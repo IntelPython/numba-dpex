@@ -7,7 +7,7 @@ from subprocess import check_call, CalledProcessError, call
 import tempfile
 
 from numba import config
-from numba.dppl.target import LINK_ATOMIC
+from numba_dppy.target import LINK_ATOMIC
 
 
 def _raise_bad_env_path(msg, path, extra=None):

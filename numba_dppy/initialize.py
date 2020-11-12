@@ -5,7 +5,7 @@ from ctypes.util import find_library
 
 
 def init_jit():
-    from numba.dppl.dispatcher import DPPLDispatcher
+    from numba_dppy.dispatcher import DPPLDispatcher
     return DPPLDispatcher
 
 def initialize_all():

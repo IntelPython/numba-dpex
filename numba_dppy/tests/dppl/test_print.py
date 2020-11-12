@@ -5,8 +5,8 @@ from timeit import default_timer as time
 import sys
 import numpy as np
 from numba import dppl, njit, prange
-from numba.dppl.testing import unittest
-from numba.dppl.testing import DPPLTestCase
+from numba_dppy.testing import unittest
+from numba_dppy.testing import DPPLTestCase
 
 import dpctl
 

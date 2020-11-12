@@ -5,8 +5,8 @@ import sys
 import numpy as np
 from numba import dppl
 import dpctl
-from numba.dppl.testing import unittest
-from numba.dppl.testing import DPPLTestCase
+from numba_dppy.testing import unittest
+from numba_dppy.testing import DPPLTestCase
 
 
 def data_parallel_sum(a, b, c):

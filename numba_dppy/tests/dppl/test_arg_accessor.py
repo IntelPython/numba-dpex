@@ -3,8 +3,8 @@ from __future__ import print_function, division, absolute_import
 import numpy as np
 
 from numba import dppl
-from numba.dppl.testing import unittest
-from numba.dppl.testing import DPPLTestCase
+from numba_dppy.testing import unittest
+from numba_dppy.testing import DPPLTestCase
 import dpctl
 
 

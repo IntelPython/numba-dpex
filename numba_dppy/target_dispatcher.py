@@ -66,7 +66,7 @@ class TargetDispatcher(serialize.ReduceMixin, metaclass=dispatcher.DispatcherMet
             if parallel is False or (isinstance(parallel, dict) and parallel.get('offload') is False):
                 raise UnsupportedError(f"Can't use 'with' context with parallel option '{parallel}'")
 
-            from numba.dppl import dppl_offload_dispatcher
+            from numba_dppy import dppl_offload_dispatcher
 
             if target is None:
                 if dpctl.get_current_device_type() == dpctl.device_type.gpu:

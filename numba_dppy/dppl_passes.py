@@ -33,7 +33,7 @@ from numba.parfors.parfor import Parfor
 def dpnp_available():
     try:
        # import dpnp
-        from numba.dppl.dpnp_glue import dpnp_fptr_interface as dpnp_glue
+        from numba_dppy.dpnp_glue import dpnp_fptr_interface as dpnp_glue
         return True
     except:
         return False
