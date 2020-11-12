@@ -4,7 +4,7 @@ import numpy as np
 
 #from numba.targets.descriptors import TargetDescriptor
 #from numba.targets.options import TargetOptions
-#import numba_dppy as dppl
+#import numba_dppy, numba_dppy as dppl
 from numba_dppy import kernel, autojit
 from .descriptor import dppl_target
 #from numba.npyufunc.deviceufunc import (UFuncMechanism, GenerializedUFunc,

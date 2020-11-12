@@ -1,6 +1,6 @@
 import sys
 import numpy as np
-import numba_dppy as dppl
+import numba_dppy, numba_dppy as dppl
 import math
 
 import dpctl

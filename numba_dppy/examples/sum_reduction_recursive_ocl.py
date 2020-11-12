@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 from numba import int32
-import numba_dppy as dppl
+import numba_dppy, numba_dppy as dppl
 import math
 
 import dpctl

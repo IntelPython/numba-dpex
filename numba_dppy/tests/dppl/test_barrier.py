@@ -5,7 +5,7 @@ import numpy as np
 from numba_dppy.testing import unittest
 from numba_dppy.testing import DPPLTestCase
 from numba import float32
-import numba_dppy as dppl
+import numba_dppy, numba_dppy as dppl
 import dpctl
 
 

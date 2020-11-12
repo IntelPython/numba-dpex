@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 from numba import njit
-import numba_dppy as dppl
+import numba_dppy, numba_dppy as dppl
 from numba.core import errors
 from numba.tests.support import captured_stdout
 from numba_dppy.testing import DPPLTestCase, unittest
