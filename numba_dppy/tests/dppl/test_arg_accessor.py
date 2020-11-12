@@ -2,7 +2,7 @@ from __future__ import print_function, division, absolute_import
 
 import numpy as np
 
-from numba import dppl
+import numba_dppy as dppl
 from numba_dppy.testing import unittest
 from numba_dppy.testing import DPPLTestCase
 import dpctl

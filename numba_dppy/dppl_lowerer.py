@@ -12,7 +12,7 @@ import numba
 from numba.core import (compiler, ir, types, sigutils, lowering,
                 funcdesc, config)
 from numba.parfors import parfor
-from numba import dppl
+import numba_dppy as dppl
 from numba.core.ir_utils import (add_offset_to_labels,
                             replace_var_names,
                             remove_dels,

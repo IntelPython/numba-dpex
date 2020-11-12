@@ -1,6 +1,7 @@
 import numpy as np
 import numba
-from numba import dppl, njit, prange
+from numba import njit, prange
+import numba_dppy as dppl
 from numba_dppy.testing import unittest, DPPLTestCase
 from numba.tests.support import captured_stdout
 import dpctl.ocldrv as ocldrv

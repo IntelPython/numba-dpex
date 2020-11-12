@@ -164,7 +164,7 @@ Complete Example using @dppl.kernel:
 
     ---------------------------------------------------------------------------
     import numpy as np
-    from numba import dppl
+    import numba_dppy as dppl
     import dpctl
 
     @dppl.kernel

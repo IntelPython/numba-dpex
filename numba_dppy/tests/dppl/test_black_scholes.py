@@ -4,7 +4,7 @@ import numpy as np
 import math
 import time
 
-from numba import dppl
+import numba_dppy as dppl
 from numba_dppy.testing import unittest
 from numba_dppy.testing import DPPLTestCase
 import dpctl

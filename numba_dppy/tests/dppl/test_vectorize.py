@@ -4,7 +4,8 @@ from timeit import default_timer as time
 
 import sys
 import numpy as np
-from numba import dppl, njit, vectorize
+from numba import njit, vectorize
+import numba_dppy as dppl
 from numba_dppy.testing import unittest
 from numba_dppy.testing import DPPLTestCase
 
