@@ -10,7 +10,7 @@ def init_jit():
 
 def initialize_all():
     from numba.core.registry import dispatcher_registry
-    dispatcher_registry.ondemand['dppl'] = init_jit
+    dispatcher_registry.ondemand['dppy'] = init_jit
 
     import dpctl
     import glob

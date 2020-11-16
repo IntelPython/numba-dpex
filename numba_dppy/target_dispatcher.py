@@ -10,7 +10,7 @@ class TargetDispatcher(serialize.ReduceMixin, metaclass=dispatcher.DispatcherMet
 
     target_offload_gpu = '__dppl_offload_gpu__'
     target_offload_cpu = '__dppl_offload_cpu__'
-    target_dppl = 'dppl'
+    target_dppl = 'dppy'
 
     def __init__(self, py_func, wrapper, target, parallel_options, compiled=None):
 
