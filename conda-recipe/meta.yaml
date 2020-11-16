@@ -1,5 +1,5 @@
 package:
-    name: "numba-dppy"
+    name: numba-dppy
     version: {{ GIT_DESCRIBE_TAG }}
 
 source:
@@ -18,6 +18,8 @@ requirements:
         - setuptools
         - cython
         - llvm-spirv
+        - numba
+        - dpctl
     run:
         - python
         - numba >=0.51
