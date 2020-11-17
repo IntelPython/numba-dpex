@@ -1,4 +1,5 @@
-from setuptools import find_packages, setup
+import os
+from setuptools import Extension, find_packages, setup
 from Cython.Build import cythonize
 
 
@@ -46,7 +47,7 @@ metadata = dict(
     packages=packages,
     setup_requires=build_requires,
     install_requires=install_requires,
-    ext_modules=get_ext_modules()
+    ext_modules=get_ext_modules(),
     author="Intel Corporation",
     classifiers=[
         "Development Status :: 4 - Beta",

@@ -20,6 +20,7 @@ requirements:
         - llvm-spirv
         - numba
         - dpctl
+        - dpnp
     run:
         - python
         - numba >=0.51
