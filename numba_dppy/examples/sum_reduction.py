@@ -4,7 +4,7 @@ import numpy as np
 import math
 import time
 
-from numba import dppl
+import numba_dppy, numba_dppy as dppl
 import dpctl
 
 

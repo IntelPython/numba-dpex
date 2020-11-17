@@ -4,7 +4,7 @@ from timeit import default_timer as time
 
 import sys
 import numpy as np
-from numba import dppl
+import numba_dppy, numba_dppy as dppl
 import dpctl
 
 

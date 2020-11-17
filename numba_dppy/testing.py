@@ -43,6 +43,6 @@ def captured_dppl_stdout():
     # Prevent accidentally capturing previously output text
     sys.stdout.flush()
 
-    from numba import dppl
+    import numba_dppy, numba_dppy as dppl
     with redirect_c_stdout() as stream:
         yield DPPLTextCapture(stream)

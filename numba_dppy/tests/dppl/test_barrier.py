@@ -2,9 +2,10 @@ from __future__ import print_function, division, absolute_import
 
 import numpy as np
 
-from numba.dppl.testing import unittest
-from numba.dppl.testing import DPPLTestCase
-from numba import dppl, float32
+from numba_dppy.testing import unittest
+from numba_dppy.testing import DPPLTestCase
+from numba import float32
+import numba_dppy, numba_dppy as dppl
 import dpctl
 
 

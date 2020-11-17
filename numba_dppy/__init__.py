@@ -164,7 +164,7 @@ Complete Example using @dppl.kernel:
 
     ---------------------------------------------------------------------------
     import numpy as np
-    from numba import dppl
+    import numba_dppy, numba_dppy as dppl
     import dpctl
 
     @dppl.kernel
@@ -516,4 +516,4 @@ def test(*args, **kwargs):
     if not dppl_present and not is_available():
         dppl_error()
 
-    return numba.testing.test("numba.dppl.tests", *args, **kwargs)
+    return numba.testing.test("numba_dppy.tests", *args, **kwargs)

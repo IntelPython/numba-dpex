@@ -1,9 +1,10 @@
 import numba
 import numpy as np
-from numba import dppl, njit
+from numba import njit
+import numba_dppy, numba_dppy as dppl
 from numba.core import errors
 from numba.tests.support import captured_stdout
-from numba.dppl.testing import DPPLTestCase, unittest
+from numba_dppy.testing import DPPLTestCase, unittest
 import dpctl
 
 
@@ -21,7 +22,7 @@ class TestWithDPPLContext(DPPLTestCase):
             a = np.ones((64), dtype=np.float64)
             nested_func(a, b)
 
-        numba.dppl.compiler.DEBUG = 1
+        numba_dppy.compiler.DEBUG = 1
         expected = np.ones((64), dtype=np.float64)
         got_gpu = np.ones((64), dtype=np.float64)
 
@@ -29,7 +30,7 @@ class TestWithDPPLContext(DPPLTestCase):
             with dpctl.device_context("opencl:gpu"):
                 func(got_gpu)
 
-        numba.dppl.compiler.DEBUG = 0
+        numba_dppy.compiler.DEBUG = 0
         func(expected)
 
         np.testing.assert_array_equal(expected, got_gpu)
@@ -47,7 +48,7 @@ class TestWithDPPLContext(DPPLTestCase):
             a = np.ones((64), dtype=np.float64)
             nested_func(a, b)
 
-        numba.dppl.compiler.DEBUG = 1
+        numba_dppy.compiler.DEBUG = 1
         expected = np.ones((64), dtype=np.float64)
         got_cpu = np.ones((64), dtype=np.float64)
 
@@ -55,7 +56,7 @@ class TestWithDPPLContext(DPPLTestCase):
             with dpctl.device_context("opencl:cpu"):
                 func(got_cpu)
 
-        numba.dppl.compiler.DEBUG = 0
+        numba_dppy.compiler.DEBUG = 0
         func(expected)
 
         np.testing.assert_array_equal(expected, got_cpu)

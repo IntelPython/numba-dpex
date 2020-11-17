@@ -74,7 +74,7 @@ spirv_data_model_manager = _init_data_model_manager()
 
 def _replace_numpy_ufunc_with_opencl_supported_functions():
     from numba.np.ufunc_db import _ufunc_db as ufunc_db
-    from numba.dppl.ocl.mathimpl import lower_ocl_impl, sig_mapper
+    from numba_dppy.ocl.mathimpl import lower_ocl_impl, sig_mapper
 
     ufuncs = [("fabs", np.fabs), ("exp", np.exp), ("log", np.log),
               ("log10", np.log10), ("expm1", np.expm1), ("log1p", np.log1p),
@@ -96,7 +96,7 @@ class DPPLTargetContext(BaseContext):
     generic_addrspace = SPIR_GENERIC_ADDRSPACE
 
     def init(self):
-        self._internal_codegen = codegen.JITSPIRVCodegen("numba.dppl.jit")
+        self._internal_codegen = codegen.JITSPIRVCodegen("numba_dppy.jit")
         self._target_data = (ll.create_target_data(codegen
                                 .SPIR_DATA_LAYOUT[utils.MACHINE_BITS]))
         # Override data model manager to SPIR model
@@ -117,7 +117,7 @@ class DPPLTargetContext(BaseContext):
 
 
     def replace_numpy_ufunc_with_opencl_supported_functions(self):
-        from numba.dppl.ocl.mathimpl import lower_ocl_impl, sig_mapper
+        from numba_dppy.ocl.mathimpl import lower_ocl_impl, sig_mapper
 
         ufuncs = [("fabs", np.fabs), ("exp", np.exp), ("log", np.log),
                   ("log10", np.log10), ("expm1", np.expm1), ("log1p", np.log1p),

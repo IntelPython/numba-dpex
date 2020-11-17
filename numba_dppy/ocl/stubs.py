@@ -2,7 +2,7 @@ from __future__ import print_function, absolute_import
 from numba.core import types, ir, typing
 from numba.core.rewrites.macros import Macro
 
-from numba.dppl.target import SPIR_LOCAL_ADDRSPACE
+from numba_dppy.target import SPIR_LOCAL_ADDRSPACE
 
 _stub_error = NotImplementedError("This is a stub.")
 

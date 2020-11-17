@@ -4,9 +4,10 @@ from timeit import default_timer as time
 
 import sys
 import numpy as np
-from numba import dppl, njit
-from numba.dppl.testing import unittest
-from numba.dppl.testing import DPPLTestCase
+from numba import njit
+import numba_dppy, numba_dppy as dppl
+from numba_dppy.testing import unittest
+from numba_dppy.testing import DPPLTestCase
 
 
 def test_for_different_datatypes(fn, test_fn, dims, arg_count, tys, np_all=False, matrix=None):
@@ -68,7 +69,7 @@ def test_for_dimensions(fn, test_fn, dims, tys, np_all=False):
 def ensure_dpnp():
     try:
        # import dpnp
-        from numba.dppl.dpnp_glue import dpnp_fptr_interface as dpnp_glue
+        from numba_dppy.dpnp_glue import dpnp_fptr_interface as dpnp_glue
         return True
     except:
         return False

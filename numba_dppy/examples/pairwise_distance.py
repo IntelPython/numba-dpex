@@ -6,7 +6,7 @@ import numpy as np
 import argparse
 import timeit
 
-from numba import dppl
+import numba_dppy, numba_dppy as dppl
 import dpctl
 import dpctl._memory as dpctl_mem
 

@@ -12,7 +12,7 @@ import numba
 from numba.core import (compiler, ir, types, sigutils, lowering,
                 funcdesc, config)
 from numba.parfors import parfor
-from numba import dppl
+import numba_dppy, numba_dppy as dppl
 from numba.core.ir_utils import (add_offset_to_labels,
                             replace_var_names,
                             remove_dels,
@@ -40,7 +40,7 @@ from numba.core.errors import NumbaParallelSafetyWarning, NumbaPerformanceWarnin
 from .dufunc_inliner import dufunc_inliner
 from . import dppl_host_fn_call_gen as dppl_call_gen
 import dpctl
-from numba.dppl.target import DPPLTargetContext
+from numba_dppy.target import DPPLTargetContext
 
 
 def _print_block(block):
@@ -329,7 +329,7 @@ def _create_gufunc_for_parfor_body(
         return addrspaces
 
     addrspaces = addrspace_from(parfor_params,
-                                numba.dppl.target.SPIR_GLOBAL_ADDRSPACE)
+                                numba_dppy.target.SPIR_GLOBAL_ADDRSPACE)
 
     if config.DEBUG_ARRAY_OPT >= 1:
         print("parfor_params = ", parfor_params, type(parfor_params))
@@ -607,7 +607,7 @@ def _create_gufunc_for_parfor_body(
         print('after DUFunc inline'.center(80, '-'))
         gufunc_ir.dump()
 
-    kernel_func = numba.dppl.compiler.compile_kernel_parfor(
+    kernel_func = numba_dppy.compiler.compile_kernel_parfor(
         dpctl.get_current_queue(),
         gufunc_ir,
         gufunc_param_types,
@@ -975,7 +975,7 @@ def relatively_deep_copy(obj, memo):
     from numba.core.types.functions import Function, Dispatcher
     from numba.core.bytecode import FunctionIdentity
     from numba.core.typing.templates import Signature
-    from numba.dppl.compiler import DPPLFunctionTemplate
+    from numba_dppy.compiler import DPPLFunctionTemplate
     from numba.core.compiler import CompileResult
     from numba.np.ufunc.dufunc import DUFunc
     from ctypes import _CFuncPtr
@@ -1169,7 +1169,7 @@ class DPPLLower(Lower):
             self.base_lower = self.gpu_lower
             lowering.lower_extensions[parfor.Parfor].pop()
         except Exception as e:
-            if numba.dppl.compiler.DEBUG:
+            if numba_dppy.compiler.DEBUG:
                 print("Failed to lower parfor on DPPL-device. Due to:\n", e)
             lowering.lower_extensions[parfor.Parfor].pop()
             if (lowering.lower_extensions[parfor.Parfor][-1] == numba.parfors.parfor_lowering._lower_parfor_parallel):
@@ -1195,7 +1195,7 @@ def copy_block(block):
 def lower_parfor_rollback(lowerer, parfor):
     try:
         _lower_parfor_gufunc(lowerer, parfor)
-        if numba.dppl.compiler.DEBUG:
+        if numba_dppy.compiler.DEBUG:
             msg = "Parfor lowered on DPPL-device"
             print(msg, parfor.loc)
     except Exception as e:

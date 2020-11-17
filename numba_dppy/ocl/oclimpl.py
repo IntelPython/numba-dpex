@@ -11,9 +11,9 @@ import llvmlite.binding as ll
 from numba.core.imputils import Registry
 from numba.core import cgutils, types
 from numba.core.itanium_mangler import mangle_c, mangle, mangle_type
-from numba.dppl import target
+from numba_dppy import target
 from . import stubs
-from numba.dppl.codegen import SPIR_DATA_LAYOUT
+from numba_dppy.codegen import SPIR_DATA_LAYOUT
 
 
 registry = Registry()

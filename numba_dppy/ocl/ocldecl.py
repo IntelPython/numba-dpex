@@ -4,7 +4,7 @@ from numba.core.typing.npydecl import register_number_classes
 from numba.core.typing.templates import (AttributeTemplate, ConcreteTemplate,
                                         AbstractTemplate, MacroTemplate,
                                         signature, Registry)
-from numba import dppl
+import numba_dppy, numba_dppy as dppl
 
 registry = Registry()
 intrinsic = registry.register

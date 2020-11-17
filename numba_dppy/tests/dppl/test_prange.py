@@ -5,9 +5,10 @@ from timeit import default_timer as time
 import sys
 import numpy as np
 import numba
-from numba import dppl, njit, prange
-from numba.dppl.testing import unittest
-from numba.dppl.testing import DPPLTestCase
+from numba import njit, prange
+import numba_dppy, numba_dppy as dppl
+from numba_dppy.testing import unittest
+from numba_dppy.testing import DPPLTestCase
 from numba.tests.support import captured_stdout
 
 
@@ -105,8 +106,8 @@ class TestPrange(DPPLTestCase):
 
             return a
 
-        old_debug = numba.dppl.compiler.DEBUG
-        numba.dppl.compiler.DEBUG = 1
+        old_debug = numba_dppy.compiler.DEBUG
+        numba_dppy.compiler.DEBUG = 1
 
         jitted = njit(parallel={'offload':True})(prange_example)
         with captured_stdout() as got:
@@ -114,7 +115,7 @@ class TestPrange(DPPLTestCase):
 
         res = prange_example()
 
-        numba.dppl.compiler.DEBUG = old_debug
+        numba_dppy.compiler.DEBUG = old_debug
 
         self.assertEqual(got.getvalue().count('Parfor lowered on DPPL-device'), 2)
         self.assertEqual(got.getvalue().count('Failed to lower parfor on DPPL-device'), 0)
@@ -133,8 +134,8 @@ class TestPrange(DPPLTestCase):
 
             return a
 
-        old_debug = numba.dppl.compiler.DEBUG
-        numba.dppl.compiler.DEBUG = 1
+        old_debug = numba_dppy.compiler.DEBUG
+        numba_dppy.compiler.DEBUG = 1
 
         jitted = njit(parallel={'offload':True})(prange_example)
         with captured_stdout() as got:
@@ -142,7 +143,7 @@ class TestPrange(DPPLTestCase):
 
         res = prange_example()
 
-        numba.dppl.compiler.DEBUG = old_debug
+        numba_dppy.compiler.DEBUG = old_debug
 
         self.assertEqual(got.getvalue().count('Parfor lowered on DPPL-device'), 2)
         self.assertEqual(got.getvalue().count('Failed to lower parfor on DPPL-device'), 0)

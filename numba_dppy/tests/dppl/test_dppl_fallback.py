@@ -3,9 +3,9 @@ from __future__ import print_function, division, absolute_import
 import numpy as np
 
 import numba
-from numba import dppl
-from numba.dppl.testing import unittest
-from numba.dppl.testing import DPPLTestCase
+import numba_dppy, numba_dppy as dppl
+from numba_dppy.testing import unittest
+from numba_dppy.testing import DPPLTestCase
 from numba.tests.support import captured_stderr
 import dpctl
 import sys
