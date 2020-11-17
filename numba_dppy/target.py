@@ -94,7 +94,6 @@ def _replace_numpy_ufunc_with_opencl_supported_functions():
 class DPPLTargetContext(BaseContext):
     implement_powi_as_math_call = True
     generic_addrspace = SPIR_GENERIC_ADDRSPACE
-    context_name = "dppl.jit"
 
     def init(self):
         self._internal_codegen = codegen.JITSPIRVCodegen("numba.dppl.jit")
