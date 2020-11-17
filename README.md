@@ -2,7 +2,7 @@
 
 ## Numba + dpPy + dpCtl + dpNP = numba-dppy
 
-`numba-dppy` extends Numba with new backend for support compilation
+`numba-dppy` extends Numba with a new backend to support compilation
 for Intel CPU and GPU architectures.
 
 For more information about Numba, see the Numba homepage:
