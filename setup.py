@@ -2,6 +2,8 @@ import os
 from setuptools import Extension, find_packages, setup
 from Cython.Build import cythonize
 
+import versioneer
+
 
 def get_ext_modules():
     ext_modules = []
@@ -41,7 +43,7 @@ install_requires = [
 
 metadata = dict(
     name="numba-dppy",
-    version="0.0.1",
+    version=versioneer.get_version(),
     description="Numba extension for Intel CPU and GPU backend",
     url="https://github.com/IntelPython/numba-dppy",
     packages=packages,
@@ -61,6 +63,7 @@ metadata = dict(
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Software Development :: Compilers",
     ],
+    cmdclass=versioneer.get_cmdclass(),
 )
 
 setup(**metadata)

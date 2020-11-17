@@ -517,3 +517,7 @@ def test(*args, **kwargs):
         dppl_error()
 
     return numba.testing.test("numba_dppy.tests", *args, **kwargs)
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
