@@ -506,14 +506,14 @@ from __future__ import print_function, absolute_import, division
 from numba import config
 import numba.testing
 
-from numba.dppl_config import *
-if dppl_present:
+from .config import dppy_present
+if dppy_present:
     from .device_init import *
 else:
     raise ImportError("Importing dppl failed")
 
 def test(*args, **kwargs):
-    if not dppl_present and not is_available():
+    if not dppy_present and not is_available():
         dppl_error()
 
     return numba.testing.test("numba_dppy.tests", *args, **kwargs)
