@@ -7,6 +7,7 @@ from subprocess import check_call, CalledProcessError, call
 import tempfile
 
 from numba import config
+from numba_dppy import config as dppy_config
 from numba_dppy.target import LINK_ATOMIC
 
 
@@ -61,7 +62,7 @@ class CmdLine(object):
         #     b) hoist all allocas to the enty block of the module
         check_call(["opt","-O1","-o",ipath+'.bc',ipath])
         check_call(["llvm-spirv","-o",opath,ipath+'.bc'])
-        if config.SAVE_DPPL_IR_FILES == 0:
+        if dppy_config.SAVE_IR_FILES == 0:
             os.unlink(ipath + '.bc')
 
     def link(self, opath, binaries):
@@ -84,12 +85,12 @@ class Module(object):
     def __del__(self):
         # Remove all temporary files
         for afile in self._tempfiles:
-            if config.SAVE_DPPL_IR_FILES != 0:
+            if dppy_config.SAVE_IR_FILES != 0:
                 print(afile)
             else:
                 os.unlink(afile)
         # Remove directory
-        if config.SAVE_DPPL_IR_FILES == 0:
+        if dppy_config.SAVE_IR_FILES == 0:
             os.rmdir(self._tmpdir)
 
     def _create_temp_file(self, name, mode='wb'):
@@ -136,7 +137,7 @@ class Module(object):
             self._cmd.link(spirv_path, binary_paths)
 
         # Validate the SPIR-V code
-        if config.SPIRV_VAL == 1:
+        if dppy_config.SPIRV_VAL == 1:
             try:
                 self._cmd.validate(ipath=spirv_path)
             except CalledProcessError:
