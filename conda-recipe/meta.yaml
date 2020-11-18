@@ -17,7 +17,6 @@ requirements:
         - python
         - setuptools
         - cython
-        - llvm-spirv
         - numba
         - dpctl
         - dpnp
@@ -27,6 +26,7 @@ requirements:
         - dpctl
         - spirv-tools
         - llvm-spirv
+        - llvmdev
         - dpnp
 
 about:
