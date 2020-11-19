@@ -4,7 +4,7 @@ from numba import njit, prange
 import numba_dppy, numba_dppy as dppl
 from numba_dppy.testing import unittest, DPPLTestCase
 from numba.tests.support import captured_stdout
-import dpctl.ocldrv as ocldrv
+import dpctl
 
 
 def prange_example():
@@ -18,17 +18,18 @@ def prange_example():
     return a
 
 
-@unittest.skipUnless(ocldrv.has_gpu_device, 'test only on GPU system')
+@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
 class TestParforMessage(DPPLTestCase):
     def test_parfor_message(self):
-        numba_dppy.compiler.DEBUG = 1
-        jitted = njit(parallel={'offload':True})(prange_example)
+        with dpctl.device_context("opencl:gpu") as gpu_queue:
+            numba_dppy.compiler.DEBUG = 1
+            jitted = njit(parallel={"offload": True})(prange_example)
 
-        with captured_stdout() as got:
-            jitted()
+            with captured_stdout() as got:
+                jitted()
 
-        numba_dppy.compiler.DEBUG = 0
-        self.assertTrue('Parfor lowered on DPPL-device' in got.getvalue())
+            numba_dppy.compiler.DEBUG = 0
+            self.assertTrue("Parfor lowered on DPPL-device" in got.getvalue())
 
 
 if __name__ == '__main__':
