@@ -24,6 +24,7 @@ from .dppl_passes import (
         SpirvFriendlyLowering,
         DPPLAddNumpyOverloadPass,
         DPPLAddNumpyRemoveOverloadPass,
+        DPPLRewriteOverloadedFunctions,
         DPPLNoPythonBackend
         )
 
@@ -43,6 +44,9 @@ class DPPLPassBuilder(object):
             pm.add_pass(FixupArgs, "fix up args")
         pm.add_pass(IRProcessing, "processing IR")
         pm.add_pass(WithLifting, "Handle with contexts")
+
+        # this pass rewrite name of functions
+        pm.add_pass(DPPLRewriteOverloadedFunctions, "dppl rewrite name of functions")
 
         # this pass adds required logic to overload default implementation of
         # Numpy functions

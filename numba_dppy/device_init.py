@@ -18,6 +18,10 @@ from .ocl.stubs import (
     CLK_GLOBAL_MEM_FENCE,
 )
 
+from .dpnp_glue.stubs import (
+    dpnp
+)
+
 DEFAULT_LOCAL_SIZE = []
 
 from . import initialize

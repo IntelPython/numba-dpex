@@ -11,6 +11,7 @@ import dpctl
 @dppl.kernel
 def data_parallel_sum(a, b, c):
     i = dppl.get_global_id(0)
+    d = dppl.atomic.add(c[i], 1)
     c[i] = a[i] + b[i]
 
 
