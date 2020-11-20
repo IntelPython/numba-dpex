@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eux
+set -ex
 
 # For activating OpenCL CPU
 source ${ONEAPI_ROOT}/compiler/latest/env/vars.sh
