@@ -37,6 +37,7 @@ class TestWithDPPLContext(DPPLTestCase):
         self.assertTrue('Parfor lowered on DPPL-device' in got_gpu_message.getvalue())
 
     @unittest.skipIf(not dpctl.has_cpu_queues(), "No CPU platforms available")
+    @unittest.expectedFailure
     def test_with_dppl_context_cpu(self):
 
         @njit
