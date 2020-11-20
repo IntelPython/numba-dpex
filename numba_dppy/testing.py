@@ -48,6 +48,10 @@ def captured_dppl_stdout():
         yield DPPLTextCapture(stream)
 
 
+def _id(obj):
+    return obj
+
+
 def expectedFailureIf(condition):
     """
     Expected failure for a test if the condition is true.
