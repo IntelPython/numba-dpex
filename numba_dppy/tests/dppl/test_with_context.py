@@ -4,13 +4,14 @@ from numba import njit
 import numba_dppy, numba_dppy as dppl
 from numba.core import errors
 from numba.tests.support import captured_stdout
-from numba_dppy.testing import DPPLTestCase, unittest
+from numba_dppy.testing import DPPLTestCase, unittest, expectedFailureIf
 import dpctl
 
 
 class TestWithDPPLContext(DPPLTestCase):
 
     @unittest.skipIf(not dpctl.has_gpu_queues(), "No GPU platforms available")
+    @expectedFailureIf(sys.platform.startswith('win'))
     def test_with_dppl_context_gpu(self):
 
         @njit

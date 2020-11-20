@@ -7,7 +7,7 @@ import numpy as np
 import numba
 from numba import njit, prange
 import numba_dppy, numba_dppy as dppl
-from numba_dppy.testing import unittest
+from numba_dppy.testing import unittest, expectedFailureIf
 from numba_dppy.testing import DPPLTestCase
 from numba.tests.support import captured_stdout
 
@@ -95,6 +95,7 @@ class TestPrange(DPPLTestCase):
         self.assertTrue(np.all(b == 12))
 
 
+    @expectedFailureIf(sys.platform.startswith('win'))
     def test_two_consequent_prange(self):
         def prange_example():
             n = 10
