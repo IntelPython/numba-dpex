@@ -503,7 +503,6 @@ Supported NumPy Functions:
 
 from __future__ import print_function, absolute_import, division
 
-from numba import config
 import numba.testing
 
 from .config import dppy_present

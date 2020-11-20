@@ -46,3 +46,16 @@ def captured_dppl_stdout():
     import numba_dppy, numba_dppy as dppl
     with redirect_c_stdout() as stream:
         yield DPPLTextCapture(stream)
+
+
+def _id(obj):
+    return obj
+
+
+def expectedFailureIf(condition):
+    """
+    Expected failure for a test if the condition is true.
+    """
+    if condition:
+        return unittest.expectedFailure
+    return _id

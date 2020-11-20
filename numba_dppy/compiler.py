@@ -402,15 +402,15 @@ class DPPLKernel(DPPLKernelBase):
         # parent
         kernelargs.append(ctypes.c_size_t(0))
 
-        kernelargs.append(ctypes.c_long(val.size))
-        kernelargs.append(ctypes.c_long(val.dtype.itemsize))
+        kernelargs.append(ctypes.c_longlong(val.size))
+        kernelargs.append(ctypes.c_longlong(val.dtype.itemsize))
 
         kernelargs.append(val.base)
 
         for ax in range(val.ndim):
-            kernelargs.append(ctypes.c_long(val.shape[ax]))
+            kernelargs.append(ctypes.c_longlong(val.shape[ax]))
         for ax in range(val.ndim):
-            kernelargs.append(ctypes.c_long(val.strides[ax]))
+            kernelargs.append(ctypes.c_longlong(val.strides[ax]))
 
 
     def _unpack_argument(self, ty, val, sycl_queue, retr, kernelargs,
@@ -439,16 +439,16 @@ class DPPLKernel(DPPLKernelBase):
                 self._unpack_device_array_argument(usm_ndarr, kernelargs)
 
         elif ty == types.int64:
-            cval = ctypes.c_long(val)
+            cval = ctypes.c_longlong(val)
             kernelargs.append(cval)
         elif ty == types.uint64:
-            cval = ctypes.c_long(val)
+            cval = ctypes.c_ulonglong(val)
             kernelargs.append(cval)
         elif ty == types.int32:
             cval = ctypes.c_int(val)
             kernelargs.append(cval)
         elif ty == types.uint32:
-            cval = ctypes.c_int(val)
+            cval = ctypes.c_uint(val)
             kernelargs.append(cval)
         elif ty == types.float64:
             cval = ctypes.c_double(val)
