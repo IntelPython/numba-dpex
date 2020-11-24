@@ -43,7 +43,7 @@ See folder `numba_dppy/tests`.
 
 Run tests:
 ```bash
-python -m numba.runtests numba_dppy.tests
+python -m unittest numba_dppy.tests
 ```
 
 ## Examples
