@@ -22,7 +22,7 @@ from numba.core.ir_utils import remove_dels
 from numba.core.errors import (LoweringError, new_error_context, TypingError,
                      LiteralTypingError)
 
-from numba.core.compiler_machinery import FunctionPass, LoweringPass, register_pass
+from numba.core.compiler_machinery import FunctionPass, LoweringPass, register_pass, AnalysisPass
 
 from .dppl_lowerer import DPPLLower
 
@@ -436,4 +436,22 @@ class DPPLNoPythonBackend(FunctionPass):
 
         remove_dels(state.func_ir.blocks)
 
+        return True
+
+
+@register_pass(mutates_CFG=False, analysis_only=True)
+class DPPLDumpParforDiagnostics(AnalysisPass):
+
+    _name = "dump_parfor_diagnostics"
+
+    def __init__(self):
+        AnalysisPass.__init__(self)
+
+    def run_pass(self, state):
+        # if state.flags.auto_parallel.enabled: //add in condition flag for kernels
+        if config.PARALLEL_DIAGNOSTICS:
+            if state.parfor_diagnostics is not None:
+                state.parfor_diagnostics.dump(config.PARALLEL_DIAGNOSTICS)
+            else:
+                raise RuntimeError("Diagnostics failed.")
         return True
