@@ -19,15 +19,17 @@ from . import spirv_generator
 import os
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
 
-DEBUG=os.environ.get('NUMBA_DPPL_DEBUG', None)
+DEBUG = os.environ.get('NUMBA_DPPL_DEBUG', None)
 _NUMBA_DPPL_READ_ONLY  = "read_only"
 _NUMBA_DPPL_WRITE_ONLY = "write_only"
 _NUMBA_DPPL_READ_WRITE = "read_write"
+
 
 def _raise_no_device_found_error():
     error_message = ("No OpenCL device specified. "
                      "Usage : jit_fn[device, globalsize, localsize](...)")
     raise ValueError(error_message)
+
 
 def _raise_invalid_kernel_enqueue_args():
     error_message = ("Incorrect number of arguments for enquing dppl.kernel. "
@@ -77,9 +79,11 @@ def compile_with_dppl(pyfunc, return_type, args, debug):
 
     typingctx = dppl_target.typing_context
     targetctx = dppl_target.target_context
-    # TODO handle debug flag
+
     flags = compiler.Flags()
     # Do not compile (generate native code), just lower (to LLVM)
+    if debug:
+        flags.set('debuginfo')
     flags.set('no_compile')
     flags.set('no_cpython_wrapper')
     flags.unset('nrt')
@@ -116,6 +120,7 @@ def compile_with_dppl(pyfunc, return_type, args, debug):
 def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
     if DEBUG:
         print("compile_kernel", args)
+        debug = True
     if not sycl_queue:
         # This will be get_current_queue
         sycl_queue = dpctl.get_current_queue()
