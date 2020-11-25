@@ -25,6 +25,7 @@ from numba.core.errors import (LoweringError, new_error_context, TypingError,
 from numba.core.compiler_machinery import FunctionPass, LoweringPass, register_pass, AnalysisPass
 
 from .dppl_lowerer import DPPLLower
+from numba_dppy import config as dppy_config
 
 from numba.parfors.parfor import PreParforPass as _parfor_PreParforPass, replace_functions_map
 from numba.parfors.parfor import ParforPass as _parfor_ParforPass
@@ -449,7 +450,7 @@ class DPPLDumpParforDiagnostics(AnalysisPass):
 
     def run_pass(self, state):
         # if state.flags.auto_parallel.enabled: //add in condition flag for kernels
-        if config.PARALLEL_DIAGNOSTICS:
+        if dppy_config.OFFLOAD_DIAGNOSTICS:
             if state.parfor_diagnostics is not None:
                 state.parfor_diagnostics.dump(config.PARALLEL_DIAGNOSTICS)
             else:
