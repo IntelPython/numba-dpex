@@ -53,8 +53,8 @@ class RewriteOverloadedFunctions(object):
         blocks = func_ir.blocks
         topo_order = find_topo_order(blocks)
 
-        import numba.dppl.dpnp_glue.dpnpdecl
-        import numba.dppl.dpnp_glue.dpnpimpl
+        import numba_dppy.dpnp_glue.dpnpdecl
+        import numba_dppy.dpnp_glue.dpnpimpl
         for label in topo_order:
             block = blocks[label]
             saved_arr_arg = {}
@@ -80,7 +80,7 @@ class RewriteOverloadedFunctions(object):
                             loc = global_module.loc
 
                             g_dppl_var = ir.Var(scope, mk_unique_var("$dppl_replaced_var"), loc)
-                            g_dppl = ir.Global('dppl', numba.dppl, loc)
+                            g_dppl = ir.Global('numba_dppy', numba_dppy, loc)
                             g_dppl_assign = ir.Assign(g_dppl, g_dppl_var, loc)
 
                             dpnp_var = ir.Var(scope, mk_unique_var("$dpnp_var"), loc)

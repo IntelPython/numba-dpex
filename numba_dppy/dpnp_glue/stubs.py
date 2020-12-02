@@ -1,4 +1,4 @@
-from numba.dppl.ocl.stubs import Stub
+from numba_dppy.ocl.stubs import Stub
 
 class dpnp(Stub):
     """dpnp namespace

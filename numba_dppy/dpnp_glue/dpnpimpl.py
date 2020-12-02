@@ -1,5 +1,5 @@
 from numba.core.imputils import (lower_builtin)
-import numba.dppl.experimental_numpy_lowering_overload as dpnp_lowering
+import numba_dppy.experimental_numpy_lowering_overload as dpnp_lowering
 from numba import types
 from numba.core.typing import signature
 from numba.core.extending import overload
