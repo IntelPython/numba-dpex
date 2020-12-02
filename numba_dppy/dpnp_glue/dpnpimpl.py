@@ -12,7 +12,6 @@ def get_dpnp_fptr(fn_name, type_names):
     f_ptr = dpnp_glue.get_dpnp_fn_ptr(fn_name, type_names)
     return f_ptr
 
-
 class RetrieveDpnpFnPtr(types.ExternalFunctionPointer):
     def __init__(self, fn_name, type_names, sig, get_pointer):
         self.fn_name = fn_name

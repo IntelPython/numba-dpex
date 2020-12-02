@@ -40,7 +40,8 @@ def dpnp_available():
     except:
         return False
 
-rewrite_function_name_map = {"sum": (["numpy"], "sum")}
+rewrite_function_name_map = {"sum": (["np"], "sum"),
+                             "eig": (["linalg"], "eig")}
 
 class RewriteOverloadedFunctions(object):
     def __init__(self, state, rewrite_function_name_map=rewrite_function_name_map):
@@ -52,7 +53,6 @@ class RewriteOverloadedFunctions(object):
         blocks = func_ir.blocks
         topo_order = find_topo_order(blocks)
 
-        import pdb
         import numba.dppl.dpnp_glue.dpnpdecl
         import numba.dppl.dpnp_glue.dpnpimpl
         for label in topo_order:
@@ -61,52 +61,41 @@ class RewriteOverloadedFunctions(object):
             new_body = []
             for stmt in block.body:
                 if isinstance(stmt, ir.Assign) and isinstance(stmt.value, ir.Expr):
-                    #pdb.set_trace()
                     lhs = stmt.target.name
                     rhs = stmt.value
                     # replace np.func with name from map np.func
                     if (rhs.op == 'getattr' and rhs.attr in rewrite_function_name_map):
-                        rhs = stmt.value
-                        rhs.attr = rewrite_function_name_map[rhs.attr][1]
+                        module_node = block.find_variable_assignment(rhs.value.name).value
+                        if ((isinstance(module_node, ir.Global) and
+                                module_node.name in rewrite_function_name_map[rhs.attr][0]) or
+                            (isinstance(module_node, ir.Expr) and
+                                module_node.attr in rewrite_function_name_map[rhs.attr][0])):
+                            rhs = stmt.value
+                            rhs.attr = rewrite_function_name_map[rhs.attr][1]
 
-                        global_module = rhs.value
-                        saved_arr_arg[lhs] = global_module
+                            global_module = rhs.value
+                            saved_arr_arg[lhs] = global_module
 
-                        scope = global_module.scope
-                        loc = global_module.loc
+                            scope = global_module.scope
+                            loc = global_module.loc
 
-                        g_dppl_var = ir.Var(scope, mk_unique_var("$dppl_replaced_var"), loc)
-                        g_dppl = ir.Global('dppl', numba.dppl, loc)
-                        g_dppl_assign = ir.Assign(g_dppl, g_dppl_var, loc)
+                            g_dppl_var = ir.Var(scope, mk_unique_var("$dppl_replaced_var"), loc)
+                            g_dppl = ir.Global('dppl', numba.dppl, loc)
+                            g_dppl_assign = ir.Assign(g_dppl, g_dppl_var, loc)
 
-                        dpnp_var = ir.Var(scope, mk_unique_var("$dpnp_var"), loc)
-                        getattr_dpnp = ir.Expr.getattr(g_dppl_var, 'dpnp', loc)
-                        dpnp_assign = ir.Assign(getattr_dpnp, dpnp_var, loc)
+                            dpnp_var = ir.Var(scope, mk_unique_var("$dpnp_var"), loc)
+                            getattr_dpnp = ir.Expr.getattr(g_dppl_var, 'dpnp', loc)
+                            dpnp_assign = ir.Assign(getattr_dpnp, dpnp_var, loc)
 
-                        rhs.value = dpnp_var
-                        new_body.append(g_dppl_assign)
-                        new_body.append(dpnp_assign)
-                        func_ir._definitions[dpnp_var.name] = [getattr_dpnp]
-                        func_ir._definitions[g_dppl_var.name] = [g_dppl]
+                            rhs.value = dpnp_var
+                            new_body.append(g_dppl_assign)
+                            new_body.append(dpnp_assign)
+                            func_ir._definitions[dpnp_var.name] = [getattr_dpnp]
+                            func_ir._definitions[g_dppl_var.name] = [g_dppl]
 
                 new_body.append(stmt)
             block.body = new_body
-            #pdb.set_trace()
 
-
-        '''
-        work_list = list(func_ir.blocks.items())
-        while work_list:
-            label, block = work_list.pop()
-            for i, instr in enumerate(block.body):
-                if isinstance(instr, ir.Assign):
-                    expr = instr.value
-                    if isinstance(expr, ir.Expr):
-                        if expr.op == 'call':
-                            call_node = block.find_variable_assignment(expr.func.name).value
-                            pass
-
-        '''
 
 @register_pass(mutates_CFG=True, analysis_only=False)
 class DPPLRewriteOverloadedFunctions(FunctionPass):
