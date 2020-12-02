@@ -8,4 +8,6 @@ class dpnp(Stub):
     class sum(Stub):
         pass
 
+    class eig(Stub):
+        pass
 
