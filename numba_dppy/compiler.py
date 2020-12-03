@@ -11,7 +11,7 @@ from types import FunctionType
 from inspect import signature
 
 import dpctl
-import dpctl._memory as dpctl_mem
+import dpctl.memory as dpctl_mem
 import numpy as np
 
 from . import spirv_generator
@@ -422,7 +422,7 @@ class DPPLKernel(DPPLKernelBase):
         device_arrs.append(None)
 
         if isinstance(ty, types.Array):
-            if isinstance(val.base, dpctl_mem.Memory):
+            if hasattr(val.base, "__sycl_usm_array_interface__"):
                 self._unpack_device_array_argument(val, kernelargs)
             else:
                 default_behavior = self.check_for_invalid_access_type(access_type)
