@@ -1,7 +1,8 @@
 import numpy as np
 import numba
 from numba import njit, prange
-import numba_dppy, numba_dppy as dppl
+import numba_dppy
+import numba_dppy as dppl
 from numba_dppy.testing import unittest, DPPLTestCase
 from numba.tests.support import captured_stdout
 import dpctl
@@ -23,7 +24,7 @@ class TestParforMessage(DPPLTestCase):
     def test_parfor_message(self):
         with dpctl.device_context("opencl:gpu") as gpu_queue:
             numba_dppy.compiler.DEBUG = 1
-            jitted = njit(parallel={"offload": True})(prange_example)
+            jitted = njit(prange_example)
 
             with captured_stdout() as got:
                 jitted()
