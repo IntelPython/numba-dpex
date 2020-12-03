@@ -2,25 +2,25 @@ from __future__ import print_function, division, absolute_import
 
 import numpy as np
 
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPLTestCase
+from numba_dppy.testing import DPPYTestCase
 import dpctl
 
 
-@dppl.kernel(access_types={"read_only": ['a', 'b'], "write_only": ['c'], "read_write": []})
+@dppy.kernel(access_types={"read_only": ['a', 'b'], "write_only": ['c'], "read_write": []})
 def sum_with_accessor(a, b, c):
-    i = dppl.get_global_id(0)
+    i = dppy.get_global_id(0)
     c[i] = a[i] + b[i]
 
-@dppl.kernel
+@dppy.kernel
 def sum_without_accessor(a, b, c):
-    i = dppl.get_global_id(0)
+    i = dppy.get_global_id(0)
     c[i] = a[i] + b[i]
 
 def call_kernel(global_size, local_size,
                 A, B, C, func):
-        func[global_size, dppl.DEFAULT_LOCAL_SIZE](A, B, C)
+        func[global_size, dppy.DEFAULT_LOCAL_SIZE](A, B, C)
 
 
 global_size = 10
@@ -33,7 +33,7 @@ D = A + B
 
 
 @unittest.skipUnless(dpctl.has_cpu_queues(), 'test only on CPU system')
-class TestDPPLArgAccessorCPU(DPPLTestCase):
+class TestDPPYArgAccessorCPU(DPPYTestCase):
     def test_arg_with_accessor(self):
         C = np.ones_like(A)
         with dpctl.device_context("opencl:cpu") as cpu_queue:
@@ -50,7 +50,7 @@ class TestDPPLArgAccessorCPU(DPPLTestCase):
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestDPPLArgAccessorGPU(DPPLTestCase):
+class TestDPPYArgAccessorGPU(DPPYTestCase):
     def test_arg_with_accessor(self):
         C = np.ones_like(A)
         with dpctl.device_context("opencl:gpu") as gpu_queue:

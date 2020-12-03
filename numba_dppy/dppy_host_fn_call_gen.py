@@ -9,7 +9,7 @@ from numba.core import types, cgutils
 
 from numba.core.ir_utils import legalize_names
 
-class DPPLHostFunctionCallsGenerator(object):
+class DPPYHostFunctionCallsGenerator(object):
     def __init__(self, lowerer, cres, num_inputs):
         self.lowerer = lowerer
         self.context = self.lowerer.context

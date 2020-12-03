@@ -4,13 +4,13 @@ import numpy as np
 import math
 import time
 
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 import dpctl
 
 
-@dppl.kernel
+@dppy.kernel
 def reduction_kernel(A, R, stride):
-    i = dppl.get_global_id(0)
+    i = dppy.get_global_id(0)
     # sum two element
     R[i] = A[i] + A[i+stride]
     # store the sum to be used in nex iteration
@@ -34,7 +34,7 @@ def test_sum_reduction():
             while (total > 1):
                 # call kernel
                 global_size = total // 2
-                reduction_kernel[global_size, dppl.DEFAULT_LOCAL_SIZE](A, R, global_size)
+                reduction_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](A, R, global_size)
                 total = total // 2
 
     else:

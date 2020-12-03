@@ -11,8 +11,8 @@ def load_tests(loader, tests, pattern):
     this_dir = dirname(__file__)
 
     if dppy_config.dppy_present:
-        suite.addTests(load_testsuite(loader, join(this_dir, 'dppl')))
+        suite.addTests(load_testsuite(loader, join(this_dir, 'dppy')))
     else:
-        print("skipped DPPL tests")
+        print("skipped DPPY tests")
 
     return suite

@@ -4,14 +4,14 @@ from timeit import default_timer as time
 
 import sys
 import numpy as np
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 import dpctl
 from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPLTestCase
+from numba_dppy.testing import DPPYTestCase
 
-@dppl.kernel
+@dppy.kernel
 def data_parallel_sum(a, b, c):
-    i = dppl.get_global_id(0)
+    i = dppy.get_global_id(0)
     c[i] = a[i] + b[i]
 
 
@@ -24,23 +24,23 @@ d = a + b
 
 
 @unittest.skipUnless(dpctl.has_cpu_queues(), 'test only on CPU system')
-class TestDPPLDeviceArrayArgsGPU(DPPLTestCase):
+class TestDPPYDeviceArrayArgsGPU(DPPYTestCase):
     def test_device_array_args_cpu(self):
         c = np.ones_like(a)
 
         with dpctl.device_context("opencl:cpu") as cpu_queue:
-            data_parallel_sum[global_size, dppl.DEFAULT_LOCAL_SIZE](a, b, c)
+            data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
             self.assertTrue(np.all(c == d))
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestDPPLDeviceArrayArgsCPU(DPPLTestCase):
+class TestDPPYDeviceArrayArgsCPU(DPPYTestCase):
     def test_device_array_args_gpu(self):
         c = np.ones_like(a)
 
         with dpctl.device_context("opencl:gpu") as gpu_queue:
-            data_parallel_sum[global_size, dppl.DEFAULT_LOCAL_SIZE](a, b, c)
+            data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
         self.assertTrue(np.all(c == d))
 

@@ -1,26 +1,26 @@
 import sys
 import numpy as np
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 import math
 
 import dpctl
 
 
-@dppl.func
+@dppy.func
 def g(a):
     return a + 1
 
 
-@dppl.kernel
+@dppy.kernel
 def f(a, b):
-    i = dppl.get_global_id(0)
+    i = dppy.get_global_id(0)
     b[i] = g(a[i])
 
 
 def driver(a, b, N):
     print(b)
     print("--------")
-    f[N, dppl.DEFAULT_LOCAL_SIZE](a, b)
+    f[N, dppy.DEFAULT_LOCAL_SIZE](a, b)
     print(b)
 
 

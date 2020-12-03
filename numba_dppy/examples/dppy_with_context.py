@@ -1,6 +1,6 @@
 import numpy as np
 from numba import njit, prange
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 import dpctl
 
 @njit

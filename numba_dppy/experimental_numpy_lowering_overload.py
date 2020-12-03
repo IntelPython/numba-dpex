@@ -350,7 +350,7 @@ def dot_2_mm(context, builder, sig, args):
 
 
 @lower_builtin(np.dot, types.Array, types.Array)
-def dot_dppl(context, builder, sig, args):
+def dot_dppy(context, builder, sig, args):
     """
     np.dot(a, b)
     a @ b
@@ -374,7 +374,7 @@ def dot_dppl(context, builder, sig, args):
 
 
 @lower_builtin("np.matmul", types.Array, types.Array)
-def matmul_dppl(context, builder, sig, args):
+def matmul_dppy(context, builder, sig, args):
     """
     np.matmul(matrix, matrix)
     """

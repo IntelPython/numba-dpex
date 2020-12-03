@@ -3,18 +3,18 @@ from timeit import default_timer as time
 
 import sys
 import numpy as np
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 import dpctl
 from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPLTestCase
+from numba_dppy.testing import DPPYTestCase
 
 
 def data_parallel_sum(a, b, c):
-    i = dppl.get_global_id(0)
+    i = dppy.get_global_id(0)
     c[i] = a[i] + b[i]
 
 
-class TestCaching(DPPLTestCase):
+class TestCaching(DPPYTestCase):
     def test_caching_kernel(self):
         global_size = 10
         N = global_size
@@ -25,11 +25,11 @@ class TestCaching(DPPLTestCase):
 
 
         with dpctl.device_context("opencl:gpu") as gpu_queue:
-            func = dppl.kernel(data_parallel_sum)
-            caching_kernel = func[global_size, dppl.DEFAULT_LOCAL_SIZE].specialize(a, b, c)
+            func = dppy.kernel(data_parallel_sum)
+            caching_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(a, b, c)
 
             for i in range(10):
-                cached_kernel = func[global_size, dppl.DEFAULT_LOCAL_SIZE].specialize(a, b, c)
+                cached_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(a, b, c)
                 self.assertIs(caching_kernel, cached_kernel)
 
 

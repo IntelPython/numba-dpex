@@ -5,8 +5,8 @@ from ctypes.util import find_library
 
 
 def init_jit():
-    from numba_dppy.dispatcher import DPPLDispatcher
-    return DPPLDispatcher
+    from numba_dppy.dispatcher import DPPYDispatcher
+    return DPPYDispatcher
 
 def initialize_all():
     from numba.core.registry import dispatcher_registry
