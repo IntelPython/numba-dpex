@@ -71,7 +71,7 @@ Intrinsic Functions:
     The following table has the list of intrinsic functions that can be directly
     used inside a DK function. All the functions are equivalent to the similarly
     named OpenCL function. Wherever there is an implementation difference
-    between the Numba-PyDPPY version and the OpenCL version, the difference is
+    between the Numba-DPPY version and the OpenCL version, the difference is
     explained in table. Note that these functions cannot be used anywhere else
     outside of a DK function in a Numba application. Readers are referred to the
     OpenCL API specs to review the functionality of each function.
@@ -509,7 +509,7 @@ from .config import dppy_present
 if dppy_present:
     from .device_init import *
 else:
-    raise ImportError("Importing dppy failed")
+    raise ImportError("Importing numba-dppy failed")
 
 def test(*args, **kwargs):
     if not dppy_present and not is_available():
