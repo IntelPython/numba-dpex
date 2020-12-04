@@ -23,6 +23,7 @@ requirements:
     run:
         - python
         - numba >=0.51
+        - cffi
         - dpctl
         - spirv-tools
         - llvm-spirv
