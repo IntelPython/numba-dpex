@@ -8,6 +8,13 @@ import versioneer
 def get_ext_modules():
     ext_modules = []
 
+    ext_dppy = Extension(
+        name="numba_dppy._dppy_rt",
+        sources=["numba_dppy/dppl_rt.c"],
+        depends=["numba/core/runtime/nrt_external.h", "numba/core/runtime/nrt.h"],
+    )
+    ext_modules += [ext_modules]
+
     dpnp_present = False
     try:
         import dpnp
@@ -65,6 +72,11 @@ metadata = dict(
         "Topic :: Software Development :: Compilers",
     ],
     cmdclass=versioneer.get_cmdclass(),
+    entry_points={
+        "numba_extensions": [
+            "init = numba_dppy.dparray:numba_register",
+        ]},
+    )
 )
 
 setup(**metadata)
