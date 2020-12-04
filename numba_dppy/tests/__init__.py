@@ -10,12 +10,9 @@ import numba_dppy.config as dppy_config
 def load_tests(loader, tests, pattern):
 
     suite = SerialSuite()
-    # tests = loader.loadTestsFromModule(numba_dppy.tests)
-    this_dir = dirname(__file__)
 
     if dppy_config.dppy_present:
-        # suite.addTests(tests)
-        suite.addTests(load_testsuite(loader, join(this_dir, 'dppy')))
+        suite.addTests(load_testsuite(loader, dirname(__file__)))
     else:
         print("skipped DPPY tests")
 
