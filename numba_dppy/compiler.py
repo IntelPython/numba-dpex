@@ -12,6 +12,7 @@ from inspect import signature
 
 import dpctl
 import dpctl.memory as dpctl_mem
+import dpctl.program as dpctl_prog
 import numpy as np
 
 from . import spirv_generator
@@ -355,7 +356,7 @@ class DPPYKernel(DPPYKernelBase):
         self.spirv_bc = spirv_generator.llvm_to_spirv(self.context, self.binary)
 
         # create a program
-        self.program = dpctl.create_program_from_spirv(self.sycl_queue, self.spirv_bc)
+        self.program = dpctl_prog.create_program_from_spirv(self.sycl_queue, self.spirv_bc)
         #  create a kernel
         self.kernel = self.program.get_sycl_kernel(self.entry_name)
 
