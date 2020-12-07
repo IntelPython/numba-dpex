@@ -9,7 +9,7 @@ import numba_dppy
 import numba_dppy as dppl
 import dpctl
 from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPLTestCase
+from numba_dppy.testing import DPPYTestCase
 
 
 def test_for_different_datatypes(fn, test_fn, dims, arg_count, tys, np_all=False, matrix=None):

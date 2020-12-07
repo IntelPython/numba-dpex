@@ -2,18 +2,18 @@ import sys
 import numba
 import numpy as np
 from numba import njit
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 from numba.core import errors
 from numba.tests.support import captured_stdout
-from numba_dppy.testing import DPPLTestCase, unittest, expectedFailureIf
+from numba_dppy.testing import DPPYTestCase, unittest, expectedFailureIf
 import dpctl
 
 
-class TestWithDPPLContext(DPPLTestCase):
+class TestWithDPPYContext(DPPYTestCase):
 
     @unittest.skipIf(not dpctl.has_gpu_queues(), "No GPU platforms available")
     @expectedFailureIf(sys.platform.startswith('win'))
-    def test_with_dppl_context_gpu(self):
+    def test_with_dppy_context_gpu(self):
 
         @njit
         def nested_func(a, b):
@@ -36,11 +36,11 @@ class TestWithDPPLContext(DPPLTestCase):
         func(expected)
 
         np.testing.assert_array_equal(expected, got_gpu)
-        self.assertTrue('Parfor lowered on DPPL-device' in got_gpu_message.getvalue())
+        self.assertTrue('Parfor lowered on DPPY-device' in got_gpu_message.getvalue())
 
     @unittest.skipIf(not dpctl.has_cpu_queues(), "No CPU platforms available")
     @unittest.expectedFailure
-    def test_with_dppl_context_cpu(self):
+    def test_with_dppy_context_cpu(self):
 
         @njit
         def nested_func(a, b):
@@ -63,11 +63,11 @@ class TestWithDPPLContext(DPPLTestCase):
         func(expected)
 
         np.testing.assert_array_equal(expected, got_cpu)
-        self.assertTrue('Parfor lowered on DPPL-device' in got_cpu_message.getvalue())
+        self.assertTrue('Parfor lowered on DPPY-device' in got_cpu_message.getvalue())
 
 
     @unittest.skipIf(not dpctl.has_gpu_queues(), "No GPU platforms available")
-    def test_with_dppl_context_target(self):
+    def test_with_dppy_context_target(self):
 
         @njit(target='cpu')
         def nested_func_target(a, b):

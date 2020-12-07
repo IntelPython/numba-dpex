@@ -17,19 +17,19 @@ from numba.core.typed_passes import (NopythonTypeInference, AnnotateTypes,
                                 DumpParforDiagnostics, IRLegalization,
                                 InlineOverloads, PreLowerStripPhis)
 
-from .dppl_passes import (
-        DPPLConstantSizeStaticLocalMemoryPass,
-        DPPLPreParforPass,
-        DPPLParforPass,
+from .dppy_passes import (
+        DPPYConstantSizeStaticLocalMemoryPass,
+        DPPYPreParforPass,
+        DPPYParforPass,
         SpirvFriendlyLowering,
-        DPPLAddNumpyOverloadPass,
-        DPPLAddNumpyRemoveOverloadPass,
-        DPPLNoPythonBackend
+        DPPYAddNumpyOverloadPass,
+        DPPYAddNumpyRemoveOverloadPass,
+        DPPYNoPythonBackend
         )
 
-class DPPLPassBuilder(object):
+class DPPYPassBuilder(object):
     """
-    This is the DPPL pass builder to run Intel GPU/CPU specific
+    This is the DPPY pass builder to run Intel GPU/CPU specific
     code-generation and optimization passes. This pass builder does
     not offer objectmode and interpreted passes.
     """
@@ -46,12 +46,12 @@ class DPPLPassBuilder(object):
 
         # this pass adds required logic to overload default implementation of
         # Numpy functions
-        pm.add_pass(DPPLAddNumpyOverloadPass, "dppl add typing template for Numpy functions")
+        pm.add_pass(DPPYAddNumpyOverloadPass, "dppy add typing template for Numpy functions")
 
         # Add pass to ensure when users are allocating static
         # constant memory the size is a constant and can not
         # come from a closure variable
-        pm.add_pass(DPPLConstantSizeStaticLocalMemoryPass, "dppl constant size for static local memory")
+        pm.add_pass(DPPYConstantSizeStaticLocalMemoryPass, "dppy constant size for static local memory")
 
         # pre typing
         if not state.flags.no_rewrites:
@@ -90,24 +90,24 @@ class DPPLPassBuilder(object):
 
 
     @staticmethod
-    def define_nopython_pipeline(state, name='dppl_nopython'):
+    def define_nopython_pipeline(state, name='dppy_nopython'):
         """Returns an nopython mode pipeline based PassManager
         """
         pm = PassManager(name)
-        DPPLPassBuilder.default_numba_nopython_pipeline(state, pm)
+        DPPYPassBuilder.default_numba_nopython_pipeline(state, pm)
 
         # Intel GPU/CPU specific optimizations
-        pm.add_pass(DPPLPreParforPass, "Preprocessing for parfors")
+        pm.add_pass(DPPYPreParforPass, "Preprocessing for parfors")
         if not state.flags.no_rewrites:
             pm.add_pass(NopythonRewrites, "nopython rewrites")
-        pm.add_pass(DPPLParforPass, "convert to parfors")
+        pm.add_pass(DPPYParforPass, "convert to parfors")
 
         # legalise
         pm.add_pass(IRLegalization, "ensure IR is legal prior to lowering")
 
         # lower
         pm.add_pass(SpirvFriendlyLowering, "SPIRV-friendly lowering pass")
-        pm.add_pass(DPPLNoPythonBackend, "nopython mode backend")
-        pm.add_pass(DPPLAddNumpyRemoveOverloadPass, "dppl remove typing template for Numpy functions")
+        pm.add_pass(DPPYNoPythonBackend, "nopython mode backend")
+        pm.add_pass(DPPYAddNumpyRemoveOverloadPass, "dppy remove typing template for Numpy functions")
         pm.finalize()
         return pm

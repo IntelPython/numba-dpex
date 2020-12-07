@@ -7,7 +7,7 @@ are listed below with the help of sample code snippets. In this release we have
 the implementation of the OAK approach described in MS138 in section 4.3.2. The
 new decorator is described below.
 
-To access the features driver module have to be imported from numba_dppy.dppl_driver
+To access the features driver module have to be imported from numba_dppy.dppy_driver
 
 New Decorator
 =============
@@ -61,7 +61,7 @@ Primitive types are passed by value to the kernel, currently supported are int, 
 Math Kernels
 ============
 
-This release has support for math kernels. See numba_dppy/tests/dppl/test_math_functions.py
+This release has support for math kernels. See numba_dppy/tests/dppy/test_math_functions.py
 for more details.
 
 
@@ -170,6 +170,6 @@ Testing
 
 All examples can be found in numba_dppy/examples/
 
-All tests can be found in numba_dppy/tests/dppl and can be triggered by the following command:
+All tests can be found in numba_dppy/tests/dppy and can be triggered by the following command:
 
 ``python -m numba.runtests numba_dppy.tests``

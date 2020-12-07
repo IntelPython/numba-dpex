@@ -4,9 +4,9 @@ import numpy as np
 import math
 import time
 
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPLTestCase
+from numba_dppy.testing import DPPYTestCase
 import dpctl
 
 
@@ -49,7 +49,7 @@ def randfloat(rand_var, low, high):
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestDPPLBlackScholes(DPPLTestCase):
+class TestDPPYBlackScholes(DPPYTestCase):
     def test_black_scholes(self):
         OPT_N = 400
         iterations = 2
@@ -70,9 +70,9 @@ class TestDPPLBlackScholes(DPPLTestCase):
                           optionStrike, optionYears, RISKFREE, VOLATILITY)
 
 
-        @dppl.kernel
-        def black_scholes_dppl(callResult, putResult, S, X, T, R, V):
-            i = dppl.get_global_id(0)
+        @dppy.kernel
+        def black_scholes_dppy(callResult, putResult, S, X, T, R, V):
+            i = dppy.get_global_id(0)
             if i >= S.shape[0]:
                 return
             sqrtT = math.sqrt(T[i])
@@ -103,7 +103,7 @@ class TestDPPLBlackScholes(DPPLTestCase):
         with dpctl.device_context("opencl:gpu") as gpu_queue:
             time1 = time.time()
             for i in range(iterations):
-                black_scholes_dppl[blockdim, griddim](
+                black_scholes_dppy[blockdim, griddim](
                     callResultNumbapro, putResultNumbapro, stockPrice, optionStrike,
                     optionYears, RISKFREE, VOLATILITY)
 
