@@ -26,7 +26,7 @@ from numba.core.errors import (LoweringError, new_error_context, TypingError,
 
 from numba.core.compiler_machinery import FunctionPass, LoweringPass, register_pass
 
-from .dppl_lowerer import DPPLLower
+from .dppy_lowerer import DPPYLower
 
 from numba.parfors.parfor import PreParforPass as _parfor_PreParforPass, replace_functions_map
 from numba.parfors.parfor import ParforPass as _parfor_ParforPass
@@ -79,7 +79,7 @@ class RewriteOverloadedFunctions(object):
                             scope = global_module.scope
                             loc = global_module.loc
 
-                            g_dppl_var = ir.Var(scope, mk_unique_var("$dppl_replaced_var"), loc)
+                            g_dppl_var = ir.Var(scope, mk_unique_var("$dppy_replaced_var"), loc)
                             g_dppl = ir.Global('numba_dppy', numba_dppy, loc)
                             g_dppl_assign = ir.Assign(g_dppl, g_dppl_var, loc)
 
@@ -98,7 +98,7 @@ class RewriteOverloadedFunctions(object):
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
-class DPPLRewriteOverloadedFunctions(FunctionPass):
+class DPPYRewriteOverloadedFunctions(FunctionPass):
     _name = "dppl_rewrite_overloaded_functions_pass"
 
     def __init__(self):
@@ -116,8 +116,8 @@ class DPPLRewriteOverloadedFunctions(FunctionPass):
 
 
 @register_pass(mutates_CFG=False, analysis_only=True)
-class DPPLAddNumpyOverloadPass(FunctionPass):
-    _name = "dppl_add_numpy_overload_pass"
+class DPPYAddNumpyOverloadPass(FunctionPass):
+    _name = "dppy_add_numpy_overload_pass"
 
     def __init__(self):
         FunctionPass.__init__(self)
@@ -198,8 +198,8 @@ class DPPLAddNumpyOverloadPass(FunctionPass):
         return True
 
 @register_pass(mutates_CFG=False, analysis_only=True)
-class DPPLAddNumpyRemoveOverloadPass(FunctionPass):
-    _name = "dppl_remove_numpy_overload_pass"
+class DPPYAddNumpyRemoveOverloadPass(FunctionPass):
+    _name = "dppy_remove_numpy_overload_pass"
 
     def __init__(self):
         FunctionPass.__init__(self)
@@ -219,9 +219,9 @@ class DPPLAddNumpyRemoveOverloadPass(FunctionPass):
         return True
 
 @register_pass(mutates_CFG=True, analysis_only=False)
-class DPPLConstantSizeStaticLocalMemoryPass(FunctionPass):
+class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
 
-    _name = "dppl_constant_size_static_local_memory_pass"
+    _name = "dppy_constant_size_static_local_memory_pass"
 
     def __init__(self):
         FunctionPass.__init__(self)
@@ -294,9 +294,9 @@ class DPPLConstantSizeStaticLocalMemoryPass(FunctionPass):
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
-class DPPLPreParforPass(FunctionPass):
+class DPPYPreParforPass(FunctionPass):
 
-    _name = "dppl_pre_parfor_pass"
+    _name = "dppy_pre_parfor_pass"
 
     def __init__(self):
         FunctionPass.__init__(self)
@@ -338,9 +338,9 @@ class DPPLPreParforPass(FunctionPass):
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
-class DPPLParforPass(FunctionPass):
+class DPPYParforPass(FunctionPass):
 
-    _name = "dppl_parfor_pass"
+    _name = "dppy_parfor_pass"
 
     def __init__(self):
         FunctionPass.__init__(self)
@@ -419,9 +419,9 @@ class SpirvFriendlyLowering(LoweringPass):
         targetctx = state.targetctx
 
         # This should not happen here, after we have the notion of context in Numba
-        # we should have specialized dispatcher for dppl context and that dispatcher
+        # we should have specialized dispatcher for dppy context and that dispatcher
         # should be a cpu dispatcher that will overload the lowering functions for
-        # linalg for dppl.cpu_dispatcher and the dppl.gpu_dipatcher should be the
+        # linalg for dppy.cpu_dispatcher and the dppy.gpu_dipatcher should be the
         # current target context we have to launch kernels.
         # This is broken as this essentially adds the new lowering in a list which
         # means it does not get replaced with the new lowering_buitins
@@ -449,7 +449,7 @@ class SpirvFriendlyLowering(LoweringPass):
                     noalias=flags.noalias)
 
             with targetctx.push_code_library(library):
-                lower = DPPLLower(targetctx, library, fndesc, interp,
+                lower = DPPYLower(targetctx, library, fndesc, interp,
                                        metadata=metadata)
                 lower.lower()
                 if not flags.no_cpython_wrapper:
@@ -476,7 +476,7 @@ class SpirvFriendlyLowering(LoweringPass):
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
-class DPPLNoPythonBackend(FunctionPass):
+class DPPYNoPythonBackend(FunctionPass):
 
     _name = "nopython_backend"
 
