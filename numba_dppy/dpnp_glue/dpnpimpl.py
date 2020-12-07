@@ -37,28 +37,28 @@ class _DPNP_EXTENSION:
         dpnp_lowering.ensure_dpnp(name)
 
     @classmethod
-    def get_sycl_queue(cls):
+    def dpctl_get_current_queue(cls):
         ret_type  = types.voidptr
         sig       = signature(ret_type)
-        return types.ExternalFunction("DPPLQueueMgr_GetCurrentQueue", sig)
+        return types.ExternalFunction("DPCTLQueueMgr_GetCurrentQueue", sig)
 
     @classmethod
-    def allocate_usm_shared(cls):
+    def dpctl_malloc_shared(cls):
         ret_type  = types.voidptr
         sig       = signature(ret_type, types.int64, types.voidptr)
-        return types.ExternalFunction("DPPLmalloc_shared", sig)
+        return types.ExternalFunction("DPCTLmalloc_shared", sig)
 
     @classmethod
-    def copy_usm(cls):
+    def dpctl_queue_memcpy(cls):
         ret_type  = types.void
         sig       = signature(ret_type, types.voidptr, types.voidptr, types.voidptr, types.int64)
-        return types.ExternalFunction("DPPLQueue_Memcpy", sig)
+        return types.ExternalFunction("DPCTLQueue_Memcpy", sig)
 
     @classmethod
-    def free_usm(cls):
+    def dpctl_free_with_queue(cls):
         ret_type  = types.void
         sig       = signature(ret_type, types.voidptr, types.voidptr)
-        return types.ExternalFunction("DPPLfree_with_queue", sig)
+        return types.ExternalFunction("DPCTLfree_with_queue", sig)
 
 
     @classmethod
@@ -86,10 +86,10 @@ def dpnp_sum_impl(a):
 
     dpnp_sum = dpnp_extension.dpnp_sum("dpnp_sum", [a.dtype.name, "NONE"])
 
-    get_sycl_queue = dpnp_extension.get_sycl_queue()
-    allocate_usm_shared = dpnp_extension.allocate_usm_shared()
-    copy_usm = dpnp_extension.copy_usm()
-    free_usm = dpnp_extension.free_usm()
+    get_sycl_queue = dpnp_extension.dpctl_get_current_queue()
+    allocate_usm_shared = dpnp_extension.dpctl_malloc_shared()
+    copy_usm = dpnp_extension.dpctl_queue_memcpy()
+    free_usm = dpnp_extension.dpctl_free_with_queue()
 
     def dpnp_sum_impl(a):
         if a.size == 0:
@@ -120,10 +120,10 @@ def dpnp_eig_impl(a):
 
     dpnp_eig = dpnp_extension.dpnp_eig("dpnp_eig", [a.dtype.name, "NONE"])
 
-    get_sycl_queue = dpnp_extension.get_sycl_queue()
-    allocate_usm_shared = dpnp_extension.allocate_usm_shared()
-    copy_usm = dpnp_extension.copy_usm()
-    free_usm = dpnp_extension.free_usm()
+    get_sycl_queue = dpnp_extension.dpctl_get_current_queue()
+    allocate_usm_shared = dpnp_extension.dpctl_malloc_shared()
+    copy_usm = dpnp_extension.dpctl_queue_memcpy()
+    free_usm = dpnp_extension.dpctl_free_with_queue()
 
 
     res_dtype = np.float64

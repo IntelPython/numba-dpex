@@ -24,9 +24,10 @@ from .dppy_passes import (
         SpirvFriendlyLowering,
         DPPYAddNumpyOverloadPass,
         DPPYAddNumpyRemoveOverloadPass,
-        DPPYNoPythonBackend,
-        DPPYRewriteOverloadedFunctions,
+        DPPYNoPythonBackend
         )
+
+from .rename_numpy_functions_pass import (DPPYRewriteOverloadedFunctions)
 
 class DPPYPassBuilder(object):
     """
@@ -46,7 +47,7 @@ class DPPYPassBuilder(object):
         pm.add_pass(WithLifting, "Handle with contexts")
 
         # this pass rewrite name of functions
-        pm.add_pass(DPPYRewriteOverloadedFunctions, "dppl rewrite name of functions")
+        pm.add_pass(DPPYRewriteOverloadedFunctions, "dppy rewrite name of functions")
 
         # this pass adds required logic to overload default implementation of
         # Numpy functions
