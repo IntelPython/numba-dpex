@@ -38,6 +38,7 @@ packages = find_packages(include=["numba_dppy", "numba_dppy.*"])
 build_requires = ["cython"]
 install_requires = [
     "numba",
+    "cffi",
     "dpctl",
 ]
 
