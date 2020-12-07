@@ -4,7 +4,7 @@ from numba.core.typing.npydecl import register_number_classes
 from numba.core.typing.templates import (AttributeTemplate, ConcreteTemplate,
                                         AbstractTemplate, MacroTemplate,
                                         signature, Registry)
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 
 registry = Registry()
 intrinsic = registry.register
@@ -15,71 +15,71 @@ intrinsic_attr = registry.register_attr
 
 @intrinsic
 class Ocl_get_global_id(ConcreteTemplate):
-    key = dppl.get_global_id
+    key = dppy.get_global_id
     cases = [signature(types.intp, types.uint32)]
 
 
 @intrinsic
 class Ocl_get_local_id(ConcreteTemplate):
-    key = dppl.get_local_id
+    key = dppy.get_local_id
     cases = [signature(types.intp, types.uint32)]
 
 
 @intrinsic
 class Ocl_get_group_id(ConcreteTemplate):
-    key = dppl.get_group_id
+    key = dppy.get_group_id
     cases = [signature(types.intp, types.uint32)]
 
 
 @intrinsic
 class Ocl_get_num_groups(ConcreteTemplate):
-    key = dppl.get_num_groups
+    key = dppy.get_num_groups
     cases = [signature(types.intp, types.uint32)]
 
 
 @intrinsic
 class Ocl_get_work_dim(ConcreteTemplate):
-    key = dppl.get_work_dim
+    key = dppy.get_work_dim
     cases = [signature(types.uint32)]
 
 
 @intrinsic
 class Ocl_get_global_size(ConcreteTemplate):
-    key = dppl.get_global_size
+    key = dppy.get_global_size
     cases = [signature(types.intp, types.uint32)]
 
 
 @intrinsic
 class Ocl_get_local_size(ConcreteTemplate):
-    key = dppl.get_local_size
+    key = dppy.get_local_size
     cases = [signature(types.intp, types.uint32)]
 
 
 @intrinsic
 class Ocl_barrier(ConcreteTemplate):
-    key = dppl.barrier
+    key = dppy.barrier
     cases = [signature(types.void, types.uint32),
              signature(types.void)]
 
 
 @intrinsic
 class Ocl_mem_fence(ConcreteTemplate):
-    key = dppl.mem_fence
+    key = dppy.mem_fence
     cases = [signature(types.void, types.uint32)]
 
 
 @intrinsic
 class Ocl_sub_group_barrier(ConcreteTemplate):
-    key = dppl.sub_group_barrier
+    key = dppy.sub_group_barrier
 
     cases = [signature(types.void)]
 
 
-# dppl.atomic submodule -------------------------------------------------------
+# dppy.atomic submodule -------------------------------------------------------
 
 @intrinsic
 class Ocl_atomic_add(AbstractTemplate):
-    key = dppl.atomic.add
+    key = dppy.atomic.add
 
     def generic(self, args, kws):
         assert not kws
@@ -92,7 +92,7 @@ class Ocl_atomic_add(AbstractTemplate):
 
 @intrinsic
 class Ocl_atomic_sub(AbstractTemplate):
-    key = dppl.atomic.sub
+    key = dppy.atomic.sub
 
     def generic(self, args, kws):
         assert not kws
@@ -106,7 +106,7 @@ class Ocl_atomic_sub(AbstractTemplate):
 
 @intrinsic_attr
 class OclAtomicTemplate(AttributeTemplate):
-    key = types.Module(dppl.atomic)
+    key = types.Module(dppy.atomic)
 
     def resolve_add(self, mod):
         return types.Function(Ocl_atomic_add)
@@ -115,15 +115,15 @@ class OclAtomicTemplate(AttributeTemplate):
         return types.Function(Ocl_atomic_sub)
 
 
-# dppl.local submodule -------------------------------------------------------
+# dppy.local submodule -------------------------------------------------------
 
 class Ocl_local_alloc(MacroTemplate):
-    key = dppl.local.static_alloc
+    key = dppy.local.static_alloc
 
 
 @intrinsic_attr
 class OclLocalTemplate(AttributeTemplate):
-    key = types.Module(dppl.local)
+    key = types.Module(dppy.local)
 
     def resolve_static_alloc(self, mod):
         return types.Macro(Ocl_local_alloc)
@@ -133,7 +133,7 @@ class OclLocalTemplate(AttributeTemplate):
 
 @intrinsic_attr
 class OclModuleTemplate(AttributeTemplate):
-    key = types.Module(dppl)
+    key = types.Module(dppy)
 
     def resolve_get_global_id(self, mod):
         return types.Function(Ocl_get_global_id)
@@ -166,11 +166,11 @@ class OclModuleTemplate(AttributeTemplate):
         return types.Function(Ocl_sub_group_barrier)
 
     def resolve_atomic(self, mod):
-        return types.Module(dppl.atomic)
+        return types.Module(dppy.atomic)
 
     def resolve_local(self, mod):
-        return types.Module(dppl.local)
+        return types.Module(dppy.local)
 
 # intrinsic
 
-#intrinsic_global(dppl, types.Module(dppl))
+#intrinsic_global(dppy, types.Module(dppy))

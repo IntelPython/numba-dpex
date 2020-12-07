@@ -12,7 +12,7 @@ import numba
 from numba.core import (compiler, ir, types, sigutils, lowering,
                 funcdesc, config)
 from numba.parfors import parfor
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 from numba.core.ir_utils import (add_offset_to_labels,
                             replace_var_names,
                             remove_dels,
@@ -38,9 +38,9 @@ import warnings
 from numba.core.errors import NumbaParallelSafetyWarning, NumbaPerformanceWarning
 
 from .dufunc_inliner import dufunc_inliner
-from . import dppl_host_fn_call_gen as dppl_call_gen
+from . import dppy_host_fn_call_gen as dppy_call_gen
 import dpctl
-from numba_dppy.target import DPPLTargetContext
+from numba_dppy.target import DPPYTargetContext
 
 
 def _print_block(block):
@@ -72,7 +72,7 @@ def _schedule_loop(parfor_dim, legal_loop_indices, loop_ranges, param_dict):
 
     for eachdim in range(global_id_dim):
         gufunc_txt += ("    " + legal_loop_indices[eachdim] + " = "
-                       + "dppl.get_global_id(" + str(eachdim) + ")\n")
+                       + "dppy.get_global_id(" + str(eachdim) + ")\n")
 
 
     for eachdim in range(global_id_dim, for_loop_dim):
@@ -444,7 +444,7 @@ def _create_gufunc_for_parfor_body(
         print("gufunc_txt = ", type(gufunc_txt), "\n", gufunc_txt)
         sys.stdout.flush()
     # Force gufunc outline into existence.
-    globls = {"np": np, "numba": numba, "dppl": dppl}
+    globls = {"np": np, "numba": numba, "dppy": dppy}
     locls = {}
     exec(gufunc_txt, globls, locls)
     gufunc_func = locls[gufunc_name]
@@ -740,7 +740,7 @@ def _lower_parfor_gufunc(lowerer, parfor):
         parfor.races,
         typemap)
 
-    generate_dppl_host_wrapper(
+    generate_dppy_host_wrapper(
         lowerer,
         func,
         gu_signature,
@@ -828,10 +828,10 @@ def _create_shape_signature(
     return (gu_sin, gu_sout)
 
 
-# Keep all the dppl kernels and programs created alive indefinitely.
+# Keep all the dppy kernels and programs created alive indefinitely.
 keep_alive_kernels = []
 
-def generate_dppl_host_wrapper(lowerer,
+def generate_dppy_host_wrapper(lowerer,
                                cres,
                                gu_signature,
                                outer_sig,
@@ -852,7 +852,7 @@ def generate_dppl_host_wrapper(lowerer,
     num_dim = len(loop_ranges)
 
     if config.DEBUG_ARRAY_OPT:
-        print("generate_dppl_host_wrapper")
+        print("generate_dppy_host_wrapper")
         print("args = ", expr_args)
         print("outer_sig = ", outer_sig.args, outer_sig.return_type,
               outer_sig.recvr, outer_sig.pysig)
@@ -868,8 +868,8 @@ def generate_dppl_host_wrapper(lowerer,
 #        print("cres.fndesc", cres.fndesc, type(cres.fndesc))
 
 
-    # get dppl_cpu_portion_lowerer object
-    dppl_cpu_lowerer = dppl_call_gen.DPPLHostFunctionCallsGenerator(
+    # get dppy_cpu_portion_lowerer object
+    dppy_cpu_lowerer = dppy_call_gen.DPPYHostFunctionCallsGenerator(
                            lowerer, cres, num_inputs)
 
     # Compute number of args ------------------------------------------------
@@ -886,7 +886,7 @@ def generate_dppl_host_wrapper(lowerer,
 
     # now that we know the total number of kernel args, lets allocate
     # a kernel_arg array
-    dppl_cpu_lowerer.allocate_kenrel_arg_array(num_expanded_args)
+    dppy_cpu_lowerer.allocate_kenrel_arg_array(num_expanded_args)
 
     ninouts = len(expr_args)
 
@@ -931,7 +931,7 @@ def generate_dppl_host_wrapper(lowerer,
                   "\n\tval_type:", val_type, type(val_type),
                   "\n\tindex:", index)
 
-        dppl_cpu_lowerer.process_kernel_arg(var, llvm_arg, arg_type, gu_sig,
+        dppy_cpu_lowerer.process_kernel_arg(var, llvm_arg, arg_type, gu_sig,
                                             val_type, index, modified_arrays)
     # -----------------------------------------------------------------------
 
@@ -951,7 +951,7 @@ def generate_dppl_host_wrapper(lowerer,
         step = load_range(step)
         loop_ranges[i] = (start, stop, step)
 
-    dppl_cpu_lowerer.enqueue_kernel_and_read_back(loop_ranges)
+    dppy_cpu_lowerer.enqueue_kernel_and_read_back(loop_ranges)
 
 
 from numba.core.lowering import Lower
@@ -975,7 +975,7 @@ def relatively_deep_copy(obj, memo):
     from numba.core.types.functions import Function, Dispatcher
     from numba.core.bytecode import FunctionIdentity
     from numba.core.typing.templates import Signature
-    from numba_dppy.compiler import DPPLFunctionTemplate
+    from numba_dppy.compiler import DPPYFunctionTemplate
     from numba.core.compiler import CompileResult
     from numba.np.ufunc.dufunc import DUFunc
     from ctypes import _CFuncPtr
@@ -983,9 +983,9 @@ def relatively_deep_copy(obj, memo):
     from numba.core.types.abstract import Type
 
     # objects which shouldn't or can't be copied and it's ok not to copy it.
-    if isinstance(obj, (FunctionIdentity, _DispatcherBase, Function, Type, Dispatcher, ModuleType,
-                        Signature, DPPLFunctionTemplate, CompileResult,
-                        DUFunc, _CFuncPtr,
+    if isinstance(obj, (FunctionIdentity, _DispatcherBase, Function, Type,
+                        Dispatcher, ModuleType, Signature,
+                        DPPYFunctionTemplate, CompileResult, DUFunc, _CFuncPtr,
                         type, str, bool, type(None))):
         return obj
 
@@ -1132,7 +1132,7 @@ def relatively_deep_copy(obj, memo):
     return cpy
 
 
-class DPPLLower(Lower):
+class DPPYLower(Lower):
     def __init__(self, context, library, fndesc, func_ir, metadata=None):
         Lower.__init__(self, context, library, fndesc, func_ir, metadata)
         memo = {}
@@ -1141,7 +1141,7 @@ class DPPLLower(Lower):
         func_ir_cpu = relatively_deep_copy(func_ir, memo)
 
 
-        cpu_context = context.cpu_context if isinstance(context, DPPLTargetContext) else context
+        cpu_context = context.cpu_context if isinstance(context, DPPYTargetContext) else context
         self.gpu_lower = Lower(context, library, fndesc, func_ir, metadata)
         self.cpu_lower = Lower(cpu_context, library, fndesc_cpu, func_ir_cpu, metadata)
 
@@ -1151,11 +1151,11 @@ class DPPLLower(Lower):
         # 1. Start lowering of parent function
         # 2. Try to lower parfor on GPU
         #     2.a. enter lower_parfor_rollback and prepare function to lower on GPU - insert get_global_id.
-        #         2.a.a. starting lower parfor body - enter this point (DPPLLower.lower()) second time.
+        #         2.a.a. starting lower parfor body - enter this point (DPPYLower.lower()) second time.
         #         2.a.b. If lowering on GPU failed - try on CPU.
         #         2.a.d. Since get_global_id is NOT supported with CPU context - fail and throw exception
         #     2.b. in lower_parfor_rollback catch exception and restore parfor body and other to its initial state
-        #     2.c. in lower_parfor_rollback throw expeption to catch it here (DPPLLower.lower())
+        #     2.c. in lower_parfor_rollback throw expeption to catch it here (DPPYLower.lower())
         # 3. Catch exception and start parfor lowering with CPU context.
 
         # WARNING: this approach only works in case no device specific modifications were added to
@@ -1169,7 +1169,7 @@ class DPPLLower(Lower):
             lowering.lower_extensions[parfor.Parfor].pop()
         except Exception as e:
             if numba_dppy.compiler.DEBUG:
-                print("Failed to lower parfor on DPPL-device. Due to:\n", e)
+                print("Failed to lower parfor on DPPY-device. Due to:\n", e)
             lowering.lower_extensions[parfor.Parfor].pop()
             if (lowering.lower_extensions[parfor.Parfor][-1] == numba.parfors.parfor_lowering._lower_parfor_parallel):
                 self.cpu_lower.lower()
@@ -1195,13 +1195,13 @@ def lower_parfor_rollback(lowerer, parfor):
     try:
         _lower_parfor_gufunc(lowerer, parfor)
         if numba_dppy.compiler.DEBUG:
-            msg = "Parfor lowered on DPPL-device"
+            msg = "Parfor lowered on DPPY-device"
             print(msg, parfor.loc)
     except Exception as e:
-        msg = "Failed to lower parfor on DPPL-device.\nTo see details set environment variable NUMBA_DPPL_DEBUG=1"
+        msg = "Failed to lower parfor on DPPY-device.\nTo see details set environment variable NUMBA_DPPY_DEBUG=1"
         warnings.warn(NumbaPerformanceWarning(msg, parfor.loc))
         raise e
 
 
-def dppl_lower_array_expr(lowerer, expr):
+def dppy_lower_array_expr(lowerer, expr):
     raise NotImplementedError(expr)

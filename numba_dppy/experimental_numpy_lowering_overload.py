@@ -77,7 +77,7 @@ def get_sycl_queue(context, builder):
     void_ptr_t = context.get_value_type(types.voidptr)
     get_queue_fnty = lc.Type.function(void_ptr_t, ())
     get_queue = builder.module.get_or_insert_function(get_queue_fnty,
-                                            name="DPPLQueueMgr_GetCurrentQueue")
+                                            name="DPCTLQueueMgr_GetCurrentQueue")
     sycl_queue_val = cgutils.alloca_once(builder, void_ptr_t)
     builder.store(builder.call(get_queue, []), sycl_queue_val)
 
@@ -87,7 +87,7 @@ def allocate_usm(context, builder, size, sycl_queue):
     void_ptr_t = context.get_value_type(types.voidptr)
     usm_shared_fnty = lc.Type.function(void_ptr_t, [ll_intp_t, void_ptr_t])
     usm_shared = builder.module.get_or_insert_function(usm_shared_fnty,
-                                                       name="DPPLmalloc_shared")
+                                                       name="DPCTLmalloc_shared")
 
     buffer_ptr = cgutils.alloca_once(builder, void_ptr_t)
     args = [size, builder.load(sycl_queue)]
@@ -100,7 +100,7 @@ def copy_usm(context, builder, src, dst, size, sycl_queue):
     queue_memcpy_fnty = lc.Type.function(ir.VoidType(), [void_ptr_t, void_ptr_t, void_ptr_t,
                                                          ll_intp_t])
     queue_memcpy = builder.module.get_or_insert_function(queue_memcpy_fnty,
-                                                       name="DPPLQueue_Memcpy")
+                                                       name="DPCTLQueue_Memcpy")
     args = [builder.load(sycl_queue),
             builder.bitcast(dst, void_ptr_t),
             builder.bitcast(src, void_ptr_t),
@@ -113,7 +113,7 @@ def free_usm(context, builder, usm_buf, sycl_queue):
 
     usm_free_fnty = lc.Type.function(ir.VoidType(), [void_ptr_t, void_ptr_t])
     usm_free = builder.module.get_or_insert_function(usm_free_fnty,
-                                               name="DPPLfree_with_queue")
+                                               name="DPCTLfree_with_queue")
 
     builder.call(usm_free, [usm_buf, builder.load(sycl_queue)])
 
@@ -350,7 +350,7 @@ def dot_2_mm(context, builder, sig, args):
 
 
 @lower_builtin(np.dot, types.Array, types.Array)
-def dot_dppl(context, builder, sig, args):
+def dot_dppy(context, builder, sig, args):
     """
     np.dot(a, b)
     a @ b
@@ -374,7 +374,7 @@ def dot_dppl(context, builder, sig, args):
 
 
 @lower_builtin("np.matmul", types.Array, types.Array)
-def matmul_dppl(context, builder, sig, args):
+def matmul_dppy(context, builder, sig, args):
     """
     np.matmul(matrix, matrix)
     """

@@ -10,7 +10,7 @@ from numba import njit, prange
 import numba_dppy
 import numba_dppy as dppl
 from numba_dppy.testing import unittest, expectedFailureIf
-from numba_dppy.testing import DPPLTestCase
+from numba_dppy.testing import DPPYTestCase
 from numba.tests.support import captured_stdout
 
 
@@ -127,6 +127,7 @@ class TestPrange(DPPLTestCase):
             'Parfor lowered on DPPL-device'), 2, stdout.getvalue())
         self.assertEqual(stdout.getvalue().count(
             'Failed to lower parfor on DPPL-device'), 0, stdout.getvalue())
+
         np.testing.assert_equal(res, jitted_res)
 
     @unittest.skip('NRT required but not enabled')
@@ -156,6 +157,7 @@ class TestPrange(DPPLTestCase):
             'Parfor lowered on DPPL-device'), 2, stdout.getvalue())
         self.assertEqual(stdout.getvalue().count(
             'Failed to lower parfor on DPPL-device'), 0, stdout.getvalue())
+
         np.testing.assert_equal(res, jitted_res)
 
 

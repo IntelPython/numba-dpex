@@ -4,45 +4,45 @@ from timeit import default_timer as time
 
 import sys
 import numpy as np
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 import dpctl
 from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPLTestCase
+from numba_dppy.testing import DPPYTestCase
 import math
 
-@dppl.kernel
-def dppl_fabs(a,b):
-    i = dppl.get_global_id(0)
+@dppy.kernel
+def dppy_fabs(a,b):
+    i = dppy.get_global_id(0)
     b[i] = math.fabs(a[i])
 
-@dppl.kernel
-def dppl_exp(a,b):
-    i = dppl.get_global_id(0)
+@dppy.kernel
+def dppy_exp(a,b):
+    i = dppy.get_global_id(0)
     b[i] = math.exp(a[i])
 
-@dppl.kernel
-def dppl_log(a,b):
-    i = dppl.get_global_id(0)
+@dppy.kernel
+def dppy_log(a,b):
+    i = dppy.get_global_id(0)
     b[i] = math.log(a[i])
 
-@dppl.kernel
-def dppl_sqrt(a,b):
-    i = dppl.get_global_id(0)
+@dppy.kernel
+def dppy_sqrt(a,b):
+    i = dppy.get_global_id(0)
     b[i] = math.sqrt(a[i])
 
-@dppl.kernel
-def dppl_sin(a,b):
-    i = dppl.get_global_id(0)
+@dppy.kernel
+def dppy_sin(a,b):
+    i = dppy.get_global_id(0)
     b[i] = math.sin(a[i])
 
-@dppl.kernel
-def dppl_cos(a,b):
-    i = dppl.get_global_id(0)
+@dppy.kernel
+def dppy_cos(a,b):
+    i = dppy.get_global_id(0)
     b[i] = math.cos(a[i])
 
-@dppl.kernel
-def dppl_tan(a,b):
-    i = dppl.get_global_id(0)
+@dppy.kernel
+def dppy_tan(a,b):
+    i = dppy.get_global_id(0)
     b[i] = math.tan(a[i])
 
 global_size = 10
@@ -53,7 +53,7 @@ a = np.array(np.random.random(N), dtype=np.float32)
 def driver(a, jitfunc):
     b = np.ones_like(a)
     # Device buffers
-    jitfunc[global_size, dppl.DEFAULT_LOCAL_SIZE](a, b)
+    jitfunc[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b)
     return b
 
 
@@ -73,67 +73,67 @@ def test_driver(input_arr, device_ty, jitfunc):
 
 
 @unittest.skipUnless(dpctl.has_cpu_queues(), 'test only on CPU system')
-class TestDPPLMathFunctionsCPU(DPPLTestCase):
+class TestDPPYMathFunctionsCPU(DPPYTestCase):
     def test_fabs_cpu(self):
-        b_actual = test_driver(a, "CPU", dppl_fabs)
+        b_actual = test_driver(a, "CPU", dppy_fabs)
         b_expected = np.fabs(a)
         self.assertTrue(np.all(b_actual == b_expected))
 
     def test_sin_cpu(self):
-        b_actual = test_driver(a, "CPU", dppl_sin)
+        b_actual = test_driver(a, "CPU", dppy_sin)
         b_expected = np.sin(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 
     def test_cos_cpu(self):
-        b_actual = test_driver(a, "CPU", dppl_cos)
+        b_actual = test_driver(a, "CPU", dppy_cos)
         b_expected = np.cos(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 
     def test_exp_cpu(self):
-        b_actual = test_driver(a, "CPU", dppl_exp)
+        b_actual = test_driver(a, "CPU", dppy_exp)
         b_expected = np.exp(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 
     def test_sqrt_cpu(self):
-        b_actual = test_driver(a, "CPU", dppl_sqrt)
+        b_actual = test_driver(a, "CPU", dppy_sqrt)
         b_expected = np.sqrt(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 
     def test_log_cpu(self):
-        b_actual = test_driver(a, "CPU", dppl_log)
+        b_actual = test_driver(a, "CPU", dppy_log)
         b_expected = np.log(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestDPPLMathFunctionsGPU(DPPLTestCase):
+class TestDPPYMathFunctionsGPU(DPPYTestCase):
     def test_fabs_gpu(self):
-        b_actual = test_driver(a, "GPU", dppl_fabs)
+        b_actual = test_driver(a, "GPU", dppy_fabs)
         b_expected = np.fabs(a)
         self.assertTrue(np.all(b_actual == b_expected))
 
     def test_sin_gpu(self):
-        b_actual = test_driver(a, "GPU", dppl_sin)
+        b_actual = test_driver(a, "GPU", dppy_sin)
         b_expected = np.sin(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 
     def test_cos_gpu(self):
-        b_actual = test_driver(a, "GPU", dppl_cos)
+        b_actual = test_driver(a, "GPU", dppy_cos)
         b_expected = np.cos(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 
     def test_exp_gpu(self):
-        b_actual = test_driver(a, "GPU", dppl_exp)
+        b_actual = test_driver(a, "GPU", dppy_exp)
         b_expected = np.exp(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 
     def test_sqrt_gpu(self):
-        b_actual = test_driver(a, "GPU", dppl_sqrt)
+        b_actual = test_driver(a, "GPU", dppy_sqrt)
         b_expected = np.sqrt(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 
     def test_log_gpu(self):
-        b_actual = test_driver(a, "GPU", dppl_log)
+        b_actual = test_driver(a, "GPU", dppy_log)
         b_expected = np.log(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 

@@ -4,14 +4,14 @@ import numpy as np
 import math
 import time
 
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPLTestCase
+from numba_dppy.testing import DPPYTestCase
 import dpctl
 
-@dppl.kernel
+@dppy.kernel
 def reduction_kernel(A, R, stride):
-    i = dppl.get_global_id(0)
+    i = dppy.get_global_id(0)
     # sum two element
     R[i] = A[i] + A[i+stride]
     # store the sum to be used in nex iteration
@@ -19,7 +19,7 @@ def reduction_kernel(A, R, stride):
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestDPPLSumReduction(DPPLTestCase):
+class TestDPPYSumReduction(DPPYTestCase):
     def test_sum_reduction(self):
         # This test will only work for even case
         N = 1024
@@ -36,7 +36,7 @@ class TestDPPLSumReduction(DPPLTestCase):
             while (total > 1):
                 # call kernel
                 global_size = total // 2
-                reduction_kernel[global_size, dppl.DEFAULT_LOCAL_SIZE](A, R, global_size)
+                reduction_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](A, R, global_size)
                 total = total // 2
 
             result = A_copy.sum()

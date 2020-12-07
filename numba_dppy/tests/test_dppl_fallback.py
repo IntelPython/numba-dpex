@@ -6,7 +6,7 @@ import numba
 import numba_dppy
 import numba_dppy as dppl
 from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPLTestCase
+from numba_dppy.testing import DPPYTestCase
 from numba.tests.support import captured_stderr
 import dpctl
 import sys
@@ -14,8 +14,8 @@ import io
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestDPPLFallback(DPPLTestCase):
-    def test_dppl_fallback_inner_call(self):
+class TestDPPYFallback(DPPYTestCase):
+    def test_dppy_fallback_inner_call(self):
         @numba.jit
         def fill_value(i):
             return i
@@ -39,11 +39,12 @@ class TestDPPLFallback(DPPLTestCase):
         self.assertTrue(
             'Failed to lower parfor on DPPL-device' in msg.getvalue())
 
-    def test_dppl_fallback_reductions(self):
+    def test_dppy_fallback_reductions(self):
         def reduction(a):
             return np.amax(a)
 
         a = np.ones(10)
+
         with captured_stderr() as msg, dpctl.device_context("opencl:gpu"):
             dppl = numba.njit(reduction)
             dppl_result = dppl(a)

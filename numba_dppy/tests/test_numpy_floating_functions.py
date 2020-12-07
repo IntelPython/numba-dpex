@@ -8,7 +8,7 @@ import numba_dppy
 import numba_dppy as dppl
 import dpctl
 from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPLTestCase
+from numba_dppy.testing import DPPYTestCase
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')

@@ -20,7 +20,7 @@ def prange_example():
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
-class TestParforMessage(DPPLTestCase):
+class TestParforMessage(DPPYTestCase):
     def test_parfor_message(self):
         with dpctl.device_context("opencl:gpu") as gpu_queue:
             numba_dppy.compiler.DEBUG = 1
@@ -30,7 +30,7 @@ class TestParforMessage(DPPLTestCase):
                 jitted()
 
             numba_dppy.compiler.DEBUG = 0
-            self.assertTrue("Parfor lowered on DPPL-device" in got.getvalue())
+            self.assertTrue("Parfor lowered on DPPY-device" in got.getvalue())
 
 
 if __name__ == '__main__':

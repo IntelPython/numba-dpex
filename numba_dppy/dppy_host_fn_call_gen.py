@@ -9,7 +9,7 @@ from numba.core import types, cgutils
 
 from numba.core.ir_utils import legalize_names
 
-class DPPLHostFunctionCallsGenerator(object):
+class DPPYHostFunctionCallsGenerator(object):
     def __init__(self, lowerer, cres, num_inputs):
         self.lowerer = lowerer
         self.context = self.lowerer.context
@@ -70,31 +70,31 @@ class DPPLHostFunctionCallsGenerator(object):
     def _declare_functions(self):
         get_queue_fnty = lc.Type.function(self.void_ptr_t, ())
         self.get_queue = self.builder.module.get_or_insert_function(get_queue_fnty,
-                                                                name="DPPLQueueMgr_GetCurrentQueue")
+                                                                name="DPCTLQueueMgr_GetCurrentQueue")
 
         submit_range_fnty = lc.Type.function(self.void_ptr_t,
                 [self.void_ptr_t, self.void_ptr_t, self.void_ptr_ptr_t,
                     self.int32_ptr_t, self.intp_t, self.intp_ptr_t,
                     self.intp_t, self.void_ptr_t, self.intp_t])
         self.submit_range = self.builder.module.get_or_insert_function(submit_range_fnty,
-                                                                name="DPPLQueue_SubmitRange")
+                                                                name="DPCTLQueue_SubmitRange")
 
 
         queue_memcpy_fnty = lc.Type.function(lir.VoidType(), [self.void_ptr_t, self.void_ptr_t, self.void_ptr_t, self.intp_t])
         self.queue_memcpy = self.builder.module.get_or_insert_function(queue_memcpy_fnty,
-                                                                name="DPPLQueue_Memcpy")
+                                                                name="DPCTLQueue_Memcpy")
 
         queue_wait_fnty =  lc.Type.function(lir.VoidType(), [self.void_ptr_t])
         self.queue_wait = self.builder.module.get_or_insert_function(queue_wait_fnty,
-                                                                name="DPPLQueue_Wait")
+                                                                name="DPCTLQueue_Wait")
 
         usm_shared_fnty = lc.Type.function(self.void_ptr_t, [self.intp_t, self.void_ptr_t])
         self.usm_shared = self.builder.module.get_or_insert_function(usm_shared_fnty,
-                                                                name="DPPLmalloc_shared")
+                                                                name="DPCTLmalloc_shared")
 
         usm_free_fnty = lc.Type.function(lir.VoidType(), [self.void_ptr_t, self.void_ptr_t])
         self.usm_free = self.builder.module.get_or_insert_function(usm_free_fnty,
-                                                                   name="DPPLfree_with_queue")
+                                                                   name="DPCTLfree_with_queue")
 
     def allocate_kenrel_arg_array(self, num_kernel_args):
         self.sycl_queue_val = cgutils.alloca_once(self.builder, self.void_ptr_t)

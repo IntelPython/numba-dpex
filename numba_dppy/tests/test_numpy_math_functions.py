@@ -9,11 +9,12 @@ import numba_dppy
 import numba_dppy as dppl
 import dpctl
 from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPLTestCase
+from numba_dppy.testing import DPPYTestCase
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
 class TestNumpy_math_functions(DPPLTestCase):
+
     N = 10
     a = np.array(np.random.random(N), dtype=np.float32)
     b = np.array(np.random.random(N), dtype=np.float32)
