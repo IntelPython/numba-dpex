@@ -1,4 +1,4 @@
-from numba.core.typing.templates import (AttributeTemplate, infer, infer_getattr, AbstractTemplate, signature)
+from numba.core.typing.templates import (AttributeTemplate, infer_getattr)
 import numba_dppy
 from numba import types
 

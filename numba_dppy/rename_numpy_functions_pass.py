@@ -2,6 +2,7 @@ from numba.core import ir
 from numba.core.compiler_machinery import FunctionPass, register_pass
 from numba.core.ir_utils import (find_topo_order, mk_unique_var,
                                  simplify_CFG)
+import numba_dppy
 
 rewrite_function_name_map = {"sum": (["np"], "sum"),
                              "eig": (["linalg"], "eig")}
@@ -16,8 +17,6 @@ class RewriteOverloadedFunctions(object):
         blocks = func_ir.blocks
         topo_order = find_topo_order(blocks)
 
-        import numba_dppy.dpnp_glue.dpnpdecl
-        import numba_dppy.dpnp_glue.dpnpimpl
         for label in topo_order:
             block = blocks[label]
             saved_arr_arg = {}
@@ -58,8 +57,6 @@ class RewriteOverloadedFunctions(object):
 
                 new_body.append(stmt)
             block.body = new_body
-            import pdb
-            pdb.set_trace()
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
@@ -68,6 +65,8 @@ class DPPYRewriteOverloadedFunctions(FunctionPass):
 
     def __init__(self):
         FunctionPass.__init__(self)
+        import numba_dppy.dpnp_glue.dpnpdecl
+        import numba_dppy.dpnp_glue.dpnpimpl
 
     def run_pass(self, state):
         rewrite_function_name_pass = RewriteOverloadedFunctions(state, rewrite_function_name_map)
