@@ -1,20 +1,20 @@
 import sys
 import numpy as np
 from numba import int32
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 import math
 
 import dpctl
 
 def sum_reduction_device_plus_host():
-    @dppl.kernel
+    @dppy.kernel
     def sum_reduction_kernel(inp, partial_sums):
-        local_id   = dppl.get_local_id(0)
-        global_id  = dppl.get_global_id(0)
-        group_size = dppl.get_local_size(0)
-        group_id   = dppl.get_group_id(0)
+        local_id   = dppy.get_local_id(0)
+        global_id  = dppy.get_global_id(0)
+        group_size = dppy.get_local_size(0)
+        group_id   = dppy.get_group_id(0)
 
-        local_sums = dppl.local.static_alloc(64, int32)
+        local_sums = dppy.local.static_alloc(64, int32)
 
         # Copy from global to local memory
         local_sums[local_id] = inp[global_id]
@@ -23,7 +23,7 @@ def sum_reduction_device_plus_host():
         stride = group_size // 2
         while (stride > 0):
             # Waiting for each 2x2 addition into given workgroup
-            dppl.barrier(dppl.CLK_LOCAL_MEM_FENCE)
+            dppy.barrier(dppy.CLK_LOCAL_MEM_FENCE)
 
             # Add elements 2 by 2 between local_id and local_id + stride
             if (local_id < stride):

@@ -5,12 +5,12 @@ from timeit import default_timer as time
 import sys
 import numpy as np
 from numba import njit
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPLTestCase
+from numba_dppy.testing import DPPYTestCase
 
 
-class TestNumpy_math_functions(DPPLTestCase):
+class TestNumpy_math_functions(DPPYTestCase):
     N = 10
     a = np.array(np.random.random(N), dtype=np.float32)
     b = np.array(np.random.random(N), dtype=np.float32)

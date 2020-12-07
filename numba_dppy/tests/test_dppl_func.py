@@ -2,59 +2,59 @@ from __future__ import print_function, division, absolute_import
 
 import numpy as np
 
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPLTestCase
+from numba_dppy.testing import DPPYTestCase
 import dpctl
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestDPPLFunc(DPPLTestCase):
+class TestDPPYFunc(DPPYTestCase):
     N = 257
 
-    def test_dppl_func_device_array(self):
-        @dppl.func
+    def test_dppy_func_device_array(self):
+        @dppy.func
         def g(a):
             return a + 1
 
-        @dppl.kernel
+        @dppy.kernel
         def f(a, b):
-            i = dppl.get_global_id(0)
+            i = dppy.get_global_id(0)
             b[i] = g(a[i])
 
         a = np.ones(self.N)
         b = np.ones(self.N)
 
         with dpctl.device_context("opencl:gpu") as gpu_queue:
-            f[self.N, dppl.DEFAULT_LOCAL_SIZE](a, b)
+            f[self.N, dppy.DEFAULT_LOCAL_SIZE](a, b)
 
 
         self.assertTrue(np.all(b == 2))
 
-    def test_dppl_func_ndarray(self):
-        @dppl.func
+    def test_dppy_func_ndarray(self):
+        @dppy.func
         def g(a):
             return a + 1
 
-        @dppl.kernel
+        @dppy.kernel
         def f(a, b):
-            i = dppl.get_global_id(0)
+            i = dppy.get_global_id(0)
             b[i] = g(a[i])
 
-        @dppl.kernel
+        @dppy.kernel
         def h(a, b):
-            i = dppl.get_global_id(0)
+            i = dppy.get_global_id(0)
             b[i] = g(a[i]) + 1
 
         a = np.ones(self.N)
         b = np.ones(self.N)
 
         with dpctl.device_context("opencl:gpu") as gpu_queue:
-            f[self.N, dppl.DEFAULT_LOCAL_SIZE](a, b)
+            f[self.N, dppy.DEFAULT_LOCAL_SIZE](a, b)
 
             self.assertTrue(np.all(b == 2))
 
-            h[self.N, dppl.DEFAULT_LOCAL_SIZE](a, b)
+            h[self.N, dppy.DEFAULT_LOCAL_SIZE](a, b)
 
             self.assertTrue(np.all(b == 3))
 

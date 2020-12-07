@@ -5,12 +5,12 @@ from timeit import default_timer as time
 import sys
 import numpy as np
 from numba import njit
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPLTestCase
+from numba_dppy.testing import DPPYTestCase
 
 
-class TestNumpy_bit_twiddling_functions(DPPLTestCase):
+class TestNumpy_bit_twiddling_functions(DPPYTestCase):
     def test_bitwise_and(self):
         @njit(parallel={'offload':True})
         def f(a, b):

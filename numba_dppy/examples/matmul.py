@@ -4,14 +4,14 @@ from timeit import default_timer as time
 
 import sys
 import numpy as np
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 import dpctl
 
 
-@dppl.kernel
-def dppl_gemm(a, b, c):
-    i = dppl.get_global_id(0)
-    j = dppl.get_global_id(1)
+@dppy.kernel
+def dppy_gemm(a, b, c):
+    i = dppy.get_global_id(0)
+    j = dppy.get_global_id(1)
     if i >= c.shape[0] or j >= c.shape[1]:
         return
     c[i,j] = 0
@@ -30,7 +30,7 @@ blockdim = Y, Y
 
 def driver(a, b, c):
     # Invoke the kernel
-    dppl_gemm[griddim,blockdim](a, b, c)
+    dppy_gemm[griddim,blockdim](a, b, c)
 
 
 def main():

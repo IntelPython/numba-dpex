@@ -4,17 +4,17 @@ import numpy as np
 
 #from numba.targets.descriptors import TargetDescriptor
 #from numba.targets.options import TargetOptions
-#import numba_dppy, numba_dppy as dppl
+#import numba_dppy, numba_dppy as dppy
 from numba_dppy import kernel, autojit
-from .descriptor import dppl_target
+from .descriptor import dppy_target
 #from numba.npyufunc.deviceufunc import (UFuncMechanism, GenerializedUFunc,
  #                                       GUFuncCallSteps)
 
 from .. import dispatcher, utils, typing
-from .compiler import DPPLCompiler
+from .compiler import DPPYCompiler
 
-class DPPLDispatcher(dispatcher.Dispatcher):
-    targetdescr = dppl_target
+class DPPYDispatcher(dispatcher.Dispatcher):
+    targetdescr = dppy_target
 
 
     def __init__(self, py_func, locals={}, targetoptions={}):
@@ -58,7 +58,7 @@ class DPPLDispatcher(dispatcher.Dispatcher):
     def __getattr__(self, key):
         return getattr(self.compiled, key)
 
-class DPPLUFuncDispatcher(object):
+class DPPYUFuncDispatcher(object):
     """
     Invoke the OpenCL ufunc specialization for the given inputs.
     """
@@ -86,7 +86,7 @@ class DPPLUFuncDispatcher(object):
                       depending on the input arguments.  Type must match
                       the input arguments.
         """
-        return DPPLUFuncMechanism.call(self.functions, args, kws)
+        return DPPYUFuncMechanism.call(self.functions, args, kws)
 
     def reduce(self, arg, stream=0):
         assert len(list(self.functions.keys())[0]) == 2, "must be a binary " \
@@ -142,7 +142,7 @@ class DPPLUFuncDispatcher(object):
                 return left
 
 
-class _DPPLGUFuncCallSteps(GUFuncCallSteps):
+class _DPPYGUFuncCallSteps(GUFuncCallSteps):
     __slots__ = [
         '_stream',
     ]
@@ -167,10 +167,10 @@ class _DPPLGUFuncCallSteps(GUFuncCallSteps):
         kernel.forall(nelem, queue=self._stream)(*args)
 
 
-class DPPLGenerializedUFunc(GenerializedUFunc):
+class DPPYGenerializedUFunc(GenerializedUFunc):
     @property
     def _call_steps(self):
-        return _DPPLGUFuncCallSteps
+        return _DPPYGUFuncCallSteps
 
     def _broadcast_scalar_input(self, ary, shape):
         return devicearray.DeviceNDArray(shape=shape,
@@ -188,7 +188,7 @@ class DPPLGenerializedUFunc(GenerializedUFunc):
                                          gpu_data=ary.gpu_data)
 
 
-class DPPLUFuncMechanism(UFuncMechanism):
+class DPPYUFuncMechanism(UFuncMechanism):
     """
     Provide OpenCL specialization
     """
