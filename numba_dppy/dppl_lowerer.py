@@ -979,14 +979,13 @@ def relatively_deep_copy(obj, memo):
     from numba.core.compiler import CompileResult
     from numba.np.ufunc.dufunc import DUFunc
     from ctypes import _CFuncPtr
-    from cffi.api import FFI
     from types import ModuleType
     from numba.core.types.abstract import Type
 
     # objects which shouldn't or can't be copied and it's ok not to copy it.
     if isinstance(obj, (FunctionIdentity, _DispatcherBase, Function, Type, Dispatcher, ModuleType,
                         Signature, DPPLFunctionTemplate, CompileResult,
-                        DUFunc, _CFuncPtr, FFI,
+                        DUFunc, _CFuncPtr,
                         type, str, bool, type(None))):
         return obj
 
