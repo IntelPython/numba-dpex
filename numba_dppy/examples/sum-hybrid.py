@@ -4,13 +4,13 @@ from timeit import default_timer as time
 
 import sys
 import numpy as np
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 import dpctl
 
 
-@dppl.kernel
+@dppy.kernel
 def data_parallel_sum(a, b, c):
-    i = dppl.get_global_id(0)
+    i = dppy.get_global_id(0)
     c[i] = a[i] + b[i]
 
 
@@ -27,7 +27,7 @@ def main():
             c = np.ones_like(a)
             print("before A: ", a)
             print("before B: ", b)
-            data_parallel_sum[global_size, dppl.DEFAULT_LOCAL_SIZE](a, b, c)
+            data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
             print("after  C: ", c)
     else:
         print("CPU device not found")
@@ -40,7 +40,7 @@ def main():
             c = np.ones_like(a)
             print("before A: ", a)
             print("before B: ", b)
-            data_parallel_sum[global_size, dppl.DEFAULT_LOCAL_SIZE](a, b, c)
+            data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
             print("after  C: ", c)
     else:
         print("GPU device not found")

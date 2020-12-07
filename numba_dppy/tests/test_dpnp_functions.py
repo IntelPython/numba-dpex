@@ -5,9 +5,9 @@ from timeit import default_timer as time
 import sys
 import numpy as np
 from numba import njit
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPLTestCase
+from numba_dppy.testing import DPPYTestCase
 
 
 def test_for_different_datatypes(fn, test_fn, dims, arg_count, tys, np_all=False, matrix=None):
@@ -76,7 +76,7 @@ def ensure_dpnp():
 
 
 @unittest.skipUnless(ensure_dpnp(), 'test only when dpNP is available')
-class Testdpnp_functions(DPPLTestCase):
+class Testdpnp_functions(DPPYTestCase):
     N = 10
 
     a = np.array(np.random.random(N), dtype=np.float32)

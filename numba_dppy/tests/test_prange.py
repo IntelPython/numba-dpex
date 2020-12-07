@@ -6,13 +6,13 @@ import sys
 import numpy as np
 import numba
 from numba import njit, prange
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 from numba_dppy.testing import unittest, expectedFailureIf
-from numba_dppy.testing import DPPLTestCase
+from numba_dppy.testing import DPPYTestCase
 from numba.tests.support import captured_stdout
 
 
-class TestPrange(DPPLTestCase):
+class TestPrange(DPPYTestCase):
     def test_one_prange(self):
         @njit(parallel={'offload':True})
         def f(a, b):
@@ -118,8 +118,8 @@ class TestPrange(DPPLTestCase):
 
         numba_dppy.compiler.DEBUG = old_debug
 
-        self.assertEqual(stdout.getvalue().count('Parfor lowered on DPPL-device'), 2, stdout.getvalue())
-        self.assertEqual(stdout.getvalue().count('Failed to lower parfor on DPPL-device'), 0, stdout.getvalue())
+        self.assertEqual(stdout.getvalue().count('Parfor lowered on DPPY-device'), 2, stdout.getvalue())
+        self.assertEqual(stdout.getvalue().count('Failed to lower parfor on DPPY-device'), 0, stdout.getvalue())
         np.testing.assert_equal(res, jitted_res)
 
 
@@ -146,8 +146,8 @@ class TestPrange(DPPLTestCase):
 
         numba_dppy.compiler.DEBUG = old_debug
 
-        self.assertEqual(stdout.getvalue().count('Parfor lowered on DPPL-device'), 2, stdout.getvalue())
-        self.assertEqual(stdout.getvalue().count('Failed to lower parfor on DPPL-device'), 0, stdout.getvalue())
+        self.assertEqual(stdout.getvalue().count('Parfor lowered on DPPY-device'), 2, stdout.getvalue())
+        self.assertEqual(stdout.getvalue().count('Failed to lower parfor on DPPY-device'), 0, stdout.getvalue())
         np.testing.assert_equal(res, jitted_res)
 
 
