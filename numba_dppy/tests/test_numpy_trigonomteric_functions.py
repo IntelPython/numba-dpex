@@ -13,7 +13,7 @@ from numba_dppy.testing import DPPYTestCase
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestNumpy_math_functions(DPPLTestCase):
+class TestNumpy_math_functions(DPPYTestCase):
 
     N = 10
     a = np.array(np.random.random(N), dtype=np.float32)

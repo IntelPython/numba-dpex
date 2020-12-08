@@ -13,7 +13,7 @@ from numba_dppy.testing import DPPYTestCase
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
-class TestVectorize(DPPLTestCase):
+class TestVectorize(DPPYTestCase):
     def test_vectorize(self):
 
         @vectorize(nopython=True)

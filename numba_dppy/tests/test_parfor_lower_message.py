@@ -3,7 +3,8 @@ import numba
 from numba import njit, prange
 import numba_dppy
 import numba_dppy as dppl
-from numba_dppy.testing import unittest, DPPLTestCase
+from numba_dppy.testing import unittest
+from numba_dppy.testing import DPPYTestCase
 from numba.tests.support import captured_stdout
 import dpctl
 

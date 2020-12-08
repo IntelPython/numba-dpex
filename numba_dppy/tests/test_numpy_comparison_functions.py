@@ -13,7 +13,7 @@ from numba_dppy.testing import DPPYTestCase
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestNumpy_comparison_functions(DPPLTestCase):
+class TestNumpy_comparison_functions(DPPYTestCase):
     a = np.array([4, 5, 6])
     b = np.array([2, 6, 6])
 

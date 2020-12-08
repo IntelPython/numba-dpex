@@ -91,7 +91,7 @@ def ensure_dpnp():
 
 
 @unittest.skipUnless(ensure_dpnp() and dpctl.has_gpu_queues(), 'test only when dpNP and GPU is available')
-class Testdpnp_functions(DPPLTestCase):
+class Testdpnp_functions(DPPYTestCase):
 
     N = 10
 

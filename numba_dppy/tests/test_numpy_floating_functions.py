@@ -12,7 +12,7 @@ from numba_dppy.testing import DPPYTestCase
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestNumpy_floating_functions(DPPLTestCase):
+class TestNumpy_floating_functions(DPPYTestCase):
     def test_isfinite(self):
         @njit
         def f(a):
