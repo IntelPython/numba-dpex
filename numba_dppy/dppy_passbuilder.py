@@ -22,10 +22,10 @@ from .dppy_passes import (
         DPPYPreParforPass,
         DPPYParforPass,
         SpirvFriendlyLowering,
-        DPPLAddNumpyOverloadPass,
-        DPPLAddNumpyRemoveOverloadPass,
-        DPPLNoPythonBackend,
-        DPPLDumpParforDiagnostics
+        DPPYAddNumpyOverloadPass,
+        DPPYAddNumpyRemoveOverloadPass,
+        DPPYNoPythonBackend,
+        DPPYDumpParforDiagnostics
         )
 
 class DPPYPassBuilder(object):
@@ -108,13 +108,8 @@ class DPPYPassBuilder(object):
 
         # lower
         pm.add_pass(SpirvFriendlyLowering, "SPIRV-friendly lowering pass")
-<<<<<<< HEAD:numba_dppy/dppl_passbuilder.py
-        pm.add_pass(DPPLNoPythonBackend, "nopython mode backend")
-        pm.add_pass(DPPLAddNumpyRemoveOverloadPass, "dppl remove typing template for Numpy functions")
-        pm.add_pass(DPPLDumpParforDiagnostics, "dump parfor diagnostics")
-=======
         pm.add_pass(DPPYNoPythonBackend, "nopython mode backend")
         pm.add_pass(DPPYAddNumpyRemoveOverloadPass, "dppy remove typing template for Numpy functions")
->>>>>>> ff8fe55f50c14b0e010f32d570d974f572cdd956:numba_dppy/dppy_passbuilder.py
+        pm.add_pass(DPPYDumpParforDiagnostics, "dump parfor diagnostics")
         pm.finalize()
         return pm

@@ -24,7 +24,7 @@ from numba.core.errors import (LoweringError, new_error_context, TypingError,
 
 from numba.core.compiler_machinery import FunctionPass, LoweringPass, register_pass, AnalysisPass
 
-from .dppl_lowerer import DPPLLower
+from .dppy_lowerer import DPPYLower
 from numba_dppy import config as dppy_config
 
 from numba.parfors.parfor import PreParforPass as _parfor_PreParforPass, replace_functions_map
@@ -441,7 +441,7 @@ class DPPYNoPythonBackend(FunctionPass):
 
 
 @register_pass(mutates_CFG=False, analysis_only=True)
-class DPPLDumpParforDiagnostics(AnalysisPass):
+class DPPYDumpParforDiagnostics(AnalysisPass):
 
     _name = "dump_parfor_diagnostics"
 

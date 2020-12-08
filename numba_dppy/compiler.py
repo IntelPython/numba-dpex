@@ -19,7 +19,7 @@ from . import spirv_generator
 
 import os
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
-from numba_dppy.dppl_parfor_diagnostics import ExtendedParforDiagnostics
+from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
 
 DEBUG=os.environ.get('NUMBA_DPPY_DEBUG', None)
 _NUMBA_DPPY_READ_ONLY  = "read_only"
