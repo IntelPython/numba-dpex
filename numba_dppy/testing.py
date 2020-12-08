@@ -11,7 +11,7 @@ from numba.tests.support import (
     redirect_c_stdout,
 )
 
-class DPPLTestCase(SerialMixin, unittest.TestCase):
+class DPPYTestCase(SerialMixin, unittest.TestCase):
     def setUp(self):
         #init()
 	#TODO
@@ -21,7 +21,7 @@ class DPPLTestCase(SerialMixin, unittest.TestCase):
 	#TODO
         pass
 
-class DPPLTextCapture(object):
+class DPPYTextCapture(object):
     def __init__(self, stream):
         self._stream = stream
 
@@ -36,16 +36,16 @@ class PythonTextCapture(object):
         return self._stream.getvalue()
 
 @contextlib.contextmanager
-def captured_dppl_stdout():
+def captured_dppy_stdout():
     """
-    Return a minimal stream-like object capturing the text output of dppl
+    Return a minimal stream-like object capturing the text output of dppy
     """
     # Prevent accidentally capturing previously output text
     sys.stdout.flush()
 
-    import numba_dppy, numba_dppy as dppl
+    import numba_dppy, numba_dppy as dppy
     with redirect_c_stdout() as stream:
-        yield DPPLTextCapture(stream)
+        yield DPPYTextCapture(stream)
 
 
 def _id(obj):

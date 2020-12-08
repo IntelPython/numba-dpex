@@ -6,7 +6,7 @@ import numpy as np
 import argparse
 import timeit
 
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 import dpctl
 import dpctl._memory as dpctl_mem
 
@@ -28,9 +28,9 @@ X = np.random.random((args.n, args.d))
 D = np.empty((args.n, args.n))
 
 
-@dppl.kernel
+@dppy.kernel
 def pairwise_distance(X, D, xshape0, xshape1):
-    idx = dppl.get_global_id(0)
+    idx = dppy.get_global_id(0)
 
     #for i in range(xshape0):
     for j in range(X.shape[0]):

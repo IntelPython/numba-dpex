@@ -9,9 +9,9 @@ from numba.core.compiler_lock import global_compiler_lock
 class TargetDispatcher(serialize.ReduceMixin, metaclass=dispatcher.DispatcherMeta):
     __numba__ = 'py_func'
 
-    target_offload_gpu = '__dppl_offload_gpu__'
-    target_offload_cpu = '__dppl_offload_cpu__'
-    target_dppl = 'dppy'
+    target_offload_gpu = '__dppy_offload_gpu__'
+    target_offload_cpu = '__dppy_offload_cpu__'
+    target_dppy = 'dppy'
 
     def __init__(self, py_func, wrapper, target, parallel_options, compiled=None):
 
@@ -54,7 +54,7 @@ class TargetDispatcher(serialize.ReduceMixin, metaclass=dispatcher.DispatcherMet
         return self.__compiled[disp]
 
     def __is_with_context_target(self, target):
-        return target is None or target == TargetDispatcher.target_dppl
+        return target is None or target == TargetDispatcher.target_dppy
 
     def get_current_disp(self):
         target = self.__target
@@ -71,7 +71,7 @@ class TargetDispatcher(serialize.ReduceMixin, metaclass=dispatcher.DispatcherMet
             if parallel is False or (isinstance(parallel, dict) and parallel.get('offload') is False):
                 raise UnsupportedError(f"Can't use 'with' context with parallel option '{parallel}'")
 
-            from numba_dppy import dppl_offload_dispatcher
+            from numba_dppy import dppy_offload_dispatcher
 
             if target is None:
                 if dpctl.get_current_device_type() == dpctl.device_type.gpu:
@@ -80,7 +80,7 @@ class TargetDispatcher(serialize.ReduceMixin, metaclass=dispatcher.DispatcherMet
                     return registry.dispatcher_registry[TargetDispatcher.target_offload_cpu]
                 else:
                     if dpctl.is_in_device_context():
-                        raise UnsupportedError('Unknown dppl device type')
+                        raise UnsupportedError('Unknown dppy device type')
                     if offload:
                         if dpctl.has_gpu_queues():
                             return registry.dispatcher_registry[TargetDispatcher.target_offload_gpu]

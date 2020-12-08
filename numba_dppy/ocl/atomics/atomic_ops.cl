@@ -5,7 +5,7 @@
 #ifdef cl_khr_int64_base_atomics
   #pragma OPENCL EXTENSION cl_khr_int64_base_atomics: enable
 
-  long numba_dppl_atomic_add_i64_local(volatile __generic long *p, long val) {
+  long numba_dppy_atomic_add_i64_local(volatile __generic long *p, long val) {
       long found = *p;
       long expected;
       do {
@@ -15,7 +15,7 @@
       return found;
   }
 
-  long numba_dppl_atomic_add_i64_global(volatile __generic long *p, long val) {
+  long numba_dppy_atomic_add_i64_global(volatile __generic long *p, long val) {
       long found = *p;
       long expected;
       do {
@@ -25,7 +25,7 @@
       return found;
   }
 
-  long numba_dppl_atomic_sub_i64_local(volatile __generic long *p, long val) {
+  long numba_dppy_atomic_sub_i64_local(volatile __generic long *p, long val) {
       long found = *p;
       long expected;
       do {
@@ -35,7 +35,7 @@
       return found;
   }
 
-  long numba_dppl_atomic_sub_i64_global(volatile __generic long *p, long val) {
+  long numba_dppy_atomic_sub_i64_global(volatile __generic long *p, long val) {
       long found = *p;
       long expected;
       do {
@@ -48,7 +48,7 @@
   #ifdef cl_khr_fp64
     #pragma OPENCL EXTENSION cl_khr_fp64: enable
 
-    double numba_dppl_atomic_cmpxchg_f64_local(volatile __generic double *p, double cmp, double val) {
+    double numba_dppy_atomic_cmpxchg_f64_local(volatile __generic double *p, double cmp, double val) {
         union {
             ulong  u64;
             double f64;
@@ -60,7 +60,7 @@
         return old_union.f64;
     }
 
-    double numba_dppl_atomic_cmpxchg_f64_global(volatile __generic double *p, double cmp, double val) {
+    double numba_dppy_atomic_cmpxchg_f64_global(volatile __generic double *p, double cmp, double val) {
         union {
             ulong  u64;
             double f64;
@@ -72,50 +72,50 @@
         return old_union.f64;
     }
 
-    double numba_dppl_atomic_add_f64_local(volatile __generic double *p, double val) {
+    double numba_dppy_atomic_add_f64_local(volatile __generic double *p, double val) {
         double  found = *p;
         double  expected;
         do {
             expected = found;
-            found = numba_dppl_atomic_cmpxchg_f64_local(p, expected, expected + val);
+            found = numba_dppy_atomic_cmpxchg_f64_local(p, expected, expected + val);
         } while (found != expected);
         return found;
     }
 
-    double numba_dppl_atomic_add_f64_global(volatile __generic double *p, double val) {
+    double numba_dppy_atomic_add_f64_global(volatile __generic double *p, double val) {
         double  found = *p;
         double  expected;
         do {
             expected = found;
-            found = numba_dppl_atomic_cmpxchg_f64_global(p, expected, expected + val);
+            found = numba_dppy_atomic_cmpxchg_f64_global(p, expected, expected + val);
         } while (found != expected);
         return found;
     }
 
 
-    double numba_dppl_atomic_sub_f64_local(volatile __generic double *p, double val) {
+    double numba_dppy_atomic_sub_f64_local(volatile __generic double *p, double val) {
         double  found = *p;
         double  expected;
         do {
             expected = found;
-            found = numba_dppl_atomic_cmpxchg_f64_local(p, expected, expected - val);
+            found = numba_dppy_atomic_cmpxchg_f64_local(p, expected, expected - val);
         } while (found != expected);
         return found;
     }
 
-    double numba_dppl_atomic_sub_f64_global(volatile __generic double *p, double val) {
+    double numba_dppy_atomic_sub_f64_global(volatile __generic double *p, double val) {
         double  found = *p;
         double  expected;
         do {
             expected = found;
-            found = numba_dppl_atomic_cmpxchg_f64_global(p, expected, expected - val);
+            found = numba_dppy_atomic_cmpxchg_f64_global(p, expected, expected - val);
         } while (found != expected);
         return found;
     }
   #endif
 #endif
 
-float numba_dppl_atomic_cmpxchg_f32_local(volatile __generic float *p, float cmp, float val) {
+float numba_dppy_atomic_cmpxchg_f32_local(volatile __generic float *p, float cmp, float val) {
     union {
         unsigned int u32;
         float        f32;
@@ -127,7 +127,7 @@ float numba_dppl_atomic_cmpxchg_f32_local(volatile __generic float *p, float cmp
     return old_union.f32;
 }
 
-float numba_dppl_atomic_cmpxchg_f32_global(volatile __generic float *p, float cmp, float val) {
+float numba_dppy_atomic_cmpxchg_f32_global(volatile __generic float *p, float cmp, float val) {
     union {
         unsigned int u32;
         float        f32;
@@ -139,47 +139,47 @@ float numba_dppl_atomic_cmpxchg_f32_global(volatile __generic float *p, float cm
     return old_union.f32;
 }
 
-float numba_dppl_atomic_add_f32_local(volatile __generic float *p, float val) {
+float numba_dppy_atomic_add_f32_local(volatile __generic float *p, float val) {
     float found = *p;
     float expected;
     do {
         expected = found;
-        found = numba_dppl_atomic_cmpxchg_f32_local(p, expected, expected + val);
+        found = numba_dppy_atomic_cmpxchg_f32_local(p, expected, expected + val);
     } while (found != expected);
     return found;
 }
 
-float numba_dppl_atomic_add_f32_global(volatile __generic float *p, float val) {
+float numba_dppy_atomic_add_f32_global(volatile __generic float *p, float val) {
     float found = *p;
     float expected;
     do {
         expected = found;
-        found = numba_dppl_atomic_cmpxchg_f32_global(p, expected, expected + val);
+        found = numba_dppy_atomic_cmpxchg_f32_global(p, expected, expected + val);
     } while (found != expected);
     return found;
 }
 
-float numba_dppl_atomic_sub_f32_local(volatile __generic float *p, float val) {
+float numba_dppy_atomic_sub_f32_local(volatile __generic float *p, float val) {
     float found = *p;
     float expected;
     do {
         expected = found;
-        found = numba_dppl_atomic_cmpxchg_f32_local(p, expected, expected - val);
+        found = numba_dppy_atomic_cmpxchg_f32_local(p, expected, expected - val);
     } while (found != expected);
     return found;
 }
 
-float numba_dppl_atomic_sub_f32_global(volatile __generic float *p, float val) {
+float numba_dppy_atomic_sub_f32_global(volatile __generic float *p, float val) {
     float found = *p;
     float expected;
     do {
         expected = found;
-        found = numba_dppl_atomic_cmpxchg_f32_global(p, expected, expected - val);
+        found = numba_dppy_atomic_cmpxchg_f32_global(p, expected, expected - val);
     } while (found != expected);
     return found;
 }
 
-int numba_dppl_atomic_add_i32_local(volatile __generic int *p, int val) {
+int numba_dppy_atomic_add_i32_local(volatile __generic int *p, int val) {
     int found = *p;
     int expected;
     do {
@@ -189,7 +189,7 @@ int numba_dppl_atomic_add_i32_local(volatile __generic int *p, int val) {
     return found;
 }
 
-int numba_dppl_atomic_add_i32_global(volatile __generic int *p, int val) {
+int numba_dppy_atomic_add_i32_global(volatile __generic int *p, int val) {
     int found = *p;
     int expected;
     do {
@@ -199,7 +199,7 @@ int numba_dppl_atomic_add_i32_global(volatile __generic int *p, int val) {
     return found;
 }
 
-int numba_dppl_atomic_sub_i32_local(volatile __generic int *p, int val) {
+int numba_dppy_atomic_sub_i32_local(volatile __generic int *p, int val) {
     int found = *p;
     int expected;
     do {
@@ -209,7 +209,7 @@ int numba_dppl_atomic_sub_i32_local(volatile __generic int *p, int val) {
     return found;
 }
 
-int numba_dppl_atomic_sub_i32_global(volatile __generic int *p, int val) {
+int numba_dppy_atomic_sub_i32_global(volatile __generic int *p, int val) {
     int found = *p;
     int expected;
     do {
