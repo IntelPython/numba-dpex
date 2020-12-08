@@ -83,9 +83,9 @@ def sub_group_barrier():
 
 class Stub(object):
     """A stub object to represent special objects which is meaningless
-    outside the context of DPPL compilation context.
+    outside the context of DPPY compilation context.
     """
-    _description_ = '<dppl special value>'
+    _description_ = '<dppy special value>'
     __slots__ = ()  # don't allocate __dict__
 
     def __new__(cls):
@@ -100,7 +100,7 @@ class Stub(object):
 def local_alloc(shape, dtype):
     shape = _legalize_shape(shape)
     ndim = len(shape)
-    fname = "dppl.lmem.alloc"
+    fname = "dppy.lmem.alloc"
     restype = types.Array(dtype, ndim, 'C', addrspace=SPIR_LOCAL_ADDRSPACE)
     sig = typing.signature(restype, types.UniTuple(types.intp, ndim), types.Any)
     return ir.Intrinsic(fname, sig, args=(shape, dtype))

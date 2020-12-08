@@ -4,21 +4,21 @@ from timeit import default_timer as time
 
 import sys
 import numpy as np
-import numba_dppy, numba_dppy as dppl
+import numba_dppy, numba_dppy as dppy
 import dpctl
 
 
-@dppl.kernel
+@dppy.kernel
 def data_parallel_sum(a, b, c):
-    i = dppl.get_global_id(0)
-    j = dppl.get_global_id(1)
+    i = dppy.get_global_id(0)
+    j = dppy.get_global_id(1)
     c[i,j] = a[i,j] + b[i,j]
 
 
 def driver(a, b, c, global_size):
     print("before A: ", a)
     print("before B: ", b)
-    data_parallel_sum[global_size, dppl.DEFAULT_LOCAL_SIZE](a, b, c)
+    data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
     print("after  C : ", c)
 
 

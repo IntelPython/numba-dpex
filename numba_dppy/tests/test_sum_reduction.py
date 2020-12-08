@@ -5,8 +5,9 @@ import math
 import time
 
 import numba_dppy, numba_dppy as dppy
+from numba_dppy.testing import unittest
+from numba_dppy.testing import DPPYTestCase
 import dpctl
-
 
 @dppy.kernel
 def reduction_kernel(A, R, stride):
@@ -17,17 +18,18 @@ def reduction_kernel(A, R, stride):
     A[i] = R[i]
 
 
-def test_sum_reduction():
-    # This test will only work for size = power of two
-    N = 2048
-    assert(N%2 == 0)
+@unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
+class TestDPPYSumReduction(DPPYTestCase):
+    def test_sum_reduction(self):
+        # This test will only work for even case
+        N = 1024
+        self.assertTrue(N%2 == 0)
 
-    A = np.array(np.random.random(N), dtype=np.float32)
-    A_copy = A.copy()
-    # at max we will require half the size of A to store sum
-    R = np.array(np.random.random(math.ceil(N/2)), dtype=np.float32)
+        A = np.array(np.random.random(N), dtype=np.float32)
+        A_copy = A.copy()
+        # at max we will require half the size of A to store sum
+        R = np.array(np.random.random(math.ceil(N/2)), dtype=np.float32)
 
-    if dpctl.has_gpu_queues():
         with dpctl.device_context("opencl:gpu") as gpu_queue:
             total = N
 
@@ -37,13 +39,10 @@ def test_sum_reduction():
                 reduction_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](A, R, global_size)
                 total = total // 2
 
-    else:
-        print("No device found")
-        exit()
+            result = A_copy.sum()
+            max_abs_err = result - R[0]
+            self.assertTrue(max_abs_err < 1e-4)
 
-    result = A_copy.sum()
-    max_abs_err = result - R[0]
-    assert(max_abs_err < 1e-2)
 
 if __name__ == '__main__':
-    test_sum_reduction()
+    unittest.main()
