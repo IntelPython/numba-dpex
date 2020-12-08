@@ -8,7 +8,7 @@ from numba.core.ir_utils import (
 )
 import numba_dppy
 
-rewrite_function_name_map = {"sum": (["np"], "sum"), "eig": (["linalg"], "eig")}
+rewrite_function_name_map = {"sum": (["np"], "sum")}
 
 
 class RewriteNumPyOverloadedFunctions(object):
