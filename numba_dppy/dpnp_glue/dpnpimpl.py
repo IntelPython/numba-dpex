@@ -1,4 +1,4 @@
-from numba.core.imputils import (lower_builtin)
+from numba.core.imputils import lower_builtin
 import numba_dppy.experimental_numpy_lowering_overload as dpnp_lowering
 from numba import types
 from numba.core.typing import signature
@@ -10,21 +10,22 @@ from numba_dppy.dpctl_functions import _DPCTL_FUNCTIONS
 
 def get_dpnp_fptr(fn_name, type_names):
     from . import dpnp_fptr_interface as dpnp_glue
+
     f_ptr = dpnp_glue.get_dpnp_fn_ptr(fn_name, type_names)
     return f_ptr
+
 
 @register_jitable
 def _check_finite_matrix(a):
     for v in np.nditer(a):
         if not np.isfinite(v.item()):
-            raise np.linalg.LinAlgError(
-                "Array must not contain infs or NaNs.")
+            raise np.linalg.LinAlgError("Array must not contain infs or NaNs.")
+
 
 @register_jitable
 def _dummy_liveness_func(a):
     """pass a list of variables to be preserved through dead code elimination"""
     return a[0]
-
 
 
 class RetrieveDpnpFnPtr(types.ExternalFunctionPointer):
@@ -33,26 +34,33 @@ class RetrieveDpnpFnPtr(types.ExternalFunctionPointer):
         self.type_names = type_names
         super(RetrieveDpnpFnPtr, self).__init__(sig, get_pointer)
 
+
 class _DPNP_EXTENSION:
     def __init__(self, name):
         dpnp_lowering.ensure_dpnp(name)
 
     @classmethod
     def dpnp_sum(cls, fn_name, type_names):
-        ret_type  = types.void
-        sig       = signature(ret_type, types.voidptr, types.voidptr, types.int64)
-        f_ptr     = get_dpnp_fptr(fn_name, type_names)
+        ret_type = types.void
+        sig = signature(ret_type, types.voidptr, types.voidptr, types.int64)
+        f_ptr = get_dpnp_fptr(fn_name, type_names)
+
         def get_pointer(obj):
             return f_ptr
+
         return types.ExternalFunctionPointer(sig, get_pointer=get_pointer)
 
     @classmethod
     def dpnp_eig(cls, fn_name, type_names):
-        ret_type  = types.void
-        sig       = signature(ret_type, types.voidptr, types.voidptr, types.voidptr, types.int64)
-        f_ptr     = get_dpnp_fptr(fn_name, type_names)
+        ret_type = types.void
+        sig = signature(
+            ret_type, types.voidptr, types.voidptr, types.voidptr, types.int64
+        )
+        f_ptr = get_dpnp_fptr(fn_name, type_names)
+
         def get_pointer(obj):
             return f_ptr
+
         return types.ExternalFunctionPointer(sig, get_pointer=get_pointer)
 
 
@@ -90,7 +98,8 @@ def dpnp_sum_impl(a):
 
     return dpnp_sum_impl
 
-'''
+
+"""
 @overload(stubs.dpnp.eig)
 def dpnp_eig_impl(a):
     dpnp_extension = _DPNP_EXTENSION("eig")
@@ -143,4 +152,4 @@ def dpnp_eig_impl(a):
         return (wr, vr)
 
     return dpnp_eig_impl
-'''
+"""

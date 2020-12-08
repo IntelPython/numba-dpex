@@ -18,8 +18,7 @@ from numba.core import (
     types,
     )
 
-from numba.core.ir_utils import (remove_dels, find_topo_order, mk_unique_var,
-                                 simplify_CFG)
+from numba.core.ir_utils import remove_dels
 
 from numba.core.errors import (LoweringError, new_error_context, TypingError,
                      LiteralTypingError)
@@ -51,7 +50,7 @@ class DPPYAddNumpyOverloadPass(FunctionPass):
     def run_pass(self, state):
         if dpnp_available():
             typingctx = state.typingctx
-            from numba.core.typing.templates import (builtin_registry as reg, infer_global, infer_getattr)
+            from numba.core.typing.templates import (builtin_registry as reg, infer_global)
             from numba.core.typing.templates import (AbstractTemplate, CallableTemplate, signature)
             from numba.core.typing.npydecl import MatMulTyperMixin
 
