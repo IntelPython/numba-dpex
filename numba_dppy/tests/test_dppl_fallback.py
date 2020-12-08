@@ -3,7 +3,8 @@ from __future__ import print_function, division, absolute_import
 import numpy as np
 
 import numba
-import numba_dppy, numba_dppy as dppy
+import numba_dppy
+import numba_dppy as dppy
 from numba_dppy.testing import unittest
 from numba_dppy.testing import DPPYTestCase
 from numba.tests.support import captured_stderr
@@ -35,7 +36,8 @@ class TestDPPYFallback(DPPYTestCase):
         ref_result = inner_call_fallback()
 
         np.testing.assert_array_equal(dppy_result, ref_result)
-        self.assertTrue('Failed to lower parfor on DPPY-device' in msg.getvalue())
+        self.assertTrue(
+            'Failed to lower parfor on DPPY-device' in msg.getvalue())
 
     def test_dppy_fallback_reductions(self):
         def reduction(a):
@@ -49,7 +51,8 @@ class TestDPPYFallback(DPPYTestCase):
         ref_result = reduction(a)
 
         np.testing.assert_array_equal(dppy_result, ref_result)
-        self.assertTrue('Failed to lower parfor on DPPY-device' in msg.getvalue())
+        self.assertTrue(
+            'Failed to lower parfor on DPPY-device' in msg.getvalue())
 
 
 if __name__ == '__main__':

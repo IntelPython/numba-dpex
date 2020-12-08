@@ -115,8 +115,9 @@ class TestPrange(DPPYTestCase):
         old_debug = numba_dppy.compiler.DEBUG
         numba_dppy.compiler.DEBUG = 1
 
-        jitted = njit(parallel={'offload': True})(prange_example)
-        with captured_stdout() as stdout:
+        jitted = njit(prange_example)
+
+        with captured_stdout() as stdout, dpctl.device_context("opencl:gpu"):
             jitted_res = jitted()
 
         res = prange_example()
@@ -144,10 +145,9 @@ class TestPrange(DPPYTestCase):
         old_debug = numba_dppy.compiler.DEBUG
         numba_dppy.compiler.DEBUG = 1
 
-        with dpctl.device_context("opencl:gpu"):
-            jitted = njit(prange_example)
+        jitted = njit(prange_example)
 
-        with captured_stdout() as stdout:
+        with captured_stdout() as stdout, dpctl.device_context("opencl:gpu"):
             jitted_res = jitted()
 
         res = prange_example()
