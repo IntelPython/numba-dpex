@@ -1,14 +1,11 @@
-from __future__ import print_function, division, absolute_import
-
 import numpy as np
 
-from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPYTestCase
+import unittest
 import dpctl
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestDPCTLAPI(DPPYTestCase):
+class TestDPCTLAPI(unittest.TestCase):
     def test_dpctl_api(self):
         with dpctl.device_context("opencl:gpu") as gpu_queue:
             dpctl.dump()

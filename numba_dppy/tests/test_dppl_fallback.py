@@ -1,12 +1,9 @@
-from __future__ import print_function, division, absolute_import
-
 import numpy as np
 
 import numba
 import numba_dppy
 import numba_dppy as dppy
-from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPYTestCase
+import unittest
 from numba.tests.support import captured_stderr
 import dpctl
 import sys
@@ -14,7 +11,7 @@ import io
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestDPPYFallback(DPPYTestCase):
+class TestDPPYFallback(unittest.TestCase):
     def test_dppy_fallback_inner_call(self):
         @numba.jit
         def fill_value(i):

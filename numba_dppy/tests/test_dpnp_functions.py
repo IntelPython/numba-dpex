@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-from __future__ import print_function
 from timeit import default_timer as time
 
 import sys
@@ -8,8 +7,7 @@ from numba import njit
 import numba_dppy
 import numba_dppy as dppl
 import dpctl
-from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPYTestCase
+import unittest
 
 
 def test_for_different_datatypes(fn, test_fn, dims, arg_count, tys, np_all=False, matrix=None):
@@ -91,7 +89,7 @@ def ensure_dpnp():
 
 
 @unittest.skipUnless(ensure_dpnp() and dpctl.has_gpu_queues(), 'test only when dpNP and GPU is available')
-class Testdpnp_functions(DPPYTestCase):
+class Testdpnp_functions(unittest.TestCase):
 
     N = 10
 

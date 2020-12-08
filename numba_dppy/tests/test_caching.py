@@ -1,12 +1,10 @@
-from __future__ import print_function
 from timeit import default_timer as time
 
 import sys
 import numpy as np
 import numba_dppy, numba_dppy as dppy
 import dpctl
-from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPYTestCase
+import unittest
 
 
 def data_parallel_sum(a, b, c):
@@ -14,7 +12,7 @@ def data_parallel_sum(a, b, c):
     c[i] = a[i] + b[i]
 
 
-class TestCaching(DPPYTestCase):
+class TestCaching(unittest.TestCase):
     def test_caching_kernel(self):
         global_size = 10
         N = global_size

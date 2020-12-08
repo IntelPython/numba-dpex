@@ -1,13 +1,11 @@
 #! /usr/bin/env python
-from __future__ import print_function
 from timeit import default_timer as time
 
 import sys
 import numpy as np
 import numba_dppy, numba_dppy as dppy
 import dpctl
-from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPYTestCase
+import unittest
 import math
 
 @dppy.kernel
@@ -73,7 +71,7 @@ def test_driver(input_arr, device_ty, jitfunc):
 
 
 @unittest.skipUnless(dpctl.has_cpu_queues(), 'test only on CPU system')
-class TestDPPYMathFunctionsCPU(DPPYTestCase):
+class TestDPPYMathFunctionsCPU(unittest.TestCase):
     def test_fabs_cpu(self):
         b_actual = test_driver(a, "CPU", dppy_fabs)
         b_expected = np.fabs(a)
@@ -106,7 +104,7 @@ class TestDPPYMathFunctionsCPU(DPPYTestCase):
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestDPPYMathFunctionsGPU(DPPYTestCase):
+class TestDPPYMathFunctionsGPU(unittest.TestCase):
     def test_fabs_gpu(self):
         b_actual = test_driver(a, "GPU", dppy_fabs)
         b_expected = np.fabs(a)

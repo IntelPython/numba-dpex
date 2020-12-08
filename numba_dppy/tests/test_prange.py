@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-from __future__ import print_function
 from timeit import default_timer as time
 
 import sys
@@ -9,13 +8,13 @@ import dpctl
 from numba import njit, prange
 import numba_dppy
 import numba_dppy as dppy
-from numba_dppy.testing import unittest, expectedFailureIf
-from numba_dppy.testing import DPPYTestCase
+import unittest
+from numba_dppy.testing import expectedFailureIf
 from numba.tests.support import captured_stdout
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
-class TestPrange(DPPYTestCase):
+class TestPrange(unittest.TestCase):
     def test_one_prange(self):
         @njit
         def f(a, b):
