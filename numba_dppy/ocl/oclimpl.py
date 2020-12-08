@@ -169,9 +169,9 @@ def insert_and_call_atomic_fn(context, builder, sig, fn_type,
         ll_val = ir.IntType(32)
         ll_p = ll_val.as_pointer()
         if fn_type == "add":
-            name = "numba_dppl_atomic_add_i32"
+            name = "numba_dppy_atomic_add_i32"
         elif fn_type == "sub":
-            name = "numba_dppl_atomic_sub_i32"
+            name = "numba_dppy_atomic_sub_i32"
         else:
             raise TypeError("Operation type is not supported %s" %
                              (fn_type))
@@ -182,9 +182,9 @@ def insert_and_call_atomic_fn(context, builder, sig, fn_type,
             ll_val = ir.IntType(64)
             ll_p = ll_val.as_pointer()
             if fn_type == "add":
-                name = "numba_dppl_atomic_add_i64"
+                name = "numba_dppy_atomic_add_i64"
             elif fn_type == "sub":
-                name = "numba_dppl_atomic_sub_i64"
+                name = "numba_dppy_atomic_sub_i64"
             else:
                 raise TypeError("Operation type is not supported %s" %
                                  (fn_type))
@@ -195,9 +195,9 @@ def insert_and_call_atomic_fn(context, builder, sig, fn_type,
         ll_val = ir.FloatType()
         ll_p = ll_val.as_pointer()
         if fn_type == "add":
-            name = "numba_dppl_atomic_add_f32"
+            name = "numba_dppy_atomic_add_f32"
         elif fn_type == "sub":
-            name = "numba_dppl_atomic_sub_f32"
+            name = "numba_dppy_atomic_sub_f32"
         else:
             raise TypeError("Operation type is not supported %s" %
                              (fn_type))
@@ -208,9 +208,9 @@ def insert_and_call_atomic_fn(context, builder, sig, fn_type,
             ll_val = ir.DoubleType()
             ll_p = ll_val.as_pointer()
             if fn_type == "add":
-                name = "numba_dppl_atomic_add_f64"
+                name = "numba_dppy_atomic_add_f64"
             elif fn_type == "sub":
-                name = "numba_dppl_atomic_sub_f64"
+                name = "numba_dppy_atomic_sub_f64"
             else:
                 raise TypeError("Operation type is not supported %s" %
                                  (fn_type))
@@ -331,11 +331,11 @@ def atomic_sub_tuple(context, builder, sig, args):
         raise ImportError("Atomic support is not present, can not perform atomic_add")
 
 
-@lower('dppl.lmem.alloc', types.UniTuple, types.Any)
-def dppl_lmem_alloc_array(context, builder, sig, args):
+@lower('dppy.lmem.alloc', types.UniTuple, types.Any)
+def dppy_lmem_alloc_array(context, builder, sig, args):
     shape, dtype = args
     return _generic_array(context, builder, shape=shape, dtype=dtype,
-                          symbol_name='_dppl_lmem',
+                          symbol_name='_dppy_lmem',
                           addrspace=target.SPIR_LOCAL_ADDRSPACE)
 
 
