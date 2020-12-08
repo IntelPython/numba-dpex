@@ -5,6 +5,7 @@ from numba.core.typing import signature
 from numba.core.extending import overload, register_jitable
 from . import stubs
 import numpy as np
+from numba_dppy.dpctl_functions import _DPCTL_FUNCTIONS
 
 
 def get_dpnp_fptr(fn_name, type_names):
@@ -37,31 +38,6 @@ class _DPNP_EXTENSION:
         dpnp_lowering.ensure_dpnp(name)
 
     @classmethod
-    def dpctl_get_current_queue(cls):
-        ret_type  = types.voidptr
-        sig       = signature(ret_type)
-        return types.ExternalFunction("DPCTLQueueMgr_GetCurrentQueue", sig)
-
-    @classmethod
-    def dpctl_malloc_shared(cls):
-        ret_type  = types.voidptr
-        sig       = signature(ret_type, types.int64, types.voidptr)
-        return types.ExternalFunction("DPCTLmalloc_shared", sig)
-
-    @classmethod
-    def dpctl_queue_memcpy(cls):
-        ret_type  = types.void
-        sig       = signature(ret_type, types.voidptr, types.voidptr, types.voidptr, types.int64)
-        return types.ExternalFunction("DPCTLQueue_Memcpy", sig)
-
-    @classmethod
-    def dpctl_free_with_queue(cls):
-        ret_type  = types.void
-        sig       = signature(ret_type, types.voidptr, types.voidptr)
-        return types.ExternalFunction("DPCTLfree_with_queue", sig)
-
-
-    @classmethod
     def dpnp_sum(cls, fn_name, type_names):
         ret_type  = types.void
         sig       = signature(ret_type, types.voidptr, types.voidptr, types.int64)
@@ -83,13 +59,14 @@ class _DPNP_EXTENSION:
 @overload(stubs.dpnp.sum)
 def dpnp_sum_impl(a):
     dpnp_extension = _DPNP_EXTENSION("sum")
+    dpctl_functions = _DPCTL_FUNCTIONS()
 
     dpnp_sum = dpnp_extension.dpnp_sum("dpnp_sum", [a.dtype.name, "NONE"])
 
-    get_sycl_queue = dpnp_extension.dpctl_get_current_queue()
-    allocate_usm_shared = dpnp_extension.dpctl_malloc_shared()
-    copy_usm = dpnp_extension.dpctl_queue_memcpy()
-    free_usm = dpnp_extension.dpctl_free_with_queue()
+    get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
+    allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
+    copy_usm = dpctl_functions.dpctl_queue_memcpy()
+    free_usm = dpctl_functions.dpctl_free_with_queue()
 
     def dpnp_sum_impl(a):
         if a.size == 0:

@@ -1,6 +1,11 @@
 from numba.core import ir
 from numba.core.compiler_machinery import FunctionPass, register_pass
-from numba.core.ir_utils import find_topo_order, mk_unique_var, simplify_CFG
+from numba.core.ir_utils import (
+    find_topo_order,
+    mk_unique_var,
+    remove_dead,
+    simplify_CFG,
+)
 import numba_dppy
 
 rewrite_function_name_map = {"sum": (["np"], "sum"), "eig": (["linalg"], "eig")}
@@ -24,7 +29,8 @@ class RewriteNumPyOverloadedFunctions(object):
 
             $2load_global.0 = global(np: <module 'numpy' from 'numpy/__init__.py'>) ['$2load_global.0']
             $4load_method.1 = getattr(value=$2load_global.0, attr=sum) ['$2load_global.0', '$4load_method.1']
-            $8call_method.3 = call $4load_method.1(a, func=$4load_method.1, args=[Var(a, test_rewrite.py:7)], kws=(), vararg=None) ['$4load_method.1', '$8call_method.3', 'a']
+            $8call_method.3 = call $4load_method.1(a, func=$4load_method.1, args=[Var(a, test_rewrite.py:7)],
+                                                   kws=(), vararg=None) ['$4load_method.1', '$8call_method.3', 'a']
 
         ---------------------------------------------------------------------------------------
         Numba IR After Rewrite:
@@ -33,7 +39,8 @@ class RewriteNumPyOverloadedFunctions(object):
             $dppy_replaced_var.0 = global(numba_dppy: <module 'numba_dppy' from 'numba_dppy/__init__.py'>) ['$dppy_replaced_var.0']
             $dpnp_var.1 = getattr(value=$dppy_replaced_var.0, attr=dpnp) ['$dpnp_var.1', '$dppy_replaced_var.0']
             $4load_method.1 = getattr(value=$dpnp_var.1, attr=sum) ['$4load_method.1', '$dpnp_var.1']
-            $8call_method.3 = call $4load_method.1(a, func=$4load_method.1, args=[Var(a, test_rewrite.py:7)], kws=(), vararg=None) ['$4load_method.1', '$8call_method.3', 'a']
+            $8call_method.3 = call $4load_method.1(a, func=$4load_method.1, args=[Var(a, test_rewrite.py:7)],
+                                                   kws=(), vararg=None) ['$4load_method.1', '$8call_method.3', 'a']
 
         ---------------------------------------------------------------------------------------
         """
@@ -49,8 +56,8 @@ class RewriteNumPyOverloadedFunctions(object):
                 if isinstance(stmt, ir.Assign) and isinstance(stmt.value, ir.Expr):
                     lhs = stmt.target.name
                     rhs = stmt.value
-                    # replace np.func(sum) with name from self.function_name_map
-                    # np.sum will be replaced with numba_dppy.dpnp.sum
+                    # replace np.FOO with name from self.function_name_map["FOO"]
+                    # e.g. np.sum will be replaced with numba_dppy.dpnp.sum
                     if rhs.op == "getattr" and rhs.attr in self.function_name_map:
                         module_node = block.find_variable_assignment(
                             rhs.value.name
@@ -72,7 +79,7 @@ class RewriteNumPyOverloadedFunctions(object):
                             loc = global_module.loc
 
                             g_dppy_var = ir.Var(
-                                scope, mk_unique_var("$dppy_replaced_var"), loc
+                                scope, mk_unique_var("$2load_global"), loc
                             )
                             # We are trying to rename np.function_name/np.linalg.function_name with
                             # numba_dppy.dpnp.function_name.
@@ -82,7 +89,7 @@ class RewriteNumPyOverloadedFunctions(object):
                             g_dppy = ir.Global("numba_dppy", numba_dppy, loc)
                             g_dppy_assign = ir.Assign(g_dppy, g_dppy_var, loc)
 
-                            dpnp_var = ir.Var(scope, mk_unique_var("$dpnp_var"), loc)
+                            dpnp_var = ir.Var(scope, mk_unique_var("$4load_attr"), loc)
                             getattr_dpnp = ir.Expr.getattr(g_dppy_var, "dpnp", loc)
                             dpnp_assign = ir.Assign(getattr_dpnp, dpnp_var, loc)
 
@@ -112,6 +119,7 @@ class DPPYRewriteOverloadedFunctions(FunctionPass):
 
         rewrite_function_name_pass.run()
 
+        remove_dead(state.func_ir.blocks, state.func_ir.arg_names, state.func_ir)
         state.func_ir.blocks = simplify_CFG(state.func_ir.blocks)
 
         return True
