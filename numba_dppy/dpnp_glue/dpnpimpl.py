@@ -94,23 +94,25 @@ def dpnp_sum_impl(a):
         free_usm(a_usm, sycl_queue)
         free_usm(out_usm, sycl_queue)
 
+
+        _dummy_liveness_func([out.size])
+
         return out[0]
 
     return dpnp_sum_impl
 
 
-"""
 @overload(stubs.dpnp.eig)
 def dpnp_eig_impl(a):
     dpnp_extension = _DPNP_EXTENSION("eig")
+    dpctl_functions = _DPCTL_FUNCTIONS()
 
     dpnp_eig = dpnp_extension.dpnp_eig("dpnp_eig", [a.dtype.name, "NONE"])
 
-    get_sycl_queue = dpnp_extension.dpctl_get_current_queue()
-    allocate_usm_shared = dpnp_extension.dpctl_malloc_shared()
-    copy_usm = dpnp_extension.dpctl_queue_memcpy()
-    free_usm = dpnp_extension.dpctl_free_with_queue()
-
+    get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
+    allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
+    copy_usm = dpctl_functions.dpctl_queue_memcpy()
+    free_usm = dpctl_functions.dpctl_free_with_queue()
 
     res_dtype = np.float64
     if a.dtype == np.float32:
@@ -130,7 +132,6 @@ def dpnp_eig_impl(a):
         if n == 0:
             return (wr, vr)
 
-        print(n, a.itemsize, a.size, wr.size, vr.size)
         sycl_queue = get_sycl_queue()
         a_usm = allocate_usm_shared(a.size * a.itemsize, sycl_queue)
         copy_usm(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
@@ -152,4 +153,3 @@ def dpnp_eig_impl(a):
         return (wr, vr)
 
     return dpnp_eig_impl
-"""

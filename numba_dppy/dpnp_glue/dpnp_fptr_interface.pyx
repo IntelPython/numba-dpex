@@ -8,6 +8,7 @@ cdef extern from "backend_iface_fptr.hpp" namespace "DPNPFuncName":  # need this
     cdef enum DPNPFuncName "DPNPFuncName":
         DPNP_FN_ABSOLUTE
         DPNP_FN_ADD
+        DPNP_FN_ARANGE
         DPNP_FN_ARCCOS
         DPNP_FN_ARCCOSH
         DPNP_FN_ARCSIN
@@ -18,40 +19,77 @@ cdef extern from "backend_iface_fptr.hpp" namespace "DPNPFuncName":  # need this
         DPNP_FN_ARGMAX
         DPNP_FN_ARGMIN
         DPNP_FN_ARGSORT
+        DPNP_FN_BITWISE_AND
+        DPNP_FN_BITWISE_OR
+        DPNP_FN_BITWISE_XOR
         DPNP_FN_CBRT
         DPNP_FN_CEIL
+        DPNP_FN_CHOLESKY
+        DPNP_FN_COPYSIGN
+        DPNP_FN_CORRELATE
         DPNP_FN_COS
         DPNP_FN_COSH
         DPNP_FN_COV
         DPNP_FN_DEGREES
+        DPNP_FN_DET
         DPNP_FN_DIVIDE
         DPNP_FN_DOT
         DPNP_FN_EIG
+        DPNP_FN_EIGVALS
         DPNP_FN_EXP
         DPNP_FN_EXP2
         DPNP_FN_EXPM1
         DPNP_FN_FABS
+        DPNP_FN_FFT_FFT
         DPNP_FN_FLOOR
+        DPNP_FN_FLOOR_DIVIDE
         DPNP_FN_FMOD
-        DPNP_FN_GAUSSIAN
         DPNP_FN_HYPOT
+        DPNP_FN_INVERT
+        DPNP_FN_LEFT_SHIFT
         DPNP_FN_LOG
         DPNP_FN_LOG10
         DPNP_FN_LOG1P
         DPNP_FN_LOG2
         DPNP_FN_MATMUL
+        DPNP_FN_MATRIX_RANK
         DPNP_FN_MAX
         DPNP_FN_MAXIMUM
         DPNP_FN_MEAN
         DPNP_FN_MEDIAN
         DPNP_FN_MIN
         DPNP_FN_MINIMUM
+        DPNP_FN_MODF
         DPNP_FN_MULTIPLY
         DPNP_FN_POWER
         DPNP_FN_PROD
-        DPNP_FN_UNIFORM
         DPNP_FN_RADIANS
+        DPNP_FN_REMAINDER
         DPNP_FN_RECIP
+        DPNP_FN_RIGHT_SHIFT
+        DPNP_FN_RNG_BETA
+        DPNP_FN_RNG_BINOMIAL
+        DPNP_FN_RNG_CHISQUARE
+        DPNP_FN_RNG_EXPONENTIAL
+        DPNP_FN_RNG_GAMMA
+        DPNP_FN_RNG_GAUSSIAN
+        DPNP_FN_RNG_GEOMETRIC
+        DPNP_FN_RNG_GUMBEL
+        DPNP_FN_RNG_HYPERGEOMETRIC
+        DPNP_FN_RNG_LAPLACE
+        DPNP_FN_RNG_LOGNORMAL
+        DPNP_FN_RNG_MULTINOMIAL
+        DPNP_FN_RNG_MULTIVARIATE_NORMAL
+        DPNP_FN_RNG_NEGATIVE_BINOMIAL
+        DPNP_FN_RNG_NORMAL
+        DPNP_FN_RNG_POISSON
+        DPNP_FN_RNG_RAYLEIGH
+        DPNP_FN_RNG_STANDARD_CAUCHY
+        DPNP_FN_RNG_STANDARD_EXPONENTIAL
+        DPNP_FN_RNG_STANDARD_GAMMA
+        DPNP_FN_RNG_STANDARD_NORMAL
+        DPNP_FN_RNG_UNIFORM
+        DPNP_FN_RNG_WEIBULL
         DPNP_FN_SIGN
         DPNP_FN_SIN
         DPNP_FN_SINH
