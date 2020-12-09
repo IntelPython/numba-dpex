@@ -21,10 +21,10 @@ import os
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
 
 
-DEBUG = os.environ.get('NUMBA_DPPL_DEBUG', None)
-_NUMBA_DPPL_READ_ONLY  = "read_only"
-_NUMBA_DPPL_WRITE_ONLY = "write_only"
-_NUMBA_DPPL_READ_WRITE = "read_write"
+DEBUG = os.environ.get('NUMBA_DPPY_DEBUG', None)
+_NUMBA_DPPY_READ_ONLY  = "read_only"
+_NUMBA_DPPY_WRITE_ONLY = "write_only"
+_NUMBA_DPPY_READ_WRITE = "read_write"
 
 
 def _raise_no_device_found_error():
