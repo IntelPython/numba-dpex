@@ -10,10 +10,11 @@ def get_ext_modules():
 
     ext_dppy = Extension(
         name="numba_dppy._dppy_rt",
-        sources=["numba_dppy/dppl_rt.c"],
-        depends=["numba/core/runtime/nrt_external.h", "numba/core/runtime/nrt.h"],
+        sources=["numba_dppy/dppy_rt.c"],
+        include_dirs=["../numba/numba"],  # Need to get rid of relative paths.
+        depends=["../numba/numba/core/runtime/nrt_external.h", "../numba/numba/core/runtime/nrt.h", "../numba/numba/_pymodule.h"],
     )
-    ext_modules += [ext_modules]
+    ext_modules += [ext_dppy]
 
     dpnp_present = False
     try:
@@ -45,7 +46,6 @@ packages = find_packages(include=["numba_dppy", "numba_dppy.*"])
 build_requires = ["cython"]
 install_requires = [
     "numba",
-    "cffi",
     "dpctl",
 ]
 
@@ -75,8 +75,7 @@ metadata = dict(
     entry_points={
         "numba_extensions": [
             "init = numba_dppy.dparray:numba_register",
-        ]},
-    )
+    ]},
 )
 
 setup(**metadata)

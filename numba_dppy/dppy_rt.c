@@ -1,5 +1,5 @@
-#include "../_pymodule.h"
-#include "../core/runtime/nrt_external.h"
+#include "_pymodule.h"
+#include "core/runtime/nrt_external.h"
 #include "assert.h"
 #include <dlfcn.h>
 #include <stdio.h>
