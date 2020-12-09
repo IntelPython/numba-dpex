@@ -1,5 +1,5 @@
 # This class creates a type in Numba.
-class DPArrayType(types.Array):
+class UsmSharedArrayType(types.Array):
     def __init__(
         self,
         dtype,
@@ -11,8 +11,8 @@ class DPArrayType(types.Array):
         addrspace=None,
     ):
         # This name defines how this type will be shown in Numba's type dumps.
-        name = "DPArray:ndarray(%s, %sd, %s)" % (dtype, ndim, layout)
-        super(DPArrayType, self).__init__(
+        name = "UsmArray:ndarray(%s, %sd, %s)" % (dtype, ndim, layout)
+        super(UsmSharedArrayType, self).__init__(
             dtype,
             ndim,
             layout,
@@ -22,19 +22,19 @@ class DPArrayType(types.Array):
             addrspace=addrspace,
         )
 
-    # Tell Numba typing how to combine DPArrayType with other ndarray types.
+    # Tell Numba typing how to combine UsmSharedArrayType with other ndarray types.
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
         if method == "__call__":
             for inp in inputs:
-                if not isinstance(inp, (DPArrayType, types.Array, types.Number)):
+                if not isinstance(inp, (UsmSharedArrayType, types.Array, types.Number)):
                     return None
 
-            return DPArrayType
+            return UsmSharedArrayType
         else:
             return None
 
 
-# This tells Numba how to create a DPArrayType when a dparray is passed
+# This tells Numba how to create a UsmSharedArrayType when a usmarray is passed
 # into a njit function.
 @typeof_impl.register(ndarray)
 def typeof_ta_ndarray(val, c):
@@ -44,16 +44,16 @@ def typeof_ta_ndarray(val, c):
         raise ValueError("Unsupported array dtype: %s" % (val.dtype,))
     layout = numpy_support.map_layout(val)
     readonly = not val.flags.writeable
-    return DPArrayType(dtype, val.ndim, layout, readonly=readonly)
+    return UsmSharedArrayType(dtype, val.ndim, layout, readonly=readonly)
 
 
 # This tells Numba to use the default Numpy ndarray data layout for
-# object of type DPArray.
-register_model(DPArrayType)(numba.core.datamodel.models.ArrayModel)
+# object of type UsmArray.
+register_model(UsmSharedArrayType)(numba.core.datamodel.models.ArrayModel)
 
 # This tells Numba how to convert from its native representation
-# of a DPArray in a njit function back to a Python DPArray.
-@box(DPArrayType)
+# of a UsmArray in a njit function back to a Python UsmArray.
+@box(UsmSharedArrayType)
 def box_array(typ, val, c):
     nativearycls = c.context.make_array(typ)
     nativeary = nativearycls(c.context, c.builder, value=val)
@@ -70,9 +70,9 @@ def box_array(typ, val, c):
 
 
 # This tells Numba to use this function when it needs to allocate a
-# DPArray in a njit function.
-@allocator(DPArrayType)
-def allocator_DPArray(context, builder, size, align):
+# UsmArray in a njit function.
+@allocator(UsmSharedArrayType)
+def allocator_UsmArray(context, builder, size, align):
     context.nrt._require_nrt()
 
     mod = builder.module
@@ -81,7 +81,7 @@ def allocator_DPArray(context, builder, size, align):
     # Get the Numba external allocator for USM memory.
     ext_allocator_fnty = ir.FunctionType(cgutils.voidptr_t, [])
     ext_allocator_fn = mod.get_or_insert_function(
-        ext_allocator_fnty, name="dparray_get_ext_allocator"
+        ext_allocator_fnty, name="usmarray_get_ext_allocator"
     )
     ext_allocator = builder.call(ext_allocator_fn, [])
     # Get the Numba function to allocate an aligned array with an external allocator.
@@ -109,14 +109,14 @@ def numba_register():
 
 
 # Copy a function registered as a lowerer in Numba but change the
-# "np" import in Numba to point to dparray instead of NumPy.
-def copy_func_for_dparray(f, dparray_mod):
+# "np" import in Numba to point to usmarray instead of NumPy.
+def copy_func_for_usmarray(f, usmarray_mod):
     import copy as cc
 
     # Make a copy so our change below doesn't affect anything else.
     gglobals = cc.copy(f.__globals__)
-    # Make the "np"'s in the code use dparray instead of Numba's default NumPy.
-    gglobals["np"] = dparray_mod
+    # Make the "np"'s in the code use usmarray instead of Numba's default NumPy.
+    gglobals["np"] = usmarray_mod
     # Create a new function using the original code but the new globals.
     g = ftype(f.__code__, gglobals, None, f.__defaults__, f.__closure__)
     # Some other tricks to make sure the function copy works.
@@ -126,7 +126,7 @@ def copy_func_for_dparray(f, dparray_mod):
 
 
 def types_replace_array(x):
-    return tuple([z if z != types.Array else DPArrayType for z in x])
+    return tuple([z if z != types.Array else UsmSharedArrayType for z in x])
 
 
 def numba_register_lower_builtin():
@@ -141,35 +141,35 @@ def numba_register_lower_builtin():
         # If it is a Numpy function...
         if isinstance(func, ftype):
             if func.__module__ == np.__name__:
-                # If we have overloaded that function in the dparray module (always True right now)...
+                # If we have overloaded that function in the usmarray module (always True right now)...
                 if func.__name__ in functions_list:
                     todo.append(ig)
         if isinstance(func, bftype):
             if func.__module__ == np.__name__:
-                # If we have overloaded that function in the dparray module (always True right now)...
+                # If we have overloaded that function in the usmarray module (always True right now)...
                 if func.__name__ in functions_list:
                     todo.append(ig)
 
     for lg in lower_registry.getattrs:
         func, attr, types = lg
-        types_with_dparray = types_replace_array(types)
-        if DPArrayType in types_with_dparray:
+        types_with_usmarray = types_replace_array(types)
+        if UsmSharedArrayType in types_with_usmarray:
             dprint(
                 "lower_getattr:", func, type(func), attr, type(attr), types, type(types)
             )
-            todo_getattr.append((func, attr, types_with_dparray))
+            todo_getattr.append((func, attr, types_with_usmarray))
 
     for lg in todo_getattr:
         lower_registry.getattrs.append(lg)
 
     cur_mod = importlib.import_module(__name__)
     for impl, func, types in todo + todo_builtin:
-        dparray_func = eval(func.__name__)
+        usmarray_func = eval(func.__name__)
         dprint(
-            "need to re-register lowerer for dparray", impl, func, types, dparray_func
+            "need to re-register lowerer for usmarray", impl, func, types, usmarray_func
         )
-        new_impl = copy_func_for_dparray(impl, cur_mod)
-        lower_registry.functions.append((new_impl, dparray_func, types))
+        new_impl = copy_func_for_usmarray(impl, cur_mod)
+        lower_registry.functions.append((new_impl, usmarray_func, types))
 
 
 def argspec_to_string(argspec):
@@ -190,7 +190,7 @@ def numba_register_typing():
         val, typ = ig
         # If it is a Numpy function...
         if isinstance(val, (ftype, bftype)):
-            # If we have overloaded that function in the dparray module (always True right now)...
+            # If we have overloaded that function in the usmarray module (always True right now)...
             if val.__name__ in functions_list:
                 todo.append(ig)
         if isinstance(val, type):
@@ -205,11 +205,11 @@ def numba_register_typing():
         # template is the typing class to invoke generic() upon.
         template = typ.templates[0]
         dpval = eval(val.__name__)
-        dprint("need to re-register for dparray", val, typ, typ.typing_key)
+        dprint("need to re-register for usmarray", val, typ, typ.typing_key)
         """
         if debug:
             print("--------------------------------------------------------------")
-            print("need to re-register for dparray", val, typ, typ.typing_key)
+            print("need to re-register for usmarray", val, typ, typ.typing_key)
             print("val:", val, type(val), "dir val", dir(val))
             print("typ:", typ, type(typ), "dir typ", dir(typ))
             print("typing key:", typ.typing_key)
@@ -239,7 +239,7 @@ def numba_register_typing():
                                 original_res = original_typer({})
                                 #print("original_res:", original_res)
                                 if isinstance(original_res, types.Array):
-                                    return DPArrayType(dtype=original_res.dtype, ndim=original_res.ndim, layout=original_res.layout)
+                                    return UsmSharedArrayType(dtype=original_res.dtype, ndim=original_res.ndim, layout=original_res.layout)
 
                                 return original_res""".format(
                 astr, ",".join(ot_argspec.args)
@@ -271,21 +271,21 @@ def numba_register_typing():
             # print("exec_res:", exec_res)
             return exec_res
 
-        new_dparray_template = type(
+        new_usmarray_template = type(
             class_name,
             (template,),
             {"set_class_vars": set_key_original, "generic": generic_impl},
         )
 
-        new_dparray_template.set_class_vars(dpval, template)
+        new_usmarray_template.set_class_vars(dpval, template)
 
         assert callable(dpval)
-        type_handler = types.Function(new_dparray_template)
+        type_handler = types.Function(new_usmarray_template)
         typing_registry.register_global(dpval, type_handler)
 
-    # Handle dparray attribute typing.
+    # Handle usmarray attribute typing.
     for tgetattr in todo_getattr:
-        class_name = tgetattr.__name__ + "_dparray"
+        class_name = tgetattr.__name__ + "_usmarray"
         dprint("tgetattr:", tgetattr, type(tgetattr), class_name)
 
         @classmethod
@@ -298,7 +298,7 @@ def numba_register_typing():
                 def wrapper(*args, **kwargs):
                     attr_res = tgetattr.__getattribute__(self, attr)(*args, **kwargs)
                     if isinstance(attr_res, types.Array):
-                        return DPArrayType(
+                        return UsmSharedArrayType(
                             dtype=attr_res.dtype,
                             ndim=attr_res.ndim,
                             layout=attr_res.layout,
@@ -308,14 +308,14 @@ def numba_register_typing():
             else:
                 return tgetattr.__getattribute__(self, attr)
 
-        new_dparray_template = type(
+        new_usmarray_template = type(
             class_name,
             (tgetattr,),
             {"set_class_vars": set_key, "__getattribute__": getattr_impl},
         )
 
-        new_dparray_template.set_class_vars(DPArrayType)
-        templates_registry.register_attr(new_dparray_template)
+        new_usmarray_template.set_class_vars(UsmSharedArrayType)
+        templates_registry.register_attr(new_usmarray_template)
 
 
 def from_ndarray(x):
@@ -339,16 +339,16 @@ class DparrayAsNdarray(CallableTemplate):
 class DparrayFromNdarray(CallableTemplate):
     def generic(self):
         def typer(arg):
-            return DPArrayType(dtype=arg.dtype, ndim=arg.ndim, layout=arg.layout)
+            return UsmSharedArrayType(dtype=arg.dtype, ndim=arg.ndim, layout=arg.layout)
 
         return typer
 
 
-@lower_registry.lower(as_ndarray, DPArrayType)
-def dparray_conversion_as(context, builder, sig, args):
+@lower_registry.lower(as_ndarray, UsmSharedArrayType)
+def usmarray_conversion_as(context, builder, sig, args):
     return _array_copy(context, builder, sig, args)
 
 
 @lower_registry.lower(from_ndarray, types.Array)
-def dparray_conversion_from(context, builder, sig, args):
+def usmarray_conversion_from(context, builder, sig, args):
     return _array_copy(context, builder, sig, args)

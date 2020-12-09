@@ -4,25 +4,25 @@
 #include <dlfcn.h>
 #include <stdio.h>
 
-NRT_ExternalAllocator dparray_allocator;
+NRT_ExternalAllocator usmarray_allocator;
 
-void dparray_memsys_init(void) {
+void usmarray_memsys_init(void) {
     void *(*get_queue)(void);
-    char *lib_name = "libDPPLSyclInterface.so";
-    char *malloc_name = "DPPLmalloc_shared";
-    char *free_name = "DPPLfree_with_queue";
-    char *get_queue_name = "DPPLQueueMgr_GetCurrentQueue";
+    char *lib_name = "libDPCTLSyclInterface.so";
+    char *malloc_name = "DPCTLmalloc_shared";
+    char *free_name = "DPCTLfree_with_queue";
+    char *get_queue_name = "DPCTLQueueMgr_GetCurrentQueue";
 
     void *sycldl = dlopen(lib_name, RTLD_NOW);
     assert(sycldl != NULL);
-    dparray_allocator.malloc = (NRT_external_malloc_func)dlsym(sycldl, malloc_name);
-    if (dparray_allocator.malloc == NULL) {
+    usmarray_allocator.malloc = (NRT_external_malloc_func)dlsym(sycldl, malloc_name);
+    if (usmarray_allocator.malloc == NULL) {
         printf("Did not find %s in %s\n", malloc_name, lib_name);
         exit(-1);
     }
-    dparray_allocator.realloc = NULL;
-    dparray_allocator.free = (NRT_external_free_func)dlsym(sycldl, free_name);
-    if (dparray_allocator.free == NULL) {
+    usmarray_allocator.realloc = NULL;
+    usmarray_allocator.free = (NRT_external_free_func)dlsym(sycldl, free_name);
+    if (usmarray_allocator.free == NULL) {
         printf("Did not find %s in %s\n", free_name, lib_name);
         exit(-1);
     }
@@ -31,18 +31,17 @@ void dparray_memsys_init(void) {
         printf("Did not find %s in %s\n", get_queue_name, lib_name);
         exit(-1);
     }
-    dparray_allocator.opaque_data = get_queue();
-//    printf("dparray_memsys_init: %p %p %p\n", dparray_allocator.malloc, dparray_allocator.free, dparray_allocator.opaque_data);
+    usmarray_allocator.opaque_data = get_queue();
 }
 
-void * dparray_get_ext_allocator(void) {
-    printf("dparray_get_ext_allocator %p\n", &dparray_allocator);
-    return (void*)&dparray_allocator;
+void * usmarray_get_ext_allocator(void) {
+    printf("usmarray_get_ext_allocator %p\n", &usmarray_allocator);
+    return (void*)&usmarray_allocator;
 }
 
 static PyObject *
 get_external_allocator(PyObject *self, PyObject *args) {
-    return PyLong_FromVoidPtr(dparray_get_ext_allocator());
+    return PyLong_FromVoidPtr(usmarray_get_ext_allocator());
 }
 
 static PyMethodDef ext_methods[] = {
@@ -69,7 +68,7 @@ build_c_helpers_dict(void)
     Py_DECREF(o);                                      \
 } while (0)
 
-    _declpointer("dparray_get_ext_allocator", &dparray_get_ext_allocator);
+    _declpointer("usmarray_get_ext_allocator", &usmarray_get_ext_allocator);
 
 #undef _declpointer
     return dct;
@@ -78,12 +77,12 @@ error:
     return NULL;
 }
 
-MOD_INIT(_dppl_rt) {
+MOD_INIT(_dppy_rt) {
     PyObject *m;
-    MOD_DEF(m, "numba.dppl._dppl_rt", "No docs", ext_methods)
+    MOD_DEF(m, "numba_dppy._dppy_rt", "No docs", ext_methods)
     if (m == NULL)
         return MOD_ERROR_VAL;
-    dparray_memsys_init();
+    usmarray_memsys_init();
     PyModule_AddObject(m, "c_helpers", build_c_helpers_dict());
     return MOD_SUCCESS_VAL(m);
 }
