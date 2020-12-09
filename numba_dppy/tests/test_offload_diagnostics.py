@@ -34,7 +34,7 @@ class TestOffloadDiagnostics(DPPYTestCase):
     def test_parfor(self):
         with dpctl.device_context("opencl:gpu"):
             dppy_config.OFFLOAD_DIAGNOSTICS = 1
-            jitted = njit(parallel={"offload": True})(prange_example)
+            jitted = njit(parallel=True)(prange_example)
 
             with captured_stdout() as got:
                 jitted()
