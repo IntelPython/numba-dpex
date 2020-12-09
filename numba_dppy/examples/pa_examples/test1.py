@@ -21,7 +21,7 @@ def main():
     print("a:", a, hex(a.ctypes.data))
     print("b:", b, hex(b.ctypes.data))
 
-    with dpctl.device_context():
+    with dpctl.device_context("opencl:gpu:0"):
         c = f1(a, b)
 
     print("RESULT c:", c, hex(c.ctypes.data))
