@@ -35,7 +35,7 @@ def dpnp_eig_impl(a):
     free_usm = dpctl_functions.dpctl_free_with_queue()
 
     res_dtype = np.float64
-    if a.dtype == np.float32:
+    if a.dtype == types.float32:
         res_dtype = np.float32
 
     def dpnp_eig_impl(a):
