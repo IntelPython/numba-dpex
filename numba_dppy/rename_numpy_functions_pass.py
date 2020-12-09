@@ -110,7 +110,8 @@ class DPPYRewriteOverloadedFunctions(FunctionPass):
     def __init__(self):
         FunctionPass.__init__(self)
         import numba_dppy.dpnp_glue.dpnpdecl
-        import numba_dppy.dpnp_glue.dpnpimpl
+        import numba_dppy.dpnp_glue.dpnp_linalgimpl
+        import numba_dppy.dpnp_glue.dpnp_transcendentalsimpl
 
     def run_pass(self, state):
         rewrite_function_name_pass = RewriteNumPyOverloadedFunctions(
