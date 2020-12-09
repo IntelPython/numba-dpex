@@ -10,4 +10,3 @@ class dpnp(Stub):
 
     class eig(Stub):
         pass
-
