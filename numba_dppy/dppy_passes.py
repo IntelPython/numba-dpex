@@ -3,6 +3,7 @@ from contextlib import contextmanager
 import warnings
 
 import numpy as np
+import numba
 from numba.core import ir
 import weakref
 from collections import namedtuple, deque
@@ -50,7 +51,7 @@ class DPPYAddNumpyOverloadPass(FunctionPass):
     def run_pass(self, state):
         if dpnp_available():
             typingctx = state.typingctx
-            from numba.core.typing.templates import builtin_registry as reg, infer_global
+            from numba.core.typing.templates import (builtin_registry as reg, infer_global)
             from numba.core.typing.templates import (AbstractTemplate, CallableTemplate, signature)
             from numba.core.typing.npydecl import MatMulTyperMixin
 
