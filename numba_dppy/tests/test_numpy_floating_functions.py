@@ -5,7 +5,7 @@ import sys
 import numpy as np
 from numba import njit
 import numba_dppy
-import numba_dppy as dppl
+import numba_dppy as dppy
 import dpctl
 from numba_dppy.testing import unittest
 from numba_dppy.testing import DPPYTestCase
