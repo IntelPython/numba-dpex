@@ -63,3 +63,7 @@ examples, supported functionalities, and known issues.
 ## Reporting issues
 
 Please use https://github.com/IntelPython/numba-dppy/issues to report issues and bugs.
+
+## Debugging
+
+Please follow instructions in the [DEBUGGING.md](DEBUGGING.md)
