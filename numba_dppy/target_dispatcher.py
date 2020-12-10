@@ -60,10 +60,6 @@ class TargetDispatcher(serialize.ReduceMixin, metaclass=dispatcher.DispatcherMet
         target = self.__target
         parallel = self.__parallel
         offload = isinstance(parallel, dict) and parallel.get('offload') is True
-        fallback = isinstance(parallel, dict) and parallel.get('fallback')
-
-        if fallback:
-            numba_dppy.config.FALLBACK_OPTION = 1
 
         if (dpctl.is_in_device_context() or offload):
             if not self.__is_with_context_target(target):
