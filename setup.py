@@ -74,7 +74,7 @@ metadata = dict(
     cmdclass=versioneer.get_cmdclass(),
     entry_points={
         "numba_extensions": [
-            "init = numba_dppy.usmarray:numba_register",
+            "init = numba_dppy.numpy_usm_shared:numba_register",
     ]},
 )
 

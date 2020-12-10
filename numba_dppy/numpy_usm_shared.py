@@ -1,3 +1,56 @@
+import numpy as np
+from inspect import getmembers, isfunction, isclass, isbuiltin
+from numbers import Number
+import numba
+from types import FunctionType as ftype, BuiltinFunctionType as bftype
+from numba import types
+from numba.extending import typeof_impl, register_model, type_callable, lower_builtin
+from numba.np import numpy_support
+from numba.core.pythonapi import box, allocator
+from llvmlite import ir
+import llvmlite.llvmpy.core as lc
+import llvmlite.binding as llb
+from numba.core import types, cgutils, config
+import builtins
+import sys
+from ctypes.util import find_library
+from numba.core.typing.templates import builtin_registry as templates_registry
+from numba.core.typing.npydecl import registry as typing_registry
+from numba.core.imputils import builtin_registry as lower_registry
+import importlib
+import functools
+import inspect
+from numba.core.typing.templates import CallableTemplate
+from numba.np.arrayobj import _array_copy
+
+from dpctl.dptensor.numpy_usm_shared import ndarray, functions_list
+
+
+debug = config.DEBUG
+
+def dprint(*args):
+    if debug:
+        print(*args)
+        sys.stdout.flush()
+
+# # This code makes it so that Numba can contain calls into the DPPLSyclInterface library.
+# sycl_mem_lib = find_library('DPCTLSyclInterface')
+# dprint("sycl_mem_lib:", sycl_mem_lib)
+# # Load the symbols from the DPPL Sycl library.
+# llb.load_library_permanently(sycl_mem_lib)
+
+import dpctl
+from dpctl.memory import MemoryUSMShared
+import numba_dppy._dppy_rt
+
+# functions_list = [o[0] for o in getmembers(np) if isfunction(o[1]) or isbuiltin(o[1])]
+# class_list = [o for o in getmembers(np) if isclass(o[1])]
+
+# Register the helper function in dppl_rt so that we can insert calls to them via llvmlite.
+for py_name, c_address in numba_dppy._dppy_rt.c_helpers.items():
+    llb.add_symbol(py_name, c_address)
+
+
 # This class creates a type in Numba.
 class UsmSharedArrayType(types.Array):
     def __init__(
