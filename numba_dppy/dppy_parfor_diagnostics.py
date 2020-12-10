@@ -9,7 +9,7 @@ class ExtendedParforDiagnostics(ParforDiagnostics):
     def dump(self, level=1):
         if level == 0:
             level = 1
-        ParforDiagnostics.dump(self, level=level)
+        super().dump(level)
 
         if self.extra_info:
             parfors_simple = self.get_parfors_simple(False)
