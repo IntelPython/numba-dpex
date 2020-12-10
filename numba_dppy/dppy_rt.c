@@ -5,33 +5,74 @@
 #include <stdio.h>
 
 NRT_ExternalAllocator usmarray_allocator;
+NRT_external_malloc_func internal_allocator = NULL;
+NRT_external_free_func internal_free = NULL;
+void *(*get_queue_internal)(void) = NULL;
+void (*free_queue_internal)(void*) = NULL;
+
+void * save_queue_allocator(size_t size, void *opaque) {
+    // Allocate a pointer-size more space than neded.
+    int new_size = size + sizeof(void*);
+    // Get the current queue
+    void *cur_queue = get_queue_internal(); // this makes a copy
+    // Use that queue to allocate.
+    void *data = internal_allocator(new_size, cur_queue);
+    // Set first pointer-sized data in allocated space to be the current queue.
+    *(void**)data = cur_queue;
+    // Return the pointer after this queue in memory.
+    return (char*)data + sizeof(void*);
+}
+
+void save_queue_deallocator(void *data, void *opaque) {
+    // Compute original allocation location by subtracting the length
+    // of the queue pointer from the data location that Numba thinks
+    // starts the object.
+    void *orig_data = (char*)data - sizeof(void*);
+    // Get the queue from the original data by derefencing the first qword.
+    void *obj_queue = *(void**)orig_data;
+    // Free the space using the correct queue.
+    internal_free(orig_data, obj_queue);
+    // Free the queue itself.
+    free_queue_internal(obj_queue);
+}
 
 void usmarray_memsys_init(void) {
-    void *(*get_queue)(void);
     char *lib_name = "libDPCTLSyclInterface.so";
     char *malloc_name = "DPCTLmalloc_shared";
     char *free_name = "DPCTLfree_with_queue";
     char *get_queue_name = "DPCTLQueueMgr_GetCurrentQueue";
+    char *free_queue_name = "DPCTLQueue_Delete";
 
     void *sycldl = dlopen(lib_name, RTLD_NOW);
     assert(sycldl != NULL);
-    usmarray_allocator.malloc = (NRT_external_malloc_func)dlsym(sycldl, malloc_name);
+    internal_allocator = (NRT_external_malloc_func)dlsym(sycldl, malloc_name);
+    usmarray_allocator.malloc = save_queue_allocator;
     if (usmarray_allocator.malloc == NULL) {
         printf("Did not find %s in %s\n", malloc_name, lib_name);
         exit(-1);
     }
+
     usmarray_allocator.realloc = NULL;
-    usmarray_allocator.free = (NRT_external_free_func)dlsym(sycldl, free_name);
+
+    internal_free = (NRT_external_free_func)dlsym(sycldl, free_name);
+    usmarray_allocator.free = save_queue_deallocator;
     if (usmarray_allocator.free == NULL) {
         printf("Did not find %s in %s\n", free_name, lib_name);
         exit(-1);
     }
-    get_queue = (void *(*))dlsym(sycldl, get_queue_name);
-    if (get_queue == NULL) {
+
+    get_queue_internal = (void *(*)(void))dlsym(sycldl, get_queue_name);
+    if (get_queue_internal == NULL) {
         printf("Did not find %s in %s\n", get_queue_name, lib_name);
         exit(-1);
     }
-    usmarray_allocator.opaque_data = get_queue();
+    usmarray_allocator.opaque_data = NULL;
+
+    free_queue_internal = (void (*)(void*))dlsym(sycldl, free_queue_name);
+    if (free_queue_internal == NULL) {
+        printf("Did not find %s in %s\n", free_queue_name, lib_name);
+        exit(-1);
+    }
 }
 
 void * usmarray_get_ext_allocator(void) {
