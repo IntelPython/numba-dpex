@@ -7,6 +7,7 @@ from numba.core.ir_utils import (
     simplify_CFG,
 )
 import numba_dppy
+from numba.core import types
 
 rewrite_function_name_map = {"sum": (["np"], "sum"), "eig": (["linalg"], "eig")}
 
@@ -104,7 +105,7 @@ class RewriteNumPyOverloadedFunctions(object):
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
-class DPPYRewriteOverloadedFunctions(FunctionPass):
+class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
     _name = "dppy_rewrite_overloaded_functions_pass"
 
     def __init__(self):
@@ -124,3 +125,110 @@ class DPPYRewriteOverloadedFunctions(FunctionPass):
         state.func_ir.blocks = simplify_CFG(state.func_ir.blocks)
 
         return True
+
+
+def get_dpnp_func_typ(func):
+    from numba.core.typing.templates import builtin_registry
+    for (k, v) in builtin_registry.globals:
+        if k == func:
+            return v
+    raise RuntimeError("type for func ", func, " not found")
+
+
+class RewriteNdarrayFunctions(object):
+    def __init__(self, state, rewrite_function_name_map=rewrite_function_name_map):
+        self.state = state
+        self.function_name_map = rewrite_function_name_map
+        self.typemap = state.type_annotation.typemap
+        self.calltypes = state.type_annotation.calltypes
+
+    def run(self):
+        typingctx = self.state.typingctx
+
+        # save array arg to call
+        # call_varname -> array
+        func_ir = self.state.func_ir
+        blocks = func_ir.blocks
+        saved_arr_arg = {}
+        topo_order = find_topo_order(blocks)
+
+        for label in topo_order:
+            block = blocks[label]
+            new_body = []
+            for stmt in block.body:
+                if isinstance(stmt, ir.Assign) and isinstance(stmt.value, ir.Expr):
+                    lhs = stmt.target.name
+                    rhs = stmt.value
+                    # replace A.func with np.func, and save A in saved_arr_arg
+                    if (rhs.op == 'getattr' and rhs.attr in self.function_name_map
+                            and isinstance(
+                                self.typemap[rhs.value.name], types.npytypes.Array)):
+                        rhs = stmt.value
+                        arr = rhs.value
+                        saved_arr_arg[lhs] = arr
+                        scope = arr.scope
+                        loc = arr.loc
+
+                        g_dppy_var = ir.Var(scope, mk_unique_var("$load_global"), loc)
+                        self.typemap[g_dppy_var.name] = types.misc.Module(numba_dppy)
+                        g_dppy = ir.Global("numba_dppy", numba_dppy, loc)
+                        g_dppy_assign = ir.Assign(g_dppy, g_dppy_var, loc)
+
+                        dpnp_var = ir.Var(scope, mk_unique_var("$load_attr"), loc)
+                        self.typemap[dpnp_var.name] = types.misc.Module(numba_dppy.dpnp)
+                        getattr_dpnp = ir.Expr.getattr(g_dppy_var, "dpnp", loc)
+                        dpnp_assign = ir.Assign(getattr_dpnp, dpnp_var, loc)
+
+                        rhs.value = dpnp_var
+                        new_body.append(g_dppy_assign)
+                        new_body.append(dpnp_assign)
+
+                        func_ir._definitions[g_dppy_var.name] = [getattr_dpnp]
+                        func_ir._definitions[dpnp_var.name] = [getattr_dpnp]
+
+                        # update func var type
+                        func = getattr(numba_dppy.dpnp, rhs.attr)
+                        func_typ = get_dpnp_func_typ(func)
+
+                        self.typemap.pop(lhs)
+                        self.typemap[lhs] = func_typ
+
+                    if rhs.op == 'call' and rhs.func.name in saved_arr_arg:
+                        # add array as first arg
+                        arr = saved_arr_arg[rhs.func.name]
+                        # update call type signature to include array arg
+                        old_sig = self.calltypes.pop(rhs)
+                        # argsort requires kws for typing so sig.args can't be used
+                        # reusing sig.args since some types become Const in sig
+                        argtyps = old_sig.args[:len(rhs.args)]
+                        kwtyps = {name: self.typemap[v.name] for name, v in rhs.kws}
+                        self.calltypes[rhs] = self.typemap[rhs.func.name].get_call_type(
+                            typingctx, [self.typemap[arr.name]] + list(argtyps), kwtyps)
+                        rhs.args = [arr] + rhs.args
+
+                new_body.append(stmt)
+            block.body = new_body
+        return
+
+
+
+@register_pass(mutates_CFG=True, analysis_only=False)
+class DPPYRewriteNdarrayFunctions(FunctionPass):
+    _name = "dppy_rewrite_ndarray_functions_pass"
+
+    def __init__(self):
+        FunctionPass.__init__(self)
+
+    def run_pass(self, state):
+        rewrite_ndarray_function_name_pass = RewriteNdarrayFunctions(
+            state, rewrite_function_name_map
+        )
+
+        rewrite_ndarray_function_name_pass.run()
+
+        remove_dead(state.func_ir.blocks, state.func_ir.arg_names, state.func_ir)
+        state.func_ir.blocks = simplify_CFG(state.func_ir.blocks)
+
+        return True
+
+

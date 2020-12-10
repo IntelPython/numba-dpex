@@ -27,7 +27,8 @@ from .dppy_passes import (
         DPPYNoPythonBackend
         )
 
-from .rename_numpy_functions_pass import DPPYRewriteOverloadedFunctions
+from .rename_numpy_functions_pass import (DPPYRewriteOverloadedNumPyFunctions,
+                                          DPPYRewriteNdarrayFunctions)
 
 class DPPYPassBuilder(object):
     """
@@ -47,7 +48,7 @@ class DPPYPassBuilder(object):
         pm.add_pass(WithLifting, "Handle with contexts")
 
         # this pass rewrites name of NumPy functions we intend to overload
-        pm.add_pass(DPPYRewriteOverloadedFunctions,
+        pm.add_pass(DPPYRewriteOverloadedNumPyFunctions,
                 "Rewrite name of Numpy functions to overload already overloaded function",
         )
 
@@ -87,6 +88,10 @@ class DPPYPassBuilder(object):
         # typing
         pm.add_pass(NopythonTypeInference, "nopython frontend")
         pm.add_pass(AnnotateTypes, "annotate types")
+
+        pm.add_pass(DPPYRewriteNdarrayFunctions,
+                "Rewrite ndarray functions to dppy supported functions",
+        )
 
         # strip phis
         pm.add_pass(PreLowerStripPhis, "remove phis nodes")

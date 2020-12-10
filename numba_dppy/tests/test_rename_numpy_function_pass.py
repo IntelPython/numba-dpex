@@ -4,18 +4,32 @@ import unittest
 import numpy as np
 
 import numba
-from numba import njit, prange
+from numba import njit, typeof
 import numba_dppy, numba_dppy as dppy
 
 
-from numba.core import compiler
-from numba_dppy.rename_numpy_functions_pass import DPPYRewriteOverloadedFunctions
+from numba.core import (compiler, typing, cpu)
+from numba_dppy.rename_numpy_functions_pass import (DPPYRewriteOverloadedNumPyFunctions,
+        DPPYRewriteNdarrayFunctions)
+from numba.core.typed_passes import (NopythonTypeInference, AnnotateTypes)
 
 
 class MyPipeline(object):
-    def __init__(self, test_ir):
+    def __init__(self, test_ir, args):
         self.state = compiler.StateDict()
+        self.state.typingctx = typing.Context()
+        self.state.targetctx = cpu.CPUContext(self.state.typingctx)
         self.state.func_ir = test_ir
+        self.state.func_id = test_ir.func_id
+        self.state.args = args
+        self.state.return_type = None
+        self.state.locals = dict()
+        self.state.status = None
+        self.state.lifted = dict()
+        self.state.lifted_from = None
+
+        self.state.typingctx.refresh()
+        self.state.targetctx.refresh()
 
 
 def check_equivalent(expected_ir, got_ir):
@@ -45,7 +59,7 @@ def check_equivalent(expected_ir, got_ir):
 
 
 class TestRenameNumpyFunctionsPass(unittest.TestCase):
-    def test_rename(self):
+    def test_rename_numpy(self):
         def expected(a):
             return numba_dppy.dpnp.sum(a)
 
@@ -55,10 +69,39 @@ class TestRenameNumpyFunctionsPass(unittest.TestCase):
         expected_ir = compiler.run_frontend(expected)
         got_ir = compiler.run_frontend(got)
 
-        pipeline = MyPipeline(got_ir)
+        pipeline = MyPipeline(got_ir, None)
 
-        rewrite_numpy_functions_pass = DPPYRewriteOverloadedFunctions()
+        rewrite_numpy_functions_pass = DPPYRewriteOverloadedNumPyFunctions()
         rewrite_numpy_functions_pass.run_pass(pipeline.state)
+
+        self.assertTrue(check_equivalent(expected_ir, pipeline.state.func_ir))
+
+
+class TestRenameNdarrayFunctionsPass(unittest.TestCase):
+    def test_rename_ndarray(self):
+        def expected(a):
+            return numba_dppy.dpnp.sum(a)
+
+        def got(a):
+            return a.sum()
+
+        expected_ir = compiler.run_frontend(expected)
+        got_ir = compiler.run_frontend(got)
+
+        a = np.arange(10)
+        args = [a]
+        argtypes = [typeof(x) for x in args]
+
+        pipeline = MyPipeline(got_ir, argtypes)
+
+        tyinfer_pass = NopythonTypeInference()
+        tyinfer_pass.run_pass(pipeline.state)
+
+        annotate_ty_pass = AnnotateTypes()
+        annotate_ty_pass.run_pass(pipeline.state)
+
+        rewrite_ndarray_functions_pass = DPPYRewriteNdarrayFunctions()
+        rewrite_ndarray_functions_pass.run_pass(pipeline.state)
 
         self.assertTrue(check_equivalent(expected_ir, pipeline.state.func_ir))
 
