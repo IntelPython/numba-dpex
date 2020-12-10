@@ -125,7 +125,25 @@ class Testdpnp_linalg_functions(unittest.TestCase):
             self.assertTrue(np.allclose(got_vec, np_vec))
 
 
-@unittest.skipUnless(enusre_dpnp(), 'test only when dpNP is available')
+@unittest.skipUnless(ensure_dpnp(), 'test only when dpNP is available')
+class Testdpnp_ndarray_functions(unittest.TestCase):
+    tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
+    def test_ndarray_sum(self):
+        @njit
+        def f(a):
+            return a.sum()
+
+        size = 3
+        for ty in self.tys:
+            a = np.arange(size * size, dtype=ty).reshape((size, size))
+
+            with dpctl.device_context("opencl:gpu"):
+                got = f(a)
+                expected = a.sum()
+
+            self.assertTrue(expected == got)
+
+@unittest.skipUnless(ensure_dpnp(), 'test only when dpNP is available')
 class Testdpnp_functions(DPPYTestCase):
     N = 10
 
