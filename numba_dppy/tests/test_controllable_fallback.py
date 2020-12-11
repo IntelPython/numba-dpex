@@ -30,8 +30,9 @@ class TestDPPYFallback(DPPYTestCase):
 
         numba_dppy.compiler.DEBUG = 1
         with captured_stderr() as msg_fallback_true:
-            dppl = numba.njit(parallel=True)(inner_call_fallback)
-            dppl_fallback_true = dppl()
+            with dpctl.device_context("opencl:gpu") as gpu_queue:
+                dppl = numba.njit(parallel=True)(inner_call_fallback)
+                dppl_fallback_true = dppl()
 
         ref_result = inner_call_fallback()
         numba_dppy.compiler.DEBUG = 0
@@ -54,18 +55,21 @@ class TestDPPYFallback(DPPYTestCase):
 
             return a
 
-        numba_dppy.compiler.DEBUG = 1
-        numba_dppy.config.FALLBACK_OPTION = 0
-        with captured_stderr() as msg_fallback_true:
-            dppl = numba.njit(parallel={'offload':True, 'fallback':False})(inner_call_fallback)
-            dppl_fallback_false = dppl()
+        try:
+            numba_dppy.compiler.DEBUG = 1
+            numba_dppy.config.FALLBACK_OPTION = 0
+            with captured_stderr() as msg_fallback_true:
+                with dpctl.device_context("opencl:gpu") as gpu_queue:
+                    dppl = numba.njit(parallel=True)(inner_call_fallback)
+                    dppl_fallback_false = dppl()
 
-        ref_result = inner_call_fallback()
-        numba_dppy.config.FALLBACK_OPTION = 1
-        numba_dppy.compiler.DEBUG = 0
+        finally:
+            ref_result = inner_call_fallback()
+            numba_dppy.config.FALLBACK_OPTION = 1
+            numba_dppy.compiler.DEBUG = 0
 
-        not np.testing.assert_array_equal(dppl_fallback_false, ref_result)
-        not self.assertTrue('Failed to lower parfor on DPPY-device' in msg_fallback_true.getvalue())
+            not np.testing.assert_array_equal(dppl_fallback_false, ref_result)
+            not self.assertTrue('Failed to lower parfor on DPPY-device' in msg_fallback_true.getvalue())
 
 
 if __name__ == '__main__':
