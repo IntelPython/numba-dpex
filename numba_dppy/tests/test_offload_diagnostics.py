@@ -8,7 +8,7 @@ from numba.tests.support import captured_stdout
 import dpctl
 
 
-def prange_example():
+def prange_func():
     n = 10
     a = np.ones((n), dtype=np.float64)
     b = np.ones((n), dtype=np.float64)
@@ -20,13 +20,9 @@ def prange_example():
 
 
 @dppy.kernel
-def data_parallel_sum(a, b, c):
+def parallel_sum(a, b, c):
     i = dppy.get_global_id(0)
     c[i] = a[i] + b[i]
-
-
-def driver(a, b, c, global_size):
-    data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
@@ -34,7 +30,7 @@ class TestOffloadDiagnostics(unittest.TestCase):
     def test_parfor(self):
         with dpctl.device_context("opencl:gpu"):
             dppy_config.OFFLOAD_DIAGNOSTICS = 1
-            jitted = njit(parallel=True)(prange_example)
+            jitted = njit(parallel=True)(prange_func)
 
             with captured_stdout() as got:
                 jitted()
@@ -55,7 +51,7 @@ class TestOffloadDiagnostics(unittest.TestCase):
             dppy_config.OFFLOAD_DIAGNOSTICS = 1
 
             with captured_stdout() as got:
-                driver(a, b, c, global_size)
+                parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
             dppy_config.OFFLOAD_DIAGNOSTICS = 0
             self.assertTrue("Auto-offloading" in got.getvalue())
