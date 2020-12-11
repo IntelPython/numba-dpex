@@ -1,10 +1,5 @@
-from timeit import default_timer as time
-
-import sys
 import numpy as np
 from numba import njit
-import numba_dppy
-import numba_dppy as dppy
 import dpctl
 import unittest
 

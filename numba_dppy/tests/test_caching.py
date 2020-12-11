@@ -1,5 +1,3 @@
-from timeit import default_timer as time
-
 import sys
 import numpy as np
 import numba_dppy, numba_dppy as dppy

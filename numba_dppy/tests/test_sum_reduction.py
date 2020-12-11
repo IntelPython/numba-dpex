@@ -1,7 +1,5 @@
 import numpy as np
 import math
-import time
-
 import numba_dppy, numba_dppy as dppy
 import unittest
 import dpctl

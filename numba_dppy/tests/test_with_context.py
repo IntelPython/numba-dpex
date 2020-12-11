@@ -1,12 +1,9 @@
-import sys
-import numba
 import numpy as np
 from numba import njit
-import numba_dppy, numba_dppy as dppy
+import numba_dppy
 import unittest
 from numba.core import errors
 from numba.tests.support import captured_stdout
-from numba_dppy.testing import expectedFailureIf
 import dpctl
 
 

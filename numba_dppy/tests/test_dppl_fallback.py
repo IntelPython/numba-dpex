@@ -1,13 +1,9 @@
 import numpy as np
 
 import numba
-import numba_dppy
-import numba_dppy as dppy
 import unittest
 from numba.tests.support import captured_stderr
 import dpctl
-import sys
-import io
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')

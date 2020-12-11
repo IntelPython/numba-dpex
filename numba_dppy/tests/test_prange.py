@@ -1,13 +1,10 @@
 #! /usr/bin/env python
-from timeit import default_timer as time
-
 import sys
 import numpy as np
 import numba
 import dpctl
 from numba import njit, prange
 import numba_dppy
-import numba_dppy as dppy
 import unittest
 from numba_dppy.testing import expectedFailureIf
 from numba.tests.support import captured_stdout
