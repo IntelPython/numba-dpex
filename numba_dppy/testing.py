@@ -1,5 +1,3 @@
-from __future__ import print_function, absolute_import, division
-
 import contextlib
 import sys
 
@@ -7,33 +5,9 @@ from numba.core import config
 import unittest
 from numba.tests.support import (
     captured_stdout,
-    SerialMixin,
     redirect_c_stdout,
 )
 
-class DPPYTestCase(SerialMixin, unittest.TestCase):
-    def setUp(self):
-        #init()
-	#TODO
-        pass
-    def tearDown(self):
-        #reset()
-	#TODO
-        pass
-
-class DPPYTextCapture(object):
-    def __init__(self, stream):
-        self._stream = stream
-
-    def getvalue(self):
-        return self._stream.read()
-
-class PythonTextCapture(object):
-    def __init__(self, stream):
-        self._stream = stream
-
-    def getvalue(self):
-        return self._stream.getvalue()
 
 @contextlib.contextmanager
 def captured_dppy_stdout():
