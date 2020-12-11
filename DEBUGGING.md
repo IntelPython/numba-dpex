@@ -8,10 +8,12 @@ Currently, the following debug info is available:
 - Stepping over break points.
 
 ### Requirements
+
 Intel GDB installed to the system  
 follow the instruction: https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-gdb.html
 
 ### Example debug usage
+
 ```bash
 $ gdb -q python  
 (gdb) break sum.py:13     # Assumes the kernel is in file sum.py, at line 13  
