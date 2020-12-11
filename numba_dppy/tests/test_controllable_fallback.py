@@ -3,13 +3,12 @@ import numpy as np
 import numba
 import numba_dppy
 from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPYTestCase
 from numba.tests.support import captured_stderr
 import dpctl
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestDPPYFallback(DPPYTestCase):
+class TestDPPYFallback(unittest.TestCase):
     def test_dppy_fallback_true(self):
         @numba.jit
         def fill_value(i):
