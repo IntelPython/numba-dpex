@@ -12,7 +12,6 @@ import dpctl
 class TestWithDPPYContext(DPPYTestCase):
 
     @unittest.skipIf(not dpctl.has_gpu_queues(), "No GPU platforms available")
-    @expectedFailureIf(sys.platform.startswith('win'))
     def test_with_dppy_context_gpu(self):
 
         @njit
