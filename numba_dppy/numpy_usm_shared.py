@@ -23,8 +23,8 @@ import inspect
 from numba.core.typing.templates import CallableTemplate
 from numba.np.arrayobj import _array_copy
 
-import dpctl.dptensor.numpy_usm_shared as numpy_usm_shared
-from dpctl.dptensor.numpy_usm_shared import ndarray, functions_list
+import dpctl.dptensor.numpy_usm_shared as nus
+from dpctl.dptensor.numpy_usm_shared import ndarray, functions_list, class_list
 
 
 debug = config.DEBUG
@@ -233,7 +233,7 @@ def numba_register_lower_builtin():
     cur_mod = importlib.import_module(__name__)
     for impl, func, types in todo + todo_builtin:
         try:
-            usmarray_func = eval("numpy_usm_shared."+func.__name__)
+            usmarray_func = eval("dpctl.dptensor.numpy_usm_shared." + func.__name__)
         except:
             dprint("failed to eval", func.__name__)
             continue
@@ -260,28 +260,44 @@ def numba_register_typing():
     # For all Numpy identifiers that have been registered for typing in Numba...
     for ig in typing_registry.globals:
         val, typ = ig
+        dprint("Numpy registered:", val, type(val), typ, type(typ))
         # If it is a Numpy function...
         if isinstance(val, (ftype, bftype)):
             # If we have overloaded that function in the usmarray module (always True right now)...
             if val.__name__ in functions_list:
                 todo.append(ig)
         if isinstance(val, type):
-            todo_classes.append(ig)
+            if isinstance(typ, numba.core.types.functions.Function):
+                todo.append(ig)
+            elif isinstance(typ, numba.core.types.functions.NumberClass):
+                pass
+                #todo_classes.append(ig)
 
     for tgetattr in templates_registry.attributes:
         if tgetattr.key == types.Array:
             todo_getattr.append(tgetattr)
 
+    for val, typ in todo_classes:
+        dprint("todo_classes:", val, typ, type(typ))
+
+        try:
+            dptype = eval("dpctl.dptensor.numpy_usm_shared." + val.__name__)
+        except:
+            dprint("failed to eval", val.__name__)
+            continue
+
+        typing_registry.register_global(dptype, numba.core.types.NumberClass(typ.instance_type))
+
     for val, typ in todo:
         assert len(typ.templates) == 1
         # template is the typing class to invoke generic() upon.
         template = typ.templates[0]
+        dprint("need to re-register for usmarray", val, typ, typ.typing_key)
         try:
-            dpval = eval("numpy_usm_shared."+val.__name__)
+            dpval = eval("dpctl.dptensor.numpy_usm_shared." + val.__name__)
         except:
             dprint("failed to eval", val.__name__)
             continue
-        dprint("need to re-register for usmarray", val, typ, typ.typing_key)
         """
         if debug:
             print("--------------------------------------------------------------")
@@ -307,9 +323,7 @@ def numba_register_typing():
         def generic_impl(self):
             original_typer = self.__class__.original.generic(self.__class__.original)
             ot_argspec = inspect.getfullargspec(original_typer)
-            # print("ot_argspec:", ot_argspec)
             astr = argspec_to_string(ot_argspec)
-            # print("astr:", astr)
 
             typer_func = """def typer({}):
                                 original_res = original_typer({})
@@ -320,8 +334,6 @@ def numba_register_typing():
                                 return original_res""".format(
                 astr, ",".join(ot_argspec.args)
             )
-
-            # print("typer_func:", typer_func)
 
             try:
                 gs = globals()
@@ -344,7 +356,6 @@ def numba_register_typing():
                 print("eval failed!", sys.exc_info()[0])
                 sys.exit(0)
 
-            # print("exec_res:", exec_res)
             return exec_res
 
         new_usmarray_template = type(
@@ -370,7 +381,6 @@ def numba_register_typing():
 
         def getattr_impl(self, attr):
             if attr.startswith("resolve_"):
-                # print("getattr_impl starts with resolve_:", self, type(self), attr)
                 def wrapper(*args, **kwargs):
                     attr_res = tgetattr.__getattribute__(self, attr)(*args, **kwargs)
                     if isinstance(attr_res, types.Array):
@@ -394,15 +404,7 @@ def numba_register_typing():
         templates_registry.register_attr(new_usmarray_template)
 
 
-def from_ndarray(x):
-    return copy(x)
-
-
-def as_ndarray(x):
-    return np.copy(x)
-
-
-@typing_registry.register_global(as_ndarray)
+@typing_registry.register_global(nus.as_ndarray)
 class DparrayAsNdarray(CallableTemplate):
     def generic(self):
         def typer(arg):
@@ -411,7 +413,7 @@ class DparrayAsNdarray(CallableTemplate):
         return typer
 
 
-@typing_registry.register_global(from_ndarray)
+@typing_registry.register_global(nus.from_ndarray)
 class DparrayFromNdarray(CallableTemplate):
     def generic(self):
         def typer(arg):
@@ -420,11 +422,11 @@ class DparrayFromNdarray(CallableTemplate):
         return typer
 
 
-@lower_registry.lower(as_ndarray, UsmSharedArrayType)
+@lower_registry.lower(nus.as_ndarray, UsmSharedArrayType)
 def usmarray_conversion_as(context, builder, sig, args):
     return _array_copy(context, builder, sig, args)
 
 
-@lower_registry.lower(from_ndarray, types.Array)
+@lower_registry.lower(nus.from_ndarray, types.Array)
 def usmarray_conversion_from(context, builder, sig, args):
     return _array_copy(context, builder, sig, args)
