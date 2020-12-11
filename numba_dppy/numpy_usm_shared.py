@@ -230,7 +230,6 @@ def numba_register_lower_builtin():
     for lg in todo_getattr:
         lower_registry.getattrs.append(lg)
 
-    cur_mod = importlib.import_module(__name__)
     for impl, func, types in todo + todo_builtin:
         try:
             usmarray_func = eval("dpctl.dptensor.numpy_usm_shared." + func.__name__)
@@ -240,7 +239,7 @@ def numba_register_lower_builtin():
         dprint(
             "need to re-register lowerer for usmarray", impl, func, types, usmarray_func
         )
-        new_impl = copy_func_for_usmarray(impl, cur_mod)
+        new_impl = copy_func_for_usmarray(impl, nus)
         lower_registry.functions.append((new_impl, usmarray_func, types))
 
 
@@ -327,7 +326,6 @@ def numba_register_typing():
 
             typer_func = """def typer({}):
                                 original_res = original_typer({})
-                                #print("original_res:", original_res)
                                 if isinstance(original_res, types.Array):
                                     return UsmSharedArrayType(dtype=original_res.dtype, ndim=original_res.ndim, layout=original_res.layout)
 
