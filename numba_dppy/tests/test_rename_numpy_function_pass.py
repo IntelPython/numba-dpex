@@ -1,8 +1,6 @@
 #! /usr/bin/env python
-
 import unittest
 import numpy as np
-
 import numba
 from numba import njit, typeof
 import numba_dppy, numba_dppy as dppy
