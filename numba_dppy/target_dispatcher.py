@@ -1,7 +1,6 @@
 from numba.core import registry, serialize, dispatcher
 from numba import types
 from numba.core.errors import UnsupportedError
-import numba_dppy
 import dpctl
 from numba.core.compiler_lock import global_compiler_lock
 

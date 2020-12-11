@@ -1172,7 +1172,7 @@ class DPPYLower(Lower):
                 print("Failed to lower parfor on DPPY-device. Due to:\n", e)
             lowering.lower_extensions[parfor.Parfor].pop()
             if ((lowering.lower_extensions[parfor.Parfor][-1] == numba.parfors.parfor_lowering._lower_parfor_parallel) and
-                numba_dppy.config.FALLBACK_OPTION == 1):
+                numba_dppy.config.FALLBACK_ON_CPU == 1):
                 self.cpu_lower.lower()
                 self.base_lower = self.cpu_lower
             else:
