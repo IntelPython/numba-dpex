@@ -3,7 +3,7 @@ import numba
 from numba import njit, prange
 import numba_dppy, numba_dppy as dppy
 from numba_dppy import config as dppy_config
-from numba_dppy.testing import unittest, DPPYTestCase
+from numba_dppy.testing import unittest
 from numba.tests.support import captured_stdout
 import dpctl
 
@@ -30,7 +30,7 @@ def driver(a, b, c, global_size):
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
-class TestOffloadDiagnostics(DPPYTestCase):
+class TestOffloadDiagnostics(unittest.TestCase):
     def test_parfor(self):
         with dpctl.device_context("opencl:gpu"):
             dppy_config.OFFLOAD_DIAGNOSTICS = 1

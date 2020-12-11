@@ -36,4 +36,4 @@ SAVE_IR_FILES = _readenv("NUMBA_DPPY_SAVE_IR_FILES", int, 0)
 SPIRV_VAL = _readenv("NUMBA_DPPY_SPIRV_VAL", int, 0)
 
 # Dump offload diagnostics
-OFFLOAD_DIAGNOSTICS = _readenv("DPPY_OFFLOAD_DIAGNOSTICS", int, 0)
+OFFLOAD_DIAGNOSTICS = _readenv("NUMBA_DPPY_OFFLOAD_DIAGNOSTICS", int, 0)
