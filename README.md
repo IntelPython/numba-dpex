@@ -57,7 +57,7 @@ python numba_dppy/examples/sum.py
 
 ## How Tos
 
-Refer the HowTo.rst guide for an overview of the programming semantics,
+Refer the [HowTo.rst](HowTo.rst) guide for an overview of the programming semantics,
 examples, supported functionalities, and known issues.
 
 ## Debugging
