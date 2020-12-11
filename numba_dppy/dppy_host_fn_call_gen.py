@@ -52,7 +52,7 @@ class DPPYHostFunctionCallsGenerator(object):
         self.byte_ptr_t      = lc.Type.pointer(self.byte_t)
         self.byte_ptr_ptr_t  = lc.Type.pointer(self.byte_ptr_t)
         self.intp_t          = self.context.get_value_type(types.intp)
-        self.long_t          = self.context.get_value_type(types.int64)
+        self.int64_t         = self.context.get_value_type(types.int64)
         self.int32_t         = self.context.get_value_type(types.int32)
         self.int32_ptr_t     = lc.Type.pointer(self.int32_t)
         self.uintp_t         = self.context.get_value_type(types.uintp)
@@ -113,23 +113,26 @@ class DPPYHostFunctionCallsGenerator(object):
 
 
     def resolve_and_return_dpctl_type(self, ty):
+        """This function looks up the dpctl defined enum values from DPCTLKernelArgType.
+        """
+
         val = None
         if ty == types.int32 or isinstance(ty, types.scalars.IntegerLiteral):
-            val = self.context.get_constant(types.int32, 4)
+            val = self.context.get_constant(types.int32, 9)  # DPCTL_LONG_LONG
         elif ty == types.uint32:
-            val = self.context.get_constant(types.int32, 5)
+            val = self.context.get_constant(types.int32, 10)  # DPCTL_UNSIGNED_LONG_LONG
         elif ty == types.boolean:
-            val = self.context.get_constant(types.int32, 5)
+            val = self.context.get_constant(types.int32, 5)  # DPCTL_UNSIGNED_INT
         elif ty == types.int64:
-            val = self.context.get_constant(types.int32, 7)
+            val = self.context.get_constant(types.int32, 9)  # DPCTL_LONG_LONG
         elif ty == types.uint64:
-            val = self.context.get_constant(types.int32, 8)
+            val = self.context.get_constant(types.int32, 11)  # DPCTL_SIZE_T
         elif ty == types.float32:
-            val = self.context.get_constant(types.int32, 12)
+            val = self.context.get_constant(types.int32, 12)  # DPCTL_FLOAT
         elif ty == types.float64:
-            val = self.context.get_constant(types.int32, 13)
+            val = self.context.get_constant(types.int32, 13)  # DPCTL_DOUBLE
         elif ty == types.voidptr:
-            val = self.context.get_constant(types.int32, 15)
+            val = self.context.get_constant(types.int32, 15)  # DPCTL_VOID_PTR
         else:
             raise NotImplementedError
 
@@ -151,12 +154,12 @@ class DPPYHostFunctionCallsGenerator(object):
             if llvm_arg is None:
                 raise NotImplementedError(arg_type, var)
 
-            storage = cgutils.alloca_once(self.builder, self.long_t)
+            storage = cgutils.alloca_once(self.builder, self.int64_t)
             self.builder.store(self.context.get_constant(types.int64, 0), storage)
             ty = self.resolve_and_return_dpctl_type(types.int64)
             self.form_kernel_arg_and_arg_ty(self.builder.bitcast(storage, self.void_ptr_t), ty)
 
-            storage = cgutils.alloca_once(self.builder, self.long_t)
+            storage = cgutils.alloca_once(self.builder, self.int64_t)
             self.builder.store(self.context.get_constant(types.int64, 0), storage)
             ty = self.resolve_and_return_dpctl_type(types.int64)
             self.form_kernel_arg_and_arg_ty(self.builder.bitcast(storage, self.void_ptr_t), ty)
