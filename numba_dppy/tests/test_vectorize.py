@@ -1,25 +1,21 @@
 #! /usr/bin/env python
-from __future__ import print_function
-from timeit import default_timer as time
-
-import sys
 import numpy as np
 from numba import njit, vectorize
-import numba_dppy, numba_dppy as dppy
-from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPYTestCase
+import dpctl
+import unittest
 
 
-class TestVectorize(DPPYTestCase):
+@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
+class TestVectorize(unittest.TestCase):
     def test_vectorize(self):
 
         @vectorize(nopython=True)
         def axy(a, x, y):
             return a * x + y
 
-        @njit(parallel={'offload':True})
+        @njit
         def f(a0, a1):
-            return np.cos(axy(a0, np.sin(a1) - 1., 1.) )
+            return np.cos(axy(a0, np.sin(a1) - 1., 1.))
 
         def f_np(a0, a1):
             sin_res = np.sin(a1)
@@ -28,11 +24,12 @@ class TestVectorize(DPPYTestCase):
                 res.append(axy(a0[i], sin_res[i] - 1., 1.))
             return np.cos(np.array(res))
 
-
         A = np.random.random(10)
         B = np.random.random(10)
 
-        expected = f(A, B)
+        with dpctl.device_context("opencl:gpu"):
+            expected = f(A, B)
+
         actual = f_np(A, B)
 
         max_abs_err = expected.sum() - actual.sum()

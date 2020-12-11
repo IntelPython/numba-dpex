@@ -1,13 +1,7 @@
 #! /usr/bin/env python
-
 import unittest
 import numpy as np
-
 import numba
-from numba import njit, prange
-import numba_dppy, numba_dppy as dppy
-
-
 from numba.core import compiler
 from numba_dppy.rename_numpy_functions_pass import DPPYRewriteOverloadedFunctions
 

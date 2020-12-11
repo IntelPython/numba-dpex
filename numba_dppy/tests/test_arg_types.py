@@ -1,10 +1,7 @@
-from __future__ import print_function, division, absolute_import
-
 import numpy as np
 
 import numba_dppy, numba_dppy as dppy
-from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPYTestCase
+import unittest
 import dpctl
 
 
@@ -24,7 +21,7 @@ B = np.array(np.random.random(N), dtype=np.float32)
 
 
 @unittest.skipUnless(dpctl.has_cpu_queues(), 'test only on CPU system')
-class TestDPPYArrayArgCPU(DPPYTestCase):
+class TestDPPYArrayArgCPU(unittest.TestCase):
     def test_integer_arg(self):
         x = np.int32(2)
         with dpctl.device_context("opencl:cpu") as cpu_queue:
@@ -59,7 +56,7 @@ class TestDPPYArrayArgCPU(DPPYTestCase):
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestDPPYArrayArgGPU(DPPYTestCase):
+class TestDPPYArrayArgGPU(unittest.TestCase):
     def test_integer_arg(self):
         x = np.int32(2)
         with dpctl.device_context("opencl:gpu") as gpu_queue:

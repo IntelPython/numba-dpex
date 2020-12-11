@@ -1,13 +1,9 @@
 #! /usr/bin/env python
-from __future__ import print_function
-from timeit import default_timer as time
-
 import sys
 import numpy as np
 import numba_dppy, numba_dppy as dppy
 import dpctl
-from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPYTestCase
+import unittest
 
 @dppy.kernel
 def data_parallel_sum(a, b, c):
@@ -24,7 +20,7 @@ d = a + b
 
 
 @unittest.skipUnless(dpctl.has_cpu_queues(), 'test only on CPU system')
-class TestDPPYDeviceArrayArgsGPU(DPPYTestCase):
+class TestDPPYDeviceArrayArgsGPU(unittest.TestCase):
     def test_device_array_args_cpu(self):
         c = np.ones_like(a)
 
@@ -35,7 +31,7 @@ class TestDPPYDeviceArrayArgsGPU(DPPYTestCase):
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestDPPYDeviceArrayArgsCPU(DPPYTestCase):
+class TestDPPYDeviceArrayArgsCPU(unittest.TestCase):
     def test_device_array_args_gpu(self):
         c = np.ones_like(a)
 

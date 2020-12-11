@@ -1,18 +1,15 @@
-import sys
-import numba
 import numpy as np
 from numba import njit
-import numba_dppy, numba_dppy as dppy
+import numba_dppy
+import unittest
 from numba.core import errors
 from numba.tests.support import captured_stdout
-from numba_dppy.testing import DPPYTestCase, unittest, expectedFailureIf
 import dpctl
 
 
-class TestWithDPPYContext(DPPYTestCase):
+class TestWithDPPYContext(unittest.TestCase):
 
     @unittest.skipIf(not dpctl.has_gpu_queues(), "No GPU platforms available")
-    @expectedFailureIf(sys.platform.startswith('win'))
     def test_with_dppy_context_gpu(self):
 
         @njit
@@ -39,7 +36,6 @@ class TestWithDPPYContext(DPPYTestCase):
         self.assertTrue('Parfor lowered on DPPY-device' in got_gpu_message.getvalue())
 
     @unittest.skipIf(not dpctl.has_cpu_queues(), "No CPU platforms available")
-    @unittest.expectedFailure
     def test_with_dppy_context_cpu(self):
 
         @njit

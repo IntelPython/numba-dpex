@@ -1,15 +1,12 @@
-from __future__ import print_function, division, absolute_import
-
 import numpy as np
 
 import numba_dppy, numba_dppy as dppy
-from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPYTestCase
+import unittest
 import dpctl
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestDPPYFunc(DPPYTestCase):
+class TestDPPYFunc(unittest.TestCase):
     N = 257
 
     def test_dppy_func_device_array(self):
