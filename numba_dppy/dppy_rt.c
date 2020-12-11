@@ -76,7 +76,6 @@ void usmarray_memsys_init(void) {
 }
 
 void * usmarray_get_ext_allocator(void) {
-    printf("usmarray_get_ext_allocator %p\n", &usmarray_allocator);
     return (void*)&usmarray_allocator;
 }
 
