@@ -27,6 +27,8 @@ from .dppy_passes import (
         DPPYNoPythonBackend
         )
 
+from .rename_numpy_functions_pass import DPPYRewriteOverloadedFunctions
+
 class DPPYPassBuilder(object):
     """
     This is the DPPY pass builder to run Intel GPU/CPU specific
@@ -43,6 +45,11 @@ class DPPYPassBuilder(object):
             pm.add_pass(FixupArgs, "fix up args")
         pm.add_pass(IRProcessing, "processing IR")
         pm.add_pass(WithLifting, "Handle with contexts")
+
+        # this pass rewrites name of NumPy functions we intend to overload
+        pm.add_pass(DPPYRewriteOverloadedFunctions,
+                "Rewrite name of Numpy functions to overload already overloaded function",
+        )
 
         # this pass adds required logic to overload default implementation of
         # Numpy functions

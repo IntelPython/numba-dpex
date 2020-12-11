@@ -1,15 +1,14 @@
 #! /usr/bin/env python
-from __future__ import print_function
 from timeit import default_timer as time
 
 import sys
 import numpy as np
 from numba import njit
 import numba_dppy
-import numba_dppy as dppl
+import numba_dppy as dppy
 import dpctl
-from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPYTestCase
+import unittest
+
 
 
 def test_for_different_datatypes(fn, test_fn, dims, arg_count, tys, np_all=False, matrix=None):
@@ -83,7 +82,6 @@ def test_for_dimensions(fn, test_fn, dims, tys, np_all=False):
 
 def ensure_dpnp():
     try:
-       # import dpnp
         from numba_dppy.dpnp_glue import dpnp_fptr_interface as dpnp_glue
         return True
     except:
@@ -91,7 +89,8 @@ def ensure_dpnp():
 
 
 @unittest.skipUnless(ensure_dpnp() and dpctl.has_gpu_queues(), 'test only when dpNP and GPU is available')
-class Testdpnp_functions(DPPLTestCase):
+class Testdpnp_functions(unittest.TestCase):
+
     N = 10
 
     a = np.array(np.random.random(N), dtype=np.float32)

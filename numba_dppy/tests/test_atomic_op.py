@@ -1,11 +1,8 @@
-from __future__ import print_function, division, absolute_import
-
 import numpy as np
 
 import numba
 import numba_dppy, numba_dppy as dppy
-from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPYTestCase
+import unittest
 import dpctl
 
 def atomic_add_int32(ary):
@@ -125,7 +122,7 @@ def call_fn_for_datatypes(fn, result, input, global_size):
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
 @unittest.skipUnless(numba_dppy.ocl.atomic_support_present(), 'test only when atomic support is present')
-class TestAtomicOp(DPPYTestCase):
+class TestAtomicOp(unittest.TestCase):
     def test_atomic_add_global(self):
         @dppy.kernel
         def atomic_add(B):

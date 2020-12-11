@@ -1,19 +1,12 @@
 #! /usr/bin/env python
-from __future__ import print_function
-from timeit import default_timer as time
-
-import sys
 import numpy as np
 from numba import njit
-import numba_dppy
-import numba_dppy as dppl
 import dpctl
-from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPYTestCase
+import unittest
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestNumpy_comparison_functions(DPPLTestCase):
+class TestNumpy_comparison_functions(unittest.TestCase):
     a = np.array([4, 5, 6])
     b = np.array([2, 6, 6])
 
