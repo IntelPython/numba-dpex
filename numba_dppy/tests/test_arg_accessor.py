@@ -1,10 +1,7 @@
-from __future__ import print_function, division, absolute_import
-
 import numpy as np
 
 import numba_dppy, numba_dppy as dppy
-from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPYTestCase
+import unittest
 import dpctl
 
 
@@ -33,7 +30,7 @@ D = A + B
 
 
 @unittest.skipUnless(dpctl.has_cpu_queues(), 'test only on CPU system')
-class TestDPPYArgAccessorCPU(DPPYTestCase):
+class TestDPPYArgAccessorCPU(unittest.TestCase):
     def test_arg_with_accessor(self):
         C = np.ones_like(A)
         with dpctl.device_context("opencl:cpu") as cpu_queue:
@@ -50,7 +47,7 @@ class TestDPPYArgAccessorCPU(DPPYTestCase):
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestDPPYArgAccessorGPU(DPPYTestCase):
+class TestDPPYArgAccessorGPU(unittest.TestCase):
     def test_arg_with_accessor(self):
         C = np.ones_like(A)
         with dpctl.device_context("opencl:gpu") as gpu_queue:

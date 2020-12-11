@@ -1,9 +1,6 @@
-from __future__ import print_function, division, absolute_import
-
 import numpy as np
 
-from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPYTestCase
+import unittest
 from numba import float32
 import numba_dppy, numba_dppy as dppy
 import dpctl

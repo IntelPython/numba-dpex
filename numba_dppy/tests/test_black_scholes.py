@@ -1,12 +1,9 @@
-from __future__ import print_function, division, absolute_import
-
 import numpy as np
 import math
 import time
 
 import numba_dppy, numba_dppy as dppy
-from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPYTestCase
+import unittest
 import dpctl
 
 
@@ -49,7 +46,7 @@ def randfloat(rand_var, low, high):
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestDPPYBlackScholes(DPPYTestCase):
+class TestDPPYBlackScholes(unittest.TestCase):
     def test_black_scholes(self):
         OPT_N = 400
         iterations = 2
