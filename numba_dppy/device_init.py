@@ -18,6 +18,14 @@ from .ocl.stubs import (
     CLK_GLOBAL_MEM_FENCE,
 )
 
+"""
+We are importing dpnp stub module to make Numba recognize the
+module when we rename Numpy functions.
+"""
+from .dpnp_glue.stubs import (
+    dpnp
+)
+
 DEFAULT_LOCAL_SIZE = []
 
 from . import initialize
@@ -34,10 +42,5 @@ def is_available():
     """
     return dpctl.has_gpu_queues()
 
-
-#def ocl_error():
-#    """Returns None or an exception if the OpenCL driver fails to initialize.
-#    """
-#    return driver.driver.initialization_error
 
 initialize.initialize_all()
