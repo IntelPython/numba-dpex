@@ -60,10 +60,10 @@ python numba_dppy/examples/sum.py
 Refer the HowTo.rst guide for an overview of the programming semantics,
 examples, supported functionalities, and known issues.
 
-## Reporting issues
-
-Please use https://github.com/IntelPython/numba-dppy/issues to report issues and bugs.
-
 ## Debugging
 
 Please follow instructions in the [DEBUGGING.md](DEBUGGING.md)
+
+## Reporting issues
+
+Please use https://github.com/IntelPython/numba-dppy/issues to report issues and bugs.
