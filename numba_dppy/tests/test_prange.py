@@ -5,16 +5,19 @@ from timeit import default_timer as time
 import sys
 import numpy as np
 import numba
+import dpctl
 from numba import njit, prange
-import numba_dppy, numba_dppy as dppy
+import numba_dppy
+import numba_dppy as dppy
 from numba_dppy.testing import unittest, expectedFailureIf
 from numba_dppy.testing import DPPYTestCase
 from numba.tests.support import captured_stdout
 
 
+@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
 class TestPrange(DPPYTestCase):
     def test_one_prange(self):
-        @njit(parallel={'offload':True})
+        @njit
         def f(a, b):
             for i in prange(4):
                 b[i, 0] = a[i, 0] * 10
@@ -24,14 +27,14 @@ class TestPrange(DPPYTestCase):
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        f(a, b)
+        with dpctl.device_context("opencl:gpu"):
+            f(a, b)
 
         for i in range(4):
             self.assertTrue(b[i, 0] == a[i, 0] * 10)
 
-
     def test_nested_prange(self):
-        @njit(parallel={'offload':True})
+        @njit
         def f(a, b):
             # dimensions must be provided as scalar
             m, n = a.shape
@@ -44,12 +47,13 @@ class TestPrange(DPPYTestCase):
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        f(a, b)
+        with dpctl.device_context("opencl:gpu"):
+            f(a, b)
+
         self.assertTrue(np.all(b == 10))
 
-
     def test_multiple_prange(self):
-        @njit(parallel={'offload':True})
+        @njit
         def f(a, b):
             # dimensions must be provided as scalar
             m, n = a.shape
@@ -57,7 +61,6 @@ class TestPrange(DPPYTestCase):
                 val = 10
                 for j in prange(n):
                     b[i, j] = a[i, j] * val
-
 
             for i in prange(m):
                 for j in prange(n):
@@ -68,13 +71,14 @@ class TestPrange(DPPYTestCase):
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        f(a, b)
+        with dpctl.device_context("opencl:gpu"):
+            f(a, b)
+
         self.assertTrue(np.all(b == 10))
         self.assertTrue(np.all(a == 10))
 
-
     def test_three_prange(self):
-        @njit(parallel={'offload':True})
+        @njit
         def f(a, b):
             # dimensions must be provided as scalar
             m, n, o = a.shape
@@ -91,9 +95,10 @@ class TestPrange(DPPYTestCase):
         a = np.ones((m, n, o))
         b = np.ones((m, n, o))
 
-        f(a, b)
-        self.assertTrue(np.all(b == 12))
+        with dpctl.device_context("opencl:gpu"):
+            f(a, b)
 
+        self.assertTrue(np.all(b == 12))
 
     @expectedFailureIf(sys.platform.startswith('win'))
     def test_two_consequent_prange(self):
@@ -110,18 +115,20 @@ class TestPrange(DPPYTestCase):
         old_debug = numba_dppy.compiler.DEBUG
         numba_dppy.compiler.DEBUG = 1
 
-        jitted = njit(parallel={'offload':True})(prange_example)
-        with captured_stdout() as stdout:
+        jitted = njit(prange_example)
+
+        with captured_stdout() as stdout, dpctl.device_context("opencl:gpu"):
             jitted_res = jitted()
 
         res = prange_example()
 
         numba_dppy.compiler.DEBUG = old_debug
 
-        self.assertEqual(stdout.getvalue().count('Parfor lowered on DPPY-device'), 2, stdout.getvalue())
-        self.assertEqual(stdout.getvalue().count('Failed to lower parfor on DPPY-device'), 0, stdout.getvalue())
+        self.assertEqual(stdout.getvalue().count(
+            'Parfor lowered on DPPY-device'), 2, stdout.getvalue())
+        self.assertEqual(stdout.getvalue().count(
+            'Failed to lower parfor on DPPY-device'), 0, stdout.getvalue())
         np.testing.assert_equal(res, jitted_res)
-
 
     @unittest.skip('NRT required but not enabled')
     def test_2d_arrays(self):
@@ -138,16 +145,19 @@ class TestPrange(DPPYTestCase):
         old_debug = numba_dppy.compiler.DEBUG
         numba_dppy.compiler.DEBUG = 1
 
-        jitted = njit(parallel={'offload':True})(prange_example)
-        with captured_stdout() as stdout:
+        jitted = njit(prange_example)
+
+        with captured_stdout() as stdout, dpctl.device_context("opencl:gpu"):
             jitted_res = jitted()
 
         res = prange_example()
 
         numba_dppy.compiler.DEBUG = old_debug
 
-        self.assertEqual(stdout.getvalue().count('Parfor lowered on DPPY-device'), 2, stdout.getvalue())
-        self.assertEqual(stdout.getvalue().count('Failed to lower parfor on DPPY-device'), 0, stdout.getvalue())
+        self.assertEqual(stdout.getvalue().count(
+            'Parfor lowered on DPPY-device'), 2, stdout.getvalue())
+        self.assertEqual(stdout.getvalue().count(
+            'Failed to lower parfor on DPPY-device'), 0, stdout.getvalue())
         np.testing.assert_equal(res, jitted_res)
 
 
