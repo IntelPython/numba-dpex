@@ -156,6 +156,38 @@ class Testdpnp_ndarray_functions(unittest.TestCase):
 
             self.assertTrue(expected == got)
 
+    def test_ndarray_prod(self):
+        @njit
+        def f(a):
+            return a.prod()
+
+        size = 3
+        for ty in self.tys:
+            a = np.arange(1, (size * size) + 1, dtype=ty).reshape((size, size))
+
+            with dpctl.device_context("opencl:gpu"):
+                got = f(a)
+                expected = a.prod()
+
+            self.assertTrue(expected == got)
+
+    def test_ndarray_max(self):
+        @njit
+        def f(a):
+            return a.max()
+
+        size = 3
+        for ty in self.tys:
+            a = np.arange(1, (size * size) + 1, dtype=ty).reshape((size, size))
+
+            with dpctl.device_context("opencl:gpu"):
+                got = f(a)
+                expected = a.max()
+
+            self.assertTrue(expected == got)
+
+
+
 @unittest.skipUnless(ensure_dpnp() and dpctl.has_gpu_queues(), 'test only when dpNP and GPU is available')
 class Testdpnp_functions(unittest.TestCase):
 
@@ -209,6 +241,19 @@ class Testdpnp_functions(unittest.TestCase):
             f, np.max, [10], 1, self.tys))
         self.assertTrue(test_for_dimensions(f, np.max, [10, 2], self.tys))
         self.assertTrue(test_for_dimensions(f, np.max, [10, 2, 3], self.tys))
+
+    def test_amax(self):
+        @njit
+        def f(a):
+            c = np.amax(a)
+            return c
+
+        self.assertTrue(test_for_different_datatypes(
+            f, np.amax, [10], 1, self.tys))
+        self.assertTrue(test_for_dimensions(f, np.amax, [10, 2], self.tys))
+        self.assertTrue(test_for_dimensions(f, np.amax, [10, 2, 3], self.tys))
+
+
 
     def test_argmin(self):
         @njit

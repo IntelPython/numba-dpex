@@ -10,3 +10,12 @@ class dpnp(Stub):
 
     class eig(Stub):
         pass
+
+    class prod(Stub):
+        pass
+
+    class max(Stub):
+        pass
+
+    class amax(Stub):
+        pass

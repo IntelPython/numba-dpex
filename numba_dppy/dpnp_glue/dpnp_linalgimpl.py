@@ -5,29 +5,26 @@ from . import stubs
 import numba_dppy.experimental_numpy_lowering_overload as dpnp_lowering
 from numba.core.extending import overload, register_jitable
 import numpy as np
-
-class _DPNP_LINALG_EXTENSION:
-    @classmethod
-    def dpnp_eig(cls, fn_name, type_names):
-        ret_type = types.void
-        sig = signature(
-            ret_type, types.voidptr, types.voidptr, types.voidptr, types.int64
-        )
-        f_ptr = dpnp_ext.get_dpnp_fptr(fn_name, type_names)
-
-        def get_pointer(obj):
-            return f_ptr
-
-        return types.ExternalFunctionPointer(sig, get_pointer=get_pointer)
-
+from numba_dppy.dpctl_functions import _DPCTL_FUNCTIONS
 
 @overload(stubs.dpnp.eig)
 def dpnp_eig_impl(a):
     dpnp_lowering.ensure_dpnp("eig")
-    dpnp_extension = _DPNP_LINALG_EXTENSION()
     dpctl_functions = dpnp_ext._DPCTL_FUNCTIONS()
 
-    dpnp_eig = dpnp_extension.dpnp_eig("dpnp_eig", [a.dtype.name, "NONE"])
+    ret_type = types.void
+    """
+    dpnp source:
+    https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels.cpp#L180
+
+    Function declaration:
+    void dpnp_eig_c(const void* array_in, void* result1, void* result2, size_t size)
+
+    """
+    sig = signature(
+        ret_type, types.voidptr, types.voidptr, types.voidptr, types.intp
+    )
+    dpnp_eig = dpnp_ext.dpnp_func("dpnp_eig", [a.dtype.name, "NONE"], sig)
 
     get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
     allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
@@ -69,6 +66,7 @@ def dpnp_eig_impl(a):
         free_usm(vr_usm, sycl_queue)
 
         dpnp_ext._dummy_liveness_func([wr.size, vr.size])
+        print("CCCC")
 
         return (wr, vr)
 

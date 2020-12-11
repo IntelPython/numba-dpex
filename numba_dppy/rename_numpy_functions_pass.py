@@ -9,7 +9,11 @@ from numba.core.ir_utils import (
 import numba_dppy
 from numba.core import types
 
-rewrite_function_name_map = {"sum": (["np"], "sum"), "eig": (["linalg"], "eig")}
+rewrite_function_name_map = {"sum": (["np"], "sum"),
+                             "eig": (["linalg"], "eig"),
+                             "prod": (["np"], "prod"),
+                             "max": (["np"], "max"),
+                             "amax": (["np"], "amax")}
 
 
 class RewriteNumPyOverloadedFunctions(object):
@@ -110,9 +114,12 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
 
     def __init__(self):
         FunctionPass.__init__(self)
+
         import numba_dppy.dpnp_glue.dpnpdecl
+        import numba_dppy.dpnp_glue.dpnpimpl
         import numba_dppy.dpnp_glue.dpnp_linalgimpl
         import numba_dppy.dpnp_glue.dpnp_transcendentalsimpl
+        import numba_dppy.dpnp_glue.dpnp_statisticsimpl
 
     def run_pass(self, state):
         rewrite_function_name_pass = RewriteNumPyOverloadedFunctions(
