@@ -7,7 +7,6 @@ import unittest
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
 class TestNumpy_math_functions(unittest.TestCase):
-
     N = 10
     a = np.array(np.random.random(N), dtype=np.float32)
     b = np.array(np.random.random(N), dtype=np.float32)

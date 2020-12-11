@@ -10,6 +10,7 @@ import dpctl
 import unittest
 
 
+
 def test_for_different_datatypes(fn, test_fn, dims, arg_count, tys, np_all=False, matrix=None):
     if arg_count == 1:
         for ty in tys:
