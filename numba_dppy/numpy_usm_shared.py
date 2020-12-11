@@ -23,6 +23,7 @@ import inspect
 from numba.core.typing.templates import CallableTemplate
 from numba.np.arrayobj import _array_copy
 
+import dpctl.dptensor.numpy_usm_shared as numpy_usm_shared
 from dpctl.dptensor.numpy_usm_shared import ndarray, functions_list
 
 
@@ -152,11 +153,25 @@ def allocator_UsmArray(context, builder, size, align):
 
 registered = False
 
+def is_usm_callback(obj):
+    if isinstance(obj, numba.core.runtime._nrt_python._MemInfo):
+        mobj = obj
+        while isinstance(mobj, numba.core.runtime._nrt_python._MemInfo):
+            ea = mobj.external_allocator
+            d = mobj.data
+            dppl_rt_allocator = numba_dppy._dppy_rt.get_external_allocator()
+            if ea == dppl_rt_allocator:
+                return True
+            mobj = mobj.parent
+            if isinstance(mobj, ndarray):
+                mobj = mobj.base
+    return False
 
 def numba_register():
     global registered
     if not registered:
         registered = True
+        ndarray.add_external_usm_checker(is_usm_callback)
         numba_register_typing()
         numba_register_lower_builtin()
 
@@ -217,7 +232,11 @@ def numba_register_lower_builtin():
 
     cur_mod = importlib.import_module(__name__)
     for impl, func, types in todo + todo_builtin:
-        usmarray_func = eval(func.__name__)
+        try:
+            usmarray_func = eval("numpy_usm_shared."+func.__name__)
+        except:
+            dprint("failed to eval", func.__name__)
+            continue
         dprint(
             "need to re-register lowerer for usmarray", impl, func, types, usmarray_func
         )
@@ -257,7 +276,11 @@ def numba_register_typing():
         assert len(typ.templates) == 1
         # template is the typing class to invoke generic() upon.
         template = typ.templates[0]
-        dpval = eval(val.__name__)
+        try:
+            dpval = eval("numpy_usm_shared."+val.__name__)
+        except:
+            dprint("failed to eval", val.__name__)
+            continue
         dprint("need to re-register for usmarray", val, typ, typ.typing_key)
         """
         if debug:
