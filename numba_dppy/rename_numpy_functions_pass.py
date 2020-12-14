@@ -13,7 +13,9 @@ rewrite_function_name_map = {"sum": (["np"], "sum"),
                              "eig": (["linalg"], "eig"),
                              "prod": (["np"], "prod"),
                              "max": (["np"], "max"),
-                             "amax": (["np"], "amax")}
+                             "amax": (["np"], "amax"),
+                             "min": (["np"], "min"),
+                             "amin": (["np"], "amin")}
 
 
 class RewriteNumPyOverloadedFunctions(object):

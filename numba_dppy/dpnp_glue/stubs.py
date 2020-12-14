@@ -19,3 +19,9 @@ class dpnp(Stub):
 
     class amax(Stub):
         pass
+
+    class min(Stub):
+        pass
+
+    class amin(Stub):
+        pass
