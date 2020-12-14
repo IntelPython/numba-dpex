@@ -22,7 +22,7 @@ def initialize_all():
         paths = glob.glob(os.path.join(os.path.dirname(dpctl.__file__), '*DPCTLSyclInterface*'))
 
     if len(paths) == 1:
-        ll.load_library_permanently(find_library(paths[0]))
+        ll.load_library_permanently(paths[0])
     else:
         raise ImportError
 
