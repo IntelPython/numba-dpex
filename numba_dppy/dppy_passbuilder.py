@@ -48,9 +48,9 @@ class DPPYPassBuilder(object):
         pm.add_pass(WithLifting, "Handle with contexts")
 
         # this pass rewrites name of NumPy functions we intend to overload
-        pm.add_pass(DPPYRewriteOverloadedNumPyFunctions,
-                "Rewrite name of Numpy functions to overload already overloaded function",
-        )
+        #pm.add_pass(DPPYRewriteOverloadedNumPyFunctions,
+        #        "Rewrite name of Numpy functions to overload already overloaded function",
+        #)
 
         # this pass adds required logic to overload default implementation of
         # Numpy functions
@@ -89,9 +89,9 @@ class DPPYPassBuilder(object):
         pm.add_pass(NopythonTypeInference, "nopython frontend")
         pm.add_pass(AnnotateTypes, "annotate types")
 
-        pm.add_pass(DPPYRewriteNdarrayFunctions,
-                "Rewrite ndarray functions to dppy supported functions",
-        )
+        #pm.add_pass(DPPYRewriteNdarrayFunctions,
+        #        "Rewrite ndarray functions to dppy supported functions",
+        #)
 
         # strip phis
         pm.add_pass(PreLowerStripPhis, "remove phis nodes")

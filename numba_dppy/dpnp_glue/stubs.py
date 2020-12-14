@@ -25,3 +25,9 @@ class dpnp(Stub):
 
     class amin(Stub):
         pass
+
+    class mean(Stub):
+        pass
+
+    class median(Stub):
+        pass

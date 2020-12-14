@@ -9,7 +9,8 @@ import numpy as np
 
 @overload(stubs.dpnp.sum)
 def dpnp_sum_impl(a):
-    dpnp_lowering.ensure_dpnp("sum")
+    name = "sum"
+    dpnp_lowering.ensure_dpnp(name)
     dpctl_functions = dpnp_ext._DPCTL_FUNCTIONS()
 
     ret_type = types.void
@@ -22,14 +23,14 @@ def dpnp_sum_impl(a):
 
     """
     sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
-    dpnp_sum = dpnp_ext.dpnp_func("dpnp_sum", [a.dtype.name, "NONE"], sig)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, [a.dtype.name, "NONE"], sig)
 
     get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
     allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
     copy_usm = dpctl_functions.dpctl_queue_memcpy()
     free_usm = dpctl_functions.dpctl_free_with_queue()
 
-    def dpnp_sum_impl(a):
+    def dpnp_impl(a):
         if a.size == 0:
             raise ValueError("Passed Empty array")
 
@@ -39,7 +40,7 @@ def dpnp_sum_impl(a):
 
         out_usm = allocate_usm_shared(a.itemsize, sycl_queue)
 
-        dpnp_sum(a_usm, out_usm, a.size)
+        dpnp_func(a_usm, out_usm, a.size)
 
         out = np.empty(1, dtype=a.dtype)
         copy_usm(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
@@ -52,12 +53,13 @@ def dpnp_sum_impl(a):
         print("AAAAA")
         return out[0]
 
-    return dpnp_sum_impl
+    return dpnp_impl
 
 
 @overload(stubs.dpnp.prod)
 def dpnp_prod_impl(a):
-    dpnp_lowering.ensure_dpnp("prod")
+    name = "prod"
+    dpnp_lowering.ensure_dpnp(name)
     dpctl_functions = dpnp_ext._DPCTL_FUNCTIONS()
 
     ret_type = types.void
@@ -69,14 +71,14 @@ def dpnp_prod_impl(a):
     void custom_prod_c(void* array1_in, void* result1, size_t size)
     """
     sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
-    dpnp_prod = dpnp_ext.dpnp_func("dpnp_prod", [a.dtype.name, "NONE"], sig)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, [a.dtype.name, "NONE"], sig)
 
     get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
     allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
     copy_usm = dpctl_functions.dpctl_queue_memcpy()
     free_usm = dpctl_functions.dpctl_free_with_queue()
 
-    def dpnp_prod_impl(a):
+    def dpnp_impl(a):
         if a.size == 0:
             raise ValueError("Passed Empty array")
 
@@ -86,7 +88,7 @@ def dpnp_prod_impl(a):
 
         out_usm = allocate_usm_shared(a.itemsize, sycl_queue)
 
-        dpnp_prod(a_usm, out_usm, a.size)
+        dpnp_func(a_usm, out_usm, a.size)
 
         out = np.empty(1, dtype=a.dtype)
         copy_usm(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
@@ -99,4 +101,4 @@ def dpnp_prod_impl(a):
         print("BBB")
         return out[0]
 
-    return dpnp_prod_impl
+    return dpnp_impl

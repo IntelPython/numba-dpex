@@ -85,7 +85,6 @@ class DPPYAddNumpyOverloadPass(FunctionPass):
                     return signature(retty, *args)
 
             @infer_global(np.mean)
-            #@infer_global("array.mean")
             class NPMean(AbstractTemplate):
                 def generic(self, args, kws):
                     assert not kws

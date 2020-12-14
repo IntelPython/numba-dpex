@@ -452,6 +452,8 @@ def common_max_min_impl(context, builder, sig, args, fn_type):
                              signature(types.none, *sig.args), args)
 
     sycl_queue = get_sycl_queue(context, builder)
+    import pdb
+    pdb.set_trace()
 
     aty = sig.args[0]
     a = make_array(aty)(context, builder, args[0])
@@ -493,6 +495,7 @@ def common_max_min_impl(context, builder, sig, args, fn_type):
 @lower_builtin(np.max, types.Array)
 @lower_builtin("array.max", types.Array)
 def array_max(context, builder, sig, args):
+    print("ASDASDAS")
     ensure_dpnp("max")
 
     return common_max_min_impl(context, builder, sig, args, "dpnp_max")
