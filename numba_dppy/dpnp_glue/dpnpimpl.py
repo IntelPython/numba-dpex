@@ -43,9 +43,8 @@ pass around.
 """
 @lower_getattr(types.Array, "shapeptr")
 def array_shape(context, builder, typ, value):
-    import pdb
-    pdb.set_trace()
     shape_ptr = builder.gep(value.operands[0],
-                          [context.get_constant(types.int32, 0),
-                           context.get_constant(types.int32, 5)])
+                            [context.get_constant(types.int32, 0),
+                             context.get_constant(types.int32, 5)])
+
     return builder.bitcast(shape_ptr, ll_void_p)

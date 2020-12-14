@@ -157,8 +157,6 @@ def dpnp_mean_impl(a):
     if a.dtype == types.float32:
         res_dtype = np.float32
 
-    res_itemsize = np.dtype(res_dtype).itemsize
-
     def dpnp_impl(a):
         if a.size == 0:
             raise ValueError("Passed Empty array")
@@ -168,20 +166,17 @@ def dpnp_mean_impl(a):
         a_usm = allocate_usm_shared(a.size * a.itemsize, sycl_queue)
         copy_usm(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
 
-        out_usm = allocate_usm_shared(res_itemsize, sycl_queue)
-
-        print(res_itemsize)
+        out = np.empty(1, dtype=res_dtype)
+        out_usm = allocate_usm_shared(out.itemsize, sycl_queue)
 
         dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim, a.shapeptr, a.ndim)
 
-        out = np.empty(1, dtype=res_dtype)
         copy_usm(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
 
         free_usm(a_usm, sycl_queue)
         free_usm(out_usm, sycl_queue)
 
-        dpnp_ext._dummy_liveness_func([out.size])
-
+        dpnp_ext._dummy_liveness_func([a.size, out.size])
         print("FFFF")
         return out[0]
 
@@ -197,11 +192,11 @@ def dpnp_median_impl(a):
     ret_type = types.void
     """
     dpnp source:
-    https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels_statistics.cpp#L169
+    https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels_statistics.cpp#L213
 
     Function declaration:
-    void custom_mean_c(void* array1_in, void* result1, const size_t* shape,
-                       size_t ndim, const size_t* axis, size_t naxis)
+    void custom_median_c(void* array1_in, void* result1, const size_t* shape,
+			 size_t ndim, const size_t* axis, size_t naxis)
 
     We are using void * in case of size_t * as Numba currently does not have
     any type to represent size_t *. Since, both the types are pointers,
@@ -241,7 +236,7 @@ def dpnp_median_impl(a):
         free_usm(a_usm, sycl_queue)
         free_usm(out_usm, sycl_queue)
 
-        dpnp_ext._dummy_liveness_func([out.size])
+        dpnp_ext._dummy_liveness_func([a.size, out.size])
 
         print("GG")
         return out[0]

@@ -16,7 +16,7 @@ rewrite_function_name_map = {"sum": (["np"], "sum"),
                              "amax": (["np"], "amax"),
                              "min": (["np"], "min"),
                              "amin": (["np"], "amin"),
-                             #"mean": (["np"], "mean"),
+                             "mean": (["np"], "mean"),
                              "median": (["np"], "median")}
 
 
