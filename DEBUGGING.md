@@ -24,6 +24,7 @@ $ gdb-oneapi -q python
 ```
 
 ### Limitations
+
 Currently, Numba-dppy provides only initial support of debugging GPU kernels.  
 The following functionality is **not supported** :
 - Printing kernel local variables (e.g. ```info locals```).
