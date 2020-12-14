@@ -18,7 +18,7 @@ requirements:
         - setuptools
         - cython
         - numba
-        - dpctl
+        - dpctl >=0.5
         - dpnp  # [linux]
     run:
         - python
