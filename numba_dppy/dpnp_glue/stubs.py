@@ -31,3 +31,12 @@ class dpnp(Stub):
 
     class median(Stub):
         pass
+
+    class argmax(Stub):
+        pass
+
+    class argmin(Stub):
+        pass
+
+    class argsort(Stub):
+        pass

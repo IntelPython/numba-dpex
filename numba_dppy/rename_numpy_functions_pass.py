@@ -17,7 +17,10 @@ rewrite_function_name_map = {"sum": (["np"], "sum"),
                              "min": (["np"], "min"),
                              "amin": (["np"], "amin"),
                              "mean": (["np"], "mean"),
-                             "median": (["np"], "median")}
+                             "median": (["np"], "median"),
+                             "argmax": (["np"], "argmax"),
+                             "argmin": (["np"], "argmin"),
+                             "argsort": (["np"], "argsort")}
 
 
 class RewriteNumPyOverloadedFunctions(object):
@@ -124,6 +127,7 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
         import numba_dppy.dpnp_glue.dpnp_linalgimpl
         import numba_dppy.dpnp_glue.dpnp_transcendentalsimpl
         import numba_dppy.dpnp_glue.dpnp_statisticsimpl
+        import numba_dppy.dpnp_glue.dpnp_sort_search_countimpl
 
     def run_pass(self, state):
         rewrite_function_name_pass = RewriteNumPyOverloadedFunctions(
