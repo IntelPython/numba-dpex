@@ -10,14 +10,16 @@ def find_numba():
     numba_dir = ""
     sys_packages = sys.path
     for pcg in sys_packages:
-        if pcg.find("/numba-0") != -1:
+        if pcg.find("site-packages/numba-") != -1:
             numba_dir = pcg
+        print(pcg)
     return numba_dir
 
 
 def get_ext_modules():
     ext_modules = []
     numba_dir = find_numba()
+    print(numba_dir)
 
     ext_dppy = Extension(
         name="numba_dppy._dppy_rt",
