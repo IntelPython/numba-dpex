@@ -7,6 +7,7 @@ import sys
 
 
 def find_numba():
+    numba_dir = ""
     sys_packages = sys.path
     for pcg in sys_packages:
         if pcg.find("/numba-0") != -1:
