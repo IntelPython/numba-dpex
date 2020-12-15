@@ -19,6 +19,7 @@ from . import spirv_generator
 
 import os
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
+from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
 
 
 DEBUG = os.environ.get('NUMBA_DPPY_DEBUG', None)
@@ -61,6 +62,8 @@ class DPPYCompiler(CompilerBase):
     def define_pipelines(self):
         # this maintains the objmode fallback behaviour
         pms = []
+        self.state.parfor_diagnostics = ExtendedParforDiagnostics()
+        self.state.metadata['parfor_diagnostics'] = self.state.parfor_diagnostics
         if not self.state.flags.force_pyobject:
             #print("Numba-DPPY [INFO]: Using Numba-DPPY pipeline")
             pms.append(DPPYPassBuilder.define_nopython_pipeline(self.state))
