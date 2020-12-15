@@ -2,7 +2,7 @@
 
 Setting the debug environment variable `NUMBA_DPPY_DEBUG` (e.g. `export NUMBA_DPPY_DEBUG=True`) enables 
 the emission of debug info to the llvm and spirv IR.
-To disable debugging set this variable to None: (e.g. `export NUMBA_DPPL_DEBUG= `).  
+To disable debugging set this variable to None: (e.g. `export NUMBA_DPPY_DEBUG= `).  
 Currently, the following debug info is available:
 - Source location (filename and line number) is available. 
 - Setting break points by the line number.
