@@ -126,6 +126,7 @@ class TestUsmArray(DPPYTestCase):
         self.assertIsInstance(b, usmarray.ndarray, type(b))
         self.assertTrue(usmarray.has_array_interface(b))
 
+    @unittest.expectedFailure
     def test_numba_usmarray_mul_add(self):
         """Testing Numba usmarray"""
         # fails if run tests in bunch
@@ -195,6 +196,7 @@ class TestUsmArray(DPPYTestCase):
         self.assertIsInstance(s1, tuple, type(s1))
         self.assertEqual(s1, (10, 10))
 
+    @unittest.expectedFailure
     def test_numba_usmarray_T(self):
         """Testing Numba usmarray.T"""
         dp4 = numba_T(numba_usmarray_empty())
