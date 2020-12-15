@@ -266,7 +266,6 @@ class Testdpnp_ndarray_functions(unittest.TestCase):
 
 @unittest.skipUnless(ensure_dpnp() and dpctl.has_gpu_queues(), 'test only when dpNP and GPU is available')
 class Testdpnp_functions(unittest.TestCase):
-
     N = 10
 
     a = np.array(np.random.random(N), dtype=np.float32)
