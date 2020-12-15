@@ -43,3 +43,6 @@ class dpnp(Stub):
 
     class cov(Stub):
         pass
+
+    class dot(Stub):
+        pass

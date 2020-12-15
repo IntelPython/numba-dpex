@@ -21,7 +21,8 @@ rewrite_function_name_map = {"sum": (["np"], "sum"),
                              "argmax": (["np"], "argmax"),
                              "argmin": (["np"], "argmin"),
                              "argsort": (["np"], "argsort"),
-                             "cov": (["np"], "cov")}
+                             "cov": (["np"], "cov"),
+                             "dot": (["np"], "dot")}
 
 
 class RewriteNumPyOverloadedFunctions(object):
