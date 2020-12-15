@@ -142,7 +142,6 @@ class TestUsmArray(DPPYTestCase):
 
     def test_numba_usmarray_2(self):
         """Testing Numba usmarray 2"""
-
         d = numba_identity(self.usmarray())
         self.assertIsInstance(d, usmarray.ndarray, type(d))
         self.assertTrue(usmarray.has_array_interface(d))
