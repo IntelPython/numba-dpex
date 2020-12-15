@@ -2,7 +2,7 @@ import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
 from numba.core import types, cgutils
 from numba.core.typing import signature
 from . import stubs
-import numba_dppy.experimental_numpy_lowering_overload as dpnp_lowering
+import numba_dppy.dpnp_glue as dpnp_lowering
 from numba.core.extending import overload, register_jitable
 import numpy as np
 

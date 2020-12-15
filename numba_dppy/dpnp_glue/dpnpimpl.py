@@ -1,13 +1,10 @@
 from numba.core.imputils import lower_builtin
-import numba_dppy.experimental_numpy_lowering_overload as dpnp_lowering
 from numba.core import types
-from numba.core.typing import signature
-from numba.core.extending import overload, register_jitable
-from . import stubs
+from numba.core.extending import register_jitable
 import numpy as np
-from numba_dppy.dpctl_functions import _DPCTL_FUNCTIONS
 from llvmlite import ir
 from numba.core.imputils import lower_getattr
+from numba_dppy.dpctl_functions import _DPCTL_FUNCTIONS
 
 ll_void_p = ir.IntType(8).as_pointer()
 
