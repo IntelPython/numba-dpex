@@ -52,7 +52,6 @@ def dpnp_argmax_impl(a):
 
         dpnp_ext._dummy_liveness_func([a.size, out.size])
 
-        print("HH")
         return out[0]
 
     return dpnp_impl
@@ -103,7 +102,6 @@ def dpnp_argmin_impl(a):
 
         dpnp_ext._dummy_liveness_func([a.size, out.size])
 
-        print("II")
         return out[0]
 
     return dpnp_impl
@@ -154,7 +152,6 @@ def dpnp_argsort_impl(a):
 
         dpnp_ext._dummy_liveness_func([a.size, out.size])
 
-        print("JJ")
         return out
 
     return dpnp_impl

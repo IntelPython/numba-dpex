@@ -50,7 +50,6 @@ def dpnp_sum_impl(a):
 
         dpnp_ext._dummy_liveness_func([out.size])
 
-        print("AAAAA")
         return out[0]
 
     return dpnp_impl
@@ -98,7 +97,6 @@ def dpnp_prod_impl(a):
 
         dpnp_ext._dummy_liveness_func([out.size])
 
-        print("BBB")
         return out[0]
 
     return dpnp_impl

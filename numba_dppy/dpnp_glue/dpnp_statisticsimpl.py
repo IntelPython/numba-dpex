@@ -59,7 +59,6 @@ def dpnp_amax_impl(a):
 
         dpnp_ext._dummy_liveness_func([out.size])
 
-        print("DDD")
         return out[0]
 
     return dpnp_impl
@@ -117,7 +116,6 @@ def dpnp_amin_impl(a):
 
         dpnp_ext._dummy_liveness_func([out.size])
 
-        print("EEE")
         return out[0]
 
     return dpnp_impl
@@ -177,7 +175,6 @@ def dpnp_mean_impl(a):
         free_usm(out_usm, sycl_queue)
 
         dpnp_ext._dummy_liveness_func([a.size, out.size])
-        print("FFFF")
         return out[0]
 
     return dpnp_impl
@@ -238,7 +235,6 @@ def dpnp_median_impl(a):
 
         dpnp_ext._dummy_liveness_func([a.size, out.size])
 
-        print("GG")
         return out[0]
 
     return dpnp_impl
@@ -308,12 +304,9 @@ def dpnp_cov_impl(a):
 
         dpnp_ext._dummy_liveness_func([a_copy_in_double.size, a.size, out.size])
 
-        print("KK")
         if a.ndim == 2:
             return out
         elif a.ndim == 1:
             return out[0]
 
     return dpnp_impl
-
-

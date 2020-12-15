@@ -67,7 +67,6 @@ def dpnp_eig_impl(a):
         free_usm(vr_usm, sycl_queue)
 
         dpnp_ext._dummy_liveness_func([wr.size, vr.size])
-        print("CCCC")
 
         return (wr, vr)
 
@@ -165,7 +164,6 @@ def dpnp_dot_impl(a, b):
             free_usm(out_usm, sycl_queue)
 
             dpnp_ext._dummy_liveness_func([a.size, b.size, out.size])
-            print("MM")
 
             return out
 
@@ -200,7 +198,6 @@ def dpnp_dot_impl(a, b):
             free_usm(out_usm, sycl_queue)
 
             dpnp_ext._dummy_liveness_func([a.size, b.size, out.size])
-            print("MV")
 
             return out
 
@@ -234,7 +231,6 @@ def dpnp_dot_impl(a, b):
             free_usm(out_usm, sycl_queue)
 
             dpnp_ext._dummy_liveness_func([a.size, b.size, out.size])
-            print("VM")
 
             return out
 
@@ -271,7 +267,6 @@ def dpnp_dot_impl(a, b):
 
             dpnp_ext._dummy_liveness_func([a.size, b.size, out.size])
 
-            print("VV")
             return out[0]
 
         return dot_2_vv
