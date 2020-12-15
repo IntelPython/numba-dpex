@@ -24,7 +24,8 @@ from .dppy_passes import (
         SpirvFriendlyLowering,
         DPPYAddNumpyOverloadPass,
         DPPYAddNumpyRemoveOverloadPass,
-        DPPYNoPythonBackend
+        DPPYNoPythonBackend,
+        DPPYDumpParforDiagnostics
         )
 
 from .rename_numpy_functions_pass import (DPPYRewriteOverloadedNumPyFunctions,
@@ -121,5 +122,6 @@ class DPPYPassBuilder(object):
         pm.add_pass(SpirvFriendlyLowering, "SPIRV-friendly lowering pass")
         pm.add_pass(DPPYNoPythonBackend, "nopython mode backend")
         pm.add_pass(DPPYAddNumpyRemoveOverloadPass, "dppy remove typing template for Numpy functions")
+        pm.add_pass(DPPYDumpParforDiagnostics, "dump parfor diagnostics")
         pm.finalize()
         return pm
