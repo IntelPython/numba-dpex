@@ -15,31 +15,11 @@ def p1(a):
 f1 = numba.njit(p1)
 
 
-@numba.njit()
-def f2(a):
-    return a
-
-
-@numba.njit()
-def f3(a, b):  # a is usmarray, b is numpy
-    return a * usmarray.asarray(b)
-
-
-@numba.njit()
-def f4():
-    return usmarray.ones(10)
-
-
 def p5(a, b):  # a is usmarray, b is numpy
     return a * b
 
 
 f5 = numba.njit(p5)
-
-
-@numba.njit()
-def f6(a):
-    return a + 13
 
 
 @numba.njit()
@@ -56,26 +36,8 @@ def f8(a):
 
 
 @numba.njit
-def f9(a):
-    return usmarray.from_ndarray(a)
-
-
-@numba.njit
 def f10():
     return usmarray.empty((10, 10))
-
-
-@numba.njit
-def f11(x):
-    return x.shape
-
-
-@numba.njit
-def f12(x):
-    return x.T
-
-
-# --------------------------------------------------------------------------------
 
 
 class TestUsmArray(DPPYTestCase):
@@ -139,6 +101,11 @@ class TestUsmArray(DPPYTestCase):
 
     def test_numba_usmarray_2(self):
         """Testing Numba usmarray 2"""
+
+        @numba.njit()
+        def f2(a):
+            return a
+
         d = f2(self.a)
         self.assertIsInstance(d, usmarray.ndarray, type(d))
         self.assertTrue(usmarray.has_array_interface(d))
@@ -153,11 +120,21 @@ class TestUsmArray(DPPYTestCase):
     @unittest.expectedFailure
     def test_numba_usmarray_constructor_from_numpy_ndarray(self):
         """Testing Numba usmarray constructor from numpy.ndarray"""
+
+        @numba.njit()
+        def f3(a, b):  # a is usmarray, b is numpy
+            return a * usmarray.asarray(b)
+
         e = f3(self.a, self.z1)
         self.assertIsInstance(e, usmarray.ndarray, type(e))
 
     def test_numba_mixing_usmarray_and_constant(self):
         """Testing Numba mixing usmarray and constant"""
+
+        @numba.njit()
+        def f6(a):
+            return a + 13
+
         g = f6(self.a)
         self.assertIsInstance(g, usmarray.ndarray, type(g))
         self.assertTrue(usmarray.has_array_interface(g))
@@ -170,6 +147,11 @@ class TestUsmArray(DPPYTestCase):
 
     def test_numba_usmarray_functions(self):
         """Testing Numba usmarray functions"""
+
+        @numba.njit()
+        def f4():
+            return usmarray.ones(10)
+
         f = f4()
         self.assertIsInstance(f, usmarray.ndarray, type(f))
         self.assertTrue(usmarray.has_array_interface(f))
@@ -181,6 +163,11 @@ class TestUsmArray(DPPYTestCase):
 
     def test_numba_usmarray_from_ndarray(self):
         """Testing Numba usmarray.from_ndarray"""
+
+        @numba.njit
+        def f9(a):
+            return usmarray.from_ndarray(a)
+
         dp2 = f9(self.nd3)
         self.assertIsInstance(dp2, usmarray.ndarray, type(dp2))
         self.assertTrue(usmarray.has_array_interface(dp2))
@@ -193,12 +180,22 @@ class TestUsmArray(DPPYTestCase):
 
     def test_numba_usmarray_shape(self):
         """Testing Numba usmarray.shape"""
+
+        @numba.njit
+        def f11(x):
+            return x.shape
+
         s1 = f11(self.dp3)
         self.assertIsInstance(s1, tuple, type(s1))
         self.assertEqual(s1, (10, 10))
 
     def test_numba_usmarray_T(self):
         """Testing Numba usmarray.T"""
+
+        @numba.njit
+        def f12(x):
+            return x.T
+
         dp4 = f12(self.dp3)
         self.assertIsInstance(dp4, usmarray.ndarray, type(dp4))
         self.assertTrue(usmarray.has_array_interface(dp4))
