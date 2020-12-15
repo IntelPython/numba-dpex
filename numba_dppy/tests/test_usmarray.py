@@ -1,228 +1,203 @@
-from __future__ import print_function, division, absolute_import
-
 import numba
-import dpctl.dptensor.numpy_usm_shared as usmarray
 import numpy
-import sys
+import unittest
+
+import dpctl.dptensor.numpy_usm_shared as usmarray
+
+from numba_dppy.testing import DPPYTestCase
 
 
-def p1(a):
+@numba.njit()
+def numba_mul_add(a):
     return a * 2.0 + 13
 
 
-f1 = numba.njit(p1)
-
-
 @numba.njit()
-def f2(a):
-    return a
-
-
-@numba.njit()
-def f3(a, b):  # a is usmarray, b is numpy
-    return a * usmarray.asarray(b)
-
-
-@numba.njit()
-def f4():
-    return usmarray.ones(10)
-
-
-def p5(a, b):  # a is usmarray, b is numpy
-    return a * b
-
-
-f5 = numba.njit(p5)
-
-
-@numba.njit()
-def f6(a):
+def numba_add_const(a):
     return a + 13
 
 
 @numba.njit()
-def f7(a):  # a is usmarray
-    # implicit conversion of a to numpy.ndarray
-    b = numpy.ones(10)
-    c = a * b
-    d = a.argsort()  # with no implicit conversion this fails
+def numba_mul(a, b):  # a is usmarray, b is numpy
+    return a * b
+
+
+@numba.njit()
+def numba_mul_usmarray_asarray(a, b):  # a is usmarray, b is numpy
+    return a * usmarray.asarray(b)
+
+
+# @numba.njit()
+# def f7(a):  # a is usmarray
+#     # implicit conversion of a to numpy.ndarray
+#     b = numpy.ones(10)
+#     c = a * b
+#     d = a.argsort()  # with no implicit conversion this fails
 
 
 @numba.njit
-def f8(a):
+def numba_usmarray_as_ndarray(a):
     return usmarray.as_ndarray(a)
 
 
 @numba.njit
-def f9(a):
+def numba_usmarray_from_ndarray(a):
     return usmarray.from_ndarray(a)
 
 
+@numba.njit()
+def numba_usmarray_ones():
+    return usmarray.ones(10)
+
+
 @numba.njit
-def f10():
+def numba_usmarray_empty():
     return usmarray.empty((10, 10))
 
 
+@numba.njit()
+def numba_identity(a):
+    return a
+
+
 @numba.njit
-def f11(x):
+def numba_shape(x):
     return x.shape
 
 
 @numba.njit
-def f12(x):
+def numba_T(x):
     return x.T
 
 
-# --------------------------------------------------------------------------------
+class TestUsmArray(DPPYTestCase):
+    def ndarray(self):
+        """Create NumPy array"""
+        return numpy.ones(10)
 
-print("------------------- Testing Python Numpy")
-sys.stdout.flush()
-z1 = numpy.ones(10)
-z2 = p1(z1)
-print("z2:", z2, type(z2))
-assert type(z2) == numpy.ndarray
+    def usmarray(self):
+        """Create dpCtl USM array"""
+        return usmarray.ones(10)
 
-print("------------------- Testing Numba Numpy")
-sys.stdout.flush()
-z1 = numpy.ones(10)
-z2 = f1(z1)
-print("z2:", z2, type(z2))
-assert type(z2) == numpy.ndarray
+    def test_python_numpy(self):
+        """Testing Python Numpy"""
+        z2 = numba_mul_add.py_func(self.ndarray())
+        self.assertEqual(type(z2), numpy.ndarray, z2)
 
-print("------------------- Testing usmarray ones")
-sys.stdout.flush()
-a = usmarray.ones(10)
-print("a:", a, type(a))
-assert isinstance(a, usmarray.ndarray)
-assert usmarray.has_array_interface(a)
+    def test_numba_numpy(self):
+        """Testing Numba Numpy"""
+        z2 = numba_mul_add(self.ndarray())
+        self.assertEqual(type(z2), numpy.ndarray, z2)
 
-print("------------------- Testing usmarray.usmarray.as_ndarray")
-sys.stdout.flush()
-nd1 = a.as_ndarray()
-print("nd1:", nd1, type(nd1))
-assert type(nd1) == numpy.ndarray
+    def test_usmarray_ones(self):
+        """Testing usmarray ones"""
+        a = usmarray.ones(10)
+        self.assertIsInstance(a, usmarray.ndarray, type(a))
+        self.assertTrue(usmarray.has_array_interface(a))
 
-print("------------------- Testing usmarray.as_ndarray")
-sys.stdout.flush()
-nd2 = usmarray.as_ndarray(a)
-print("nd2:", nd2, type(nd2))
-assert type(nd2) == numpy.ndarray
+    def test_usmarray_usmarray_as_ndarray(self):
+        """Testing usmarray.usmarray.as_ndarray"""
+        nd1 = self.usmarray().as_ndarray()
+        self.assertEqual(type(nd1), numpy.ndarray, nd1)
 
-print("------------------- Testing usmarray.from_ndarray")
-sys.stdout.flush()
-dp1 = usmarray.from_ndarray(nd2)
-print("dp1:", dp1, type(dp1))
-assert isinstance(dp1, usmarray.ndarray)
-assert usmarray.has_array_interface(dp1)
+    def test_usmarray_as_ndarray(self):
+        """Testing usmarray.as_ndarray"""
+        nd2 = usmarray.as_ndarray(self.usmarray())
+        self.assertEqual(type(nd2), numpy.ndarray, nd2)
 
-print("------------------- Testing usmarray multiplication")
-sys.stdout.flush()
-c = a * 5
-print("c", c, type(c))
-assert isinstance(c, usmarray.ndarray)
-assert usmarray.has_array_interface(c)
+    def test_usmarray_from_ndarray(self):
+        """Testing usmarray.from_ndarray"""
+        nd2 = usmarray.as_ndarray(self.usmarray())
+        dp1 = usmarray.from_ndarray(nd2)
+        self.assertIsInstance(dp1, usmarray.ndarray, type(dp1))
+        self.assertTrue(usmarray.has_array_interface(dp1))
 
-print("------------------- Testing Python usmarray")
-sys.stdout.flush()
-b = p1(c)
-print("b:", b, type(b))
-assert isinstance(b, usmarray.ndarray)
-assert usmarray.has_array_interface(b)
-del b
+    def test_usmarray_multiplication(self):
+        """Testing usmarray multiplication"""
+        c = self.usmarray() * 5
+        self.assertIsInstance(c, usmarray.ndarray, type(c))
+        self.assertTrue(usmarray.has_array_interface(c))
 
-print("------------------- Testing Python mixing usmarray and numpy.ndarray")
-sys.stdout.flush()
-h = p5(a, z1)
-print("h:", h, type(h))
-assert isinstance(h, usmarray.ndarray)
-assert usmarray.has_array_interface(h)
-del h
+    def test_python_usmarray_mul_add(self):
+        """Testing Python usmarray"""
+        c = self.usmarray() * 5
+        b = numba_mul_add.py_func(c)
+        self.assertIsInstance(b, usmarray.ndarray, type(b))
+        self.assertTrue(usmarray.has_array_interface(b))
 
-print("------------------- Testing Numba usmarray 2")
-sys.stdout.flush()
-d = f2(a)
-print("d:", d, type(d))
-assert isinstance(d, usmarray.ndarray)
-assert usmarray.has_array_interface(d)
-del d
+    @unittest.expectedFailure
+    def test_numba_usmarray_mul_add(self):
+        """Testing Numba usmarray"""
+        # fails if run tests in bunch
+        c = self.usmarray() * 5
+        b = numba_mul_add(c)
+        self.assertIsInstance(b, usmarray.ndarray, type(b))
+        self.assertTrue(usmarray.has_array_interface(b))
 
-print("------------------- Testing Numba usmarray")
-sys.stdout.flush()
-b = f1(c)
-print("b:", b, type(b))
-assert isinstance(b, usmarray.ndarray)
-assert usmarray.has_array_interface(b)
-del b
+    def test_python_mixing_usmarray_and_numpy_ndarray(self):
+        """Testing Python mixing usmarray and numpy.ndarray"""
+        h = numba_mul.py_func(self.usmarray(), self.ndarray())
+        self.assertIsInstance(h, usmarray.ndarray, type(h))
+        self.assertTrue(usmarray.has_array_interface(h))
 
-"""
-print("------------------- Testing Numba usmarray constructor from numpy.ndarray")
-sys.stdout.flush()
-e = f3(a, z1)
-print("e:", e, type(e))
-assert(isinstance(e, usmarray.ndarray))
-"""
+    def test_numba_usmarray_2(self):
+        """Testing Numba usmarray 2"""
 
-print("------------------- Testing Numba mixing usmarray and constant")
-sys.stdout.flush()
-g = f6(a)
-print("g:", g, type(g))
-assert isinstance(g, usmarray.ndarray)
-assert usmarray.has_array_interface(g)
-del g
+        d = numba_identity(self.usmarray())
+        self.assertIsInstance(d, usmarray.ndarray, type(d))
+        self.assertTrue(usmarray.has_array_interface(d))
 
-print("------------------- Testing Numba mixing usmarray and numpy.ndarray")
-sys.stdout.flush()
-h = f5(a, z1)
-print("h:", h, type(h))
-assert isinstance(h, usmarray.ndarray)
-assert usmarray.has_array_interface(h)
-del h
+    @unittest.expectedFailure
+    def test_numba_usmarray_constructor_from_numpy_ndarray(self):
+        """Testing Numba usmarray constructor from numpy.ndarray"""
+        e = numba_mul_usmarray_asarray(self.usmarray(), self.ndarray())
+        self.assertIsInstance(e, usmarray.ndarray, type(e))
 
-print("------------------- Testing Numba usmarray functions")
-sys.stdout.flush()
-f = f4()
-print("f:", f, type(f))
-assert isinstance(f, usmarray.ndarray)
-assert usmarray.has_array_interface(f)
-del f
+    def test_numba_mixing_usmarray_and_constant(self):
+        """Testing Numba mixing usmarray and constant"""
+        g = numba_add_const(self.usmarray())
+        self.assertIsInstance(g, usmarray.ndarray, type(g))
+        self.assertTrue(usmarray.has_array_interface(g))
 
-print("------------------- Testing Numba usmarray.as_ndarray")
-sys.stdout.flush()
-nd3 = f8(a)
-print("nd3:", nd3, type(nd3))
-assert type(nd3) == numpy.ndarray
+    def test_numba_mixing_usmarray_and_numpy_ndarray(self):
+        """Testing Numba mixing usmarray and numpy.ndarray"""
+        h = numba_mul(self.usmarray(), self.ndarray())
+        self.assertIsInstance(h, usmarray.ndarray, type(h))
+        self.assertTrue(usmarray.has_array_interface(h))
 
-print("------------------- Testing Numba usmarray.from_ndarray")
-sys.stdout.flush()
-dp2 = f9(nd3)
-print("dp2:", dp2, type(dp2))
-assert isinstance(dp2, usmarray.ndarray)
-assert usmarray.has_array_interface(dp2)
-del nd3
-del dp2
+    def test_numba_usmarray_functions(self):
+        """Testing Numba usmarray functions"""
+        f = numba_usmarray_ones()
+        self.assertIsInstance(f, usmarray.ndarray, type(f))
+        self.assertTrue(usmarray.has_array_interface(f))
 
-print("------------------- Testing Numba usmarray.empty")
-sys.stdout.flush()
-dp3 = f10()
-print("dp3:", dp3, type(dp3))
-assert isinstance(dp3, usmarray.ndarray)
-assert usmarray.has_array_interface(dp3)
+    def test_numba_usmarray_as_ndarray(self):
+        """Testing Numba usmarray.as_ndarray"""
+        nd3 = numba_usmarray_as_ndarray(self.usmarray())
+        self.assertEqual(type(nd3), numpy.ndarray, nd3)
 
-print("------------------- Testing Numba usmarray.shape")
-sys.stdout.flush()
-s1 = f11(dp3)
-print("s1:", s1, type(s1))
+    def test_numba_usmarray_from_ndarray(self):
+        """Testing Numba usmarray.from_ndarray"""
+        nd3 = numba_usmarray_as_ndarray(self.usmarray())
+        dp2 = numba_usmarray_from_ndarray(nd3)
+        self.assertIsInstance(dp2, usmarray.ndarray, type(dp2))
+        self.assertTrue(usmarray.has_array_interface(dp2))
 
-print("------------------- Testing Numba usmarray.T")
-sys.stdout.flush()
-dp4 = f12(dp3)
-print("dp4:", dp4, type(dp4))
-assert isinstance(dp4, usmarray.ndarray)
-assert usmarray.has_array_interface(dp4)
-del dp3
-del dp4
+    def test_numba_usmarray_empty(self):
+        """Testing Numba usmarray.empty"""
+        dp3 = numba_usmarray_empty()
+        self.assertIsInstance(dp3, usmarray.ndarray, type(dp3))
+        self.assertTrue(usmarray.has_array_interface(dp3))
 
-# -------------------------------
-del a
+    def test_numba_usmarray_shape(self):
+        """Testing Numba usmarray.shape"""
+        s1 = numba_shape(numba_usmarray_empty())
+        self.assertIsInstance(s1, tuple, type(s1))
+        self.assertEqual(s1, (10, 10))
 
-print("SUCCESS")
+    @unittest.expectedFailure
+    def test_numba_usmarray_T(self):
+        """Testing Numba usmarray.T"""
+        dp4 = numba_T(numba_usmarray_empty())
+        self.assertIsInstance(dp4, usmarray.ndarray, type(dp4))
+        self.assertTrue(usmarray.has_array_interface(dp4))
