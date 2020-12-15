@@ -10,6 +10,7 @@ import dpctl
 import unittest
 
 
+import dpctl
 
 def test_for_different_datatypes(fn, test_fn, dims, arg_count, tys, np_all=False, matrix=None):
     if arg_count == 1:
@@ -87,10 +88,58 @@ def ensure_dpnp():
     except:
         return False
 
+# From https://github.com/IntelPython/dpnp/blob/master/tests/test_linalg.py
+def vvsort(val, vec, size):
+    for i in range(size):
+        imax = i
+        for j in range(i + 1, size):
+            if np.abs(val[imax]) < np.abs(val[j]):
+                imax = j
+
+        temp = val[i]
+        val[i] = val[imax]
+        val[imax] = temp
+
+        for k in range(size):
+            temp = vec[k, i]
+            vec[k, i] = vec[k, imax]
+            vec[k, imax] = temp
+
+
+@unittest.skipUnless(ensure_dpnp(), 'test only when dpNP is available')
+class Testdpnp_linalg_functions(unittest.TestCase):
+    tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
+    def test_eig(self):
+        @njit
+        def f(a):
+            return np.linalg.eig(a)
+
+        size = 3
+        for ty in self.tys:
+            a = np.arange(size * size, dtype=ty).reshape((size, size))
+            symm_a = np.tril(a) + np.tril(a, -1).T + np.diag(np.full((size,), size * size, dtype=ty))
+
+            with dpctl.device_context("opencl:gpu"):
+                got_val, got_vec = f(symm_a)
+
+            np_val, np_vec = np.linalg.eig(symm_a)
+
+            # sort val/vec by abs value
+            vvsort(got_val, got_vec, size)
+            vvsort(np_val, np_vec, size)
+
+
+	    # NP change sign of vectors
+            for i in range(np_vec.shape[1]):
+                if np_vec[0, i] * got_vec[0, i] < 0:
+                    np_vec[:, i] = -np_vec[:, i]
+
+            self.assertTrue(np.allclose(got_val, np_val))
+            self.assertTrue(np.allclose(got_vec, np_vec))
+
 
 @unittest.skipUnless(ensure_dpnp() and dpctl.has_gpu_queues(), 'test only when dpNP and GPU is available')
 class Testdpnp_functions(unittest.TestCase):
-
     N = 10
 
     a = np.array(np.random.random(N), dtype=np.float32)
