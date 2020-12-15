@@ -40,3 +40,6 @@ class dpnp(Stub):
 
     class argsort(Stub):
         pass
+
+    class cov(Stub):
+        pass

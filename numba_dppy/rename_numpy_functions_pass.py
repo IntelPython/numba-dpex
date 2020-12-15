@@ -20,7 +20,8 @@ rewrite_function_name_map = {"sum": (["np"], "sum"),
                              "median": (["np"], "median"),
                              "argmax": (["np"], "argmax"),
                              "argmin": (["np"], "argmin"),
-                             "argsort": (["np"], "argsort")}
+                             "argsort": (["np"], "argsort"),
+                             "cov": (["np"], "cov")}
 
 
 class RewriteNumPyOverloadedFunctions(object):
