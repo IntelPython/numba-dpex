@@ -22,7 +22,8 @@ rewrite_function_name_map = {"sum": (["np"], "sum"),
                              "argmin": (["np"], "argmin"),
                              "argsort": (["np"], "argsort"),
                              "cov": (["np"], "cov"),
-                             "dot": (["np"], "dot")}
+                             "dot": (["np"], "dot"),
+                             "matmul": (["np"], "matmul")}
 
 
 class RewriteNumPyOverloadedFunctions(object):
@@ -228,7 +229,6 @@ class RewriteNdarrayFunctions(object):
         return
 
 
-
 @register_pass(mutates_CFG=True, analysis_only=False)
 class DPPYRewriteNdarrayFunctions(FunctionPass):
     _name = "dppy_rewrite_ndarray_functions_pass"
@@ -247,5 +247,3 @@ class DPPYRewriteNdarrayFunctions(FunctionPass):
         state.func_ir.blocks = simplify_CFG(state.func_ir.blocks)
 
         return True
-
-

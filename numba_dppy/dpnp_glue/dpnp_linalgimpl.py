@@ -74,6 +74,7 @@ def dpnp_eig_impl(a):
     return dpnp_eig_impl
 
 
+@overload(stubs.dpnp.matmul)
 @overload(stubs.dpnp.dot)
 def dpnp_dot_impl(a, b):
     dpnp_lowering.ensure_dpnp("dot")

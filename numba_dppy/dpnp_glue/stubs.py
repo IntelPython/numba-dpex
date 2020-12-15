@@ -46,3 +46,6 @@ class dpnp(Stub):
 
     class dot(Stub):
         pass
+
+    class matmul(Stub):
+        pass
