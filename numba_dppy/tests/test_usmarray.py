@@ -1,11 +1,10 @@
 import numba
 import numpy
-import sys
 import unittest
 
-from numba_dppy.testing import DPPYTestCase
-
 import dpctl.dptensor.numpy_usm_shared as usmarray
+
+from numba_dppy.testing import DPPYTestCase
 
 
 @numba.njit()
