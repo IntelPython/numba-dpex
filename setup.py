@@ -3,16 +3,26 @@ from setuptools import Extension, find_packages, setup
 from Cython.Build import cythonize
 
 import versioneer
+import sys
+
+
+def find_numba():
+    sys_packages = sys.path
+    for pcg in sys_packages:
+        if pcg.find("/numba-0") != -1:
+            numba_dir = pcg
+    return numba_dir
 
 
 def get_ext_modules():
     ext_modules = []
+    numba_dir = find_numba()
 
     ext_dppy = Extension(
         name="numba_dppy._dppy_rt",
         sources=["numba_dppy/dppy_rt.c"],
-        include_dirs=["../numba/numba"],  # Need to get rid of relative paths.
-        depends=["../numba/numba/core/runtime/nrt_external.h", "../numba/numba/core/runtime/nrt.h", "../numba/numba/_pymodule.h"],
+        include_dirs=[numba_dir + "/numba"],
+        depends=[numba_dir + "/numba/core/runtime/nrt_external.h", numba_dir + "/numba/core/runtime/nrt.h", numba_dir + "/numba/_pymodule.h"],
     )
     ext_modules += [ext_dppy]
 
