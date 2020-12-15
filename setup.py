@@ -1,23 +1,15 @@
 import os
 from setuptools import Extension, find_packages, setup
 from Cython.Build import cythonize
+from numba.core.extending import include_path
 
 import versioneer
 import sys
 
 
-def find_numba():
-    numba_dir = ""
-    sys_packages = sys.path
-    for pcg in sys_packages:
-        if pcg.find("/numba-0") != -1:
-            numba_dir = pcg
-    return numba_dir
-
-
 def get_ext_modules():
     ext_modules = []
-    numba_dir = find_numba()
+    numba_dir = include_path()
 
     ext_dppy = Extension(
         name="numba_dppy._dppy_rt",
