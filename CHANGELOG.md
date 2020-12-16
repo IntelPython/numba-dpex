@@ -12,12 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Offload diagnostics.
 - Controllable fallback.
 - Add flags to generate debug symbols.
-- Implementation of `np.linalg.eig`.
+- Implementation of `np.linalg.eig`, `np.ndarray.sum`, `np.ndarray.max`, `np.ndarray.min`, `np.ndarray.mean`.
+- Two new re-write passes to convert NumPy calls into a pseudo `numba_dppy` call site to allow target-specific
+  overload of NumPy functions. The rewrite passes is a temporary fix till Numba gains support for target-specific overlaods.
 - Updated to dpCtl 0.5.* and dpNP 0.4.*
-- The `dpnp` integration to support NumPy functions on SYCL devices now uses
-Numba's `@overload` functionality.
 
 ### Changed
+- The `dpnp` interface now uses Numba's `@overload` functionality as opposed to the previous `@lower_builtin` method.
 - Rename `DPPL` to `DPPY`.
 - Cleaned test code.
 - `DPPLTestCase` replaced with `unittest.TestCase`.
