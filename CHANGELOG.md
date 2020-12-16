@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add flags to generate debug symbols.
 - Implementation of `np.linalg.eig`.
 - Updated to dpCtl 0.5.* and dpNP 0.4.*
+- The `dpnp` integration to support NumPy functions on SYCL devices now uses
+Numba's `@overload` functionality.
 
 ### Changed
 - Rename `DPPL` to `DPPY`.
