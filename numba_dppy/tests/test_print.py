@@ -1,19 +1,14 @@
 #! /usr/bin/env python
-from __future__ import print_function
-from timeit import default_timer as time
-
-import sys
 import numpy as np
 from numba import njit, prange
 import numba_dppy, numba_dppy as dppy
-from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPYTestCase
+import unittest
 
 import dpctl
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestPrint(DPPYTestCase):
+class TestPrint(unittest.TestCase):
     def test_print_dppy_kernel(self):
         @dppy.func
         def g(a):

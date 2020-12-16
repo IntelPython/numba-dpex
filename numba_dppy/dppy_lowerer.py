@@ -520,6 +520,8 @@ def _create_gufunc_for_parfor_body(
     diagnostics.hoist_info[parfor.id] = {'hoisted': hoisted,
                                          'not_hoisted': not_hoisted}
 
+    lowerer.metadata['parfor_diagnostics'].extra_info[str(parfor.id)] = str(dpctl.get_current_queue().get_sycl_device().get_device_name())
+
     if config.DEBUG_ARRAY_OPT:
         print("After hoisting")
         _print_body(loop_body)
@@ -1165,13 +1167,18 @@ class DPPYLower(Lower):
         try:
             lowering.lower_extensions[parfor.Parfor].append(lower_parfor_rollback)
             self.gpu_lower.lower()
+            # if lower dont crash, and parfor_diagnostics is empty then it is kernel
+            if not self.gpu_lower.metadata['parfor_diagnostics'].extra_info:
+                str_name = str(dpctl.get_current_queue().get_sycl_device().get_device_name())
+                self.gpu_lower.metadata['parfor_diagnostics'].extra_info["kernel"] = str_name
             self.base_lower = self.gpu_lower
             lowering.lower_extensions[parfor.Parfor].pop()
         except Exception as e:
             if numba_dppy.compiler.DEBUG:
                 print("Failed to lower parfor on DPPY-device. Due to:\n", e)
             lowering.lower_extensions[parfor.Parfor].pop()
-            if (lowering.lower_extensions[parfor.Parfor][-1] == numba.parfors.parfor_lowering._lower_parfor_parallel):
+            if ((lowering.lower_extensions[parfor.Parfor][-1] == numba.parfors.parfor_lowering._lower_parfor_parallel) and
+                numba_dppy.config.FALLBACK_ON_CPU == 1):
                 self.cpu_lower.lower()
                 self.base_lower = self.cpu_lower
             else:
