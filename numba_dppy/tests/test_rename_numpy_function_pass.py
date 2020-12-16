@@ -4,6 +4,7 @@ import numpy as np
 import numba
 from numba import njit, typeof
 import numba_dppy, numba_dppy as dppy
+from numba_dppy.testing import ensure_dpnp
 
 
 from numba.core import (compiler, typing, cpu)
@@ -75,6 +76,7 @@ class TestRenameNumpyFunctionsPass(unittest.TestCase):
         self.assertTrue(check_equivalent(expected_ir, pipeline.state.func_ir))
 
 
+@unittest.skipUnless(ensure_dpnp(), 'test only when dpNP is available')
 class TestRenameNdarrayFunctionsPass(unittest.TestCase):
     def test_rename_ndarray(self):
         def expected(a):
