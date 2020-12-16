@@ -50,7 +50,6 @@ def dpnp_sum_impl(a):
         free_usm(a_usm, sycl_queue)
         free_usm(out_usm, sycl_queue)
 
-
         dpnp_ext._dummy_liveness_func([out.size])
 
         return out[0]
