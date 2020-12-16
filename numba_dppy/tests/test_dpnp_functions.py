@@ -8,6 +8,7 @@ import numba_dppy
 import numba_dppy as dppy
 import dpctl
 import unittest
+from numba_dppy.testing import ensure_dpnp
 
 
 import dpctl
@@ -80,13 +81,6 @@ def test_for_dimensions(fn, test_fn, dims, tys, np_all=False):
 
     return True
 
-
-def ensure_dpnp():
-    try:
-        from numba_dppy.dpnp_glue import dpnp_fptr_interface as dpnp_glue
-        return True
-    except:
-        return False
 
 # From https://github.com/IntelPython/dpnp/blob/master/tests/test_linalg.py
 def vvsort(val, vec, size):
@@ -231,7 +225,6 @@ class Testdpnp_ndarray_functions(unittest.TestCase):
 
             self.assertTrue(expected == got)
 
-
     def test_ndarray_argmin(self):
         @njit
         def f(a):
@@ -261,7 +254,6 @@ class Testdpnp_ndarray_functions(unittest.TestCase):
                 expected = a.argsort()
 
             self.assertTrue(np.array_equal(expected, got))
-
 
 
 @unittest.skipUnless(ensure_dpnp() and dpctl.has_gpu_queues(), 'test only when dpNP and GPU is available')
