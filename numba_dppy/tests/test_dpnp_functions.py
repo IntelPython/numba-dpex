@@ -8,6 +8,7 @@ import numba_dppy
 import numba_dppy as dppy
 import dpctl
 import unittest
+from numba_dppy.testing import ensure_dpnp
 
 
 import dpctl
@@ -80,13 +81,6 @@ def test_for_dimensions(fn, test_fn, dims, tys, np_all=False):
 
     return True
 
-
-def ensure_dpnp():
-    try:
-        from numba_dppy.dpnp_glue import dpnp_fptr_interface as dpnp_glue
-        return True
-    except:
-        return False
 
 # From https://github.com/IntelPython/dpnp/blob/master/tests/test_linalg.py
 def vvsort(val, vec, size):
