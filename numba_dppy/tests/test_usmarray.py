@@ -4,8 +4,6 @@ import unittest
 
 import dpctl.dptensor.numpy_usm_shared as usmarray
 
-from numba_dppy.testing import DPPYTestCase
-
 
 @numba.njit()
 def numba_mul_add(a):
@@ -70,7 +68,7 @@ def numba_T(x):
     return x.T
 
 
-class TestUsmArray(DPPYTestCase):
+class TestUsmArray(unittest.TestCase):
     def ndarray(self):
         """Create NumPy array"""
         return numpy.ones(10)
