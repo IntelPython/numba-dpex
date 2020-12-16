@@ -27,7 +27,6 @@ Numba's `@overload` functionality.
 - Remove nested folder `dppl` in `tests`.
 - No dependency on `cffi`.
 
-
 ### Removed
 - The old backup file.
 
