@@ -1,8 +1,12 @@
 #include "_pymodule.h"
 #include "core/runtime/nrt_external.h"
 #include "assert.h"
-#include <dlfcn.h>
 #include <stdio.h>
+#if !defined _WIN32
+   #include <dlfcn.h>
+#else
+   #include <windows.h>
+#endif
 
 NRT_ExternalAllocator usmarray_allocator;
 NRT_external_malloc_func internal_allocator = NULL;
@@ -37,42 +41,81 @@ void save_queue_deallocator(void *data, void *opaque) {
 }
 
 void usmarray_memsys_init(void) {
-    char *lib_name = "libDPCTLSyclInterface.so";
-    char *malloc_name = "DPCTLmalloc_shared";
-    char *free_name = "DPCTLfree_with_queue";
-    char *get_queue_name = "DPCTLQueueMgr_GetCurrentQueue";
-    char *free_queue_name = "DPCTLQueue_Delete";
+    #if !defined _WIN32
+        char *lib_name = "libDPCTLSyclInterface.so";
+        char *malloc_name = "DPCTLmalloc_shared";
+        char *free_name = "DPCTLfree_with_queue";
+        char *get_queue_name = "DPCTLQueueMgr_GetCurrentQueue";
+        char *free_queue_name = "DPCTLQueue_Delete";
 
-    void *sycldl = dlopen(lib_name, RTLD_NOW);
-    assert(sycldl != NULL);
-    internal_allocator = (NRT_external_malloc_func)dlsym(sycldl, malloc_name);
-    usmarray_allocator.malloc = save_queue_allocator;
-    if (usmarray_allocator.malloc == NULL) {
-        printf("Did not find %s in %s\n", malloc_name, lib_name);
-        exit(-1);
-    }
+        void *sycldl = dlopen(lib_name, RTLD_NOW);
+        assert(sycldl != NULL);
+        internal_allocator = (NRT_external_malloc_func)dlsym(sycldl, malloc_name);
+        usmarray_allocator.malloc = save_queue_allocator;
+        if (usmarray_allocator.malloc == NULL) {
+            printf("Did not find %s in %s\n", malloc_name, lib_name);
+            exit(-1);
+        }
 
-    usmarray_allocator.realloc = NULL;
+        usmarray_allocator.realloc = NULL;
 
-    internal_free = (NRT_external_free_func)dlsym(sycldl, free_name);
-    usmarray_allocator.free = save_queue_deallocator;
-    if (usmarray_allocator.free == NULL) {
-        printf("Did not find %s in %s\n", free_name, lib_name);
-        exit(-1);
-    }
+        internal_free = (NRT_external_free_func)dlsym(sycldl, free_name);
+        usmarray_allocator.free = save_queue_deallocator;
+        if (usmarray_allocator.free == NULL) {
+            printf("Did not find %s in %s\n", free_name, lib_name);
+            exit(-1);
+        }
 
-    get_queue_internal = (void *(*)(void))dlsym(sycldl, get_queue_name);
-    if (get_queue_internal == NULL) {
-        printf("Did not find %s in %s\n", get_queue_name, lib_name);
-        exit(-1);
-    }
-    usmarray_allocator.opaque_data = NULL;
+        get_queue_internal = (void *(*)(void))dlsym(sycldl, get_queue_name);
+        if (get_queue_internal == NULL) {
+            printf("Did not find %s in %s\n", get_queue_name, lib_name);
+            exit(-1);
+        }
+        usmarray_allocator.opaque_data = NULL;
 
-    free_queue_internal = (void (*)(void*))dlsym(sycldl, free_queue_name);
-    if (free_queue_internal == NULL) {
-        printf("Did not find %s in %s\n", free_queue_name, lib_name);
-        exit(-1);
-    }
+        free_queue_internal = (void (*)(void*))dlsym(sycldl, free_queue_name);
+        if (free_queue_internal == NULL) {
+            printf("Did not find %s in %s\n", free_queue_name, lib_name);
+            exit(-1);
+        }
+    #else
+        char *lib_name = "libDPCTLSyclInterface.dll";
+        char *malloc_name = "DPCTLmalloc_shared";
+        char *free_name = "DPCTLfree_with_queue";
+        char *get_queue_name = "DPCTLQueueMgr_GetCurrentQueue";
+        char *free_queue_name = "DPCTLQueue_Delete";
+
+        HMODULE sycldl = LoadLibrary(lib_name);
+        assert(sycldl != NULL);
+        internal_allocator = (NRT_external_malloc_func)GetProcAddress(sycldl, malloc_name);
+        usmarray_allocator.malloc = save_queue_allocator;
+        if (usmarray_allocator.malloc == NULL) {
+            printf("Did not find %s in %s\n", malloc_name, lib_name);
+            exit(-1);
+        }
+
+        usmarray_allocator.realloc = NULL;
+
+        internal_free = (NRT_external_free_func)GetProcAddress(sycldl, free_name);
+        usmarray_allocator.free = save_queue_deallocator;
+        if (usmarray_allocator.free == NULL) {
+            printf("Did not find %s in %s\n", free_name, lib_name);
+            exit(-1);
+        }
+
+        get_queue_internal = (void *(*)(void))GetProcAddress(sycldl, get_queue_name);
+        if (get_queue_internal == NULL) {
+            printf("Did not find %s in %s\n", get_queue_name, lib_name);
+            exit(-1);
+        }
+        usmarray_allocator.opaque_data = NULL;
+
+        free_queue_internal = (void (*)(void*))GetProcAddress(sycldl, free_queue_name);
+        if (free_queue_internal == NULL) {
+            printf("Did not find %s in %s\n", free_queue_name, lib_name);
+            exit(-1);
+        }
+    #endif
 }
 
 void * usmarray_get_ext_allocator(void) {
