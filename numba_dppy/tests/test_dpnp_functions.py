@@ -150,6 +150,113 @@ class Testdpnp_ndarray_functions(unittest.TestCase):
 
             self.assertTrue(expected == got)
 
+    def test_ndarray_prod(self):
+        @njit
+        def f(a):
+            return a.prod()
+
+        size = 3
+        for ty in self.tys:
+            a = np.arange(1, (size * size) + 1, dtype=ty).reshape((size, size))
+
+            with dpctl.device_context("opencl:gpu"):
+                got = f(a)
+                expected = a.prod()
+
+            self.assertTrue(expected == got)
+
+    def test_ndarray_max(self):
+        @njit
+        def f(a):
+            return a.max()
+
+        size = 3
+        for ty in self.tys:
+            a = np.arange(1, (size * size) + 1, dtype=ty).reshape((size, size))
+
+            with dpctl.device_context("opencl:gpu"):
+                got = f(a)
+                expected = a.max()
+
+            self.assertTrue(expected == got)
+
+    def test_ndarray_min(self):
+        @njit
+        def f(a):
+            return a.min()
+
+        size = 3
+        for ty in self.tys:
+            a = np.arange(1, (size * size) + 1, dtype=ty).reshape((size, size))
+
+            with dpctl.device_context("opencl:gpu"):
+                got = f(a)
+                expected = a.min()
+
+            self.assertTrue(expected == got)
+
+    def test_ndarray_mean(self):
+        @njit
+        def f(a):
+            return a.mean()
+
+        size = 3
+        for ty in self.tys:
+            a = np.arange(1, (size * size) + 1, dtype=ty).reshape((size, size))
+
+            with dpctl.device_context("opencl:gpu"):
+                got = f(a)
+                expected = a.mean()
+
+            self.assertTrue(expected == got)
+
+    def test_ndarray_argmax(self):
+        @njit
+        def f(a):
+            return a.argmax()
+
+        size = 3
+        for ty in self.tys:
+            a = np.arange(1, (size * size) + 1, dtype=ty).reshape((size, size))
+
+            with dpctl.device_context("opencl:gpu"):
+                got = f(a)
+                expected = a.argmax()
+
+            self.assertTrue(expected == got)
+
+
+    def test_ndarray_argmin(self):
+        @njit
+        def f(a):
+            return a.argmin()
+
+        size = 3
+        for ty in self.tys:
+            a = np.arange(1, (size * size) + 1, dtype=ty).reshape((size, size))
+
+            with dpctl.device_context("opencl:gpu"):
+                got = f(a)
+                expected = a.argmin()
+
+            self.assertTrue(expected == got)
+
+    def test_ndarray_argsort(self):
+        @njit
+        def f(a):
+            return a.argsort()
+
+        size = 3
+        for ty in self.tys:
+            a = np.arange(1, (size * size) + 1, dtype=ty)
+
+            with dpctl.device_context("opencl:gpu"):
+                got = f(a)
+                expected = a.argsort()
+
+            self.assertTrue(np.array_equal(expected, got))
+
+
 @unittest.skipUnless(ensure_dpnp() and dpctl.has_gpu_queues(), 'test only when dpNP and GPU is available')
 class Testdpnp_functions(unittest.TestCase):
     N = 10
@@ -203,6 +310,18 @@ class Testdpnp_functions(unittest.TestCase):
         self.assertTrue(test_for_dimensions(f, np.max, [10, 2], self.tys))
         self.assertTrue(test_for_dimensions(f, np.max, [10, 2, 3], self.tys))
 
+    def test_amax(self):
+        @njit
+        def f(a):
+            c = np.amax(a)
+            return c
+
+        self.assertTrue(test_for_different_datatypes(
+            f, np.amax, [10], 1, self.tys))
+        self.assertTrue(test_for_dimensions(f, np.amax, [10, 2], self.tys))
+        self.assertTrue(test_for_dimensions(f, np.amax, [10, 2, 3], self.tys))
+
+
     def test_argmin(self):
         @njit
         def f(a):
@@ -219,6 +338,17 @@ class Testdpnp_functions(unittest.TestCase):
         @njit
         def f(a):
             c = np.min(a)
+            return c
+
+        self.assertTrue(test_for_different_datatypes(
+            f, np.min, [10], 1, self.tys))
+        self.assertTrue(test_for_dimensions(f, np.min, [10, 2], self.tys))
+        self.assertTrue(test_for_dimensions(f, np.min, [10, 2, 3], self.tys))
+
+    def test_amin(self):
+        @njit
+        def f(a):
+            c = np.amin(a)
             return c
 
         self.assertTrue(test_for_different_datatypes(
