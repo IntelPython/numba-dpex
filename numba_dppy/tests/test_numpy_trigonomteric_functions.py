@@ -9,7 +9,7 @@ def skip_tests(device_type):
         q = dpctl.get_current_queue()
         device = q.get_sycl_device()
         name = device.get_device_name()
-        if ("Gen12LP HD Graphics NEO" in name) or ("Gen12HP HD Graphics NEO" in name):
+        if "Gen12" in name:
             return True
 
         return False
