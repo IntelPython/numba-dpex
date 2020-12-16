@@ -96,7 +96,7 @@ class TestPrange(unittest.TestCase):
 
         self.assertTrue(np.all(b == 12))
 
-    @expectedFailureIf(sys.platform.startswith('win'))
+    @unittest.skip('numba-dppy issue 110')
     def test_two_consequent_prange(self):
         def prange_example():
             n = 10

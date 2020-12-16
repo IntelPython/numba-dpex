@@ -8,6 +8,7 @@ import numba_dppy
 import numba_dppy as dppy
 import dpctl
 import unittest
+from numba_dppy.testing import ensure_dpnp
 
 
 import dpctl
@@ -81,13 +82,6 @@ def test_for_dimensions(fn, test_fn, dims, tys, np_all=False):
     return True
 
 
-def ensure_dpnp():
-    try:
-        from numba_dppy.dpnp_glue import dpnp_fptr_interface as dpnp_glue
-        return True
-    except:
-        return False
-
 # From https://github.com/IntelPython/dpnp/blob/master/tests/test_linalg.py
 def vvsort(val, vec, size):
     for i in range(size):
@@ -137,6 +131,24 @@ class Testdpnp_linalg_functions(unittest.TestCase):
             self.assertTrue(np.allclose(got_val, np_val))
             self.assertTrue(np.allclose(got_vec, np_vec))
 
+
+@unittest.skipUnless(ensure_dpnp(), 'test only when dpNP is available')
+class Testdpnp_ndarray_functions(unittest.TestCase):
+    tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
+    def test_ndarray_sum(self):
+        @njit
+        def f(a):
+            return a.sum()
+
+        size = 3
+        for ty in self.tys:
+            a = np.arange(size * size, dtype=ty).reshape((size, size))
+
+            with dpctl.device_context("opencl:gpu"):
+                got = f(a)
+                expected = a.sum()
+
+            self.assertTrue(expected == got)
 
 @unittest.skipUnless(ensure_dpnp() and dpctl.has_gpu_queues(), 'test only when dpNP and GPU is available')
 class Testdpnp_functions(unittest.TestCase):
