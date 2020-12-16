@@ -29,6 +29,10 @@ requirements:
         - llvmdev
         - dpnp 0.4.*  # [linux]
 
+test:
+  requires:
+    - scipy  # [linux]
+
 about:
     home: https://github.com/IntelPython/numba-dppy
     license: BSD-2-Clause
