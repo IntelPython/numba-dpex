@@ -18,12 +18,12 @@ requirements:
         - setuptools
         - cython
         - numba
-        - dpctl
+        - dpctl 0.5.*
         - dpnp 0.4.*  # [linux]
     run:
         - python
         - numba >=0.51
-        - dpctl
+        - dpctl 0.5.*
         - spirv-tools
         - llvm-spirv
         - llvmdev
