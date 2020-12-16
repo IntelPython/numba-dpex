@@ -31,7 +31,6 @@ class TestNumpy_math_functions(unittest.TestCase):
 
         d = self.a + self.b
         self.assertTrue(np.all(c == d))
-        skip_tests("opencl:gpu")
 
     def test_subtract(self):
         @njit
