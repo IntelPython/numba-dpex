@@ -12,9 +12,7 @@ In the "Auto-offloading" section there is the information on which device (devic
 
 ## Controllable Fallback
 
-With the default behavior of numba-dppy, if a section of code cannot be offloaded on the GPU, then it is automatically executed on the CPU and printed a warning.
+With the default behavior of numba-dppy, if a section of code cannot be offloaded on the GPU, then it is automatically executed on the CPU and printed a warning. This behavior only applies to njit functions and auto-offloading of numpy functions, array expressions, and prange loops.
 
 Setting the debug environment variable `NUMBA_DPPY_FALLBACK_OPTION `
 (e.g. `export NUMBA_DPPY_FALLBACK_OPTION=0`) enables the code is not automatically offload to the CPU, and an error occurs. This is necessary in order to understand at an early stage which parts of the code do not work on the GPU, and not to wait for the program to execute on the CPU if you don't need it.
-
-This behavior only applies to njit functions and auto-offloading of numpy functions, array expressions, and prange loops.

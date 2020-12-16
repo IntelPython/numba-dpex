@@ -70,4 +70,4 @@ Please use https://github.com/IntelPython/numba-dppy/issues to report issues and
 
 ## Features
 
-Read this guide for additional features [INDEX.md](INDEX.md)
+Read this guide for additional features [INDEX.md](docs/INDEX.md)
