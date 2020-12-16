@@ -4,6 +4,16 @@ from numba import njit
 import dpctl
 import unittest
 
+def skip_tests(device_type):
+    with dpctl.device_context(device_type):
+        q = dpctl.get_current_queue()
+        device = q.get_sycl_device()
+        name = device.get_device_name()
+        if ("Gen12LP HD Graphics NEO" in name) or ("Gen12HP HD Graphics NEO" in name):
+            return True
+
+        return False
+
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
 class TestNumpy_math_functions(unittest.TestCase):
@@ -155,6 +165,7 @@ class TestNumpy_math_functions(unittest.TestCase):
         max_abs_err = c.sum() - d.sum()
         self.assertTrue(max_abs_err < 1e-5)
 
+    @unittest.skipIf(skip_tests("opencl:gpu"), "skipping test")
     def test_arccosh(self):
         @njit
         def f(a):
