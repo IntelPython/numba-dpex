@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
 ## [0.12.0] - 2020-12-17
 ### Added
 - Dependency on llvm-spirv, llvmdev , spirv-tools.
@@ -11,7 +16,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Rename `DPPL` to `DPPY`.
 - `DPPLTestCase` replaced with `unittest.TestCase`.
-- Numba-dppy tests and examples use `with device_context`.
+- All tests and examples use `with device_context`.
 
 ### Removed
 - Use of cffi.
