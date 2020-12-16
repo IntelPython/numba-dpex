@@ -23,9 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Config environment variables starts with `NUMBA_DPPY_`
 (i.e. NUMBA_DPPY_SAVE_IR_FILES and NUMBA_DPPY_SPIRV_VAL)
 - Remove nested folder `dppl` in `tests`.
+- No dependency on `cffi`.
+
 
 ### Removed
-- Use dependency to `cffi`.
 - The old backup file.
 
 ## NUMBA Version 0.48.0 + DPPY Version 0.3.0 (June 29, 2020)
