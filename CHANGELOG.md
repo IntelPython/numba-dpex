@@ -8,10 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.12.0] - 2020-12-17
 ### Added
-- Dependency on llvm-spirv, llvmdev , spirv-tools.
-- Documentation on using gdb.
-- Implementation of `np.linalg.eig`.
+- numba-dppy is a standalone package now.
 - Offload diagnostics.
+- Controllable fallback.
+- Add flags to generate debug symbols.
+- Implementation of `np.linalg.eig`.
 
 ### Changed
 - Rename `DPPL` to `DPPY`.
