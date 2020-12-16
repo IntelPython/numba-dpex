@@ -19,7 +19,7 @@ requirements:
         - cython
         - numba
         - dpctl
-        - dpnp x.x  # [linux]
+        - dpnp 0.4.*  # [linux]
     run:
         - python
         - numba >=0.51
@@ -27,7 +27,7 @@ requirements:
         - spirv-tools
         - llvm-spirv
         - llvmdev
-        - dpnp x.x  # [linux]
+        - dpnp 0.4.*  # [linux]
 
 about:
     home: https://github.com/IntelPython/numba-dppy
