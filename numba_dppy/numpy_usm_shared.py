@@ -20,7 +20,8 @@ from numba.core.imputils import builtin_registry as lower_registry
 import importlib
 import functools
 import inspect
-from numba.core.typing.templates import CallableTemplate
+from numba.core.typing.templates import (CallableTemplate, AttributeTemplate,
+                                         signature, bound_function)
 from numba.np.arrayobj import _array_copy
 
 import dpctl.dptensor.numpy_usm_shared as nus
@@ -273,6 +274,7 @@ def numba_register_typing():
                 #todo_classes.append(ig)
 
     for tgetattr in templates_registry.attributes:
+        dprint("Numpy getattr:", tgetattr, type(tgetattr), tgetattr.key)
         if tgetattr.key == types.Array:
             todo_getattr.append(tgetattr)
 
@@ -369,6 +371,8 @@ def numba_register_typing():
         typing_registry.register_global(dpval, type_handler)
 
     # Handle usmarray attribute typing.
+    templates_registry.register_attr(UsmArrayAttribute)
+    """
     for tgetattr in todo_getattr:
         class_name = tgetattr.__name__ + "_usmarray"
         dprint("tgetattr:", tgetattr, type(tgetattr), class_name)
@@ -378,6 +382,7 @@ def numba_register_typing():
             cls.key = key
 
         def getattr_impl(self, attr):
+            dprint("getattr_impl:", class_name, attr)
             if attr.startswith("resolve_"):
                 def wrapper(*args, **kwargs):
                     attr_res = tgetattr.__getattribute__(self, attr)(*args, **kwargs)
@@ -387,6 +392,8 @@ def numba_register_typing():
                             ndim=attr_res.ndim,
                             layout=attr_res.layout,
                         )
+                    else:
+                        return attr_res
 
                 return wrapper
             else:
@@ -400,6 +407,270 @@ def numba_register_typing():
 
         new_usmarray_template.set_class_vars(UsmSharedArrayType)
         templates_registry.register_attr(new_usmarray_template)
+    """
+
+class UsmArrayAttribute(AttributeTemplate):
+    key = UsmSharedArrayType
+
+    def resolve_dtype(self, ary):
+        return types.DType(ary.dtype)
+
+    def resolve_itemsize(self, ary):
+        return types.intp
+
+    def resolve_shape(self, ary):
+        return types.UniTuple(types.intp, ary.ndim)
+
+    def resolve_strides(self, ary):
+        return types.UniTuple(types.intp, ary.ndim)
+
+    def resolve_ndim(self, ary):
+        return types.intp
+
+    def resolve_size(self, ary):
+        return types.intp
+
+    def resolve_flat(self, ary):
+        return types.NumpyFlatType(ary)
+
+    def resolve_ctypes(self, ary):
+        return types.ArrayCTypes(ary)
+
+    def resolve_flags(self, ary):
+        return types.ArrayFlags(ary)
+
+    def resolve_T(self, ary):
+        if ary.ndim <= 1:
+            retty = ary
+        else:
+            layout = {"C": "F", "F": "C"}.get(ary.layout, "A")
+            retty = ary.copy(layout=layout)
+        return retty
+
+    def resolve_real(self, ary):
+        return self._resolve_real_imag(ary, attr='real')
+
+    def resolve_imag(self, ary):
+        return self._resolve_real_imag(ary, attr='imag')
+
+    def _resolve_real_imag(self, ary, attr):
+        if ary.dtype in types.complex_domain:
+            return ary.copy(dtype=ary.dtype.underlying_float, layout='A')
+        elif ary.dtype in types.number_domain:
+            res = ary.copy(dtype=ary.dtype)
+            if attr == 'imag':
+                res = res.copy(readonly=True)
+            return res
+        else:
+            msg = "cannot access .{} of array of {}"
+            raise TypingError(msg.format(attr, ary.dtype))
+
+"""
+    @bound_function("array.transpose")
+    def resolve_transpose(self, ary, args, kws):
+        def sentry_shape_scalar(ty):
+            if ty in types.number_domain:
+                # Guard against non integer type
+                if not isinstance(ty, types.Integer):
+                    raise TypeError("transpose() arg cannot be {0}".format(ty))
+                return True
+            else:
+                return False
+
+        assert not kws
+        if len(args) == 0:
+            return signature(self.resolve_T(ary))
+
+        if len(args) == 1:
+            shape, = args
+
+            if sentry_shape_scalar(shape):
+                assert ary.ndim == 1
+                return signature(ary, *args)
+
+            if isinstance(shape, types.NoneType):
+                return signature(self.resolve_T(ary))
+
+            shape = normalize_shape(shape)
+            if shape is None:
+                return
+
+            assert ary.ndim == shape.count
+            return signature(self.resolve_T(ary).copy(layout="A"), shape)
+
+        else:
+            if any(not sentry_shape_scalar(a) for a in args):
+                raise TypeError("transpose({0}) is not supported".format(
+                    ', '.join(args)))
+            assert ary.ndim == len(args)
+            return signature(self.resolve_T(ary).copy(layout="A"), *args)
+
+    @bound_function("array.copy")
+    def resolve_copy(self, ary, args, kws):
+        assert not args
+        assert not kws
+        retty = ary.copy(layout="C", readonly=False)
+        return signature(retty)
+
+    @bound_function("array.item")
+    def resolve_item(self, ary, args, kws):
+        assert not kws
+        # We don't support explicit arguments as that's exactly equivalent
+        # to regular indexing.  The no-argument form is interesting to
+        # allow some degree of genericity when writing functions.
+        if not args:
+            return signature(ary.dtype)
+
+    @bound_function("array.itemset")
+    def resolve_itemset(self, ary, args, kws):
+        assert not kws
+        # We don't support explicit arguments as that's exactly equivalent
+        # to regular indexing.  The no-argument form is interesting to
+        # allow some degree of genericity when writing functions.
+        if len(args) == 1:
+            return signature(types.none, ary.dtype)
+
+    @bound_function("array.nonzero")
+    def resolve_nonzero(self, ary, args, kws):
+        assert not args
+        assert not kws
+        # 0-dim arrays return one result array
+        ndim = max(ary.ndim, 1)
+        retty = types.UniTuple(UsmSharedArrayType(types.intp, 1, 'C'), ndim)
+        return signature(retty)
+
+    @bound_function("array.reshape")
+    def resolve_reshape(self, ary, args, kws):
+        def sentry_shape_scalar(ty):
+            if ty in types.number_domain:
+                # Guard against non integer type
+                if not isinstance(ty, types.Integer):
+                    raise TypeError("reshape() arg cannot be {0}".format(ty))
+                return True
+            else:
+                return False
+
+        assert not kws
+        if ary.layout not in 'CF':
+            # only work for contiguous array
+            raise TypeError("reshape() supports contiguous array only")
+
+        if len(args) == 1:
+            # single arg
+            shape, = args
+
+            if sentry_shape_scalar(shape):
+                ndim = 1
+            else:
+                shape = normalize_shape(shape)
+                if shape is None:
+                    return
+                ndim = shape.count
+            retty = ary.copy(ndim=ndim)
+            return signature(retty, shape)
+
+        elif len(args) == 0:
+            # no arg
+            raise TypeError("reshape() take at least one arg")
+
+        else:
+            # vararg case
+            if any(not sentry_shape_scalar(a) for a in args):
+                raise TypeError("reshape({0}) is not supported".format(
+                    ', '.join(map(str, args))))
+
+            retty = ary.copy(ndim=len(args))
+            return signature(retty, *args)
+
+    @bound_function("array.sort")
+    def resolve_sort(self, ary, args, kws):
+        assert not args
+        assert not kws
+        if ary.ndim == 1:
+            return signature(types.none)
+
+    @bound_function("array.argsort")
+    def resolve_argsort(self, ary, args, kws):
+        assert not args
+        kwargs = dict(kws)
+        kind = kwargs.pop('kind', types.StringLiteral('quicksort'))
+        if not isinstance(kind, types.StringLiteral):
+            raise errors.TypingError('"kind" must be a string literal')
+        if kwargs:
+            msg = "Unsupported keywords: {!r}"
+            raise TypingError(msg.format([k for k in kwargs.keys()]))
+        if ary.ndim == 1:
+            def argsort_stub(kind='quicksort'):
+                pass
+            pysig = utils.pysignature(argsort_stub)
+            sig = signature(UsmSharedArrayType(types.intp, 1, 'C'), kind).replace(pysig=pysig)
+            return sig
+
+    @bound_function("array.view")
+    def resolve_view(self, ary, args, kws):
+        from .npydecl import parse_dtype
+        assert not kws
+        dtype, = args
+        dtype = parse_dtype(dtype)
+        if dtype is None:
+            return
+        retty = ary.copy(dtype=dtype)
+        return signature(retty, *args)
+
+    @bound_function("array.astype")
+    def resolve_astype(self, ary, args, kws):
+        from .npydecl import parse_dtype
+        assert not kws
+        dtype, = args
+        dtype = parse_dtype(dtype)
+        if dtype is None:
+            return
+        if not self.context.can_convert(ary.dtype, dtype):
+            raise TypeError("astype(%s) not supported on %s: "
+                            "cannot convert from %s to %s"
+                            % (dtype, ary, ary.dtype, dtype))
+        layout = ary.layout if ary.layout in 'CF' else 'C'
+        # reset the write bit irrespective of whether the cast type is the same
+        # as the current dtype, this replicates numpy
+        retty = ary.copy(dtype=dtype, layout=layout, readonly=False)
+        return signature(retty, *args)
+
+    @bound_function("array.ravel")
+    def resolve_ravel(self, ary, args, kws):
+        # Only support no argument version (default order='C')
+        assert not kws
+        assert not args
+        return signature(ary.copy(ndim=1, layout='C'))
+
+    @bound_function("array.flatten")
+    def resolve_flatten(self, ary, args, kws):
+        # Only support no argument version (default order='C')
+        assert not kws
+        assert not args
+        return signature(ary.copy(ndim=1, layout='C'))
+
+    @bound_function("array.take")
+    def resolve_take(self, ary, args, kws):
+        assert not kws
+        argty, = args
+        if isinstance(argty, types.Integer):
+            sig = signature(ary.dtype, *args)
+        elif isinstance(argty, UsmSharedArrayType):
+            sig = signature(argty.copy(layout='C', dtype=ary.dtype), *args)
+        elif isinstance(argty, types.List): # 1d lists only
+            sig = signature(UsmSharedArrayType(ary.dtype, 1, 'C'), *args)
+        elif isinstance(argty, types.BaseTuple):
+            sig = signature(UsmSharedArrayType(ary.dtype, np.ndim(argty), 'C'), *args)
+        else:
+            raise TypeError("take(%s) not supported for %s" % argty)
+        return sig
+
+    def generic_resolve(self, ary, attr):
+        # Resolution of other attributes, for record arrays
+        if isinstance(ary.dtype, types.Record):
+            if attr in ary.dtype.fields:
+                return ary.copy(dtype=ary.dtype.typeof(attr), layout='A')
+"""
 
 
 @typing_registry.register_global(nus.as_ndarray)
