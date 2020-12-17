@@ -9,7 +9,21 @@ from numba.core.ir_utils import (
 import numba_dppy
 from numba.core import types
 
-rewrite_function_name_map = {"sum": (["np"], "sum"), "eig": (["linalg"], "eig")}
+rewrite_function_name_map = {"sum": (["np"], "sum"),
+                             "eig": (["linalg"], "eig"),
+                             "prod": (["np"], "prod"),
+                             "max": (["np"], "max"),
+                             "amax": (["np"], "amax"),
+                             "min": (["np"], "min"),
+                             "amin": (["np"], "amin"),
+                             "mean": (["np"], "mean"),
+                             "median": (["np"], "median"),
+                             "argmax": (["np"], "argmax"),
+                             "argmin": (["np"], "argmin"),
+                             "argsort": (["np"], "argsort"),
+                             "cov": (["np"], "cov"),
+                             "dot": (["np"], "dot"),
+                             "matmul": (["np"], "matmul")}
 
 
 class RewriteNumPyOverloadedFunctions(object):
@@ -110,9 +124,13 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
 
     def __init__(self):
         FunctionPass.__init__(self)
+
         import numba_dppy.dpnp_glue.dpnpdecl
+        import numba_dppy.dpnp_glue.dpnpimpl
         import numba_dppy.dpnp_glue.dpnp_linalgimpl
         import numba_dppy.dpnp_glue.dpnp_transcendentalsimpl
+        import numba_dppy.dpnp_glue.dpnp_statisticsimpl
+        import numba_dppy.dpnp_glue.dpnp_sort_search_countimpl
 
     def run_pass(self, state):
         rewrite_function_name_pass = RewriteNumPyOverloadedFunctions(
@@ -211,7 +229,6 @@ class RewriteNdarrayFunctions(object):
         return
 
 
-
 @register_pass(mutates_CFG=True, analysis_only=False)
 class DPPYRewriteNdarrayFunctions(FunctionPass):
     _name = "dppy_rewrite_ndarray_functions_pass"
@@ -230,5 +247,3 @@ class DPPYRewriteNdarrayFunctions(FunctionPass):
         state.func_ir.blocks = simplify_CFG(state.func_ir.blocks)
 
         return True
-
-

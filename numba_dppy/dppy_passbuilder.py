@@ -22,8 +22,6 @@ from .dppy_passes import (
         DPPYPreParforPass,
         DPPYParforPass,
         SpirvFriendlyLowering,
-        DPPYAddNumpyOverloadPass,
-        DPPYAddNumpyRemoveOverloadPass,
         DPPYNoPythonBackend,
         DPPYDumpParforDiagnostics
         )
@@ -52,10 +50,6 @@ class DPPYPassBuilder(object):
         pm.add_pass(DPPYRewriteOverloadedNumPyFunctions,
                 "Rewrite name of Numpy functions to overload already overloaded function",
         )
-
-        # this pass adds required logic to overload default implementation of
-        # Numpy functions
-        pm.add_pass(DPPYAddNumpyOverloadPass, "dppy add typing template for Numpy functions")
 
         # Add pass to ensure when users are allocating static
         # constant memory the size is a constant and can not
@@ -101,7 +95,6 @@ class DPPYPassBuilder(object):
         pm.add_pass(InlineOverloads, "inline overloaded functions")
 
 
-
     @staticmethod
     def define_nopython_pipeline(state, name='dppy_nopython'):
         """Returns an nopython mode pipeline based PassManager
@@ -121,7 +114,6 @@ class DPPYPassBuilder(object):
         # lower
         pm.add_pass(SpirvFriendlyLowering, "SPIRV-friendly lowering pass")
         pm.add_pass(DPPYNoPythonBackend, "nopython mode backend")
-        pm.add_pass(DPPYAddNumpyRemoveOverloadPass, "dppy remove typing template for Numpy functions")
         pm.add_pass(DPPYDumpParforDiagnostics, "dump parfor diagnostics")
         pm.finalize()
         return pm
