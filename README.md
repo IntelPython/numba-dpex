@@ -68,3 +68,7 @@ Please follow instructions in the [DEBUGGING.md](DEBUGGING.md)
 ## Reporting issues
 
 Please use https://github.com/IntelPython/numba-dppy/issues to report issues and bugs.
+
+## Features
+
+Read this guide for additional features [INDEX.md](docs/INDEX.md)

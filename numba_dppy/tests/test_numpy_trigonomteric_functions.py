@@ -3,6 +3,7 @@ import numpy as np
 from numba import njit
 import dpctl
 import unittest
+from . import skip_tests
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
@@ -155,6 +156,7 @@ class TestNumpy_math_functions(unittest.TestCase):
         max_abs_err = c.sum() - d.sum()
         self.assertTrue(max_abs_err < 1e-5)
 
+    @unittest.skipIf(skip_tests.is_gen12("opencl:gpu"), "Gen12 not supported")
     def test_arccosh(self):
         @njit
         def f(a):
