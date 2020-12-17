@@ -49,14 +49,14 @@ def get_ext_modules():
 
 class install(orig_install.install):
     def run(self):
+        super().run()
         spirv_compile()
-        return super().run()
 
 
 class develop(orig_develop.develop):
     def run(self):
+        super().run()
         spirv_compile()
-        return super().run()
 
 
 def _get_cmdclass():
@@ -68,30 +68,36 @@ def _get_cmdclass():
 def spirv_compile():
     if IS_LIN:
         os.environ["CC"] = os.path.join(os.environ.get("ONEAPI_ROOT"), "compiler/latest/linux", "bin/clang")
-        clang_args = [
-            os.environ.get("CC"),
-            "-flto",
-            "-target",
-            "spir64-unknown-unknown",
-            "-c",
-            "-x",
-            "cl",
-            "-emit-llvm",
-            "-cl-std=CL2.0",
-            "-Xclang",
-            "-finclude-default-header",
-            "numba_dppy/ocl/atomics/atomic_ops.cl",
-            "-o",
-            "numba_dppy/ocl/atomics/atomic_ops.bc",
-        ]
+    if IS_WIN:
+        os.environ["CC"] = os.path.join(os.environ.get("ONEAPI_ROOT"), "compiler/latest/windows", "bin/clang.exe")
+    clang_args = [
+        os.environ.get("CC"),
+        "-flto",
+        "-target",
+        "spir64-unknown-unknown",
+        "-c",
+        "-x",
+        "cl",
+        "-emit-llvm",
+        "-cl-std=CL2.0",
+        "-Xclang",
+        "-finclude-default-header",
+        "numba_dppy/ocl/atomics/atomic_ops.cl",
+        "-o",
+        "numba_dppy/ocl/atomics/atomic_ops.bc",
+    ]
+    spirv_args = [
+        "llvm-spirv",
+        "-o",
+        "numba_dppy/ocl/atomics/atomic_ops.spir",
+        "numba_dppy/ocl/atomics/atomic_ops.bc",
+    ]
+    if IS_LIN:
         subprocess.check_call(clang_args, stderr=subprocess.STDOUT, shell=False)
-        spirv_args = [
-            "llvm-spirv",
-            "-o",
-            "numba_dppy/ocl/atomics/atomic_ops.spir",
-            "numba_dppy/ocl/atomics/atomic_ops.bc",
-        ]
         subprocess.check_call(spirv_args, stderr=subprocess.STDOUT, shell=False)
+    if IS_WIN:
+        subprocess.check_call(clang_args, stderr=subprocess.STDOUT, shell=True)
+        subprocess.check_call(spirv_args, stderr=subprocess.STDOUT, shell=True)
 
 
 packages = find_packages(include=["numba_dppy", "numba_dppy.*"])
