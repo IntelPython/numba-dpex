@@ -5,8 +5,8 @@ from ctypes.util import find_library
 
 
 def init_jit():
-    from numba_dppy.dispatcher import DPPLDispatcher
-    return DPPLDispatcher
+    from numba_dppy.dispatcher import DPPYDispatcher
+    return DPPYDispatcher
 
 def initialize_all():
     from numba.core.registry import dispatcher_registry
@@ -17,12 +17,12 @@ def initialize_all():
     import platform as plt
     platform = plt.system()
     if platform == 'Windows':
-        paths = glob.glob(os.path.join(os.path.dirname(dpctl.__file__), '*DPPLSyclInterface.dll'))
+        paths = glob.glob(os.path.join(os.path.dirname(dpctl.__file__), '*DPCTLSyclInterface.dll'))
     else:
-        paths = glob.glob(os.path.join(os.path.dirname(dpctl.__file__), '*DPPLSyclInterface*'))
+        paths = glob.glob(os.path.join(os.path.dirname(dpctl.__file__), '*DPCTLSyclInterface*'))
 
     if len(paths) == 1:
-        ll.load_library_permanently(find_library(paths[0]))
+        ll.load_library_permanently(paths[0])
     else:
         raise ImportError
 

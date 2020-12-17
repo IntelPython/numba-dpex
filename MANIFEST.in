@@ -3,3 +3,5 @@ include README.md setup.py LICENSE
 
 recursive-include numba_dppy *.cl
 
+include versioneer.py
+include numba_dppy/_version.py

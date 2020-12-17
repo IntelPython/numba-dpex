@@ -17,17 +17,21 @@ requirements:
         - python
         - setuptools
         - cython
-        - llvm-spirv
         - numba
-        - dpctl
-        - dpnp
+        - dpctl 0.5.*
+        - dpnp 0.4.*  # [linux]
     run:
         - python
         - numba >=0.51
-        - dpctl
+        - dpctl 0.5.*
         - spirv-tools
         - llvm-spirv
-        - dpnp
+        - llvmdev
+        - dpnp 0.4.*  # [linux]
+
+test:
+  requires:
+    - scipy  # [linux]
 
 about:
     home: https://github.com/IntelPython/numba-dppy
