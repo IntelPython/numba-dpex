@@ -8,6 +8,7 @@ source ${ONEAPI_ROOT}/tbb/latest/env/vars.sh
 
 set -x
 
+python -m numba.runtests -b -v -m -- numba.tests
 python -m numba.runtests -b -v -m -- numba_dppy.tests
 
 exit 0
