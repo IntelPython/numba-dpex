@@ -34,7 +34,10 @@ class TestDPPYFallback(unittest.TestCase):
 
     def test_dppy_fallback_reductions(self):
         def reduction(a):
-            return np.amax(a)
+            b = 1
+            for i in numba.prange(len(a)):
+                b += a[i]
+            return b
 
         a = np.ones(10)
         with captured_stderr() as msg, dpctl.device_context("opencl:gpu"):

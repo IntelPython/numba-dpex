@@ -20,11 +20,12 @@ https://intelpython.github.io/dpnp/
 ## Dependencies
 
 * numba >=0.51 (IntelPython/numba)
-* dpCtl >=0.4.0
-* dpNP >=0.3 (optional)
+* dpCtl 0.5.*
+* dpNP 0.4.* (optional)
 * llvm-spirv (SPIRV generation from LLVM IR)
 * llvmdev (LLVM IR generation)
 * spirv-tools
+* scipy (for testing)
 
 ## dpPy
 
@@ -67,3 +68,7 @@ Please follow instructions in the [DEBUGGING.md](DEBUGGING.md)
 ## Reporting issues
 
 Please use https://github.com/IntelPython/numba-dppy/issues to report issues and bugs.
+
+## Features
+
+Read this guide for additional features [INDEX.md](docs/INDEX.md)
