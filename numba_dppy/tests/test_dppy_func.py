@@ -5,7 +5,7 @@ import unittest
 import dpctl
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
+@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
 class TestDPPYFunc(unittest.TestCase):
     N = 257
 
@@ -24,7 +24,6 @@ class TestDPPYFunc(unittest.TestCase):
 
         with dpctl.device_context("opencl:gpu") as gpu_queue:
             f[self.N, dppy.DEFAULT_LOCAL_SIZE](a, b)
-
 
         self.assertTrue(np.all(b == 2))
 
@@ -56,5 +55,5 @@ class TestDPPYFunc(unittest.TestCase):
             self.assertTrue(np.all(b == 3))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -16,7 +16,7 @@ class TestOffloadDiagnostics(unittest.TestCase):
             a = np.ones((n), dtype=np.float64)
             b = np.ones((n), dtype=np.float64)
             c = np.ones((n), dtype=np.float64)
-            for i in prange(n//2):
+            for i in prange(n // 2):
                 a[i] = b[i] + c[i]
 
             return a
@@ -56,5 +56,5 @@ class TestOffloadDiagnostics(unittest.TestCase):
             self.assertTrue("Device -" in got.getvalue())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

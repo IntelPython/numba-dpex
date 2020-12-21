@@ -24,8 +24,7 @@ _void_value = lc.Constant.null(lc.Type.pointer(lc.Type.int(8)))
 # -----------------------------------------------------------------------------
 
 
-def _declare_function(context, builder, name, sig, cargs,
-                      mangler=mangle_c):
+def _declare_function(context, builder, name, sig, cargs, mangler=mangle_c):
     """Insert declaration for a opencl builtin function.
     Uses the Itanium mangler.
 
@@ -60,11 +59,13 @@ def _declare_function(context, builder, name, sig, cargs,
     fn.calling_convention = target.CC_SPIR_FUNC
     return fn
 
+
 @lower(stubs.get_global_id, types.uint32)
 def get_global_id_impl(context, builder, sig, args):
     [dim] = args
-    get_global_id = _declare_function(context, builder, 'get_global_id', sig,
-                                      ['unsigned int'])
+    get_global_id = _declare_function(
+        context, builder, "get_global_id", sig, ["unsigned int"]
+    )
     res = builder.call(get_global_id, [dim])
     return context.cast(builder, res, types.uintp, types.intp)
 
@@ -72,8 +73,9 @@ def get_global_id_impl(context, builder, sig, args):
 @lower(stubs.get_local_id, types.uint32)
 def get_local_id_impl(context, builder, sig, args):
     [dim] = args
-    get_local_id = _declare_function(context, builder, 'get_local_id', sig,
-                                     ['unsigned int'])
+    get_local_id = _declare_function(
+        context, builder, "get_local_id", sig, ["unsigned int"]
+    )
     res = builder.call(get_local_id, [dim])
     return context.cast(builder, res, types.uintp, types.intp)
 
@@ -81,8 +83,9 @@ def get_local_id_impl(context, builder, sig, args):
 @lower(stubs.get_group_id, types.uint32)
 def get_group_id_impl(context, builder, sig, args):
     [dim] = args
-    get_group_id = _declare_function(context, builder, 'get_group_id', sig,
-                                     ['unsigned int'])
+    get_group_id = _declare_function(
+        context, builder, "get_group_id", sig, ["unsigned int"]
+    )
     res = builder.call(get_group_id, [dim])
     return context.cast(builder, res, types.uintp, types.intp)
 
@@ -90,16 +93,16 @@ def get_group_id_impl(context, builder, sig, args):
 @lower(stubs.get_num_groups, types.uint32)
 def get_num_groups_impl(context, builder, sig, args):
     [dim] = args
-    get_num_groups = _declare_function(context, builder, 'get_num_groups', sig,
-                                       ['unsigned int'])
+    get_num_groups = _declare_function(
+        context, builder, "get_num_groups", sig, ["unsigned int"]
+    )
     res = builder.call(get_num_groups, [dim])
     return context.cast(builder, res, types.uintp, types.intp)
 
 
 @lower(stubs.get_work_dim)
 def get_work_dim_impl(context, builder, sig, args):
-    get_work_dim = _declare_function(context, builder, 'get_work_dim', sig,
-                                     ["void"])
+    get_work_dim = _declare_function(context, builder, "get_work_dim", sig, ["void"])
     res = builder.call(get_work_dim, [])
     return res
 
@@ -107,8 +110,9 @@ def get_work_dim_impl(context, builder, sig, args):
 @lower(stubs.get_global_size, types.uint32)
 def get_global_size_impl(context, builder, sig, args):
     [dim] = args
-    get_global_size = _declare_function(context, builder, 'get_global_size',
-                                        sig, ['unsigned int'])
+    get_global_size = _declare_function(
+        context, builder, "get_global_size", sig, ["unsigned int"]
+    )
     res = builder.call(get_global_size, [dim])
     return context.cast(builder, res, types.uintp, types.intp)
 
@@ -116,8 +120,9 @@ def get_global_size_impl(context, builder, sig, args):
 @lower(stubs.get_local_size, types.uint32)
 def get_local_size_impl(context, builder, sig, args):
     [dim] = args
-    get_local_size = _declare_function(context, builder, 'get_local_size',
-                                       sig, ['unsigned int'])
+    get_local_size = _declare_function(
+        context, builder, "get_local_size", sig, ["unsigned int"]
+    )
     res = builder.call(get_local_size, [dim])
     return context.cast(builder, res, types.uintp, types.intp)
 
@@ -125,17 +130,16 @@ def get_local_size_impl(context, builder, sig, args):
 @lower(stubs.barrier, types.uint32)
 def barrier_one_arg_impl(context, builder, sig, args):
     [flags] = args
-    barrier = _declare_function(context, builder, 'barrier', sig,
-                                ['unsigned int'])
+    barrier = _declare_function(context, builder, "barrier", sig, ["unsigned int"])
     builder.call(barrier, [flags])
     return _void_value
+
 
 @lower(stubs.barrier)
 def barrier_no_arg_impl(context, builder, sig, args):
     assert not args
     sig = types.void(types.uint32)
-    barrier = _declare_function(context, builder, 'barrier', sig,
-                                ['unsigned int'])
+    barrier = _declare_function(context, builder, "barrier", sig, ["unsigned int"])
     flags = context.get_constant(types.uint32, stubs.CLK_GLOBAL_MEM_FENCE)
     builder.call(barrier, [flags])
     return _void_value
@@ -144,8 +148,7 @@ def barrier_no_arg_impl(context, builder, sig, args):
 @lower(stubs.mem_fence, types.uint32)
 def mem_fence_impl(context, builder, sig, args):
     [flags] = args
-    mem_fence = _declare_function(context, builder, 'mem_fence', sig,
-                                ['unsigned int'])
+    mem_fence = _declare_function(context, builder, "mem_fence", sig, ["unsigned int"])
     builder.call(mem_fence, [flags])
     return _void_value
 
@@ -154,15 +157,15 @@ def mem_fence_impl(context, builder, sig, args):
 def sub_group_barrier_impl(context, builder, sig, args):
     assert not args
     sig = types.void(types.uint32)
-    barrier = _declare_function(context, builder, 'barrier', sig,
-                                ['unsigned int'])
+    barrier = _declare_function(context, builder, "barrier", sig, ["unsigned int"])
     flags = context.get_constant(types.uint32, stubs.CLK_LOCAL_MEM_FENCE)
     builder.call(barrier, [flags])
     return _void_value
 
 
-def insert_and_call_atomic_fn(context, builder, sig, fn_type,
-                              dtype, ptr, val, addrspace):
+def insert_and_call_atomic_fn(
+    context, builder, sig, fn_type, dtype, ptr, val, addrspace
+):
     ll_p = None
     name = ""
     if dtype.name == "int32" or dtype.name == "uint32":
@@ -173,11 +176,10 @@ def insert_and_call_atomic_fn(context, builder, sig, fn_type,
         elif fn_type == "sub":
             name = "numba_dppy_atomic_sub_i32"
         else:
-            raise TypeError("Operation type is not supported %s" %
-                             (fn_type))
+            raise TypeError("Operation type is not supported %s" % (fn_type))
     elif dtype.name == "int64" or dtype.name == "uint64":
         # dpctl needs to expose same functions()
-        #if device_env.device_support_int64_atomics():
+        # if device_env.device_support_int64_atomics():
         if True:
             ll_val = ir.IntType(64)
             ll_p = ll_val.as_pointer()
@@ -186,9 +188,8 @@ def insert_and_call_atomic_fn(context, builder, sig, fn_type,
             elif fn_type == "sub":
                 name = "numba_dppy_atomic_sub_i64"
             else:
-                raise TypeError("Operation type is not supported %s" %
-                                 (fn_type))
-        #else:
+                raise TypeError("Operation type is not supported %s" % (fn_type))
+        # else:
         #    raise TypeError("Current device does not support atomic " +
         #                     "operations on 64-bit Integer")
     elif dtype.name == "float32":
@@ -199,10 +200,9 @@ def insert_and_call_atomic_fn(context, builder, sig, fn_type,
         elif fn_type == "sub":
             name = "numba_dppy_atomic_sub_f32"
         else:
-            raise TypeError("Operation type is not supported %s" %
-                             (fn_type))
+            raise TypeError("Operation type is not supported %s" % (fn_type))
     elif dtype.name == "float64":
-        #if device_env.device_support_float64_atomics():
+        # if device_env.device_support_float64_atomics():
         # dpctl needs to expose same functions()
         if True:
             ll_val = ir.DoubleType()
@@ -212,22 +212,20 @@ def insert_and_call_atomic_fn(context, builder, sig, fn_type,
             elif fn_type == "sub":
                 name = "numba_dppy_atomic_sub_f64"
             else:
-                raise TypeError("Operation type is not supported %s" %
-                                 (fn_type))
-        #else:
+                raise TypeError("Operation type is not supported %s" % (fn_type))
+        # else:
         #    raise TypeError("Current device does not support atomic " +
         #                    "operations on 64-bit Float")
     else:
-        raise TypeError("Atomic operation is not supported for type %s" %
-                        (dtype.name))
+        raise TypeError("Atomic operation is not supported for type %s" % (dtype.name))
 
     if addrspace == target.SPIR_LOCAL_ADDRSPACE:
         name = name + "_local"
     else:
         name = name + "_global"
 
-    assert(ll_p != None)
-    assert(name != "")
+    assert ll_p != None
+    assert name != ""
     ll_p.addrspace = target.SPIR_GENERIC_ADDRSPACE
 
     mod = builder.module
@@ -242,19 +240,17 @@ def insert_and_call_atomic_fn(context, builder, sig, fn_type,
     fn = mod.get_or_insert_function(fnty, name)
     fn.calling_convention = target.CC_SPIR_FUNC
 
-    generic_ptr = context.addrspacecast(builder, ptr,
-                                    target.SPIR_GENERIC_ADDRSPACE)
+    generic_ptr = context.addrspacecast(builder, ptr, target.SPIR_GENERIC_ADDRSPACE)
 
     return builder.call(fn, [generic_ptr, val])
 
 
 @lower(stubs.atomic.add, types.Array, types.intp, types.Any)
-@lower(stubs.atomic.add, types.Array,
-           types.UniTuple, types.Any)
-@lower(stubs.atomic.add, types.Array, types.Tuple,
-           types.Any)
+@lower(stubs.atomic.add, types.Array, types.UniTuple, types.Any)
+@lower(stubs.atomic.add, types.Array, types.Tuple, types.Any)
 def atomic_add_tuple(context, builder, sig, args):
     from .atomics import atomic_support_present
+
     if atomic_support_present():
         context.link_binaries[target.LINK_ATOMIC] = True
         aryty, indty, valty = sig.args
@@ -266,36 +262,53 @@ def atomic_add_tuple(context, builder, sig, args):
             indty = [indty]
         else:
             indices = cgutils.unpack_tuple(builder, inds, count=len(indty))
-            indices = [context.cast(builder, i, t, types.intp)
-                       for t, i in zip(indty, indices)]
+            indices = [
+                context.cast(builder, i, t, types.intp) for t, i in zip(indty, indices)
+            ]
 
         if dtype != valty:
             raise TypeError("expecting %s but got %s" % (dtype, valty))
 
         if aryty.ndim != len(indty):
-            raise TypeError("indexing %d-D array with %d-D index" %
-                            (aryty.ndim, len(indty)))
+            raise TypeError(
+                "indexing %d-D array with %d-D index" % (aryty.ndim, len(indty))
+            )
 
         lary = context.make_array(aryty)(context, builder, ary)
         ptr = cgutils.get_item_pointer(context, builder, aryty, lary, indices)
 
         if aryty.addrspace == target.SPIR_LOCAL_ADDRSPACE:
-            return insert_and_call_atomic_fn(context, builder, sig, "add", dtype,
-                    ptr, val, target.SPIR_LOCAL_ADDRSPACE)
+            return insert_and_call_atomic_fn(
+                context,
+                builder,
+                sig,
+                "add",
+                dtype,
+                ptr,
+                val,
+                target.SPIR_LOCAL_ADDRSPACE,
+            )
         else:
-            return insert_and_call_atomic_fn(context, builder, sig, "add", dtype,
-                    ptr, val, target.SPIR_GLOBAL_ADDRSPACE)
+            return insert_and_call_atomic_fn(
+                context,
+                builder,
+                sig,
+                "add",
+                dtype,
+                ptr,
+                val,
+                target.SPIR_GLOBAL_ADDRSPACE,
+            )
     else:
         raise ImportError("Atomic support is not present, can not perform atomic_add")
 
 
 @lower(stubs.atomic.sub, types.Array, types.intp, types.Any)
-@lower(stubs.atomic.sub, types.Array,
-           types.UniTuple, types.Any)
-@lower(stubs.atomic.sub, types.Array, types.Tuple,
-           types.Any)
+@lower(stubs.atomic.sub, types.Array, types.UniTuple, types.Any)
+@lower(stubs.atomic.sub, types.Array, types.Tuple, types.Any)
 def atomic_sub_tuple(context, builder, sig, args):
     from .atomics import atomic_support_present
+
     if atomic_support_present():
         context.link_binaries[target.LINK_ATOMIC] = True
         aryty, indty, valty = sig.args
@@ -307,36 +320,58 @@ def atomic_sub_tuple(context, builder, sig, args):
             indty = [indty]
         else:
             indices = cgutils.unpack_tuple(builder, inds, count=len(indty))
-            indices = [context.cast(builder, i, t, types.intp)
-                       for t, i in zip(indty, indices)]
+            indices = [
+                context.cast(builder, i, t, types.intp) for t, i in zip(indty, indices)
+            ]
 
         if dtype != valty:
             raise TypeError("expecting %s but got %s" % (dtype, valty))
 
         if aryty.ndim != len(indty):
-            raise TypeError("indexing %d-D array with %d-D index" %
-                            (aryty.ndim, len(indty)))
+            raise TypeError(
+                "indexing %d-D array with %d-D index" % (aryty.ndim, len(indty))
+            )
 
         lary = context.make_array(aryty)(context, builder, ary)
         ptr = cgutils.get_item_pointer(context, builder, aryty, lary, indices)
 
-
         if aryty.addrspace == target.SPIR_LOCAL_ADDRSPACE:
-            return insert_and_call_atomic_fn(context, builder, sig, "sub", dtype,
-                    ptr, val, target.SPIR_LOCAL_ADDRSPACE)
+            return insert_and_call_atomic_fn(
+                context,
+                builder,
+                sig,
+                "sub",
+                dtype,
+                ptr,
+                val,
+                target.SPIR_LOCAL_ADDRSPACE,
+            )
         else:
-            return insert_and_call_atomic_fn(context, builder, sig, "sub", dtype,
-                    ptr, val, target.SPIR_GLOBAL_ADDRSPACE)
+            return insert_and_call_atomic_fn(
+                context,
+                builder,
+                sig,
+                "sub",
+                dtype,
+                ptr,
+                val,
+                target.SPIR_GLOBAL_ADDRSPACE,
+            )
     else:
         raise ImportError("Atomic support is not present, can not perform atomic_add")
 
 
-@lower('dppy.lmem.alloc', types.UniTuple, types.Any)
+@lower("dppy.lmem.alloc", types.UniTuple, types.Any)
 def dppy_lmem_alloc_array(context, builder, sig, args):
     shape, dtype = args
-    return _generic_array(context, builder, shape=shape, dtype=dtype,
-                          symbol_name='_dppy_lmem',
-                          addrspace=target.SPIR_LOCAL_ADDRSPACE)
+    return _generic_array(
+        context,
+        builder,
+        shape=shape,
+        dtype=dtype,
+        symbol_name="_dppy_lmem",
+        addrspace=target.SPIR_LOCAL_ADDRSPACE,
+    )
 
 
 def _generic_array(context, builder, shape, dtype, symbol_name, addrspace):
@@ -374,10 +409,18 @@ def _generic_array(context, builder, shape, dtype, symbol_name, addrspace):
     return _make_array(context, builder, gvmem, dtype, shape, addrspace=addrspace)
 
 
-def _make_array(context, builder, dataptr, dtype, shape, layout='C', addrspace=target.SPIR_GENERIC_ADDRSPACE):
+def _make_array(
+    context,
+    builder,
+    dataptr,
+    dtype,
+    shape,
+    layout="C",
+    addrspace=target.SPIR_GENERIC_ADDRSPACE,
+):
     ndim = len(shape)
     # Create array object
-    aryty = types.Array(dtype=dtype, ndim=ndim, layout='C', addrspace=addrspace)
+    aryty = types.Array(dtype=dtype, ndim=ndim, layout="C", addrspace=addrspace)
     ary = context.make_array(aryty)(context, builder)
 
     targetdata = _get_target_data(context)
@@ -392,12 +435,14 @@ def _make_array(context, builder, dataptr, dtype, shape, layout='C', addrspace=t
     kshape = [context.get_constant(types.intp, s) for s in shape]
     kstrides = [context.get_constant(types.intp, s) for s in strides]
 
-    context.populate_array(ary,
-                           data=builder.bitcast(dataptr, ary.data.type),
-                           shape=cgutils.pack_array(builder, kshape),
-                           strides=cgutils.pack_array(builder, kstrides),
-                           itemsize=context.get_constant(types.intp, itemsize),
-                           meminfo=None)
+    context.populate_array(
+        ary,
+        data=builder.bitcast(dataptr, ary.data.type),
+        shape=cgutils.pack_array(builder, kshape),
+        strides=cgutils.pack_array(builder, kstrides),
+        itemsize=context.get_constant(types.intp, itemsize),
+        meminfo=None,
+    )
 
     return ary._getvalue()
 

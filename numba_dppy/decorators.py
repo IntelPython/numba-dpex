@@ -1,7 +1,12 @@
 from __future__ import print_function, absolute_import, division
 from numba.core import sigutils, types
-from .compiler import (compile_kernel, JitDPPYKernel, compile_dppy_func_template,
-                       compile_dppy_func, get_ordered_arg_access_types)
+from .compiler import (
+    compile_kernel,
+    JitDPPYKernel,
+    compile_dppy_func_template,
+    compile_dppy_func,
+    get_ordered_arg_access_types,
+)
 
 
 def kernel(signature=None, access_types=None, debug=False):
@@ -23,13 +28,14 @@ def autojit(debug=False, access_types=None):
     def _kernel_autojit(pyfunc):
         ordered_arg_access_types = get_ordered_arg_access_types(pyfunc, access_types)
         return JitDPPYKernel(pyfunc, ordered_arg_access_types)
+
     return _kernel_autojit
 
 
 def _kernel_jit(signature, debug, access_types):
     argtypes, restype = sigutils.normalize_signature(signature)
     if restype is not None and restype != types.void:
-        msg = ("DPPY kernel must have void return type but got {restype}")
+        msg = "DPPY kernel must have void return type but got {restype}"
         raise TypeError(msg.format(restype=restype))
 
     def _wrapped(pyfunc):
@@ -37,7 +43,6 @@ def _kernel_jit(signature, debug, access_types):
         return compile_kernel(None, pyfunc, argtypes, ordered_arg_access_types, debug)
 
     return _wrapped
-
 
 
 def func(signature=None):
@@ -57,6 +62,7 @@ def _func_jit(signature):
         return compile_dppy_func(pyfunc, restype, argtypes)
 
     return _wrapped
+
 
 def _func_autojit(pyfunc):
     return compile_dppy_func_template(pyfunc)
