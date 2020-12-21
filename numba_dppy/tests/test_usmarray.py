@@ -192,7 +192,6 @@ class TestUsmArray(unittest.TestCase):
         self.assertIsInstance(s1, tuple, type(s1))
         self.assertEqual(s1, (10, 10))
 
-    @unittest.expectedFailure
     def test_numba_usmarray_T(self):
         """Testing Numba usmarray.T"""
         dp4 = numba_T(numba_usmarray_empty())

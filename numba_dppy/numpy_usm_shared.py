@@ -371,7 +371,13 @@ def numba_register_typing():
         typing_registry.register_global(dpval, type_handler)
 
     # Handle usmarray attribute typing.
-    templates_registry.register_attr(UsmArrayAttribute)
+    # This explicit register_attr of a copied/modified UsmArrayAttribute
+    # may be removed in the future in favor of the below commented out code
+    # once we get this registration code to run after everything is registered
+    # in Numba.  Right now, the attribute registrations we need are happening
+    # after the registration callback that gets us here so we would miss the
+    # attribute registrations we need.
+    typing_registry.register_attr(UsmArrayAttribute)
     """
     for tgetattr in todo_getattr:
         class_name = tgetattr.__name__ + "_usmarray"
@@ -439,13 +445,19 @@ class UsmArrayAttribute(AttributeTemplate):
     def resolve_flags(self, ary):
         return types.ArrayFlags(ary)
 
+    def convert_array_to_usmarray(self, retty):
+        if isinstance(retty, types.Array):
+            return UsmSharedArrayType(dtype=retty.dtype, ndim=retty.ndim, layout=retty.layout)
+        else:
+            return retty
+
     def resolve_T(self, ary):
         if ary.ndim <= 1:
             retty = ary
         else:
             layout = {"C": "F", "F": "C"}.get(ary.layout, "A")
             retty = ary.copy(layout=layout)
-        return retty
+        return self.convert_array_to_usmarray(retty)
 
     def resolve_real(self, ary):
         return self._resolve_real_imag(ary, attr='real')
@@ -460,7 +472,7 @@ class UsmArrayAttribute(AttributeTemplate):
             res = ary.copy(dtype=ary.dtype)
             if attr == 'imag':
                 res = res.copy(readonly=True)
-            return res
+            return self.convert_array_to_usmarray(res)
         else:
             msg = "cannot access .{} of array of {}"
             raise TypingError(msg.format(attr, ary.dtype))
