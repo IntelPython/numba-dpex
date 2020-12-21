@@ -5,7 +5,7 @@ import numba_dppy, numba_dppy as dppy
 import math
 
 import dpctl
-import dpctl._memory as dpctl_mem
+import dpctl.memory as dpctl_mem
 
 
 def recursive_reduction(size, group_size,
