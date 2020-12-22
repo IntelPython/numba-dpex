@@ -52,7 +52,7 @@ void usmarray_memsys_init(void) {
         assert(sycldl != NULL);
         internal_allocator = (NRT_external_malloc_func)dlsym(sycldl, malloc_name);
         usmarray_allocator.malloc = save_queue_allocator;
-        if (usmarray_allocator.malloc == NULL) {
+        if (internal_allocator == NULL) {
             printf("Did not find %s in %s\n", malloc_name, lib_name);
             exit(-1);
         }
@@ -61,7 +61,7 @@ void usmarray_memsys_init(void) {
 
         internal_free = (NRT_external_free_func)dlsym(sycldl, free_name);
         usmarray_allocator.free = save_queue_deallocator;
-        if (usmarray_allocator.free == NULL) {
+        if (internal_free == NULL) {
             printf("Did not find %s in %s\n", free_name, lib_name);
             exit(-1);
         }
@@ -89,7 +89,7 @@ void usmarray_memsys_init(void) {
         assert(sycldl != NULL);
         internal_allocator = (NRT_external_malloc_func)GetProcAddress(sycldl, malloc_name);
         usmarray_allocator.malloc = save_queue_allocator;
-        if (usmarray_allocator.malloc == NULL) {
+        if (internal_allocator == NULL) {
             printf("Did not find %s in %s\n", malloc_name, lib_name);
             exit(-1);
         }
@@ -98,7 +98,7 @@ void usmarray_memsys_init(void) {
 
         internal_free = (NRT_external_free_func)GetProcAddress(sycldl, free_name);
         usmarray_allocator.free = save_queue_deallocator;
-        if (usmarray_allocator.free == NULL) {
+        if (internal_free == NULL) {
             printf("Did not find %s in %s\n", free_name, lib_name);
             exit(-1);
         }
