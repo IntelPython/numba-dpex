@@ -79,7 +79,7 @@ void usmarray_memsys_init(void) {
             exit(-1);
         }
     #else
-        char *lib_name = "libDPCTLSyclInterface.dll";
+        char *lib_name = "DPCTLSyclInterface.dll";
         char *malloc_name = "DPCTLmalloc_shared";
         char *free_name = "DPCTLfree_with_queue";
         char *get_queue_name = "DPCTLQueueMgr_GetCurrentQueue";
