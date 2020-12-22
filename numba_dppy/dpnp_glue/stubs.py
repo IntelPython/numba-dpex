@@ -49,3 +49,6 @@ class dpnp(Stub):
 
     class matmul(Stub):
         pass
+
+    class random_sample(Stub):
+        pass

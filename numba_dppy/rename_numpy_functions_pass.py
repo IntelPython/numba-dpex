@@ -23,7 +23,8 @@ rewrite_function_name_map = {"sum": (["np"], "sum"),
                              "argsort": (["np"], "argsort"),
                              "cov": (["np"], "cov"),
                              "dot": (["np"], "dot"),
-                             "matmul": (["np"], "matmul")}
+                             "matmul": (["np"], "matmul"),
+                             "random_sample": (["random"], "random_sample")}
 
 
 class RewriteNumPyOverloadedFunctions(object):
@@ -131,6 +132,7 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
         import numba_dppy.dpnp_glue.dpnp_transcendentalsimpl
         import numba_dppy.dpnp_glue.dpnp_statisticsimpl
         import numba_dppy.dpnp_glue.dpnp_sort_search_countimpl
+        import numba_dppy.dpnp_glue.dpnp_randomimpl
 
     def run_pass(self, state):
         rewrite_function_name_pass = RewriteNumPyOverloadedFunctions(
