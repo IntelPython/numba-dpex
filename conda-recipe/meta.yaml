@@ -28,7 +28,6 @@ requirements:
         - llvm-spirv
         - llvmdev
         - dpnp 0.4.*  # [linux]
-        - cython  # For testing only: dpCtl requires it.
 
 test:
   requires:
