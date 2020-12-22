@@ -1,5 +1,5 @@
-#include "_pymodule.h"
-#include "core/runtime/nrt_external.h"
+#include "numba/_pymodule.h"
+#include "numba/core/runtime/nrt_external.h"
 #include "assert.h"
 #include <stdio.h>
 #if !defined _WIN32

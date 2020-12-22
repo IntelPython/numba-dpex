@@ -1,7 +1,6 @@
 import os
 from setuptools import Extension, find_packages, setup
 from Cython.Build import cythonize
-from numba.core.extending import include_path
 
 import versioneer
 import sys
@@ -9,13 +8,12 @@ import sys
 
 def get_ext_modules():
     ext_modules = []
-    numba_dir = include_path()
 
+    import numba
     ext_dppy = Extension(
         name="numba_dppy._dppy_rt",
         sources=["numba_dppy/dppy_rt.c"],
-        include_dirs=[numba_dir + "/numba"],
-        depends=[numba_dir + "/numba/core/runtime/nrt_external.h", numba_dir + "/numba/core/runtime/nrt.h", numba_dir + "/numba/_pymodule.h"],
+        include_dirs=[numba.core.extending.include_path()],
     )
     ext_modules += [ext_dppy]
 
