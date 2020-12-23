@@ -22,7 +22,9 @@ def dpnp_argmax_impl(a):
     void custom_argmax_c(void* array1_in, void* result1, size_t size)
     """
     sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, [a.dtype.name, np.dtype(np.int64).name], sig)
+    dpnp_func = dpnp_ext.dpnp_func(
+        "dpnp_" + name, [a.dtype.name, np.dtype(np.int64).name], sig
+    )
 
     get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
     allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
@@ -72,7 +74,9 @@ def dpnp_argmin_impl(a):
     void custom_argmin_c(void* array1_in, void* result1, size_t size)
     """
     sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, [a.dtype.name, np.dtype(np.int64).name], sig)
+    dpnp_func = dpnp_ext.dpnp_func(
+        "dpnp_" + name, [a.dtype.name, np.dtype(np.int64).name], sig
+    )
 
     get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
     allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
@@ -122,7 +126,7 @@ def dpnp_argsort_impl(a):
     void custom_argmin_c(void* array1_in, void* result1, size_t size)
     """
     sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, [a.dtype.name, "NONE"], sig)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
     allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()

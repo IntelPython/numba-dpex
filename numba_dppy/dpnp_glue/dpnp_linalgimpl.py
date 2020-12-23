@@ -7,6 +7,7 @@ from numba.core.extending import overload, register_jitable
 import numpy as np
 from numba_dppy.dpctl_functions import _DPCTL_FUNCTIONS
 
+
 @overload(stubs.dpnp.eig)
 def dpnp_eig_impl(a):
     name = "eig"
@@ -22,10 +23,8 @@ def dpnp_eig_impl(a):
     void dpnp_eig_c(const void* array_in, void* result1, void* result2, size_t size)
 
     """
-    sig = signature(
-        ret_type, types.voidptr, types.voidptr, types.voidptr, types.intp
-    )
-    dpnp_eig = dpnp_ext.dpnp_func("dpnp_"+name, [a.dtype.name, "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.voidptr, types.voidptr, types.intp)
+    dpnp_eig = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
     allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
@@ -92,8 +91,14 @@ def dpnp_dot_impl(a, b):
 
     """
     sig = signature(
-        ret_type, types.voidptr, types.voidptr, types.voidptr,
-                  types.intp, types.intp, types.intp)
+        ret_type,
+        types.voidptr,
+        types.voidptr,
+        types.voidptr,
+        types.intp,
+        types.intp,
+        types.intp,
+    )
 
     get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
     allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
@@ -137,6 +142,7 @@ def dpnp_dot_impl(a, b):
     ndims = [a.ndim, b.ndim]
     if ndims == [2, 2]:
         dpnp_func = dpnp_ext.dpnp_func("dpnp_matmul", [a.dtype.name, "NONE"], sig)
+
         def dot_2_mm(a, b):
             sycl_queue = get_sycl_queue()
 
@@ -170,11 +176,12 @@ def dpnp_dot_impl(a, b):
         return dot_2_mm
     elif ndims == [2, 1]:
         dpnp_func = dpnp_ext.dpnp_func("dpnp_matmul", [a.dtype.name, "NONE"], sig)
+
         def dot_2_mv(a, b):
             sycl_queue = get_sycl_queue()
 
             m, k = a.shape
-            _n,  = b.shape
+            (_n,) = b.shape
             n = 1
 
             if _n != k:
@@ -186,7 +193,7 @@ def dpnp_dot_impl(a, b):
             b_usm = allocate_usm_shared(b.size * b.itemsize, sycl_queue)
             copy_usm(sycl_queue, b_usm, b.ctypes, b.size * b.itemsize)
 
-            out = np.empty((m, ), dtype=res_dtype)
+            out = np.empty((m,), dtype=res_dtype)
             out_usm = allocate_usm_shared(out.size * out.itemsize, sycl_queue)
 
             dpnp_func(a_usm, b_usm, out_usm, m, n, k)
@@ -204,10 +211,11 @@ def dpnp_dot_impl(a, b):
         return dot_2_mv
     elif ndims == [1, 2]:
         dpnp_func = dpnp_ext.dpnp_func("dpnp_matmul", [a.dtype.name, "NONE"], sig)
+
         def dot_2_vm(a, b):
             sycl_queue = get_sycl_queue()
 
-            m, = a.shape
+            (m,) = a.shape
             k, n = b.shape
 
             if m != k:
@@ -219,7 +227,7 @@ def dpnp_dot_impl(a, b):
             b_usm = allocate_usm_shared(b.size * b.itemsize, sycl_queue)
             copy_usm(sycl_queue, b_usm, b.ctypes, b.size * b.itemsize)
 
-            out = np.empty((n, ), dtype=res_dtype)
+            out = np.empty((n,), dtype=res_dtype)
             out_usm = allocate_usm_shared(out.size * out.itemsize, sycl_queue)
 
             dpnp_func(a_usm, b_usm, out_usm, m, n, k)
@@ -236,14 +244,16 @@ def dpnp_dot_impl(a, b):
 
         return dot_2_vm
     elif ndims == [1, 1]:
-        sig = signature(ret_type, types.voidptr, types.voidptr, types.voidptr,
-                                  types.intp)
+        sig = signature(
+            ret_type, types.voidptr, types.voidptr, types.voidptr, types.intp
+        )
         dpnp_func = dpnp_ext.dpnp_func("dpnp_dot", [a.dtype.name, "NONE"], sig)
+
         def dot_2_vv(a, b):
             sycl_queue = get_sycl_queue()
 
-            m, = a.shape
-            n, = b.shape
+            (m,) = a.shape
+            (n,) = b.shape
 
             if m != n:
                 raise ValueError("Incompatible array sizes for np.dot(a, b)")

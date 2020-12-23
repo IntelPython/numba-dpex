@@ -12,7 +12,7 @@ import dpctl
 def data_parallel_sum(a, b, c):
     i = dppy.get_global_id(0)
     j = dppy.get_global_id(1)
-    c[i,j] = a[i,j] + b[i,j]
+    c[i, j] = a[i, j] + b[i, j]
 
 
 def driver(a, b, c, global_size):
@@ -26,11 +26,11 @@ def main():
     # Array dimesnions
     X = 8
     Y = 8
-    global_size = X,Y
+    global_size = X, Y
 
-    a = np.arange(X*Y, dtype=np.float32).reshape(X,Y)
-    b = np.array(np.random.random(X*Y), dtype=np.float32).reshape(X,Y)
-    c = np.ones_like(a).reshape(X,Y)
+    a = np.arange(X * Y, dtype=np.float32).reshape(X, Y)
+    b = np.array(np.random.random(X * Y), dtype=np.float32).reshape(X, Y)
+    c = np.ones_like(a).reshape(X, Y)
 
     if dpctl.has_gpu_queues():
         with dpctl.device_context("opencl:gpu") as gpu_queue:
@@ -45,5 +45,5 @@ def main():
     print("Done...")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
