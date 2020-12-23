@@ -5,7 +5,7 @@ from . import stubs
 import numba_dppy.dpnp_glue as dpnp_lowering
 from numba.core.extending import overload, register_jitable
 import numpy as np
-import numba_dppy.dpctl_functions as dpctl_functions
+from numba_dppy import dpctl_functions
 
 
 @overload(stubs.dpnp.argmax)
