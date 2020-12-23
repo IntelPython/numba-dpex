@@ -52,8 +52,12 @@ def dpnp_eig_impl(a):
 
         dpnp_eig(a_usm, wr_usm, vr_usm, n)
 
-        dpctl_functions.queue_memcpy(sycl_queue, wr.ctypes, wr_usm, wr.size * wr.itemsize)
-        dpctl_functions.queue_memcpy(sycl_queue, vr.ctypes, vr_usm, vr.size * vr.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, wr.ctypes, wr_usm, wr.size * wr.itemsize
+        )
+        dpctl_functions.queue_memcpy(
+            sycl_queue, vr.ctypes, vr_usm, vr.size * vr.itemsize
+        )
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(wr_usm, sycl_queue)
@@ -141,17 +145,23 @@ def dpnp_dot_impl(a, b):
                 raise ValueError("Incompatible array sizes for np.dot(a, b)")
 
             a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-            dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+            dpctl_functions.queue_memcpy(
+                sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+            )
 
             b_usm = dpctl_functions.malloc_shared(b.size * b.itemsize, sycl_queue)
-            dpctl_functions.queue_memcpy(sycl_queue, b_usm, b.ctypes, b.size * b.itemsize)
+            dpctl_functions.queue_memcpy(
+                sycl_queue, b_usm, b.ctypes, b.size * b.itemsize
+            )
 
             out = np.empty((m, n), dtype=res_dtype)
             out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
             dpnp_func(a_usm, b_usm, out_usm, m, n, k)
 
-            dpctl_functions.queue_memcpy(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
+            dpctl_functions.queue_memcpy(
+                sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+            )
 
             dpctl_functions.free_with_queue(a_usm, sycl_queue)
             dpctl_functions.free_with_queue(b_usm, sycl_queue)
@@ -176,17 +186,23 @@ def dpnp_dot_impl(a, b):
                 raise ValueError("Incompatible array sizes for np.dot(a, b)")
 
             a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-            dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+            dpctl_functions.queue_memcpy(
+                sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+            )
 
             b_usm = dpctl_functions.malloc_shared(b.size * b.itemsize, sycl_queue)
-            dpctl_functions.queue_memcpy(sycl_queue, b_usm, b.ctypes, b.size * b.itemsize)
+            dpctl_functions.queue_memcpy(
+                sycl_queue, b_usm, b.ctypes, b.size * b.itemsize
+            )
 
             out = np.empty((m,), dtype=res_dtype)
             out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
             dpnp_func(a_usm, b_usm, out_usm, m, n, k)
 
-            dpctl_functions.queue_memcpy(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
+            dpctl_functions.queue_memcpy(
+                sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+            )
 
             dpctl_functions.free_with_queue(a_usm, sycl_queue)
             dpctl_functions.free_with_queue(b_usm, sycl_queue)
@@ -210,17 +226,23 @@ def dpnp_dot_impl(a, b):
                 raise ValueError("Incompatible array sizes for np.dot(a, b)")
 
             a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-            dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+            dpctl_functions.queue_memcpy(
+                sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+            )
 
             b_usm = dpctl_functions.malloc_shared(b.size * b.itemsize, sycl_queue)
-            dpctl_functions.queue_memcpy(sycl_queue, b_usm, b.ctypes, b.size * b.itemsize)
+            dpctl_functions.queue_memcpy(
+                sycl_queue, b_usm, b.ctypes, b.size * b.itemsize
+            )
 
             out = np.empty((n,), dtype=res_dtype)
             out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
             dpnp_func(a_usm, b_usm, out_usm, m, n, k)
 
-            dpctl_functions.queue_memcpy(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
+            dpctl_functions.queue_memcpy(
+                sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+            )
 
             dpctl_functions.free_with_queue(a_usm, sycl_queue)
             dpctl_functions.free_with_queue(b_usm, sycl_queue)
@@ -247,17 +269,23 @@ def dpnp_dot_impl(a, b):
                 raise ValueError("Incompatible array sizes for np.dot(a, b)")
 
             a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-            dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+            dpctl_functions.queue_memcpy(
+                sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+            )
 
             b_usm = dpctl_functions.malloc_shared(b.size * b.itemsize, sycl_queue)
-            dpctl_functions.queue_memcpy(sycl_queue, b_usm, b.ctypes, b.size * b.itemsize)
+            dpctl_functions.queue_memcpy(
+                sycl_queue, b_usm, b.ctypes, b.size * b.itemsize
+            )
 
             out = np.empty(1, dtype=res_dtype)
             out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
             dpnp_func(a_usm, b_usm, out_usm, m)
 
-            dpctl_functions.queue_memcpy(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
+            dpctl_functions.queue_memcpy(
+                sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+            )
 
             dpctl_functions.free_with_queue(a_usm, sycl_queue)
             dpctl_functions.free_with_queue(b_usm, sycl_queue)

@@ -53,7 +53,9 @@ def dpnp_amax_impl(a):
         dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim, a.shapeptr, a.ndim)
 
         out = np.empty(1, dtype=a.dtype)
-        dpctl_functions.queue_memcpy(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+        )
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
@@ -110,7 +112,9 @@ def dpnp_amin_impl(a):
         dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim, a.shapeptr, 0)
 
         out = np.empty(1, dtype=a.dtype)
-        dpctl_functions.queue_memcpy(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+        )
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
@@ -170,7 +174,9 @@ def dpnp_mean_impl(a):
 
         dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim, a.shapeptr, a.ndim)
 
-        dpctl_functions.queue_memcpy(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+        )
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
@@ -229,7 +235,9 @@ def dpnp_median_impl(a):
 
         dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim, a.shapeptr, a.ndim)
 
-        dpctl_functions.queue_memcpy(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+        )
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
@@ -296,7 +304,9 @@ def dpnp_cov_impl(a):
 
         dpnp_func(a_usm, out_usm, rows, cols)
 
-        dpctl_functions.queue_memcpy(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+        )
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)

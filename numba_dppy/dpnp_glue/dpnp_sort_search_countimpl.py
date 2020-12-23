@@ -42,7 +42,9 @@ def dpnp_argmax_impl(a):
 
         dpnp_func(a_usm, out_usm, a.size)
 
-        dpctl_functions.queue_memcpy(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+        )
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
@@ -88,7 +90,9 @@ def dpnp_argmin_impl(a):
 
         dpnp_func(a_usm, out_usm, a.size)
 
-        dpctl_functions.queue_memcpy(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+        )
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
@@ -132,7 +136,9 @@ def dpnp_argsort_impl(a):
 
         dpnp_func(a_usm, out_usm, a.size)
 
-        dpctl_functions.queue_memcpy(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+        )
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)

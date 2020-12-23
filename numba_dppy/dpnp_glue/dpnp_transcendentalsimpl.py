@@ -38,7 +38,9 @@ def dpnp_sum_impl(a):
         dpnp_func(a_usm, out_usm, a.size)
 
         out = np.empty(1, dtype=a.dtype)
-        dpctl_functions.queue_memcpy(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+        )
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
@@ -79,7 +81,9 @@ def dpnp_prod_impl(a):
         dpnp_func(a_usm, out_usm, a.size)
 
         out = np.empty(1, dtype=a.dtype)
-        dpctl_functions.queue_memcpy(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+        )
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
