@@ -10,8 +10,8 @@ from numba.core.cpu import CPUTargetOptions
 
 class DPPYTarget(TargetDescriptor):
     options = CPUTargetOptions
-    #typingctx = DPPYTypingContext()
-    #targetctx = DPPYTargetContext(typingctx)
+    # typingctx = DPPYTypingContext()
+    # targetctx = DPPYTargetContext(typingctx)
 
     @utils.cached_property
     def _toplevel_target_context(self):
@@ -36,7 +36,6 @@ class DPPYTarget(TargetDescriptor):
         The typing context for DPPY targets.
         """
         return self._toplevel_typing_context
-
 
 
 # The global DPPY target

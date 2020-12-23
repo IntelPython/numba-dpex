@@ -6,10 +6,10 @@ import numba_dppy, numba_dppy as dppy
 import dpctl
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
+@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
 class TestBarrier(unittest.TestCase):
     def test_proper_lowering(self):
-        #@dppy.kernel("void(float32[::1])")
+        # @dppy.kernel("void(float32[::1])")
         @dppy.kernel
         def twice(A):
             i = dppy.get_global_id(0)
@@ -22,13 +22,13 @@ class TestBarrier(unittest.TestCase):
         orig = arr.copy()
 
         with dpctl.device_context("opencl:gpu") as gpu_queue:
-            twice[N, N//2](arr)
+            twice[N, N // 2](arr)
 
         # The computation is correct?
         np.testing.assert_allclose(orig * 2, arr)
 
     def test_no_arg_barrier_support(self):
-        #@dppy.kernel("void(float32[::1])")
+        # @dppy.kernel("void(float32[::1])")
         @dppy.kernel
         def twice(A):
             i = dppy.get_global_id(0)
@@ -47,11 +47,10 @@ class TestBarrier(unittest.TestCase):
         # The computation is correct?
         np.testing.assert_allclose(orig * 2, arr)
 
-
     def test_local_memory(self):
         blocksize = 10
 
-        #@dppy.kernel("void(float32[::1])")
+        # @dppy.kernel("void(float32[::1])")
         @dppy.kernel
         def reverse_array(A):
             lm = dppy.local.static_alloc(shape=10, dtype=float32)
@@ -74,5 +73,5 @@ class TestBarrier(unittest.TestCase):
         np.testing.assert_allclose(expected, arr)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

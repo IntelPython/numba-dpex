@@ -5,7 +5,7 @@ import dpctl
 import unittest
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
+@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
 class TestNumpy_comparison_functions(unittest.TestCase):
     a = np.array([4, 5, 6])
     b = np.array([2, 6, 6])
@@ -202,5 +202,5 @@ class TestNumpy_comparison_functions(unittest.TestCase):
         np.testing.assert_equal(c, d)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

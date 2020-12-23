@@ -23,7 +23,7 @@ def dpnp_sum_impl(a):
 
     """
     sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, [a.dtype.name, "NONE"], sig)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
     allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
@@ -70,7 +70,7 @@ def dpnp_prod_impl(a):
     void custom_prod_c(void* array1_in, void* result1, size_t size)
     """
     sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, [a.dtype.name, "NONE"], sig)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
     allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()

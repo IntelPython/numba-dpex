@@ -8,20 +8,19 @@ import unittest
 @unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
 class TestVectorize(unittest.TestCase):
     def test_vectorize(self):
-
         @vectorize(nopython=True)
         def axy(a, x, y):
             return a * x + y
 
         @njit
         def f(a0, a1):
-            return np.cos(axy(a0, np.sin(a1) - 1., 1.))
+            return np.cos(axy(a0, np.sin(a1) - 1.0, 1.0))
 
         def f_np(a0, a1):
             sin_res = np.sin(a1)
             res = []
             for i in range(len(a0)):
-                res.append(axy(a0[i], sin_res[i] - 1., 1.))
+                res.append(axy(a0[i], sin_res[i] - 1.0, 1.0))
             return np.cos(np.array(res))
 
         A = np.random.random(10)
@@ -36,5 +35,5 @@ class TestVectorize(unittest.TestCase):
         self.assertTrue(max_abs_err < 1e-5)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
