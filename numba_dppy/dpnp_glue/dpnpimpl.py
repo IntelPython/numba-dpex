@@ -4,7 +4,7 @@ from numba.core.extending import register_jitable
 import numpy as np
 from llvmlite import ir
 from numba.core.imputils import lower_getattr
-from numba_dppy.dpctl_functions import _DPCTL_FUNCTIONS
+
 
 ll_void_p = ir.IntType(8).as_pointer()
 
