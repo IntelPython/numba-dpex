@@ -88,7 +88,7 @@ def test_for_dimensions(fn, test_fn, dims, tys, np_all=False):
     return True
 
 
-# From https://github.com/IntelPython/dpnp/blob/master/tests/test_linalg.py
+# From https://github.com/IntelPython/dpnp/blob/0.4.0/tests/test_linalg.py#L8
 def vvsort(val, vec, size):
     for i in range(size):
         imax = i
