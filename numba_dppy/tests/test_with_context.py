@@ -8,10 +8,8 @@ import dpctl
 
 
 class TestWithDPPYContext(unittest.TestCase):
-
     @unittest.skipIf(not dpctl.has_gpu_queues(), "No GPU platforms available")
     def test_with_dppy_context_gpu(self):
-
         @njit
         def nested_func(a, b):
             np.sin(a, b)
@@ -33,11 +31,10 @@ class TestWithDPPYContext(unittest.TestCase):
         func(expected)
 
         np.testing.assert_array_equal(expected, got_gpu)
-        self.assertTrue('Parfor lowered on DPPY-device' in got_gpu_message.getvalue())
+        self.assertTrue("Parfor lowered on DPPY-device" in got_gpu_message.getvalue())
 
     @unittest.skipIf(not dpctl.has_cpu_queues(), "No CPU platforms available")
     def test_with_dppy_context_cpu(self):
-
         @njit
         def nested_func(a, b):
             np.sin(a, b)
@@ -59,17 +56,15 @@ class TestWithDPPYContext(unittest.TestCase):
         func(expected)
 
         np.testing.assert_array_equal(expected, got_cpu)
-        self.assertTrue('Parfor lowered on DPPY-device' in got_cpu_message.getvalue())
-
+        self.assertTrue("Parfor lowered on DPPY-device" in got_cpu_message.getvalue())
 
     @unittest.skipIf(not dpctl.has_gpu_queues(), "No GPU platforms available")
     def test_with_dppy_context_target(self):
-
-        @njit(target='cpu')
+        @njit(target="cpu")
         def nested_func_target(a, b):
             np.sin(a, b)
 
-        @njit(target='gpu')
+        @njit(target="gpu")
         def func_target(b):
             a = np.ones((64), dtype=np.float64)
             nested_func_target(a, b)
@@ -83,7 +78,6 @@ class TestWithDPPYContext(unittest.TestCase):
         def func_no_parallel(b):
             a = np.ones((64), dtype=np.float64)
             return a
-
 
         a = np.ones((64), dtype=np.float64)
         b = np.ones((64), dtype=np.float64)
@@ -112,5 +106,5 @@ class TestWithDPPYContext(unittest.TestCase):
         self.assertTrue(msg_2 in str(raises_4.exception))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

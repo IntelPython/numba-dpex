@@ -39,15 +39,15 @@ class DPPYTypingContext(typing.BaseContext):
 # -----------------------------------------------------------------------------
 # Implementation
 
-VALID_CHARS = re.compile(r'[^a-z0-9]', re.I)
+VALID_CHARS = re.compile(r"[^a-z0-9]", re.I)
 
 
 # Address spaces
-SPIR_PRIVATE_ADDRSPACE  = 0
-SPIR_GLOBAL_ADDRSPACE   = 1
+SPIR_PRIVATE_ADDRSPACE = 0
+SPIR_GLOBAL_ADDRSPACE = 1
 SPIR_CONSTANT_ADDRSPACE = 2
-SPIR_LOCAL_ADDRSPACE    = 3
-SPIR_GENERIC_ADDRSPACE  = 4
+SPIR_LOCAL_ADDRSPACE = 3
+SPIR_GENERIC_ADDRSPACE = 4
 
 SPIR_VERSION = (2, 0)
 
@@ -57,9 +57,13 @@ LINK_ATOMIC = 111
 
 class GenericPointerModel(datamodel.PrimitiveModel):
     def __init__(self, dmm, fe_type):
-        #print("GenericPointerModel:", dmm, fe_type, fe_type.addrspace)
-        adrsp = fe_type.addrspace if fe_type.addrspace is not None else SPIR_GENERIC_ADDRSPACE
-        #adrsp = SPIR_GENERIC_ADDRSPACE
+        # print("GenericPointerModel:", dmm, fe_type, fe_type.addrspace)
+        adrsp = (
+            fe_type.addrspace
+            if fe_type.addrspace is not None
+            else SPIR_GENERIC_ADDRSPACE
+        )
+        # adrsp = SPIR_GENERIC_ADDRSPACE
         be_type = dmm.lookup(fe_type.dtype).get_data_type().as_pointer(adrsp)
         super(GenericPointerModel, self).__init__(dmm, fe_type, be_type)
 
@@ -72,18 +76,37 @@ def _init_data_model_manager():
 
 spirv_data_model_manager = _init_data_model_manager()
 
+
 def _replace_numpy_ufunc_with_opencl_supported_functions():
     from numba.np.ufunc_db import _ufunc_db as ufunc_db
     from numba_dppy.ocl.mathimpl import lower_ocl_impl, sig_mapper
 
-    ufuncs = [("fabs", np.fabs), ("exp", np.exp), ("log", np.log),
-              ("log10", np.log10), ("expm1", np.expm1), ("log1p", np.log1p),
-              ("sqrt", np.sqrt), ("sin", np.sin), ("cos", np.cos),
-              ("tan", np.tan), ("asin", np.arcsin), ("acos", np.arccos),
-              ("atan", np.arctan), ("atan2", np.arctan2), ("sinh", np.sinh),
-              ("cosh", np.cosh), ("tanh", np.tanh), ("asinh", np.arcsinh),
-              ("acosh", np.arccosh), ("atanh", np.arctanh), ("ldexp", np.ldexp),
-              ("floor", np.floor), ("ceil", np.ceil), ("trunc", np.trunc)]
+    ufuncs = [
+        ("fabs", np.fabs),
+        ("exp", np.exp),
+        ("log", np.log),
+        ("log10", np.log10),
+        ("expm1", np.expm1),
+        ("log1p", np.log1p),
+        ("sqrt", np.sqrt),
+        ("sin", np.sin),
+        ("cos", np.cos),
+        ("tan", np.tan),
+        ("asin", np.arcsin),
+        ("acos", np.arccos),
+        ("atan", np.arctan),
+        ("atan2", np.arctan2),
+        ("sinh", np.sinh),
+        ("cosh", np.cosh),
+        ("tanh", np.tanh),
+        ("asinh", np.arcsinh),
+        ("acosh", np.arccosh),
+        ("atanh", np.arctanh),
+        ("ldexp", np.ldexp),
+        ("floor", np.floor),
+        ("ceil", np.ceil),
+        ("trunc", np.trunc),
+    ]
 
     for name, ufunc in ufuncs:
         for sig in ufunc_db[ufunc].keys():
@@ -97,16 +120,19 @@ class DPPYTargetContext(BaseContext):
 
     def init(self):
         self._internal_codegen = codegen.JITSPIRVCodegen("numba_dppy.jit")
-        self._target_data = (ll.create_target_data(codegen
-                                .SPIR_DATA_LAYOUT[utils.MACHINE_BITS]))
+        self._target_data = ll.create_target_data(
+            codegen.SPIR_DATA_LAYOUT[utils.MACHINE_BITS]
+        )
         # Override data model manager to SPIR model
         self.data_model_manager = spirv_data_model_manager
         self.link_binaries = dict()
 
         from numba.np.ufunc_db import _lazy_init_db
         import copy
+
         _lazy_init_db()
         from numba.np.ufunc_db import _ufunc_db as ufunc_db
+
         self.ufunc_db = copy.deepcopy(ufunc_db)
 
         from numba.core.cpu import CPUContext
@@ -114,25 +140,40 @@ class DPPYTargetContext(BaseContext):
 
         self.cpu_context = cpu_target.target_context
 
-
-
     def replace_numpy_ufunc_with_opencl_supported_functions(self):
         from numba_dppy.ocl.mathimpl import lower_ocl_impl, sig_mapper
 
-        ufuncs = [("fabs", np.fabs), ("exp", np.exp), ("log", np.log),
-                  ("log10", np.log10), ("expm1", np.expm1), ("log1p", np.log1p),
-                  ("sqrt", np.sqrt), ("sin", np.sin), ("cos", np.cos),
-                  ("tan", np.tan), ("asin", np.arcsin), ("acos", np.arccos),
-                  ("atan", np.arctan), ("atan2", np.arctan2), ("sinh", np.sinh),
-                  ("cosh", np.cosh), ("tanh", np.tanh), ("asinh", np.arcsinh),
-                  ("acosh", np.arccosh), ("atanh", np.arctanh), ("ldexp", np.ldexp),
-                  ("floor", np.floor), ("ceil", np.ceil), ("trunc", np.trunc)]
+        ufuncs = [
+            ("fabs", np.fabs),
+            ("exp", np.exp),
+            ("log", np.log),
+            ("log10", np.log10),
+            ("expm1", np.expm1),
+            ("log1p", np.log1p),
+            ("sqrt", np.sqrt),
+            ("sin", np.sin),
+            ("cos", np.cos),
+            ("tan", np.tan),
+            ("asin", np.arcsin),
+            ("acos", np.arccos),
+            ("atan", np.arctan),
+            ("atan2", np.arctan2),
+            ("sinh", np.sinh),
+            ("cosh", np.cosh),
+            ("tanh", np.tanh),
+            ("asinh", np.arcsinh),
+            ("acosh", np.arccosh),
+            ("atanh", np.arctanh),
+            ("ldexp", np.ldexp),
+            ("floor", np.floor),
+            ("ceil", np.ceil),
+            ("trunc", np.trunc),
+        ]
 
         for name, ufunc in ufuncs:
             for sig in self.ufunc_db[ufunc].keys():
                 if sig in sig_mapper and (name, sig_mapper[sig]) in lower_ocl_impl:
                     self.ufunc_db[ufunc][sig] = lower_ocl_impl[(name, sig_mapper[sig])]
-
 
     def load_additional_registries(self):
         from .ocl import oclimpl, mathimpl
@@ -150,7 +191,6 @@ class DPPYTargetContext(BaseContext):
         """
         self.replace_numpy_ufunc_with_opencl_supported_functions()
 
-
     @cached_property
     def call_conv(self):
         return DPPYCallConv(self)
@@ -167,13 +207,13 @@ class DPPYTargetContext(BaseContext):
             ch = m.group(0)
             return "_%X_" % ord(ch)
 
-        qualified = name + '.' + '.'.join(str(a) for a in argtypes)
+        qualified = name + "." + ".".join(str(a) for a in argtypes)
         mangled = VALID_CHARS.sub(repl, qualified)
-        return 'dppy_py_devfn_' + mangled
+        return "dppy_py_devfn_" + mangled
 
     def prepare_ocl_kernel(self, func, argtypes):
         module = func.module
-        func.linkage = 'linkonce_odr'
+        func.linkage = "linkonce_odr"
 
         module.data_layout = codegen.SPIR_DATA_LAYOUT[self.address_size]
         wrapper = self.generate_kernel_wrapper(func, argtypes)
@@ -184,7 +224,7 @@ class DPPYTargetContext(BaseContext):
         # Adapt to SPIR
         # module = func.module
         func.calling_convention = CC_SPIR_FUNC
-        func.linkage = 'linkonce_odr'
+        func.linkage = "linkonce_odr"
         return func
 
     def generate_kernel_wrapper(self, func, argtypes):
@@ -196,32 +236,33 @@ class DPPYTargetContext(BaseContext):
                 if lty.addrspace == SPIR_LOCAL_ADDRSPACE:
                     return lty, None
                 # DRD : Cast all pointer types to global address space.
-                if  lty.addrspace != SPIR_GLOBAL_ADDRSPACE: # jcaraban
-                    return (lty.pointee.as_pointer(SPIR_GLOBAL_ADDRSPACE),
-                            lty.addrspace)
+                if lty.addrspace != SPIR_GLOBAL_ADDRSPACE:  # jcaraban
+                    return (
+                        lty.pointee.as_pointer(SPIR_GLOBAL_ADDRSPACE),
+                        lty.addrspace,
+                    )
             return lty, None
 
         if len(arginfo.argument_types) > 0:
-            llargtys, changed = zip(*map(sub_gen_with_global,
-                                         arginfo.argument_types))
+            llargtys, changed = zip(*map(sub_gen_with_global, arginfo.argument_types))
         else:
             llargtys = changed = ()
         wrapperfnty = lc.Type.function(lc.Type.void(), llargtys)
 
         wrapper_module = self.create_module("dppy.kernel.wrapper")
-        wrappername = 'dppyPy_{name}'.format(name=func.name)
+        wrappername = "dppyPy_{name}".format(name=func.name)
 
         argtys = list(arginfo.argument_types)
-        fnty = lc.Type.function(lc.Type.int(),
-                                [self.call_conv.get_return_type(
-                                    types.pyobject)] + argtys)
+        fnty = lc.Type.function(
+            lc.Type.int(), [self.call_conv.get_return_type(types.pyobject)] + argtys
+        )
 
         func = wrapper_module.add_function(fnty, name=func.name)
         func.calling_convention = CC_SPIR_FUNC
 
         wrapper = wrapper_module.add_function(wrapperfnty, name=wrappername)
 
-        builder = lc.Builder(wrapper.append_basic_block(''))
+        builder = lc.Builder(wrapper.append_basic_block(""))
 
         # Adjust address space of each kernel argument
         fixed_args = []
@@ -235,20 +276,21 @@ class DPPYTargetContext(BaseContext):
         callargs = arginfo.from_arguments(builder, fixed_args)
 
         # XXX handle error status
-        status, _ = self.call_conv.call_function(builder, func, types.void,
-                                                 argtypes, callargs)
+        status, _ = self.call_conv.call_function(
+            builder, func, types.void, argtypes, callargs
+        )
         builder.ret_void()
 
         set_dppy_kernel(wrapper)
 
-        #print(str(wrapper_module))
+        # print(str(wrapper_module))
         # Link
         module.link_in(ll.parse_assembly(str(wrapper_module)))
         # To enable inlining which is essential because addrspacecast 1->0 is
         # illegal.  Inlining will optimize the addrspacecast out.
-        func.linkage = 'internal'
+        func.linkage = "internal"
         wrapper = module.get_function(wrapper.name)
-        module.get_function(func.name).linkage = 'internal'
+        module.get_function(func.name).linkage = "internal"
         return wrapper
 
     def declare_function(self, module, fndesc):
@@ -256,12 +298,12 @@ class DPPYTargetContext(BaseContext):
         fn = module.get_or_insert_function(fnty, name=fndesc.mangled_name)
 
         if not self.enable_debuginfo:
-            fn.attributes.add('alwaysinline')
+            fn.attributes.add("alwaysinline")
 
         ret = super(DPPYTargetContext, self).declare_function(module, fndesc)
 
         # XXX: Refactor fndesc instead of this special case
-        if fndesc.llvm_func_name.startswith('dppy_py_devfn'):
+        if fndesc.llvm_func_name.startswith("dppy_py_devfn"):
             ret.calling_convention = CC_SPIR_FUNC
         return ret
 
@@ -274,32 +316,29 @@ class DPPYTargetContext(BaseContext):
         # return a._getvalue()
         raise NotImplementedError
 
-
     def insert_const_string(self, mod, string):
         """
         This returns a a pointer in the spir generic addrspace.
         """
         text = lc.Constant.stringz(string)
 
-        name = '$'.join(["__conststring__",
-                         self.mangler(string, ["str"])])
+        name = "$".join(["__conststring__", self.mangler(string, ["str"])])
 
         # Try to reuse existing global
         try:
             gv = mod.get_global(name)
         except KeyError as e:
             # Not defined yet
-            gv = mod.add_global_variable(text.type, name=name,
-                                         addrspace=SPIR_GENERIC_ADDRSPACE)
-            gv.linkage = 'internal'
+            gv = mod.add_global_variable(
+                text.type, name=name, addrspace=SPIR_GENERIC_ADDRSPACE
+            )
+            gv.linkage = "internal"
             gv.global_constant = True
             gv.initializer = text
 
         # Cast to a i8* pointer
         charty = gv.type.pointee.element
-        return lc.Constant.bitcast(gv,
-                               charty.as_pointer(SPIR_GENERIC_ADDRSPACE))
-
+        return lc.Constant.bitcast(gv, charty.as_pointer(SPIR_GENERIC_ADDRSPACE))
 
     def addrspacecast(self, builder, src, addrspace):
         """
@@ -325,12 +364,19 @@ def set_dppy_kernel(fn):
 
     # Mark kernels
     ocl_kernels = mod.get_or_insert_named_metadata("opencl.kernels")
-    ocl_kernels.add(lc.MetaData.get(mod, [fn,
-                                          gen_arg_addrspace_md(fn),
-                                          gen_arg_access_qual_md(fn),
-                                          gen_arg_type(fn),
-                                          gen_arg_type_qual(fn),
-                                          gen_arg_base_type(fn)]))
+    ocl_kernels.add(
+        lc.MetaData.get(
+            mod,
+            [
+                fn,
+                gen_arg_addrspace_md(fn),
+                gen_arg_access_qual_md(fn),
+                gen_arg_type(fn),
+                gen_arg_type_qual(fn),
+                gen_arg_base_type(fn),
+            ],
+        )
+    )
 
     # SPIR version 2.0
     make_constant = lambda x: lc.Constant.int(lc.Type.int(), x)
@@ -346,14 +392,16 @@ def set_dppy_kernel(fn):
 
     # Other metadata
     empty_md = lc.MetaData.get(mod, ())
-    others = ["opencl.used.extensions",
-              "opencl.used.optional.core.features",
-              "opencl.compiler.options"]
+    others = [
+        "opencl.used.extensions",
+        "opencl.used.optional.core.features",
+        "opencl.compiler.options",
+    ]
 
     for name in others:
         nmd = mod.get_or_insert_named_metadata(name)
         if not nmd.operands:
-             nmd.add(empty_md)
+            nmd.add(empty_md)
 
 
 def gen_arg_addrspace_md(fn):

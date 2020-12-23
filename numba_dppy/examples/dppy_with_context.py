@@ -3,6 +3,7 @@ from numba import njit, prange
 import numba_dppy, numba_dppy as dppy
 import dpctl
 
+
 @njit
 def add_two_arrays(b, c):
     a = np.empty_like(b)
@@ -20,14 +21,14 @@ def main():
     if dpctl.has_gpu_queues():
         with dpctl.device_context("opencl:gpu"):
             gpu_result = add_two_arrays(b, c)
-        print('GPU device found. Result on GPU:', gpu_result)
+        print("GPU device found. Result on GPU:", gpu_result)
     elif dpctl.has_cpu_queues():
         with dpctl.device_context("opencl:cpu"):
             cpu_result = add_two_arrays(b, c)
-        print('CPU device found. Result on CPU:', cpu_result)
+        print("CPU device found. Result on CPU:", cpu_result)
     else:
         print("No device found")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

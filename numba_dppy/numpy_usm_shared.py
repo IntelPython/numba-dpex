@@ -20,8 +20,12 @@ from numba.core.imputils import builtin_registry as lower_registry
 import importlib
 import functools
 import inspect
-from numba.core.typing.templates import (CallableTemplate, AttributeTemplate,
-                                         signature, bound_function)
+from numba.core.typing.templates import (
+    CallableTemplate,
+    AttributeTemplate,
+    signature,
+    bound_function,
+)
 from numba.np.arrayobj import _array_copy
 
 import dpctl.dptensor.numpy_usm_shared as nus
@@ -30,10 +34,12 @@ from dpctl.dptensor.numpy_usm_shared import ndarray, functions_list, class_list
 
 debug = config.DEBUG
 
+
 def dprint(*args):
     if debug:
         print(*args)
         sys.stdout.flush()
+
 
 # # This code makes it so that Numba can contain calls into the DPPLSyclInterface library.
 # sycl_mem_lib = find_library('DPCTLSyclInterface')
@@ -154,6 +160,7 @@ def allocator_UsmArray(context, builder, size, align):
 
 registered = False
 
+
 def is_usm_callback(obj):
     if isinstance(obj, numba.core.runtime._nrt_python._MemInfo):
         mobj = obj
@@ -167,6 +174,7 @@ def is_usm_callback(obj):
             if isinstance(mobj, ndarray):
                 mobj = mobj.base
     return False
+
 
 def numba_register():
     global registered
@@ -271,7 +279,7 @@ def numba_register_typing():
                 todo.append(ig)
             elif isinstance(typ, numba.core.types.functions.NumberClass):
                 pass
-                #todo_classes.append(ig)
+                # todo_classes.append(ig)
 
     for tgetattr in templates_registry.attributes:
         dprint("Numpy getattr:", tgetattr, type(tgetattr), tgetattr.key)
@@ -287,7 +295,9 @@ def numba_register_typing():
             dprint("failed to eval", val.__name__)
             continue
 
-        typing_registry.register_global(dptype, numba.core.types.NumberClass(typ.instance_type))
+        typing_registry.register_global(
+            dptype, numba.core.types.NumberClass(typ.instance_type)
+        )
 
     for val, typ in todo:
         assert len(typ.templates) == 1
@@ -415,6 +425,7 @@ def numba_register_typing():
         templates_registry.register_attr(new_usmarray_template)
     """
 
+
 class UsmArrayAttribute(AttributeTemplate):
     key = UsmSharedArrayType
 
@@ -447,7 +458,9 @@ class UsmArrayAttribute(AttributeTemplate):
 
     def convert_array_to_usmarray(self, retty):
         if isinstance(retty, types.Array):
-            return UsmSharedArrayType(dtype=retty.dtype, ndim=retty.ndim, layout=retty.layout)
+            return UsmSharedArrayType(
+                dtype=retty.dtype, ndim=retty.ndim, layout=retty.layout
+            )
         else:
             return retty
 
@@ -460,22 +473,23 @@ class UsmArrayAttribute(AttributeTemplate):
         return self.convert_array_to_usmarray(retty)
 
     def resolve_real(self, ary):
-        return self._resolve_real_imag(ary, attr='real')
+        return self._resolve_real_imag(ary, attr="real")
 
     def resolve_imag(self, ary):
-        return self._resolve_real_imag(ary, attr='imag')
+        return self._resolve_real_imag(ary, attr="imag")
 
     def _resolve_real_imag(self, ary, attr):
         if ary.dtype in types.complex_domain:
-            return ary.copy(dtype=ary.dtype.underlying_float, layout='A')
+            return ary.copy(dtype=ary.dtype.underlying_float, layout="A")
         elif ary.dtype in types.number_domain:
             res = ary.copy(dtype=ary.dtype)
-            if attr == 'imag':
+            if attr == "imag":
                 res = res.copy(readonly=True)
             return self.convert_array_to_usmarray(res)
         else:
             msg = "cannot access .{} of array of {}"
             raise TypingError(msg.format(attr, ary.dtype))
+
 
 """
     @bound_function("array.transpose")

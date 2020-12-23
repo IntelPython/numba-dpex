@@ -28,10 +28,16 @@ def dpnp_amax_impl(a):
     if the compiler allows there should not be any mismatch in the size of
     the container to hold different types of pointer.
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr,
-                              types.voidptr, types.intp,
-                              types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, [a.dtype.name, "NONE"], sig)
+    sig = signature(
+        ret_type,
+        types.voidptr,
+        types.voidptr,
+        types.voidptr,
+        types.intp,
+        types.voidptr,
+        types.intp,
+    )
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
     allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
@@ -85,10 +91,16 @@ def dpnp_amin_impl(a):
     if the compiler allows there should not be any mismatch in the size of
     the container to hold different types of pointer.
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr,
-                              types.voidptr, types.intp,
-                              types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, [a.dtype.name, "NONE"], sig)
+    sig = signature(
+        ret_type,
+        types.voidptr,
+        types.voidptr,
+        types.voidptr,
+        types.intp,
+        types.voidptr,
+        types.intp,
+    )
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
     allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
@@ -141,10 +153,16 @@ def dpnp_mean_impl(a):
     if the compiler allows there should not be any mismatch in the size of
     the container to hold different types of pointer.
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr,
-                              types.voidptr, types.intp,
-                              types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, [a.dtype.name, "NONE"], sig)
+    sig = signature(
+        ret_type,
+        types.voidptr,
+        types.voidptr,
+        types.voidptr,
+        types.intp,
+        types.voidptr,
+        types.intp,
+    )
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
     allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
@@ -200,10 +218,16 @@ def dpnp_median_impl(a):
     if the compiler allows there should not be any mismatch in the size of
     the container to hold different types of pointer.
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr,
-                              types.voidptr, types.intp,
-                              types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, [a.dtype.name, "NONE"], sig)
+    sig = signature(
+        ret_type,
+        types.voidptr,
+        types.voidptr,
+        types.voidptr,
+        types.intp,
+        types.voidptr,
+        types.intp,
+    )
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
     allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
@@ -254,9 +278,8 @@ def dpnp_cov_impl(a):
     Function declaration:
     void custom_cov_c(void* array1_in, void* result1, size_t nrows, size_t ncols)
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr,
-                              types.intp, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, [a.dtype.name, "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.voidptr, types.intp, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
     allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
@@ -267,7 +290,6 @@ def dpnp_cov_impl(a):
     copy_input_to_double = True
     if a.dtype == types.float64:
         copy_input_to_double = False
-
 
     def dpnp_impl(a):
         if a.size == 0:
@@ -280,9 +302,15 @@ def dpnp_cov_impl(a):
             a_copy_in_double = a.astype(np.float64)
         else:
             a_copy_in_double = a
-        a_usm = allocate_usm_shared(a_copy_in_double.size * a_copy_in_double.itemsize, sycl_queue)
-        copy_usm(sycl_queue, a_usm, a_copy_in_double.ctypes,
-                 a_copy_in_double.size * a_copy_in_double.itemsize)
+        a_usm = allocate_usm_shared(
+            a_copy_in_double.size * a_copy_in_double.itemsize, sycl_queue
+        )
+        copy_usm(
+            sycl_queue,
+            a_usm,
+            a_copy_in_double.ctypes,
+            a_copy_in_double.size * a_copy_in_double.itemsize,
+        )
 
         if a.ndim == 2:
             rows = a.shape[0]
