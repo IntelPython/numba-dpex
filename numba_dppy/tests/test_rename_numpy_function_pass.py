@@ -7,10 +7,12 @@ import numba_dppy, numba_dppy as dppy
 from numba_dppy.testing import ensure_dpnp
 
 
-from numba.core import (compiler, typing, cpu)
-from numba_dppy.rename_numpy_functions_pass import (DPPYRewriteOverloadedNumPyFunctions,
-        DPPYRewriteNdarrayFunctions)
-from numba.core.typed_passes import (NopythonTypeInference, AnnotateTypes)
+from numba.core import compiler, typing, cpu
+from numba_dppy.rename_numpy_functions_pass import (
+    DPPYRewriteOverloadedNumPyFunctions,
+    DPPYRewriteNdarrayFunctions,
+)
+from numba.core.typed_passes import NopythonTypeInference, AnnotateTypes
 
 
 class MyPipeline(object):
@@ -46,8 +48,10 @@ def check_equivalent(expected_ir, got_ir):
         else:
             if isinstance(expected_stmt, numba.core.ir.Assign):
                 if isinstance(expected_stmt.value, numba.core.ir.Global):
-                    if (expected_stmt.value.name != got_stmt.value.name and
-                        expected_stmt.value.name != "numba_dppy"):
+                    if (
+                        expected_stmt.value.name != got_stmt.value.name
+                        and expected_stmt.value.name != "numba_dppy"
+                    ):
                         return False
                 elif isinstance(expected_stmt.value, numba.core.ir.Expr):
                     # should get "dpnp" and "sum" as attr
@@ -76,7 +80,7 @@ class TestRenameNumpyFunctionsPass(unittest.TestCase):
         self.assertTrue(check_equivalent(expected_ir, pipeline.state.func_ir))
 
 
-@unittest.skipUnless(ensure_dpnp(), 'test only when dpNP is available')
+@unittest.skipUnless(ensure_dpnp(), "test only when dpNP is available")
 class TestRenameNdarrayFunctionsPass(unittest.TestCase):
     def test_rename_ndarray(self):
         def expected(a):

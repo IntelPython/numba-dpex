@@ -39,5 +39,5 @@ def main():
         print("No device found")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

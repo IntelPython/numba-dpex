@@ -7,7 +7,7 @@ import dpctl
 import warnings
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
+@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
 class TestDPPYFallback(unittest.TestCase):
     def test_dppy_fallback_inner_call(self):
         @numba.jit
@@ -50,5 +50,5 @@ class TestDPPYFallback(unittest.TestCase):
         assert 'Failed to lower parfor on DPPY-device' in str(w[-1].message)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -13,7 +13,7 @@ def prange_example():
     a = np.ones((n), dtype=np.float64)
     b = np.ones((n), dtype=np.float64)
     c = np.ones((n), dtype=np.float64)
-    for i in prange(n//2):
+    for i in prange(n // 2):
         a[i] = b[i] + c[i]
 
     return a
@@ -33,5 +33,5 @@ class TestParforMessage(unittest.TestCase):
             self.assertTrue("Parfor lowered on DPPY-device" in got.getvalue())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

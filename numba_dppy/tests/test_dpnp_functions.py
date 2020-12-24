@@ -17,8 +17,9 @@ def case_for_different_datatypes(fn, test_fn, dims, arg_count, tys, np_all=False
     if arg_count == 1:
         for ty in tys:
             if matrix and matrix[0]:
-                a = np.array(np.random.random(
-                    dims[0] * dims[1]), dtype=ty).reshape(dims[0], dims[1])
+                a = np.array(np.random.random(dims[0] * dims[1]), dtype=ty).reshape(
+                    dims[0], dims[1]
+                )
             else:
                 a = np.array(np.random.random(dims[0]), dtype=ty)
 
@@ -36,13 +37,15 @@ def case_for_different_datatypes(fn, test_fn, dims, arg_count, tys, np_all=False
     elif arg_count == 2:
         for ty in tys:
             if matrix and matrix[0]:
-                a = np.array(np.random.random(
-                    dims[0] * dims[1]), dtype=ty).reshape(dims[0], dims[1])
+                a = np.array(np.random.random(dims[0] * dims[1]), dtype=ty).reshape(
+                    dims[0], dims[1]
+                )
             else:
                 a = np.array(np.random.random(dims[0] * dims[1]), dtype=ty)
             if matrix and matrix[1]:
-                b = np.array(np.random.random(
-                    dims[2] * dims[3]), dtype=ty).reshape(dims[2], dims[3])
+                b = np.array(np.random.random(dims[2] * dims[3]), dtype=ty).reshape(
+                    dims[2], dims[3]
+                )
             else:
                 b = np.array(np.random.random(dims[2] * dims[3]), dtype=ty)
 
@@ -82,7 +85,7 @@ def case_for_dimensions(fn, test_fn, dims, tys, np_all=False):
     return True
 
 
-# From https://github.com/IntelPython/dpnp/blob/master/tests/test_linalg.py
+# From https://github.com/IntelPython/dpnp/blob/0.4.0/tests/test_linalg.py#L8
 def vvsort(val, vec, size):
     for i in range(size):
         imax = i
@@ -100,9 +103,10 @@ def vvsort(val, vec, size):
             vec[k, imax] = temp
 
 
-@unittest.skipUnless(ensure_dpnp(), 'test only when dpNP is available')
+@unittest.skipUnless(ensure_dpnp(), "test only when dpNP is available")
 class Testdpnp_linalg_functions(unittest.TestCase):
     tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
+
     def test_eig(self):
         @njit
         def f(a):
@@ -111,7 +115,11 @@ class Testdpnp_linalg_functions(unittest.TestCase):
         size = 3
         for ty in self.tys:
             a = np.arange(size * size, dtype=ty).reshape((size, size))
-            symm_a = np.tril(a) + np.tril(a, -1).T + np.diag(np.full((size,), size * size, dtype=ty))
+            symm_a = (
+                np.tril(a)
+                + np.tril(a, -1).T
+                + np.diag(np.full((size,), size * size, dtype=ty))
+            )
 
             with dpctl.device_context("opencl:gpu"):
                 got_val, got_vec = f(symm_a)
@@ -122,8 +130,7 @@ class Testdpnp_linalg_functions(unittest.TestCase):
             vvsort(got_val, got_vec, size)
             vvsort(np_val, np_vec, size)
 
-
-	    # NP change sign of vectors
+            # NP change sign of vectors
             for i in range(np_vec.shape[1]):
                 if np_vec[0, i] * got_vec[0, i] < 0:
                     np_vec[:, i] = -np_vec[:, i]
@@ -132,9 +139,10 @@ class Testdpnp_linalg_functions(unittest.TestCase):
             self.assertTrue(np.allclose(got_vec, np_vec))
 
 
-@unittest.skipUnless(ensure_dpnp(), 'test only when dpNP is available')
+@unittest.skipUnless(ensure_dpnp(), "test only when dpNP is available")
 class Testdpnp_ndarray_functions(unittest.TestCase):
     tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
+
     def test_ndarray_sum(self):
         @njit
         def f(a):
@@ -225,7 +233,6 @@ class Testdpnp_ndarray_functions(unittest.TestCase):
 
             self.assertTrue(expected == got)
 
-
     def test_ndarray_argmin(self):
         @njit
         def f(a):
@@ -257,7 +264,9 @@ class Testdpnp_ndarray_functions(unittest.TestCase):
             self.assertTrue(np.array_equal(expected, got))
 
 
-@unittest.skipUnless(ensure_dpnp() and dpctl.has_gpu_queues(), 'test only when dpNP and GPU is available')
+@unittest.skipUnless(
+    ensure_dpnp() and dpctl.has_gpu_queues(), "test only when dpNP and GPU is available"
+)
 class Testdpnp_functions(unittest.TestCase):
     N = 10
 
@@ -320,7 +329,6 @@ class Testdpnp_functions(unittest.TestCase):
             f, np.amax, [10], 1, self.tys))
         self.assertTrue(case_for_dimensions(f, np.amax, [10, 2], self.tys))
         self.assertTrue(case_for_dimensions(f, np.amax, [10, 2, 3], self.tys))
-
 
     def test_argmin(self):
         @njit
@@ -426,15 +434,15 @@ class Testdpnp_functions(unittest.TestCase):
         def f(a, b):
             c = np.sum(a)
             e = np.add(b, a)
-            #d = a + 1
+            # d = a + 1
             return 0
 
         result = f(self.a, self.b)
-        #np_result = np.add((self.a + np.sum(self.a)), self.b)
+        # np_result = np.add((self.a + np.sum(self.a)), self.b)
 
-        #max_abs_err = result.sum() - np_result.sum()
-        #self.assertTrue(max_abs_err < 1e-4)
+        # max_abs_err = result.sum() - np_result.sum()
+        # self.assertTrue(max_abs_err < 1e-4)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
