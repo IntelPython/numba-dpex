@@ -52,7 +52,7 @@ def driver(a, jitfunc):
     return b
 
 
-def test_driver(input_arr, device_ty, jitfunc):
+def case_driver(input_arr, device_ty, jitfunc):
     out_actual = None
     if device_ty == "GPU":
         with dpctl.device_context("opencl:gpu") as gpu_queue:
@@ -70,32 +70,32 @@ def test_driver(input_arr, device_ty, jitfunc):
 @unittest.skipUnless(dpctl.has_cpu_queues(), 'test only on CPU system')
 class TestDPPYMathFunctionsCPU(unittest.TestCase):
     def test_fabs_cpu(self):
-        b_actual = test_driver(a, "CPU", dppy_fabs)
+        b_actual = case_driver(a, "CPU", dppy_fabs)
         b_expected = np.fabs(a)
         self.assertTrue(np.all(b_actual == b_expected))
 
     def test_sin_cpu(self):
-        b_actual = test_driver(a, "CPU", dppy_sin)
+        b_actual = case_driver(a, "CPU", dppy_sin)
         b_expected = np.sin(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 
     def test_cos_cpu(self):
-        b_actual = test_driver(a, "CPU", dppy_cos)
+        b_actual = case_driver(a, "CPU", dppy_cos)
         b_expected = np.cos(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 
     def test_exp_cpu(self):
-        b_actual = test_driver(a, "CPU", dppy_exp)
+        b_actual = case_driver(a, "CPU", dppy_exp)
         b_expected = np.exp(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 
     def test_sqrt_cpu(self):
-        b_actual = test_driver(a, "CPU", dppy_sqrt)
+        b_actual = case_driver(a, "CPU", dppy_sqrt)
         b_expected = np.sqrt(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 
     def test_log_cpu(self):
-        b_actual = test_driver(a, "CPU", dppy_log)
+        b_actual = case_driver(a, "CPU", dppy_log)
         b_expected = np.log(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 
@@ -103,32 +103,32 @@ class TestDPPYMathFunctionsCPU(unittest.TestCase):
 @unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
 class TestDPPYMathFunctionsGPU(unittest.TestCase):
     def test_fabs_gpu(self):
-        b_actual = test_driver(a, "GPU", dppy_fabs)
+        b_actual = case_driver(a, "GPU", dppy_fabs)
         b_expected = np.fabs(a)
         self.assertTrue(np.all(b_actual == b_expected))
 
     def test_sin_gpu(self):
-        b_actual = test_driver(a, "GPU", dppy_sin)
+        b_actual = case_driver(a, "GPU", dppy_sin)
         b_expected = np.sin(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 
     def test_cos_gpu(self):
-        b_actual = test_driver(a, "GPU", dppy_cos)
+        b_actual = case_driver(a, "GPU", dppy_cos)
         b_expected = np.cos(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 
     def test_exp_gpu(self):
-        b_actual = test_driver(a, "GPU", dppy_exp)
+        b_actual = case_driver(a, "GPU", dppy_exp)
         b_expected = np.exp(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 
     def test_sqrt_gpu(self):
-        b_actual = test_driver(a, "GPU", dppy_sqrt)
+        b_actual = case_driver(a, "GPU", dppy_sqrt)
         b_expected = np.sqrt(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 
     def test_log_gpu(self):
-        b_actual = test_driver(a, "GPU", dppy_log)
+        b_actual = case_driver(a, "GPU", dppy_log)
         b_expected = np.log(a)
         self.assertTrue(np.allclose(b_actual,b_expected))
 
