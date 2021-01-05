@@ -1,13 +1,15 @@
-from numba.core import ir
+from numba.core import ir, compiler
 from numba.core.compiler_machinery import FunctionPass, register_pass
 from numba.core.ir_utils import (
     find_topo_order,
     mk_unique_var,
     remove_dead,
     simplify_CFG,
+    get_name_var_table,
 )
 import numba_dppy
 from numba.core import types
+import numpy as np
 
 rewrite_function_name_map = {
     "sum": (["np"], "sum"),
@@ -64,10 +66,10 @@ class RewriteNumPyOverloadedFunctions(object):
         func_ir = self.state.func_ir
         blocks = func_ir.blocks
         topo_order = find_topo_order(blocks)
+        saved_arr_arg = {}
 
         for label in topo_order:
             block = blocks[label]
-            saved_arr_arg = {}
             new_body = []
             for stmt in block.body:
                 if isinstance(stmt, ir.Assign) and isinstance(stmt.value, ir.Expr):
@@ -87,16 +89,16 @@ class RewriteNumPyOverloadedFunctions(object):
                             and module_node.attr in self.function_name_map[rhs.attr][0]
                         ):
                             rhs = stmt.value
+                            saved_arr_arg[lhs] = rhs.value
                             rhs.attr = self.function_name_map[rhs.attr][1]
 
                             global_module = rhs.value
-                            saved_arr_arg[lhs] = global_module
 
                             scope = global_module.scope
                             loc = global_module.loc
 
                             g_dppy_var = ir.Var(
-                                scope, mk_unique_var("$2load_global"), loc
+                                scope, mk_unique_var("$load_global"), loc
                             )
                             # We are trying to rename np.function_name/np.linalg.function_name with
                             # numba_dppy.dpnp.function_name.
@@ -106,7 +108,7 @@ class RewriteNumPyOverloadedFunctions(object):
                             g_dppy = ir.Global("numba_dppy", numba_dppy, loc)
                             g_dppy_assign = ir.Assign(g_dppy, g_dppy_var, loc)
 
-                            dpnp_var = ir.Var(scope, mk_unique_var("$4load_attr"), loc)
+                            dpnp_var = ir.Var(scope, mk_unique_var("$load_attr"), loc)
                             getattr_dpnp = ir.Expr.getattr(g_dppy_var, "dpnp", loc)
                             dpnp_assign = ir.Assign(getattr_dpnp, dpnp_var, loc)
 
@@ -250,6 +252,107 @@ class DPPYRewriteNdarrayFunctions(FunctionPass):
         )
 
         rewrite_ndarray_function_name_pass.run()
+
+        remove_dead(state.func_ir.blocks, state.func_ir.arg_names, state.func_ir)
+        state.func_ir.blocks = simplify_CFG(state.func_ir.blocks)
+
+        return True
+
+
+class ConvertDPNPArgs(object):
+    def __init__(self, state, rewrite_function_name_map=rewrite_function_name_map):
+        self.state = state
+        self.typemap = state.type_annotation.typemap
+        self.calltypes = state.type_annotation.calltypes
+        self.function_name_map = rewrite_function_name_map
+
+    def run(self):
+        """
+        In this pass we find out call nodes that belong to dpnp submodule.
+        If we find any, for each argument of that call node that is of types.npytypes.Array,
+        we add a call to a convert function. The convert function will ideally
+        check if the ndarray is USM backed and if not will create a new ndarray that is
+        USM backed and copy the exisiting data into the new array.
+
+        """
+        typingctx = self.state.typingctx
+        func_id = 0
+
+        # save array arg to call
+        # call_varname -> array
+        func_ir = self.state.func_ir
+        blocks = func_ir.blocks
+        saved_arr_arg = {}
+        topo_order = find_topo_order(blocks)
+
+        for label in topo_order:
+            block = blocks[label]
+            new_body = []
+            for stmt in block.body:
+                if isinstance(stmt, ir.Assign) and isinstance(stmt.value, ir.Expr):
+                    lhs = stmt.target.name
+                    rhs = stmt.value
+
+                    if rhs.op == "getattr" and rhs.attr in self.function_name_map:
+                        module_node = block.find_variable_assignment(
+                            rhs.value.name
+                        ).value
+                        if (
+                            isinstance(module_node, ir.Expr) and module_node.op == "getattr"
+                            and module_node.attr == "dpnp"
+                            ):
+                            scope = rhs.value.scope
+                            loc = rhs.value.loc
+
+                            saved_arr_arg[lhs] = rhs.value
+                            convert_var = ir.Var(scope, mk_unique_var("$load_method"), loc)
+                            saved_arr_arg["convert_var"] = convert_var
+                            getattr_convert = ir.Expr.getattr(rhs.value, "convert_ndarray_to_usm",
+                                                              loc)
+                            convert_assign = ir.Assign(getattr_convert, convert_var, loc)
+                            self.typemap[convert_var.name] = get_dpnp_func_typ(getattr(numba_dppy.dpnp,
+                                                                              getattr_convert.attr))
+                            func_ir._definitions[convert_var.name] = [getattr_convert]
+
+                            new_body.append(convert_assign)
+
+                    if rhs.op == "call" and rhs.func.name in saved_arr_arg:
+                        # the assumption hwew is that we only get the ndarray as the argument
+                        new_args_list = list()
+                        for arg in rhs.args:
+
+                            if isinstance(self.typemap[arg.name], types.npytypes.Array):
+                                convert_func_var = ir.Var(scope, mk_unique_var("$call_method"), loc)
+                                new_args_list.append(convert_func_var)
+                                convert_func_expr = ir.Expr.call(func=saved_arr_arg["convert_var"],
+                                                                 args=[arg], kws=(), loc=loc)
+                                convert_func_assign = ir.Assign(convert_func_expr, convert_func_var, loc)
+                                self.typemap[convert_func_var.name] = self.typemap[arg.name]
+                                new_body.append(convert_func_assign)
+
+                                self.calltypes[convert_func_expr] = self.typemap[saved_arr_arg["convert_var"].name].get_call_type(typingctx, [self.typemap[arg.name]], {})
+                            else:
+                                new_args_list.append(arg)
+
+                        rhs.args = new_args_list
+
+                new_body.append(stmt)
+            block.body = new_body
+
+        return
+
+
+@register_pass(mutates_CFG=True, analysis_only=False)
+class DPPYConvertDPNPArgumentsToUSM(FunctionPass):
+    _name = "dppy_convert_dpnp_function_arguments_to_usm_pass"
+
+    def __init__(self):
+        FunctionPass.__init__(self)
+
+    def run_pass(self, state):
+        convert_dpnp_args_pass = ConvertDPNPArgs(state)
+
+        convert_dpnp_args_pass.run()
 
         remove_dead(state.func_ir.blocks, state.func_ir.arg_names, state.func_ir)
         state.func_ir.blocks = simplify_CFG(state.func_ir.blocks)

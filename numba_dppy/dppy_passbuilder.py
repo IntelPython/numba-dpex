@@ -45,6 +45,7 @@ from .dppy_passes import (
 from .rename_numpy_functions_pass import (
     DPPYRewriteOverloadedNumPyFunctions,
     DPPYRewriteNdarrayFunctions,
+    DPPYConvertDPNPArgumentsToUSM,
 )
 
 
@@ -109,6 +110,11 @@ class DPPYPassBuilder(object):
         pm.add_pass(
             DPPYRewriteNdarrayFunctions,
             "Rewrite ndarray functions to dppy supported functions",
+        )
+
+        pm.add_pass(
+            DPPYConvertDPNPArgumentsToUSM,
+            "Convert all arguments of DPNP functions to USM",
         )
 
         # strip phis

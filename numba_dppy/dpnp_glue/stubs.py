@@ -6,6 +6,9 @@ class dpnp(Stub):
 
     _description_ = "<dpnp>"
 
+    class convert_ndarray_to_usm(Stub):
+        pass
+
     class sum(Stub):
         pass
 

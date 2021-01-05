@@ -1,10 +1,13 @@
 from numba.core.imputils import lower_builtin
 from numba.core import types
-from numba.core.extending import register_jitable
+from numba.core.extending import overload, register_jitable
 import numpy as np
 from llvmlite import ir
 from numba.core.imputils import lower_getattr
 
+from numba.core.typing import signature
+from . import stubs
+from numba_dppy import dpctl_functions
 
 ll_void_p = ir.IntType(8).as_pointer()
 
@@ -43,8 +46,6 @@ This function retrieves the pointer to the structure where the shape
 of an ndarray is stored. We cast it to void * to make it easier to
 pass around.
 """
-
-
 @lower_getattr(types.Array, "shapeptr")
 def array_shape(context, builder, typ, value):
     shape_ptr = builder.gep(
@@ -53,3 +54,21 @@ def array_shape(context, builder, typ, value):
     )
 
     return builder.bitcast(shape_ptr, ll_void_p)
+
+
+@overload(stubs.dpnp.convert_ndarray_to_usm)
+def dpnp_convert_ndarray_to_usm_impl(a):
+    name = "convert_ndarray_to_usm"
+
+    def dpnp_impl(a):
+        if a.size == 0:
+            raise ValueError("Passed Empty array")
+
+        out = a.copy()
+        _dummy_liveness_func([a.size, out.size])
+
+        print("WAS called")
+
+        return out
+
+    return dpnp_impl
