@@ -27,7 +27,7 @@ rewrite_function_name_map = {
     "dot": (["np"], "dot"),
     "matmul": (["np"], "matmul"),
     "random_sample": (["random"], "random_sample"),
-
+    }
 
 class RewriteNumPyOverloadedFunctions(object):
     def __init__(self, state, rewrite_function_name_map=rewrite_function_name_map):

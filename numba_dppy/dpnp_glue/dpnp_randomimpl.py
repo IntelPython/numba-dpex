@@ -5,14 +5,14 @@ from . import stubs
 import numba_dppy.dpnp_glue as dpnp_lowering
 from numba.core.extending import overload, register_jitable
 import numpy as np
-from numba_dppy.dpctl_functions import _DPCTL_FUNCTIONS
+from numba_dppy import dpctl_functions
+import os
 
 
 @overload(stubs.dpnp.random_sample)
 def dpnp_random_sample(size):
     name = "random_sample"
     dpnp_lowering.ensure_dpnp(name)
-    dpctl_functions = dpnp_ext._DPCTL_FUNCTIONS()
 
     ret_type = types.void
     """
@@ -27,30 +27,38 @@ def dpnp_random_sample(size):
         ret_type, types.voidptr, types.int64, types.int64, types.intp)
     dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
 
-    get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
-    allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
-    copy_usm = dpctl_functions.dpctl_queue_memcpy()
-    free_usm = dpctl_functions.dpctl_free_with_queue()
-
     res_dtype = np.float64
+
+    PRINT_DEBUG = dpnp_lowering.DEBUG
+    if isinstance(size, types.UniTuple):
+        t = True
+    else:
+        t = False
 
     def dpnp_impl(size):
         res = np.empty(size, dtype=res_dtype)
 
-        for i in size:
-            if i == 0:
+        if t:
+            for i in size:
+                if i == 0:
+                    return res
+        else:
+            if size == 0:
                 return res
 
-        sycl_queue = get_sycl_queue()
-        res_usm = allocate_usm_shared(res.size * res.itemsize, sycl_queue)
+        sycl_queue = dpctl_functions.get_current_queue()
+        res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
 
         dpnp_func(res_usm, 0, 1, res.size)
 
-        copy_usm(sycl_queue, res.ctypes, res_usm, res.size * res.itemsize)
+        dpctl_functions.queue_memcpy(sycl_queue, res.ctypes, res_usm, res.size * res.itemsize)
 
-        free_usm(res_usm, sycl_queue)
+        dpctl_functions.free_with_queue(res_usm, sycl_queue)
 
         dpnp_ext._dummy_liveness_func([res.size])
+
+        if PRINT_DEBUG:
+            print("DPNP implementation")
 
         return res
 

@@ -8,8 +8,7 @@ import numba_dppy
 import numba_dppy as dppy
 import dpctl
 import unittest
-from numba_dppy.testing import ensure_dpnp
-
+from numba_dppy.testing import ensure_dpnp, set_dpnp_debug
 
 import dpctl
 
@@ -265,6 +264,31 @@ class Testdpnp_ndarray_functions(unittest.TestCase):
                 expected = a.argsort()
 
             self.assertTrue(np.array_equal(expected, got))
+
+
+@unittest.skipUnless(ensure_dpnp(), "test only when dpNP is available")
+class Testdpnp_random_functions(unittest.TestCase):
+    def test_random_sample(self):
+        from numba.tests.support import captured_stdout
+
+        @njit
+        def f(size):
+            c = np.random.random_sample(size)
+            return c
+
+        sizes = [9, (2, 5), (3, 2, 4)]
+        set_dpnp_debug(1)
+        with captured_stdout() as got_gpu_message:
+            with dpctl.device_context("opencl:gpu"):
+                for size in sizes:
+                    print(size)
+                    result = f(size)
+                    _result = result.ravel()
+                    for i in range(_result.size):
+                        self.assertTrue(_result[i] >= 0.0)
+                        self.assertTrue(_result[i] < 1.0)
+                    self.assertTrue("DPNP implementation" in got_gpu_message.getvalue())
+        set_dpnp_debug(None)
 
 
 @unittest.skipUnless(
