@@ -68,6 +68,11 @@ def numba_T(x):
     return x.T
 
 
+@numba.njit
+def numba_reshape(x):
+    return x.reshape((4,3))
+
+
 class TestUsmArray(unittest.TestCase):
     def ndarray(self):
         """Create NumPy array"""
@@ -196,3 +201,11 @@ class TestUsmArray(unittest.TestCase):
         dp4 = numba_T(numba_usmarray_empty())
         self.assertIsInstance(dp4, usmarray.ndarray, type(dp4))
         self.assertTrue(usmarray.has_array_interface(dp4))
+
+    @unittest.expectedFailure
+    def test_numba_usmarray_reshape(self):
+        """Testing Numba usmarray.reshape()"""
+        a = usmarray.ones(12)
+        s1 = numba_reshape(a)
+        self.assertIsInstance(s1, usmarray.ndarray, type(s1))
+        self.assertEqual(s1.shape, (4, 3))
