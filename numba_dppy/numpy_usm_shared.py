@@ -26,6 +26,7 @@ from numba.core.typing.templates import (
     signature,
     bound_function,
 )
+from numba.core.typing.arraydecl import normalize_shape
 from numba.np.arrayobj import _array_copy
 
 import dpctl.dptensor.numpy_usm_shared as nus
@@ -82,6 +83,13 @@ class UsmSharedArrayType(types.Array):
             name=name,
             addrspace=addrspace,
         )
+
+    def copy(self, *args, **kwargs):
+        retty = super(UsmSharedArrayType, self).copy(*args, **kwargs)
+        if isinstance(retty, types.Array):
+            return UsmSharedArrayType(dtype=retty.dtype, ndim=retty.ndim, layout=retty.layout)
+        else:
+            return retty
 
     # Tell Numba typing how to combine UsmSharedArrayType with other ndarray types.
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
@@ -162,12 +170,13 @@ registered = False
 
 
 def is_usm_callback(obj):
+    dprint("is_usm_callback:", obj, type(obj))
     if isinstance(obj, numba.core.runtime._nrt_python._MemInfo):
         mobj = obj
         while isinstance(mobj, numba.core.runtime._nrt_python._MemInfo):
             ea = mobj.external_allocator
-            d = mobj.data
             dppl_rt_allocator = numba_dppy._dppy_rt.get_external_allocator()
+            dprint("Checking MemInfo:", ea)
             if ea == dppl_rt_allocator:
                 return True
             mobj = mobj.parent
@@ -210,25 +219,34 @@ def numba_register_lower_builtin():
     todo = []
     todo_builtin = []
     todo_getattr = []
+    todo_array_member_func = []
 
     # For all Numpy identifiers that have been registered for typing in Numba...
     # this registry contains functions, getattrs, setattrs, casts and constants...need to do them all? FIX FIX FIX
     for ig in lower_registry.functions:
         impl, func, types = ig
+        dprint("Numpy lowered registry functions:", impl, func, type(func), types)
         # If it is a Numpy function...
         if isinstance(func, ftype):
+            dprint("is ftype")
             if func.__module__ == np.__name__:
+                dprint("is Numpy module")
                 # If we have overloaded that function in the usmarray module (always True right now)...
                 if func.__name__ in functions_list:
                     todo.append(ig)
         if isinstance(func, bftype):
+            dprint("is bftype")
             if func.__module__ == np.__name__:
+                dprint("is Numpy module")
                 # If we have overloaded that function in the usmarray module (always True right now)...
                 if func.__name__ in functions_list:
                     todo.append(ig)
+        if isinstance(func, str) and func.startswith("array."):
+            todo_array_member_func.append(ig)
 
     for lg in lower_registry.getattrs:
         func, attr, types = lg
+        dprint("Numpy lowered registry getattrs:", func, attr, types)
         types_with_usmarray = types_replace_array(types)
         if UsmSharedArrayType in types_with_usmarray:
             dprint(
@@ -250,6 +268,13 @@ def numba_register_lower_builtin():
         )
         new_impl = copy_func_for_usmarray(impl, nus)
         lower_registry.functions.append((new_impl, usmarray_func, types))
+
+    for impl, func, types in todo_array_member_func:
+        types_with_usmarray = types_replace_array(types)
+        usmarray_func = "usm" + func
+        dprint("Registering lowerer for", impl, usmarray_func, types_with_usmarray)
+        new_impl = copy_func_for_usmarray(impl, nus)
+        lower_registry.functions.append((new_impl, usmarray_func, types_with_usmarray))
 
 
 def argspec_to_string(argspec):
@@ -470,7 +495,7 @@ class UsmArrayAttribute(AttributeTemplate):
         else:
             layout = {"C": "F", "F": "C"}.get(ary.layout, "A")
             retty = ary.copy(layout=layout)
-        return self.convert_array_to_usmarray(retty)
+        return retty
 
     def resolve_real(self, ary):
         return self._resolve_real_imag(ary, attr="real")
@@ -485,14 +510,19 @@ class UsmArrayAttribute(AttributeTemplate):
             res = ary.copy(dtype=ary.dtype)
             if attr == "imag":
                 res = res.copy(readonly=True)
-            return self.convert_array_to_usmarray(res)
+            return res
         else:
             msg = "cannot access .{} of array of {}"
             raise TypingError(msg.format(attr, ary.dtype))
 
+    @bound_function("usmarray.copy")
+    def resolve_copy(self, ary, args, kws):
+        assert not args
+        assert not kws
+        retty = ary.copy(layout="C", readonly=False)
+        return signature(retty)
 
-"""
-    @bound_function("array.transpose")
+    @bound_function("usmarray.transpose")
     def resolve_transpose(self, ary, args, kws):
         def sentry_shape_scalar(ty):
             if ty in types.number_domain:
@@ -531,14 +561,7 @@ class UsmArrayAttribute(AttributeTemplate):
             assert ary.ndim == len(args)
             return signature(self.resolve_T(ary).copy(layout="A"), *args)
 
-    @bound_function("array.copy")
-    def resolve_copy(self, ary, args, kws):
-        assert not args
-        assert not kws
-        retty = ary.copy(layout="C", readonly=False)
-        return signature(retty)
-
-    @bound_function("array.item")
+    @bound_function("usmarray.item")
     def resolve_item(self, ary, args, kws):
         assert not kws
         # We don't support explicit arguments as that's exactly equivalent
@@ -547,7 +570,7 @@ class UsmArrayAttribute(AttributeTemplate):
         if not args:
             return signature(ary.dtype)
 
-    @bound_function("array.itemset")
+    @bound_function("usmarray.itemset")
     def resolve_itemset(self, ary, args, kws):
         assert not kws
         # We don't support explicit arguments as that's exactly equivalent
@@ -556,7 +579,7 @@ class UsmArrayAttribute(AttributeTemplate):
         if len(args) == 1:
             return signature(types.none, ary.dtype)
 
-    @bound_function("array.nonzero")
+    @bound_function("usmarray.nonzero")
     def resolve_nonzero(self, ary, args, kws):
         assert not args
         assert not kws
@@ -565,7 +588,7 @@ class UsmArrayAttribute(AttributeTemplate):
         retty = types.UniTuple(UsmSharedArrayType(types.intp, 1, 'C'), ndim)
         return signature(retty)
 
-    @bound_function("array.reshape")
+    @bound_function("usmarray.reshape")
     def resolve_reshape(self, ary, args, kws):
         def sentry_shape_scalar(ty):
             if ty in types.number_domain:
@@ -608,14 +631,14 @@ class UsmArrayAttribute(AttributeTemplate):
             retty = ary.copy(ndim=len(args))
             return signature(retty, *args)
 
-    @bound_function("array.sort")
+    @bound_function("usmarray.sort")
     def resolve_sort(self, ary, args, kws):
         assert not args
         assert not kws
         if ary.ndim == 1:
             return signature(types.none)
 
-    @bound_function("array.argsort")
+    @bound_function("usmarray.argsort")
     def resolve_argsort(self, ary, args, kws):
         assert not args
         kwargs = dict(kws)
@@ -632,7 +655,7 @@ class UsmArrayAttribute(AttributeTemplate):
             sig = signature(UsmSharedArrayType(types.intp, 1, 'C'), kind).replace(pysig=pysig)
             return sig
 
-    @bound_function("array.view")
+    @bound_function("usmarray.view")
     def resolve_view(self, ary, args, kws):
         from .npydecl import parse_dtype
         assert not kws
@@ -643,7 +666,7 @@ class UsmArrayAttribute(AttributeTemplate):
         retty = ary.copy(dtype=dtype)
         return signature(retty, *args)
 
-    @bound_function("array.astype")
+    @bound_function("usmarray.astype")
     def resolve_astype(self, ary, args, kws):
         from .npydecl import parse_dtype
         assert not kws
@@ -661,21 +684,21 @@ class UsmArrayAttribute(AttributeTemplate):
         retty = ary.copy(dtype=dtype, layout=layout, readonly=False)
         return signature(retty, *args)
 
-    @bound_function("array.ravel")
+    @bound_function("usmarray.ravel")
     def resolve_ravel(self, ary, args, kws):
         # Only support no argument version (default order='C')
         assert not kws
         assert not args
         return signature(ary.copy(ndim=1, layout='C'))
 
-    @bound_function("array.flatten")
+    @bound_function("usmarray.flatten")
     def resolve_flatten(self, ary, args, kws):
         # Only support no argument version (default order='C')
         assert not kws
         assert not args
         return signature(ary.copy(ndim=1, layout='C'))
 
-    @bound_function("array.take")
+    @bound_function("usmarray.take")
     def resolve_take(self, ary, args, kws):
         assert not kws
         argty, = args
@@ -696,7 +719,6 @@ class UsmArrayAttribute(AttributeTemplate):
         if isinstance(ary.dtype, types.Record):
             if attr in ary.dtype.fields:
                 return ary.copy(dtype=ary.dtype.typeof(attr), layout='A')
-"""
 
 
 @typing_registry.register_global(nus.as_ndarray)
