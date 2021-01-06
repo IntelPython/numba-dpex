@@ -1,17 +1,23 @@
 from __future__ import print_function, division, absolute_import
 from numba import types
 from numba.core.typing.npydecl import register_number_classes
-from numba.core.typing.templates import (AttributeTemplate, ConcreteTemplate,
-                                        AbstractTemplate, MacroTemplate,
-                                        signature, Registry)
+from numba.core.typing.templates import (
+    AttributeTemplate,
+    ConcreteTemplate,
+    AbstractTemplate,
+    MacroTemplate,
+    signature,
+    Registry,
+)
 import numba_dppy, numba_dppy as dppy
 
 registry = Registry()
 intrinsic = registry.register
 intrinsic_attr = registry.register_attr
-#intrinsic_global = registry.register_global
+# intrinsic_global = registry.register_global
 
-#register_number_classes(intrinsic_global)
+# register_number_classes(intrinsic_global)
+
 
 @intrinsic
 class Ocl_get_global_id(ConcreteTemplate):
@@ -58,8 +64,7 @@ class Ocl_get_local_size(ConcreteTemplate):
 @intrinsic
 class Ocl_barrier(ConcreteTemplate):
     key = dppy.barrier
-    cases = [signature(types.void, types.uint32),
-             signature(types.void)]
+    cases = [signature(types.void, types.uint32), signature(types.void)]
 
 
 @intrinsic
@@ -77,6 +82,7 @@ class Ocl_sub_group_barrier(ConcreteTemplate):
 
 # dppy.atomic submodule -------------------------------------------------------
 
+
 @intrinsic
 class Ocl_atomic_add(AbstractTemplate):
     key = dppy.atomic.add
@@ -89,6 +95,7 @@ class Ocl_atomic_add(AbstractTemplate):
             return signature(ary.dtype, ary, types.intp, ary.dtype)
         elif ary.ndim > 1:
             return signature(ary.dtype, ary, idx, ary.dtype)
+
 
 @intrinsic
 class Ocl_atomic_sub(AbstractTemplate):
@@ -117,6 +124,7 @@ class OclAtomicTemplate(AttributeTemplate):
 
 # dppy.local submodule -------------------------------------------------------
 
+
 class Ocl_local_alloc(MacroTemplate):
     key = dppy.local.static_alloc
 
@@ -130,6 +138,7 @@ class OclLocalTemplate(AttributeTemplate):
 
 
 # OpenCL module --------------------------------------------------------------
+
 
 @intrinsic_attr
 class OclModuleTemplate(AttributeTemplate):
@@ -171,6 +180,7 @@ class OclModuleTemplate(AttributeTemplate):
     def resolve_local(self, mod):
         return types.Module(dppy.local)
 
+
 # intrinsic
 
-#intrinsic_global(dppy, types.Module(dppy))
+# intrinsic_global(dppy, types.Module(dppy))

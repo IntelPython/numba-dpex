@@ -9,22 +9,24 @@ from numba.core.ir_utils import (
 import numba_dppy
 from numba.core import types
 
-rewrite_function_name_map = {"sum": (["np"], "sum"),
-                             "eig": (["linalg"], "eig"),
-                             "prod": (["np"], "prod"),
-                             "max": (["np"], "max"),
-                             "amax": (["np"], "amax"),
-                             "min": (["np"], "min"),
-                             "amin": (["np"], "amin"),
-                             "mean": (["np"], "mean"),
-                             "median": (["np"], "median"),
-                             "argmax": (["np"], "argmax"),
-                             "argmin": (["np"], "argmin"),
-                             "argsort": (["np"], "argsort"),
-                             "cov": (["np"], "cov"),
-                             "dot": (["np"], "dot"),
-                             "matmul": (["np"], "matmul"),
-                             "random_sample": (["random"], "random_sample")}
+
+rewrite_function_name_map = {
+    "sum": (["np"], "sum"),
+    "eig": (["linalg"], "eig"),
+    "prod": (["np"], "prod"),
+    "max": (["np"], "max"),
+    "amax": (["np"], "amax"),
+    "min": (["np"], "min"),
+    "amin": (["np"], "amin"),
+    "mean": (["np"], "mean"),
+    "median": (["np"], "median"),
+    "argmax": (["np"], "argmax"),
+    "argmin": (["np"], "argmin"),
+    "argsort": (["np"], "argsort"),
+    "cov": (["np"], "cov"),
+    "dot": (["np"], "dot"),
+    "matmul": (["np"], "matmul"),
+    "random_sample": (["random"], "random_sample"),
 
 
 class RewriteNumPyOverloadedFunctions(object):
@@ -149,6 +151,7 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
 
 def get_dpnp_func_typ(func):
     from numba.core.typing.templates import builtin_registry
+
     for (k, v) in builtin_registry.globals:
         if k == func:
             return v
@@ -180,9 +183,13 @@ class RewriteNdarrayFunctions(object):
                     lhs = stmt.target.name
                     rhs = stmt.value
                     # replace A.func with np.func, and save A in saved_arr_arg
-                    if (rhs.op == 'getattr' and rhs.attr in self.function_name_map
-                            and isinstance(
-                                self.typemap[rhs.value.name], types.npytypes.Array)):
+                    if (
+                        rhs.op == "getattr"
+                        and rhs.attr in self.function_name_map
+                        and isinstance(
+                            self.typemap[rhs.value.name], types.npytypes.Array
+                        )
+                    ):
                         rhs = stmt.value
                         arr = rhs.value
                         saved_arr_arg[lhs] = arr
@@ -213,17 +220,18 @@ class RewriteNdarrayFunctions(object):
                         self.typemap.pop(lhs)
                         self.typemap[lhs] = func_typ
 
-                    if rhs.op == 'call' and rhs.func.name in saved_arr_arg:
+                    if rhs.op == "call" and rhs.func.name in saved_arr_arg:
                         # add array as first arg
                         arr = saved_arr_arg[rhs.func.name]
                         # update call type signature to include array arg
                         old_sig = self.calltypes.pop(rhs)
                         # argsort requires kws for typing so sig.args can't be used
                         # reusing sig.args since some types become Const in sig
-                        argtyps = old_sig.args[:len(rhs.args)]
+                        argtyps = old_sig.args[: len(rhs.args)]
                         kwtyps = {name: self.typemap[v.name] for name, v in rhs.kws}
                         self.calltypes[rhs] = self.typemap[rhs.func.name].get_call_type(
-                            typingctx, [self.typemap[arr.name]] + list(argtyps), kwtyps)
+                            typingctx, [self.typemap[arr.name]] + list(argtyps), kwtyps
+                        )
                         rhs.args = [arr] + rhs.args
 
                 new_body.append(stmt)

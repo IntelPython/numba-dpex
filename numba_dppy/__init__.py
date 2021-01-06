@@ -506,10 +506,12 @@ from __future__ import print_function, absolute_import, division
 import numba.testing
 
 from .config import dppy_present
+
 if dppy_present:
     from .device_init import *
 else:
     raise ImportError("Importing numba-dppy failed")
+
 
 def test(*args, **kwargs):
     if not dppy_present and not is_available():
@@ -517,6 +519,8 @@ def test(*args, **kwargs):
 
     return numba.testing.test("numba_dppy.tests", *args, **kwargs)
 
+
 from ._version import get_versions
-__version__ = get_versions()['version']
+
+__version__ = get_versions()["version"]
 del get_versions
