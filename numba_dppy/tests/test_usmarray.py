@@ -25,14 +25,6 @@ def numba_mul_usmarray_asarray(a, b):  # a is usmarray, b is numpy
     return a * usmarray.asarray(b)
 
 
-# @numba.njit()
-# def f7(a):  # a is usmarray
-#     # implicit conversion of a to numpy.ndarray
-#     b = numpy.ones(10)
-#     c = a * b
-#     d = a.argsort()  # with no implicit conversion this fails
-
-
 @numba.njit
 def numba_usmarray_as_ndarray(a):
     return usmarray.as_ndarray(a)
