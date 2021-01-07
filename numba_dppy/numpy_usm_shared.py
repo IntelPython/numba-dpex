@@ -52,16 +52,20 @@ import dpctl
 from dpctl.memory import MemoryUSMShared
 import numba_dppy._dppy_rt
 
-# functions_list = [o[0] for o in getmembers(np) if isfunction(o[1]) or isbuiltin(o[1])]
-# class_list = [o for o in getmembers(np) if isclass(o[1])]
-
 # Register the helper function in dppl_rt so that we can insert calls to them via llvmlite.
 for py_name, c_address in numba_dppy._dppy_rt.c_helpers.items():
     llb.add_symbol(py_name, c_address)
 
 
-# This class creates a type in Numba.
 class UsmSharedArrayType(types.Array):
+    """Creates a Numba type for Numpy arrays that are stored in USM shared
+       memory.  We inherit from Numba's existing Numpy array type but overload
+       how this type is printed during dumping of typing information and we
+       implement the special __array_ufunc__ function to determine who this
+       type gets combined with scalars and regular Numpy types.
+       We re-use Numpy functions as well but those are going to return Numpy
+       arrays allocated in USM and we use the overloaded copy function to
+       convert such USM-backed Numpy arrays into typed USM arrays."""
     def __init__(
         self,
         dtype,
@@ -168,7 +172,7 @@ def allocator_UsmArray(context, builder, size, align):
     return builder.call(fn, [size, align, ext_allocator])
 
 
-registered = False
+_registered = False
 
 
 def is_usm_callback(obj):
@@ -188,9 +192,9 @@ def is_usm_callback(obj):
 
 
 def numba_register():
-    global registered
-    if not registered:
-        registered = True
+    global _registered
+    if not _registered:
+        _registered = True
         ndarray.add_external_usm_checker(is_usm_callback)
         numba_register_typing()
         numba_register_lower_builtin()
@@ -306,7 +310,6 @@ def numba_register_typing():
                 todo.append(ig)
             elif isinstance(typ, numba.core.types.functions.NumberClass):
                 pass
-                # todo_classes.append(ig)
 
     for tgetattr in templates_registry.attributes:
         dprint("Numpy getattr:", tgetattr, type(tgetattr), tgetattr.key)
@@ -366,8 +369,11 @@ def numba_register_typing():
             typer_func = """def typer({}):
                                 original_res = original_typer({})
                                 if isinstance(original_res, types.Array):
-                                    return UsmSharedArrayType(dtype=original_res.dtype, ndim=original_res.ndim, layout=original_res.layout)
-
+                                    return UsmSharedArrayType(
+                                        dtype=original_res.dtype,
+                                        ndim=original_res.ndim,
+                                        layout=original_res.layout
+                                    )
                                 return original_res""".format(
                 astr, ",".join(ot_argspec.args)
             )
@@ -415,42 +421,6 @@ def numba_register_typing():
     # after the registration callback that gets us here so we would miss the
     # attribute registrations we need.
     typing_registry.register_attr(UsmArrayAttribute)
-    """
-    for tgetattr in todo_getattr:
-        class_name = tgetattr.__name__ + "_usmarray"
-        dprint("tgetattr:", tgetattr, type(tgetattr), class_name)
-
-        @classmethod
-        def set_key(cls, key):
-            cls.key = key
-
-        def getattr_impl(self, attr):
-            dprint("getattr_impl:", class_name, attr)
-            if attr.startswith("resolve_"):
-                def wrapper(*args, **kwargs):
-                    attr_res = tgetattr.__getattribute__(self, attr)(*args, **kwargs)
-                    if isinstance(attr_res, types.Array):
-                        return UsmSharedArrayType(
-                            dtype=attr_res.dtype,
-                            ndim=attr_res.ndim,
-                            layout=attr_res.layout,
-                        )
-                    else:
-                        return attr_res
-
-                return wrapper
-            else:
-                return tgetattr.__getattribute__(self, attr)
-
-        new_usmarray_template = type(
-            class_name,
-            (tgetattr,),
-            {"set_class_vars": set_key, "__getattribute__": getattr_impl},
-        )
-
-        new_usmarray_template.set_class_vars(UsmSharedArrayType)
-        templates_registry.register_attr(new_usmarray_template)
-    """
 
 
 class UsmArrayAttribute(AttributeTemplate):
