@@ -87,7 +87,9 @@ class UsmSharedArrayType(types.Array):
     def copy(self, *args, **kwargs):
         retty = super(UsmSharedArrayType, self).copy(*args, **kwargs)
         if isinstance(retty, types.Array):
-            return UsmSharedArrayType(dtype=retty.dtype, ndim=retty.ndim, layout=retty.layout)
+            return UsmSharedArrayType(
+                dtype=retty.dtype, ndim=retty.ndim, layout=retty.layout
+            )
         else:
             return retty
 
@@ -538,7 +540,7 @@ class UsmArrayAttribute(AttributeTemplate):
             return signature(self.resolve_T(ary))
 
         if len(args) == 1:
-            shape, = args
+            (shape,) = args
 
             if sentry_shape_scalar(shape):
                 assert ary.ndim == 1
@@ -556,8 +558,9 @@ class UsmArrayAttribute(AttributeTemplate):
 
         else:
             if any(not sentry_shape_scalar(a) for a in args):
-                raise TypeError("transpose({0}) is not supported".format(
-                    ', '.join(args)))
+                raise TypeError(
+                    "transpose({0}) is not supported".format(", ".join(args))
+                )
             assert ary.ndim == len(args)
             return signature(self.resolve_T(ary).copy(layout="A"), *args)
 
@@ -585,7 +588,7 @@ class UsmArrayAttribute(AttributeTemplate):
         assert not kws
         # 0-dim arrays return one result array
         ndim = max(ary.ndim, 1)
-        retty = types.UniTuple(UsmSharedArrayType(types.intp, 1, 'C'), ndim)
+        retty = types.UniTuple(UsmSharedArrayType(types.intp, 1, "C"), ndim)
         return signature(retty)
 
     @bound_function("usmarray.reshape")
@@ -600,13 +603,13 @@ class UsmArrayAttribute(AttributeTemplate):
                 return False
 
         assert not kws
-        if ary.layout not in 'CF':
+        if ary.layout not in "CF":
             # only work for contiguous array
             raise TypeError("reshape() supports contiguous array only")
 
         if len(args) == 1:
             # single arg
-            shape, = args
+            (shape,) = args
 
             if sentry_shape_scalar(shape):
                 ndim = 1
@@ -625,8 +628,9 @@ class UsmArrayAttribute(AttributeTemplate):
         else:
             # vararg case
             if any(not sentry_shape_scalar(a) for a in args):
-                raise TypeError("reshape({0}) is not supported".format(
-                    ', '.join(map(str, args))))
+                raise TypeError(
+                    "reshape({0}) is not supported".format(", ".join(map(str, args)))
+                )
 
             retty = ary.copy(ndim=len(args))
             return signature(retty, *args)
@@ -642,24 +646,29 @@ class UsmArrayAttribute(AttributeTemplate):
     def resolve_argsort(self, ary, args, kws):
         assert not args
         kwargs = dict(kws)
-        kind = kwargs.pop('kind', types.StringLiteral('quicksort'))
+        kind = kwargs.pop("kind", types.StringLiteral("quicksort"))
         if not isinstance(kind, types.StringLiteral):
             raise errors.TypingError('"kind" must be a string literal')
         if kwargs:
             msg = "Unsupported keywords: {!r}"
             raise TypingError(msg.format([k for k in kwargs.keys()]))
         if ary.ndim == 1:
-            def argsort_stub(kind='quicksort'):
+
+            def argsort_stub(kind="quicksort"):
                 pass
+
             pysig = utils.pysignature(argsort_stub)
-            sig = signature(UsmSharedArrayType(types.intp, 1, 'C'), kind).replace(pysig=pysig)
+            sig = signature(UsmSharedArrayType(types.intp, 1, "C"), kind).replace(
+                pysig=pysig
+            )
             return sig
 
     @bound_function("usmarray.view")
     def resolve_view(self, ary, args, kws):
         from .npydecl import parse_dtype
+
         assert not kws
-        dtype, = args
+        (dtype,) = args
         dtype = parse_dtype(dtype)
         if dtype is None:
             return
@@ -669,16 +678,18 @@ class UsmArrayAttribute(AttributeTemplate):
     @bound_function("usmarray.astype")
     def resolve_astype(self, ary, args, kws):
         from .npydecl import parse_dtype
+
         assert not kws
-        dtype, = args
+        (dtype,) = args
         dtype = parse_dtype(dtype)
         if dtype is None:
             return
         if not self.context.can_convert(ary.dtype, dtype):
-            raise TypeError("astype(%s) not supported on %s: "
-                            "cannot convert from %s to %s"
-                            % (dtype, ary, ary.dtype, dtype))
-        layout = ary.layout if ary.layout in 'CF' else 'C'
+            raise TypeError(
+                "astype(%s) not supported on %s: "
+                "cannot convert from %s to %s" % (dtype, ary, ary.dtype, dtype)
+            )
+        layout = ary.layout if ary.layout in "CF" else "C"
         # reset the write bit irrespective of whether the cast type is the same
         # as the current dtype, this replicates numpy
         retty = ary.copy(dtype=dtype, layout=layout, readonly=False)
@@ -689,27 +700,27 @@ class UsmArrayAttribute(AttributeTemplate):
         # Only support no argument version (default order='C')
         assert not kws
         assert not args
-        return signature(ary.copy(ndim=1, layout='C'))
+        return signature(ary.copy(ndim=1, layout="C"))
 
     @bound_function("usmarray.flatten")
     def resolve_flatten(self, ary, args, kws):
         # Only support no argument version (default order='C')
         assert not kws
         assert not args
-        return signature(ary.copy(ndim=1, layout='C'))
+        return signature(ary.copy(ndim=1, layout="C"))
 
     @bound_function("usmarray.take")
     def resolve_take(self, ary, args, kws):
         assert not kws
-        argty, = args
+        (argty,) = args
         if isinstance(argty, types.Integer):
             sig = signature(ary.dtype, *args)
         elif isinstance(argty, UsmSharedArrayType):
-            sig = signature(argty.copy(layout='C', dtype=ary.dtype), *args)
-        elif isinstance(argty, types.List): # 1d lists only
-            sig = signature(UsmSharedArrayType(ary.dtype, 1, 'C'), *args)
+            sig = signature(argty.copy(layout="C", dtype=ary.dtype), *args)
+        elif isinstance(argty, types.List):  # 1d lists only
+            sig = signature(UsmSharedArrayType(ary.dtype, 1, "C"), *args)
         elif isinstance(argty, types.BaseTuple):
-            sig = signature(UsmSharedArrayType(ary.dtype, np.ndim(argty), 'C'), *args)
+            sig = signature(UsmSharedArrayType(ary.dtype, np.ndim(argty), "C"), *args)
         else:
             raise TypeError("take(%s) not supported for %s" % argty)
         return sig
@@ -718,7 +729,7 @@ class UsmArrayAttribute(AttributeTemplate):
         # Resolution of other attributes, for record arrays
         if isinstance(ary.dtype, types.Record):
             if attr in ary.dtype.fields:
-                return ary.copy(dtype=ary.dtype.typeof(attr), layout='A')
+                return ary.copy(dtype=ary.dtype.typeof(attr), layout="A")
 
 
 @typing_registry.register_global(nus.as_ndarray)

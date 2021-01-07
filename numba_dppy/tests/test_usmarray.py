@@ -70,7 +70,7 @@ def numba_T(x):
 
 @numba.njit
 def numba_reshape(x):
-    return x.reshape((4,3))
+    return x.reshape((4, 3))
 
 
 class TestUsmArray(unittest.TestCase):
