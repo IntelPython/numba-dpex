@@ -53,3 +53,18 @@ class dpnp(Stub):
 
     class random_sample(Stub):
         pass
+
+    class ranf(Stub):
+        pass
+
+    class sample(Stub):
+        pass
+
+    class random(Stub):
+        pass
+
+    class rand(Stub):
+        pass
+
+    class randint(Stub):
+        pass
