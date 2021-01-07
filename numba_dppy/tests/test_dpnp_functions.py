@@ -426,6 +426,68 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result[0] >= 0)
                 self.assertTrue(result[0] < low)
 
+        set_dpnp_debug(None)
+
+    def test_random_integers(self):
+        from numba.tests.support import captured_stdout
+        @njit
+        def f(low, high, size):
+            c = np.random.random_integers(low, high=high, size=size)
+            return c
+
+        @njit
+        def f1(low, size):
+            c = np.random.random_integers(low, size=size)
+            return c
+
+        @njit
+        def f2(low, high):
+            c = np.random.random_integers(low, high=high)
+            return c
+
+        @njit
+        def f3(low):
+            c = np.random.random_integers(low)
+            return c
+
+        sizes = [9, (2, 5), (3, 2, 4)]
+        low = 2
+        high = 23
+        set_dpnp_debug(1)
+        with captured_stdout() as got_gpu_message:
+            with dpctl.device_context("opencl:gpu"):
+                for size in sizes:
+                    result = f(low, high, size)
+                    _result = result.ravel()
+                    for i in range(_result.size):
+                        self.assertTrue(_result[i] >= low)
+                        self.assertTrue(_result[i] <= high)
+                    self.assertTrue("DPNP implementation" in got_gpu_message.getvalue())
+
+                result = f(low, None, sizes[0])
+                _result = result.ravel()
+
+                for i in range(_result.size):
+                    self.assertTrue(_result[i] >= 1)
+                    self.assertTrue(_result[i] <= low)
+
+                result = f1(low, sizes[0])
+                _result = result.ravel()
+
+                for i in range(_result.size):
+                    self.assertTrue(_result[i] >= 1)
+                    self.assertTrue(_result[i] <= low)
+
+                result = f2(low, high)
+
+                self.assertTrue(result[0] >= low)
+                self.assertTrue(result[0] <= high)
+
+                result = f3(low)
+
+                self.assertTrue(result[0] >= 1)
+                self.assertTrue(result[0] <= low)
+
 
         set_dpnp_debug(None)
 

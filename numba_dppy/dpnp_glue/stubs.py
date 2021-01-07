@@ -68,3 +68,6 @@ class dpnp(Stub):
 
     class randint(Stub):
         pass
+
+    class random_integers(Stub):
+        pass

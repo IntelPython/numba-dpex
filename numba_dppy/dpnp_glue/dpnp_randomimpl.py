@@ -14,6 +14,24 @@ def check_range(low, high):
     if low >= high:
         raise ValueError("Low cannot be >= High")
 
+@register_jitable
+def common_impl(low, high, res, dpnp_func, PRINT_DEBUG):
+    check_range(low, high)
+
+    sycl_queue = dpctl_functions.get_current_queue()
+    res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
+
+    dpnp_func(res_usm, low, high, res.size)
+
+    dpctl_functions.queue_memcpy(sycl_queue, res.ctypes, res_usm, res.size * res.itemsize)
+
+    dpctl_functions.free_with_queue(res_usm, sycl_queue)
+
+    dpnp_ext._dummy_liveness_func([res.size])
+
+    if PRINT_DEBUG:
+        print("DPNP implementation")
+
 
 @overload(stubs.dpnp.random)
 @overload(stubs.dpnp.sample)
@@ -55,20 +73,7 @@ def dpnp_random_sample(size):
             if size == 0:
                 return res
 
-        sycl_queue = dpctl_functions.get_current_queue()
-        res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
-
-        dpnp_func(res_usm, 0, 1, res.size)
-
-        dpctl_functions.queue_memcpy(sycl_queue, res.ctypes, res_usm, res.size * res.itemsize)
-
-        dpctl_functions.free_with_queue(res_usm, sycl_queue)
-
-        dpnp_ext._dummy_liveness_func([res.size])
-
-        if PRINT_DEBUG:
-            print("DPNP implementation")
-
+        common_impl(0, 1, res, dpnp_func, PRINT_DEBUG)
         return res
 
     return dpnp_impl
@@ -102,20 +107,7 @@ def dpnp_random_sample(*size):
             if i == 0:
                 return res
 
-        sycl_queue = dpctl_functions.get_current_queue()
-        res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
-
-        dpnp_func(res_usm, 0, 1, res.size)
-
-        dpctl_functions.queue_memcpy(sycl_queue, res.ctypes, res_usm, res.size * res.itemsize)
-
-        dpctl_functions.free_with_queue(res_usm, sycl_queue)
-
-        dpnp_ext._dummy_liveness_func([res.size])
-
-        if PRINT_DEBUG:
-            print("DPNP implementation")
-
+        common_impl(0, 1, res, dpnp_func, PRINT_DEBUG)
         return res
 
     return dpnp_impl
@@ -143,34 +135,16 @@ def dpnp_random_sample(low, high=None, size=None):
 
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
-    @register_jitable
-    def optional_impl(low, high, res):
-        check_range(low, high)
-
-        sycl_queue = dpctl_functions.get_current_queue()
-        res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
-
-        dpnp_func(res_usm, low, high, res.size)
-
-        dpctl_functions.queue_memcpy(sycl_queue, res.ctypes, res_usm, res.size * res.itemsize)
-
-        dpctl_functions.free_with_queue(res_usm, sycl_queue)
-
-        dpnp_ext._dummy_liveness_func([res.size])
-
-        if PRINT_DEBUG:
-            print("DPNP implementation")
-
     if size in (None, types.none):
         if high not in (None, types.none):
             def dpnp_impl(low, high=None, size=None):
                 res = np.empty(1, dtype=res_dtype)
-                optional_impl(low, high, res)
+                common_impl(low, high, res, dpnp_func, PRINT_DEBUG)
                 return res
         else:
             def dpnp_impl(low, high=None, size=None):
                 res = np.empty(1, dtype=res_dtype)
-                optional_impl(0, low, res)
+                common_impl(0, low, res, dpnp_func, PRINT_DEBUG)
                 return res
     else:
         if isinstance(size, types.UniTuple):
@@ -188,7 +162,7 @@ def dpnp_random_sample(low, high=None, size=None):
                 else:
                     if size == 0:
                         return res
-                optional_impl(low, high, res)
+                common_impl(low, high, res, dpnp_func, PRINT_DEBUG)
                 return res
         else:
             def dpnp_impl(low, high=None, size=None):
@@ -200,7 +174,74 @@ def dpnp_random_sample(low, high=None, size=None):
                 else:
                     if size == 0:
                         return res
-                optional_impl(0, low, res)
+                common_impl(0, low, res, dpnp_func, PRINT_DEBUG)
+                return res
+
+    return dpnp_impl
+
+
+@overload(stubs.dpnp.random_integers)
+def dpnp_random_sample(low, high=None, size=None):
+    name = "random_sample"
+    dpnp_lowering.ensure_dpnp("randint")
+
+    ret_type = types.void
+    """
+    dpnp source:
+    https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels_random.cpp#L391
+
+    Function declaration:
+    void custom_rng_uniform_c(void* result, long low, long high, size_t size)
+
+    """
+    sig = signature(
+        ret_type, types.voidptr, types.int64, types.int64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["int32", "NONE"], sig)
+
+    res_dtype = np.int32
+
+    PRINT_DEBUG = dpnp_lowering.DEBUG
+
+    if size in (None, types.none):
+        if high not in (None, types.none):
+            def dpnp_impl(low, high=None, size=None):
+                res = np.empty(1, dtype=res_dtype)
+                common_impl(low, high+1, res, dpnp_func, PRINT_DEBUG)
+                return res
+        else:
+            def dpnp_impl(low, high=None, size=None):
+                res = np.empty(1, dtype=res_dtype)
+                common_impl(1, low+1, res, dpnp_func, PRINT_DEBUG)
+                return res
+    else:
+        if isinstance(size, types.UniTuple):
+            t = True
+        else:
+            t = False
+
+        if high not in (None, types.none):
+            def dpnp_impl(low, high=None, size=None):
+                res = np.empty(size, dtype=res_dtype)
+                if t:
+                    for i in size:
+                        if i == 0:
+                            return res
+                else:
+                    if size == 0:
+                        return res
+                common_impl(low, high+1, res, dpnp_func, PRINT_DEBUG)
+                return res
+        else:
+            def dpnp_impl(low, high=None, size=None):
+                res = np.empty(size, dtype=res_dtype)
+                if t:
+                    for i in size:
+                        if i == 0:
+                            return res
+                else:
+                    if size == 0:
+                        return res
+                common_impl(1, low+1, res, dpnp_func, PRINT_DEBUG)
                 return res
 
     return dpnp_impl
