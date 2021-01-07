@@ -59,13 +59,13 @@ for py_name, c_address in numba_dppy._dppy_rt.c_helpers.items():
 
 class UsmSharedArrayType(types.Array):
     """Creates a Numba type for Numpy arrays that are stored in USM shared
-       memory.  We inherit from Numba's existing Numpy array type but overload
-       how this type is printed during dumping of typing information and we
-       implement the special __array_ufunc__ function to determine who this
-       type gets combined with scalars and regular Numpy types.
-       We re-use Numpy functions as well but those are going to return Numpy
-       arrays allocated in USM and we use the overloaded copy function to
-       convert such USM-backed Numpy arrays into typed USM arrays."""
+    memory.  We inherit from Numba's existing Numpy array type but overload
+    how this type is printed during dumping of typing information and we
+    implement the special __array_ufunc__ function to determine who this
+    type gets combined with scalars and regular Numpy types.
+    We re-use Numpy functions as well but those are going to return Numpy
+    arrays allocated in USM and we use the overloaded copy function to
+    convert such USM-backed Numpy arrays into typed USM arrays."""
     def __init__(
         self,
         dtype,
@@ -339,20 +339,17 @@ def numba_register_typing():
         except:
             dprint("failed to eval", val.__name__)
             continue
-        """
-        if debug:
-            print("--------------------------------------------------------------")
-            print("need to re-register for usmarray", val, typ, typ.typing_key)
-            print("val:", val, type(val), "dir val", dir(val))
-            print("typ:", typ, type(typ), "dir typ", dir(typ))
-            print("typing key:", typ.typing_key)
-            print("name:", typ.name)
-            print("key:", typ.key)
-            print("templates:", typ.templates)
-            print("template:", template, type(template))
-            print("dpval:", dpval, type(dpval))
-            print("--------------------------------------------------------------")
-        """
+        dprint("--------------------------------------------------------------")
+        dprint("need to re-register for usmarray", val, typ, typ.typing_key)
+        dprint("val:", val, type(val), "dir val", dir(val))
+        dprint("typ:", typ, type(typ), "dir typ", dir(typ))
+        dprint("typing key:", typ.typing_key)
+        dprint("name:", typ.name)
+        dprint("key:", typ.key)
+        dprint("templates:", typ.templates)
+        dprint("template:", template, type(template))
+        dprint("dpval:", dpval, type(dpval))
+        dprint("--------------------------------------------------------------")
 
         class_name = "DparrayTemplate_" + val.__name__
 
