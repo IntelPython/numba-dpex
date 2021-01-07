@@ -66,6 +66,7 @@ class UsmSharedArrayType(types.Array):
     We re-use Numpy functions as well but those are going to return Numpy
     arrays allocated in USM and we use the overloaded copy function to
     convert such USM-backed Numpy arrays into typed USM arrays."""
+
     def __init__(
         self,
         dtype,
