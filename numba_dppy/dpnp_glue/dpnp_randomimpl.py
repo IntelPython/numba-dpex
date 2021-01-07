@@ -183,7 +183,7 @@ def dpnp_random_sample(low, high=None, size=None):
 @overload(stubs.dpnp.random_integers)
 def dpnp_random_sample(low, high=None, size=None):
     name = "random_sample"
-    dpnp_lowering.ensure_dpnp("randint")
+    dpnp_lowering.ensure_dpnp("random_integers")
 
     ret_type = types.void
     """
@@ -243,5 +243,76 @@ def dpnp_random_sample(low, high=None, size=None):
                         return res
                 common_impl(1, low+1, res, dpnp_func, PRINT_DEBUG)
                 return res
+
+    return dpnp_impl
+
+
+@overload(stubs.dpnp.beta)
+def dpnp_random_sample(a, b, size=None):
+    name = "beta"
+    dpnp_lowering.ensure_dpnp(name)
+
+    ret_type = types.void
+    """
+    dpnp source:
+    https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels_random.cpp#L36
+
+    Function declaration:
+    void custom_rng_beta_c(void* result, _DataType a, _DataType b, size_t size)
+
+    """
+    sig = signature(
+        ret_type, types.voidptr, types.float64, types.float64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+
+    res_dtype = np.float64
+
+    PRINT_DEBUG = dpnp_lowering.DEBUG
+
+    @register_jitable
+    def beta_impl(a, b, res):
+        sycl_queue = dpctl_functions.get_current_queue()
+        print(res.size, res.itemsize)
+        res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
+
+        dpnp_func(res_usm, a, b, res.size)
+
+        dpctl_functions.queue_memcpy(sycl_queue, res.ctypes, res_usm, res.size * res.itemsize)
+
+        dpctl_functions.free_with_queue(res_usm, sycl_queue)
+
+        dpnp_ext._dummy_liveness_func([res.size])
+
+        if PRINT_DEBUG:
+            print("DPNP implementation")
+
+    if not (isinstance(a, types.Float)):
+        raise ValueError("We only support float scalar for input: a")
+
+    if not (isinstance(b, types.Float)):
+        raise ValueError("We only support float scalar for input: b")
+
+    if size in (None, types.none):
+        def dpnp_impl(a, b, size=None):
+            res = np.empty(1, dtype=res_dtype)
+            beta_impl(a, b, res)
+            return res
+    else:
+        if isinstance(size, types.UniTuple):
+            t = True
+        else:
+            t = False
+
+        def dpnp_impl(a, b, size=None):
+            res = np.empty(size, dtype=res_dtype)
+            if t:
+                for i in size:
+                    if i == 0:
+                        return res
+            else:
+                if size == 0:
+                    return res
+            beta_impl(a, b, res)
+            return res
 
     return dpnp_impl

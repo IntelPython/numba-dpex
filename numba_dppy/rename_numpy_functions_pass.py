@@ -33,6 +33,7 @@ rewrite_function_name_map = {
     "rand": (["random"], "rand"),
     "randint": (["random"], "randint"),
     "random_integers": (["random"], "random_integers"),
+    "beta": (["random"], "beta"),
     }
 
 class RewriteNumPyOverloadedFunctions(object):

@@ -71,3 +71,6 @@ class dpnp(Stub):
 
     class random_integers(Stub):
         pass
+
+    class beta(Stub):
+        pass

@@ -151,6 +151,8 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_EIG
     elif name == "dpnp_random_sample":
         return DPNPFuncName.DPNP_FN_RNG_UNIFORM
+    elif name == "dpnp_beta":
+        return DPNPFuncName.DPNP_FN_RNG_BETA
     else:
         return  DPNPFuncName.DPNP_FN_DOT
 
