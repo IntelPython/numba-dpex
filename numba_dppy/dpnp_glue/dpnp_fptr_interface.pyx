@@ -153,6 +153,16 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_RNG_UNIFORM
     elif name == "dpnp_beta":
         return DPNPFuncName.DPNP_FN_RNG_BETA
+    elif name == "dpnp_binomial":
+        return DPNPFuncName.DPNP_FN_RNG_BINOMIAL
+    elif name == "dpnp_chisquare":
+        return DPNPFuncName.DPNP_FN_RNG_CHISQUARE
+    elif name == "dpnp_exponential":
+        return DPNPFuncName.DPNP_FN_RNG_EXPONENTIAL
+    elif name == "dpnp_gamma":
+        return DPNPFuncName.DPNP_FN_RNG_GAMMA
+    elif name == "dpnp_geometric":
+        return DPNPFuncName.DPNP_FN_RNG_GEOMETRIC
     else:
         return  DPNPFuncName.DPNP_FN_DOT
 

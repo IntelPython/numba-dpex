@@ -74,3 +74,18 @@ class dpnp(Stub):
 
     class beta(Stub):
         pass
+
+    class binomial(Stub):
+        pass
+
+    class chisquare(Stub):
+        pass
+
+    class exponential(Stub):
+        pass
+
+    class gamma(Stub):
+        pass
+
+    class geometric(Stub):
+        pass

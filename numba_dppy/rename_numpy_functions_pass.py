@@ -34,6 +34,11 @@ rewrite_function_name_map = {
     "randint": (["random"], "randint"),
     "random_integers": (["random"], "random_integers"),
     "beta": (["random"], "beta"),
+    "binomial": (["random"], "binomial"),
+    "chisquare": (["random"], "chisquare"),
+    "exponential": (["random"], "exponential"),
+    "gamma": (["random"], "gamma"),
+    "geometric": (["random"], "geometric"),
     }
 
 class RewriteNumPyOverloadedFunctions(object):
