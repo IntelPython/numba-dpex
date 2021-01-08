@@ -4,6 +4,7 @@ from numba.core.extending import register_jitable
 import numpy as np
 from llvmlite import ir
 from numba.core.imputils import lower_getattr
+from numba.cpython import listobj
 
 
 ll_void_p = ir.IntType(8).as_pointer()
@@ -43,8 +44,6 @@ This function retrieves the pointer to the structure where the shape
 of an ndarray is stored. We cast it to void * to make it easier to
 pass around.
 """
-
-
 @lower_getattr(types.Array, "shapeptr")
 def array_shape(context, builder, typ, value):
     shape_ptr = builder.gep(
@@ -53,3 +52,13 @@ def array_shape(context, builder, typ, value):
     )
 
     return builder.bitcast(shape_ptr, ll_void_p)
+
+@lower_getattr(types.List, "itemsize")
+def list_itemsize(context, builder, typ, value):
+    llty = context.get_data_type(typ.dtype)
+    return context.get_constant(types.uintp, context.get_abi_sizeof(llty))
+
+@lower_getattr(types.List, "data")
+def list_itemsize(context, builder, typ, value):
+    inst = listobj.ListInstance(context, builder, typ, value)
+    return builder.bitcast(inst.data, ll_void_p)

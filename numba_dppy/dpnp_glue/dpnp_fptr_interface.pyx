@@ -163,8 +163,18 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_RNG_GAMMA
     elif name == "dpnp_geometric":
         return DPNPFuncName.DPNP_FN_RNG_GEOMETRIC
+    elif name == "dpnp_gumbel":
+        return DPNPFuncName.DPNP_FN_RNG_GUMBEL
+    elif name == "dpnp_hypergeometric":
+        return DPNPFuncName.DPNP_FN_RNG_HYPERGEOMETRIC
+    elif name == "dpnp_laplace":
+        return DPNPFuncName.DPNP_FN_RNG_LAPLACE
+    elif name == "dpnp_lognormal":
+        return DPNPFuncName.DPNP_FN_RNG_LOGNORMAL
+    elif name == "dpnp_multinomial":
+        return DPNPFuncName.DPNP_FN_RNG_MULTINOMIAL
     else:
-        return  DPNPFuncName.DPNP_FN_DOT
+        raise ValueError("Unknown dpnp function requested: " + name.split("_")[1])
 
 
 cdef DPNPFuncType get_DPNPFuncType_from_str(name):

@@ -89,3 +89,18 @@ class dpnp(Stub):
 
     class geometric(Stub):
         pass
+
+    class gumbel(Stub):
+        pass
+
+    class hypergeometric(Stub):
+        pass
+
+    class laplace(Stub):
+        pass
+
+    class lognormal(Stub):
+        pass
+
+    class multinomial(Stub):
+        pass

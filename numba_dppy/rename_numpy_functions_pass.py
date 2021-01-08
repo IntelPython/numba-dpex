@@ -39,6 +39,11 @@ rewrite_function_name_map = {
     "exponential": (["random"], "exponential"),
     "gamma": (["random"], "gamma"),
     "geometric": (["random"], "geometric"),
+    "gumbel": (["random"], "gumbel"),
+    "hypergeometric": (["random"], "hypergeometric"),
+    "laplace": (["random"], "laplace"),
+    "lognormal": (["random"], "lognormal"),
+    "multinomial": (["random"], "multinomial"),
     }
 
 class RewriteNumPyOverloadedFunctions(object):
