@@ -116,3 +116,18 @@ class dpnp(Stub):
 
     class poisson(Stub):
         pass
+
+    class rayleigh(Stub):
+        pass
+
+    class standard_cauchy(Stub):
+        pass
+
+    class standard_exponential(Stub):
+        pass
+
+    class standard_gamma(Stub):
+        pass
+
+    class standard_normal(Stub):
+        pass

@@ -181,6 +181,14 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_RNG_NORMAL
     elif name == "dpnp_poisson":
         return DPNPFuncName.DPNP_FN_RNG_POISSON
+    elif name == "dpnp_rayleigh":
+        return DPNPFuncName.DPNP_FN_RNG_RAYLEIGH
+    elif name == "dpnp_standard_cauchy":
+        return DPNPFuncName.DPNP_FN_RNG_STANDARD_CAUCHY
+    elif name == "dpnp_standard_exponential":
+        return DPNPFuncName.DPNP_FN_RNG_STANDARD_EXPONENTIAL
+    elif name == "dpnp_standard_gamma":
+        return DPNPFuncName.DPNP_FN_RNG_STANDARD_GAMMA
     else:
         raise ValueError("Unknown dpnp function requested: " + name.split("_")[1])
 

@@ -514,6 +514,7 @@ def dpnp_random_impl(scale=1.0, size=None):
                 if size == 0:
                     return res
             common_impl(scale, res)
+            return res
 
     return dpnp_impl
 
@@ -1289,6 +1290,327 @@ def dpnp_random_impl(lam=1.0, size=None):
                 if size == 0:
                     return res
             common_impl(lam, res)
+            return res
+
+    return dpnp_impl
+
+
+@overload(stubs.dpnp.rayleigh)
+def dpnp_random_impl(scale=1.0, size=None):
+    name = "rayleigh"
+    dpnp_lowering.ensure_dpnp(name)
+
+    ret_type = types.void
+    """
+    dpnp source:
+    https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels_random.cpp#L312
+
+    Function declaration:
+    void custom_rng_rayleigh_c(void* result, _DataType scale, size_t size)
+    """
+    sig = signature(
+        ret_type, types.voidptr, types.float64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+
+    res_dtype = np.float64
+
+    PRINT_DEBUG = dpnp_lowering.DEBUG
+
+    @register_jitable
+    def common_impl(scale, res):
+        sycl_queue = dpctl_functions.get_current_queue()
+        res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
+
+        dpnp_func(res_usm, scale, res.size)
+
+        dpctl_functions.queue_memcpy(sycl_queue, res.ctypes, res_usm, res.size * res.itemsize)
+
+        dpctl_functions.free_with_queue(res_usm, sycl_queue)
+
+        dpnp_ext._dummy_liveness_func([res.size])
+
+        if PRINT_DEBUG:
+            print("DPNP implementation")
+
+    if not isinstance(scale, float):
+        if not (isinstance(scale, types.Float)):
+            raise ValueError("We only support scalar for input: scale")
+
+    if size in (None, types.none):
+        def dpnp_impl(scale=1.0, size=None):
+            res = np.empty(1, dtype=res_dtype)
+            common_impl(scale, res)
+            return res[0]
+    else:
+        if isinstance(size, types.UniTuple):
+            t = True
+        else:
+            t = False
+        def dpnp_impl(scale=1.0, size=None):
+            res = np.empty(size, dtype=res_dtype)
+            if t:
+                for i in size:
+                    if i == 0:
+                        return res
+            else:
+                if size == 0:
+                    return res
+            common_impl(scale, res)
+            return res
+
+    return dpnp_impl
+
+
+@overload(stubs.dpnp.standard_cauchy)
+def dpnp_random_impl(size=None):
+    name = "standard_cauchy"
+    dpnp_lowering.ensure_dpnp(name)
+
+    ret_type = types.void
+    """
+    dpnp source:
+    https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels_random.cpp#L331
+
+    Function declaration:
+    void custom_rng_standard_cauchy_c(void* result, size_t size)
+    """
+    sig = signature(
+        ret_type, types.voidptr, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+
+    res_dtype = np.float64
+
+    PRINT_DEBUG = dpnp_lowering.DEBUG
+
+    @register_jitable
+    def common_impl(res):
+        sycl_queue = dpctl_functions.get_current_queue()
+        res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
+
+        dpnp_func(res_usm, res.size)
+
+        dpctl_functions.queue_memcpy(sycl_queue, res.ctypes, res_usm, res.size * res.itemsize)
+
+        dpctl_functions.free_with_queue(res_usm, sycl_queue)
+
+        dpnp_ext._dummy_liveness_func([res.size])
+
+        if PRINT_DEBUG:
+            print("DPNP implementation")
+
+    if size in (None, types.none):
+        def dpnp_impl(size=None):
+            res = np.empty(1, dtype=res_dtype)
+            common_impl(res)
+            return res[0]
+    else:
+        if isinstance(size, types.UniTuple):
+            t = True
+        else:
+            t = False
+
+        def dpnp_impl(size=None):
+            res = np.empty(size, dtype=res_dtype)
+            if t:
+                for i in size:
+                    if i == 0:
+                        return res
+            else:
+                if size == 0:
+                    return res
+            common_impl(res)
+            return res
+
+    return dpnp_impl
+
+
+@overload(stubs.dpnp.standard_exponential)
+def dpnp_random_impl(size=None):
+    name = "standard_exponential"
+    dpnp_lowering.ensure_dpnp(name)
+
+    ret_type = types.void
+    """
+    dpnp source:
+    https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels_random.cpp#L350
+
+    Function declaration:
+    void custom_rng_standard_exponential_c(void* result, size_t size)
+    """
+    sig = signature(
+        ret_type, types.voidptr, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+
+    res_dtype = np.float64
+
+    PRINT_DEBUG = dpnp_lowering.DEBUG
+
+    @register_jitable
+    def common_impl(res):
+        sycl_queue = dpctl_functions.get_current_queue()
+        res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
+
+        dpnp_func(res_usm, res.size)
+
+        dpctl_functions.queue_memcpy(sycl_queue, res.ctypes, res_usm, res.size * res.itemsize)
+
+        dpctl_functions.free_with_queue(res_usm, sycl_queue)
+
+        dpnp_ext._dummy_liveness_func([res.size])
+
+        if PRINT_DEBUG:
+            print("DPNP implementation")
+
+    if size in (None, types.none):
+        def dpnp_impl(size=None):
+            res = np.empty(1, dtype=res_dtype)
+            common_impl(res)
+            return res[0]
+    else:
+        if isinstance(size, types.UniTuple):
+            t = True
+        else:
+            t = False
+
+        def dpnp_impl(size=None):
+            res = np.empty(size, dtype=res_dtype)
+            if t:
+                for i in size:
+                    if i == 0:
+                        return res
+            else:
+                if size == 0:
+                    return res
+            common_impl(res)
+            return res
+
+    return dpnp_impl
+
+
+@overload(stubs.dpnp.standard_gamma)
+def dpnp_random_impl(shape, size=None):
+    name = "standard_gamma"
+    dpnp_lowering.ensure_dpnp(name)
+
+    ret_type = types.void
+    """
+    dpnp source:
+    https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels_random.cpp#L364
+
+    Function declaration:
+    void custom_rng_standard_gamma_c(void* result, _DataType shape, size_t size)
+    """
+    sig = signature(
+        ret_type, types.voidptr, types.float64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+
+    res_dtype = np.float64
+
+    PRINT_DEBUG = dpnp_lowering.DEBUG
+
+    @register_jitable
+    def common_impl(shape, res):
+        sycl_queue = dpctl_functions.get_current_queue()
+        res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
+
+        dpnp_func(res_usm, shape, res.size)
+
+        dpctl_functions.queue_memcpy(sycl_queue, res.ctypes, res_usm, res.size * res.itemsize)
+
+        dpctl_functions.free_with_queue(res_usm, sycl_queue)
+
+        dpnp_ext._dummy_liveness_func([res.size])
+
+        if PRINT_DEBUG:
+            print("DPNP implementation")
+
+    if not (isinstance(shape, types.Float)):
+        raise ValueError("We only support scalar for input: shape")
+
+    if size in (None, types.none):
+        def dpnp_impl(shape, size=None):
+            res = np.empty(1, dtype=res_dtype)
+            common_impl(shape, res)
+            return res[0]
+    else:
+        if isinstance(size, types.UniTuple):
+            t = True
+        else:
+            t = False
+
+        def dpnp_impl(shape, size=None):
+            res = np.empty(size, dtype=res_dtype)
+            if t:
+                for i in size:
+                    if i == 0:
+                        return res
+            else:
+                if size == 0:
+                    return res
+            common_impl(shape, res)
+            return res
+
+    return dpnp_impl
+
+
+@overload(stubs.dpnp.standard_normal)
+def dpnp_random_impl(size=None):
+    name = "normal"
+    dpnp_lowering.ensure_dpnp("standard_normal")
+
+    ret_type = types.void
+    """
+    dpnp source:
+    https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels_random.cpp#L282
+
+    Function declaration:
+    void custom_rng_normal_c(void* result, _DataType mean, _DataType stddev, size_t size)
+    """
+    sig = signature(
+        ret_type, types.voidptr, types.float64, types.float64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+
+    res_dtype = np.float64
+
+    PRINT_DEBUG = dpnp_lowering.DEBUG
+
+    @register_jitable
+    def common_impl(res):
+        sycl_queue = dpctl_functions.get_current_queue()
+        res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
+
+        dpnp_func(res_usm, 0.0, 1.0, res.size)
+
+        dpctl_functions.queue_memcpy(sycl_queue, res.ctypes, res_usm, res.size * res.itemsize)
+
+        dpctl_functions.free_with_queue(res_usm, sycl_queue)
+
+        dpnp_ext._dummy_liveness_func([res.size])
+
+        if PRINT_DEBUG:
+            print("DPNP implementation")
+
+    if size in (None, types.none):
+        def dpnp_impl(size=None):
+            res = np.empty(1, dtype=res_dtype)
+            common_impl(res)
+            return res[0]
+    else:
+        if isinstance(size, types.UniTuple):
+            t = True
+        else:
+            t = False
+
+        def dpnp_impl(size=None):
+            res = np.empty(size, dtype=res_dtype)
+            if t:
+                for i in size:
+                    if i == 0:
+                        return res
+            else:
+                if size == 0:
+                    return res
+            common_impl(res)
             return res
 
     return dpnp_impl

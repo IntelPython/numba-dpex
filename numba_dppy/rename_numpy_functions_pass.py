@@ -48,6 +48,11 @@ rewrite_function_name_map = {
     "negative_binomial": (["random"], "negative_binomial"),
     "normal": (["random"], "normal"),
     "poisson": (["random"], "poisson"),
+    "rayleigh": (["random"], "rayleigh"),
+    "standard_cauchy": (["random"], "standard_cauchy"),
+    "standard_exponential": (["random"], "standard_exponential"),
+    "standard_gamma": (["random"], "standard_gamma"),
+    "standard_normal": (["random"], "standard_normal"),
     }
 
 class RewriteNumPyOverloadedFunctions(object):
