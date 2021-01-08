@@ -31,8 +31,11 @@ class ArrayAttribute(AttributeTemplate):
 class ListAttribute(AttributeTemplate):
     key = types.List
 
+    def resolve_size(self, ary):
+        return types.int64
+
     def resolve_itemsize(self, ary):
         return types.int64
 
-    def resolve_data(self, ary):
+    def resolve_ctypes(self, ary):
         return types.voidptr

@@ -104,3 +104,15 @@ class dpnp(Stub):
 
     class multinomial(Stub):
         pass
+
+    class multivariate_normal(Stub):
+        pass
+
+    class negative_binomial(Stub):
+        pass
+
+    class normal(Stub):
+        pass
+
+    class poisson(Stub):
+        pass

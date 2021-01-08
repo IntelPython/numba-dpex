@@ -44,6 +44,10 @@ rewrite_function_name_map = {
     "laplace": (["random"], "laplace"),
     "lognormal": (["random"], "lognormal"),
     "multinomial": (["random"], "multinomial"),
+    "multivariate_normal": (["random"], "multivariate_normal"),
+    "negative_binomial": (["random"], "negative_binomial"),
+    "normal": (["random"], "normal"),
+    "poisson": (["random"], "poisson"),
     }
 
 class RewriteNumPyOverloadedFunctions(object):

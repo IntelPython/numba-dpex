@@ -173,6 +173,14 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_RNG_LOGNORMAL
     elif name == "dpnp_multinomial":
         return DPNPFuncName.DPNP_FN_RNG_MULTINOMIAL
+    elif name == "dpnp_multivariate_normal":
+        return DPNPFuncName.DPNP_FN_RNG_MULTIVARIATE_NORMAL
+    elif name == "dpnp_negative_binomial":
+        return DPNPFuncName.DPNP_FN_RNG_NEGATIVE_BINOMIAL
+    elif name == "dpnp_normal":
+        return DPNPFuncName.DPNP_FN_RNG_NORMAL
+    elif name == "dpnp_poisson":
+        return DPNPFuncName.DPNP_FN_RNG_POISSON
     else:
         raise ValueError("Unknown dpnp function requested: " + name.split("_")[1])
 

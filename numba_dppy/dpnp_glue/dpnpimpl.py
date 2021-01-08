@@ -53,12 +53,18 @@ def array_shape(context, builder, typ, value):
 
     return builder.bitcast(shape_ptr, ll_void_p)
 
+
+@lower_getattr(types.List, "size")
+def list_itemsize(context, builder, typ, value):
+    inst = listobj.ListInstance(context, builder, typ, value)
+    return inst.size
+
 @lower_getattr(types.List, "itemsize")
 def list_itemsize(context, builder, typ, value):
     llty = context.get_data_type(typ.dtype)
     return context.get_constant(types.uintp, context.get_abi_sizeof(llty))
 
-@lower_getattr(types.List, "data")
+@lower_getattr(types.List, "ctypes")
 def list_itemsize(context, builder, typ, value):
     inst = listobj.ListInstance(context, builder, typ, value)
     return builder.bitcast(inst.data, ll_void_p)
