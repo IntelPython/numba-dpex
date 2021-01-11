@@ -189,6 +189,10 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_RNG_STANDARD_EXPONENTIAL
     elif name == "dpnp_standard_gamma":
         return DPNPFuncName.DPNP_FN_RNG_STANDARD_GAMMA
+    elif name == "dpnp_uniform":
+        return DPNPFuncName.DPNP_FN_RNG_UNIFORM
+    elif name == "dpnp_weibull":
+        return DPNPFuncName.DPNP_FN_RNG_WEIBULL
     else:
         raise ValueError("Unknown dpnp function requested: " + name.split("_")[1])
 

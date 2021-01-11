@@ -131,3 +131,9 @@ class dpnp(Stub):
 
     class standard_normal(Stub):
         pass
+
+    class uniform(Stub):
+        pass
+
+    class weibull(Stub):
+        pass

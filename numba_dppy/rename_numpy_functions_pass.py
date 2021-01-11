@@ -53,6 +53,8 @@ rewrite_function_name_map = {
     "standard_exponential": (["random"], "standard_exponential"),
     "standard_gamma": (["random"], "standard_gamma"),
     "standard_normal": (["random"], "standard_normal"),
+    "uniform": (["random"], "uniform"),
+    "weibull": (["random"], "weibull"),
     }
 
 class RewriteNumPyOverloadedFunctions(object):
