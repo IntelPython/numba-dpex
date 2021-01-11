@@ -7,7 +7,7 @@ import unittest
 import dpctl
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
+@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
 class TestPrint(unittest.TestCase):
     def test_print_dppy_kernel(self):
         @dppy.func
@@ -30,5 +30,5 @@ class TestPrint(unittest.TestCase):
             f[N, dppy.DEFAULT_LOCAL_SIZE](a, b)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -4,7 +4,7 @@ import dpctl
 import unittest
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
+@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
 class TestNumpy_floating_functions(unittest.TestCase):
     def test_isfinite(self):
         @njit
@@ -12,7 +12,7 @@ class TestNumpy_floating_functions(unittest.TestCase):
             c = np.isfinite(a)
             return c
 
-        test_arr = [np.log(-1.), 1., np.log(0)]
+        test_arr = [np.log(-1.0), 1.0, np.log(0)]
         input_arr = np.asarray(test_arr, dtype=np.float32)
 
         with dpctl.device_context("opencl:gpu"):
@@ -27,7 +27,7 @@ class TestNumpy_floating_functions(unittest.TestCase):
             c = np.isinf(a)
             return c
 
-        test_arr = [np.log(-1.), 1., np.log(0)]
+        test_arr = [np.log(-1.0), 1.0, np.log(0)]
         input_arr = np.asarray(test_arr, dtype=np.float32)
 
         with dpctl.device_context("opencl:gpu"):
@@ -42,7 +42,7 @@ class TestNumpy_floating_functions(unittest.TestCase):
             c = np.isnan(a)
             return c
 
-        test_arr = [np.log(-1.), 1., np.log(0)]
+        test_arr = [np.log(-1.0), 1.0, np.log(0)]
         input_arr = np.asarray(test_arr, dtype=np.float32)
 
         with dpctl.device_context("opencl:gpu"):
@@ -94,5 +94,5 @@ class TestNumpy_floating_functions(unittest.TestCase):
         self.assertTrue(np.all(c == d))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

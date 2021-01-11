@@ -96,14 +96,14 @@ class TestPrange(unittest.TestCase):
 
         self.assertTrue(np.all(b == 12))
 
-    @unittest.skip('numba-dppy issue 110')
+    @unittest.skip("numba-dppy issue 110")
     def test_two_consequent_prange(self):
         def prange_example():
             n = 10
             a = np.ones((n), dtype=np.float64)
             b = np.ones((n), dtype=np.float64)
             c = np.ones((n), dtype=np.float64)
-            for i in prange(n//2):
+            for i in prange(n // 2):
                 a[i] = b[i] + c[i]
 
             return a
@@ -120,20 +120,26 @@ class TestPrange(unittest.TestCase):
 
         numba_dppy.compiler.DEBUG = old_debug
 
-        self.assertEqual(stdout.getvalue().count(
-            'Parfor lowered on DPPY-device'), 2, stdout.getvalue())
-        self.assertEqual(stdout.getvalue().count(
-            'Failed to lower parfor on DPPY-device'), 0, stdout.getvalue())
+        self.assertEqual(
+            stdout.getvalue().count("Parfor lowered on DPPY-device"),
+            2,
+            stdout.getvalue(),
+        )
+        self.assertEqual(
+            stdout.getvalue().count("Failed to lower parfor on DPPY-device"),
+            0,
+            stdout.getvalue(),
+        )
         np.testing.assert_equal(res, jitted_res)
 
-    @unittest.skip('NRT required but not enabled')
+    @unittest.skip("NRT required but not enabled")
     def test_2d_arrays(self):
         def prange_example():
             n = 10
             a = np.ones((n, n), dtype=np.float64)
             b = np.ones((n, n), dtype=np.float64)
             c = np.ones((n, n), dtype=np.float64)
-            for i in prange(n//2):
+            for i in prange(n // 2):
                 a[i] = b[i] + c[i]
 
             return a
@@ -150,12 +156,18 @@ class TestPrange(unittest.TestCase):
 
         numba_dppy.compiler.DEBUG = old_debug
 
-        self.assertEqual(stdout.getvalue().count(
-            'Parfor lowered on DPPY-device'), 2, stdout.getvalue())
-        self.assertEqual(stdout.getvalue().count(
-            'Failed to lower parfor on DPPY-device'), 0, stdout.getvalue())
+        self.assertEqual(
+            stdout.getvalue().count("Parfor lowered on DPPY-device"),
+            2,
+            stdout.getvalue(),
+        )
+        self.assertEqual(
+            stdout.getvalue().count("Failed to lower parfor on DPPY-device"),
+            0,
+            stdout.getvalue(),
+        )
         np.testing.assert_equal(res, jitted_res)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
