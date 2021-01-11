@@ -19,15 +19,18 @@ class TestCaching(unittest.TestCase):
         b = np.array(np.random.random(N), dtype=np.float32)
         c = np.ones_like(a)
 
-
         with dpctl.device_context("opencl:gpu") as gpu_queue:
             func = dppy.kernel(data_parallel_sum)
-            caching_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(a, b, c)
+            caching_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
+                a, b, c
+            )
 
             for i in range(10):
-                cached_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(a, b, c)
+                cached_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
+                    a, b, c
+                )
                 self.assertIs(caching_kernel, cached_kernel)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

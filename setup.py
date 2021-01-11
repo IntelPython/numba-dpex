@@ -32,13 +32,15 @@ def get_ext_modules():
     if dpnp_present:
         dpnp_lib_path = []
         dpnp_lib_path += [os.path.dirname(dpnp.__file__)]
-        ext_dpnp_glue = Extension(name='numba_dppy.dpnp_glue.dpnp_fptr_interface',
-                                  sources=['numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx'],
-                                  include_dirs=[dpnp.get_include()],
-                                  libraries=['dpnp_backend_c'],
-                                  library_dirs=dpnp_lib_path,
-                                  runtime_library_dirs=dpnp_lib_path,
-                                  language="c++")
+        ext_dpnp_glue = Extension(
+            name="numba_dppy.dpnp_glue.dpnp_fptr_interface",
+            sources=["numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx"],
+            include_dirs=[dpnp.get_include()],
+            libraries=["dpnp_backend_c"],
+            library_dirs=dpnp_lib_path,
+            runtime_library_dirs=dpnp_lib_path,
+            language="c++",
+        )
         ext_modules += [ext_dpnp_glue]
 
     if dpnp_present:

@@ -5,7 +5,7 @@ import dpctl
 import unittest
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
+@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
 class TestNumpy_bit_twiddling_functions(unittest.TestCase):
     def test_bitwise_and(self):
         @njit
@@ -111,5 +111,5 @@ class TestNumpy_bit_twiddling_functions(unittest.TestCase):
         self.assertTrue(np.all(c == d))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -6,13 +6,14 @@ import math
 
 import dpctl
 
+
 def sum_reduction_device_plus_host():
     @dppy.kernel
     def sum_reduction_kernel(inp, partial_sums):
-        local_id   = dppy.get_local_id(0)
-        global_id  = dppy.get_global_id(0)
+        local_id = dppy.get_local_id(0)
+        global_id = dppy.get_global_id(0)
         group_size = dppy.get_local_size(0)
-        group_id   = dppy.get_group_id(0)
+        group_id = dppy.get_group_id(0)
 
         local_sums = dppy.local.static_alloc(64, int32)
 
@@ -21,12 +22,12 @@ def sum_reduction_device_plus_host():
 
         # Loop for computing local_sums : divide workgroup into 2 parts
         stride = group_size // 2
-        while (stride > 0):
+        while stride > 0:
             # Waiting for each 2x2 addition into given workgroup
             dppy.barrier(dppy.CLK_LOCAL_MEM_FENCE)
 
             # Add elements 2 by 2 between local_id and local_id + stride
-            if (local_id < stride):
+            if local_id < stride:
                 local_sums[local_id] += local_sums[local_id + stride]
 
             stride >>= 1
@@ -55,9 +56,9 @@ def sum_reduction_device_plus_host():
     for i in range(nb_work_groups):
         final_sum += partial_sums[i]
 
-    assert(final_sum == global_size)
+    assert final_sum == global_size
     print("Expected:", global_size, "--- GOT:", final_sum)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sum_reduction_device_plus_host()

@@ -1,8 +1,12 @@
 from __future__ import print_function, absolute_import, division
 import math
 from numba.core import types, utils
-from numba.core.typing.templates import (AttributeTemplate, ConcreteTemplate,
-                                        signature, Registry)
+from numba.core.typing.templates import (
+    AttributeTemplate,
+    ConcreteTemplate,
+    signature,
+    Registry,
+)
 
 registry = Registry()
 builtin_attr = registry.register_attr
@@ -253,11 +257,14 @@ class Math_degrees(Math_unary):
 class Math_erf(Math_unary):
     key = math.erf
 
+
 class Math_erfc(Math_unary):
     key = math.erfc
 
+
 class Math_gamma(Math_unary):
     key = math.gamma
+
 
 class Math_lgamma(Math_unary):
     key = math.lgamma
