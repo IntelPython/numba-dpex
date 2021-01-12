@@ -18,6 +18,7 @@ if "linux" in sys.platform:
 elif sys.platform in ["win32", "cygwin"]:
     IS_WIN = True
 
+
 def get_ext_modules():
     ext_modules = []
 
@@ -67,11 +68,16 @@ def _get_cmdclass():
     cmdclass["develop"] = develop
     return cmdclass
 
+
 def spirv_compile():
     if IS_LIN:
-        os.environ["CC"] = os.path.join(os.environ.get("ONEAPI_ROOT"), "compiler/latest/linux", "bin/clang")
+        os.environ["CC"] = os.path.join(
+            os.environ.get("ONEAPI_ROOT"), "compiler/latest/linux", "bin/clang"
+        )
     if IS_WIN:
-        os.environ["CC"] = os.path.join(os.environ.get("ONEAPI_ROOT"), "compiler/latest/windows", "bin/clang.exe")
+        os.environ["CC"] = os.path.join(
+            os.environ.get("ONEAPI_ROOT"), "compiler/latest/windows", "bin/clang.exe"
+        )
     clang_args = [
         os.environ.get("CC"),
         "-flto",
