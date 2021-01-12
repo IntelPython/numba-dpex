@@ -23,14 +23,16 @@ class TestDPPYFallback(unittest.TestCase):
 
             return a
 
-        with warnings.catch_warnings(record=True) as w, dpctl.device_context("opencl:gpu"):
+        with warnings.catch_warnings(record=True) as w, dpctl.device_context(
+            "opencl:gpu"
+        ):
             dppy = numba.njit(inner_call_fallback)
             dppy_result = dppy()
 
         ref_result = inner_call_fallback()
 
         np.testing.assert_array_equal(dppy_result, ref_result)
-        assert 'Failed to lower parfor on DPPY-device' in str(w[-1].message)
+        assert "Failed to lower parfor on DPPY-device" in str(w[-1].message)
 
     def test_dppy_fallback_reductions(self):
         def reduction(a):
@@ -40,14 +42,16 @@ class TestDPPYFallback(unittest.TestCase):
             return b
 
         a = np.ones(10)
-        with warnings.catch_warnings(record=True) as w, dpctl.device_context("opencl:gpu"):
+        with warnings.catch_warnings(record=True) as w, dpctl.device_context(
+            "opencl:gpu"
+        ):
             dppy = numba.njit(reduction)
             dppy_result = dppy(a)
 
         ref_result = reduction(a)
 
         np.testing.assert_array_equal(dppy_result, ref_result)
-        assert 'Failed to lower parfor on DPPY-device' in str(w[-1].message)
+        assert "Failed to lower parfor on DPPY-device" in str(w[-1].message)
 
 
 if __name__ == "__main__":

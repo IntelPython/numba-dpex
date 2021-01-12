@@ -34,7 +34,7 @@ class TestDPPYFallback(unittest.TestCase):
         numba_dppy.compiler.DEBUG = 0
 
         np.testing.assert_array_equal(dppy_fallback_true, ref_result)
-        assert 'Failed to lower parfor on DPPY-device' in str(w[-1].message)
+        assert "Failed to lower parfor on DPPY-device" in str(w[-1].message)
 
     @unittest.expectedFailure
     def test_dppy_fallback_false(self):
@@ -53,7 +53,7 @@ class TestDPPYFallback(unittest.TestCase):
 
         try:
             numba_dppy.compiler.DEBUG = 1
-            numba_dppy.config.FALLBACK_ON_CPU  = 0
+            numba_dppy.config.FALLBACK_ON_CPU = 0
             with warnings.catch_warnings(record=True) as w:
                 with dpctl.device_context("opencl:gpu") as gpu_queue:
                     dppy = numba.njit(parallel=True)(inner_call_fallback)
@@ -65,7 +65,7 @@ class TestDPPYFallback(unittest.TestCase):
             numba_dppy.compiler.DEBUG = 0
 
             not np.testing.assert_array_equal(dppy_fallback_false, ref_result)
-            assert not 'Failed to lower parfor on DPPY-device' in str(w[-1].message)
+            assert not "Failed to lower parfor on DPPY-device" in str(w[-1].message)
 
 
 if __name__ == "__main__":
