@@ -229,7 +229,7 @@ def numba_register_lower_builtin():
     todo_array_member_func = []
 
     # For all Numpy identifiers that have been registered for typing in Numba...
-    # this registry contains functions, getattrs, setattrs, casts and constants...need to do them all? FIX FIX FIX
+    # this registry contains functions, getattrs, setattrs, casts and constants...
     for ig in lower_registry.functions:
         impl, func, types = ig
         dprint("Numpy lowered registry functions:", impl, func, type(func), types)
