@@ -70,6 +70,34 @@ def dpnp_eig_impl(a):
     return dpnp_impl
 
 
+@register_jitable
+def common_matmul_impl(dpnp_func, a, b, out, m, n, k):
+    sycl_queue = dpctl_functions.get_current_queue()
+
+    a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
+    dpctl_functions.queue_memcpy(
+        sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+    )
+
+    b_usm = dpctl_functions.malloc_shared(b.size * b.itemsize, sycl_queue)
+    dpctl_functions.queue_memcpy(
+        sycl_queue, b_usm, b.ctypes, b.size * b.itemsize
+    )
+
+    out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
+
+    dpnp_func(a_usm, b_usm, out_usm, m, n, k)
+
+    dpctl_functions.queue_memcpy(
+        sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+    )
+
+    dpctl_functions.free_with_queue(a_usm, sycl_queue)
+    dpctl_functions.free_with_queue(b_usm, sycl_queue)
+    dpctl_functions.free_with_queue(out_usm, sycl_queue)
+
+    dpnp_ext._dummy_liveness_func([a.size, b.size, out.size])
+
 @overload(stubs.dpnp.matmul)
 @overload(stubs.dpnp.dot)
 def dpnp_dot_impl(a, b):
@@ -131,43 +159,20 @@ def dpnp_dot_impl(a, b):
     elif a.dtype == types.float64 and b.dtype == types.float64:
         res_dtype = np.float64
 
+
     ndims = [a.ndim, b.ndim]
     if ndims == [2, 2]:
         dpnp_func = dpnp_ext.dpnp_func("dpnp_matmul", [a.dtype.name, "NONE"], sig)
 
         def dot_2_mm(a, b):
-            sycl_queue = dpctl_functions.get_current_queue()
-
             m, k = a.shape
             _k, n = b.shape
 
             if _k != k:
                 raise ValueError("Incompatible array sizes for np.dot(a, b)")
 
-            a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-            dpctl_functions.queue_memcpy(
-                sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
-            )
-
-            b_usm = dpctl_functions.malloc_shared(b.size * b.itemsize, sycl_queue)
-            dpctl_functions.queue_memcpy(
-                sycl_queue, b_usm, b.ctypes, b.size * b.itemsize
-            )
-
             out = np.empty((m, n), dtype=res_dtype)
-            out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
-
-            dpnp_func(a_usm, b_usm, out_usm, m, n, k)
-
-            dpctl_functions.queue_memcpy(
-                sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
-            )
-
-            dpctl_functions.free_with_queue(a_usm, sycl_queue)
-            dpctl_functions.free_with_queue(b_usm, sycl_queue)
-            dpctl_functions.free_with_queue(out_usm, sycl_queue)
-
-            dpnp_ext._dummy_liveness_func([a.size, b.size, out.size])
+            common_matmul_impl(dpnp_func, a, b, out, m, n, k)
 
             return out
 
@@ -176,8 +181,6 @@ def dpnp_dot_impl(a, b):
         dpnp_func = dpnp_ext.dpnp_func("dpnp_matmul", [a.dtype.name, "NONE"], sig)
 
         def dot_2_mv(a, b):
-            sycl_queue = dpctl_functions.get_current_queue()
-
             m, k = a.shape
             (_n,) = b.shape
             n = 1
@@ -185,30 +188,8 @@ def dpnp_dot_impl(a, b):
             if _n != k:
                 raise ValueError("Incompatible array sizes for np.dot(a, b)")
 
-            a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-            dpctl_functions.queue_memcpy(
-                sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
-            )
-
-            b_usm = dpctl_functions.malloc_shared(b.size * b.itemsize, sycl_queue)
-            dpctl_functions.queue_memcpy(
-                sycl_queue, b_usm, b.ctypes, b.size * b.itemsize
-            )
-
             out = np.empty((m,), dtype=res_dtype)
-            out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
-
-            dpnp_func(a_usm, b_usm, out_usm, m, n, k)
-
-            dpctl_functions.queue_memcpy(
-                sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
-            )
-
-            dpctl_functions.free_with_queue(a_usm, sycl_queue)
-            dpctl_functions.free_with_queue(b_usm, sycl_queue)
-            dpctl_functions.free_with_queue(out_usm, sycl_queue)
-
-            dpnp_ext._dummy_liveness_func([a.size, b.size, out.size])
+            common_matmul_impl(dpnp_func, a, b, out, m, n, k)
 
             return out
 
@@ -217,38 +198,14 @@ def dpnp_dot_impl(a, b):
         dpnp_func = dpnp_ext.dpnp_func("dpnp_matmul", [a.dtype.name, "NONE"], sig)
 
         def dot_2_vm(a, b):
-            sycl_queue = dpctl_functions.get_current_queue()
-
             (m,) = a.shape
             k, n = b.shape
 
             if m != k:
                 raise ValueError("Incompatible array sizes for np.dot(a, b)")
 
-            a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-            dpctl_functions.queue_memcpy(
-                sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
-            )
-
-            b_usm = dpctl_functions.malloc_shared(b.size * b.itemsize, sycl_queue)
-            dpctl_functions.queue_memcpy(
-                sycl_queue, b_usm, b.ctypes, b.size * b.itemsize
-            )
-
             out = np.empty((n,), dtype=res_dtype)
-            out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
-
-            dpnp_func(a_usm, b_usm, out_usm, m, n, k)
-
-            dpctl_functions.queue_memcpy(
-                sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
-            )
-
-            dpctl_functions.free_with_queue(a_usm, sycl_queue)
-            dpctl_functions.free_with_queue(b_usm, sycl_queue)
-            dpctl_functions.free_with_queue(out_usm, sycl_queue)
-
-            dpnp_ext._dummy_liveness_func([a.size, b.size, out.size])
+            common_matmul_impl(dpnp_func, a, b, out, m, n, k)
 
             return out
 
