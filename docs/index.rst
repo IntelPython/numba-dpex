@@ -11,6 +11,7 @@ Welcome to numba-dppy's documentation!
    :caption: Contents:
 
    INDEX
+   DEBUGGING
 
 
 Indices and tables

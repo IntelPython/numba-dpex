@@ -65,7 +65,7 @@ examples, supported functionalities, and known issues.
 
 ## Debugging
 
-Please follow instructions in the [DEBUGGING.md](DEBUGGING.md)
+Please follow instructions in the [DEBUGGING.md](docs/DEBUGGING.md)
 
 ## Reporting issues
 
