@@ -13,7 +13,7 @@ Welcome to numba-dppy's documentation!
    HowTo
    INDEX
    DEBUGGING
-
+   CONTRIBUTING
 
 Indices and tables
 ==================
