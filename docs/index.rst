@@ -10,6 +10,7 @@ Welcome to numba-dppy's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   HowTo
    INDEX
    DEBUGGING
 
