@@ -100,7 +100,7 @@ def common_matmul_impl(dpnp_func, a, b, out, m, n, k, print_debug):
     dpnp_ext._dummy_liveness_func([a.size, b.size, out.size])
 
     if print_debug:
-        print("DPNP implementation!!")
+        print("DPNP implementation")
 
 
 @register_jitable
@@ -131,7 +131,7 @@ def common_dot_impl(dpnp_func, a, b, out, m, print_debug):
     dpnp_ext._dummy_liveness_func([a.size, b.size, out.size])
 
     if print_debug:
-        print("DPNP implementation!!")
+        print("DPNP implementation")
 
 
 def get_res_dtype(a, b):
