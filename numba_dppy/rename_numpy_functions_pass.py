@@ -55,7 +55,12 @@ rewrite_function_name_map = {
     "standard_normal": (["random"], "standard_normal"),
     "uniform": (["random"], "uniform"),
     "weibull": (["random"], "weibull"),
+    "vdot": (["numpy"], "vdot"),
+    "cholesky": (["linalg"], "cholesky"),
+    "det": (["linalg"], "det"),
+    "multi_dot": (["linalg"], "multi_dot"),
     }
+
 
 class RewriteNumPyOverloadedFunctions(object):
     def __init__(self, state, rewrite_function_name_map=rewrite_function_name_map):

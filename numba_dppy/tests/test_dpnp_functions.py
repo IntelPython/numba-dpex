@@ -105,9 +105,23 @@ def vvsort(val, vec, size):
             vec[k, imax] = temp
 
 
+def sample_matrix(m, dtype, order="C"):
+    # pd. (positive definite) matrix has eigenvalues in Z+
+    np.random.seed(0)  # repeatable seed
+    A = np.random.rand(m, m)
+    # orthonormal q needed to form up q^{-1}*D*q
+    # no "orth()" in numpy
+    q, _ = np.linalg.qr(A)
+    L = np.arange(1, m + 1)  # some positive eigenvalues
+    Q = np.dot(np.dot(q.T, np.diag(L)), q)  # construct
+    Q = np.array(Q, dtype=dtype, order=order)  # sort out order/type
+    return Q
+
+
 @unittest.skipUnless(ensure_dpnp(), "test only when dpNP is available")
 class Testdpnp_linalg_functions(unittest.TestCase):
-    tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
+    #tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
+    tys = [ np.float, np.double]
 
     def test_eig(self):
         @njit
@@ -139,6 +153,106 @@ class Testdpnp_linalg_functions(unittest.TestCase):
 
             self.assertTrue(np.allclose(got_val, np_val))
             self.assertTrue(np.allclose(got_vec, np_vec))
+
+    def test_matmul(self):
+        @njit
+        def f(a, b):
+            c = np.matmul(a, b)
+            return c
+
+        self.assertTrue(
+            test_for_different_datatypes(
+                f,
+                np.matmul,
+                [10, 5, 5, 10],
+                2,
+                [np.float, np.double],
+                np_all=True,
+                matrix=[True, True],
+            )
+        )
+
+    def test_dot(self):
+        @njit
+        def f(a, b):
+            c = np.dot(a, b)
+            return c
+
+        self.assertTrue(
+            test_for_different_datatypes(
+                f, np.dot, [10, 1, 10, 1], 2, [np.float, np.double]
+            )
+        )
+        self.assertTrue(
+            test_for_different_datatypes(
+                f,
+                np.dot,
+                [10, 1, 10, 2],
+                2,
+                [np.float, np.double],
+                matrix=[False, True],
+                np_all=True,
+            )
+        )
+        self.assertTrue(
+            test_for_different_datatypes(
+                f,
+                np.dot,
+                [2, 10, 10, 1],
+                2,
+                [np.float, np.double],
+                matrix=[True, False],
+                np_all=True,
+            )
+        )
+        self.assertTrue(
+            test_for_different_datatypes(
+                f,
+                np.dot,
+                [10, 2, 2, 10],
+                2,
+                [np.float, np.double],
+                matrix=[True, True],
+                np_all=True,
+            )
+        )
+
+    @unittest.skip("")
+    def test_cholesky(self):
+        @njit
+        def f(a):
+            c = np.linalg.cholesky(a)
+            return c
+
+        with dpctl.device_context("opencl:gpu"):
+            for ty in self.tys:
+                a = np.array([[1, -2], [2, 5]], dtype=ty)
+                got = f(a)
+                expected = np.linalg.cholesky(a)
+                self.assertTrue(np.array_equal(got, expected))
+
+    def test_det(self):
+        @njit
+        def f(a):
+            c = np.linalg.det(a)
+            return c
+
+        arrays = [
+        [[0, 0], [0, 0]],
+        [[1, 2], [1, 2]],
+        [[1, 2], [3, 4]],
+        [[[1, 2], [3, 4]], [[1, 2], [2, 1]], [[1, 3], [3, 1]]],
+        [[[[1, 2], [3, 4]], [[1, 2], [2, 1]]], [[[1, 3], [3, 1]], [[0, 1], [1, 3]]]]
+	]
+
+        with dpctl.device_context("opencl:gpu"):
+            for ary in arrays:
+                for ty in self.tys:
+                    a = np.array(ary, dtype=ty)
+                    got = f(a)
+                    expected = np.linalg.det(a)
+                    print(got, expected)
+                    self.assertTrue(np.array_equal(got, expected))
 
 
 @unittest.skipUnless(ensure_dpnp(), "test only when dpNP is available")
@@ -492,8 +606,6 @@ class Testdpnp_random_functions(unittest.TestCase):
         set_dpnp_debug(None)
 
 
-
-
 @unittest.skipUnless(
     ensure_dpnp() and dpctl.has_gpu_queues(), "test only when dpNP and GPU is available"
 )
@@ -613,69 +725,6 @@ class Testdpnp_functions(unittest.TestCase):
         self.assertTrue(test_for_different_datatypes(f, np.mean, [10], 1, self.tys))
         self.assertTrue(test_for_dimensions(f, np.mean, [10, 2], self.tys))
         self.assertTrue(test_for_dimensions(f, np.mean, [10, 2, 3], self.tys))
-
-    def test_matmul(self):
-        @njit
-        def f(a, b):
-            c = np.matmul(a, b)
-            return c
-
-        self.assertTrue(
-            test_for_different_datatypes(
-                f,
-                np.matmul,
-                [10, 5, 5, 10],
-                2,
-                [np.float, np.double],
-                np_all=True,
-                matrix=[True, True],
-            )
-        )
-
-    def test_dot(self):
-        @njit
-        def f(a, b):
-            c = np.dot(a, b)
-            return c
-
-        self.assertTrue(
-            test_for_different_datatypes(
-                f, np.dot, [10, 1, 10, 1], 2, [np.float, np.double]
-            )
-        )
-        self.assertTrue(
-            test_for_different_datatypes(
-                f,
-                np.dot,
-                [10, 1, 10, 2],
-                2,
-                [np.float, np.double],
-                matrix=[False, True],
-                np_all=True,
-            )
-        )
-        self.assertTrue(
-            test_for_different_datatypes(
-                f,
-                np.dot,
-                [2, 10, 10, 1],
-                2,
-                [np.float, np.double],
-                matrix=[True, False],
-                np_all=True,
-            )
-        )
-        self.assertTrue(
-            test_for_different_datatypes(
-                f,
-                np.dot,
-                [10, 2, 2, 10],
-                2,
-                [np.float, np.double],
-                matrix=[True, True],
-                np_all=True,
-            )
-        )
 
     def test_cov(self):
         @njit

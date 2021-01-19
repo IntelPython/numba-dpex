@@ -137,3 +137,15 @@ class dpnp(Stub):
 
     class weibull(Stub):
         pass
+
+    class vdot(Stub):
+        pass
+
+    class cholesky(Stub):
+        pass
+
+    class det(Stub):
+        pass
+
+    class multi_dot(Stub):
+        pass
