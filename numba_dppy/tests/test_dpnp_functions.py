@@ -99,10 +99,11 @@ def vvsort(val, vec, size):
         val[i] = val[imax]
         val[imax] = temp
 
-        for k in range(size):
-            temp = vec[k, i]
-            vec[k, i] = vec[k, imax]
-            vec[k, imax] = temp
+        if vec:
+            for k in range(size):
+                temp = vec[k, i]
+                vec[k, i] = vec[k, imax]
+                vec[k, imax] = temp
 
 
 def sample_matrix(m, dtype, order="C"):
@@ -120,8 +121,7 @@ def sample_matrix(m, dtype, order="C"):
 
 @unittest.skipUnless(ensure_dpnp(), "test only when dpNP is available")
 class Testdpnp_linalg_functions(unittest.TestCase):
-    #tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
-    tys = [ np.float, np.double]
+    tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
 
     def test_eig(self):
         @njit
@@ -366,6 +366,30 @@ class Testdpnp_linalg_functions(unittest.TestCase):
                     print(got, expected)
                     self.assertTrue(np.allclose(got, expected))
 
+    def test_eigvals(self):
+        @njit
+        def f(a):
+            return np.linalg.eigvals(a)
+
+        size = 3
+        for ty in self.tys:
+            a = np.arange(size * size, dtype=ty).reshape((size, size))
+            symm_a = (
+                np.tril(a)
+                + np.tril(a, -1).T
+                + np.diag(np.full((size,), size * size, dtype=ty))
+            )
+
+            with dpctl.device_context("opencl:gpu"):
+                got_val = f(symm_a)
+
+            np_val = np.linalg.eigvals(symm_a)
+
+            # sort val by abs value
+            vvsort(got_val, None, size)
+            vvsort(np_val, None, size)
+
+            self.assertTrue(np.allclose(got_val, np_val))
 
 
 @unittest.skipUnless(ensure_dpnp(), "test only when dpNP is available")

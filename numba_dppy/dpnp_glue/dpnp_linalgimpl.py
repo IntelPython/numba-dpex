@@ -501,3 +501,14 @@ def dpnp_matrix_rank_impl(M, tol=None, hermitian=False):
     return dpnp_impl
 
 
+@overload(stubs.dpnp.eigvals)
+def dpnp_eigvals_impl(a):
+    dpnp_lowering.ensure_dpnp("eigvals")
+
+    def dpnp_impl(a):
+        eigval, eigvec = numba_dppy.dpnp.eig(a)
+        return eigval
+
+    return dpnp_impl
+
+

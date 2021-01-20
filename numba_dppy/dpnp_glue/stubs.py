@@ -155,3 +155,6 @@ class dpnp(Stub):
 
     class matrix_rank(Stub):
         pass
+
+    class eigvals(Stub):
+        pass
