@@ -149,3 +149,6 @@ class dpnp(Stub):
 
     class multi_dot(Stub):
         pass
+
+    class matrix_power(Stub):
+        pass

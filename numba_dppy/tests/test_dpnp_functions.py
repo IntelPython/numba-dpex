@@ -321,6 +321,28 @@ class Testdpnp_linalg_functions(unittest.TestCase):
             )
         )
 
+    def test_matrix_power(self):
+        @njit
+        def f(a, n):
+            c = np.linalg.matrix_power(a, n)
+            return c
+
+        arrays = [
+        [[0, 0], [0, 0]],
+        [[1, 2], [1, 2]],
+        [[1, 2], [3, 4]],
+	]
+
+        ns = [2, 3, 0]
+        with dpctl.device_context("opencl:gpu"):
+            for n in ns:
+                for ary in arrays:
+                    for ty in self.tys:
+                        a = np.array(ary, dtype=ty)
+                        got = f(a, n)
+                        expected = np.linalg.matrix_power(a, n)
+                        self.assertTrue(np.allclose(got, expected))
+
 
 @unittest.skipUnless(ensure_dpnp(), "test only when dpNP is available")
 class Testdpnp_ndarray_functions(unittest.TestCase):
