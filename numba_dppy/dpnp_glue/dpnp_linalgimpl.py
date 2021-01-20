@@ -172,7 +172,6 @@ def get_res_dtype(a, b):
     return res_dtype
 
 
-@overload(stubs.dpnp.vdot)
 @overload(stubs.dpnp.matmul)
 @overload(stubs.dpnp.dot)
 def dpnp_dot_impl(a, b):
@@ -297,6 +296,24 @@ def dpnp_multi_dot_impl(arrays):
         for idx in range(1, n):
             result = numba_dppy.dpnp.dot(result, arrays[idx])
         return result
+
+    return dpnp_impl
+
+
+@overload(stubs.dpnp.vdot)
+def dpnp_multi_dot_impl(a, b):
+    dpnp_lowering.ensure_dpnp("vdot")
+
+    """
+    dpnp source:
+    https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels.cpp#L118
+
+    Function declaration:
+    void dpnp_dot_c(void* array1_in, void* array2_in, void* result1, size_t size)
+
+    """
+    def dpnp_impl(a, b):
+        return numba_dppy.dpnp.dot(np.ravel(a), np.ravel(b))
 
     return dpnp_impl
 

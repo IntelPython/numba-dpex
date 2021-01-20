@@ -166,7 +166,7 @@ class Testdpnp_linalg_functions(unittest.TestCase):
                 np.matmul,
                 [10, 5, 5, 10],
                 2,
-                [np.float, np.double],
+                [np.int32, np.int64, np.float, np.double],
                 np_all=True,
                 matrix=[True, True],
             )
@@ -180,7 +180,7 @@ class Testdpnp_linalg_functions(unittest.TestCase):
 
         self.assertTrue(
             test_for_different_datatypes(
-                f, np.dot, [10, 1, 10, 1], 2, [np.float, np.double]
+                f, np.dot, [10, 1, 10, 1], 2, [np.int32, np.int64, np.float, np.double]
             )
         )
         self.assertTrue(
@@ -189,7 +189,7 @@ class Testdpnp_linalg_functions(unittest.TestCase):
                 np.dot,
                 [10, 1, 10, 2],
                 2,
-                [np.float, np.double],
+                [np.int32, np.int64, np.float, np.double],
                 matrix=[False, True],
                 np_all=True,
             )
@@ -200,7 +200,7 @@ class Testdpnp_linalg_functions(unittest.TestCase):
                 np.dot,
                 [2, 10, 10, 1],
                 2,
-                [np.float, np.double],
+                [np.int32, np.int64, np.float, np.double],
                 matrix=[True, False],
                 np_all=True,
             )
@@ -211,7 +211,7 @@ class Testdpnp_linalg_functions(unittest.TestCase):
                 np.dot,
                 [10, 2, 2, 10],
                 2,
-                [np.float, np.double],
+                [np.int32, np.int64, np.float, np.double],
                 matrix=[True, True],
                 np_all=True,
             )
@@ -275,6 +275,52 @@ class Testdpnp_linalg_functions(unittest.TestCase):
                 self.assertTrue("DPNP implementation" in got_gpu_message.getvalue())
 
         set_dpnp_debug(None)
+
+    def test_vdot(self):
+        @njit
+        def f(a, b):
+            c = np.vdot(a, b)
+            return c
+
+        self.assertTrue(
+            test_for_different_datatypes(
+                f, np.vdot, [10, 1, 10, 1], 2, [np.int32, np.int64, np.float, np.double]
+            )
+        )
+        self.assertTrue(
+            test_for_different_datatypes(
+                f,
+                np.vdot,
+                [10, 1, 10, 1],
+                2,
+                [np.int32, np.int64, np.float, np.double],
+                matrix=[False, True],
+                np_all=True,
+            )
+        )
+        self.assertTrue(
+            test_for_different_datatypes(
+                f,
+                np.vdot,
+                [2, 10, 10, 2],
+                2,
+                [np.int32, np.int64, np.float, np.double],
+                matrix=[True, False],
+                np_all=True,
+            )
+        )
+        self.assertTrue(
+            test_for_different_datatypes(
+                f,
+                np.vdot,
+                [10, 2, 2, 10],
+                2,
+                [np.int32, np.int64, np.float, np.double],
+                matrix=[True, True],
+                np_all=True,
+            )
+        )
+
 
 @unittest.skipUnless(ensure_dpnp(), "test only when dpNP is available")
 class Testdpnp_ndarray_functions(unittest.TestCase):
