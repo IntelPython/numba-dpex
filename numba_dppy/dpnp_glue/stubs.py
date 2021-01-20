@@ -152,3 +152,6 @@ class dpnp(Stub):
 
     class matrix_power(Stub):
         pass
+
+    class matrix_rank(Stub):
+        pass

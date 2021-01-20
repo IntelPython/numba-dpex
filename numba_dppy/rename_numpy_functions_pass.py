@@ -60,6 +60,7 @@ rewrite_function_name_map = {
     "det": (["linalg"], "det"),
     "multi_dot": (["linalg"], "multi_dot"),
     "matrix_power": (["linalg"], "matrix_power"),
+    "matrix_rank": (["linalg"], "matrix_rank"),
     }
 
 

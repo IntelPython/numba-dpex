@@ -433,13 +433,11 @@ def dpnp_det_impl(a):
 
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
-        print(out)
         dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim)
 
         dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
         )
-        print(out)
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
@@ -450,6 +448,55 @@ def dpnp_det_impl(a):
             return out[0]
         else:
             return out
+
+    return dpnp_impl
+
+
+@overload(stubs.dpnp.matrix_rank)
+def dpnp_matrix_rank_impl(M, tol=None, hermitian=False):
+    name = "matrix_rank"
+    dpnp_lowering.ensure_dpnp(name)
+
+    ret_type = types.void
+    """
+    dpnp source:
+    https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels_linalg.cpp#L186
+
+    Function declaration:
+    void custom_matrix_rank_c(void* array1_in, void* result1, size_t* shape, size_t ndim)
+    """
+    sig = signature(ret_type, types.voidptr, types.voidptr, types.voidptr, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [M.dtype.name, "NONE"], sig)
+
+    def dpnp_impl(M, tol=None, hermitian=False):
+        if tol != None:
+            raise ValueError("tol is not supported for np.linalg.matrix_rank(M)")
+        if hermitian == True:
+            raise ValueError("hermitian is not supported for np.linalg.matrix_rank(M)")
+
+        if M.ndim > 2:
+            raise ValueError("np.linalg.matrix_rank(M) is only supported on 1 or 2-d arrays")
+
+        out = np.empty(1, dtype=M.dtype)
+
+        sycl_queue = dpctl_functions.get_current_queue()
+        M_usm = dpctl_functions.malloc_shared(M.size * M.itemsize, sycl_queue)
+        dpctl_functions.queue_memcpy(sycl_queue, M_usm, M.ctypes, M.size * M.itemsize)
+
+        out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
+
+        dpnp_func(M_usm, out_usm, M.shapeptr, M.ndim)
+
+        dpctl_functions.queue_memcpy(
+            sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+        )
+
+        dpctl_functions.free_with_queue(M_usm, sycl_queue)
+        dpctl_functions.free_with_queue(out_usm, sycl_queue)
+
+        dpnp_ext._dummy_liveness_func([out.size, M.size])
+
+        return out[0]
 
     return dpnp_impl
 

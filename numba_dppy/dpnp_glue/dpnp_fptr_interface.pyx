@@ -199,6 +199,8 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_CHOLESKY
     elif name == "dpnp_det":
         return DPNPFuncName.DPNP_FN_DET
+    elif name == "dpnp_matrix_rank":
+        return DPNPFuncName.DPNP_FN_MATRIX_RANK
     else:
         raise ValueError("Unknown dpnp function requested: " + name.split("_")[1])
 

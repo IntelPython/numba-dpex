@@ -343,6 +343,30 @@ class Testdpnp_linalg_functions(unittest.TestCase):
                         expected = np.linalg.matrix_power(a, n)
                         self.assertTrue(np.allclose(got, expected))
 
+    @unittest.skip("")
+    def test_matrix_rank(self):
+        @njit
+        def f(a):
+            c = np.linalg.matrix_rank(a)
+            return c
+
+        arrays = [
+        np.eye(4),
+        np.ones((4,)),
+        np.ones((4,4)),
+        np.zeros((4,))
+	]
+
+        with dpctl.device_context("opencl:gpu"):
+            for ary in arrays:
+                for ty in self.tys:
+                    a = np.array(ary, dtype=ty)
+                    got = f(a)
+                    expected = np.linalg.matrix_rank(a)
+                    print(got, expected)
+                    self.assertTrue(np.allclose(got, expected))
+
+
 
 @unittest.skipUnless(ensure_dpnp(), "test only when dpNP is available")
 class Testdpnp_ndarray_functions(unittest.TestCase):
