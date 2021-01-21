@@ -1,10 +1,6 @@
-from __future__ import print_function, division, absolute_import
-
 import numpy as np
 import math
-import time
-
-import numba_dppy, numba_dppy as dppy
+import numba_dppy as dppy
 import dpctl
 
 
@@ -26,14 +22,15 @@ def get_context():
         raise RuntimeError("No device found")
 
 
-def reduce(A, R):
-    """Work only for size = power of two"""
+def sum_reduce(A):
+    """Size of A should be power of two."""
     total = len(A)
+    # max size will require half the size of A to store sum
+    R = np.array(np.random.random(math.ceil(total / 2)), dtype=A.dtype)
 
     context = get_context()
     with dpctl.device_context(context):
         while total > 1:
-            # call kernel
             global_size = total // 2
             reduction_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](
                 A, R, global_size
@@ -43,25 +40,22 @@ def reduce(A, R):
     return R[0]
 
 
-def test_sum_reduction():
+def test_sum_reduce():
     # This test will only work for size = power of two
     N = 2048
     assert N % 2 == 0
 
     A = np.array(np.random.random(N), dtype=np.float32)
     A_copy = A.copy()
-    # at max we will require half the size of A to store sum
-    R = np.array(np.random.random(math.ceil(N / 2)), dtype=np.float32)
 
-    actual = reduce(A, R)
+    actual = sum_reduce(A)
     expected = A_copy.sum()
-    max_abs_err = expected - actual
 
     print("Actual:  ", actual)
     print("Expected:", expected)
 
-    assert max_abs_err < 1e-2
+    assert expected - actual < 1e-2
 
 
 if __name__ == "__main__":
-    test_sum_reduction()
+    test_sum_reduce()

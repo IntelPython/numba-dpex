@@ -11,7 +11,15 @@ Example 1:
    :pyobject: reduction_kernel
 
 .. literalinclude:: ../../numba_dppy/examples/sum_reduction.py
-   :pyobject: reduce
+   :pyobject: sum_reduce
+
+Example 2:
+
+.. literalinclude:: ../../numba_dppy/examples/sum_reduction_ocl.py
+   :pyobject: reduction_kernel
+
+.. literalinclude:: ../../numba_dppy/examples/sum_reduction_ocl.py
+   :pyobject: sum_reduce
 
 
 Transition from Numba CUDA
