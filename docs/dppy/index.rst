@@ -6,3 +6,5 @@ Numba for DPPY GPUs
 .. toctree::
 
    device-functions.rst
+   debugging.md
+

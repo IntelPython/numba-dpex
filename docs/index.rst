@@ -12,7 +12,6 @@ Welcome to numba-dppy's documentation!
 
    HowTo
    INDEX
-   DEBUGGING
    CONTRIBUTING
 
 .. toctree::
