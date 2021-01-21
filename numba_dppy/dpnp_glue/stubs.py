@@ -158,3 +158,9 @@ class dpnp(Stub):
 
     class eigvals(Stub):
         pass
+
+    class nansum(Stub):
+        pass
+
+    class nanprod(Stub):
+        pass

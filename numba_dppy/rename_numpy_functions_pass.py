@@ -62,7 +62,9 @@ rewrite_function_name_map = {
     "matrix_power": (["linalg"], "matrix_power"),
     "matrix_rank": (["linalg"], "matrix_rank"),
     "eigvals": (["linalg"], "eigvals"),
-    }
+    "nansum": (["numpy"], "nansum"),
+    "nanprod": (["numpy"], "nanprod"),
+}
 
 
 class RewriteNumPyOverloadedFunctions(object):
@@ -118,7 +120,8 @@ class RewriteNumPyOverloadedFunctions(object):
                         ).value
                         if (
                             isinstance(module_node, ir.Global)
-                            and module_node.value.__name__ in self.function_name_map[rhs.attr][0]
+                            and module_node.value.__name__
+                            in self.function_name_map[rhs.attr][0]
                         ) or (
                             isinstance(module_node, ir.Expr)
                             and module_node.attr in self.function_name_map[rhs.attr][0]
