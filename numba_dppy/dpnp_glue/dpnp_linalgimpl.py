@@ -76,14 +76,10 @@ def common_matmul_impl(dpnp_func, a, b, out, m, n, k, print_debug):
     sycl_queue = dpctl_functions.get_current_queue()
 
     a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-    dpctl_functions.queue_memcpy(
-        sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
-    )
+    dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
 
     b_usm = dpctl_functions.malloc_shared(b.size * b.itemsize, sycl_queue)
-    dpctl_functions.queue_memcpy(
-        sycl_queue, b_usm, b.ctypes, b.size * b.itemsize
-    )
+    dpctl_functions.queue_memcpy(sycl_queue, b_usm, b.ctypes, b.size * b.itemsize)
 
     out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
@@ -107,14 +103,10 @@ def common_matmul_impl(dpnp_func, a, b, out, m, n, k, print_debug):
 def common_dot_impl(dpnp_func, a, b, out, m, print_debug):
     sycl_queue = dpctl_functions.get_current_queue()
     a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-    dpctl_functions.queue_memcpy(
-        sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
-    )
+    dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
 
     b_usm = dpctl_functions.malloc_shared(b.size * b.itemsize, sycl_queue)
-    dpctl_functions.queue_memcpy(
-        sycl_queue, b_usm, b.ctypes, b.size * b.itemsize
-    )
+    dpctl_functions.queue_memcpy(sycl_queue, b_usm, b.ctypes, b.size * b.itemsize)
 
     out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
@@ -290,6 +282,7 @@ def dpnp_multi_dot_impl(arrays):
     void dpnp_dot_c(void* array1_in, void* array2_in, void* result1, size_t size)
 
     """
+
     def dpnp_impl(arrays):
         n = len(arrays)
         result = arrays[0]
@@ -316,6 +309,7 @@ def dpnp_vdot_impl(a, b):
     void dpnp_dot_c(void* array1_in, void* array2_in, void* result1, size_t size)
 
     """
+
     def dpnp_impl(a, b):
         return numba_dppy.dpnp.dot(np.ravel(a), np.ravel(b))
 
@@ -334,6 +328,7 @@ def dpnp_matrix_power_impl(a, n):
     void dpnp_matmul_c(void* array1_in, void* array2_in, void* result1, size_t size_m,
                        size_t size_n, size_t size_k)
     """
+
     def dpnp_impl(a, n):
         if n < 0:
             raise ValueError("n < 0 is not supported for np.linalg.matrix_power(a, n)")
@@ -342,7 +337,7 @@ def dpnp_matrix_power_impl(a, n):
             return np.identity(a.shape[0], a.dtype)
 
         result = a
-        for idx in range(0, n-1):
+        for idx in range(0, n - 1):
             result = numba_dppy.dpnp.matmul(result, a)
         return result
 
@@ -422,7 +417,7 @@ def dpnp_det_impl(a):
         dpnp_ext._check_finite_matrix(a)
 
         if a.ndim == 2:
-            out = np.empty((1, ), dtype=a.dtype)
+            out = np.empty((1,), dtype=a.dtype)
             out[0] = -4
         else:
             out = np.empty(a.shape[:-2], dtype=a.dtype)
@@ -475,7 +470,9 @@ def dpnp_matrix_rank_impl(M, tol=None, hermitian=False):
             raise ValueError("hermitian is not supported for np.linalg.matrix_rank(M)")
 
         if M.ndim > 2:
-            raise ValueError("np.linalg.matrix_rank(M) is only supported on 1 or 2-d arrays")
+            raise ValueError(
+                "np.linalg.matrix_rank(M) is only supported on 1 or 2-d arrays"
+            )
 
         out = np.empty(1, dtype=M.dtype)
 
@@ -510,5 +507,3 @@ def dpnp_eigvals_impl(a):
         return eigval
 
     return dpnp_impl
-
-

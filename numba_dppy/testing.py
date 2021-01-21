@@ -44,6 +44,7 @@ def ensure_dpnp():
     except:
         return False
 
+
 def set_dpnp_debug(opt):
     import numba_dppy.dpnp_glue as dpnp_lowering
 

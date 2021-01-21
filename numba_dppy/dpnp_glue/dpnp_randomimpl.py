@@ -14,6 +14,7 @@ def check_range(low, high):
     if low >= high:
         raise ValueError("Low cannot be >= High")
 
+
 @register_jitable
 def common_impl(low, high, res, dpnp_func, PRINT_DEBUG):
     check_range(low, high)
@@ -23,13 +24,16 @@ def common_impl(low, high, res, dpnp_func, PRINT_DEBUG):
 
     dpnp_func(res_usm, low, high, res.size)
 
-    dpctl_functions.queue_memcpy(sycl_queue, res.ctypes, res_usm, res.size * res.itemsize)
+    dpctl_functions.queue_memcpy(
+        sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
+    )
     dpctl_functions.free_with_queue(res_usm, sycl_queue)
 
     dpnp_ext._dummy_liveness_func([res.size])
 
     if PRINT_DEBUG:
         print("DPNP implementation")
+
 
 @register_jitable
 def common_impl_0_arg(res, dpnp_func, print_debug):
@@ -38,13 +42,16 @@ def common_impl_0_arg(res, dpnp_func, print_debug):
 
     dpnp_func(res_usm, res.size)
 
-    dpctl_functions.queue_memcpy(sycl_queue, res.ctypes, res_usm, res.size * res.itemsize)
+    dpctl_functions.queue_memcpy(
+        sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
+    )
     dpctl_functions.free_with_queue(res_usm, sycl_queue)
 
     dpnp_ext._dummy_liveness_func([res.size])
 
     if print_debug:
         print("dpnp implementation")
+
 
 @register_jitable
 def common_impl_1_arg(arg1, res, dpnp_func, print_debug):
@@ -56,13 +63,16 @@ def common_impl_1_arg(arg1, res, dpnp_func, print_debug):
     except Exception:
         raise ValueError("Device not supported")
 
-    dpctl_functions.queue_memcpy(sycl_queue, res.ctypes, res_usm, res.size * res.itemsize)
+    dpctl_functions.queue_memcpy(
+        sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
+    )
     dpctl_functions.free_with_queue(res_usm, sycl_queue)
 
     dpnp_ext._dummy_liveness_func([res.size])
 
     if print_debug:
         print("dpnp implementation")
+
 
 @register_jitable
 def common_impl_2_arg(arg1, arg2, res, dpnp_func, print_debug):
@@ -71,7 +81,9 @@ def common_impl_2_arg(arg1, arg2, res, dpnp_func, print_debug):
 
     dpnp_func(res_usm, arg1, arg2, res.size)
 
-    dpctl_functions.queue_memcpy(sycl_queue, res.ctypes, res_usm, res.size * res.itemsize)
+    dpctl_functions.queue_memcpy(
+        sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
+    )
     dpctl_functions.free_with_queue(res_usm, sycl_queue)
 
     dpnp_ext._dummy_liveness_func([res.size])
@@ -97,13 +109,13 @@ def dpnp_random_impl(size):
     void custom_rng_uniform_c(void* result, long low, long high, size_t size)
 
     """
-    sig = signature(
-        ret_type, types.voidptr, types.int64, types.int64, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.int64, types.int64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
 
     res_dtype = np.float64
 
     PRINT_DEBUG = dpnp_lowering.DEBUG
+
     def dpnp_impl(size):
         res = np.empty(size, dtype=res_dtype)
         if res.size != 0:
@@ -111,6 +123,7 @@ def dpnp_random_impl(size):
         return res
 
     return dpnp_impl
+
 
 @overload(stubs.dpnp.rand)
 def dpnp_random_impl(*size):
@@ -126,9 +139,8 @@ def dpnp_random_impl(*size):
     void custom_rng_uniform_c(void* result, long low, long high, size_t size)
 
     """
-    sig = signature(
-        ret_type, types.voidptr, types.int64, types.int64, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.int64, types.int64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
 
     res_dtype = np.float64
 
@@ -157,9 +169,8 @@ def dpnp_random_impl(low, high=None, size=None):
     void custom_rng_uniform_c(void* result, long low, long high, size_t size)
 
     """
-    sig = signature(
-        ret_type, types.voidptr, types.int64, types.int64, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["int32", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.int64, types.int64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["int32", "NONE"], sig)
 
     res_dtype = np.int32
 
@@ -167,23 +178,30 @@ def dpnp_random_impl(low, high=None, size=None):
 
     if size in (None, types.none):
         if high not in (None, types.none):
+
             def dpnp_impl(low, high=None, size=None):
                 res = np.empty(1, dtype=res_dtype)
                 common_impl(low, high, res, dpnp_func, PRINT_DEBUG)
                 return res
+
         else:
+
             def dpnp_impl(low, high=None, size=None):
                 res = np.empty(1, dtype=res_dtype)
                 common_impl(0, low, res, dpnp_func, PRINT_DEBUG)
                 return res
+
     else:
         if high not in (None, types.none):
+
             def dpnp_impl(low, high=None, size=None):
                 res = np.empty(size, dtype=res_dtype)
                 if res.size != 0:
                     common_impl(low, high, res, dpnp_func, PRINT_DEBUG)
                 return res
+
         else:
+
             def dpnp_impl(low, high=None, size=None):
                 res = np.empty(size, dtype=res_dtype)
                 if res.size != 0:
@@ -207,9 +225,8 @@ def dpnp_random_impl(low, high=None, size=None):
     void custom_rng_uniform_c(void* result, long low, long high, size_t size)
 
     """
-    sig = signature(
-        ret_type, types.voidptr, types.int64, types.int64, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["int32", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.int64, types.int64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["int32", "NONE"], sig)
 
     res_dtype = np.int32
 
@@ -217,27 +234,34 @@ def dpnp_random_impl(low, high=None, size=None):
 
     if size in (None, types.none):
         if high not in (None, types.none):
+
             def dpnp_impl(low, high=None, size=None):
                 res = np.empty(1, dtype=res_dtype)
-                common_impl(low, high+1, res, dpnp_func, PRINT_DEBUG)
+                common_impl(low, high + 1, res, dpnp_func, PRINT_DEBUG)
                 return res
+
         else:
+
             def dpnp_impl(low, high=None, size=None):
                 res = np.empty(1, dtype=res_dtype)
-                common_impl(1, low+1, res, dpnp_func, PRINT_DEBUG)
+                common_impl(1, low + 1, res, dpnp_func, PRINT_DEBUG)
                 return res
+
     else:
         if high not in (None, types.none):
+
             def dpnp_impl(low, high=None, size=None):
                 res = np.empty(size, dtype=res_dtype)
                 if res.size != 0:
-                    common_impl(low, high+1, res, dpnp_func, PRINT_DEBUG)
+                    common_impl(low, high + 1, res, dpnp_func, PRINT_DEBUG)
                 return res
+
         else:
+
             def dpnp_impl(low, high=None, size=None):
                 res = np.empty(size, dtype=res_dtype)
                 if res.size != 0:
-                    common_impl(1, low+1, res, dpnp_func, PRINT_DEBUG)
+                    common_impl(1, low + 1, res, dpnp_func, PRINT_DEBUG)
                 return res
 
     return dpnp_impl
@@ -257,9 +281,8 @@ def dpnp_random_impl(a, b, size=None):
     void custom_rng_beta_c(void* result, _DataType a, _DataType b, size_t size)
 
     """
-    sig = signature(
-        ret_type, types.voidptr, types.float64, types.float64, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.float64, types.float64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
@@ -270,11 +293,14 @@ def dpnp_random_impl(a, b, size=None):
         raise ValueError("We only support float scalar for input: b")
 
     if size in (None, types.none):
+
         def dpnp_impl(a, b, size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl_2_arg(a, b, res, dpnp_func, print_debug)
             return res[0]
+
     else:
+
         def dpnp_impl(a, b, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
@@ -298,9 +324,8 @@ def dpnp_random_impl(n, p, size=None):
     void custom_rng_binomial_c(void* result, int ntrial, double p, size_t size)
 
     """
-    sig = signature(
-        ret_type, types.voidptr, types.int32, types.float64, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["int32", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.int32, types.float64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["int32", "NONE"], sig)
     res_dtype = np.int32
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
@@ -311,11 +336,14 @@ def dpnp_random_impl(n, p, size=None):
         raise ValueError("We only support scalar for input: p")
 
     if size in (None, types.none):
+
         def dpnp_impl(n, p, size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl_2_arg(n, p, res, dpnp_func, print_debug)
             return res[0]
+
     else:
+
         def dpnp_impl(n, p, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
@@ -338,9 +366,8 @@ def dpnp_random_impl(df, size=None):
     Function declaration:
     void custom_rng_chi_square_c(void* result, int df, size_t size)
     """
-    sig = signature(
-        ret_type, types.voidptr, types.int32, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.int32, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
@@ -348,11 +375,14 @@ def dpnp_random_impl(df, size=None):
         raise ValueError("We only support scalar for input: df")
 
     if size in (None, types.none):
+
         def dpnp_impl(df, size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl_1_arg(df, res, dpnp_func, PRINT_DEBUG)
             return res[0]
+
     else:
+
         def dpnp_impl(df, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
@@ -375,9 +405,8 @@ def dpnp_random_impl(scale=1.0, size=None):
     Function declaration:
     void custom_rng_exponential_c(void* result, _DataType beta, size_t size)
     """
-    sig = signature(
-        ret_type, types.voidptr, types.float64, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.float64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
@@ -386,11 +415,14 @@ def dpnp_random_impl(scale=1.0, size=None):
             raise ValueError("We only support scalar for input: scale")
 
     if size in (None, types.none):
+
         def dpnp_impl(scale=1.0, size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl_1_arg(scale, res, dpnp_func, PRINT_DEBUG)
             return res[0]
+
     else:
+
         def dpnp_impl(scale=1.0, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
@@ -413,9 +445,8 @@ def dpnp_random_impl(shape, scale=1.0, size=None):
     Function declaration:
     void custom_rng_gamma_c(void* result, _DataType shape, _DataType scale, size_t size)
     """
-    sig = signature(
-        ret_type, types.voidptr, types.float64, types.float64, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.float64, types.float64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
@@ -427,11 +458,14 @@ def dpnp_random_impl(shape, scale=1.0, size=None):
             raise ValueError("We only support scalar for input: scale")
 
     if size in (None, types.none):
+
         def dpnp_impl(shape, scale=1.0, size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl_2_arg(shape, scale, res, dpnp_func, print_debug)
             return res[0]
+
     else:
+
         def dpnp_impl(shape, scale=1.0, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
@@ -453,9 +487,8 @@ def dpnp_random_impl(p, size=None):
     Function declaration:
     void custom_rng_geometric_c(void* result, float p, size_t size)
     """
-    sig = signature(
-        ret_type, types.voidptr, types.float32, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["int32", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.float32, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["int32", "NONE"], sig)
     res_dtype = np.int32
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
@@ -463,11 +496,14 @@ def dpnp_random_impl(p, size=None):
         raise ValueError("We only support scalar for input: p")
 
     if size in (None, types.none):
+
         def dpnp_impl(p, size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl_1_arg(p, res, dpnp_func, PRINT_DEBUG)
             return res[0]
+
     else:
+
         def dpnp_impl(p, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
@@ -490,9 +526,8 @@ def dpnp_random_impl(loc=0.0, scale=1.0, size=None):
     Function declaration:
     void custom_rng_gumbel_c(void* result, double loc, double scale, size_t size)
     """
-    sig = signature(
-        ret_type, types.voidptr, types.float64, types.float64, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.float64, types.float64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
@@ -505,11 +540,14 @@ def dpnp_random_impl(loc=0.0, scale=1.0, size=None):
             raise ValueError("We only support scalar for input: scale")
 
     if size in (None, types.none):
+
         def dpnp_impl(loc=0.0, scale=1.0, size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl_2_arg(loc, scale, res, dpnp_func, print_debug)
             return res[0]
+
     else:
+
         def dpnp_impl(loc=0.0, scale=1.0, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
@@ -533,8 +571,9 @@ def dpnp_random_impl(ngood, nbad, nsample, size=None):
     void custom_rng_hypergeometric_c(void* result, int l, int s, int m, size_t size)
     """
     sig = signature(
-        ret_type, types.voidptr, types.int32, types.int32, types.int32, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["int32", "NONE"], sig)
+        ret_type, types.voidptr, types.int32, types.int32, types.int32, types.intp
+    )
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["int32", "NONE"], sig)
 
     res_dtype = np.int32
 
@@ -547,7 +586,9 @@ def dpnp_random_impl(ngood, nbad, nsample, size=None):
 
         dpnp_func(res_usm, ngood, nbad, nsample, res.size)
 
-        dpctl_functions.queue_memcpy(sycl_queue, res.ctypes, res_usm, res.size * res.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
+        )
 
         dpctl_functions.free_with_queue(res_usm, sycl_queue)
 
@@ -565,13 +606,15 @@ def dpnp_random_impl(ngood, nbad, nsample, size=None):
     if not (isinstance(nsample, types.Integer)):
         raise ValueError("We only support scalar for input: nsample")
 
-
     if size in (None, types.none):
+
         def dpnp_impl(ngood, nbad, nsample, size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl(ngood, nbad, nsample, res)
             return res[0]
+
     else:
+
         def dpnp_impl(ngood, nbad, nsample, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
@@ -594,9 +637,8 @@ def dpnp_random_impl(loc=0.0, scale=1.0, size=None):
     Function declaration:
     void custom_rng_laplace_c(void* result, double loc, double scale, size_t size)
     """
-    sig = signature(
-        ret_type, types.voidptr, types.float64, types.float64, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.float64, types.float64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
@@ -609,11 +651,14 @@ def dpnp_random_impl(loc=0.0, scale=1.0, size=None):
             raise ValueError("We only support scalar for input: scale")
 
     if size in (None, types.none):
+
         def dpnp_impl(loc=0.0, scale=1.0, size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl_2_arg(loc, scale, res, dpnp_func, print_debug)
             return res[0]
+
     else:
+
         def dpnp_impl(loc=0.0, scale=1.0, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
@@ -636,9 +681,8 @@ def dpnp_random_impl(mean=0.0, sigma=1.0, size=None):
     Function declaration:
     void custom_rng_lognormal_c(void* result, _DataType mean, _DataType stddev, size_t size)
     """
-    sig = signature(
-        ret_type, types.voidptr, types.float64, types.float64, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.float64, types.float64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
@@ -651,11 +695,14 @@ def dpnp_random_impl(mean=0.0, sigma=1.0, size=None):
             raise ValueError("We only support scalar for input: scale")
 
     if size in (None, types.none):
+
         def dpnp_impl(mean=0.0, sigma=1.0, size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl_2_arg(mean, sigma, res, dpnp_func, print_debug)
             return res[0]
+
     else:
+
         def dpnp_impl(mean=0.0, sigma=1.0, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
@@ -680,8 +727,9 @@ def dpnp_random_impl(n, pvals, size=None):
                                   const size_t p_vector_size, size_t size)
     """
     sig = signature(
-        ret_type, types.voidptr, types.int32, types.voidptr, types.intp, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["int32", "NONE"], sig)
+        ret_type, types.voidptr, types.int32, types.voidptr, types.intp, types.intp
+    )
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["int32", "NONE"], sig)
 
     res_dtype = np.int32
 
@@ -692,12 +740,18 @@ def dpnp_random_impl(n, pvals, size=None):
         sycl_queue = dpctl_functions.get_current_queue()
         res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
 
-        pvals_usm = dpctl_functions.malloc_shared(pvals.size * pvals.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(sycl_queue, pvals_usm, pvals.ctypes, pvals.size * pvals.itemsize)
+        pvals_usm = dpctl_functions.malloc_shared(
+            pvals.size * pvals.itemsize, sycl_queue
+        )
+        dpctl_functions.queue_memcpy(
+            sycl_queue, pvals_usm, pvals.ctypes, pvals.size * pvals.itemsize
+        )
 
         dpnp_func(res_usm, n, pvals_usm, pvals.size, res.size)
 
-        dpctl_functions.queue_memcpy(sycl_queue, res.ctypes, res_usm, res.size * res.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
+        )
 
         dpctl_functions.free_with_queue(res_usm, sycl_queue)
         dpctl_functions.free_with_queue(pvals_usm, sycl_queue)
@@ -708,40 +762,48 @@ def dpnp_random_impl(n, pvals, size=None):
             print("DPNP implementation")
 
     if not isinstance(n, types.Integer):
-        raise TypeError("np.random.multinomial(): n should be an "
-                        "integer, got %s" % (n,))
+        raise TypeError(
+            "np.random.multinomial(): n should be an " "integer, got %s" % (n,)
+        )
 
     if not isinstance(pvals, (types.Sequence, types.Array)):
-        raise TypeError("np.random.multinomial(): pvals should be an "
-                        "array or sequence, got %s" % (pvals,))
+        raise TypeError(
+            "np.random.multinomial(): pvals should be an "
+            "array or sequence, got %s" % (pvals,)
+        )
 
     if size in (None, types.none):
+
         def dpnp_impl(n, pvals, size=None):
             out = np.zeros(len(pvals), res_dtype)
             common_impl(n, pvals, out)
             return out
 
     elif isinstance(size, types.Integer):
+
         def dpnp_impl(n, pvals, size=None):
             out = np.zeros((size, len(pvals)), res_dtype)
             common_impl(n, pvals, out)
             return out
 
     elif isinstance(size, types.BaseTuple):
+
         def dpnp_impl(n, pvals, size=None):
             out = np.zeros(size + (len(pvals),), res_dtype)
             common_impl(n, pvals, out)
             return out
 
     else:
-        raise TypeError("np.random.multinomial(): size should be int or "
-                        "tuple or None, got %s" % (size,))
+        raise TypeError(
+            "np.random.multinomial(): size should be int or "
+            "tuple or None, got %s" % (size,)
+        )
 
     return dpnp_impl
 
 
 @overload(stubs.dpnp.multivariate_normal)
-def dpnp_random_impl(mean, cov, size=None, check_valid='warn', tol=1e-8):
+def dpnp_random_impl(mean, cov, size=None, check_valid="warn", tol=1e-8):
     name = "multivariate_normal"
     dpnp_lowering.ensure_dpnp(name)
 
@@ -760,9 +822,16 @@ def dpnp_random_impl(mean, cov, size=None, check_valid='warn', tol=1e-8):
                                       size_t size)
     """
     sig = signature(
-        ret_type, types.voidptr, types.int32, types.voidptr, types.intp,
-        types.voidptr, types.intp, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+        ret_type,
+        types.voidptr,
+        types.int32,
+        types.voidptr,
+        types.intp,
+        types.voidptr,
+        types.intp,
+        types.intp,
+    )
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
 
     res_dtype = np.float64
 
@@ -774,14 +843,20 @@ def dpnp_random_impl(mean, cov, size=None, check_valid='warn', tol=1e-8):
         res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
 
         mean_usm = dpctl_functions.malloc_shared(mean.size * mean.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(sycl_queue, mean_usm, mean.ctypes, mean.size * mean.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, mean_usm, mean.ctypes, mean.size * mean.itemsize
+        )
 
         cov_usm = dpctl_functions.malloc_shared(cov.size * cov.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(sycl_queue, cov_usm, cov.ctypes, cov.size * cov.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, cov_usm, cov.ctypes, cov.size * cov.itemsize
+        )
 
         dpnp_func(res_usm, mean.size, mean_usm, mean.size, cov_usm, cov.size, res.size)
 
-        dpctl_functions.queue_memcpy(sycl_queue, res.ctypes, res_usm, res.size * res.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
+        )
 
         dpctl_functions.free_with_queue(res_usm, sycl_queue)
         dpctl_functions.free_with_queue(mean_usm, sycl_queue)
@@ -793,29 +868,34 @@ def dpnp_random_impl(mean, cov, size=None, check_valid='warn', tol=1e-8):
             print("DPNP implementation")
 
     if size in (None, types.none):
-        def dpnp_impl(mean, cov, size=None, check_valid='warn', tol=1e-8):
+
+        def dpnp_impl(mean, cov, size=None, check_valid="warn", tol=1e-8):
             out = np.empty(mean.shape, dtype=res_dtype)
             common_impl(mean, cov, size, check_valid, tol, out)
             return out
 
     elif isinstance(size, types.Integer):
-        def dpnp_impl(mean, cov, size=None, check_valid='warn', tol=1e-8):
-            new_size = (size, )
-            new_size = new_size + (mean.size, )
+
+        def dpnp_impl(mean, cov, size=None, check_valid="warn", tol=1e-8):
+            new_size = (size,)
+            new_size = new_size + (mean.size,)
             out = np.empty(new_size, dtype=res_dtype)
             common_impl(mean, cov, size, check_valid, tol, out)
             return out
 
     elif isinstance(size, types.BaseTuple):
-        def dpnp_impl(mean, cov, size=None, check_valid='warn', tol=1e-8):
-            new_size = size + (mean.size, )
+
+        def dpnp_impl(mean, cov, size=None, check_valid="warn", tol=1e-8):
+            new_size = size + (mean.size,)
             out = np.empty(new_size, dtype=res_dtype)
             common_impl(mean, cov, size, check_valid, tol, out)
             return out
 
     else:
-        raise TypeError("np.random.multivariate_normal(): size should be int or "
-                        "tuple or None, got %s" % (size,))
+        raise TypeError(
+            "np.random.multivariate_normal(): size should be int or "
+            "tuple or None, got %s" % (size,)
+        )
 
     return dpnp_impl
 
@@ -833,9 +913,8 @@ def dpnp_random_impl(n, p, size=None):
     Function declaration:
     void custom_rng_negative_binomial_c(void* result, double a, double p, size_t size)
     """
-    sig = signature(
-        ret_type, types.voidptr, types.int32, types.float64, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["int32", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.int32, types.float64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["int32", "NONE"], sig)
     res_dtype = np.int32
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
@@ -846,11 +925,14 @@ def dpnp_random_impl(n, p, size=None):
         raise ValueError("We only support scalar for input: p")
 
     if size in (None, types.none):
+
         def dpnp_impl(n, p, size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl_2_arg(n, p, res, dpnp_func, print_debug)
             return res[0]
+
     else:
+
         def dpnp_impl(n, p, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
@@ -873,9 +955,8 @@ def dpnp_random_impl(loc=0.0, scale=1.0, size=None):
     Function declaration:
     void custom_rng_normal_c(void* result, _DataType mean, _DataType stddev, size_t size)
     """
-    sig = signature(
-        ret_type, types.voidptr, types.float64, types.float64, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.float64, types.float64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
@@ -888,11 +969,14 @@ def dpnp_random_impl(loc=0.0, scale=1.0, size=None):
             raise ValueError("We only support scalar for input: scale")
 
     if size in (None, types.none):
+
         def dpnp_impl(loc=0.0, scale=1.0, size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl_2_arg(loc, scale, res, dpnp_func, print_debug)
             return res[0]
+
     else:
+
         def dpnp_impl(loc=0.0, scale=1.0, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
@@ -915,9 +999,8 @@ def dpnp_random_impl(lam=1.0, size=None):
     Function declaration:
     void custom_rng_poisson_c(void* result, double lambda, size_t size)
     """
-    sig = signature(
-        ret_type, types.voidptr, types.float64, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["int32", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.float64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["int32", "NONE"], sig)
     res_dtype = np.int32
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
@@ -926,11 +1009,14 @@ def dpnp_random_impl(lam=1.0, size=None):
             raise ValueError("We only support scalar for input: lam")
 
     if size in (None, types.none):
+
         def dpnp_impl(lam=1.0, size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl_1_arg(lam, res, dpnp_func, PRINT_DEBUG)
             return res[0]
+
     else:
+
         def dpnp_impl(lam=1.0, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
@@ -953,9 +1039,8 @@ def dpnp_random_impl(scale=1.0, size=None):
     Function declaration:
     void custom_rng_rayleigh_c(void* result, _DataType scale, size_t size)
     """
-    sig = signature(
-        ret_type, types.voidptr, types.float64, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.float64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
@@ -964,11 +1049,14 @@ def dpnp_random_impl(scale=1.0, size=None):
             raise ValueError("We only support scalar for input: scale")
 
     if size in (None, types.none):
+
         def dpnp_impl(scale=1.0, size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl_1_arg(scale, res, dpnp_func, PRINT_DEBUG)
             return res[0]
+
     else:
+
         def dpnp_impl(scale=1.0, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
@@ -991,18 +1079,20 @@ def dpnp_random_impl(size=None):
     Function declaration:
     void custom_rng_standard_cauchy_c(void* result, size_t size)
     """
-    sig = signature(
-        ret_type, types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
     if size in (None, types.none):
+
         def dpnp_impl(size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl_0_arg(res, dpnp_func, print_debug)
             return res[0]
+
     else:
+
         def dpnp_impl(size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
@@ -1025,18 +1115,20 @@ def dpnp_random_impl(size=None):
     Function declaration:
     void custom_rng_standard_exponential_c(void* result, size_t size)
     """
-    sig = signature(
-        ret_type, types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
     if size in (None, types.none):
+
         def dpnp_impl(size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl_0_arg(res, dpnp_func, print_debug)
             return res[0]
+
     else:
+
         def dpnp_impl(size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
@@ -1059,9 +1151,8 @@ def dpnp_random_impl(shape, size=None):
     Function declaration:
     void custom_rng_standard_gamma_c(void* result, _DataType shape, size_t size)
     """
-    sig = signature(
-        ret_type, types.voidptr, types.float64, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.float64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
@@ -1069,11 +1160,14 @@ def dpnp_random_impl(shape, size=None):
         raise ValueError("We only support scalar for input: shape")
 
     if size in (None, types.none):
+
         def dpnp_impl(shape, size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl_1_arg(shape, res, dpnp_func, PRINT_DEBUG)
             return res[0]
+
     else:
+
         def dpnp_impl(shape, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
@@ -1096,18 +1190,20 @@ def dpnp_random_impl(size=None):
     Function declaration:
     void custom_rng_normal_c(void* result, _DataType mean, _DataType stddev, size_t size)
     """
-    sig = signature(
-        ret_type, types.voidptr, types.float64, types.float64, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.float64, types.float64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
     if size in (None, types.none):
+
         def dpnp_impl(size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl(0.0, 1.0, res, dpnp_func, PRINT_DEBUG)
             return res[0]
+
     else:
+
         def dpnp_impl(size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
@@ -1130,20 +1226,22 @@ def dpnp_random_impl(low=0.0, high=1.0, size=None):
     Function declaration:
     void custom_rng_uniform_c(void* result, long low, long high, size_t size)
     """
-    sig = signature(
-        ret_type, types.voidptr, types.int64, types.int64, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.int64, types.int64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
 
     res_dtype = np.float64
 
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
     if size in (None, types.none):
+
         def dpnp_impl(low=0.0, high=1.0, size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl(low, high, res, dpnp_func, PRINT_DEBUG)
             return res
+
     else:
+
         def dpnp_impl(low=0.0, high=1.0, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
@@ -1166,9 +1264,8 @@ def dpnp_random_impl(a, size=None):
     Function declaration:
     void custom_rng_weibull_c(void* result, double alpha, size_t size)
     """
-    sig = signature(
-        ret_type, types.voidptr, types.float64, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, ["float64", "NONE"], sig)
+    sig = signature(ret_type, types.voidptr, types.float64, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
@@ -1176,11 +1273,14 @@ def dpnp_random_impl(a, size=None):
         raise ValueError("We only support scalar for input: a")
 
     if size in (None, types.none):
+
         def dpnp_impl(a, size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl_1_arg(a, res, dpnp_func, PRINT_DEBUG)
             return res[0]
+
     else:
+
         def dpnp_impl(a, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:

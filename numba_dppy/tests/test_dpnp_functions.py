@@ -239,12 +239,15 @@ class Testdpnp_linalg_functions(unittest.TestCase):
             return c
 
         arrays = [
-        [[0, 0], [0, 0]],
-        [[1, 2], [1, 2]],
-        [[1, 2], [3, 4]],
-        [[[1, 2], [3, 4]], [[1, 2], [2, 1]], [[1, 3], [3, 1]]],
-        [[[[1, 2], [3, 4]], [[1, 2], [2, 1]]], [[[1, 3], [3, 1]], [[0, 1], [1, 3]]]]
-	]
+            [[0, 0], [0, 0]],
+            [[1, 2], [1, 2]],
+            [[1, 2], [3, 4]],
+            [[[1, 2], [3, 4]], [[1, 2], [2, 1]], [[1, 3], [3, 1]]],
+            [
+                [[[1, 2], [3, 4]], [[1, 2], [2, 1]]],
+                [[[1, 3], [3, 1]], [[0, 1], [1, 3]]],
+            ],
+        ]
 
         with dpctl.device_context("opencl:gpu"):
             for ary in arrays:
@@ -256,6 +259,7 @@ class Testdpnp_linalg_functions(unittest.TestCase):
 
     def test_multi_dot(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(A, B, C, D):
             c = np.linalg.multi_dot([A, B, C, D])
@@ -328,10 +332,10 @@ class Testdpnp_linalg_functions(unittest.TestCase):
             return c
 
         arrays = [
-        [[0, 0], [0, 0]],
-        [[1, 2], [1, 2]],
-        [[1, 2], [3, 4]],
-	]
+            [[0, 0], [0, 0]],
+            [[1, 2], [1, 2]],
+            [[1, 2], [3, 4]],
+        ]
 
         ns = [2, 3, 0]
         with dpctl.device_context("opencl:gpu"):
@@ -350,12 +354,7 @@ class Testdpnp_linalg_functions(unittest.TestCase):
             c = np.linalg.matrix_rank(a)
             return c
 
-        arrays = [
-        np.eye(4),
-        np.ones((4,)),
-        np.ones((4,4)),
-        np.zeros((4,))
-	]
+        arrays = [np.eye(4), np.ones((4,)), np.ones((4, 4)), np.zeros((4,))]
 
         with dpctl.device_context("opencl:gpu"):
             for ary in arrays:
@@ -521,6 +520,7 @@ class Testdpnp_ndarray_functions(unittest.TestCase):
 class Testdpnp_random_functions(unittest.TestCase):
     def test_random_sample(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(size):
             c = np.random.random_sample(size)
@@ -541,6 +541,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_ranf(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(size):
             c = np.random.ranf(size)
@@ -561,6 +562,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_sample(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(size):
             c = np.random.sample(size)
@@ -581,6 +583,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_random(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(size):
             c = np.random.random(size)
@@ -601,6 +604,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_rand(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f():
             c = np.random.rand(3, 2)
@@ -619,6 +623,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_randint(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(low, high, size):
             c = np.random.randint(low, high=high, size=size)
@@ -681,6 +686,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_random_integers(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(low, high, size):
             c = np.random.random_integers(low, high=high, size=size)
@@ -738,7 +744,6 @@ class Testdpnp_random_functions(unittest.TestCase):
 
                 self.assertTrue(result[0] >= 1)
                 self.assertTrue(result[0] <= low)
-
 
         set_dpnp_debug(None)
 

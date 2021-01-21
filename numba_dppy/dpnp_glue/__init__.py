@@ -5,4 +5,5 @@ def ensure_dpnp(name):
     except ImportError:
         raise ImportError("dpNP is needed to call np.%s" % name)
 
+
 DEBUG = None
