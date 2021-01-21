@@ -34,6 +34,7 @@ def get_context():
     else:
         raise RuntimeError("No device found")
 
+
 def main():
     N = 10
     a = np.ones(N)
