@@ -15,6 +15,13 @@ Welcome to numba-dppy's documentation!
    DEBUGGING
    CONTRIBUTING
 
+.. toctree::
+   :caption: For DPPY users
+   :maxdepth: 2
+
+   dppy/index.rst
+   dppy-reference/index.rst
+
 Indices and tables
 ==================
 
