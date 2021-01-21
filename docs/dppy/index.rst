@@ -7,3 +7,4 @@ Numba for DPPY GPUs
 
    device-functions.rst
    python-support-features.rst
+   reduction.rst
