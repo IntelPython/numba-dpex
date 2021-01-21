@@ -37,7 +37,8 @@ Full example can be found at ``numba_dppy/examples/sum_reduction_ocl.py``.
 Example 3
 ~~~~~~~~~
 
-Full example can be found at ``numba_dppy/examples/sum_reduction_recursive_ocl.py``
+Full example can be found at
+``numba_dppy/examples/sum_reduction_recursive_ocl.py``.
 
 .. literalinclude:: ../../numba_dppy/examples/sum_reduction_recursive_ocl.py
    :pyobject: sum_reduction_kernel
