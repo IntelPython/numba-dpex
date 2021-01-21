@@ -7,7 +7,7 @@ import dpctl
 
 
 @dppy.kernel
-def reduction_kernel(inp, partial_sums):
+def sum_reduction_kernel(A, partial_sums):
     local_id = dppy.get_local_id(0)
     global_id = dppy.get_global_id(0)
     group_size = dppy.get_local_size(0)
@@ -16,7 +16,7 @@ def reduction_kernel(inp, partial_sums):
     local_sums = dppy.local.static_alloc(64, int32)
 
     # Copy from global to local memory
-    local_sums[local_id] = inp[global_id]
+    local_sums[local_id] = A[global_id]
 
     # Loop for computing local_sums : divide workgroup into 2 parts
     stride = group_size // 2
@@ -43,17 +43,17 @@ def get_context():
         raise RuntimeError("No device found")
 
 
-def sum_reduce(inp):
-    global_size = len(inp)
+def sum_reduce(A):
+    global_size = len(A)
     work_group_size = 64
     # nb_work_groups have to be even for this implementation
     nb_work_groups = global_size // work_group_size
 
-    partial_sums = np.zeros(nb_work_groups).astype(np.int32)
+    partial_sums = np.zeros(nb_work_groups).astype(A.dtype)
 
     context = get_context()
     with dpctl.device_context(context):
-        reduction_kernel[global_size, work_group_size](inp, partial_sums)
+        sum_reduction_kernel[global_size, work_group_size](A, partial_sums)
 
     final_sum = 0
     # calculate the final sum in HOST
@@ -62,13 +62,14 @@ def sum_reduce(inp):
 
     return final_sum
 
+
 def test_sum_reduce():
     N = 1024
-    inp = np.ones(N).astype(np.int32)
+    A = np.ones(N).astype(np.int32)
 
     print("Running Device + Host reduction")
 
-    actual = sum_reduce(inp)
+    actual = sum_reduce(A)
     expected = N
 
     print("Actual:  ", actual)

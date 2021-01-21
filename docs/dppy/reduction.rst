@@ -8,7 +8,7 @@ device and host.
 Example 1:
 
 .. literalinclude:: ../../numba_dppy/examples/sum_reduction.py
-   :pyobject: reduction_kernel
+   :pyobject: sum_reduction_kernel
 
 .. literalinclude:: ../../numba_dppy/examples/sum_reduction.py
    :pyobject: sum_reduce
@@ -16,11 +16,21 @@ Example 1:
 Example 2:
 
 .. literalinclude:: ../../numba_dppy/examples/sum_reduction_ocl.py
-   :pyobject: reduction_kernel
+   :pyobject: sum_reduction_kernel
 
 .. literalinclude:: ../../numba_dppy/examples/sum_reduction_ocl.py
    :pyobject: sum_reduce
 
+Example 3:
+
+.. literalinclude:: ../../numba_dppy/examples/sum_reduction_recursive_ocl.py
+   :pyobject: sum_reduction_kernel
+
+.. literalinclude:: ../../numba_dppy/examples/sum_reduction_recursive_ocl.py
+   :pyobject: sum_recursive_reduction
+
+.. literalinclude:: ../../numba_dppy/examples/sum_reduction_recursive_ocl.py
+   :pyobject: sum_reduce
 
 Transition from Numba CUDA
 --------------------------

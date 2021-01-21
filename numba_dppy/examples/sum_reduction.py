@@ -5,7 +5,7 @@ import dpctl
 
 
 @dppy.kernel
-def reduction_kernel(A, R, stride):
+def sum_reduction_kernel(A, R, stride):
     i = dppy.get_global_id(0)
     # sum two element
     R[i] = A[i] + A[i + stride]
@@ -32,7 +32,7 @@ def sum_reduce(A):
     with dpctl.device_context(context):
         while total > 1:
             global_size = total // 2
-            reduction_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](
+            sum_reduction_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](
                 A, R, global_size
             )
             total = total // 2
