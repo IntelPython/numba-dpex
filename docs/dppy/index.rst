@@ -6,3 +6,4 @@ Numba for DPPY GPUs
 .. toctree::
 
    device-functions.rst
+   atomic-operations.rst
