@@ -58,7 +58,9 @@ def sum_recursive_reduction(size, group_size, Dinp, Dpartial_sums):
         )
         result = Dinp[0]
     else:
-        result = sum_recursive_reduction(nb_work_groups, group_size, Dpartial_sums, Dinp)
+        result = sum_recursive_reduction(
+            nb_work_groups, group_size, Dpartial_sums, Dinp
+        )
 
     return result
 
