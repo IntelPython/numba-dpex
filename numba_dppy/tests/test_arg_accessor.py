@@ -32,7 +32,7 @@ B = np.array(np.random.random(N), dtype=np.float32)
 D = A + B
 
 
-@unittest.skipUnless(dpctl.has_cpu_queues(), "test only on CPU system")
+@unittest.skipUnless(dpctl.has_cpu_queues(), "test only on OpenCL CPU system")
 class TestDPPYArgAccessorCPU(unittest.TestCase):
     def test_arg_with_accessor(self):
         C = np.ones_like(A)
@@ -47,8 +47,8 @@ class TestDPPYArgAccessorCPU(unittest.TestCase):
         self.assertTrue(np.all(D == C))
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
-class TestDPPYArgAccessorGPU(unittest.TestCase):
+@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on OpenCL GPU system")
+class TestDPPYArgAccessorOCLGPU(unittest.TestCase):
     def test_arg_with_accessor(self):
         C = np.ones_like(A)
         with dpctl.device_context("opencl:gpu") as gpu_queue:
@@ -58,6 +58,24 @@ class TestDPPYArgAccessorGPU(unittest.TestCase):
     def test_arg_without_accessor(self):
         C = np.ones_like(A)
         with dpctl.device_context("opencl:gpu") as gpu_queue:
+            call_kernel(global_size, local_size, A, B, C, sum_without_accessor)
+        self.assertTrue(np.all(D == C))
+
+
+@unittest.skipUnless(
+    dpctl.has_gpu_queues(dpctl.backend_type.level_zero),
+    "test only on Level Zero GPU system",
+)
+class TestDPPYArgAccessorL0GPU(unittest.TestCase):
+    def test_arg_with_accessor(self):
+        C = np.ones_like(A)
+        with dpctl.device_context("level0:gpu") as gpu_queue:
+            call_kernel(global_size, local_size, A, B, C, sum_with_accessor)
+        self.assertTrue(np.all(D == C))
+
+    def test_arg_without_accessor(self):
+        C = np.ones_like(A)
+        with dpctl.device_context("level0:gpu") as gpu_queue:
             call_kernel(global_size, local_size, A, B, C, sum_without_accessor)
         self.assertTrue(np.all(D == C))
 

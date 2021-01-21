@@ -121,7 +121,7 @@ def call_fn_for_datatypes(fn, result, input, global_size):
         assert a[0] == result
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
+@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on OpenCL GPU system")
 @unittest.skipUnless(
     numba_dppy.ocl.atomic_support_present(), "test only when atomic support is present"
 )
