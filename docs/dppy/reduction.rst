@@ -5,7 +5,17 @@ DPPY does not provide specific features for implementing reductions on GPU.
 Examples contain different approaches for calculating reductions using both
 device and host.
 
-Example 1:
+Examples
+--------
+
+Example 1
+~~~~~~~~~
+
+This example demonstrates a sum reduction of 1d array.
+
+Full example can be found at ``numba_dppy/examples/sum_reduction.py``.
+
+In this example to sum the 1d array we invoke the Kernel multiple times.
 
 .. literalinclude:: ../../numba_dppy/examples/sum_reduction.py
    :pyobject: sum_reduction_kernel
@@ -13,7 +23,10 @@ Example 1:
 .. literalinclude:: ../../numba_dppy/examples/sum_reduction.py
    :pyobject: sum_reduce
 
-Example 2:
+Example 2
+~~~~~~~~~
+
+Full example can be found at ``numba_dppy/examples/sum_reduction_ocl.py``.
 
 .. literalinclude:: ../../numba_dppy/examples/sum_reduction_ocl.py
    :pyobject: sum_reduction_kernel
@@ -21,7 +34,10 @@ Example 2:
 .. literalinclude:: ../../numba_dppy/examples/sum_reduction_ocl.py
    :pyobject: sum_reduce
 
-Example 3:
+Example 3
+~~~~~~~~~
+
+Full example can be found at ``numba_dppy/examples/sum_reduction_recursive_ocl.py``
 
 .. literalinclude:: ../../numba_dppy/examples/sum_reduction_recursive_ocl.py
    :pyobject: sum_reduction_kernel
@@ -31,6 +47,13 @@ Example 3:
 
 .. literalinclude:: ../../numba_dppy/examples/sum_reduction_recursive_ocl.py
    :pyobject: sum_reduce
+
+Limitations
+-----------
+
+Examples show invocation of the kernel multiple times.
+Reduction could be implemented by invoking the kernel once, but that requires
+support for local device memory and barrier, which is a work in progress.
 
 Transition from Numba CUDA
 --------------------------
