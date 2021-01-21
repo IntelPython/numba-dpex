@@ -17,6 +17,32 @@ def reduction_kernel(A, R, stride):
     A[i] = R[i]
 
 
+def get_context():
+    if dpctl.has_gpu_queues():
+        return "opencl:gpu"
+    elif dpctl.has_cpu_queues():
+        return "opencl:cpu"
+    else:
+        raise RuntimeError("No device found")
+
+
+def reduce(A, R):
+    """Work only for size = power of two"""
+    total = len(A)
+
+    context = get_context()
+    with dpctl.device_context(context):
+        while total > 1:
+            # call kernel
+            global_size = total // 2
+            reduction_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](
+                A, R, global_size
+            )
+            total = total // 2
+
+    return R[0]
+
+
 def test_sum_reduction():
     # This test will only work for size = power of two
     N = 2048
@@ -27,24 +53,13 @@ def test_sum_reduction():
     # at max we will require half the size of A to store sum
     R = np.array(np.random.random(math.ceil(N / 2)), dtype=np.float32)
 
-    if dpctl.has_gpu_queues():
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
-            total = N
+    actual = reduce(A, R)
+    expected = A_copy.sum()
+    max_abs_err = expected - actual
 
-            while total > 1:
-                # call kernel
-                global_size = total // 2
-                reduction_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](
-                    A, R, global_size
-                )
-                total = total // 2
+    print("Actual:  ", actual)
+    print("Expected:", expected)
 
-    else:
-        print("No device found")
-        exit()
-
-    result = A_copy.sum()
-    max_abs_err = result - R[0]
     assert max_abs_err < 1e-2
 
 
