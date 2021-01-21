@@ -3,10 +3,20 @@ from setuptools import Extension, find_packages, setup
 from Cython.Build import cythonize
 
 import versioneer
+import sys
 
 
 def get_ext_modules():
     ext_modules = []
+
+    import numba
+
+    ext_dppy = Extension(
+        name="numba_dppy._dppy_rt",
+        sources=["numba_dppy/dppy_rt.c"],
+        include_dirs=[numba.core.extending.include_path()],
+    )
+    ext_modules += [ext_dppy]
 
     dpnp_present = False
     try:
@@ -66,6 +76,11 @@ metadata = dict(
         "Topic :: Software Development :: Compilers",
     ],
     cmdclass=versioneer.get_cmdclass(),
+    entry_points={
+        "numba_extensions": [
+            "init = numba_dppy.numpy_usm_shared:numba_register",
+        ]
+    },
 )
 
 setup(**metadata)
