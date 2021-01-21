@@ -286,6 +286,22 @@ class TestNumpy_math_functions(unittest.TestCase):
         max_abs_err = c.sum() - d.sum()
         self.assertTrue(max_abs_err < 1e-5)
 
+    def test_hypot(self):
+        @njit
+        def f(a, b):
+            c = np.hypot(a, b)
+            return c
+
+        arr1 = 3*np.ones((3, 3))
+        arr2 = 4*np.ones((3, 3))
+
+        with dpctl.device_context("opencl:gpu"):
+            c = f(arr1, arr2)
+
+        d = np.hypot(arr1, arr2)
+        max_abs_err = c.sum() - d.sum()
+        self.assertTrue(max_abs_err < 1e-5)
+
     def test_sqrt(self):
         @njit
         def f(a):
