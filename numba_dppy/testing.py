@@ -18,6 +18,7 @@ def captured_dppy_stdout():
     sys.stdout.flush()
 
     import numba_dppy, numba_dppy as dppy
+
     with redirect_c_stdout() as stream:
         yield DPPYTextCapture(stream)
 
@@ -33,3 +34,12 @@ def expectedFailureIf(condition):
     if condition:
         return unittest.expectedFailure
     return _id
+
+
+def ensure_dpnp():
+    try:
+        from numba_dppy.dpnp_glue import dpnp_fptr_interface as dpnp_glue
+
+        return True
+    except:
+        return False

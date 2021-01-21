@@ -1,11 +1,12 @@
 from numba.core.imputils import lower_builtin
-import numba_dppy.experimental_numpy_lowering_overload as dpnp_lowering
-from numba import types
-from numba.core.typing import signature
-from numba.core.extending import overload, register_jitable
-from . import stubs
+from numba.core import types
+from numba.core.extending import register_jitable
 import numpy as np
-from numba_dppy.dpctl_functions import _DPCTL_FUNCTIONS
+from llvmlite import ir
+from numba.core.imputils import lower_getattr
+
+
+ll_void_p = ir.IntType(8).as_pointer()
 
 
 def get_dpnp_fptr(fn_name, type_names):
@@ -28,8 +29,27 @@ def _dummy_liveness_func(a):
     return a[0]
 
 
-class RetrieveDpnpFnPtr(types.ExternalFunctionPointer):
-    def __init__(self, fn_name, type_names, sig, get_pointer):
-        self.fn_name = fn_name
-        self.type_names = type_names
-        super(RetrieveDpnpFnPtr, self).__init__(sig, get_pointer)
+def dpnp_func(fn_name, type_names, sig):
+    f_ptr = get_dpnp_fptr(fn_name, type_names)
+
+    def get_pointer(obj):
+        return f_ptr
+
+    return types.ExternalFunctionPointer(sig, get_pointer=get_pointer)
+
+
+"""
+This function retrieves the pointer to the structure where the shape
+of an ndarray is stored. We cast it to void * to make it easier to
+pass around.
+"""
+
+
+@lower_getattr(types.Array, "shapeptr")
+def array_shape(context, builder, typ, value):
+    shape_ptr = builder.gep(
+        value.operands[0],
+        [context.get_constant(types.int32, 0), context.get_constant(types.int32, 5)],
+    )
+
+    return builder.bitcast(shape_ptr, ll_void_p)
