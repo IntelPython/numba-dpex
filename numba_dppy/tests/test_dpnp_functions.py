@@ -99,7 +99,7 @@ def vvsort(val, vec, size):
         val[i] = val[imax]
         val[imax] = temp
 
-        if vec:
+        if not (vec is None):
             for k in range(size):
                 temp = vec[k, i]
                 vec[k, i] = vec[k, imax]
@@ -121,7 +121,7 @@ def sample_matrix(m, dtype, order="C"):
 
 @unittest.skipUnless(ensure_dpnp(), "test only when dpNP is available")
 class Testdpnp_linalg_functions(unittest.TestCase):
-    tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
+    tys = [np.int32, np.int64, np.float, np.double]
 
     def test_eig(self):
         @njit

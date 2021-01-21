@@ -281,6 +281,7 @@ def dpnp_dot_impl(a, b):
 def dpnp_multi_dot_impl(arrays):
     dpnp_lowering.ensure_dpnp("multi_dot")
 
+    print_debug = dpnp_lowering.DEBUG
     """
     dpnp source:
     https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels.cpp#L118
@@ -295,6 +296,9 @@ def dpnp_multi_dot_impl(arrays):
 
         for idx in range(1, n):
             result = numba_dppy.dpnp.dot(result, arrays[idx])
+
+        if print_debug:
+            print("DPNP implementation")
         return result
 
     return dpnp_impl
@@ -335,18 +339,14 @@ def dpnp_matrix_power_impl(a, n):
             raise ValueError("n < 0 is not supported for np.linalg.matrix_power(a, n)")
 
         if n == 0:
-            return np.identity(a.shape[0])
+            return np.identity(a.shape[0], a.dtype)
 
         result = a
         for idx in range(0, n-1):
             result = numba_dppy.dpnp.matmul(result, a)
         return result
 
-
-
     return dpnp_impl
-
-
 
 
 @overload(stubs.dpnp.cholesky)
