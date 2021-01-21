@@ -2,18 +2,20 @@ Writing Device Functions
 ========================
 
 DPPY device functions can only be invoked from within the device (by a kernel
-or another device function). To define a device function::
+or another device function). To define a device function:
 
-    import numba_dppy as dppy
+.. literalinclude:: ../../numba_dppy/examples/dppy_func.py
+   :pyobject: a_device_function
 
-    @dppy.func
-    def a_device_function(a):
-        return a + 1
+To use a device function from an another device function:
 
-    @dppy.kernel
-    def a_kernel_function(a, b):
-        i = dppy.get_global_id(0)
-        b[i] = a_device_function(a[i])
+.. literalinclude:: ../../numba_dppy/examples/dppy_func.py
+   :pyobject: an_another_device_function
+
+To use a device function from a kernel:
+
+.. literalinclude:: ../../numba_dppy/examples/dppy_func.py
+   :pyobject: a_kernel_function
 
 Unlike a kernel function, a device function can return a value like normal
 functions.

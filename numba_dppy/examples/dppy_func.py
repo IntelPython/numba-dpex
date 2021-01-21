@@ -8,10 +8,15 @@ def a_device_function(a):
     return a + 1
 
 
+@dppy.func
+def an_another_device_function(a):
+    return a_device_function(a)
+
+
 @dppy.kernel
 def a_kernel_function(a, b):
     i = dppy.get_global_id(0)
-    b[i] = a_device_function(a[i])
+    b[i] = an_another_device_function(a[i])
 
 
 def driver(a, b, N):
