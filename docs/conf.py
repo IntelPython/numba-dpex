@@ -34,6 +34,7 @@ release = "0.12.0"
 extensions = [
     "recommonmark",
     "sphinx_rtd_theme",
+    "sphinx.ext.autodoc",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
