@@ -1,5 +1,5 @@
 import numpy as np
-from numba import vectorize, float64
+from numba import vectorize
 import dpctl
 
 
