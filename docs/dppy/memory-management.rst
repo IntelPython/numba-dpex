@@ -72,6 +72,6 @@ Private memory
 Dppy does not support private memory now. Cuda analogue is per-thread local memory.
 
 Constant memory
---------------
+---------------
 
 Dppy does not support constant memory now.
