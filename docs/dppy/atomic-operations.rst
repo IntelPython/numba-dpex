@@ -4,10 +4,8 @@ Supported Atomic Operations
 Numba provides access to some of the atomic operations supported in DPPY.
 Those that are presently implemented are as follows:
 
-.. automethod:: numba_dppy.ocl.stubs.atomic.add
-   :noindex:
-
-.. automethod:: numba_dppy.ocl.stubs.atomic.sub
+.. automodule:: numba_dppy.ocl.stubs
+   :members: atomic
    :noindex:
 
 Example
