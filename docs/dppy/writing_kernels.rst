@@ -9,7 +9,7 @@ In Numba-dppy, the code you write will be executed by multiple threads at once (
 Your solution will be modeled by defining a thread hierarchy of work-groups and work-items.
 
 Numba-dppy  support exposes facilities to declare and manage this hierarchy of threads.
-The facilities are largely similar to those exposed by `Opencl language <https://www.khronos.org/opencl/>`_.
+The facilities are largely similar to those exposed by `OpenCL language <https://www.khronos.org/opencl/>`_.
 
 Kernel declaration
 ------------------
