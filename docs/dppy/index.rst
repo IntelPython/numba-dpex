@@ -8,6 +8,7 @@ Numba for DPPY GPUs
 
    memory-management.rst
    device-functions.rst
+   atomic-operations.rst
    python-support-features.rst
    debugging.md
    reduction.rst
