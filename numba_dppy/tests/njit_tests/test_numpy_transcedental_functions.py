@@ -34,29 +34,45 @@ def filter_str(request):
     return request.param
 
 
-list_of_trig_ops = [
-    "sin",
-    "cos",
-    "tan",
-    "arcsin",
-    "arccos",
-    "arctan",
-    "arctan2",
-    "sinh",
-    "cosh",
-    "tanh",
-    "arcsinh",
-    "arccosh",
-    "arctanh",
-    "deg2rad",
-    "rad2deg",
-    "degrees",
-    "radians",
+list_of_binary_ops = [
+    "add",
+    "subtract",
+    "multiply",
+    "divide",
+    "true_divide",
+    "power",
+    "remainder",
+    "mod",
+    "fmod",
 ]
 
 
-@pytest.fixture(params=list_of_trig_ops)
-def trig_op(request):
+@pytest.fixture(params=list_of_binary_ops)
+def binary_op(request):
+    return request.param
+
+
+list_of_unary_ops = [
+    "negative",
+    "abs",
+    "absolute",
+    "fabs",
+    "sign",
+    "conj",
+    "exp",
+    "log",
+    "log10",
+    "expm1",
+    "log1p",
+    "sqrt",
+    "square",
+    "reciprocal",
+    "conjugate",
+]
+
+
+@pytest.fixture(params=list_of_unary_ops)
+def unary_op(request):
     return request.param
 
 
@@ -64,11 +80,6 @@ list_of_dtypes = [
     np.float32,
     np.float64,
 ]
-
-
-@pytest.fixture(params=list_of_trig_ops)
-def dtype(request):
-    return request.param
 
 
 @pytest.fixture(params=list_of_dtypes)
@@ -80,34 +91,39 @@ def input_arrays(request):
     return a, b
 
 
-def test_trigonometric_fn(filter_str, trig_op, input_arrays):
-
-    # FIXME: Why does archcosh fail on Gen12 discrete graphics card?
-    if trig_op == "arccosh" and skip_tests.is_gen12(filter_str):
-        pytest.skip()
-
+def test_binary_ops(filter_str, binary_op, input_arrays):
     a, b = input_arrays
-    trig_fn = getattr(np, trig_op)
+    binop = getattr(np, binary_op)
     actual = np.empty(shape=a.shape, dtype=a.dtype)
     expected = np.empty(shape=a.shape, dtype=a.dtype)
 
-    if trig_op == "arctan2":
+    @njit
+    def f(a, b):
+        return binop(a, b)
 
-        @njit
-        def f(a, b):
-            return trig_fn(a, b)
+    with dpctl.device_context(filter_str):
+        actual = f(a, b)
 
-        with dpctl.device_context(filter_str):
-            actual = f(a, b)
-        expected = trig_fn(a, b)
-    else:
+    expected = binop(a, b)
+    np.testing.assert_allclose(actual, expected, rtol=1e-5, atol=0)
 
-        @njit
-        def f(a):
-            return trig_fn(a)
 
-        with dpctl.device_context(filter_str):
-            actual = f(a)
-        expected = trig_fn(a)
+def test_unary_ops(filter_str, unary_op, input_arrays):
+    # FIXME: Why does sign fail on Gen12 discrete graphics card?
+    if unary_op == "sign" and skip_tests.is_gen12(filter_str):
+        pytest.skip()
 
+    a = input_arrays[0]
+    uop = getattr(np, unary_op)
+    actual = np.empty(shape=a.shape, dtype=a.dtype)
+    expected = np.empty(shape=a.shape, dtype=a.dtype)
+
+    @njit
+    def f(a):
+        return uop(a)
+
+    with dpctl.device_context(filter_str):
+        actual = f(a)
+
+    expected = uop(a)
     np.testing.assert_allclose(actual, expected, rtol=1e-5, atol=0)
