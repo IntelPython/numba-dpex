@@ -75,7 +75,7 @@ def dtype(request):
 @pytest.fixture(params=list_of_dtypes)
 def input_arrays(request):
     # The size of input and out arrays to be used
-    N = 10
+    N = 2048
     a = np.array(np.random.random(N), request.param)
     b = np.array(np.random.random(N), request.param)
     return a, b
