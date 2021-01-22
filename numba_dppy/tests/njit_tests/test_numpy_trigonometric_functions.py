@@ -75,6 +75,11 @@ def dtype(request):
 def input_arrays(request):
     # The size of input and out arrays to be used
     N = 2048
+    # Note: These inputs do not work for all of the functions and
+    # can result in warnings. E.g. arccosh needs the range of values
+    # to be greater than 0, while arccos needs them to be [-1,1].
+    # These warnings are relatively benign as NumPy will return "nan"
+    # for such cases.
     a = np.array(np.random.random(N), request.param)
     b = np.array(np.random.random(N), request.param)
     return a, b
