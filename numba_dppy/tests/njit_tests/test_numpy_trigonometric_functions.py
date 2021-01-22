@@ -82,7 +82,6 @@ def input_arrays(request):
 
 
 def test_trigonometric_fn(filter_str, trig_op, input_arrays):
-
     a, b = input_arrays
     trig_fn = getattr(np, trig_op)
     actual = np.empty(shape=a.shape, dtype=a.dtype)
