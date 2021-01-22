@@ -7,6 +7,7 @@ Numba for DPPY GPUs
    :maxdepth: 2
 
    device-functions.rst
+   atomic-operations.rst
    python-support-features.rst
    debugging.md
    reduction.rst
