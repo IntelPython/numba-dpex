@@ -92,6 +92,12 @@ def input_arrays(request):
 
 
 def test_binary_ops(filter_str, binary_op, input_arrays):
+    try:
+        with dpctl.device_context(filter_str):
+            pass
+    except Exception:
+        pytest.skip()
+
     a, b = input_arrays
     binop = getattr(np, binary_op)
     actual = np.empty(shape=a.shape, dtype=a.dtype)
@@ -109,6 +115,12 @@ def test_binary_ops(filter_str, binary_op, input_arrays):
 
 
 def test_unary_ops(filter_str, unary_op, input_arrays):
+    try:
+        with dpctl.device_context(filter_str):
+            pass
+    except Exception:
+        pytest.skip()
+
     # FIXME: Why does sign fail on Gen12 discrete graphics card?
     if unary_op == "sign" and skip_tests.is_gen12(filter_str):
         pytest.skip()
