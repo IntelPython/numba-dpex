@@ -7,5 +7,6 @@ Numba for DPPY GPUs
    :maxdepth: 2
 
    device-functions.rst
+   debugging.md
    reduction.rst
    ufunc.rst
