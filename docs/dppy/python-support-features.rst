@@ -4,7 +4,7 @@ Supported Python features in DPPY kernel
 This page lists the Python features supported in the DPPY Python. This includes all kernel and device functions compiled with ``@dppy.kernel``.
 
 Constructs
-==========
+----------
 
 The following Python constructs are not supported:
 
@@ -16,7 +16,7 @@ The following Python constructs are not supported:
 - The ``assert`` statement
 
 Built-in types
-==============
+--------------
 
 The following built-in types support are inherited from CPU nopython mode.
 
@@ -31,7 +31,7 @@ And the following types now not support.
 - ``tuple``
 
 Built-in functions
-==================
+------------------
 
 The following built-in functions are supported:
 
@@ -43,7 +43,7 @@ The following built-in functions are supported:
 - ``round()``
 
 Standard library modules
-========================
+------------------------
 
 The following functions from the math module are supported:
 
@@ -102,6 +102,6 @@ The following functions from the operator module are supported:
 -  ``operator.truediv()``
 
 Numpy support
-=============
+-------------
 
 Numpy is not supported on kernels, but you can use parfor offloading instead, it is available from ``@numba.jit``.
