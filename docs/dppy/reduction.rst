@@ -1,7 +1,7 @@
 GPU Reduction
 =============
 
-DPPY does not provide specific features for implementing reductions on GPU.
+DPPY does not provide specific decorators for implementing reductions on GPU.
 Examples contain different approaches for calculating reductions using both
 device and host.
 
