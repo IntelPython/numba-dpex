@@ -131,6 +131,7 @@ class DPPYTargetContext(BaseContext):
             ("ceil", np.ceil),
             ("trunc", np.trunc),
             ("hypot", np.hypot),
+            ("exp2", np.exp2),
         ]
 
         for name, ufunc in ufuncs:

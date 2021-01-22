@@ -75,6 +75,7 @@ function_descriptors = {
     "lgamma": (_unary_f_f, _unary_d_d),
     "ldexp": (_binary_f_fi, _binary_f_fl, _binary_d_di, _binary_d_dl),
     "hypot": (_binary_f_fi, _binary_f_ff, _binary_d_dl, _binary_d_dd),
+    "exp2": (_unary_f_f, _unary_d_d),
     # unsupported functions listed in the math module documentation:
     # frexp, ldexp, trunc, modf, factorial, fsum
 }
@@ -87,7 +88,6 @@ _lib_counterpart = {"gamma": "tgamma"}
 
 def _mk_fn_decl(name, decl_sig):
     sym = _lib_counterpart.get(name, name)
-
     def core(context, builder, sig, args):
         fn = _declare_function(
             context, builder, sym, decl_sig, decl_sig.args, mangler=mangle
@@ -134,6 +134,7 @@ _supported = [
     "ldexp",
     "trunc",
     "hypot",
+    "exp2",
 ]
 
 
