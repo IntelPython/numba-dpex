@@ -16,7 +16,7 @@ At the moment, there is no analogue of
 Pinned memory
 -------------
 
-Dppy does not support pinned memory now.
+DPPY does not support pinned memory now.
 
 Queue
 -----
@@ -80,10 +80,10 @@ And for local memory:
 Private memory
 --------------
 
-Dppy does not support private memory now. Cuda analogue is per-thread local
+DPPY does not support private memory now. Cuda analogue is per-thread local
 memory.
 
 Constant memory
 ---------------
 
-Dppy does not support constant memory now.
+DPPY does not support constant memory now.
