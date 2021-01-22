@@ -4,12 +4,14 @@ Memory management
 Data transfer
 -------------
 
-At the moment, there is no mechanism for the explicit transfer of arrays to the device and back. Please use usm arrays.
+At the moment, there is no mechanism for the explicit transfer of arrays to
+the device and back. Please use usm arrays.
 
 Device arrays
 -------------
 
-At the moment, there is no analogue of ``numba.cuda.cudadrv.devicearray.DeviceNDArray``, please use usm arrays.
+At the moment, there is no analogue of
+``numba.cuda.cudadrv.devicearray.DeviceNDArray``, please use usm arrays.
 
 Pinned memory
 -------------
@@ -46,15 +48,24 @@ When the python with context exits, the stream is automatically synchronized.
 Local memory
 ------------
 
-A limited amount of shared memory can be allocated on the device to speed up access to data, when necessary. That memory will be shared (i.e. both readable and writable) amongst all threads belonging to a given block and has faster access times than regular device memory. It also allows threads to cooperate on a given solution. You can think of it as a manually-managed data cache.
+A limited amount of shared memory can be allocated on the device to speed up
+access to data, when necessary. That memory will be shared (i.e. both readable
+and writable) amongst all threads belonging to a given block and has faster
+access times than regular device memory. It also allows threads to cooperate on
+a given solution. You can think of it as a manually-managed data cache.
 
 Local memory in SYCL is an analogue of cuda shared memory.
 
-To go from cuda to DPPY, replace ``numba.cuda.shared.array`` with ``dppy.local.static_alloc(shape=blocksize, dtype=float32)``.
+To go from cuda to DPPY, replace ``numba.cuda.shared.array`` with
+``dppy.local.static_alloc(shape=blocksize, dtype=float32)``.
 
-``dppy.barrier()`` needs to synchronize all threads in the same thread block. This function implements the same pattern as barriers in traditional multi-threaded programming: this function waits until all threads in the block call it, at which point it returns control to all its callers.
+``dppy.barrier()`` needs to synchronize all threads in the same thread block.
+This function implements the same pattern as barriers in traditional
+multi-threaded programming: this function waits until all threads in the block
+call it, at which point it returns control to all its callers.
 
-To go from cuda to DPPY, replace ``numba.cuda.syncthreads`` with ``dppy.local.static_alloc(shape=blocksize, dtype=float32)``.
+To go from cuda to DPPY, replace ``numba.cuda.syncthreads`` with
+``dppy.local.static_alloc(shape=blocksize, dtype=float32)``.
 
 Here's an example of how to use barrier with global mem fence in DPPY:
 
@@ -69,7 +80,8 @@ And for local memory:
 Private memory
 --------------
 
-Dppy does not support private memory now. Cuda analogue is per-thread local memory.
+Dppy does not support private memory now. Cuda analogue is per-thread local
+memory.
 
 Constant memory
 ---------------
