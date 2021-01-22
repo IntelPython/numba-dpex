@@ -76,6 +76,7 @@ def _init_data_model_manager():
 
 spirv_data_model_manager = _init_data_model_manager()
 
+
 class DPPYTargetContext(BaseContext):
     implement_powi_as_math_call = True
     generic_addrspace = SPIR_GENERIC_ADDRSPACE
@@ -132,6 +133,7 @@ class DPPYTargetContext(BaseContext):
             ("trunc", np.trunc),
             ("hypot", np.hypot),
             ("exp2", np.exp2),
+            ("log2", np.log2),
         ]
 
         for name, ufunc in ufuncs:

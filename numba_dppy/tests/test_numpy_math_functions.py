@@ -255,6 +255,22 @@ class TestNumpy_math_functions(unittest.TestCase):
         self.assertTrue(max_abs_err < 1e-5)
 
     @unittest.skipIf(skip_tests.is_gen12("opencl:gpu"), "Gen12 not supported")
+    def test_log2(self):
+        @njit
+        def f(a):
+            c = np.log2(a)
+            return c
+
+        input_arr = np.random.randint(1, self.N, size=(self.N))
+
+        with dpctl.device_context("opencl:gpu"):
+            c = f(input_arr)
+
+        d = np.log2(input_arr)
+        max_abs_err = c.sum() - d.sum()
+        self.assertTrue(max_abs_err < 1e-5)
+
+    @unittest.skipIf(skip_tests.is_gen12("opencl:gpu"), "Gen12 not supported")
     def test_log10(self):
         @njit
         def f(a):
@@ -307,8 +323,8 @@ class TestNumpy_math_functions(unittest.TestCase):
             c = np.hypot(a, b)
             return c
 
-        arr1 = 3*np.ones((3, 3))
-        arr2 = 4*np.ones((3, 3))
+        arr1 = 3 * np.ones((3, 3))
+        arr2 = 4 * np.ones((3, 3))
 
         with dpctl.device_context("opencl:gpu"):
             c = f(arr1, arr2)
