@@ -7,4 +7,5 @@ Numba for DPPY GPUs
 
    device-functions.rst
    debugging.md
+   reduction.rst
 
