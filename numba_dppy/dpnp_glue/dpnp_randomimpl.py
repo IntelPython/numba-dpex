@@ -269,13 +269,13 @@ def dpnp_random_impl(a, b, size=None):
     if size in (None, types.none):
         def dpnp_impl(a, b, size=None):
             res = np.empty(1, dtype=res_dtype)
-            common_impl_2_arg(a, b, res, dpnp_func, print_debug)
+            common_impl_2_arg(a, b, res, dpnp_func, PRINT_DEBUG)
             return res[0]
     else:
         def dpnp_impl(a, b, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
-                common_impl_2_arg(a, b, res, dpnp_func, print_debug)
+                common_impl_2_arg(a, b, res, dpnp_func, PRINT_DEBUG)
             return res
 
     return dpnp_impl
@@ -310,13 +310,13 @@ def dpnp_random_impl(n, p, size=None):
     if size in (None, types.none):
         def dpnp_impl(n, p, size=None):
             res = np.empty(1, dtype=res_dtype)
-            common_impl_2_arg(n, p, res, dpnp_func, print_debug)
+            common_impl_2_arg(n, p, res, dpnp_func, PRINT_DEBUG)
             return res[0]
     else:
         def dpnp_impl(n, p, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
-                common_impl_2_arg(n, p, res, dpnp_func, print_debug)
+                common_impl_2_arg(n, p, res, dpnp_func, PRINT_DEBUG)
             return res
 
     return dpnp_impl
@@ -426,13 +426,13 @@ def dpnp_random_impl(shape, scale=1.0, size=None):
     if size in (None, types.none):
         def dpnp_impl(shape, scale=1.0, size=None):
             res = np.empty(1, dtype=res_dtype)
-            common_impl_2_arg(shape, scale, res, dpnp_func, print_debug)
+            common_impl_2_arg(shape, scale, res, dpnp_func, PRINT_DEBUG)
             return res[0]
     else:
         def dpnp_impl(shape, scale=1.0, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
-                common_impl_2_arg(shape, scale, res, dpnp_func, print_debug)
+                common_impl_2_arg(shape, scale, res, dpnp_func, PRINT_DEBUG)
 
     return dpnp_impl
 
@@ -504,13 +504,13 @@ def dpnp_random_impl(loc=0.0, scale=1.0, size=None):
     if size in (None, types.none):
         def dpnp_impl(loc=0.0, scale=1.0, size=None):
             res = np.empty(1, dtype=res_dtype)
-            common_impl_2_arg(loc, scale, res, dpnp_func, print_debug)
+            common_impl_2_arg(loc, scale, res, dpnp_func, PRINT_DEBUG)
             return res[0]
     else:
         def dpnp_impl(loc=0.0, scale=1.0, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
-                common_impl_2_arg(loc, scale, res, dpnp_func, print_debug)
+                common_impl_2_arg(loc, scale, res, dpnp_func, PRINT_DEBUG)
             return res
 
     return dpnp_impl
@@ -608,13 +608,13 @@ def dpnp_random_impl(loc=0.0, scale=1.0, size=None):
     if size in (None, types.none):
         def dpnp_impl(loc=0.0, scale=1.0, size=None):
             res = np.empty(1, dtype=res_dtype)
-            common_impl_2_arg(loc, scale, res, dpnp_func, print_debug)
+            common_impl_2_arg(loc, scale, res, dpnp_func, PRINT_DEBUG)
             return res[0]
     else:
         def dpnp_impl(loc=0.0, scale=1.0, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
-                common_impl_2_arg(loc, scale, res, dpnp_func, print_debug)
+                common_impl_2_arg(loc, scale, res, dpnp_func, PRINT_DEBUG)
             return res
 
     return dpnp_impl
@@ -650,13 +650,13 @@ def dpnp_random_impl(mean=0.0, sigma=1.0, size=None):
     if size in (None, types.none):
         def dpnp_impl(mean=0.0, sigma=1.0, size=None):
             res = np.empty(1, dtype=res_dtype)
-            common_impl_2_arg(mean, sigma, res, dpnp_func, print_debug)
+            common_impl_2_arg(mean, sigma, res, dpnp_func, PRINT_DEBUG)
             return res[0]
     else:
         def dpnp_impl(mean=0.0, sigma=1.0, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
-                common_impl_2_arg(mean, sigma, res, dpnp_func, print_debug)
+                common_impl_2_arg(mean, sigma, res, dpnp_func, PRINT_DEBUG)
             return res
 
     return dpnp_impl
@@ -845,13 +845,13 @@ def dpnp_random_impl(n, p, size=None):
     if size in (None, types.none):
         def dpnp_impl(n, p, size=None):
             res = np.empty(1, dtype=res_dtype)
-            common_impl_2_arg(n, p, res, dpnp_func, print_debug)
+            common_impl_2_arg(n, p, res, dpnp_func, PRINT_DEBUG)
             return res[0]
     else:
         def dpnp_impl(n, p, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
-                common_impl_2_arg(n, p, res, dpnp_func, print_debug)
+                common_impl_2_arg(n, p, res, dpnp_func, PRINT_DEBUG)
             return res
 
     return dpnp_impl
@@ -887,13 +887,13 @@ def dpnp_random_impl(loc=0.0, scale=1.0, size=None):
     if size in (None, types.none):
         def dpnp_impl(loc=0.0, scale=1.0, size=None):
             res = np.empty(1, dtype=res_dtype)
-            common_impl_2_arg(loc, scale, res, dpnp_func, print_debug)
+            common_impl_2_arg(loc, scale, res, dpnp_func, PRINT_DEBUG)
             return res[0]
     else:
         def dpnp_impl(loc=0.0, scale=1.0, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
-                common_impl_2_arg(loc, scale, res, dpnp_func, print_debug)
+                common_impl_2_arg(loc, scale, res, dpnp_func, PRINT_DEBUG)
             return res
 
     return dpnp_impl
@@ -997,13 +997,13 @@ def dpnp_random_impl(size=None):
     if size in (None, types.none):
         def dpnp_impl(size=None):
             res = np.empty(1, dtype=res_dtype)
-            common_impl_0_arg(res, dpnp_func, print_debug)
+            common_impl_0_arg(res, dpnp_func, PRINT_DEBUG)
             return res[0]
     else:
         def dpnp_impl(size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
-                common_impl_0_arg(res, dpnp_func, print_debug)
+                common_impl_0_arg(res, dpnp_func, PRINT_DEBUG)
             return res
 
     return dpnp_impl
@@ -1031,13 +1031,13 @@ def dpnp_random_impl(size=None):
     if size in (None, types.none):
         def dpnp_impl(size=None):
             res = np.empty(1, dtype=res_dtype)
-            common_impl_0_arg(res, dpnp_func, print_debug)
+            common_impl_0_arg(res, dpnp_func, PRINT_DEBUG)
             return res[0]
     else:
         def dpnp_impl(size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
-                common_impl_0_arg(res, dpnp_func, print_debug)
+                common_impl_0_arg(res, dpnp_func, PRINT_DEBUG)
             return res
 
     return dpnp_impl
