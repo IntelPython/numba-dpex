@@ -48,11 +48,11 @@ When the python with context exits, the stream is automatically synchronized.
 Local memory
 ------------
 
-A limited amount of shared memory can be allocated on the device to speed up
+A limited amount of local memory can be allocated on the device to speed up
 access to data, when necessary. That memory will be shared (i.e. both readable
-and writable) amongst all threads belonging to a given block and has faster
-access times than regular device memory. It also allows threads to cooperate on
-a given solution. You can think of it as a manually-managed data cache.
+and writable) amongst all threads belonging to a given work group. It also
+allows threads to cooperate on a given solution.
+You can think of it as a manually-managed data cache.
 
 Local memory in SYCL is an analogue of CUDA shared memory.
 
