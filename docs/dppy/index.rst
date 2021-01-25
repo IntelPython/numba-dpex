@@ -6,6 +6,7 @@ Numba for DPPY GPUs
 .. toctree::
    :maxdepth: 2
 
+   writing_kernels.rst
    memory-management.rst
    device-functions.rst
    atomic-operations.rst
