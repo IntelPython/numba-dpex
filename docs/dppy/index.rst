@@ -9,8 +9,9 @@ Numba for DPPY GPUs
    writing_kernels.rst
    memory-management.rst
    device-functions.rst
-   atomic-operations.rst
    python-support-features.rst
+   atomic-operations.rst
+   random.rst
    debugging.md
    reduction.rst
    ufunc.rst
