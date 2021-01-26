@@ -282,7 +282,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                     for i in range(_result.size):
                         self.assertTrue(_result[i] >= 0.0)
                         self.assertTrue(_result[i] < 1.0)
-                    self.assertIn("DPNP implementation", got_gpu_message.getvalue())
+                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
         set_dpnp_debug(None)
 
     def test_ranf(self):
@@ -301,7 +301,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                     for i in range(_result.size):
                         self.assertTrue(_result[i] >= 0.0)
                         self.assertTrue(_result[i] < 1.0)
-                    self.assertIn("DPNP implementation", got_gpu_message.getvalue())
+                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
         set_dpnp_debug(None)
 
     def test_sample(self):
@@ -320,7 +320,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                     for i in range(_result.size):
                         self.assertTrue(_result[i] >= 0.0)
                         self.assertTrue(_result[i] < 1.0)
-                    self.assertIn("DPNP implementation", got_gpu_message.getvalue())
+                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
         set_dpnp_debug(None)
 
     def test_random(self):
@@ -339,7 +339,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                     for i in range(_result.size):
                         self.assertTrue(_result[i] >= 0.0)
                         self.assertTrue(_result[i] < 1.0)
-                    self.assertIn("DPNP implementation", got_gpu_message.getvalue())
+                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
         set_dpnp_debug(None)
 
     def test_rand(self):
@@ -356,7 +356,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                 for i in range(_result.size):
                     self.assertTrue(_result[i] >= 0.0)
                     self.assertTrue(_result[i] < 1.0)
-                self.assertIn("DPNP implementation", got_gpu_message.getvalue())
+                self.assertIn("dpnp implementation", got_gpu_message.getvalue())
         set_dpnp_debug(None)
 
     def test_randint(self):
@@ -392,7 +392,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                     for i in range(_result.size):
                         self.assertTrue(_result[i] >= low)
                         self.assertTrue(_result[i] < high)
-                    self.assertIn("DPNP implementation", got_gpu_message.getvalue())
+                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
 
                 result = f(low, None, sizes[0])
                 _result = result.ravel()
@@ -453,7 +453,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                     for i in range(_result.size):
                         self.assertTrue(_result[i] >= low)
                         self.assertTrue(_result[i] <= high)
-                    self.assertIn("DPNP implementation", got_gpu_message.getvalue())
+                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
 
                 result = f(low, None, sizes[0])
                 _result = result.ravel()
@@ -502,7 +502,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0)
                         self.assertTrue(final_result.all() <= 1.0)
-                    self.assertIn("DPNP implementation", got_gpu_message.getvalue())
+                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
         set_dpnp_debug(None)
 
     @unittest.skip("Exception from MKL, oneMKL: rng/generate")
@@ -525,7 +525,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0)
                         self.assertTrue(final_result.all() <= n)
-                    self.assertIn("DPNP implementation", got_gpu_message.getvalue())
+                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
         set_dpnp_debug(None)
 
     @unittest.skip("Exception from MKL, oneMKL: rng/generate")
@@ -546,7 +546,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                     else:
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0)
-                    self.assertIn("DPNP implementation", got_gpu_message.getvalue())
+                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
         set_dpnp_debug(None)
 
     def test_exponential(self):
@@ -881,7 +881,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                     else:
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0.0)
-                    self.assertIn("DPNP implementation", got_gpu_message.getvalue())
+                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
         set_dpnp_debug(None)
 
     @unittest.skip(
@@ -906,7 +906,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= low)
                         self.assertTrue(final_result.all() < high)
-                    self.assertIn("DPNP implementation", got_gpu_message.getvalue())
+                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
         set_dpnp_debug(None)
 
     def test_weibull(self):

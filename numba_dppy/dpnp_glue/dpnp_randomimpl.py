@@ -32,7 +32,7 @@ def common_impl(low, high, res, dpnp_func, PRINT_DEBUG):
     dpnp_ext._dummy_liveness_func([res.size])
 
     if PRINT_DEBUG:
-        print("DPNP implementation")
+        print("dpnp implementation")
 
 
 @register_jitable
@@ -592,7 +592,7 @@ def dpnp_random_impl(ngood, nbad, nsample, size=None):
         dpnp_ext._dummy_liveness_func([res.size])
 
         if PRINT_DEBUG:
-            print("DPNP implementation")
+            print("dpnp implementation")
 
     if not (isinstance(ngood, types.Integer)):
         raise ValueError("We only support scalar for input: ngood")
@@ -756,7 +756,7 @@ def dpnp_random_impl(n, pvals, size=None):
         dpnp_ext._dummy_liveness_func([res.size])
 
         if PRINT_DEBUG:
-            print("DPNP implementation")
+            print("dpnp implementation")
 
     if not isinstance(n, types.Integer):
         raise TypeError(
@@ -862,7 +862,7 @@ def dpnp_random_impl(mean, cov, size=None, check_valid="warn", tol=1e-8):
         dpnp_ext._dummy_liveness_func([res.size])
 
         if PRINT_DEBUG:
-            print("DPNP implementation")
+            print("dpnp implementation")
 
     if size in (None, types.none):
 
