@@ -11,7 +11,6 @@ import unittest
 from numba_dppy.testing import ensure_dpnp, set_dpnp_debug
 
 
-
 def test_for_different_datatypes(
     fn, test_fn, dims, arg_count, tys, np_all=False, matrix=None
 ):
@@ -271,6 +270,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_random_sample(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(size):
             c = np.random.random_sample(size)
@@ -291,6 +291,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_ranf(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(size):
             c = np.random.ranf(size)
@@ -311,6 +312,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_sample(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(size):
             c = np.random.sample(size)
@@ -331,6 +333,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_random(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(size):
             c = np.random.random(size)
@@ -351,6 +354,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_rand(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f():
             c = np.random.rand(3, 2)
@@ -369,6 +373,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_randint(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(low, high, size):
             c = np.random.randint(low, high=high, size=size)
@@ -431,6 +436,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_random_integers(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(low, high, size):
             c = np.random.random_integers(low, high=high, size=size)
@@ -489,12 +495,12 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result[0] >= 1)
                 self.assertTrue(result[0] <= low)
 
-
         set_dpnp_debug(None)
 
     @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_beta(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(a, b, size):
             res = np.random.beta(a, b, size)
@@ -520,6 +526,7 @@ class Testdpnp_random_functions(unittest.TestCase):
     @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_binomial(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(a, b, size):
             res = np.random.binomial(a, b, size)
@@ -544,6 +551,7 @@ class Testdpnp_random_functions(unittest.TestCase):
     @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_chisquare(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(df, size):
             res = np.random.chisquare(df, size)
@@ -565,13 +573,14 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_exponential(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(scale, size):
             res = np.random.exponential(scale, size)
             return res
 
         set_dpnp_debug(1)
-        scale = 3.
+        scale = 3.0
         with captured_stdout() as got_gpu_message:
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
@@ -587,12 +596,13 @@ class Testdpnp_random_functions(unittest.TestCase):
     @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_gamma(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(shape, size):
             res = np.random.gamma(shape=shape, size=size)
             return res
 
-        shape = 2.
+        shape = 2.0
         set_dpnp_debug(1)
         with captured_stdout() as got_gpu_message:
             with dpctl.device_context("opencl:gpu"):
@@ -608,6 +618,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_geometric(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(p, size):
             res = np.random.geometric(p, size=size)
@@ -629,6 +640,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_gumbel(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(loc, scale, size):
             res = np.random.gumbel(loc=loc, scale=scale, size=size)
@@ -647,6 +659,7 @@ class Testdpnp_random_functions(unittest.TestCase):
     @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_hypergeometric(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(ngood, nbad, nsamp, size):
             res = np.random.hypergeometric(ngood, nbad, nsamp, size)
@@ -660,7 +673,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                     result = f(ngood, nbad, nsamp, size)
                     if np.isscalar(result):
                         self.assertTrue(result >= 0)
-                        self.assertTrue(result <= min(nsamp, ngood+nbad))
+                        self.assertTrue(result <= min(nsamp, ngood + nbad))
                     else:
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0)
@@ -670,12 +683,13 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_laplace(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(loc, scale, size):
             res = np.random.laplace(loc, scale, size)
             return res
 
-        loc, scale = 0., 1.
+        loc, scale = 0.0, 1.0
         set_dpnp_debug(1)
         with captured_stdout() as got_gpu_message:
             with dpctl.device_context("opencl:gpu"):
@@ -687,12 +701,13 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_lognormal(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(mean, sigma, size):
             res = np.random.lognormal(mean, sigma, size)
             return res
 
-        mu, sigma = 3., 1.  # mean and standard deviation
+        mu, sigma = 3.0, 1.0  # mean and standard deviation
         set_dpnp_debug(1)
         with captured_stdout() as got_gpu_message:
             with dpctl.device_context("opencl:gpu"):
@@ -709,12 +724,13 @@ class Testdpnp_random_functions(unittest.TestCase):
     @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_multinomial(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(n, pvals, size):
             res = np.random.multinomial(n, pvals, size)
             return res
 
-        n, pvals = 100, np.array([1/7.]*5)
+        n, pvals = 100, np.array([1 / 7.0] * 5)
         set_dpnp_debug(1)
         with captured_stdout() as got_gpu_message:
             with dpctl.device_context("opencl:gpu"):
@@ -730,10 +746,13 @@ class Testdpnp_random_functions(unittest.TestCase):
                     self.assertIn("dpnp implementation", got_gpu_message.getvalue())
         set_dpnp_debug(None)
 
-    @unittest.skip("No implementation of function Function(<class "
-                   "'numba_dppy.dpnp_glue.stubs.dpnp.multivariate_normal'>) found for signature")
+    @unittest.skip(
+        "No implementation of function Function(<class "
+        "'numba_dppy.dpnp_glue.stubs.dpnp.multivariate_normal'>) found for signature"
+    )
     def test_multivariate_normal(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(mean, cov, size):
             res = np.random.multivariate_normal(mean, cov, size)
@@ -752,6 +771,7 @@ class Testdpnp_random_functions(unittest.TestCase):
     @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_negative_binomial(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(n, p, size):
             res = np.random.negative_binomial(n, p, size)
@@ -773,6 +793,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_normal(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(loc, scale, size):
             res = np.random.normal(loc, scale, size)
@@ -795,12 +816,13 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_poisson(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(lam, size):
             res = np.random.poisson(lam, size)
             return res
 
-        lam = 5.  # lambda
+        lam = 5.0  # lambda
         set_dpnp_debug(1)
         with captured_stdout() as got_gpu_message:
             with dpctl.device_context("opencl:gpu"):
@@ -816,12 +838,13 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_rayleigh(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(scale, size):
             res = np.random.rayleigh(scale, size)
             return res
 
-        scale = 2.  # lambda
+        scale = 2.0  # lambda
         set_dpnp_debug(1)
         with captured_stdout() as got_gpu_message:
             with dpctl.device_context("opencl:gpu"):
@@ -837,6 +860,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_standard_cauchy(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(size):
             res = np.random.standard_cauchy(size)
@@ -853,6 +877,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_standard_exponential(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(size):
             res = np.random.standard_exponential(size)
@@ -874,12 +899,13 @@ class Testdpnp_random_functions(unittest.TestCase):
     @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_standard_gamma(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(shape, size):
             res = np.random.standard_gamma(shape, size)
             return res
 
-        shape = 2.
+        shape = 2.0
         set_dpnp_debug(1)
         with captured_stdout() as got_gpu_message:
             with dpctl.device_context("opencl:gpu"):
@@ -895,6 +921,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_standard_normal(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(size):
             res = np.random.standard_normal(size)
@@ -913,9 +940,12 @@ class Testdpnp_random_functions(unittest.TestCase):
                     self.assertIn("DPNP implementation", got_gpu_message.getvalue())
         set_dpnp_debug(None)
 
-    @unittest.skip("TypeError: dpnp_random_impl() got an unexpected keyword argument 'low'")
+    @unittest.skip(
+        "TypeError: dpnp_random_impl() got an unexpected keyword argument 'low'"
+    )
     def test_uniform(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(low, high, size):
             res = np.random.standard_normal(low=low, high=high, size=size)
@@ -939,12 +969,13 @@ class Testdpnp_random_functions(unittest.TestCase):
 
     def test_weibull(self):
         from numba.tests.support import captured_stdout
+
         @njit
         def f(a, size):
             res = np.random.weibull(a, size)
             return res
 
-        a = 5.
+        a = 5.0
         set_dpnp_debug(1)
         with captured_stdout() as got_gpu_message:
             with dpctl.device_context("opencl:gpu"):

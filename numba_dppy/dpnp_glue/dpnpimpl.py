@@ -44,6 +44,8 @@ This function retrieves the pointer to the structure where the shape
 of an ndarray is stored. We cast it to void * to make it easier to
 pass around.
 """
+
+
 @lower_getattr(types.Array, "shapeptr")
 def array_shape(context, builder, typ, value):
     shape_ptr = builder.gep(
@@ -59,10 +61,12 @@ def list_itemsize(context, builder, typ, value):
     inst = listobj.ListInstance(context, builder, typ, value)
     return inst.size
 
+
 @lower_getattr(types.List, "itemsize")
 def list_itemsize(context, builder, typ, value):
     llty = context.get_data_type(typ.dtype)
     return context.get_constant(types.uintp, context.get_abi_sizeof(llty))
+
 
 @lower_getattr(types.List, "ctypes")
 def list_itemsize(context, builder, typ, value):
