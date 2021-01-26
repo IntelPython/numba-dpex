@@ -16,7 +16,7 @@ def check_range(low, high):
 
 
 @register_jitable
-def common_impl(low, high, res, dpnp_func, PRINT_DEBUG):
+def common_impl(low, high, res, dpnp_func, print_debug):
     check_range(low, high)
 
     sycl_queue = dpctl_functions.get_current_queue()
@@ -31,7 +31,7 @@ def common_impl(low, high, res, dpnp_func, PRINT_DEBUG):
 
     dpnp_ext._dummy_liveness_func([res.size])
 
-    if PRINT_DEBUG:
+    if print_debug:
         print("dpnp implementation")
 
 
