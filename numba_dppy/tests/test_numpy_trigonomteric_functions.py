@@ -6,7 +6,7 @@ import unittest
 from . import skip_tests
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
+@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
 class TestNumpy_math_functions(unittest.TestCase):
 
     N = 10
@@ -238,5 +238,5 @@ class TestNumpy_math_functions(unittest.TestCase):
         self.assertTrue(max_abs_err < 1e-5)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

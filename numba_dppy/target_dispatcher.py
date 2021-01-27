@@ -6,11 +6,11 @@ from numba.core.compiler_lock import global_compiler_lock
 
 
 class TargetDispatcher(serialize.ReduceMixin, metaclass=dispatcher.DispatcherMeta):
-    __numba__ = 'py_func'
+    __numba__ = "py_func"
 
-    target_offload_gpu = '__dppy_offload_gpu__'
-    target_offload_cpu = '__dppy_offload_cpu__'
-    target_dppy = 'dppy'
+    target_offload_gpu = "__dppy_offload_gpu__"
+    target_offload_cpu = "__dppy_offload_cpu__"
+    target_dppy = "dppy"
 
     def __init__(self, py_func, wrapper, target, parallel_options, compiled=None):
 
@@ -58,32 +58,46 @@ class TargetDispatcher(serialize.ReduceMixin, metaclass=dispatcher.DispatcherMet
     def get_current_disp(self):
         target = self.__target
         parallel = self.__parallel
-        offload = isinstance(parallel, dict) and parallel.get('offload') is True
+        offload = isinstance(parallel, dict) and parallel.get("offload") is True
 
-        if (dpctl.is_in_device_context() or offload):
+        if dpctl.is_in_device_context() or offload:
             if not self.__is_with_context_target(target):
-                raise UnsupportedError(f"Can't use 'with' context with explicitly specified target '{target}'")
-            if parallel is False or (isinstance(parallel, dict) and parallel.get('offload') is False):
-                raise UnsupportedError(f"Can't use 'with' context with parallel option '{parallel}'")
+                raise UnsupportedError(
+                    f"Can't use 'with' context with explicitly specified target '{target}'"
+                )
+            if parallel is False or (
+                isinstance(parallel, dict) and parallel.get("offload") is False
+            ):
+                raise UnsupportedError(
+                    f"Can't use 'with' context with parallel option '{parallel}'"
+                )
 
             from numba_dppy import dppy_offload_dispatcher
 
             if target is None:
                 if dpctl.get_current_device_type() == dpctl.device_type.gpu:
-                    return registry.dispatcher_registry[TargetDispatcher.target_offload_gpu]
+                    return registry.dispatcher_registry[
+                        TargetDispatcher.target_offload_gpu
+                    ]
                 elif dpctl.get_current_device_type() == dpctl.device_type.cpu:
-                    return registry.dispatcher_registry[TargetDispatcher.target_offload_cpu]
+                    return registry.dispatcher_registry[
+                        TargetDispatcher.target_offload_cpu
+                    ]
                 else:
                     if dpctl.is_in_device_context():
-                        raise UnsupportedError('Unknown dppy device type')
+                        raise UnsupportedError("Unknown dppy device type")
                     if offload:
                         if dpctl.has_gpu_queues():
-                            return registry.dispatcher_registry[TargetDispatcher.target_offload_gpu]
+                            return registry.dispatcher_registry[
+                                TargetDispatcher.target_offload_gpu
+                            ]
                         elif dpctl.has_cpu_queues():
-                            return registry.dispatcher_registry[TargetDispatcher.target_offload_cpu]
+                            return registry.dispatcher_registry[
+                                TargetDispatcher.target_offload_cpu
+                            ]
 
         if target is None:
-            target = 'cpu'
+            target = "cpu"
 
         return registry.dispatcher_registry[target]
 
@@ -93,5 +107,5 @@ class TargetDispatcher(serialize.ReduceMixin, metaclass=dispatcher.DispatcherMet
             wrapper=self.__wrapper,
             target=self.__target,
             parallel=self.__parallel,
-            compiled=self.__compiled
+            compiled=self.__compiled,
         )

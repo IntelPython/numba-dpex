@@ -5,7 +5,8 @@ import dpctl
 import unittest
 from . import skip_tests
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
+
+@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
 class TestNumpy_math_functions(unittest.TestCase):
     N = 10
     a = np.array(np.random.random(N), dtype=np.float32)
@@ -138,7 +139,7 @@ class TestNumpy_math_functions(unittest.TestCase):
         with dpctl.device_context("opencl:gpu"):
             c = f(input_arr, divisor)
 
-        self.assertTrue(np.all(c == 1.))
+        self.assertTrue(np.all(c == 1.0))
 
     def test_abs(self):
         @njit
@@ -191,7 +192,7 @@ class TestNumpy_math_functions(unittest.TestCase):
         with dpctl.device_context("opencl:gpu"):
             c = f(input_arr)
 
-        self.assertTrue(np.all(c == -1.))
+        self.assertTrue(np.all(c == -1.0))
 
     def test_conj(self):
         @njit
@@ -322,7 +323,7 @@ class TestNumpy_math_functions(unittest.TestCase):
         with dpctl.device_context("opencl:gpu"):
             c = f(input_arr)
 
-        self.assertTrue(np.all(c == 1/input_arr))
+        self.assertTrue(np.all(c == 1 / input_arr))
 
     def test_conjugate(self):
         @njit
@@ -339,5 +340,5 @@ class TestNumpy_math_functions(unittest.TestCase):
         self.assertTrue(np.all(c == d))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

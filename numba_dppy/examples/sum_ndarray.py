@@ -8,7 +8,9 @@ import numba_dppy, numba_dppy as dppy
 import dpctl
 
 
-@dppy.kernel(access_types={"read_only": ['a', 'b'], "write_only": ['c'], "read_write": []})
+@dppy.kernel(
+    access_types={"read_only": ["a", "b"], "write_only": ["c"], "read_write": []}
+)
 def data_parallel_sum(a, b, c):
     i = dppy.get_global_id(0)
     c[i] = a[i] + b[i]
@@ -45,5 +47,5 @@ def main():
     print("Done...")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -27,8 +27,7 @@ def print_item(ty, context, builder, val):
     A (format string, [list of arguments]) is returned that will allow
     forming the final printf()-like call.
     """
-    raise NotImplementedError("printing unimplemented for values of type %s"
-                              % (ty,))
+    raise NotImplementedError("printing unimplemented for values of type %s" % (ty,))
 
 
 @print_item.register(types.Integer)
@@ -44,10 +43,12 @@ def int_print_impl(ty, context, builder, val):
     lld = context.cast(builder, val, ty, dsttype)
     return rawfmt, [lld]
 
+
 @print_item.register(types.Float)
 def real_print_impl(ty, context, builder, val):
     lld = context.cast(builder, val, ty, types.float64)
     return "%f", [lld]
+
 
 @print_item.register(types.StringLiteral)
 def const_print_impl(ty, context, builder, sigval):

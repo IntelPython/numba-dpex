@@ -5,6 +5,7 @@ from . import stubs
 import numba_dppy.dpnp_glue as dpnp_lowering
 from numba.core.extending import overload, register_jitable
 import numpy as np
+from numba_dppy import dpctl_functions
 
 
 @overload(stubs.dpnp.max)
@@ -12,7 +13,6 @@ import numpy as np
 def dpnp_amax_impl(a):
     name = "max"
     dpnp_lowering.ensure_dpnp(name)
-    dpctl_functions = dpnp_ext._DPCTL_FUNCTIONS()
 
     ret_type = types.void
     """
@@ -28,34 +28,37 @@ def dpnp_amax_impl(a):
     if the compiler allows there should not be any mismatch in the size of
     the container to hold different types of pointer.
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr,
-                              types.voidptr, types.intp,
-                              types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, [a.dtype.name, "NONE"], sig)
-
-    get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
-    allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
-    copy_usm = dpctl_functions.dpctl_queue_memcpy()
-    free_usm = dpctl_functions.dpctl_free_with_queue()
+    sig = signature(
+        ret_type,
+        types.voidptr,
+        types.voidptr,
+        types.voidptr,
+        types.intp,
+        types.voidptr,
+        types.intp,
+    )
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     def dpnp_impl(a):
         if a.size == 0:
             raise ValueError("Passed Empty array")
 
-        sycl_queue = get_sycl_queue()
+        sycl_queue = dpctl_functions.get_current_queue()
 
-        a_usm = allocate_usm_shared(a.size * a.itemsize, sycl_queue)
-        copy_usm(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
+        dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
 
-        out_usm = allocate_usm_shared(a.itemsize, sycl_queue)
+        out_usm = dpctl_functions.malloc_shared(a.itemsize, sycl_queue)
 
         dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim, a.shapeptr, a.ndim)
 
         out = np.empty(1, dtype=a.dtype)
-        copy_usm(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+        )
 
-        free_usm(a_usm, sycl_queue)
-        free_usm(out_usm, sycl_queue)
+        dpctl_functions.free_with_queue(a_usm, sycl_queue)
+        dpctl_functions.free_with_queue(out_usm, sycl_queue)
 
         dpnp_ext._dummy_liveness_func([out.size])
 
@@ -69,7 +72,6 @@ def dpnp_amax_impl(a):
 def dpnp_amin_impl(a):
     name = "min"
     dpnp_lowering.ensure_dpnp(name)
-    dpctl_functions = dpnp_ext._DPCTL_FUNCTIONS()
 
     ret_type = types.void
     """
@@ -85,34 +87,37 @@ def dpnp_amin_impl(a):
     if the compiler allows there should not be any mismatch in the size of
     the container to hold different types of pointer.
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr,
-                              types.voidptr, types.intp,
-                              types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, [a.dtype.name, "NONE"], sig)
-
-    get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
-    allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
-    copy_usm = dpctl_functions.dpctl_queue_memcpy()
-    free_usm = dpctl_functions.dpctl_free_with_queue()
+    sig = signature(
+        ret_type,
+        types.voidptr,
+        types.voidptr,
+        types.voidptr,
+        types.intp,
+        types.voidptr,
+        types.intp,
+    )
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     def dpnp_impl(a):
         if a.size == 0:
             raise ValueError("Passed Empty array")
 
-        sycl_queue = get_sycl_queue()
+        sycl_queue = dpctl_functions.get_current_queue()
 
-        a_usm = allocate_usm_shared(a.size * a.itemsize, sycl_queue)
-        copy_usm(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
+        dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
 
-        out_usm = allocate_usm_shared(a.itemsize, sycl_queue)
+        out_usm = dpctl_functions.malloc_shared(a.itemsize, sycl_queue)
 
         dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim, a.shapeptr, 0)
 
         out = np.empty(1, dtype=a.dtype)
-        copy_usm(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+        )
 
-        free_usm(a_usm, sycl_queue)
-        free_usm(out_usm, sycl_queue)
+        dpctl_functions.free_with_queue(a_usm, sycl_queue)
+        dpctl_functions.free_with_queue(out_usm, sycl_queue)
 
         dpnp_ext._dummy_liveness_func([out.size])
 
@@ -125,7 +130,6 @@ def dpnp_amin_impl(a):
 def dpnp_mean_impl(a):
     name = "mean"
     dpnp_lowering.ensure_dpnp(name)
-    dpctl_functions = dpnp_ext._DPCTL_FUNCTIONS()
 
     ret_type = types.void
     """
@@ -141,15 +145,16 @@ def dpnp_mean_impl(a):
     if the compiler allows there should not be any mismatch in the size of
     the container to hold different types of pointer.
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr,
-                              types.voidptr, types.intp,
-                              types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, [a.dtype.name, "NONE"], sig)
-
-    get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
-    allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
-    copy_usm = dpctl_functions.dpctl_queue_memcpy()
-    free_usm = dpctl_functions.dpctl_free_with_queue()
+    sig = signature(
+        ret_type,
+        types.voidptr,
+        types.voidptr,
+        types.voidptr,
+        types.intp,
+        types.voidptr,
+        types.intp,
+    )
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     res_dtype = np.float64
     if a.dtype == types.float32:
@@ -159,20 +164,22 @@ def dpnp_mean_impl(a):
         if a.size == 0:
             raise ValueError("Passed Empty array")
 
-        sycl_queue = get_sycl_queue()
+        sycl_queue = dpctl_functions.get_current_queue()
 
-        a_usm = allocate_usm_shared(a.size * a.itemsize, sycl_queue)
-        copy_usm(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
+        dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
 
         out = np.empty(1, dtype=res_dtype)
-        out_usm = allocate_usm_shared(out.itemsize, sycl_queue)
+        out_usm = dpctl_functions.malloc_shared(out.itemsize, sycl_queue)
 
         dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim, a.shapeptr, a.ndim)
 
-        copy_usm(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+        )
 
-        free_usm(a_usm, sycl_queue)
-        free_usm(out_usm, sycl_queue)
+        dpctl_functions.free_with_queue(a_usm, sycl_queue)
+        dpctl_functions.free_with_queue(out_usm, sycl_queue)
 
         dpnp_ext._dummy_liveness_func([a.size, out.size])
         return out[0]
@@ -184,7 +191,6 @@ def dpnp_mean_impl(a):
 def dpnp_median_impl(a):
     name = "median"
     dpnp_lowering.ensure_dpnp(name)
-    dpctl_functions = dpnp_ext._DPCTL_FUNCTIONS()
 
     ret_type = types.void
     """
@@ -200,15 +206,16 @@ def dpnp_median_impl(a):
     if the compiler allows there should not be any mismatch in the size of
     the container to hold different types of pointer.
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr,
-                              types.voidptr, types.intp,
-                              types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, [a.dtype.name, "NONE"], sig)
-
-    get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
-    allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
-    copy_usm = dpctl_functions.dpctl_queue_memcpy()
-    free_usm = dpctl_functions.dpctl_free_with_queue()
+    sig = signature(
+        ret_type,
+        types.voidptr,
+        types.voidptr,
+        types.voidptr,
+        types.intp,
+        types.voidptr,
+        types.intp,
+    )
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     res_dtype = np.float64
     if a.dtype == types.float32:
@@ -218,20 +225,22 @@ def dpnp_median_impl(a):
         if a.size == 0:
             raise ValueError("Passed Empty array")
 
-        sycl_queue = get_sycl_queue()
+        sycl_queue = dpctl_functions.get_current_queue()
 
-        a_usm = allocate_usm_shared(a.size * a.itemsize, sycl_queue)
-        copy_usm(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
+        dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
 
         out = np.empty(1, dtype=res_dtype)
-        out_usm = allocate_usm_shared(out.itemsize, sycl_queue)
+        out_usm = dpctl_functions.malloc_shared(out.itemsize, sycl_queue)
 
         dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim, a.shapeptr, a.ndim)
 
-        copy_usm(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+        )
 
-        free_usm(a_usm, sycl_queue)
-        free_usm(out_usm, sycl_queue)
+        dpctl_functions.free_with_queue(a_usm, sycl_queue)
+        dpctl_functions.free_with_queue(out_usm, sycl_queue)
 
         dpnp_ext._dummy_liveness_func([a.size, out.size])
 
@@ -244,7 +253,6 @@ def dpnp_median_impl(a):
 def dpnp_cov_impl(a):
     name = "cov"
     dpnp_lowering.ensure_dpnp(name)
-    dpctl_functions = dpnp_ext._DPCTL_FUNCTIONS()
 
     ret_type = types.void
     """
@@ -254,35 +262,34 @@ def dpnp_cov_impl(a):
     Function declaration:
     void custom_cov_c(void* array1_in, void* result1, size_t nrows, size_t ncols)
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr,
-                              types.intp, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_"+name, [a.dtype.name, "NONE"], sig)
-
-    get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
-    allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
-    copy_usm = dpctl_functions.dpctl_queue_memcpy()
-    free_usm = dpctl_functions.dpctl_free_with_queue()
+    sig = signature(ret_type, types.voidptr, types.voidptr, types.intp, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     res_dtype = np.float64
     copy_input_to_double = True
     if a.dtype == types.float64:
         copy_input_to_double = False
 
-
     def dpnp_impl(a):
         if a.size == 0:
             raise ValueError("Passed Empty array")
 
-        sycl_queue = get_sycl_queue()
+        sycl_queue = dpctl_functions.get_current_queue()
 
         """ We have to pass a array in double precision to DpNp """
         if copy_input_to_double:
             a_copy_in_double = a.astype(np.float64)
         else:
             a_copy_in_double = a
-        a_usm = allocate_usm_shared(a_copy_in_double.size * a_copy_in_double.itemsize, sycl_queue)
-        copy_usm(sycl_queue, a_usm, a_copy_in_double.ctypes,
-                 a_copy_in_double.size * a_copy_in_double.itemsize)
+        a_usm = dpctl_functions.malloc_shared(
+            a_copy_in_double.size * a_copy_in_double.itemsize, sycl_queue
+        )
+        dpctl_functions.queue_memcpy(
+            sycl_queue,
+            a_usm,
+            a_copy_in_double.ctypes,
+            a_copy_in_double.size * a_copy_in_double.itemsize,
+        )
 
         if a.ndim == 2:
             rows = a.shape[0]
@@ -293,14 +300,16 @@ def dpnp_cov_impl(a):
             cols = a.shape[0]
             out = np.empty(rows, dtype=res_dtype)
 
-        out_usm = allocate_usm_shared(out.size * out.itemsize, sycl_queue)
+        out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
         dpnp_func(a_usm, out_usm, rows, cols)
 
-        copy_usm(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+        )
 
-        free_usm(a_usm, sycl_queue)
-        free_usm(out_usm, sycl_queue)
+        dpctl_functions.free_with_queue(a_usm, sycl_queue)
+        dpctl_functions.free_with_queue(out_usm, sycl_queue)
 
         dpnp_ext._dummy_liveness_func([a_copy_in_double.size, a.size, out.size])
 
