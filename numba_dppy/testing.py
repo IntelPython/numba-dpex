@@ -45,7 +45,20 @@ def ensure_dpnp():
         return False
 
 
-def set_dpnp_debug(opt):
+@contextlib.contextmanager
+def dpnp_debug():
     import numba_dppy.dpnp_glue as dpnp_lowering
 
-    dpnp_lowering.DEBUG = opt
+    old, dpnp_lowering.DEBUG = dpnp_lowering.DEBUG, 1
+    yield
+    dpnp_lowering.DEBUG = old
+
+
+@contextlib.contextmanager
+def assert_dpnp_implementaion():
+    from numba.tests.support import captured_stdout
+
+    with captured_stdout() as stdout, dpnp_debug():
+        yield
+
+    assert "dpnp implementation" in stdout.getvalue(), "dpnp implementation is not used"

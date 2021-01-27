@@ -6,7 +6,7 @@ import numba_dppy
 import numba_dppy as dppy
 import dpctl
 import unittest
-from numba_dppy.testing import ensure_dpnp, set_dpnp_debug
+from numba_dppy.testing import ensure_dpnp, assert_dpnp_implementaion
 
 
 def check_for_different_datatypes(
@@ -273,8 +273,7 @@ class Testdpnp_random_functions(unittest.TestCase):
             return c
 
         sizes = [9, (2, 5), (3, 2, 4)]
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in sizes:
                     result = f(size)
@@ -282,8 +281,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     for i in range(_result.size):
                         self.assertTrue(_result[i] >= 0.0)
                         self.assertTrue(_result[i] < 1.0)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     def test_ranf(self):
         @njit
@@ -292,8 +289,7 @@ class Testdpnp_random_functions(unittest.TestCase):
             return c
 
         sizes = [9, (2, 5), (3, 2, 4)]
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in sizes:
                     result = f(size)
@@ -301,8 +297,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     for i in range(_result.size):
                         self.assertTrue(_result[i] >= 0.0)
                         self.assertTrue(_result[i] < 1.0)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     def test_sample(self):
         @njit
@@ -311,8 +305,7 @@ class Testdpnp_random_functions(unittest.TestCase):
             return c
 
         sizes = [9, (2, 5), (3, 2, 4)]
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in sizes:
                     result = f(size)
@@ -320,8 +313,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     for i in range(_result.size):
                         self.assertTrue(_result[i] >= 0.0)
                         self.assertTrue(_result[i] < 1.0)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     def test_random(self):
         @njit
@@ -330,8 +321,7 @@ class Testdpnp_random_functions(unittest.TestCase):
             return c
 
         sizes = [9, (2, 5), (3, 2, 4)]
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in sizes:
                     result = f(size)
@@ -339,8 +329,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     for i in range(_result.size):
                         self.assertTrue(_result[i] >= 0.0)
                         self.assertTrue(_result[i] < 1.0)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     def test_rand(self):
         @njit
@@ -348,16 +336,13 @@ class Testdpnp_random_functions(unittest.TestCase):
             c = np.random.rand(3, 2)
             return c
 
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 result = f()
                 _result = result.ravel()
                 for i in range(_result.size):
                     self.assertTrue(_result[i] >= 0.0)
                     self.assertTrue(_result[i] < 1.0)
-                self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     def test_randint(self):
         @njit
@@ -383,8 +368,7 @@ class Testdpnp_random_functions(unittest.TestCase):
         sizes = [9, (2, 5), (3, 2, 4)]
         low = 2
         high = 23
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in sizes:
                     result = f(low, high, size)
@@ -392,7 +376,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     for i in range(_result.size):
                         self.assertTrue(_result[i] >= low)
                         self.assertTrue(_result[i] < high)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
 
                 result = f(low, None, sizes[0])
                 _result = result.ravel()
@@ -418,8 +401,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result[0] >= 0)
                 self.assertTrue(result[0] < low)
 
-        set_dpnp_debug(None)
-
     def test_random_integers(self):
         @njit
         def f(low, high, size):
@@ -444,8 +425,7 @@ class Testdpnp_random_functions(unittest.TestCase):
         sizes = [9, (2, 5), (3, 2, 4)]
         low = 2
         high = 23
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in sizes:
                     result = f(low, high, size)
@@ -453,7 +433,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     for i in range(_result.size):
                         self.assertTrue(_result[i] >= low)
                         self.assertTrue(_result[i] <= high)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
 
                 result = f(low, None, sizes[0])
                 _result = result.ravel()
@@ -479,8 +458,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result[0] >= 1)
                 self.assertTrue(result[0] <= low)
 
-        set_dpnp_debug(None)
-
     @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_beta(self):
         @njit
@@ -488,10 +465,9 @@ class Testdpnp_random_functions(unittest.TestCase):
             res = np.random.beta(a, b, size)
             return res
 
-        set_dpnp_debug(1)
         alpha = 2.56
         beta = 0.8
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(alpha, beta, size)
@@ -502,8 +478,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0)
                         self.assertTrue(final_result.all() <= 1.0)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_binomial(self):
@@ -512,10 +486,9 @@ class Testdpnp_random_functions(unittest.TestCase):
             res = np.random.binomial(a, b, size)
             return res
 
-        set_dpnp_debug(1)
         n = 5
         p = 0.0
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(n, p, size)
@@ -525,8 +498,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0)
                         self.assertTrue(final_result.all() <= n)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_chisquare(self):
@@ -535,9 +506,8 @@ class Testdpnp_random_functions(unittest.TestCase):
             res = np.random.chisquare(df, size)
             return res
 
-        set_dpnp_debug(1)
         df = 3  # number of degrees of freedom
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(df, size)
@@ -546,8 +516,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     else:
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     def test_exponential(self):
         @njit
@@ -555,9 +523,8 @@ class Testdpnp_random_functions(unittest.TestCase):
             res = np.random.exponential(scale, size)
             return res
 
-        set_dpnp_debug(1)
         scale = 3.0
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(scale, size)
@@ -566,8 +533,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     else:
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_gamma(self):
@@ -577,8 +542,7 @@ class Testdpnp_random_functions(unittest.TestCase):
             return res
 
         shape = 2.0
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(shape, size)
@@ -587,8 +551,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     else:
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     def test_geometric(self):
         @njit
@@ -597,8 +559,7 @@ class Testdpnp_random_functions(unittest.TestCase):
             return res
 
         p = 0.35
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(p, size)
@@ -607,8 +568,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     else:
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     def test_gumbel(self):
         @njit
@@ -617,14 +576,11 @@ class Testdpnp_random_functions(unittest.TestCase):
             return res
 
         mu, beta = 0.5, 0.1  # location and scale
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(mu, beta, size)
                     # TODO: check result, x belongs R
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_hypergeometric(self):
@@ -634,8 +590,7 @@ class Testdpnp_random_functions(unittest.TestCase):
             return res
 
         ngood, nbad, nsamp = 100, 2, 10
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(ngood, nbad, nsamp, size)
@@ -646,8 +601,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0)
                         self.assertTrue(final_result.all() <= min(nsamp, ngood + nbad))
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     def test_laplace(self):
         @njit
@@ -656,14 +609,11 @@ class Testdpnp_random_functions(unittest.TestCase):
             return res
 
         loc, scale = 0.0, 1.0
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(loc, scale, size)
                     # TODO: check result, x belongs R
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     def test_lognormal(self):
         @njit
@@ -672,8 +622,7 @@ class Testdpnp_random_functions(unittest.TestCase):
             return res
 
         mu, sigma = 3.0, 1.0  # mean and standard deviation
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(mu, sigma, size)
@@ -682,8 +631,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     else:
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_multinomial(self):
@@ -693,8 +640,7 @@ class Testdpnp_random_functions(unittest.TestCase):
             return res
 
         n, pvals = 100, np.array([1 / 7.0] * 5)
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(n, pvals, size)
@@ -705,8 +651,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0)
                         self.assertTrue(final_result.all() <= n)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     @unittest.skip(
         "No implementation of function Function(<class "
@@ -719,14 +663,11 @@ class Testdpnp_random_functions(unittest.TestCase):
             return res
 
         mean, cov = (1, 2), [[1, 0], [0, 1]]
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(mean, cov, size)
                     # TODO: check result, for multidimensional distribution
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_negative_binomial(self):
@@ -736,8 +677,7 @@ class Testdpnp_random_functions(unittest.TestCase):
             return res
 
         n, p = 1, 0.1
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(n, p, size)
@@ -746,8 +686,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     else:
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     def test_normal(self):
         @njit
@@ -757,8 +695,7 @@ class Testdpnp_random_functions(unittest.TestCase):
 
         sizes = (1000,)
         mu, sigma = 0.0, 0.1  # mean and standard deviation
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in sizes:
                     result = f(mu, sigma, size)
@@ -767,8 +704,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     else:
                         final_result = result.ravel()
                         self.assertTrue(abs(mu - np.mean(final_result)) < 0.01)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     def test_poisson(self):
         @njit
@@ -777,8 +712,7 @@ class Testdpnp_random_functions(unittest.TestCase):
             return res
 
         lam = 5.0  # lambda
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(lam, size)
@@ -787,8 +721,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     else:
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0.0)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     def test_rayleigh(self):
         @njit
@@ -797,8 +729,7 @@ class Testdpnp_random_functions(unittest.TestCase):
             return res
 
         scale = 2.0  # lambda
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(scale, size)
@@ -807,8 +738,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     else:
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0.0)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     def test_standard_cauchy(self):
         @njit
@@ -816,14 +745,11 @@ class Testdpnp_random_functions(unittest.TestCase):
             res = np.random.standard_cauchy(size)
             return res
 
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(size)
                     # TODO: check result, x belongs R
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     def test_standard_exponential(self):
         @njit
@@ -831,8 +757,7 @@ class Testdpnp_random_functions(unittest.TestCase):
             res = np.random.standard_exponential(size)
             return res
 
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(size)
@@ -841,8 +766,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     else:
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0.0)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_standard_gamma(self):
@@ -852,8 +775,7 @@ class Testdpnp_random_functions(unittest.TestCase):
             return res
 
         shape = 2.0
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(shape, size)
@@ -862,8 +784,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     else:
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0.0)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     def test_standard_normal(self):
         @njit
@@ -871,8 +791,7 @@ class Testdpnp_random_functions(unittest.TestCase):
             res = np.random.standard_normal(size)
             return res
 
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(size)
@@ -881,8 +800,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     else:
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0.0)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     @unittest.skip(
         "TypeError: dpnp_random_impl() got an unexpected keyword argument 'low'"
@@ -894,8 +811,7 @@ class Testdpnp_random_functions(unittest.TestCase):
             return res
 
         low, high = -1.0, 0.0
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(low, high, size)
@@ -906,8 +822,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= low)
                         self.assertTrue(final_result.all() < high)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
     def test_weibull(self):
         @njit
@@ -916,8 +830,7 @@ class Testdpnp_random_functions(unittest.TestCase):
             return res
 
         a = 5.0
-        set_dpnp_debug(1)
-        with captured_stdout() as got_gpu_message:
+        with assert_dpnp_implementaion():
             with dpctl.device_context("opencl:gpu"):
                 for size in self.sizes:
                     result = f(a, size)
@@ -926,8 +839,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     else:
                         final_result = result.ravel()
                         self.assertTrue(final_result.all() >= 0.0)
-                    self.assertIn("dpnp implementation", got_gpu_message.getvalue())
-        set_dpnp_debug(None)
 
 
 @unittest.skipUnless(
