@@ -1,9 +1,6 @@
 #! /usr/bin/env python
 import numpy as np
 from numba import njit
-from numba.tests.support import captured_stdout
-import numba_dppy
-import numba_dppy as dppy
 import dpctl
 import unittest
 from numba_dppy.testing import ensure_dpnp, assert_dpnp_implementaion
