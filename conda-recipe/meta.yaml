@@ -27,7 +27,7 @@ requirements:
         - spirv-tools
         - llvm-spirv
         - llvmdev
-        - dpnp 0.4.*  # [linux]
+        - dpnp 0.4.*,!=0.4.0=*_155  # [linux]
 
 test:
   requires:
