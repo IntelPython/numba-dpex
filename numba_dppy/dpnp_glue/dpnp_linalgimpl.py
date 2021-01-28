@@ -96,7 +96,7 @@ def common_matmul_impl(dpnp_func, a, b, out, m, n, k, print_debug):
     dpnp_ext._dummy_liveness_func([a.size, b.size, out.size])
 
     if print_debug:
-        print("DPNP implementation")
+        print("dpnp implementation")
 
 
 @register_jitable
@@ -123,7 +123,7 @@ def common_dot_impl(dpnp_func, a, b, out, m, print_debug):
     dpnp_ext._dummy_liveness_func([a.size, b.size, out.size])
 
     if print_debug:
-        print("DPNP implementation")
+        print("dpnp implementation")
 
 
 def get_res_dtype(a, b):
@@ -291,7 +291,7 @@ def dpnp_multi_dot_impl(arrays):
             result = numba_dppy.dpnp.dot(result, arrays[idx])
 
         if print_debug:
-            print("DPNP implementation")
+            print("dpnp implementation")
         return result
 
     return dpnp_impl
