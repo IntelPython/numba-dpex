@@ -28,6 +28,7 @@ https://intelpython.github.io/dpnp/
 * llvmdev (LLVM IR generation)
 * spirv-tools
 * scipy (for testing)
+* cython (for building)
 
 ## dpPy
 
