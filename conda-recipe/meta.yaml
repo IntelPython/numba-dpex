@@ -19,7 +19,7 @@ requirements:
         - cython
         - numba
         - dpctl >=0.5.1rc1
-        - dpnp 0.4.0=*_59  # [linux]
+        - dpnp 0.4.*  # [linux]
     run:
         - python
         - numba >=0.51
@@ -27,7 +27,7 @@ requirements:
         - spirv-tools
         - llvm-spirv
         - llvmdev
-        - dpnp 0.4.0=*_59  # [linux]
+        - dpnp 0.4.*  # [linux]
 
 test:
   requires:
