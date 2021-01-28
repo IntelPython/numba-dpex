@@ -89,6 +89,83 @@ def common_impl_2_arg(arg1, arg2, res, dpnp_func, print_debug):
         print("dpnp implementation")
 
 
+@register_jitable
+def common_impl_hypergeometric(ngood, nbad, nsample, res, dpnp_func, print_debug):
+    sycl_queue = dpctl_functions.get_current_queue()
+    res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
+
+    dpnp_func(res_usm, ngood, nbad, nsample, res.size)
+
+    dpctl_functions.queue_memcpy(
+        sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
+    )
+
+    dpctl_functions.free_with_queue(res_usm, sycl_queue)
+
+    dpnp_ext._dummy_liveness_func([res.size])
+
+    if print_debug:
+        print("dpnp implementation")
+
+
+@register_jitable
+def common_impl_multinomial(n, pvals, res, dpnp_func, print_debug):
+    sycl_queue = dpctl_functions.get_current_queue()
+    res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
+
+    pvals_usm = dpctl_functions.malloc_shared(pvals.size * pvals.itemsize, sycl_queue)
+    dpctl_functions.queue_memcpy(
+        sycl_queue, pvals_usm, pvals.ctypes, pvals.size * pvals.itemsize
+    )
+
+    dpnp_func(res_usm, n, pvals_usm, pvals.size, res.size)
+
+    dpctl_functions.queue_memcpy(
+        sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
+    )
+
+    dpctl_functions.free_with_queue(res_usm, sycl_queue)
+    dpctl_functions.free_with_queue(pvals_usm, sycl_queue)
+
+    dpnp_ext._dummy_liveness_func([res.size])
+
+    if print_debug:
+        print("dpnp implementation")
+
+
+@register_jitable
+def common_impl_multivariate_normal(
+    mean, cov, size, check_valid, tol, res, dpnp_func, print_debug
+):
+    sycl_queue = dpctl_functions.get_current_queue()
+    res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
+
+    mean_usm = dpctl_functions.malloc_shared(mean.size * mean.itemsize, sycl_queue)
+    dpctl_functions.queue_memcpy(
+        sycl_queue, mean_usm, mean.ctypes, mean.size * mean.itemsize
+    )
+
+    cov_usm = dpctl_functions.malloc_shared(cov.size * cov.itemsize, sycl_queue)
+    dpctl_functions.queue_memcpy(
+        sycl_queue, cov_usm, cov.ctypes, cov.size * cov.itemsize
+    )
+
+    dpnp_func(res_usm, mean.size, mean_usm, mean.size, cov_usm, cov.size, res.size)
+
+    dpctl_functions.queue_memcpy(
+        sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
+    )
+
+    dpctl_functions.free_with_queue(res_usm, sycl_queue)
+    dpctl_functions.free_with_queue(mean_usm, sycl_queue)
+    dpctl_functions.free_with_queue(cov_usm, sycl_queue)
+
+    dpnp_ext._dummy_liveness_func([res.size])
+
+    if PRINT_DEBUG:
+        print("dpnp implementation")
+
+
 @overload(stubs.dpnp.random)
 @overload(stubs.dpnp.sample)
 @overload(stubs.dpnp.ranf)
@@ -576,24 +653,6 @@ def dpnp_random_impl(ngood, nbad, nsample, size=None):
 
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
-    @register_jitable
-    def common_impl(ngood, nbad, nsample, res):
-        sycl_queue = dpctl_functions.get_current_queue()
-        res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
-
-        dpnp_func(res_usm, ngood, nbad, nsample, res.size)
-
-        dpctl_functions.queue_memcpy(
-            sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
-        )
-
-        dpctl_functions.free_with_queue(res_usm, sycl_queue)
-
-        dpnp_ext._dummy_liveness_func([res.size])
-
-        if PRINT_DEBUG:
-            print("dpnp implementation")
-
     if not (isinstance(ngood, types.Integer)):
         raise ValueError("We only support scalar for input: ngood")
 
@@ -607,7 +666,9 @@ def dpnp_random_impl(ngood, nbad, nsample, size=None):
 
         def dpnp_impl(ngood, nbad, nsample, size=None):
             res = np.empty(1, dtype=res_dtype)
-            common_impl(ngood, nbad, nsample, res)
+            common_impl_hypergeometric(
+                ngood, nbad, nsample, res, dpnp_func, PRINT_DEBUG
+            )
             return res[0]
 
     else:
@@ -615,7 +676,9 @@ def dpnp_random_impl(ngood, nbad, nsample, size=None):
         def dpnp_impl(ngood, nbad, nsample, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:
-                common_impl(ngood, nbad, nsample, res)
+                common_impl_hypergeometric(
+                    ngood, nbad, nsample, res, dpnp_func, PRINT_DEBUG
+                )
             return res
 
     return dpnp_impl
@@ -732,32 +795,6 @@ def dpnp_random_impl(n, pvals, size=None):
 
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
-    @register_jitable
-    def common_impl(n, pvals, res):
-        sycl_queue = dpctl_functions.get_current_queue()
-        res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
-
-        pvals_usm = dpctl_functions.malloc_shared(
-            pvals.size * pvals.itemsize, sycl_queue
-        )
-        dpctl_functions.queue_memcpy(
-            sycl_queue, pvals_usm, pvals.ctypes, pvals.size * pvals.itemsize
-        )
-
-        dpnp_func(res_usm, n, pvals_usm, pvals.size, res.size)
-
-        dpctl_functions.queue_memcpy(
-            sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
-        )
-
-        dpctl_functions.free_with_queue(res_usm, sycl_queue)
-        dpctl_functions.free_with_queue(pvals_usm, sycl_queue)
-
-        dpnp_ext._dummy_liveness_func([res.size])
-
-        if PRINT_DEBUG:
-            print("dpnp implementation")
-
     if not isinstance(n, types.Integer):
         raise TypeError(
             "np.random.multinomial(): n should be an " "integer, got %s" % (n,)
@@ -773,21 +810,21 @@ def dpnp_random_impl(n, pvals, size=None):
 
         def dpnp_impl(n, pvals, size=None):
             out = np.zeros(len(pvals), res_dtype)
-            common_impl(n, pvals, out)
+            common_impl_multinomial(n, pvals, out, dpnp_func, PRINT_DEBUG)
             return out
 
     elif isinstance(size, types.Integer):
 
         def dpnp_impl(n, pvals, size=None):
             out = np.zeros((size, len(pvals)), res_dtype)
-            common_impl(n, pvals, out)
+            common_impl_multinomial(n, pvals, out, dpnp_func, PRINT_DEBUG)
             return out
 
     elif isinstance(size, types.BaseTuple):
 
         def dpnp_impl(n, pvals, size=None):
             out = np.zeros(size + (len(pvals),), res_dtype)
-            common_impl(n, pvals, out)
+            common_impl_multinomial(n, pvals, out, dpnp_func, PRINT_DEBUG)
             return out
 
     else:
@@ -834,41 +871,13 @@ def dpnp_random_impl(mean, cov, size=None, check_valid="warn", tol=1e-8):
 
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
-    @register_jitable
-    def common_impl(mean, cov, size, check_valid, tol, res):
-        sycl_queue = dpctl_functions.get_current_queue()
-        res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
-
-        mean_usm = dpctl_functions.malloc_shared(mean.size * mean.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(
-            sycl_queue, mean_usm, mean.ctypes, mean.size * mean.itemsize
-        )
-
-        cov_usm = dpctl_functions.malloc_shared(cov.size * cov.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(
-            sycl_queue, cov_usm, cov.ctypes, cov.size * cov.itemsize
-        )
-
-        dpnp_func(res_usm, mean.size, mean_usm, mean.size, cov_usm, cov.size, res.size)
-
-        dpctl_functions.queue_memcpy(
-            sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
-        )
-
-        dpctl_functions.free_with_queue(res_usm, sycl_queue)
-        dpctl_functions.free_with_queue(mean_usm, sycl_queue)
-        dpctl_functions.free_with_queue(cov_usm, sycl_queue)
-
-        dpnp_ext._dummy_liveness_func([res.size])
-
-        if PRINT_DEBUG:
-            print("dpnp implementation")
-
     if size in (None, types.none):
 
         def dpnp_impl(mean, cov, size=None, check_valid="warn", tol=1e-8):
             out = np.empty(mean.shape, dtype=res_dtype)
-            common_impl(mean, cov, size, check_valid, tol, out)
+            common_impl_multivariate_normal(
+                mean, cov, size, check_valid, tol, out, dpnp_func, PRINT_DEBUG
+            )
             return out
 
     elif isinstance(size, types.Integer):
@@ -877,7 +886,9 @@ def dpnp_random_impl(mean, cov, size=None, check_valid="warn", tol=1e-8):
             new_size = (size,)
             new_size = new_size + (mean.size,)
             out = np.empty(new_size, dtype=res_dtype)
-            common_impl(mean, cov, size, check_valid, tol, out)
+            common_impl_multivariate_normal(
+                mean, cov, size, check_valid, tol, out, dpnp_func, PRINT_DEBUG
+            )
             return out
 
     elif isinstance(size, types.BaseTuple):
@@ -885,7 +896,9 @@ def dpnp_random_impl(mean, cov, size=None, check_valid="warn", tol=1e-8):
         def dpnp_impl(mean, cov, size=None, check_valid="warn", tol=1e-8):
             new_size = size + (mean.size,)
             out = np.empty(new_size, dtype=res_dtype)
-            common_impl(mean, cov, size, check_valid, tol, out)
+            common_impl_multivariate_normal(
+                mean, cov, size, check_valid, tol, out, dpnp_func, PRINT_DEBUG
+            )
             return out
 
     else:
