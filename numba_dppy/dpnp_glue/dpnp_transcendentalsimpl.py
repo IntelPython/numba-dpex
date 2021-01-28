@@ -10,7 +10,7 @@ import numba_dppy
 
 
 @register_jitable
-def common_impl(a, out, dpnp_func, PRINT_DEBUG):
+def common_impl(a, out, dpnp_func, print_debug):
     if a.size == 0:
         raise ValueError("Passed Empty array")
 
@@ -31,8 +31,8 @@ def common_impl(a, out, dpnp_func, PRINT_DEBUG):
 
     dpnp_ext._dummy_liveness_func([out.size])
 
-    if PRINT_DEBUG:
-        print("DPNP implementation")
+    if print_debug:
+        print("dpnp implementation")
 
 
 @overload(stubs.dpnp.sum)
@@ -95,6 +95,8 @@ def dpnp_nansum_impl(a):
     name = "nansum"
     dpnp_lowering.ensure_dpnp(name)
 
+    PRINT_DEBUG = dpnp_lowering.DEBUG
+
     def dpnp_impl(a):
         a_copy = a.copy()
         a_copy = np.ravel(a_copy)
@@ -105,6 +107,10 @@ def dpnp_nansum_impl(a):
 
         result = numba_dppy.dpnp.sum(a_copy)
         dpnp_ext._dummy_liveness_func([a_copy.size])
+
+        if PRINT_DEBUG:
+            print("dpnp implementation")
+
         return result
 
     return dpnp_impl
@@ -114,6 +120,8 @@ def dpnp_nansum_impl(a):
 def dpnp_nanprod_impl(a):
     name = "nanprod"
     dpnp_lowering.ensure_dpnp(name)
+
+    PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(a):
         a_copy = a.copy()
@@ -125,6 +133,10 @@ def dpnp_nanprod_impl(a):
 
         result = numba_dppy.dpnp.prod(a_copy)
         dpnp_ext._dummy_liveness_func([a_copy.size])
+
+        if PRINT_DEBUG:
+            print("dpnp implementation")
+
         return result
 
     return dpnp_impl
