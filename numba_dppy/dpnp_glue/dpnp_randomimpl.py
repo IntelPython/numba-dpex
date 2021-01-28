@@ -58,7 +58,10 @@ def common_impl_1_arg(arg1, res, dpnp_func, print_debug):
     sycl_queue = dpctl_functions.get_current_queue()
     res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
 
-    dpnp_func(res_usm, arg1, res.size)
+    try:
+        dpnp_func(res_usm, arg1, res.size)
+    except Exception:
+        raise ValueError("Device not supported")
 
     dpctl_functions.queue_memcpy(
         sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
@@ -162,7 +165,7 @@ def common_impl_multivariate_normal(
 
     dpnp_ext._dummy_liveness_func([res.size])
 
-    if PRINT_DEBUG:
+    if print_debug:
         print("dpnp implementation")
 
 

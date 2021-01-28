@@ -11,21 +11,21 @@ from numba.core import types
 
 
 rewrite_function_name_map = {
-    "sum": (["np"], "sum"),
+    "sum": (["numpy"], "sum"),
     "eig": (["linalg"], "eig"),
-    "prod": (["np"], "prod"),
-    "max": (["np"], "max"),
-    "amax": (["np"], "amax"),
-    "min": (["np"], "min"),
-    "amin": (["np"], "amin"),
-    "mean": (["np"], "mean"),
-    "median": (["np"], "median"),
-    "argmax": (["np"], "argmax"),
-    "argmin": (["np"], "argmin"),
-    "argsort": (["np"], "argsort"),
-    "cov": (["np"], "cov"),
-    "dot": (["np"], "dot"),
-    "matmul": (["np"], "matmul"),
+    "prod": (["numpy"], "prod"),
+    "max": (["numpy"], "max"),
+    "amax": (["numpy"], "amax"),
+    "min": (["numpy"], "min"),
+    "amin": (["numpy"], "amin"),
+    "mean": (["numpy"], "mean"),
+    "median": (["numpy"], "median"),
+    "argmax": (["numpy"], "argmax"),
+    "argmin": (["numpy"], "argmin"),
+    "argsort": (["numpy"], "argsort"),
+    "cov": (["numpy"], "cov"),
+    "dot": (["numpy"], "dot"),
+    "matmul": (["numpy"], "matmul"),
     "random_sample": (["random"], "random_sample"),
     "ranf": (["random"], "ranf"),
     "sample": (["random"], "sample"),
@@ -55,6 +55,13 @@ rewrite_function_name_map = {
     "standard_normal": (["random"], "standard_normal"),
     "uniform": (["random"], "uniform"),
     "weibull": (["random"], "weibull"),
+    "vdot": (["numpy"], "vdot"),
+    "cholesky": (["linalg"], "cholesky"),
+    "det": (["linalg"], "det"),
+    "multi_dot": (["linalg"], "multi_dot"),
+    "matrix_power": (["linalg"], "matrix_power"),
+    "matrix_rank": (["linalg"], "matrix_rank"),
+    "eigvals": (["linalg"], "eigvals"),
 }
 
 
@@ -111,7 +118,8 @@ class RewriteNumPyOverloadedFunctions(object):
                         ).value
                         if (
                             isinstance(module_node, ir.Global)
-                            and module_node.name in self.function_name_map[rhs.attr][0]
+                            and module_node.value.__name__
+                            in self.function_name_map[rhs.attr][0]
                         ) or (
                             isinstance(module_node, ir.Expr)
                             and module_node.attr in self.function_name_map[rhs.attr][0]

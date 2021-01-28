@@ -137,3 +137,24 @@ class dpnp(Stub):
 
     class weibull(Stub):
         pass
+
+    class vdot(Stub):
+        pass
+
+    class cholesky(Stub):
+        pass
+
+    class det(Stub):
+        pass
+
+    class multi_dot(Stub):
+        pass
+
+    class matrix_power(Stub):
+        pass
+
+    class matrix_rank(Stub):
+        pass
+
+    class eigvals(Stub):
+        pass
