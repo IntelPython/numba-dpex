@@ -1128,6 +1128,90 @@ class Testdpnp_random_functions(unittest.TestCase):
 
 
 @unittest.skipUnless(
+    ensure_dpnp() and dpctl.has_gpu_queues(), "test only when dpNP is available"
+)
+class Testdpnp_transcendentals_functions(unittest.TestCase):
+    tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
+    nantys = [np.float, np.double]
+
+    def test_sum(self):
+        @njit
+        def f(a):
+            c = np.sum(a)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(check_for_different_datatypes(f, np.sum, [10], 1, self.tys))
+            self.assertTrue(check_for_dimensions(f, np.sum, [10, 2], self.tys))
+            self.assertTrue(check_for_dimensions(f, np.sum, [10, 2, 3], self.tys))
+
+    def test_prod(self):
+        @njit
+        def f(a):
+            c = np.prod(a)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes(f, np.prod, [10], 1, self.tys)
+            )
+            self.assertTrue(check_for_dimensions(f, np.prod, [10, 2], self.tys))
+            self.assertTrue(check_for_dimensions(f, np.prod, [10, 2, 3], self.tys))
+
+    def test_nansum(self):
+        @njit
+        def f(a):
+            c = np.nansum(a)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes(f, np.nansum, [10], 1, self.tys)
+            )
+            self.assertTrue(check_for_dimensions(f, np.nansum, [10, 2], self.tys))
+            self.assertTrue(check_for_dimensions(f, np.nansum, [10, 2, 3], self.tys))
+
+        a = np.array([[1, 2], [1, np.nan]])
+
+        for ty in self.nantys:
+            ary = np.array(a, dtype=ty)
+
+            with assert_dpnp_implementaion():
+                with dpctl.device_context("opencl:gpu"):
+                    got = f(ary)
+
+            expected = np.nansum(ary)
+            max_abs_err = np.sum(got) - np.sum(expected)
+            self.assertTrue(max_abs_err < 1e-4)
+
+    def test_nanprod(self):
+        @njit
+        def f(a):
+            c = np.nanprod(a)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes(f, np.nanprod, [10], 1, self.tys)
+            )
+            self.assertTrue(check_for_dimensions(f, np.nanprod, [10, 2], self.tys))
+            self.assertTrue(check_for_dimensions(f, np.nanprod, [10, 2, 3], self.tys))
+
+        a = np.array([[1, 2], [1, np.nan]])
+
+        for ty in self.nantys:
+            ary = np.array(a, dtype=ty)
+
+            with assert_dpnp_implementaion():
+                with dpctl.device_context("opencl:gpu"):
+                    got = f(ary)
+
+            expected = np.nanprod(ary)
+            max_abs_err = np.sum(got) - np.sum(expected)
+            self.assertTrue(max_abs_err < 1e-4)
+
+
+@unittest.skipUnless(
     ensure_dpnp() and dpctl.has_gpu_queues(), "test only when dpNP and GPU is available"
 )
 class Testdpnp_functions(unittest.TestCase):
@@ -1136,26 +1220,6 @@ class Testdpnp_functions(unittest.TestCase):
     a = np.array(np.random.random(N), dtype=np.float32)
     b = np.array(np.random.random(N), dtype=np.float32)
     tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
-
-    def test_sum(self):
-        @njit
-        def f(a):
-            c = np.sum(a)
-            return c
-
-        self.assertTrue(check_for_different_datatypes(f, np.sum, [10], 1, self.tys))
-        self.assertTrue(check_for_dimensions(f, np.sum, [10, 2], self.tys))
-        self.assertTrue(check_for_dimensions(f, np.sum, [10, 2, 3], self.tys))
-
-    def test_prod(self):
-        @njit
-        def f(a):
-            c = np.prod(a)
-            return c
-
-        self.assertTrue(check_for_different_datatypes(f, np.prod, [10], 1, self.tys))
-        self.assertTrue(check_for_dimensions(f, np.prod, [10, 2], self.tys))
-        self.assertTrue(check_for_dimensions(f, np.prod, [10, 2, 3], self.tys))
 
     def test_argmax(self):
         @njit
@@ -1323,18 +1387,18 @@ class Testdpnp_functions(unittest.TestCase):
         )
 
     def test_dpnp_interacting_with_parfor(self):
-        @njit
         def f(a, b):
             c = np.sum(a)
             e = np.add(b, a)
-            # d = a + 1
-            return 0
+            d = c + e
+            return d
 
-        result = f(self.a, self.b)
-        # np_result = np.add((self.a + np.sum(self.a)), self.b)
+        njit_f = njit(f)
+        got = njit_f(self.a, self.b)
+        expected = f(self.a, self.b)
 
-        # max_abs_err = result.sum() - np_result.sum()
-        # self.assertTrue(max_abs_err < 1e-4)
+        max_abs_err = got.sum() - expected.sum()
+        self.assertTrue(max_abs_err < 1e-4)
 
 
 if __name__ == "__main__":
