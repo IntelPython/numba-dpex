@@ -23,7 +23,6 @@ rewrite_function_name_map = {
     "median": (["numpy"], "median"),
     "min": (["numpy"], "min"),
     "vdot": (["numpy"], "vdot"),
-
     # random
     "beta": (["random"], "beta"),
     "binomial": (["random"], "binomial"),
@@ -54,7 +53,6 @@ rewrite_function_name_map = {
     "standard_normal": (["random"], "standard_normal"),
     "uniform": (["random"], "uniform"),
     "weibull": (["random"], "weibull"),
-
     # linalg
     "cholesky": (["linalg"], "cholesky"),
     "det": (["linalg"], "det"),
@@ -65,7 +63,6 @@ rewrite_function_name_map = {
     "matrix_power": (["linalg"], "matrix_power"),
     "matrix_rank": (["linalg"], "matrix_rank"),
     "multi_dot": (["linalg"], "multi_dot"),
-
     # transcendentals
     "nanprod": (["numpy"], "nanprod"),
     "nansum": (["numpy"], "nansum"),

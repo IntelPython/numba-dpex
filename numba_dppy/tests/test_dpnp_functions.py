@@ -1152,7 +1152,9 @@ class Testdpnp_transcendentals_functions(unittest.TestCase):
             return c
 
         with assert_dpnp_implementaion():
-            self.assertTrue(check_for_different_datatypes(f, np.prod, [10], 1, self.tys))
+            self.assertTrue(
+                check_for_different_datatypes(f, np.prod, [10], 1, self.tys)
+            )
             self.assertTrue(check_for_dimensions(f, np.prod, [10, 2], self.tys))
             self.assertTrue(check_for_dimensions(f, np.prod, [10, 2, 3], self.tys))
 
