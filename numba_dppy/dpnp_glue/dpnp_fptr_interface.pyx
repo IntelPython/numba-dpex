@@ -149,8 +149,52 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_COV
     elif name == "dpnp_eig":
         return DPNPFuncName.DPNP_FN_EIG
+    elif name == "dpnp_random_sample":
+        return DPNPFuncName.DPNP_FN_RNG_UNIFORM
+    elif name == "dpnp_beta":
+        return DPNPFuncName.DPNP_FN_RNG_BETA
+    elif name == "dpnp_binomial":
+        return DPNPFuncName.DPNP_FN_RNG_BINOMIAL
+    elif name == "dpnp_chisquare":
+        return DPNPFuncName.DPNP_FN_RNG_CHISQUARE
+    elif name == "dpnp_exponential":
+        return DPNPFuncName.DPNP_FN_RNG_EXPONENTIAL
+    elif name == "dpnp_gamma":
+        return DPNPFuncName.DPNP_FN_RNG_GAMMA
+    elif name == "dpnp_geometric":
+        return DPNPFuncName.DPNP_FN_RNG_GEOMETRIC
+    elif name == "dpnp_gumbel":
+        return DPNPFuncName.DPNP_FN_RNG_GUMBEL
+    elif name == "dpnp_hypergeometric":
+        return DPNPFuncName.DPNP_FN_RNG_HYPERGEOMETRIC
+    elif name == "dpnp_laplace":
+        return DPNPFuncName.DPNP_FN_RNG_LAPLACE
+    elif name == "dpnp_lognormal":
+        return DPNPFuncName.DPNP_FN_RNG_LOGNORMAL
+    elif name == "dpnp_multinomial":
+        return DPNPFuncName.DPNP_FN_RNG_MULTINOMIAL
+    elif name == "dpnp_multivariate_normal":
+        return DPNPFuncName.DPNP_FN_RNG_MULTIVARIATE_NORMAL
+    elif name == "dpnp_negative_binomial":
+        return DPNPFuncName.DPNP_FN_RNG_NEGATIVE_BINOMIAL
+    elif name == "dpnp_normal":
+        return DPNPFuncName.DPNP_FN_RNG_NORMAL
+    elif name == "dpnp_poisson":
+        return DPNPFuncName.DPNP_FN_RNG_POISSON
+    elif name == "dpnp_rayleigh":
+        return DPNPFuncName.DPNP_FN_RNG_RAYLEIGH
+    elif name == "dpnp_standard_cauchy":
+        return DPNPFuncName.DPNP_FN_RNG_STANDARD_CAUCHY
+    elif name == "dpnp_standard_exponential":
+        return DPNPFuncName.DPNP_FN_RNG_STANDARD_EXPONENTIAL
+    elif name == "dpnp_standard_gamma":
+        return DPNPFuncName.DPNP_FN_RNG_STANDARD_GAMMA
+    elif name == "dpnp_uniform":
+        return DPNPFuncName.DPNP_FN_RNG_UNIFORM
+    elif name == "dpnp_weibull":
+        return DPNPFuncName.DPNP_FN_RNG_WEIBULL
     else:
-        return  DPNPFuncName.DPNP_FN_DOT
+        raise ValueError("Unknown dpnp function requested: " + name.split("_")[1])
 
 
 cdef DPNPFuncType get_DPNPFuncType_from_str(name):

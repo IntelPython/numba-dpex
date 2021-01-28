@@ -50,3 +50,90 @@ class dpnp(Stub):
 
     class matmul(Stub):
         pass
+
+    class random_sample(Stub):
+        pass
+
+    class ranf(Stub):
+        pass
+
+    class sample(Stub):
+        pass
+
+    class random(Stub):
+        pass
+
+    class rand(Stub):
+        pass
+
+    class randint(Stub):
+        pass
+
+    class random_integers(Stub):
+        pass
+
+    class beta(Stub):
+        pass
+
+    class binomial(Stub):
+        pass
+
+    class chisquare(Stub):
+        pass
+
+    class exponential(Stub):
+        pass
+
+    class gamma(Stub):
+        pass
+
+    class geometric(Stub):
+        pass
+
+    class gumbel(Stub):
+        pass
+
+    class hypergeometric(Stub):
+        pass
+
+    class laplace(Stub):
+        pass
+
+    class lognormal(Stub):
+        pass
+
+    class multinomial(Stub):
+        pass
+
+    class multivariate_normal(Stub):
+        pass
+
+    class negative_binomial(Stub):
+        pass
+
+    class normal(Stub):
+        pass
+
+    class poisson(Stub):
+        pass
+
+    class rayleigh(Stub):
+        pass
+
+    class standard_cauchy(Stub):
+        pass
+
+    class standard_exponential(Stub):
+        pass
+
+    class standard_gamma(Stub):
+        pass
+
+    class standard_normal(Stub):
+        pass
+
+    class uniform(Stub):
+        pass
+
+    class weibull(Stub):
+        pass

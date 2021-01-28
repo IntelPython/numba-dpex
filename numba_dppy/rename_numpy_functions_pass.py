@@ -9,6 +9,7 @@ from numba.core.ir_utils import (
 import numba_dppy
 from numba.core import types
 
+
 rewrite_function_name_map = {
     "sum": (["np"], "sum"),
     "eig": (["linalg"], "eig"),
@@ -25,6 +26,35 @@ rewrite_function_name_map = {
     "cov": (["np"], "cov"),
     "dot": (["np"], "dot"),
     "matmul": (["np"], "matmul"),
+    "random_sample": (["random"], "random_sample"),
+    "ranf": (["random"], "ranf"),
+    "sample": (["random"], "sample"),
+    "random": (["random"], "random"),
+    "rand": (["random"], "rand"),
+    "randint": (["random"], "randint"),
+    "random_integers": (["random"], "random_integers"),
+    "beta": (["random"], "beta"),
+    "binomial": (["random"], "binomial"),
+    "chisquare": (["random"], "chisquare"),
+    "exponential": (["random"], "exponential"),
+    "gamma": (["random"], "gamma"),
+    "geometric": (["random"], "geometric"),
+    "gumbel": (["random"], "gumbel"),
+    "hypergeometric": (["random"], "hypergeometric"),
+    "laplace": (["random"], "laplace"),
+    "lognormal": (["random"], "lognormal"),
+    "multinomial": (["random"], "multinomial"),
+    "multivariate_normal": (["random"], "multivariate_normal"),
+    "negative_binomial": (["random"], "negative_binomial"),
+    "normal": (["random"], "normal"),
+    "poisson": (["random"], "poisson"),
+    "rayleigh": (["random"], "rayleigh"),
+    "standard_cauchy": (["random"], "standard_cauchy"),
+    "standard_exponential": (["random"], "standard_exponential"),
+    "standard_gamma": (["random"], "standard_gamma"),
+    "standard_normal": (["random"], "standard_normal"),
+    "uniform": (["random"], "uniform"),
+    "weibull": (["random"], "weibull"),
 }
 
 
@@ -133,6 +163,7 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
         import numba_dppy.dpnp_glue.dpnp_transcendentalsimpl
         import numba_dppy.dpnp_glue.dpnp_statisticsimpl
         import numba_dppy.dpnp_glue.dpnp_sort_search_countimpl
+        import numba_dppy.dpnp_glue.dpnp_randomimpl
 
     def run_pass(self, state):
         rewrite_function_name_pass = RewriteNumPyOverloadedFunctions(
