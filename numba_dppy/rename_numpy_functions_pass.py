@@ -18,16 +18,10 @@ rewrite_function_name_map = {
     "argmin": (["numpy"], "argmin"),
     "argsort": (["numpy"], "argsort"),
     "cov": (["numpy"], "cov"),
-    "dot": (["numpy"], "dot"),
-    "matmul": (["numpy"], "matmul"),
     "max": (["numpy"], "max"),
     "mean": (["numpy"], "mean"),
     "median": (["numpy"], "median"),
     "min": (["numpy"], "min"),
-    "nanprod": (["numpy"], "nanprod"),
-    "nansum": (["numpy"], "nansum"),
-    "prod": (["numpy"], "prod"),
-    "sum": (["numpy"], "sum"),
     "vdot": (["numpy"], "vdot"),
 
     # random
@@ -64,11 +58,19 @@ rewrite_function_name_map = {
     # linalg
     "cholesky": (["linalg"], "cholesky"),
     "det": (["linalg"], "det"),
+    "dot": (["numpy"], "dot"),
     "eig": (["linalg"], "eig"),
     "eigvals": (["linalg"], "eigvals"),
+    "matmul": (["numpy"], "matmul"),
     "matrix_power": (["linalg"], "matrix_power"),
     "matrix_rank": (["linalg"], "matrix_rank"),
     "multi_dot": (["linalg"], "multi_dot"),
+
+    # transcendentals
+    "nanprod": (["numpy"], "nanprod"),
+    "nansum": (["numpy"], "nansum"),
+    "prod": (["numpy"], "prod"),
+    "sum": (["numpy"], "sum"),
 }
 
 
