@@ -24,7 +24,7 @@ def random_normal(loc, scale, size):
 
 
 size = 9
-scale = 3.
+scale = 3.0
 
 with dpctl.device_context("opencl:gpu"):
     result = rand()

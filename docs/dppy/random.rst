@@ -52,4 +52,7 @@ Distribution
 
 Example:
 
+.. note::
+    To ensure the code is executed on GPU set `DEBUG=1` (or `NUMBA_DPPY_DEBUG=1`) and look to stdout
+
 .. literalinclude:: ../../numba_dppy/examples/rand.py
