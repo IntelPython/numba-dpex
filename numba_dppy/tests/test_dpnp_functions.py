@@ -1140,9 +1140,10 @@ class Testdpnp_transcendentals_functions(unittest.TestCase):
             c = np.sum(a)
             return c
 
-        self.assertTrue(check_for_different_datatypes(f, np.sum, [10], 1, self.tys))
-        self.assertTrue(check_for_dimensions(f, np.sum, [10, 2], self.tys))
-        self.assertTrue(check_for_dimensions(f, np.sum, [10, 2, 3], self.tys))
+        with assert_dpnp_implementaion():
+            self.assertTrue(check_for_different_datatypes(f, np.sum, [10], 1, self.tys))
+            self.assertTrue(check_for_dimensions(f, np.sum, [10, 2], self.tys))
+            self.assertTrue(check_for_dimensions(f, np.sum, [10, 2, 3], self.tys))
 
     def test_prod(self):
         @njit
@@ -1150,9 +1151,10 @@ class Testdpnp_transcendentals_functions(unittest.TestCase):
             c = np.prod(a)
             return c
 
-        self.assertTrue(check_for_different_datatypes(f, np.prod, [10], 1, self.tys))
-        self.assertTrue(check_for_dimensions(f, np.prod, [10, 2], self.tys))
-        self.assertTrue(check_for_dimensions(f, np.prod, [10, 2, 3], self.tys))
+        with assert_dpnp_implementaion():
+            self.assertTrue(check_for_different_datatypes(f, np.prod, [10], 1, self.tys))
+            self.assertTrue(check_for_dimensions(f, np.prod, [10, 2], self.tys))
+            self.assertTrue(check_for_dimensions(f, np.prod, [10, 2, 3], self.tys))
 
     def test_nansum(self):
         @njit
