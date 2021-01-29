@@ -3,7 +3,6 @@ import numpy as np
 import numba
 import numba_dppy
 from numba_dppy.testing import unittest
-from numba.tests.support import captured_stderr
 import dpctl
 import warnings
 
@@ -34,7 +33,7 @@ class TestDPPYFallback(unittest.TestCase):
         numba_dppy.compiler.DEBUG = 0
 
         np.testing.assert_array_equal(dppy_fallback_true, ref_result)
-        assert "Failed to lower parfor on DPPY-device" in str(w[-1].message)
+        self.assertIn("Failed to lower parfor on DPPY-device", str(w[-1].message))
 
     @unittest.expectedFailure
     def test_dppy_fallback_false(self):
@@ -65,7 +64,7 @@ class TestDPPYFallback(unittest.TestCase):
             numba_dppy.compiler.DEBUG = 0
 
             not np.testing.assert_array_equal(dppy_fallback_false, ref_result)
-            assert not "Failed to lower parfor on DPPY-device" in str(w[-1].message)
+            self.assertNotIn("Failed to lower parfor on DPPY-device", str(w[-1].message))
 
 
 if __name__ == "__main__":
