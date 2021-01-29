@@ -25,3 +25,17 @@ class ArrayAttribute(AttributeTemplate):
 
     def resolve_shapeptr(self, ary):
         return types.voidptr
+
+
+@infer_getattr
+class ListAttribute(AttributeTemplate):
+    key = types.List
+
+    def resolve_size(self, ary):
+        return types.int64
+
+    def resolve_itemsize(self, ary):
+        return types.int64
+
+    def resolve_ctypes(self, ary):
+        return types.voidptr
