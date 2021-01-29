@@ -9,22 +9,65 @@ from numba.core.ir_utils import (
 import numba_dppy
 from numba.core import types
 
+
 rewrite_function_name_map = {
-    "sum": (["np"], "sum"),
+    # numpy
+    "amax": (["numpy"], "amax"),
+    "amin": (["numpy"], "amin"),
+    "argmax": (["numpy"], "argmax"),
+    "argmin": (["numpy"], "argmin"),
+    "argsort": (["numpy"], "argsort"),
+    "cov": (["numpy"], "cov"),
+    "max": (["numpy"], "max"),
+    "mean": (["numpy"], "mean"),
+    "median": (["numpy"], "median"),
+    "min": (["numpy"], "min"),
+    "vdot": (["numpy"], "vdot"),
+    # random
+    "beta": (["random"], "beta"),
+    "binomial": (["random"], "binomial"),
+    "chisquare": (["random"], "chisquare"),
+    "exponential": (["random"], "exponential"),
+    "gamma": (["random"], "gamma"),
+    "geometric": (["random"], "geometric"),
+    "gumbel": (["random"], "gumbel"),
+    "hypergeometric": (["random"], "hypergeometric"),
+    "laplace": (["random"], "laplace"),
+    "lognormal": (["random"], "lognormal"),
+    "multinomial": (["random"], "multinomial"),
+    "multivariate_normal": (["random"], "multivariate_normal"),
+    "negative_binomial": (["random"], "negative_binomial"),
+    "normal": (["random"], "normal"),
+    "poisson": (["random"], "poisson"),
+    "rand": (["random"], "rand"),
+    "randint": (["random"], "randint"),
+    "random_integers": (["random"], "random_integers"),
+    "random_sample": (["random"], "random_sample"),
+    "random": (["random"], "random"),
+    "ranf": (["random"], "ranf"),
+    "rayleigh": (["random"], "rayleigh"),
+    "sample": (["random"], "sample"),
+    "standard_cauchy": (["random"], "standard_cauchy"),
+    "standard_exponential": (["random"], "standard_exponential"),
+    "standard_gamma": (["random"], "standard_gamma"),
+    "standard_normal": (["random"], "standard_normal"),
+    "uniform": (["random"], "uniform"),
+    "weibull": (["random"], "weibull"),
+    # linalg
+    "cholesky": (["linalg"], "cholesky"),
+    "det": (["linalg"], "det"),
+    "dot": (["numpy"], "dot"),
     "eig": (["linalg"], "eig"),
-    "prod": (["np"], "prod"),
-    "max": (["np"], "max"),
-    "amax": (["np"], "amax"),
-    "min": (["np"], "min"),
-    "amin": (["np"], "amin"),
-    "mean": (["np"], "mean"),
-    "median": (["np"], "median"),
-    "argmax": (["np"], "argmax"),
-    "argmin": (["np"], "argmin"),
-    "argsort": (["np"], "argsort"),
-    "cov": (["np"], "cov"),
-    "dot": (["np"], "dot"),
-    "matmul": (["np"], "matmul"),
+    "eigvals": (["linalg"], "eigvals"),
+    "matmul": (["numpy"], "matmul"),
+    "matrix_power": (["linalg"], "matrix_power"),
+    "matrix_rank": (["linalg"], "matrix_rank"),
+    "multi_dot": (["linalg"], "multi_dot"),
+    # transcendentals
+    "nanprod": (["numpy"], "nanprod"),
+    "nansum": (["numpy"], "nansum"),
+    "prod": (["numpy"], "prod"),
+    "sum": (["numpy"], "sum"),
 }
 
 
@@ -81,7 +124,8 @@ class RewriteNumPyOverloadedFunctions(object):
                         ).value
                         if (
                             isinstance(module_node, ir.Global)
-                            and module_node.name in self.function_name_map[rhs.attr][0]
+                            and module_node.value.__name__
+                            in self.function_name_map[rhs.attr][0]
                         ) or (
                             isinstance(module_node, ir.Expr)
                             and module_node.attr in self.function_name_map[rhs.attr][0]
@@ -133,6 +177,7 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
         import numba_dppy.dpnp_glue.dpnp_transcendentalsimpl
         import numba_dppy.dpnp_glue.dpnp_statisticsimpl
         import numba_dppy.dpnp_glue.dpnp_sort_search_countimpl
+        import numba_dppy.dpnp_glue.dpnp_randomimpl
 
     def run_pass(self, state):
         rewrite_function_name_pass = RewriteNumPyOverloadedFunctions(
