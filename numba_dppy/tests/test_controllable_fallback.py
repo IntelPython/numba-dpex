@@ -64,7 +64,9 @@ class TestDPPYFallback(unittest.TestCase):
             numba_dppy.compiler.DEBUG = 0
 
             not np.testing.assert_array_equal(dppy_fallback_false, ref_result)
-            self.assertNotIn("Failed to lower parfor on DPPY-device", str(w[-1].message))
+            self.assertNotIn(
+                "Failed to lower parfor on DPPY-device", str(w[-1].message)
+            )
 
 
 if __name__ == "__main__":
