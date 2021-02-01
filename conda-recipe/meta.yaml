@@ -34,6 +34,7 @@ requirements:
 test:
   requires:
     - scipy  # [linux]
+    - pytest
 
 about:
     home: https://github.com/IntelPython/numba-dppy
