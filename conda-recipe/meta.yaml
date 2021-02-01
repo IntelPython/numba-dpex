@@ -18,6 +18,7 @@ requirements:
         - python
         - setuptools
         - cython
+        - jinja2
         - numba
         - dpctl >=0.5.1rc1
         - dpnp 0.4.*  # [linux]

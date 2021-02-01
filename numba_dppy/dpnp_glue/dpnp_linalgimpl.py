@@ -1,7 +1,7 @@
 import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
 from numba import types
 from numba.core.typing import signature
-from . import stubs
+from numba_dppy.numpy import stubs
 import numba_dppy.dpnp_glue as dpnp_lowering
 from numba.core.extending import overload, register_jitable
 import numpy as np
@@ -9,7 +9,7 @@ from numba_dppy import dpctl_functions
 import numba_dppy
 
 
-@overload(stubs.dpnp.eig)
+@overload(stubs.numpy.eig)
 def dpnp_eig_impl(a):
     name = "eig"
     dpnp_lowering.ensure_dpnp(name)
@@ -164,8 +164,8 @@ def get_res_dtype(a, b):
     return res_dtype
 
 
-@overload(stubs.dpnp.matmul)
-@overload(stubs.dpnp.dot)
+@overload(stubs.numpy.matmul)
+@overload(stubs.numpy.dot)
 def dpnp_dot_impl(a, b):
     dpnp_lowering.ensure_dpnp("dot")
 
@@ -269,7 +269,7 @@ def dpnp_dot_impl(a, b):
         assert 0
 
 
-@overload(stubs.dpnp.multi_dot)
+@overload(stubs.numpy.multi_dot)
 def dpnp_multi_dot_impl(arrays):
     dpnp_lowering.ensure_dpnp("multi_dot")
 
@@ -288,7 +288,7 @@ def dpnp_multi_dot_impl(arrays):
         result = arrays[0]
 
         for idx in range(1, n):
-            result = numba_dppy.dpnp.dot(result, arrays[idx])
+            result = numba_dppy.numpy.dot(result, arrays[idx])
 
         if print_debug:
             print("dpnp implementation")
@@ -297,7 +297,7 @@ def dpnp_multi_dot_impl(arrays):
     return dpnp_impl
 
 
-@overload(stubs.dpnp.vdot)
+@overload(stubs.numpy.vdot)
 def dpnp_vdot_impl(a, b):
     dpnp_lowering.ensure_dpnp("vdot")
 
@@ -311,12 +311,12 @@ def dpnp_vdot_impl(a, b):
     """
 
     def dpnp_impl(a, b):
-        return numba_dppy.dpnp.dot(np.ravel(a), np.ravel(b))
+        return numba_dppy.numpy.dot(np.ravel(a), np.ravel(b))
 
     return dpnp_impl
 
 
-@overload(stubs.dpnp.matrix_power)
+@overload(stubs.numpy.matrix_power)
 def dpnp_matrix_power_impl(a, n):
     dpnp_lowering.ensure_dpnp("matrix_power")
 
@@ -338,13 +338,13 @@ def dpnp_matrix_power_impl(a, n):
 
         result = a
         for idx in range(0, n - 1):
-            result = numba_dppy.dpnp.matmul(result, a)
+            result = numba_dppy.numpy.matmul(result, a)
         return result
 
     return dpnp_impl
 
 
-@overload(stubs.dpnp.cholesky)
+@overload(stubs.numpy.cholesky)
 def dpnp_cholesky_impl(a):
     name = "cholesky"
     dpnp_lowering.ensure_dpnp(name)
@@ -393,7 +393,7 @@ def dpnp_cholesky_impl(a):
     return dpnp_impl
 
 
-@overload(stubs.dpnp.det)
+@overload(stubs.numpy.det)
 def dpnp_det_impl(a):
     name = "det"
     dpnp_lowering.ensure_dpnp(name)
@@ -447,7 +447,7 @@ def dpnp_det_impl(a):
     return dpnp_impl
 
 
-@overload(stubs.dpnp.matrix_rank)
+@overload(stubs.numpy.matrix_rank)
 def dpnp_matrix_rank_impl(M, tol=None, hermitian=False):
     name = "matrix_rank"
     dpnp_lowering.ensure_dpnp(name)
@@ -498,12 +498,12 @@ def dpnp_matrix_rank_impl(M, tol=None, hermitian=False):
     return dpnp_impl
 
 
-@overload(stubs.dpnp.eigvals)
+@overload(stubs.numpy.eigvals)
 def dpnp_eigvals_impl(a):
     dpnp_lowering.ensure_dpnp("eigvals")
 
     def dpnp_impl(a):
-        eigval, eigvec = numba_dppy.dpnp.eig(a)
+        eigval, eigvec = numba_dppy.numpy.eig(a)
         return eigval
 
     return dpnp_impl

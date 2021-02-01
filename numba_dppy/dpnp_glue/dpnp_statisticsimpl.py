@@ -1,15 +1,15 @@
 import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
 from numba.core import types, cgutils
 from numba.core.typing import signature
-from . import stubs
+from numba_dppy.numpy import stubs
 import numba_dppy.dpnp_glue as dpnp_lowering
 from numba.core.extending import overload, register_jitable
 import numpy as np
 from numba_dppy import dpctl_functions
 
 
-@overload(stubs.dpnp.max)
-@overload(stubs.dpnp.amax)
+@overload(stubs.numpy.max)
+@overload(stubs.numpy.amax)
 def dpnp_amax_impl(a):
     name = "max"
     dpnp_lowering.ensure_dpnp(name)
@@ -67,8 +67,8 @@ def dpnp_amax_impl(a):
     return dpnp_impl
 
 
-@overload(stubs.dpnp.min)
-@overload(stubs.dpnp.amin)
+@overload(stubs.numpy.min)
+@overload(stubs.numpy.amin)
 def dpnp_amin_impl(a):
     name = "min"
     dpnp_lowering.ensure_dpnp(name)
@@ -126,7 +126,7 @@ def dpnp_amin_impl(a):
     return dpnp_impl
 
 
-@overload(stubs.dpnp.mean)
+@overload(stubs.numpy.mean)
 def dpnp_mean_impl(a):
     name = "mean"
     dpnp_lowering.ensure_dpnp(name)
@@ -187,7 +187,7 @@ def dpnp_mean_impl(a):
     return dpnp_impl
 
 
-@overload(stubs.dpnp.median)
+@overload(stubs.numpy.median)
 def dpnp_median_impl(a):
     name = "median"
     dpnp_lowering.ensure_dpnp(name)
@@ -249,7 +249,7 @@ def dpnp_median_impl(a):
     return dpnp_impl
 
 
-@overload(stubs.dpnp.cov)
+@overload(stubs.numpy.cov)
 def dpnp_cov_impl(a):
     name = "cov"
     dpnp_lowering.ensure_dpnp(name)

@@ -64,12 +64,14 @@ class install(orig_install.install):
     def run(self):
         super().run()
         spirv_compile()
+        generate_numpy_impl()
 
 
 class develop(orig_develop.develop):
     def run(self):
         super().run()
         spirv_compile()
+        generate_numpy_impl()
 
 
 def _get_cmdclass():
@@ -77,6 +79,21 @@ def _get_cmdclass():
     cmdclass["install"] = install
     cmdclass["develop"] = develop
     return cmdclass
+
+
+def generate_numpy_impl():
+    jinja_args= [
+        "python",
+        "numba_dppy/numpy/generate.py",
+        "-t",
+        "numba_dppy/numpy/templates",
+        "-o",
+        "numba_dppy/numpy",
+    ]
+    if IS_LIN:
+        subprocess.check_call(jinja_args, stderr=subprocess.STDOUT, shell=False)
+    if IS_WIN:
+        subprocess.check_call(jinja_args, stderr=subprocess.STDOUT, shell=True)
 
 
 def spirv_compile():

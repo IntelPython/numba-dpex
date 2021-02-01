@@ -1085,13 +1085,10 @@ class Testdpnp_random_functions(unittest.TestCase):
                 final_result = result.ravel()
                 self.assertTrue(final_result.all() >= 0.0)
 
-    @unittest.skip(
-        "TypeError: dpnp_random_impl() got an unexpected keyword argument 'low'"
-    )
     def test_uniform(self):
         @njit
         def f(low, high, size):
-            res = np.random.standard_normal(low=low, high=high, size=size)
+            res = np.random.uniform(low=low, high=high, size=size)
             return res
 
         low, high = -1.0, 0.0
@@ -1105,8 +1102,9 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result < high)
             else:
                 final_result = result.ravel()
-                self.assertTrue(final_result.all() >= low)
-                self.assertTrue(final_result.all() < high)
+                self.assertTrue((final_result >= low).all())
+                self.assertTrue((final_result < high).all())
+
 
     def test_weibull(self):
         @njit

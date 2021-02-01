@@ -17,8 +17,6 @@ This adds a shapeptr attribute to Numba type representing np.ndarray.
 This allows us to get the raw pointer to the structure where the shape
 of an ndarray is stored from an overloaded implementation
 """
-
-
 @infer_getattr
 class ArrayAttribute(AttributeTemplate):
     key = types.Array

@@ -44,8 +44,6 @@ This function retrieves the pointer to the structure where the shape
 of an ndarray is stored. We cast it to void * to make it easier to
 pass around.
 """
-
-
 @lower_getattr(types.Array, "shapeptr")
 def array_shape(context, builder, typ, value):
     shape_ptr = builder.gep(

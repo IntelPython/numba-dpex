@@ -64,7 +64,7 @@ def check_equivalent(expected_ir, got_ir):
 class TestRenameNumpyFunctionsPass(unittest.TestCase):
     def test_rename_numpy(self):
         def expected(a):
-            return numba_dppy.dpnp.sum(a)
+            return numba_dppy.numpy.sum(a)
 
         def got(a):
             return np.sum(a)
@@ -84,7 +84,7 @@ class TestRenameNumpyFunctionsPass(unittest.TestCase):
 class TestRenameNdarrayFunctionsPass(unittest.TestCase):
     def test_rename_ndarray(self):
         def expected(a):
-            return numba_dppy.dpnp.sum(a)
+            return numba_dppy.numpy.sum(a)
 
         def got(a):
             return a.sum()

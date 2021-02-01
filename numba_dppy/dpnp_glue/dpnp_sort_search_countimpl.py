@@ -1,14 +1,14 @@
 import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
 from numba.core import types, cgutils
 from numba.core.typing import signature
-from . import stubs
+from numba_dppy.numpy import stubs
 import numba_dppy.dpnp_glue as dpnp_lowering
 from numba.core.extending import overload, register_jitable
 import numpy as np
 from numba_dppy import dpctl_functions
 
 
-@overload(stubs.dpnp.argmax)
+@overload(stubs.numpy.argmax)
 def dpnp_argmax_impl(a):
     name = "argmax"
     dpnp_lowering.ensure_dpnp(name)
@@ -56,7 +56,7 @@ def dpnp_argmax_impl(a):
     return dpnp_impl
 
 
-@overload(stubs.dpnp.argmin)
+@overload(stubs.numpy.argmin)
 def dpnp_argmin_impl(a):
     name = "argmin"
     dpnp_lowering.ensure_dpnp(name)
@@ -104,7 +104,7 @@ def dpnp_argmin_impl(a):
     return dpnp_impl
 
 
-@overload(stubs.dpnp.argsort)
+@overload(stubs.numpy.argsort)
 def dpnp_argsort_impl(a):
     name = "argsort"
     dpnp_lowering.ensure_dpnp(name)

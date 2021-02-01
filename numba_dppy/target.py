@@ -105,7 +105,9 @@ class DPPYTargetContext(BaseContext):
 
     def replace_numpy_ufunc_with_opencl_supported_functions(self):
         from numba_dppy.ocl.mathimpl import lower_ocl_impl, sig_mapper
+        from numba_dppy.numpy.maps import numba_dppy_numpy_ufunc
 
+        '''
         ufuncs = [
             ("fabs", np.fabs),
             ("exp", np.exp),
@@ -135,6 +137,8 @@ class DPPYTargetContext(BaseContext):
             ("exp2", np.exp2),
             ("log2", np.log2),
         ]
+        '''
+        ufuncs = numba_dppy_numpy_ufunc
 
         for name, ufunc in ufuncs:
             for sig in self.ufunc_db[ufunc].keys():

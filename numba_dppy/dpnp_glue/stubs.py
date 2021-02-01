@@ -51,7 +51,7 @@ class dpnp(Stub):
     class matmul(Stub):
         pass
 
-    class random_sample(Stub):
+    def random_sample():
         pass
 
     class ranf(Stub):
