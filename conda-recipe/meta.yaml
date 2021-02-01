@@ -33,7 +33,6 @@ requirements:
 
 test:
   requires:
-    - scipy  # [linux]
     - pytest
 
 about:
