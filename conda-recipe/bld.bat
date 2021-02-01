@@ -14,3 +14,11 @@ set "CC=clang.exe"
 %CC% -flto -target spir64-unknown-unknown -c -x cl -emit-llvm -cl-std=CL2.0 -Xclang -finclude-default-header numba_dppy/ocl/atomics/atomic_ops.cl -o numba_dppy/ocl/atomics/atomic_ops.bc
 llvm-spirv -o numba_dppy/ocl/atomics/atomic_ops.spir numba_dppy/ocl/atomics/atomic_ops.bc
 xcopy numba_dppy\ocl\atomics\atomic_ops.spir %SP_DIR%\numba_dppy\ocl\atomics /E /Y
+
+rem Build wheel package
+if NOT "%WHEELS_OUTPUT_FOLDER%"=="" (
+    %PYTHON% setup.py bdist_wheel
+    if errorlevel 1 exit 1
+    copy dist\numba_dppy*.whl %WHEELS_OUTPUT_FOLDER%
+    if errorlevel 1 exit 1
+)
