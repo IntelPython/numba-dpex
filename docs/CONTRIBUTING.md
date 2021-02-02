@@ -9,7 +9,32 @@ We use [black](https://black.readthedocs.io/en/stable/) code formatter.
 - Revision: `20.8b1` or branch `stable`.
 - See configuration in `pyproject.toml`.
 
-Run before each commit: `black .`
+Install:
+```bash
+python -m pip install black
+```
+
+Run before each commit:
+```bash
+black .
+```
+
+### License
+
+We use [addlicense](https://github.com/google/addlicense) license checker.
+
+Install:
+```bash
+conda install go
+export PATH=${PATH}:`go env GOPATH`/bin
+go get -u github.com/google/addlicense
+```
+
+Run before each commit:
+```bash
+export PATH=${PATH}:`go env GOPATH`/bin
+addlicense -l apache -c "Intel Corporation" numba_dppy/**/*.py numba_dppy/*.py setup.py
+```
 
 ## Documentation
 
