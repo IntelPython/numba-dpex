@@ -4,6 +4,8 @@ from Cython.Build import cythonize
 
 import versioneer
 
+with open("README.md", "r", encoding="utf-8") as file:
+    long_description = file.read()
 
 def get_ext_modules():
     ext_modules = []
@@ -39,12 +41,15 @@ build_requires = ["cython"]
 install_requires = [
     "numba",
     "dpctl",
+    'dpnp'
 ]
 
 metadata = dict(
     name="numba-dppy",
     version=versioneer.get_version(),
     description="Numba extension for Intel CPU and GPU backend",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     url="https://github.com/IntelPython/numba-dppy",
     packages=packages,
     setup_requires=build_requires,
