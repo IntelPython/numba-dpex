@@ -96,7 +96,7 @@ def _get_cmdclass():
 
 
 def generate_numpy_impl():
-    jinja_args= [
+    jinja_args = [
         "python",
         "numba_dppy/numpy/generate.py",
         "-t",
@@ -180,9 +180,7 @@ metadata = dict(
         "Topic :: Software Development :: Compilers",
     ],
     entry_points={
-        "numba_extensions": [
-            "init = numba_dppy.numpy_usm_shared:numba_register",
-        ]
+        "numba_extensions": ["init = numba_dppy.numpy_usm_shared:numba_register",]
     },
 )
 

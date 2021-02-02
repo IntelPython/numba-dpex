@@ -42,7 +42,7 @@ class RewriteNumPyOverloadedFunctions(object):
             new_node = block.find_variable_assignment(rhs.value.name)
             if not isinstance(new_node.value, ir.Global):
                 # we assume rhs.op == getattr
-                return self._find_module(block, new_node, map_node[rhs.attr], depth+1)
+                return self._find_module(block, new_node, map_node[rhs.attr], depth + 1)
             else:
                 if isinstance(map_node[rhs.attr], tuple):
                     return (new_node.value, map_node[rhs.attr])
@@ -94,11 +94,12 @@ class RewriteNumPyOverloadedFunctions(object):
                     # replace np.FOO with name from self.function_name_map["FOO"]
                     # e.g. np.sum will be replaced with numba_dppy.dpnp.sum
                     if rhs.op == "getattr" and rhs.attr in self.function_name_map:
-                        module_node, map_node = self._find_module(block, stmt, self.function_name_map)
+                        module_node, map_node = self._find_module(
+                            block, stmt, self.function_name_map
+                        )
                         if (
                             isinstance(module_node, ir.Global)
-                            and module_node.value.__name__
-                            in map_node[0]
+                            and module_node.value.__name__ in map_node[0]
                         ):
                             rhs = stmt.value
                             rhs.attr = map_node[1]
@@ -216,7 +217,9 @@ class RewriteNdarrayFunctions(object):
                         g_dppy_assign = ir.Assign(g_dppy, g_dppy_var, loc)
 
                         dpnp_var = ir.Var(scope, mk_unique_var("$load_attr"), loc)
-                        self.typemap[dpnp_var.name] = types.misc.Module(numba_dppy.numpy)
+                        self.typemap[dpnp_var.name] = types.misc.Module(
+                            numba_dppy.numpy
+                        )
                         getattr_dpnp = ir.Expr.getattr(g_dppy_var, "numpy", loc)
                         dpnp_assign = ir.Assign(getattr_dpnp, dpnp_var, loc)
 

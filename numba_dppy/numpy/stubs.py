@@ -1,5 +1,6 @@
 from numba_dppy.ocl.stubs import Stub
 
+
 class numpy(Stub):
     _description_ = "<numpy>"
 
@@ -672,4 +673,3 @@ class numpy(Stub):
         """This function provides numpy.arange()
         """
         pass
-

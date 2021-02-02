@@ -120,6 +120,7 @@ class DPPYTargetContext(BaseContext):
     def replace_numpy_ufunc_with_opencl_supported_functions(self):
         from numba_dppy.ocl.mathimpl import lower_ocl_impl, sig_mapper
         from numba_dppy.numpy.maps import numba_dppy_numpy_ufunc
+
         ufuncs = numba_dppy_numpy_ufunc
 
         for name, ufunc in ufuncs:

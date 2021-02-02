@@ -1261,11 +1261,14 @@ def dpnp_random_impl(low=0.0, high=1.0, size=None):
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
     if size in (None, types.none):
+
         def dpnp_impl(low=0.0, high=1.0, size=None):
             res = np.empty(1, dtype=res_dtype)
             common_impl(low, high, res, dpnp_func, PRINT_DEBUG)
             return res[0]
+
     else:
+
         def dpnp_impl(low=0.0, high=1.0, size=None):
             res = np.empty(size, dtype=res_dtype)
             if res.size != 0:

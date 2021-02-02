@@ -1119,7 +1119,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue((final_result >= low).all())
                 self.assertTrue((final_result < high).all())
 
-
     def test_weibull(self):
         @njit
         def f(a, size):
