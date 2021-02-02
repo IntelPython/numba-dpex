@@ -4,7 +4,7 @@
 import ctypes
 
 
-cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncName":  # need this namespace for Enum import
+cdef extern from "backend_iface_fptr.hpp" namespace "DPNPFuncName":  # need this namespace for Enum import
     cdef enum DPNPFuncName "DPNPFuncName":
         DPNP_FN_ABSOLUTE
         DPNP_FN_ADD
@@ -106,7 +106,7 @@ cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncName":  # need this na
         DPNP_FN_VAR
 
 
-cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncType":  # need this namespace for Enum import
+cdef extern from "backend_iface_fptr.hpp" namespace "DPNPFuncType":  # need this namespace for Enum import
     cdef enum DPNPFuncType "DPNPFuncType":
         DPNP_FT_NONE
         DPNP_FT_INT
@@ -114,7 +114,7 @@ cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncType":  # need this na
         DPNP_FT_FLOAT
         DPNP_FT_DOUBLE
 
-cdef extern from "dpnp_iface_fptr.hpp":
+cdef extern from "backend_iface_fptr.hpp":
     struct DPNPFuncData:
         DPNPFuncType return_type
         void * ptr
