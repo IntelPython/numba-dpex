@@ -1,0 +1,23 @@
+name: license
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [mian]
+
+jobs:
+  license:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-go@v2
+    - name: Install addlicense
+      run: |
+        export PATH=${PATH}:`go env GOPATH`/bin
+        go get -v -u github.com/google/addlicense
+    - name: Check license
+      run: |
+        export PATH=${PATH}:`go env GOPATH`/bin
+        addlicense -check -l apache -c "Intel Corporation" numba-dppy/*.py setup.py')
