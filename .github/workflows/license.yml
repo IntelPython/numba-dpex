@@ -20,4 +20,4 @@ jobs:
     - name: Check license
       run: |
         export PATH=${PATH}:`go env GOPATH`/bin
-        addlicense -check -l apache -c "Intel Corporation" numba-dppy/*.py setup.py
+        addlicense -check -l apache -c "Intel Corporation" numba_dppy/**/*.py setup.py
