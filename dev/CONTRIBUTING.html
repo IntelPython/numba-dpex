@@ -1,31 +1,23 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Contributing &mdash; numba-dppy 0.12.0 documentation</title>
   
 
   
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
+  
   
   
 
   
-  
-
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -36,8 +28,13 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Numba for DPPY GPUs" href="dppy/index.html" />
     <link rel="prev" title="Debugging with GDB" href="DEBUGGING.html" /> 
 </head>
 
@@ -75,7 +72,6 @@
           
         </div>
 
-        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -94,6 +90,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#python-code-style">Python code style</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#black">black</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#license">License</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a><ul>
@@ -104,11 +101,19 @@
 </ul>
 </li>
 </ul>
+<p class="caption"><span class="caption-text">For DPPY users</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dppy/index.html">Numba for DPPY GPUs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dppy-reference/index.html">DPPY Python Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">NumPy support in Numba_dppy &#64;njit</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="numpy_support/index.html">numpy support</a></li>
+</ul>
 
             
           
         </div>
-        
       </div>
     </nav>
 
@@ -143,20 +148,18 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="index.html">Docs</a> &raquo;</li>
         
       <li>Contributing</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             <a href="_sources/CONTRIBUTING.md.txt" rel="nofollow"> View page source</a>
           
         
@@ -181,7 +184,29 @@
 <li><p>Revision: <code class="docutils literal notranslate"><span class="pre">20.8b1</span></code> or branch <code class="docutils literal notranslate"><span class="pre">stable</span></code>.</p></li>
 <li><p>See configuration in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.</p></li>
 </ul>
-<p>Run before each commit: <code class="docutils literal notranslate"><span class="pre">black</span> <span class="pre">.</span></code></p>
+<p>Install:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pip install black
+</pre></div>
+</div>
+<p>Run before each commit:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>black .
+</pre></div>
+</div>
+</div>
+<div class="section" id="license">
+<h3>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h3>
+<p>We use <a class="reference external" href="https://github.com/google/addlicense">addlicense</a> license checker.</p>
+<p>Install:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install go
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PATH</span><span class="si">}</span>:<span class="sb">`</span>go env GOPATH<span class="sb">`</span>/bin
+go get -u github.com/google/addlicense
+</pre></div>
+</div>
+<p>Run before each commit:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">PATH</span><span class="si">}</span>:<span class="sb">`</span>go env GOPATH<span class="sb">`</span>/bin
+addlicense -l apache -c <span class="s2">&quot;Intel Corporation&quot;</span> numba_dppy/**/*.py numba_dppy/*.py setup.py
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="documentation">
@@ -220,28 +245,29 @@ to <code class="docutils literal notranslate"><span class="pre">gh-pages</span><
            
           </div>
           <footer>
+  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="DEBUGGING.html" class="btn btn-neutral float-left" title="Debugging with GDB" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+      
+        <a href="dppy/index.html" class="btn btn-neutral float-right" title="Numba for DPPY GPUs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="DEBUGGING.html" class="btn btn-neutral float-left" title="Debugging with GDB" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
     </div>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021, Intel.
+        &copy; Copyright 2021, Intel
 
     </p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 
@@ -249,6 +275,7 @@ to <code class="docutils literal notranslate"><span class="pre">gh-pages</span><
 
   </div>
   
+
 
   <script type="text/javascript">
       jQuery(function () {
