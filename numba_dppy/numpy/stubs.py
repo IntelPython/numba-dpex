@@ -4,672 +4,672 @@ class numpy(Stub):
     _description_ = "<numpy>"
 
     def sin():
-        """numpy.sin()
+        """This function provides numpy.sin()
         """
         pass
 
     def cos():
-        """numpy.cos()
+        """This function provides numpy.cos()
         """
         pass
 
     def tan():
-        """numpy.tan()
+        """This function provides numpy.tan()
         """
         pass
 
     def arcsin():
-        """numpy.arcsin()
+        """This function provides numpy.arcsin()
         """
         pass
 
     def arccos():
-        """numpy.arccos()
+        """This function provides numpy.arccos()
         """
         pass
 
     def arctan():
-        """numpy.arctan()
+        """This function provides numpy.arctan()
         """
         pass
 
     def arctan2():
-        """numpy.arctan2()
+        """This function provides numpy.arctan2()
         """
         pass
 
     def degrees():
-        """numpy.degrees()
+        """This function provides numpy.degrees()
         """
         pass
 
     def radians():
-        """numpy.radians()
+        """This function provides numpy.radians()
         """
         pass
 
     def deg2rad():
-        """numpy.deg2rad()
+        """This function provides numpy.deg2rad()
         """
         pass
 
     def rad2deg():
-        """numpy.rad2deg()
+        """This function provides numpy.rad2deg()
         """
         pass
 
     def sinh():
-        """numpy.sinh()
+        """This function provides numpy.sinh()
         """
         pass
 
     def cosh():
-        """numpy.cosh()
+        """This function provides numpy.cosh()
         """
         pass
 
     def tanh():
-        """numpy.tanh()
+        """This function provides numpy.tanh()
         """
         pass
 
     def arcsinh():
-        """numpy.arcsinh()
+        """This function provides numpy.arcsinh()
         """
         pass
 
     def arccosh():
-        """numpy.arccosh()
+        """This function provides numpy.arccosh()
         """
         pass
 
     def arctanh():
-        """numpy.arctanh()
+        """This function provides numpy.arctanh()
         """
         pass
 
     def floor():
-        """numpy.floor()
+        """This function provides numpy.floor()
         """
         pass
 
     def ceil():
-        """numpy.ceil()
+        """This function provides numpy.ceil()
         """
         pass
 
     def trunc():
-        """numpy.trunc()
+        """This function provides numpy.trunc()
         """
         pass
 
     def hypot():
-        """numpy.hypot()
+        """This function provides numpy.hypot()
         """
         pass
 
     def exp2():
-        """numpy.exp2()
+        """This function provides numpy.exp2()
         """
         pass
 
     def log2():
-        """numpy.log2()
+        """This function provides numpy.log2()
         """
         pass
 
     def prod():
-        """numpy.prod()
+        """This function provides numpy.prod()
         """
         pass
 
     def sum():
-        """numpy.sum()
+        """This function provides numpy.sum()
         """
         pass
 
     def nanprod():
-        """numpy.nanprod()
+        """This function provides numpy.nanprod()
         """
         pass
 
     def nansum():
-        """numpy.nansum()
+        """This function provides numpy.nansum()
         """
         pass
 
     def exp():
-        """numpy.exp()
+        """This function provides numpy.exp()
         """
         pass
 
     def expm1():
-        """numpy.expm1()
+        """This function provides numpy.expm1()
         """
         pass
 
     def log():
-        """numpy.log()
+        """This function provides numpy.log()
         """
         pass
 
     def log10():
-        """numpy.log10()
+        """This function provides numpy.log10()
         """
         pass
 
     def log1p():
-        """numpy.log1p()
+        """This function provides numpy.log1p()
         """
         pass
 
     def add():
-        """numpy.add()
+        """This function provides numpy.add()
         """
         pass
 
     def reciprocal():
-        """numpy.reciprocal()
+        """This function provides numpy.reciprocal()
         """
         pass
 
     def negative():
-        """numpy.negative()
+        """This function provides numpy.negative()
         """
         pass
 
     def multiply():
-        """numpy.multiply()
+        """This function provides numpy.multiply()
         """
         pass
 
     def divide():
-        """numpy.divide()
+        """This function provides numpy.divide()
         """
         pass
 
     def power():
-        """numpy.power()
+        """This function provides numpy.power()
         """
         pass
 
     def subtract():
-        """numpy.subtract()
+        """This function provides numpy.subtract()
         """
         pass
 
     def true_divide():
-        """numpy.true_divide()
+        """This function provides numpy.true_divide()
         """
         pass
 
     def fmod():
-        """numpy.fmod()
+        """This function provides numpy.fmod()
         """
         pass
 
     def mod():
-        """numpy.mod()
+        """This function provides numpy.mod()
         """
         pass
 
     def remainder():
-        """numpy.remainder()
+        """This function provides numpy.remainder()
         """
         pass
 
     def sqrt():
-        """numpy.sqrt()
+        """This function provides numpy.sqrt()
         """
         pass
 
     def square():
-        """numpy.square()
+        """This function provides numpy.square()
         """
         pass
 
     def absolute():
-        """numpy.absolute()
+        """This function provides numpy.absolute()
         """
         pass
 
     def abs():
-        """numpy.abs()
+        """This function provides numpy.abs()
         """
         pass
 
     def fabs():
-        """numpy.fabs()
+        """This function provides numpy.fabs()
         """
         pass
 
     def sign():
-        """numpy.sign()
+        """This function provides numpy.sign()
         """
         pass
 
     def maximum():
-        """numpy.maximum()
+        """This function provides numpy.maximum()
         """
         pass
 
     def minimum():
-        """numpy.minimum()
+        """This function provides numpy.minimum()
         """
         pass
 
     def fmax():
-        """numpy.fmax()
+        """This function provides numpy.fmax()
         """
         pass
 
     def fmin():
-        """numpy.fmin()
+        """This function provides numpy.fmin()
         """
         pass
 
     def median():
-        """numpy.median()
+        """This function provides numpy.median()
         """
         pass
 
     def mean():
-        """numpy.mean()
+        """This function provides numpy.mean()
         """
         pass
 
     def cov():
-        """numpy.cov()
+        """This function provides numpy.cov()
         """
         pass
 
     def argsort():
-        """numpy.argsort()
+        """This function provides numpy.argsort()
         """
         pass
 
     def argmax():
-        """numpy.argmax()
+        """This function provides numpy.argmax()
         """
         pass
 
     def argmin():
-        """numpy.argmin()
+        """This function provides numpy.argmin()
         """
         pass
 
     def beta():
-        """numpy.random.beta()
+        """This function provides numpy.random.beta()
         """
         pass
 
     def binomial():
-        """numpy.random.binomial()
+        """This function provides numpy.random.binomial()
         """
         pass
 
     def chisquare():
-        """numpy.random.chisquare()
+        """This function provides numpy.random.chisquare()
         """
         pass
 
     def exponential():
-        """numpy.random.exponential()
+        """This function provides numpy.random.exponential()
         """
         pass
 
     def gamma():
-        """numpy.random.gamma()
+        """This function provides numpy.random.gamma()
         """
         pass
 
     def geometric():
-        """numpy.random.geometric()
+        """This function provides numpy.random.geometric()
         """
         pass
 
     def gumbel():
-        """numpy.random.gumbel()
+        """This function provides numpy.random.gumbel()
         """
         pass
 
     def hypergeometric():
-        """numpy.random.hypergeometric()
+        """This function provides numpy.random.hypergeometric()
         """
         pass
 
     def laplace():
-        """numpy.random.laplace()
+        """This function provides numpy.random.laplace()
         """
         pass
 
     def lognormal():
-        """numpy.random.lognormal()
+        """This function provides numpy.random.lognormal()
         """
         pass
 
     def multinomial():
-        """numpy.random.multinomial()
+        """This function provides numpy.random.multinomial()
         """
         pass
 
     def multivariate_normal():
-        """numpy.random.multivariate_normal()
+        """This function provides numpy.random.multivariate_normal()
         """
         pass
 
     def negative_binomial():
-        """numpy.random.negative_binomial()
+        """This function provides numpy.random.negative_binomial()
         """
         pass
 
     def normal():
-        """numpy.random.normal()
+        """This function provides numpy.random.normal()
         """
         pass
 
     def poisson():
-        """numpy.random.poisson()
+        """This function provides numpy.random.poisson()
         """
         pass
 
     def rand():
-        """numpy.random.rand()
+        """This function provides numpy.random.rand()
         """
         pass
 
     def randint():
-        """numpy.random.randint()
+        """This function provides numpy.random.randint()
         """
         pass
 
     def random_integers():
-        """numpy.random.random_integers()
+        """This function provides numpy.random.random_integers()
         """
         pass
 
     def random_sample():
-        """numpy.random.random_sample()
+        """This function provides numpy.random.random_sample()
         """
         pass
 
     def random():
-        """numpy.random.random()
+        """This function provides numpy.random.random()
         """
         pass
 
     def ranf():
-        """numpy.random.ranf()
+        """This function provides numpy.random.ranf()
         """
         pass
 
     def rayleigh():
-        """numpy.random.rayleigh()
+        """This function provides numpy.random.rayleigh()
         """
         pass
 
     def sample():
-        """numpy.random.sample()
+        """This function provides numpy.random.sample()
         """
         pass
 
     def standard_cauchy():
-        """numpy.random.standard_cauchy()
+        """This function provides numpy.random.standard_cauchy()
         """
         pass
 
     def standard_exponential():
-        """numpy.random.standard_exponential()
+        """This function provides numpy.random.standard_exponential()
         """
         pass
 
     def standard_gamma():
-        """numpy.random.standard_gamma()
+        """This function provides numpy.random.standard_gamma()
         """
         pass
 
     def standard_normal():
-        """numpy.random.standard_normal()
+        """This function provides numpy.random.standard_normal()
         """
         pass
 
     def uniform():
-        """numpy.random.uniform()
+        """This function provides numpy.random.uniform()
         """
         pass
 
     def weibull():
-        """numpy.random.weibull()
+        """This function provides numpy.random.weibull()
         """
         pass
 
     def isfinite():
-        """numpy.isfinite()
+        """This function provides numpy.isfinite()
         """
         pass
 
     def isinf():
-        """numpy.isinf()
+        """This function provides numpy.isinf()
         """
         pass
 
     def isnan():
-        """numpy.isnan()
+        """This function provides numpy.isnan()
         """
         pass
 
     def logical_and():
-        """numpy.logical_and()
+        """This function provides numpy.logical_and()
         """
         pass
 
     def logical_or():
-        """numpy.logical_or()
+        """This function provides numpy.logical_or()
         """
         pass
 
     def logical_not():
-        """numpy.logical_not()
+        """This function provides numpy.logical_not()
         """
         pass
 
     def logical_xor():
-        """numpy.logical_xor()
+        """This function provides numpy.logical_xor()
         """
         pass
 
     def greater():
-        """numpy.greater()
+        """This function provides numpy.greater()
         """
         pass
 
     def greater_equal():
-        """numpy.greater_equal()
+        """This function provides numpy.greater_equal()
         """
         pass
 
     def less():
-        """numpy.less()
+        """This function provides numpy.less()
         """
         pass
 
     def less_equal():
-        """numpy.less_equal()
+        """This function provides numpy.less_equal()
         """
         pass
 
     def equal():
-        """numpy.equal()
+        """This function provides numpy.equal()
         """
         pass
 
     def not_equal():
-        """numpy.not_equal()
+        """This function provides numpy.not_equal()
         """
         pass
 
     def dot():
-        """numpy.dot()
+        """This function provides numpy.dot()
         """
         pass
 
     def vdot():
-        """numpy.vdot()
+        """This function provides numpy.vdot()
         """
         pass
 
     def matmul():
-        """numpy.matmul()
+        """This function provides numpy.matmul()
         """
         pass
 
     def matrix_power():
-        """numpy.linalg.matrix_power()
+        """This function provides numpy.linalg.matrix_power()
         """
         pass
 
     def cholesky():
-        """numpy.linalg.cholesky()
+        """This function provides numpy.linalg.cholesky()
         """
         pass
 
     def eig():
-        """numpy.linalg.eig()
+        """This function provides numpy.linalg.eig()
         """
         pass
 
     def eigvals():
-        """numpy.linalg.eigvals()
+        """This function provides numpy.linalg.eigvals()
         """
         pass
 
     def det():
-        """numpy.linalg.det()
+        """This function provides numpy.linalg.det()
         """
         pass
 
     def matrix_rank():
-        """numpy.linalg.matrix_rank()
+        """This function provides numpy.linalg.matrix_rank()
         """
         pass
 
     def multi_dot():
-        """numpy.linalg.multi_dot()
+        """This function provides numpy.linalg.multi_dot()
         """
         pass
 
     def bitwise_and():
-        """numpy.bitwise_and()
+        """This function provides numpy.bitwise_and()
         """
         pass
 
     def bitwise_or():
-        """numpy.bitwise_or()
+        """This function provides numpy.bitwise_or()
         """
         pass
 
     def bitwise_xor():
-        """numpy.bitwise_xor()
+        """This function provides numpy.bitwise_xor()
         """
         pass
 
     def invert():
-        """numpy.invert()
+        """This function provides numpy.invert()
         """
         pass
 
     def bitwise_not():
-        """numpy.bitwise_not()
+        """This function provides numpy.bitwise_not()
         """
         pass
 
     def left_shift():
-        """numpy.left_shift()
+        """This function provides numpy.left_shift()
         """
         pass
 
     def right_shift():
-        """numpy.right_shift()
+        """This function provides numpy.right_shift()
         """
         pass
 
     def all():
-        """numpy.all()
+        """This function provides numpy.all()
         """
         pass
 
     def any():
-        """numpy.any()
+        """This function provides numpy.any()
         """
         pass
 
     def amax():
-        """numpy.amax()
+        """This function provides numpy.amax()
         """
         pass
 
     def amin():
-        """numpy.amin()
+        """This function provides numpy.amin()
         """
         pass
 
     def argmax():
-        """numpy.argmax()
+        """This function provides numpy.argmax()
         """
         pass
 
     def argmin():
-        """numpy.argmin()
+        """This function provides numpy.argmin()
         """
         pass
 
     def argsort():
-        """numpy.argsort()
+        """This function provides numpy.argsort()
         """
         pass
 
     def dot():
-        """numpy.dot()
+        """This function provides numpy.dot()
         """
         pass
 
     def max():
-        """numpy.max()
+        """This function provides numpy.max()
         """
         pass
 
     def mean():
-        """numpy.mean()
+        """This function provides numpy.mean()
         """
         pass
 
     def min():
-        """numpy.min()
+        """This function provides numpy.min()
         """
         pass
 
     def empty():
-        """numpy.empty()
+        """This function provides numpy.empty()
         """
         pass
 
     def empty_like():
-        """numpy.empty_like()
+        """This function provides numpy.empty_like()
         """
         pass
 
     def sdones():
-        """numpy.sdones()
+        """This function provides numpy.sdones()
         """
         pass
 
     def zeros():
-        """numpy.zeros()
+        """This function provides numpy.zeros()
         """
         pass
 
     def arange():
-        """numpy.arange()
+        """This function provides numpy.arange()
         """
         pass
 
