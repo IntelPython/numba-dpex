@@ -7,6 +7,12 @@ class numpy(Stub):
 
 {%     filter indent(width=4, first=True) %}
 def {{ func.name }}():
+{%         if func.get("nest") %}
+    """numpy.{{ func.nest  }}.{{ func.name }}()
+{%         else %}
+    """numpy.{{ func.name }}()
+{%         endif %}
+    """
     pass
 
 {%     endfilter %}
