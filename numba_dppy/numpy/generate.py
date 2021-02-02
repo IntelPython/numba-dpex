@@ -7,14 +7,15 @@ parser.add_argument('-t', required=True,
 parser.add_argument('-o', required=True,
                     help='output directory')
 
+
 numpy_func_list = [
     {"name" : "sin", "impl" : "ufunc"},
     {"name" : "cos", "impl" : "ufunc"},
     {"name" : "tan", "impl" : "ufunc"},
-    {"name" : "arcsin", "impl" : "ufunc"},
-    {"name" : "arccos", "impl" : "ufunc"},
-    {"name" : "arctan", "impl" : "ufunc"},
-    {"name" : "arctan2", "impl" : "ufunc"},
+    {"name" : "arcsin", "impl" : "ufunc", "alt" : "asin"},
+    {"name" : "arccos", "impl" : "ufunc", "alt" : "acos"},
+    {"name" : "arctan", "impl" : "ufunc", "alt" : "atan"},
+    {"name" : "arctan2", "impl" : "ufunc", "alt" : "atan2"},
     {"name" : "degrees", "impl" : "generic"},
     {"name" : "radians", "impl" : "generic"},
     {"name" : "deg2rad", "impl" : "generic"},
@@ -22,9 +23,9 @@ numpy_func_list = [
     {"name" : "sinh", "impl" : "ufunc"},
     {"name" : "cosh", "impl" : "ufunc"},
     {"name" : "tanh", "impl" : "ufunc"},
-    {"name" : "arcsinh", "impl" : "ufunc"},
-    {"name" : "arccosh", "impl" : "ufunc"},
-    {"name" : "arctanh", "impl" : "ufunc"},
+    {"name" : "arcsinh", "impl" : "ufunc", "alt" : "asinh"},
+    {"name" : "arccosh", "impl" : "ufunc", "alt" : "acosh"},
+    {"name" : "arctanh", "impl" : "ufunc", "alt" : "atanh"},
     {"name" : "floor", "impl" : "ufunc"},
     {"name" : "ceil", "impl" : "ufunc"},
     {"name" : "trunc", "impl" : "ufunc"},
@@ -161,6 +162,7 @@ func_list = numpy_func_list
 generated_stubs = stubs_template.render(numpy_supported_funcs=func_list)
 generated_rewrite_function_name_map = rewrite_function_name_map_template.render(numpy_supported_funcs=func_list)
 generated_ufunc = ufunc_template.render(numpy_supported_funcs=func_list)
+
 
 with open(output_dir + 'stubs.py', 'w') as f:
     f.write(generated_stubs)
