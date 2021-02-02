@@ -4,14 +4,6 @@ from numba import types
 from numba.core.types.misc import RawPointer
 
 
-@infer_getattr
-class DppyDpnpTemplate(AttributeTemplate):
-    key = types.Module(numba_dppy)
-
-    def resolve_dpnp(self, mod):
-        return types.Module(numba_dppy.dpnp)
-
-
 """
 This adds a shapeptr attribute to Numba type representing np.ndarray.
 This allows us to get the raw pointer to the structure where the shape

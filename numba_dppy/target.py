@@ -106,38 +106,6 @@ class DPPYTargetContext(BaseContext):
     def replace_numpy_ufunc_with_opencl_supported_functions(self):
         from numba_dppy.ocl.mathimpl import lower_ocl_impl, sig_mapper
         from numba_dppy.numpy.maps import numba_dppy_numpy_ufunc
-
-        '''
-        ufuncs = [
-            ("fabs", np.fabs),
-            ("exp", np.exp),
-            ("log", np.log),
-            ("log10", np.log10),
-            ("expm1", np.expm1),
-            ("log1p", np.log1p),
-            ("sqrt", np.sqrt),
-            ("sin", np.sin),
-            ("cos", np.cos),
-            ("tan", np.tan),
-            ("asin", np.arcsin),
-            ("acos", np.arccos),
-            ("atan", np.arctan),
-            ("atan2", np.arctan2),
-            ("sinh", np.sinh),
-            ("cosh", np.cosh),
-            ("tanh", np.tanh),
-            ("asinh", np.arcsinh),
-            ("acosh", np.arccosh),
-            ("atanh", np.arctanh),
-            ("ldexp", np.ldexp),
-            ("floor", np.floor),
-            ("ceil", np.ceil),
-            ("trunc", np.trunc),
-            ("hypot", np.hypot),
-            ("exp2", np.exp2),
-            ("log2", np.log2),
-        ]
-        '''
         ufuncs = numba_dppy_numpy_ufunc
 
         for name, ufunc in ufuncs:

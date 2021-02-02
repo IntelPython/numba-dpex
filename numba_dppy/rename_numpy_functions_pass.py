@@ -8,68 +8,6 @@ from numba.core.ir_utils import (
 )
 import numba_dppy
 from numba.core import types
-
-'''
-rewrite_function_name_map = {
-    # numpy
-    "amax": (["numpy"], "amax"),
-    "amin": (["numpy"], "amin"),
-    "argmax": (["numpy"], "argmax"),
-    "argmin": (["numpy"], "argmin"),
-    "argsort": (["numpy"], "argsort"),
-    "cov": (["numpy"], "cov"),
-    "max": (["numpy"], "max"),
-    "mean": (["numpy"], "mean"),
-    "median": (["numpy"], "median"),
-    "min": (["numpy"], "min"),
-    "vdot": (["numpy"], "vdot"),
-    # random
-    "beta": (["random"], "beta"),
-    "binomial": (["random"], "binomial"),
-    "chisquare": (["random"], "chisquare"),
-    "exponential": (["random"], "exponential"),
-    "gamma": (["random"], "gamma"),
-    "geometric": (["random"], "geometric"),
-    "gumbel": (["random"], "gumbel"),
-    "hypergeometric": (["random"], "hypergeometric"),
-    "laplace": (["random"], "laplace"),
-    "lognormal": (["random"], "lognormal"),
-    "multinomial": (["random"], "multinomial"),
-    "multivariate_normal": (["random"], "multivariate_normal"),
-    "negative_binomial": (["random"], "negative_binomial"),
-    "normal": (["random"], "normal"),
-    "poisson": (["random"], "poisson"),
-    "rand": (["random"], "rand"),
-    "randint": (["random"], "randint"),
-    "random_integers": (["random"], "random_integers"),
-    "random_sample": {"random": (["numpy"], "random_sample")},
-    "random": {"random": (["numpy"], "random")},
-    "ranf": (["random"], "ranf"),
-    "rayleigh": (["random"], "rayleigh"),
-    "sample": (["random"], "sample"),
-    "standard_cauchy": (["random"], "standard_cauchy"),
-    "standard_exponential": (["random"], "standard_exponential"),
-    "standard_gamma": (["random"], "standard_gamma"),
-    "standard_normal": (["random"], "standard_normal"),
-    "uniform": (["random"], "uniform"),
-    "weibull": (["random"], "weibull"),
-    # linalg
-    "cholesky": (["linalg"], "cholesky"),
-    "det": (["linalg"], "det"),
-    "dot": (["numpy"], "dot"),
-    "eig": (["linalg"], "eig"),
-    "eigvals": (["linalg"], "eigvals"),
-    "matmul": (["numpy"], "matmul"),
-    "matrix_power": (["linalg"], "matrix_power"),
-    "matrix_rank": (["linalg"], "matrix_rank"),
-    "multi_dot": (["linalg"], "multi_dot"),
-    # transcendentals
-    "nanprod": (["numpy"], "nanprod"),
-    "nansum": (["numpy"], "nansum"),
-    "prod": (["numpy"], "prod"),
-    "sum": (["numpy"], "sum"),
-}
-'''
 from numba_dppy.numpy.maps import rewrite_function_name_map
 
 
@@ -142,19 +80,11 @@ class RewriteNumPyOverloadedFunctions(object):
                     # replace np.FOO with name from self.function_name_map["FOO"]
                     # e.g. np.sum will be replaced with numba_dppy.dpnp.sum
                     if rhs.op == "getattr" and rhs.attr in self.function_name_map:
-
                         module_node, map_node = self._find_module(block, stmt, self.function_name_map)
-
-                        #module_node = block.find_variable_assignment(
-                        #    rhs.value.name
-                        #).value
                         if (
                             isinstance(module_node, ir.Global)
                             and module_node.value.__name__
                             in map_node[0]
-                        #) or (
-                        #    isinstance(module_node, ir.Expr)
-                        #    and module_node.attr in self.function_name_map[rhs.attr][0]
                         ):
                             rhs = stmt.value
                             rhs.attr = map_node[1]
@@ -177,7 +107,6 @@ class RewriteNumPyOverloadedFunctions(object):
                             g_dppy_assign = ir.Assign(g_dppy, g_dppy_var, loc)
 
                             dpnp_var = ir.Var(scope, mk_unique_var("$4load_attr"), loc)
-                            #getattr_dpnp = ir.Expr.getattr(g_dppy_var, "dpnp", loc)
                             getattr_dpnp = ir.Expr.getattr(g_dppy_var, "numpy", loc)
                             dpnp_assign = ir.Assign(getattr_dpnp, dpnp_var, loc)
 
@@ -273,9 +202,7 @@ class RewriteNdarrayFunctions(object):
                         g_dppy_assign = ir.Assign(g_dppy, g_dppy_var, loc)
 
                         dpnp_var = ir.Var(scope, mk_unique_var("$load_attr"), loc)
-                        #self.typemap[dpnp_var.name] = types.misc.Module(numba_dppy.dpnp)
                         self.typemap[dpnp_var.name] = types.misc.Module(numba_dppy.numpy)
-                        #getattr_dpnp = ir.Expr.getattr(g_dppy_var, "dpnp", loc)
                         getattr_dpnp = ir.Expr.getattr(g_dppy_var, "numpy", loc)
                         dpnp_assign = ir.Assign(getattr_dpnp, dpnp_var, loc)
 
