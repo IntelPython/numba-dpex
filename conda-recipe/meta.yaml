@@ -9,6 +9,7 @@ build:
     number: {{ GIT_DESCRIBE_NUMBER }}
     script_env:
         - ONEAPI_ROOT
+        - WHEELS_OUTPUT_FOLDER
 
 requirements:
     build:
@@ -20,6 +21,7 @@ requirements:
         - numba
         - dpctl >=0.5.1rc1
         - dpnp 0.4.*  # [linux]
+        - wheel
     run:
         - python
         - numba >=0.51

@@ -1,4 +1,18 @@
 #! /usr/bin/env python
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import numpy as np
 from numba import njit
 import dpctl
@@ -223,6 +237,21 @@ class TestNumpy_math_functions(unittest.TestCase):
         max_abs_err = c.sum() - d.sum()
         self.assertTrue(max_abs_err < 1e-5)
 
+    def test_exp2(self):
+        @njit
+        def f(a):
+            c = np.exp2(a)
+            return c
+
+        input_arr = np.random.randint(self.N, size=(self.N))
+
+        with dpctl.device_context("opencl:gpu"):
+            c = f(input_arr)
+
+        d = np.exp2(input_arr)
+        max_abs_err = c.sum() - d.sum()
+        self.assertTrue(max_abs_err < 1e-5)
+
     @unittest.skipIf(skip_tests.is_gen12("opencl:gpu"), "Gen12 not supported")
     def test_log(self):
         @njit
@@ -236,6 +265,22 @@ class TestNumpy_math_functions(unittest.TestCase):
             c = f(input_arr)
 
         d = np.log(input_arr)
+        max_abs_err = c.sum() - d.sum()
+        self.assertTrue(max_abs_err < 1e-5)
+
+    @unittest.skipIf(skip_tests.is_gen12("opencl:gpu"), "Gen12 not supported")
+    def test_log2(self):
+        @njit
+        def f(a):
+            c = np.log2(a)
+            return c
+
+        input_arr = np.random.randint(1, self.N, size=(self.N))
+
+        with dpctl.device_context("opencl:gpu"):
+            c = f(input_arr)
+
+        d = np.log2(input_arr)
         max_abs_err = c.sum() - d.sum()
         self.assertTrue(max_abs_err < 1e-5)
 
@@ -283,6 +328,22 @@ class TestNumpy_math_functions(unittest.TestCase):
             c = f(input_arr)
 
         d = np.log1p(input_arr)
+        max_abs_err = c.sum() - d.sum()
+        self.assertTrue(max_abs_err < 1e-5)
+
+    def test_hypot(self):
+        @njit
+        def f(a, b):
+            c = np.hypot(a, b)
+            return c
+
+        arr1 = 3 * np.ones((3, 3))
+        arr2 = 4 * np.ones((3, 3))
+
+        with dpctl.device_context("opencl:gpu"):
+            c = f(arr1, arr2)
+
+        d = np.hypot(arr1, arr2)
         max_abs_err = c.sum() - d.sum()
         self.assertTrue(max_abs_err < 1e-5)
 
