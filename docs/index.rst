@@ -26,7 +26,7 @@ Welcome to numba-dppy's documentation!
    :caption: NumPy support in @njit
    :maxdepth: 2
 
-   numpy_support
+   numpy_support/index
 
 
 Indices and tables
