@@ -68,7 +68,7 @@ its SYCL interface.
    CONTRIBUTING
 
 .. toctree::
-   :caption: Programming SYCL devices using Numba-Dppy
+   :caption: Programming SYCL devices
    :maxdepth: 2
 
    dppy/index.rst
