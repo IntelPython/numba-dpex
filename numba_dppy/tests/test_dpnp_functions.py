@@ -1302,7 +1302,7 @@ class Testdpnp_functions(unittest.TestCase):
             return c
 
         self.assertTrue(
-            check_for_different_datatypes(f, np.argmin, [10], 1, self.tys, np_all=True)
+            check_for_different_datatypes(f, np.argsort, [10], 1, self.tys, np_all=True)
         )
 
     def test_median(self):
