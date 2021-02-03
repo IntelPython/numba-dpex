@@ -24,9 +24,9 @@ Welcome to numba-dppy's documentation!
 
 .. toctree::
    :caption: NumPy support in @njit
-   :maxdepth: 4
+   :maxdepth: 2
 
-   numpy_support/index.rst
+   numpy_support/index
 
 
 Indices and tables

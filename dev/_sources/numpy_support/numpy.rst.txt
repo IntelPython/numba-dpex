@@ -1,8 +1,5 @@
-numpy support
+Numpy support
 =============
-
-Submodules
-----------
 
 numba_dppy.numpy_support module
 -------------------------------
