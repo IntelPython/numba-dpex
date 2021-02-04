@@ -26,7 +26,7 @@ Welcome to numba-dppy's documentation!
    :caption: NumPy support through @njit
    :maxdepth: 4
 
-   numpy_support/index.rst
+   numpy_support/numpy.rst
 
 
 Indices and tables
