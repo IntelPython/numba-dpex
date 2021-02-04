@@ -23,10 +23,10 @@ Welcome to numba-dppy's documentation!
    dppy-reference/index.rst
 
 .. toctree::
-   :caption: NumPy support in @njit
-   :maxdepth: 2
+   :caption: NumPy support through @njit
+   :maxdepth: 4
 
-   numpy_support/index
+   numpy_support/index.rst
 
 
 Indices and tables
