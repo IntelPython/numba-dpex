@@ -31,7 +31,7 @@ def dpnp_sort_impl(a):
     ret_type = types.void
     """
     dpnp source:
-    https://github.com/IntelPython/dpnp/blob/master/dpnp/backend/kernels/dpnp_krnl_sorting.cpp#L90
+    https://github.com/IntelPython/dpnp/blob/0.5.0/dpnp/backend/kernels/dpnp_krnl_sorting.cpp#L90
 
     Function declaration:
     void dpnp_sort_c(void* array1_in, void* result1, size_t size)
