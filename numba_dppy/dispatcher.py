@@ -126,7 +126,12 @@ class DPPYUFuncDispatcher(object):
             # reduce by recursively spliting and operating
             out = self.__reduce(mem, gpu_mems, stream)
             # store the resultong scalar in a [1,] buffer
-            buf = np.empty([out.size,], dtype=out.dtype,)
+            buf = np.empty(
+                [
+                    out.size,
+                ],
+                dtype=out.dtype,
+            )
             # copy the result back to host
             out.copy_to_host(buf, stream=stream)
 
