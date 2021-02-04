@@ -82,3 +82,4 @@ def test_kernel_arg_accessor(filter_str, input_arrays, kernel):
     expected = a + b
     with dpctl.device_context(filter_str):
         call_kernel(global_size, local_size, a, b, actual, kernel)
+    np.testing.assert_allclose(actual, expected, rtol=1e-5, atol=0)
