@@ -1,18 +1,7 @@
 Numpy support
 =============
 
-numba_dppy.numpy_support module
--------------------------------
-
 .. automodule:: numba_dppy.numpy.stubs
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: numba_dppy.numpy
    :members:
    :undoc-members:
    :show-inheritance:
