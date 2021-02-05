@@ -1,7 +1,7 @@
 Random Number Generation
 ========================
 
-DPPY does not provides a random number generation algorithm that can be executed
+DPPY does not provide a random number generation algorithm that can be executed
 on the GPU.
 
 DPPY provides access to NumPy random algorithms that can be executed on the GPU
@@ -49,3 +49,10 @@ Distribution
 - `standard_normal <https://numpy.org/doc/1.16/reference/generated/numpy.random.standard_normal.html#numpy.random.standard_normal>`_
 - `uniform <https://numpy.org/doc/1.16/reference/generated/numpy.random.uniform.html#numpy.random.uniform>`_
 - `weibull <https://numpy.org/doc/1.16/reference/generated/numpy.random.weibull.html#numpy.random.weibull>`_
+
+Example:
+
+.. note::
+    To ensure the code is executed on GPU set `DEBUG=1` (or `NUMBA_DPPY_DEBUG=1`) and look to stdout
+
+.. literalinclude:: ../../numba_dppy/examples/rand.py
