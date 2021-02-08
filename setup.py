@@ -41,12 +41,11 @@ build_requires = ["cython"]
 install_requires = [
     "numba",
     "dpctl",
-    'dpnp'
 ]
 
 metadata = dict(
     name="numba-dppy",
-    version=versioneer.get_version(),
+    version=versioneer.get_version().split('+')[0],
     description="Numba extension for Intel CPU and GPU backend",
     long_description=long_description,
     long_description_content_type="text/markdown",
