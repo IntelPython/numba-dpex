@@ -178,3 +178,9 @@ class dpnp(Stub):
 
     class nanprod(Stub):
         pass
+
+    class take(Stub):
+        pass
+
+    class sort(Stub):
+        pass
