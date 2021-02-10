@@ -24,6 +24,7 @@ import llvmlite.binding as ll
 
 from numba.core.imputils import Registry
 from numba.core import cgutils, types
+from numba.core.typing.npydecl import parse_dtype
 from numba.core.itanium_mangler import mangle_c, mangle, mangle_type
 from numba_dppy import target
 from . import stubs
@@ -375,9 +376,26 @@ def atomic_sub_tuple(context, builder, sig, args):
         raise ImportError("Atomic support is not present, can not perform atomic_add")
 
 
-@lower("dppy.lmem.alloc", types.UniTuple, types.Any)
-def dppy_lmem_alloc_array(context, builder, sig, args):
-    shape, dtype = args
+
+@lower(stubs.local.array, types.IntegerLiteral, types.Any)
+def dppy_local_array_integer(context, builder, sig, args):
+    length = sig.args[0].literal_value
+    dtype = parse_dtype(sig.args[1])
+    return _generic_array(
+        context,
+        builder,
+        shape=(length, ),
+        dtype=dtype,
+        symbol_name="_dppy_lmem",
+        addrspace=target.SPIR_LOCAL_ADDRSPACE,
+    )
+
+
+@lower(stubs.local.array, types.Tuple, types.Any)
+@lower(stubs.local.array, types.UniTuple, types.Any)
+def dppy_local_array_tuple(context, builder, sig, args):
+    shape = [ s.literal_value for s in sig.args[0] ]
+    dtype = parse_dtype(sig.args[1])
     return _generic_array(
         context,
         builder,
