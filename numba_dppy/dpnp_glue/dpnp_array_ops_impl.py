@@ -10,7 +10,7 @@ import numba_dppy
 
 
 @overload(stubs.dpnp.take)
-def dpnp_take_impl(a,ind):
+def dpnp_take_impl(a, ind):
     name = "take"
     dpnp_lowering.ensure_dpnp(name)
 
@@ -27,7 +27,7 @@ def dpnp_take_impl(a,ind):
     res_dtype = a.dtype
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
-    def dpnp_impl(a,ind):
+    def dpnp_impl(a, ind):
         if a.size == 0:
             raise ValueError("Passed Empty array")
 
@@ -37,7 +37,9 @@ def dpnp_take_impl(a,ind):
         dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
 
         ind_usm = dpctl_functions.malloc_shared(ind.size * ind.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(sycl_queue, ind_usm, ind.ctypes, ind.size * ind.itemsize)
+        dpctl_functions.queue_memcpy(
+            sycl_queue, ind_usm, ind.ctypes, ind.size * ind.itemsize
+        )
 
         out = np.arange(ind.size, dtype=res_dtype).reshape(ind.shape)
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
@@ -52,7 +54,7 @@ def dpnp_take_impl(a,ind):
         dpctl_functions.free_with_queue(ind_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
 
-        dpnp_ext._dummy_liveness_func([a.size,ind.size,out.size])
+        dpnp_ext._dummy_liveness_func([a.size, ind.size, out.size])
 
         if PRINT_DEBUG:
             print("dpnp implementation")

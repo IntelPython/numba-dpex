@@ -1410,6 +1410,7 @@ class Testdpnp_functions(unittest.TestCase):
         max_abs_err = got.sum() - expected.sum()
         self.assertTrue(max_abs_err < 1e-4)
 
+
 @unittest.skipUnless(
     ensure_dpnp() and dpctl.has_gpu_queues(), "test only when dpNP and GPU is available"
 )
@@ -1421,8 +1422,9 @@ class Testdpnp_array_ops_functions(unittest.TestCase):
     ):
         for ty in tys:
             if matrix:
-                a = np.arange(np.prod(np.array(dims)),
-                              dtype=ty).reshape(dims[0], dims[1])
+                a = np.arange(np.prod(np.array(dims)), dtype=ty).reshape(
+                    dims[0], dims[1]
+                )
             else:
                 a = np.arange(dims[0], dtype=ty)
 
@@ -1482,7 +1484,12 @@ class Testdpnp_array_ops_functions(unittest.TestCase):
             for ind in test_indices:
                 self.assertTrue(
                     self.check_take_for_different_datatypes(
-                        f, np.take, self.get_np_array(ind), [3, 4], [np.float], matrix=True
+                        f,
+                        np.take,
+                        self.get_np_array(ind),
+                        [3, 4],
+                        [np.float],
+                        matrix=True,
                     )
                 )
 
