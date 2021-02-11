@@ -1454,14 +1454,13 @@ class Testdpnp_array_ops_functions(unittest.TestCase):
             c = np.take(a, ind)
             return c
 
-        test_indices = []
-        test_indices.append(np.array([1, 5, 1, 11, 3]))
+        test_indices = [np.array([1, 5, 1, 11, 3])]
 
         with assert_dpnp_implementaion():
             for ind in test_indices:
                 self.assertTrue(
                     self.check_take_for_different_datatypes(
-                        f, np.take, self.get_np_array(ind), [12], self.tys, matrix=False
+                        f, np.take, ind, [12], self.tys, matrix=False
                     )
                 )
 
