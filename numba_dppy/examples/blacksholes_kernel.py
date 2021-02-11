@@ -80,7 +80,7 @@ def black_scholes_dppy(callResult, putResult, S, X, T, R, V):
 blockdim = 512, 1
 griddim = int(math.ceil(float(OPT_N) / blockdim[0])), 1
 
-with dpctl.device_context("level0:cpu") as gpu_queue:
+with dpctl.device_context("level0:gpu") as gpu_queue:
     time1 = time.time()
     for i in range(iterations):
         black_scholes_dppy[blockdim, griddim](

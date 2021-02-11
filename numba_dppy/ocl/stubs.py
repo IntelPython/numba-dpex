@@ -151,13 +151,13 @@ class atomic(Stub):
 
     _description_ = "<atomic>"
 
-    class add(Stub):
+    def add():
         """add(ary, idx, val)
 
         Perform atomic ary[idx] += val
         """
 
-    class sub(Stub):
+    def sub():
         """sub(ary, idx, val)
 
         Perform atomic ary[idx] -= val

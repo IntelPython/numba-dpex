@@ -98,6 +98,7 @@ class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
                             ).value
                             if (
                                 isinstance(call_node, ir.Expr)
+                                and call_node.op == "getattr"
                                 and call_node.attr == "static_alloc"
                             ):
                                 arg = None

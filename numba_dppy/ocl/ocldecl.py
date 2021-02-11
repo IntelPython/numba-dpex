@@ -28,7 +28,7 @@ import numba_dppy, numba_dppy as dppy
 registry = Registry()
 intrinsic = registry.register
 intrinsic_attr = registry.register_attr
-# intrinsic_global = registry.register_global
+intrinsic_global = registry.register_global
 
 # register_number_classes(intrinsic_global)
 
@@ -135,6 +135,8 @@ class OclAtomicTemplate(AttributeTemplate):
     def resolve_sub(self, mod):
         return types.Function(Ocl_atomic_sub)
 
+intrinsic_global(dppy.atomic.add, types.Function(Ocl_atomic_add))
+intrinsic_global(dppy.atomic.sub, types.Function(Ocl_atomic_sub))
 
 # dppy.local submodule -------------------------------------------------------
 
