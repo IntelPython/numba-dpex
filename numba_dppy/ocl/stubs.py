@@ -17,6 +17,9 @@ from numba.core import types, ir, typing
 from numba.core.rewrites.macros import Macro
 
 from numba_dppy.target import SPIR_LOCAL_ADDRSPACE
+import numpy as np
+import numba
+from numba.np import numpy_support
 
 _stub_error = NotImplementedError("This is a stub.")
 
@@ -118,9 +121,15 @@ def local_alloc(shape, dtype):
     shape = _legalize_shape(shape)
     ndim = len(shape)
     fname = "dppy.lmem.alloc"
-    restype = types.Array(dtype, ndim, "C", addrspace=SPIR_LOCAL_ADDRSPACE)
+    if isinstance(dtype, types.scalars.Integer) or isinstance(
+        dtype, types.scalars.Float
+    ):
+        numba_dtype = dtype
+    else:
+        numba_dtype = numpy_support.from_dtype(dtype)
+    restype = types.Array(numba_dtype, ndim, "C", addrspace=SPIR_LOCAL_ADDRSPACE)
     sig = typing.signature(restype, types.UniTuple(types.intp, ndim), types.Any)
-    return ir.Intrinsic(fname, sig, args=(shape, dtype))
+    return ir.Intrinsic(fname, sig, args=(shape, numba_dtype))
 
 
 class local(Stub):

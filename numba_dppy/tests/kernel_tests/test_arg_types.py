@@ -1,3 +1,17 @@
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import numpy as np
 import numba_dppy as dppy
 import pytest
@@ -7,9 +21,11 @@ global_size = 1054
 local_size = 1
 N = global_size * local_size
 
+
 def mul_kernel(a, b, c):
     i = dppy.get_global_id(0)
     b[i] = a[i] * c
+
 
 list_of_filter_strs = [
     "opencl:gpu:0",
@@ -17,9 +33,11 @@ list_of_filter_strs = [
     "opencl:cpu:0",
 ]
 
+
 @pytest.fixture(params=list_of_filter_strs)
 def filter_str(request):
     return request.param
+
 
 list_of_dtypes = [
     np.int32,
@@ -58,6 +76,7 @@ def check_bool_kernel(A, test):
     else:
         A[0] = 222
 
+
 def test_bool_type(filter_str):
     try:
         with dpctl.device_context(filter_str):
@@ -70,7 +89,6 @@ def test_bool_type(filter_str):
 
     with dpctl.device_context(filter_str):
         kernel[a.size, dppy.DEFAULT_LOCAL_SIZE](a, True)
-        assert(a[0] == 111)
+        assert a[0] == 111
         kernel[a.size, dppy.DEFAULT_LOCAL_SIZE](a, False)
-        assert(a[0] == 222)
-
+        assert a[0] == 222
