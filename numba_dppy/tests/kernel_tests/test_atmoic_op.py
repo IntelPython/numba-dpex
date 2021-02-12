@@ -19,10 +19,6 @@ import pytest
 import dpctl
 
 
-def call_kernel(global_size, local_size, A, B, C, func):
-    func[global_size, local_size](A, B, C)
-
-
 global_size = 100
 N = global_size
 
