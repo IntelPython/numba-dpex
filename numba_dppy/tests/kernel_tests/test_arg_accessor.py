@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import numpy as np
-
 import numba_dppy as dppy
 import pytest
 import dpctl
