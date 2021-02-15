@@ -740,7 +740,6 @@ class Testdpnp_random_functions(unittest.TestCase):
             self.assertTrue(result[0] >= 1)
             self.assertTrue(result[0] <= low)
 
-    @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_beta(self):
         @njit
         def f(a, b, size):
@@ -762,7 +761,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(final_result.all() >= 0)
                 self.assertTrue(final_result.all() <= 1.0)
 
-    @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_binomial(self):
         @njit
         def f(a, b, size):
@@ -783,7 +781,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(final_result.all() >= 0)
                 self.assertTrue(final_result.all() <= n)
 
-    @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_chisquare(self):
         @njit
         def f(df, size):
@@ -820,7 +817,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                 final_result = result.ravel()
                 self.assertTrue(final_result.all() >= 0)
 
-    @unittest.skip("Exception from MKL, oneMKL: rng/generate")
+    @unittest.skip("AttributeError: 'NoneType' object has no attribute 'ravel'")
     def test_gamma(self):
         @njit
         def f(shape, size):
@@ -870,7 +867,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     result = f(mu, beta, size)
                     # TODO: check result, x belongs R
 
-    @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_hypergeometric(self):
         @njit
         def f(ngood, nbad, nsamp, size):
@@ -922,7 +918,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                 final_result = result.ravel()
                 self.assertTrue(final_result.all() >= 0)
 
-    @unittest.skip("Exception from MKL, oneMKL: rng/generate")
+    @unittest.skip("DPNP RNG Error: dpnp_rng_multinomial_c() failed")
     def test_multinomial(self):
         @njit
         def f(n, pvals, size):
@@ -960,7 +956,8 @@ class Testdpnp_random_functions(unittest.TestCase):
                     result = f(mean, cov, size)
                     # TODO: check result, for multidimensional distribution
 
-    @unittest.skip("Exception from MKL, oneMKL: rng/generate")
+    @unittest.skip("DPNP RNG Error: dpnp_rng_negative_binomial_c() failed.")
+    # Intel MKL ERROR: Parameter 6 was incorrect on entry to viRngNegbinomial.
     def test_negative_binomial(self):
         @njit
         def f(n, p, size):
@@ -1063,7 +1060,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                 final_result = result.ravel()
                 self.assertTrue(final_result.all() >= 0.0)
 
-    @unittest.skip("Exception from MKL, oneMKL: rng/generate")
     def test_standard_gamma(self):
         @njit
         def f(shape, size):
