@@ -27,6 +27,7 @@ list_of_filter_strs = [
 def filter_str(request):
     return request.param
 
+
 def test_dpctl_api(filter_str):
     with dpctl.device_context(filter_str) as gpu_queue:
         dpctl.dump()
