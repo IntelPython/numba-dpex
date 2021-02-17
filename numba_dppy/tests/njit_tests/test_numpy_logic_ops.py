@@ -35,20 +35,16 @@ def filter_str(request):
 
 
 list_of_binary_ops = [
-    "add",
-    "subtract",
-    "multiply",
-    "divide",
-    "true_divide",
-    "power",
-    "remainder",
-    "mod",
-    "fmod",
-    "hypot",
-    "maximum",
-    "minimum",
-    "fmax",
-    "fmin",
+    "greater",
+    "greater_equal",
+    "less",
+    "less_equal",
+    "not_equal",
+    "equal",
+    "logical_and",
+    "logical_or",
+    "logical_xor",
+    "logical_not",
 ]
 
 
@@ -57,33 +53,9 @@ def binary_op(request):
     return request.param
 
 
-list_of_unary_ops = [
-    "negative",
-    "abs",
-    "absolute",
-    "fabs",
-    "sign",
-    "conj",
-    "exp",
-    "exp2",
-    "log",
-    "log2",
-    "log10",
-    "expm1",
-    "log1p",
-    "sqrt",
-    "square",
-    "reciprocal",
-    "conjugate",
-]
-
-
-@pytest.fixture(params=list_of_unary_ops)
-def unary_op(request):
-    return request.param
-
-
 list_of_dtypes = [
+    np.int32,
+    np.int64,
     np.float32,
     np.float64,
 ]
@@ -118,31 +90,4 @@ def test_binary_ops(filter_str, binary_op, input_arrays):
         actual = f(a, b)
 
     expected = binop(a, b)
-    np.testing.assert_allclose(actual, expected, rtol=1e-5, atol=0)
-
-
-def test_unary_ops(filter_str, unary_op, input_arrays):
-    try:
-        with dpctl.device_context(filter_str):
-            pass
-    except Exception:
-        pytest.skip()
-
-    # FIXME: Why does sign fail on Gen12 discrete graphics card?
-    if unary_op == "sign" and skip_tests.is_gen12(filter_str):
-        pytest.skip()
-
-    a = input_arrays[0]
-    uop = getattr(np, unary_op)
-    actual = np.empty(shape=a.shape, dtype=a.dtype)
-    expected = np.empty(shape=a.shape, dtype=a.dtype)
-
-    @njit
-    def f(a):
-        return uop(a)
-
-    with dpctl.device_context(filter_str):
-        actual = f(a)
-
-    expected = uop(a)
     np.testing.assert_allclose(actual, expected, rtol=1e-5, atol=0)
