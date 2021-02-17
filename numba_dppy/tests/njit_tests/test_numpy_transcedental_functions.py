@@ -44,6 +44,7 @@ list_of_binary_ops = [
     "remainder",
     "mod",
     "fmod",
+    "hypot",
 ]
 
 
@@ -60,7 +61,9 @@ list_of_unary_ops = [
     "sign",
     "conj",
     "exp",
+    "exp2",
     "log",
+    "log2",
     "log10",
     "expm1",
     "log1p",
