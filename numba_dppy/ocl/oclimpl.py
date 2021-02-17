@@ -376,7 +376,6 @@ def atomic_sub_tuple(context, builder, sig, args):
         raise ImportError("Atomic support is not present, can not perform atomic_add")
 
 
-
 @lower(stubs.local.array, types.IntegerLiteral, types.Any)
 def dppy_local_array_integer(context, builder, sig, args):
     length = sig.args[0].literal_value
@@ -384,7 +383,7 @@ def dppy_local_array_integer(context, builder, sig, args):
     return _generic_array(
         context,
         builder,
-        shape=(length, ),
+        shape=(length,),
         dtype=dtype,
         symbol_name="_dppy_lmem",
         addrspace=target.SPIR_LOCAL_ADDRSPACE,
@@ -394,7 +393,7 @@ def dppy_local_array_integer(context, builder, sig, args):
 @lower(stubs.local.array, types.Tuple, types.Any)
 @lower(stubs.local.array, types.UniTuple, types.Any)
 def dppy_local_array_tuple(context, builder, sig, args):
-    shape = [ s.literal_value for s in sig.args[0] ]
+    shape = [s.literal_value for s in sig.args[0]]
     dtype = parse_dtype(sig.args[1])
     return _generic_array(
         context,

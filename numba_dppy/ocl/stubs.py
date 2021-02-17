@@ -112,6 +112,7 @@ class Stub(object):
 # -------------------------------------------------------------------------------
 # local memory
 
+
 class local(Stub):
     """local namespace"""
 
