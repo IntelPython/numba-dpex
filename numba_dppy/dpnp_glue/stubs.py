@@ -184,3 +184,6 @@ class dpnp(Stub):
 
     class cumprod(Stub):
         pass
+
+    class sort(Stub):
+        pass

@@ -207,6 +207,8 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_CUMSUM
     elif name == "dpnp_cumprod":
         return DPNPFuncName.DPNP_FN_CUMPROD
+    elif name == "dpnp_sort":
+        return DPNPFuncName.DPNP_FN_SORT
     else:
         raise ValueError("Unknown dpnp function requested: " + name.split("_")[1])
 
