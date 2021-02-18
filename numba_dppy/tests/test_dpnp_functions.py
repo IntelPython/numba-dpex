@@ -72,6 +72,33 @@ def check_for_different_datatypes(
     return True
 
 
+def check_for_different_datatypes_array_creations(
+    fn, test_fn, dims, arg_count, tys, np_all=False, matrix=None
+):
+    for ty in tys:
+        if matrix and matrix[0]:
+            a = np.array(np.random.random(dims[0] * dims[1]), dtype=ty).reshape(
+                dims[0], dims[1]
+            )
+        else:
+            a = np.array(np.random.random(dims[0]), dtype=ty)
+        b_dppy = np.array(np.random.random(1), dtype=ty)
+        b_numpy = b_dppy[0]
+
+        with dpctl.device_context("opencl:gpu"):
+            c = fn(a, b_dppy)
+
+        d = test_fn(a.shape, b_numpy)
+
+        if np_all:
+            max_abs_err = np.all(c - d)
+        else:
+            max_abs_err = c - d
+        if not (max_abs_err < 1e-4):
+            return False
+    return True
+
+
 def check_for_dimensions(fn, test_fn, dims, tys, np_all=False):
     total_size = 1
     for d in dims:
@@ -1429,6 +1456,25 @@ class Testdpnp_array_ops_functions(unittest.TestCase):
                     f, np.sort, [10], 1, self.tys, np_all=True
                 )
             )
+
+
+@unittest.skipUnless(
+    ensure_dpnp() and dpctl.has_gpu_queues(), "test only when dpNP and GPU is available"
+)
+class Testdpnp_array_creations_functions(unittest.TestCase):
+    tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
+
+    def test_full(self):
+        @njit
+        def f(a, b):
+            c = np.full(a, b)
+            return c
+
+        self.assertTrue(
+            check_for_different_datatypes_array_creations(
+                f, np.full, [10], 2, self.tys, np_all=True
+            )
+        )
 
 
 if __name__ == "__main__":

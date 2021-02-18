@@ -44,6 +44,7 @@ cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncName":  # need this na
         DPNP_FN_FLOOR
         DPNP_FN_FLOOR_DIVIDE
         DPNP_FN_FMOD
+        DPNP_FN_FULL
         DPNP_FN_HYPOT
         DPNP_FN_INVERT
         DPNP_FN_LEFT_SHIFT
@@ -203,6 +204,8 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_MATRIX_RANK
     elif name == "dpnp_sort":
         return DPNPFuncName.DPNP_FN_SORT
+    elif name == "dpnp_full":
+        return DPNPFuncName.DPNP_FN_FULL
     else:
         raise ValueError("Unknown dpnp function requested: " + name.split("_")[1])
 

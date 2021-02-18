@@ -181,3 +181,6 @@ class dpnp(Stub):
 
     class sort(Stub):
         pass
+
+    class full(Stub):
+        pass
