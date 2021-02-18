@@ -21,9 +21,9 @@ https://intelpython.github.io/dpnp/
 
 ## Dependencies
 
-* numba >=0.51 (IntelPython/numba)
+* numba 0.52.* (IntelPython/numba)
 * dpCtl >=0.5.1
-* dpNP 0.4.* (optional)
+* dpNP >=0.5.1 (optional)
 * llvm-spirv (SPIRV generation from LLVM IR)
 * llvmdev (LLVM IR generation)
 * spirv-tools
@@ -46,7 +46,11 @@ See folder `numba_dppy/tests`.
 
 Run tests:
 ```bash
-python -m unittest numba_dppy.tests
+python -m pytest --pyargs numba_dppy.tests
+```
+or
+```bash
+pytest
 ```
 
 ## Examples
