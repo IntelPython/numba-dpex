@@ -83,6 +83,8 @@ rewrite_function_name_map = {
     "prod": (["numpy"], "prod"),
     "sum": (["numpy"], "sum"),
     # array ops
+    "cumsum": (["numpy"], "cumsum"),
+    "cumprod": (["numpy"], "cumprod"),
     "sort": (["numpy"], "sort"),
 }
 

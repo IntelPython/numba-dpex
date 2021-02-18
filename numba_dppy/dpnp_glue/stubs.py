@@ -179,5 +179,11 @@ class dpnp(Stub):
     class nanprod(Stub):
         pass
 
+    class cumsum(Stub):
+        pass
+
+    class cumprod(Stub):
+        pass
+
     class sort(Stub):
         pass
