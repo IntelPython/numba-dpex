@@ -7,11 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Documentation.
-- Support NumPy functions via dpNP: random, linalg and transcendental.
+- Support NumPy functions via dpNP: random, linalg, transcendental, sort.
 
 ### Changed
 - Start using black code style formatter.
-- Apache 2.0 license
+- Start using Apache 2.0 license.
 - Updated to Numba 0.52 and dpNP 0.5.1.
 - Start using pytest for running tests.
 
