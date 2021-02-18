@@ -22,7 +22,7 @@ import dpctl
 
 def atomic_add_int32(ary):
     tid = dppy.get_local_id(0)
-    lm = dppy.local.static_alloc(32, numba.uint32)
+    lm = dppy.local.array(32, numba.uint32)
     lm[tid] = 0
     dppy.barrier(dppy.CLK_GLOBAL_MEM_FENCE)
     bin = ary[tid] % 32
@@ -33,7 +33,7 @@ def atomic_add_int32(ary):
 
 def atomic_sub_int32(ary):
     tid = dppy.get_local_id(0)
-    lm = dppy.local.static_alloc(32, numba.uint32)
+    lm = dppy.local.array(32, numba.uint32)
     lm[tid] = 0
     dppy.barrier(dppy.CLK_GLOBAL_MEM_FENCE)
     bin = ary[tid] % 32
@@ -43,7 +43,7 @@ def atomic_sub_int32(ary):
 
 
 def atomic_add_float32(ary):
-    lm = dppy.local.static_alloc(1, numba.float32)
+    lm = dppy.local.array(1, numba.float32)
     lm[0] = ary[0]
     dppy.barrier(dppy.CLK_GLOBAL_MEM_FENCE)
     dppy.atomic.add(lm, 0, 1)
@@ -52,7 +52,7 @@ def atomic_add_float32(ary):
 
 
 def atomic_sub_float32(ary):
-    lm = dppy.local.static_alloc(1, numba.float32)
+    lm = dppy.local.array(1, numba.float32)
     lm[0] = ary[0]
     dppy.barrier(dppy.CLK_GLOBAL_MEM_FENCE)
     dppy.atomic.sub(lm, 0, 1)
@@ -61,7 +61,7 @@ def atomic_sub_float32(ary):
 
 
 def atomic_add_int64(ary):
-    lm = dppy.local.static_alloc(1, numba.int64)
+    lm = dppy.local.array(1, numba.int64)
     lm[0] = ary[0]
     dppy.barrier(dppy.CLK_GLOBAL_MEM_FENCE)
     dppy.atomic.add(lm, 0, 1)
@@ -70,7 +70,7 @@ def atomic_add_int64(ary):
 
 
 def atomic_sub_int64(ary):
-    lm = dppy.local.static_alloc(1, numba.int64)
+    lm = dppy.local.array(1, numba.int64)
     lm[0] = ary[0]
     dppy.barrier(dppy.CLK_GLOBAL_MEM_FENCE)
     dppy.atomic.sub(lm, 0, 1)
@@ -79,7 +79,7 @@ def atomic_sub_int64(ary):
 
 
 def atomic_add_float64(ary):
-    lm = dppy.local.static_alloc(1, numba.float64)
+    lm = dppy.local.array(1, numba.float64)
     lm[0] = ary[0]
     dppy.barrier(dppy.CLK_GLOBAL_MEM_FENCE)
     dppy.atomic.add(lm, 0, 1)
@@ -88,7 +88,7 @@ def atomic_add_float64(ary):
 
 
 def atomic_sub_float64(ary):
-    lm = dppy.local.static_alloc(1, numba.float64)
+    lm = dppy.local.array(1, numba.float64)
     lm[0] = ary[0]
     dppy.barrier(dppy.CLK_GLOBAL_MEM_FENCE)
     dppy.atomic.sub(lm, 0, 1)
@@ -99,7 +99,7 @@ def atomic_sub_float64(ary):
 def atomic_add2(ary):
     tx = dppy.get_local_id(0)
     ty = dppy.get_local_id(1)
-    lm = dppy.local.static_alloc((4, 8), numba.uint32)
+    lm = dppy.local.array((4, 8), numba.uint32)
     lm[tx, ty] = ary[tx, ty]
     dppy.barrier(dppy.CLK_GLOBAL_MEM_FENCE)
     dppy.atomic.add(lm, (tx, ty), 1)
@@ -110,7 +110,7 @@ def atomic_add2(ary):
 def atomic_add3(ary):
     tx = dppy.get_local_id(0)
     ty = dppy.get_local_id(1)
-    lm = dppy.local.static_alloc((4, 8), numba.uint32)
+    lm = dppy.local.array((4, 8), numba.uint32)
     lm[tx, ty] = ary[tx, ty]
     dppy.barrier(dppy.CLK_GLOBAL_MEM_FENCE)
     dppy.atomic.add(lm, (tx, numba.uint64(ty)), 1)

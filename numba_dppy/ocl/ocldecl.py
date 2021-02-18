@@ -14,16 +14,17 @@
 
 from __future__ import print_function, division, absolute_import
 from numba import types
-from numba.core.typing.npydecl import register_number_classes
+from numba.core.typing.npydecl import register_number_classes, parse_dtype, parse_shape
 from numba.core.typing.templates import (
     AttributeTemplate,
     ConcreteTemplate,
     AbstractTemplate,
-    MacroTemplate,
+    CallableTemplate,
     signature,
     Registry,
 )
 import numba_dppy, numba_dppy as dppy
+from numba_dppy import target
 
 registry = Registry()
 intrinsic = registry.register
@@ -139,16 +140,43 @@ class OclAtomicTemplate(AttributeTemplate):
 # dppy.local submodule -------------------------------------------------------
 
 
-class Ocl_local_alloc(MacroTemplate):
-    key = dppy.local.static_alloc
+@intrinsic
+class OCL_local_array(CallableTemplate):
+    key = dppy.local.array
+
+    def generic(self):
+        def typer(shape, dtype):
+
+            # Only integer literals and tuples of integer literals are valid
+            # shapes
+            if isinstance(shape, types.Integer):
+                if not isinstance(shape, types.IntegerLiteral):
+                    return None
+            elif isinstance(shape, (types.Tuple, types.UniTuple)):
+                if any([not isinstance(s, types.IntegerLiteral) for s in shape]):
+                    return None
+            else:
+                return None
+
+            ndim = parse_shape(shape)
+            nb_dtype = parse_dtype(dtype)
+            if nb_dtype is not None and ndim is not None:
+                return types.Array(
+                    dtype=nb_dtype,
+                    ndim=ndim,
+                    layout="C",
+                    addrspace=target.SPIR_LOCAL_ADDRSPACE,
+                )
+
+        return typer
 
 
 @intrinsic_attr
 class OclLocalTemplate(AttributeTemplate):
     key = types.Module(dppy.local)
 
-    def resolve_static_alloc(self, mod):
-        return types.Macro(Ocl_local_alloc)
+    def resolve_array(self, mod):
+        return types.Function(OCL_local_array)
 
 
 # OpenCL module --------------------------------------------------------------
