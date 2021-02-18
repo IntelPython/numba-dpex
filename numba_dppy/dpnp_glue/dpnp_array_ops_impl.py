@@ -57,7 +57,7 @@ def dpnp_cumsum_impl(a):
     res_type = types.void
     """
     dpnp source:
-    https://github.com/IntelPython/dpnp/blob/master/dpnp/backend/kernels/dpnp_krnl_mathematical.cpp#L135
+    https://github.com/IntelPython/dpnp/blob/0.5.1/dpnp/backend/kernels/dpnp_krnl_mathematical.cpp#L135
     Function declaration:
     void dpnp_cumsum_c(void* array1_in, void* result1, size_t size)
     """
@@ -83,7 +83,7 @@ def dpnp_cumprod_impl(a):
     res_type = types.void
     """
     dpnp source:
-    https://github.com/IntelPython/dpnp/blob/master/dpnp/backend/kernels/dpnp_krnl_mathematical.cpp#L110
+    https://github.com/IntelPython/dpnp/blob/0.5.1/dpnp/backend/kernels/dpnp_krnl_mathematical.cpp#L110
     Function declaration:
     void dpnp_cumprod_c(void* array1_in, void* result1, size_t size)
     """
