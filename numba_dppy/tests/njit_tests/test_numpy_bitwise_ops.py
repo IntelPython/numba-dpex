@@ -104,10 +104,6 @@ def test_unary_ops(filter_str, unary_op, input_arrays):
     except Exception:
         pytest.skip()
 
-    # FIXME: Why does sign fail on Gen12 discrete graphics card?
-    if unary_op == "sign" and skip_tests.is_gen12(filter_str):
-        pytest.skip()
-
     a = input_arrays[0]
     uop = getattr(np, unary_op)
     actual = np.empty(shape=a.shape, dtype=a.dtype)

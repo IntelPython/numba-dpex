@@ -52,6 +52,18 @@ list_of_binary_ops = [
 def binary_op(request):
     return request.param
 
+list_of_unary_ops = [
+    "isinf",
+    "isfinite",
+    "isnan",
+]
+
+
+@pytest.fixture(params=list_of_unary_ops)
+def unary_op(request):
+    return request.param
+
+
 
 list_of_dtypes = [
     np.int32,
@@ -90,4 +102,27 @@ def test_binary_ops(filter_str, binary_op, input_arrays):
         actual = f(a, b)
 
     expected = binop(a, b)
+    np.testing.assert_allclose(actual, expected, rtol=1e-5, atol=0)
+
+
+def test_unary_ops(filter_str, unary_op, input_arrays):
+    try:
+        with dpctl.device_context(filter_str):
+            pass
+    except Exception:
+        pytest.skip()
+
+    a = input_arrays[0]
+    uop = getattr(np, unary_op)
+    actual = np.empty(shape=a.shape, dtype=a.dtype)
+    expected = np.empty(shape=a.shape, dtype=a.dtype)
+
+    @njit
+    def f(a):
+        return uop(a)
+
+    with dpctl.device_context(filter_str):
+        actual = f(a)
+
+    expected = uop(a)
     np.testing.assert_allclose(actual, expected, rtol=1e-5, atol=0)

@@ -75,6 +75,9 @@ list_of_unary_ops = [
     "square",
     "reciprocal",
     "conjugate",
+    "floor",
+    "ceil",
+    "trunc",
 ]
 
 
