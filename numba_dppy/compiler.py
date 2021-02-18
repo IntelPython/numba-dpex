@@ -87,8 +87,6 @@ class DPPYCompiler(CompilerBase):
             pms.append(DPPYPassBuilder.define_nopython_pipeline(self.state))
         if self.state.status.can_fallback or self.state.flags.force_pyobject:
             pms.append(DefaultPassBuilder.define_objectmode_pipeline(self.state))
-        if self.state.status.can_giveup:
-            pms.append(DefaultPassBuilder.define_interpreted_pipeline(self.state))
         return pms
 
 
