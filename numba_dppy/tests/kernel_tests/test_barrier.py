@@ -77,7 +77,7 @@ def test_local_memory(filter_str):
     # @dppy.kernel("void(float32[::1])")
     @dppy.kernel
     def reverse_array(A):
-        lm = dppy.local.static_alloc(shape=10, dtype=np.float32)
+        lm = dppy.local.array(shape=10, dtype=np.float32)
         i = dppy.get_global_id(0)
 
         # preload

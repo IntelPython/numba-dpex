@@ -93,7 +93,7 @@ def get_kernel_local(op_type, dtype):
     op = getattr(dppy.atomic, op_type)
 
     def f(a):
-        lm = dppy.local.static_alloc(1, dtype)
+        lm = dppy.local.array(1, dtype)
         lm[0] = a[0]
         dppy.barrier(dppy.CLK_GLOBAL_MEM_FENCE)
         op(lm, 0, 1)
@@ -114,7 +114,7 @@ def test_kernel_atomic_local(filter_str, input_arrays, return_list_of_op):
     op_type, expected = return_list_of_op
     kernel = get_kernel_local(op_type, dtype)
     with dpctl.device_context(filter_str):
-        kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
+        kernel[global_size, global_size](a)
     assert a[0] == expected
 
 
