@@ -73,7 +73,7 @@ def check_for_different_datatypes(
 
 
 def check_for_different_datatypes_array_creations(
-    fn, test_fn, dims, arg_count, tys, np_all=False, matrix=None
+    fn, test_fn, dims, tys, np_all=False, matrix=None, fill_value=0, func_like=True
 ):
     for ty in tys:
         if matrix and matrix[0]:
@@ -82,13 +82,16 @@ def check_for_different_datatypes_array_creations(
             )
         else:
             a = np.array(np.random.random(dims[0]), dtype=ty)
-        b_dppy = np.array(np.random.random(1), dtype=ty)
+        b_dppy = np.array([fill_value], dtype=ty)
         b_numpy = b_dppy[0]
 
         with dpctl.device_context("opencl:gpu"):
             c = fn(a, b_dppy)
 
-        d = test_fn(a.shape, b_numpy)
+        if func_like:
+            d = test_fn(a, b_numpy)
+        else:
+            d = test_fn(a.shape, b_numpy)
 
         if np_all:
             max_abs_err = np.all(c - d)
@@ -1470,11 +1473,51 @@ class Testdpnp_array_creations_functions(unittest.TestCase):
             c = np.full(a, b)
             return c
 
-        self.assertTrue(
-            check_for_different_datatypes_array_creations(
-                f, np.full, [10], 2, self.tys, np_all=True
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes_array_creations(
+                    f, np.full, [10], self.tys, np_all=True, func_like=False
+                )
             )
-        )
+
+    def test_ones_like(self):
+        @njit
+        def f(a, b):
+            c = np.ones_like(a, b)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes_array_creations(
+                    f, np.ones_like, [10], self.tys, np_all=True, fill_value=1
+                )
+            )
+
+    def test_zeros_like(self):
+        @njit
+        def f(a, b):
+            c = np.zeros_like(a, b)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes_array_creations(
+                    f, np.zeros_like, [10], self.tys, np_all=True, fill_value=0
+                )
+            )
+
+    def test_full_like(self):
+        @njit
+        def f(a, b):
+            c = np.full_like(a, b)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes_array_creations(
+                    f, np.full_like, [10], self.tys, np_all=True
+                )
+            )
 
 
 if __name__ == "__main__":

@@ -184,3 +184,12 @@ class dpnp(Stub):
 
     class full(Stub):
         pass
+
+    class ones_like(Stub):
+        pass
+
+    class zeros_like(Stub):
+        pass
+
+    class full_like(Stub):
+        pass

@@ -17,10 +17,121 @@ from numba import types
 from numba.core.typing import signature
 from . import stubs
 import numba_dppy.dpnp_glue as dpnp_lowering
-from numba.core.extending import overload
+from numba.core.extending import overload, register_jitable
 import numpy as np
 from numba_dppy import dpctl_functions
 import numba_dppy
+
+
+@register_jitable
+def common_impl(a, b, out, dpnp_func, PRINT_DEBUG):
+    if a.size == 0:
+        raise ValueError("Passed Empty array")
+
+    sycl_queue = dpctl_functions.get_current_queue()
+
+    b_usm = dpctl_functions.malloc_shared(b.size * b.itemsize, sycl_queue)
+    dpctl_functions.queue_memcpy(sycl_queue, b_usm, b.ctypes, b.size * b.itemsize)
+
+    out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
+
+    dpnp_func(out_usm, b_usm, a.size)
+
+    dpctl_functions.queue_memcpy(
+        sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+    )
+
+    dpctl_functions.free_with_queue(b_usm, sycl_queue)
+    dpctl_functions.free_with_queue(out_usm, sycl_queue)
+
+    dpnp_ext._dummy_liveness_func([a.size, out.size])
+
+    if PRINT_DEBUG:
+        print("dpnp implementation")
+
+
+@overload(stubs.dpnp.ones_like)
+def dpnp_ones_like_impl(a, b):
+    name = "ones_like"
+    dpnp_lowering.ensure_dpnp(name)
+
+    ret_type = types.void
+    """
+    dpnp source:
+    https://github.com/IntelPython/dpnp/blob/0.5.1/dpnp/backend/kernels/dpnp_krnl_common.cpp#L224
+
+    Function declaration:
+    void dpnp_initval_c(void* result1, void* value, size_t size)
+
+    """
+    sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [b.dtype.name, "NONE"], sig)
+
+    res_dtype = b.dtype
+    PRINT_DEBUG = dpnp_lowering.DEBUG
+
+    def dpnp_impl(a, b):
+        out = np.arange(a.size, dtype=res_dtype)
+        common_impl(a, b, out, dpnp_func, PRINT_DEBUG)
+        return out
+
+    return dpnp_impl
+
+
+@overload(stubs.dpnp.zeros_like)
+def dpnp_zeros_like_impl(a, b):
+    name = "zeros_like"
+    dpnp_lowering.ensure_dpnp(name)
+
+    ret_type = types.void
+    """
+    dpnp source:
+    https://github.com/IntelPython/dpnp/blob/0.5.1/dpnp/backend/kernels/dpnp_krnl_common.cpp#L224
+
+    Function declaration:
+    void dpnp_initval_c(void* result1, void* value, size_t size)
+
+    """
+    sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [b.dtype.name, "NONE"], sig)
+
+    res_dtype = b.dtype
+    PRINT_DEBUG = dpnp_lowering.DEBUG
+
+    def dpnp_impl(a, b):
+        out = np.arange(a.size, dtype=res_dtype)
+        common_impl(a, b, out, dpnp_func, PRINT_DEBUG)
+        return out
+
+    return dpnp_impl
+
+
+@overload(stubs.dpnp.full_like)
+def dpnp_full_like_impl(a, b):
+    name = "full_like"
+    dpnp_lowering.ensure_dpnp(name)
+
+    ret_type = types.void
+    """
+    dpnp source:
+    https://github.com/IntelPython/dpnp/blob/0.5.1/dpnp/backend/kernels/dpnp_krnl_common.cpp#L224
+
+    Function declaration:
+    void dpnp_initval_c(void* result1, void* value, size_t size)
+
+    """
+    sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [b.dtype.name, "NONE"], sig)
+
+    res_dtype = b.dtype
+    PRINT_DEBUG = dpnp_lowering.DEBUG
+
+    def dpnp_impl(a, b):
+        out = np.arange(a.size, dtype=res_dtype)
+        common_impl(a, b, out, dpnp_func, PRINT_DEBUG)
+        return out
+
+    return dpnp_impl
 
 
 @overload(stubs.dpnp.full)
@@ -38,7 +149,7 @@ def dpnp_full_impl(a, b):
 
     """
     sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [b.dtype.name, "NONE"], sig)
 
     res_dtype = b.dtype
     PRINT_DEBUG = dpnp_lowering.DEBUG

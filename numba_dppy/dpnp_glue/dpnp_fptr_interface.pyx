@@ -46,6 +46,7 @@ cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncName":  # need this na
         DPNP_FN_FMOD
         DPNP_FN_FULL
         DPNP_FN_HYPOT
+        DPNP_FN_INITVAL
         DPNP_FN_INVERT
         DPNP_FN_LEFT_SHIFT
         DPNP_FN_LOG
@@ -206,6 +207,12 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_SORT
     elif name == "dpnp_full":
         return DPNPFuncName.DPNP_FN_FULL
+    elif name == "dpnp_ones_like":
+        return DPNPFuncName.DPNP_FN_INITVAL
+    elif name == "dpnp_zeros_like":
+        return DPNPFuncName.DPNP_FN_INITVAL
+    elif name == "dpnp_full_like":
+        return DPNPFuncName.DPNP_FN_INITVAL
     else:
         raise ValueError("Unknown dpnp function requested: " + name.split("_")[1])
 
