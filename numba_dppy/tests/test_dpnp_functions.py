@@ -758,8 +758,8 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result <= 1.0)
             else:
                 final_result = result.ravel()
-                self.assertTrue(final_result.all() >= 0)
-                self.assertTrue(final_result.all() <= 1.0)
+                self.assertTrue(np.all(final_result >= 0))
+                self.assertTrue(np.all(final_result <= 1.0))
 
     def test_binomial(self):
         @njit
@@ -778,8 +778,8 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result >= 0)
             else:
                 final_result = result.ravel()
-                self.assertTrue(final_result.all() >= 0)
-                self.assertTrue(final_result.all() <= n)
+                self.assertTrue(np.all(final_result >= 0))
+                self.assertTrue(np.all(final_result <= n))
 
     def test_chisquare(self):
         @njit
@@ -797,7 +797,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result >= 0)
             else:
                 final_result = result.ravel()
-                self.assertTrue(final_result.all() >= 0)
+                self.assertTrue(np.all(final_result >= 0))
 
     def test_exponential(self):
         @njit
@@ -815,7 +815,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result >= 0)
             else:
                 final_result = result.ravel()
-                self.assertTrue(final_result.all() >= 0)
+                self.assertTrue(np.all(final_result >= 0))
 
     @unittest.skip("AttributeError: 'NoneType' object has no attribute 'ravel'")
     def test_gamma(self):
@@ -834,7 +834,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result >= 0)
             else:
                 final_result = result.ravel()
-                self.assertTrue(final_result.all() >= 0)
+                self.assertTrue(np.all(final_result >= 0))
 
     def test_geometric(self):
         @njit
@@ -852,7 +852,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result >= 0)
             else:
                 final_result = result.ravel()
-                self.assertTrue(final_result.all() >= 0)
+                self.assertTrue(np.all(final_result >= 0))
 
     def test_gumbel(self):
         @njit
@@ -884,8 +884,8 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result <= min(nsamp, ngood + nbad))
             else:
                 final_result = result.ravel()
-                self.assertTrue(final_result.all() >= 0)
-                self.assertTrue(final_result.all() <= min(nsamp, ngood + nbad))
+                self.assertTrue(np.all(final_result >= 0))
+                self.assertTrue(np.all(final_result <= min(nsamp, ngood + nbad)))
 
     def test_laplace(self):
         @njit
@@ -916,7 +916,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result >= 0)
             else:
                 final_result = result.ravel()
-                self.assertTrue(final_result.all() >= 0)
+                self.assertTrue(np.all(final_result >= 0))
 
     @unittest.skip("DPNP RNG Error: dpnp_rng_multinomial_c() failed")
     def test_multinomial(self):
@@ -936,8 +936,8 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result <= n)
             else:
                 final_result = result.ravel()
-                self.assertTrue(final_result.all() >= 0)
-                self.assertTrue(final_result.all() <= n)
+                self.assertTrue(np.all(final_result >= 0))
+                self.assertTrue(np.all(final_result <= n))
 
     @unittest.skip(
         "No implementation of function Function(<class "
@@ -957,7 +957,6 @@ class Testdpnp_random_functions(unittest.TestCase):
                     # TODO: check result, for multidimensional distribution
 
     @unittest.skip("DPNP RNG Error: dpnp_rng_negative_binomial_c() failed.")
-    # Intel MKL ERROR: Parameter 6 was incorrect on entry to viRngNegbinomial.
     def test_negative_binomial(self):
         @njit
         def f(n, p, size):
@@ -974,7 +973,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result >= 0)
             else:
                 final_result = result.ravel()
-                self.assertTrue(final_result.all() >= 0)
+                self.assertTrue(np.all(final_result >= 0))
 
     def test_normal(self):
         @njit
@@ -1011,7 +1010,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result >= 0.0)
             else:
                 final_result = result.ravel()
-                self.assertTrue(final_result.all() >= 0.0)
+                self.assertTrue(np.all(final_result >= 0.0))
 
     def test_rayleigh(self):
         @njit
@@ -1029,7 +1028,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result >= 0.0)
             else:
                 final_result = result.ravel()
-                self.assertTrue(final_result.all() >= 0.0)
+                self.assertTrue(np.all(final_result >= 0.0))
 
     def test_standard_cauchy(self):
         @njit
@@ -1058,7 +1057,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result >= 0.0)
             else:
                 final_result = result.ravel()
-                self.assertTrue(final_result.all() >= 0.0)
+                self.assertTrue(np.all(final_result >= 0.0))
 
     def test_standard_gamma(self):
         @njit
@@ -1076,7 +1075,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result >= 0.0)
             else:
                 final_result = result.ravel()
-                self.assertTrue(final_result.all() >= 0.0)
+                self.assertTrue(np.all(final_result >= 0.0))
 
     def test_standard_normal(self):
         @njit
@@ -1088,20 +1087,12 @@ class Testdpnp_random_functions(unittest.TestCase):
             with assert_dpnp_implementaion():
                 with dpctl.device_context("opencl:gpu"):
                     result = f(size)
+                    # TODO: check result, x belongs R
 
-            if np.isscalar(result):
-                self.assertTrue(result >= 0.0)
-            else:
-                final_result = result.ravel()
-                self.assertTrue(final_result.all() >= 0.0)
-
-    @unittest.skip(
-        "TypeError: dpnp_random_impl() got an unexpected keyword argument 'low'"
-    )
     def test_uniform(self):
         @njit
         def f(low, high, size):
-            res = np.random.standard_normal(low=low, high=high, size=size)
+            res = np.random.uniform(low=low, high=high, size=size)
             return res
 
         low, high = -1.0, 0.0
@@ -1115,8 +1106,8 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result < high)
             else:
                 final_result = result.ravel()
-                self.assertTrue(final_result.all() >= low)
-                self.assertTrue(final_result.all() < high)
+                self.assertTrue(np.all(final_result >= low))
+                self.assertTrue(np.all(final_result < high))
 
     def test_weibull(self):
         @njit
@@ -1134,7 +1125,7 @@ class Testdpnp_random_functions(unittest.TestCase):
                 self.assertTrue(result >= 0.0)
             else:
                 final_result = result.ravel()
-                self.assertTrue(final_result.all() >= 0.0)
+                self.assertTrue(np.all(final_result >= 0.0))
 
 
 @unittest.skipUnless(
@@ -1298,7 +1289,7 @@ class Testdpnp_functions(unittest.TestCase):
             return c
 
         self.assertTrue(
-            check_for_different_datatypes(f, np.argmin, [10], 1, self.tys, np_all=True)
+            check_for_different_datatypes(f, np.argsort, [10], 1, self.tys, np_all=True)
         )
 
     def test_median(self):
@@ -1409,6 +1400,26 @@ class Testdpnp_functions(unittest.TestCase):
 
         max_abs_err = got.sum() - expected.sum()
         self.assertTrue(max_abs_err < 1e-4)
+
+
+@unittest.skipUnless(
+    ensure_dpnp() and dpctl.has_gpu_queues(), "test only when dpNP and GPU is available"
+)
+class Testdpnp_array_ops_functions(unittest.TestCase):
+    tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
+
+    def test_sort(self):
+        @njit
+        def f(a):
+            c = np.sort(a)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes(
+                    f, np.sort, [10], 1, self.tys, np_all=True
+                )
+            )
 
 
 if __name__ == "__main__":
