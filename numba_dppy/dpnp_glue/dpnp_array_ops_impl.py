@@ -96,6 +96,10 @@ def dpnp_cumprod_impl(a):
         out = np.arange(a.size, dtype=a.dtype)
         common_impl(a, out, dpnp_func, PRINT_DEBUG)
 
+        return out
+
+    return dpnp_impl
+
 
 @overload(stubs.dpnp.sort)
 def dpnp_sort_impl(a):
