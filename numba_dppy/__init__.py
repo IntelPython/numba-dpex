@@ -140,7 +140,7 @@ Other Intrinsic Functions
     |                  |                               |string, and float        |
     |                  |                               |arguments.               |
     +------------------+-------------------------------+-------------------------+
-    |local.static_alloc|local.static_alloc(shape,dtype)|This function allow users|
+    |local.array       |local.array(shape,dtype)       |This function allow users|
     |                  |                               |to create local memory   |
     |                  |                               |that's only accessible to|
     |                  |                               |work items in a workgroup|
