@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Documentation.
-- Support NumPy functions via dpNP: random, linalg, transcendental, sort.
+- Support NumPy functions via dpNP: random, linalg, transcendental, array ops.
 
 ### Changed
 - Start using black code style formatter.
