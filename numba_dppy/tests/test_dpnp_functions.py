@@ -1402,5 +1402,25 @@ class Testdpnp_functions(unittest.TestCase):
         self.assertTrue(max_abs_err < 1e-4)
 
 
+@unittest.skipUnless(
+    ensure_dpnp() and dpctl.has_gpu_queues(), "test only when dpNP and GPU is available"
+)
+class Testdpnp_array_ops_functions(unittest.TestCase):
+    tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
+
+    def test_sort(self):
+        @njit
+        def f(a):
+            c = np.sort(a)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes(
+                    f, np.sort, [10], 1, self.tys, np_all=True
+                )
+            )
+
+
 if __name__ == "__main__":
     unittest.main()
