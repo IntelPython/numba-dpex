@@ -18,18 +18,18 @@ requirements:
         - python
         - setuptools
         - cython
-        - numba
+        - numba 0.52.*
         - dpctl >=0.5.1rc1
-        - dpnp 0.5.0  # [linux]
+        - dpnp >=0.5.1  # [linux]
         - wheel
     run:
         - python
-        - numba >=0.51
+        - numba 0.52.*
         - dpctl >=0.5.1rc1
         - spirv-tools
         - llvm-spirv
         - llvmdev
-        - dpnp 0.5.0  # [linux]
+        - dpnp >=0.5.1  # [linux]
 
 test:
   requires:
