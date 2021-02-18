@@ -179,9 +179,6 @@ class dpnp(Stub):
     class nanprod(Stub):
         pass
 
-    class sort(Stub):
-        pass
-
     class full(Stub):
         pass
 

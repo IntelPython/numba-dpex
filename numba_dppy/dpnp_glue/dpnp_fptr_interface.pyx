@@ -203,8 +203,6 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_DET
     elif name == "dpnp_matrix_rank":
         return DPNPFuncName.DPNP_FN_MATRIX_RANK
-    elif name == "dpnp_sort":
-        return DPNPFuncName.DPNP_FN_SORT
     elif name == "dpnp_full":
         return DPNPFuncName.DPNP_FN_FULL
     elif name == "dpnp_ones_like":

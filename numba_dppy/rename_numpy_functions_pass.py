@@ -82,8 +82,6 @@ rewrite_function_name_map = {
     "nansum": (["numpy"], "nansum"),
     "prod": (["numpy"], "prod"),
     "sum": (["numpy"], "sum"),
-    # array ops
-    "sort": (["numpy"], "sort"),
     # array creations
     "full": (["numpy"], "full"),
     "ones_like": (["numpy"], "ones_like"),
@@ -199,7 +197,6 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
         import numba_dppy.dpnp_glue.dpnp_statisticsimpl
         import numba_dppy.dpnp_glue.dpnp_sort_search_countimpl
         import numba_dppy.dpnp_glue.dpnp_randomimpl
-        import numba_dppy.dpnp_glue.dpnp_array_ops_impl
         import numba_dppy.dpnp_glue.dpnp_array_creations_impl
 
     def run_pass(self, state):
