@@ -99,7 +99,7 @@ class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
                             if (
                                 isinstance(call_node, ir.Expr)
                                 and call_node.op == "getattr"
-                                and call_node.attr == "static_alloc"
+                                and call_node.attr == "array"
                             ):
                                 arg = None
                                 # at first look in keyword arguments to get the shape, which has to be
@@ -354,7 +354,6 @@ class DPPYNoPythonBackend(FunctionPass):
             call_helper=lowered.call_helper,
             signature=signature,
             objectmode=False,
-            interpmode=False,
             lifted=state.lifted,
             fndesc=lowered.fndesc,
             environment=lowered.env,

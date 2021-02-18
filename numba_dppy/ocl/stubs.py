@@ -14,7 +14,6 @@
 
 from __future__ import print_function, absolute_import
 from numba.core import types, ir, typing
-from numba.core.rewrites.macros import Macro
 
 from numba_dppy.target import SPIR_LOCAL_ADDRSPACE
 import numpy as np
@@ -117,38 +116,16 @@ class Stub(object):
 # local memory
 
 
-def local_alloc(shape, dtype):
-    shape = _legalize_shape(shape)
-    ndim = len(shape)
-    fname = "dppy.lmem.alloc"
-    if isinstance(dtype, types.scalars.Integer) or isinstance(
-        dtype, types.scalars.Float
-    ):
-        numba_dtype = dtype
-    else:
-        numba_dtype = numpy_support.from_dtype(dtype)
-    restype = types.Array(numba_dtype, ndim, "C", addrspace=SPIR_LOCAL_ADDRSPACE)
-    sig = typing.signature(restype, types.UniTuple(types.intp, ndim), types.Any)
-    return ir.Intrinsic(fname, sig, args=(shape, numba_dtype))
-
-
 class local(Stub):
     """local namespace"""
 
     _description_ = "<local>"
 
-    static_alloc = Macro(
-        "local.static_alloc", local_alloc, callable=True, argnames=["shape", "dtype"]
-    )
+    def array(shape, dtype):
+        """local.array(shape, dtype)
 
-
-def _legalize_shape(shape):
-    if isinstance(shape, tuple):
-        return shape
-    elif isinstance(shape, int):
-        return (shape,)
-    else:
-        raise TypeError("invalid type for shape; got {0}".format(type(shape)))
+        Allocate a local array.
+        """
 
 
 # -------------------------------------------------------------------------------
