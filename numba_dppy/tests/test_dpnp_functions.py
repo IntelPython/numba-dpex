@@ -1411,5 +1411,44 @@ class Testdpnp_functions(unittest.TestCase):
         self.assertTrue(max_abs_err < 1e-4)
 
 
+@unittest.skipUnless(
+    ensure_dpnp() and dpctl.has_gpu_queues(), "test only when dpNP and GPU is available"
+)
+class Testdpnp_array_ops_functions(unittest.TestCase):
+    tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
+
+    def test_cumsum(self):
+        @njit
+        def f(a):
+            c = np.cumsum(a)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes(f, np.cumsum, [10], 1, self.tys, True)
+            )
+            self.assertTrue(check_for_dimensions(f, np.cumsum, [10, 2], self.tys, True))
+            self.assertTrue(
+                check_for_dimensions(f, np.cumsum, [10, 2, 3], self.tys, True)
+            )
+
+    def test_cumprod(self):
+        @njit
+        def f(a):
+            c = np.cumprod(a)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes(f, np.cumprod, [10], 1, self.tys, True)
+            )
+            self.assertTrue(
+                check_for_dimensions(f, np.cumprod, [10, 2], self.tys, True)
+            )
+            self.assertTrue(
+                check_for_dimensions(f, np.cumprod, [10, 2, 3], self.tys, True)
+            )
+
+
 if __name__ == "__main__":
     unittest.main()

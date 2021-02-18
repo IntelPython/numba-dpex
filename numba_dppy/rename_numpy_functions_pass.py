@@ -82,6 +82,9 @@ rewrite_function_name_map = {
     "nansum": (["numpy"], "nansum"),
     "prod": (["numpy"], "prod"),
     "sum": (["numpy"], "sum"),
+    # array ops
+    "cumsum": (["numpy"], "cumsum"),
+    "cumprod": (["numpy"], "cumprod"),
 }
 
 
@@ -192,6 +195,7 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
         import numba_dppy.dpnp_glue.dpnp_statisticsimpl
         import numba_dppy.dpnp_glue.dpnp_sort_search_countimpl
         import numba_dppy.dpnp_glue.dpnp_randomimpl
+        import numba_dppy.dpnp_glue.dpnp_array_ops_impl
 
     def run_pass(self, state):
         rewrite_function_name_pass = RewriteNumPyOverloadedFunctions(
