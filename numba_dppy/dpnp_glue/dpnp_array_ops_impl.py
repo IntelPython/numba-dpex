@@ -31,7 +31,7 @@ def dpnp_take_impl(a, ind):
     ret_type = types.void
     """
     dpnp source:
-    https://github.com/IntelPython/dpnp/blob/master/dpnp/backend/kernels/dpnp_krnl_indexing.cpp#L38
+    https://github.com/IntelPython/dpnp/blob/0.5.1/dpnp/backend/kernels/dpnp_krnl_indexing.cpp#L34
     Function declaration:
     void dpnp_take_c(void* array1_in, void* indices1, void* result1, size_t size)
     """
