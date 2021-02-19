@@ -30,6 +30,8 @@ cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncName":  # need this na
         DPNP_FN_COS
         DPNP_FN_COSH
         DPNP_FN_COV
+        DPNP_FN_CUMPROD
+        DPNP_FN_CUMSUM
         DPNP_FN_DEGREES
         DPNP_FN_DET
         DPNP_FN_DIVIDE
@@ -201,6 +203,12 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_DET
     elif name == "dpnp_matrix_rank":
         return DPNPFuncName.DPNP_FN_MATRIX_RANK
+    elif name == "dpnp_cumsum":
+        return DPNPFuncName.DPNP_FN_CUMSUM
+    elif name == "dpnp_cumprod":
+        return DPNPFuncName.DPNP_FN_CUMPROD
+    elif name == "dpnp_sort":
+        return DPNPFuncName.DPNP_FN_SORT
     else:
         raise ValueError("Unknown dpnp function requested: " + name.split("_")[1])
 
