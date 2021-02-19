@@ -190,4 +190,3 @@ class dpnp(Stub):
 
     class take(Stub):
         pass
-    

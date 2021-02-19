@@ -150,6 +150,7 @@ def dpnp_sort_impl(a):
 
     return dpnp_impl
 
+
 @overload(stubs.dpnp.take)
 def dpnp_take_impl(a, ind):
     name = "take"

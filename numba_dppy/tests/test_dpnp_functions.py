@@ -1454,18 +1454,15 @@ class Testdpnp_array_ops_functions(unittest.TestCase):
             )
 
     def check_take_for_different_datatypes(
-        self, fn, test_fn, ind, dims, tys, matrix=None
+        self, fn, test_fn, ind, dims, tys, matrix=False
     ):
         for ty in tys:
             if matrix:
-                a = np.arange(np.prod(np.array(dims)), dtype=ty).reshape(
-                    dims[0], dims[1]
-                )
+                a = np.arange(np.prod(dims), dtype=ty).reshape(dims[0], dims[1])
             else:
                 a = np.arange(dims[0], dtype=ty)
 
-            with dpctl.device_context("opencl:gpu"):
-                c = fn(a, ind)
+            c = fn(a, ind)
 
             d = test_fn(a, ind)
             if c.shape == d.shape:
@@ -1475,29 +1472,7 @@ class Testdpnp_array_ops_functions(unittest.TestCase):
 
         return True
 
-    def get_np_array(self, a):
-        type_a = type(a)
-        if type_a is np.ndarray:
-            return a
-        elif type_a in (list, tuple):
-            return np.array(a)
-        else:
-            raise TypeError
-
-    def test_take_types(self):
-        @njit
-        def f(a, ind):
-            c = np.take(a, ind)
-            return c
-
-        with assert_dpnp_implementaion():
-            self.assertTrue(
-                self.check_take_for_different_datatypes(
-                    f, np.take, np.array([1, 5, 1, 11, 3]), [12], self.tys, matrix=False
-                )
-            )
-
-    def test_take_indices(self):
+    def test_take(self):
         @njit
         def f(a, ind):
             c = np.take(a, ind)
@@ -1507,23 +1482,24 @@ class Testdpnp_array_ops_functions(unittest.TestCase):
         test_indices.append(np.array([[1, 5, 1], [11, 3, 0]]))
         test_indices.append(np.array([[[1, 5, 1], [11, 3, 0]]]))
         test_indices.append(np.array([[[[1, 5]], [[11, 0]], [[1, 2]]]]))
-        test_indices.append([1, 5, 1, 11, 3])
-        test_indices.append((1, 5, 1))
-        test_indices.append(((1, 5, 1), (11, 3, 2)))
-        test_indices.append((((1,), (5,), (1,)), ((11,), (3,), (2,))))
 
-        with assert_dpnp_implementaion():
-            for ind in test_indices:
-                self.assertTrue(
-                    self.check_take_for_different_datatypes(
-                        f,
-                        np.take,
-                        self.get_np_array(ind),
-                        [3, 4],
-                        [np.float],
-                        matrix=True,
-                    )
+        self.assertTrue(
+            self.check_take_for_different_datatypes(
+                f, np.take, np.array([1, 5, 1, 11, 3]), [12], self.tys
+            )
+        )
+
+        for ind in test_indices:
+            self.assertTrue(
+                self.check_take_for_different_datatypes(
+                    f,
+                    np.take,
+                    ind,
+                    [3, 4],
+                    [np.float],
+                    matrix=True,
                 )
+            )
 
 
 if __name__ == "__main__":
