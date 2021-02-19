@@ -9,6 +9,7 @@ build:
     number: {{ GIT_DESCRIBE_NUMBER }}
     script_env:
         - ONEAPI_ROOT
+        - WHEELS_OUTPUT_FOLDER
 
 requirements:
     build:
@@ -17,21 +18,22 @@ requirements:
         - python
         - setuptools
         - cython
-        - numba
-        - dpctl 0.5.*
-        - dpnp 0.4.*  # [linux]
+        - numba 0.52.*
+        - dpctl >=0.5.1rc1
+        - dpnp >=0.5.1  # [linux]
+        - wheel
     run:
         - python
-        - numba >=0.51
-        - dpctl 0.5.*
+        - numba 0.52.*
+        - dpctl >=0.5.1rc1
         - spirv-tools
         - llvm-spirv
         - llvmdev
-        - dpnp 0.4.*  # [linux]
+        - dpnp >=0.5.1  # [linux]
 
 test:
   requires:
-    - scipy  # [linux]
+    - pytest
 
 about:
     home: https://github.com/IntelPython/numba-dppy

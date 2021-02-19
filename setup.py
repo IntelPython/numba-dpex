@@ -1,12 +1,50 @@
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import os
+import sys
+import setuptools.command.install as orig_install
+import setuptools.command.develop as orig_develop
+import subprocess
+import shutil
 from setuptools import Extension, find_packages, setup
 from Cython.Build import cythonize
 
 import versioneer
+import sys
+
+
+IS_WIN = False
+IS_LIN = False
+
+if "linux" in sys.platform:
+    IS_LIN = True
+elif sys.platform in ["win32", "cygwin"]:
+    IS_WIN = True
 
 
 def get_ext_modules():
     ext_modules = []
+
+    import numba
+
+    ext_dppy = Extension(
+        name="numba_dppy._dppy_rt",
+        sources=["numba_dppy/dppy_rt.c"],
+        include_dirs=[numba.core.extending.include_path()],
+    )
+    ext_modules += [ext_dppy]
 
     dpnp_present = False
     try:
@@ -36,6 +74,64 @@ def get_ext_modules():
         return ext_modules
 
 
+class install(orig_install.install):
+    def run(self):
+        super().run()
+        spirv_compile()
+
+
+class develop(orig_develop.develop):
+    def run(self):
+        super().run()
+        spirv_compile()
+
+
+def _get_cmdclass():
+    cmdclass = versioneer.get_cmdclass()
+    cmdclass["install"] = install
+    cmdclass["develop"] = develop
+    return cmdclass
+
+
+def spirv_compile():
+    if IS_LIN:
+        os.environ["CC"] = os.path.join(
+            os.environ.get("ONEAPI_ROOT"), "compiler/latest/linux", "bin/clang"
+        )
+    if IS_WIN:
+        os.environ["CC"] = os.path.join(
+            os.environ.get("ONEAPI_ROOT"), "compiler/latest/windows", "bin/clang.exe"
+        )
+    clang_args = [
+        os.environ.get("CC"),
+        "-flto",
+        "-target",
+        "spir64-unknown-unknown",
+        "-c",
+        "-x",
+        "cl",
+        "-emit-llvm",
+        "-cl-std=CL2.0",
+        "-Xclang",
+        "-finclude-default-header",
+        "numba_dppy/ocl/atomics/atomic_ops.cl",
+        "-o",
+        "numba_dppy/ocl/atomics/atomic_ops.bc",
+    ]
+    spirv_args = [
+        "llvm-spirv",
+        "-o",
+        "numba_dppy/ocl/atomics/atomic_ops.spir",
+        "numba_dppy/ocl/atomics/atomic_ops.bc",
+    ]
+    if IS_LIN:
+        subprocess.check_call(clang_args, stderr=subprocess.STDOUT, shell=False)
+        subprocess.check_call(spirv_args, stderr=subprocess.STDOUT, shell=False)
+    if IS_WIN:
+        subprocess.check_call(clang_args, stderr=subprocess.STDOUT, shell=True)
+        subprocess.check_call(spirv_args, stderr=subprocess.STDOUT, shell=True)
+
+
 packages = find_packages(include=["numba_dppy", "numba_dppy.*"])
 build_requires = ["cython"]
 install_requires = [
@@ -46,6 +142,7 @@ install_requires = [
 metadata = dict(
     name="numba-dppy",
     version=versioneer.get_version(),
+    cmdclass=_get_cmdclass(),
     description="Numba extension for Intel CPU and GPU backend",
     url="https://github.com/IntelPython/numba-dppy",
     packages=packages,
@@ -65,7 +162,11 @@ metadata = dict(
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Software Development :: Compilers",
     ],
-    cmdclass=versioneer.get_cmdclass(),
+    entry_points={
+        "numba_extensions": [
+            "init = numba_dppy.numpy_usm_shared:numba_register",
+        ]
+    },
 )
 
 setup(**metadata)
