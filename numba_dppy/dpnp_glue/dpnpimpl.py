@@ -1,10 +1,25 @@
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from numba.core.imputils import lower_builtin
 from numba.core import types
 from numba.core.extending import register_jitable
 import numpy as np
 from llvmlite import ir
 from numba.core.imputils import lower_getattr
-from numba_dppy.dpctl_functions import _DPCTL_FUNCTIONS
+from numba.cpython import listobj
+
 
 ll_void_p = ir.IntType(8).as_pointer()
 
@@ -53,3 +68,21 @@ def array_shape(context, builder, typ, value):
     )
 
     return builder.bitcast(shape_ptr, ll_void_p)
+
+
+@lower_getattr(types.List, "size")
+def list_itemsize(context, builder, typ, value):
+    inst = listobj.ListInstance(context, builder, typ, value)
+    return inst.size
+
+
+@lower_getattr(types.List, "itemsize")
+def list_itemsize(context, builder, typ, value):
+    llty = context.get_data_type(typ.dtype)
+    return context.get_constant(types.uintp, context.get_abi_sizeof(llty))
+
+
+@lower_getattr(types.List, "ctypes")
+def list_itemsize(context, builder, typ, value):
+    inst = listobj.ListInstance(context, builder, typ, value)
+    return builder.bitcast(inst.data, ll_void_p)
