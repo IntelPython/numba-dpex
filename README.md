@@ -46,7 +46,11 @@ See folder `numba_dppy/tests`.
 
 Run tests:
 ```bash
-python -m unittest numba_dppy.tests
+python -m pytest --pyargs numba_dppy.tests
+```
+or
+```bash
+pytest
 ```
 
 ## Examples
