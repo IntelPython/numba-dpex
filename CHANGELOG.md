@@ -6,8 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Changed
-- Updated to Numba 0.52
-- Updated to dpNP 0.5.1
+- Updated to Numba 0.52 and dpNP 0.5.1.
+- Start using pytest for running tests.
 
 ## [0.12.0] - 2020-12-17
 ### Added

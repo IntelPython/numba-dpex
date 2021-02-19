@@ -190,3 +190,12 @@ class dpnp(Stub):
 
     class full_like(Stub):
         pass
+
+    class cumsum(Stub):
+        pass
+
+    class cumprod(Stub):
+        pass
+
+    class sort(Stub):
+        pass
