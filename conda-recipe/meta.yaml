@@ -32,8 +32,11 @@ requirements:
         - dpnp >=0.5.1  # [linux]
 
 test:
-  requires:
-    - pytest
+    requires:
+        - pytest
+        - intel_tester
+    files:
+        - intel_tester_config.py
 
 about:
     home: https://github.com/IntelPython/numba-dppy
