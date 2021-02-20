@@ -85,8 +85,8 @@ rewrite_function_name_map = {
     # array creations
     "full": (["numpy"], "full"),
     "ones_like": (["numpy"], "ones_like"),
-    "zeros_like": (["numpy"], "ones_like"),
-    "full_like": (["numpy"], "ones_like"),
+    "zeros_like": (["numpy"], "zeros_like"),
+    "full_like": (["numpy"], "full_like"),
     # array ops
     "cumsum": (["numpy"], "cumsum"),
     "cumprod": (["numpy"], "cumprod"),

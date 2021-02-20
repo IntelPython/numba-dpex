@@ -73,25 +73,30 @@ def check_for_different_datatypes(
 
 
 def check_for_different_datatypes_array_creations(
-    fn, test_fn, dims, tys, np_all=False, matrix=None, fill_value=0, func_like=True
+    fn, test_fn, dims, arg_count, tys, np_all=False, matrix=None, fill_value=10, func=0
 ):
     for ty in tys:
-        if matrix and matrix[0]:
-            a = np.array(np.random.random(dims[0] * dims[1]), dtype=ty).reshape(
-                dims[0], dims[1]
-            )
-        else:
-            a = np.array(np.random.random(dims[0]), dtype=ty)
+        a = np.array(np.random.random(dims[0]), dtype=ty)
         b_dppy = np.array([fill_value], dtype=ty)
         b_numpy = b_dppy[0]
 
-        with dpctl.device_context("opencl:gpu"):
-            c = fn(a, b_dppy)
-
-        if func_like:
-            d = test_fn(a, b_numpy)
-        else:
-            d = test_fn(a.shape, b_numpy)
+        if arg_count == 1:
+            with dpctl.device_context("opencl:gpu"):
+                c = fn(a)
+            d = test_fn(a)
+        elif arg_count == 2:
+            if func == 2:
+                with dpctl.device_context("opencl:gpu"):
+                    c = fn(a, dtype=ty)
+                d = test_fn(a, dtype=ty)
+            elif func == 1:
+                with dpctl.device_context("opencl:gpu"):
+                    c = fn(a, b_dppy)
+                d = test_fn(a, b_numpy)
+            else:
+                with dpctl.device_context("opencl:gpu"):
+                    c = fn(a, b_dppy)
+                d = test_fn(a.shape, b_numpy)
 
         if np_all:
             max_abs_err = np.all(c - d)
@@ -1488,7 +1493,7 @@ class Testdpnp_array_ops_functions(unittest.TestCase):
     ensure_dpnp() and dpctl.has_gpu_queues(), "test only when dpNP and GPU is available"
 )
 class Testdpnp_array_creations_functions(unittest.TestCase):
-    tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
+    tys = [np.int32, np.uint32, np.int64, np.uint64, np.float64, np.double]
 
     def test_full(self):
         @njit
@@ -1499,33 +1504,59 @@ class Testdpnp_array_creations_functions(unittest.TestCase):
         with assert_dpnp_implementaion():
             self.assertTrue(
                 check_for_different_datatypes_array_creations(
-                    f, np.full, [10], self.tys, np_all=True, func_like=False
+                    f, np.full, [10], 2, self.tys, np_all=True
                 )
             )
 
     def test_ones_like(self):
         @njit
-        def f(a, b):
-            c = np.ones_like(a, b)
+        def f(a, dtype):
+            c = np.ones_like(a, dtype)
             return c
 
         with assert_dpnp_implementaion():
             self.assertTrue(
                 check_for_different_datatypes_array_creations(
-                    f, np.ones_like, [10], self.tys, np_all=True, fill_value=1
+                    f, np.ones_like, [10], 2, self.tys, np_all=True, func=2
+                )
+            )
+
+    def test_ones_like_without_dtype(self):
+        @njit
+        def f(a):
+            c = np.ones_like(a)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes_array_creations(
+                    f, np.ones_like, [10], 1, self.tys, np_all=True
                 )
             )
 
     def test_zeros_like(self):
         @njit
-        def f(a, b):
-            c = np.zeros_like(a, b)
+        def f(a, dtype):
+            c = np.zeros_like(a, dtype)
             return c
 
         with assert_dpnp_implementaion():
             self.assertTrue(
                 check_for_different_datatypes_array_creations(
-                    f, np.zeros_like, [10], self.tys, np_all=True, fill_value=0
+                    f, np.zeros_like, [10], 2, self.tys, np_all=True, func=2
+                )
+            )
+
+    def test_zeros_like_without_dtype(self):
+        @njit
+        def f(a):
+            c = np.zeros_like(a)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes_array_creations(
+                    f, np.zeros_like, [10], 1, self.tys, np_all=True
                 )
             )
 
@@ -1538,7 +1569,7 @@ class Testdpnp_array_creations_functions(unittest.TestCase):
         with assert_dpnp_implementaion():
             self.assertTrue(
                 check_for_different_datatypes_array_creations(
-                    f, np.full_like, [10], self.tys, np_all=True
+                    f, np.full_like, [10], 2, self.tys, np_all=True, func=1
                 )
             )
 

@@ -207,11 +207,7 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_MATRIX_RANK
     elif name == "dpnp_full":
         return DPNPFuncName.DPNP_FN_FULL
-    elif name == "dpnp_ones_like":
-        return DPNPFuncName.DPNP_FN_INITVAL
-    elif name == "dpnp_zeros_like":
-        return DPNPFuncName.DPNP_FN_INITVAL
-    elif name == "dpnp_full_like":
+    elif name == "dpnp_ones_like" or name == "dpnp_zeros_like" or name == "dpnp_full_like":
         return DPNPFuncName.DPNP_FN_INITVAL
     elif name == "dpnp_cumsum":
         return DPNPFuncName.DPNP_FN_CUMSUM

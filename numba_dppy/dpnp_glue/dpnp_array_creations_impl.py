@@ -50,36 +50,8 @@ def common_impl(a, b, out, dpnp_func, PRINT_DEBUG):
         print("dpnp implementation")
 
 
-@overload(stubs.dpnp.ones_like)
-def dpnp_ones_like_impl(a, b):
-    name = "ones_like"
-    dpnp_lowering.ensure_dpnp(name)
-
-    ret_type = types.void
-    """
-    dpnp source:
-    https://github.com/IntelPython/dpnp/blob/0.5.1/dpnp/backend/kernels/dpnp_krnl_common.cpp#L224
-
-    Function declaration:
-    void dpnp_initval_c(void* result1, void* value, size_t size)
-
-    """
-    sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [b.dtype.name, "NONE"], sig)
-
-    res_dtype = b.dtype
-    PRINT_DEBUG = dpnp_lowering.DEBUG
-
-    def dpnp_impl(a, b):
-        out = np.arange(a.size, dtype=res_dtype)
-        common_impl(a, b, out, dpnp_func, PRINT_DEBUG)
-        return out
-
-    return dpnp_impl
-
-
 @overload(stubs.dpnp.zeros_like)
-def dpnp_zeros_like_impl(a, b):
+def dpnp_zeros_like_impl(a, dtype=None):
     name = "zeros_like"
     dpnp_lowering.ensure_dpnp(name)
 
@@ -92,13 +64,53 @@ def dpnp_zeros_like_impl(a, b):
     void dpnp_initval_c(void* result1, void* value, size_t size)
 
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [b.dtype.name, "NONE"], sig)
+    res_dtype = dtype or a.dtype
+    if dtype:
+        name_dtype = res_dtype.dtype.name
+    else:
+        name_dtype = res_dtype.name
 
-    res_dtype = b.dtype
+    sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [name_dtype, "NONE"], sig)
+
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
-    def dpnp_impl(a, b):
+    def dpnp_impl(a, dtype=None):
+        b = np.zeros(1, dtype=res_dtype)
+        out = np.arange(a.size, dtype=res_dtype)
+        common_impl(a, b, out, dpnp_func, PRINT_DEBUG)
+        return out
+
+    return dpnp_impl
+
+
+@overload(stubs.dpnp.ones_like)
+def dpnp_ones_like_impl(a, dtype=None):
+    name = "ones_like"
+    dpnp_lowering.ensure_dpnp(name)
+
+    ret_type = types.void
+    """
+    dpnp source:
+    https://github.com/IntelPython/dpnp/blob/0.5.1/dpnp/backend/kernels/dpnp_krnl_common.cpp#L224
+
+    Function declaration:
+    void dpnp_initval_c(void* result1, void* value, size_t size)
+
+    """
+    res_dtype = dtype or a.dtype
+    if dtype:
+        name_dtype = res_dtype.dtype.name
+    else:
+        name_dtype = res_dtype.name
+
+    sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [name_dtype, "NONE"], sig)
+
+    PRINT_DEBUG = dpnp_lowering.DEBUG
+
+    def dpnp_impl(a, dtype=None):
+        b = np.ones(1, dtype=res_dtype)
         out = np.arange(a.size, dtype=res_dtype)
         common_impl(a, b, out, dpnp_func, PRINT_DEBUG)
         return out
