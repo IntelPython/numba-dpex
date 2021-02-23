@@ -43,6 +43,7 @@ def dpnp_eig_impl(a):
     res_dtype = np.float64
     if a.dtype == types.float32:
         res_dtype = np.float32
+    PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(a):
         n = a.shape[-1]
@@ -80,6 +81,8 @@ def dpnp_eig_impl(a):
 
         dpnp_ext._dummy_liveness_func([wr.size, vr.size])
 
+        if PRINT_DEBUG:
+            print("dpnp implementation")
         return (wr, vr)
 
     return dpnp_impl
@@ -343,11 +346,14 @@ def dpnp_matrix_power_impl(a, n):
                        size_t size_n, size_t size_k)
     """
 
+    PRINT_DEBUG = dpnp_lowering.DEBUG
     def dpnp_impl(a, n):
         if n < 0:
             raise ValueError("n < 0 is not supported for np.linalg.matrix_power(a, n)")
 
         if n == 0:
+            if PRINT_DEBUG:
+                print("dpnp implementation")
             return np.identity(a.shape[0], a.dtype)
 
         result = a
@@ -374,6 +380,7 @@ def dpnp_cholesky_impl(a):
     """
     sig = signature(ret_type, types.voidptr, types.voidptr, types.voidptr)
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
+    PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(a):
         n = a.shape[-1]
@@ -402,6 +409,8 @@ def dpnp_cholesky_impl(a):
 
         dpnp_ext._dummy_liveness_func([out.size, a.size])
 
+        if PRINT_DEBUG:
+            print("dpnp implementation")
         return out
 
     return dpnp_impl
@@ -422,6 +431,7 @@ def dpnp_det_impl(a):
     """
     sig = signature(ret_type, types.voidptr, types.voidptr, types.voidptr, types.intp)
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
+    PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(a):
         n = a.shape[-1]
@@ -453,6 +463,8 @@ def dpnp_det_impl(a):
 
         dpnp_ext._dummy_liveness_func([out.size, a.size])
 
+        if PRINT_DEBUG:
+            print("dpnp implementation")
         if a.ndim == 2:
             return out[0]
         else:
@@ -476,6 +488,7 @@ def dpnp_matrix_rank_impl(M, tol=None, hermitian=False):
     """
     sig = signature(ret_type, types.voidptr, types.voidptr, types.voidptr, types.intp)
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [M.dtype.name, "NONE"], sig)
+    PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(M, tol=None, hermitian=False):
         if tol != None:
@@ -507,6 +520,8 @@ def dpnp_matrix_rank_impl(M, tol=None, hermitian=False):
 
         dpnp_ext._dummy_liveness_func([out.size, M.size])
 
+        if PRINT_DEBUG:
+            print("dpnp implementation")
         return out[0]
 
     return dpnp_impl

@@ -217,3 +217,38 @@ def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
                 actual = actual.ravel()
                 assert(np.all(actual >= low))
                 assert(np.all(actual <= high))
+
+
+def test_rand(filter_str):
+    @njit
+    def f():
+        c = np.random.rand(3, 2)
+        return c
+
+    with dpctl.device_context(filter_str), dpnp_debug():
+        actual = f()
+
+        actual = actual.ravel()
+        assert(np.all(actual >= 0.0))
+        assert(np.all(actual < 1.0))
+
+
+def test_hypergeometric(filter_str, three_arg_size):
+    @njit
+    def f(ngood, nbad, nsamp, size):
+        res = np.random.hypergeometric(ngood, nbad, nsamp, size)
+        return res
+
+    ngood, nbad, nsamp = 100, 2, 10
+    with dpctl.device_context(filter_str), dpnp_debug():
+        actual = f(ngood, nbad, nsamp, three_arg_size)
+
+        if np.isscalar(actual):
+            assert(actual >= 0)
+            assert(actual <= min(nsamp, ngood + nbad))
+        else:
+            actual = actual.ravel()
+            assert(np.all(actual >= 0))
+            assert(np.all(actual <= min(nsamp, ngood + nbad)))
+
+
