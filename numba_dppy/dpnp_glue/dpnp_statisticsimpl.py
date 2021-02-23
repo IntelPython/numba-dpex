@@ -243,6 +243,7 @@ def dpnp_median_impl(a):
     res_dtype = np.float64
     if a.dtype == types.float32:
         res_dtype = np.float32
+    PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(a):
         if a.size == 0:
@@ -267,6 +268,8 @@ def dpnp_median_impl(a):
 
         dpnp_ext._dummy_liveness_func([a.size, out.size])
 
+        if PRINT_DEBUG:
+            print("dpnp implementation")
         return out[0]
 
     return dpnp_impl
@@ -292,6 +295,7 @@ def dpnp_cov_impl(a):
     copy_input_to_double = True
     if a.dtype == types.float64:
         copy_input_to_double = False
+    PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(a):
         if a.size == 0:
@@ -336,6 +340,8 @@ def dpnp_cov_impl(a):
 
         dpnp_ext._dummy_liveness_func([a_copy_in_double.size, a.size, out.size])
 
+        if PRINT_DEBUG:
+            print("dpnp implementation")
         if a.ndim == 2:
             return out
         elif a.ndim == 1:
