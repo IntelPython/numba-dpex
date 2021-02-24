@@ -1,8 +1,24 @@
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from __future__ import print_function, absolute_import
 from numba.core import types, ir, typing
-from numba.core.rewrites.macros import Macro
 
 from numba_dppy.target import SPIR_LOCAL_ADDRSPACE
+import numpy as np
+import numba
+from numba.np import numpy_support
 
 _stub_error = NotImplementedError("This is a stub.")
 
@@ -100,32 +116,16 @@ class Stub(object):
 # local memory
 
 
-def local_alloc(shape, dtype):
-    shape = _legalize_shape(shape)
-    ndim = len(shape)
-    fname = "dppy.lmem.alloc"
-    restype = types.Array(dtype, ndim, "C", addrspace=SPIR_LOCAL_ADDRSPACE)
-    sig = typing.signature(restype, types.UniTuple(types.intp, ndim), types.Any)
-    return ir.Intrinsic(fname, sig, args=(shape, dtype))
-
-
 class local(Stub):
     """local namespace"""
 
     _description_ = "<local>"
 
-    static_alloc = Macro(
-        "local.static_alloc", local_alloc, callable=True, argnames=["shape", "dtype"]
-    )
+    def array(shape, dtype):
+        """local.array(shape, dtype)
 
-
-def _legalize_shape(shape):
-    if isinstance(shape, tuple):
-        return shape
-    elif isinstance(shape, int):
-        return (shape,)
-    else:
-        raise TypeError("invalid type for shape; got {0}".format(type(shape)))
+        Allocate a local array.
+        """
 
 
 # -------------------------------------------------------------------------------
@@ -137,13 +137,13 @@ class atomic(Stub):
 
     _description_ = "<atomic>"
 
-    class add(Stub):
+    def add():
         """add(ary, idx, val)
 
         Perform atomic ary[idx] += val
         """
 
-    class sub(Stub):
+    def sub():
         """sub(ary, idx, val)
 
         Perform atomic ary[idx] -= val

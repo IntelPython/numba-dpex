@@ -44,6 +44,11 @@ list_of_binary_ops = [
     "remainder",
     "mod",
     "fmod",
+    "hypot",
+    "maximum",
+    "minimum",
+    "fmax",
+    "fmin",
 ]
 
 
@@ -60,7 +65,9 @@ list_of_unary_ops = [
     "sign",
     "conj",
     "exp",
+    "exp2",
     "log",
+    "log2",
     "log10",
     "expm1",
     "log1p",
@@ -68,6 +75,9 @@ list_of_unary_ops = [
     "square",
     "reciprocal",
     "conjugate",
+    "floor",
+    "ceil",
+    "trunc",
 ]
 
 

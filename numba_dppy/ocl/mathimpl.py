@@ -1,5 +1,20 @@
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from __future__ import print_function, absolute_import, division
 import math
+import numpy
 import warnings
 
 from numba.core.imputils import Registry
@@ -20,7 +35,9 @@ _binary_f_ff = types.float32(types.float32, types.float32)
 _binary_d_dd = types.float64(types.float64, types.float64)
 
 _binary_f_fi = types.float32(types.float32, types.int32)
+_binary_f_ii = types.float32(types.int32, types.int32)
 _binary_f_fl = types.float32(types.float32, types.int64)
+_binary_f_fd = types.float32(types.float32, types.float64)
 _binary_d_di = types.float64(types.float64, types.int32)
 _binary_d_dl = types.float64(types.float64, types.int64)
 
@@ -31,8 +48,10 @@ sig_mapper = {
     "dd->d": _binary_d_dd,
     "fi->f": _binary_f_fi,
     "fl->f": _binary_f_fl,
+    "ff->f": _binary_f_ff,
     "di->d": _binary_d_di,
     "dl->d": _binary_d_dl,
+    "dd->d": _binary_d_dd,
 }
 
 function_descriptors = {
@@ -69,6 +88,9 @@ function_descriptors = {
     "gamma": (_unary_f_f, _unary_d_d),
     "lgamma": (_unary_f_f, _unary_d_d),
     "ldexp": (_binary_f_fi, _binary_f_fl, _binary_d_di, _binary_d_dl),
+    "hypot": (_binary_f_fi, _binary_f_ff, _binary_d_dl, _binary_d_dd),
+    "exp2": (_unary_f_f, _unary_d_d),
+    "log2": (_unary_f_f, _unary_d_d),
     # unsupported functions listed in the math module documentation:
     # frexp, ldexp, trunc, modf, factorial, fsum
 }
@@ -127,6 +149,9 @@ _supported = [
     "lgamma",
     "ldexp",
     "trunc",
+    "hypot",
+    "exp2",
+    "log2",
 ]
 
 
@@ -138,7 +163,10 @@ def function_name_to_supported_decl(name, sig):
         # only symbols present in the math module
         key = getattr(math, name)
     except AttributeError:
-        return None
+        try:
+            key = getattr(numpy, name)
+        except:
+            return None
 
     fn = _mk_fn_decl(name, sig)
     # lower(key, *sig.args)(fn)

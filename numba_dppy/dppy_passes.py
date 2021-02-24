@@ -1,3 +1,17 @@
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from __future__ import print_function, division, absolute_import
 from contextlib import contextmanager
 import warnings
@@ -84,46 +98,58 @@ class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
                             ).value
                             if (
                                 isinstance(call_node, ir.Expr)
-                                and call_node.attr == "static_alloc"
+                                and call_node.op == "getattr"
+                                and call_node.attr == "array"
                             ):
-                                arg = None
-                                # at first look in keyword arguments to get the shape, which has to be
-                                # constant
-                                if expr.kws:
-                                    for _arg in expr.kws:
-                                        if _arg[0] == "shape":
-                                            arg = _arg[1]
+                                # let's check if it is from numba_dppy.local
+                                attr_node = block.find_variable_assignment(
+                                    call_node.value.name
+                                ).value
+                                if (
+                                    isinstance(attr_node, ir.Expr)
+                                    and attr_node.op == "getattr"
+                                    and attr_node.attr == "local"
+                                ):
 
-                                if not arg:
-                                    arg = expr.args[0]
 
-                                error = False
-                                # arg can be one constant or a tuple of constant items
-                                arg_type = func_ir.get_definition(arg.name)
-                                if isinstance(arg_type, ir.Expr):
-                                    # we have a tuple
-                                    for item in arg_type.items:
+                                    arg = None
+                                    # at first look in keyword arguments to get the shape, which has to be
+                                    # constant
+                                    if expr.kws:
+                                        for _arg in expr.kws:
+                                            if _arg[0] == "shape":
+                                                arg = _arg[1]
+
+                                    if not arg:
+                                        arg = expr.args[0]
+
+                                    error = False
+                                    # arg can be one constant or a tuple of constant items
+                                    arg_type = func_ir.get_definition(arg.name)
+                                    if isinstance(arg_type, ir.Expr):
+                                        # we have a tuple
+                                        for item in arg_type.items:
+                                            if not isinstance(
+                                                func_ir.get_definition(item.name), ir.Const
+                                            ):
+                                                error = True
+                                                break
+
+                                    else:
                                         if not isinstance(
-                                            func_ir.get_definition(item.name), ir.Const
+                                            func_ir.get_definition(arg.name), ir.Const
                                         ):
                                             error = True
                                             break
 
-                                else:
-                                    if not isinstance(
-                                        func_ir.get_definition(arg.name), ir.Const
-                                    ):
-                                        error = True
-                                        break
-
-                                if error:
-                                    warnings.warn_explicit(
-                                        "The size of the Local memory has to be constant",
-                                        errors.NumbaError,
-                                        state.func_id.filename,
-                                        state.func_id.firstlineno,
-                                    )
-                                    raise
+                                    if error:
+                                        warnings.warn_explicit(
+                                            "The size of the Local memory has to be constant",
+                                            errors.NumbaError,
+                                            state.func_id.filename,
+                                            state.func_id.firstlineno,
+                                        )
+                                        raise
 
         if config.DEBUG or config.DUMP_IR:
             name = state.func_ir.func_id.func_qualname
@@ -339,7 +365,6 @@ class DPPYNoPythonBackend(FunctionPass):
             call_helper=lowered.call_helper,
             signature=signature,
             objectmode=False,
-            interpmode=False,
             lifted=state.lifted,
             fndesc=lowered.fndesc,
             environment=lowered.env,

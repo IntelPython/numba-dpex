@@ -1,3 +1,17 @@
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from __future__ import print_function, absolute_import
 
 import re
@@ -77,43 +91,6 @@ def _init_data_model_manager():
 spirv_data_model_manager = _init_data_model_manager()
 
 
-def _replace_numpy_ufunc_with_opencl_supported_functions():
-    from numba.np.ufunc_db import _ufunc_db as ufunc_db
-    from numba_dppy.ocl.mathimpl import lower_ocl_impl, sig_mapper
-
-    ufuncs = [
-        ("fabs", np.fabs),
-        ("exp", np.exp),
-        ("log", np.log),
-        ("log10", np.log10),
-        ("expm1", np.expm1),
-        ("log1p", np.log1p),
-        ("sqrt", np.sqrt),
-        ("sin", np.sin),
-        ("cos", np.cos),
-        ("tan", np.tan),
-        ("asin", np.arcsin),
-        ("acos", np.arccos),
-        ("atan", np.arctan),
-        ("atan2", np.arctan2),
-        ("sinh", np.sinh),
-        ("cosh", np.cosh),
-        ("tanh", np.tanh),
-        ("asinh", np.arcsinh),
-        ("acosh", np.arccosh),
-        ("atanh", np.arctanh),
-        ("ldexp", np.ldexp),
-        ("floor", np.floor),
-        ("ceil", np.ceil),
-        ("trunc", np.trunc),
-    ]
-
-    for name, ufunc in ufuncs:
-        for sig in ufunc_db[ufunc].keys():
-            if sig in sig_mapper and (name, sig_mapper[sig]) in lower_ocl_impl:
-                ufunc_db[ufunc][sig] = lower_ocl_impl[(name, sig_mapper[sig])]
-
-
 class DPPYTargetContext(BaseContext):
     implement_powi_as_math_call = True
     generic_addrspace = SPIR_GENERIC_ADDRSPACE
@@ -168,6 +145,9 @@ class DPPYTargetContext(BaseContext):
             ("floor", np.floor),
             ("ceil", np.ceil),
             ("trunc", np.trunc),
+            ("hypot", np.hypot),
+            ("exp2", np.exp2),
+            ("log2", np.log2),
         ]
 
         for name, ufunc in ufuncs:
