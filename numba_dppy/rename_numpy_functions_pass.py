@@ -91,6 +91,7 @@ rewrite_function_name_map = {
     "cumsum": (["numpy"], "cumsum"),
     "cumprod": (["numpy"], "cumprod"),
     "sort": (["numpy"], "sort"),
+    "take": (["numpy"], "take"),
 }
 
 
