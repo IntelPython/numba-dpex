@@ -41,6 +41,7 @@ def dpnp_argmax_impl(a):
     )
 
     res_dtype = np.int64
+    PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(a):
         if a.size == 0:
@@ -65,6 +66,8 @@ def dpnp_argmax_impl(a):
 
         dpnp_ext._dummy_liveness_func([a.size, out.size])
 
+        if PRINT_DEBUG:
+            print("dpnp implementation")
         return out[0]
 
     return dpnp_impl
@@ -89,6 +92,7 @@ def dpnp_argmin_impl(a):
     )
 
     res_dtype = np.int64
+    PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(a):
         if a.size == 0:
@@ -113,6 +117,8 @@ def dpnp_argmin_impl(a):
 
         dpnp_ext._dummy_liveness_func([a.size, out.size])
 
+        if PRINT_DEBUG:
+            print("dpnp implementation")
         return out[0]
 
     return dpnp_impl
@@ -135,6 +141,7 @@ def dpnp_argsort_impl(a):
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     res_dtype = np.int64
+    PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(a):
         if a.size == 0:
@@ -159,6 +166,8 @@ def dpnp_argsort_impl(a):
 
         dpnp_ext._dummy_liveness_func([a.size, out.size])
 
+        if PRINT_DEBUG:
+            print("dpnp implementation")
         return out
 
     return dpnp_impl
