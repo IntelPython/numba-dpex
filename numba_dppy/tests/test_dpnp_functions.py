@@ -1453,6 +1453,19 @@ class Testdpnp_array_ops_functions(unittest.TestCase):
                 )
             )
 
+    def test_copy(self):
+        @njit
+        def f(a):
+            c = np.copy(a)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes(
+                    f, np.copy, [10], 1, self.tys, np_all=True
+                )
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

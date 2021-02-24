@@ -187,3 +187,6 @@ class dpnp(Stub):
 
     class sort(Stub):
         pass
+
+    class copy(Stub):
+        pass
