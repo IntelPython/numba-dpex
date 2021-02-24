@@ -72,6 +72,41 @@ def check_for_different_datatypes(
     return True
 
 
+def check_for_different_datatypes_array_creations(
+    fn, test_fn, dims, arg_count, tys, np_all=False, matrix=None, fill_value=10, func=0
+):
+    for ty in tys:
+        a = np.array(np.random.random(dims[0]), dtype=ty)
+        b_dppy = np.array([fill_value], dtype=ty)
+        b_numpy = b_dppy[0]
+
+        if arg_count == 1:
+            with dpctl.device_context("opencl:gpu"):
+                c = fn(a)
+            d = test_fn(a)
+        elif arg_count == 2:
+            if func == 2:
+                with dpctl.device_context("opencl:gpu"):
+                    c = fn(a, dtype=ty)
+                d = test_fn(a, dtype=ty)
+            elif func == 1:
+                with dpctl.device_context("opencl:gpu"):
+                    c = fn(a, b_dppy)
+                d = test_fn(a, b_numpy)
+            else:
+                with dpctl.device_context("opencl:gpu"):
+                    c = fn(a, b_dppy)
+                d = test_fn(a.shape, b_numpy)
+
+        if np_all:
+            max_abs_err = np.all(c - d)
+        else:
+            max_abs_err = c - d
+        if not (max_abs_err < 1e-4):
+            return False
+    return True
+
+
 def check_for_dimensions(fn, test_fn, dims, tys, np_all=False):
     total_size = 1
     for d in dims:
@@ -1450,6 +1485,91 @@ class Testdpnp_array_ops_functions(unittest.TestCase):
             self.assertTrue(
                 check_for_different_datatypes(
                     f, np.sort, [10], 1, self.tys, np_all=True
+                )
+            )
+
+
+@unittest.skipUnless(
+    ensure_dpnp() and dpctl.has_gpu_queues(), "test only when dpNP and GPU is available"
+)
+class Testdpnp_array_creations_functions(unittest.TestCase):
+    tys = [np.int32, np.uint32, np.int64, np.uint64, np.float64, np.double]
+
+    def test_full(self):
+        @njit
+        def f(a, b):
+            c = np.full(a, b)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes_array_creations(
+                    f, np.full, [10], 2, self.tys, np_all=True
+                )
+            )
+
+    def test_ones_like(self):
+        @njit
+        def f(a, dtype):
+            c = np.ones_like(a, dtype)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes_array_creations(
+                    f, np.ones_like, [10], 2, self.tys, np_all=True, func=2
+                )
+            )
+
+    def test_ones_like_without_dtype(self):
+        @njit
+        def f(a):
+            c = np.ones_like(a)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes_array_creations(
+                    f, np.ones_like, [10], 1, self.tys, np_all=True
+                )
+            )
+
+    def test_zeros_like(self):
+        @njit
+        def f(a, dtype):
+            c = np.zeros_like(a, dtype)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes_array_creations(
+                    f, np.zeros_like, [10], 2, self.tys, np_all=True, func=2
+                )
+            )
+
+    def test_zeros_like_without_dtype(self):
+        @njit
+        def f(a):
+            c = np.zeros_like(a)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes_array_creations(
+                    f, np.zeros_like, [10], 1, self.tys, np_all=True
+                )
+            )
+
+    def test_full_like(self):
+        @njit
+        def f(a, b):
+            c = np.full_like(a, b)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes_array_creations(
+                    f, np.full_like, [10], 2, self.tys, np_all=True, func=1
                 )
             )
 

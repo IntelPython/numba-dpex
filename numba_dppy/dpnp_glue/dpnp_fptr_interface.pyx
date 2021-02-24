@@ -46,7 +46,9 @@ cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncName":  # need this na
         DPNP_FN_FLOOR
         DPNP_FN_FLOOR_DIVIDE
         DPNP_FN_FMOD
+        DPNP_FN_FULL
         DPNP_FN_HYPOT
+        DPNP_FN_INITVAL
         DPNP_FN_INVERT
         DPNP_FN_LEFT_SHIFT
         DPNP_FN_LOG
@@ -203,6 +205,10 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_DET
     elif name == "dpnp_matrix_rank":
         return DPNPFuncName.DPNP_FN_MATRIX_RANK
+    elif name == "dpnp_full":
+        return DPNPFuncName.DPNP_FN_FULL
+    elif name == "dpnp_ones_like" or name == "dpnp_zeros_like" or name == "dpnp_full_like":
+        return DPNPFuncName.DPNP_FN_INITVAL
     elif name == "dpnp_cumsum":
         return DPNPFuncName.DPNP_FN_CUMSUM
     elif name == "dpnp_cumprod":
