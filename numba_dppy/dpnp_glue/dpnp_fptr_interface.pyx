@@ -25,6 +25,7 @@ cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncName":  # need this na
         DPNP_FN_CBRT
         DPNP_FN_CEIL
         DPNP_FN_CHOLESKY
+        DPNP_FN_COPY
         DPNP_FN_COPYSIGN
         DPNP_FN_CORRELATE
         DPNP_FN_COS
@@ -216,6 +217,8 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_CUMPROD
     elif name == "dpnp_sort":
         return DPNPFuncName.DPNP_FN_SORT
+    elif name == "dpnp_copy":
+        return DPNPFuncName.DPNP_FN_COPY
     elif name == "dpnp_take":
         return DPNPFuncName.DPNP_FN_TAKE
     else:
