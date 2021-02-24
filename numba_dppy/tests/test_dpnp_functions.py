@@ -1540,7 +1540,12 @@ class Testdpnp_array_ops_functions(unittest.TestCase):
         for ind in test_indices:
             self.assertTrue(
                 self.check_take_for_different_datatypes(
-                    f, np.take, ind, [3, 4], [np.float], matrix=True,
+                    f,
+                    np.take,
+                    ind,
+                    [3, 4],
+                    [np.float],
+                    matrix=True,
                 )
             )
 
