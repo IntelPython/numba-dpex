@@ -1443,6 +1443,19 @@ class Testdpnp_functions(unittest.TestCase):
 class Testdpnp_array_ops_functions(unittest.TestCase):
     tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
 
+    def test_copy(self):
+        @njit
+        def f(a):
+            c = np.copy(a)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes(
+                    f, np.copy, [10], 1, self.tys, np_all=True
+                )
+            )
+
     def test_cumsum(self):
         @njit
         def f(a):
@@ -1488,16 +1501,46 @@ class Testdpnp_array_ops_functions(unittest.TestCase):
                 )
             )
 
-    def test_copy(self):
+    def check_take_for_different_datatypes(
+        self, fn, test_fn, ind, dims, tys, matrix=False
+    ):
+        for ty in tys:
+            if matrix:
+                a = np.arange(np.prod(dims), dtype=ty).reshape(dims[0], dims[1])
+            else:
+                a = np.arange(dims[0], dtype=ty)
+
+            c = fn(a, ind)
+
+            d = test_fn(a, ind)
+            if c.shape == d.shape:
+                max_abs_err = np.all(c - d)
+            if not (max_abs_err < 1e-4) and c.dtype != d.dtype:
+                return False
+
+        return True
+
+    def test_take(self):
         @njit
-        def f(a):
-            c = np.copy(a)
+        def f(a, ind):
+            c = np.take(a, ind)
             return c
 
-        with assert_dpnp_implementaion():
+        test_indices = []
+        test_indices.append(np.array([[1, 5, 1], [11, 3, 0]]))
+        test_indices.append(np.array([[[1, 5, 1], [11, 3, 0]]]))
+        test_indices.append(np.array([[[[1, 5]], [[11, 0]], [[1, 2]]]]))
+
+        self.assertTrue(
+            self.check_take_for_different_datatypes(
+                f, np.take, np.array([1, 5, 1, 11, 3]), [12], self.tys
+            )
+        )
+
+        for ind in test_indices:
             self.assertTrue(
-                check_for_different_datatypes(
-                    f, np.copy, [10], 1, self.tys, np_all=True
+                self.check_take_for_different_datatypes(
+                    f, np.take, ind, [3, 4], [np.float], matrix=True,
                 )
             )
 
