@@ -41,6 +41,7 @@ list_of_dtypes = [
     np.float64,
 ]
 
+
 @pytest.fixture(params=list_of_dtypes)
 def input_arrays(request):
     # The size of input and out arrays to be used
@@ -55,6 +56,7 @@ list_of_shape = [
     (50, 2),
     (10, 5, 2),
 ]
+
 
 @pytest.fixture(params=list_of_shape)
 def get_shape(request):
@@ -71,6 +73,7 @@ list_of_unary_ops = [
     "cov",
 ]
 
+
 @pytest.fixture(params=list_of_unary_ops)
 def unary_op(request):
     func_str = "def fn(a):\n    return np." + request.param + "(a)"
@@ -78,6 +81,7 @@ def unary_op(request):
     exec(func_str, globals(), ldict)
     fn = ldict["fn"]
     return fn, request.param
+
 
 def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
     try:

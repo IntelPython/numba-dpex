@@ -41,6 +41,7 @@ list_of_dtypes = [
     np.float64,
 ]
 
+
 @pytest.fixture(params=list_of_dtypes)
 def input_array(request):
     # The size of input and out arrays to be used
@@ -48,10 +49,12 @@ def input_array(request):
     a = np.array(np.random.random(N), request.param)
     return a
 
+
 list_of_shape = [
     (10),
     (5, 2),
 ]
+
 
 @pytest.fixture(params=list_of_shape)
 def get_shape(request):
@@ -67,26 +70,30 @@ list_of_binary_op = [
     "zeros_like",
 ]
 
+
 @pytest.fixture(params=list_of_unary_op)
 def unary_op(request):
     return request.param
+
 
 @pytest.fixture(params=list_of_binary_op)
 def binary_op(request):
     return request.param
 
+
 def get_op_fn(name, nargs):
     func_str = "def fn("
     for i in range(nargs):
-        func_str += chr(97+i) + ","
+        func_str += chr(97 + i) + ","
     func_str = func_str[:-1] + "):\n\treturn np." + name + "("
     for i in range(nargs):
-        func_str += chr(97+i) + ","
+        func_str += chr(97 + i) + ","
     func_str = func_str[:-1] + ")"
     ldict = {}
     exec(func_str, globals(), ldict)
     fn = ldict["fn"]
     return fn
+
 
 def test_unary_ops(filter_str, unary_op, input_array, capfd):
     try:
@@ -117,6 +124,7 @@ def test_unary_ops(filter_str, unary_op, input_array, capfd):
 def dtype(request):
     return request.param
 
+
 def test_binary_op(filter_str, binary_op, input_array, dtype, get_shape, capfd):
     try:
         with dpctl.device_context(filter_str):
@@ -145,6 +153,7 @@ def test_binary_op(filter_str, binary_op, input_array, dtype, get_shape, capfd):
 list_of_full = [
     "full_like",
 ]
+
 
 @pytest.fixture(params=list_of_full)
 def full_name(request):

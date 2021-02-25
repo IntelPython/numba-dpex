@@ -45,12 +45,14 @@ list_of_float_dtypes = [
     np.float64,
 ]
 
-@pytest.fixture(params=list_of_int_dtypes+list_of_float_dtypes)
+
+@pytest.fixture(params=list_of_int_dtypes + list_of_float_dtypes)
 def input_array(request):
     # The size of input and out arrays to be used
     N = 100
     a = np.array(np.random.random(N), request.param)
     return a
+
 
 @pytest.fixture(params=list_of_float_dtypes)
 def input_nan_array(request):
@@ -58,7 +60,7 @@ def input_nan_array(request):
     N = 100
     a = np.array(np.random.random(N), request.param)
     for i in range(5):
-        a[N-1-i] = np.nan
+        a[N - 1 - i] = np.nan
     return a
 
 
@@ -67,6 +69,7 @@ list_of_shape = [
     (50, 2),
     (10, 5, 2),
 ]
+
 
 @pytest.fixture(params=list_of_shape)
 def get_shape(request):
@@ -93,10 +96,12 @@ def get_func(param):
     exec(func_str, globals(), ldict)
     return ldict["fn"]
 
-@pytest.fixture(params=list_of_unary_ops+list_of_nan_ops)
+
+@pytest.fixture(params=list_of_unary_ops + list_of_nan_ops)
 def unary_op(request):
     fn = get_func(request.param)
     return fn, request.param
+
 
 @pytest.fixture(params=list_of_nan_ops)
 def unary_nan_op(request):

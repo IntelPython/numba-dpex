@@ -30,7 +30,6 @@ class Testdpnp_functions(unittest.TestCase):
     b = np.array(np.random.random(N), dtype=np.float32)
     tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
 
-
     def test_dpnp_interacting_with_parfor(self):
         def f(a, b):
             c = np.sum(a)

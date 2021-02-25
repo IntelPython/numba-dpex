@@ -147,6 +147,7 @@ def dpnp_full_like_impl(a, b):
 
     return dpnp_impl
 
+
 # TODO: This implementation is incorrect
 @overload(stubs.dpnp.full)
 def dpnp_full_impl(a, b):

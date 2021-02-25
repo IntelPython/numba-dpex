@@ -347,6 +347,7 @@ def dpnp_matrix_power_impl(a, n):
     """
 
     PRINT_DEBUG = dpnp_lowering.DEBUG
+
     def dpnp_impl(a, n):
         if n < 0:
             raise ValueError("n < 0 is not supported for np.linalg.matrix_power(a, n)")

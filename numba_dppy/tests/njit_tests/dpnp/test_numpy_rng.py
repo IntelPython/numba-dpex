@@ -25,15 +25,16 @@ from numba_dppy.testing import ensure_dpnp, dpnp_debug
 # dpnp throws -30 (CL_INVALID_VALUE) when invoked with multiple kinds of
 # devices at runtime, so testing for level0 only
 list_of_filter_strs = [
-    #"opencl:gpu:0",
+    # "opencl:gpu:0",
     "level0:gpu:0",
-    #"opencl:cpu:0",
+    # "opencl:cpu:0",
 ]
 
 
 @pytest.fixture(params=list_of_filter_strs)
 def filter_str(request):
     return request.param
+
 
 list_of_size = [
     9,
@@ -43,13 +44,16 @@ list_of_size = [
 
 none_size = [None]
 
+
 @pytest.fixture(params=list_of_size)
 def unary_size(request):
     return request.param
 
-@pytest.fixture(params=list_of_size+none_size)
+
+@pytest.fixture(params=list_of_size + none_size)
 def three_arg_size(request):
     return request.param
+
 
 list_of_one_arg = [
     ("random_sample", 0.0, 1.0),
@@ -60,6 +64,7 @@ list_of_one_arg = [
     ("standard_normal", None, None),
     ("standard_cauchy", None, None),
 ]
+
 
 @pytest.fixture(params=list_of_one_arg)
 def one_arg_fn(request):
@@ -98,9 +103,10 @@ def test_one_arg_fn(filter_str, one_arg_fn, unary_size, capfd):
         assert "dpnp implementation" in captured.out
 
         if low != None:
-            assert(np.all(actual >= low))
+            assert np.all(actual >= low)
         if high != None:
-            assert(np.all(actual < high))
+            assert np.all(actual < high)
+
 
 list_of_two_arg_fn = [
     ("chisquare", 3, 0, None),
@@ -113,16 +119,23 @@ list_of_two_arg_fn = [
     ("weibull", 5.0, 0, None),
 ]
 
+
 @pytest.fixture(params=list_of_two_arg_fn)
 def two_arg_fn(request):
     return request.param
 
+
 def get_two_arg_fn(op_name):
-    func_str = "def fn(first_arg, second_arg):\n\treturn np.random." + op_name + "(first_arg, second_arg)"
+    func_str = (
+        "def fn(first_arg, second_arg):\n\treturn np.random."
+        + op_name
+        + "(first_arg, second_arg)"
+    )
     ldict = {}
     exec(func_str, globals(), ldict)
     fn = ldict["fn"]
     return fn
+
 
 def test_two_arg_fn(filter_str, two_arg_fn, unary_size, capfd):
     if skip_test(filter_str):
@@ -141,10 +154,10 @@ def test_two_arg_fn(filter_str, two_arg_fn, unary_size, capfd):
 
         if low != None and high == None:
             if np.isscalar(actual):
-                assert(actual >= low)
+                assert actual >= low
             else:
                 actual = actual.ravel()
-                assert(np.all(actual >= low))
+                assert np.all(actual >= low)
 
 
 list_of_three_arg_fn = [
@@ -162,17 +175,23 @@ list_of_three_arg_fn = [
     ("uniform", -1.0, 0.0, -1.0, 0.0),
 ]
 
+
 @pytest.fixture(params=list_of_three_arg_fn)
 def three_arg_fn(request):
     return request.param
 
 
 def get_three_arg_fn(op_name):
-    func_str = "def fn(first_arg, second_arg, third_arg):\n\treturn np.random." + op_name + "(first_arg, second_arg, third_arg)"
+    func_str = (
+        "def fn(first_arg, second_arg, third_arg):\n\treturn np.random."
+        + op_name
+        + "(first_arg, second_arg, third_arg)"
+    )
     ldict = {}
     exec(func_str, globals(), ldict)
     fn = ldict["fn"]
     return fn
+
 
 def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
     if skip_test(filter_str):
@@ -183,14 +202,14 @@ def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
     if op_name == "multinomial":
         pytest.skip("DPNP RNG Error: dpnp_rng_multinomial_c() failed")
     elif op_name == "multivariate_normal":
-        pytest.skip("No implementation of function Function(<class "
-                "'numba_dppy.dpnp_glue.stubs.dpnp.multivariate_normal'>) found for signature"
-                )
+        pytest.skip(
+            "No implementation of function Function(<class "
+            "'numba_dppy.dpnp_glue.stubs.dpnp.multivariate_normal'>) found for signature"
+        )
     elif op_name == "negative_binomial":
         pytest.skip("DPNP RNG Error: dpnp_rng_negative_binomial_c() failed.")
     elif op_name == "gumbel":
         pytest.skip("MKL error")
-
 
     op = get_three_arg_fn(op_name)
     f = njit(op)
@@ -203,20 +222,20 @@ def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
             if second_arg:
                 low = first_arg
                 high = second_arg
-                assert(np.all(actual >= low))
-                assert(np.all(actual <= high))
+                assert np.all(actual >= low)
+                assert np.all(actual <= high)
             else:
                 high = first_arg
-                assert(np.all(actual >= low))
-                assert(np.all(actual <= high))
+                assert np.all(actual >= low)
+                assert np.all(actual <= high)
         elif low != None and high != None:
             if np.isscalar(actual):
-                assert(actual >= low)
-                assert(actual <= high)
+                assert actual >= low
+                assert actual <= high
             else:
                 actual = actual.ravel()
-                assert(np.all(actual >= low))
-                assert(np.all(actual <= high))
+                assert np.all(actual >= low)
+                assert np.all(actual <= high)
 
 
 def test_rand(filter_str):
@@ -229,8 +248,8 @@ def test_rand(filter_str):
         actual = f()
 
         actual = actual.ravel()
-        assert(np.all(actual >= 0.0))
-        assert(np.all(actual < 1.0))
+        assert np.all(actual >= 0.0)
+        assert np.all(actual < 1.0)
 
 
 def test_hypergeometric(filter_str, three_arg_size):
@@ -244,11 +263,9 @@ def test_hypergeometric(filter_str, three_arg_size):
         actual = f(ngood, nbad, nsamp, three_arg_size)
 
         if np.isscalar(actual):
-            assert(actual >= 0)
-            assert(actual <= min(nsamp, ngood + nbad))
+            assert actual >= 0
+            assert actual <= min(nsamp, ngood + nbad)
         else:
             actual = actual.ravel()
-            assert(np.all(actual >= 0))
-            assert(np.all(actual <= min(nsamp, ngood + nbad)))
-
-
+            assert np.all(actual >= 0)
+            assert np.all(actual <= min(nsamp, ngood + nbad))
