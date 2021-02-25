@@ -88,9 +88,11 @@ rewrite_function_name_map = {
     "zeros_like": (["numpy"], "zeros_like"),
     "full_like": (["numpy"], "full_like"),
     # array ops
+    "copy": (["numpy"], "copy"),
     "cumsum": (["numpy"], "cumsum"),
     "cumprod": (["numpy"], "cumprod"),
     "sort": (["numpy"], "sort"),
+    "take": (["numpy"], "take"),
 }
 
 
