@@ -52,6 +52,7 @@ list_of_binary_ops = [
 def binary_op(request):
     return request.param
 
+
 list_of_unary_ops = [
     "isinf",
     "isfinite",
@@ -62,7 +63,6 @@ list_of_unary_ops = [
 @pytest.fixture(params=list_of_unary_ops)
 def unary_op(request):
     return request.param
-
 
 
 list_of_dtypes = [

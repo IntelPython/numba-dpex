@@ -34,40 +34,25 @@ def filter_str(request):
     return request.param
 
 
-list_of_int_dtypes = [
+list_of_dtypes = [
     np.int32,
     np.int64,
-]
-
-
-list_of_float_dtypes = [
     np.float32,
     np.float64,
 ]
 
 
-@pytest.fixture(params=list_of_int_dtypes + list_of_float_dtypes)
+@pytest.fixture(params=list_of_dtypes)
 def input_array(request):
     # The size of input and out arrays to be used
-    N = 100
+    N = 10
     a = np.array(np.random.random(N), request.param)
-    return a
-
-
-@pytest.fixture(params=list_of_float_dtypes)
-def input_nan_array(request):
-    # The size of input and out arrays to be used
-    N = 100
-    a = np.array(np.random.random(N), request.param)
-    for i in range(5):
-        a[N - 1 - i] = np.nan
     return a
 
 
 list_of_shape = [
-    (100),
-    (50, 2),
-    (10, 5, 2),
+    (10),
+    (5, 2),
 ]
 
 
@@ -76,40 +61,41 @@ def get_shape(request):
     return request.param
 
 
-list_of_unary_ops = [
-    "sum",
-    "prod",
-    "cumsum",
-    "cumprod",
+list_of_unary_op = [
+    "copy",
 ]
 
-list_of_nan_ops = [
-    "nansum",
-    "nanprod",
+list_of_binary_op = [
+    "ones_like",
+    "zeros_like",
 ]
 
 
-def get_func(param):
-    name = param
-    func_str = "def fn(a):\n    return np." + name + "(a)"
+@pytest.fixture(params=list_of_unary_op)
+def unary_op(request):
+    return request.param
+
+
+@pytest.fixture(params=list_of_binary_op)
+def binary_op(request):
+    return request.param
+
+
+def get_op_fn(name, nargs):
+    func_str = "def fn("
+    for i in range(nargs):
+        func_str += chr(97 + i) + ","
+    func_str = func_str[:-1] + "):\n\treturn np." + name + "("
+    for i in range(nargs):
+        func_str += chr(97 + i) + ","
+    func_str = func_str[:-1] + ")"
     ldict = {}
     exec(func_str, globals(), ldict)
-    return ldict["fn"]
+    fn = ldict["fn"]
+    return fn
 
 
-@pytest.fixture(params=list_of_unary_ops + list_of_nan_ops)
-def unary_op(request):
-    fn = get_func(request.param)
-    return fn, request.param
-
-
-@pytest.fixture(params=list_of_nan_ops)
-def unary_nan_op(request):
-    fn = get_func(request.param)
-    return fn, request.param
-
-
-def test_unary_ops(filter_str, unary_op, input_array, get_shape, capfd):
+def test_unary_ops(filter_str, unary_op, input_array, capfd):
     try:
         with dpctl.device_context(filter_str):
             pass
@@ -120,25 +106,26 @@ def test_unary_ops(filter_str, unary_op, input_array, get_shape, capfd):
         pytest.skip()
 
     a = input_array
-    a = np.reshape(a, get_shape)
-    op, name = unary_op
-    if (name == "cumprod" or name == "cumsum") and filter_str == "opencl:cpu:0":
-        pytest.skip()
+    fn = get_op_fn(unary_op, 1)
     actual = np.empty(shape=a.shape, dtype=a.dtype)
     expected = np.empty(shape=a.shape, dtype=a.dtype)
 
-    f = njit(op)
+    f = njit(fn)
     with dpctl.device_context(filter_str), dpnp_debug():
         actual = f(a)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
 
-    expected = op(a)
-    max_abs_err = np.sum(actual - expected)
-    assert max_abs_err < 1e-4
+    expected = fn(a)
+    np.testing.assert_allclose(actual, expected, rtol=1e-3, atol=0)
 
 
-def test_unary_nan_ops(filter_str, unary_nan_op, input_nan_array, get_shape, capfd):
+@pytest.fixture(params=list_of_dtypes + [None])
+def dtype(request):
+    return request.param
+
+
+def test_binary_op(filter_str, binary_op, input_array, dtype, get_shape, capfd):
     try:
         with dpctl.device_context(filter_str):
             pass
@@ -148,18 +135,51 @@ def test_unary_nan_ops(filter_str, unary_nan_op, input_nan_array, get_shape, cap
     if not ensure_dpnp():
         pytest.skip()
 
-    a = input_nan_array
-    a = np.reshape(a, get_shape)
-    op, name = unary_nan_op
+    a = np.reshape(input_array, get_shape)
+    fn = get_op_fn(binary_op, 2)
     actual = np.empty(shape=a.shape, dtype=a.dtype)
     expected = np.empty(shape=a.shape, dtype=a.dtype)
 
-    f = njit(op)
+    f = njit(fn)
     with dpctl.device_context(filter_str), dpnp_debug():
-        actual = f(a)
+        actual = f(a, dtype)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
 
-    expected = op(a)
-    max_abs_err = np.sum(actual - expected)
-    assert max_abs_err < 1e-4
+    expected = fn(a, dtype)
+    np.testing.assert_allclose(actual, expected, rtol=1e-3, atol=0)
+
+
+list_of_full = [
+    "full_like",
+]
+
+
+@pytest.fixture(params=list_of_full)
+def full_name(request):
+    return request.param
+
+
+def test_full(filter_str, full_name, input_array, get_shape, capfd):
+    try:
+        with dpctl.device_context(filter_str):
+            pass
+    except Exception:
+        pytest.skip()
+
+    if not ensure_dpnp():
+        pytest.skip()
+
+    a = np.reshape(input_array, get_shape)
+    fn = get_op_fn(full_name, 2)
+    actual = np.empty(shape=a.shape, dtype=a.dtype)
+    expected = np.empty(shape=a.shape, dtype=a.dtype)
+
+    f = njit(fn)
+    with dpctl.device_context(filter_str), dpnp_debug():
+        actual = f(a, np.array([2]))
+        captured = capfd.readouterr()
+        assert "dpnp implementation" in captured.out
+
+    expected = fn(a, np.array([2]))
+    np.testing.assert_allclose(actual, expected, rtol=1e-3, atol=0)

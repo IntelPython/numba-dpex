@@ -17,7 +17,7 @@ import numpy as np
 from numba import njit
 import dpctl
 import unittest
-from numba_dppy.testing import ensure_dpnp, assert_dpnp_implementaion
+from numba_dppy.testing import ensure_dpnp
 
 
 @unittest.skipUnless(
@@ -29,7 +29,6 @@ class Testdpnp_functions(unittest.TestCase):
     a = np.array(np.random.random(N), dtype=np.float32)
     b = np.array(np.random.random(N), dtype=np.float32)
     tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
-
 
     def test_dpnp_interacting_with_parfor(self):
         def f(a, b):

@@ -180,6 +180,7 @@ def dpnp_mean_impl(a):
     res_dtype = np.float64
     if a.dtype == types.float32:
         res_dtype = np.float32
+    PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(a):
         if a.size == 0:

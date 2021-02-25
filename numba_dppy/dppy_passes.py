@@ -111,7 +111,6 @@ class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
                                     and attr_node.attr == "local"
                                 ):
 
-
                                     arg = None
                                     # at first look in keyword arguments to get the shape, which has to be
                                     # constant
@@ -130,7 +129,8 @@ class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
                                         # we have a tuple
                                         for item in arg_type.items:
                                             if not isinstance(
-                                                func_ir.get_definition(item.name), ir.Const
+                                                func_ir.get_definition(item.name),
+                                                ir.Const,
                                             ):
                                                 error = True
                                                 break
