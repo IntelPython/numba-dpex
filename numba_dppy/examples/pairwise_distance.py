@@ -22,7 +22,7 @@ import timeit
 
 import numba_dppy, numba_dppy as dppy
 import dpctl
-import dpctl._memory as dpctl_mem
+import dpctl.memory as dpctl_mem
 
 parser = argparse.ArgumentParser(description="Program to compute pairwise distance")
 

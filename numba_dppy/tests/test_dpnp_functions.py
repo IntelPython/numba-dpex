@@ -17,7 +17,7 @@ import numpy as np
 from numba import njit
 import dpctl
 import unittest
-from numba_dppy.testing import ensure_dpnp, assert_dpnp_implementaion
+from numba_dppy.testing import ensure_dpnp
 
 
 @unittest.skipUnless(
