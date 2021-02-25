@@ -36,6 +36,18 @@ export PATH=${PATH}:`go env GOPATH`/bin
 addlicense -l apache -c "Intel Corporation" numba_dppy/**/*.py numba_dppy/*.py setup.py
 ```
 
+## Security
+
+### Bandit
+
+We use [Bandit](https://github.com/PyCQA/bandit) to find common security issues in Python code.
+
+Install: `pip install bandit`
+
+- Revision: `1.7.0`
+
+Run before each commit: `bandit -r numba_dppy -lll`
+
 ## Documentation
 
 ### Generating documentation
