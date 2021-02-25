@@ -5,14 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.13.0]
 ### Added
 - Documentation.
-- Support NumPy functions via dpNP: random, linalg, transcendental, array ops.
+- Support NumPy functions via dpNP: random, linalg, transcendental, array ops, array creation.
 
 ### Changed
 - Start using black code style formatter.
 - Start using Apache 2.0 license.
-- Updated to Numba 0.52 and dpNP 0.5.1.
+- Updated to Numba 0.52, dpCtl 0.6 and dpNP 0.5.1.
 - Start using pytest for running tests.
 
 ## [0.12.0] - 2020-12-17
