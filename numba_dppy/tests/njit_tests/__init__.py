@@ -16,5 +16,5 @@
 # limitations under the License.
 ################################################################################
 
-from .test_numpy_trigonometric_functions import *
+from . import *
 from .skip_tests import *
