@@ -74,15 +74,15 @@ def get_shape(request):
 
 
 list_of_unary_ops = [
-    #"sum",
-    #"prod",
-    #"cumsum",
+    "sum",
+    "prod",
+    "cumsum",
     "cumprod",
 ]
 
 list_of_nan_ops = [
-    #"nansum",
-    #"nanprod",
+    "nansum",
+    "nanprod",
 ]
 
 
@@ -117,7 +117,7 @@ def test_unary_ops(filter_str, unary_op, input_array, get_shape, capfd):
     a = input_array
     a = np.reshape(a, get_shape)
     op, name = unary_op
-    if name == "cumprod" and filter_str == "opencl:cpu:0":
+    if (name == "cumprod" or name == "cumsum") and filter_str == "opencl:cpu:0":
         pytest.skip()
     actual = np.empty(shape=a.shape, dtype=a.dtype)
     expected = np.empty(shape=a.shape, dtype=a.dtype)
