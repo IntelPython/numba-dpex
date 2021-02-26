@@ -87,6 +87,7 @@ def atomic_skip_test(device_type):
 
     return skip
 
+
 def test_kernel_atomic_simple(filter_str, input_arrays, kernel_result_pair):
     if atomic_skip_test(filter_str):
         pytest.skip()
