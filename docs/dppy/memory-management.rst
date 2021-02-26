@@ -21,7 +21,7 @@ DPPY does not support pinned memory now.
 Queue
 -----
 
-The queue is used in DPPY as an analogue of the stream in CUDA.
+The queue is used in SYCL as an analogue of the stream in CUDA.
 Below is an example of use for GPU:
 
 .. code-block:: python
