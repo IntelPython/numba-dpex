@@ -46,29 +46,30 @@ def test_no_copy_usm_shared(capfd):
     targetctx = cpu_target.target_context
     args = typingctx.resolve_argument_type(a)
 
-    cres = compiler.compile_extra(
-        typingctx=typingctx,
-        targetctx=targetctx,
-        func=fn,
-        args=tuple([args]),
-        return_type=args,
-        flags=flags,
-        locals={},
-        pipeline_class=DPPYCompiler,
-    )
+    with dpctl.device_context("opencl:gpu:0"):
+        cres = compiler.compile_extra(
+            typingctx=typingctx,
+            targetctx=targetctx,
+            func=fn,
+            args=tuple([args]),
+            return_type=args,
+            flags=flags,
+            locals={},
+            pipeline_class=DPPYCompiler,
+        )
 
-    assert "DPCTLQueue_Memcpy" not in cres.library.get_llvm_str()
+        assert "DPCTLQueue_Memcpy" not in cres.library.get_llvm_str()
 
-    args = typingctx.resolve_argument_type(b)
-    cres = compiler.compile_extra(
-        typingctx=typingctx,
-        targetctx=targetctx,
-        func=fn,
-        args=tuple([args]),
-        return_type=args,
-        flags=flags,
-        locals={},
-        pipeline_class=DPPYCompiler,
-    )
+        args = typingctx.resolve_argument_type(b)
+        cres = compiler.compile_extra(
+            typingctx=typingctx,
+            targetctx=targetctx,
+            func=fn,
+            args=tuple([args]),
+            return_type=args,
+            flags=flags,
+            locals={},
+            pipeline_class=DPPYCompiler,
+        )
 
-    assert "DPCTLQueue_Memcpy" in cres.library.get_llvm_str()
+        assert "DPCTLQueue_Memcpy" in cres.library.get_llvm_str()
