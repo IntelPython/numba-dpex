@@ -201,7 +201,7 @@ def test_matmul(filter_str, dtype, capfd):
         pytest.skip()
 
     if filter_str == "level0:gpu:0":
-        pytest.skip("MKL segfaults with device type level0:gpu:0")
+        pytest.skip("Segfaults with device type level0:gpu:0")
 
     a = np.array(np.random.random(10 * 2), dtype=dtype).reshape(10, 2)
     b = np.array(np.random.random(2 * 10), dtype=dtype).reshape(2, 10)
@@ -274,7 +274,7 @@ def test_multi_dot(filter_str, capfd):
         pytest.skip()
 
     if filter_str == "level0:gpu:0":
-        pytest.skip("MKL segfaults with device type level0:gpu:0")
+        pytest.skip("Segfaults with device type level0:gpu:0")
 
     def fn(A, B, C, D):
         c = np.linalg.multi_dot([A, B, C, D])
@@ -320,7 +320,7 @@ def test_matrix_power(filter_str, matrix_power_input, power, dtype, capfd):
         pytest.skip()
 
     if filter_str == "level0:gpu:0":
-        pytest.skip("MKL segfaults with device type level0:gpu:0")
+        pytest.skip("Segfaults with device type level0:gpu:0")
 
     a = np.array(matrix_power_input, dtype=dtype)
     fn = get_fn("linalg.matrix_power", 2)
@@ -365,7 +365,7 @@ def test_eigvals(filter_str, eig_input, capfd):
         pytest.skip()
 
     if filter_str == "level0:gpu:0":
-        pytest.skip("MKL segfaults with device type level0:gpu:0")
+        pytest.skip("Segfaults with device type level0:gpu:0")
 
     a = eig_input
     fn = get_fn("linalg.eigvals", 1)
