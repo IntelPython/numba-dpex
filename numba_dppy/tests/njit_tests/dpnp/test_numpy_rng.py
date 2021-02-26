@@ -225,6 +225,8 @@ def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
 
 
 def test_rand(filter_str):
+    if skip_test(filter_str):
+        pytest.skip()
     @njit
     def f():
         c = np.random.rand(3, 2)
@@ -239,6 +241,8 @@ def test_rand(filter_str):
 
 
 def test_hypergeometric(filter_str, three_arg_size):
+    if skip_test(filter_str):
+        pytest.skip()
     @njit
     def f(ngood, nbad, nsamp, size):
         res = np.random.hypergeometric(ngood, nbad, nsamp, size)
