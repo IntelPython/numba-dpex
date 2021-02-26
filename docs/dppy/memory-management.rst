@@ -16,7 +16,7 @@ At the moment, there is no analogue of
 Pinned memory
 -------------
 
-DPPY does not support pinned memory now.
+numba-dppy does not support pinned memory now.
 
 Queue
 -----

@@ -1,6 +1,6 @@
 ## Debugging with GDB
 
-Numba-dppy allows SYCL kernels to be debugged with the GDB debugger.
+numba-dppy allows SYCL kernels to be debugged with the GDB debugger.
 Setting the debug environment variable `NUMBA_DPPY_DEBUG` (e.g. `export NUMBA_DPPY_DEBUG=True`) enables
 the emission of debug information.
 To disable debugging set this variable to None: (e.g. `export NUMBA_DPPY_DEBUG= `).
@@ -25,7 +25,7 @@ $ gdb-oneapi -q python
 (gdb) run sum.py
 ```
 
-For example, given the following Numba-dppy kernel code:
+For example, given the following numba-dppy kernel code:
 ```python
 import numpy as np
 import numba_dppy as dppy
@@ -59,7 +59,7 @@ Thread 2.2 hit Breakpoint 1,  with SIMD lanes [0-7], dppl_py_devfn__5F__5F_main_
 
 ### Limitations
 
-Currently, Numba-dppy provides only initial support of debugging SYCL kernels.
+Currently, numba-dppy provides only initial support of debugging SYCL kernels.
 The following functionality is **not supported** :
 - Printing kernel local variables (e.g. ```info locals```).
 - Stepping over several off-loaded functions.

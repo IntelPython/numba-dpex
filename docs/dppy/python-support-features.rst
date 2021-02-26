@@ -1,7 +1,8 @@
 Supported Python features in DPPY kernel
 ========================================
 
-This page lists the Python features supported in the DPPY Python. This includes all kernel and device functions compiled with ``@dppy.kernel``.
+This page lists the Python features supported in the numba-dppy Python. This
+includes all kernel and device functions compiled with ``@dppy.kernel``.
 
 Constructs
 ----------
@@ -104,4 +105,5 @@ The following functions from the operator module are supported:
 Numpy support
 -------------
 
-Numpy is not supported on kernels, but you can use parfor offloading instead, it is available from ``@numba.jit``.
+Numpy is not supported on kernels, but you can use parfor offloading instead, it
+is available from ``@numba.jit``.

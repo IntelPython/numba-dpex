@@ -1,7 +1,7 @@
 Reduction on SYCL-supported Devices
 ===================================
 
-DPPY does not provide specific decorators for implementing reductions on
+numba-dppy does not provide specific decorators for implementing reductions on
 SYCL-supported devices.
 Examples contain different approaches for calculating reductions using both
 device and host.
@@ -60,8 +60,8 @@ support for local device memory and barrier, which is a work in progress.
 Transition from Numba CUDA
 --------------------------
 
-DPPY does not provide ``@reduce`` decorator for writing a reduction algorithm
-for SYCL-supported devices.
+numba-dppy does not provide ``@reduce`` decorator for writing a reduction
+algorithm for SYCL-supported devices.
 
 See also
 --------
