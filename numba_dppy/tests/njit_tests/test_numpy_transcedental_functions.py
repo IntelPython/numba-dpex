@@ -20,7 +20,7 @@ import dpctl
 import numpy as np
 from numba import njit
 import pytest
-from . import skip_tests
+from numba_dppy.tests.skip_tests import skip_test, is_gen12
 
 list_of_filter_strs = [
     "opencl:gpu:0",
@@ -102,10 +102,7 @@ def input_arrays(request):
 
 
 def test_binary_ops(filter_str, binary_op, input_arrays):
-    try:
-        with dpctl.device_context(filter_str):
-            pass
-    except Exception:
+    if skip_test(filter_str):
         pytest.skip()
 
     a, b = input_arrays
@@ -125,14 +122,12 @@ def test_binary_ops(filter_str, binary_op, input_arrays):
 
 
 def test_unary_ops(filter_str, unary_op, input_arrays):
-    try:
-        with dpctl.device_context(filter_str):
-            pass
-    except Exception:
+    if skip_test(filter_str):
         pytest.skip()
 
     # FIXME: Why does sign fail on Gen12 discrete graphics card?
-    if unary_op == "sign" and skip_tests.is_gen12(filter_str):
+    skip_ops = ["sign", "log", "log2", "log10", "expm1"]
+    if unary_op in skip_ops and is_gen12(filter_str):
         pytest.skip()
 
     a = input_arrays[0]

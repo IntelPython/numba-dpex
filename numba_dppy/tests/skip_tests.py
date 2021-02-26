@@ -24,3 +24,27 @@ def is_gen12(device_type):
             return True
 
         return False
+
+def platform_not_supported(device_type):
+    import platform
+    platform = platform.system()
+    device = device_type.split(":")[0]
+
+    if device == "level0" and platform == "Windows":
+        return True
+
+    return False
+
+def skip_test(device_type):
+    skip = False
+    try:
+        with dpctl.device_context(device_type):
+            pass
+    except Exception:
+        skip = True
+
+    if not skip:
+        if platform_not_supported(device_type):
+            skip = True
+
+    return skip

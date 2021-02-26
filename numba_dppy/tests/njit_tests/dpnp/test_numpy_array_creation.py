@@ -20,7 +20,8 @@ import dpctl
 import numpy as np
 from numba import njit
 import pytest
-from numba_dppy.testing import ensure_dpnp, dpnp_debug
+from numba_dppy.testing import dpnp_debug
+from .dpnp_skip_test import dpnp_skip_test as skip_test
 
 list_of_filter_strs = [
     "opencl:gpu:0",
@@ -96,13 +97,7 @@ def get_op_fn(name, nargs):
 
 
 def test_unary_ops(filter_str, unary_op, input_array, capfd):
-    try:
-        with dpctl.device_context(filter_str):
-            pass
-    except Exception:
-        pytest.skip()
-
-    if not ensure_dpnp():
+    if skip_test(filter_str):
         pytest.skip()
 
     a = input_array
@@ -126,13 +121,7 @@ def dtype(request):
 
 
 def test_binary_op(filter_str, binary_op, input_array, dtype, get_shape, capfd):
-    try:
-        with dpctl.device_context(filter_str):
-            pass
-    except Exception:
-        pytest.skip()
-
-    if not ensure_dpnp():
+    if skip_test(filter_str):
         pytest.skip()
 
     a = np.reshape(input_array, get_shape)
@@ -161,13 +150,7 @@ def full_name(request):
 
 
 def test_full(filter_str, full_name, input_array, get_shape, capfd):
-    try:
-        with dpctl.device_context(filter_str):
-            pass
-    except Exception:
-        pytest.skip()
-
-    if not ensure_dpnp():
+    if skip_test(filter_str):
         pytest.skip()
 
     a = np.reshape(input_array, get_shape)

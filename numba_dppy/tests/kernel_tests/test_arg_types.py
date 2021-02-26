@@ -16,6 +16,7 @@ import numpy as np
 import numba_dppy as dppy
 import pytest
 import dpctl
+from numba_dppy.tests.skip_tests import skip_test
 
 global_size = 1054
 local_size = 1
@@ -56,10 +57,7 @@ def input_arrays(request):
 
 
 def test_kernel_arg_types(filter_str, input_arrays):
-    try:
-        with dpctl.device_context(filter_str):
-            pass
-    except Exception:
+    if skip_test(filter_str):
         pytest.skip()
 
     kernel = dppy.kernel(mul_kernel)
@@ -78,10 +76,7 @@ def check_bool_kernel(A, test):
 
 
 def test_bool_type(filter_str):
-    try:
-        with dpctl.device_context(filter_str):
-            pass
-    except Exception:
+    if skip_test(filter_str):
         pytest.skip()
 
     kernel = dppy.kernel(check_bool_kernel)
