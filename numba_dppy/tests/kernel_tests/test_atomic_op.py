@@ -76,8 +76,20 @@ def kernel_result_pair(request):
     return dppy.kernel(f), request.param[1]
 
 
+def atomic_skip_test(device_type):
+    skip = False
+    if skip_test(device_type):
+        skip = True
+
+    if not skip:
+        if not dppy.ocl.atomic_support_present():
+            skip = True
+
+    return skip
+
+
 def test_kernel_atomic_simple(filter_str, input_arrays, kernel_result_pair):
-    if skip_test(filter_str):
+    if atomic_skip_test(filter_str):
         pytest.skip()
 
     a, dtype = input_arrays
@@ -102,7 +114,7 @@ def get_kernel_local(op_type, dtype):
 
 
 def test_kernel_atomic_local(filter_str, input_arrays, return_list_of_op):
-    if skip_test(filter_str):
+    if atomic_skip_test(filter_str):
         pytest.skip()
 
     a, dtype = input_arrays
@@ -143,7 +155,7 @@ def get_kernel_multi_dim(op_type, size):
 def test_kernel_atomic_multi_dim(
     filter_str, return_list_of_op, return_list_of_dim, return_dtype
 ):
-    if skip_test(filter_str):
+    if atomic_skip_test(filter_str):
         pytest.skip()
 
     op_type, expected = return_list_of_op
