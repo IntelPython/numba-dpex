@@ -96,6 +96,8 @@ def test_eig(filter_str, eig_input, capfd):
     if skip_test(filter_str):
         pytest.skip()
 
+    if filter_str == "opencl:cpu:0":
+        pytest.skip("Segfaults with device type level0:gpu:0")
     a = eig_input
     fn = get_fn("linalg.eig", 1)
     f = njit(fn)
