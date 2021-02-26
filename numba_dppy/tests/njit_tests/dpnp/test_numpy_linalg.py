@@ -46,7 +46,7 @@ def vvsort(val, vec):
 list_of_filter_strs = [
     "opencl:gpu:0",
     # "level0:gpu:0",
-    "opencl:cpu:0",
+    # "opencl:cpu:0",
 ]
 
 
