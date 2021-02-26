@@ -17,6 +17,7 @@ import numba_dppy as dppy
 import numpy as np
 import pytest
 import math
+from numba_dppy.tests.skip_tests import skip_test
 
 list_of_filter_strs = [
     "opencl:gpu:0",
@@ -54,10 +55,7 @@ def input_arrays(request):
 
 
 def test_binary_ops(filter_str, unary_op, input_arrays):
-    try:
-        with dpctl.device_context(filter_str):
-            pass
-    except Exception:
+    if skip_test(filter_str):
         pytest.skip()
 
     a, actual = input_arrays

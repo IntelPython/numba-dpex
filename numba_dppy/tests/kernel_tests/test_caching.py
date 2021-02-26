@@ -17,6 +17,7 @@ import numpy as np
 import numba_dppy as dppy
 import pytest
 import dpctl
+from numba_dppy.tests.skip_tests import skip_test
 
 list_of_filter_strs = [
     "opencl:gpu:0",
@@ -36,6 +37,8 @@ def data_parallel_sum(a, b, c):
 
 
 def test_caching_kernel(filter_str):
+    if skip_test(filter_str):
+        pytest.skip()
     global_size = 10
     N = global_size
 

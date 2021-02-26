@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import numpy as np
+from numba_dppy.tests.skip_tests import skip_test
 
 import numba_dppy as dppy
 import pytest
@@ -76,10 +77,7 @@ def kernel_result_pair(request):
 
 
 def test_kernel_atomic_simple(filter_str, input_arrays, kernel_result_pair):
-    try:
-        with dpctl.device_context(filter_str):
-            pass
-    except Exception:
+    if skip_test(filter_str):
         pytest.skip()
 
     a, dtype = input_arrays
@@ -104,10 +102,7 @@ def get_kernel_local(op_type, dtype):
 
 
 def test_kernel_atomic_local(filter_str, input_arrays, return_list_of_op):
-    try:
-        with dpctl.device_context(filter_str):
-            pass
-    except Exception:
+    if skip_test(filter_str):
         pytest.skip()
 
     a, dtype = input_arrays
@@ -148,10 +143,7 @@ def get_kernel_multi_dim(op_type, size):
 def test_kernel_atomic_multi_dim(
     filter_str, return_list_of_op, return_list_of_dim, return_dtype
 ):
-    try:
-        with dpctl.device_context(filter_str):
-            pass
-    except Exception:
+    if skip_test(filter_str):
         pytest.skip()
 
     op_type, expected = return_list_of_op

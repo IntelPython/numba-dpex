@@ -16,6 +16,7 @@ import numpy as np
 import numba_dppy as dppy
 import pytest
 import dpctl
+from numba_dppy.tests.skip_tests import skip_test
 
 
 def call_kernel(global_size, local_size, A, B, C, func):
@@ -71,10 +72,7 @@ def kernel(request):
 
 
 def test_kernel_arg_accessor(filter_str, input_arrays, kernel):
-    try:
-        with dpctl.device_context(filter_str):
-            pass
-    except Exception:
+    if skip_test(filter_str):
         pytest.skip()
 
     a, b, actual = input_arrays

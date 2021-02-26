@@ -20,7 +20,8 @@ import dpctl
 import numpy as np
 from numba import njit
 import pytest
-from numba_dppy.testing import ensure_dpnp, dpnp_debug
+from numba_dppy.testing import dpnp_debug
+from .dpnp_skip_test import dpnp_skip_test as skip_test
 
 # From https://github.com/IntelPython/dpnp/blob/0.4.0/tests/test_linalg.py#L8
 def vvsort(val, vec):
@@ -68,21 +69,6 @@ def get_fn(name, args):
     exec(func_str, globals(), ldict)
     fn = ldict["fn"]
     return fn
-
-
-def skip_test(filter_str):
-    skip = False
-    try:
-        with dpctl.device_context(filter_str):
-            pass
-    except Exception:
-        skip = True
-
-    if not skip:
-        if not ensure_dpnp():
-            skip = True
-
-    return skip
 
 
 list_of_dtypes = [

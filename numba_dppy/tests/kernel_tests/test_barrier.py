@@ -16,6 +16,7 @@ import numpy as np
 import numba_dppy as dppy
 import pytest
 import dpctl
+from numba_dppy.tests.skip_tests import skip_test
 
 
 list_of_filter_strs = [
@@ -31,6 +32,8 @@ def filter_str(request):
 
 
 def test_proper_lowering(filter_str):
+    if skip_test(filter_str):
+        pytest.skip()
     # @dppy.kernel("void(float32[::1])")
     @dppy.kernel
     def twice(A):
@@ -51,6 +54,8 @@ def test_proper_lowering(filter_str):
 
 
 def test_no_arg_barrier_support(filter_str):
+    if skip_test(filter_str):
+        pytest.skip()
     # @dppy.kernel("void(float32[::1])")
     @dppy.kernel
     def twice(A):
@@ -72,6 +77,8 @@ def test_no_arg_barrier_support(filter_str):
 
 
 def test_local_memory(filter_str):
+    if skip_test(filter_str):
+        pytest.skip()
     blocksize = 10
 
     # @dppy.kernel("void(float32[::1])")
