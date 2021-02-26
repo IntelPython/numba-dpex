@@ -1,7 +1,7 @@
 .. _dppy-index:
 
-Numba for DPPY GPUs
-===================
+Numba for SYCL-supported Devices
+================================
 
 .. toctree::
    :maxdepth: 2
