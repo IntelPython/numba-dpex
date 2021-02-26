@@ -19,6 +19,7 @@ import numba
 from types import FunctionType as ftype, BuiltinFunctionType as bftype
 from numba import types
 from numba.extending import typeof_impl, register_model, type_callable, lower_builtin
+from numba.core.datamodel.registry import register_default as register_model_default
 from numba.np import numpy_support
 from numba.core.pythonapi import box, allocator
 from llvmlite import ir
@@ -45,6 +46,7 @@ from numba.np.arrayobj import _array_copy
 
 import dpctl.dptensor.numpy_usm_shared as nus
 from dpctl.dptensor.numpy_usm_shared import ndarray, functions_list, class_list
+from . import target as dppy_target
 
 
 debug = config.DEBUG
@@ -140,6 +142,9 @@ def typeof_ta_ndarray(val, c):
 # This tells Numba to use the default Numpy ndarray data layout for
 # object of type UsmArray.
 register_model(UsmSharedArrayType)(numba.core.datamodel.models.ArrayModel)
+dppy_target.spirv_data_model_manager.register(
+    UsmSharedArrayType, numba.core.datamodel.models.ArrayModel
+)
 
 # This tells Numba how to convert from its native representation
 # of a UsmArray in a njit function back to a Python UsmArray.

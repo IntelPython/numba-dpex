@@ -22,6 +22,7 @@ import llvmlite.binding as lb
 from numba.core import types, cgutils
 
 from numba.core.ir_utils import legalize_names
+from . import numpy_usm_shared as nus
 
 
 class DPPYHostFunctionCallsGenerator(object):
@@ -274,39 +275,51 @@ class DPPYHostFunctionCallsGenerator(object):
                 ],
             )
 
-            buffer_name = "buffer_ptr" + str(self.cur_arg)
-            buffer_ptr = cgutils.alloca_once(
-                self.builder, self.void_ptr_t, name=buffer_name
-            )
-
-            args = [
-                self.builder.load(total_size),
-                self.builder.load(self.sycl_queue_val),
-            ]
-            self.builder.store(self.builder.call(self.usm_shared, args), buffer_ptr)
-
-            # names are replaces usig legalize names, we have to do the same for them to match
+            # names are replaced using legalize names, we have to do the same for them to match
             legal_names = legalize_names([var])
+            ty = self.resolve_and_return_dpctl_type(types.voidptr)
 
-            if legal_names[var] in modified_arrays:
-                self.write_buffs.append((buffer_ptr, total_size, data_member))
-            else:
-                self.read_only_buffs.append((buffer_ptr, total_size, data_member))
-
-            # We really need to detect when an array needs to be copied over
-            if index < self.num_inputs:
-                args = [
-                    self.builder.load(self.sycl_queue_val),
-                    self.builder.load(buffer_ptr),
+            if isinstance(arg_type, nus.UsmSharedArrayType):
+                self.form_kernel_arg_and_arg_ty(
                     self.builder.bitcast(
                         self.builder.load(data_member), self.void_ptr_t
                     ),
-                    self.builder.load(total_size),
-                ]
-                self.builder.call(self.queue_memcpy, args)
+                    ty,
+                )
+            else:
+                # Not known to be USM so we need to copy to USM.
+                buffer_name = "buffer_ptr" + str(self.cur_arg)
+                # Create void * to hold new USM buffer.
+                buffer_ptr = cgutils.alloca_once(
+                    self.builder, self.void_ptr_t, name=buffer_name
+                )
 
-            ty = self.resolve_and_return_dpctl_type(types.voidptr)
-            self.form_kernel_arg_and_arg_ty(self.builder.load(buffer_ptr), ty)
+                # Setup the args to the USM allocator, size and SYCL queue.
+                args = [
+                    self.builder.load(total_size),
+                    self.builder.load(self.sycl_queue_val),
+                ]
+                # Call USM shared allocator and store in buffer_ptr.
+                self.builder.store(self.builder.call(self.usm_shared, args), buffer_ptr)
+
+                if legal_names[var] in modified_arrays:
+                    self.write_buffs.append((buffer_ptr, total_size, data_member))
+                else:
+                    self.read_only_buffs.append((buffer_ptr, total_size, data_member))
+
+                # We really need to detect when an array needs to be copied over
+                if index < self.num_inputs:
+                    args = [
+                        self.builder.load(self.sycl_queue_val),
+                        self.builder.load(buffer_ptr),
+                        self.builder.bitcast(
+                            self.builder.load(data_member), self.void_ptr_t
+                        ),
+                        self.builder.load(total_size),
+                    ]
+                    self.builder.call(self.queue_memcpy, args)
+
+                self.form_kernel_arg_and_arg_ty(self.builder.load(buffer_ptr), ty)
 
             # Handle shape
             shape_member = self.builder.gep(
