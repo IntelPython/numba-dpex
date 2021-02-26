@@ -99,7 +99,7 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
         a = np.reshape(a, get_shape)
     else:
         if filter_str == "level0:gpu:0":
-            pytest.skip("MKL segfaults with device type level0:gpu:0")
+            pytest.skip("Segfaults with device type level0:gpu:0")
     actual = np.empty(shape=a.shape, dtype=a.dtype)
     expected = np.empty(shape=a.shape, dtype=a.dtype)
 

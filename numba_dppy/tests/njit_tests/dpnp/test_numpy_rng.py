@@ -209,7 +209,7 @@ def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
     elif op_name == "negative_binomial":
         pytest.skip("DPNP RNG Error: dpnp_rng_negative_binomial_c() failed.")
     elif op_name == "gumbel":
-        pytest.skip("MKL error")
+        pytest.skip("DPNP error")
 
     op = get_three_arg_fn(op_name)
     f = njit(op)
