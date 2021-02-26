@@ -1443,6 +1443,19 @@ class Testdpnp_functions(unittest.TestCase):
 class Testdpnp_array_ops_functions(unittest.TestCase):
     tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
 
+    def test_copy(self):
+        @njit
+        def f(a):
+            c = np.copy(a)
+            return c
+
+        with assert_dpnp_implementaion():
+            self.assertTrue(
+                check_for_different_datatypes(
+                    f, np.copy, [10], 1, self.tys, np_all=True
+                )
+            )
+
     def test_cumsum(self):
         @njit
         def f(a):
