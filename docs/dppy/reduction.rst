@@ -1,7 +1,8 @@
-GPU Reduction
-=============
+Reduction on SYCL-supported Devices
+===================================
 
-DPPY does not provide specific decorators for implementing reductions on GPU.
+DPPY does not provide specific decorators for implementing reductions on
+SYCL-supported devices.
 Examples contain different approaches for calculating reductions using both
 device and host.
 
@@ -60,7 +61,7 @@ Transition from Numba CUDA
 --------------------------
 
 DPPY does not provide ``@reduce`` decorator for writing a reduction algorithm
-for DPPY GPU.
+for SYCL-supported devices.
 
 See also
 --------

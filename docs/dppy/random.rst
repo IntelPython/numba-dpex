@@ -2,10 +2,10 @@ Random Number Generation
 ========================
 
 DPPY does not provide a random number generation algorithm that can be executed
-on the GPU.
+on the SYCL-supported Device.
 
-DPPY provides access to NumPy random algorithms that can be executed on the GPU
-via integration with `dpNP Random`_.
+DPPY provides access to NumPy random algorithms that can be executed on the
+SYCL-supported device via integration with `dpNP Random`_.
 
 .. _`dpNP Random`: https://intelpython.github.io/dpnp/reference/comparison.html#random-sampling
 
