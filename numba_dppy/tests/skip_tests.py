@@ -25,8 +25,10 @@ def is_gen12(device_type):
 
         return False
 
+
 def platform_not_supported(device_type):
     import platform
+
     platform = platform.system()
     device = device_type.split(":")[0]
 
@@ -34,6 +36,7 @@ def platform_not_supported(device_type):
         return True
 
     return False
+
 
 def skip_test(device_type):
     skip = False

@@ -18,6 +18,7 @@ import pytest
 import dpctl
 from numba_dppy.tests.skip_tests import skip_test
 
+
 def call_kernel(global_size, local_size, A, B, C, func):
     func[global_size, local_size](A, B, C)
 
