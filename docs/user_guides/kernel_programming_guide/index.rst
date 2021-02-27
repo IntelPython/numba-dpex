@@ -1,7 +1,5 @@
-.. _dppy-index:
-
-Numba for SYCL-supported Devices
-================================
+Programming SYCL Kernels Using ``numba_dppy.kernel``
+====================================================
 
 .. toctree::
    :maxdepth: 2
@@ -9,9 +7,7 @@ Numba for SYCL-supported Devices
    writing_kernels.rst
    memory-management.rst
    device-functions.rst
-   python-support-features.rst
    atomic-operations.rst
-   random.rst
-   debugging.md
    reduction.rst
    ufunc.rst
+   supported-python-features.rst

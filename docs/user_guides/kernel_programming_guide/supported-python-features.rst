@@ -1,30 +1,18 @@
-Supported Python features in DPPY kernel
-========================================
+Supported Python features in ``numba-dppy`` kernel
+==================================================
 
-This page lists the Python features supported in the numba-dppy Python. This
-includes all kernel and device functions compiled with ``@dppy.kernel``.
-
-Constructs
-----------
-
-The following Python constructs are not supported:
-
-- Exception handling (``try .. except``, ``try .. finally``)
-- Context management (the ``with`` statement)
-- Comprehensions (either list, dict, set or generator comprehensions)
-- Generator (any ``yield`` statements)
-- The ``raise`` statement
-- The ``assert`` statement
+This page lists the Python features supported inside a ``numba_dppy.kernel``
+function.
 
 Built-in types
 --------------
 
-The following built-in types support are inherited from CPU nopython mode.
+**Supported Types**
 
 - ``int``
 - ``float``
 
-And the following types now not support.
+**Unsupported Types**
 
 - ``complex``
 - ``bool``
@@ -102,8 +90,21 @@ The following functions from the operator module are supported:
 -  ``operator.sub()``
 -  ``operator.truediv()``
 
-Numpy support
+Unsupported Constructs
+----------------------
+
+The following Python constructs are **not supported**:
+
+- Exception handling (``try .. except``, ``try .. finally``)
+- Context management (the ``with`` statement)
+- Comprehensions (either list, dict, set or generator comprehensions)
+- Generator (any ``yield`` statements)
+- The ``raise`` statement
+- The ``assert`` statement
+
+
+NumPy support
 -------------
 
-Numpy is not supported on kernels, but you can use parfor offloading instead, it
-is available from ``@numba.jit``.
+NumPy functions are whole array operations and are not supported within a
+``numba_dppy.kernel``.

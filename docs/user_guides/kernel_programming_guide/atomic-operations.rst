@@ -1,7 +1,7 @@
 Supported Atomic Operations
 ===========================
 
-Numba provides access to some of the atomic operations supported in DPPY.
+``numba-dppy`` supports some of the atomic operations supported in DPC++.
 Those that are presently implemented are as follows:
 
 .. automodule:: numba_dppy.ocl.stubs
@@ -13,17 +13,15 @@ Example
 
 Here's an example of how to use atomics add in DPPY:
 
-.. literalinclude:: ../../numba_dppy/examples/atomic_op.py
+.. literalinclude:: ../../../numba_dppy/examples/atomic_op.py
    :pyobject: main
 
-Transition from Numba CUDA
---------------------------
+.. note::
 
-Replace ``numba.cuda.atomic.add`` with ``dppy.atomic.add``.
+    The ``numba_dppy.atomic.add`` function is analogous to The
+    ``numba.cuda.atomic.add`` provided by the ``numba.cuda`` backend.
 
-See also
---------
-
-Examples:
+Full examples
+-------------
 
 - ``numba_dppy/examples/atomic_op.py``

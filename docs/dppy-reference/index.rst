@@ -1,4 +1,0 @@
-DPPY Python Reference
-=====================
-
-.. toctree::

@@ -1,11 +1,12 @@
-## Debugging with GDB
+## Debugging With GDB
 
 numba-dppy allows SYCL kernels to be debugged with the GDB debugger.
-Setting the debug environment variable `NUMBA_DPPY_DEBUG` (e.g. `export NUMBA_DPPY_DEBUG=True`) enables
-the emission of debug information.
-To disable debugging set this variable to None: (e.g. `export NUMBA_DPPY_DEBUG= `).
+Setting the debug environment variable `NUMBA_DPPY_DEBUG` (e.g.
+`export NUMBA_DPPY_DEBUG=True`) enables the emission of debug information.
+To disable debugging, unset the variable, *i.e*, `export NUMBA_DPPY_DEBUG= `.
 
-Unlike the CPU target, currently the following debug information is available:
+Not all GDB features supported by Numba on CPUs are yet supported in numba-dppy.
+Currently, the following debugging features are available:
 - Source location (filename and line number).
 - Setting break points by the line number.
 - Stepping over break points.
@@ -21,7 +22,7 @@ Documentation for the GDB debugger can be found in the
 ```bash
 $ export NUMBA_DPPY_DEBUG=True
 $ gdb-oneapi -q python
-(gdb) break numba_dppy/examples/sum.py:14     # Assumes the kernel is in file sum.py, at line 14
+(gdb) break numba_dppy/examples/sum.py:14  # Assumes the kernel is in file sum.py, at line 14
 (gdb) run sum.py
 ```
 
@@ -47,7 +48,7 @@ with dpctl.device_context("opencl:gpu") as gpu_queue:
     data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 ```
 
-GDB output:
+**GDB output**:
 ```bash
 Thread 2.2 hit Breakpoint 1,  with SIMD lanes [0-7], dppl_py_devfn__5F__5F_main_5F__5F__2E_data_5F_parallel_5F_sum_24_1_2E_array_28_float32_2C__20_1d_2C__20_C_29__2E_array_28_float32_2C__20_1d_2C__20_C_29__2E_array_28_float32_2C__20_1d_2C__20_C_29_ () at sum.py:14
 14          i = dppy.get_global_id(0)
@@ -60,6 +61,6 @@ Thread 2.2 hit Breakpoint 1,  with SIMD lanes [0-7], dppl_py_devfn__5F__5F_main_
 ### Limitations
 
 Currently, numba-dppy provides only initial support of debugging SYCL kernels.
-The following functionality is **not supported** :
+The following functionalities are **not supported** :
 - Printing kernel local variables (e.g. ```info locals```).
 - Stepping over several off-loaded functions.

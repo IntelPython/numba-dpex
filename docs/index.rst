@@ -6,15 +6,19 @@
 Welcome to numba-dppy's documentation!
 ======================================
 
-Numba-dppy is a standalone extension to the `Numba
+numba-dppy is a standalone extension to the `Numba
 <https://numba.pydata.org/>`_ JIT compiler that adds `SYCL
-<https://www.khronos.org/sycl/>`_ programming capabilities to the compiler.
-Numba-dppy supports SYCL programming in two modes:
+<https://www.khronos.org/sycl/>`_ programming capabilities to Numba. numba-dppy
+uses `dpCtl <https://github.com/IntelPython/dpctl>`_ to support SYCL features
+and currently Intel's `DPC++ <https://github.com/intel/llvm/blob/sycl/sycl/doc/GetStartedGuide.md>`_
+is the only SYCL runtime supported by numba-dppy.
 
-  - Explicit kernel programming mode.
-    
+There are two programming models to program SYCL devices using numba-dppy:
+
+  - An explicit kernel programming mode.
+
     .. code-block:: python
-    
+
         import numpy as np
         import numba_dppy, numba_dppy as dppy
         import dpctl
@@ -23,17 +27,17 @@ Numba-dppy supports SYCL programming in two modes:
             def sum(a, b, c):
             i = dppy.get_global_id(0)
             c[i] = a[i] + b[i]
-        
+
         a = np.array(np.random.random(20), dtype=np.float32)
         b = np.array(np.random.random(20), dtype=np.float32)
         c = np.ones_like(a)
-        
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
+
+        with dpctl.device_context("opencl:gpu"):
             sum[20, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
-  - Automatic offloading of NumPy data-parallel expressions and 
+  - An automatic offload mode for NumPy data-parallel expressions and
     `Numba parallel loops <https://numba.pydata.org/numba-doc/dev/user/parallel.html#explicit-parallel-loops>`_.
-    
+
     .. code-block:: python
 
         from numba import njit
@@ -44,7 +48,7 @@ Numba-dppy supports SYCL programming in two modes:
         def f1(a, b):
             c = a + b
             return c
-    
+
         global_size = 64
         local_size = 32
         N = global_size * local_size
@@ -53,30 +57,37 @@ Numba-dppy supports SYCL programming in two modes:
         with dpctl.device_context("opencl:gpu:0"):
             c = f1(a, b)
 
-The two aforementioned examples demonstrate the same operation adding two NumPy 
-arrays.
+.. toctree::
+   :maxdepth: 1
+   :caption: Core Features
 
-Numba-dppy uses the `dpctl <https://intelpython.github.io/dpctl/>`_ library for
-its SYCL interface.
+   CoreFeatures
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
+   :caption: User Guides
 
-   HowTo
-   INDEX
-   CONTRIBUTING
+    Getting Started <user_guides/getting_started.rst>
+    Programming SYCL Kernels <user_guides/kernel_programming_guide/index.rst>
+    Debugging With GDB <user_guides/debugging.md>
+    numba-dppy for numba.cuda Programmers <user_guides/migrating_from_numba_cuda.rst>
 
-.. toctree::
-   :caption: Programming SYCL devices
-   :maxdepth: 2
+About
+=====
 
-   dppy/index.rst
-   dppy-reference/index.rst
+``numba-dppy`` is developed by Intel and is part of the `Intel Distribution for
+Python <https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-python.html>`_.
 
-Indices and tables
-==================
+Contributing
+============
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+Refer the `contributing guide <https://github.com/IntelPython/numba-dppy/blob/main/CONTRIBUTING>`_
+for information on coding style and standards used in numba-dppy.
+
+License
+=======
+
+numba-dppy is Licensed under Apache License 2.0 that can be found in
+`LICENSE <https://github.com/IntelPython/numba-dppy/blob/main/LICENSE>`_.
+All usage and contributions to the project are subject to the terms and
+conditions of this license.

@@ -35,7 +35,12 @@ extensions = [
     "recommonmark",
     "sphinx_rtd_theme",
     "sphinx.ext.autodoc",
+    "sphinx.ext.todo",
 ]
+
+todo_include_todos = True
+
+source_parsers = {".md": "recommonmark.parser.CommonMarkParser"}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
