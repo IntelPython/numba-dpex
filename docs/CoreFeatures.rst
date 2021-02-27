@@ -41,6 +41,10 @@ A key distinction between ``numba-dppy`` and other the GPU backends in Numba is
 the ability to automatically offload specific data-parallel sections of a
 Numba ``jit`` function.
 
+.. todo::
+
+    Details and examples to be added.
+
 Controllable Fallback
 ---------------------
 
@@ -66,5 +70,5 @@ offload diagnostics information.
 If set to an integer value between 1 and 4 (inclusive) diagnostic information
 about parallel transforms undertaken by Numba will be written to STDOUT. The
 higher the value set the more detailed the information produced.
-In the "Auto-offloading" section there is the information on which device
-(device name) this parfor or kernel was offloaded.
+.. In the "Auto-offloading" section there is the information on which device
+.. (device name) this parfor or kernel was offloaded.
