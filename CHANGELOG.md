@@ -6,16 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.13.0]
+## [0.13.0] - 2021-03-01
 ### Added
 - Documentation.
-- Support NumPy functions via dpNP: random, linalg, transcendental, array ops, array creation.
+- Add support for dpctl.dparray.
+- Support NumPy functions via DPNP: random, linalg, transcendental, array ops, array creation.
+- Wheels building.
+- Using Bandit for finding common security issues in Python code.
 
 ### Changed
 - Start using black code style formatter.
-- Start using Apache 2.0 license.
-- Updated to Numba 0.52, dpCtl 0.6 and dpNP 0.5.1.
+- Build SPIRV code in setup.py.
 - Start using pytest for running tests.
+- Start using Apache 2.0 license.
+- Consistency of file headers.
+- Updated to Numba 0.52, dpCtl 0.6 and dpNP 0.5.1.
+- Don't create a new copy of a usm shared array data pointers for kernel call.
+- Modify test cases and examples to use Level Zero queue.
+
+### Fixed
+- Fix incorrect import in examples.
 
 ## [0.12.0] - 2020-12-17
 ### Added
