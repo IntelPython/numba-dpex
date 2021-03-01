@@ -6,6 +6,7 @@ Programming SYCL Kernels Using ``numba_dppy.kernel``
 
    writing_kernels.rst
    memory-management.rst
+   synchronization.rst
    device-functions.rst
    atomic-operations.rst
    reduction.rst

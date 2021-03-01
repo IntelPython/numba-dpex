@@ -21,8 +21,8 @@ Full example can be found at ``numba_dppy/examples/vectorize.py``.
 .. literalinclude:: ../../../numba_dppy/examples/vectorize.py
    :pyobject: test_ufunc
 
-Example2: Calling ``numba.vectorize`` inside a ``numba_dppy.kernel``
---------------------------------------------------------------------
+Example 2: Calling ``numba.vectorize`` inside a ``numba_dppy.kernel``
+---------------------------------------------------------------------
 
 Full example can be found at ``numba_dppy/examples/blacksholes_njit.py``.
 
