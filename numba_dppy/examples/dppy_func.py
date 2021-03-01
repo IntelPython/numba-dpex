@@ -12,30 +12,41 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
 import numpy as np
-import numba_dppy, numba_dppy as dppy
-import math
-
+import numba_dppy as dppy
 import dpctl
 
 
 @dppy.func
-def g(a):
+def a_device_function(a):
     return a + 1
 
 
+@dppy.func
+def an_another_device_function(a):
+    return a_device_function(a)
+
+
 @dppy.kernel
-def f(a, b):
+def a_kernel_function(a, b):
     i = dppy.get_global_id(0)
-    b[i] = g(a[i])
+    b[i] = an_another_device_function(a[i])
 
 
 def driver(a, b, N):
     print(b)
     print("--------")
-    f[N, dppy.DEFAULT_LOCAL_SIZE](a, b)
+    a_kernel_function[N, dppy.DEFAULT_LOCAL_SIZE](a, b)
     print(b)
+
+
+def get_context():
+    if dpctl.has_gpu_queues():
+        return "opencl:gpu"
+    elif dpctl.has_cpu_queues():
+        return "opencl:cpu"
+    else:
+        raise RuntimeError("No device found")
 
 
 def main():
@@ -43,14 +54,12 @@ def main():
     a = np.ones(N)
     b = np.ones(N)
 
-    if dpctl.has_gpu_queues():
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
-            driver(a, b, N)
-    elif dpctl.has_cpu_queues():
-        with dpctl.device_context("opencl:cpu") as cpu_queue:
-            driver(a, b, N)
-    else:
-        print("No device found")
+    context = get_context()
+
+    print("Device Context:", context)
+
+    with dpctl.device_context(context):
+        driver(a, b, N)
 
 
 if __name__ == "__main__":
