@@ -105,8 +105,10 @@ To run the examples:
 Limitations
 -----------
 
-Using ``numba-dppy`` requires `Intel Python Numba`_.
-Without `Intel Python Numba`_ ``dpctl.device_context`` will have no effect.
+Using ``numba-dppy`` requires `Intel Python Numba`_ as that version of Numba has
+patches needed to recognize a ``dpctl.device_context`` scope and trigger
+code-generation for a SYCL device. Work in underway to upstream all patches, so
+that in future ``numba-dppy`` can work with upstream Numba.
 
 .. _`Intel Python Numba`: https://github.com/IntelPython/numba
 .. _`Intel Python dpCtl`: https://github.com/IntelPython/dpctl

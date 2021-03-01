@@ -8,12 +8,12 @@ Welcome to numba-dppy's documentation!
 
 ``numba-dppy`` is a standalone extension to the `Numba
 <https://numba.pydata.org/>`_ JIT compiler that adds `SYCL
-<https://www.khronos.org/sycl/>`_ programming capabilities to Numba. numba-dppy
-uses `dpCtl <https://github.com/IntelPython/dpctl>`_ to support SYCL features
-and currently Intel's `DPC++ <https://github.com/intel/llvm/blob/sycl/sycl/doc/GetStartedGuide.md>`_
-is the only SYCL runtime supported by numba-dppy.
+<https://www.khronos.org/sycl/>`_ programming capabilities to Numba.
+``numba-dppy`` uses `dpCtl <https://github.com/IntelPython/dpctl>`_ to support
+SYCL features and currently Intel's `DPC++ <https://github.com/intel/llvm/blob/sycl/sycl/doc/GetStartedGuide.md>`_ is the only SYCL runtime supported by
+``numba-dppy``.
 
-There are two programming models to program SYCL devices using numba-dppy:
+There are two ways to program SYCL devices using ``numba-dppy``:
 
   - An explicit kernel programming mode.
 
@@ -69,7 +69,7 @@ There are two programming models to program SYCL devices using numba-dppy:
 
     Getting Started <user_guides/getting_started.rst>
     Programming SYCL Kernels <user_guides/kernel_programming_guide/index.rst>
-    Debugging With GDB <user_guides/debugging.md>
+    Debugging with GDB <user_guides/debugging.md>
     numba-dppy for numba.cuda Programmers <user_guides/migrating_from_numba_cuda.rst>
 
 About

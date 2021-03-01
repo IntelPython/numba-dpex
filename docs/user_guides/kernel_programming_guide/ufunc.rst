@@ -1,4 +1,4 @@
-Universal functions
+Universal Functions
 ===================
 
 Numba provides a `set of decorators <https://numba.pydata.org/numba-doc/latest/user/vectorize.html>`_ to create `NumPy universal functions <http://docs.scipy.org/doc/numpy/reference/ufuncs.html>`_-like

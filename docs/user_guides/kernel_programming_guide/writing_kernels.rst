@@ -1,4 +1,4 @@
-Writing SYCL kernels
+Writing SYCL Kernels
 ====================
 
 Introduction
@@ -46,7 +46,7 @@ A kernel is typically launched in the following way:
 .. literalinclude:: ../../../numba_dppy/examples/sum.py
    :pyobject: driver
 
-Indexing Functions
+Indexing functions
 ------------------
 
 Currently, ``numba-dppy`` supports the following indexing functions that have

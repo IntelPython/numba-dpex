@@ -13,11 +13,12 @@ Currently, the following debugging features are available:
 
 ### Requirements
 
-Intel® Distribution for GDB installed to the system.
-Documentation for the GDB debugger can be found in the
+Intel® Distribution for GDB is needed for `numba-dppy`'s debugging features
+to work. Intel® Distribution for GDB is part of Intel oneApi and the relevant
+documentation can be found at
 [Intel® Distribution for GDB documentation](https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-gdb.html).
 
-### Example debug usage
+### Example of GDB usage
 
 ```bash
 $ export NUMBA_DPPY_DEBUG=True
@@ -63,4 +64,4 @@ Thread 2.2 hit Breakpoint 1,  with SIMD lanes [0-7], dppl_py_devfn__5F__5F_main_
 Currently, `numba-dppy` provides only initial support of debugging SYCL kernels.
 The following functionalities are **not supported** :
 - Printing kernel local variables (e.g. ```info locals```).
-- Stepping over several off-loaded functions.
+- Stepping over several offloaded functions.
