@@ -2,7 +2,7 @@
 # Copyright (c) 2017 Intel Corporation
 # SPDX-License-Identifier: BSD-2-Clause
 #
-
+import dpctl
 import numba
 import numpy as np
 import math
@@ -16,7 +16,7 @@ def cndf2(inp):
     return out
 
 
-@numba.njit(parallel={"offload": True}, fastmath=True)
+@numba.njit(parallel=True, fastmath=True)
 def blackscholes(sptprice, strike, rate, volatility, timev):
     logterm = np.log(sptprice / strike)
     powterm = 0.5 * volatility * volatility
@@ -52,9 +52,24 @@ def main():
     args = parser.parse_args()
     options = args.options
 
-    run(10)
-    print("options = ", options)
-    run(options)
+    if dpctl.has_gpu_queues():
+        print("\nScheduling on OpenCL GPU\n")
+        with dpctl.device_context("opencl:gpu") as gpu_queue:
+            run(10)
+    else:
+        print("\nSkip scheduling on OpenCL GPU\n")
+    # if dpctl.has_gpu_queues(dpctl.backend_type.level_zero):
+    #    print("\nScheduling on Level Zero GPU\n")
+    #    with dpctl.device_context("level0:gpu") as gpu_queue:
+    #        run(10)
+    # else:
+    #    print("\nSkip scheduling on Level Zero GPU\n")
+    if dpctl.has_cpu_queues():
+        print("\nScheduling on OpenCL CPU\n")
+        with dpctl.device_context("opencl:cpu") as cpu_queue:
+            run(10)
+    else:
+        print("\nSkip scheduling on OpenCL CPU\n")
 
 
 if __name__ == "__main__":
