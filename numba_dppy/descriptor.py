@@ -1,3 +1,17 @@
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from __future__ import print_function, division, absolute_import
 from numba.core.descriptors import TargetDescriptor
 from numba.core.options import TargetOptions
@@ -10,8 +24,8 @@ from numba.core.cpu import CPUTargetOptions
 
 class DPPYTarget(TargetDescriptor):
     options = CPUTargetOptions
-    #typingctx = DPPYTypingContext()
-    #targetctx = DPPYTargetContext(typingctx)
+    # typingctx = DPPYTypingContext()
+    # targetctx = DPPYTargetContext(typingctx)
 
     @utils.cached_property
     def _toplevel_target_context(self):
@@ -36,7 +50,6 @@ class DPPYTarget(TargetDescriptor):
         The typing context for DPPY targets.
         """
         return self._toplevel_typing_context
-
 
 
 # The global DPPY target

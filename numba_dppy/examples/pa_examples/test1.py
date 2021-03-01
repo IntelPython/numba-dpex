@@ -1,8 +1,9 @@
 from numba import njit
 import numpy as np
+import dpctl
 
 
-@njit(parallel={'offload':True})
+@njit
 def f1(a, b):
     c = a + b
     return c
@@ -19,7 +20,10 @@ def main():
 
     print("a:", a, hex(a.ctypes.data))
     print("b:", b, hex(b.ctypes.data))
-    c = f1(a,b)
+
+    with dpctl.device_context("opencl:gpu:0"):
+        c = f1(a, b)
+
     print("RESULT c:", c, hex(c.ctypes.data))
     for i in range(N):
         if c[i] != 2.0:
@@ -27,5 +31,5 @@ def main():
             break
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

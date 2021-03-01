@@ -1,3 +1,17 @@
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import sys
 import numpy as np
 from numba import int32
@@ -6,27 +20,28 @@ import math
 
 import dpctl
 
+
 def sum_reduction_device_plus_host():
     @dppy.kernel
     def sum_reduction_kernel(inp, partial_sums):
-        local_id   = dppy.get_local_id(0)
-        global_id  = dppy.get_global_id(0)
+        local_id = dppy.get_local_id(0)
+        global_id = dppy.get_global_id(0)
         group_size = dppy.get_local_size(0)
-        group_id   = dppy.get_group_id(0)
+        group_id = dppy.get_group_id(0)
 
-        local_sums = dppy.local.static_alloc(64, int32)
+        local_sums = dppy.local.array(64, int32)
 
         # Copy from global to local memory
         local_sums[local_id] = inp[global_id]
 
         # Loop for computing local_sums : divide workgroup into 2 parts
         stride = group_size // 2
-        while (stride > 0):
+        while stride > 0:
             # Waiting for each 2x2 addition into given workgroup
             dppy.barrier(dppy.CLK_LOCAL_MEM_FENCE)
 
             # Add elements 2 by 2 between local_id and local_id + stride
-            if (local_id < stride):
+            if local_id < stride:
                 local_sums[local_id] += local_sums[local_id + stride]
 
             stride >>= 1
@@ -55,9 +70,9 @@ def sum_reduction_device_plus_host():
     for i in range(nb_work_groups):
         final_sum += partial_sums[i]
 
-    assert(final_sum == global_size)
+    assert final_sum == global_size
     print("Expected:", global_size, "--- GOT:", final_sum)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sum_reduction_device_plus_host()

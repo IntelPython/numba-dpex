@@ -1,20 +1,29 @@
-import sys
-import numba
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import numpy as np
 from numba import njit
-import numba_dppy, numba_dppy as dppy
+import numba_dppy
+import unittest
 from numba.core import errors
 from numba.tests.support import captured_stdout
-from numba_dppy.testing import DPPYTestCase, unittest, expectedFailureIf
 import dpctl
 
 
-class TestWithDPPYContext(DPPYTestCase):
-
+class TestWithDPPYContext(unittest.TestCase):
     @unittest.skipIf(not dpctl.has_gpu_queues(), "No GPU platforms available")
-    @expectedFailureIf(sys.platform.startswith('win'))
     def test_with_dppy_context_gpu(self):
-
         @njit
         def nested_func(a, b):
             np.sin(a, b)
@@ -36,12 +45,10 @@ class TestWithDPPYContext(DPPYTestCase):
         func(expected)
 
         np.testing.assert_array_equal(expected, got_gpu)
-        self.assertTrue('Parfor lowered on DPPY-device' in got_gpu_message.getvalue())
+        self.assertTrue("Parfor lowered on DPPY-device" in got_gpu_message.getvalue())
 
     @unittest.skipIf(not dpctl.has_cpu_queues(), "No CPU platforms available")
-    @unittest.expectedFailure
     def test_with_dppy_context_cpu(self):
-
         @njit
         def nested_func(a, b):
             np.sin(a, b)
@@ -63,17 +70,15 @@ class TestWithDPPYContext(DPPYTestCase):
         func(expected)
 
         np.testing.assert_array_equal(expected, got_cpu)
-        self.assertTrue('Parfor lowered on DPPY-device' in got_cpu_message.getvalue())
-
+        self.assertTrue("Parfor lowered on DPPY-device" in got_cpu_message.getvalue())
 
     @unittest.skipIf(not dpctl.has_gpu_queues(), "No GPU platforms available")
     def test_with_dppy_context_target(self):
-
-        @njit(target='cpu')
+        @njit(target="cpu")
         def nested_func_target(a, b):
             np.sin(a, b)
 
-        @njit(target='gpu')
+        @njit(target="gpu")
         def func_target(b):
             a = np.ones((64), dtype=np.float64)
             nested_func_target(a, b)
@@ -87,7 +92,6 @@ class TestWithDPPYContext(DPPYTestCase):
         def func_no_parallel(b):
             a = np.ones((64), dtype=np.float64)
             return a
-
 
         a = np.ones((64), dtype=np.float64)
         b = np.ones((64), dtype=np.float64)
@@ -116,5 +120,5 @@ class TestWithDPPYContext(DPPYTestCase):
         self.assertTrue(msg_2 in str(raises_4.exception))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

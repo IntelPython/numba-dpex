@@ -1,11 +1,27 @@
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from numba.core.imputils import lower_builtin
-import numba_dppy.experimental_numpy_lowering_overload as dpnp_lowering
-from numba import types
-from numba.core.typing import signature
-from numba.core.extending import overload, register_jitable
-from . import stubs
+from numba.core import types
+from numba.core.extending import register_jitable
 import numpy as np
-from numba_dppy.dpctl_functions import _DPCTL_FUNCTIONS
+from llvmlite import ir
+from numba.core.imputils import lower_getattr
+from numba.cpython import listobj
+
+
+ll_void_p = ir.IntType(8).as_pointer()
 
 
 def get_dpnp_fptr(fn_name, type_names):
@@ -28,62 +44,45 @@ def _dummy_liveness_func(a):
     return a[0]
 
 
-class RetrieveDpnpFnPtr(types.ExternalFunctionPointer):
-    def __init__(self, fn_name, type_names, sig, get_pointer):
-        self.fn_name = fn_name
-        self.type_names = type_names
-        super(RetrieveDpnpFnPtr, self).__init__(sig, get_pointer)
+def dpnp_func(fn_name, type_names, sig):
+    f_ptr = get_dpnp_fptr(fn_name, type_names)
+
+    def get_pointer(obj):
+        return f_ptr
+
+    return types.ExternalFunctionPointer(sig, get_pointer=get_pointer)
 
 
-class _DPNP_EXTENSION:
-    def __init__(self, name):
-        dpnp_lowering.ensure_dpnp(name)
-
-    @classmethod
-    def dpnp_sum(cls, fn_name, type_names):
-        ret_type = types.void
-        sig = signature(ret_type, types.voidptr, types.voidptr, types.int64)
-        f_ptr = get_dpnp_fptr(fn_name, type_names)
-
-        def get_pointer(obj):
-            return f_ptr
-
-        return types.ExternalFunctionPointer(sig, get_pointer=get_pointer)
+"""
+This function retrieves the pointer to the structure where the shape
+of an ndarray is stored. We cast it to void * to make it easier to
+pass around.
+"""
 
 
-@overload(stubs.dpnp.sum)
-def dpnp_sum_impl(a):
-    dpnp_extension = _DPNP_EXTENSION("sum")
-    dpctl_functions = _DPCTL_FUNCTIONS()
+@lower_getattr(types.Array, "shapeptr")
+def array_shape(context, builder, typ, value):
+    shape_ptr = builder.gep(
+        value.operands[0],
+        [context.get_constant(types.int32, 0), context.get_constant(types.int32, 5)],
+    )
 
-    dpnp_sum = dpnp_extension.dpnp_sum("dpnp_sum", [a.dtype.name, "NONE"])
-
-    get_sycl_queue = dpctl_functions.dpctl_get_current_queue()
-    allocate_usm_shared = dpctl_functions.dpctl_malloc_shared()
-    copy_usm = dpctl_functions.dpctl_queue_memcpy()
-    free_usm = dpctl_functions.dpctl_free_with_queue()
-
-    def dpnp_sum_impl(a):
-        if a.size == 0:
-            raise ValueError("Passed Empty array")
-
-        sycl_queue = get_sycl_queue()
-        a_usm = allocate_usm_shared(a.size * a.itemsize, sycl_queue)
-        copy_usm(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
-
-        out_usm = allocate_usm_shared(a.itemsize, sycl_queue)
-
-        dpnp_sum(a_usm, out_usm, a.size)
-
-        out = np.empty(1, dtype=a.dtype)
-        copy_usm(sycl_queue, out.ctypes, out_usm, out.size * out.itemsize)
-
-        free_usm(a_usm, sycl_queue)
-        free_usm(out_usm, sycl_queue)
+    return builder.bitcast(shape_ptr, ll_void_p)
 
 
-        _dummy_liveness_func([out.size])
+@lower_getattr(types.List, "size")
+def list_itemsize(context, builder, typ, value):
+    inst = listobj.ListInstance(context, builder, typ, value)
+    return inst.size
 
-        return out[0]
 
-    return dpnp_sum_impl
+@lower_getattr(types.List, "itemsize")
+def list_itemsize(context, builder, typ, value):
+    llty = context.get_data_type(typ.dtype)
+    return context.get_constant(types.uintp, context.get_abi_sizeof(llty))
+
+
+@lower_getattr(types.List, "ctypes")
+def list_itemsize(context, builder, typ, value):
+    inst = listobj.ListInstance(context, builder, typ, value)
+    return builder.bitcast(inst.data, ll_void_p)

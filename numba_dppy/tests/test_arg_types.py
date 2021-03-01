@@ -1,10 +1,21 @@
-from __future__ import print_function, division, absolute_import
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 import numpy as np
 
 import numba_dppy, numba_dppy as dppy
-from numba_dppy.testing import unittest
-from numba_dppy.testing import DPPYTestCase
+import unittest
 import dpctl
 
 
@@ -12,6 +23,7 @@ import dpctl
 def mul_kernel(A, B, test):
     i = dppy.get_global_id(0)
     B[i] = A[i] * test
+
 
 def call_mul_device_kernel(global_size, A, B, test):
     mul_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](A, B, test)
@@ -23,8 +35,8 @@ A = np.array(np.random.random(N), dtype=np.float32)
 B = np.array(np.random.random(N), dtype=np.float32)
 
 
-@unittest.skipUnless(dpctl.has_cpu_queues(), 'test only on CPU system')
-class TestDPPYArrayArgCPU(DPPYTestCase):
+@unittest.skipUnless(dpctl.has_cpu_queues(), "test only on CPU system")
+class TestDPPYArrayArgCPU(unittest.TestCase):
     def test_integer_arg(self):
         x = np.int32(2)
         with dpctl.device_context("opencl:cpu") as cpu_queue:
@@ -49,7 +61,7 @@ class TestDPPYArrayArgCPU(DPPYTestCase):
             else:
                 A[0] = 222
 
-        A = np.array([0], dtype='float64')
+        A = np.array([0], dtype="float64")
 
         with dpctl.device_context("opencl:cpu") as cpu_queue:
             check_bool_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](A, True)
@@ -58,8 +70,8 @@ class TestDPPYArrayArgCPU(DPPYTestCase):
             self.assertTrue(A[0] == 222)
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), 'test only on GPU system')
-class TestDPPYArrayArgGPU(DPPYTestCase):
+@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
+class TestDPPYArrayArgGPU(unittest.TestCase):
     def test_integer_arg(self):
         x = np.int32(2)
         with dpctl.device_context("opencl:gpu") as gpu_queue:
@@ -84,7 +96,7 @@ class TestDPPYArrayArgGPU(DPPYTestCase):
             else:
                 A[0] = 222
 
-        A = np.array([0], dtype='float64')
+        A = np.array([0], dtype="float64")
 
         with dpctl.device_context("opencl:gpu") as gpu_queue:
             check_bool_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](A, True)
@@ -92,5 +104,6 @@ class TestDPPYArrayArgGPU(DPPYTestCase):
             check_bool_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](A, False)
             self.assertTrue(A[0] == 222)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

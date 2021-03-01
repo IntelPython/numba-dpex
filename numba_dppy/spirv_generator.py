@@ -1,3 +1,17 @@
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 # A wrapper to connect to the SPIR-V binaries (Tools, Translator).
 # Currently, connect to commandline interface.
 from __future__ import print_function, absolute_import
@@ -17,43 +31,51 @@ def _raise_bad_env_path(msg, path, extra=None):
         error_message += extra
     raise ValueError(error_message)
 
+
 _real_check_call = check_call
 
+
 def check_call(*args, **kwargs):
-    #print("check_call:", *args, **kwargs)
+    # print("check_call:", *args, **kwargs)
     return _real_check_call(*args, **kwargs)
 
-class CmdLine(object):
 
+class CmdLine(object):
     def disassemble(self, ipath, opath):
-        check_call([
-            "spirv-dis",
-            # "--no-indent",
-            # "--no-header",
-            # "--raw-id",
-            # "--offsets",
-            "-o",
-            opath,
-            ipath])
+        check_call(
+            [
+                "spirv-dis",
+                # "--no-indent",
+                # "--no-header",
+                # "--raw-id",
+                # "--offsets",
+                "-o",
+                opath,
+                ipath,
+            ]
+        )
 
     def validate(self, ipath):
-        check_call(["spirv-val",ipath])
+        check_call(["spirv-val", ipath])
 
     def optimize(self, ipath, opath):
-        check_call([
-            "spirv-opt",
-            # "--strip-debug",
-            # "--freeze-spec-const",
-            # "--eliminate-dead-const",
-            # "--fold-spec-const-op-composite",
-            # "--set-spec-const-default-value '<spec id>:<default value> ...'",
-            # "--unify-const",
-            # "--inline-entry-points-exhaustive",
-            # "--flatten-decorations",
-            # "--compact-ids",
-            "-o",
-            opath,
-            ipath])
+        check_call(
+            [
+                "spirv-opt",
+                # "--strip-debug",
+                # "--freeze-spec-const",
+                # "--eliminate-dead-const",
+                # "--fold-spec-const-op-composite",
+                # "--set-spec-const-default-value '<spec id>:<default value> ...'",
+                # "--unify-const",
+                # "--inline-entry-points-exhaustive",
+                # "--flatten-decorations",
+                # "--compact-ids",
+                "-o",
+                opath,
+                ipath,
+            ]
+        )
 
     def generate(self, ipath, opath):
         # DRD : Temporary hack to get SPIR-V code generation to work.
@@ -64,16 +86,18 @@ class CmdLine(object):
         # Get optimization level from NUMBA_OPT
         opt_level_option = f'-O{config.OPT}'
 
-        check_call(["opt",opt_level_option,"-o",ipath+'.bc',ipath])
-        check_call(["llvm-spirv","-o",opath,ipath+'.bc'])
+        check_call(["opt", opt_level_option, "-o", ipath + '.bc', ipath])
+        check_call(["llvm-spirv", "-o", opath, ipath + '.bc'])
+
         if dppy_config.SAVE_IR_FILES == 0:
-            os.unlink(ipath + '.bc')
+            os.unlink(ipath + ".bc")
 
     def link(self, opath, binaries):
-        params = ["spirv-link","--allow-partial-linkage","-o", opath]
+        params = ["spirv-link", "--allow-partial-linkage", "-o", opath]
         params.extend(binaries)
 
         check_call(params)
+
 
 class Module(object):
     def __init__(self, context):
@@ -97,14 +121,13 @@ class Module(object):
         if dppy_config.SAVE_IR_FILES == 0:
             os.rmdir(self._tmpdir)
 
-    def _create_temp_file(self, name, mode='wb'):
+    def _create_temp_file(self, name, mode="wb"):
         path = self._track_temp_file(name)
         fobj = open(path, mode=mode)
         return fobj, path
 
     def _track_temp_file(self, name):
-        path = os.path.join(self._tmpdir,
-                            "{0}-{1}".format(len(self._tempfiles), name))
+        path = os.path.join(self._tmpdir, "{0}-{1}".format(len(self._tempfiles), name))
         self._tempfiles.append(path)
         return path
 
@@ -134,6 +157,7 @@ class Module(object):
             del self.context.link_binaries[key]
             if key == LINK_ATOMIC:
                 from .ocl.atomics import get_atomic_spirv_path
+
                 binary_paths.append(get_atomic_spirv_path())
 
         if len(binary_paths) > 1:
@@ -156,13 +180,13 @@ class Module(object):
                     # Disassemble optimized SPIR-V code
                     dis_path = self._track_temp_file("disassembled-spirv")
                     self._cmd.disassemble(ipath=opt_path, opath=dis_path)
-                    with open(dis_path, 'rb') as fin_opt:
+                    with open(dis_path, "rb") as fin_opt:
                         print("ASSEMBLY".center(80, "-"))
                         print(fin_opt.read())
                         print("".center(80, "="))
 
         # Read and return final SPIR-V (not optimized!)
-        with open(spirv_path, 'rb') as fin:
+        with open(spirv_path, "rb") as fin:
             spirv = fin.read()
 
         self._finalized = True
@@ -171,6 +195,7 @@ class Module(object):
 
 
 # Public llvm_to_spirv function ###############################################
+
 
 def llvm_to_spirv(context, bitcode):
     mod = Module(context)

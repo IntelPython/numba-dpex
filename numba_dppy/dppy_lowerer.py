@@ -1,3 +1,17 @@
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from __future__ import print_function, division, absolute_import
 
 import ast
@@ -9,28 +23,29 @@ import sys
 import numpy as np
 
 import numba
-from numba.core import (compiler, ir, types, sigutils, lowering,
-                funcdesc, config)
+from numba.core import compiler, ir, types, sigutils, lowering, funcdesc, config
 from numba.parfors import parfor
 import numba_dppy, numba_dppy as dppy
-from numba.core.ir_utils import (add_offset_to_labels,
-                            replace_var_names,
-                            remove_dels,
-                            legalize_names,
-                            mk_unique_var,
-                            rename_labels,
-                            get_name_var_table,
-                            visit_vars_inner,
-                            guard,
-                            find_callname,
-                            remove_dead,
-                            get_call_table,
-                            is_pure,
-                            build_definitions,
-                            get_np_ufunc_typ,
-                            get_unused_var_name,
-                            find_potential_aliases,
-                            is_const_call)
+from numba.core.ir_utils import (
+    add_offset_to_labels,
+    replace_var_names,
+    remove_dels,
+    legalize_names,
+    mk_unique_var,
+    rename_labels,
+    get_name_var_table,
+    visit_vars_inner,
+    guard,
+    find_callname,
+    remove_dead,
+    get_call_table,
+    is_pure,
+    build_definitions,
+    get_np_ufunc_typ,
+    get_unused_var_name,
+    find_potential_aliases,
+    is_const_call,
+)
 
 from numba.core.typing import signature
 
@@ -47,9 +62,9 @@ def _print_block(block):
     for i, inst in enumerate(block.body):
         print("    ", i, inst)
 
+
 def _print_body(body_dict):
-    '''Pretty-print a set of IR blocks.
-    '''
+    """Pretty-print a set of IR blocks."""
     for label, block in body_dict.items():
         print("label: ", label)
         _print_block(block)
@@ -61,9 +76,9 @@ def _print_body(body_dict):
 # through OpenCL and generate for loops for the remaining
 # dimensions
 def _schedule_loop(parfor_dim, legal_loop_indices, loop_ranges, param_dict):
-    gufunc_txt    = ""
+    gufunc_txt = ""
     global_id_dim = 0
-    for_loop_dim  = parfor_dim
+    for_loop_dim = parfor_dim
 
     if parfor_dim > 3:
         global_id_dim = 3
@@ -71,9 +86,14 @@ def _schedule_loop(parfor_dim, legal_loop_indices, loop_ranges, param_dict):
         global_id_dim = parfor_dim
 
     for eachdim in range(global_id_dim):
-        gufunc_txt += ("    " + legal_loop_indices[eachdim] + " = "
-                       + "dppy.get_global_id(" + str(eachdim) + ")\n")
-
+        gufunc_txt += (
+            "    "
+            + legal_loop_indices[eachdim]
+            + " = "
+            + "dppy.get_global_id("
+            + str(eachdim)
+            + ")\n"
+        )
 
     for eachdim in range(global_id_dim, for_loop_dim):
         for indent in range(1 + (eachdim - global_id_dim)):
@@ -82,11 +102,15 @@ def _schedule_loop(parfor_dim, legal_loop_indices, loop_ranges, param_dict):
         start, stop, step = loop_ranges[eachdim]
         start = param_dict.get(str(start), start)
         stop = param_dict.get(str(stop), stop)
-        gufunc_txt += ("for " +
-                   legal_loop_indices[eachdim] +
-                   " in range(" + str(start) +
-                   ", " + str(stop) +
-                   " + 1):\n")
+        gufunc_txt += (
+            "for "
+            + legal_loop_indices[eachdim]
+            + " in range("
+            + str(start)
+            + ", "
+            + str(stop)
+            + " + 1):\n"
+        )
 
     for eachdim in range(global_id_dim, for_loop_dim):
         for indent in range(1 + (eachdim - global_id_dim)):
@@ -114,17 +138,18 @@ def _dbgprint_after_each_array_assignments(lowerer, loop_body, typemap):
                 strconsttyp = types.StringLiteral(strval)
 
                 lhs = ir.Var(scope, mk_unique_var("str_const"), loc)
-                assign_lhs = ir.Assign(value=ir.Const(value=strval, loc=loc),
-                                       target=lhs, loc=loc)
+                assign_lhs = ir.Assign(
+                    value=ir.Const(value=strval, loc=loc), target=lhs, loc=loc
+                )
                 typemap[lhs.name] = strconsttyp
                 new_block.append(assign_lhs)
 
                 # Make print node
-                print_node = ir.Print(args=[lhs, inst.target], vararg=None,
-                                      loc=loc)
+                print_node = ir.Print(args=[lhs, inst.target], vararg=None, loc=loc)
                 new_block.append(print_node)
-                sig = numba.typing.signature(types.none, typemap[lhs.name],
-                                             typemap[inst.target.name])
+                sig = numba.typing.signature(
+                    types.none, typemap[lhs.name], typemap[inst.target.name]
+                )
                 lowerer.fndesc.calltypes[print_node] = sig
         loop_body[label] = new_block
 
@@ -134,33 +159,36 @@ def replace_var_with_array_in_block(vars, block, typemap, calltypes):
     for inst in block.body:
         if isinstance(inst, ir.Assign) and inst.target.name in vars:
             const_node = ir.Const(0, inst.loc)
-            const_var = ir.Var(inst.target.scope, mk_unique_var("$const_ind_0"),
-                               inst.loc)
+            const_var = ir.Var(
+                inst.target.scope, mk_unique_var("$const_ind_0"), inst.loc
+            )
             typemap[const_var.name] = types.uintp
             const_assign = ir.Assign(const_node, const_var, inst.loc)
             new_block.append(const_assign)
 
-            setitem_node = ir.SetItem(inst.target, const_var, inst.value,
-                                      inst.loc)
+            setitem_node = ir.SetItem(inst.target, const_var, inst.value, inst.loc)
             calltypes[setitem_node] = signature(
-                types.none, types.npytypes.Array(typemap[inst.target.name], 1,
-                                                 "C"), types.intp,
-                                                 typemap[inst.target.name])
+                types.none,
+                types.npytypes.Array(typemap[inst.target.name], 1, "C"),
+                types.intp,
+                typemap[inst.target.name],
+            )
             new_block.append(setitem_node)
             continue
         elif isinstance(inst, parfor.Parfor):
-            replace_var_with_array_internal(vars, {0: inst.init_block},
-                                            typemap, calltypes)
-            replace_var_with_array_internal(vars, inst.loop_body,
-                                            typemap, calltypes)
+            replace_var_with_array_internal(
+                vars, {0: inst.init_block}, typemap, calltypes
+            )
+            replace_var_with_array_internal(vars, inst.loop_body, typemap, calltypes)
 
         new_block.append(inst)
     return new_block
 
+
 def replace_var_with_array_internal(vars, loop_body, typemap, calltypes):
     for label, block in loop_body.items():
-        block.body = replace_var_with_array_in_block(vars, block, typemap,
-                                                     calltypes)
+        block.body = replace_var_with_array_in_block(vars, block, typemap, calltypes)
+
 
 def replace_var_with_array(vars, loop_body, typemap, calltypes):
     replace_var_with_array_internal(vars, loop_body, typemap, calltypes)
@@ -178,17 +206,18 @@ def wrap_loop_body(loop_body):
     blocks[last_label].body.append(ir.Jump(first_label, loc))
     return blocks
 
+
 def unwrap_loop_body(loop_body):
     last_label = max(loop_body.keys())
     loop_body[last_label].body = loop_body[last_label].body[:-1]
 
 
 def legalize_names_with_typemap(names, typemap):
-    """ We use ir_utils.legalize_names to replace internal IR variable names
-        containing illegal characters (e.g. period) with a legal character
-        (underscore) so as to create legal variable names.
-        The original variable names are in the typemap so we also
-        need to add the legalized name to the typemap as well.
+    """We use ir_utils.legalize_names to replace internal IR variable names
+    containing illegal characters (e.g. period) with a legal character
+    (underscore) so as to create legal variable names.
+    The original variable names are in the typemap so we also
+    need to add the legalized name to the typemap as well.
     """
     outdict = legalize_names(names)
     # For each pair in the dict of legalized names...
@@ -206,6 +235,7 @@ def to_scalar_from_0d(x):
             return x.dtype
     return x
 
+
 def find_setitems_block(setitems, block, typemap):
     for inst in block.body:
         if isinstance(inst, ir.StaticSetItem) or isinstance(inst, ir.SetItem):
@@ -214,15 +244,17 @@ def find_setitems_block(setitems, block, typemap):
             find_setitems_block(setitems, inst.init_block, typemap)
             find_setitems_body(setitems, inst.loop_body, typemap)
 
+
 def find_setitems_body(setitems, loop_body, typemap):
     """
-      Find the arrays that are written into (goes into setitems)
+    Find the arrays that are written into (goes into setitems)
     """
     for label, block in loop_body.items():
         find_setitems_block(setitems, block, typemap)
 
+
 def _create_gufunc_for_regular_parfor():
-    #TODO
+    # TODO
     pass
 
 
@@ -231,18 +263,19 @@ def _create_gufunc_for_reduction_parfor():
 
 
 def _create_gufunc_for_parfor_body(
-        lowerer,
-        parfor,
-        typemap,
-        typingctx,
-        targetctx,
-        flags,
-        loop_ranges,
-        locals,
-        has_aliases,
-        index_var_typ,
-        races):
-    '''
+    lowerer,
+    parfor,
+    typemap,
+    typingctx,
+    targetctx,
+    flags,
+    loop_ranges,
+    locals,
+    has_aliases,
+    index_var_typ,
+    races,
+):
+    """
     Takes a parfor and creates a gufunc function for its body. There
     are two parts to this function:
 
@@ -257,7 +290,7 @@ def _create_gufunc_for_parfor_body(
     IR retrieved with run_frontend. The IR is scanned for the sentinel
     assignment where that basic block is split and the IR for the parfor
     body inserted.
-    '''
+    """
 
     loc = parfor.init_block.loc
 
@@ -288,25 +321,22 @@ def _create_gufunc_for_parfor_body(
     typemap = lowerer.fndesc.typemap
 
     parfor_redvars, parfor_reddict = numba.parfors.parfor.get_parfor_reductions(
-                                        lowerer.func_ir,
-                                        parfor,
-                                        parfor_params,
-                                        lowerer.fndesc.calltypes)
+        lowerer.func_ir, parfor, parfor_params, lowerer.fndesc.calltypes
+    )
     has_reduction = False if len(parfor_redvars) == 0 else True
 
     if has_reduction:
         _create_gufunc_for_reduction_parfor()
 
     # Compute just the parfor inputs as a set difference.
-    parfor_inputs = sorted(
-        list(
-            set(parfor_params) -
-            set(parfor_outputs)))
+    parfor_inputs = sorted(list(set(parfor_params) - set(parfor_outputs)))
 
     for race in races:
-        msg = ("Variable %s used in parallel loop may be written "
-               "to simultaneously by multiple workers and may result "
-               "in non-deterministic or unintended results." % race)
+        msg = (
+            "Variable %s used in parallel loop may be written "
+            "to simultaneously by multiple workers and may result "
+            "in non-deterministic or unintended results." % race
+        )
         warnings.warn(NumbaParallelSafetyWarning(msg, loc))
     replace_var_with_array(races, loop_body, typemap, lowerer.fndesc.calltypes)
 
@@ -321,15 +351,13 @@ def _create_gufunc_for_parfor_body(
     def addrspace_from(params, def_addr):
         addrspaces = []
         for p in params:
-            if isinstance(to_scalar_from_0d(typemap[p]),
-                          types.npytypes.Array):
+            if isinstance(to_scalar_from_0d(typemap[p]), types.npytypes.Array):
                 addrspaces.append(def_addr)
             else:
                 addrspaces.append(None)
         return addrspaces
 
-    addrspaces = addrspace_from(parfor_params,
-                                numba_dppy.target.SPIR_GLOBAL_ADDRSPACE)
+    addrspaces = addrspace_from(parfor_params, numba_dppy.target.SPIR_GLOBAL_ADDRSPACE)
 
     if config.DEBUG_ARRAY_OPT >= 1:
         print("parfor_params = ", parfor_params, type(parfor_params))
@@ -351,8 +379,7 @@ def _create_gufunc_for_parfor_body(
 
     if config.DEBUG_ARRAY_OPT >= 1:
         print("ind_dict = ", sorted(ind_dict.items()), type(ind_dict))
-        print("legal_loop_indices = ",legal_loop_indices,
-              type(legal_loop_indices))
+        print("legal_loop_indices = ", legal_loop_indices, type(legal_loop_indices))
 
         for pd in parfor_params:
             print("pd = ", pd)
@@ -365,14 +392,15 @@ def _create_gufunc_for_parfor_body(
 
     # Calculate types of args passed to gufunc.
     func_arg_types = [typemap[v] for v in (parfor_inputs + parfor_outputs)]
-    assert(len(param_types_addrspaces) == len(addrspaces))
+    assert len(param_types_addrspaces) == len(addrspaces)
     for i in range(len(param_types_addrspaces)):
         if addrspaces[i] is not None:
-            #print("before:", id(param_types_addrspaces[i]))
-            assert(isinstance(param_types_addrspaces[i], types.npytypes.Array))
-            param_types_addrspaces[i] = (param_types_addrspaces[i]
-                                        .copy(addrspace=addrspaces[i]))
-            #print("setting param type", i, param_types[i], id(param_types[i]),
+            # print("before:", id(param_types_addrspaces[i]))
+            assert isinstance(param_types_addrspaces[i], types.npytypes.Array)
+            param_types_addrspaces[i] = param_types_addrspaces[i].copy(
+                addrspace=addrspaces[i]
+            )
+            # print("setting param type", i, param_types[i], id(param_types[i]),
             #      "to addrspace", param_types_addrspaces[i].addrspace)
 
     def print_arg_with_addrspaces(args):
@@ -396,10 +424,12 @@ def _create_gufunc_for_parfor_body(
     parfor_params = []
     ascontig = False
     for pindex in range(len(parfor_params_orig)):
-        if (ascontig and
-            pindex < len(parfor_inputs) and
-            isinstance(param_types[pindex], types.npytypes.Array)):
-            parfor_params.append(parfor_params_orig[pindex]+"param")
+        if (
+            ascontig
+            and pindex < len(parfor_inputs)
+            and isinstance(param_types[pindex], types.npytypes.Array)
+        ):
+            parfor_params.append(parfor_params_orig[pindex] + "param")
         else:
             parfor_params.append(parfor_params_orig[pindex])
 
@@ -409,11 +439,7 @@ def _create_gufunc_for_parfor_body(
     sentinel_name = get_unused_var_name("__sentinel__", loop_body_var_table)
 
     if config.DEBUG_ARRAY_OPT >= 1:
-        print(
-            "legal parfor_params = ",
-            parfor_params,
-            type(parfor_params))
-
+        print("legal parfor_params = ", parfor_params, type(parfor_params))
 
     # Determine the unique names of the scheduling and gufunc functions.
     gufunc_name = "__numba_parfor_gufunc_%s" % (parfor.id)
@@ -428,9 +454,9 @@ def _create_gufunc_for_parfor_body(
     gufunc_txt += "def " + gufunc_name
     gufunc_txt += "(" + (", ".join(parfor_params)) + "):\n"
 
-
-    gufunc_txt += _schedule_loop(parfor_dim, legal_loop_indices, loop_ranges,
-                                 param_dict)
+    gufunc_txt += _schedule_loop(
+        parfor_dim, legal_loop_indices, loop_ranges, param_dict
+    )
 
     # Add the sentinel assignment so that we can find the loop body position
     # in the IR.
@@ -463,8 +489,7 @@ def _create_gufunc_for_parfor_body(
     # rename all variables in gufunc_ir afresh
     var_table = get_name_var_table(gufunc_ir.blocks)
     new_var_dict = {}
-    reserved_names = [sentinel_name] + \
-        list(param_dict.values()) + legal_loop_indices
+    reserved_names = [sentinel_name] + list(param_dict.values()) + legal_loop_indices
     for name, var in var_table.items():
         if not (name in reserved_names):
             new_var_dict[name] = mk_unique_var(name)
@@ -481,10 +506,8 @@ def _create_gufunc_for_parfor_body(
 
     if config.DEBUG_ARRAY_OPT:
         print(
-            "gufunc_param_types = ",
-            type(gufunc_param_types),
-            "\n",
-            gufunc_param_types)
+            "gufunc_param_types = ", type(gufunc_param_types), "\n", gufunc_param_types
+        )
 
     gufunc_stub_last_label = max(gufunc_ir.blocks.keys()) + 1
 
@@ -503,7 +526,7 @@ def _create_gufunc_for_parfor_body(
         _print_body(loop_body)
 
     wrapped_blocks = wrap_loop_body(loop_body)
-    #hoisted, not_hoisted = hoist(parfor_params, loop_body,
+    # hoisted, not_hoisted = hoist(parfor_params, loop_body,
     #                             typemap, wrapped_blocks)
     setitems = set()
     find_setitems_body(setitems, loop_body, typemap)
@@ -516,9 +539,12 @@ def _create_gufunc_for_parfor_body(
     unwrap_loop_body(loop_body)
 
     # store hoisted into diagnostics
-    diagnostics = lowerer.metadata['parfor_diagnostics']
-    diagnostics.hoist_info[parfor.id] = {'hoisted': hoisted,
-                                         'not_hoisted': not_hoisted}
+    diagnostics = lowerer.metadata["parfor_diagnostics"]
+    diagnostics.hoist_info[parfor.id] = {"hoisted": hoisted, "not_hoisted": not_hoisted}
+
+    lowerer.metadata["parfor_diagnostics"].extra_info[str(parfor.id)] = str(
+        dpctl.get_current_queue().get_sycl_device().get_device_name()
+    )
 
     if config.DEBUG_ARRAY_OPT:
         print("After hoisting")
@@ -527,8 +553,7 @@ def _create_gufunc_for_parfor_body(
     # Search all the block in the gufunc outline for the sentinel assignment.
     for label, block in gufunc_ir.blocks.items():
         for i, inst in enumerate(block.body):
-            if (isinstance(inst, ir.Assign) and
-                inst.target.name == sentinel_name):
+            if isinstance(inst, ir.Assign) and inst.target.name == sentinel_name:
                 # We found the sentinel assignment.
                 loc = inst.loc
                 scope = block.scope
@@ -539,7 +564,7 @@ def _create_gufunc_for_parfor_body(
                 prev_block.body = block.body[:i]
 
                 # The current block is used for statements after the sentinel.
-                block.body = block.body[i + 1:]
+                block.body = block.body[i + 1 :]
                 # But the current block gets a new label.
                 body_first_label = min(loop_body.keys())
 
@@ -555,8 +580,7 @@ def _create_gufunc_for_parfor_body(
                 gufunc_ir.blocks[label] = prev_block
                 # Add a jump from the last parfor body block to the block
                 # containing statements after the sentinel.
-                gufunc_ir.blocks[body_last_label].append(
-                    ir.Jump(new_label, loc))
+                gufunc_ir.blocks[body_last_label].append(ir.Jump(new_label, loc))
                 break
         else:
             continue
@@ -596,22 +620,21 @@ def _create_gufunc_for_parfor_body(
         sys.stdout.flush()
 
     if config.DEBUG_ARRAY_OPT:
-        print('before DUFunc inlining'.center(80, '-'))
+        print("before DUFunc inlining".center(80, "-"))
         gufunc_ir.dump()
 
     # Inlining all DUFuncs
-    dufunc_inliner(gufunc_ir, lowerer.fndesc.calltypes, typemap,
-                   lowerer.context.typing_context)
+    dufunc_inliner(
+        gufunc_ir, lowerer.fndesc.calltypes, typemap, lowerer.context.typing_context
+    )
 
     if config.DEBUG_ARRAY_OPT:
-        print('after DUFunc inline'.center(80, '-'))
+        print("after DUFunc inline".center(80, "-"))
         gufunc_ir.dump()
 
     kernel_func = numba_dppy.compiler.compile_kernel_parfor(
-        dpctl.get_current_queue(),
-        gufunc_ir,
-        gufunc_param_types,
-        param_types_addrspaces)
+        dpctl.get_current_queue(), gufunc_ir, gufunc_param_types, param_types_addrspaces
+    )
 
     flags.noalias = old_alias
 
@@ -670,8 +693,9 @@ def _lower_parfor_gufunc(lowerer, parfor):
 
     alias_map = {}
     arg_aliases = {}
-    numba.parfors.parfor.find_potential_aliases_parfor(parfor, parfor.params, typemap,
-                                        lowerer.func_ir, alias_map, arg_aliases)
+    numba.parfors.parfor.find_potential_aliases_parfor(
+        parfor, parfor.params, typemap, lowerer.func_ir, alias_map, arg_aliases
+    )
     if config.DEBUG_ARRAY_OPT:
         print("alias_map", alias_map)
         print("arg_aliases", arg_aliases)
@@ -682,12 +706,12 @@ def _lower_parfor_gufunc(lowerer, parfor):
     assert parfor.params != None
 
     parfor_output_arrays = numba.parfors.parfor.get_parfor_outputs(
-        parfor, parfor.params)
-
+        parfor, parfor.params
+    )
 
     # compile parfor body as a separate function to be used with GUFuncWrapper
     flags = copy.copy(parfor.flags)
-    flags.set('error_model', 'numpy')
+    flags.set("error_model", "numpy")
 
     # Can't get here unless flags.set('auto_parallel', ParallelOptions(True))
     index_var_typ = typemap[parfor.loop_nests[0].index_variable.name]
@@ -700,8 +724,13 @@ def _lower_parfor_gufunc(lowerer, parfor):
     loop_ranges = [(l.start, l.stop, l.step) for l in parfor.loop_nests]
 
     try:
-        func, func_args, func_sig, func_arg_types, modified_arrays =(
-        _create_gufunc_for_parfor_body(
+        (
+            func,
+            func_args,
+            func_sig,
+            func_arg_types,
+            modified_arrays,
+        ) = _create_gufunc_for_parfor_body(
             lowerer,
             parfor,
             typemap,
@@ -712,7 +741,8 @@ def _lower_parfor_gufunc(lowerer, parfor):
             {},
             bool(alias_map),
             index_var_typ,
-            parfor.races))
+            parfor.races,
+        )
     finally:
         numba.parfors.parfor.sequential_parfor_lowering = False
 
@@ -733,12 +763,8 @@ def _lower_parfor_gufunc(lowerer, parfor):
         print("loop_ranges = ", loop_ranges)
 
     gu_signature = _create_shape_signature(
-        parfor.get_shape_classes,
-        num_inputs,
-        func_args,
-        func_sig,
-        parfor.races,
-        typemap)
+        parfor.get_shape_classes, num_inputs, func_args, func_sig, parfor.races, typemap
+    )
 
     generate_dppy_host_wrapper(
         lowerer,
@@ -752,7 +778,8 @@ def _lower_parfor_gufunc(lowerer, parfor):
         parfor.init_block,
         index_var_typ,
         parfor.races,
-        modified_arrays)
+        modified_arrays,
+    )
 
     if config.DEBUG_ARRAY_OPT:
         sys.stdout.flush()
@@ -763,50 +790,52 @@ def _lower_parfor_gufunc(lowerer, parfor):
 
 
 def _create_shape_signature(
-        get_shape_classes,
-        num_inputs,
-        #num_reductions,
-        args,
-        func_sig,
-        races,
-        typemap):
-    '''Create shape signature for GUFunc
-    '''
+    get_shape_classes,
+    num_inputs,
+    # num_reductions,
+    args,
+    func_sig,
+    races,
+    typemap,
+):
+    """Create shape signature for GUFunc"""
     if config.DEBUG_ARRAY_OPT:
         print("_create_shape_signature", num_inputs, args)
         arg_start_print = 0
         for i in args[arg_start_print:]:
             print("argument", i, type(i), get_shape_classes(i, typemap=typemap))
 
-    #num_inouts = len(args) - num_reductions
+    # num_inouts = len(args) - num_reductions
     num_inouts = len(args)
     # maximum class number for array shapes
-    classes = [get_shape_classes(var, typemap=typemap)
-               if var not in races else (-1,) for var in args[1:]]
+    classes = [
+        get_shape_classes(var, typemap=typemap) if var not in races else (-1,)
+        for var in args[1:]
+    ]
     class_set = set()
     for _class in classes:
         if _class:
             for i in _class:
                 class_set.add(i)
     max_class = max(class_set) + 1 if class_set else 0
-    classes.insert(0, (max_class,)) # force set the class of 'sched' argument
+    classes.insert(0, (max_class,))  # force set the class of 'sched' argument
     class_set.add(max_class)
     class_map = {}
     # TODO: use prefix + class number instead of single char
-    alphabet = ord('a')
+    alphabet = ord("a")
     for n in class_set:
-       if n >= 0:
-           class_map[n] = chr(alphabet)
-           alphabet += 1
+        if n >= 0:
+            class_map[n] = chr(alphabet)
+            alphabet += 1
 
-    alpha_dict = {'latest_alpha' : alphabet}
+    alpha_dict = {"latest_alpha": alphabet}
 
     def bump_alpha(c, class_map):
         if c >= 0:
             return class_map[c]
         else:
-            alpha_dict['latest_alpha'] += 1
-            return chr(alpha_dict['latest_alpha'])
+            alpha_dict["latest_alpha"] += 1
+            return chr(alpha_dict["latest_alpha"])
 
     gu_sin = []
     gu_sout = []
@@ -831,21 +860,24 @@ def _create_shape_signature(
 # Keep all the dppy kernels and programs created alive indefinitely.
 keep_alive_kernels = []
 
-def generate_dppy_host_wrapper(lowerer,
-                               cres,
-                               gu_signature,
-                               outer_sig,
-                               expr_args,
-                               num_inputs,
-                               expr_arg_types,
-                               loop_ranges,
-                               init_block,
-                               index_var_typ,
-                               races,
-                               modified_arrays):
-    '''
+
+def generate_dppy_host_wrapper(
+    lowerer,
+    cres,
+    gu_signature,
+    outer_sig,
+    expr_args,
+    num_inputs,
+    expr_arg_types,
+    loop_ranges,
+    init_block,
+    index_var_typ,
+    races,
+    modified_arrays,
+):
+    """
     Adds the call to the gufunc function from the main function.
-    '''
+    """
     context = lowerer.context
     builder = lowerer.builder
     sin, sout = gu_signature
@@ -854,8 +886,13 @@ def generate_dppy_host_wrapper(lowerer,
     if config.DEBUG_ARRAY_OPT:
         print("generate_dppy_host_wrapper")
         print("args = ", expr_args)
-        print("outer_sig = ", outer_sig.args, outer_sig.return_type,
-              outer_sig.recvr, outer_sig.pysig)
+        print(
+            "outer_sig = ",
+            outer_sig.args,
+            outer_sig.return_type,
+            outer_sig.recvr,
+            outer_sig.pysig,
+        )
         print("loop_ranges = ", loop_ranges)
         print("expr_args", expr_args)
         print("expr_arg_types", expr_arg_types)
@@ -864,13 +901,13 @@ def generate_dppy_host_wrapper(lowerer,
         print("sout", sout)
         print("cres", cres, type(cres))
         print("modified_arrays", modified_arrays)
-#        print("cres.library", cres.library, type(cres.library))
-#        print("cres.fndesc", cres.fndesc, type(cres.fndesc))
-
+    #        print("cres.library", cres.library, type(cres.library))
+    #        print("cres.fndesc", cres.fndesc, type(cres.fndesc))
 
     # get dppy_cpu_portion_lowerer object
     dppy_cpu_lowerer = dppy_call_gen.DPPYHostFunctionCallsGenerator(
-                           lowerer, cres, num_inputs)
+        lowerer, cres, num_inputs
+    )
 
     # Compute number of args ------------------------------------------------
     num_expanded_args = 0
@@ -909,8 +946,7 @@ def generate_dppy_host_wrapper(lowerer,
             return None
 
     all_llvm_args = [getvar_or_none(lowerer, x) for x in expr_args[:ninouts]]
-    all_val_types = ([val_type_or_none(context, lowerer, x)
-                     for x in expr_args[:ninouts]])
+    all_val_types = [val_type_or_none(context, lowerer, x) for x in expr_args[:ninouts]]
     all_args = [loadvar_or_none(lowerer, x) for x in expr_args[:ninouts]]
 
     keep_alive_kernels.append(cres)
@@ -920,19 +956,37 @@ def generate_dppy_host_wrapper(lowerer,
     # the enqueue function. Put each part of each argument into
     # kernel_arg_array.
     for var, llvm_arg, arg_type, gu_sig, val_type, index in zip(
-        expr_args, all_llvm_args, expr_arg_types, sin + sout, all_val_types,
-        range(len(expr_args))):
+        expr_args,
+        all_llvm_args,
+        expr_arg_types,
+        sin + sout,
+        all_val_types,
+        range(len(expr_args)),
+    ):
 
         if config.DEBUG_ARRAY_OPT:
-            print("var:", var, type(var),
-                  "\n\tllvm_arg:", llvm_arg, type(llvm_arg),
-                  "\n\targ_type:", arg_type, type(arg_type),
-                  "\n\tgu_sig:", gu_sig,
-                  "\n\tval_type:", val_type, type(val_type),
-                  "\n\tindex:", index)
+            print(
+                "var:",
+                var,
+                type(var),
+                "\n\tllvm_arg:",
+                llvm_arg,
+                type(llvm_arg),
+                "\n\targ_type:",
+                arg_type,
+                type(arg_type),
+                "\n\tgu_sig:",
+                gu_sig,
+                "\n\tval_type:",
+                val_type,
+                type(val_type),
+                "\n\tindex:",
+                index,
+            )
 
-        dppy_cpu_lowerer.process_kernel_arg(var, llvm_arg, arg_type, gu_sig,
-                                            val_type, index, modified_arrays)
+        dppy_cpu_lowerer.process_kernel_arg(
+            var, llvm_arg, arg_type, gu_sig, val_type, index, modified_arrays
+        )
     # -----------------------------------------------------------------------
 
     # loadvars for loop_ranges
@@ -947,7 +1001,7 @@ def generate_dppy_host_wrapper(lowerer,
         start, stop, step = loop_ranges[i]
         start = load_range(start)
         stop = load_range(stop)
-        assert(step == 1)  # We do not support loop steps other than 1
+        assert step == 1  # We do not support loop steps other than 1
         step = load_range(step)
         loop_ranges[i] = (start, stop, step)
 
@@ -983,10 +1037,26 @@ def relatively_deep_copy(obj, memo):
     from numba.core.types.abstract import Type
 
     # objects which shouldn't or can't be copied and it's ok not to copy it.
-    if isinstance(obj, (FunctionIdentity, _DispatcherBase, Function, Type,
-                        Dispatcher, ModuleType, Signature,
-                        DPPYFunctionTemplate, CompileResult, DUFunc, _CFuncPtr,
-                        type, str, bool, type(None))):
+    if isinstance(
+        obj,
+        (
+            FunctionIdentity,
+            _DispatcherBase,
+            Function,
+            Type,
+            Dispatcher,
+            ModuleType,
+            Signature,
+            DPPYFunctionTemplate,
+            CompileResult,
+            DUFunc,
+            _CFuncPtr,
+            type,
+            str,
+            bool,
+            type(None),
+        ),
+    ):
         return obj
 
     from numba.core.ir import Global, FreeVar
@@ -995,15 +1065,24 @@ def relatively_deep_copy(obj, memo):
     from numba.core.funcdesc import FunctionDescriptor
 
     if isinstance(obj, FunctionDescriptor):
-        cpy = FunctionDescriptor(native=obj.native, modname=obj.modname, qualname=obj.qualname,
-                                 unique_name=obj.unique_name, doc=obj.doc,
-                                 typemap=relatively_deep_copy(obj.typemap, memo),
-                                 restype=obj.restype,
-                                 calltypes=relatively_deep_copy(obj.calltypes, memo),
-                                 args=obj.args, kws=obj.kws, mangler=None,
-                                 argtypes=relatively_deep_copy(obj.argtypes, memo),
-                                 inline=obj.inline, noalias=obj.noalias, env_name=obj.env_name,
-                                 global_dict=obj.global_dict)
+        cpy = FunctionDescriptor(
+            native=obj.native,
+            modname=obj.modname,
+            qualname=obj.qualname,
+            unique_name=obj.unique_name,
+            doc=obj.doc,
+            typemap=relatively_deep_copy(obj.typemap, memo),
+            restype=obj.restype,
+            calltypes=relatively_deep_copy(obj.calltypes, memo),
+            args=obj.args,
+            kws=obj.kws,
+            mangler=None,
+            argtypes=relatively_deep_copy(obj.argtypes, memo),
+            inline=obj.inline,
+            noalias=obj.noalias,
+            env_name=obj.env_name,
+            global_dict=obj.global_dict,
+        )
         # mangler parameter is not saved in FunctionDescriptor, but used to generated name.
         # So pass None as mangler parameter and then copy mangled_name by hands
         cpy.mangled_name = obj.mangled_name
@@ -1023,13 +1102,15 @@ def relatively_deep_copy(obj, memo):
         # This means that copy of IR actually has a side effect on it.
         pp = PostProcessor(obj)
         pp.run()
-        cpy = FunctionIR(blocks=relatively_deep_copy(obj.blocks, memo),
-                         is_generator=relatively_deep_copy(obj.is_generator, memo),
-                         func_id=relatively_deep_copy(obj.func_id, memo),
-                         loc=obj.loc,
-                         definitions=relatively_deep_copy(obj._definitions, memo),
-                         arg_count=obj.arg_count,
-                         arg_names=relatively_deep_copy(obj.arg_names, memo))
+        cpy = FunctionIR(
+            blocks=relatively_deep_copy(obj.blocks, memo),
+            is_generator=relatively_deep_copy(obj.is_generator, memo),
+            func_id=relatively_deep_copy(obj.func_id, memo),
+            loc=obj.loc,
+            definitions=relatively_deep_copy(obj._definitions, memo),
+            arg_count=obj.arg_count,
+            arg_names=relatively_deep_copy(obj.arg_names, memo),
+        )
         pp = PostProcessor(cpy)
         pp.run()
 
@@ -1140,8 +1221,9 @@ class DPPYLower(Lower):
         fndesc_cpu = relatively_deep_copy(fndesc, memo)
         func_ir_cpu = relatively_deep_copy(func_ir, memo)
 
-
-        cpu_context = context.cpu_context if isinstance(context, DPPYTargetContext) else context
+        cpu_context = (
+            context.cpu_context if isinstance(context, DPPYTargetContext) else context
+        )
         self.gpu_lower = Lower(context, library, fndesc, func_ir, metadata)
         self.cpu_lower = Lower(cpu_context, library, fndesc_cpu, func_ir_cpu, metadata)
 
@@ -1165,13 +1247,24 @@ class DPPYLower(Lower):
         try:
             lowering.lower_extensions[parfor.Parfor].append(lower_parfor_rollback)
             self.gpu_lower.lower()
+            # if lower dont crash, and parfor_diagnostics is empty then it is kernel
+            if not self.gpu_lower.metadata["parfor_diagnostics"].extra_info:
+                str_name = str(
+                    dpctl.get_current_queue().get_sycl_device().get_device_name()
+                )
+                self.gpu_lower.metadata["parfor_diagnostics"].extra_info[
+                    "kernel"
+                ] = str_name
             self.base_lower = self.gpu_lower
             lowering.lower_extensions[parfor.Parfor].pop()
         except Exception as e:
             if numba_dppy.compiler.DEBUG:
                 print("Failed to lower parfor on DPPY-device. Due to:\n", e)
             lowering.lower_extensions[parfor.Parfor].pop()
-            if (lowering.lower_extensions[parfor.Parfor][-1] == numba.parfors.parfor_lowering._lower_parfor_parallel):
+            if (
+                lowering.lower_extensions[parfor.Parfor][-1]
+                == numba.parfors.parfor_lowering._lower_parfor_parallel
+            ) and numba_dppy.config.FALLBACK_ON_CPU == 1:
                 self.cpu_lower.lower()
                 self.base_lower = self.cpu_lower
             else:
