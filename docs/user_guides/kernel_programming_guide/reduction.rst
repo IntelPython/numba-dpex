@@ -18,10 +18,8 @@ Full example can be found at ``numba_dppy/examples/sum_reduction.py``.
 In this example, to reduce the array we invoke the kernel multiple times.
 
 .. literalinclude:: ../../../numba_dppy/examples/sum_reduction.py
-   :pyobject: sum_reduction_kernel
+   :pyobject: reduction_kernel
 
-.. literalinclude:: ../../../numba_dppy/examples/sum_reduction.py
-   :pyobject: sum_reduce
 
 Example 2
 ~~~~~~~~~
@@ -29,14 +27,12 @@ Example 2
 Full example can be found at
 ``numba_dppy/examples/sum_reduction_recursive_ocl.py``.
 
-.. literalinclude:: ../../numba_dppy/examples/sum_reduction_recursive_ocl.py
-   :pyobject: sum_reduction_kernel
+.. literalinclude:: ../../../numba_dppy/examples/sum_reduction_recursive_ocl.py
+   :pyobject: recursive_reduction
 
-.. literalinclude:: ../../numba_dppy/examples/sum_reduction_recursive_ocl.py
-   :pyobject: sum_recursive_reduction
+.. literalinclude:: ../../../numba_dppy/examples/sum_reduction_recursive_ocl.py
+   :pyobject: sum_reduction_recursive
 
-.. literalinclude:: ../../numba_dppy/examples/sum_reduction_recursive_ocl.py
-   :pyobject: sum_reduce
 
 .. note::
 
