@@ -82,7 +82,7 @@ Contributing
 ============
 
 Refer the `contributing guide <https://github.com/IntelPython/numba-dppy/blob/main/CONTRIBUTING>`_
-for information on coding style and standards used in numba-dppy.
+for information on coding style and standards used in ``numba-dppy``.
 
 License
 =======
