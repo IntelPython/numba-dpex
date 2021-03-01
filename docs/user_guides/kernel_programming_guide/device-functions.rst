@@ -9,12 +9,17 @@ However, ``numba-dppy`` provides a special decorator ``numba_dppy.func``
 specifically to implement device functions.
 
 .. literalinclude:: ../../../numba_dppy/examples/dppy_func.py
-   :pyobject: g
+   :pyobject: a_device_function
 
-Device functions can only be invoked from kernel functions ``numba_dppy.kernel``.
+To use a device function from an another device function:
 
 .. literalinclude:: ../../../numba_dppy/examples/dppy_func.py
-   :pyobject: f
+   :pyobject: an_another_device_functiongi
+
+To use a device function from a kernel:
+
+.. literalinclude:: ../../../numba_dppy/examples/dppy_func.py
+   :pyobject: a_kernel_function
 
 Unlike a kernel function, a device function can return a value like normal
 functions.
