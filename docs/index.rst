@@ -6,7 +6,7 @@
 Welcome to numba-dppy's documentation!
 ======================================
 
-numba-dppy is a standalone extension to the `Numba
+``numba-dppy`` is a standalone extension to the `Numba
 <https://numba.pydata.org/>`_ JIT compiler that adds `SYCL
 <https://www.khronos.org/sycl/>`_ programming capabilities to Numba. numba-dppy
 uses `dpCtl <https://github.com/IntelPython/dpctl>`_ to support SYCL features
