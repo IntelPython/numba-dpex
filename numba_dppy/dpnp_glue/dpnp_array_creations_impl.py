@@ -64,11 +64,12 @@ def dpnp_zeros_like_impl(a, dtype=None):
     void dpnp_initval_c(void* result1, void* value, size_t size)
 
     """
-    res_dtype = dtype or a.dtype
-    if dtype:
-        name_dtype = res_dtype.dtype.name
-    else:
+    res_dtype = dtype
+    if dtype == types.none:
+        res_dtype = a.dtype
         name_dtype = res_dtype.name
+    else:
+        name_dtype = res_dtype.dtype.name
 
     sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [name_dtype, "NONE"], sig)
@@ -77,7 +78,7 @@ def dpnp_zeros_like_impl(a, dtype=None):
 
     def dpnp_impl(a, dtype=None):
         b = np.zeros(1, dtype=res_dtype)
-        out = np.arange(a.size, dtype=res_dtype)
+        out = np.zeros(a.shape, dtype=res_dtype)
         common_impl(a, b, out, dpnp_func, PRINT_DEBUG)
         return out
 
@@ -98,11 +99,12 @@ def dpnp_ones_like_impl(a, dtype=None):
     void dpnp_initval_c(void* result1, void* value, size_t size)
 
     """
-    res_dtype = dtype or a.dtype
-    if dtype:
-        name_dtype = res_dtype.dtype.name
-    else:
+    res_dtype = dtype
+    if dtype == types.none:
+        res_dtype = a.dtype
         name_dtype = res_dtype.name
+    else:
+        name_dtype = res_dtype.dtype.name
 
     sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [name_dtype, "NONE"], sig)
@@ -111,7 +113,7 @@ def dpnp_ones_like_impl(a, dtype=None):
 
     def dpnp_impl(a, dtype=None):
         b = np.ones(1, dtype=res_dtype)
-        out = np.arange(a.size, dtype=res_dtype)
+        out = np.ones(a.shape, dtype=res_dtype)
         common_impl(a, b, out, dpnp_func, PRINT_DEBUG)
         return out
 
@@ -139,13 +141,14 @@ def dpnp_full_like_impl(a, b):
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(a, b):
-        out = np.arange(a.size, dtype=res_dtype)
+        out = np.ones(a.shape, dtype=res_dtype)
         common_impl(a, b, out, dpnp_func, PRINT_DEBUG)
         return out
 
     return dpnp_impl
 
 
+# TODO: This implementation is incorrect
 @overload(stubs.dpnp.full)
 def dpnp_full_impl(a, b):
     name = "full"

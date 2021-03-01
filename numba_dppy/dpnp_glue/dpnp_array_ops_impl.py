@@ -91,9 +91,13 @@ def dpnp_cumprod_impl(a):
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     PRINT_DEBUG = dpnp_lowering.DEBUG
+    if a.dtype == types.Integer:
+        ret_dtype = np.int64
+    else:
+        ret_dtype = a.dtype
 
     def dpnp_impl(a):
-        out = np.arange(a.size, dtype=a.dtype)
+        out = np.arange(a.size, dtype=ret_dtype)
         common_impl(a, out, dpnp_func, PRINT_DEBUG)
 
         return out

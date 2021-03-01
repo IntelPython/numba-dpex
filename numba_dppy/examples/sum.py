@@ -18,6 +18,7 @@ from timeit import default_timer as time
 
 import sys
 import numpy as np
+import numpy.testing as testing
 import numba_dppy, numba_dppy as dppy
 import dpctl
 
@@ -29,11 +30,12 @@ def data_parallel_sum(a, b, c):
 
 
 def driver(a, b, c, global_size):
-    print("before : ", a)
-    print("before : ", b)
-    print("before : ", c)
+    print("A : ", a)
+    print("B : ", b)
     data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
-    print("after : ", c)
+    print("A + B = ")
+    print("C ", c)
+    testing.assert_equal(c, a + b)
 
 
 def main():
@@ -46,15 +48,23 @@ def main():
     c = np.ones_like(a)
 
     if dpctl.has_gpu_queues():
+        print("\nScheduling on OpenCL GPU\n")
         with dpctl.device_context("opencl:gpu") as gpu_queue:
             driver(a, b, c, global_size)
-    elif dpctl.has_cpu_queues():
+    else:
+        print("\nSkip scheduling on OpenCL GPU\n")
+    if dpctl.has_gpu_queues(dpctl.backend_type.level_zero):
+        print("\nScheduling on Level Zero GPU\n")
+        with dpctl.device_context("level0:gpu") as gpu_queue:
+            driver(a, b, c, global_size)
+    else:
+        print("\nSkip scheduling on Level Zero GPU\n")
+    if dpctl.has_cpu_queues():
+        print("\nScheduling on OpenCL CPU\n")
         with dpctl.device_context("opencl:cpu") as cpu_queue:
             driver(a, b, c, global_size)
     else:
-        print("No device found")
-        exit()
-
+        print("\nSkip scheduling on OpenCL CPU\n")
     print("Done...")
 
 

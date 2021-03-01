@@ -12,9 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+import numpy as np
+import numba_dppy as dppy
 import pytest
 import dpctl
-
+from numba_dppy.tests.skip_tests import skip_test
 
 list_of_filter_strs = [
     "opencl:gpu:0",
@@ -28,13 +31,27 @@ def filter_str(request):
     return request.param
 
 
-def test_dpctl_api(filter_str):
+def data_parallel_sum(a, b, c):
+    i = dppy.get_global_id(0)
+    c[i] = a[i] + b[i]
+
+
+def test_caching_kernel(filter_str):
+    if skip_test(filter_str):
+        pytest.skip()
+    global_size = 10
+    N = global_size
+
+    a = np.array(np.random.random(N), dtype=np.float32)
+    b = np.array(np.random.random(N), dtype=np.float32)
+    c = np.ones_like(a)
+
     with dpctl.device_context(filter_str) as gpu_queue:
-        dpctl.dump()
-        dpctl.get_current_queue()
-        dpctl.get_num_platforms()
-        dpctl.get_num_activated_queues()
-        dpctl.has_cpu_queues()
-        dpctl.has_gpu_queues()
-        dpctl.has_sycl_platforms()
-        dpctl.is_in_device_context()
+        func = dppy.kernel(data_parallel_sum)
+        caching_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(a, b, c)
+
+        for i in range(10):
+            cached_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
+                a, b, c
+            )
+            assert caching_kernel == cached_kernel

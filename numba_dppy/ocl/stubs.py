@@ -16,6 +16,9 @@ from __future__ import print_function, absolute_import
 from numba.core import types, ir, typing
 
 from numba_dppy.target import SPIR_LOCAL_ADDRSPACE
+import numpy as np
+import numba
+from numba.np import numpy_support
 
 _stub_error = NotImplementedError("This is a stub.")
 
@@ -134,13 +137,13 @@ class atomic(Stub):
 
     _description_ = "<atomic>"
 
-    class add(Stub):
+    def add():
         """add(ary, idx, val)
 
         Perform atomic ary[idx] += val
         """
 
-    class sub(Stub):
+    def sub():
         """sub(ary, idx, val)
 
         Perform atomic ary[idx] -= val
