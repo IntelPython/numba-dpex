@@ -26,5 +26,5 @@ to all its callers.
 
 .. note::
 
-    The ``dppy.barrier()`` function is semantically equivalent to
+    The ``numba_dppy.barrier()`` function is semantically equivalent to
     ``numba.cuda.syncthreads``.

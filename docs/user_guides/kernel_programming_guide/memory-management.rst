@@ -90,7 +90,7 @@ allocate local memory for a kernel.
 
   To go convert from ``numba.cuda`` to ``numba-dppy``, replace
   ``numba.cuda.shared.array`` with
-  ``dppy.local.array(shape=blocksize, dtype=float32)``.
+  ``numba_dppy.local.array(shape=blocksize, dtype=float32)``.
 
 .. todo::
 

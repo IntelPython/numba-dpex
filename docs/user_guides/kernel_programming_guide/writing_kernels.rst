@@ -52,7 +52,7 @@ Indexing functions
 Currently, ``numba-dppy`` supports the following indexing functions that have
 the same semantics as OpenCL.
 
-- ``dppy.get_local_id``
-- ``dppy.get_local_size``
-- ``dppy.get_group_id``
-- ``dppy.get_num_groups``
+- ``numba_dppy.get_local_id``
+- ``numba_dppy.get_local_size``
+- ``numba_dppy.get_group_id``
+- ``numba_dppy.get_num_groups``
