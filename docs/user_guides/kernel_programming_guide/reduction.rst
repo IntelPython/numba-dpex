@@ -40,7 +40,7 @@ Full example can be found at
 
 .. note::
 
-    numba-dppy does not yet provide any analogue to the ``numba.cuda.reduce`` decorator for writing kernel reductions.
+    ``numba-dppy`` does not yet provide any analogue to the ``numba.cuda.reduce`` decorator for writing kernel reductions.
     Such decorator will be added in future releases.
 
 Full examples

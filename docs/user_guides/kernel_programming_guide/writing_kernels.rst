@@ -12,7 +12,9 @@ in ``numba-dppy``, and some of the concepts may not be a good fit for Python.
 
 The explicit kernel programming mode of ``numba-dppy`` bears lots of
 similarities with Numba's other GPU backends:``numba.cuda`` and ``numba.roc``.
-Readers who are familiar with either of the existing backends of Numba, or in general with OpenCL, CUDA, or SYCL programming should find writing kernels in numba-dppy extremely intuitive. Irrespective of the reader's level of
+Readers who are familiar with either of the existing backends of Numba, or in
+general with OpenCL, CUDA, or SYCL programming should find writing kernels in
+``numba-dppy`` extremely intuitive. Irrespective of the reader's level of
 familiarity with GPU programming frameworks, this documentation should serves
 as a guide for using the current features available in ``numba-dppy``.
 
