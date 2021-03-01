@@ -179,6 +179,21 @@ class dpnp(Stub):
     class nanprod(Stub):
         pass
 
+    class full(Stub):
+        pass
+
+    class ones_like(Stub):
+        pass
+
+    class zeros_like(Stub):
+        pass
+
+    class full_like(Stub):
+        pass
+
+    class copy(Stub):
+        pass
+
     class cumsum(Stub):
         pass
 
@@ -186,4 +201,7 @@ class dpnp(Stub):
         pass
 
     class sort(Stub):
+        pass
+
+    class take(Stub):
         pass
