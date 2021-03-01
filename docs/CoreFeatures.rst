@@ -48,27 +48,20 @@ Numba ``jit`` function.
 Controllable Fallback
 ---------------------
 
-With the default behavior of numba-dppy, if a section of code cannot be
-offloaded on the GPU, then it is automatically executed on the CPU and printed a
-warning. This behavior only applies to ``jit`` functions and auto-offloading of
-NumPy functions, array expressions, and ``prange`` loops.
-
-Setting the debug environment variable ``NUMBA_DPPY_FALLBACK_OPTION``
-(e.g. ``export NUMBA_DPPY_FALLBACK_OPTION=0``) enables the code is not
-automatically offload to the CPU, and an error occurs. This is necessary in
-order to understand at an early stage which parts of the code do not work on
-the GPU, and not to wait for the program to execute on the CPU if you don't
-need it.
+By default, if a section of code cannot be offloaded to the GPU, it is automatically
+executed on the CPU and warning is printed. This behavior is only applicable to ``jit``
+functions, auto-offloading of NumPy calls, array expressions and ``prange`` loops.
+To disable this functionality and force code running on GPU set the environment variable
+``NUMBA_DPPY_FALLBACK_OPTION`` to false (e.g. ``export NUMBA_DPPY_FALLBACK_OPTION=0``). In this
+case the code is not automatically offloaded to the CPU and errors occur if any.
 
 Offload Diagnostics
 -------------------
 
 Setting the debug environment variable ``NUMBA_DPPY_OFFLOAD_DIAGNOSTICS``
-(e.g. ``export NUMBA_DPPY_OFFLOAD_DIAGNOSTICS=1``) enables the parallel and
-offload diagnostics information.
-
-If set to an integer value between 1 and 4 (inclusive) diagnostic information
-about parallel transforms undertaken by Numba will be written to STDOUT. The
-higher the value set the more detailed the information produced.
-.. In the "Auto-offloading" section there is the information on which device
-.. (device name) this parfor or kernel was offloaded.
+(e.g. ``export NUMBA_DPPY_OFFLOAD_DIAGNOSTICS=1``) provides emission of the parallel and
+offload diagnostics information based on produced parallel transforms. The level of detail
+depends on the integer value between 1 and 4 that is set to the environment variable
+(higher is more detailed).
+In the "Auto-offloading" section there is the information on which device (device name)
+this parfor or kernel was offloaded.

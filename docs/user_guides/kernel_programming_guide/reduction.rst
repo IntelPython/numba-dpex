@@ -1,7 +1,8 @@
 Reduction on SYCL-supported Devices
 ===================================
 
-``numba-dppy`` does not yet provide any specific decorator to implement reduction kernels. However, a reduction kernel can be written explicitly.This section provides two approaches for writing a reduction kernel using
+``numba-dppy`` does not yet provide any specific decorator to implement reduction kernels. However, a kernel reduction
+can be written explicitly. This section provides two approaches for writing a kernel reduction using
 ``numba_dppy.kernel``.
 
 Examples
@@ -10,8 +11,7 @@ Examples
 Example 1
 ~~~~~~~~~
 
-This example demonstrates a summation reduction operation on a one-dimensional
-array.
+This example demonstrates a summation reduction on a one-dimensional array.
 
 Full example can be found at ``numba_dppy/examples/sum_reduction.py``.
 
@@ -40,8 +40,8 @@ Full example can be found at
 
 .. note::
 
-    numba-dppy does not yet provide any analogue to the ``numba.cuda.reduce`` decorator for writing a reduction kernels. Such a decorator will be added
-    in future releases.
+    numba-dppy does not yet provide any analogue to the ``numba.cuda.reduce`` decorator for writing kernel reductions.
+    Such decorator will be added in future releases.
 
 Full examples
 -------------
