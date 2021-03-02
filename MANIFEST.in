@@ -2,6 +2,7 @@ include MANIFEST.in
 include README.md setup.py LICENSE
 
 recursive-include numba_dppy *.cl
+recursive-include numba_dppy *.spir
 
 include versioneer.py
 include numba_dppy/_version.py

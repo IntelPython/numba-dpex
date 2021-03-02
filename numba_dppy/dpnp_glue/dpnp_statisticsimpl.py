@@ -175,6 +175,7 @@ def dpnp_mean_impl(a):
         types.intp,
     )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
+    PRINT_DEBUG = dpnp_lowering.DEBUG
 
     res_dtype = np.float64
     if a.dtype == types.float32:

@@ -12,23 +12,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
+import pytest
 import dpctl
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
-class TestDPCTLAPI(unittest.TestCase):
-    def test_dpctl_api(self):
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
-            dpctl.dump()
-            dpctl.get_current_queue()
-            dpctl.get_num_platforms()
-            dpctl.get_num_activated_queues()
-            dpctl.has_cpu_queues()
-            dpctl.has_gpu_queues()
-            dpctl.has_sycl_platforms()
-            dpctl.is_in_device_context()
+list_of_filter_strs = [
+    "opencl:gpu:0",
+    "level0:gpu:0",
+    "opencl:cpu:0",
+]
 
 
-if __name__ == "__main__":
-    unittest.main()
+@pytest.fixture(params=list_of_filter_strs)
+def filter_str(request):
+    return request.param
+
+
+def test_dpctl_api(filter_str):
+    with dpctl.device_context(filter_str) as gpu_queue:
+        dpctl.dump()
+        dpctl.get_current_queue()
+        dpctl.get_num_platforms()
+        dpctl.get_num_activated_queues()
+        dpctl.has_cpu_queues()
+        dpctl.has_gpu_queues()
+        dpctl.has_sycl_platforms()
+        dpctl.is_in_device_context()

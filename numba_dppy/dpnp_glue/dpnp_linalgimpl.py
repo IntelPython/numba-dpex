@@ -346,11 +346,15 @@ def dpnp_matrix_power_impl(a, n):
                        size_t size_n, size_t size_k)
     """
 
+    PRINT_DEBUG = dpnp_lowering.DEBUG
+
     def dpnp_impl(a, n):
         if n < 0:
             raise ValueError("n < 0 is not supported for np.linalg.matrix_power(a, n)")
 
         if n == 0:
+            if PRINT_DEBUG:
+                print("dpnp implementation")
             return np.identity(a.shape[0], a.dtype)
 
         result = a
