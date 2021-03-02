@@ -13,31 +13,13 @@
 # limitations under the License.
 
 import numpy as np
-import numba_dppy as dppy
+from numba import vectorize
 import dpctl
 
 
-@dppy.func
-def a_device_function(a):
-    return a + 1
-
-
-@dppy.func
-def an_another_device_function(a):
-    return a_device_function(a)
-
-
-@dppy.kernel
-def a_kernel_function(a, b):
-    i = dppy.get_global_id(0)
-    b[i] = an_another_device_function(a[i])
-
-
-def driver(a, b, N):
-    print(b)
-    print("--------")
-    a_kernel_function[N, dppy.DEFAULT_LOCAL_SIZE](a, b)
-    print(b)
+@vectorize(nopython=True)
+def ufunc_kernel(x, y):
+    return x + y
 
 
 def get_context():
@@ -49,18 +31,19 @@ def get_context():
         raise RuntimeError("No device found")
 
 
-def main():
+def test_ufunc():
     N = 10
-    a = np.ones(N)
-    b = np.ones(N)
+    dtype = np.float64
+
+    A = np.arange(N, dtype=dtype)
+    B = np.arange(N, dtype=dtype) * 10
 
     context = get_context()
-
-    print("Device Context:", context)
-
     with dpctl.device_context(context):
-        driver(a, b, N)
+        C = ufunc_kernel(A, B)
+
+    print(C)
 
 
 if __name__ == "__main__":
-    main()
+    test_ufunc()
