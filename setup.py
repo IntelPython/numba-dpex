@@ -76,14 +76,14 @@ def get_ext_modules():
 
 class install(orig_install.install):
     def run(self):
-        super().run()
         spirv_compile()
+        super().run()
 
 
 class develop(orig_develop.develop):
     def run(self):
-        super().run()
         spirv_compile()
+        super().run()
 
 
 def _get_cmdclass():
