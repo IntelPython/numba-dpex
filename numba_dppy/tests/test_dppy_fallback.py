@@ -17,6 +17,7 @@ import numpy as np
 import numba
 import unittest
 import dpctl
+from numba_dppy.context import device_context
 import warnings
 
 

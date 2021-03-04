@@ -16,6 +16,7 @@ import numpy as np
 import numba_dppy as dppy
 import pytest
 import dpctl
+from numba_dppy.context import device_context
 from numba_dppy.tests.skip_tests import skip_test
 
 global_size = 1054

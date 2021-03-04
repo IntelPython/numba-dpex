@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import dpctl
+from numba_dppy.context import device_context
 import numba_dppy as dppy
 import numpy as np
 import pytest

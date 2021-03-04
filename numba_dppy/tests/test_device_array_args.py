@@ -17,6 +17,7 @@ import sys
 import numpy as np
 import numba_dppy, numba_dppy as dppy
 import dpctl
+from numba_dppy.context import device_context
 import unittest
 
 

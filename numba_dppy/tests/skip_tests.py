@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import dpctl
+from numba_dppy.context import device_context
 
 
 def is_gen12(device_type):

@@ -14,6 +14,7 @@
 
 import pytest
 import dpctl
+from numba_dppy.context import device_context
 
 
 list_of_filter_strs = [

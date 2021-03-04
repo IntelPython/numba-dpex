@@ -18,6 +18,7 @@ import numba
 import numba_dppy
 from numba_dppy.testing import unittest
 import dpctl
+from numba_dppy.context import device_context
 import warnings
 
 

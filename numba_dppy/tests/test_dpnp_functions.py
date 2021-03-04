@@ -16,6 +16,7 @@
 import numpy as np
 from numba import njit
 import dpctl
+from numba_dppy.context import device_context
 import unittest
 from numba_dppy.testing import ensure_dpnp
 

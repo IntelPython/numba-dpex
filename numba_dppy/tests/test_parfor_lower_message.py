@@ -20,6 +20,7 @@ import numba_dppy as dppy
 import unittest
 from numba.tests.support import captured_stdout
 import dpctl
+from numba_dppy.context import device_context
 
 
 def prange_example():
