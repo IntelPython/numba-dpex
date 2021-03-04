@@ -20,7 +20,6 @@ from numba.core import compiler, cpu
 
 import dpctl.dptensor.numpy_usm_shared as usmarray
 import numba_dppy.numpy_usm_shared as nus
-import dpctl
 from numba_dppy.context import device_context
 
 from numba_dppy.compiler import DPPYCompiler

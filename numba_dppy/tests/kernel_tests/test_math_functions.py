@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import dpctl
 from numba_dppy.context import device_context
 import numba_dppy as dppy
 import numpy as np

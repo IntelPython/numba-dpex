@@ -16,7 +16,6 @@
 # limitations under the License.
 ################################################################################
 
-import dpctl
 from numba_dppy.context import device_context
 import numpy as np
 from numba import njit

@@ -17,7 +17,7 @@ from numba_dppy.tests.skip_tests import skip_test
 
 import numba_dppy as dppy
 import pytest
-import dpctl
+
 from numba_dppy.context import device_context
 
 
