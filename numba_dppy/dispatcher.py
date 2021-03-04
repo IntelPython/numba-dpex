@@ -25,7 +25,7 @@ from .descriptor import dppy_target
 # from numba.npyufunc.deviceufunc import (UFuncMechanism, GenerializedUFunc,
 #                                       GUFuncCallSteps)
 
-from .. import dispatcher, utils, typing
+from numba.core import dispatcher, utils, typing
 from .compiler import DPPYCompiler
 
 
