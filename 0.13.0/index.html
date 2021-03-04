@@ -38,7 +38,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Features" href="HowTo.html" /> 
+    <link rel="next" title="Code-generation based on a device" href="CoreFeatures.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -83,20 +83,17 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Core Features</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="HowTo.html">Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="HowTo.html#examples">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="HowTo.html#parfor-support">ParFor Support</a></li>
-<li class="toctree-l1"><a class="reference internal" href="HowTo.html#testing">Testing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="INDEX.html">numba-dppy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="DEBUGGING.html">Debugging with GDB</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoreFeatures.html">Code-generation based on a device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
 </ul>
-<p class="caption"><span class="caption-text">For DPPY users</span></p>
+<p class="caption"><span class="caption-text">User Guides</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dppy/index.html">Numba for DPPY GPUs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dppy-reference/index.html">DPPY Python Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/getting_started.html"> Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/debugging.html"> Debugging with GDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
 </ul>
 
             
@@ -166,63 +163,88 @@
             
   <div class="section" id="welcome-to-numba-dppy-s-documentation">
 <h1>Welcome to numba-dppy’s documentation!<a class="headerlink" href="#welcome-to-numba-dppy-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> is a standalone extension to the <a class="reference external" href="https://numba.pydata.org/">Numba</a> JIT compiler that adds <a class="reference external" href="https://www.khronos.org/sycl/">SYCL</a> programming capabilities to Numba.
+<code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> uses <a class="reference external" href="https://github.com/IntelPython/dpctl">dpCtl</a> to support
+SYCL features and currently Intel’s <a class="reference external" href="https://github.com/intel/llvm/blob/sycl/sycl/doc/GetStartedGuide.md">DPC++</a> is the only SYCL runtime supported by
+<code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code>.</p>
+<p>There are two ways to program SYCL devices using <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code>:</p>
+<blockquote>
+<div><ul>
+<li><p>An explicit kernel programming mode.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numba_dppy</span><span class="o">,</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
+<span class="kn">import</span> <span class="nn">dpctl</span>
+
+<span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span>
+    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">):</span>
+    <span class="nb">sum</span><span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>An automatic offload mode for NumPy data-parallel expressions and
+<a class="reference external" href="https://numba.pydata.org/numba-doc/dev/user/parallel.html#explicit-parallel-loops">Numba parallel loops</a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">njit</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">dpctl</span>
+
+<span class="nd">@njit</span>
+<span class="k">def</span> <span class="nf">f1</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+    <span class="k">return</span> <span class="n">c</span>
+
+<span class="n">global_size</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="n">local_size</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="n">N</span> <span class="o">=</span> <span class="n">global_size</span> <span class="o">*</span> <span class="n">local_size</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="s2">&quot;opencl:gpu:0&quot;</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">f1</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div></blockquote>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p class="caption"><span class="caption-text">Core Features</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="HowTo.html">Features</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="HowTo.html#new-decorator">New Decorator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="HowTo.html#device-environment">Device Environment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="HowTo.html#device-array">Device Array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="HowTo.html#math-kernels">Math Kernels</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="HowTo.html#examples">Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="HowTo.html#sum-of-two-1d-arrays">Sum of two 1d arrays</a></li>
-<li class="toctree-l2"><a class="reference internal" href="HowTo.html#ndarray-support">ndArray Support</a></li>
-<li class="toctree-l2"><a class="reference internal" href="HowTo.html#reduction">Reduction</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="HowTo.html#parfor-support">ParFor Support</a></li>
-<li class="toctree-l1"><a class="reference internal" href="HowTo.html#testing">Testing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="INDEX.html">numba-dppy</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="INDEX.html#offload-diagnostics">Offload Diagnostics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="INDEX.html#controllable-fallback">Controllable Fallback</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="DEBUGGING.html">Debugging with GDB</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="DEBUGGING.html#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DEBUGGING.html#example-debug-usage">Example debug usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DEBUGGING.html#limitations">Limitations</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="CONTRIBUTING.html#python-code-style">Python code style</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CONTRIBUTING.html#security">Security</a></li>
-<li class="toctree-l2"><a class="reference internal" href="CONTRIBUTING.html#documentation">Documentation</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="CoreFeatures.html">Code-generation based on a device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">For DPPY users</span></p>
+<p class="caption"><span class="caption-text">User Guides</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dppy/index.html">Numba for DPPY GPUs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dppy/device-functions.html">Writing Device Functions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="dppy-reference/index.html">DPPY Python Reference</a><ul class="simple">
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/getting_started.html"> Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/debugging.html"> Debugging with GDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
 </ul>
 </div>
 </div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
-</ul>
+<div class="section" id="about">
+<h1>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> is developed by Intel and is part of the <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-python.html">Intel Distribution for
+Python</a>.</p>
+</div>
+<div class="section" id="contributing">
+<h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
+<p>Refer the <a class="reference external" href="https://github.com/IntelPython/numba-dppy/blob/main/CONTRIBUTING">contributing guide</a>
+for information on coding style and standards used in <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code>.</p>
+</div>
+<div class="section" id="license">
+<h1>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h1>
+<p>numba-dppy is Licensed under Apache License 2.0 that can be found in
+<a class="reference external" href="https://github.com/IntelPython/numba-dppy/blob/main/LICENSE">LICENSE</a>.
+All usage and contributions to the project are subject to the terms and
+conditions of this license.</p>
 </div>
 
 
@@ -231,7 +253,7 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="HowTo.html" class="btn btn-neutral float-right" title="Features" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="CoreFeatures.html" class="btn btn-neutral float-right" title="Code-generation based on a device" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
