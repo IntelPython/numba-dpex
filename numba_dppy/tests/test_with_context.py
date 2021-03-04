@@ -12,13 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import unittest
+
+import dpctl
+import numba_dppy
+from numba_dppy.context import device_context
 import numpy as np
 from numba import njit
-import numba_dppy
-import unittest
 from numba.core import errors
 from numba.tests.support import captured_stdout
-import dpctl
 
 
 class TestWithDPPYContext(unittest.TestCase):
@@ -38,14 +40,14 @@ class TestWithDPPYContext(unittest.TestCase):
         got_gpu = np.ones((64), dtype=np.float64)
 
         with captured_stdout() as got_gpu_message:
-            with dpctl.device_context("opencl:gpu"):
+            with device_context("opencl:gpu"):
                 func(got_gpu)
 
         numba_dppy.compiler.DEBUG = 0
         func(expected)
 
         np.testing.assert_array_equal(expected, got_gpu)
-        self.assertTrue("Parfor lowered on DPPY-device" in got_gpu_message.getvalue())
+        self.assertIn("Parfor lowered on DPPY-device", got_gpu_message.getvalue())
 
     @unittest.skipIf(not dpctl.has_cpu_queues(), "No CPU platforms available")
     def test_with_dppy_context_cpu(self):
@@ -63,7 +65,7 @@ class TestWithDPPYContext(unittest.TestCase):
         got_cpu = np.ones((64), dtype=np.float64)
 
         with captured_stdout() as got_cpu_message:
-            with dpctl.device_context("opencl:cpu"):
+            with device_context("opencl:cpu"):
                 func(got_cpu)
 
         numba_dppy.compiler.DEBUG = 0
@@ -97,19 +99,19 @@ class TestWithDPPYContext(unittest.TestCase):
         b = np.ones((64), dtype=np.float64)
 
         with self.assertRaises(errors.UnsupportedError) as raises_1:
-            with dpctl.device_context("opencl:gpu"):
+            with device_context("opencl:gpu"):
                 nested_func_target(a, b)
 
         with self.assertRaises(errors.UnsupportedError) as raises_2:
-            with dpctl.device_context("opencl:gpu"):
+            with device_context("opencl:gpu"):
                 func_target(a)
 
         with self.assertRaises(errors.UnsupportedError) as raises_3:
-            with dpctl.device_context("opencl:gpu"):
+            with device_context("opencl:gpu"):
                 func_no_target(a)
 
         with self.assertRaises(errors.UnsupportedError) as raises_4:
-            with dpctl.device_context("opencl:gpu"):
+            with device_context("opencl:gpu"):
                 func_no_parallel(a)
 
         msg_1 = "Can't use 'with' context with explicitly specified target"
