@@ -46,7 +46,7 @@ def test_caching_kernel(filter_str):
     b = np.array(np.random.random(N), dtype=np.float32)
     c = np.ones_like(a)
 
-    with dpctl.device_context(filter_str) as gpu_queue:
+    with device_context(filter_str) as gpu_queue:
         func = dppy.kernel(data_parallel_sum)
         caching_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(a, b, c)
 

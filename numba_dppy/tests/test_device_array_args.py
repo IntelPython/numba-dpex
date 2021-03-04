@@ -39,7 +39,7 @@ class TestDPPYDeviceArrayArgsGPU(unittest.TestCase):
     def test_device_array_args_cpu(self):
         c = np.ones_like(a)
 
-        with dpctl.device_context("opencl:cpu") as cpu_queue:
+        with device_context("opencl:cpu") as cpu_queue:
             data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
             self.assertTrue(np.all(c == d))
@@ -50,7 +50,7 @@ class TestDPPYDeviceArrayArgsCPU(unittest.TestCase):
     def test_device_array_args_gpu(self):
         c = np.ones_like(a)
 
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
+        with device_context("opencl:gpu") as gpu_queue:
             data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
         self.assertTrue(np.all(c == d))

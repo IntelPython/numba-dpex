@@ -67,7 +67,7 @@ def test_binary_ops(filter_str, unary_op, input_arrays):
         i = dppy.get_global_id(0)
         b[i] = uop(a[i])
 
-    with dpctl.device_context(filter_str):
+    with device_context(filter_str):
         f[a.size, dppy.DEFAULT_LOCAL_SIZE](a, actual)
 
     expected = np_uop(a)

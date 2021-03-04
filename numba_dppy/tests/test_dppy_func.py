@@ -36,7 +36,7 @@ class TestDPPYFunc(unittest.TestCase):
         a = np.ones(self.N)
         b = np.ones(self.N)
 
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
+        with device_context("opencl:gpu") as gpu_queue:
             f[self.N, dppy.DEFAULT_LOCAL_SIZE](a, b)
 
         self.assertTrue(np.all(b == 2))
@@ -59,7 +59,7 @@ class TestDPPYFunc(unittest.TestCase):
         a = np.ones(self.N)
         b = np.ones(self.N)
 
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
+        with device_context("opencl:gpu") as gpu_queue:
             f[self.N, dppy.DEFAULT_LOCAL_SIZE](a, b)
 
             self.assertTrue(np.all(b == 2))

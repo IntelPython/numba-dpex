@@ -37,7 +37,7 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        with dpctl.device_context("opencl:gpu"):
+        with device_context("opencl:gpu"):
             f(a, b)
 
         for i in range(4):
@@ -57,7 +57,7 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        with dpctl.device_context("opencl:gpu"):
+        with device_context("opencl:gpu"):
             f(a, b)
 
         self.assertTrue(np.all(b == 10))
@@ -81,7 +81,7 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        with dpctl.device_context("opencl:gpu"):
+        with device_context("opencl:gpu"):
             f(a, b)
 
         self.assertTrue(np.all(b == 10))
@@ -105,7 +105,7 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n, o))
         b = np.ones((m, n, o))
 
-        with dpctl.device_context("opencl:gpu"):
+        with device_context("opencl:gpu"):
             f(a, b)
 
         self.assertTrue(np.all(b == 12))
@@ -127,7 +127,7 @@ class TestPrange(unittest.TestCase):
 
         jitted = njit(prange_example)
 
-        with captured_stdout() as stdout, dpctl.device_context("opencl:gpu"):
+        with captured_stdout() as stdout, device_context("opencl:gpu"):
             jitted_res = jitted()
 
         res = prange_example()
@@ -163,7 +163,7 @@ class TestPrange(unittest.TestCase):
 
         jitted = njit(prange_example)
 
-        with captured_stdout() as stdout, dpctl.device_context("opencl:gpu"):
+        with captured_stdout() as stdout, device_context("opencl:gpu"):
             jitted_res = jitted()
 
         res = prange_example()

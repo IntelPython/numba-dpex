@@ -103,7 +103,7 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
     expected = np.empty(shape=a.shape, dtype=a.dtype)
 
     f = njit(op)
-    with dpctl.device_context(filter_str), dpnp_debug():
+    with device_context(filter_str), dpnp_debug():
         actual = f(a)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -142,7 +142,7 @@ def test_take(filter_str, input_arrays, indices, capfd):
     expected = np.empty(shape=a.shape, dtype=a.dtype)
 
     f = njit(fn)
-    with dpctl.device_context(filter_str), dpnp_debug():
+    with device_context(filter_str), dpnp_debug():
         actual = f(a, indices)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out

@@ -31,7 +31,7 @@ def filter_str(request):
 @pytest.mark.xfail
 def test_print_only_str(filter_str):
     try:
-        with dpctl.device_context(filter_str):
+        with device_context(filter_str):
             pass
     except Exception:
         pytest.skip()
@@ -45,7 +45,7 @@ def test_print_only_str(filter_str):
     # replaced by a puts() which fails due to lack of addrspace in the
     # puts function signature right now, and would fail in general due
     # to lack of support for puts() in OpenCL.
-    with dpctl.device_context(filter_str), captured_stdout() as stdout:
+    with device_context(filter_str), captured_stdout() as stdout:
         f[3, dppy.DEFAULT_LOCAL_SIZE]()
 
 
@@ -75,7 +75,7 @@ def test_print(filter_str, input_arrays, capfd):
     a = input_arrays
     global_size = 3
 
-    with dpctl.device_context(filter_str):
+    with device_context(filter_str):
         f[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
         captured = capfd.readouterr()
         assert "test" in captured.out

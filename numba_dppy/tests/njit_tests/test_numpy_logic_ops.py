@@ -95,7 +95,7 @@ def test_binary_ops(filter_str, binary_op, input_arrays):
     def f(a, b):
         return binop(a, b)
 
-    with dpctl.device_context(filter_str):
+    with device_context(filter_str):
         actual = f(a, b)
 
     expected = binop(a, b)
@@ -115,7 +115,7 @@ def test_unary_ops(filter_str, unary_op, input_arrays):
     def f(a):
         return uop(a)
 
-    with dpctl.device_context(filter_str):
+    with device_context(filter_str):
         actual = f(a)
 
     expected = uop(a)

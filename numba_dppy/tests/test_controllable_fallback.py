@@ -39,7 +39,7 @@ class TestDPPYFallback(unittest.TestCase):
 
         numba_dppy.compiler.DEBUG = 1
         with warnings.catch_warnings(record=True) as w:
-            with dpctl.device_context("opencl:gpu") as gpu_queue:
+            with device_context("opencl:gpu") as gpu_queue:
                 dppy = numba.njit(parallel=True)(inner_call_fallback)
                 dppy_fallback_true = dppy()
 
@@ -68,7 +68,7 @@ class TestDPPYFallback(unittest.TestCase):
             numba_dppy.compiler.DEBUG = 1
             numba_dppy.config.FALLBACK_ON_CPU = 0
             with warnings.catch_warnings(record=True) as w:
-                with dpctl.device_context("opencl:gpu") as gpu_queue:
+                with device_context("opencl:gpu") as gpu_queue:
                     dppy = numba.njit(parallel=True)(inner_call_fallback)
                     dppy_fallback_false = dppy()
 

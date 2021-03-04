@@ -102,7 +102,7 @@ def test_eig(filter_str, eig_input, capfd):
     fn = get_fn("linalg.eig", 1)
     f = njit(fn)
 
-    with dpctl.device_context(filter_str), dpnp_debug():
+    with device_context(filter_str), dpnp_debug():
         actual_val, actual_vec = f(a)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -175,7 +175,7 @@ def test_dot(filter_str, dot_name, dot_input, dtype, capfd):
     fn = get_fn(dot_name, 2)
     f = njit(fn)
 
-    with dpctl.device_context(filter_str), dpnp_debug():
+    with device_context(filter_str), dpnp_debug():
         actual = f(a, b)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -196,7 +196,7 @@ def test_matmul(filter_str, dtype, capfd):
     fn = get_fn("matmul", 2)
     f = njit(fn)
 
-    with dpctl.device_context(filter_str), dpnp_debug():
+    with device_context(filter_str), dpnp_debug():
         actual = f(a, b)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -214,7 +214,7 @@ def test_cholesky(filter_str, dtype, capfd):
     fn = get_fn("linalg.cholesky", 1)
     f = njit(fn)
 
-    with dpctl.device_context(filter_str), dpnp_debug():
+    with device_context(filter_str), dpnp_debug():
         actual = f(a)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -248,7 +248,7 @@ def test_det(filter_str, det_input, dtype, capfd):
     fn = get_fn("linalg.det", 1)
     f = njit(fn)
 
-    with dpctl.device_context(filter_str), dpnp_debug():
+    with device_context(filter_str), dpnp_debug():
         actual = f(a)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -274,7 +274,7 @@ def test_multi_dot(filter_str, capfd):
     D = np.random.random((5, 333))
     f = njit(fn)
 
-    with dpctl.device_context(filter_str), dpnp_debug():
+    with device_context(filter_str), dpnp_debug():
         actual = f(A, B, C, D)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -314,7 +314,7 @@ def test_matrix_power(filter_str, matrix_power_input, power, dtype, capfd):
     fn = get_fn("linalg.matrix_power", 2)
     f = njit(fn)
 
-    with dpctl.device_context(filter_str), dpnp_debug():
+    with device_context(filter_str), dpnp_debug():
         actual = f(a, power)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -339,7 +339,7 @@ def test_matrix_rank(filter_str, matrix_rank_input, capfd):
     fn = get_fn("linalg.matrix_rank", 1)
     f = njit(fn)
 
-    with dpctl.device_context(filter_str), dpnp_debug():
+    with device_context(filter_str), dpnp_debug():
         actual = f(matrix_rank_input)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -359,7 +359,7 @@ def test_eigvals(filter_str, eig_input, capfd):
     fn = get_fn("linalg.eigvals", 1)
     f = njit(fn)
 
-    with dpctl.device_context(filter_str), dpnp_debug():
+    with device_context(filter_str), dpnp_debug():
         actual_val = f(a)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
