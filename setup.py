@@ -148,6 +148,7 @@ metadata = dict(
     packages=packages,
     setup_requires=build_requires,
     install_requires=install_requires,
+    include_package_data=True,
     ext_modules=get_ext_modules(),
     author="Intel Corporation",
     classifiers=[
