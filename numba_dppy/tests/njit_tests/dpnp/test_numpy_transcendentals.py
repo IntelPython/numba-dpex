@@ -118,7 +118,9 @@ def test_unary_ops(filter_str, unary_op, input_array, get_shape, capfd):
     a = input_array
     a = np.reshape(a, get_shape)
     op, name = unary_op
-    if (name == "cumprod" or name == "cumsum") and (filter_str == "opencl:cpu:0" or is_gen12()):
+    if (name == "cumprod" or name == "cumsum") and (
+        filter_str == "opencl:cpu:0" or is_gen12()
+    ):
         pytest.skip()
     actual = np.empty(shape=a.shape, dtype=a.dtype)
     expected = np.empty(shape=a.shape, dtype=a.dtype)
