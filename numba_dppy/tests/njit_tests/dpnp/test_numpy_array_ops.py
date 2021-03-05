@@ -97,16 +97,16 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
     if name != "argsort" and name != "copy":
         a = np.reshape(a, get_shape)
     if name == "cumprod" and (
-        filter_str == "opencl:cpu:0" or a.dtype == np.int32 or is_gen12()
+        filter_str == "opencl:cpu:0" or a.dtype == np.int32 or is_gen12(filter_str)
     ):
         pytest.skip()
     if name == "cumsum" and (
-        filter_str == "opencl:cpu:0" or a.dtype == np.int32 or is_gen12()
+        filter_str == "opencl:cpu:0" or a.dtype == np.int32 or is_gen12(filter_str)
     ):
         pytest.skip()
-    if name == "mean" and is_gen12():
+    if name == "mean" and is_gen12(filter_str):
         pytest.skip()
-    if name == "argmax" and is_gen12():
+    if name == "argmax" and is_gen12(filter_str):
         pytest.skip()
 
     actual = np.empty(shape=a.shape, dtype=a.dtype)
