@@ -41,5 +41,5 @@ def retarget_to_gpu(cpu_disp):
 @contextmanager
 def device_context(*args, **kwargs):
     with switch_target(retarget_to_gpu):
-        with dpctl.device_context(*args, **kwargs):
-            yield
+        with dpctl.device_context(*args, **kwargs) as queue:
+            yield queue
