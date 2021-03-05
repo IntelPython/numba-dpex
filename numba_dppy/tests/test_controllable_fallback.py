@@ -50,7 +50,6 @@ class TestDPPYFallback(unittest.TestCase):
         np.testing.assert_array_equal(dppy_fallback_true, ref_result)
         self.assertIn("Failed to lower parfor on DPPY-device", str(w[-1].message))
 
-    @unittest.expectedFailure
     def test_dppy_fallback_false(self):
         @numba.jit
         def fill_value(i):
