@@ -2,7 +2,7 @@ name: Build Sphinx
 on:
   push:
     branches:
-      - main_dev
+      - main
       - release*
     tags:
       - '[0-9].+**'
@@ -73,7 +73,7 @@ jobs:
         working-directory: docs
       # https://github.com/marketplace/actions/github-pages-action
       - name: Deploy docs (Main)
-        if: github.ref == 'refs/heads/main_dev'
+        if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
