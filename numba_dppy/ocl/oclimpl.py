@@ -293,7 +293,10 @@ def atomic_add_tuple(context, builder, sig, args):
         lary = context.make_array(aryty)(context, builder, ary)
         ptr = cgutils.get_item_pointer(context, builder, aryty, lary, indices)
 
-        if isinstance(aryty, DPPYArray) and aryty.addrspace == target.SPIR_LOCAL_ADDRSPACE:
+        if (
+            isinstance(aryty, DPPYArray)
+            and aryty.addrspace == target.SPIR_LOCAL_ADDRSPACE
+        ):
             return insert_and_call_atomic_fn(
                 context,
                 builder,
@@ -351,7 +354,10 @@ def atomic_sub_tuple(context, builder, sig, args):
         lary = context.make_array(aryty)(context, builder, ary)
         ptr = cgutils.get_item_pointer(context, builder, aryty, lary, indices)
 
-        if isinstance(aryty, DPPYArray) and aryty.addrspace == target.SPIR_LOCAL_ADDRSPACE:
+        if (
+            isinstance(aryty, DPPYArray)
+            and aryty.addrspace == target.SPIR_LOCAL_ADDRSPACE
+        ):
             return insert_and_call_atomic_fn(
                 context,
                 builder,

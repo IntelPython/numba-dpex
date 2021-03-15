@@ -399,7 +399,16 @@ def _create_gufunc_for_parfor_body(
             # print("before:", id(param_types_addrspaces[i]))
             assert isinstance(param_types_addrspaces[i], types.npytypes.Array)
             _param = param_types_addrspaces[i]
-            param_types_addrspaces[i] = DPPYArray(_param.dtype, _param.ndim, _param.layout, _param.py_type, not _param.mutable, _param.name, _param.aligned, addrspace=addrspaces[i])
+            param_types_addrspaces[i] = DPPYArray(
+                _param.dtype,
+                _param.ndim,
+                _param.layout,
+                _param.py_type,
+                not _param.mutable,
+                _param.name,
+                _param.aligned,
+                addrspace=addrspaces[i],
+            )
             # print("setting param type", i, param_types[i], id(param_types[i]),
             #      "to addrspace", param_types_addrspaces[i].addrspace)
 
