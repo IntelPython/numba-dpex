@@ -16,7 +16,8 @@ from __future__ import absolute_import, print_function
 import llvmlite.binding as ll
 import os
 from ctypes.util import find_library
-
+from numba_dppy.vectorizers import DPPYVectorize
+from numba.np.ufunc.decorators import Vectorize
 
 def init_jit():
     from numba_dppy.dispatcher import DPPYDispatcher
@@ -49,3 +50,8 @@ def initialize_all():
         raise ImportError
 
     ll.load_library_permanently(find_library("OpenCL"))
+
+    def init_dppy_vectorize():
+        return DPPYVectorize
+
+    Vectorize.target_registry.ondemand['dppy'] = init_dppy_vectorize
