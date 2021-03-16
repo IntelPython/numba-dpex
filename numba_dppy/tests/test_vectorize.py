@@ -16,38 +16,62 @@
 import numpy as np
 from numba import njit, vectorize
 import dpctl
-import unittest
+import pytest
+
+list_of_filter_strs = [
+    "opencl:gpu:0",
+    "level0:gpu:0",
+    "opencl:cpu:0",
+]
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
-class TestVectorize(unittest.TestCase):
-    def test_vectorize(self):
-        @vectorize(nopython=True)
-        def axy(a, x, y):
-            return a * x + y
+@pytest.fixture(params=list_of_filter_strs)
+def filter_str(request):
+    return request.param
 
-        @njit
-        def f(a0, a1):
-            return np.cos(axy(a0, np.sin(a1) - 1.0, 1.0))
 
-        def f_np(a0, a1):
-            sin_res = np.sin(a1)
-            res = []
-            for i in range(len(a0)):
-                res.append(axy(a0[i], sin_res[i] - 1.0, 1.0))
-            return np.cos(np.array(res))
+list_of_shape = [
+    100,
+    (10, 10),
+    (2, 5, 10),
+]
 
-        A = np.random.random(10)
-        B = np.random.random(10)
 
-        with dpctl.device_context("opencl:gpu"):
-            expected = f(A, B)
+@pytest.fixture(params=list_of_shape)
+def shape(request):
+    return request.param
 
-        actual = f_np(A, B)
+
+def test_njit(filter_str):
+    @vectorize(nopython=True)
+    def axy(a, x, y):
+        return a * x + y
+
+    def f(a0, a1):
+        return np.cos(axy(a0, np.sin(a1) - 1.0, 1.0))
+
+    A = np.random.random(10)
+    B = np.random.random(10)
+
+    with dpctl.device_context(filter_str):
+        f_njit = njit(f)
+        expected = f_njit(A, B)
+        actual = f(A, B)
 
         max_abs_err = expected.sum() - actual.sum()
-        self.assertTrue(max_abs_err < 1e-5)
+        assert max_abs_err < 1e-5
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_vectorize(filter_str, shape):
+    def axy(a):
+        return a + 1
+
+    A = np.arange(100).reshape(shape)
+
+    with dpctl.device_context(filter_str):
+        f = vectorize(target="dppy")(axy)
+        expected = f(A)
+        actual = axy(A)
+
+        max_abs_err = expected.sum() - actual.sum()
+        assert max_abs_err < 1e-5

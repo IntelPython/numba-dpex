@@ -19,6 +19,7 @@ from ctypes.util import find_library
 from numba_dppy.vectorizers import DPPYVectorize
 from numba.np.ufunc.decorators import Vectorize
 
+
 def init_jit():
     from numba_dppy.dispatcher import DPPYDispatcher
 
@@ -54,4 +55,4 @@ def initialize_all():
     def init_dppy_vectorize():
         return DPPYVectorize
 
-    Vectorize.target_registry.ondemand['dppy'] = init_dppy_vectorize
+    Vectorize.target_registry.ondemand["dppy"] = init_dppy_vectorize
