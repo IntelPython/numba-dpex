@@ -38,10 +38,14 @@ CC_SPIR_FUNC = "spir_func"
 
 
 class DPPYTypingContext(typing.BaseContext):
+    def init(self):
+        self.cpu_context = cpu_target.target_context.typing_context
+
     def load_additional_registries(self):
         # Declarations for OpenCL API functions and OpenCL Math functions
-        from .ocl import ocldecl, mathdecl
         from numba.core.typing import cmathdecl, npydecl
+
+        from .ocl import mathdecl, ocldecl
 
         self.install_registry(ocldecl.registry)
         self.install_registry(mathdecl.registry)
@@ -71,13 +75,11 @@ LLVM_SPIRV_ARGS = 112
 
 class GenericPointerModel(datamodel.PrimitiveModel):
     def __init__(self, dmm, fe_type):
-        # print("GenericPointerModel:", dmm, fe_type, fe_type.addrspace)
         adrsp = (
             fe_type.addrspace
             if fe_type.addrspace is not None
-            else SPIR_GENERIC_ADDRSPACE
+            else SPIR_GLOBAL_ADDRSPACE
         )
-        # adrsp = SPIR_GENERIC_ADDRSPACE
         be_type = dmm.lookup(fe_type.dtype).get_data_type().as_pointer(adrsp)
         super(GenericPointerModel, self).__init__(dmm, fe_type, be_type)
 
@@ -105,8 +107,9 @@ class DPPYTargetContext(BaseContext):
         self.data_model_manager = spirv_data_model_manager
         self.extra_compile_options = dict()
 
-        from numba.np.ufunc_db import _lazy_init_db
         import copy
+
+        from numba.np.ufunc_db import _lazy_init_db
 
         _lazy_init_db()
         from numba.np.ufunc_db import _ufunc_db as ufunc_db
@@ -157,9 +160,10 @@ class DPPYTargetContext(BaseContext):
                     self.ufunc_db[ufunc][sig] = lower_ocl_impl[(name, sig_mapper[sig])]
 
     def load_additional_registries(self):
-        from .ocl import oclimpl, mathimpl
         from numba.np import npyimpl
+
         from . import printimpl
+        from .ocl import mathimpl, oclimpl
 
         self.insert_func_defn(oclimpl.registry.functions)
         self.insert_func_defn(mathimpl.registry.functions)
@@ -203,7 +207,6 @@ class DPPYTargetContext(BaseContext):
 
     def mark_ocl_device(self, func):
         # Adapt to SPIR
-        # module = func.module
         func.calling_convention = CC_SPIR_FUNC
         func.linkage = "linkonce_odr"
         return func
@@ -211,17 +214,19 @@ class DPPYTargetContext(BaseContext):
     def generate_kernel_wrapper(self, func, argtypes):
         module = func.module
         arginfo = self.get_arg_packer(argtypes)
+        # print(module)
+        breakpoint()
 
         def sub_gen_with_global(lty):
             if isinstance(lty, llvmir.PointerType):
                 if lty.addrspace == SPIR_LOCAL_ADDRSPACE:
                     return lty, None
-                # DRD : Cast all pointer types to global address space.
-                if lty.addrspace != SPIR_GLOBAL_ADDRSPACE:  # jcaraban
-                    return (
-                        lty.pointee.as_pointer(SPIR_GLOBAL_ADDRSPACE),
-                        lty.addrspace,
-                    )
+                # # DRD : Cast all pointer types to global address space.
+                # if lty.addrspace != SPIR_GLOBAL_ADDRSPACE:  # jcaraban
+                #     return (
+                #         lty.pointee.as_pointer(SPIR_GLOBAL_ADDRSPACE),
+                #         lty.addrspace,
+                #     )
             return lty, None
 
         if len(arginfo.argument_types) > 0:
@@ -235,7 +240,9 @@ class DPPYTargetContext(BaseContext):
 
         argtys = list(arginfo.argument_types)
         fnty = lc.Type.function(
-            lc.Type.int(), [self.call_conv.get_return_type(types.pyobject)] + argtys
+            # lc.Type.int(), [self.call_conv.get_return_type(types.pyobject)] + argtys
+            lc.Type.int(),
+            [self.call_conv.get_return_type(types.pyobject)] + argtys,
         )
 
         func = wrapper_module.add_function(fnty, name=func.name)
@@ -284,8 +291,9 @@ class DPPYTargetContext(BaseContext):
         ret = super(DPPYTargetContext, self).declare_function(module, fndesc)
 
         # XXX: Refactor fndesc instead of this special case
-        if fndesc.llvm_func_name.startswith("dppy_py_devfn"):
-            ret.calling_convention = CC_SPIR_FUNC
+        # if fndesc.llvm_func_name.startswith("dppy_py_devfn"):
+        #    ret.calling_convention = CC_SPIR_FUNC
+        ret.calling_convention = CC_SPIR_FUNC
         return ret
 
     def make_constant_array(self, builder, typ, ary):
@@ -470,3 +478,48 @@ class DPPYCallConv(MinimalCallConv):
         retval = builder.load(retvaltmp)
         out = self.context.get_returned_value(builder, resty, retval)
         return status, out
+
+    def get_function_type(self, restype, argtypes):
+        """
+        Get the implemented Function type for *restype* and *argtypes*.
+        """
+        arginfo = self._get_arg_packer(argtypes)
+        argtypes = list(arginfo.argument_types)
+        resptr = self.get_return_type(restype)
+        fnty = llvmir.FunctionType(llvmir.VoidType(), [resptr] + argtypes)
+        return fnty
+
+    def return_value(self, builder, retval):
+        retptr = builder.function.args[0]
+        assert retval.type == retptr.type.pointee, (
+            str(retval.type),
+            str(retptr.type.pointee),
+        )
+        builder.store(retval, retptr)
+        builder.ret_void()
+
+    def decode_arguments(self, builder, argtypes, func):
+        """
+        Get the decoded (unpacked) Python arguments with *argtypes*
+        from LLVM function *func*.  A tuple of LLVM values is returned.
+        """
+        raw_args = self.get_arguments(func)
+        arginfo = self._get_arg_packer(argtypes)
+        args_list = []
+
+        # Cast all global address space pointer args generic address space
+        # pointers
+        for argnum in range(len(raw_args)):
+            arg = raw_args[argnum]
+            argtype = arginfo.argument_types[argnum]
+            if (
+                isinstance(argtype, llvmir.PointerType)
+                and argtype.addrspace != SPIR_GLOBAL_ADDRSPACE
+            ):
+                ptras = llvmir.PointerType(
+                    arg.type.pointee, addrspace=SPIR_GENERIC_ADDRSPACE
+                )
+                arg = builder.addrspacecast(arg, ptras)
+            args_list.append(arg)
+
+        return arginfo.from_arguments(builder, tuple(args_list))
