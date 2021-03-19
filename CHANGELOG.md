@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.1] - 2021-03-11
+### Fixed
+- Add spir file to package.
+- Do not modify CC env variable during build.
+- Use correct version in documentation.
+
 ## [0.13.0] - 2021-03-02
 ### Added
 - Documentation.
