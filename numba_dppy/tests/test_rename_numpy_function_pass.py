@@ -1,4 +1,18 @@
 #! /usr/bin/env python
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import unittest
 import numpy as np
 import numba
@@ -7,10 +21,12 @@ import numba_dppy, numba_dppy as dppy
 from numba_dppy.testing import ensure_dpnp
 
 
-from numba.core import (compiler, typing, cpu)
-from numba_dppy.rename_numpy_functions_pass import (DPPYRewriteOverloadedNumPyFunctions,
-        DPPYRewriteNdarrayFunctions)
-from numba.core.typed_passes import (NopythonTypeInference, AnnotateTypes)
+from numba.core import compiler, typing, cpu
+from numba_dppy.rename_numpy_functions_pass import (
+    DPPYRewriteOverloadedNumPyFunctions,
+    DPPYRewriteNdarrayFunctions,
+)
+from numba.core.typed_passes import NopythonTypeInference, AnnotateTypes
 
 
 class MyPipeline(object):
@@ -46,8 +62,10 @@ def check_equivalent(expected_ir, got_ir):
         else:
             if isinstance(expected_stmt, numba.core.ir.Assign):
                 if isinstance(expected_stmt.value, numba.core.ir.Global):
-                    if (expected_stmt.value.name != got_stmt.value.name and
-                        expected_stmt.value.name != "numba_dppy"):
+                    if (
+                        expected_stmt.value.name != got_stmt.value.name
+                        and expected_stmt.value.name != "numba_dppy"
+                    ):
                         return False
                 elif isinstance(expected_stmt.value, numba.core.ir.Expr):
                     # should get "dpnp" and "sum" as attr
@@ -76,7 +94,7 @@ class TestRenameNumpyFunctionsPass(unittest.TestCase):
         self.assertTrue(check_equivalent(expected_ir, pipeline.state.func_ir))
 
 
-@unittest.skipUnless(ensure_dpnp(), 'test only when dpNP is available')
+@unittest.skipUnless(ensure_dpnp(), "test only when dpNP is available")
 class TestRenameNdarrayFunctionsPass(unittest.TestCase):
     def test_rename_ndarray(self):
         def expected(a):

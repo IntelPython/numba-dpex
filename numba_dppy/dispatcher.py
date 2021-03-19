@@ -1,21 +1,36 @@
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from __future__ import absolute_import, print_function
 
 import numpy as np
 
-#from numba.targets.descriptors import TargetDescriptor
-#from numba.targets.options import TargetOptions
-#import numba_dppy, numba_dppy as dppy
+# from numba.targets.descriptors import TargetDescriptor
+# from numba.targets.options import TargetOptions
+# import numba_dppy, numba_dppy as dppy
 from numba_dppy import kernel, autojit
 from .descriptor import dppy_target
-#from numba.npyufunc.deviceufunc import (UFuncMechanism, GenerializedUFunc,
- #                                       GUFuncCallSteps)
+
+# from numba.npyufunc.deviceufunc import (UFuncMechanism, GenerializedUFunc,
+#                                       GUFuncCallSteps)
 
 from .. import dispatcher, utils, typing
 from .compiler import DPPYCompiler
 
+
 class DPPYDispatcher(dispatcher.Dispatcher):
     targetdescr = dppy_target
-
 
     def __init__(self, py_func, locals={}, targetoptions={}):
         assert not locals
@@ -44,8 +59,7 @@ class DPPYDispatcher(dispatcher.Dispatcher):
         return self.compiled(*args, **kws)
 
     def disable_compile(self, val=True):
-        """Disable the compilation of new signatures at call time.
-        """
+        """Disable the compilation of new signatures at call time."""
         # Do nothing
         pass
 
@@ -57,6 +71,7 @@ class DPPYDispatcher(dispatcher.Dispatcher):
 
     def __getattr__(self, key):
         return getattr(self.compiled, key)
+
 
 class DPPYUFuncDispatcher(object):
     """
@@ -89,8 +104,7 @@ class DPPYUFuncDispatcher(object):
         return DPPYUFuncMechanism.call(self.functions, args, kws)
 
     def reduce(self, arg, stream=0):
-        assert len(list(self.functions.keys())[0]) == 2, "must be a binary " \
-                                                         "ufunc"
+        assert len(list(self.functions.keys())[0]) == 2, "must be a binary " "ufunc"
         assert arg.ndim == 1, "must use 1d array"
 
         n = arg.shape[0]
@@ -112,7 +126,12 @@ class DPPYUFuncDispatcher(object):
             # reduce by recursively spliting and operating
             out = self.__reduce(mem, gpu_mems, stream)
             # store the resultong scalar in a [1,] buffer
-            buf = np.empty([out.size,], dtype=out.dtype)
+            buf = np.empty(
+                [
+                    out.size,
+                ],
+                dtype=out.dtype,
+            )
             # copy the result back to host
             out.copy_to_host(buf, stream=stream)
 
@@ -144,7 +163,7 @@ class DPPYUFuncDispatcher(object):
 
 class _DPPYGUFuncCallSteps(GUFuncCallSteps):
     __slots__ = [
-        '_stream',
+        "_stream",
     ]
 
     def is_device_array(self, obj):
@@ -161,7 +180,7 @@ class _DPPYGUFuncCallSteps(GUFuncCallSteps):
         return ocl.device_array(shape=shape, dtype=dtype, stream=self._stream)
 
     def prepare_inputs(self):
-        self._stream = self.kwargs.get('stream', 0)
+        self._stream = self.kwargs.get("stream", 0)
 
     def launch_kernel(self, kernel, nelem, args):
         kernel.forall(nelem, queue=self._stream)(*args)
@@ -173,27 +192,26 @@ class DPPYGenerializedUFunc(GenerializedUFunc):
         return _DPPYGUFuncCallSteps
 
     def _broadcast_scalar_input(self, ary, shape):
-        return devicearray.DeviceNDArray(shape=shape,
-                                         strides=(0,),
-                                         dtype=ary.dtype,
-                                         gpu_data=ary.gpu_data)
+        return devicearray.DeviceNDArray(
+            shape=shape, strides=(0,), dtype=ary.dtype, gpu_data=ary.gpu_data
+        )
 
     def _broadcast_add_axis(self, ary, newshape):
         newax = len(newshape) - len(ary.shape)
         # Add 0 strides for missing dimension
         newstrides = (0,) * newax + ary.strides
-        return devicearray.DeviceNDArray(shape=newshape,
-                                         strides=newstrides,
-                                         dtype=ary.dtype,
-                                         gpu_data=ary.gpu_data)
+        return devicearray.DeviceNDArray(
+            shape=newshape, strides=newstrides, dtype=ary.dtype, gpu_data=ary.gpu_data
+        )
 
 
 class DPPYUFuncMechanism(UFuncMechanism):
     """
     Provide OpenCL specialization
     """
+
     DEFAULT_STREAM = 0
-    ARRAY_ORDER = 'A'
+    ARRAY_ORDER = "A"
 
     def launch(self, func, count, stream, args):
         func.forall(count, queue=stream)(*args)
@@ -211,9 +229,11 @@ class DPPYUFuncMechanism(UFuncMechanism):
         return ocl.device_array(shape=shape, dtype=dtype, stream=stream)
 
     def broadcast_device(self, ary, shape):
-        ax_differs = [ax for ax in range(len(shape))
-                      if ax >= ary.ndim
-                      or ary.shape[ax] != shape[ax]]
+        ax_differs = [
+            ax
+            for ax in range(len(shape))
+            if ax >= ary.ndim or ary.shape[ax] != shape[ax]
+        ]
 
         missingdim = len(shape) - len(ary.shape)
         strides = [0] * missingdim + list(ary.strides)
@@ -221,7 +241,6 @@ class DPPYUFuncMechanism(UFuncMechanism):
         for ax in ax_differs:
             strides[ax] = 0
 
-        return devicearray.DeviceNDArray(shape=shape,
-                                         strides=strides,
-                                         dtype=ary.dtype,
-                                         gpu_data=ary.gpu_data)
+        return devicearray.DeviceNDArray(
+            shape=shape, strides=strides, dtype=ary.dtype, gpu_data=ary.gpu_data
+        )

@@ -1,3 +1,5 @@
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 # numba-dppy
 
 ## Numba + dpPy + dpCtl + dpNP = numba-dppy
@@ -19,9 +21,9 @@ https://intelpython.github.io/dpnp/
 
 ## Dependencies
 
-* numba >=0.51 (IntelPython/numba)
-* dpCtl 0.5.*
-* dpNP 0.4.* (optional)
+* numba 0.52.* (IntelPython/numba)
+* dpCtl 0.6.*
+* dpNP >=0.5.1 (optional)
 * llvm-spirv (SPIRV generation from LLVM IR)
 * llvmdev (LLVM IR generation)
 * spirv-tools
@@ -44,7 +46,11 @@ See folder `numba_dppy/tests`.
 
 Run tests:
 ```bash
-python -m unittest numba_dppy.tests
+python -m pytest --pyargs numba_dppy.tests
+```
+or
+```bash
+pytest
 ```
 
 ## Examples
@@ -58,12 +64,12 @@ python numba_dppy/examples/sum.py
 
 ## How Tos
 
-Refer the [HowTo.rst](HowTo.rst) guide for an overview of the programming semantics,
+Refer the [HowTo.rst](docs/HowTo.rst) guide for an overview of the programming semantics,
 examples, supported functionalities, and known issues.
 
 ## Debugging
 
-Please follow instructions in the [DEBUGGING.md](DEBUGGING.md)
+Please follow instructions in the [debugging.md](docs/dppy/debugging.md)
 
 ## Reporting issues
 

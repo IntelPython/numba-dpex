@@ -1,3 +1,17 @@
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from __future__ import print_function, division, absolute_import
 from contextlib import contextmanager
 import warnings
@@ -16,19 +30,31 @@ from numba.core import (
     utils,
     typing,
     types,
-    )
+)
 
 from numba.core.ir_utils import remove_dels
 
-from numba.core.errors import (LoweringError, new_error_context, TypingError,
-                     LiteralTypingError)
+from numba.core.errors import (
+    LoweringError,
+    new_error_context,
+    TypingError,
+    LiteralTypingError,
+)
 
-from numba.core.compiler_machinery import FunctionPass, LoweringPass, register_pass, AnalysisPass
+from numba.core.compiler_machinery import (
+    FunctionPass,
+    LoweringPass,
+    register_pass,
+    AnalysisPass,
+)
 
 from .dppy_lowerer import DPPYLower
 from numba_dppy import config as dppy_config
 
-from numba.parfors.parfor import PreParforPass as _parfor_PreParforPass, replace_functions_map
+from numba.parfors.parfor import (
+    PreParforPass as _parfor_PreParforPass,
+    replace_functions_map,
+)
 from numba.parfors.parfor import ParforPass as _parfor_ParforPass
 from numba.parfors.parfor import Parfor
 
@@ -52,7 +78,11 @@ class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
         _DEBUG = False
 
         if _DEBUG:
-            print('Checks if size of OpenCL local address space alloca is a compile-time constant.'.center(80, '-'))
+            print(
+                "Checks if size of OpenCL local address space alloca is a compile-time constant.".center(
+                    80, "-"
+                )
+            )
             print(func_ir.dump())
 
         work_list = list(func_ir.blocks.items())
@@ -62,43 +92,64 @@ class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
                 if isinstance(instr, ir.Assign):
                     expr = instr.value
                     if isinstance(expr, ir.Expr):
-                        if expr.op == 'call':
-                            call_node = block.find_variable_assignment(expr.func.name).value
-                            if isinstance(call_node, ir.Expr) and call_node.attr == "static_alloc":
-                                arg = None
-                                # at first look in keyword arguments to get the shape, which has to be
-                                # constant
-                                if expr.kws:
-                                    for _arg in expr.kws:
-                                        if _arg[0] == "shape":
-                                            arg = _arg[1]
+                        if expr.op == "call":
+                            call_node = block.find_variable_assignment(
+                                expr.func.name
+                            ).value
+                            if (
+                                isinstance(call_node, ir.Expr)
+                                and call_node.op == "getattr"
+                                and call_node.attr == "array"
+                            ):
+                                # let's check if it is from numba_dppy.local
+                                attr_node = block.find_variable_assignment(
+                                    call_node.value.name
+                                ).value
+                                if (
+                                    isinstance(attr_node, ir.Expr)
+                                    and attr_node.op == "getattr"
+                                    and attr_node.attr == "local"
+                                ):
 
-                                if not arg:
-                                    arg = expr.args[0]
+                                    arg = None
+                                    # at first look in keyword arguments to get the shape, which has to be
+                                    # constant
+                                    if expr.kws:
+                                        for _arg in expr.kws:
+                                            if _arg[0] == "shape":
+                                                arg = _arg[1]
 
-                                error = False
-                                # arg can be one constant or a tuple of constant items
-                                arg_type = func_ir.get_definition(arg.name)
-                                if isinstance(arg_type, ir.Expr):
-                                    # we have a tuple
-                                    for item in arg_type.items:
-                                        if not isinstance(func_ir.get_definition(item.name), ir.Const):
+                                    if not arg:
+                                        arg = expr.args[0]
+
+                                    error = False
+                                    # arg can be one constant or a tuple of constant items
+                                    arg_type = func_ir.get_definition(arg.name)
+                                    if isinstance(arg_type, ir.Expr):
+                                        # we have a tuple
+                                        for item in arg_type.items:
+                                            if not isinstance(
+                                                func_ir.get_definition(item.name),
+                                                ir.Const,
+                                            ):
+                                                error = True
+                                                break
+
+                                    else:
+                                        if not isinstance(
+                                            func_ir.get_definition(arg.name), ir.Const
+                                        ):
                                             error = True
                                             break
 
-                                else:
-                                    if not isinstance(func_ir.get_definition(arg.name), ir.Const):
-                                        error = True
-                                        break
-
-                                if error:
-                                    warnings.warn_explicit("The size of the Local memory has to be constant",
-                                                           errors.NumbaError,
-                                                           state.func_id.filename,
-                                                           state.func_id.firstlineno)
-                                    raise
-
-
+                                    if error:
+                                        warnings.warn_explicit(
+                                            "The size of the Local memory has to be constant",
+                                            errors.NumbaError,
+                                            state.func_id.filename,
+                                            state.func_id.firstlineno,
+                                        )
+                                        raise
 
         if config.DEBUG or config.DUMP_IR:
             name = state.func_ir.func_id.func_qualname
@@ -124,22 +175,23 @@ class DPPYPreParforPass(FunctionPass):
         # Ensure we have an IR and type information.
         assert state.func_ir
         functions_map = replace_functions_map.copy()
-        functions_map.pop(('dot', 'numpy'), None)
-        functions_map.pop(('sum', 'numpy'), None)
-        functions_map.pop(('prod', 'numpy'), None)
-        functions_map.pop(('argmax', 'numpy'), None)
-        functions_map.pop(('max', 'numpy'), None)
-        functions_map.pop(('argmin', 'numpy'), None)
-        functions_map.pop(('min', 'numpy'), None)
-        functions_map.pop(('mean', 'numpy'), None)
+        functions_map.pop(("dot", "numpy"), None)
+        functions_map.pop(("sum", "numpy"), None)
+        functions_map.pop(("prod", "numpy"), None)
+        functions_map.pop(("argmax", "numpy"), None)
+        functions_map.pop(("max", "numpy"), None)
+        functions_map.pop(("argmin", "numpy"), None)
+        functions_map.pop(("min", "numpy"), None)
+        functions_map.pop(("mean", "numpy"), None)
 
         preparfor_pass = _parfor_PreParforPass(
             state.func_ir,
             state.type_annotation.typemap,
-            state.type_annotation.calltypes, state.typingctx,
+            state.type_annotation.calltypes,
+            state.typingctx,
             state.flags.auto_parallel,
             state.parfor_diagnostics.replaced_fns,
-            replace_functions_map=functions_map
+            replace_functions_map=functions_map,
         )
 
         preparfor_pass.run()
@@ -166,14 +218,16 @@ class DPPYParforPass(FunctionPass):
         """
         # Ensure we have an IR and type information.
         assert state.func_ir
-        parfor_pass = _parfor_ParforPass(state.func_ir,
-                                         state.type_annotation.typemap,
-                                         state.type_annotation.calltypes,
-                                         state.return_type,
-                                         state.typingctx,
-                                         state.flags.auto_parallel,
-                                         state.flags,
-                                         state.parfor_diagnostics)
+        parfor_pass = _parfor_ParforPass(
+            state.func_ir,
+            state.type_annotation.typemap,
+            state.type_annotation.calltypes,
+            state.return_type,
+            state.typingctx,
+            state.flags.auto_parallel,
+            state.flags,
+            state.parfor_diagnostics,
+        )
 
         parfor_pass.run()
 
@@ -203,14 +257,17 @@ def fallback_context(state, msg):
                 e = e.with_traceback(None)
             # this emits a warning containing the error message body in the
             # case of fallback from npm to objmode
-            loop_lift = '' if state.flags.enable_looplift else 'OUT'
-            msg_rewrite = ("\nCompilation is falling back to object mode "
-                           "WITH%s looplifting enabled because %s"
-                           % (loop_lift, msg))
-            warnings.warn_explicit('%s due to: %s' % (msg_rewrite, e),
-                                   errors.NumbaWarning,
-                                   state.func_id.filename,
-                                   state.func_id.firstlineno)
+            loop_lift = "" if state.flags.enable_looplift else "OUT"
+            msg_rewrite = (
+                "\nCompilation is falling back to object mode "
+                "WITH%s looplifting enabled because %s" % (loop_lift, msg)
+            )
+            warnings.warn_explicit(
+                "%s due to: %s" % (msg_rewrite, e),
+                errors.NumbaWarning,
+                state.func_id.filename,
+                state.func_id.firstlineno,
+            )
             raise
 
 
@@ -232,27 +289,31 @@ class SpirvFriendlyLowering(LoweringPass):
 
         targetctx = state.targetctx
 
-        library   = state.library
-        interp    = state.func_ir  # why is it called this?!
-        typemap   = state.typemap
-        restype   = state.return_type
+        library = state.library
+        interp = state.func_ir  # why is it called this?!
+        typemap = state.typemap
+        restype = state.return_type
         calltypes = state.calltypes
-        flags     = state.flags
-        metadata  = state.metadata
+        flags = state.flags
+        metadata = state.metadata
 
-        msg = ("Function %s failed at nopython "
-               "mode lowering" % (state.func_id.func_name,))
+        msg = "Function %s failed at nopython " "mode lowering" % (
+            state.func_id.func_name,
+        )
         with fallback_context(state, msg):
             # Lowering
-            fndesc = \
-                funcdesc.PythonFunctionDescriptor.from_specialized_function(
-                    interp, typemap, restype, calltypes,
-                    mangler=targetctx.mangler, inline=flags.forceinline,
-                    noalias=flags.noalias)
+            fndesc = funcdesc.PythonFunctionDescriptor.from_specialized_function(
+                interp,
+                typemap,
+                restype,
+                calltypes,
+                mangler=targetctx.mangler,
+                inline=flags.forceinline,
+                noalias=flags.noalias,
+            )
 
             with targetctx.push_code_library(library):
-                lower = DPPYLower(targetctx, library, fndesc, interp,
-                                       metadata=metadata)
+                lower = DPPYLower(targetctx, library, fndesc, interp, metadata=metadata)
                 lower.lower()
                 if not flags.no_cpython_wrapper:
                     lower.create_cpython_wrapper(flags.release_gil)
@@ -262,17 +323,16 @@ class SpirvFriendlyLowering(LoweringPass):
                 del lower
 
             from numba.core.compiler import _LowerResult  # TODO: move this
+
             if flags.no_compile:
-                state['cr'] = _LowerResult(fndesc, call_helper,
-                                           cfunc=None, env=env)
+                state["cr"] = _LowerResult(fndesc, call_helper, cfunc=None, env=env)
             else:
                 # Prepare for execution
                 cfunc = targetctx.get_executable(library, fndesc, env)
                 # Insert native function for use by other jitted-functions.
                 # We also register its library to allow for inlining.
                 targetctx.insert_user_function(cfunc, fndesc, [library])
-                state['cr'] = _LowerResult(fndesc, call_helper,
-                                           cfunc=cfunc, env=env)
+                state["cr"] = _LowerResult(fndesc, call_helper, cfunc=cfunc, env=env)
 
         return True
 
@@ -290,10 +350,11 @@ class DPPYNoPythonBackend(FunctionPass):
         Back-end: Generate LLVM IR from Numba IR, compile to machine code
         """
 
-        lowered = state['cr']
+        lowered = state["cr"]
         signature = typing.signature(state.return_type, *state.args)
 
         from numba.core.compiler import compile_result
+
         state.cr = compile_result(
             typing_context=state.typingctx,
             target_context=state.targetctx,
@@ -304,7 +365,6 @@ class DPPYNoPythonBackend(FunctionPass):
             call_helper=lowered.call_helper,
             signature=signature,
             objectmode=False,
-            interpmode=False,
             lifted=state.lifted,
             fndesc=lowered.fndesc,
             environment=lowered.env,

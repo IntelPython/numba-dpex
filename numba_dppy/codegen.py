@@ -1,3 +1,17 @@
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from llvmlite import binding as ll
 from llvmlite.llvmpy import core as lc
 
@@ -5,14 +19,17 @@ from numba.core.codegen import BaseCPUCodegen, CodeLibrary
 from numba.core import utils
 
 
-SPIR_TRIPLE = {32: ' spir-unknown-unknown',
-               64: 'spir64-unknown-unknown'}
+SPIR_TRIPLE = {32: " spir-unknown-unknown", 64: "spir64-unknown-unknown"}
 
 SPIR_DATA_LAYOUT = {
-    32 : ('e-p:32:32-i64:64-v16:16-v24:32-v32:32-v48:64-v96:128-v192:256-v256:'
-          '256-v512:512-v1024:1024'),
-    64 : ('e-i64:64-v16:16-v24:32-v32:32-v48:64-v96:128-v192:256-v256:256-'
-          'v512:512-v1024:1024')
+    32: (
+        "e-p:32:32-i64:64-v16:16-v24:32-v32:32-v48:64-v96:128-v192:256-v256:"
+        "256-v512:512-v1024:1024"
+    ),
+    64: (
+        "e-i64:64-v16:16-v24:32-v32:32-v48:64-v96:128-v192:256-v256:256-"
+        "v512:512-v1024:1024"
+    ),
 }
 
 
@@ -36,8 +53,8 @@ class SPIRVCodeLibrary(CodeLibrary):
     def _finalize_specific(self):
         # Fix global naming
         for gv in self._final_module.global_variables:
-            if '.' in gv.name:
-                gv.name = gv.name.replace('.', '_')
+            if "." in gv.name:
+                gv.name = gv.name.replace(".", "_")
 
     def get_asm_str(self):
         # Return nothing: we can only dump assembler code when it is later
