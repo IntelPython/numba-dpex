@@ -36,6 +36,7 @@ elif sys.platform in ["win32", "cygwin"]:
 with open("README.md", "r", encoding="utf-8") as file:
     long_description = file.read()
 
+
 def get_ext_modules():
     ext_modules = []
 
@@ -143,7 +144,7 @@ install_requires = [
 
 metadata = dict(
     name="numba-dppy",
-    version=versioneer.get_version().split('+')[0],
+    version=versioneer.get_version().split("+")[0],
     cmdclass=_get_cmdclass(),
     description="Numba extension for Intel CPU and GPU backend",
     long_description=long_description,
