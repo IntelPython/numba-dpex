@@ -143,8 +143,7 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
         print("compile_kernel", args)
         debug = True
     if not sycl_queue:
-        # This will be get_current_queue
-        sycl_queue = dpctl.get_current_queue()
+        raise ValueError("SYCL queue is required for compiling a kernel")
 
     cres = compile_with_dppy(pyfunc, None, args, debug=debug)
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
@@ -545,17 +544,21 @@ class DPPYKernel(DPPYKernelBase):
 
 
 class JitDPPYKernel(DPPYKernelBase):
-    def __init__(self, func, access_types):
+    def __init__(self, func, debug, access_types):
 
         super(JitDPPYKernel, self).__init__()
 
         self.py_func = func
         self.definitions = {}
+        self.debug = debug
         self.access_types = access_types
 
         from .descriptor import dppy_target
 
         self.typingctx = dppy_target.typing_context
+
+    def get_argtypes(self, *args):
+        return tuple([self.typingctx.resolve_argument_type(a) for a in args])
 
     def __call__(self, *args, **kwargs):
         assert not kwargs, "Keyword Arguments are not supported"
@@ -565,12 +568,12 @@ class JitDPPYKernel(DPPYKernelBase):
             except:
                 _raise_no_device_found_error()
 
-        kernel = self.specialize(*args)
+        argtypes = self.get_argtypes(*args)
+        kernel = self.specialize(argtypes)
         cfg = kernel.configure(self.sycl_queue, self.global_size, self.local_size)
         cfg(*args)
 
-    def specialize(self, *args):
-        argtypes = tuple([self.typingctx.resolve_argument_type(a) for a in args])
+    def specialize(self, argtypes):
         q = None
         kernel = None
         # we were previously using the _env_ptr of the device_env, the sycl_queue
@@ -582,11 +585,16 @@ class JitDPPYKernel(DPPYKernelBase):
         if result:
             q, kernel = result
 
+        if self.sycl_queue is None:
+            sycl_queue = dpctl.get_current_queue()
+        else:
+            sycl_queue = self.sycl_queue
+
         if q and self.sycl_queue.equals(q):
             return kernel
         else:
             kernel = compile_kernel(
-                self.sycl_queue, self.py_func, argtypes, self.access_types
+                sycl_queue, self.py_func, argtypes, self.access_types
             )
-            self.definitions[key_definitions] = (self.sycl_queue, kernel)
+            self.definitions[key_definitions] = (sycl_queue, kernel)
         return kernel

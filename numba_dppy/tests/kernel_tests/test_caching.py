@@ -48,10 +48,10 @@ def test_caching_kernel(filter_str):
 
     with dpctl.device_context(filter_str) as gpu_queue:
         func = dppy.kernel(data_parallel_sum)
-        caching_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(a, b, c)
+        caching_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(func.get_argtypes(a, b, c))
 
         for i in range(10):
-            cached_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
+            cached_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(func.get_argtypes(
                 a, b, c
-            )
+                ))
             assert caching_kernel == cached_kernel

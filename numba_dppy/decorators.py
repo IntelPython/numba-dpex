@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function, absolute_import, division
 from numba.core import sigutils, types
 from .compiler import (
     compile_kernel,
@@ -41,20 +40,24 @@ def kernel(signature=None, access_types=None, debug=False):
 def autojit(debug=False, access_types=None):
     def _kernel_autojit(pyfunc):
         ordered_arg_access_types = get_ordered_arg_access_types(pyfunc, access_types)
-        return JitDPPYKernel(pyfunc, ordered_arg_access_types)
+        return JitDPPYKernel(pyfunc, debug, ordered_arg_access_types)
 
     return _kernel_autojit
 
 
 def _kernel_jit(signature, debug, access_types):
     argtypes, restype = sigutils.normalize_signature(signature)
+
     if restype is not None and restype != types.void:
         msg = "DPPY kernel must have void return type but got {restype}"
         raise TypeError(msg.format(restype=restype))
 
     def _wrapped(pyfunc):
         ordered_arg_access_types = get_ordered_arg_access_types(pyfunc, access_types)
-        return compile_kernel(None, pyfunc, argtypes, ordered_arg_access_types, debug)
+        dppy_kernel = JitDPPYKernel(pyfunc, debug, ordered_arg_access_types)
+        dppy_kernel.specialize(argtypes)
+        return dppy_kernel
+
 
     return _wrapped
 
