@@ -34,6 +34,7 @@ def filter_str(request):
 def test_proper_lowering(filter_str):
     if skip_test(filter_str):
         pytest.skip()
+
     @dppy.kernel("void(float32[::1])")
     def twice(A):
         i = dppy.get_global_id(0)
@@ -55,6 +56,7 @@ def test_proper_lowering(filter_str):
 def test_no_arg_barrier_support(filter_str):
     if skip_test(filter_str):
         pytest.skip()
+
     @dppy.kernel("void(float32[::1])")
     def twice(A):
         i = dppy.get_global_id(0)

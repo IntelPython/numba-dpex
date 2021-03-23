@@ -58,7 +58,6 @@ def _kernel_jit(signature, debug, access_types):
         dppy_kernel.specialize(argtypes)
         return dppy_kernel
 
-
     return _wrapped
 
 
