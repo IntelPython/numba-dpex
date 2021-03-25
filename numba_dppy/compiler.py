@@ -396,12 +396,12 @@ class DPPYKernel(DPPYKernelBase):
                 self.sycl_queue, self.spirv_bc
             )
         except Exception as e:
-            print(e)
+            raise(e)
         #  create a kernel
         try:
             self.kernel = self.program.get_sycl_kernel(self.entry_name)
         except Exception as e:
-            print(e)
+            raise(e)
 
     def __call__(self, *args):
 
