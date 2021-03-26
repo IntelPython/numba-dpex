@@ -74,6 +74,23 @@ def get_ordered_arg_access_types(pyfunc, access_types):
     return ordered_arg_access_types
 
 
+def get_sycl_queue(arg):
+    if arg is None:
+        return arg
+    # queue can be a dpctl.SyclQueue object/filter_str/SyclDevice, SyclContext
+    #if isinstance(arg, dpctl.SyclQueue):
+    #   queue = arg
+    #else
+    # Create a SyclQueue
+    #   queue = dpctl.SyclQueue(arg)
+
+    # We expect arg to be a filter_string
+    assert(isinstance(arg, str))
+    with dpctl.device_context("opencl:gpu") as gpu_queue:
+        queue = gpu_queue
+    return queue
+
+
 class DPPYCompiler(CompilerBase):
     """ DPPY Compiler """
 
@@ -545,13 +562,14 @@ class DPPYKernel(DPPYKernelBase):
 
 
 class JitDPPYKernel(DPPYKernelBase):
-    def __init__(self, func, access_types):
+    def __init__(self, func, access_types, queue):
 
         super(JitDPPYKernel, self).__init__()
 
         self.py_func = func
         self.definitions = {}
         self.access_types = access_types
+        self.sycl_queue = queue
 
         from .descriptor import dppy_target
 
