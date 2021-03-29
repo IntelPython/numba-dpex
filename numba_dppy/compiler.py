@@ -86,7 +86,7 @@ def get_sycl_queue(arg):
 
     # We expect arg to be a filter_string
     assert(isinstance(arg, str))
-    with dpctl.device_context("opencl:gpu") as gpu_queue:
+    with dpctl.device_context(arg) as gpu_queue:
         queue = gpu_queue
     return queue
 

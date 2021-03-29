@@ -61,17 +61,17 @@ def _kernel_jit(signature, debug, access_types, queue=None):
     return _wrapped
 
 
-def func(signature=None, queue=None):
+def func(signature=None):
     if signature is None:
         return _func_autojit
-    elif not sigutils.is_signature(signature, queue):
+    elif not sigutils.is_signature(signature):
         func = signature
-        return _func_autojit(func, queue)
+        return _func_autojit(func)
     else:
-        return _func_jit(signature, queue)
+        return _func_jit(signature)
 
 
-def _func_jit(signature, queue=None):
+def _func_jit(signature):
     argtypes, restype = sigutils.normalize_signature(signature)
 
     def _wrapped(pyfunc):
@@ -80,5 +80,5 @@ def _func_jit(signature, queue=None):
     return _wrapped
 
 
-def _func_autojit(pyfunc, queue=None):
+def _func_autojit(pyfunc):
     return compile_dppy_func_template(pyfunc)
