@@ -78,14 +78,14 @@ def get_sycl_queue(arg):
     if arg is None:
         return arg
     # queue can be a dpctl.SyclQueue object/filter_str/SyclDevice, SyclContext
-    #if isinstance(arg, dpctl.SyclQueue):
+    # if isinstance(arg, dpctl.SyclQueue):
     #   queue = arg
-    #else
+    # else
     # Create a SyclQueue
     #   queue = dpctl.SyclQueue(arg)
 
     # We expect arg to be a filter_string
-    assert(isinstance(arg, str))
+    assert isinstance(arg, str)
     with dpctl.device_context(arg) as gpu_queue:
         queue = gpu_queue
     return queue

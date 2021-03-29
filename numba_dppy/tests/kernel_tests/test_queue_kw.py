@@ -35,8 +35,9 @@ def dppy_kernel(a, b):
     idx = dppy.get_global_id(0)
     b[idx] = a[idx] + 1
 
+
 def test_queue_kw(filter_str):
     kernel = dppy.kernel(queue=filter_str)(dppy_kernel)
 
     with dpctl.device_context(filter_str) as gpu_queue:
-        assert(kernel.sycl_queue.equals(gpu_queue))
+        assert kernel.sycl_queue.equals(gpu_queue)
