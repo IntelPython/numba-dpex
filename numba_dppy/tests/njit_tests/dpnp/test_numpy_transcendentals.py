@@ -22,6 +22,7 @@ from numba import njit
 import pytest
 from numba_dppy.testing import dpnp_debug
 from .dpnp_skip_test import dpnp_skip_test as skip_test
+from numba_dppy.tests.skip_tests import is_gen12
 
 list_of_filter_strs = [
     "opencl:gpu:0",
@@ -117,7 +118,9 @@ def test_unary_ops(filter_str, unary_op, input_array, get_shape, capfd):
     a = input_array
     a = np.reshape(a, get_shape)
     op, name = unary_op
-    if (name == "cumprod" or name == "cumsum") and filter_str == "opencl:cpu:0":
+    if (name == "cumprod" or name == "cumsum") and (
+        filter_str == "opencl:cpu:0" or is_gen12(filter_str)
+    ):
         pytest.skip()
     actual = np.empty(shape=a.shape, dtype=a.dtype)
     expected = np.empty(shape=a.shape, dtype=a.dtype)
@@ -142,6 +145,9 @@ def test_unary_nan_ops(filter_str, unary_nan_op, input_nan_array, get_shape, cap
     op, name = unary_nan_op
     actual = np.empty(shape=a.shape, dtype=a.dtype)
     expected = np.empty(shape=a.shape, dtype=a.dtype)
+
+    if name == "nansum" and is_gen12(filter_str):
+        pytest.skip()
 
     f = njit(op)
     with dpctl.device_context(filter_str), dpnp_debug():

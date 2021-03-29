@@ -76,14 +76,14 @@ def get_ext_modules():
 
 class install(orig_install.install):
     def run(self):
-        super().run()
         spirv_compile()
+        super().run()
 
 
 class develop(orig_develop.develop):
     def run(self):
-        super().run()
         spirv_compile()
+        super().run()
 
 
 def _get_cmdclass():
@@ -95,15 +95,15 @@ def _get_cmdclass():
 
 def spirv_compile():
     if IS_LIN:
-        os.environ["CC"] = os.path.join(
+        compiler = os.path.join(
             os.environ.get("ONEAPI_ROOT"), "compiler/latest/linux", "bin/clang"
         )
     if IS_WIN:
-        os.environ["CC"] = os.path.join(
+        compiler = os.path.join(
             os.environ.get("ONEAPI_ROOT"), "compiler/latest/windows", "bin/clang.exe"
         )
     clang_args = [
-        os.environ.get("CC"),
+        compiler,
         "-flto",
         "-target",
         "spir64-unknown-unknown",
@@ -144,6 +144,7 @@ metadata = dict(
     packages=packages,
     setup_requires=build_requires,
     install_requires=install_requires,
+    include_package_data=True,
     ext_modules=get_ext_modules(),
     author="Intel Corporation",
     classifiers=[
