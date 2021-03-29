@@ -29,6 +29,7 @@ class TestDebugInfo(TestCase):
     """
     These tests only check the compiled assembly for debuginfo.
     """
+
     def get_kernel_asm(self, fn, sig, debug=False):
         kernel = compiler.compile_kernel(
             fn.sycl_queue, fn.py_func, sig, None, debug=debug
