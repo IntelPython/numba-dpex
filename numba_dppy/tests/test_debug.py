@@ -30,7 +30,9 @@ class TestDebugInfo(TestCase):
     These tests only check the compiled assembly for debuginfo.
     """
     def get_kernel_asm(self, fn, sig, debug=False):
-        kernel = compiler.compile_kernel(fn.sycl_queue, fn.py_func, sig, None, debug=debug)
+        kernel = compiler.compile_kernel(
+            fn.sycl_queue, fn.py_func, sig, None, debug=debug
+        )
         return kernel.assembly
 
     def make_check(self, fn, sig, expect):
@@ -39,7 +41,7 @@ class TestDebugInfo(TestCase):
         # Checking whether debug symbols have been emmited to IR
         m = re.search(r"!dbg", asm, re.I)
         got = m is not None
-        self.assertEqual(expect, got, msg='debug info not found in kernel:\n%s' % fn)
+        self.assertEqual(expect, got, msg="debug info not found in kernel:\n%s" % fn)
 
     def test_debuginfo_in_asm(self):
         """
@@ -74,5 +76,5 @@ class TestDebugInfo(TestCase):
                 self.make_check(foo, sig, debug_expect)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
