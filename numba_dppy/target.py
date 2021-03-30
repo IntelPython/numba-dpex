@@ -117,6 +117,9 @@ class DPPYTargetContext(BaseContext):
 
         self.cpu_context = cpu_target.target_context
 
+        # Add lower_extension attribute
+        self.lower_extensions = {}
+
     def replace_numpy_ufunc_with_opencl_supported_functions(self):
         from numba_dppy.ocl.mathimpl import lower_ocl_impl, sig_mapper
 

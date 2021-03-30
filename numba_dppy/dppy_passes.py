@@ -216,6 +216,13 @@ class DPPYParforPass(FunctionPass):
         """
         Convert data-parallel computations into Parfor nodes
         """
+        # Register lowerer for Parfor Node
+        from numba_dppy.dppy_lowerer import lower_parfor_rollback
+        if hasattr(state.targetctx, "lower_extensions"):
+            state.targetctx.lower_extensions[Parfor] = lower_parfor_rollback
+        else:
+            raise AttributeError("target_context has no attribute 'lower_extensions'")
+
         # Ensure we have an IR and type information.
         assert state.func_ir
         parfor_pass = _parfor_ParforPass(

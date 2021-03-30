@@ -1245,7 +1245,6 @@ class DPPYLower(Lower):
         # different solution should be used.
 
         try:
-            lowering.lower_extensions[parfor.Parfor].append(lower_parfor_rollback)
             self.gpu_lower.lower()
             # if lower dont crash, and parfor_diagnostics is empty then it is kernel
             if not self.gpu_lower.metadata["parfor_diagnostics"].extra_info:
@@ -1256,15 +1255,10 @@ class DPPYLower(Lower):
                     "kernel"
                 ] = str_name
             self.base_lower = self.gpu_lower
-            lowering.lower_extensions[parfor.Parfor].pop()
         except Exception as e:
             if numba_dppy.compiler.DEBUG:
                 print("Failed to lower parfor on DPPY-device. Due to:\n", e)
-            lowering.lower_extensions[parfor.Parfor].pop()
-            if (
-                lowering.lower_extensions[parfor.Parfor][-1]
-                == numba.parfors.parfor_lowering._lower_parfor_parallel
-            ) and numba_dppy.config.FALLBACK_ON_CPU == 1:
+            if numba_dppy.config.FALLBACK_ON_CPU == 1:
                 self.cpu_lower.lower()
                 self.base_lower = self.cpu_lower
             else:
