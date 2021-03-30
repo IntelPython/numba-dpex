@@ -34,6 +34,7 @@ requirements:
 test:
   requires:
     - pytest
+    - pytest-cov
 
 about:
     home: https://github.com/IntelPython/numba-dppy

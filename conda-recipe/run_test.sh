@@ -8,6 +8,6 @@ source ${ONEAPI_ROOT}/tbb/latest/env/vars.sh
 
 set -x
 
-pytest -q -ra --disable-warnings --pyargs numba_dppy -vv
+pytest -q -ra --disable-warnings --cov numba_dppy --cov-report term-missing --pyargs numba_dppy -vv
 
 exit 0
