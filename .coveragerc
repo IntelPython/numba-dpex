@@ -1,4 +1,5 @@
 [run]
 branch = True
 source = numba_dppy
-omit = numba_dppy/tests/*, numba_dppy/_version.py, *__init__.py
+omit = numba_dppy/tests/*, numba_dppy/_version.py
+
