@@ -18,6 +18,7 @@ from numba.core.ir_utils import (
     find_topo_order,
     mk_unique_var,
     remove_dead,
+    dead_code_elimination,
     simplify_CFG,
 )
 import numba_dppy
@@ -132,6 +133,7 @@ class RewriteNumPyOverloadedFunctions(object):
         func_ir = self.state.func_ir
         blocks = func_ir.blocks
         topo_order = find_topo_order(blocks)
+        replaced = False
 
         for label in topo_order:
             block = blocks[label]
@@ -184,9 +186,11 @@ class RewriteNumPyOverloadedFunctions(object):
                             new_body.append(dpnp_assign)
                             func_ir._definitions[dpnp_var.name] = [getattr_dpnp]
                             func_ir._definitions[g_dppy_var.name] = [g_dppy]
+                            replaced = True
 
                 new_body.append(stmt)
             block.body = new_body
+            return replaced
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
@@ -211,9 +215,10 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
             state, rewrite_function_name_map
         )
 
-        rewrite_function_name_pass.run()
+        replaced = rewrite_function_name_pass.run()
 
-        remove_dead(state.func_ir.blocks, state.func_ir.arg_names, state.func_ir)
+        if replaced:
+            remove_dead(state.func_ir.blocks, state.func_ir.arg_names, state.func_ir)
         state.func_ir.blocks = simplify_CFG(state.func_ir.blocks)
 
         return True
@@ -244,6 +249,7 @@ class RewriteNdarrayFunctions(object):
         blocks = func_ir.blocks
         saved_arr_arg = {}
         topo_order = find_topo_order(blocks)
+        replaced = False
 
         for label in topo_order:
             block = blocks[label]
@@ -289,6 +295,7 @@ class RewriteNdarrayFunctions(object):
 
                         self.typemap.pop(lhs)
                         self.typemap[lhs] = func_typ
+                        replaced = True
 
                     if rhs.op == "call" and rhs.func.name in saved_arr_arg:
                         # add array as first arg
@@ -306,7 +313,7 @@ class RewriteNdarrayFunctions(object):
 
                 new_body.append(stmt)
             block.body = new_body
-        return
+        return replaced
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
@@ -321,9 +328,10 @@ class DPPYRewriteNdarrayFunctions(FunctionPass):
             state, rewrite_function_name_map
         )
 
-        rewrite_ndarray_function_name_pass.run()
+        replaced = rewrite_ndarray_function_name_pass.run()
 
-        remove_dead(state.func_ir.blocks, state.func_ir.arg_names, state.func_ir)
+        if replaced:
+            remove_dead(state.func_ir.blocks, state.func_ir.arg_names, state.func_ir)
         state.func_ir.blocks = simplify_CFG(state.func_ir.blocks)
 
         return True
