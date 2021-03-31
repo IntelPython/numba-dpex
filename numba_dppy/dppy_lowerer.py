@@ -25,6 +25,7 @@ import numpy as np
 import numba
 from numba.core import compiler, ir, types, sigutils, lowering, funcdesc, config
 from numba.parfors import parfor
+from numba.parfors.parfor_lowering import _lower_parfor_parallel
 import numba_dppy, numba_dppy as dppy
 from numba.core.ir_utils import (
     add_offset_to_labels,
@@ -1243,7 +1244,6 @@ class DPPYLower(Lower):
         # WARNING: this approach only works in case no device specific modifications were added to
         # parent function (function with parfor). In case parent function was patched with device specific
         # different solution should be used.
-
         try:
             self.gpu_lower.lower()
             # if lower dont crash, and parfor_diagnostics is empty then it is kernel
@@ -1259,6 +1259,7 @@ class DPPYLower(Lower):
             if numba_dppy.compiler.DEBUG:
                 print("Failed to lower parfor on DPPY-device. Due to:\n", e)
             if numba_dppy.config.FALLBACK_ON_CPU == 1:
+                self.cpu_lower.context.lower_extensions[parfor.Parfor] = _lower_parfor_parallel
                 self.cpu_lower.lower()
                 self.base_lower = self.cpu_lower
             else:
