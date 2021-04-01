@@ -43,6 +43,7 @@ def test_proper_lowering(filter_str):
             d = A[i]
             dppy.barrier(dppy.CLK_LOCAL_MEM_FENCE)  # local mem fence
             A[i] = d * 2
+
     except:
         pytest.skip()
 
@@ -62,6 +63,7 @@ def test_no_arg_barrier_support(filter_str):
         pytest.skip()
 
     try:
+
         @dppy.kernel("void(float32[::1])")
         def twice(A):
             i = dppy.get_global_id(0)
@@ -69,6 +71,7 @@ def test_no_arg_barrier_support(filter_str):
             # no argument defaults to global mem fence
             dppy.barrier()
             A[i] = d * 2
+
     except:
         pytest.skip()
 
@@ -89,6 +92,7 @@ def test_local_memory(filter_str):
     blocksize = 10
 
     try:
+
         @dppy.kernel("void(float32[::1])")
         def reverse_array(A):
             lm = dppy.local.array(shape=10, dtype=np.float32)
@@ -100,6 +104,7 @@ def test_local_memory(filter_str):
             dppy.barrier(dppy.CLK_LOCAL_MEM_FENCE)  # local mem fence
             # write
             A[i] += lm[blocksize - 1 - i]
+
     except:
         pytest.skip()
 
