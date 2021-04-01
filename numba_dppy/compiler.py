@@ -564,18 +564,20 @@ class JitDPPYKernel(DPPYKernelBase):
 
     def __call__(self, *args, **kwargs):
         assert not kwargs, "Keyword Arguments are not supported"
-        if self.sycl_queue is None:
-            try:
-                self.sycl_queue = dpctl.get_current_queue()
-            except:
-                _raise_no_device_found_error()
+        try:
+            current_queue = dpctl.get_current_queue()
+        except:
+            _raise_no_device_found_error()
 
         argtypes = self.get_argtypes(*args)
-        kernel = self.specialize(argtypes)
+        kernel = self.specialize(argtypes, current_queue)
         cfg = kernel.configure(self.sycl_queue, self.global_size, self.local_size)
         cfg(*args)
 
-    def specialize(self, argtypes):
+    def specialize(self, argtypes, queue):
+        # We specialize for argtypes and queue. These two are used as key for
+        # caching as well.
+        assert queue is not None
         q = None
         kernel = None
         # we were previously using the _env_ptr of the device_env, the sycl_queue
@@ -587,14 +589,9 @@ class JitDPPYKernel(DPPYKernelBase):
         if result:
             q, kernel = result
 
-        if self.sycl_queue is None:
-            self.sycl_queue = dpctl.get_current_queue()
-
-        if q and self.sycl_queue.equals(q):
+        if q and queue.equals(q):
             return kernel
         else:
-            kernel = compile_kernel(
-                self.sycl_queue, self.py_func, argtypes, self.access_types
-            )
-            self.definitions[key_definitions] = (self.sycl_queue, kernel)
+            kernel = compile_kernel(queue, self.py_func, argtypes, self.access_types)
+            self.definitions[key_definitions] = (queue, kernel)
         return kernel

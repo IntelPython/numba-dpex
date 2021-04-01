@@ -20,6 +20,7 @@ from .compiler import (
     compile_dppy_func,
     get_ordered_arg_access_types,
 )
+import dpctl
 
 
 def kernel(signature=None, access_types=None, debug=False):
@@ -53,12 +54,13 @@ def _kernel_jit(signature, debug, access_types):
         raise TypeError(msg.format(restype=restype))
 
     def _wrapped(pyfunc):
+        current_queue = dpctl.get_current_queue()
         ordered_arg_access_types = get_ordered_arg_access_types(pyfunc, access_types)
         # We create an instance of JitDPPYKernel to make sure at call time
         # we are going through the caching mechanism.
         dppy_kernel = JitDPPYKernel(pyfunc, debug, ordered_arg_access_types)
         # This will make sure we are compiling eagerly.
-        dppy_kernel.specialize(argtypes)
+        dppy_kernel.specialize(argtypes, current_queue)
         return dppy_kernel
 
     return _wrapped
