@@ -73,3 +73,19 @@ Please use https://github.com/IntelPython/numba-dppy/issues to report issues and
 ## Features
 
 Read this guide for additional features [INDEX.md](docs/INDEX.md)
+
+## Test Matrix:
+
+| # |    OS   | Distribution | Python |   Architecture  | Test type | IntelOneAPI |                                   Build Commands                                  |    Dependencies    |
+|:-:|:-------:|:------------:|:------:|:---------------:|:---------:|:-----------:|:---------------------------------------------------------------------------------:|:------------------:|
+| 1 |  Linux  | Ubuntu 20.04 |   3.7  | Gen9 Integrated |     CI    |    2021.2   | python setup.py install; pytest -q -ra --disable-warnings --pyargs numba_dppy -vv | Numba, NumPy, dpnp |
+| 2 |  Linux  | Ubuntu 20.04 |   3.7  |  Gen12 Discrete |   Manual  |    2021.2   | python setup.py install; pytest -q -ra --disable-warnings --pyargs numba_dppy -vv | Numba, NumPy, dpnp |
+| 3 | Linux   | Ubuntu 20.04 |   3.7  |    i7-10710U    |     CI    |    2021.2   | python setup.py install; pytest -q -ra --disable-warnings --pyargs numba_dppy -vv | Numba, NumPy, dpnp |
+| 4 | Windows |      10      |   3.7  | Gen9 Integrated |     CI    |    2021.2   | python setup.py install; pytest -q -ra --disable-warnings --pyargs numba_dppy -vv |    Numba, NumPy    |
+| 5 | Windows |      10      |   3.7  |     i7-10710    |     CI    |    2021.2   | python setup.py install; python -q -ra --disable-warnings --pyargs numba_dppy -vv |    Numba, NumPy    |
+|   |         |              |        |                 |           |             |                                                                                   |                    |
+|   |         |              |        |                 |           |             |                                                                                   |                    |
+|   |         |              |        |                 |           |             |                                                                                   |                    |
+|   |         |              |        |                 |           |             |                                                                                   |                    |
+|   |         |              |        |                 |           |             |                                                                                   |                    |
+|   |         |              |        |                 |           |             |                                                                                   |                    |
