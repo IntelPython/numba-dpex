@@ -54,7 +54,10 @@ def _kernel_jit(signature, debug, access_types):
 
     def _wrapped(pyfunc):
         ordered_arg_access_types = get_ordered_arg_access_types(pyfunc, access_types)
+        # We create an instance of JitDPPYKernel to make sure at call time
+        # we are going through the caching mechanism.
         dppy_kernel = JitDPPYKernel(pyfunc, debug, ordered_arg_access_types)
+        # This will make sure we are compiling eagerly.
         dppy_kernel.specialize(argtypes)
         return dppy_kernel
 
