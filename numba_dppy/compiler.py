@@ -391,17 +391,11 @@ class DPPYKernel(DPPYKernelBase):
         self.spirv_bc = spirv_generator.llvm_to_spirv(self.context, self.binary)
 
         # create a program
-        try:
-            self.program = dpctl_prog.create_program_from_spirv(
-                self.sycl_queue, self.spirv_bc
-            )
-        except Exception as e:
-            raise (e)
+        self.program = dpctl_prog.create_program_from_spirv(
+            self.sycl_queue, self.spirv_bc
+        )
         #  create a kernel
-        try:
-            self.kernel = self.program.get_sycl_kernel(self.entry_name)
-        except Exception as e:
-            raise (e)
+        self.kernel = self.program.get_sycl_kernel(self.entry_name)
 
     def __call__(self, *args):
 
