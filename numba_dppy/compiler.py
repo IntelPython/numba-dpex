@@ -143,6 +143,7 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
         print("compile_kernel", args)
         debug = True
     if not sycl_queue:
+        # We expect the sycl_queue to be provided when this function is called
         raise ValueError("SYCL queue is required for compiling a kernel")
 
     cres = compile_with_dppy(pyfunc, None, args, debug=debug)
@@ -558,6 +559,7 @@ class JitDPPYKernel(DPPYKernelBase):
         self.typingctx = dppy_target.typing_context
 
     def get_argtypes(self, *args):
+        # Convenience function to get the type of each argument.
         return tuple([self.typingctx.resolve_argument_type(a) for a in args])
 
     def __call__(self, *args, **kwargs):
@@ -586,15 +588,13 @@ class JitDPPYKernel(DPPYKernelBase):
             q, kernel = result
 
         if self.sycl_queue is None:
-            sycl_queue = dpctl.get_current_queue()
-        else:
-            sycl_queue = self.sycl_queue
+            self.sycl_queue = dpctl.get_current_queue()
 
         if q and self.sycl_queue.equals(q):
             return kernel
         else:
             kernel = compile_kernel(
-                sycl_queue, self.py_func, argtypes, self.access_types
+                self.sycl_queue, self.py_func, argtypes, self.access_types
             )
-            self.definitions[key_definitions] = (sycl_queue, kernel)
+            self.definitions[key_definitions] = (self.sycl_queue, kernel)
         return kernel
