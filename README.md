@@ -31,7 +31,7 @@ https://intelpython.github.io/dpnp/
 
 ## dppy
 
-dppy is a proof-of-concept backend for NUMBA to support compilation for
+dppy is a proof-of-concept backend for Numba to support compilation for
 Intel CPU and GPU architectures.
 The present implementation of dpPy is based on OpenCL 2.1, but is likely
 to change in the future to rely on Sycl/DPC++ or Intel Level-0 driver API.
