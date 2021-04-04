@@ -18,24 +18,26 @@ import os
 try:
     import dpctl
 
-    dppy_present = dpctl.has_sycl_platforms()
+    dppy_present = False
+    try:
+        # For the extension to work we should have at least one
+        # non-host SYCL device.
+        dppy_present = not dpctl.select_default_device().is_host
+    except ValueError:
+        dppy_present = False
 except:
     dppy_present = False
 
 
 def _readenv(name, ctor, default):
-    """Original version from numba\core\config.py
-    class _EnvReloader():
-        ...
-        def process_environ():
-            def _readenv(): ...
-    """
     value = os.environ.get(name)
     if value is None:
         return default() if callable(default) else default
     try:
         return ctor(value)
     except Exception:
+        import warnings
+
         warnings.warn(
             "environ %s defined but failed to parse '%s'" % (name, value),
             RuntimeWarning,

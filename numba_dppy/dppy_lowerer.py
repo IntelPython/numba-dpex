@@ -543,7 +543,7 @@ def _create_gufunc_for_parfor_body(
     diagnostics.hoist_info[parfor.id] = {"hoisted": hoisted, "not_hoisted": not_hoisted}
 
     lowerer.metadata["parfor_diagnostics"].extra_info[str(parfor.id)] = str(
-        dpctl.get_current_queue().get_sycl_device().get_device_name()
+        dpctl.get_current_queue().get_sycl_device().name
     )
 
     if config.DEBUG_ARRAY_OPT:
@@ -1249,9 +1249,7 @@ class DPPYLower(Lower):
             self.gpu_lower.lower()
             # if lower dont crash, and parfor_diagnostics is empty then it is kernel
             if not self.gpu_lower.metadata["parfor_diagnostics"].extra_info:
-                str_name = str(
-                    dpctl.get_current_queue().get_sycl_device().get_device_name()
-                )
+                str_name = str(dpctl.get_current_queue().get_sycl_device().name)
                 self.gpu_lower.metadata["parfor_diagnostics"].extra_info[
                     "kernel"
                 ] = str_name
