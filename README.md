@@ -2,7 +2,7 @@
 
 # numba-dppy
 
-## Numba + dpPy + dpCtl + dpNP = numba-dppy
+## Numba + dppy + dpctl + dpnp = numba-dppy
 
 `numba-dppy` extends Numba with a new backend to support compilation
 for Intel CPU and GPU architectures.
@@ -22,16 +22,16 @@ https://intelpython.github.io/dpnp/
 ## Dependencies
 
 * numba 0.52.* (IntelPython/numba)
-* dpCtl 0.6.*
-* dpNP >=0.5.1 (optional)
+* dpctl 0.6.*
+* dpnp >=0.5.1 (optional)
 * llvm-spirv (SPIRV generation from LLVM IR)
 * llvmdev (LLVM IR generation)
 * spirv-tools
 * scipy (for testing)
 
-## dpPy
+## dppy
 
-dpPy is a proof-of-concept backend for NUMBA to support compilation for
+dppy is a proof-of-concept backend for NUMBA to support compilation for
 Intel CPU and GPU architectures.
 The present implementation of dpPy is based on OpenCL 2.1, but is likely
 to change in the future to rely on Sycl/DPC++ or Intel Level-0 driver API.
