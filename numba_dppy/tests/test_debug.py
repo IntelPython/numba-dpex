@@ -21,7 +21,7 @@ from numba.core import types
 
 import numba_dppy as dppy
 from numba_dppy import compiler
-from numba_dppy.tests.skip_tests import skip_test
+from numba_dppy.tests._helper import skip_test
 
 
 debug_options = [True, False]

@@ -45,7 +45,7 @@ def vvsort(val, vec):
 
 list_of_filter_strs = [
     "opencl:gpu:0",
-    # "level0:gpu:0",
+    # "level_zero:gpu:0",
     # "opencl:cpu:0",
 ]
 
@@ -97,7 +97,7 @@ def test_eig(filter_str, eig_input, capfd):
         pytest.skip()
 
     if filter_str == "opencl:cpu:0":
-        pytest.skip("Segfaults with device type level0:gpu:0")
+        pytest.skip("Segfaults with device type level_zero:gpu:0")
     a = eig_input
     fn = get_fn("linalg.eig", 1)
     f = njit(fn)
@@ -188,8 +188,8 @@ def test_matmul(filter_str, dtype, capfd):
     if skip_test(filter_str):
         pytest.skip()
 
-    if filter_str == "level0:gpu:0":
-        pytest.skip("Segfaults with device type level0:gpu:0")
+    if filter_str == "level_zero:gpu:0":
+        pytest.skip("Segfaults with device type level_zero:gpu:0")
 
     a = np.array(np.random.random(10 * 2), dtype=dtype).reshape(10, 2)
     b = np.array(np.random.random(2 * 10), dtype=dtype).reshape(2, 10)
@@ -228,10 +228,7 @@ list_of_det_input = [
     [[1, 2], [1, 2]],
     [[1, 2], [3, 4]],
     [[[1, 2], [3, 4]], [[1, 2], [2, 1]], [[1, 3], [3, 1]]],
-    [
-        [[[1, 2], [3, 4]], [[1, 2], [2, 1]]],
-        [[[1, 3], [3, 1]], [[0, 1], [1, 3]]],
-    ],
+    [[[[1, 2], [3, 4]], [[1, 2], [2, 1]]], [[[1, 3], [3, 1]], [[0, 1], [1, 3]]],],
 ]
 
 
@@ -261,8 +258,8 @@ def test_multi_dot(filter_str, capfd):
     if skip_test(filter_str):
         pytest.skip()
 
-    if filter_str == "level0:gpu:0":
-        pytest.skip("Segfaults with device type level0:gpu:0")
+    if filter_str == "level_zero:gpu:0":
+        pytest.skip("Segfaults with device type level_zero:gpu:0")
 
     def fn(A, B, C, D):
         c = np.linalg.multi_dot([A, B, C, D])
@@ -307,8 +304,8 @@ def test_matrix_power(filter_str, matrix_power_input, power, dtype, capfd):
     if skip_test(filter_str):
         pytest.skip()
 
-    if filter_str == "level0:gpu:0":
-        pytest.skip("Segfaults with device type level0:gpu:0")
+    if filter_str == "level_zero:gpu:0":
+        pytest.skip("Segfaults with device type level_zero:gpu:0")
 
     a = np.array(matrix_power_input, dtype=dtype)
     fn = get_fn("linalg.matrix_power", 2)
@@ -352,8 +349,8 @@ def test_eigvals(filter_str, eig_input, capfd):
     if skip_test(filter_str):
         pytest.skip()
 
-    if filter_str == "level0:gpu:0":
-        pytest.skip("Segfaults with device type level0:gpu:0")
+    if filter_str == "level_zero:gpu:0":
+        pytest.skip("Segfaults with device type level_zero:gpu:0")
 
     a = eig_input
     fn = get_fn("linalg.eigvals", 1)
