@@ -1,4 +1,4 @@
-# Copyright 2021 Intel Corporation
+# Copyright 2020, 2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,13 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
-from numba import int32
-import numba_dppy as dppy
-import math
+"""
+There are multiple ways of implementing reduction using numba-dppy. Here we
+demonstrate another way of implementing reduction using recursion to compute
+partial reductions in separate kernels.
+"""
 
 import dpctl
 import dpctl.memory as dpctl_mem
+from numba import int32
+import numba_dppy as dppy
+import numpy as np
 
 
 @dppy.kernel
@@ -79,13 +83,16 @@ def sum_recursive_reduction(size, group_size, Dinp, Dpartial_sums):
     return result
 
 
-def get_context():
-    if dpctl.has_gpu_queues():
-        return "opencl:gpu"
-    elif dpctl.has_cpu_queues():
-        return "opencl:cpu"
-    else:
-        raise RuntimeError("No device found")
+def get_device():
+    device = None
+    try:
+        device = dpctl.select_gpu_device()
+    except:
+        try:
+            device = dpctl.select_cpu_device()
+        except:
+            raise RuntimeError("No device found")
+    return device
 
 
 def sum_reduce(A):
@@ -97,8 +104,10 @@ def sum_reduce(A):
 
     partial_sums = np.zeros(nb_work_groups).astype(A.dtype)
 
-    context = get_context()
-    with dpctl.device_context(context):
+    device = get_device()
+    with dpctl.device_context(device):
+        print("Offloading to ...")
+        device.print_device_info()
         inp_buf = dpctl_mem.MemoryUSMShared(A.size * A.dtype.itemsize)
         inp_ndarray = np.ndarray(A.shape, buffer=inp_buf, dtype=A.dtype)
         np.copyto(inp_ndarray, A)

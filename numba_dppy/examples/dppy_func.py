@@ -1,4 +1,4 @@
-# Copyright 2021 Intel Corporation
+# Copyright 2020, 2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,18 +19,22 @@ import dpctl
 
 @dppy.func
 def a_device_function(a):
+    """
+    A `func` is a device callable function that can be invoked from
+    `kernel` and other `func` functions.
+    """
     return a + 1
 
 
 @dppy.func
-def an_another_device_function(a):
+def another_device_function(a):
     return a_device_function(a)
 
 
 @dppy.kernel
 def a_kernel_function(a, b):
     i = dppy.get_global_id(0)
-    b[i] = an_another_device_function(a[i])
+    b[i] = another_device_function(a[i])
 
 
 def driver(a, b, N):
@@ -40,26 +44,19 @@ def driver(a, b, N):
     print(b)
 
 
-def get_context():
-    if dpctl.has_gpu_queues():
-        return "opencl:gpu"
-    elif dpctl.has_cpu_queues():
-        return "opencl:cpu"
-    else:
-        raise RuntimeError("No device found")
-
-
 def main():
     N = 10
     a = np.ones(N)
     b = np.ones(N)
 
-    context = get_context()
-
-    print("Device Context:", context)
-
-    with dpctl.device_context(context):
-        driver(a, b, N)
+    try:
+        gpu = dpctl.select_gpu_device()
+        with dpctl.device_context(gpu):
+            print("Offloading to ...")
+            gpu.print_device_info()
+            driver(a, b, N)
+    except ValueError:
+        print("No SYCL device found")
 
 
 if __name__ == "__main__":

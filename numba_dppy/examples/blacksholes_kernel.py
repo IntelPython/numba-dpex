@@ -1,4 +1,4 @@
-# Copyright 2021 Intel Corporation
+# Copyright 2020, 2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,8 +15,7 @@
 import numpy as np
 import math
 import time
-import numba_dppy, numba_dppy as dppy
-import unittest
+import numba_dppy as dppy
 import dpctl
 
 
@@ -47,6 +46,10 @@ putResult = -np.ones(OPT_N)
 
 @dppy.kernel
 def black_scholes_dppy(callResult, putResult, S, X, T, R, V):
+    """
+    A simple implementation of the BlackScholes Formula using explicit
+    OpenCL-syle kernel programming model.
+    """
     i = dppy.get_global_id(0)
     if i >= S.shape[0]:
         return
@@ -80,18 +83,24 @@ def black_scholes_dppy(callResult, putResult, S, X, T, R, V):
 blockdim = 512, 1
 griddim = int(math.ceil(float(OPT_N) / blockdim[0])), 1
 
-with dpctl.device_context("level0:gpu") as gpu_queue:
-    time1 = time.time()
-    for i in range(iterations):
-        black_scholes_dppy[blockdim, griddim](
-            callResult,
-            putResult,
-            stockPrice,
-            optionStrike,
-            optionYears,
-            RISKFREE,
-            VOLATILITY,
-        )
+try:
+    gpu = dpctl.select_gpu_device()
+    with dpctl.device_context(gpu):
+        print("Offloading to ...")
+        gpu.print_device_info()
+        time1 = time.time()
+        for i in range(iterations):
+            black_scholes_dppy[blockdim, griddim](
+                callResult,
+                putResult,
+                stockPrice,
+                optionStrike,
+                optionYears,
+                RISKFREE,
+                VOLATILITY,
+            )
+except ValueError:
+    print("No SYCL gpu found")
 
 print("callResult : ", callResult)
 print("putResult : ", putResult)

@@ -1,4 +1,4 @@
-# Copyright 2021 Intel Corporation
+# Copyright 2020, 2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,6 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+"""
+Numba-dppy can run several of the numpy.random RNG functions called inside
+a JIT function on a SYCL device using dpnp
+(https://github.com/IntelPython/dpnp). As with the rest of numba-dppy examples,
+this feature is also available by simply invoking a numba.jit function with
+the numpy.random calls from within a dpctl.device_context scope.
+"""
 
 import numba
 import numpy as np
@@ -40,19 +48,26 @@ def random_normal(loc, scale, size):
 size = 9
 scale = 3.0
 
-with dpctl.device_context("opencl:gpu"):
-    result = rand()
-    # Random values in a given shape (3, 2)
-    print(result)
+try:
+    gpu = dpctl.select_gpu_device()
+    print("Running on the following SYCL GPU device")
+    gpu.print_device_info()
+    with dpctl.device_context(gpu):
+        result = rand()
+        # Random values in a given shape (3, 2)
+        print(result)
 
-    result = random_sample(size)
-    # Array of shape (9,) with random floats in the half-open interval [0.0, 1.0)
-    print(result)
+        result = random_sample(size)
+        # Array of shape (9,) with random floats in the
+        # half-open interval [0.0, 1.0)
+        print(result)
 
-    result = random_exponential(scale, size)
-    # Array of shape (9,) with samples from an exponential distribution
-    print(result)
+        result = random_exponential(scale, size)
+        # Array of shape (9,) with samples from an exponential distribution
+        print(result)
 
-    result = random_normal(0.0, 0.1, size)
-    # Array of shape (9,) with samples from a normal distribution
-    print(result)
+        result = random_normal(0.0, 0.1, size)
+        # Array of shape (9,) with samples from a normal distribution
+        print(result)
+except ValueError:
+    print("No SYCL GPU device found")

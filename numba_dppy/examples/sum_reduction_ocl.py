@@ -1,4 +1,4 @@
-# Copyright 2021 Intel Corporation
+# Copyright 2020, 2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,16 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
+import dpctl
 from numba import int32
 import numba_dppy as dppy
-import math
-
-import dpctl
+import numpy as np
 
 
 @dppy.kernel
 def sum_reduction_kernel(A, partial_sums):
+    """
+    The example demonstrates a reduction kernel implemented as a `kernel`
+    function.
+    """
     local_id = dppy.get_local_id(0)
     global_id = dppy.get_global_id(0)
     group_size = dppy.get_local_size(0)
@@ -48,15 +50,6 @@ def sum_reduction_kernel(A, partial_sums):
         partial_sums[group_id] = local_sums[0]
 
 
-def get_context():
-    if dpctl.has_gpu_queues():
-        return "opencl:gpu"
-    elif dpctl.has_cpu_queues():
-        return "opencl:cpu"
-    else:
-        raise RuntimeError("No device found")
-
-
 def sum_reduce(A):
     global_size = len(A)
     work_group_size = 64
@@ -65,16 +58,21 @@ def sum_reduce(A):
 
     partial_sums = np.zeros(nb_work_groups).astype(A.dtype)
 
-    context = get_context()
-    with dpctl.device_context(context):
-        sum_reduction_kernel[global_size, work_group_size](A, partial_sums)
+    try:
+        gpu = dpctl.select_gpu_device()
+        with dpctl.device_context(gpu):
+            print("Offloading to ...")
+            gpu.print_device_info()
+            sum_reduction_kernel[global_size, work_group_size](A, partial_sums)
+        final_sum = 0
+        # calculate the final sum in HOST
+        for i in range(nb_work_groups):
+            final_sum += partial_sums[i]
 
-    final_sum = 0
-    # calculate the final sum in HOST
-    for i in range(nb_work_groups):
-        final_sum += partial_sums[i]
-
-    return final_sum
+        return final_sum
+    except ValueError:
+        print("No SYCL GPU device found. Failed to perform the summation.")
+        return -1
 
 
 def test_sum_reduce():
