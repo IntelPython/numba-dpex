@@ -37,9 +37,7 @@ def offload_device(request):
 
 
 def get_kernel_ir(fn, sig, debug=False):
-    kernel = compiler.compile_kernel(
-        fn.sycl_queue, fn.py_func, sig, None, debug=debug
-    )
+    kernel = compiler.compile_kernel(fn.sycl_queue, fn.py_func, sig, None, debug=debug)
     return kernel.assembly
 
 
