@@ -7,7 +7,7 @@ Installation
 ``numba-dppy`` depends on following components:
 
 * numba 0.52.* (`Intel Python Numba`_)
-* dpctl 0.6.* (`Intel Python dpCtl`_)
+* dpctl 0.6.* (`Intel Python dpctl`_)
 * dpnp >=0.5.1 (optional, `Intel Python DPNP`_)
 * `llvm-spirv`_ (SPIRV generation from LLVM IR)
 * `llvmdev`_ (LLVM IR generation)
@@ -111,8 +111,8 @@ code-generation for a SYCL device. Work in underway to upstream all patches, so
 that in future ``numba-dppy`` can work with upstream Numba.
 
 .. _`Intel Python Numba`: https://github.com/IntelPython/numba
-.. _`Intel Python dpCtl`: https://github.com/IntelPython/dpctl
-.. _`Intel Python DPNP`: https://github.com/IntelPython/dpnp
+.. _`Intel Python dpctl`: https://github.com/IntelPython/dpctl
+.. _`Intel Python dpnp`: https://github.com/IntelPython/dpnp
 .. _`llvm-spirv`: https://anaconda.org/intel/llvm-spirv
 .. _`llvmdev`: https://anaconda.org/intel/llvmdev
 .. _`spirv-tools`: https://anaconda.org/intel/spirv-tools
