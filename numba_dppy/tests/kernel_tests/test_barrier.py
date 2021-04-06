@@ -17,6 +17,7 @@ import numba_dppy as dppy
 import pytest
 import dpctl
 from numba_dppy.tests.skip_tests import skip_test
+import sys
 
 
 list_of_filter_strs = [
@@ -35,17 +36,17 @@ def test_proper_lowering(filter_str):
     if skip_test(filter_str):
         pytest.skip()
 
-    try:
-        # This will trigger eager compilation
-        @dppy.kernel("void(float32[::1])")
-        def twice(A):
-            i = dppy.get_global_id(0)
-            d = A[i]
-            dppy.barrier(dppy.CLK_LOCAL_MEM_FENCE)  # local mem fence
-            A[i] = d * 2
-
-    except:
+    if sys.platform in ["win32", "cygwin"] and filter_str == list_of_filter_strs[1]:
         pytest.skip()
+
+    # This will trigger eager compilation
+    @dppy.kernel("void(float32[::1])")
+    def twice(A):
+        i = dppy.get_global_id(0)
+        d = A[i]
+        dppy.barrier(dppy.CLK_LOCAL_MEM_FENCE)  # local mem fence
+        A[i] = d * 2
+
 
     N = 256
     arr = np.random.random(N).astype(np.float32)
@@ -62,18 +63,16 @@ def test_no_arg_barrier_support(filter_str):
     if skip_test(filter_str):
         pytest.skip()
 
-    try:
-
-        @dppy.kernel("void(float32[::1])")
-        def twice(A):
-            i = dppy.get_global_id(0)
-            d = A[i]
-            # no argument defaults to global mem fence
-            dppy.barrier()
-            A[i] = d * 2
-
-    except:
+    if sys.platform in ["win32", "cygwin"] and filter_str == list_of_filter_strs[1]:
         pytest.skip()
+
+    @dppy.kernel("void(float32[::1])")
+    def twice(A):
+        i = dppy.get_global_id(0)
+        d = A[i]
+        # no argument defaults to global mem fence
+        dppy.barrier()
+        A[i] = d * 2
 
     N = 256
     arr = np.random.random(N).astype(np.float32)
@@ -91,22 +90,20 @@ def test_local_memory(filter_str):
         pytest.skip()
     blocksize = 10
 
-    try:
-
-        @dppy.kernel("void(float32[::1])")
-        def reverse_array(A):
-            lm = dppy.local.array(shape=10, dtype=np.float32)
-            i = dppy.get_global_id(0)
-
-            # preload
-            lm[i] = A[i]
-            # barrier local or global will both work as we only have one work group
-            dppy.barrier(dppy.CLK_LOCAL_MEM_FENCE)  # local mem fence
-            # write
-            A[i] += lm[blocksize - 1 - i]
-
-    except:
+    if sys.platform in ["win32", "cygwin"] and filter_str == list_of_filter_strs[1]:
         pytest.skip()
+
+    @dppy.kernel("void(float32[::1])")
+    def reverse_array(A):
+        lm = dppy.local.array(shape=10, dtype=np.float32)
+        i = dppy.get_global_id(0)
+
+        # preload
+        lm[i] = A[i]
+        # barrier local or global will both work as we only have one work group
+        dppy.barrier(dppy.CLK_LOCAL_MEM_FENCE)  # local mem fence
+        # write
+        A[i] += lm[blocksize - 1 - i]
 
     arr = np.arange(blocksize).astype(np.float32)
     orig = arr.copy()
