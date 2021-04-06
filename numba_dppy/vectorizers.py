@@ -15,6 +15,9 @@
 from numba.np.ufunc import deviceufunc
 import numba_dppy as dppy
 from numba_dppy.dppy_offload_dispatcher import DppyOffloadDispatcher
+from numba_dppy.compiler import (is_device_array as dppy_is_device_array,
+                                 device_array as dppy_device_array,
+                                 to_device as dppy_to_device)
 
 vectorizer_stager_source = """
 def __vectorized_{name}({args}, __out__):
@@ -35,11 +38,60 @@ class DPPYVectorize(deviceufunc.DeviceVectorize):
         return glbl
 
     def _compile_kernel(self, fnobj, sig):
-        return dppy.kernel(fnobj)
+        return dppy.kernel(sig)(fnobj)
 
     def build_ufunc(self):
-        return DppyOffloadDispatcher(self.pyfunc)
+        return DPPYUFuncDispatcher(self.kernelmap)
 
     @property
     def _kernel_template(self):
         return vectorizer_stager_source
+
+
+class DPPYUFuncDispatcher(object):
+    """
+    Invoke the HSA ufunc specialization for the given inputs.
+    """
+
+    def __init__(self, types_to_retty_kernels):
+        self.functions = types_to_retty_kernels
+
+    def __call__(self, *args, **kws):
+        """
+        *args: numpy arrays
+        **kws:
+            stream -- hsa stream; when defined, asynchronous mode is used.
+            out    -- output array. Can be a numpy array or DeviceArrayBase
+                      depending on the input arguments.  Type must match
+                      the input arguments.
+        """
+        return DPPYUFuncMechanism.call(self.functions, args, kws)
+
+    def reduce(self, arg, stream=0):
+        raise NotImplementedError
+
+
+class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
+    """
+    Provide OpenCL specialization
+    """
+    def is_device_array(self, obj):
+        return dppy_is_device_array(obj)
+
+    def is_host_array(self, obj):
+        return not dppy_is_device_array(obj)
+
+    def to_device(self, hostary, stream):
+        return dppy_to_device(hostary)
+
+    def to_host(self, devary, stream):
+        raise NotImplementedError('device to_host NIY')
+
+    def launch(self, func, count, stream, args):
+        func[count, dppy.DEFAULT_LOCAL_SIZE](*args)
+
+    def device_array(self, shape, dtype, stream):
+        return dppy_device_array(shape, dtype)
+
+    def broadcast_device(self, ary, shape):
+        raise NotImplementedError('device broadcast_device NIY')

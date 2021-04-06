@@ -65,7 +65,7 @@ def dpnp_zeros_like_impl(a, dtype=None):
 
     """
     res_dtype = dtype
-    if dtype == types.none:
+    if dtype == types.none or dtype == None:
         res_dtype = a.dtype
         name_dtype = res_dtype.name
     else:
@@ -100,7 +100,7 @@ def dpnp_ones_like_impl(a, dtype=None):
 
     """
     res_dtype = dtype
-    if dtype == types.none:
+    if dtype == types.none or dtype == None:
         res_dtype = a.dtype
         name_dtype = res_dtype.name
     else:

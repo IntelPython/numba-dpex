@@ -115,6 +115,7 @@ def dufunc_inliner(func_ir, calltypes, typemap, typingctx):
     _DEBUG = False
     modified = False
 
+    breakpoint()
     if _DEBUG:
         print("GUFunc before inlining DUFunc".center(80, "-"))
         print(func_ir.dump())

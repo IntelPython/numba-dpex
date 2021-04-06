@@ -39,6 +39,9 @@ CC_SPIR_FUNC = "spir_func"
 
 
 class DPPYTypingContext(typing.BaseContext):
+    def init(self):
+        self.cpu_context = cpu_target.target_context.typing_context
+
     def load_additional_registries(self):
         # Declarations for OpenCL API functions and OpenCL Math functions
         from .ocl import ocldecl, mathdecl
