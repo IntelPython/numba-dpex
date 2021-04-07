@@ -34,7 +34,6 @@ requirements:
 test:
   requires:
     - pytest
-    - coverage <5
     - pytest-cov
 
 about:
