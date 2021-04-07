@@ -8,6 +8,6 @@ source ${ONEAPI_ROOT}/tbb/latest/env/vars.sh
 
 set -x
 
-coverage run -m --source=numba_dppy --branch --omit=numba_dppy/tests/*,numba_dppy/_version.py pytest -q -ra --disable-warnings --pyargs numba_dppy -vv && coverage report -m
+coverage run -m --source=numba_dppy --branch --omit=*/numba_dppy/tests/*,*/numba_dppy/_version.py pytest -q -ra --disable-warnings --pyargs numba_dppy -vv && coverage report 
 
 exit 0
