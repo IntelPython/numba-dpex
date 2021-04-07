@@ -33,6 +33,7 @@ requirements:
 
 test:
   requires:
+    - pytest
     - coverage
 
 about:
