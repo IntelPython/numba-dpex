@@ -32,11 +32,24 @@ def filter_str(request):
     return request.param
 
 
+def skip_if_win():
+    if sys.platform in ["win32", "cygwin"]:
+        return True
+    return False
+
+
 def test_proper_lowering(filter_str):
     if skip_test(filter_str):
         pytest.skip()
 
-    if sys.platform in ["win32", "cygwin"] and filter_str == list_of_filter_strs[1]:
+    # We perform eager compilation at the site of
+    # @dppy.kernel. This takes the default dpctl
+    # queue which is level_zero backed. Level_zero
+    # is not yet supported on Windows platform and
+    # hence we skip these tests if the platform is
+    # Windows regardless of which backend filter_str
+    # specifies.
+    if skip_if_win():
         pytest.skip()
 
     # This will trigger eager compilation
@@ -46,7 +59,6 @@ def test_proper_lowering(filter_str):
         d = A[i]
         dppy.barrier(dppy.CLK_LOCAL_MEM_FENCE)  # local mem fence
         A[i] = d * 2
-
 
     N = 256
     arr = np.random.random(N).astype(np.float32)
@@ -63,7 +75,7 @@ def test_no_arg_barrier_support(filter_str):
     if skip_test(filter_str):
         pytest.skip()
 
-    if sys.platform in ["win32", "cygwin"] and filter_str == list_of_filter_strs[1]:
+    if skip_if_win():
         pytest.skip()
 
     @dppy.kernel("void(float32[::1])")
@@ -90,7 +102,7 @@ def test_local_memory(filter_str):
         pytest.skip()
     blocksize = 10
 
-    if sys.platform in ["win32", "cygwin"] and filter_str == list_of_filter_strs[1]:
+    if skip_if_win():
         pytest.skip()
 
     @dppy.kernel("void(float32[::1])")
