@@ -124,12 +124,8 @@ def spirv_compile():
         "numba_dppy/ocl/atomics/atomic_ops.spir",
         "numba_dppy/ocl/atomics/atomic_ops.bc",
     ]
-    if IS_LIN:
-        subprocess.check_call(clang_args, stderr=subprocess.STDOUT, shell=False)
-        subprocess.check_call(spirv_args, stderr=subprocess.STDOUT, shell=False)
-    if IS_WIN:
-        subprocess.check_call(clang_args, stderr=subprocess.STDOUT, shell=True)
-        subprocess.check_call(spirv_args, stderr=subprocess.STDOUT, shell=True)
+    subprocess.check_call(clang_args, stderr=subprocess.STDOUT, shell=False)
+    subprocess.check_call(spirv_args, stderr=subprocess.STDOUT, shell=False)
 
 
 packages = find_packages(include=["numba_dppy", "numba_dppy.*"])

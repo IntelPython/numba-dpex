@@ -5,9 +5,9 @@ Random Number Generation
 executed on the SYCL-supported Device.
 
 ``numba-dppy`` provides access to NumPy random algorithms that can be executed on the
-SYCL-supported device via integration with `dpNP Random`_.
+SYCL-supported device via integration with `dpnp Random`_.
 
-.. _`dpNP Random`: https://intelpython.github.io/dpnp/reference/comparison.html#random-sampling
+.. _`dpnp Random`: https://intelpython.github.io/dpnp/reference/comparison.html#random-sampling
 
 
 DPPY supported functions
