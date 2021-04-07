@@ -19,7 +19,7 @@ import pytest
 import numba_dppy as dppy
 import dpctl
 
-from numba.core import types, compiler
+from numba.core import types
 from numba_dppy import compiler
 from numba_dppy.tests.skip_tests import skip_test
 
@@ -36,24 +36,30 @@ def offload_device(request):
     return request.param
 
 
+debug_options = [True, False]
+
+
+@pytest.fixture(params=debug_options)
+def debug_option(request):
+    return request.param
+
+
 def get_kernel_ir(fn, sig, debug=False):
     kernel = compiler.compile_kernel(fn.sycl_queue, fn.py_func, sig, None, debug=debug)
     return kernel.assembly
 
 
-def make_check(fn, sig, expect):
+def make_check(ir):
     """
-    Check the compiled assembly for debuginfo.
+    Check the compiled ir for debuginfo.
     """
-    ir = get_kernel_ir(fn, sig=sig, debug=expect)
 
-    # Checking whether debug symbols have been emmited to IR
     m = re.search(r"!dbg", ir, re.I)
     got = m is not None
-    assert expect == got
+    return got
 
 
-def test_debuginfo_in_ir(offload_device):
+def test_debug_flag_generates_ir_with_debuginfo(offload_device, debug_option):
     """
     Check debug info is emitting to IR if debug parameter is set to True
     """
@@ -61,31 +67,15 @@ def test_debuginfo_in_ir(offload_device):
     if skip_test(offload_device):
         pytest.skip()
 
-    debug_expect = True
-
     @dppy.kernel
     def foo(x):
         return x
 
     with dpctl.device_context(offload_device):
         sig = (types.int32,)
-        make_check(foo, sig, debug_expect)
+        kernel_ir = get_kernel_ir(foo, sig, debug=debug_option)
 
+        expect = debug_option
+        got = make_check(kernel_ir)
 
-def test_debuginfo_not_in_ir(offload_device):
-    """
-    Check debug info is not emitting to IR if debug parameter is set to True
-    """
-
-    if skip_test(offload_device):
-        pytest.skip()
-
-    debug_expect = False
-
-    @dppy.kernel
-    def foo(x):
-        return x
-
-    with dpctl.device_context(offload_device):
-        sig = (types.int32,)
-        make_check(foo, sig, debug_expect)
+        assert expect == got
