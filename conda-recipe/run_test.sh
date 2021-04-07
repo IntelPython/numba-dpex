@@ -8,6 +8,6 @@ source ${ONEAPI_ROOT}/tbb/latest/env/vars.sh
 
 set -x
 
-pytest -q -ra --disable-warnings --cov-config=.coveragerc --cov numba_dppy --cov-report term-missing --pyargs numba_dppy -vv
+coverage run -m --source=numba_dppy --branch --omit=numba_dppy/tests/*,numba_dppy/_version.py pytest -q -ra --disable-warnings --pyargs numba_dppy -vv && coverage report -m
 
 exit 0
