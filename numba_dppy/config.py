@@ -36,6 +36,7 @@ def _readenv(name, ctor, default):
     try:
         return ctor(value)
     except Exception:
+        import warnings
         warnings.warn(
             "environ %s defined but failed to parse '%s'" % (name, value),
             RuntimeWarning,
