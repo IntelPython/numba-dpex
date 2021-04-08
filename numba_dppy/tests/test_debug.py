@@ -16,32 +16,12 @@
 import re
 import pytest
 
-import numba_dppy as dppy
 import dpctl
-
 from numba.core import types
+
+import numba_dppy as dppy
 from numba_dppy import compiler
 from numba_dppy.tests.skip_tests import skip_test
-
-
-# TODO: Add level0 and move to common place
-offload_devices = [
-    "opencl:gpu:0",
-    "opencl:cpu:0",
-]
-
-
-@pytest.fixture(params=offload_devices)
-def offload_device(request):
-    return request.param
-
-
-debug_options = [True, False]
-
-
-@pytest.fixture(params=debug_options)
-def debug_option(request):
-    return request.param
 
 
 def get_kernel_ir(fn, sig, debug=False):
@@ -51,7 +31,7 @@ def get_kernel_ir(fn, sig, debug=False):
 
 def make_check(ir):
     """
-    Check the compiled ir for debuginfo.
+    Check the compiled assembly for debuginfo.
     """
 
     m = re.search(r"!dbg", ir, re.I)
@@ -66,6 +46,9 @@ def test_debug_flag_generates_ir_with_debuginfo(offload_device, debug_option):
 
     if skip_test(offload_device):
         pytest.skip()
+
+    if offload_device in "level0:gpu:0":
+        pytest.xfail("Failing compilation: SyclProgramCompilationError")
 
     @dppy.kernel
     def foo(x):
