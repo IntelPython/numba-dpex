@@ -16,7 +16,9 @@ import numpy as np
 import numba_dppy as dppy
 import pytest
 import dpctl
+from numba.tests.support import captured_stdout
 from numba_dppy.tests.skip_tests import skip_test
+
 
 list_of_filter_strs = [
     "opencl:gpu:0",
