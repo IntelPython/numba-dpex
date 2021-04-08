@@ -32,6 +32,7 @@ from ctypes.util import find_library
 from numba.core.typing.templates import builtin_registry as templates_registry
 from numba.core.typing.npydecl import registry as typing_registry
 from numba.core.imputils import builtin_registry as lower_registry
+from numba.core.errors import TypingError
 import importlib
 import functools
 import inspect
@@ -635,7 +636,7 @@ class UsmArrayAttribute(AttributeTemplate):
         kwargs = dict(kws)
         kind = kwargs.pop("kind", types.StringLiteral("quicksort"))
         if not isinstance(kind, types.StringLiteral):
-            raise errors.TypingError('"kind" must be a string literal')
+            raise TypingError('"kind" must be a string literal')
         if kwargs:
             msg = "Unsupported keywords: {!r}"
             raise TypingError(msg.format([k for k in kwargs.keys()]))
