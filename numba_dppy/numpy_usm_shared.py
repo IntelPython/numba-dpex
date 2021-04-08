@@ -25,7 +25,7 @@ from numba.core.pythonapi import box, allocator
 from llvmlite import ir
 import llvmlite.llvmpy.core as lc
 import llvmlite.binding as llb
-from numba.core import types, cgutils, config
+from numba.core import types, cgutils, config, utils
 import builtins
 import sys
 from ctypes.util import find_library
