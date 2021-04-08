@@ -45,6 +45,7 @@ from . import initialize
 from .decorators import kernel, func, autojit
 import dpctl
 from . import target
+from .dppy_devicearray import DPPYDeviceArray
 
 
 def is_available():
