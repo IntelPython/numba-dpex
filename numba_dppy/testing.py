@@ -23,20 +23,6 @@ from numba.tests.support import (
 )
 
 
-@contextlib.contextmanager
-def captured_dppy_stdout():
-    """
-    Return a minimal stream-like object capturing the text output of dppy
-    """
-    # Prevent accidentally capturing previously output text
-    sys.stdout.flush()
-
-    import numba_dppy, numba_dppy as dppy
-
-    with redirect_c_stdout() as stream:
-        yield DPPYTextCapture(stream)
-
-
 def _id(obj):
     return obj
 
