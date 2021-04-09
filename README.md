@@ -1,4 +1,5 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Documentation Status](https://readthedocs.org/projects/numba-dppy/badge/?version=latest)](https://numba-dppy.readthedocs.io/en/latest/?badge=latest)
 
 # numba-dppy
 
