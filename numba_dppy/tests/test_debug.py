@@ -24,6 +24,14 @@ from numba_dppy import compiler
 from numba_dppy.tests.skip_tests import skip_test
 
 
+debug_options = [True, False]
+
+
+@pytest.fixture(params=debug_options)
+def debug_option(request):
+    return request.param
+
+
 def get_kernel_ir(fn, sig, debug=False):
     kernel = compiler.compile_kernel(fn.sycl_queue, fn.py_func, sig, None, debug=debug)
     return kernel.assembly

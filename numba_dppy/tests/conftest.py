@@ -26,11 +26,3 @@ offload_devices = [
 @pytest.fixture(params=offload_devices, scope="module")
 def offload_device(request):
     return request.param
-
-
-debug_options = [True, False]
-
-
-@pytest.fixture(params=debug_options, scope="module")
-def debug_option(request):
-    return request.param
