@@ -137,3 +137,19 @@ class DPPYDeviceArray(object):
 
         np.copyto(ary, self.hostary)
         return ary
+
+
+def to_device(ary):
+    """Convenience function to create a DPPYDeviceArray from a np.ndarray
+    Args
+    ----
+    ary
+        np.ndarray.
+    """
+    if ary is None or not isinstance(ary, np.ndarray):
+        raise ValueError("ary has to be a valid np.ndarray")
+
+    da = DPPYDeviceArray(ary.shape, ary.strides, ary.dtype)
+    da.copy_to_device(ary)
+
+    return da

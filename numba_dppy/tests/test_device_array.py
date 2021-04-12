@@ -114,16 +114,38 @@ def test_array_as_arg(filter_str, input_array):
 
         assert np.allclose(c, a + b)
 
-        # We can mix device array and ndarray
+        # we can mix device array and ndarray
         data_parallel_sum[c.size, dppy.DEFAULT_LOCAL_SIZE](c, db, dc)
         d = dc.copy_to_host()
         assert np.allclose(d, c + b)
 
 
+
+@pytest.mark.xfail(strict=True)
+def test_array_as_arg_queue_mismatch():
+    @dppy.kernel
+    def sample_kernel(a):
+        i = dppy.get_global_id(0)
+        a[i] = a[i] + 1
+
+    a = np.array(np.random.random(1023), np.int32)
+
+    with dpctl.device_context("opencl:gpu:0") as gpu_queue:
+        # Users can explicitly provide SYCL queue, the queue used internally
+        # will be the current queue. Current queue is set by the context_manager
+        # dpctl.device_context.
+        da = dppy.DPPYDeviceArray(a.shape, a.strides, a.dtype, queue=gpu_queue)
+        da.copy_to_device(a)
+
+
+    with dpctl.device_context("level0:gpu:0") as gpu_queue:
+        sample_kernel[a.size, dppy.DEFAULT_LOCAL_SIZE](da)
+
+
 def test_array_api(filter_str, input_array, get_shape):
     a = np.reshape(input_array, get_shape)
 
-    with dpctl.device_context(filter_str):
+    with dpctl.device_context(filter_str) as gpu_queue:
         da = dppy.DPPYDeviceArray(a.shape, a.strides, a.dtype)
 
         da.copy_to_device(a)
@@ -131,3 +153,29 @@ def test_array_api(filter_str, input_array, get_shape):
         c = np.empty_like(a)
         da.copy_to_host(c)
         assert np.array_equal(b, c)
+        assert gpu_queue.equals(da.queue)
+
+
+def test_to_device(filter_str, input_array, get_shape):
+    a = np.reshape(input_array, get_shape)
+
+    with dpctl.device_context(filter_str):
+        da = dppy.to_device(a)
+        assert da.shape == a.shape
+        assert da.strides == a.strides
+        assert da.dtype == a.dtype
+        assert da.size == a.size
+        assert da.itemsize == a.dtype.itemsize
+
+        b = da.copy_to_host()
+        assert np.array_equal(a, b)
+
+
+@pytest.mark.xfail(strict=True)
+def test_to_device_without_ndarray(filter_str):
+    a = 2
+    b = None
+
+    with dpctl.device_context(filter_str):
+        da = dppy.to_device(a)
+        db = dppy.do_device(b)

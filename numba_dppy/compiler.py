@@ -406,9 +406,9 @@ class DPPYKernel(DPPYKernelBase):
         retr = []  # hold functors for writeback
         kernelargs = []
         internal_device_arrs = []
-        for ty, val, access_type in zip(
+        for idx, (ty, val, access_type) in enumerate(zip(
             self.argument_types, args, self.ordered_arg_access_types
-        ):
+        )):
             self._unpack_argument(
                 ty,
                 val,
@@ -417,6 +417,7 @@ class DPPYKernel(DPPYKernelBase):
                 kernelargs,
                 internal_device_arrs,
                 access_type,
+                idx
             )
 
         self.sycl_queue.submit(
@@ -468,7 +469,7 @@ class DPPYKernel(DPPYKernelBase):
             kernelargs.append(ctypes.c_longlong(val.strides[ax]))
 
     def _unpack_argument(
-        self, ty, val, sycl_queue, retr, kernelargs, device_arrs, access_type
+        self, ty, val, sycl_queue, retr, kernelargs, device_arrs, access_type, idx
     ):
         """
         Convert arguments to ctypes and append to kernelargs
@@ -480,6 +481,7 @@ class DPPYKernel(DPPYKernelBase):
             if isinstance(val, DPPYDeviceArray):
                 device_arrs[-1] = (val.base, val, val)
                 self._unpack_device_array_argument(val, kernelargs)
+                assert sycl_queue.equals(val.queue), ("Current SYCL queue and queue used for allocating argument %d does not match!" % (idx + 1))
             else:
                 if hasattr(val.base, "__sycl_usm_array_interface__"):
                     self._unpack_device_array_argument(val, kernelargs)
