@@ -34,6 +34,7 @@ from . import spirv_generator
 import os
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
+from numba_dppy.dppy_devicearray import DPPYDeviceArray
 
 
 DEBUG = os.environ.get("NUMBA_DPPY_DEBUG", None)
@@ -444,7 +445,8 @@ class DPPYKernel(DPPYKernelBase):
             # device_array or if access_type of this device_array
             # is not of type read_only and read_write
             usm_buf, usm_ndarr, orig_ndarray = device_arr
-            np.copyto(orig_ndarray, usm_ndarr)
+            if isinstance(orig_ndarray, np.ndarray):
+                np.copyto(orig_ndarray, usm_ndarr)
 
     def _unpack_device_array_argument(self, val, kernelargs):
         # this function only takes ndarrays created using USM allocated buffer
@@ -475,23 +477,28 @@ class DPPYKernel(DPPYKernelBase):
         device_arrs.append(None)
 
         if isinstance(ty, types.Array):
-            if hasattr(val.base, "__sycl_usm_array_interface__"):
+            if isinstance(val, DPPYDeviceArray):
+                device_arrs[-1] = (val.base, val, val)
                 self._unpack_device_array_argument(val, kernelargs)
             else:
-                default_behavior = self.check_for_invalid_access_type(access_type)
+                if hasattr(val.base, "__sycl_usm_array_interface__"):
+                    self._unpack_device_array_argument(val, kernelargs)
+                else:
+                    default_behavior = self.check_for_invalid_access_type(access_type)
 
-                usm_buf = dpctl_mem.MemoryUSMShared(val.size * val.dtype.itemsize)
-                usm_ndarr = np.ndarray(val.shape, buffer=usm_buf, dtype=val.dtype)
+                    usm_buf = dpctl_mem.MemoryUSMShared(val.size * val.dtype.itemsize)
+                    usm_ndarr = np.ndarray(val.shape, buffer=usm_buf, dtype=val.dtype)
 
-                if (
-                    default_behavior
-                    or self.valid_access_types[access_type] == _NUMBA_DPPY_READ_ONLY
-                    or self.valid_access_types[access_type] == _NUMBA_DPPY_READ_WRITE
-                ):
-                    np.copyto(usm_ndarr, val)
+                    if (
+                        default_behavior
+                        or self.valid_access_types[access_type] == _NUMBA_DPPY_READ_ONLY
+                        or self.valid_access_types[access_type]
+                        == _NUMBA_DPPY_READ_WRITE
+                    ):
+                        np.copyto(usm_ndarr, val)
 
-                device_arrs[-1] = (usm_buf, usm_ndarr, val)
-                self._unpack_device_array_argument(usm_ndarr, kernelargs)
+                    device_arrs[-1] = (usm_buf, usm_ndarr, val)
+                    self._unpack_device_array_argument(usm_ndarr, kernelargs)
 
         elif ty == types.int64:
             cval = ctypes.c_longlong(val)
