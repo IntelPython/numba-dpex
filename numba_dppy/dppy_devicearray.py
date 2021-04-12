@@ -141,6 +141,8 @@ class DPPYDeviceArray(object):
 
 def to_device(ary):
     """Convenience function to create a DPPYDeviceArray from a np.ndarray
+    and copy data from ary to the created DPPYDeviceArray.
+
     Args
     ----
     ary
