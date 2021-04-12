@@ -120,7 +120,6 @@ def test_array_as_arg(filter_str, input_array):
         assert np.allclose(d, c + b)
 
 
-
 @pytest.mark.xfail(strict=True)
 def test_array_as_arg_queue_mismatch():
     @dppy.kernel
@@ -136,7 +135,6 @@ def test_array_as_arg_queue_mismatch():
         # dpctl.device_context.
         da = dppy.DPPYDeviceArray(a.shape, a.strides, a.dtype, queue=gpu_queue)
         da.copy_to_device(a)
-
 
     with dpctl.device_context("level0:gpu:0") as gpu_queue:
         sample_kernel[a.size, dppy.DEFAULT_LOCAL_SIZE](da)
