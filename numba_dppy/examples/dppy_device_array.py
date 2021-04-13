@@ -27,7 +27,13 @@ def data_parallel_sum(a, b, c):
 
 
 def driver(a, b, c, global_size):
-    # Get dppy device arrays for input
+    # Get dppy device arrays for input.
+    # We can pass kw argument queue to `to_device`. This will
+    # make sure the memory allocated for DPPYDeviceArray is
+    # using the passed queue. In the case where the queue
+    # is not passed the queue returned by `dpctl.get_current_queue`
+    # will be used. The same queue argument can be passed when creating
+    # DPPYDeviceArray as well.
     da = dppy.to_device(a)
     db = dppy.to_device(b)
 
@@ -53,7 +59,6 @@ def driver(a, b, c, global_size):
     data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](c, b, dc)
     e = dc.copy_to_host()
     assert np.allclose(e, c + b)
-
 
 
 def main():
