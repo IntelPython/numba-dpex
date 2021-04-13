@@ -139,7 +139,7 @@ class DPPYDeviceArray(object):
         return ary
 
 
-def to_device(ary):
+def to_device(ary, queue=None):
     """Convenience function to create a DPPYDeviceArray from a np.ndarray
     and copy data from ary to the created DPPYDeviceArray.
 
@@ -151,7 +151,7 @@ def to_device(ary):
     if ary is None or not isinstance(ary, np.ndarray):
         raise ValueError("ary has to be a valid np.ndarray")
 
-    da = DPPYDeviceArray(ary.shape, ary.strides, ary.dtype)
+    da = DPPYDeviceArray(ary.shape, ary.strides, ary.dtype, queue=queue)
     da.copy_to_device(ary)
 
     return da

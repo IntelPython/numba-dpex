@@ -55,6 +55,7 @@ def driver(a, b, c, global_size):
     assert np.allclose(e, c + b)
 
 
+
 def main():
     global_size = 10
     N = global_size
