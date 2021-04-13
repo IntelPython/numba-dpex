@@ -151,7 +151,7 @@ def test_array_api(filter_str, input_array, get_shape):
         c = np.empty_like(a)
         da.copy_to_host(c)
         assert np.array_equal(b, c)
-        assert gpu_queue.equals(da.queue)
+        assert gpu_queue.equals(da.get_queue())
 
 
 def test_to_device(filter_str, input_array, get_shape):

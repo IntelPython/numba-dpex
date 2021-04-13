@@ -36,15 +36,6 @@ class DPPYDeviceArray(object):
         usm_memory
             user provided device memory for the ndarray data buffer
         """
-
-        # dpctl.memory.MemoryUSMShared does not cache the queue. Without
-        # a reference to the Sycl queue in the usm_memory we need to
-        # store the reference in this class. Until dpctl.memory.MemoryUSMShared
-        # provides a reference to the queue we can not allow any usm_memory
-        # being passed to this class.
-        if usm_memory is not None:
-            raise ValueError("Pre-allocated usm_memory is not supported")
-
         if isinstance(shape, int):
             shape = (shape,)
         if isinstance(strides, int):
@@ -53,16 +44,12 @@ class DPPYDeviceArray(object):
         if len(strides) != self.ndim:
             raise ValueError("strides not match ndim")
 
-        if queue is None:
-            queue = dpctl.get_current_queue()
-
         self.shape = tuple(shape)
         self.strides = tuple(strides)
         self.dtype = np.dtype(dtype)
         self.size = int(np.prod(self.shape))
         self.itemsize = dtype.itemsize
         self.alloc_size = self.size * self.itemsize
-        self.queue = queue
 
         if self.size > 0:
             if usm_memory is None:
@@ -85,6 +72,10 @@ class DPPYDeviceArray(object):
         """
         dtype = numpy_support.from_dtype(self.dtype)
         return types.Array(dtype, self.ndim, "A")
+
+    def get_queue(self):
+        """Returns the SYCL queue the instance's memory was allocated using."""
+        return self.base._queue
 
     def copy_to_device(self, ary):
         """Copy `ary` to `self`.
