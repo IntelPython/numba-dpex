@@ -79,9 +79,11 @@ Copy generated documentation into corresponding folder and create pull request
 to `gh-pages` branch.
 
 ## Code Coverage
+
 Implement python file coverage using `coverage` and `pytest-cov` packages.
-### Using Code Coverage
-#### Using coverage
+
+### Using coverage
+
 Install Coverage:
 ```bash
 conda install coverage
@@ -91,27 +93,33 @@ Run Coverage:
 ```bash
 coverage run -m pytest
 ```
+
 Show report:
 ```bash
 coverage report
 ```
+
 - For each module executed, the report shows the count of executable statements, the number of those statements missed, and the resulting coverage, expressed as a percentage.
 
 The `-m` flag also shows the line numbers of missing statements:
 ```bash
 coverage report -m
 ```
+
 Produce annotated HTML listings with coverage results:
 ```bash
 coverage html
 ```
+
 - The htmlcov folder will appear in the root folder of the project. It contains reports on python file coverage in html format.
 
 Erase previously collected coverage data:
 ```bash
 coverage erase
 ```
-#### Using pytest-cov
+
+### Using pytest-cov
+
 This plugin provides a clean minimal set of command line options that are added to pytest.
 
 You must have `coverage` package installed to use pytest-cov.
@@ -120,12 +128,16 @@ Install pytest-cov:
 ```bash
 conda install pytest-cov
 ```
+
 Run pytest-cov:
 ```bash
 pytest --cov=numba_dppy
 ```
+
 The complete list of command line options is:
 - `--cov=PATH`
+
 Measure coverage for filesystem path. (multi-allowed)
 - `--cov-report=type`
+
 Type of report to generate: term(the terminal report without line numbers (default)), term-missing(the terminal report with line numbers), annotate, html, xml (multi-allowed).
