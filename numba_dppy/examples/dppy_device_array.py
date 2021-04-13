@@ -12,10 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from __future__ import print_function
-from timeit import default_timer as time
-
 import sys
 import numpy as np
 import numpy.testing as testing
@@ -38,7 +34,7 @@ def driver(a, b, c, global_size):
     # Array `c` is write only. We can use the `to_device`
     # convenience function or create a DPPYDeviceArray.
     # Using the convenience function will copy the data of
-    # the np.ndarray we pass as argument.
+    # the np.ndarray we pass as argument, which is redundant.
     dc = dppy.DPPYDeviceArray(a.shape, a.strides, a.dtype)
 
     data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](da, db, dc)
@@ -70,6 +66,8 @@ def main():
     if dpctl.has_gpu_queues():
         with dpctl.device_context("opencl:gpu") as gpu_queue:
             driver(a, b, c, global_size)
+
+    print("Done!")
 
 
 if __name__ == "__main__":
