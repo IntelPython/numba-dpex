@@ -122,6 +122,7 @@ class DPPYTargetContext(BaseContext):
 
         from numba_dppy.dppy_lowerer import lower_parfor_rollback
         from numba.parfors.parfor import Parfor
+
         # Specify how to lower Parfor nodes using the lower_extensions
         self.lower_extensions[Parfor] = lower_parfor_rollback
 

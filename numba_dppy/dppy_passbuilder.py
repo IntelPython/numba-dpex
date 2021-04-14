@@ -55,7 +55,7 @@ from .dppy_passes import (
     DPPYNoPythonBackend,
     DPPYDumpParforDiagnostics,
     DPPYSetParForLowererPass,
-    DPPYUnsetParForLowererPass
+    DPPYUnsetParForLowererPass,
 )
 
 from .rename_numpy_functions_pass import (

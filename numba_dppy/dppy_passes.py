@@ -76,12 +76,14 @@ class DPPYSetParForLowererPass(LoweringPass):
 
         # Register lowerer for Parfor Node
         from numba_dppy.dppy_lowerer import lower_parfor_rollback
+
         if hasattr(state.targetctx, "lower_extensions"):
             state.targetctx.lower_extensions[Parfor] = lower_parfor_rollback
         else:
             raise AttributeError("target_context has no attribute 'lower_extensions'")
 
         return True
+
 
 @register_pass(mutates_CFG=False, analysis_only=True)
 class DPPYUnsetParForLowererPass(LoweringPass):
@@ -100,6 +102,7 @@ class DPPYUnsetParForLowererPass(LoweringPass):
 
         # Reset lowerer for Parfor Node
         from numba.parfors.parfor_lowering import _lower_parfor_parallel
+
         # Specify how to lower Parfor nodes using the lower_extensions
         if hasattr(state.targetctx, "lower_extensions"):
             state.targetctx.lower_extensions[Parfor] = _lower_parfor_parallel
@@ -107,6 +110,7 @@ class DPPYUnsetParForLowererPass(LoweringPass):
             raise AttributeError("target_context has no attribute 'lower_extensions'")
 
         return True
+
 
 @register_pass(mutates_CFG=True, analysis_only=False)
 class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
