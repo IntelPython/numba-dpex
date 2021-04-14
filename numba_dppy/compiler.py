@@ -34,7 +34,7 @@ from . import spirv_generator
 import os
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
-from numba_dppy.dppy_devicearray import DPPYDeviceArray
+from numba_dppy.dppy_devicearray import DeviceArray
 
 
 DEBUG = os.environ.get("NUMBA_DPPY_DEBUG", None)
@@ -478,7 +478,7 @@ class DPPYKernel(DPPYKernelBase):
         device_arrs.append(None)
 
         if isinstance(ty, types.Array):
-            if isinstance(val, DPPYDeviceArray):
+            if isinstance(val, DeviceArray):
                 assert sycl_queue.equals(val.get_queue()), (
                     "Current SYCL queue and queue used for allocating argument %d does not match!"
                     % idx

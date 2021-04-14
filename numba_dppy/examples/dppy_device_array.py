@@ -29,33 +29,33 @@ def data_parallel_sum(a, b, c):
 def driver(a, b, c, global_size):
     # Get dppy device arrays for input.
     # We can pass kw argument queue to `to_device`. This will
-    # make sure the memory allocated for DPPYDeviceArray is
+    # make sure the memory allocated for DeviceArray is
     # using the passed queue. In the case where the queue
     # is not passed the queue returned by `dpctl.get_current_queue`
     # will be used. The same queue argument can be passed when creating
-    # DPPYDeviceArray as well.
+    # DeviceArray as well.
     da = dppy.to_device(a)
     db = dppy.to_device(b)
 
     # Array `c` is write only. We can use the `to_device`
-    # convenience function or create a DPPYDeviceArray.
+    # convenience function or create a DeviceArray.
     # Using the convenience function will copy the data of
     # the np.ndarray we pass as argument, which is redundant.
-    dc = dppy.DPPYDeviceArray(a.shape, a.strides, a.dtype)
+    dc = dppy.DeviceArray(a.shape, a.strides, a.dtype)
 
     data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](da, db, dc)
 
     # copy_to_host will create a ndarray and copy the data from
-    # the DPPYDeviceArray.
+    # the DeviceArray.
     d = dc.copy_to_host()
     assert np.allclose(d, a + b)
 
     # We can also send a np.ndarray and copy the data of the
-    # DPPYDeviceArray in that ndarray.
+    # DeviceArray in that ndarray.
     dc.copy_to_host(c)
     assert np.allclose(c, a + b)
 
-    # We can mix and match DPPYDeviceArray and np.ndarray
+    # We can mix and match DeviceArray and np.ndarray
     data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](c, b, dc)
     e = dc.copy_to_host()
     assert np.allclose(e, c + b)

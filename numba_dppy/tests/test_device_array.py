@@ -63,7 +63,7 @@ def test_array_creation(filter_str, input_array, get_shape):
     a = np.reshape(input_array, get_shape)
 
     with dpctl.device_context(filter_str):
-        da = dppy.DPPYDeviceArray(a.shape, a.strides, a.dtype)
+        da = dppy.DeviceArray(a.shape, a.strides, a.dtype)
         assert da.shape == a.shape
         assert da.strides == a.strides
         assert da.dtype == a.dtype
@@ -71,20 +71,20 @@ def test_array_creation(filter_str, input_array, get_shape):
         assert da.itemsize == a.dtype.itemsize
 
 
-@pytest.mark.xfail(strict=True)
 def test_array_creation_with_buf(filter_str, input_array, get_shape):
     a = np.reshape(input_array, get_shape)
 
     with dpctl.device_context(filter_str):
         usm_buf = dpctl_mem.MemoryUSMShared(a.size * a.dtype.itemsize)
-        da = dppy.DPPYDeviceArray(shape, strides, dtype, usm_memory=usm_buf)
+        da = dppy.DeviceArray(a.shape, a.strides, a.dtype, usm_memory=usm_buf)
+        assert da.base == usm_buf
 
 
 def test_array_values(filter_str, input_array, get_shape):
     a = np.reshape(input_array, get_shape)
 
     with dpctl.device_context(filter_str):
-        da = dppy.DPPYDeviceArray(a.shape, a.strides, a.dtype)
+        da = dppy.DeviceArray(a.shape, a.strides, a.dtype)
         da.copy_to_device(a)
         b = da.copy_to_host()
         assert np.array_equal(a, b)
@@ -100,13 +100,13 @@ def test_array_as_arg(filter_str, input_array):
     b = np.ones_like(a)
 
     with dpctl.device_context(filter_str):
-        da = dppy.DPPYDeviceArray(a.shape, a.strides, a.dtype)
+        da = dppy.DeviceArray(a.shape, a.strides, a.dtype)
         da.copy_to_device(a)
 
-        db = dppy.DPPYDeviceArray(b.shape, b.strides, b.dtype)
+        db = dppy.DeviceArray(b.shape, b.strides, b.dtype)
         db.copy_to_device(b)
 
-        dc = dppy.DPPYDeviceArray(a.shape, a.strides, a.dtype)
+        dc = dppy.DeviceArray(a.shape, a.strides, a.dtype)
 
         data_parallel_sum[a.size, dppy.DEFAULT_LOCAL_SIZE](da, db, dc)
 
@@ -133,7 +133,7 @@ def test_array_as_arg_queue_mismatch():
         # Users can explicitly provide SYCL queue, the queue used internally
         # will be the current queue. Current queue is set by the context_manager
         # dpctl.device_context.
-        da = dppy.DPPYDeviceArray(a.shape, a.strides, a.dtype, queue=gpu_queue)
+        da = dppy.DeviceArray(a.shape, a.strides, a.dtype, queue=gpu_queue)
         da.copy_to_device(a)
 
     with dpctl.device_context("level0:gpu:0") as gpu_queue:
@@ -144,7 +144,7 @@ def test_array_api(filter_str, input_array, get_shape):
     a = np.reshape(input_array, get_shape)
 
     with dpctl.device_context(filter_str) as gpu_queue:
-        da = dppy.DPPYDeviceArray(a.shape, a.strides, a.dtype)
+        da = dppy.DeviceArray(a.shape, a.strides, a.dtype)
 
         da.copy_to_device(a)
         b = da.copy_to_host()

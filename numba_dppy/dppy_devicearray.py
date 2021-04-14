@@ -19,8 +19,8 @@ from numba.core import types
 from numba.np import numpy_support
 
 
-class DPPYDeviceArray(object):
-    """Device Array type for dppy"""
+class DeviceArray(object):
+    """An on-GPU array type"""
 
     def __init__(self, shape, strides, dtype, usm_memory=None, queue=None):
         """
@@ -131,8 +131,8 @@ class DPPYDeviceArray(object):
 
 
 def to_device(ary, queue=None):
-    """Convenience function to create a DPPYDeviceArray from a np.ndarray
-    and copy data from ary to the created DPPYDeviceArray.
+    """Convenience function to create a DeviceArray from a np.ndarray
+    and copy data from ary to the created DeviceArray.
 
     Args
     ----
@@ -142,7 +142,7 @@ def to_device(ary, queue=None):
     if ary is None or not isinstance(ary, np.ndarray):
         raise ValueError("ary has to be a valid np.ndarray")
 
-    da = DPPYDeviceArray(ary.shape, ary.strides, ary.dtype, queue=queue)
+    da = DeviceArray(ary.shape, ary.strides, ary.dtype, queue=queue)
     da.copy_to_device(ary)
 
     return da
