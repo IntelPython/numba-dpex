@@ -216,6 +216,12 @@ class DPPYParforPass(FunctionPass):
         """
         Convert data-parallel computations into Parfor nodes
         """
+        # We currently reuse the CPUContext from Numba. Ideally we
+        # have our own CPUContext but the way @overload is implemented
+        # we can not create our own CPUContext and inherit the overloads.
+        # When we will be able to have our CPUContext we will move the
+        # registration of lowering_extension inside the `init` of the
+        # CPUContext.
         # Register lowerer for Parfor Node
         from numba_dppy.dppy_lowerer import lower_parfor_rollback
         if hasattr(state.targetctx, "lower_extensions"):
