@@ -54,6 +54,8 @@ from .dppy_passes import (
     SpirvFriendlyLowering,
     DPPYNoPythonBackend,
     DPPYDumpParforDiagnostics,
+    DPPYSetParForLowererPass,
+    DPPYUnsetParForLowererPass
 )
 
 from .rename_numpy_functions_pass import (
@@ -147,8 +149,10 @@ class DPPYPassBuilder(object):
         pm.add_pass(IRLegalization, "ensure IR is legal prior to lowering")
 
         # lower
+        pm.add_pass(DPPYSetParForLowererPass, "Set dppy parfor lowerer")
         pm.add_pass(SpirvFriendlyLowering, "SPIRV-friendly lowering pass")
         pm.add_pass(DPPYNoPythonBackend, "nopython mode backend")
         pm.add_pass(DPPYDumpParforDiagnostics, "dump parfor diagnostics")
+        pm.add_pass(DPPYUnsetParForLowererPass, "Unset dppy parfor lowerer")
         pm.finalize()
         return pm

@@ -543,7 +543,6 @@ def _create_gufunc_for_parfor_body(
     diagnostics = lowerer.metadata["parfor_diagnostics"]
     diagnostics.hoist_info[parfor.id] = {"hoisted": hoisted, "not_hoisted": not_hoisted}
 
-    breakpoint()
     lowerer.metadata["parfor_diagnostics"].extra_info[str(parfor.id)] = str(
         dpctl.get_current_queue().get_sycl_device().get_device_name()
     )
