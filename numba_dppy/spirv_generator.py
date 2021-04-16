@@ -84,10 +84,10 @@ class CmdLine(object):
         #     b) hoist all allocas to the enty block of the module
 
         # Get optimization level from NUMBA_OPT
-        opt_level_option = f'-O{config.OPT}'
+        opt_level_option = f"-O{config.OPT}"
 
-        check_call(["opt", opt_level_option, "-o", ipath + '.bc', ipath])
-        check_call(["llvm-spirv", "-o", opath, ipath + '.bc'])
+        check_call(["opt", opt_level_option, "-o", ipath + ".bc", ipath])
+        check_call(["llvm-spirv", "-o", opath, ipath + ".bc"])
 
         if dppy_config.SAVE_IR_FILES == 0:
             os.unlink(ipath + ".bc")
