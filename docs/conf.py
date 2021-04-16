@@ -23,7 +23,7 @@ copyright = "2021, Intel"
 author = "Intel"
 
 # The full version, including alpha/beta/rc tags
-release = "0.12.0"
+release = "0.13.1"
 
 
 # -- General configuration ---------------------------------------------------
@@ -34,7 +34,13 @@ release = "0.12.0"
 extensions = [
     "recommonmark",
     "sphinx_rtd_theme",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.todo",
 ]
+
+todo_include_todos = True
+
+source_parsers = {".md": "recommonmark.parser.CommonMarkParser"}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

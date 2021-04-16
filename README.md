@@ -22,7 +22,7 @@ https://intelpython.github.io/dpnp/
 ## Dependencies
 
 * numba 0.52.* (IntelPython/numba)
-* dpCtl >=0.5.1
+* dpCtl 0.6.*
 * dpNP >=0.5.1 (optional)
 * llvm-spirv (SPIRV generation from LLVM IR)
 * llvmdev (LLVM IR generation)
@@ -62,14 +62,9 @@ Run examples:
 python numba_dppy/examples/sum.py
 ```
 
-## How Tos
-
-Refer the [HowTo.rst](docs/HowTo.rst) guide for an overview of the programming semantics,
-examples, supported functionalities, and known issues.
-
 ## Debugging
 
-Please follow instructions in the [DEBUGGING.md](docs/DEBUGGING.md)
+Please follow instructions in the [debugging.md](docs/user_guides/debugging.md)
 
 ## Reporting issues
 

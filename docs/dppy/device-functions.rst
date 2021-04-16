@@ -1,2 +1,0 @@
-Writing Device Functions
-========================

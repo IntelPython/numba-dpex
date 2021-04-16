@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 # Copyright 2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,35 +13,26 @@
 # limitations under the License.
 
 import numpy as np
-from numba import njit, prange
+
+import numba
 import numba_dppy, numba_dppy as dppy
 import unittest
-
 import dpctl
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
-class TestPrint(unittest.TestCase):
-    def test_print_dppy_kernel(self):
-        @dppy.func
-        def g(a):
-            print("value of a:", a)
-            return a + 1
+def main():
+    @dppy.kernel
+    def atomic_add(a):
+        dppy.atomic.add(a, 0, 1)
 
-        @dppy.kernel
-        def f(a, b):
-            i = dppy.get_global_id(0)
-            b[i] = g(a[i])
-            print("value of b at:", i, "is", b[i])
+    global_size = 100
+    a = np.array([0])
 
-        N = 10
-
-        a = np.ones(N)
-        b = np.ones(N)
-
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
-            f[N, dppy.DEFAULT_LOCAL_SIZE](a, b)
+    with dpctl.device_context("opencl:gpu") as gpu_queue:
+        atomic_add[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
+        # Expected 100, because global_size = 100
+        print(a)
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()
