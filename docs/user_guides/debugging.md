@@ -11,6 +11,11 @@ Currently, the following debugging features are available:
 - Setting break points by the line number.
 - Stepping over break points.
 
+**Note**  
+Debug features depend heavily on optimization level. At full optimization (equivalent to O3), 
+most of the variables are optimized out. 
+It is recommended to debug at "no optimization" level (e.g. `NUMBA_OPT=0`).
+
 ### Requirements
 
 Intel® Distribution for GDB is needed for `numba-dppy`'s debugging features
