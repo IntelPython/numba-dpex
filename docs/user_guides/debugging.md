@@ -14,7 +14,10 @@ Currently, the following debugging features are available:
 **Note**  
 Debug features depend heavily on optimization level. At full optimization (equivalent to O3), 
 most of the variables are optimized out. 
-It is recommended to debug at "no optimization" level (e.g. `NUMBA_OPT=0`).
+It is recommended to debug at "no optimization" level (e.g. `NUMBA_OPT=0`).  
+For more information refer to the Numba documentation 
+[Debugging JIT compiled code with GDB](https://numba.pydata.org/numba-doc/latest/user/troubleshoot.html?highlight=numba_opt#debugging-jit-compiled-code-with-gdb).
+
 
 ### Requirements
 
