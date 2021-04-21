@@ -121,7 +121,7 @@ def test_array_as_arg(filter_str, input_array):
 
 
 @pytest.mark.xfail(strict=True)
-def test_array_as_arg_queue_mismatch():
+def test_array_as_arg_context_mismatch():
     @dppy.kernel
     def sample_kernel(a):
         i = dppy.get_global_id(0)

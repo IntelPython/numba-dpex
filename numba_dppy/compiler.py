@@ -479,16 +479,20 @@ class DPPYKernel(DPPYKernelBase):
 
         if isinstance(ty, types.Array):
             if isinstance(val, DeviceArray):
-                assert sycl_queue.equals(val.get_queue()), (
-                    "Current SYCL queue and queue used for allocating argument %d does not match!"
+                assert sycl_queue.get_sycl_context().equals(
+                    val.get_queue().get_sycl_context()
+                ), (
+                    "Current SYCL context and context used for allocating argument %d does not match!"
                     % idx
                 )
                 device_arrs[-1] = (val.base, val, val)
                 self._unpack_device_array_argument(val, kernelargs)
             else:
                 if hasattr(val.base, "__sycl_usm_array_interface__"):
-                    assert sycl_queue.equals(val.base._queue), (
-                        "Current SYCL queue and queue used for allocating argument %d does not match!"
+                    assert sycl_queue.get_sycl_context().equals(
+                        val.base._queue.get_sycl_context()
+                    ), (
+                        "Current SYCL context and context used for allocating argument %d does not match!"
                         % idx
                     )
                     self._unpack_device_array_argument(val, kernelargs)
