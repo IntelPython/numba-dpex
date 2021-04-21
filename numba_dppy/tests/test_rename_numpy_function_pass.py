@@ -94,7 +94,7 @@ class TestRenameNumpyFunctionsPass(unittest.TestCase):
         self.assertTrue(check_equivalent(expected_ir, pipeline.state.func_ir))
 
 
-@unittest.skipUnless(ensure_dpnp(), "test only when dpNP is available")
+@unittest.skipUnless(ensure_dpnp(), "test only when dpnp is available")
 class TestRenameNdarrayFunctionsPass(unittest.TestCase):
     def test_rename_ndarray(self):
         def expected(a):
