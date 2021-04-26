@@ -75,7 +75,7 @@ def get_ordered_arg_access_types(pyfunc, access_types):
 
 
 class DPPYCompiler(CompilerBase):
-    """ DPPY Compiler """
+    """DPPY Compiler"""
 
     def define_pipelines(self):
         # this maintains the objmode fallback behaviour
