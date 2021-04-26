@@ -39,13 +39,11 @@ class SPIRVCodeLibrary(CodeLibrary):
         pass
 
     def _optimize_final_module(self):
-        opt_level_option = config.OPT
-
         # Run some lightweight optimization to simplify the module.
         pmb = ll.PassManagerBuilder()
 
-        # Turn off any optimizations if OPT level is set to 0
-        pmb.opt_level = 0 if opt_level_option == 0 else 1
+        # Make optimization level depending on config.OPT variable
+        pmb.opt_level = config.OPT
 
         pmb.disable_unit_at_a_time = False
         pmb.disable_unroll_loops = True
