@@ -6,7 +6,7 @@
 
 We use [black](https://black.readthedocs.io/en/stable/) code formatter.
 
-- Revision: `20.8b1` or branch `stable`.
+- Revision: `20.8b1`.
 - See configuration in `pyproject.toml`.
 
 Install:
