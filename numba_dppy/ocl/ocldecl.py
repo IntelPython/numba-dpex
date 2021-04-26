@@ -112,6 +112,7 @@ class Ocl_atomic_add(AbstractTemplate):
             return signature(ary.dtype, ary, idx, ary.dtype)
 
 
+'''
 @intrinsic
 class Ocl_atomic_sub(AbstractTemplate):
     key = dppy.atomic.sub
@@ -124,6 +125,7 @@ class Ocl_atomic_sub(AbstractTemplate):
             return signature(ary.dtype, ary, types.intp, ary.dtype)
         elif ary.ndim > 1:
             return signature(ary.dtype, ary, idx, ary.dtype)
+'''
 
 
 @intrinsic_attr
@@ -133,12 +135,14 @@ class OclAtomicTemplate(AttributeTemplate):
     def resolve_add(self, mod):
         return types.Function(Ocl_atomic_add)
 
+    '''
     def resolve_sub(self, mod):
         return types.Function(Ocl_atomic_sub)
+    '''
 
 
 intrinsic_global(dppy.atomic.add, types.Function(Ocl_atomic_add))
-intrinsic_global(dppy.atomic.sub, types.Function(Ocl_atomic_sub))
+#intrinsic_global(dppy.atomic.sub, types.Function(Ocl_atomic_sub))
 
 # dppy.local submodule -------------------------------------------------------
 

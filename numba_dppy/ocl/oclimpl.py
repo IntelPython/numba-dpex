@@ -264,6 +264,67 @@ def insert_and_call_atomic_fn(
 @lower(stubs.atomic.add, types.Array, types.UniTuple, types.Any)
 @lower(stubs.atomic.add, types.Array, types.Tuple, types.Any)
 def atomic_add_tuple(context, builder, sig, args):
+    aryty, indty, valty = sig.args
+    ary, inds, val = args
+    dtype = aryty.dtype
+
+    if indty == types.intp:
+        indices = [inds]  # just a single integer
+        indty = [indty]
+    else:
+        indices = cgutils.unpack_tuple(builder, inds, count=len(indty))
+        indices = [
+            context.cast(builder, i, t, types.intp) for t, i in zip(indty, indices)
+        ]
+
+    if dtype != valty:
+        raise TypeError("expecting %s but got %s" % (dtype, valty))
+
+    if aryty.ndim != len(indty):
+        raise TypeError(
+            "indexing %d-D array with %d-D index" % (aryty.ndim, len(indty))
+        )
+
+    lary = context.make_array(aryty)(context, builder, ary)
+    ptr = cgutils.get_item_pointer(context, builder, aryty, lary, indices)
+
+    name = ""
+
+    if dtype == types.float32:
+        name = "__spirv_AtomicFAddEXT"
+    if dtype == types.float64:
+        name = "__spirv_AtomicFAddEXT"
+    if dtype == types.int32:
+        name = "__spirv_AtomicIAdd"
+    if dtype == types.int64:
+        name = "__spirv_AtomicIAdd"
+
+    assert name != ""
+
+    ptr_type = context.get_value_type(dtype).as_pointer()
+    if aryty.addrspace is None:
+        ptr_type.addrspace = target.SPIR_GLOBAL_ADDRSPACE
+        ptr = context.addrspacecast(builder, ptr, target.SPIR_GLOBAL_ADDRSPACE)
+    else:
+        ptr_type.addrspace = target.SPIR_LOCAL_ADDRSPACE
+    retty = context.get_value_type(sig.return_type)
+    spirv_fn_arg_types = [ptr_type, ir.IntType(32), ir.IntType(32), context.get_value_type(sig.args[2])]
+
+    from numba_dppy import extended_numba_itanium_mangler as ext_itanium_mangler
+
+    numba_ptr_ty = types.CPointer(dtype, addrspace=ptr_type.addrspace)
+    mangled_fn_name = ext_itanium_mangler.mangle(name, [numba_ptr_ty,  "__spv.Scope.Flag", "__spv.MemorySemanticsMask.Flag", valty])
+
+    fnty = ir.FunctionType(retty, spirv_fn_arg_types)
+    fn = builder.module.get_or_insert_function(fnty, mangled_fn_name)
+    fn.calling_convention = target.CC_SPIR_FUNC
+
+    fn_args = [ptr, context.get_constant(types.int32, 1), context.get_constant(types.int32, 896), val]
+
+    return builder.call(fn, fn_args)
+
+'''
+def atomic_add_tuple(context, builder, sig, args):
     from .atomics import atomic_support_present
 
     if atomic_support_present():
@@ -374,6 +435,7 @@ def atomic_sub_tuple(context, builder, sig, args):
             )
     else:
         raise ImportError("Atomic support is not present, can not perform atomic_add")
+'''
 
 
 @lower(stubs.local.array, types.IntegerLiteral, types.Any)
