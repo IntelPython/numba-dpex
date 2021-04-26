@@ -23,7 +23,7 @@ from numba_dppy.target import (
     SPIR_CONSTANT_ADDRSPACE,
     SPIR_LOCAL_ADDRSPACE,
     SPIR_GENERIC_ADDRSPACE,
-    )
+)
 
 list_of_dtypes = [
     (int32, "i"),
@@ -34,9 +34,11 @@ list_of_dtypes = [
     (float64, "d"),
 ]
 
+
 @pytest.fixture(params=list_of_dtypes)
 def dtypes(request):
     return request.param
+
 
 list_of_addrspaces = [
     (SPIR_PRIVATE_ADDRSPACE, "3AS0"),
@@ -46,9 +48,11 @@ list_of_addrspaces = [
     (SPIR_GENERIC_ADDRSPACE, "3AS4"),
 ]
 
+
 @pytest.fixture(params=list_of_addrspaces)
 def addrspaces(request):
     return request.param
+
 
 def test_mangling_arg_type(dtypes):
     dtype, expected_str = dtypes
@@ -56,10 +60,10 @@ def test_mangling_arg_type(dtypes):
     expected = "P" + expected_str
     assert got == expected
 
+
 def test_mangling_arg_type(dtypes, addrspaces):
     dtype, expected_dtype_str = dtypes
     addrspace, expected_addrspace_str = addrspaces
     got = itanium_mangler.mangle_type(types.CPointer(dtype, addrspace=addrspace))
     expected = "PU" + expected_addrspace_str + expected_dtype_str
     assert got == expected
-
