@@ -37,9 +37,12 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        with dpctl.device_context("opencl:gpu"):
+        old_debug = numba_dppy.compiler.DEBUG
+        numba_dppy.compiler.DEBUG = 1
+        with captured_stdout() as stdout, dpctl.device_context("opencl:gpu"):
             f(a, b)
 
+        self.assertTrue("Parfor lowered to specified SYCL device" in stdout.getvalue())
         for i in range(4):
             self.assertTrue(b[i, 0] == a[i, 0] * 10)
 
@@ -57,9 +60,13 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        with dpctl.device_context("opencl:gpu"):
+        old_debug = numba_dppy.compiler.DEBUG
+        numba_dppy.compiler.DEBUG = 1
+
+        with captured_stdout() as stdout, dpctl.device_context("opencl:gpu"):
             f(a, b)
 
+        self.assertTrue("Parfor lowered to specified SYCL device" in stdout.getvalue())
         self.assertTrue(np.all(b == 10))
 
     def test_multiple_prange(self):
@@ -81,9 +88,13 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        with dpctl.device_context("opencl:gpu"):
+        old_debug = numba_dppy.compiler.DEBUG
+        numba_dppy.compiler.DEBUG = 1
+
+        with captured_stdout() as stdout, dpctl.device_context("opencl:gpu"):
             f(a, b)
 
+        self.assertTrue("Parfor lowered to specified SYCL device" in stdout.getvalue())
         self.assertTrue(np.all(b == 10))
         self.assertTrue(np.all(a == 10))
 
@@ -105,9 +116,13 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n, o))
         b = np.ones((m, n, o))
 
-        with dpctl.device_context("opencl:gpu"):
+        old_debug = numba_dppy.compiler.DEBUG
+        numba_dppy.compiler.DEBUG = 1
+
+        with captured_stdout() as stdout, dpctl.device_context("opencl:gpu"):
             f(a, b)
 
+        self.assertTrue("Parfor lowered to specified SYCL device" in stdout.getvalue())
         self.assertTrue(np.all(b == 12))
 
     @unittest.skip("numba-dppy issue 110")
@@ -135,12 +150,14 @@ class TestPrange(unittest.TestCase):
         numba_dppy.compiler.DEBUG = old_debug
 
         self.assertEqual(
-            stdout.getvalue().count("Parfor lowered on DPPY-device"),
+            stdout.getvalue().count(""),
             2,
             stdout.getvalue(),
         )
         self.assertEqual(
-            stdout.getvalue().count("Failed to lower parfor on DPPY-device"),
+            stdout.getvalue().count(
+                "Failed to lower parfor on SYCL device. Falling back to default CPU parallelization."
+            ),
             0,
             stdout.getvalue(),
         )
@@ -171,12 +188,14 @@ class TestPrange(unittest.TestCase):
         numba_dppy.compiler.DEBUG = old_debug
 
         self.assertEqual(
-            stdout.getvalue().count("Parfor lowered on DPPY-device"),
+            stdout.getvalue().count("Parfor lowered to specified SYCL device"),
             2,
             stdout.getvalue(),
         )
         self.assertEqual(
-            stdout.getvalue().count("Failed to lower parfor on DPPY-device"),
+            stdout.getvalue().count(
+                "Failed to lower parfor on SYCL device. Falling back to default CPU parallelization."
+            ),
             0,
             stdout.getvalue(),
         )
