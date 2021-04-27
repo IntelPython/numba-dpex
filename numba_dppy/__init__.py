@@ -524,7 +524,7 @@ from .config import dppy_present
 if dppy_present:
     from .device_init import *
 else:
-    raise ImportError("Importing numba-dppy failed")
+    raise ImportError("Importing numba_dppy failed")
 
 
 def test(*args, **kwargs):
