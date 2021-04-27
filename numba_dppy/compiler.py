@@ -75,7 +75,7 @@ def get_ordered_arg_access_types(pyfunc, access_types):
 
 
 class DPPYCompiler(CompilerBase):
-    """ DPPY Compiler """
+    """DPPY Compiler"""
 
     def define_pipelines(self):
         # this maintains the objmode fallback behaviour
@@ -410,7 +410,12 @@ class DPPYKernel(DPPYKernelBase):
             self.argument_types, args, self.ordered_arg_access_types
         ):
             self._unpack_argument(
-                ty, val, self.sycl_queue, kernelargs, internal_device_arrs, access_type,
+                ty,
+                val,
+                self.sycl_queue,
+                kernelargs,
+                internal_device_arrs,
+                access_type,
             )
 
         self.sycl_queue.submit(
