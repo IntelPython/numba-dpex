@@ -1288,10 +1288,16 @@ def lower_parfor_rollback(lowerer, parfor):
     try:
         _lower_parfor_gufunc(lowerer, parfor)
         if numba_dppy.compiler.DEBUG:
-            msg = "Parfor lowered on DPPY-device"
+            msg = "Parfor lowered to specified SYCL device"
             print(msg, parfor.loc)
     except Exception as e:
-        msg = "Failed to lower parfor on DPPY-device.\nTo see details set environment variable NUMBA_DPPY_DEBUG=1"
+        msg = (
+            "Failed to lower parfor to the specified SYCL device. Falling "
+            "back to default CPU parallelization."
+        )
+        if not numba_dppy.compiler.DEBUG:
+            msg += " Set NUMBA_DPPY_DEBUG=1 for more details."
+
         warnings.warn(NumbaPerformanceWarning(msg, parfor.loc))
         raise e
 
