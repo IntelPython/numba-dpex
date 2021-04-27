@@ -15,13 +15,14 @@
 
 import numpy as np
 from numba import njit
-import dpctl
+from . import _helper
 import unittest
 from numba_dppy.testing import ensure_dpnp
 
 
 @unittest.skipUnless(
-    ensure_dpnp() and dpctl.has_gpu_queues(), "test only when dpnp and GPU is available"
+    ensure_dpnp() and _helper.has_gpu_queues(),
+    "test only when dpnp and GPU is available",
 )
 class Testdpnp_functions(unittest.TestCase):
     N = 10
