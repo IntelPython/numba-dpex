@@ -30,6 +30,12 @@ except:
 
 
 def _readenv(name, ctor, default):
+    """Original version from numba\core\config.py
+    class _EnvReloader():
+        ...
+        def process_environ():
+            def _readenv(): ...
+    """
     value = os.environ.get(name)
     if value is None:
         return default() if callable(default) else default
