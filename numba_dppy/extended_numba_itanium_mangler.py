@@ -15,30 +15,30 @@
 from numba.core import itanium_mangler, types
 from numba_dppy import target
 
-EXQ2ABI = {
-    target.SPIR_PRIVATE_ADDRSPACE: "AS0",
-    target.SPIR_GLOBAL_ADDRSPACE: "AS1",
-    target.SPIR_CONSTANT_ADDRSPACE: "AS2",
-    target.SPIR_LOCAL_ADDRSPACE: "AS3",
-    target.SPIR_GENERIC_ADDRSPACE: "AS4",
-}
-
 
 def mangle_type_or_value(typ):
     """
     Mangle type parameter and arbitrary value.
-    This function extends Numba provided `magle_type_or_value()` to
+
+    This function extends Numba's `magle_type_or_value()` to
     support numba.types.CPointer type.
-    e.g. `int *` -> "Pi"
-    For extended qualifier like `addrspace`, we generate "U" representing
-    the presence of an extended qualifier. The actual address space is treated
-    the same way as an identifier.
-    e.g. `int (address_space(1)) *` -> "PU3AS1i"
+    e.g. an `int *` argument will be mangled to "Pi".
+    Mangling of extended qualifiers is supported only
+    for address space qualifiers. In which case, the mangling
+    follows the rule defined in Section 5.1.5.1 of the Itanium ABI.
+    e.g. an `int global *` argument will be mangeled to "PU3AS1i".
+
+    Args:
+        typ (numba.types, int, str) : Type to mangle
+
+    Returns:
+        str: The mangled name of the type
+
     """
     if isinstance(typ, types.CPointer):
         rc = "P"
         if typ.addrspace is not None:
-            rc += "U" + itanium_mangler.mangle_identifier(EXQ2ABI[typ.addrspace])
+            rc += "U" + itanium_mangler.mangle_identifier("AS" + str(typ.addrspace))
         rc += itanium_mangler.mangle_type_or_value(typ.dtype)
         return rc
     else:
