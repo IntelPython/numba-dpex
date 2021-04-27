@@ -59,59 +59,6 @@ from numba.parfors.parfor import ParforPass as _parfor_ParforPass
 from numba.parfors.parfor import Parfor
 
 
-@register_pass(mutates_CFG=False, analysis_only=True)
-class DPPYSetParForLowererPass(LoweringPass):
-    _name = "dppy_set_parfor_lower_pass"
-
-    def __init__(self):
-        LoweringPass.__init__(self)
-
-    def run_pass(self, state):
-        # We currently reuse the CPUContext from Numba. Ideally we should
-        # have our own CPUContext but the way @overload is implemented
-        # we can not create our own CPUContext and inherit the overloads.
-        # When we will be able to have our CPUContext we will move the
-        # registration of lowering_extension inside the `init` of our
-        # CPUContext.
-
-        # Register lowerer for Parfor Node
-        from numba_dppy.dppy_lowerer import lower_parfor_rollback
-
-        if hasattr(state.targetctx, "lower_extensions"):
-            state.targetctx.lower_extensions[Parfor] = lower_parfor_rollback
-        else:
-            raise AttributeError("target_context has no attribute 'lower_extensions'")
-
-        return True
-
-
-@register_pass(mutates_CFG=False, analysis_only=True)
-class DPPYUnsetParForLowererPass(LoweringPass):
-    _name = "dppy_unset_parfor_lower_pass"
-
-    def __init__(self):
-        LoweringPass.__init__(self)
-
-    def run_pass(self, state):
-        # We currently reuse the CPUContext from Numba. Ideally we should
-        # have our own CPUContext but the way @overload is implemented
-        # we can not create our own CPUContext and inherit the overloads.
-        # When we will be able to have our CPUContext we will move the
-        # registration of lowering_extension inside the `init` of our
-        # CPUContext.
-
-        # Reset lowerer for Parfor Node
-        from numba.parfors.parfor_lowering import _lower_parfor_parallel
-
-        # Specify how to lower Parfor nodes using the lower_extensions
-        if hasattr(state.targetctx, "lower_extensions"):
-            state.targetctx.lower_extensions[Parfor] = _lower_parfor_parallel
-        else:
-            raise AttributeError("target_context has no attribute 'lower_extensions'")
-
-        return True
-
-
 @register_pass(mutates_CFG=True, analysis_only=False)
 class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
 
