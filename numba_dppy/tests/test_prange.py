@@ -13,15 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
 import numpy as np
-import numba
 import dpctl
 from numba import njit, prange
-import numba_dppy
 import unittest
-from numba_dppy.testing import expectedFailureIf
-from numba.tests.support import captured_stdout
+from numba_dppy.testing import assert_auto_offloading
 
 
 @unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
@@ -37,12 +33,9 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        old_debug = numba_dppy.compiler.DEBUG
-        numba_dppy.compiler.DEBUG = 1
-        with captured_stdout() as stdout, dpctl.device_context("opencl:gpu"):
+        with assert_auto_offloading(1, 0), dpctl.device_context("opencl:gpu"):
             f(a, b)
 
-        self.assertTrue("Parfor lowered to specified SYCL device" in stdout.getvalue())
         for i in range(4):
             self.assertTrue(b[i, 0] == a[i, 0] * 10)
 
@@ -60,13 +53,9 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        old_debug = numba_dppy.compiler.DEBUG
-        numba_dppy.compiler.DEBUG = 1
-
-        with captured_stdout() as stdout, dpctl.device_context("opencl:gpu"):
+        with assert_auto_offloading(1, 0), dpctl.device_context("opencl:gpu"):
             f(a, b)
 
-        self.assertTrue("Parfor lowered to specified SYCL device" in stdout.getvalue())
         self.assertTrue(np.all(b == 10))
 
     def test_multiple_prange(self):
@@ -88,13 +77,9 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        old_debug = numba_dppy.compiler.DEBUG
-        numba_dppy.compiler.DEBUG = 1
-
-        with captured_stdout() as stdout, dpctl.device_context("opencl:gpu"):
+        with assert_auto_offloading(2, 0), dpctl.device_context("opencl:gpu"):
             f(a, b)
 
-        self.assertTrue("Parfor lowered to specified SYCL device" in stdout.getvalue())
         self.assertTrue(np.all(b == 10))
         self.assertTrue(np.all(a == 10))
 
@@ -116,13 +101,9 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n, o))
         b = np.ones((m, n, o))
 
-        old_debug = numba_dppy.compiler.DEBUG
-        numba_dppy.compiler.DEBUG = 1
-
-        with captured_stdout() as stdout, dpctl.device_context("opencl:gpu"):
+        with assert_auto_offloading(1, 0), dpctl.device_context("opencl:gpu"):
             f(a, b)
 
-        self.assertTrue("Parfor lowered to specified SYCL device" in stdout.getvalue())
         self.assertTrue(np.all(b == 12))
 
     @unittest.skip("numba-dppy issue 110")
@@ -137,30 +118,13 @@ class TestPrange(unittest.TestCase):
 
             return a
 
-        old_debug = numba_dppy.compiler.DEBUG
-        numba_dppy.compiler.DEBUG = 1
-
         jitted = njit(prange_example)
 
-        with captured_stdout() as stdout, dpctl.device_context("opencl:gpu"):
+        with assert_auto_offloading(2, 0), dpctl.device_context("opencl:gpu"):
             jitted_res = jitted()
 
         res = prange_example()
 
-        numba_dppy.compiler.DEBUG = old_debug
-
-        self.assertEqual(
-            stdout.getvalue().count("Parfor lowered to specified SYCL device"),
-            2,
-            stdout.getvalue(),
-        )
-        self.assertEqual(
-            stdout.getvalue().count(
-                "Failed to lower parfor on SYCL device. Falling back to default CPU parallelization."
-            ),
-            0,
-            stdout.getvalue(),
-        )
         np.testing.assert_equal(res, jitted_res)
 
     @unittest.skip("NRT required but not enabled")
@@ -175,30 +139,13 @@ class TestPrange(unittest.TestCase):
 
             return a
 
-        old_debug = numba_dppy.compiler.DEBUG
-        numba_dppy.compiler.DEBUG = 1
-
         jitted = njit(prange_example)
 
-        with captured_stdout() as stdout, dpctl.device_context("opencl:gpu"):
+        with assert_auto_offloading(2, 0), dpctl.device_context("opencl:gpu"):
             jitted_res = jitted()
 
         res = prange_example()
 
-        numba_dppy.compiler.DEBUG = old_debug
-
-        self.assertEqual(
-            stdout.getvalue().count("Parfor lowered to specified SYCL device"),
-            2,
-            stdout.getvalue(),
-        )
-        self.assertEqual(
-            stdout.getvalue().count(
-                "Failed to lower parfor on SYCL device. Falling back to default CPU parallelization."
-            ),
-            0,
-            stdout.getvalue(),
-        )
         np.testing.assert_equal(res, jitted_res)
 
 

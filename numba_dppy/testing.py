@@ -21,6 +21,7 @@ from numba.tests.support import (
     captured_stdout,
     redirect_c_stdout,
 )
+import numba_dppy
 
 
 @contextlib.contextmanager
@@ -76,3 +77,36 @@ def assert_dpnp_implementaion():
         yield
 
     assert "dpnp implementation" in stdout.getvalue(), "dpnp implementation is not used"
+
+
+@contextlib.contextmanager
+def assert_auto_offloading(
+    expected_offloaded_count=-1, expected_not_offloaded_count=-1
+):
+    old_debug = numba_dppy.compiler.DEBUG
+    numba_dppy.compiler.DEBUG = 1
+
+    with captured_stdout() as stdout:
+        yield
+
+    if expected_offloaded_count == -1:
+        # Check if this message is present
+        assert "Parfor lowered to specified SYCL device" in stdout.getvalue()
+    else:
+        got_offloaded_count = stdout.getvalue().count(
+            "Parfor lowered to specified SYCL device"
+        )
+        assert expected_offloaded_count == got_offloaded_count, (
+            "Expected %d parfor(s) to be auto offloaded, instead got %d parfor(s) auto offloaded"
+            % (expected_offloaded_count, got_offloaded_count)
+        )
+
+    # We only check the presence of this message when user specifies the expected frequency of this message
+    if expected_not_offloaded_count != -1:
+        got_not_offloaded_count = stdout.getvalue().count(
+            "Failed to lower parfor on SYCL device. Falling back to default CPU parallelization."
+        )
+        assert expected_not_offloaded_count == got_not_offloaded_count, (
+            "Expected %d parfor(s) to be not auto offloaded, instead got %d parfor(s) not auto offloaded"
+            % (expected_not_offloaded_count, got_not_offloaded_count)
+        )
