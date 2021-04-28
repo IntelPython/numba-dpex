@@ -1252,7 +1252,7 @@ class DPPYLower(Lower):
                 context.lower_extensions[parfor.Parfor] = lower_parfor_rollback
             except Exception as e:
                 if numba_dppy.compiler.DEBUG:
-                    print(e.message)
+                    print(e)
                 pass
 
             self.gpu_lower.lower()
@@ -1270,7 +1270,7 @@ class DPPYLower(Lower):
                 context.lower_extensions[parfor.Parfor] = lower_extension_parfor
             except Exception as e:
                 if numba_dppy.compiler.DEBUG:
-                    print(e.message)
+                    print(e)
                 pass
         except Exception as e:
             if numba_dppy.compiler.DEBUG:
