@@ -44,7 +44,7 @@ class TestParforMessage(unittest.TestCase):
                 jitted()
 
             numba_dppy.compiler.DEBUG = 0
-            self.assertTrue("Parfor lowered on DPPY-device" in got.getvalue())
+            self.assertTrue("Parfor lowered to specified SYCL device" in got.getvalue())
 
 
 if __name__ == "__main__":
