@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import _helper
+from . import _helper
 import dpctl
 import numba
 import numpy as np
@@ -87,7 +87,7 @@ def main():
             run(10)
     else:
         print("Skipping Level Zero GPU execution")
-    print("here...")
+
     # Run the example of an OpenCL CPU device
     if _helper.has_cpu():
         with dpctl.device_context("opencl:cpu") as cpu_queue:

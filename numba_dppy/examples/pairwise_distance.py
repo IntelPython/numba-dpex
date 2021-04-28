@@ -13,8 +13,7 @@
 # limitations under the License.
 
 from time import time
-from numba import int32, float32
-from math import ceil, sqrt
+from math import sqrt
 import numpy as np
 import argparse
 import numba_dppy as dppy
