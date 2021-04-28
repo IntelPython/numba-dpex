@@ -45,29 +45,34 @@ def random_normal(loc, scale, size):
     return np.random.normal(loc, scale, size)
 
 
-size = 9
-scale = 3.0
+def main():
+    size = 9
+    scale = 3.0
 
-try:
-    gpu = dpctl.select_gpu_device()
-    print("Running on the following SYCL GPU device")
-    gpu.print_device_info()
-    with dpctl.device_context(gpu):
-        result = rand()
-        # Random values in a given shape (3, 2)
-        print(result)
+    try:
+        gpu = dpctl.select_gpu_device()
+        print("Running on the following SYCL GPU device")
+        gpu.print_device_info()
+        with dpctl.device_context(gpu):
+            result = rand()
+            # Random values in a given shape (3, 2)
+            print(result)
 
-        result = random_sample(size)
-        # Array of shape (9,) with random floats in the
-        # half-open interval [0.0, 1.0)
-        print(result)
+            result = random_sample(size)
+            # Array of shape (9,) with random floats in the
+            # half-open interval [0.0, 1.0)
+            print(result)
 
-        result = random_exponential(scale, size)
-        # Array of shape (9,) with samples from an exponential distribution
-        print(result)
+            result = random_exponential(scale, size)
+            # Array of shape (9,) with samples from an exponential distribution
+            print(result)
 
-        result = random_normal(0.0, 0.1, size)
-        # Array of shape (9,) with samples from a normal distribution
-        print(result)
-except ValueError:
-    print("No SYCL GPU device found")
+            result = random_normal(0.0, 0.1, size)
+            # Array of shape (9,) with samples from a normal distribution
+            print(result)
+    except ValueError:
+        print("No SYCL GPU device found")
+
+
+if __name__ == "__main__":
+    main()

@@ -33,18 +33,23 @@ print("a:", a, hex(a.ctypes.data))
 print("b:", b, hex(b.ctypes.data))
 
 
-try:
-    device = dpctl.select_gpu_device()
-    with dpctl.device_context(device):
-        print("Offloading to ...")
-        device.print_device_info()
-        c = f1(a, b)
+def main():
+    try:
+        device = dpctl.select_gpu_device()
+        with dpctl.device_context(device):
+            print("Offloading to ...")
+            device.print_device_info()
+            c = f1(a, b)
 
-    print("c:", c, hex(c.ctypes.data))
-    for i in range(N):
-        for j in range(N):
-            if c[i, j] != 2.0:
-                print("First index not equal to 2.0 was", i, j)
-                break
-except ValueError:
-    print("Could not find an SYCL GPU device")
+        print("c:", c, hex(c.ctypes.data))
+        for i in range(N):
+            for j in range(N):
+                if c[i, j] != 2.0:
+                    print("First index not equal to 2.0 was", i, j)
+                    break
+    except ValueError:
+        print("Could not find an SYCL GPU device")
+
+
+if __name__ == "__main__":
+    main()

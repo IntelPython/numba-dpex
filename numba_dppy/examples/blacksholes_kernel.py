@@ -80,27 +80,32 @@ def black_scholes_dppy(callResult, putResult, S, X, T, R, V):
     putResult[i] = X[i] * expRT * (1.0 - cndd2) - S[i] * (1.0 - cndd1)
 
 
-blockdim = 512, 1
-griddim = int(math.ceil(float(OPT_N) / blockdim[0])), 1
+def main():
+    blockdim = 512, 1
+    griddim = int(math.ceil(float(OPT_N) / blockdim[0])), 1
 
-try:
-    gpu = dpctl.select_gpu_device()
-    with dpctl.device_context(gpu):
-        print("Offloading to ...")
-        gpu.print_device_info()
-        time1 = time.time()
-        for i in range(iterations):
-            black_scholes_dppy[blockdim, griddim](
-                callResult,
-                putResult,
-                stockPrice,
-                optionStrike,
-                optionYears,
-                RISKFREE,
-                VOLATILITY,
-            )
-except ValueError:
-    print("No SYCL gpu found")
+    try:
+        gpu = dpctl.select_gpu_device()
+        with dpctl.device_context(gpu):
+            print("Offloading to ...")
+            gpu.print_device_info()
+            time1 = time.time()
+            for i in range(iterations):
+                black_scholes_dppy[blockdim, griddim](
+                    callResult,
+                    putResult,
+                    stockPrice,
+                    optionStrike,
+                    optionYears,
+                    RISKFREE,
+                    VOLATILITY,
+                )
+    except ValueError:
+        print("No SYCL gpu found")
 
-print("callResult : ", callResult)
-print("putResult : ", putResult)
+    print("callResult : \n", callResult)
+    print("putResult : \n", putResult)
+
+
+if __name__ == "__main__":
+    main()
