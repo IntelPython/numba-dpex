@@ -18,7 +18,6 @@ from numba.core.ir_utils import (
     find_topo_order,
     mk_unique_var,
     remove_dead,
-    dead_code_elimination,
     simplify_CFG,
 )
 import numba_dppy
@@ -215,13 +214,13 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
             state, rewrite_function_name_map
         )
 
-        replaced = rewrite_function_name_pass.run()
+        mutated = rewrite_function_name_pass.run()
 
-        if replaced:
+        if mutated:
             remove_dead(state.func_ir.blocks, state.func_ir.arg_names, state.func_ir)
         state.func_ir.blocks = simplify_CFG(state.func_ir.blocks)
 
-        return True
+        return mutated
 
 
 def get_dpnp_func_typ(func):
@@ -328,10 +327,10 @@ class DPPYRewriteNdarrayFunctions(FunctionPass):
             state, rewrite_function_name_map
         )
 
-        replaced = rewrite_ndarray_function_name_pass.run()
+        mutated = rewrite_ndarray_function_name_pass.run()
 
-        if replaced:
+        if mutated:
             remove_dead(state.func_ir.blocks, state.func_ir.arg_names, state.func_ir)
         state.func_ir.blocks = simplify_CFG(state.func_ir.blocks)
 
-        return True
+        return mutated
