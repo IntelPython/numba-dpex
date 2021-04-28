@@ -21,12 +21,13 @@ def mangle_type_or_value(typ):
     Mangle type parameter and arbitrary value.
 
     This function extends Numba's `magle_type_or_value()` to
-    support numba.types.CPointer type.
-    e.g. an `int *` argument will be mangled to "Pi".
+    support numba.types.CPointer type, e.g. an ``int *`` argument will be
+    mangled to "Pi".
     Mangling of extended qualifiers is supported only
     for address space qualifiers. In which case, the mangling
-    follows the rule defined in Section 5.1.5.1 of the Itanium ABI.
-    e.g. an `int global *` argument will be mangeled to "PU3AS1i".
+    follows the rule defined in Section 5.1.5.1 of the ``Itanium ABI
+    <https://itanium-cxx-abi.github.io/cxx-abi/abi.html#mangle.qualified-type>``_.
+    For example, an ``int global *`` argument will be mangeled to "PU3AS1i".
 
     Args:
         typ (numba.types, int, str) : Type to mangle
