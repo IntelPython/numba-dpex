@@ -1245,17 +1245,15 @@ class DPPYLower(Lower):
         # parent function (function with parfor). In case parent function was patched with device specific
         # different solution should be used.
         try:
-            if (
-                hasattr(self.gpu_lower.context, "lower_extensions")
-                and parfor.Parfor in self.gpu_lower.context.lower_extensions
-            ):
-                lower_extension_parfor = self.gpu_lower.context.lower_extensions[
-                    parfor.Parfor
-                ]
-                # Specify how to lower Parfor nodes using the lower_extensions
-                self.gpu_lower.context.lower_extensions[
-                    parfor.Parfor
-                ] = lower_parfor_rollback
+            context = self.gpu_lower.context
+            try:
+                # Only Numba's CPUContext has the `lower_extension` attribute
+                lower_extension_parfor = context.lower_extensions[parfor.Parfor]
+                context.lower_extensions[parfor.Parfor] = lower_parfor_rollback
+            except Exception as e:
+                if numba_dppy.compiler.DEBUG:
+                    print(e.message)
+                pass
 
             self.gpu_lower.lower()
             # if lower dont crash, and parfor_diagnostics is empty then it is kernel
@@ -1268,13 +1266,12 @@ class DPPYLower(Lower):
                 ] = str_name
             self.base_lower = self.gpu_lower
 
-            if (
-                hasattr(self.gpu_lower.context, "lower_extensions")
-                and parfor.Parfor in self.gpu_lower.context.lower_extensions
-            ):
-                self.gpu_lower.context.lower_extensions[
-                    parfor.Parfor
-                ] = lower_extension_parfor
+            try:
+                context.lower_extensions[parfor.Parfor] = lower_extension_parfor
+            except Exception as e:
+                if numba_dppy.compiler.DEBUG:
+                    print(e.message)
+                pass
         except Exception as e:
             if numba_dppy.compiler.DEBUG:
                 print("Failed to lower parfor on DPPY-device. Due to:\n", e)
