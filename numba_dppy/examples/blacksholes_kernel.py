@@ -47,7 +47,7 @@ putResult = -np.ones(OPT_N)
 @dppy.kernel
 def black_scholes_dppy(callResult, putResult, S, X, T, R, V):
     """
-    A simple implementation of the BlackScholes Formula using explicit
+    A simple implementation of the Black-Scholes formula using explicit
     OpenCL-syle kernel programming model.
     """
     i = dppy.get_global_id(0)

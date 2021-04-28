@@ -50,7 +50,7 @@ def main():
                             print("First index not equal to 2.0 was", i, j, k, l)
                             break
     except ValueError:
-        print("Could not find an SYCL GPU device")
+        print("Could not find a SYCL GPU device")
 
 
 if __name__ == "__main__":

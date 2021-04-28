@@ -21,7 +21,7 @@ import numpy as np
 @dppy.kernel
 def data_parallel_sum(a, b, c):
     """
-    A two-dimensional vector addition example using the `kernel` decorator.
+    A two-dimensional vector addition example using the ``kernel`` decorator.
     """
     i = dppy.get_global_id(0)
     j = dppy.get_global_id(1)

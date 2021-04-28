@@ -20,8 +20,8 @@ import dpctl
 @dppy.func
 def a_device_function(a):
     """
-    A `func` is a device callable function that can be invoked from
-    `kernel` and other `func` functions.
+    A ``func`` is a device callable function that can be invoked from
+    ``kernel`` and other ``func`` functions.
     """
     return a + 1
 

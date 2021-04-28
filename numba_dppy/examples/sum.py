@@ -22,7 +22,7 @@ import numpy as np
 @dppy.kernel
 def data_parallel_sum(a, b, c):
     """
-    Vector addition using the `kernel` decorator.
+    Vector addition using the ``kernel`` decorator.
     """
     i = dppy.get_global_id(0)
     c[i] = a[i] + b[i]

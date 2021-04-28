@@ -42,7 +42,7 @@ D = np.empty((args.n, args.n))
 def pairwise_distance(X, D, xshape0, xshape1):
     """
     An Euclidean pairwise distance computation implemented as
-    a `kernel` function.
+    a ``kernel`` function.
     """
     idx = dppy.get_global_id(0)
 

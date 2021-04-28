@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """
-There are multiple ways of implementing reduction using numba-dppy. Here we
+There are multiple ways of implementing reduction using numba_dppy. Here we
 demonstrate another way of implementing reduction using recursion to compute
 partial reductions in separate kernels.
 """

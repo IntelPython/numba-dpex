@@ -30,8 +30,8 @@ def cndf2(inp):
 @numba.njit(parallel=True, fastmath=True)
 def blackscholes(sptprice, strike, rate, volatility, timev):
     """
-    A simple implementation of the BlackScholes Formula using the automatic
-    offload feature of numba-dppy. In this example, each NumPy array
+    A simple implementation of the Black-Scholes formula using the automatic
+    offload feature of numba_dppy. In this example, each NumPy array
     expression is identified as a data-parallel kernel and fused together to
     generate a single SYCL kernel. The kernel is automatically offloaded to
     the device specified where the function is invoked.

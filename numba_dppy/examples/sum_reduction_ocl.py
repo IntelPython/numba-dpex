@@ -21,7 +21,7 @@ import numpy as np
 @dppy.kernel
 def sum_reduction_kernel(A, partial_sums):
     """
-    The example demonstrates a reduction kernel implemented as a `kernel`
+    The example demonstrates a reduction kernel implemented as a ``kernel``
     function.
     """
     local_id = dppy.get_local_id(0)

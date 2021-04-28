@@ -23,7 +23,7 @@ import dpctl
 @dppy.kernel
 def dppy_gemm(a, b, c):
     """
-    A basic DGEMM implemented as a `kernel` function.
+    A basic DGEMM implemented as a ``kernel`` function.
     """
     i = dppy.get_global_id(0)
     j = dppy.get_global_id(1)

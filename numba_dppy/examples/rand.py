@@ -13,11 +13,11 @@
 # limitations under the License.
 
 """
-Numba-dppy can run several of the numpy.random RNG functions called inside
+numba_dppy can run several of the numpy.random RNG functions called inside
 a JIT function on a SYCL device using dpnp
-(https://github.com/IntelPython/dpnp). As with the rest of numba-dppy examples,
-this feature is also available by simply invoking a numba.jit function with
-the numpy.random calls from within a dpctl.device_context scope.
+(https://github.com/IntelPython/dpnp). As with the rest of numba_dppy examples,
+this feature is also available by simply invoking a ``numba.jit`` function with
+the numpy.random calls from within a ``dpctl.device_context``scope.
 """
 
 import numba

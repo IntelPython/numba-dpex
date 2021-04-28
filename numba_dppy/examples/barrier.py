@@ -20,9 +20,9 @@ import dpctl
 
 def no_arg_barrier_support():
     """
-    This example demonstrates the usage of numba-dppy's `barrier`
-    intrinsic function. The `barrier` function is usable only inside
-    a `kernel` and is equivalent to OpenCL's `barrier` function.
+    This example demonstrates the usage of numba_dppy's ``barrier``
+    intrinsic function. The ``barrier`` function is usable only inside
+    a ``kernel`` and is equivalent to OpenCL's ``barrier`` function.
     """
 
     @dppy.kernel
