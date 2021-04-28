@@ -150,7 +150,7 @@ class TestPrange(unittest.TestCase):
         numba_dppy.compiler.DEBUG = old_debug
 
         self.assertEqual(
-            stdout.getvalue().count(""),
+            stdout.getvalue().count("Parfor lowered to specified SYCL device"),
             2,
             stdout.getvalue(),
         )
