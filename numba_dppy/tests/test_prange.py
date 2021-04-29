@@ -13,18 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
+from . import _helper
 import numpy as np
-import numba
 import dpctl
 from numba import njit, prange
 import numba_dppy
 import unittest
-from numba_dppy.testing import expectedFailureIf
 from numba.tests.support import captured_stdout
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
+@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
 class TestPrange(unittest.TestCase):
     def test_one_prange(self):
         @njit

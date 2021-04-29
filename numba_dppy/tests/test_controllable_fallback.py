@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from . import _helper
 import numpy as np
 
 import numba
@@ -21,7 +22,7 @@ import dpctl
 import warnings
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
+@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
 class TestDPPYFallback(unittest.TestCase):
     def test_dppy_fallback_true(self):
         @numba.jit
@@ -39,7 +40,7 @@ class TestDPPYFallback(unittest.TestCase):
 
         numba_dppy.compiler.DEBUG = 1
         with warnings.catch_warnings(record=True) as w:
-            with dpctl.device_context("opencl:gpu") as gpu_queue:
+            with dpctl.device_context("opencl:gpu"):
                 dppy = numba.njit(parallel=True)(inner_call_fallback)
                 dppy_fallback_true = dppy()
 
@@ -70,7 +71,7 @@ class TestDPPYFallback(unittest.TestCase):
             numba_dppy.compiler.DEBUG = 1
             numba_dppy.config.FALLBACK_ON_CPU = 0
             with warnings.catch_warnings(record=True) as w:
-                with dpctl.device_context("opencl:gpu") as gpu_queue:
+                with dpctl.device_context("opencl:gpu"):
                     dppy = numba.njit(parallel=True)(inner_call_fallback)
                     dppy_fallback_false = dppy()
 
