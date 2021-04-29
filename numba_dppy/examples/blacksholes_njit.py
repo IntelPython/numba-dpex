@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from . import _helper
 import dpctl
 import numba
 import numpy as np
@@ -70,32 +69,12 @@ def main():
     args = parser.parse_args()
     options = args.options
 
-    # Run the example of an OpenCL GPU device
-    if _helper.has_gpu():
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
-            print("Offloading to ...")
-            gpu_queue.get_sycl_device().print_device_info()
-            run(10)
-    else:
-        print("Skipping OpenCL GPU execution")
-
-    # Run the example of a Level Zero GPU device
-    if _helper.has_gpu("level_zero"):
-        with dpctl.device_context("level_zero:gpu") as gpu_queue:
-            print("Offloading to ...")
-            gpu_queue.get_sycl_device().print_device_info()
-            run(10)
-    else:
-        print("Skipping Level Zero GPU execution")
-
-    # Run the example of an OpenCL CPU device
-    if _helper.has_cpu():
-        with dpctl.device_context("opencl:cpu") as cpu_queue:
-            print("Offloading to ...")
-            cpu_queue.get_sycl_device().print_device_info()
-            run(10)
-    else:
-        print("Skip OpenCL CPU execution")
+    # Run the example of a deafult GPU device
+    gpu_device = dpctl.select_gpu_device()
+    with dpctl.device_context(gpu_device):
+        print("Offloading to ...")
+        gpu_device.print_device_info()
+        run(10)
 
 
 if __name__ == "__main__":
