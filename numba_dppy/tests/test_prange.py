@@ -33,7 +33,7 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        with assert_auto_offloading(1, 0), dpctl.device_context("opencl:gpu"):
+        with assert_auto_offloading(), dpctl.device_context("opencl:gpu"):
             f(a, b)
 
         for i in range(4):
@@ -53,7 +53,7 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        with assert_auto_offloading(1, 0), dpctl.device_context("opencl:gpu"):
+        with assert_auto_offloading(), dpctl.device_context("opencl:gpu"):
             f(a, b)
 
         self.assertTrue(np.all(b == 10))
@@ -77,7 +77,7 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        with assert_auto_offloading(2, 0), dpctl.device_context("opencl:gpu"):
+        with assert_auto_offloading(parfor_offloaded=2), dpctl.device_context("opencl:gpu"):
             f(a, b)
 
         self.assertTrue(np.all(b == 10))
@@ -101,7 +101,7 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n, o))
         b = np.ones((m, n, o))
 
-        with assert_auto_offloading(1, 0), dpctl.device_context("opencl:gpu"):
+        with assert_auto_offloading(parfor_offloaded=1), dpctl.device_context("opencl:gpu"):
             f(a, b)
 
         self.assertTrue(np.all(b == 12))
@@ -120,7 +120,7 @@ class TestPrange(unittest.TestCase):
 
         jitted = njit(prange_example)
 
-        with assert_auto_offloading(2, 0), dpctl.device_context("opencl:gpu"):
+        with assert_auto_offloading(parfor_offloaded=2), dpctl.device_context("opencl:gpu"):
             jitted_res = jitted()
 
         res = prange_example()
@@ -141,7 +141,7 @@ class TestPrange(unittest.TestCase):
 
         jitted = njit(prange_example)
 
-        with assert_auto_offloading(2, 0), dpctl.device_context("opencl:gpu"):
+        with assert_auto_offloading(parfor_offloaded=2), dpctl.device_context("opencl:gpu"):
             jitted_res = jitted()
 
         res = prange_example()

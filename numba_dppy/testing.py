@@ -81,32 +81,38 @@ def assert_dpnp_implementaion():
 
 @contextlib.contextmanager
 def assert_auto_offloading(
-    expected_offloaded_count=-1, expected_not_offloaded_count=-1
+    parfor_offloaded=1, parfor_offloaded_failure=0
 ):
+    """
+    If ``parfor_offloaded`` is not provided this context_manager
+    will check for 1 occurrance of success message. Developers
+    can always specify how many parfor offload success message
+    is expected.
+    If ``parfor_offloaded_failure`` is not provided the default
+    behavior is to expect 0 failure message, in other words, we
+    expect all parfors present in the code to be successfully
+    offloaded to GPU.
+    """
     old_debug = numba_dppy.compiler.DEBUG
     numba_dppy.compiler.DEBUG = 1
 
     with captured_stdout() as stdout:
         yield
 
-    if expected_offloaded_count == -1:
-        # Check if this message is present
-        assert "Parfor lowered to specified SYCL device" in stdout.getvalue()
-    else:
-        got_offloaded_count = stdout.getvalue().count(
-            "Parfor lowered to specified SYCL device"
-        )
-        assert expected_offloaded_count == got_offloaded_count, (
-            "Expected %d parfor(s) to be auto offloaded, instead got %d parfor(s) auto offloaded"
-            % (expected_offloaded_count, got_offloaded_count)
-        )
+    numba_dppy.compiler.DEBUG = old_debug
 
-    # We only check the presence of this message when user specifies the expected frequency of this message
-    if expected_not_offloaded_count != -1:
-        got_not_offloaded_count = stdout.getvalue().count(
-            "Failed to lower parfor on SYCL device. Falling back to default CPU parallelization."
-        )
-        assert expected_not_offloaded_count == got_not_offloaded_count, (
-            "Expected %d parfor(s) to be not auto offloaded, instead got %d parfor(s) not auto offloaded"
-            % (expected_not_offloaded_count, got_not_offloaded_count)
-        )
+    got_parfor_offloaded = stdout.getvalue().count(
+        "Parfor lowered to specified SYCL device"
+    )
+    assert parfor_offloaded == got_parfor_offloaded, (
+        "Expected %d parfor(s) to be auto offloaded, instead got %d parfor(s) auto offloaded"
+        % (parfor_offloaded, got_parfor_offloaded)
+    )
+
+    got_parfor_offloaded_failure = stdout.getvalue().count(
+        "Failed to lower parfor on SYCL device. Falling back to default CPU parallelization."
+    )
+    assert parfor_offloaded_failure == got_parfor_offloaded_failure, (
+        "Expected %d parfor(s) to be not auto offloaded, instead got %d parfor(s) not auto offloaded"
+        % (parfor_offloaded_failure, got_parfor_offloaded_failure)
+    )
