@@ -319,7 +319,9 @@ def atomic_add_tuple(context, builder, sig, args):
     fn = builder.module.get_or_insert_function(fnty, mangled_fn_name)
     fn.calling_convention = target.CC_SPIR_FUNC
 
-    fn_args = [ptr, context.get_constant(types.int32, 1), context.get_constant(types.int32, 896), val]
+    memory_order = 1
+    memory_scope = 896
+    fn_args = [ptr, context.get_constant(types.int32, memory_order), context.get_constant(types.int32, memory_scope), val]
 
     return builder.call(fn, fn_args)
 
