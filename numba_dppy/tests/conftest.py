@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 # Copyright 2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,13 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-def ensure_dpnp(name):
-    try:
-        # import dpnp
-        from . import dpnp_fptr_interface as dpnp_glue
-    except ImportError:
-        raise ImportError("dpnp is needed to call np.%s" % name)
+import pytest
 
 
-DEBUG = None
+offload_devices = [
+    "opencl:gpu:0",
+    "level0:gpu:0",
+    "opencl:cpu:0",
+]
+
+
+@pytest.fixture(params=offload_devices, scope="module")
+def offload_device(request):
+    return request.param

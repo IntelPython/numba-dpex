@@ -47,6 +47,12 @@ def test_no_copy_usm_shared(capfd):
     targetctx = cpu_target.target_context
     args = typingctx.resolve_argument_type(a)
 
+    try:
+        device = dpctl.SyclDevice("opencl:gpu:0")
+    except ValueError:
+        print("Device not found")
+        exit()
+
     with dpctl.device_context("opencl:gpu:0"):
         cres = compiler.compile_extra(
             typingctx=typingctx,

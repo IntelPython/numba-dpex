@@ -18,7 +18,13 @@ import os
 try:
     import dpctl
 
-    dppy_present = dpctl.has_sycl_platforms() and dpctl.has_gpu_queues()
+    dppy_present = False
+    try:
+        # For the extension to work we should have at least one
+        # non-host SYCL device.
+        dppy_present = not dpctl.select_default_device().is_host
+    except ValueError:
+        dppy_present = False
 except:
     dppy_present = False
 
@@ -36,6 +42,8 @@ def _readenv(name, ctor, default):
     try:
         return ctor(value)
     except Exception:
+        import warnings
+
         warnings.warn(
             "environ %s defined but failed to parse '%s'" % (name, value),
             RuntimeWarning,
