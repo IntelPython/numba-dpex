@@ -22,11 +22,11 @@ from numba import njit
 import pytest
 from numba_dppy.testing import dpnp_debug
 from .dpnp_skip_test import dpnp_skip_test as skip_test
-from numba_dppy.tests.skip_tests import is_gen12
+from numba_dppy.tests._helper import is_gen12
 
 list_of_filter_strs = [
     "opencl:gpu:0",
-    "level0:gpu:0",
+    "level_zero:gpu:0",
     "opencl:cpu:0",
 ]
 

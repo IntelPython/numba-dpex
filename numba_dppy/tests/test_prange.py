@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from . import _helper
 import numpy as np
 import dpctl
 from numba import njit, prange
@@ -20,7 +21,7 @@ import unittest
 from numba_dppy.testing import assert_auto_offloading
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
+@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
 class TestPrange(unittest.TestCase):
     def test_one_prange(self):
         @njit

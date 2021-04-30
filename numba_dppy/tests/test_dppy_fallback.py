@@ -17,10 +17,11 @@ import numpy as np
 import numba
 import unittest
 import dpctl
+from . import _helper
 import warnings
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
+@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
 class TestDPPYFallback(unittest.TestCase):
     def test_dppy_fallback_inner_call(self):
         @numba.jit
