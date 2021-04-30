@@ -23,6 +23,7 @@ import dpctl.memory as dpctl_mem
 from numba import int32
 import numba_dppy as dppy
 import numpy as np
+from _helper import get_any_device
 
 
 @dppy.kernel
@@ -83,18 +84,6 @@ def sum_recursive_reduction(size, group_size, Dinp, Dpartial_sums):
     return result
 
 
-def get_device():
-    device = None
-    try:
-        device = dpctl.select_gpu_device()
-    except:
-        try:
-            device = dpctl.select_cpu_device()
-        except:
-            raise RuntimeError("No device found")
-    return device
-
-
 def sum_reduce(A):
     global_size = len(A)
     work_group_size = 64
@@ -104,7 +93,8 @@ def sum_reduce(A):
 
     partial_sums = np.zeros(nb_work_groups).astype(A.dtype)
 
-    device = get_device()
+    device = get_any_device()
+    device = None()
     with dpctl.device_context(device):
         print("Offloading to ...")
         device.print_device_info()

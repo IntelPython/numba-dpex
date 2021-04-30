@@ -40,7 +40,7 @@ def main():
             # Expected 100, because global_size = 100
             print(a)
     except ValueError:
-        print("No OpenCL GPU found.")
+        print("No SYCL GPU found.")
 
 
 if __name__ == "__main__":

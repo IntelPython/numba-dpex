@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import _helper
+from _helper import has_cpu, has_gpu
 import numpy as np
 import numba_dppy as dppy
 import dpctl
@@ -37,7 +37,7 @@ c = np.ones_like(a)
 
 
 def main():
-    if _helper.has_gpu():
+    if has_gpu():
         with dpctl.device_context("opencl:gpu") as queue:
             print("Offloading to ...")
             queue.get_sycl_device().print_device_info()
@@ -48,7 +48,7 @@ def main():
     else:
         print("Could not find an OpenCL GPU device")
 
-    if _helper.has_cpu():
+    if has_cpu():
         with dpctl.device_context("opencl:cpu") as queue:
             print("Offloading to ...")
             queue.get_sycl_device().print_device_info()
@@ -59,7 +59,7 @@ def main():
     else:
         print("Could not find an OpenCL CPU device")
 
-    if _helper.has_gpu("level_zero"):
+    if has_gpu("level_zero"):
         with dpctl.device_context("level_zero:gpu") as queue:
             print("Offloading to ...")
             queue.get_sycl_device().print_device_info()

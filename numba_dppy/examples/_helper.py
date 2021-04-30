@@ -26,3 +26,15 @@ def has_cpu(backend="opencl"):
 
 def has_sycl_platforms():
     return bool(len(dpctl.get_platforms()))
+
+
+def get_any_device():
+    device = None
+    try:
+        device = dpctl.select_gpu_device()
+    except:
+        try:
+            device = dpctl.select_cpu_device()
+        except:
+            raise RuntimeError("No device found")
+    return device
