@@ -80,9 +80,7 @@ def assert_dpnp_implementaion():
 
 
 @contextlib.contextmanager
-def assert_auto_offloading(
-    parfor_offloaded=1, parfor_offloaded_failure=0
-):
+def assert_auto_offloading(parfor_offloaded=1, parfor_offloaded_failure=0):
     """
     If ``parfor_offloaded`` is not provided this context_manager
     will check for 1 occurrance of success message. Developers
