@@ -1,4 +1,4 @@
-# Copyright 2021 Intel Corporation
+# Copyright 2020, 2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
-import math
-import numba_dppy as dppy
 import dpctl
+import math
+import numpy as np
+import numba_dppy as dppy
 
 
 @dppy.kernel
@@ -27,13 +27,16 @@ def sum_reduction_kernel(A, R, stride):
     A[i] = R[i]
 
 
-def get_context():
-    if dpctl.has_gpu_queues():
-        return "opencl:gpu"
-    elif dpctl.has_cpu_queues():
-        return "opencl:cpu"
-    else:
-        raise RuntimeError("No device found")
+def get_device():
+    device = None
+    try:
+        device = dpctl.select_gpu_device()
+    except:
+        try:
+            device = dpctl.select_cpu_device()
+        except:
+            raise RuntimeError("No device found")
+    return device
 
 
 def sum_reduce(A):
@@ -42,8 +45,10 @@ def sum_reduce(A):
     # max size will require half the size of A to store sum
     R = np.array(np.random.random(math.ceil(total / 2)), dtype=A.dtype)
 
-    context = get_context()
-    with dpctl.device_context(context):
+    device = get_device()
+    with dpctl.device_context(device):
+        print("Offloading to ...")
+        device.print_device_info()
         while total > 1:
             global_size = total // 2
             sum_reduction_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](

@@ -15,15 +15,16 @@
 
 from __future__ import print_function
 from timeit import default_timer as time
-
-import sys
 import numpy as np
-import numba_dppy, numba_dppy as dppy
+import numba_dppy as dppy
 import dpctl
 
 
 @dppy.kernel
 def dppy_gemm(a, b, c):
+    """
+    A basic DGEMM implemented as a ``kernel`` function.
+    """
     i = dppy.get_global_id(0)
     j = dppy.get_global_id(1)
     if i >= c.shape[0] or j >= c.shape[1]:
@@ -33,7 +34,7 @@ def dppy_gemm(a, b, c):
         c[i, j] += a[i, k] * b[k, j]
 
 
-# Array dimesnions
+# Array dimensions
 X = 1024
 Y = 16
 global_size = X, X
@@ -52,17 +53,25 @@ def main():
     b = np.array(np.random.random(X * X), dtype=np.float32).reshape(X, X)
     c = np.ones_like(a).reshape(X, X)
 
-    if dpctl.has_gpu_queues():
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
+    try:
+        gpu = dpctl.select_gpu_device()
+        print("Running on the following SYCL GPU device")
+        gpu.print_device_info()
+        with dpctl.device_context(gpu):
             driver(a, b, c)
-    elif dpctl.has_cpu_queues():
-        with dpctl.device_context("opencl:cpu") as cpu_queue:
-            driver(a, b, c)
-    else:
-        print("No device found")
-        exit()
+    except ValueError:
+        print("No SYCL GPU device found")
 
-    # Host compute using standard Numpy
+    try:
+        cpu = dpctl.select_cpu_device()
+        print("Running on the following SYCL CPU device")
+        cpu.print_device_info()
+        with dpctl.device_context(cpu):
+            driver(a, b, c)
+    except ValueError:
+        print("No SYCL CPU device found")
+
+    # Host compute using standard NumPy
     Amat = np.matrix(a)
     Bmat = np.matrix(b)
     Cans = Amat * Bmat
