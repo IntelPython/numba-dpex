@@ -15,11 +15,12 @@
 
 import numpy as np
 from numba import njit, vectorize
+from . import _helper
 import dpctl
 import unittest
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
+@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
 class TestVectorize(unittest.TestCase):
     def test_vectorize(self):
         @vectorize(nopython=True)

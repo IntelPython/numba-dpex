@@ -7,7 +7,7 @@ Installation
 ``numba-dppy`` depends on following components:
 
 * numba 0.52.* (`Intel Python Numba`_)
-* dpctl 0.6.* (`Intel Python dpctl`_)
+* dpctl 0.7.* (`Intel Python dpctl`_)
 * dpnp >=0.5.1 (optional, `Intel Python DPNP`_)
 * `llvm-spirv`_ (SPIRV generation from LLVM IR)
 * `llvmdev`_ (LLVM IR generation)
