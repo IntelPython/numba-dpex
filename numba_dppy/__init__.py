@@ -524,12 +524,12 @@ from .config import dppy_present
 if dppy_present:
     from .device_init import *
 else:
-    raise ImportError("Importing numba-dppy failed")
+    raise ImportError("Importing numba_dppy failed")
 
 
 def test(*args, **kwargs):
     if not dppy_present and not is_available():
-        dppy_error()
+        raise RuntimeError("numba-dppy could not be imported")
 
     return numba.testing.test("numba_dppy.tests", *args, **kwargs)
 

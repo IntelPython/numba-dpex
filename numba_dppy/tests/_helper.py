@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 # Copyright 2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +16,38 @@
 import dpctl
 
 
+def has_gpu_queues(backend="opencl"):
+    """
+    Checks if dpctl is able to select a GPU device that defaults to
+    an OpenCL GPU.
+    """
+    return bool(dpctl.get_num_devices(backend=backend, device_type="gpu"))
+
+
+def has_cpu_queues(backend="opencl"):
+    """
+    Checks if dpctl is able to select a CPU device that defaults to
+    an OpenCL CPU.
+    """
+    return bool(dpctl.get_num_devices(backend=backend, device_type="cpu"))
+
+
+def has_sycl_platforms():
+    """
+    Checks if dpctl is able to identify a non-host SYCL platform.
+    """
+    platforms = dpctl.get_platforms()
+    for p in platforms:
+        if not p.backend is dpctl.backend_type.host:
+            return True
+    return False
+
+
 def is_gen12(device_type):
     with dpctl.device_context(device_type):
         q = dpctl.get_current_queue()
         device = q.get_sycl_device()
-        name = device.get_device_name()
+        name = device.name
         if "Gen12" in name:
             return True
 
@@ -32,7 +60,7 @@ def platform_not_supported(device_type):
     platform = platform.system()
     device = device_type.split(":")[0]
 
-    if device == "level0" and platform == "Windows":
+    if device == "level_zero" and platform == "Windows":
         return True
 
     return False

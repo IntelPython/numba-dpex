@@ -543,7 +543,7 @@ def _create_gufunc_for_parfor_body(
     diagnostics.hoist_info[parfor.id] = {"hoisted": hoisted, "not_hoisted": not_hoisted}
 
     lowerer.metadata["parfor_diagnostics"].extra_info[str(parfor.id)] = str(
-        dpctl.get_current_queue().get_sycl_device().get_device_name()
+        dpctl.get_current_queue().get_sycl_device().name
     )
 
     if config.DEBUG_ARRAY_OPT:
@@ -1249,9 +1249,7 @@ class DPPYLower(Lower):
             self.gpu_lower.lower()
             # if lower dont crash, and parfor_diagnostics is empty then it is kernel
             if not self.gpu_lower.metadata["parfor_diagnostics"].extra_info:
-                str_name = str(
-                    dpctl.get_current_queue().get_sycl_device().get_device_name()
-                )
+                str_name = str(dpctl.get_current_queue().get_sycl_device().name)
                 self.gpu_lower.metadata["parfor_diagnostics"].extra_info[
                     "kernel"
                 ] = str_name
@@ -1288,10 +1286,16 @@ def lower_parfor_rollback(lowerer, parfor):
     try:
         _lower_parfor_gufunc(lowerer, parfor)
         if numba_dppy.compiler.DEBUG:
-            msg = "Parfor lowered on DPPY-device"
+            msg = "Parfor lowered to specified SYCL device"
             print(msg, parfor.loc)
     except Exception as e:
-        msg = "Failed to lower parfor on DPPY-device.\nTo see details set environment variable NUMBA_DPPY_DEBUG=1"
+        msg = (
+            "Failed to lower parfor to the specified SYCL device. Falling "
+            "back to default CPU parallelization."
+        )
+        if not numba_dppy.compiler.DEBUG:
+            msg += " Set NUMBA_DPPY_DEBUG=1 for more details."
+
         warnings.warn(NumbaPerformanceWarning(msg, parfor.loc))
         raise e
 

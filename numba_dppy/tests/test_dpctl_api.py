@@ -14,11 +14,12 @@
 
 import pytest
 import dpctl
+from numba_dppy.tests._helper import skip_test
 
 
 list_of_filter_strs = [
     "opencl:gpu:0",
-    "level0:gpu:0",
+    "level_zero:gpu:0",
     "opencl:cpu:0",
 ]
 
@@ -29,12 +30,11 @@ def filter_str(request):
 
 
 def test_dpctl_api(filter_str):
-    with dpctl.device_context(filter_str) as gpu_queue:
-        dpctl.dump()
+    if skip_test(filter_str):
+        pytest.skip()
+
+    with dpctl.device_context(filter_str):
+        dpctl.lsplatform()
         dpctl.get_current_queue()
-        dpctl.get_num_platforms()
         dpctl.get_num_activated_queues()
-        dpctl.has_cpu_queues()
-        dpctl.has_gpu_queues()
-        dpctl.has_sycl_platforms()
         dpctl.is_in_device_context()

@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-# Copyright 2021 Intel Corporation
+# Copyright 2020, 2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,18 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function
-from timeit import default_timer as time
-
-import sys
-import numpy as np
-import numpy.testing as testing
-import numba_dppy, numba_dppy as dppy
 import dpctl
+import numpy.testing as testing
+import numba_dppy as dppy
+import numpy as np
 
 
 @dppy.kernel
 def data_parallel_sum(a, b, c):
+    """
+    Vector addition using the ``kernel`` decorator.
+    """
     i = dppy.get_global_id(0)
     c[i] = a[i] + b[i]
 
@@ -47,24 +46,24 @@ def main():
     b = np.array(np.random.random(N), dtype=np.float32)
     c = np.ones_like(a)
 
-    if dpctl.has_gpu_queues():
-        print("\nScheduling on OpenCL GPU\n")
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
+    try:
+        device = dpctl.select_gpu_device()
+        print("Scheduling on ...")
+        device.print_device_info()
+        with dpctl.device_context(device):
             driver(a, b, c, global_size)
-    else:
-        print("\nSkip scheduling on OpenCL GPU\n")
-    if dpctl.has_gpu_queues(dpctl.backend_type.level_zero):
-        print("\nScheduling on Level Zero GPU\n")
-        with dpctl.device_context("level0:gpu") as gpu_queue:
+    except ValueError:
+        print("Failed to schedule on a SYCL GPU device")
+
+    try:
+        device = dpctl.select_cpu_device()
+        print("Scheduling on ...")
+        device.print_device_info()
+        with dpctl.device_context(device):
             driver(a, b, c, global_size)
-    else:
-        print("\nSkip scheduling on Level Zero GPU\n")
-    if dpctl.has_cpu_queues():
-        print("\nScheduling on OpenCL CPU\n")
-        with dpctl.device_context("opencl:cpu") as cpu_queue:
-            driver(a, b, c, global_size)
-    else:
-        print("\nSkip scheduling on OpenCL CPU\n")
+    except ValueError:
+        print("Failed to schedule on a SYCL CPU device")
+
     print("Done...")
 
 

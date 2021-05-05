@@ -1,4 +1,4 @@
-# Copyright 2021 Intel Corporation
+# Copyright 2020, 2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,15 +13,18 @@
 # limitations under the License.
 
 import numpy as np
-
-import unittest
 from numba import float32
-import numba_dppy, numba_dppy as dppy
+import numba_dppy as dppy
 import dpctl
 
 
 def no_arg_barrier_support():
-    # @dppy.kernel("void(float32[::1])")
+    """
+    This example demonstrates the usage of numba_dppy's ``barrier``
+    intrinsic function. The ``barrier`` function is usable only inside
+    a ``kernel`` and is equivalent to OpenCL's ``barrier`` function.
+    """
+
     @dppy.kernel
     def twice(A):
         i = dppy.get_global_id(0)
@@ -34,17 +37,26 @@ def no_arg_barrier_support():
     arr = np.arange(N).astype(np.float32)
     print(arr)
 
-    with dpctl.device_context("opencl:gpu") as gpu_queue:
-        twice[N, dppy.DEFAULT_LOCAL_SIZE](arr)
-
-    # there arr should be original arr * 2, i.e. [0, 2, 4, 6, ...]
+    try:
+        gpu = dpctl.select_gpu_device()
+        with dpctl.device_context(gpu):
+            print("Offloading to ...")
+            gpu.print_device_info()
+            twice[N, dppy.DEFAULT_LOCAL_SIZE](arr)
+    except ValueError:
+        print("No SYCL GPU found")
+    # the output should be `arr * 2, i.e. [0, 2, 4, 6, ...]`
     print(arr)
 
 
 def local_memory():
+    """
+    This example demonstrates the usage of numba-dppy's `local.array`
+    intrinsic function. The function is used to create a static array
+    allocated on the devices local address space.
+    """
     blocksize = 10
 
-    # @dppy.kernel("void(float32[::1])")
     @dppy.kernel
     def reverse_array(A):
         lm = dppy.local.array(shape=10, dtype=float32)
@@ -60,10 +72,15 @@ def local_memory():
     arr = np.arange(blocksize).astype(np.float32)
     print(arr)
 
-    with dpctl.device_context("opencl:gpu") as gpu_queue:
-        reverse_array[blocksize, dppy.DEFAULT_LOCAL_SIZE](arr)
-
-    # there arr should be orig[::-1] + orig, i.e. [9, 9, 9, ...]
+    try:
+        gpu = dpctl.select_gpu_device()
+        with dpctl.device_context(gpu):
+            print("Offloading to ...")
+            gpu.print_device_info()
+            reverse_array[blocksize, dppy.DEFAULT_LOCAL_SIZE](arr)
+    except ValueError:
+        print("No SYCL GPU found")
+    # the output should be `orig[::-1] + orig, i.e. [9, 9, 9, ...]``
     print(arr)
 
 
