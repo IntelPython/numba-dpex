@@ -22,7 +22,7 @@ import tempfile
 
 from numba import config
 from numba_dppy import config as dppy_config
-from numba_dppy.target import LINK_ATOMIC
+from numba_dppy.target import LINK_ATOMIC, LLVM_SPIRV_ARGS
 
 
 def _raise_bad_env_path(msg, path, extra=None):
@@ -77,7 +77,7 @@ class CmdLine(object):
             ]
         )
 
-    def generate(self, ipath, opath):
+    def generate(self, ipath, opath, llvm_spirv_args):
         # DRD : Temporary hack to get SPIR-V code generation to work.
         # The opt step is needed for:
         #     a) generate a bitcode file from the text IR file
@@ -86,17 +86,12 @@ class CmdLine(object):
         opt_level_option = f"-O{config.OPT}"
 
         check_call(["opt", opt_level_option, "-o", ipath + ".bc", ipath])
-        # check_call(["llvm-spirv", "-o", opath, ipath + ".bc"])
-        check_call(
-            [
-                # "/opt/intel/oneapi/compiler/2021.2.0/linux/bin/llvm-spirv",
-                "/localdisk/work/rhoque/custom_dpcpp/bin/llvm-spirv",
-                "--spirv-ext=+SPV_EXT_shader_atomic_float_add",
-                "-o",
-                opath,
-                ipath + ".bc",
-            ]
-        )
+
+        llvm_spirv_call_args = ["llvm-spirv"]
+        if llvm_spirv_args is not None:
+            llvm_spirv_call_args += llvm_spirv_args
+        llvm_spirv_call_args += ["-o", opath, ipath + ".bc"]
+        check_call(llvm_spirv_call_args)
 
         if dppy_config.SAVE_IR_FILES == 0:
             os.unlink(ipath + ".bc")
@@ -159,15 +154,21 @@ class Module(object):
 
         # Generate SPIR-V from "friendly" LLVM-based SPIR 2.0
         spirv_path = self._track_temp_file("generated-spirv")
-        self._cmd.generate(ipath=self._llvmfile, opath=spirv_path)
 
         binary_paths = [spirv_path]
-        for key in list(self.context.link_binaries.keys()):
-            del self.context.link_binaries[key]
+        llvm_spirv_args = None
+        for key in list(self.context.extra_compile_options.keys()):
             if key == LINK_ATOMIC:
                 from .ocl.atomics import get_atomic_spirv_path
 
                 binary_paths.append(get_atomic_spirv_path())
+            if key == LLVM_SPIRV_ARGS:
+                llvm_spirv_args = self.context.extra_compile_options[key]
+            del self.context.extra_compile_options[key]
+
+        self._cmd.generate(
+            ipath=self._llvmfile, opath=spirv_path, llvm_spirv_args=llvm_spirv_args
+        )
 
         if len(binary_paths) > 1:
             spirv_path = self._track_temp_file("linked-spirv")

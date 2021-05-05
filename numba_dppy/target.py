@@ -67,6 +67,7 @@ SPIR_VERSION = (2, 0)
 
 
 LINK_ATOMIC = 111
+LLVM_SPIRV_ARGS = 112
 
 
 class GenericPointerModel(datamodel.PrimitiveModel):
@@ -102,7 +103,7 @@ class DPPYTargetContext(BaseContext):
         )
         # Override data model manager to SPIR model
         self.data_model_manager = spirv_data_model_manager
-        self.link_binaries = dict()
+        self.extra_compile_options = dict()
 
         from numba.np.ufunc_db import _lazy_init_db
         import copy
