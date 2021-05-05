@@ -147,7 +147,6 @@ class atomic(Stub):
         .. note:: Supported on int32, int64, float32, float64 operands only.
         """
 
-    '''
     def sub():
         """sub(ary, idx, val)
 
@@ -157,4 +156,3 @@ class atomic(Stub):
 
         .. note:: Supported on int32, int64, float32, float64 operands only.
         """
-    '''

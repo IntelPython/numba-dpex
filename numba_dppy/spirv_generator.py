@@ -86,8 +86,17 @@ class CmdLine(object):
         opt_level_option = f"-O{config.OPT}"
 
         check_call(["opt", opt_level_option, "-o", ipath + ".bc", ipath])
-        #check_call(["llvm-spirv", "-o", opath, ipath + ".bc"])
-        check_call(["/opt/intel/oneapi/compiler/2021.2.0/linux/bin/llvm-spirv", "--spirv-ext=+SPV_EXT_shader_atomic_float_add", "-o", opath, ipath + ".bc"])
+        # check_call(["llvm-spirv", "-o", opath, ipath + ".bc"])
+        check_call(
+            [
+                # "/opt/intel/oneapi/compiler/2021.2.0/linux/bin/llvm-spirv",
+                "/localdisk/work/rhoque/custom_dpcpp/bin/llvm-spirv",
+                "--spirv-ext=+SPV_EXT_shader_atomic_float_add",
+                "-o",
+                opath,
+                ipath + ".bc",
+            ]
+        )
 
         if dppy_config.SAVE_IR_FILES == 0:
             os.unlink(ipath + ".bc")

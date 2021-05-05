@@ -29,6 +29,7 @@ from numba.core.itanium_mangler import mangle_c, mangle, mangle_type
 from numba_dppy import target
 from . import stubs
 from numba_dppy.codegen import SPIR_DATA_LAYOUT
+from numba_dppy.ocl.atomics import atomic_helper
 
 
 registry = Registry()
@@ -260,10 +261,7 @@ def insert_and_call_atomic_fn(
     return builder.call(fn, [generic_ptr, val])
 
 
-@lower(stubs.atomic.add, types.Array, types.intp, types.Any)
-@lower(stubs.atomic.add, types.Array, types.UniTuple, types.Any)
-@lower(stubs.atomic.add, types.Array, types.Tuple, types.Any)
-def atomic_add_tuple(context, builder, sig, args):
+def atomic_add(context, builder, sig, args):
     aryty, indty, valty = sig.args
     ary, inds, val = args
     dtype = aryty.dtype
@@ -288,16 +286,12 @@ def atomic_add_tuple(context, builder, sig, args):
     lary = context.make_array(aryty)(context, builder, ary)
     ptr = cgutils.get_item_pointer(context, builder, aryty, lary, indices)
 
-    name = ""
-
-    if dtype == types.float32:
+    if dtype == types.float32 or dtype == types.float64:
         name = "__spirv_AtomicFAddEXT"
-    if dtype == types.float64:
-        name = "__spirv_AtomicFAddEXT"
-    if dtype == types.int32:
+    elif dtype == types.int32 or dtype == types.int64:
         name = "__spirv_AtomicIAdd"
-    if dtype == types.int64:
-        name = "__spirv_AtomicIAdd"
+    else:
+        raise TypeError("Unsupported type")
 
     assert name != ""
 
@@ -308,24 +302,76 @@ def atomic_add_tuple(context, builder, sig, args):
     else:
         ptr_type.addrspace = target.SPIR_LOCAL_ADDRSPACE
     retty = context.get_value_type(sig.return_type)
-    spirv_fn_arg_types = [ptr_type, ir.IntType(32), ir.IntType(32), context.get_value_type(sig.args[2])]
+    spirv_fn_arg_types = [
+        ptr_type,
+        ir.IntType(32),
+        ir.IntType(32),
+        context.get_value_type(sig.args[2]),
+    ]
 
     from numba_dppy import extended_numba_itanium_mangler as ext_itanium_mangler
 
     numba_ptr_ty = types.CPointer(dtype, addrspace=ptr_type.addrspace)
-    mangled_fn_name = ext_itanium_mangler.mangle(name, [numba_ptr_ty,  "__spv.Scope.Flag", "__spv.MemorySemanticsMask.Flag", valty])
+    mangled_fn_name = ext_itanium_mangler.mangle(
+        name,
+        [numba_ptr_ty, "__spv.Scope.Flag", "__spv.MemorySemanticsMask.Flag", valty],
+    )
 
     fnty = ir.FunctionType(retty, spirv_fn_arg_types)
     fn = builder.module.get_or_insert_function(fnty, mangled_fn_name)
     fn.calling_convention = target.CC_SPIR_FUNC
 
-    memory_order = 1
-    memory_scope = 896
-    fn_args = [ptr, context.get_constant(types.int32, memory_order), context.get_constant(types.int32, memory_scope), val]
+    sycl_memory_order = atomic_helper.sycl_memory_order.relaxed
+    sycl_memory_scope = atomic_helper.sycl_memory_scope.device
+    spirv_scope = atomic_helper.get_scope(sycl_memory_scope)
+    spirv_memory_semantics_mask = atomic_helper.get_memory_semantics_mask(
+        sycl_memory_order
+    )
+    fn_args = [
+        ptr,
+        context.get_constant(types.int32, spirv_scope),
+        context.get_constant(types.int32, spirv_memory_semantics_mask),
+        val,
+    ]
 
     return builder.call(fn, fn_args)
 
-'''
+
+@lower(stubs.atomic.add, types.Array, types.intp, types.Any)
+@lower(stubs.atomic.add, types.Array, types.UniTuple, types.Any)
+@lower(stubs.atomic.add, types.Array, types.Tuple, types.Any)
+def atomic_add_tuple(context, builder, sig, args):
+    return atomic_add(context, builder, sig, args)
+
+
+@lower(stubs.atomic.sub, types.Array, types.intp, types.Any)
+@lower(stubs.atomic.sub, types.Array, types.UniTuple, types.Any)
+@lower(stubs.atomic.sub, types.Array, types.Tuple, types.Any)
+def atomic_sub_tuple(context, builder, sig, args):
+    val = args[2]
+    # dpcpp yet does not support ``__spirv_AtomicFSubEXT``. To support atomic.sub we
+    # reuse atomic.add and negate the value. For example, atomic.add(A, index, -val) is
+    # equivalent to atomic.sub(A, index, val).
+    new_val = cgutils.alloca_once(
+        builder,
+        context.get_value_type(sig.args[2]),
+        size=context.get_constant(types.uintp, 1),
+        name="new_val_0",
+    )
+    dtype = sig.args[2]
+    if dtype == types.float32 or dtype == types.float64:
+        builder.store(builder.fmul(val, context.get_constant(sig.args[2], -1)), new_val)
+    elif dtype == types.int32 or dtype == types.int64:
+        builder.store(builder.mul(val, context.get_constant(sig.args[2], -1)), new_val)
+    else:
+        raise TypeError("Unsupported type")
+
+    args[2] = builder.load(new_val)
+
+    return atomic_add(context, builder, sig, args)
+
+
+"""
 def atomic_add_tuple(context, builder, sig, args):
     from .atomics import atomic_support_present
 
@@ -437,7 +483,7 @@ def atomic_sub_tuple(context, builder, sig, args):
             )
     else:
         raise ImportError("Atomic support is not present, can not perform atomic_add")
-'''
+"""
 
 
 @lower(stubs.local.array, types.IntegerLiteral, types.Any)
