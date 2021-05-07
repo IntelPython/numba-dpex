@@ -48,11 +48,19 @@ from . import target
 
 
 def is_available():
-    """Returns a boolean to indicate the availability of a OpenCL GPU.
+    """Returns a boolean indicating if dpctl could find a default device.
 
-    This will initialize the driver if it hasn't been initialized.
+    A valueError is thrown by dpctl if no default device is found and it
+    implies that numba-dppy cannot create a SYCL queue to compile kernels.
+
+    Returns:
+        bool: True if a default SYCL device is found, otherwise False.
     """
-    return dpctl.has_gpu_queues()
+    try:
+        d = dpctl.select_default_device()
+        return not d.is_host
+    except ValueError:
+        return False
 
 
 initialize.initialize_all()

@@ -16,11 +16,9 @@
 import unittest
 import numpy as np
 import numba
-from numba import njit, typeof
-import numba_dppy, numba_dppy as dppy
+from numba import typeof
+import numba_dppy
 from numba_dppy.testing import ensure_dpnp
-
-
 from numba.core import compiler, typing, cpu
 from numba_dppy.rename_numpy_functions_pass import (
     DPPYRewriteOverloadedNumPyFunctions,
@@ -42,7 +40,6 @@ class MyPipeline(object):
         self.state.status = None
         self.state.lifted = dict()
         self.state.lifted_from = None
-
         self.state.typingctx.refresh()
         self.state.targetctx.refresh()
 
@@ -94,7 +91,7 @@ class TestRenameNumpyFunctionsPass(unittest.TestCase):
         self.assertTrue(check_equivalent(expected_ir, pipeline.state.func_ir))
 
 
-@unittest.skipUnless(ensure_dpnp(), "test only when dpNP is available")
+@unittest.skipUnless(ensure_dpnp(), "test only when dpnp is available")
 class TestRenameNdarrayFunctionsPass(unittest.TestCase):
     def test_rename_ndarray(self):
         def expected(a):

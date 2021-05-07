@@ -1,4 +1,4 @@
-# Copyright 2021 Intel Corporation
+# Copyright 2020, 2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,13 +22,16 @@ def ufunc_kernel(x, y):
     return x + y
 
 
-def get_context():
-    if dpctl.has_gpu_queues():
-        return "opencl:gpu"
-    elif dpctl.has_cpu_queues():
-        return "opencl:cpu"
-    else:
-        raise RuntimeError("No device found")
+def get_device():
+    device = None
+    try:
+        device = dpctl.select_gpu_device()
+    except:
+        try:
+            device = dpctl.select_cpu_device()
+        except:
+            raise RuntimeError("No device found")
+    return device
 
 
 def test_ufunc():
@@ -38,8 +41,8 @@ def test_ufunc():
     A = np.arange(N, dtype=dtype)
     B = np.arange(N, dtype=dtype) * 10
 
-    context = get_context()
-    with dpctl.device_context(context):
+    device = get_device()
+    with dpctl.device_context(device):
         C = ufunc_kernel(A, B)
 
     print(C)

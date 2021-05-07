@@ -14,12 +14,13 @@
 
 import numpy as np
 
-import numba_dppy, numba_dppy as dppy
+import numba_dppy as dppy
 import unittest
 import dpctl
+from . import _helper
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
+@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
 class TestDPPYFunc(unittest.TestCase):
     N = 257
 
@@ -36,7 +37,7 @@ class TestDPPYFunc(unittest.TestCase):
         a = np.ones(self.N)
         b = np.ones(self.N)
 
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
+        with dpctl.device_context("opencl:gpu"):
             f[self.N, dppy.DEFAULT_LOCAL_SIZE](a, b)
 
         self.assertTrue(np.all(b == 2))
@@ -59,7 +60,7 @@ class TestDPPYFunc(unittest.TestCase):
         a = np.ones(self.N)
         b = np.ones(self.N)
 
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
+        with dpctl.device_context("opencl:gpu"):
             f[self.N, dppy.DEFAULT_LOCAL_SIZE](a, b)
 
             self.assertTrue(np.all(b == 2))

@@ -17,6 +17,7 @@ from llvmlite.llvmpy import core as lc
 
 from numba.core.codegen import BaseCPUCodegen, CodeLibrary
 from numba.core import utils
+from numba import config
 
 
 SPIR_TRIPLE = {32: " spir-unknown-unknown", 64: "spir64-unknown-unknown"}
@@ -40,7 +41,10 @@ class SPIRVCodeLibrary(CodeLibrary):
     def _optimize_final_module(self):
         # Run some lightweight optimization to simplify the module.
         pmb = ll.PassManagerBuilder()
-        pmb.opt_level = 1
+
+        # Make optimization level depending on config.OPT variable
+        pmb.opt_level = config.OPT
+
         pmb.disable_unit_at_a_time = False
         pmb.disable_unroll_loops = True
         pmb.loop_vectorize = False

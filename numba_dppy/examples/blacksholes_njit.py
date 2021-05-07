@@ -1,7 +1,17 @@
+# Copyright 2020, 2021 Intel Corporation
 #
-# Copyright (c) 2017 Intel Corporation
-# SPDX-License-Identifier: BSD-2-Clause
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import dpctl
 import numba
 import numpy as np
@@ -18,6 +28,13 @@ def cndf2(inp):
 
 @numba.njit(parallel=True, fastmath=True)
 def blackscholes(sptprice, strike, rate, volatility, timev):
+    """
+    A simple implementation of the Black-Scholes formula using the automatic
+    offload feature of numba_dppy. In this example, each NumPy array
+    expression is identified as a data-parallel kernel and fused together to
+    generate a single SYCL kernel. The kernel is automatically offloaded to
+    the device specified where the function is invoked.
+    """
     logterm = np.log(sptprice / strike)
     powterm = 0.5 * volatility * volatility
     den = volatility * np.sqrt(timev)
@@ -52,24 +69,12 @@ def main():
     args = parser.parse_args()
     options = args.options
 
-    if dpctl.has_gpu_queues():
-        print("\nScheduling on OpenCL GPU\n")
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
-            run(10)
-    else:
-        print("\nSkip scheduling on OpenCL GPU\n")
-    # if dpctl.has_gpu_queues(dpctl.backend_type.level_zero):
-    #    print("\nScheduling on Level Zero GPU\n")
-    #    with dpctl.device_context("level0:gpu") as gpu_queue:
-    #        run(10)
-    # else:
-    #    print("\nSkip scheduling on Level Zero GPU\n")
-    if dpctl.has_cpu_queues():
-        print("\nScheduling on OpenCL CPU\n")
-        with dpctl.device_context("opencl:cpu") as cpu_queue:
-            run(10)
-    else:
-        print("\nSkip scheduling on OpenCL CPU\n")
+    # Run the example of a deafult GPU device
+    gpu_device = dpctl.select_gpu_device()
+    with dpctl.device_context(gpu_device):
+        print("Offloading to ...")
+        gpu_device.print_device_info()
+        run(10)
 
 
 if __name__ == "__main__":
