@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-# Copyright 2021 Intel Corporation
+# Copyright 2020, 2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,17 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function
-from timeit import default_timer as time
-
-import sys
-import numpy as np
-import numba_dppy, numba_dppy as dppy
 import dpctl
+import numba_dppy as dppy
+import numpy as np
 
 
 @dppy.kernel
 def data_parallel_sum(a, b, c):
+    """
+    A two-dimensional vector addition example using the ``kernel`` decorator.
+    """
     i = dppy.get_global_id(0)
     j = dppy.get_global_id(1)
     c[i, j] = a[i, j] + b[i, j]
@@ -37,7 +36,7 @@ def driver(a, b, c, global_size):
 
 
 def main():
-    # Array dimesnions
+    # Array dimensions
     X = 8
     Y = 8
     global_size = X, Y
@@ -46,15 +45,23 @@ def main():
     b = np.array(np.random.random(X * Y), dtype=np.float32).reshape(X, Y)
     c = np.ones_like(a).reshape(X, Y)
 
-    if dpctl.has_gpu_queues():
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
+    try:
+        device = dpctl.select_gpu_device()
+        print("Scheduling on ...")
+        device.print_device_info()
+        with dpctl.device_context(device):
             driver(a, b, c, global_size)
-    elif dpctl.has_cpu_queues():
-        with dpctl.device_context("opencl:cpu") as cpu_queue:
+    except ValueError:
+        print("Failed to schedule on a SYCL GPU device")
+
+    try:
+        device = dpctl.select_cpu_device()
+        print("Scheduling on ...")
+        device.print_device_info()
+        with dpctl.device_context(device):
             driver(a, b, c, global_size)
-    else:
-        print("No device found")
-        exit()
+    except ValueError:
+        print("Failed to schedule on a SYCL CPU device")
 
     print("Done...")
 
