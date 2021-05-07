@@ -87,7 +87,29 @@ class CmdLine(object):
 
         check_call(["opt", opt_level_option, "-o", ipath + ".bc", ipath])
 
-        llvm_spirv_call_args = ["llvm-spirv"]
+        if dppy_config.NATIVE_FP_ATOMICS == 1:
+            llvm_spirv_root = dppy_config.LLVM_SPIRV_ROOT
+
+            if llvm_spirv_root == "":
+                # try to find ONEAPI root
+                possible_oneapi_roots = ["/opt/intel/oneapi", "$A21_SDK_ROOT"]
+                for path in possible_oneapi_roots:
+                    path += "/compiler/latest/linux/bin"
+                    path = os.path.expandvars(path)
+                    if os.path.isfile(path + "/llvm-spirv"):
+                        llvm_spirv_root = path
+                        break
+
+            if llvm_spirv_root == "":
+                raise ValueError(
+                    "Native floating point atomics require dpcpp provided llvm-spirv, "
+                    "please specify the LLVM-SPIRV root directory using env variable "
+                    "NUMBA_DPPY_LLVM_SPIRV_ROOT."
+                )
+
+            llvm_spirv_call_args = [path + "/llvm-spirv"]
+        else:
+            llvm_spirv_call_args = ["llvm-spirv"]
         if llvm_spirv_args is not None:
             llvm_spirv_call_args += llvm_spirv_args
         llvm_spirv_call_args += ["-o", opath, ipath + ".bc"]

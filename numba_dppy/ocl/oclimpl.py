@@ -31,6 +31,7 @@ from . import stubs
 from numba_dppy.codegen import SPIR_DATA_LAYOUT
 from numba_dppy.ocl.atomics import atomic_helper
 import dpctl
+from numba_dppy.config import NATIVE_FP_ATOMICS
 
 
 registry = Registry()
@@ -320,7 +321,7 @@ def atomic_add_tuple(context, builder, sig, args):
     dtype = sig.args[0].dtype
 
     if dtype == types.float32 or dtype == types.float64:
-        if device_type == dpctl.device_type.gpu:
+        if device_type == dpctl.device_type.gpu and NATIVE_FP_ATOMICS == 1:
             return native_atomic_add(context, builder, sig, args)
         else:
             # Currently, DPCPP only supports native floating point
@@ -363,7 +364,7 @@ def atomic_sub_tuple(context, builder, sig, args):
     device_type = dpctl.get_current_queue().sycl_device.device_type
     dtype = sig.args[0].dtype
 
-    if dtype == types.float32 or dtype == types.float64:
+    if dtype == types.float32 or dtype == types.float64 and NATIVE_FP_ATOMICS == 1:
         if device_type == dpctl.device_type.gpu:
             return atomic_sub_wrapper(context, builder, sig, args)
         else:
