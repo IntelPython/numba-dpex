@@ -17,9 +17,12 @@ from enum import Enum, auto
 
 class sycl_memory_order(Enum):
     """
-    An enumeration of SYCL memory order.
-    Please refer:
-    https://github.com/intel/llvm/blob/sycl/sycl/include/CL/sycl/ONEAPI/atomic_enums.hpp#L25
+    An enumeration of SYCL memory order. For more details please refer to
+    SYCL 2020 specification, section 3.8.3.1
+    (https://www.khronos.org/registry/SYCL/specs/sycl-2020/html/sycl-2020.html#_memory_ordering).
+
+    For DPCPP implementation please refer:
+    https://github.com/intel/llvm/blob/sycl-nightly/20210507/sycl/include/CL/sycl/ONEAPI/atomic_enums.hpp#L25
 
     =====================   ============
     Memory Order            Enum value
@@ -43,9 +46,12 @@ class sycl_memory_order(Enum):
 
 class sycl_memory_scope(Enum):
     """
-    An enumeration of SYCL memory scope.
-    Please refer:
-    https://github.com/intel/llvm/blob/sycl/sycl/include/CL/sycl/ONEAPI/atomic_enums.hpp#L45
+    An enumeration of SYCL memory scope. For more details please refer to
+    SYCL 2020 specification, section 3.8.3.2
+    (https://www.khronos.org/registry/SYCL/specs/sycl-2020/html/sycl-2020.html#_memory_scope).
+
+    For DPCPP implementation please refer:
+    https://github.com/intel/llvm/blob/sycl-nightly/20210507/sycl/include/CL/sycl/ONEAPI/atomic_enums.hpp#L45
 
     ===============  ============
     Memory Scope     Enum value
@@ -68,8 +74,9 @@ class sycl_memory_scope(Enum):
 class _spv_scope(Enum):
     """
     An enumeration of SPIRV scope.
-    Please refer:
-    https://github.com/intel/llvm/blob/sycl/sycl/include/CL/__spirv/spirv_types.hpp#L24
+
+    For DPCPP implementation please refer:
+    https://github.com/intel/llvm/blob/sycl-nightly/20210507/sycl/include/CL/__spirv/spirv_types.hpp#L24
     """
 
     CrossDevice = 0
@@ -82,8 +89,9 @@ class _spv_scope(Enum):
 class _spv_memory_semantics_mask(Enum):
     """
     An enumeration of SPIRV memory semantics mask.
-    Please refer:
-    https://github.com/intel/llvm/blob/sycl/sycl/include/CL/__spirv/spirv_types.hpp#L81
+
+    For DPCPP implementation please refer:
+    https://github.com/intel/llvm/blob/sycl-nightly/20210507/sycl/include/CL/__spirv/spirv_types.hpp#L81
     """
 
     NONE = 0x0
@@ -102,8 +110,9 @@ class _spv_memory_semantics_mask(Enum):
 def get_memory_semantics_mask(memory_order):
     """
     This function translates SYCL memory order to SPIRV memory semantics mask.
-    Please refer:
-    https://github.com/intel/llvm/blob/sycl/sycl/include/CL/sycl/detail/spirv.hpp#L220
+
+    For DPCPP implementation please refer:
+    https://github.com/intel/llvm/blob/sycl-nightly/20210507/sycl/include/CL/sycl/detail/spirv.hpp#L220
     """
 
     spv_order = _spv_memory_semantics_mask.NONE.value
@@ -133,8 +142,9 @@ def get_memory_semantics_mask(memory_order):
 def get_scope(memory_scope):
     """
     This function translates SYCL memory scope to SPIRV scope.
-    Please refer:
-    https://github.com/intel/llvm/blob/sycl/sycl/include/CL/sycl/detail/spirv.hpp#L247
+
+    For DPCPP implementation please refer:
+    https://github.com/intel/llvm/blob/sycl-nightly/20210507/sycl/include/CL/sycl/detail/spirv.hpp#L247
     """
 
     if memory_scope == sycl_memory_scope.work_item:
