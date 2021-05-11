@@ -29,6 +29,7 @@ from numba.core.callconv import MinimalCallConv
 from . import codegen
 from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
 from numba_dppy.utils import npytypes_array_to_dppy_array, address_space, calling_conv
+from numba.core.target_extension import GPU, target_registry
 
 
 CC_SPIR_KERNEL = "spir_kernel"
@@ -103,6 +104,14 @@ def _init_data_model_manager():
 
 
 spirv_data_model_manager = _init_data_model_manager()
+
+
+class SyclDevice(GPU):
+    """Mark the hardware target as SYCL Device.
+    """
+
+
+target_registry['SyclDevice'] = SyclDevice
 
 
 class DPPYTargetContext(BaseContext):
@@ -246,6 +255,9 @@ class DPPYTargetContext(BaseContext):
         wrapper = module.get_function(wrapper.name)
         module.get_function(func.name).linkage = "internal"
         return wrapper
+
+    def __init__(self, typingctx, target='SyclDevice'):
+        super().__init__(typingctx, target)
 
     def init(self):
         self._internal_codegen = codegen.JITSPIRVCodegen("numba_dppy.jit")

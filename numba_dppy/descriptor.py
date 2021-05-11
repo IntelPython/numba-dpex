@@ -23,13 +23,11 @@ from numba.core.cpu import CPUTargetOptions
 
 class DPPYTarget(TargetDescriptor):
     options = CPUTargetOptions
-    # typingctx = DPPYTypingContext()
-    # targetctx = DPPYTargetContext(typingctx)
 
     @utils.cached_property
     def _toplevel_target_context(self):
         # Lazily-initialized top-level target context, for all threads
-        return DPPYTargetContext(self.typing_context)
+        return DPPYTargetContext(self.typing_context, self._target_name)
 
     @utils.cached_property
     def _toplevel_typing_context(self):
