@@ -15,7 +15,7 @@
 from llvmlite import binding as ll
 from llvmlite.llvmpy import core as lc
 
-from numba.core.codegen import BaseCPUCodegen, CodeLibrary
+from numba.core.codegen import CPUCodegen, CodeLibrary
 from numba.core import utils
 from numba import config
 
@@ -66,7 +66,7 @@ class SPIRVCodeLibrary(CodeLibrary):
         return None
 
 
-class JITSPIRVCodegen(BaseCPUCodegen):
+class JITSPIRVCodegen(CPUCodegen):
     """
     This codegen implementation generates optimized SPIR 2.0
     """
