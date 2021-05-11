@@ -13,8 +13,9 @@
 # limitations under the License.
 
 import numpy as np
+from . import _helper
 import math
-import numba_dppy, numba_dppy as dppy
+import numba_dppy as dppy
 import unittest
 import dpctl
 
@@ -28,7 +29,7 @@ def reduction_kernel(A, R, stride):
     A[i] = R[i]
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
+@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
 class TestDPPYSumReduction(unittest.TestCase):
     def test_sum_reduction(self):
         # This test will only work for even case
@@ -40,7 +41,7 @@ class TestDPPYSumReduction(unittest.TestCase):
         # at max we will require half the size of A to store sum
         R = np.array(np.random.random(math.ceil(N / 2)), dtype=np.float32)
 
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
+        with dpctl.device_context("opencl:gpu"):
             total = N
 
             while total > 1:

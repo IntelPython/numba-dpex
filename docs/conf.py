@@ -23,7 +23,7 @@ copyright = "2021, Intel"
 author = "Intel"
 
 # The full version, including alpha/beta/rc tags
-release = "0.12.0"
+release = "0.13.1"
 
 
 # -- General configuration ---------------------------------------------------

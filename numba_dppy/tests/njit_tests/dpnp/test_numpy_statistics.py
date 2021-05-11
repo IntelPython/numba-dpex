@@ -25,7 +25,7 @@ from .dpnp_skip_test import dpnp_skip_test as skip_test
 
 list_of_filter_strs = [
     "opencl:gpu:0",
-    "level0:gpu:0",
+    "level_zero:gpu:0",
     "opencl:cpu:0",
 ]
 
@@ -93,8 +93,8 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
     if name != "cov":
         a = np.reshape(a, get_shape)
     else:
-        if filter_str == "level0:gpu:0":
-            pytest.skip("Segfaults with device type level0:gpu:0")
+        if filter_str == "level_zero:gpu:0":
+            pytest.skip("Segfaults with device type level_zero:gpu:0")
     actual = np.empty(shape=a.shape, dtype=a.dtype)
     expected = np.empty(shape=a.shape, dtype=a.dtype)
 

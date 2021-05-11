@@ -18,11 +18,12 @@ import numba_dppy
 import unittest
 from numba.core import errors
 from numba.tests.support import captured_stdout
+from . import _helper
 import dpctl
 
 
 class TestWithDPPYContext(unittest.TestCase):
-    @unittest.skipIf(not dpctl.has_gpu_queues(), "No GPU platforms available")
+    @unittest.skipIf(not _helper.has_gpu_queues(), "No GPU platforms available")
     def test_with_dppy_context_gpu(self):
         @njit
         def nested_func(a, b):
@@ -45,9 +46,11 @@ class TestWithDPPYContext(unittest.TestCase):
         func(expected)
 
         np.testing.assert_array_equal(expected, got_gpu)
-        self.assertTrue("Parfor lowered on DPPY-device" in got_gpu_message.getvalue())
+        self.assertTrue(
+            "Parfor lowered to specified SYCL device" in got_gpu_message.getvalue()
+        )
 
-    @unittest.skipIf(not dpctl.has_cpu_queues(), "No CPU platforms available")
+    @unittest.skipIf(not _helper.has_cpu_queues(), "No CPU platforms available")
     def test_with_dppy_context_cpu(self):
         @njit
         def nested_func(a, b):
@@ -70,9 +73,11 @@ class TestWithDPPYContext(unittest.TestCase):
         func(expected)
 
         np.testing.assert_array_equal(expected, got_cpu)
-        self.assertTrue("Parfor lowered on DPPY-device" in got_cpu_message.getvalue())
+        self.assertTrue(
+            "Parfor lowered to specified SYCL device" in got_cpu_message.getvalue()
+        )
 
-    @unittest.skipIf(not dpctl.has_gpu_queues(), "No GPU platforms available")
+    @unittest.skipIf(not _helper.has_gpu_queues(), "No GPU platforms available")
     def test_with_dppy_context_target(self):
         @njit(target="cpu")
         def nested_func_target(a, b):

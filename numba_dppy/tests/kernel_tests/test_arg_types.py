@@ -16,7 +16,7 @@ import numpy as np
 import numba_dppy as dppy
 import pytest
 import dpctl
-from numba_dppy.tests.skip_tests import skip_test
+from numba_dppy.tests._helper import skip_test
 
 global_size = 1054
 local_size = 1
@@ -30,7 +30,7 @@ def mul_kernel(a, b, c):
 
 list_of_filter_strs = [
     "opencl:gpu:0",
-    "level0:gpu:0",
+    "level_zero:gpu:0",
     "opencl:cpu:0",
 ]
 

@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from . import _helper
 import numpy as np
 import math
 import time
 
-import numba_dppy, numba_dppy as dppy
+import numba_dppy as dppy
 import unittest
 import dpctl
 
@@ -65,7 +66,7 @@ def randfloat(rand_var, low, high):
     return (1.0 - rand_var) * low + rand_var * high
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
+@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
 class TestDPPYBlackScholes(unittest.TestCase):
     def test_black_scholes(self):
         OPT_N = 400
@@ -92,7 +93,7 @@ class TestDPPYBlackScholes(unittest.TestCase):
                 RISKFREE,
                 VOLATILITY,
             )
-
+        # numba-dppy
         @dppy.kernel
         def black_scholes_dppy(callResult, putResult, S, X, T, R, V):
             i = dppy.get_global_id(0)
@@ -124,7 +125,7 @@ class TestDPPYBlackScholes(unittest.TestCase):
             callResult[i] = S[i] * cndd1 - X[i] * expRT * cndd2
             putResult[i] = X[i] * expRT * (1.0 - cndd2) - S[i] * (1.0 - cndd1)
 
-        # numbapro
+        # numba
         time0 = time.time()
         blockdim = 512, 1
         griddim = int(math.ceil(float(OPT_N) / blockdim[0])), 1
