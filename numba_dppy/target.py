@@ -27,6 +27,7 @@ from numba.core.registry import cpu_target
 from numba.core.callconv import MinimalCallConv
 from . import codegen
 from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
+from numba.core.extending_hardware import GPU, hardware_registry
 
 
 CC_SPIR_KERNEL = "spir_kernel"
@@ -92,9 +93,19 @@ def _init_data_model_manager():
 spirv_data_model_manager = _init_data_model_manager()
 
 
+class SyclDevice(GPU):
+    """Mark the hardware target as SYCL Device.
+    """
+
+
+hardware_registry['SyclDevice'] = SyclDevice
+
 class DPPYTargetContext(BaseContext):
     implement_powi_as_math_call = True
     generic_addrspace = SPIR_GENERIC_ADDRSPACE
+
+    def __init__(self, typingctx, target='SyclDevice'):
+        super().__init__(typingctx, target)
 
     def init(self):
         self._internal_codegen = codegen.JITSPIRVCodegen("numba_dppy.jit")
