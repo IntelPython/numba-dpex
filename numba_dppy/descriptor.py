@@ -52,4 +52,4 @@ class DPPYTarget(TargetDescriptor):
 
 
 # The global DPPY target
-dppy_target = DPPYTarget()
+dppy_target = DPPYTarget("SyclDevice")
