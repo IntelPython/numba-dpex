@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba import njit
+from numba import njit, gdb
 import numpy as np
 import dpctl
 
@@ -23,26 +23,32 @@ def f1(a, b):
     return c
 
 
+N = 1000
+print("N", N)
+
+a = np.ones((N, N), dtype=np.float32)
+b = np.ones((N, N), dtype=np.float32)
+
+print("a:", a, hex(a.ctypes.data))
+print("b:", b, hex(b.ctypes.data))
+
+
 def main():
-    global_size = 64
-    local_size = 32
-    N = global_size * local_size
-    print("N", N)
+    try:
+        device = dpctl.select_gpu_device()
+        with dpctl.device_context(device):
+            print("Offloading to ...")
+            device.print_device_info()
+            c = f1(a, b)
 
-    a = np.ones(N, dtype=np.float32)
-    b = np.ones(N, dtype=np.float32)
-
-    print("a:", a, hex(a.ctypes.data))
-    print("b:", b, hex(b.ctypes.data))
-
-    with dpctl.device_context("opencl:gpu:0"):
-        c = f1(a, b)
-
-    print("RESULT c:", c, hex(c.ctypes.data))
-    for i in range(N):
-        if c[i] != 2.0:
-            print("First index not equal to 2.0 was", i)
-            break
+        print("c:", c, hex(c.ctypes.data))
+        for i in range(N):
+            for j in range(N):
+                if c[i, j] != 2.0:
+                    print("First index not equal to 2.0 was", i, j)
+                    break
+    except ValueError:
+        print("Could not find an SYCL GPU device")
 
 
 if __name__ == "__main__":

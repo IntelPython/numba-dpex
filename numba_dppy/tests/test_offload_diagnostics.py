@@ -13,16 +13,16 @@
 # limitations under the License.
 
 import numpy as np
-import numba
 from numba import njit, prange
-import numba_dppy, numba_dppy as dppy
+import numba_dppy as dppy
 from numba_dppy import config as dppy_config
 from numba_dppy.testing import unittest
 from numba.tests.support import captured_stdout
+from . import _helper
 import dpctl
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
+@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
 class TestOffloadDiagnostics(unittest.TestCase):
     def test_parfor(self):
         def prange_func():

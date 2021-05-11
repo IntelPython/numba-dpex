@@ -24,10 +24,10 @@ from numba_dppy.testing import dpnp_debug
 from .dpnp_skip_test import dpnp_skip_test as skip_test
 
 # dpnp throws -30 (CL_INVALID_VALUE) when invoked with multiple kinds of
-# devices at runtime, so testing for level0 only
+# devices at runtime, so testing for level_zero only
 list_of_filter_strs = [
     # "opencl:gpu:0",
-    "level0:gpu:0",
+    "level_zero:gpu:0",
     # "opencl:cpu:0",
 ]
 

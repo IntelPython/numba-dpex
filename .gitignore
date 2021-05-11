@@ -25,3 +25,7 @@ htmlcov/
 __pycache__/
 
 docs/source/developer/autogen*
+
+# Ignore generated cpp files
+numba_dppy/dpnp_glue/*.cpp
+numba_dppy/dpnp_glue/*.h
