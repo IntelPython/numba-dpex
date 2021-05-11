@@ -49,7 +49,7 @@ from numba.core.compiler_machinery import (
 
 from numba.parfors.parfor import (
     PreParforPass as _parfor_PreParforPass,
-    replace_functions_map,
+    swap_functions_map,
 )
 from numba.parfors.parfor import ParforPass as _parfor_ParforPass
 from numba.parfors.parfor import Parfor
@@ -173,7 +173,7 @@ class DPPYPreParforPass(FunctionPass):
 
         # Ensure we have an IR and type information.
         assert state.func_ir
-        functions_map = replace_functions_map.copy()
+        functions_map = swap_functions_map.copy()
         functions_map.pop(("dot", "numpy"), None)
         functions_map.pop(("sum", "numpy"), None)
         functions_map.pop(("prod", "numpy"), None)
