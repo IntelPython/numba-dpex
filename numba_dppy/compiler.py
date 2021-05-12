@@ -100,7 +100,7 @@ def compile_with_dppy(pyfunc, return_type, args, debug=None):
     # Do not compile (generate native code), just lower (to LLVM)
     flags.debuginfo = config.DEBUGINFO_DEFAULT
     flags.no_compile = True
-    flags.no_cython_wrapper = True
+    flags.no_cpython_wrapper = True
     flags.nrt = False
 
     if debug is not None:

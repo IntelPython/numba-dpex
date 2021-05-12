@@ -15,7 +15,7 @@
 from llvmlite import binding as ll
 from llvmlite.llvmpy import core as lc
 
-from numba.core.codegen import CPUCodegen, CodeLibrary
+from numba.core.codegen import CPUCodegen, CPUCodeLibrary
 from numba.core import utils
 
 from numba_dppy import config
@@ -35,7 +35,7 @@ SPIR_DATA_LAYOUT = {
 }
 
 
-class SPIRVCodeLibrary(CodeLibrary):
+class SPIRVCodeLibrary(CPUCodeLibrary):
     def _optimize_functions(self, ll_module):
         pass
 
