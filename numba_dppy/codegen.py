@@ -15,7 +15,7 @@
 from llvmlite import binding as ll
 from llvmlite.llvmpy import core as lc
 
-from numba.core.codegen import CPUCodegen, CodeLibrary
+from numba.core.codegen import CPUCodegen, CPUCodeLibrary
 from numba.core import utils
 from numba import config
 
@@ -34,7 +34,7 @@ SPIR_DATA_LAYOUT = {
 }
 
 
-class SPIRVCodeLibrary(CodeLibrary):
+class SPIRVCodeLibrary(CPUCodeLibrary):
     def _optimize_functions(self, ll_module):
         pass
 
@@ -64,6 +64,7 @@ class SPIRVCodeLibrary(CodeLibrary):
         # Return nothing: we can only dump assembler code when it is later
         # generated (in numba_dppy.compiler).
         return None
+
 
 
 class JITSPIRVCodegen(CPUCodegen):

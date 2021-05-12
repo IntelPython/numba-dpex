@@ -101,7 +101,7 @@ def compile_with_dppy(pyfunc, return_type, args, debug):
     if debug:
         flags.debuginfo = True
     flags.no_compile = True
-    flags.no_cython_wrapper = True
+    flags.no_cpython_wrapper = True
     flags.nrt = False
 
     # Run compilation pipeline
