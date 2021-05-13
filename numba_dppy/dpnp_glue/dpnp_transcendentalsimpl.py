@@ -34,11 +34,11 @@ def common_impl(a, out, dpnp_func, print_debug):
 
     out_usm = dpctl_functions.malloc_shared(a.itemsize, sycl_queue)
 
-    initial = np.zeros(1, dtype=a.dtype)
     axes, axes_ndim = 0, 0
+    initial = 0
     where = 0
 
-    dpnp_func(out_usm, a_usm, a.shapeptr, a.ndim, axes, axes_ndim, initial.ctypes, where)
+    dpnp_func(out_usm, a_usm, a.shapeptr, a.ndim, axes, axes_ndim, initial, where)
 
     dpctl_functions.queue_memcpy(
         sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
