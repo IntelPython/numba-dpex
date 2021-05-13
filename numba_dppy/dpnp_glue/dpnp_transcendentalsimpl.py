@@ -34,11 +34,11 @@ def common_impl(a, out, dpnp_func, print_debug):
 
     out_usm = dpctl_functions.malloc_shared(a.itemsize, sycl_queue)
 
-    initial = np.zeros(1, dtype=a.dtype)
     axes, axes_ndim = 0, 0
+    initial = 0
     where = 0
 
-    dpnp_func(out_usm, a_usm, a.shapeptr, a.ndim, axes, axes_ndim, initial.ctypes, where)
+    dpnp_func(out_usm, a_usm, a.shapeptr, a.ndim, axes, axes_ndim, initial, where)
 
     dpctl_functions.queue_memcpy(
         sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
@@ -74,11 +74,17 @@ def dpnp_sum_impl(a):
                     const long* where)
 
     """
-    sig = signature(ret_type,
-                    types.voidptr, types.voidptr,
-                    types.voidptr, types.intp,
-                    types.voidptr, types.intp,
-                    types.voidptr, types.voidptr)
+    sig = signature(
+        ret_type,
+        types.voidptr,  # void* result_out,
+        types.voidptr,  # const void* input_in,
+        types.voidptr,  # const size_t* input_shape,
+        types.intp,  # const size_t input_shape_ndim,
+        types.voidptr,  # const long* axes,
+        types.intp,  # const size_t axes_ndim,
+        types.voidptr,  # const void* initial,
+        types.voidptr,  # const long* where)
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     PRINT_DEBUG = dpnp_lowering.DEBUG
