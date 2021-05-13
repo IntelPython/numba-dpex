@@ -106,12 +106,29 @@ def dpnp_prod_impl(a):
     ret_type = types.void
     """
     dpnp source:
-    https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels_reduction.cpp#L83
+    https://github.com/IntelPython/dpnp/blob/0.6.1dev/dpnp/backend/kernels/dpnp_krnl_reduction.cpp#L129
 
     Function declaration:
-    void custom_prod_c(void* array1_in, void* result1, size_t size)
+    void dpnp_prod_c(void* result_out,
+                     const void* input_in,
+                     const size_t* input_shape,
+                     const size_t input_shape_ndim,
+                     const long* axes,
+                     const size_t axes_ndim,
+                     const void* initial, // type must be _DataType_output
+                     const long* where)
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
+    sig = signature(
+        ret_type,
+        types.voidptr,  # void* result_out,
+        types.voidptr,  # const void* input_in,
+        types.voidptr,  # const size_t* input_shape,
+        types.intp,  # const size_t input_shape_ndim,
+        types.voidptr,  # const long* axes,
+        types.intp,  # const long* axes,
+        types.voidptr,  # const void* initial, // type must be _DataType_output
+        types.voidptr,  # const long* where)
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     PRINT_DEBUG = dpnp_lowering.DEBUG
