@@ -76,14 +76,14 @@ def dpnp_sum_impl(a):
     """
     sig = signature(
         ret_type,
-        types.voidptr,
-        types.voidptr,
-        types.voidptr,
-        types.intp,
-        types.voidptr,
-        types.intp,
-        types.voidptr,
-        types.voidptr,
+        types.voidptr,  # void* result_out,
+        types.voidptr,  # const void* input_in,
+        types.voidptr,  # const size_t* input_shape,
+        types.intp,  # const size_t input_shape_ndim,
+        types.voidptr,  # const long* axes,
+        types.intp,  # const size_t axes_ndim,
+        types.voidptr,  # const void* initial,
+        types.voidptr,  # const long* where)
     )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
