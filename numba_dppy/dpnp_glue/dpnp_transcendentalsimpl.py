@@ -74,11 +74,17 @@ def dpnp_sum_impl(a):
                     const long* where)
 
     """
-    sig = signature(ret_type,
-                    types.voidptr, types.voidptr,
-                    types.voidptr, types.intp,
-                    types.voidptr, types.intp,
-                    types.voidptr, types.voidptr)
+    sig = signature(
+        ret_type,
+        types.voidptr,
+        types.voidptr,
+        types.voidptr,
+        types.intp,
+        types.voidptr,
+        types.intp,
+        types.voidptr,
+        types.voidptr,
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     PRINT_DEBUG = dpnp_lowering.DEBUG
