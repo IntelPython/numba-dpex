@@ -46,9 +46,7 @@ class TestWithDPPYContext(unittest.TestCase):
         func(expected)
 
         np.testing.assert_array_equal(expected, got_gpu)
-        self.assertTrue(
-            "Parfor lowered to specified SYCL device" in got_gpu_message.getvalue()
-        )
+        self.assertTrue("Parfor offloaded to opencl:gpu" in got_gpu_message.getvalue())
 
     @unittest.skipIf(not _helper.has_cpu_queues(), "No CPU platforms available")
     def test_with_dppy_context_cpu(self):
@@ -73,9 +71,7 @@ class TestWithDPPYContext(unittest.TestCase):
         func(expected)
 
         np.testing.assert_array_equal(expected, got_cpu)
-        self.assertTrue(
-            "Parfor lowered to specified SYCL device" in got_cpu_message.getvalue()
-        )
+        self.assertTrue("Parfor offloaded to opencl:cpu" in got_cpu_message.getvalue())
 
     @unittest.skipIf(not _helper.has_gpu_queues(), "No GPU platforms available")
     def test_with_dppy_context_target(self):
