@@ -34,7 +34,11 @@ def common_impl(a, out, dpnp_func, print_debug):
 
     out_usm = dpctl_functions.malloc_shared(a.itemsize, sycl_queue)
 
-    dpnp_func(a_usm, out_usm, a.size)
+    initial = np.zeros(1, dtype=a.dtype)
+    axes, axes_ndim = 0, 0
+    where = 0
+
+    dpnp_func(out_usm, a_usm, a.shapeptr, a.ndim, axes, axes_ndim, initial.ctypes, where)
 
     dpctl_functions.queue_memcpy(
         sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
@@ -43,7 +47,7 @@ def common_impl(a, out, dpnp_func, print_debug):
     dpctl_functions.free_with_queue(a_usm, sycl_queue)
     dpctl_functions.free_with_queue(out_usm, sycl_queue)
 
-    dpnp_ext._dummy_liveness_func([out.size])
+    dpnp_ext._dummy_liveness_func([a.size, out.size])
 
     if print_debug:
         print("dpnp implementation")
@@ -57,13 +61,24 @@ def dpnp_sum_impl(a):
     ret_type = types.void
     """
     dpnp source:
-    https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels_reduction.cpp#L39
+    https://github.com/IntelPython/dpnp/blob/0.6.1dev/dpnp/backend/kernels/dpnp_krnl_reduction.cpp#L59
 
     Function declaration:
-    void custom_sum_c(void* array1_in, void* result1, size_t size)
+    void dpnp_sum_c(void* result_out,
+                    const void* input_in,
+                    const size_t* input_shape,
+                    const size_t input_shape_ndim,
+                    const long* axes,
+                    const size_t axes_ndim,
+                    const void* initial,
+                    const long* where)
 
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
+    sig = signature(ret_type,
+                    types.voidptr, types.voidptr,
+                    types.voidptr, types.intp,
+                    types.voidptr, types.intp,
+                    types.voidptr, types.voidptr)
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     PRINT_DEBUG = dpnp_lowering.DEBUG
