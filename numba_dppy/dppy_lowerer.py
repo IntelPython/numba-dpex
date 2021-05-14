@@ -25,6 +25,7 @@ import numpy as np
 import numba
 from numba.core import compiler, ir, types, sigutils, lowering, funcdesc, config
 from numba.parfors import parfor
+from numba.parfors.parfor_lowering import _lower_parfor_parallel
 import numba_dppy, numba_dppy as dppy
 from numba.core.ir_utils import (
     add_offset_to_labels,
@@ -1243,9 +1244,17 @@ class DPPYLower(Lower):
         # WARNING: this approach only works in case no device specific modifications were added to
         # parent function (function with parfor). In case parent function was patched with device specific
         # different solution should be used.
-
         try:
-            lowering.lower_extensions[parfor.Parfor].append(lower_parfor_rollback)
+            context = self.gpu_lower.context
+            try:
+                # Only Numba's CPUContext has the `lower_extension` attribute
+                lower_extension_parfor = context.lower_extensions[parfor.Parfor]
+                context.lower_extensions[parfor.Parfor] = lower_parfor_rollback
+            except Exception as e:
+                if numba_dppy.compiler.DEBUG:
+                    print(e)
+                pass
+
             self.gpu_lower.lower()
             # if lower dont crash, and parfor_diagnostics is empty then it is kernel
             if not self.gpu_lower.metadata["parfor_diagnostics"].extra_info:
@@ -1254,7 +1263,13 @@ class DPPYLower(Lower):
                     "kernel"
                 ] = str_name
             self.base_lower = self.gpu_lower
-            lowering.lower_extensions[parfor.Parfor].pop()
+
+            try:
+                context.lower_extensions[parfor.Parfor] = lower_extension_parfor
+            except Exception as e:
+                if numba_dppy.compiler.DEBUG:
+                    print(e)
+                pass
         except Exception as e:
             if numba_dppy.compiler.DEBUG:
                 import traceback
@@ -1267,11 +1282,11 @@ class DPPYLower(Lower):
                     e,
                 )
                 print(traceback.format_exc())
-            lowering.lower_extensions[parfor.Parfor].pop()
-            if (
-                lowering.lower_extensions[parfor.Parfor][-1]
-                == numba.parfors.parfor_lowering._lower_parfor_parallel
-            ) and numba_dppy.config.FALLBACK_ON_CPU == 1:
+
+            if numba_dppy.config.FALLBACK_ON_CPU == 1:
+                self.cpu_lower.context.lower_extensions[
+                    parfor.Parfor
+                ] = _lower_parfor_parallel
                 self.cpu_lower.lower()
                 self.base_lower = self.cpu_lower
             else:
