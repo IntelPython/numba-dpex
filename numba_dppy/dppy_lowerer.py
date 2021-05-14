@@ -25,6 +25,7 @@ import numpy as np
 import numba
 from numba.core import compiler, ir, types, sigutils, lowering, funcdesc, config
 from numba.parfors import parfor
+from numba.parfors.parfor_lowering import _lower_parfor_parallel
 import numba_dppy, numba_dppy as dppy
 from numba.core.ir_utils import (
     add_offset_to_labels,
@@ -1252,26 +1253,49 @@ class DPPYLower(Lower):
         # WARNING: this approach only works in case no device specific modifications were added to
         # parent function (function with parfor). In case parent function was patched with device specific
         # different solution should be used.
-
         try:
-            lowering.lower_extensions[parfor.Parfor].append(lower_parfor_rollback)
+            context = self.gpu_lower.context
+            try:
+                # Only Numba's CPUContext has the `lower_extension` attribute
+                lower_extension_parfor = context.lower_extensions[parfor.Parfor]
+                context.lower_extensions[parfor.Parfor] = lower_parfor_rollback
+            except Exception as e:
+                if numba_dppy.compiler.DEBUG:
+                    print(e)
+                pass
+
             self.gpu_lower.lower()
             # if lower dont crash, and parfor_diagnostics is empty then it is kernel
             if not self.gpu_lower.metadata["parfor_diagnostics"].extra_info:
-                str_name = str(dpctl.get_current_queue().get_sycl_device().name)
+                str_name = dpctl.get_current_queue().get_sycl_device().filter_string
                 self.gpu_lower.metadata["parfor_diagnostics"].extra_info[
                     "kernel"
                 ] = str_name
             self.base_lower = self.gpu_lower
-            lowering.lower_extensions[parfor.Parfor].pop()
+
+            try:
+                context.lower_extensions[parfor.Parfor] = lower_extension_parfor
+            except Exception as e:
+                if numba_dppy.compiler.DEBUG:
+                    print(e)
+                pass
         except Exception as e:
             if numba_dppy.compiler.DEBUG:
-                print("Failed to lower parfor on DPPY-device. Due to:\n", e)
-            lowering.lower_extensions[parfor.Parfor].pop()
-            if (
-                lowering.lower_extensions[parfor.Parfor][-1]
-                == numba.parfors.parfor_lowering._lower_parfor_parallel
-            ) and numba_dppy.config.FALLBACK_ON_CPU == 1:
+                import traceback
+
+                device_filter_str = (
+                    dpctl.get_current_queue().get_sycl_device().filter_string
+                )
+                print(
+                    "Failed to offload parfor to " + device_filter_str + ". Due to:\n",
+                    e,
+                )
+                print(traceback.format_exc())
+
+            if numba_dppy.config.FALLBACK_ON_CPU == 1:
+                self.cpu_lower.context.lower_extensions[
+                    parfor.Parfor
+                ] = _lower_parfor_parallel
                 self.cpu_lower.lower()
                 self.base_lower = self.cpu_lower
             else:
@@ -1295,15 +1319,25 @@ def lower_parfor_rollback(lowerer, parfor):
     try:
         _lower_parfor_gufunc(lowerer, parfor)
         if numba_dppy.compiler.DEBUG:
-            msg = "Parfor lowered to specified SYCL device"
+
+            device_filter_str = (
+                dpctl.get_current_queue().get_sycl_device().filter_string
+            )
+
+            msg = "Parfor offloaded to " + device_filter_str
             print(msg, parfor.loc)
     except Exception as e:
+
+        device_filter_str = dpctl.get_current_queue().get_sycl_device().filter_string
         msg = (
-            "Failed to lower parfor to the specified SYCL device. Falling "
-            "back to default CPU parallelization."
+            "Failed to offload parfor to " + device_filter_str + ". Falling "
+            "back to default CPU parallelization. Please file a bug report "
+            "at https://github.com/IntelPython/numba-dppy. To help us debug "
+            "the issue, please add the traceback to the bug report."
         )
         if not numba_dppy.compiler.DEBUG:
-            msg += " Set NUMBA_DPPY_DEBUG=1 for more details."
+            msg += " Set the environment variable NUMBA_DPPY_DEBUG to 1 to "
+            msg += "generate a traceback."
 
         warnings.warn(NumbaPerformanceWarning(msg, parfor.loc))
         raise e

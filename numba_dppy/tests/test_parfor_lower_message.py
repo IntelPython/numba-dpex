@@ -43,7 +43,7 @@ class TestParforMessage(unittest.TestCase):
                 jitted()
 
             dppy.compiler.DEBUG = 0
-            self.assertTrue("Parfor lowered to specified SYCL device" in got.getvalue())
+            self.assertTrue("Parfor offloaded " in got.getvalue())
 
 
 if __name__ == "__main__":

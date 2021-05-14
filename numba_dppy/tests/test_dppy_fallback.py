@@ -46,9 +46,7 @@ class TestDPPYFallback(unittest.TestCase):
         ref_result = inner_call_fallback()
 
         np.testing.assert_array_equal(dppy_result, ref_result)
-        self.assertIn(
-            "Failed to lower parfor to the specified SYCL device", str(w[-1].message)
-        )
+        self.assertIn("Failed to offload parfor ", str(w[-1].message))
 
     def test_dppy_fallback_reductions(self):
         def reduction(a):
@@ -67,9 +65,7 @@ class TestDPPYFallback(unittest.TestCase):
         ref_result = reduction(a)
 
         np.testing.assert_array_equal(dppy_result, ref_result)
-        self.assertIn(
-            "Failed to lower parfor to the specified SYCL device", str(w[-1].message)
-        )
+        self.assertIn("Failed to offload parfor ", str(w[-1].message))
 
 
 if __name__ == "__main__":
