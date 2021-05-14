@@ -57,6 +57,7 @@ from .dufunc_inliner import dufunc_inliner
 from . import dppy_host_fn_call_gen as dppy_call_gen
 import dpctl
 from numba_dppy.target import DPPYTargetContext
+from numba_dppy.dppy_array_type import DPPYArray
 
 
 def _print_block(block):
@@ -398,8 +399,16 @@ def _create_gufunc_for_parfor_body(
         if addrspaces[i] is not None:
             # print("before:", id(param_types_addrspaces[i]))
             assert isinstance(param_types_addrspaces[i], types.npytypes.Array)
-            param_types_addrspaces[i] = param_types_addrspaces[i].copy(
-                addrspace=addrspaces[i]
+            _param = param_types_addrspaces[i]
+            param_types_addrspaces[i] = DPPYArray(
+                _param.dtype,
+                _param.ndim,
+                _param.layout,
+                _param.py_type,
+                not _param.mutable,
+                _param.name,
+                _param.aligned,
+                addrspace=addrspaces[i],
             )
             # print("setting param type", i, param_types[i], id(param_types[i]),
             #      "to addrspace", param_types_addrspaces[i].addrspace)

@@ -29,6 +29,7 @@ from numba.core.itanium_mangler import mangle_c, mangle, mangle_type
 from numba_dppy import target
 from . import stubs
 from numba_dppy.codegen import SPIR_DATA_LAYOUT
+from numba_dppy.dppy_array_type import DPPYArray
 
 
 registry = Registry()
@@ -292,7 +293,10 @@ def atomic_add_tuple(context, builder, sig, args):
         lary = context.make_array(aryty)(context, builder, ary)
         ptr = cgutils.get_item_pointer(context, builder, aryty, lary, indices)
 
-        if aryty.addrspace == target.SPIR_LOCAL_ADDRSPACE:
+        if (
+            isinstance(aryty, DPPYArray)
+            and aryty.addrspace == target.SPIR_LOCAL_ADDRSPACE
+        ):
             return insert_and_call_atomic_fn(
                 context,
                 builder,
@@ -350,7 +354,10 @@ def atomic_sub_tuple(context, builder, sig, args):
         lary = context.make_array(aryty)(context, builder, ary)
         ptr = cgutils.get_item_pointer(context, builder, aryty, lary, indices)
 
-        if aryty.addrspace == target.SPIR_LOCAL_ADDRSPACE:
+        if (
+            isinstance(aryty, DPPYArray)
+            and aryty.addrspace == target.SPIR_LOCAL_ADDRSPACE
+        ):
             return insert_and_call_atomic_fn(
                 context,
                 builder,
@@ -451,7 +458,7 @@ def _make_array(
 ):
     ndim = len(shape)
     # Create array object
-    aryty = types.Array(dtype=dtype, ndim=ndim, layout="C", addrspace=addrspace)
+    aryty = DPPYArray(dtype=dtype, ndim=ndim, layout="C", addrspace=addrspace)
     ary = context.make_array(aryty)(context, builder)
 
     targetdata = _get_target_data(context)

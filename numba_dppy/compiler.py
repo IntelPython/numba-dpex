@@ -168,7 +168,7 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
 def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug=False):
     if DEBUG:
         print("compile_kernel_parfor", args)
-        for a in args:
+        for a in args_with_addrspaces:
             print(a, type(a))
             if isinstance(a, types.npytypes.Array):
                 print("addrspace:", a.addrspace)
