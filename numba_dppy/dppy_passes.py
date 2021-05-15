@@ -226,6 +226,7 @@ class DPPYParforPass(FunctionPass):
             state.typingctx,
             state.flags.auto_parallel,
             state.flags,
+            state.metadata,
             state.parfor_diagnostics,
         )
 
