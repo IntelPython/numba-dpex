@@ -48,9 +48,7 @@ class TestDPPYFallback(unittest.TestCase):
         numba_dppy.compiler.DEBUG = 0
 
         np.testing.assert_array_equal(dppy_fallback_true, ref_result)
-        self.assertIn(
-            "Failed to lower parfor to the specified SYCL device", str(w[-1].message)
-        )
+        self.assertIn("Failed to offload parfor", str(w[-1].message))
 
     @unittest.expectedFailure
     def test_dppy_fallback_false(self):
@@ -81,10 +79,7 @@ class TestDPPYFallback(unittest.TestCase):
             numba_dppy.compiler.DEBUG = 0
 
             not np.testing.assert_array_equal(dppy_fallback_false, ref_result)
-            self.assertNotIn(
-                "Failed to lower parfor to the specified SYCL device",
-                str(w[-1].message),
-            )
+            self.assertNotIn("Failed to offload parfor", str(w[-1].message))
 
 
 if __name__ == "__main__":

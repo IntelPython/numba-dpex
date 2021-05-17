@@ -12,29 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytest
-import dpctl
-from numba_dppy.tests._helper import skip_test
+"""
+Various utility functions and classes to aid LLVM IR building.
 
+"""
+from numba_dppy.utils.llvm_codegen_helpers import (
+    LLVMTypes,
+    get_llvm_type,
+    get_llvm_ptr_type,
+    create_null_ptr,
+    get_zero,
+    get_one,
+)
 
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
+__all__ = [
+    LLVMTypes,
+    get_llvm_type,
+    get_llvm_ptr_type,
+    create_null_ptr,
+    get_zero,
+    get_one,
 ]
-
-
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
-
-
-def test_dpctl_api(filter_str):
-    if skip_test(filter_str):
-        pytest.skip()
-
-    with dpctl.device_context(filter_str):
-        dpctl.lsplatform()
-        dpctl.get_current_queue()
-        dpctl.get_num_activated_queues()
-        dpctl.is_in_device_context()
