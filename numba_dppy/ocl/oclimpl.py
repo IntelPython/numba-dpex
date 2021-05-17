@@ -273,7 +273,7 @@ def native_atomic_add(context, builder, sig, args):
     assert name != ""
 
     ptr_type = context.get_value_type(dtype).as_pointer()
-    if aryty.addrspace is None:
+    if not hasattr(aryty, "addrspace"):
         ptr_type.addrspace = target.SPIR_GLOBAL_ADDRSPACE
         ptr = context.addrspacecast(builder, ptr, target.SPIR_GLOBAL_ADDRSPACE)
     else:
