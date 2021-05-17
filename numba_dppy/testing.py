@@ -100,7 +100,7 @@ def assert_auto_offloading(parfor_offloaded=1, parfor_offloaded_failure=0):
     numba_dppy.compiler.DEBUG = old_debug
 
     got_parfor_offloaded = stdout.getvalue().count(
-        "Parfor lowered to specified SYCL device"
+        "Parfor offloaded to"
     )
     assert parfor_offloaded == got_parfor_offloaded, (
         "Expected %d parfor(s) to be auto offloaded, instead got %d parfor(s) auto offloaded"
@@ -108,7 +108,7 @@ def assert_auto_offloading(parfor_offloaded=1, parfor_offloaded_failure=0):
     )
 
     got_parfor_offloaded_failure = stdout.getvalue().count(
-        "Failed to lower parfor on SYCL device. Falling back to default CPU parallelization."
+        "Failed to offload parfor to"
     )
     assert parfor_offloaded_failure == got_parfor_offloaded_failure, (
         "Expected %d parfor(s) to be not auto offloaded, instead got %d parfor(s) not auto offloaded"
