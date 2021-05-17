@@ -99,9 +99,7 @@ def assert_auto_offloading(parfor_offloaded=1, parfor_offloaded_failure=0):
 
     numba_dppy.compiler.DEBUG = old_debug
 
-    got_parfor_offloaded = stdout.getvalue().count(
-        "Parfor offloaded to"
-    )
+    got_parfor_offloaded = stdout.getvalue().count("Parfor offloaded to")
     assert parfor_offloaded == got_parfor_offloaded, (
         "Expected %d parfor(s) to be auto offloaded, instead got %d parfor(s) auto offloaded"
         % (parfor_offloaded, got_parfor_offloaded)
