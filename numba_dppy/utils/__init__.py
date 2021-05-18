@@ -12,13 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Various utility functions and classes to aid LLVM IR building.
 
-def ensure_dpnp(name):
-    try:
-        # import dpnp
-        from . import dpnp_fptr_interface as dpnp_glue
-    except ImportError:
-        raise ImportError("dpnp is needed to call np.%s" % name)
+"""
+from numba_dppy.utils.llvm_codegen_helpers import (
+    LLVMTypes,
+    get_llvm_type,
+    get_llvm_ptr_type,
+    create_null_ptr,
+    get_zero,
+    get_one,
+)
 
-
-DEBUG = None
+__all__ = [
+    LLVMTypes,
+    get_llvm_type,
+    get_llvm_ptr_type,
+    create_null_ptr,
+    get_zero,
+    get_one,
+]
