@@ -31,12 +31,11 @@ import numpy as np
 
 from . import spirv_generator
 
-import os
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
+from numba_dppy.config import DEBUG
 
 
-DEBUG = os.environ.get("NUMBA_DPPY_DEBUG", None)
 _NUMBA_DPPY_READ_ONLY = "read_only"
 _NUMBA_DPPY_WRITE_ONLY = "write_only"
 _NUMBA_DPPY_READ_WRITE = "read_write"

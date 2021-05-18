@@ -61,3 +61,6 @@ SPIRV_VAL = _readenv("NUMBA_DPPY_SPIRV_VAL", int, 0)
 OFFLOAD_DIAGNOSTICS = _readenv("NUMBA_DPPY_OFFLOAD_DIAGNOSTICS", int, 0)
 
 FALLBACK_ON_CPU = _readenv("NUMBA_DPPY_FALLBACK_ON_CPU", int, 1)
+
+# Emit debug info
+DEBUG = os.environ.get("NUMBA_DPPY_DEBUG", None)
