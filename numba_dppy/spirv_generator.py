@@ -42,40 +42,28 @@ def check_call(*args, **kwargs):
 
 class CmdLine(object):
     def disassemble(self, ipath, opath):
-        check_call(
-            [
-                "spirv-dis",
-                # "--no-indent",
-                # "--no-header",
-                # "--raw-id",
-                # "--offsets",
-                "-o",
-                opath,
-                ipath,
-            ]
-        )
+        flags = []
+        # flags.append("--no-indent")
+        # flags.append("--no-header")
+        # flags.append("--raw-id")
+        # flags.append("--offsets")
+        check_call(["spirv-dis", *flags, "-o", opath, ipath])
 
     def validate(self, ipath):
         check_call(["spirv-val", ipath])
 
     def optimize(self, ipath, opath):
-        check_call(
-            [
-                "spirv-opt",
-                # "--strip-debug",
-                # "--freeze-spec-const",
-                # "--eliminate-dead-const",
-                # "--fold-spec-const-op-composite",
-                # "--set-spec-const-default-value '<spec id>:<default value> ...'",
-                # "--unify-const",
-                # "--inline-entry-points-exhaustive",
-                # "--flatten-decorations",
-                # "--compact-ids",
-                "-o",
-                opath,
-                ipath,
-            ]
-        )
+        flags = []
+        # flags.append("--strip-debug")
+        # flags.append("--freeze-spec-const")
+        # flags.append("--eliminate-dead-const")
+        # flags.append("--fold-spec-const-op-composite")
+        # flags.append("--set-spec-const-default-value '<spec id>:<default value> ...'")
+        # flags.append("--unify-const")
+        # flags.append("--inline-entry-points-exhaustive")
+        # flags.append("--flatten-decorations")
+        # flags.append("--compact-ids")
+        check_call(["spirv-opt", *flags, "-o", opath, ipath])
 
     def generate(self, ipath, opath):
         # DRD : Temporary hack to get SPIR-V code generation to work.
@@ -83,20 +71,20 @@ class CmdLine(object):
         #     a) generate a bitcode file from the text IR file
         #     b) hoist all allocas to the enty block of the module
 
-        # Get optimization level from NUMBA_OPT
-        opt_level_option = f"-O{config.OPT}"
+        ipath_optimized = ipath + ".bc"
 
-        check_call(["opt", opt_level_option, "-o", ipath + ".bc", ipath])
-        check_call(["llvm-spirv", "-o", opath, ipath + ".bc"])
+        # Get optimization level from NUMBA_OPT
+        opt_flags = [f"-O{config.OPT}"]
+
+        check_call(["opt", *opt_flags, "-o", ipath_optimized, ipath])
+        check_call(["llvm-spirv", "-o", opath, ipath_optimized])
 
         if dppy_config.SAVE_IR_FILES == 0:
-            os.unlink(ipath + ".bc")
+            os.unlink(ipath_optimized)
 
     def link(self, opath, binaries):
-        params = ["spirv-link", "--allow-partial-linkage", "-o", opath]
-        params.extend(binaries)
-
-        check_call(params)
+        flags = ["--allow-partial-linkage"]
+        check_call(["spirv-link", *flags, "-o", opath, *binaries])
 
 
 class Module(object):
