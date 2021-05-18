@@ -127,7 +127,29 @@ def common_dot_impl(dpnp_func, a, b, out, m, print_debug):
 
     out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
-    dpnp_func(a_usm, b_usm, out_usm, m)
+    result_out = out_usm
+    input1_in = a_usm
+    input1_size = a.size
+    input1_shape = a.shapeptr
+    input1_shape_ndim = a.ndim
+    input2_in = b_usm
+    input2_size = b.size
+    input2_shape = b.shapeptr
+    input2_shape_ndim = b.ndim
+    where = 0
+
+    dpnp_func(
+        result_out,
+        input1_in,
+        input1_size,
+        input1_shape,
+        input1_shape_ndim,
+        input2_in,
+        input2_size,
+        input2_shape,
+        input2_shape_ndim,
+        where,
+    )
 
     dpctl_functions.queue_memcpy(
         sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
@@ -190,13 +212,21 @@ def dpnp_dot_impl(a, b):
     """
     dpnp source:
     https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels.cpp#L42
-    https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels.cpp#L118
+    https://github.com/IntelPython/dpnp/blob/0.6.1dev/dpnp/backend/kernels/dpnp_krnl_common.cpp#L78
 
     Function declaration:
     void dpnp_matmul_c(void* array1_in, void* array2_in, void* result1, size_t size_m,
                        size_t size_n, size_t size_k)
-    void dpnp_dot_c(void* array1_in, void* array2_in, void* result1, size_t size)
-
+    void dpnp_dot_c(void* result_out,
+                const void* input1_in,
+                const size_t input1_size,
+                const size_t* input1_shape,
+                const size_t input1_shape_ndim,
+                const void* input2_in,
+                const size_t input2_size,
+                const size_t* input2_shape,
+                const size_t input2_shape_ndim,
+                const size_t* where)
     """
     sig = signature(
         ret_type,
@@ -264,7 +294,17 @@ def dpnp_dot_impl(a, b):
         return dot_2_vm
     elif ndims == [1, 1]:
         sig = signature(
-            ret_type, types.voidptr, types.voidptr, types.voidptr, types.intp
+            ret_type,
+            types.voidptr,  # void* result_out,
+            types.voidptr,  # const void* input1_in,
+            types.intp,  # const size_t input1_size,
+            types.voidptr,  # const size_t* input1_shape,
+            types.intp,  # const size_t input1_shape_ndim,
+            types.voidptr,  # const void* input2_in,
+            types.intp,  # const size_t input2_size,
+            types.voidptr,  # const size_t* input2_shape,
+            types.intp,  # const size_t input2_shape_ndim,
+            types.voidptr,  # const size_t* where)
         )
         dpnp_func = dpnp_ext.dpnp_func("dpnp_dot", [a.dtype.name, "NONE"], sig)
 
