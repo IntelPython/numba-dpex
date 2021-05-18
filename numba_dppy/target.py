@@ -329,6 +329,10 @@ class DPPYTargetContext(BaseContext):
         ptras = llvmir.PointerType(src.type.pointee, addrspace=addrspace)
         return builder.addrspacecast(src, ptras)
 
+    # Overrides
+    def get_ufunc_info(self, ufunc_key):
+        return self.ufunc_db[ufunc_key]
+
 
 def set_dppy_kernel(fn):
     """
