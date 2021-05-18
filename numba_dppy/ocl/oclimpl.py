@@ -331,7 +331,7 @@ def atomic_add_tuple(context, builder, sig, args):
     elif dtype == types.int32 or dtype == types.int64:
         return native_atomic_add(context, builder, sig, args)
     else:
-        raise TypeError("Atomic operation on unsupported type")
+        raise TypeError("Atomic operation on unsupported type %s" % dtype)
 
 
 def atomic_sub_wrapper(context, builder, sig, args):
@@ -351,7 +351,7 @@ def atomic_sub_wrapper(context, builder, sig, args):
     elif val_dtype == types.int32 or val_dtype == types.int64:
         builder.store(builder.mul(val, context.get_constant(sig.args[2], -1)), new_val)
     else:
-        raise TypeError("Unsupported type")
+        raise TypeError("Unsupported type %s" % val_dtype)
 
     args[2] = builder.load(new_val)
 
@@ -375,7 +375,7 @@ def atomic_sub_tuple(context, builder, sig, args):
     elif dtype == types.int32 or dtype == types.int64:
         return atomic_sub_wrapper(context, builder, sig, args)
     else:
-        raise TypeError("Atomic operation on unsupported type")
+        raise TypeError("Atomic operation on unsupported type %s" % dtype)
 
 
 def atomic_add(context, builder, sig, args, name):
