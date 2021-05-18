@@ -12,28 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function, absolute_import, division
+from __future__ import absolute_import, division, print_function
 
 import operator
 from functools import reduce
 
+import dpctl
+import llvmlite.binding as ll
+import llvmlite.llvmpy.core as lc
 from llvmlite import ir
 from llvmlite.llvmpy.core import Type
-import llvmlite.llvmpy.core as lc
-import llvmlite.binding as ll
-
-from numba.core.imputils import Registry
 from numba.core import cgutils, types
+from numba.core.imputils import Registry
+from numba.core.itanium_mangler import mangle, mangle_c, mangle_type
 from numba.core.typing.npydecl import parse_dtype
-from numba.core.itanium_mangler import mangle_c, mangle, mangle_type
+
 from numba_dppy import target
-from . import stubs
 from numba_dppy.codegen import SPIR_DATA_LAYOUT
-from numba_dppy.ocl.atomics import atomic_helper
-import dpctl
 from numba_dppy.config import NATIVE_FP_ATOMICS
 from numba_dppy.dppy_array_type import DPPYArray
+from numba_dppy.ocl.atomics import atomic_helper
 
+from . import stubs
 
 registry = Registry()
 lower = registry.lower
@@ -286,7 +286,8 @@ def native_atomic_add(context, builder, sig, args):
         context.get_value_type(sig.args[2]),
     ]
 
-    from numba_dppy import extended_numba_itanium_mangler as ext_itanium_mangler
+    from numba_dppy import \
+        extended_numba_itanium_mangler as ext_itanium_mangler
 
     numba_ptr_ty = types.CPointer(dtype, addrspace=ptr_type.addrspace)
     mangled_fn_name = ext_itanium_mangler.mangle(

@@ -64,5 +64,5 @@ FALLBACK_ON_CPU = _readenv("NUMBA_DPPY_FALLBACK_ON_CPU", int, 1)
 
 # Activate Native floating point atomcis support for supported devices.
 # Requires llvm-spirv supporting the FP atomics extensio
-NATIVE_FP_ATOMICS = _readenv("NUMBA_DPPY_ACTIVATE_NATIVE_FP_ATOMICS", int, 0)
+NATIVE_FP_ATOMICS = _readenv("NUMBA_DPPY_ACTIVATE_ATOMCIS_FP_NATIVE", int, 0)
 LLVM_SPIRV_ROOT = _readenv("NUMBA_DPPY_LLVM_SPIRV_ROOT", str, "")
