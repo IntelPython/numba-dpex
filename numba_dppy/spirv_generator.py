@@ -85,11 +85,13 @@ class CmdLine(object):
 
         # Get optimization level from NUMBA_OPT
         opt_level_option = f"-O{config.OPT}"
-        # spirv-debug-info-version flag is for generating right ocl debug info name
-        ocl_debug_flag = ["--spirv-debug-info-version=ocl-100"] if dppy_config.DEBUG else []
+
+        llvm_spirv_flags = []
+        if dppy_config.DEBUG:
+            llvm_spirv_flags.append("--spirv-debug-info-version=ocl-100")
 
         check_call(["opt", opt_level_option, "-o", ipath + ".bc", ipath])
-        check_call(["llvm-spirv", *ocl_debug_flag, "-o", opath, ipath + ".bc"])
+        check_call(["llvm-spirv", *llvm_spirv_flags, "-o", opath, ipath + ".bc"])
 
         if dppy_config.SAVE_IR_FILES == 0:
             os.unlink(ipath + ".bc")
