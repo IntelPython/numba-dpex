@@ -17,9 +17,8 @@ from . import _helper
 import numpy as np
 import dpctl
 from numba import njit, prange
-import numba_dppy
 import unittest
-from numba.tests.support import captured_stdout
+from numba_dppy.testing import assert_auto_offloading
 
 
 @unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
@@ -35,7 +34,7 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        with dpctl.device_context("opencl:gpu"):
+        with assert_auto_offloading(), dpctl.device_context("opencl:gpu"):
             f(a, b)
 
         for i in range(4):
@@ -55,7 +54,7 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        with dpctl.device_context("opencl:gpu"):
+        with assert_auto_offloading(), dpctl.device_context("opencl:gpu"):
             f(a, b)
 
         self.assertTrue(np.all(b == 10))
@@ -79,7 +78,9 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        with dpctl.device_context("opencl:gpu"):
+        with assert_auto_offloading(parfor_offloaded=2), dpctl.device_context(
+            "opencl:gpu"
+        ):
             f(a, b)
 
         self.assertTrue(np.all(b == 10))
@@ -103,7 +104,9 @@ class TestPrange(unittest.TestCase):
         a = np.ones((m, n, o))
         b = np.ones((m, n, o))
 
-        with dpctl.device_context("opencl:gpu"):
+        with assert_auto_offloading(parfor_offloaded=1), dpctl.device_context(
+            "opencl:gpu"
+        ):
             f(a, b)
 
         self.assertTrue(np.all(b == 12))
@@ -120,28 +123,15 @@ class TestPrange(unittest.TestCase):
 
             return a
 
-        old_debug = numba_dppy.compiler.DEBUG
-        numba_dppy.compiler.DEBUG = 1
-
         jitted = njit(prange_example)
 
-        with captured_stdout() as stdout, dpctl.device_context("opencl:gpu"):
+        with assert_auto_offloading(parfor_offloaded=2), dpctl.device_context(
+            "opencl:gpu"
+        ):
             jitted_res = jitted()
 
         res = prange_example()
 
-        numba_dppy.compiler.DEBUG = old_debug
-
-        self.assertEqual(
-            stdout.getvalue().count("Parfor lowered on DPPY-device"),
-            2,
-            stdout.getvalue(),
-        )
-        self.assertEqual(
-            stdout.getvalue().count("Failed to lower parfor on DPPY-device"),
-            0,
-            stdout.getvalue(),
-        )
         np.testing.assert_equal(res, jitted_res)
 
     @unittest.skip("NRT required but not enabled")
@@ -156,28 +146,15 @@ class TestPrange(unittest.TestCase):
 
             return a
 
-        old_debug = numba_dppy.compiler.DEBUG
-        numba_dppy.compiler.DEBUG = 1
-
         jitted = njit(prange_example)
 
-        with captured_stdout() as stdout, dpctl.device_context("opencl:gpu"):
+        with assert_auto_offloading(parfor_offloaded=2), dpctl.device_context(
+            "opencl:gpu"
+        ):
             jitted_res = jitted()
 
         res = prange_example()
 
-        numba_dppy.compiler.DEBUG = old_debug
-
-        self.assertEqual(
-            stdout.getvalue().count("Parfor lowered on DPPY-device"),
-            2,
-            stdout.getvalue(),
-        )
-        self.assertEqual(
-            stdout.getvalue().count("Failed to lower parfor on DPPY-device"),
-            0,
-            stdout.getvalue(),
-        )
         np.testing.assert_equal(res, jitted_res)
 
 
