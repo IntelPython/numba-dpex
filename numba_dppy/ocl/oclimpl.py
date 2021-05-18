@@ -365,8 +365,8 @@ def atomic_sub_tuple(context, builder, sig, args):
     device_type = dpctl.get_current_queue().sycl_device.device_type
     dtype = sig.args[0].dtype
 
-    if dtype == types.float32 or dtype == types.float64 and NATIVE_FP_ATOMICS == 1:
-        if device_type == dpctl.device_type.gpu:
+    if dtype == types.float32 or dtype == types.float64:
+        if device_type == dpctl.device_type.gpu and NATIVE_FP_ATOMICS == 1:
             return atomic_sub_wrapper(context, builder, sig, args)
         else:
             # Currently, DPCPP only supports native floating point
