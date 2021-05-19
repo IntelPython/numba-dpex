@@ -17,10 +17,11 @@ import numpy as np
 import numba
 import unittest
 import dpctl
+from . import _helper
 import warnings
 
 
-@unittest.skipUnless(dpctl.has_gpu_queues(), "test only on GPU system")
+@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
 class TestDPPYFallback(unittest.TestCase):
     def test_dppy_fallback_inner_call(self):
         @numba.jit
@@ -45,7 +46,7 @@ class TestDPPYFallback(unittest.TestCase):
         ref_result = inner_call_fallback()
 
         np.testing.assert_array_equal(dppy_result, ref_result)
-        self.assertIn("Failed to lower parfor on DPPY-device", str(w[-1].message))
+        self.assertIn("Failed to offload parfor ", str(w[-1].message))
 
     def test_dppy_fallback_reductions(self):
         def reduction(a):
@@ -64,7 +65,7 @@ class TestDPPYFallback(unittest.TestCase):
         ref_result = reduction(a)
 
         np.testing.assert_array_equal(dppy_result, ref_result)
-        self.assertIn("Failed to lower parfor on DPPY-device", str(w[-1].message))
+        self.assertIn("Failed to offload parfor ", str(w[-1].message))
 
 
 if __name__ == "__main__":

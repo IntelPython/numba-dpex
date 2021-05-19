@@ -31,12 +31,11 @@ import numpy as np
 
 from . import spirv_generator
 
-import os
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
+from numba_dppy.config import DEBUG
 
 
-DEBUG = os.environ.get("NUMBA_DPPY_DEBUG", None)
 _NUMBA_DPPY_READ_ONLY = "read_only"
 _NUMBA_DPPY_WRITE_ONLY = "write_only"
 _NUMBA_DPPY_READ_WRITE = "read_write"
@@ -75,7 +74,7 @@ def get_ordered_arg_access_types(pyfunc, access_types):
 
 
 class DPPYCompiler(CompilerBase):
-    """ DPPY Compiler """
+    """DPPY Compiler"""
 
     def define_pipelines(self):
         # this maintains the objmode fallback behaviour
@@ -168,7 +167,7 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
 def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug=False):
     if DEBUG:
         print("compile_kernel_parfor", args)
-        for a in args:
+        for a in args_with_addrspaces:
             print(a, type(a))
             if isinstance(a, types.npytypes.Array):
                 print("addrspace:", a.addrspace)
@@ -443,10 +442,11 @@ class DPPYKernel(DPPYKernelBase):
         self.kernel = self.program.get_sycl_kernel(self.entry_name)
 
     def __call__(self, *args):
+        """
+        Create a list of the kernel arguments by unpacking pyobject values
+        into ctypes values.
+        """
 
-        # Create an array of KenrelArgs
-        # Unpack pyobject values into ctypes scalar values
-        retr = []  # hold functors for writeback
         kernelargs = []
         internal_device_arrs = []
         for ty, val, access_type in zip(
@@ -456,7 +456,6 @@ class DPPYKernel(DPPYKernelBase):
                 ty,
                 val,
                 self.sycl_queue,
-                retr,
                 kernelargs,
                 internal_device_arrs,
                 access_type,
@@ -491,29 +490,47 @@ class DPPYKernel(DPPYKernelBase):
             np.copyto(orig_ndarray, usm_ndarr)
 
     def _unpack_device_array_argument(self, val, kernelargs):
-        # this function only takes ndarrays created using USM allocated buffer
-        void_ptr_arg = True
-
+        """
+        Implements the unpacking logic for array arguments.
+        """
         # meminfo
         kernelargs.append(ctypes.c_size_t(0))
         # parent
         kernelargs.append(ctypes.c_size_t(0))
-
         kernelargs.append(ctypes.c_longlong(val.size))
         kernelargs.append(ctypes.c_longlong(val.dtype.itemsize))
-
         kernelargs.append(val.base)
-
         for ax in range(val.ndim):
             kernelargs.append(ctypes.c_longlong(val.shape[ax]))
         for ax in range(val.ndim):
             kernelargs.append(ctypes.c_longlong(val.strides[ax]))
 
     def _unpack_argument(
-        self, ty, val, sycl_queue, retr, kernelargs, device_arrs, access_type
+        self, ty, val, sycl_queue, kernelargs, device_arrs, access_type
     ):
         """
-        Convert arguments to ctypes and append to kernelargs
+        Unpacks the arguments that are to be passed to the SYCL kernel from
+        Numba types to Ctypes.
+
+        Args:
+            ty: The data types of the kernel argument defined as in instance of
+                numba.types.
+            val: The value of the kernel argument.
+            sycl_queue (dpctl.SyclQueue): A ``dpctl.SyclQueue`` object. The
+                queue object will be used whenever USM memory allocation is
+                needed during unpacking of an numpy.ndarray argument.
+            kernelargs (list): The list of kernel arguments into which the
+                current kernel argument will be appended.
+            device_arrs (list): A list of tuples that is used to store the
+                triples corresponding to the USM memorry allocated for an
+                ``numpy.ndarray`` argument, a wrapper ``ndarray`` created from
+                the USM memory, and the original ``ndarray`` argument.
+            access_type : The type of access for an array argument.
+
+        Raises:
+            NotImplementedError: If the type of argument is not yet supported,
+                then a ``NotImplementedError`` is raised.
+
         """
 
         device_arrs.append(None)
@@ -524,7 +541,10 @@ class DPPYKernel(DPPYKernelBase):
             else:
                 default_behavior = self.check_for_invalid_access_type(access_type)
 
-                usm_ndarr = device_array(val.shape, val.dtype)
+                usm_buf = dpctl_mem.MemoryUSMShared(
+                    val.size * val.dtype.itemsize, queue=sycl_queue
+                )
+                usm_ndarr = np.ndarray(val.shape, buffer=usm_buf, dtype=val.dtype)
 
                 if (
                     default_behavior
@@ -558,15 +578,9 @@ class DPPYKernel(DPPYKernelBase):
             cval = ctypes.c_uint8(int(val))
             kernelargs.append(cval)
         elif ty == types.complex64:
-            # kernelargs.append(ctypes.c_float(val.real))
-            # kernelargs.append(ctypes.c_float(val.imag))
             raise NotImplementedError(ty, val)
-
         elif ty == types.complex128:
-            # kernelargs.append(ctypes.c_double(val.real))
-            # kernelargs.append(ctypes.c_double(val.imag))
             raise NotImplementedError(ty, val)
-
         else:
             raise NotImplementedError(ty, val)
 
@@ -632,7 +646,7 @@ class JitDPPYKernel(DPPYKernelBase):
         if result:
             q, kernel = result
 
-        if q and queue.equals(q):
+        if q == self.sycl_queue:
             return kernel
         else:
             kernel = compile_kernel(queue, self.py_func, argtypes, self.access_types)

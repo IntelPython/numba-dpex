@@ -82,8 +82,17 @@ class CmdLine(object):
         # The opt step is needed for:
         #     a) generate a bitcode file from the text IR file
         #     b) hoist all allocas to the enty block of the module
-        check_call(["opt", "-O1", "-o", ipath + ".bc", ipath])
-        check_call(["llvm-spirv", "-o", opath, ipath + ".bc"])
+
+        # Get optimization level from NUMBA_OPT
+        opt_level_option = f"-O{config.OPT}"
+
+        llvm_spirv_flags = []
+        if dppy_config.DEBUG:
+            llvm_spirv_flags.append("--spirv-debug-info-version=ocl-100")
+
+        check_call(["opt", opt_level_option, "-o", ipath + ".bc", ipath])
+        check_call(["llvm-spirv", *llvm_spirv_flags, "-o", opath, ipath + ".bc"])
+
         if dppy_config.SAVE_IR_FILES == 0:
             os.unlink(ipath + ".bc")
 

@@ -15,6 +15,7 @@
 
 import numpy as np
 from numba import njit, vectorize
+from . import _helper
 import dpctl
 import pytest
 
@@ -23,7 +24,6 @@ list_of_filter_strs = [
     "level0:gpu:0",
     "opencl:cpu:0",
 ]
-
 
 @pytest.fixture(params=list_of_filter_strs)
 def filter_str(request):

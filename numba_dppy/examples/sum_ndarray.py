@@ -13,12 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function
-from timeit import default_timer as time
-
-import sys
+from _helper import has_cpu, has_gpu
 import numpy as np
-import numba_dppy, numba_dppy as dppy
+import numba_dppy as dppy
 import dpctl
 
 
@@ -40,24 +37,38 @@ c = np.ones_like(a)
 
 
 def main():
-    if dpctl.has_gpu_queues():
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
-            print("----Running in GPU----")
-            print("before A: ", a)
-            print("before B: ", b)
-            data_parallel_sum[global_size, local_size](a, b, c)
-            print("after  C: ", c)
-    if dpctl.has_cpu_queues():
-        with dpctl.device_context("opencl:cpu") as cpu_queue:
-            print("----Running in CPU----")
+    if has_gpu():
+        with dpctl.device_context("opencl:gpu") as queue:
+            print("Offloading to ...")
+            queue.get_sycl_device().print_device_info()
             print("before A: ", a)
             print("before B: ", b)
             data_parallel_sum[global_size, local_size](a, b, c)
             print("after  C: ", c)
     else:
-        print("No device found")
-        exit()
+        print("Could not find an OpenCL GPU device")
 
+    if has_cpu():
+        with dpctl.device_context("opencl:cpu") as queue:
+            print("Offloading to ...")
+            queue.get_sycl_device().print_device_info()
+            print("before A: ", a)
+            print("before B: ", b)
+            data_parallel_sum[global_size, local_size](a, b, c)
+            print("after  C: ", c)
+    else:
+        print("Could not find an OpenCL CPU device")
+
+    if has_gpu("level_zero"):
+        with dpctl.device_context("level_zero:gpu") as queue:
+            print("Offloading to ...")
+            queue.get_sycl_device().print_device_info()
+            print("before A: ", a)
+            print("before B: ", b)
+            data_parallel_sum[global_size, local_size](a, b, c)
+            print("after  C: ", c)
+    else:
+        print("Could not find an Level Zero GPU device")
     print("Done...")
 
 

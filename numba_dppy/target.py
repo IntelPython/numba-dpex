@@ -28,6 +28,7 @@ from numba.core.base import BaseContext
 from numba.core.registry import cpu_target
 from numba.core.callconv import MinimalCallConv
 from . import codegen
+from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
 
 
 CC_SPIR_KERNEL = "spir_kernel"
@@ -88,6 +89,7 @@ class GenericPointerModel(datamodel.PrimitiveModel):
 def _init_data_model_manager():
     dmm = datamodel.default_manager.copy()
     dmm.register(types.CPointer, GenericPointerModel)
+    dmm.register(DPPYArray, DPPYArrayModel)
     return dmm
 
 
@@ -329,6 +331,10 @@ class DPPYTargetContext(BaseContext):
         """
         ptras = llvmir.PointerType(src.type.pointee, addrspace=addrspace)
         return builder.addrspacecast(src, ptras)
+
+    # Overrides
+    def get_ufunc_info(self, ufunc_key):
+        return self.ufunc_db[ufunc_key]
 
 
 def set_dppy_kernel(fn):
