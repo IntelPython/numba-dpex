@@ -405,8 +405,8 @@ class DPPYKernel(DPPYKernelBase):
 
         kernelargs = []
         internal_device_arrs = []
-        for ty, val, access_type in zip(
-            self.argument_types, args, self.ordered_arg_access_types
+        for idx, (ty, val, access_type) in enumerate(
+            zip(self.argument_types, args, self.ordered_arg_access_types)
         ):
             self._unpack_argument(
                 ty,
@@ -415,6 +415,7 @@ class DPPYKernel(DPPYKernelBase):
                 kernelargs,
                 internal_device_arrs,
                 access_type,
+                idx + 1,
             )
 
         self.sycl_queue.submit(
@@ -462,7 +463,7 @@ class DPPYKernel(DPPYKernelBase):
             kernelargs.append(ctypes.c_longlong(val.strides[ax]))
 
     def _unpack_argument(
-        self, ty, val, sycl_queue, kernelargs, device_arrs, access_type
+        self, ty, val, sycl_queue, kernelargs, device_arrs, access_type, idx
     ):
         """
         Unpacks the arguments that are to be passed to the SYCL kernel from
@@ -493,6 +494,12 @@ class DPPYKernel(DPPYKernelBase):
 
         if isinstance(ty, types.Array):
             if hasattr(val.base, "__sycl_usm_array_interface__"):
+                assert (
+                    sycl_queue.get_sycl_context() == val.base._queue.get_sycl_context()
+                ), (
+                    "Current SYCL context and context used for allocating argument %d does not match!"
+                    % idx
+                )
                 self._unpack_device_array_argument(val, kernelargs)
             else:
                 default_behavior = self.check_for_invalid_access_type(access_type)
