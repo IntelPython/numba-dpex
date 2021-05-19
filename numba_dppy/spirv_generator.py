@@ -84,6 +84,10 @@ class CmdLine(object):
         # Get optimization level from NUMBA_OPT
         opt_level_option = f"-O{config.OPT}"
 
+        llvm_spirv_flags = []
+        if dppy_config.DEBUG:
+            llvm_spirv_flags.append("--spirv-debug-info-version=ocl-100")
+
         check_call(["opt", opt_level_option, "-o", ipath + ".bc", ipath])
 
         if dppy_config.NATIVE_FP_ATOMICS == 1:
