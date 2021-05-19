@@ -36,20 +36,28 @@ def filter_str(request):
     return request.param
 
 
-list_of_dtypes = [
+list_of_i_dtypes = [
     np.int32,
     np.int64,
+]
+
+list_of_f_dtypes = [
     np.float32,
     np.float64,
 ]
 
 
-@pytest.fixture(params=list_of_dtypes)
+@pytest.fixture(params=list_of_i_dtypes + list_of_f_dtypes)
 def return_dtype(request):
     return request.param
 
 
-@pytest.fixture(params=list_of_dtypes)
+@pytest.fixture(params=list_of_f_dtypes)
+def fdtype(request):
+    return request.param
+
+
+@pytest.fixture(params=list_of_i_dtypes + list_of_f_dtypes)
 def input_arrays(request):
     a = np.array([0], request.param)
     return a, request.param
@@ -165,3 +173,47 @@ def test_kernel_atomic_multi_dim(
     with dpctl.device_context(filter_str):
         kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
     assert a[0] == expected
+
+
+@pytest.fixture
+def cmdopt(request):
+    return request.config.getoption("--LLVM_SPIRV_ROOT")
+
+def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, cmdopt):
+    print("--" , cmdopt)
+    if cmdopt == "":
+        pytest.skip("This test will run when correct --LLVM_SPIRV_ROOT is provided")
+
+    if atomic_skip_test(filter_str):
+        pytest.skip()
+
+    a = np.array([0], fdtype)
+
+    op_type, expected = return_list_of_op
+    op = getattr(dppy.atomic, op_type)
+    def f(a):
+        op(a, 0, 1)
+
+    kernel = dppy.kernel(f)
+
+    NATIVE_FP_ATOMICS_old_val = dppy.config.NATIVE_FP_ATOMICS
+    dppy.config.NATIVE_FP_ATOMICS = 1
+
+    LLVM_SPIRV_ROOT_old_val = dppy.config.LLVM_SPIRV_ROOT
+    dppy.config.LLVM_SPIRV_ROOT = cmdopt
+
+    with dpctl.device_context(filter_str):
+        kern = kernel[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(a)
+        if filter_str != "opencl:cpu:0":
+            assert "__spirv_AtomicFAddEXT" in kern.assembly
+        else:
+            assert "__spirv_AtomicFAddEXT" not in kern.assembly
+
+    dppy.config.NATIVE_FP_ATOMICS = NATIVE_FP_ATOMICS_old_val
+    dppy.config.LLVM_SPIRV_ROOT = LLVM_SPIRV_ROOT_old_val
+
+    # To bypass caching
+    kernel = dppy.kernel(f)
+    with dpctl.device_context(filter_str):
+        kern = kernel[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(a)
+        assert "__spirv_AtomicFAddEXT" not in kern.assembly

@@ -14,7 +14,6 @@
 
 # A wrapper to connect to the SPIR-V binaries (Tools, Translator).
 # Currently, connect to commandline interface.
-from __future__ import print_function, absolute_import
 import sys
 import os
 from subprocess import check_call, CalledProcessError, call
@@ -91,23 +90,13 @@ class CmdLine(object):
             llvm_spirv_root = dppy_config.LLVM_SPIRV_ROOT
 
             if llvm_spirv_root == "":
-                # try to find ONEAPI root
-                possible_oneapi_roots = ["/opt/intel/oneapi", "$A21_SDK_ROOT"]
-                for path in possible_oneapi_roots:
-                    path += "/compiler/latest/linux/bin"
-                    path = os.path.expandvars(path)
-                    if os.path.isfile(path + "/llvm-spirv"):
-                        llvm_spirv_root = path
-                        break
-
-            if llvm_spirv_root == "":
                 raise ValueError(
                     "Native floating point atomics require dpcpp provided llvm-spirv, "
                     "please specify the LLVM-SPIRV root directory using env variable "
                     "NUMBA_DPPY_LLVM_SPIRV_ROOT."
                 )
 
-            llvm_spirv_call_args = [path + "/llvm-spirv"]
+            llvm_spirv_call_args = [llvm_spirv_root + "/llvm-spirv"]
         else:
             llvm_spirv_call_args = ["llvm-spirv"]
         if llvm_spirv_args is not None:
