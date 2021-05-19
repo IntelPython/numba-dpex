@@ -177,7 +177,7 @@ def test_kernel_atomic_multi_dim(
 
 
 def test_atomic_fp_native(filter_str, return_list_of_op, fdtype):
-    LLVM_SPIRV_ROOT = os.environ.get('NUMBA_DPPY_LLVM_SPIRV_ROOT')
+    LLVM_SPIRV_ROOT = os.environ.get("NUMBA_DPPY_LLVM_SPIRV_ROOT")
     if LLVM_SPIRV_ROOT == "" or LLVM_SPIRV_ROOT == None:
         pytest.skip("Please set envar NUMBA_DPPY_LLVM_SPIRV_ROOT to run this test")
 
