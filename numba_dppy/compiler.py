@@ -397,7 +397,6 @@ def device_array(shape, dtype):
 
     return usm_ndarr
 
-
 def to_device(hostary):
     usm_ndarr = device_array(hostary.shape, hostary.dtype)
     np.copyto(usm_ndarr, hostary)

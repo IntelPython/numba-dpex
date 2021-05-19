@@ -14,7 +14,7 @@
 # limitations under the License.
 
 import numpy as np
-from numba import njit, vectorize
+from numba import njit, vectorize, int32
 from . import _helper
 import dpctl
 import pytest
@@ -66,10 +66,10 @@ def test_vectorize(filter_str, shape):
     def axy(a):
         return a + 1
 
-    A = np.arange(100).reshape(shape)
+    A = np.arange(100, dtype=np.int32).reshape(shape)
 
     with dpctl.device_context(filter_str):
-        f = vectorize(target="dppy")(axy)
+        f = vectorize([int32(int32)], target="dppy")(axy)
         expected = f(A)
         actual = axy(A)
 

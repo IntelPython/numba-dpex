@@ -18,13 +18,14 @@ from numba_dppy.dppy_offload_dispatcher import DppyOffloadDispatcher
 from numba_dppy.compiler import (is_device_array as dppy_is_device_array,
                                  device_array as dppy_device_array,
                                  to_device as dppy_to_device)
+from numba_dppy.descriptor import dppy_target
 
-vectorizer_stager_source = """
+vectorizer_stager_source = '''
 def __vectorized_{name}({args}, __out__):
     __tid__ = __dppy__.get_global_id(0)
     if __tid__ < __out__.shape[0]:
         __out__[__tid__] = __core__({argitems})
-"""
+'''
 
 
 class DPPYVectorize(deviceufunc.DeviceVectorize):
@@ -55,6 +56,7 @@ class DPPYUFuncDispatcher(object):
 
     def __init__(self, types_to_retty_kernels):
         self.functions = types_to_retty_kernels
+        #self.functions = tuple([self.typingctx.resolve_argument_type(a) for a in args])
 
     def __call__(self, *args, **kws):
         """
@@ -75,6 +77,96 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
     """
     Provide OpenCL specialization
     """
+    @classmethod
+    def call(cls, typemap, args, kws):
+        """Perform the entire ufunc call mechanism.
+        """
+        # Handle keywords
+        stream = kws.pop('stream', cls.DEFAULT_STREAM)
+        out = kws.pop('out', None)
+
+        if kws:
+            warnings.warn("unrecognized keywords: %s" % ', '.join(kws))
+
+        # Begin call resolution
+        cr = cls(typemap, args)
+        args = cr.get_arguments()
+        resty, func = cr.get_function()
+
+        outshape = args[0].shape
+
+        # Adjust output value
+        if out is not None and cr.is_device_array(out):
+            out = cr.as_device_array(out)
+
+        def attempt_ravel(a):
+            if cr.SUPPORT_DEVICE_SLICING:
+                raise NotImplementedError
+
+            try:
+                # Call the `.ravel()` method
+                return a.ravel()
+            except NotImplementedError:
+                # If it is not a device array
+                if not cr.is_device_array(a):
+                    raise
+                # For device array, retry ravel on the host by first
+                # copying it back.
+                else:
+                    hostary = cr.to_host(a, stream).ravel()
+                    return cr.to_device(hostary, stream)
+
+        if args[0].ndim > 1:
+            args = [attempt_ravel(a) for a in args]
+
+        # Prepare argument on the device
+        devarys = []
+        any_device = False
+        for a in args:
+            if cr.is_device_array(a):
+                devarys.append(a)
+                any_device = True
+            else:
+                dev_a = cr.to_device(a, stream=stream)
+                devarys.append(dev_a)
+
+        # Launch
+        shape = args[0].shape
+        if out is None:
+            # No output is provided
+            devout = cr.device_array(shape, resty, stream=stream)
+
+            devarys.extend([devout])
+            cr.launch(func, shape[0], stream, devarys)
+
+            if any_device:
+                # If any of the arguments are on device,
+                # Keep output on the device
+                return devout.reshape(outshape)
+            else:
+                # Otherwise, transfer output back to host
+                return devout.copy_to_host().reshape(outshape)
+
+        elif cr.is_device_array(out):
+            # If output is provided and it is a device array,
+            # Return device array
+            if out.ndim > 1:
+                out = attempt_ravel(out)
+            devout = out
+            devarys.extend([devout])
+            cr.launch(func, shape[0], stream, devarys)
+            return devout.reshape(outshape)
+
+        else:
+            # If output is provided and it is a host array,
+            # Return host array
+            assert out.shape == shape
+            assert out.dtype == resty
+            devout = cr.device_array(shape, resty, stream=stream)
+            devarys.extend([devout])
+            cr.launch(func, shape[0], stream, devarys)
+            return devout.copy_to_host(out, stream=stream).reshape(outshape)
+
     def is_device_array(self, obj):
         return dppy_is_device_array(obj)
 
