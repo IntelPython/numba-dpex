@@ -179,8 +179,9 @@ def test_kernel_atomic_multi_dim(
 def cmdopt(request):
     return request.config.getoption("--LLVM_SPIRV_ROOT")
 
+
 def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, cmdopt):
-    print("--" , cmdopt)
+    print("--", cmdopt)
     if cmdopt == "":
         pytest.skip("This test will run when correct --LLVM_SPIRV_ROOT is provided")
 
@@ -191,6 +192,7 @@ def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, cmdopt):
 
     op_type, expected = return_list_of_op
     op = getattr(dppy.atomic, op_type)
+
     def f(a):
         op(a, 0, 1)
 

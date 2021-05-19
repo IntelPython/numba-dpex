@@ -318,6 +318,7 @@ def native_atomic_add(context, builder, sig, args):
 @lower(stubs.atomic.add, types.Array, types.Tuple, types.Any)
 def atomic_add_tuple(context, builder, sig, args):
     from numba_dppy.config import NATIVE_FP_ATOMICS
+
     device_type = dpctl.get_current_queue().sycl_device.device_type
     dtype = sig.args[0].dtype
 
@@ -363,6 +364,7 @@ def atomic_sub_wrapper(context, builder, sig, args):
 @lower(stubs.atomic.sub, types.Array, types.Tuple, types.Any)
 def atomic_sub_tuple(context, builder, sig, args):
     from numba_dppy.config import NATIVE_FP_ATOMICS
+
     device_type = dpctl.get_current_queue().sycl_device.device_type
     dtype = sig.args[0].dtype
 

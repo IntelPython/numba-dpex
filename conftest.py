@@ -27,9 +27,11 @@ offload_devices = [
 def offload_device(request):
     return request.param
 
+
 def pytest_addoption(parser):
     parser.addoption(
-        "--LLVM_SPIRV_ROOT", action="store", default="",
-        help="LLVM_SPIRV_ROOT: /path/to/dpcpp_llvm_spirv/root"
+        "--LLVM_SPIRV_ROOT",
+        action="store",
+        default="",
+        help="LLVM_SPIRV_ROOT: /path/to/dpcpp_llvm_spirv/root",
     )
-
