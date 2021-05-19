@@ -30,9 +30,9 @@ Integration with `DPNP backend library`_
 Repository map
 ``````````````
 
-Code for integration is mostly resides in `numba_dppy/dpnp_glue`_.
-Tests resides in `numba_dppy/tests/njit_tests/dpnp`_.
-Helper pass resides in `numba_dppy/rename_numpy_functions_pass.py`_.
+- Code for integration is mostly resides in `numba_dppy/dpnp_glue`_.
+- Tests resides in `numba_dppy/tests/njit_tests/dpnp`_.
+- Helper pass resides in `numba_dppy/rename_numpy_functions_pass.py`_.
 
 Architecture
 ````````````
