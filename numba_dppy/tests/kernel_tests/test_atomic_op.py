@@ -15,6 +15,7 @@
 import numpy as np
 from numba_dppy.tests._helper import skip_test
 
+import os
 import numba_dppy as dppy
 import pytest
 import dpctl
@@ -175,15 +176,10 @@ def test_kernel_atomic_multi_dim(
     assert a[0] == expected
 
 
-@pytest.fixture
-def cmdopt(request):
-    return request.config.getoption("--LLVM_SPIRV_ROOT")
-
-
-def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, cmdopt):
-    print("--", cmdopt)
-    if cmdopt == "":
-        pytest.skip("This test will run when correct --LLVM_SPIRV_ROOT is provided")
+def test_atomic_fp_native(filter_str, return_list_of_op, fdtype):
+    LLVM_SPIRV_ROOT = os.environ.get('NUMBA_DPPY_LLVM_SPIRV_ROOT')
+    if LLVM_SPIRV_ROOT == "" or LLVM_SPIRV_ROOT == None:
+        pytest.skip("Please set envar NUMBA_DPPY_LLVM_SPIRV_ROOT to run this test")
 
     if atomic_skip_test(filter_str):
         pytest.skip()
@@ -202,7 +198,7 @@ def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, cmdopt):
     dppy.config.NATIVE_FP_ATOMICS = 1
 
     LLVM_SPIRV_ROOT_old_val = dppy.config.LLVM_SPIRV_ROOT
-    dppy.config.LLVM_SPIRV_ROOT = cmdopt
+    dppy.config.LLVM_SPIRV_ROOT = LLVM_SPIRV_ROOT
 
     with dpctl.device_context(filter_str):
         kern = kernel[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(a)
