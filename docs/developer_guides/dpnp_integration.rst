@@ -88,6 +88,10 @@ Pleces to update
 Writing overload for stub function
 ``````````````````````````````````
 
+Overloads for stub functions resized in `numba_dppy/dpnp_glue/*.py`_ modules.
+If you need create new module try to name it corresponding to DPNP naming.
+I.e. `dpnp/backend/kernels/dpnp_krnl_indexing.cpp`_ -> `numba_dppy/dpnp_glue/dpnp_indexing.py`_.
+
 .. code::
 
     from numba.core.extending import overload
