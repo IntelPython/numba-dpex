@@ -122,11 +122,10 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
 
         # Prepare argument on the device
         devarys = []
-        any_device = False
+        any_device = True
         for a in args:
             if cr.is_device_array(a):
                 devarys.append(a)
-                any_device = True
             else:
                 dev_a = cr.to_device(a, stream=stream)
                 devarys.append(dev_a)
@@ -146,7 +145,8 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
                 return devout.reshape(outshape)
             else:
                 # Otherwise, transfer output back to host
-                return devout.copy_to_host().reshape(outshape)
+                #return devout.copy_to_host().reshape(outshape)
+                raise ValueError("copy_to_host() is not yet supported")
 
         elif cr.is_device_array(out):
             # If output is provided and it is a device array,
@@ -166,7 +166,7 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
             devout = cr.device_array(shape, resty, stream=stream)
             devarys.extend([devout])
             cr.launch(func, shape[0], stream, devarys)
-            return devout.copy_to_host(out, stream=stream).reshape(outshape)
+            return devout.reshape(outshape)
 
     def is_device_array(self, obj):
         return dppy_is_device_array(obj)
@@ -184,7 +184,7 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
         func[count, dppy.DEFAULT_LOCAL_SIZE](*args)
 
     def device_array(self, shape, dtype, stream):
-        return dppy_device_array(shape, dtype)
+        return dppy_device_array(shape, dtype, stream)
 
     def broadcast_device(self, ary, shape):
         raise NotImplementedError('device broadcast_device NIY')
