@@ -82,10 +82,17 @@ def binary_op(request):
     return request.param
 
 
-def compile_function(function_text, function_name):
-    locals = {}
-    exec(function_text, globals(), locals)
-    return locals[function_name]
+def get_op_fn(name, nargs):
+    args = args_string(nargs)
+    return wraper_function(args, "np.{name}({args})")
+
+
+def wraper_function(args, code, function_name="func"):
+    function_text = f"""\
+def {function_name}({args}):
+    return {code}
+"""
+    return compile_function(function_text, function_name), function_text
 
 
 def args_string(args_count):
@@ -94,17 +101,11 @@ def args_string(args_count):
     return ", ".join(list(string.ascii_lowercase[:args_count]))
 
 
-def create_numpy_call_function(name, args):
-    function_text = f"""\
-def func({args}):
-    return np.{name}({args})
-"""
-    return compile_function(function_text, "func")
-
-
-def get_op_fn(name, nargs):
-    return create_numpy_call_function(name, args_string(nargs))
-
+def compile_function(function_text, function_name):
+    locals = {}
+    exec(function_text, globals(), locals)
+    return locals[function_name]
+    
 
 def test_unary_ops(filter_str, unary_op, input_array, capfd):
     if skip_test(filter_str):
