@@ -242,7 +242,54 @@ the container to hold different types of pointer.
 Writing DPNP integration tests
 ``````````````````````````````
 
-TODO
+See all DPNP integration tests in `numba_dppy/tests/njit_tests/dpnp`_.
+
+Usually adding new test is as easy as adding function name to the list with functions.
+Each item in the list is used as a parameter for tests.
+You should find tests for the category of functions similar to your function and
+update a list with functions like ``list_of_unary_ops``, ``list_of_nan_ops``.
+
+.. code::
+
+    def test_unary_ops(filter_str, unary_op, input_array, get_shape, capfd):
+      if skip_test(filter_str):
+          pytest.skip()
+
+      a = input_array  # 1
+      a = np.reshape(a, get_shape)
+      op, name = unary_op  # 2
+      if (name == "cumprod" or name == "cumsum") and (
+          filter_str == "opencl:cpu:0" or is_gen12(filter_str)
+      ):
+          pytest.skip()
+      actual = np.empty(shape=a.shape, dtype=a.dtype)
+      expected = np.empty(shape=a.shape, dtype=a.dtype)
+
+      f = njit(op)  # 3
+      with dpctl.device_context(filter_str), dpnp_debug():  # 7
+          actual = f(a)  # 4
+          captured = capfd.readouterr()
+          assert "dpnp implementation" in captured.out  # 8
+
+      expected = op(a)  # 5
+      max_abs_err = np.sum(actual - expected)
+      assert max_abs_err < 1e-4  # 6
+
+Tets functions starts from `test_` (see pytest docs) and all input parameters are
+provided by fixtures.
+
+In example above ``unary_op`` contains tuple ``(FUNCTION, FUNCTION_NAME)``, see
+fixture ``unary_op()``.
+
+Key parts of any test are:
+1. Receive input array from the fixture ``input_array``
+2. Receive the tested function from fixture ``unary_op``
+3. Compile the tested function with ``njit``
+4. Call the compiled tested function inside ``device_context()`` and receive actual result
+5. Call the original tested function and receive expected result
+6. Compare actual and expected result
+7. Run the compiled test function inside debug contex ``dpnp_debug``
+8. Check that DPNP was usede via debug information printed in output
 
 Troubleshooting
 ```````````````
