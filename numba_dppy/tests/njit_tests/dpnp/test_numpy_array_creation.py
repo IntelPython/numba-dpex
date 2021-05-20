@@ -86,7 +86,7 @@ def binary_op(request):
 
 def get_op_fn(name, nargs):
     args = args_string(nargs)
-    return wrapper_function(args, "np.{name}({args})", globals())
+    return wrapper_function(args, f"np.{name}({args})", globals())
 
 
 def test_unary_ops(filter_str, unary_op, input_array, capfd):
