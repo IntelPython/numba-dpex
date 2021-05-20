@@ -175,8 +175,8 @@ This code created implementation function and returns it from the overload funct
 ``PRINT_DEBUG`` used for printing debug information which is used in tests.
 Tests rely on debug information to check that DPNP implementation was used.
 
-``dpnp_impl()`` function creates output array with size and data type
-corresponding to DPNP function.
+``dpnp_impl()`` creates output array with size and data type corresponding
+to DPNP function output array.
 
 The implementation function usually reuse a common function like ``common_impl()``.
 It eliminates code duplication.
