@@ -25,7 +25,7 @@ Integration with `DPNP backend library`_
 
     print(result)
 
-``np.sum(a)`` will be replaced with `dpnp_sum_c<int, int>(...) <https://github.com/IntelPython/dpnp/blob/ef404c0f284b0c508ed1e556e140f02f76ae5551/dpnp/backend/kernels/dpnp_krnl_reduction.cpp#L58>`_.
+``np.sum(a)`` will be replaced with `dpnp_sum_c<int, int>(...)`_.
 
 Repository map
 ``````````````
@@ -80,9 +80,10 @@ Pleces to update
 1. `numba_dppy/dpnp_glue/stubs.py`_: Add new class to ``stubs.dpnp`` class.
 2. `numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx`_: Update items in ``DPNPFuncName`` enum.
 3. `numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx`_: Update if statements in ``get_DPNPFuncName_from_str()`` function.
-4. `numba_dppy/rename_numpy_functions_pass.py`_: Update items in ``rewrite_function_name_map`` dict.
-5. Add ``@overload(stubs.dpnp.YOUR_FUNCTION))`` in one of the `numba_dppy/dpnp_glue/*.py`_ modules or create new.
-6. Add test in one of the `numba_dppy/tests/njit_tests/dpnp`_ test modules or create new.
+4. Add ``@overload(stubs.dpnp.YOUR_FUNCTION))`` in one of the `numba_dppy/dpnp_glue/*.py`_ modules or create new.
+5. `numba_dppy/rename_numpy_functions_pass.py`_: Update items in ``rewrite_function_name_map`` dict.
+6. `numba_dppy/rename_numpy_functions_pass.py`_: Update imported modules in ``DPPYRewriteOverloadedNumPyFunctions.__init__()``.
+7. Add test in one of the `numba_dppy/tests/njit_tests/dpnp`_ test modules or create new.
 
 Writing overload for stub function
 ``````````````````````````````````
@@ -302,3 +303,4 @@ Troubleshooting
 
 
 .. _`DPNP backend library`: https://github.com/IntelPython/dpnp/tree/master/dpnp/backend
+.. _`dpnp_sum_c<int, int>(...)`: https://github.com/IntelPython/dpnp/blob/ef404c0f284b0c508ed1e556e140f02f76ae5551/dpnp/backend/kernels/dpnp_krnl_reduction.cpp#L58
