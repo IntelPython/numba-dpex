@@ -388,20 +388,19 @@ class DPPYKernelBase(object):
 def is_device_array(obj):
     return hasattr(obj.base, "__sycl_usm_array_interface__")
 
-def device_array(shape, dtype):
+def device_array(shape, dtype, queue):
     size = 1
     for i in shape:
         size *= i
-    usm_buf = dpctl_mem.MemoryUSMShared(size * dtype.itemsize)
+    usm_buf = dpctl_mem.MemoryUSMShared(size * dtype.itemsize, queue=queue)
     usm_ndarr = np.ndarray(shape, buffer=usm_buf, dtype=dtype)
 
     return usm_ndarr
 
-def to_device(hostary):
-    usm_ndarr = device_array(hostary.shape, hostary.dtype)
+def to_device(hostary, queue):
+    usm_ndarr = device_array(hostary.shape, hostary.dtype, queue)
     np.copyto(usm_ndarr, hostary)
     return usm_ndarr
-
 
 class DPPYKernel(DPPYKernelBase):
     """
@@ -540,10 +539,11 @@ class DPPYKernel(DPPYKernelBase):
             else:
                 default_behavior = self.check_for_invalid_access_type(access_type)
 
-                usm_buf = dpctl_mem.MemoryUSMShared(
-                    val.size * val.dtype.itemsize, queue=sycl_queue
-                )
-                usm_ndarr = np.ndarray(val.shape, buffer=usm_buf, dtype=val.dtype)
+                usm_ndarr = device_array(val.shape, val.dtype, sycl_queue)
+                #usm_buf = dpctl_mem.MemoryUSMShared(
+                #    val.size * val.dtype.itemsize, queue=sycl_queue
+                #)
+                #usm_ndarr = np.ndarray(val.shape, buffer=usm_buf, dtype=val.dtype)
 
                 if (
                     default_behavior
@@ -627,7 +627,7 @@ class JitDPPYKernel(DPPYKernelBase):
 
         argtypes = self.get_argtypes(*args)
         kernel = self.specialize(argtypes, current_queue)
-        cfg = kernel.configure(self.sycl_queue, self.global_size, self.local_size)
+        cfg = kernel.configure(current_queue, self.global_size, self.local_size)
         cfg(*args)
 
     def specialize(self, argtypes, queue):
@@ -645,7 +645,7 @@ class JitDPPYKernel(DPPYKernelBase):
         if result:
             q, kernel = result
 
-        if q == self.sycl_queue:
+        if q == queue:
             return kernel
         else:
             kernel = compile_kernel(queue, self.py_func, argtypes, self.access_types)

@@ -19,6 +19,7 @@ from numba_dppy.compiler import (is_device_array as dppy_is_device_array,
                                  device_array as dppy_device_array,
                                  to_device as dppy_to_device)
 from numba_dppy.descriptor import dppy_target
+import dpctl
 
 vectorizer_stager_source = '''
 def __vectorized_{name}({args}, __out__):
@@ -82,7 +83,7 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
         """Perform the entire ufunc call mechanism.
         """
         # Handle keywords
-        stream = kws.pop('stream', cls.DEFAULT_STREAM)
+        stream = dpctl.get_current_queue()
         out = kws.pop('out', None)
 
         if kws:
@@ -174,7 +175,7 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
         return not dppy_is_device_array(obj)
 
     def to_device(self, hostary, stream):
-        return dppy_to_device(hostary)
+        return dppy_to_device(hostary, stream)
 
     def to_host(self, devary, stream):
         raise NotImplementedError('device to_host NIY')
