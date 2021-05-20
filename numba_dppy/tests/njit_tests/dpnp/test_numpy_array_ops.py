@@ -83,7 +83,7 @@ list_of_unary_ops = [
 
 @pytest.fixture(params=list_of_unary_ops)
 def unary_op(request):
-    return wrapper_function("a", f"a.{request.param}()"), request.param
+    return wrapper_function("a", f"a.{request.param}()", globals()), request.param
 
 
 def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
@@ -132,7 +132,7 @@ def indices(request):
 
 
 def get_take_fn():
-    return wrapper_function("a, ind", "a.take(ind)")
+    return wrapper_function("a, ind", "a.take(ind)", globals())
 
 
 def test_take(filter_str, input_arrays, indices, capfd):

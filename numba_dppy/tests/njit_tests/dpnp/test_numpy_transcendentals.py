@@ -94,7 +94,7 @@ list_of_nan_ops = [
 
 
 def get_func(name):
-    return wrapper_function("a", f"np.{name}(a)")
+    return wrapper_function("a", f"np.{name}(a)", globals())
 
 
 @pytest.fixture(params=list_of_unary_ops + list_of_nan_ops)

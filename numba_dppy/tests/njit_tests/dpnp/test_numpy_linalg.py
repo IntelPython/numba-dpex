@@ -59,7 +59,7 @@ def filter_str(request):
 
 def get_fn(name, nargs):
     args = args_string(nargs)
-    return wrapper_function(args, f"np.{name}({args})")
+    return wrapper_function(args, f"np.{name}({args})", globals())
 
 
 list_of_dtypes = [

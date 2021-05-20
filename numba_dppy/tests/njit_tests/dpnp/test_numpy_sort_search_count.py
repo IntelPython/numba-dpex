@@ -75,7 +75,7 @@ list_of_unary_ops = [
 
 @pytest.fixture(params=list_of_unary_ops)
 def unary_op(request):
-    return wrapper_function("a", f"np.{request.param}(a)"), request.param
+    return wrapper_function("a", f"np.{request.param}(a)", globals()), request.param
 
 
 def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):

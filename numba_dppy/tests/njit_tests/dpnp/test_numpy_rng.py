@@ -71,7 +71,9 @@ list_of_one_arg = [
 
 @pytest.fixture(params=list_of_one_arg)
 def one_arg_fn(request):
-    function = wrapper_function("size", f"np.random.{request.param[0]}(size)")
+    function = wrapper_function(
+        "size", f"np.random.{request.param[0]}(size)", globals()
+    )
     return function, request.param
 
 
@@ -111,7 +113,7 @@ def two_arg_fn(request):
 
 
 def get_two_arg_fn(op_name):
-    return wrapper_function("a, b", f"np.random.{op_name}(a, b)")
+    return wrapper_function("a, b", f"np.random.{op_name}(a, b)", globals())
 
 
 def test_two_arg_fn(filter_str, two_arg_fn, unary_size, capfd):
@@ -159,7 +161,7 @@ def three_arg_fn(request):
 
 
 def get_three_arg_fn(op_name):
-    return wrapper_function("a, b, c", f"np.random.{op_name}(a, b, c)")
+    return wrapper_function("a, b, c", f"np.random.{op_name}(a, b, c)", globals())
 
 
 def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
