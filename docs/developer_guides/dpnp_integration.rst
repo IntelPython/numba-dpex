@@ -178,10 +178,10 @@ Tests rely on debug information to check that DPNP implementation was used.
 ``dpnp_impl()`` function creates output array with size and data type
 corresponding to DPNP function.
 
-The implementation function usually reuse common function like ``common_impl()``.
+The implementation function usually reuse a common function like ``common_impl()``.
 It eliminates code duplication.
 You should consider all available common functions at the top of the file before
-creating new common function or writin common code in implementation function.
+creating new common function.
 
 .. code::
 
