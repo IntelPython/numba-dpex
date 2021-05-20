@@ -64,6 +64,7 @@ def get_shape(request):
 
 list_of_unary_op = [
     "copy",
+    "trace",
 ]
 
 list_of_binary_op = [
