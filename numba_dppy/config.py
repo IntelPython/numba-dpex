@@ -16,13 +16,16 @@ import os
 import warnings
 from packaging import version
 
+
 class DpctlMinimumVersionRequiredError(Exception):
     """
     A ``DpctlMinimumVersionRequiredError`` indicates that the version of dpctl
     does not satisfy the minimum version requirement.
 
     """
+
     pass
+
 
 # Check for dpctl 0.7.0 or higher on the system.
 _dpctl_found = False
