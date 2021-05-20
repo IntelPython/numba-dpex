@@ -44,8 +44,8 @@ from numba.core.typing.templates import (
 from numba.core.typing.arraydecl import normalize_shape
 from numba.np.arrayobj import _array_copy
 
-import dpctl.dptensor.numpy_usm_shared as nus
-from dpctl.dptensor.numpy_usm_shared import ndarray, functions_list, class_list
+import dpctl.tensor.numpy_usm_shared as nus
+from dpctl.tensor.numpy_usm_shared import ndarray, functions_list, class_list
 from . import target as dppy_target
 from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
 
@@ -284,7 +284,7 @@ def numba_register_lower_builtin():
 
     for impl, func, types in todo + todo_builtin:
         try:
-            usmarray_func = eval("dpctl.dptensor.numpy_usm_shared." + func.__name__)
+            usmarray_func = eval("dpctl.tensor.numpy_usm_shared." + func.__name__)
         except:
             dprint("failed to eval", func.__name__)
             continue
@@ -339,7 +339,7 @@ def numba_register_typing():
         dprint("todo_classes:", val, typ, type(typ))
 
         try:
-            dptype = eval("dpctl.dptensor.numpy_usm_shared." + val.__name__)
+            dptype = eval("dpctl.tensor.numpy_usm_shared." + val.__name__)
         except:
             dprint("failed to eval", val.__name__)
             continue
@@ -354,7 +354,7 @@ def numba_register_typing():
         template = typ.templates[0]
         dprint("need to re-register for usmarray", val, typ, typ.typing_key)
         try:
-            dpval = eval("dpctl.dptensor.numpy_usm_shared." + val.__name__)
+            dpval = eval("dpctl.tensor.numpy_usm_shared." + val.__name__)
         except:
             dprint("failed to eval", val.__name__)
             continue
