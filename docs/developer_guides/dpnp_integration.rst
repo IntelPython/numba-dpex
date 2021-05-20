@@ -178,6 +178,9 @@ Tests rely on debug information to check that DPNP implementation was used.
 ``dpnp_impl()`` creates output array with size and data type corresponding
 to DPNP function output array.
 
+``dpnp_impl()`` could call ``NumPy`` functions supported by Numba and
+other stab functions (i.e. ``numba_dppy.dpnp.dot()``).
+
 The implementation function usually reuse a common function like ``common_impl()``.
 It eliminates code duplication.
 You should consider all available common functions at the top of the file before
