@@ -68,10 +68,11 @@ is overload in `numba_dppy/dpnp_glue/dpnp_transcendentalsimpl.py`_:
       ...
 
 Overload implementation knows about DPNP functions.
-It receives DPNP function pointer and uses known signature from DPNP headers.
-The implementation calls DPNP function via ``ctypes`` supported by ``Numba``.
+It receives DPNP function pointer from DPNP and uses known signature from DPNP headers.
+The implementation calls DPNP function via creating Numba ``ExternalFunctionPointer``.
 
 For more details about overloads implementation see `Writing overload for stub function`_.
+For more details about testing the integration see `Writing DPNP integration tests`_.
 
 Pleces to update
 ````````````````
@@ -86,9 +87,145 @@ Pleces to update
 Writing overload for stub function
 ``````````````````````````````````
 
-``@overload(stubs.dpnp.YOUR_FUNCTION))``
+.. code::
 
+    from numba.core.extending import overload
+    import numba_dppy.dpnp_glue as dpnp_lowering
+    ...
 
+    @overload(stubs.dpnp.sum)
+    def dpnp_sum_impl(a):
+      dpnp_lowering.ensure_dpnp("sum")
+
+``ensure_dpnp(FUNCTION_NAME)`` checks that DPNP package is available and contains the function.
+
+.. code::
+
+    from numba import types
+    from numba.core.typing import signature
+    ...
+    # continue of dpnp_sum_impl()
+      """
+      dpnp source:
+      https://github.com/IntelPython/dpnp/blob/0.6.1dev/dpnp/backend/kernels/dpnp_krnl_reduction.cpp#L59
+
+      Function declaration:
+      void dpnp_sum_c(void* result_out,
+                      const void* input_in,
+                      const size_t* input_shape,
+                      const size_t input_shape_ndim,
+                      const long* axes,
+                      const size_t axes_ndim,
+                      const void* initial,
+                      const long* where)
+
+      """
+      sig = signature(
+          types.void,  # return type
+          types.voidptr,  # void* result_out,
+          types.voidptr,  # const void* input_in,
+          types.voidptr,  # const size_t* input_shape,
+          types.intp,  # const size_t input_shape_ndim,
+          types.voidptr,  # const long* axes,
+          types.intp,  # const size_t axes_ndim,
+          types.voidptr,  # const void* initial,
+          types.voidptr,  # const long* where)
+      )
+
+Signature of the function is based on DPNP header files.
+It is recommended to provide link to signature in DPNP sources and copy it in comment.
+
+For mapping between C types and Numba types see `Types matching for Numba and DPNP`_.
+
+.. code::
+
+    import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
+    ...
+    # continue of dpnp_sum_impl()
+      dpnp_func = dpnp_ext.dpnp_func("dpnp_sum", [a.dtype.name, "NONE"], sig)
+
+``dpnp_ext.dpnp_func()`` returns function pointer from DPNP.
+It receives:
+
+- Function name (i.e. `dpnp_sum`) which is converted to
+  ``DPNPFuncName`` enum in ``get_DPNPFuncName_from_str()``
+- List of input and output data types names
+  (i.e. [a.dtype.name, "NONE"], if "NONE" then reuse previous type name)
+  which is converted to ``DPNPFuncType`` enum in ``get_DPNPFuncType_from_str()``
+- Signature which used for creating Numba ``ExternalFunctionPointer``.
+
+.. code::
+
+    import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
+    ...
+    # continue of dpnp_sum_impl()
+      PRINT_DEBUG = dpnp_lowering.DEBUG
+
+      def dpnp_impl(a):
+          out = np.empty(1, dtype=a.dtype)
+          common_impl(a, out, dpnp_func, PRINT_DEBUG)
+
+          return out[0]
+
+      return dpnp_impl
+
+This code created implementation function and returns it from the overload function.
+
+``PRINT_DEBUG`` used for printing debug information which is used in tests.
+Tests rely on debug information to check that DPNP implementation was used.
+
+``dpnp_impl()`` function creates output array with size and data type
+corresponding to DPNP function.
+
+The implementation function usually reuse common function like ``common_impl()``.
+It eliminates code duplication.
+You should consider all available common functions at the top of the file before
+creating new common function or writin common code in implementation function.
+
+.. code::
+
+    from numba.core.extending import register_jitable
+    from numba_dppy import dpctl_functions
+    import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
+    ...
+
+    @register_jitable
+    def common_impl(a, out, dpnp_func, print_debug):
+        if a.size == 0:
+            raise ValueError("Passed Empty array")
+
+        sycl_queue = dpctl_functions.get_current_queue()
+        a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)  # 1
+        dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)  # 2
+
+        out_usm = dpctl_functions.malloc_shared(a.itemsize, sycl_queue)  # 1
+
+        axes, axes_ndim = 0, 0
+        initial = 0
+        where = 0
+
+        dpnp_func(out_usm, a_usm, a.shapeptr, a.ndim, axes, axes_ndim, initial, where)  # 3
+
+        dpctl_functions.queue_memcpy(
+            sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+        )  # 4
+
+        dpctl_functions.free_with_queue(a_usm, sycl_queue)  # 5
+        dpctl_functions.free_with_queue(out_usm, sycl_queue)  # 5
+
+        dpnp_ext._dummy_liveness_func([a.size, out.size])  # 6
+
+        if print_debug:
+            print("dpnp implementation")  # 7
+
+Common function:
+1. allocates input and output USM arrays
+2. copies input array to input USM array
+3. calls ``dpnp_func()``
+4. copies output USM array to output array
+5. deallocates USM arrays
+6. disable dead code elimination for input and output arrays
+7. print debug infirmation used for testing
 
 Types matching for Numba and DPNP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -102,11 +239,16 @@ any type to represent size_t *. Since, both the types are pointers,
 if the compiler allows there should not be any mismatch in the size of
 the container to hold different types of pointer.
 
+Writing DPNP integration tests
+``````````````````````````````
+
+TODO
+
 Troubleshooting
 ```````````````
 
 1. Do not forget build ``numba-dppy`` with current installed version of ``DPNP``.
-   There is headers dependency.
+   There is headers dependency in Cython files (i.e. `numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx`_).
 2. Do not forget add array to ``dpnp_ext._dummy_liveness_func([YOUR_ARRAY.size])``.
    Dead code elimination could delete temporary variables before they are used for DPNP function call.
    As a result wrong data could be passed to DPNP function.
