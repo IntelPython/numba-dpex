@@ -27,14 +27,14 @@ class DpctlMinimumVersionRequiredError(Exception):
     pass
 
 
-# Check for dpctl 0.7.0 or higher on the system.
+# Check for dpctl 0.8.0 or higher in the system.
 _dpctl_found = False
 try:
     import dpctl
 
-    # Versions of dpctl lower than 0.7.0 are not compatible with current main
+    # Versions of dpctl lower than 0.8.0 are not compatible with current main
     # of numba_dppy.
-    if version.parse(dpctl.__version__) < version.parse("0.7.0"):
+    if version.parse(dpctl.__version__) < version.parse("0.8.*"):
         raise DpctlMinimumVersionRequiredError
 
     # For the Numba_dppy extension to work, we should have at least one
@@ -47,10 +47,11 @@ try:
         msg += "A non-host SYCL device is required to use numba_dppy."
         warnings.warn(msg, UserWarning)
 except DpctlMinimumVersionRequiredError:
-    msg = "numba_dppy requires dpctl 0.7.0 or higher."
+    msg = "numba_dppy is not compatible with " + dpctl.__version__ + "."
+    msg += " Install dpctl 0.8.* or higher."
     warnings.warn(msg, UserWarning)
 except:
-    msg = "Please install dpctl 0.7.0 or higher."
+    msg = "Please install dpctl 0.8.* or higher."
     warnings.warn(msg, UserWarning)
 
 # Set this config flag based on if dpctl is found or not. The config flags is
