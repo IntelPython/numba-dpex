@@ -88,7 +88,7 @@ class CmdLine(object):
 
         llvm_spirv_flags = []
         if dppy_config.DEBUG:
-            #llvm_spirv_flags.append("--spirv-debug-info-version=ocl-100")
+            # llvm_spirv_flags.append("--spirv-debug-info-version=ocl-100")
             pass
 
         check_call(["opt", opt_level_option, "-o", ipath + ".bc", ipath])

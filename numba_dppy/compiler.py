@@ -199,21 +199,21 @@ def insert_device_function_typing(typingctx, devfn, function_template):
     typingctx.insert_user_function(devfn, function_template)
     # insert it into cpu typing context as well to be discoverable from
     # @vectorize
-    #typingctx.cpu_context.insert_user_function(devfn, function_template)
+    # typingctx.cpu_context.insert_user_function(devfn, function_template)
+
 
 def insert_device_function_target(targetctx, devfn, fndesc, libs):
     targetctx.insert_user_function(devfn, fndesc, libs)
     # insert it into cpu target context as well to be discoverable from
     # @vectorize
-    #targetctx.cpu_context.insert_user_function(devfn, fndesc, libs)
+    # targetctx.cpu_context.insert_user_function(devfn, fndesc, libs)
+
 
 def add_device_function_target(targetctx, devfn, fndesc, libs):
     targetctx.add_user_function(devfn, fndesc, libs)
     # insert it into cpu target context as well to be discoverable from
     # @vectorize
-    #targetctx.cpu_context.add_user_function(devfn, fndesc, libs)
-
-
+    # targetctx.cpu_context.add_user_function(devfn, fndesc, libs)
 
 
 def compile_dppy_func(pyfunc, return_type, args, debug=False):
@@ -226,10 +226,10 @@ def compile_dppy_func(pyfunc, return_type, args, debug=False):
         key = devfn
         cases = [cres.signature]
 
-    #cres.typing_context.insert_user_function(devfn, dppy_function_template)
+    # cres.typing_context.insert_user_function(devfn, dppy_function_template)
     insert_device_function_typing(cres.typing_context, devfn, dppy_function_template)
     libs = [cres.library]
-    #cres.target_context.insert_user_function(devfn, cres.fndesc, libs)
+    # cres.target_context.insert_user_function(devfn, cres.fndesc, libs)
     insert_device_function_target(cres.target_context, devfn, cres.fndesc, libs)
     return devfn
 
@@ -249,7 +249,7 @@ def compile_dppy_func_template(pyfunc):
             return dft.compile(args)
 
     typingctx = dppy_target.typing_context
-    #typingctx.insert_user_function(dft, dppy_function_template)
+    # typingctx.insert_user_function(dft, dppy_function_template)
     insert_device_function_typing(typingctx, dft, dppy_function_template)
     return dft
 
@@ -279,10 +279,12 @@ class DPPYFunctionTemplate(object):
 
             if first_definition:
                 # First definition
-                #cres.target_context.insert_user_function(self, cres.fndesc, libs)
-                insert_device_function_target(cres.target_context, self, cres.fndesc, libs)
+                # cres.target_context.insert_user_function(self, cres.fndesc, libs)
+                insert_device_function_target(
+                    cres.target_context, self, cres.fndesc, libs
+                )
             else:
-                #cres.target_context.add_user_function(self, cres.fndesc, libs)
+                # cres.target_context.add_user_function(self, cres.fndesc, libs)
                 add_device_function_target(cres.target_context, self, cres.fndesc, libs)
 
         else:
@@ -385,8 +387,13 @@ class DPPYKernelBase(object):
 
         return self.configure(sycl_queue, gs, ls)
 
+
 def is_device_array(obj):
-    return hasattr(obj.base, "__sycl_usm_array_interface__")
+    if hasattr(obj, "base"):
+        return hasattr(obj.base, "__sycl_usm_array_interface__")
+    else:
+        return False
+
 
 def device_array(shape, dtype, queue):
     size = 1
@@ -397,10 +404,12 @@ def device_array(shape, dtype, queue):
 
     return usm_ndarr
 
+
 def to_device(hostary, queue):
     usm_ndarr = device_array(hostary.shape, hostary.dtype, queue)
     np.copyto(usm_ndarr, hostary)
     return usm_ndarr
+
 
 class DPPYKernel(DPPYKernelBase):
     """
@@ -540,10 +549,10 @@ class DPPYKernel(DPPYKernelBase):
                 default_behavior = self.check_for_invalid_access_type(access_type)
 
                 usm_ndarr = device_array(val.shape, val.dtype, sycl_queue)
-                #usm_buf = dpctl_mem.MemoryUSMShared(
+                # usm_buf = dpctl_mem.MemoryUSMShared(
                 #    val.size * val.dtype.itemsize, queue=sycl_queue
-                #)
-                #usm_ndarr = np.ndarray(val.shape, buffer=usm_buf, dtype=val.dtype)
+                # )
+                # usm_ndarr = np.ndarray(val.shape, buffer=usm_buf, dtype=val.dtype)
 
                 if (
                     default_behavior

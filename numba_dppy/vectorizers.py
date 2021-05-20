@@ -15,18 +15,20 @@
 from numba.np.ufunc import deviceufunc
 import numba_dppy as dppy
 from numba_dppy.dppy_offload_dispatcher import DppyOffloadDispatcher
-from numba_dppy.compiler import (is_device_array as dppy_is_device_array,
-                                 device_array as dppy_device_array,
-                                 to_device as dppy_to_device)
+from numba_dppy.compiler import (
+    is_device_array as dppy_is_device_array,
+    device_array as dppy_device_array,
+    to_device as dppy_to_device,
+)
 from numba_dppy.descriptor import dppy_target
 import dpctl
 
-vectorizer_stager_source = '''
+vectorizer_stager_source = """
 def __vectorized_{name}({args}, __out__):
     __tid__ = __dppy__.get_global_id(0)
     if __tid__ < __out__.shape[0]:
         __out__[__tid__] = __core__({argitems})
-'''
+"""
 
 
 class DPPYVectorize(deviceufunc.DeviceVectorize):
@@ -57,7 +59,7 @@ class DPPYUFuncDispatcher(object):
 
     def __init__(self, types_to_retty_kernels):
         self.functions = types_to_retty_kernels
-        #self.functions = tuple([self.typingctx.resolve_argument_type(a) for a in args])
+        # self.functions = tuple([self.typingctx.resolve_argument_type(a) for a in args])
 
     def __call__(self, *args, **kws):
         """
@@ -78,16 +80,16 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
     """
     Provide OpenCL specialization
     """
+
     @classmethod
     def call(cls, typemap, args, kws):
-        """Perform the entire ufunc call mechanism.
-        """
+        """Perform the entire ufunc call mechanism."""
         # Handle keywords
         stream = dpctl.get_current_queue()
-        out = kws.pop('out', None)
+        out = kws.pop("out", None)
 
         if kws:
-            warnings.warn("unrecognized keywords: %s" % ', '.join(kws))
+            warnings.warn("unrecognized keywords: %s" % ", ".join(kws))
 
         # Begin call resolution
         cr = cls(typemap, args)
@@ -145,7 +147,7 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
                 return devout.reshape(outshape)
             else:
                 # Otherwise, transfer output back to host
-                #return devout.copy_to_host().reshape(outshape)
+                # return devout.copy_to_host().reshape(outshape)
                 raise ValueError("copy_to_host() is not yet supported")
 
         elif cr.is_device_array(out):
@@ -178,7 +180,7 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
         return dppy_to_device(hostary, stream)
 
     def to_host(self, devary, stream):
-        raise NotImplementedError('device to_host NIY')
+        raise NotImplementedError("device to_host NIY")
 
     def launch(self, func, count, stream, args):
         func[count, dppy.DEFAULT_LOCAL_SIZE](*args)
@@ -187,4 +189,4 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
         return dppy_device_array(shape, dtype, stream)
 
     def broadcast_device(self, ary, shape):
-        raise NotImplementedError('device broadcast_device NIY')
+        raise NotImplementedError("device broadcast_device NIY")
