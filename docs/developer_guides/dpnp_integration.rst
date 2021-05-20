@@ -93,7 +93,7 @@ Writing overload for stub function
 Types matching for Numba and DPNP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- T* -> types.voidptr
+- [const] T* -> types.voidptr
 - size_t -> types.intp
 - long -> types.int64
 
