@@ -16,6 +16,14 @@ import os
 import warnings
 from packaging import version
 
+class DpctlMinimumVersionRequiredError(Exception):
+    """
+    A ``DpctlMinimumVersionRequiredError`` indicates that the version of dpctl
+    does not satisfy the minimum version requirement.
+
+    """
+    pass
+
 # Check for dpctl 0.7.0 or higher on the system.
 _dpctl_found = False
 try:
@@ -24,10 +32,9 @@ try:
     # Versions of dpctl lower than 0.7.0 are not compatible with current main
     # of numba_dppy.
     if version.parse(dpctl.__version__) < version.parse("0.7.0"):
-        msg = "numba_dppy requires dpctl 0.7.0 or higher."
-        warnings.warn(msg, UserWarning)
+        raise DpctlMinimumVersionRequiredError
 
-    # For the Numba_dppy extension to work we should have at least one
+    # For the Numba_dppy extension to work, we should have at least one
     # non-host SYCL device installed.
     # FIXME: In future, we should support just the host device.
     if not dpctl.select_default_device().is_host:
@@ -36,6 +43,9 @@ try:
         msg = "dpctl could not find any non-host SYCL device on the system. "
         msg += "A non-host SYCL device is required to use numba_dppy."
         warnings.warn(msg, UserWarning)
+except DpctlMinimumVersionRequiredError:
+    msg = "numba_dppy requires dpctl 0.7.0 or higher."
+    warnings.warn(msg, UserWarning)
 except:
     msg = "Please install dpctl 0.7.0 or higher."
     warnings.warn(msg, UserWarning)
