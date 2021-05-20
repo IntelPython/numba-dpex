@@ -82,18 +82,28 @@ def binary_op(request):
     return request.param
 
 
+def compile_function(function_text, function_name):
+    locals = {}
+    exec(function_text, globals(), locals)
+    return locals[function_name]
+
+
+def args_string(args_count):
+    import string
+
+    return ", ".join(list(string.ascii_lowercase[:args_count]))
+
+
+def create_numpy_call_function(name, args):
+    function_text = f"""\
+def func({args}):
+    return np.{name}({args})
+"""
+    return compile_function(function_text, "func")
+
+
 def get_op_fn(name, nargs):
-    func_str = "def fn("
-    for i in range(nargs):
-        func_str += chr(97 + i) + ","
-    func_str = func_str[:-1] + "):\n\treturn np." + name + "("
-    for i in range(nargs):
-        func_str += chr(97 + i) + ","
-    func_str = func_str[:-1] + ")"
-    ldict = {}
-    exec(func_str, globals(), ldict)
-    fn = ldict["fn"]
-    return fn
+    return create_numpy_call_function(name, args_string(nargs))
 
 
 def test_unary_ops(filter_str, unary_op, input_array, capfd):
