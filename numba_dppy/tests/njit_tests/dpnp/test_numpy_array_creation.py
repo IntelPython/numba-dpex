@@ -22,6 +22,8 @@ from numba import njit
 import pytest
 from numba_dppy.testing import dpnp_debug
 from .dpnp_skip_test import dpnp_skip_test as skip_test
+from ._helper import wrapper_function, args_string
+
 
 list_of_filter_strs = [
     "opencl:gpu:0",
@@ -84,28 +86,8 @@ def binary_op(request):
 
 def get_op_fn(name, nargs):
     args = args_string(nargs)
-    return wraper_function(args, "np.{name}({args})")
+    return wrapper_function(args, "np.{name}({args})")
 
-
-def wraper_function(args, code, function_name="func"):
-    function_text = f"""\
-def {function_name}({args}):
-    return {code}
-"""
-    return compile_function(function_text, function_name), function_text
-
-
-def args_string(args_count):
-    import string
-
-    return ", ".join(list(string.ascii_lowercase[:args_count]))
-
-
-def compile_function(function_text, function_name):
-    locals = {}
-    exec(function_text, globals(), locals)
-    return locals[function_name]
-    
 
 def test_unary_ops(filter_str, unary_op, input_array, capfd):
     if skip_test(filter_str):

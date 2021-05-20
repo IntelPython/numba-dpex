@@ -22,6 +22,8 @@ from numba import njit
 import pytest
 from numba_dppy.testing import dpnp_debug
 from .dpnp_skip_test import dpnp_skip_test as skip_test
+from ._helper import wrapper_function, args_string
+
 
 # From https://github.com/IntelPython/dpnp/blob/0.4.0/tests/test_linalg.py#L8
 def vvsort(val, vec):
@@ -55,20 +57,9 @@ def filter_str(request):
     return request.param
 
 
-def get_fn(name, args):
-    # func_str = "def fn(a):\n    return np.linalg." + name + "(a)"
-    func_str = "def fn("
-    for i in range(args):
-        func_str += chr(97 + i) + ","
-    func_str = func_str[:-1] + "):\n\treturn np." + name + "("
-    for i in range(args):
-        func_str += chr(97 + i) + ","
-    func_str = func_str[:-1] + ")"
-
-    ldict = {}
-    exec(func_str, globals(), ldict)
-    fn = ldict["fn"]
-    return fn
+def get_fn(name, nargs):
+    args = args_string(nargs)
+    return wrapper_function(args, f"np.{name}({args})")
 
 
 list_of_dtypes = [

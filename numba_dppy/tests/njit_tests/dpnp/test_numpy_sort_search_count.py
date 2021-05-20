@@ -22,6 +22,8 @@ from numba import njit
 import pytest
 from numba_dppy.testing import dpnp_debug
 from .dpnp_skip_test import dpnp_skip_test as skip_test
+from ._helper import wrapper_function
+
 
 list_of_filter_strs = [
     "opencl:gpu:0",
@@ -73,11 +75,7 @@ list_of_unary_ops = [
 
 @pytest.fixture(params=list_of_unary_ops)
 def unary_op(request):
-    func_str = "def fn(a):\n    return np." + request.param + "(a)"
-    ldict = {}
-    exec(func_str, globals(), ldict)
-    fn = ldict["fn"]
-    return fn, request.param
+    return wrapper_function("a", f"np.{request.param}(a)"), request.param
 
 
 def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
