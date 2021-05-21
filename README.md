@@ -40,63 +40,7 @@ to change in the future to rely on Sycl/DPC++ or Intel Level-0 driver API.
 
 ## Installation
 
-Create conda environment:
-
-``` bash
-export ONEAPI_ROOT=/opt/intel/oneapi
-conda create -n numba-dppy-env numba-dppy dpnp -c ${ONEAPI_ROOT}/conda_channel
-```
-
-# Build and Install Conda Package
-
-Create and activate conda build environment:
-
-``` bash
-conda create -n build-env conda-build
-conda activate build-env
-```
-
-Set environment variable `ONEAPI_ROOT` and build conda package:
-
-``` bash
-export ONEAPI_ROOT=/opt/intel/oneapi
-conda build conda-recipe -c ${ONEAPI_ROOT}/conda_channel
-```
-
-Install conda package:
-
-``` bash
-conda install numba-dppy
-```
-
-# Build and Install with setuptools
-
-`setup.py` requires environment variable `ONEAPI_ROOT` and following
-packages installed in conda environment:
-
-``` bash
-export ONEAPI_ROOT=/opt/intel/oneapi
-conda create -n numba-dppy-env -c ${ONEAPI_ROOT}/conda_channel python=3.7 dpctl dpnp numba spirv-tools llvm-spirv llvmdev cython pytest
-conda activate numba-dppy-env
-```
-
-Activate DPC++ compiler:
-
-``` bash
-source ${ONEAPI_ROOT}/compiler/latest/env/vars.sh
-```
-
-For installing:
-
-``` bash
-python setup.py install
-```
-
-For development:
-
-``` bash
-python setup.py develop
-```
+Please follow the instructions provided [here](https://intelpython.github.io/numba-dppy/latest/user_guides/getting_started.html).
 
 ## Testing
 
