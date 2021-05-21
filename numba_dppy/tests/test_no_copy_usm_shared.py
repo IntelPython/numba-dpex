@@ -18,7 +18,7 @@ from numba import njit, prange
 
 from numba.core import compiler, cpu
 
-import dpctl.dptensor.numpy_usm_shared as usmarray
+import dpctl.tensor.numpy_usm_shared as usmarray
 import numba_dppy.numpy_usm_shared as nus
 import dpctl
 
