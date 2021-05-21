@@ -3,17 +3,17 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to numba-dppy's documentation!
+Welcome to Numba-dppy's documentation!
 ======================================
 
-``numba-dppy`` is a standalone extension to the `Numba
+`Numba-dppy <https://github.com/IntelPython/numba-dppy>`_ is a standalone extension to the `Numba
 <https://numba.pydata.org/>`_ JIT compiler that adds `SYCL
 <https://www.khronos.org/sycl/>`_ programming capabilities to Numba.
-``numba-dppy`` uses `dpctl <https://github.com/IntelPython/dpctl>`_ to support
+Numba-dppy uses `dpctl <https://github.com/IntelPython/dpctl>`_ to support
 SYCL features and currently Intel's `DPC++ <https://github.com/intel/llvm/blob/sycl/sycl/doc/GetStartedGuide.md>`_ is the only SYCL runtime supported by
-``numba-dppy``.
+Numba-dppy.
 
-There are two ways to program SYCL devices using ``numba-dppy``:
+There are two ways to program SYCL devices using Numba-dppy:
 
   - An explicit kernel programming mode.
 
@@ -75,14 +75,14 @@ There are two ways to program SYCL devices using ``numba-dppy``:
 About
 =====
 
-``numba-dppy`` is developed by Intel and is part of the `Intel Distribution for
+Numba-dppy is developed by Intel and is part of the `Intel Distribution for
 Python <https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-python.html>`_.
 
 Contributing
 ============
 
 Refer the `contributing guide <https://github.com/IntelPython/numba-dppy/blob/main/CONTRIBUTING>`_
-for information on coding style and standards used in ``numba-dppy``.
+for information on coding style and standards used in Numba-dppy.
 
 License
 =======
