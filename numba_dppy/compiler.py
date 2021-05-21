@@ -491,6 +491,7 @@ class DPPYKernel(DPPYKernelBase):
 
         device_arrs.append(None)
 
+        breakpoint()
         if isinstance(ty, types.Array):
             if hasattr(val.base, "__sycl_usm_array_interface__"):
                 self._unpack_device_array_argument(val, kernelargs)
