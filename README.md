@@ -40,7 +40,7 @@ to change in the future to rely on Sycl/DPC++ or Intel Level-0 driver API.
 
 ## Installation
 
-Use setup.py or conda (see conda-recipe).
+Please follow the instructions provided [here](https://intelpython.github.io/numba-dppy/latest/user_guides/getting_started.html).
 
 ## Testing
 
