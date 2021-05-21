@@ -34,6 +34,7 @@ from . import spirv_generator
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dppy.config import DEBUG
+from numba_dppy.driver import USM_NdArrayType
 
 
 _NUMBA_DPPY_READ_ONLY = "read_only"
@@ -491,7 +492,10 @@ class DPPYKernel(DPPYKernelBase):
 
         device_arrs.append(None)
 
-        breakpoint()
+        if isinstance(ty, USM_NdArrayType):
+            breakpoint()
+            pass
+
         if isinstance(ty, types.Array):
             if hasattr(val.base, "__sycl_usm_array_interface__"):
                 self._unpack_device_array_argument(val, kernelargs)

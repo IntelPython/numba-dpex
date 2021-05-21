@@ -31,7 +31,7 @@ class USM_NdArrayType(DPPYArray):
     ):
         # This name defines how this type will be shown in Numba's type dumps.
         name = "Usm:ndarray(%s, %sd, %s)" % (dtype, ndim, layout)
-        super(UsmSharedArrayType, self).__init__(
+        super(USM_NdArrayType, self).__init__(
             dtype,
             ndim,
             layout,
@@ -63,8 +63,8 @@ def typeof_ta_ndarray(val, c):
         dtype = numpy_support.from_dtype(val.dtype)
     except NotImplementedError:
         raise ValueError("Unsupported array dtype: %s" % (val.dtype,))
-    layout = numpy_support.map_layout(val)
-    readonly = not val.flags.writeable
+    layout = 'C'
+    readonly = False
     return USM_NdArrayType(dtype, val.ndim, layout, readonly=readonly)
 
 

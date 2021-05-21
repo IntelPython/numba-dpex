@@ -53,10 +53,10 @@ def main():
         device.print_device_info()
         with dpctl.device_context(device):
             da = dpt.usm_ndarray(a.shape, dtype=a.dtype, buffer="shared")
-            da.usm_data.copy_from_host()
+            da.usm_data.copy_from_host(a.reshape((-1)).view("|u1"))
 
             db = dpt.usm_ndarray(b.shape, dtype=b.dtype, buffer="shared")
-            db.usm_data.copy_from_host()
+            db.usm_data.copy_from_host(b.reshape((-1)).view("|u1"))
 
             dc = dpt.usm_ndarray(c.shape, dtype=c.dtype, buffer="shared")
 
