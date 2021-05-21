@@ -25,7 +25,7 @@ requirements:
     run:
         - python
         - numba 0.53*
-        - dpctl 0.7.*
+        - dpctl 0.8.*
         - spirv-tools
         - llvm-spirv
         - llvmdev
