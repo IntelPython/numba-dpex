@@ -69,7 +69,7 @@ There are two ways to program SYCL devices using Numba-dppy:
 
     Getting Started <user_guides/getting_started.rst>
     Programming SYCL Kernels <user_guides/kernel_programming_guide/index.rst>
-    Debugging with GDB <user_guides/debugging.md>
+    Debugging with GDB <user_guides/debugging.rst>
     numba-dppy for numba.cuda Programmers <user_guides/migrating_from_numba_cuda.rst>
 
 About
