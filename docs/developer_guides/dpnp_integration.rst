@@ -49,17 +49,15 @@ Repository map
 Architecture
 ````````````
 
-`numba-dppy` modifies default `Numba` compiler pipeline nd extends it with
+`numba-dppy` modifies default `Numba` compiler pipeline and extends it with
 :class:`DPPYRewriteOverloadedNumPyFunctions` pass.
 
-The main work is performed in ``RewriteNumPyOverloadedFunctions`` used by the pass.
-It rewrites call for ``NumPy`` function in following way:
+The main work is performed in :class:`RewriteNumPyOverloadedFunctions` used by the pass.
+It rewrites call for `NumPy` function in following way:
 
-.. code-block::
+    :samp:`np.sum(a)` -> :samp:`numba_dppy.dpnp.sum(a)`
 
-    np.sum(a) -> numba_dppy.dpnp.sum(a)
-
-:mod:`numba_dppy.dpnp` contains stub functions defined as classes like following:
+:mod:`numba_dppy.dpnp` contains stub functions (defined as classes) like following:
 
 .. code-block:: python
 
