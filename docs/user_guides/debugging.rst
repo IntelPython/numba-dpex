@@ -2,7 +2,7 @@ Debugging With GDB
 ==================
 
 `numba-dppy` allows SYCL kernels to be debugged with the GDB debugger.
-Setting the debug environment variable `NUMBA_DPPY_DEBUG` (e.g.
+Setting the debug environment variable :envvar:`NUMBA_DPPY_DEBUG` (e.g.
 ``export NUMBA_DPPY_DEBUG=1``) enables the emission of debug information.
 To disable debugging, unset the variable, i.e ``unset NUMBA_DPPY_DEBUG``.
 
@@ -17,7 +17,7 @@ Currently, the following debugging features are available:
 
     Debug features depend heavily on optimization level.
     At full optimization (equivalent to O3), most of the variables are optimized out.
-    It is recommended to debug at "no optimization" level (e.g. ``export NUMBA_OPT=0``).
+    It is recommended to debug at "no optimization" level via :envvar:`NUMBA_OPT` (e.g. ``export NUMBA_OPT=0``).
     For more information refer to the Numba documentation
     `Debugging JIT compiled code with GDB <https://numba.pydata.org/numba-doc/latest/user/troubleshoot.html?highlight=numba_opt#debugging-jit-compiled-code-with-gdb>`_.
 
