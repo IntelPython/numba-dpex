@@ -202,7 +202,7 @@ See :ref:`dpnp-integration-tests`.
 to `DPNP` function output array.
 
 :func:`dpnp_impl` could call `NumPy` functions supported by `Numba` and
-other stab functions (i.e. :fun:`numba_dppy.dpnp.dot`).
+other stab functions (i.e. :func:`numba_dppy.dpnp.dot`).
 
 The implementation function usually reuse a common function like :func:`common_impl`.
 This approach eliminates code duplication.
@@ -272,7 +272,7 @@ any mismatch in the size of the container to hold different types of pointer.
 .. _dpnp-integration-tests:
 
 Writing `DPNP` integration tests
-``````````````````````````````
+````````````````````````````````
 
 See all `DPNP` integration tests in :file:`numba_dppy/tests/njit_tests/dpnp`.
 
