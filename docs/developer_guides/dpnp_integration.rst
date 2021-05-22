@@ -1,9 +1,13 @@
+.. _dpnp-integration:
+
 DPNP integration
 ================
 
 Currently ``numba-dppy`` uses `DPNP backend library`_.
 
 .. _`DPNP backend library`: https://github.com/IntelPython/dpnp/tree/master/dpnp/backend
+
+.. _integration-dpnp-backend:
 
 Integration with `DPNP backend library`_
 ----------------------------------------
@@ -31,12 +35,16 @@ Integration with `DPNP backend library`_
 
 .. _`dpnp_sum_c<int, int>(...)`: https://github.com/IntelPython/dpnp/blob/ef404c0f284b0c508ed1e556e140f02f76ae5551/dpnp/backend/kernels/dpnp_krnl_reduction.cpp#L58
 
+.. _dpnp-integration-repository-map:
+
 Repository map
 ``````````````
 
 - Code for integration is mostly resides in :file:`numba_dppy/dpnp_glue`.
 - Tests resides in :file:`numba_dppy/tests/njit_tests/dpnp`.
 - Helper pass resides in :file:`numba_dppy/rename_numpy_functions_pass.py`.
+
+.. _dpnp-integration-architecture:
 
 Architecture
 ````````````
@@ -75,10 +83,13 @@ Overload implementation knows about DPNP functions.
 It receives DPNP function pointer from DPNP and uses known signature from DPNP headers.
 The implementation calls DPNP function via creating Numba ``ExternalFunctionPointer``.
 
-For more details about overloads implementation see `Writing overload for stub function`_.
-For more details about testing the integration see `Writing DPNP integration tests`_.
+For more details about overloads implementation see :ref:`overload-for-stub`.
 
-Pleces to update
+For more details about testing the integration see :ref:`dpnp-tests`.
+
+.. _dpnp-integration-places:
+
+Places to update
 ````````````````
 
 1. :file:`numba_dppy/dpnp_glue/stubs.py`: Add new class to ``stubs.dpnp`` class.
@@ -88,6 +99,8 @@ Pleces to update
 5. :file:`numba_dppy/rename_numpy_functions_pass.py`: Update items in ``rewrite_function_name_map`` dict.
 6. :file:`numba_dppy/rename_numpy_functions_pass.py`: Update imported modules in ``DPPYRewriteOverloadedNumPyFunctions.__init__()``.
 7. Add test in one of the :file:`numba_dppy/tests/njit_tests/dpnp` test modules or create new.
+
+.. _overload-for-stub:
 
 Writing overload for stub function
 ``````````````````````````````````
@@ -144,7 +157,7 @@ I.e. :file:`dpnp/backend/kernels/dpnp_krnl_indexing.cpp` -> :file:`numba_dppy/dp
 Signature of the function is based on DPNP header files.
 It is recommended to provide link to signature in DPNP sources and copy it in comment.
 
-For mapping between C types and Numba types see `Types matching for Numba and DPNP`_.
+For mapping between C types and Numba types see :ref:`types-matching-numba-dpnp`.
 
 .. code-block:: python
 
@@ -240,6 +253,8 @@ Key parts of any common function are:
 6. Disable dead code elimination for input and output arrays
 7. Print debug information used for testing
 
+.. _types-matching-numba-dpnp:
+
 Types matching for Numba and DPNP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -251,6 +266,8 @@ We are using void * in case of size_t * as Numba currently does not have
 any type to represent size_t *. Since, both the types are pointers,
 if the compiler allows there should not be any mismatch in the size of
 the container to hold different types of pointer.
+
+.. _dpnp-integration-tests:
 
 Writing DPNP integration tests
 ``````````````````````````````
@@ -304,6 +321,8 @@ Key parts of any test are:
 6. Compare actual and expected result
 7. Run the compiled test function inside debug contex ``dpnp_debug``
 8. Check that DPNP was usede via debug information printed in output
+
+.. dpnp-troubleshooting:
 
 Troubleshooting
 ```````````````
