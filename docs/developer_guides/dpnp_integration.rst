@@ -34,9 +34,9 @@ Integration with `DPNP backend library`_
 Repository map
 ``````````````
 
-- Code for integration is mostly resides in `numba_dppy/dpnp_glue`_.
-- Tests resides in `numba_dppy/tests/njit_tests/dpnp`_.
-- Helper pass resides in `numba_dppy/rename_numpy_functions_pass.py`_.
+- Code for integration is mostly resides in :file:`numba_dppy/dpnp_glue`.
+- Tests resides in :file:`numba_dppy/tests/njit_tests/dpnp`.
+- Helper pass resides in :file:`numba_dppy/rename_numpy_functions_pass.py`.
 
 Architecture
 ````````````
@@ -63,7 +63,7 @@ It rewrites call for ``NumPy`` function in following way:
         pass
 
 For the stub function call to be lowered with ``Numba`` compiler pipeline there
-is overload in `numba_dppy/dpnp_glue/dpnp_transcendentalsimpl.py`_:
+is overload in :file:`numba_dppy/dpnp_glue/dpnp_transcendentalsimpl.py`:
 
 .. code-block:: python
 
@@ -81,20 +81,20 @@ For more details about testing the integration see `Writing DPNP integration tes
 Pleces to update
 ````````````````
 
-1. `numba_dppy/dpnp_glue/stubs.py`_: Add new class to ``stubs.dpnp`` class.
-2. `numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx`_: Update items in ``DPNPFuncName`` enum.
-3. `numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx`_: Update if statements in ``get_DPNPFuncName_from_str()`` function.
-4. Add ``@overload(stubs.dpnp.YOUR_FUNCTION))`` in one of the `numba_dppy/dpnp_glue/*.py`_ modules or create new.
-5. `numba_dppy/rename_numpy_functions_pass.py`_: Update items in ``rewrite_function_name_map`` dict.
-6. `numba_dppy/rename_numpy_functions_pass.py`_: Update imported modules in ``DPPYRewriteOverloadedNumPyFunctions.__init__()``.
-7. Add test in one of the `numba_dppy/tests/njit_tests/dpnp`_ test modules or create new.
+1. :file:`numba_dppy/dpnp_glue/stubs.py`: Add new class to ``stubs.dpnp`` class.
+2. :file:`numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx`: Update items in ``DPNPFuncName`` enum.
+3. :file:`numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx`: Update if statements in ``get_DPNPFuncName_from_str()`` function.
+4. Add ``@overload(stubs.dpnp.YOUR_FUNCTION))`` in one of the :file:`numba_dppy/dpnp_glue/{*}.py` modules or create new.
+5. :file:`numba_dppy/rename_numpy_functions_pass.py`: Update items in ``rewrite_function_name_map`` dict.
+6. :file:`numba_dppy/rename_numpy_functions_pass.py`: Update imported modules in ``DPPYRewriteOverloadedNumPyFunctions.__init__()``.
+7. Add test in one of the :file:`numba_dppy/tests/njit_tests/dpnp` test modules or create new.
 
 Writing overload for stub function
 ``````````````````````````````````
 
-Overloads for stub functions resized in `numba_dppy/dpnp_glue/*.py`_ modules.
+Overloads for stub functions resized in :file:`numba_dppy/dpnp_glue/{*}.py` modules.
 If you need create new module try to name it corresponding to DPNP naming.
-I.e. `dpnp/backend/kernels/dpnp_krnl_indexing.cpp`_ -> `numba_dppy/dpnp_glue/dpnp_indexing.py`_.
+I.e. :file:`dpnp/backend/kernels/dpnp_krnl_indexing.cpp` -> :file:`numba_dppy/dpnp_glue/dpnp_indexing.py`.
 
 .. code-block:: python
 
@@ -255,7 +255,7 @@ the container to hold different types of pointer.
 Writing DPNP integration tests
 ``````````````````````````````
 
-See all DPNP integration tests in `numba_dppy/tests/njit_tests/dpnp`_.
+See all DPNP integration tests in :file:`numba_dppy/tests/njit_tests/dpnp`.
 
 Usually adding new test is as easy as adding function name to the list with functions.
 Each item in the list is used as a parameter for tests.
@@ -309,7 +309,7 @@ Troubleshooting
 ```````````````
 
 1. Do not forget build ``numba-dppy`` with current installed version of ``DPNP``.
-   There is headers dependency in Cython files (i.e. `numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx`_).
+   There is headers dependency in Cython files (i.e. :file:`numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx`).
 2. Do not forget add array to ``dpnp_ext._dummy_liveness_func([YOUR_ARRAY.size])``.
    Dead code elimination could delete temporary variables before they are used for DPNP function call.
    As a result wrong data could be passed to DPNP function.
