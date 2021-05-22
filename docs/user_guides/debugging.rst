@@ -35,6 +35,7 @@ Example of GDB usage
 For example, given the following `numba-dppy` kernel code:
 
 .. code-block:: python
+    :caption: sum.py
     :linenos:
 
     import numpy as np
