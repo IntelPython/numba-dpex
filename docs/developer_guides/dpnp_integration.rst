@@ -3,12 +3,14 @@ DPNP integration
 
 Currently ``numba-dppy`` uses `DPNP backend library`_.
 
+.. _`DPNP backend library`: https://github.com/IntelPython/dpnp/tree/master/dpnp/backend
+
 Integration with `DPNP backend library`_
 ----------------------------------------
 
 ``numba-dppy`` replaces ``NumPy`` function calls with ``DPNP`` function calls.
 
-.. code::
+.. code-block:: python
 
     import numpy as np
     from numba import njit
@@ -16,7 +18,7 @@ Integration with `DPNP backend library`_
 
     @njit
     def foo(a):
-      return np.sum(a)
+      return np.sum(a)  # this call will be replaced with DPNP function
 
     a = np.arange(42)
 
@@ -26,6 +28,8 @@ Integration with `DPNP backend library`_
     print(result)
 
 ``np.sum(a)`` will be replaced with `dpnp_sum_c<int, int>(...)`_.
+
+.. _`dpnp_sum_c<int, int>(...)`: https://github.com/IntelPython/dpnp/blob/ef404c0f284b0c508ed1e556e140f02f76ae5551/dpnp/backend/kernels/dpnp_krnl_reduction.cpp#L58
 
 Repository map
 ``````````````
@@ -43,13 +47,13 @@ Architecture
 The main work is performed in ``RewriteNumPyOverloadedFunctions`` used by the pass.
 It rewrites call for ``NumPy`` function in following way:
 
-.. code::
+.. code-block::
 
     np.sum(a) -> numba_dppy.dpnp.sum(a)
 
 ``numba_dppy.dpnp`` contains stub classes like following:
 
-.. code::
+.. code-block:: python
 
     # numba_dppy/dpnp_glue/stubs.py - imported in numba_dppy.__init__.py
 
@@ -61,7 +65,7 @@ It rewrites call for ``NumPy`` function in following way:
 For the stub function call to be lowered with ``Numba`` compiler pipeline there
 is overload in `numba_dppy/dpnp_glue/dpnp_transcendentalsimpl.py`_:
 
-.. code::
+.. code-block:: python
 
     @overload(stubs.dpnp.sum)
     def dpnp_sum_impl(a):
@@ -92,7 +96,7 @@ Overloads for stub functions resized in `numba_dppy/dpnp_glue/*.py`_ modules.
 If you need create new module try to name it corresponding to DPNP naming.
 I.e. `dpnp/backend/kernels/dpnp_krnl_indexing.cpp`_ -> `numba_dppy/dpnp_glue/dpnp_indexing.py`_.
 
-.. code::
+.. code-block:: python
 
     from numba.core.extending import overload
     import numba_dppy.dpnp_glue as dpnp_lowering
@@ -104,7 +108,7 @@ I.e. `dpnp/backend/kernels/dpnp_krnl_indexing.cpp`_ -> `numba_dppy/dpnp_glue/dpn
 
 ``ensure_dpnp(FUNCTION_NAME)`` checks that DPNP package is available and contains the function.
 
-.. code::
+.. code-block:: python
 
     from numba import types
     from numba.core.typing import signature
@@ -142,7 +146,7 @@ It is recommended to provide link to signature in DPNP sources and copy it in co
 
 For mapping between C types and Numba types see `Types matching for Numba and DPNP`_.
 
-.. code::
+.. code-block:: python
 
     import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
     ...
@@ -159,7 +163,7 @@ It receives:
   which is converted to ``DPNPFuncType`` enum in ``get_DPNPFuncType_from_str()``
 - Signature which used for creating Numba ``ExternalFunctionPointer``.
 
-.. code::
+.. code-block:: python
 
     import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
     ...
@@ -190,7 +194,7 @@ It eliminates code duplication.
 You should consider all available common functions at the top of the file before
 creating new common function.
 
-.. code::
+.. code-block:: python
 
     from numba.core.extending import register_jitable
     from numba_dppy import dpctl_functions
@@ -226,14 +230,15 @@ creating new common function.
         if print_debug:
             print("dpnp implementation")  # 7
 
-Common function:
-1. allocates input and output USM arrays
-2. copies input array to input USM array
-3. calls ``dpnp_func()``
-4. copies output USM array to output array
-5. deallocates USM arrays
-6. disable dead code elimination for input and output arrays
-7. print debug infirmation used for testing
+Key parts of any common function are:
+
+1. Allocate input and output USM arrays
+2. Copy input array to input USM array
+3. Call ``dpnp_func()``
+4. Copy output USM array to output array
+5. Deallocate USM arrays
+6. Disable dead code elimination for input and output arrays
+7. Print debug information used for testing
 
 Types matching for Numba and DPNP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -257,7 +262,7 @@ Each item in the list is used as a parameter for tests.
 You should find tests for the category of functions similar to your function and
 update a list with functions like ``list_of_unary_ops``, ``list_of_nan_ops``.
 
-.. code::
+.. code-block:: python
 
     def test_unary_ops(filter_str, unary_op, input_array, get_shape, capfd):
       if skip_test(filter_str):
@@ -290,6 +295,7 @@ In example above ``unary_op`` contains tuple ``(FUNCTION, FUNCTION_NAME)``, see
 fixture ``unary_op()``.
 
 Key parts of any test are:
+
 1. Receive input array from the fixture ``input_array``
 2. Receive the tested function from fixture ``unary_op``
 3. Compile the tested function with ``njit``
@@ -307,7 +313,3 @@ Troubleshooting
 2. Do not forget add array to ``dpnp_ext._dummy_liveness_func([YOUR_ARRAY.size])``.
    Dead code elimination could delete temporary variables before they are used for DPNP function call.
    As a result wrong data could be passed to DPNP function.
-
-
-.. _`DPNP backend library`: https://github.com/IntelPython/dpnp/tree/master/dpnp/backend
-.. _`dpnp_sum_c<int, int>(...)`: https://github.com/IntelPython/dpnp/blob/ef404c0f284b0c508ed1e556e140f02f76ae5551/dpnp/backend/kernels/dpnp_krnl_reduction.cpp#L58
