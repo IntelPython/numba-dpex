@@ -49,8 +49,8 @@ Repository map
 Architecture
 ````````````
 
-`numba-dppy` modifies default `Numba` compiler ipeline nd extends it with
-``DPPYRewriteOverloadedNumPyFunctions`` pass.
+`numba-dppy` modifies default `Numba` compiler pipeline nd extends it with
+:class:`DPPYRewriteOverloadedNumPyFunctions` pass.
 
 The main work is performed in ``RewriteNumPyOverloadedFunctions`` used by the pass.
 It rewrites call for ``NumPy`` function in following way:
@@ -59,7 +59,7 @@ It rewrites call for ``NumPy`` function in following way:
 
     np.sum(a) -> numba_dppy.dpnp.sum(a)
 
-``numba_dppy.dpnp`` contains stub classes like following:
+:mod:`numba_dppy.dpnp` contains stub functions defined as classes like following:
 
 .. code-block:: python
 
@@ -67,7 +67,7 @@ It rewrites call for ``NumPy`` function in following way:
 
     class dpnp(Stub):
 
-      class sum(Stub):
+      class sum(Stub):  # stub function
         pass
 
 For the stub function call to be lowered with `Numba` compiler pipeline there
@@ -79,25 +79,25 @@ is overload in :file:`numba_dppy/dpnp_glue/dpnp_transcendentalsimpl.py`:
     def dpnp_sum_impl(a):
       ...
 
-Overload implementation knows about DPNP functions.
-It receives DPNP function pointer from DPNP and uses known signature from DPNP headers.
-The implementation calls DPNP function via creating Numba ``ExternalFunctionPointer``.
+Overload implementation knows about `DPNP` functions.
+It receives `DPNP` function pointer from `DPNP` and uses known signature from `DPNP` headers.
+The implementation calls `DPNP` function via creating `Numba` :class:`ExternalFunctionPointer`.
 
 For more details about overloads implementation see :ref:`overload-for-stub`.
 
-For more details about testing the integration see :ref:`dpnp-tests`.
+For more details about testing the integration see :ref:`dpnp-integration-tests`.
 
 .. _dpnp-integration-places:
 
 Places to update
 ````````````````
 
-1. :file:`numba_dppy/dpnp_glue/stubs.py`: Add new class to ``stubs.dpnp`` class.
-2. :file:`numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx`: Update items in ``DPNPFuncName`` enum.
-3. :file:`numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx`: Update if statements in ``get_DPNPFuncName_from_str()`` function.
-4. Add ``@overload(stubs.dpnp.YOUR_FUNCTION))`` in one of the :file:`numba_dppy/dpnp_glue/{*}.py` modules or create new.
-5. :file:`numba_dppy/rename_numpy_functions_pass.py`: Update items in ``rewrite_function_name_map`` dict.
-6. :file:`numba_dppy/rename_numpy_functions_pass.py`: Update imported modules in ``DPPYRewriteOverloadedNumPyFunctions.__init__()``.
+1. :file:`numba_dppy/dpnp_glue/stubs.py`: Add new class to :class:`stubs.dpnp` class.
+2. :file:`numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx`: Update items in :class:`DPNPFuncName` enum.
+3. :file:`numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx`: Update if statements in :func:`get_DPNPFuncName_from_str` function.
+4. Add :samp:`@overload(stubs.dpnp.{YOUR_FUNCTION})` in one of the :file:`numba_dppy/dpnp_glue/{*}.py` modules or create new.
+5. :file:`numba_dppy/rename_numpy_functions_pass.py`: Update items in :obj:`rewrite_function_name_map` dict.
+6. :file:`numba_dppy/rename_numpy_functions_pass.py`: Update imported modules in :meth:`DPPYRewriteOverloadedNumPyFunctions.__init__`.
 7. Add test in one of the :file:`numba_dppy/tests/njit_tests/dpnp` test modules or create new.
 
 .. _overload-for-stub:
@@ -105,8 +105,8 @@ Places to update
 Writing overload for stub function
 ``````````````````````````````````
 
-Overloads for stub functions resized in :file:`numba_dppy/dpnp_glue/{*}.py` modules.
-If you need create new module try to name it corresponding to DPNP naming.
+Overloads for stub functions resides in :file:`numba_dppy/dpnp_glue/{*}.py` modules.
+If you need create new module try to name it corresponding to `DPNP` naming.
 I.e. :file:`dpnp/backend/kernels/dpnp_krnl_indexing.cpp` -> :file:`numba_dppy/dpnp_glue/dpnp_indexing.py`.
 
 .. code-block:: python
@@ -119,7 +119,7 @@ I.e. :file:`dpnp/backend/kernels/dpnp_krnl_indexing.cpp` -> :file:`numba_dppy/dp
     def dpnp_sum_impl(a):
       dpnp_lowering.ensure_dpnp("sum")
 
-``ensure_dpnp(FUNCTION_NAME)`` checks that DPNP package is available and contains the function.
+:func:`ensure_dpnp` checks that `DPNP` package is available and contains the function.
 
 .. code-block:: python
 
@@ -154,10 +154,11 @@ I.e. :file:`dpnp/backend/kernels/dpnp_krnl_indexing.cpp` -> :file:`numba_dppy/dp
           types.voidptr,  # const long* where)
       )
 
-Signature of the function is based on DPNP header files.
-It is recommended to provide link to signature in DPNP sources and copy it in comment.
+Signature :obj:`sig` is based on the `DPNP` function signature defined in header file.
+It is recommended to provide link to signature in `DPNP` sources and copy it in comment
+as shown above.
 
-For mapping between C types and Numba types see :ref:`types-matching-numba-dpnp`.
+For mapping between `C` types and `Numba` types see :ref:`dpnp-integration-types-matching`.
 
 .. code-block:: python
 
@@ -166,15 +167,15 @@ For mapping between C types and Numba types see :ref:`types-matching-numba-dpnp`
     # continue of dpnp_sum_impl()
       dpnp_func = dpnp_ext.dpnp_func("dpnp_sum", [a.dtype.name, "NONE"], sig)
 
-``dpnp_ext.dpnp_func()`` returns function pointer from DPNP.
+:func:`dpnp_ext.dpnp_func` returns function pointer from `DPNP`.
 It receives:
 
-- Function name (i.e. `dpnp_sum`) which is converted to
-  ``DPNPFuncName`` enum in ``get_DPNPFuncName_from_str()``
+- Function name (i.e. :samp:`"dpnp_sum"`) which is converted to
+  :class:`DPNPFuncName` enum in :func:`get_DPNPFuncName_from_str()`.
 - List of input and output data types names
-  (i.e. [a.dtype.name, "NONE"], if "NONE" then reuse previous type name)
-  which is converted to ``DPNPFuncType`` enum in ``get_DPNPFuncType_from_str()``
-- Signature which used for creating Numba ``ExternalFunctionPointer``.
+  (i.e. :samp:`[a.dtype.name, "NONE"]`, :samp:`"NONE"` means reusing previous type name)
+  which is converted to :class:`DPNPFuncType` enum in :func:`get_DPNPFuncType_from_str()`.
+- Signature which is used for creating `Numba` :class:`ExternalFunctionPointer`.
 
 .. code-block:: python
 
@@ -193,19 +194,20 @@ It receives:
 
 This code created implementation function and returns it from the overload function.
 
-``PRINT_DEBUG`` used for printing debug information which is used in tests.
+:obj:`PRINT_DEBUG` used for printing debug information which is used in tests.
 Tests rely on debug information to check that DPNP implementation was used.
+See :ref:`dpnp-integration-tests`.
 
-``dpnp_impl()`` creates output array with size and data type corresponding
-to DPNP function output array.
+:func:`dpnp_impl` creates output array with size and data type corresponding
+to `DPNP` function output array.
 
-``dpnp_impl()`` could call ``NumPy`` functions supported by Numba and
-other stab functions (i.e. ``numba_dppy.dpnp.dot()``).
+:func:`dpnp_impl` could call `NumPy` functions supported by `Numba` and
+other stab functions (i.e. :fun:`numba_dppy.dpnp.dot`).
 
-The implementation function usually reuse a common function like ``common_impl()``.
-It eliminates code duplication.
+The implementation function usually reuse a common function like :func:`common_impl`.
+This approach eliminates code duplication.
 You should consider all available common functions at the top of the file before
-creating new common function.
+creating the new one.
 
 .. code-block:: python
 
@@ -247,37 +249,37 @@ Key parts of any common function are:
 
 1. Allocate input and output USM arrays
 2. Copy input array to input USM array
-3. Call ``dpnp_func()``
+3. Call :func:`dpnp_func`
 4. Copy output USM array to output array
 5. Deallocate USM arrays
 6. Disable dead code elimination for input and output arrays
 7. Print debug information used for testing
 
-.. _types-matching-numba-dpnp:
+.. _dpnp-integration-types-matching:
 
 Types matching for Numba and DPNP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- [const] T* -> types.voidptr
-- size_t -> types.intp
-- long -> types.int64
+- :samp:`[const] {T}*` -> :obj:`types.voidptr`
+- `size_t` -> :obj:`types.intp`
+- `long` -> :obj:`types.int64`
 
-We are using void * in case of size_t * as Numba currently does not have
-any type to represent size_t *. Since, both the types are pointers,
-if the compiler allows there should not be any mismatch in the size of
-the container to hold different types of pointer.
+We are using `void *` in case of `size_t *` as `Numba` currently does not have
+any type to represent `size_t *`.
+Since, both the types are pointers, if the compiler allows there should not be
+any mismatch in the size of the container to hold different types of pointer.
 
 .. _dpnp-integration-tests:
 
-Writing DPNP integration tests
+Writing `DPNP` integration tests
 ``````````````````````````````
 
-See all DPNP integration tests in :file:`numba_dppy/tests/njit_tests/dpnp`.
+See all `DPNP` integration tests in :file:`numba_dppy/tests/njit_tests/dpnp`.
 
-Usually adding new test is as easy as adding function name to the list with functions.
+Usually adding new test is as easy as adding function name to the corresponding list of function names.
 Each item in the list is used as a parameter for tests.
 You should find tests for the category of functions similar to your function and
-update a list with functions like ``list_of_unary_ops``, ``list_of_nan_ops``.
+update a list with function names like :obj:`list_of_unary_ops`, :obj:`list_of_nan_ops`.
 
 .. code-block:: python
 
@@ -305,30 +307,31 @@ update a list with functions like ``list_of_unary_ops``, ``list_of_nan_ops``.
       max_abs_err = np.sum(actual - expected)
       assert max_abs_err < 1e-4  # 6
 
-Tets functions starts from `test_` (see pytest docs) and all input parameters are
-provided by fixtures.
+Test functions starts from :samp:`test_` (see `pytest` docs) and
+all input parameters are provided by fixtures.
 
-In example above ``unary_op`` contains tuple ``(FUNCTION, FUNCTION_NAME)``, see
-fixture ``unary_op()``.
+In example above :obj:`unary_op` contains tuple :samp:`({FUNCTION}, {FUNCTION_NAME})`,
+see fixture :func:`unary_op`.
 
 Key parts of any test are:
 
-1. Receive input array from the fixture ``input_array``
-2. Receive the tested function from fixture ``unary_op``
-3. Compile the tested function with ``njit``
-4. Call the compiled tested function inside ``device_context()`` and receive actual result
-5. Call the original tested function and receive expected result
-6. Compare actual and expected result
-7. Run the compiled test function inside debug contex ``dpnp_debug``
-8. Check that DPNP was usede via debug information printed in output
+1. Receive input array from the fixture :obj:`input_array`
+2. Receive the tested function from fixture :obj:`unary_op`
+3. Compile the tested function with :func:`njit`
+4. Call the compiled tested function inside :func:`device_context` device_context
+   and receive :obj:`actual` result
+5. Call the original tested function and receive :obj:`expected` result
+6. Compare :obj:`actual` and :obj:`expected` result
+7. Run the compiled test function inside debug contex :func:`dpnp_debug`
+8. Check that `DPNP` was usede as debug information was printed to output
 
-.. dpnp-troubleshooting:
+.. _dpnp-troubleshooting:
 
 Troubleshooting
 ```````````````
 
 1. Do not forget build `numba-dppy` with current installed version of `DPNP`.
-   There is headers dependency in Cython files (i.e. :file:`numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx`).
-2. Do not forget add array to ``dpnp_ext._dummy_liveness_func([YOUR_ARRAY.size])``.
-   Dead code elimination could delete temporary variables before they are used for DPNP function call.
-   As a result wrong data could be passed to DPNP function.
+   There is headers dependency in `Cython` files (i.e. :file:`numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx`).
+2. Do not forget add array to :samp:`dpnp_ext._dummy_liveness_func([{YOUR_ARRAY}.size])`.
+   Dead code elimination could delete temporary variables before they are used for `DPNP` function call.
+   As a result wrong data could be passed to `DPNP` function.
