@@ -67,7 +67,7 @@ html_static_path = ["_static"]
 modindex_common_prefix = ["numba_dppy."]
 
 # See https://github.com/sphinx-contrib/apidoc
-apidoc_module_dir = '../numba_dppy'
-apidoc_output_dir = 'apidoc'
-apidoc_excluded_paths = ['tests']
+apidoc_module_dir = "../numba_dppy"
+apidoc_output_dir = "apidoc"
+apidoc_excluded_paths = ["tests"]
 apidoc_separate_modules = True
