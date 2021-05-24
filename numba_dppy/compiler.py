@@ -492,6 +492,7 @@ class DPPYKernel(DPPYKernelBase):
 
         device_arrs.append(None)
 
+        breakpoint()
         if isinstance(ty, USM_NdArrayType):
             raise NotImplementedError(ty, USM_NdArrayType)
 
