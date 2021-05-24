@@ -16,6 +16,10 @@ Numba-dppy depends on following components:
 * `scipy`_ (for testing)
 * `pytest`_ (for testing)
 
+.. note::
+    Numba-dppy will not work with stock `Numba`_. It requires `Intel Python Numba`_.
+    See limitations_ for details.
+
 It is recommended to use conda packages from `Intel Distribution for Python`_
 channel or `anaconda.org/intel`_ channel.
 `Intel Distribution for Python`_ is available from `Intel oneAPI`_.
@@ -102,6 +106,8 @@ To run the examples:
 
     python numba_dppy/examples/sum.py
 
+.. _limitations:
+
 Limitations
 -----------
 
@@ -110,6 +116,7 @@ patches needed to recognize a ``dpctl.device_context`` scope and trigger
 code-generation for a SYCL device. Work in underway to upstream all patches, so
 that in future Numba-dppy can work with upstream Numba.
 
+.. _`Numba`: https://github.com/numba/numba
 .. _`Intel Python Numba`: https://github.com/IntelPython/numba
 .. _`Intel Python dpctl`: https://github.com/IntelPython/dpctl
 .. _`Intel Python dpnp`: https://github.com/IntelPython/dpnp
