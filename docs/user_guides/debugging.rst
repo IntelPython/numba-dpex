@@ -1,4 +1,4 @@
-Debugging With GDB
+Debugging with GDB
 ==================
 
 `numba-dppy` allows SYCL kernels to be debugged with the GDB debugger.
