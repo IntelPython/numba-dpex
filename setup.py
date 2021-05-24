@@ -100,7 +100,7 @@ def spirv_compile():
         )
     if IS_WIN:
         compiler = os.path.join(
-            os.environ.get("ONEAPI_ROOT"), "compiler/latest/windows/bin/clang.exe"
+            os.environ.get("ONEAPI_ROOT"), "compiler\\latest\\windows\\bin\\clang.exe"
         )
     compiler = shlex.quote(compiler)
     clang_args = [
