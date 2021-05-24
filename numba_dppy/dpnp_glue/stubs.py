@@ -208,3 +208,6 @@ class dpnp(Stub):
 
     class trace(Stub):
         pass
+
+    class diagonal(Stub):
+        pass

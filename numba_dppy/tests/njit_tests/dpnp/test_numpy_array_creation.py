@@ -102,6 +102,8 @@ def test_unary_ops(filter_str, unary_op, input_array, capfd):
         pytest.skip()
 
     a = input_array
+    if unary_op == 'trace':
+        a = input_array.reshape((2, 5))
     fn = get_op_fn(unary_op, 1)
     actual = np.empty(shape=a.shape, dtype=a.dtype)
     expected = np.empty(shape=a.shape, dtype=a.dtype)

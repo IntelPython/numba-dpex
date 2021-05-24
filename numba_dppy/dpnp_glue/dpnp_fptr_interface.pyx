@@ -35,6 +35,7 @@ cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncName":  # need this na
         DPNP_FN_CUMSUM
         DPNP_FN_DEGREES
         DPNP_FN_DET
+        DPNP_FN_DIAGONAL
         DPNP_FN_DIVIDE
         DPNP_FN_DOT
         DPNP_FN_EIG
@@ -222,6 +223,10 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_COPY
     elif name == "dpnp_take":
         return DPNPFuncName.DPNP_FN_TAKE
+    elif name == "dpnp_trace":
+        return DPNPFuncName.DPNP_FN_TRACE
+    elif name == "dpnp_diagonal":
+        return DPNPFuncName.DPNP_FN_DIAGONAL
     else:
         raise ValueError("Unknown dpnp function requested: " + name.split("_")[1])
 

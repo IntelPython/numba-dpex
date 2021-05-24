@@ -62,7 +62,7 @@ def common_shape_impl(a, out, dpnp_func, PRINT_DEBUG):
 
     out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
-    dpnp_func(out_usm, a_usm, a.shapeptr, a.ndim)
+    dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim)
 
     dpctl_functions.queue_memcpy(
         sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
@@ -241,15 +241,14 @@ def dpnp_trace_impl(a):
 
     """
     sig = signature(ret_type, types.voidptr, types.voidptr, types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [b.dtype.name, "NONE"], sig)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(a):
-        diag_arr = np.diagonal(a)
-        out = np.ndarray(diag_arr.shape[:-1], dtype=ret_type)
+        diag_arr = numba_dppy.dpnp.diagonal(a, 0)
+        out = np.zeros(diag_arr.shape[:-1], dtype=a.dtype)
         common_shape_impl(diag_arr, out, dpnp_func, PRINT_DEBUG)
         return out
 
     return dpnp_impl
-
