@@ -17,7 +17,8 @@ Numba-dppy depends on following components:
 * `pytest`_ (for testing)
 
 .. note::
-    Numba-dppy will not work with stock `Numba`_. It requires `Intel Python Numba`_.
+    Numba-dppy does not yet work with stock `Numba`_.
+    For now, we need a patched Numba version included in `Intel Python Numba`_.
     See limitations_ for details.
 
 It is recommended to use conda packages from `Intel Distribution for Python`_
