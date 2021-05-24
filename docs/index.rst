@@ -76,7 +76,7 @@ There are two ways to program SYCL devices using ``numba-dppy``:
     :maxdepth: 1
     :caption: Developer Guides
 
-    developer_guides/dpnp_integration.md
+    developer_guides/dpnp_integration
 
 
 About
