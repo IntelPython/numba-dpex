@@ -17,7 +17,7 @@ import sys
 import setuptools.command.install as orig_install
 import setuptools.command.develop as orig_develop
 import subprocess
-import shutil
+import shlex
 from setuptools import Extension, find_packages, setup
 from Cython.Build import cythonize
 
@@ -96,12 +96,13 @@ def _get_cmdclass():
 def spirv_compile():
     if IS_LIN:
         compiler = os.path.join(
-            os.environ.get("ONEAPI_ROOT"), "compiler/latest/linux", "bin/clang"
+            os.environ.get("ONEAPI_ROOT"), "compiler/latest/linux/bin/clang"
         )
     if IS_WIN:
         compiler = os.path.join(
-            os.environ.get("ONEAPI_ROOT"), "compiler/latest/windows", "bin/clang.exe"
+            os.environ.get("ONEAPI_ROOT"), "compiler/latest/windows/bin/clang.exe"
         )
+    compiler = shlex.quote(compiler)
     clang_args = [
         compiler,
         "-flto",
