@@ -54,7 +54,7 @@ import warnings
 from numba.core.errors import NumbaParallelSafetyWarning, NumbaPerformanceWarning
 
 from .dufunc_inliner import dufunc_inliner
-from . import dppy_host_fn_call_gen as dppy_call_gen
+from numba_dppy.driver import KernelLaunchOps
 import dpctl
 from numba_dppy.target import DPPYTargetContext
 from numba_dppy.dppy_array_type import DPPYArray
@@ -776,7 +776,7 @@ def _lower_parfor_gufunc(lowerer, parfor):
         parfor.get_shape_classes, num_inputs, func_args, func_sig, parfor.races, typemap
     )
 
-    generate_dppy_host_wrapper(
+    generate_kernel_launch_ops(
         lowerer,
         func,
         gu_signature,
@@ -785,9 +785,6 @@ def _lower_parfor_gufunc(lowerer, parfor):
         num_inputs,
         func_arg_types,
         loop_ranges,
-        parfor.init_block,
-        index_var_typ,
-        parfor.races,
         modified_arrays,
     )
 
@@ -871,7 +868,7 @@ def _create_shape_signature(
 keep_alive_kernels = []
 
 
-def generate_dppy_host_wrapper(
+def generate_kernel_launch_ops(
     lowerer,
     cres,
     gu_signature,
@@ -880,9 +877,6 @@ def generate_dppy_host_wrapper(
     num_inputs,
     expr_arg_types,
     loop_ranges,
-    init_block,
-    index_var_typ,
-    races,
     modified_arrays,
 ):
     """
@@ -894,7 +888,7 @@ def generate_dppy_host_wrapper(
     num_dim = len(loop_ranges)
 
     if config.DEBUG_ARRAY_OPT:
-        print("generate_dppy_host_wrapper")
+        print("generate_kernel_launch_ops")
         print("args = ", expr_args)
         print(
             "outer_sig = ",
@@ -911,15 +905,14 @@ def generate_dppy_host_wrapper(
         print("sout", sout)
         print("cres", cres, type(cres))
         print("modified_arrays", modified_arrays)
-    #        print("cres.library", cres.library, type(cres.library))
-    #        print("cres.fndesc", cres.fndesc, type(cres.fndesc))
 
     # get dppy_cpu_portion_lowerer object
-    dppy_cpu_lowerer = dppy_call_gen.DPPYHostFunctionCallsGenerator(
-        lowerer, cres, num_inputs
-    )
+    kernel_launcher = KernelLaunchOps(lowerer, cres.kernel, num_inputs)
 
-    # Compute number of args ------------------------------------------------
+    # Get a pointer to the current queue
+    curr_queue = kernel_launcher.get_current_queue()
+
+    # Compute number of args
     num_expanded_args = 0
 
     for arg_type in expr_arg_types:
@@ -933,7 +926,7 @@ def generate_dppy_host_wrapper(
 
     # now that we know the total number of kernel args, lets allocate
     # a kernel_arg array
-    dppy_cpu_lowerer.allocate_kenrel_arg_array(num_expanded_args)
+    kernel_launcher.allocate_kernel_arg_array(num_expanded_args)
 
     ninouts = len(expr_args)
 
@@ -961,7 +954,6 @@ def generate_dppy_host_wrapper(
 
     keep_alive_kernels.append(cres)
 
-    # -----------------------------------------------------------------------
     # Call clSetKernelArg for each arg and create arg array for
     # the enqueue function. Put each part of each argument into
     # kernel_arg_array.
@@ -993,11 +985,9 @@ def generate_dppy_host_wrapper(
                 "\n\tindex:",
                 index,
             )
-
-        dppy_cpu_lowerer.process_kernel_arg(
-            var, llvm_arg, arg_type, gu_sig, val_type, index, modified_arrays
+        kernel_launcher.process_kernel_arg(
+            var, llvm_arg, arg_type, index, modified_arrays, curr_queue
         )
-    # -----------------------------------------------------------------------
 
     # loadvars for loop_ranges
     def load_range(v):
@@ -1015,7 +1005,10 @@ def generate_dppy_host_wrapper(
         step = load_range(step)
         loop_ranges[i] = (start, stop, step)
 
-    dppy_cpu_lowerer.enqueue_kernel_and_read_back(loop_ranges)
+    kernel_launcher.enqueue_kernel_and_copy_back(loop_ranges, curr_queue)
+
+    # At this point we can free the DPCTLSyclQueueRef (curr_queue)
+    kernel_launcher.free_queue(sycl_queue_val=curr_queue)
 
 
 from numba.core.lowering import Lower
@@ -1027,9 +1020,10 @@ class CopyIRException(RuntimeError):
 
 
 def relatively_deep_copy(obj, memo):
-    # WARNING: there are some issues with genarators which were not investigated and root cause is not found.
-    # Though copied IR seems to work fine there are some extra references kept on generator objects which may result
-    # in memory "leak"
+    # WARNING: there are some issues with genarators which were not investigated
+    # and root cause is not found. Though copied IR seems to work fine there are
+    # some extra references kept on generator objects which may result in a
+    # memory leak.
 
     obj_id = id(obj)
     if obj_id in memo:
