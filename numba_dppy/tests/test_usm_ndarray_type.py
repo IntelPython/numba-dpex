@@ -28,6 +28,7 @@ list_of_dtypes = [
     np.float64,
 ]
 
+
 @pytest.fixture(params=list_of_dtypes)
 def input_array(request):
     a = np.array(np.random.random(10), request.param)

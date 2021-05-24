@@ -18,6 +18,7 @@ import numba_dppy.target as dppy_target
 from dpctl.tensor import usm_ndarray
 from numba.np import numpy_support
 
+
 class USM_NdArrayType(DPPYArray):
     def __init__(
         self,
@@ -50,6 +51,7 @@ class USM_NdArrayType(DPPYArray):
         else:
             return retty
 
+
 # This tells Numba to use the default Numpy ndarray data layout for
 # object of type UsmArray.
 register_model(USM_NdArrayType)(DPPYArrayModel)
@@ -63,8 +65,6 @@ def typeof_ta_ndarray(val, c):
         dtype = numpy_support.from_dtype(val.dtype)
     except NotImplementedError:
         raise ValueError("Unsupported array dtype: %s" % (val.dtype,))
-    layout = 'C'
+    layout = "C"
     readonly = False
     return USM_NdArrayType(dtype, val.ndim, layout, readonly=readonly)
-
-

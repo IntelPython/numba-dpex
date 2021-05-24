@@ -20,6 +20,7 @@ import numpy as np
 
 import dpctl.tensor as dpt
 
+
 @dppy.kernel
 def data_parallel_sum(a, b, c):
     """
@@ -63,7 +64,6 @@ def main():
             driver(da, db, dc, global_size)
     except ValueError:
         print("Failed to schedule on a SYCL device")
-
 
     print("Done...")
 
