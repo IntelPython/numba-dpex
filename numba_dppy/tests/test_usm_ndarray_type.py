@@ -33,11 +33,13 @@ list_of_dtypes = [
 def dtype(request):
     return request.param
 
+
 list_of_usm_type = [
-    'shared',
-    'device',
-    'host',
+    "shared",
+    "device",
+    "host",
 ]
+
 
 @pytest.fixture(params=list_of_usm_type)
 def usm_type(request):

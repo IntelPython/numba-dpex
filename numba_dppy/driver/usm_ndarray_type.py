@@ -26,6 +26,7 @@ class USM_NdArrayType(DPPYArray):
                     aligned=True, addrspace=None)
     creates Numba type to represent ``dpctl.tensor.usm_ndarray``.
     """
+
     def __init__(
         self,
         dtype,
@@ -58,6 +59,7 @@ class USM_NdArrayType(DPPYArray):
 """
 register_model(USM_NdArrayType)(DPPYArrayModel)
 dppy_target.spirv_data_model_manager.register(USM_NdArrayType, DPPYArrayModel)
+
 
 @typeof_impl.register(usm_ndarray)
 def typeof_usm_ndarray(val, c):
