@@ -493,7 +493,6 @@ class DPPYKernel(DPPYKernelBase):
         device_arrs.append(None)
 
         if isinstance(ty, USM_NdArrayType):
-            breakpoint()
             pass
 
         if isinstance(ty, types.Array):

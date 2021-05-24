@@ -30,7 +30,7 @@ class USM_NdArrayType(DPPYArray):
         addrspace=None,
     ):
         # This name defines how this type will be shown in Numba's type dumps.
-        name = "Usm:ndarray(%s, %sd, %s)" % (dtype, ndim, layout)
+        name = "USM:ndarray(%s, %sd, %s)" % (dtype, ndim, layout)
         super(USM_NdArrayType, self).__init__(
             dtype,
             ndim,
