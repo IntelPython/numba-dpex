@@ -22,6 +22,17 @@ def main():
     The example demonstrates the use of numba_dppy's ``atomic_add`` intrinsic
     function on a SYCL GPU device. The ``dpctl.select_gpu_device`` is
     equivalent to ``sycl::gpu_selector`` and returns a sycl::device of type GPU.
+
+    If we want to generate native floating point atomics for spported
+    SYCL devices we need to set two environment variables:
+    NUMBA_DPPY_ACTIVATE_ATOMCIS_FP_NATIVE=1
+    NUMBA_DPPY_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv
+
+    To run this example:
+    NUMBA_DPPY_ACTIVATE_ATOMCIS_FP_NATIVE=1 NUMBA_DPPY_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv python atomic_op.py
+
+    Without these two environment variables Numba_dppy will use other
+    implementation for floating point atomics.
     """
 
     @dppy.kernel
@@ -29,7 +40,7 @@ def main():
         dppy.atomic.add(a, 0, 1)
 
     global_size = 100
-    a = np.array([0])
+    a = np.array([0], dtype=np.float32)
 
     try:
         d = dpctl.select_gpu_device()
@@ -39,8 +50,8 @@ def main():
             atomic_add[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
             # Expected 100, because global_size = 100
             print(a)
-    except ValueError:
-        print("No SYCL GPU found.")
+    except ValueError as e:
+        print(e)
 
 
 if __name__ == "__main__":
