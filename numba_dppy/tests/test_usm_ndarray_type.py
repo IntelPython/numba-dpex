@@ -30,15 +30,26 @@ list_of_dtypes = [
 
 
 @pytest.fixture(params=list_of_dtypes)
-def input_array(request):
-    a = np.array(np.random.random(10), request.param)
-    da = dpt.usm_ndarray(a.shape, dtype=a.dtype, buffer="shared")
+def dtype(request):
+    return request.param
 
-    return da
+list_of_usm_type = [
+    'shared',
+    'device',
+    'host',
+]
+
+@pytest.fixture(params=list_of_usm_type)
+def usm_type(request):
+    return request.param
 
 
-def test_usm_ndarray_type(offload_device, input_array):
+def test_usm_ndarray_type(offload_device, dtype, usm_type):
     if skip_test(offload_device):
         pytest.skip()
 
-    assert isinstance(typeof(input_array), USM_NdArrayType)
+    a = np.array(np.random.random(10), dtype)
+    da = dpt.usm_ndarray(a.shape, dtype=a.dtype, buffer=usm_type)
+
+    assert isinstance(typeof(da), USM_NdArrayType)
+    assert da.usm_type == usm_type

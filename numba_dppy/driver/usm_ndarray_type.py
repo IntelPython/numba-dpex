@@ -20,16 +20,24 @@ from numba.np import numpy_support
 
 
 class USM_NdArrayType(DPPYArray):
+    """
+    USM_NdArrayType(dtype, ndim, layout, usm_type,
+                    readonly=False, name=None,
+                    aligned=True, addrspace=None)
+    creates Numba type to represent ``dpctl.tensor.usm_ndarray``.
+    """
     def __init__(
         self,
         dtype,
         ndim,
         layout,
+        usm_type,
         readonly=False,
         name=None,
         aligned=True,
         addrspace=None,
     ):
+        self.usm_type = usm_type
         # This name defines how this type will be shown in Numba's type dumps.
         name = "USM:ndarray(%s, %sd, %s)" % (dtype, ndim, layout)
         super(USM_NdArrayType, self).__init__(
@@ -43,28 +51,23 @@ class USM_NdArrayType(DPPYArray):
         )
 
     def copy(self, *args, **kwargs):
-        retty = super(USM_NdArrayType, self).copy(*args, **kwargs)
-        if isinstance(retty, types.Array):
-            return USM_NdArrayType(
-                dtype=retty.dtype, ndim=retty.ndim, layout=retty.layout
-            )
-        else:
-            return retty
+        return super(USM_NdArrayType, self).copy(*args, **kwargs)
 
 
-# This tells Numba to use the default Numpy ndarray data layout for
-# object of type UsmArray.
+"""This tells Numba to use the DPPYArray data layout for object of type USM_NdArrayType.
+"""
 register_model(USM_NdArrayType)(DPPYArrayModel)
 dppy_target.spirv_data_model_manager.register(USM_NdArrayType, DPPYArrayModel)
 
-# This tells Numba how to create a UsmSharedArrayType when a usmarray is passed
-# into a njit function.
 @typeof_impl.register(usm_ndarray)
-def typeof_ta_ndarray(val, c):
+def typeof_usm_ndarray(val, c):
+    """
+    This tells Numba how to create a USM_NdArrayType when a usm_ndarray is passed.
+    """
     try:
         dtype = numpy_support.from_dtype(val.dtype)
     except NotImplementedError:
         raise ValueError("Unsupported array dtype: %s" % (val.dtype,))
     layout = "C"
     readonly = False
-    return USM_NdArrayType(dtype, val.ndim, layout, readonly=readonly)
+    return USM_NdArrayType(dtype, val.ndim, layout, val.usm_type, readonly=readonly)

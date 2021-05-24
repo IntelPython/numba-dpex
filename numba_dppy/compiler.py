@@ -493,7 +493,7 @@ class DPPYKernel(DPPYKernelBase):
         device_arrs.append(None)
 
         if isinstance(ty, USM_NdArrayType):
-            pass
+            raise NotImplementedError(ty, USM_NdArrayType)
 
         if isinstance(ty, types.Array):
             if hasattr(val.base, "__sycl_usm_array_interface__"):
