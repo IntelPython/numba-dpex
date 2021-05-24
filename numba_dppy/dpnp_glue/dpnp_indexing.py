@@ -38,9 +38,16 @@ def dpnp_diagonal_impl(a, offset=0):
         void* array1_in, void* result1, const size_t offset, size_t* shape, size_t* res_shape, const size_t res_ndim)
 
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr, types.intp, types.voidptr, types.voidptr, types.intp)
+    sig = signature(
+        ret_type,
+        types.voidptr,
+        types.voidptr,
+        types.intp,
+        types.voidptr,
+        types.voidptr,
+        types.intp,
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
-
 
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
