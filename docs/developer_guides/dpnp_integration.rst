@@ -3,7 +3,7 @@
 DPNP integration
 ================
 
-Currently ``numba-dppy`` uses `DPNP backend library`_.
+Currently `numba-dppy` uses `DPNP backend library`_.
 
 .. _`DPNP backend library`: https://github.com/IntelPython/dpnp/tree/master/dpnp/backend
 
@@ -12,7 +12,7 @@ Currently ``numba-dppy`` uses `DPNP backend library`_.
 Integration with `DPNP backend library`_
 ----------------------------------------
 
-``numba-dppy`` replaces ``NumPy`` function calls with ``DPNP`` function calls.
+`numba-dppy` replaces `NumPy` function calls with `DPNP` function calls.
 
 .. code-block:: python
 
@@ -31,7 +31,7 @@ Integration with `DPNP backend library`_
 
     print(result)
 
-``np.sum(a)`` will be replaced with `dpnp_sum_c<int, int>(...)`_.
+:samp:`np.sum(a)` will be replaced with `dpnp_sum_c<int, int>(...)`_.
 
 .. _`dpnp_sum_c<int, int>(...)`: https://github.com/IntelPython/dpnp/blob/ef404c0f284b0c508ed1e556e140f02f76ae5551/dpnp/backend/kernels/dpnp_krnl_reduction.cpp#L58
 
@@ -49,7 +49,7 @@ Repository map
 Architecture
 ````````````
 
-``numba-dppy`` modifies default ``Numba`` compiler pipeline and extends it with
+`numba-dppy` modifies default `Numba` compiler ipeline nd extends it with
 ``DPPYRewriteOverloadedNumPyFunctions`` pass.
 
 The main work is performed in ``RewriteNumPyOverloadedFunctions`` used by the pass.
@@ -70,7 +70,7 @@ It rewrites call for ``NumPy`` function in following way:
       class sum(Stub):
         pass
 
-For the stub function call to be lowered with ``Numba`` compiler pipeline there
+For the stub function call to be lowered with `Numba` compiler pipeline there
 is overload in :file:`numba_dppy/dpnp_glue/dpnp_transcendentalsimpl.py`:
 
 .. code-block:: python
@@ -327,7 +327,7 @@ Key parts of any test are:
 Troubleshooting
 ```````````````
 
-1. Do not forget build ``numba-dppy`` with current installed version of ``DPNP``.
+1. Do not forget build `numba-dppy` with current installed version of `DPNP`.
    There is headers dependency in Cython files (i.e. :file:`numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx`).
 2. Do not forget add array to ``dpnp_ext._dummy_liveness_func([YOUR_ARRAY.size])``.
    Dead code elimination could delete temporary variables before they are used for DPNP function call.
