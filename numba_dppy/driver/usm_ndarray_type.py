@@ -55,8 +55,8 @@ class USM_NdArrayType(DPPYArray):
         return super(USM_NdArrayType, self).copy(*args, **kwargs)
 
 
-"""This tells Numba to use the DPPYArray data layout for object of type USM_NdArrayType.
-"""
+# This tells Numba to use the DPPYArray data layout for object of type USM_NdArrayType.
+
 register_model(USM_NdArrayType)(DPPYArrayModel)
 dppy_target.spirv_data_model_manager.register(USM_NdArrayType, DPPYArrayModel)
 
@@ -64,7 +64,7 @@ dppy_target.spirv_data_model_manager.register(USM_NdArrayType, DPPYArrayModel)
 @typeof_impl.register(usm_ndarray)
 def typeof_usm_ndarray(val, c):
     """
-    This tells Numba how to create a USM_NdArrayType when a usm_ndarray is passed.
+    This function creates the Numba type (USM_NdArrayType) when a usm_ndarray is passed.
     """
     try:
         dtype = numpy_support.from_dtype(val.dtype)
