@@ -14,6 +14,10 @@
 # limitations under the License.
 
 import dpctl
+<<<<<<< HEAD
+=======
+import numpy.testing as testing
+>>>>>>> main
 import numba_dppy as dppy
 import numpy as np
 

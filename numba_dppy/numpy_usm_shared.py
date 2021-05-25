@@ -59,18 +59,12 @@ def dprint(*args):
         sys.stdout.flush()
 
 
-# # This code makes it so that Numba can contain calls into the DPPLSyclInterface library.
-# sycl_mem_lib = find_library('DPCTLSyclInterface')
-# dprint("sycl_mem_lib:", sycl_mem_lib)
-# # Load the symbols from the DPPL Sycl library.
-# llb.load_library_permanently(sycl_mem_lib)
-
 import dpctl
 from dpctl.memory import MemoryUSMShared
-import numba_dppy._dppy_rt
+import numba_dppy._usm_shared_allocator_ext
 
 # Register the helper function in dppl_rt so that we can insert calls to them via llvmlite.
-for py_name, c_address in numba_dppy._dppy_rt.c_helpers.items():
+for py_name, c_address in numba_dppy._usm_shared_allocator_ext.c_helpers.items():
     llb.add_symbol(py_name, c_address)
 
 
@@ -200,7 +194,9 @@ def is_usm_callback(obj):
         mobj = obj
         while isinstance(mobj, numba.core.runtime._nrt_python._MemInfo):
             ea = mobj.external_allocator
-            dppl_rt_allocator = numba_dppy._dppy_rt.get_external_allocator()
+            dppl_rt_allocator = (
+                numba_dppy._usm_shared_allocator_ext.get_external_allocator()
+            )
             dprint("Checking MemInfo:", ea)
             if ea == dppl_rt_allocator:
                 return True
