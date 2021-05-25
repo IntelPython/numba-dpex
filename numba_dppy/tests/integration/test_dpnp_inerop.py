@@ -27,6 +27,7 @@ list_of_dtype = [
     np.float64,
 ]
 
+
 @pytest.fixture(params=list_of_dtype)
 def dtype(request):
     return request.param
