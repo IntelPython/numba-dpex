@@ -40,7 +40,7 @@ void (*free_queue_internal)(void *) = NULL;
 void *save_queue_allocator(size_t size, void *opaque)
 {
     // Allocate a pointer-size more space than needed.
-    int new_size = size + sizeof(void *);
+    size_t new_size = size + sizeof(void *);
     // Get a copy of the current queue
     void *cur_queue = (void *)DPCTLQueueMgr_GetCurrentQueue();
     // Use that queue to allocate.

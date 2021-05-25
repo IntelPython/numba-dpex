@@ -39,13 +39,18 @@ def get_ext_modules():
 
     import numba, dpctl
 
+    dpctl_runtime_library_dirs = []
+
+    if IS_LIN:
+        dpctl_runtime_library_dirs.append(os.path.dirname(dpctl.__file__))
+
     ext_dppy = Extension(
         name="numba_dppy._usm_shared_allocator_ext",
         sources=["numba_dppy/driver/usm_shared_allocator_ext.c"],
         include_dirs=[numba.core.extending.include_path(), dpctl.get_include()],
         libraries=["DPCTLSyclInterface"],
         library_dirs=[os.path.dirname(dpctl.__file__)],
-        runtime_library_dirs=[os.path.dirname(dpctl.__file__)],
+        runtime_library_dirs=dpctl_runtime_library_dirs,
     )
     ext_modules += [ext_dppy]
 
