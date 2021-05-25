@@ -72,6 +72,13 @@ There are two ways to program SYCL devices using Numba-dppy:
     Debugging with GDB <user_guides/debugging.md>
     numba-dppy for numba.cuda Programmers <user_guides/migrating_from_numba_cuda.rst>
 
+.. toctree::
+    :maxdepth: 1
+    :caption: Developer Guides
+
+    developer_guides/dpnp_integration
+
+
 About
 =====
 
