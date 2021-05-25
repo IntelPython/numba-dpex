@@ -31,8 +31,7 @@ def load_dpctl_sycl_interface():
     load_library_permanently function.
 
     Raises:
-        ImportError: If the ``DPCTLSyclInterface`` library could not be
-        loaded.
+        ImportError: If the ``DPCTLSyclInterface`` library could not be loaded.
     """
     import dpctl
     import glob

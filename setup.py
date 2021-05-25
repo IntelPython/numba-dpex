@@ -37,12 +37,15 @@ elif sys.platform in ["win32", "cygwin"]:
 def get_ext_modules():
     ext_modules = []
 
-    import numba
+    import numba, dpctl
 
     ext_dppy = Extension(
-        name="numba_dppy._dppy_rt",
-        sources=["numba_dppy/dppy_rt.c"],
-        include_dirs=[numba.core.extending.include_path()],
+        name="numba_dppy._usm_shared_allocator_ext",
+        sources=["numba_dppy/driver/usm_shared_allocator_ext.c"],
+        include_dirs=[numba.core.extending.include_path(), dpctl.get_include()],
+        libraries=["DPCTLSyclInterface"],
+        library_dirs=[os.path.dirname(dpctl.__file__)],
+        runtime_library_dirs=[os.path.dirname(dpctl.__file__)],
     )
     ext_modules += [ext_dppy]
 
