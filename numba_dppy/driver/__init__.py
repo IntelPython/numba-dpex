@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 # Copyright 2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,16 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytest
+"""
+The ``driver`` module implements Numba's interface to the dpctl library, a
+lightweight Python and C wrapper to a subset of DPC++'s runtime API. The 
+``driver`` module includes:
 
+- LLVM IR builders for dpctl C API functions to be called directly from a Numba
+  generated LLVM module.
+- Functions to lauch kernels on the dpctl "current queue".
 
-offload_devices = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
+"""
+from numba_dppy.driver.dpctl_capi_fn_builder import DpctlCAPIFnBuilder
+from numba_dppy.driver.kernel_launch_ops import KernelLaunchOps
+
+__all__ = [
+    DpctlCAPIFnBuilder,
+    KernelLaunchOps,
 ]
-
-
-@pytest.fixture(params=offload_devices, scope="module")
-def offload_device(request):
-    return request.param

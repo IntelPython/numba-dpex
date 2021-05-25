@@ -44,9 +44,10 @@ from numba.core.typing.templates import (
 from numba.core.typing.arraydecl import normalize_shape
 from numba.np.arrayobj import _array_copy
 
-import dpctl.dptensor.numpy_usm_shared as nus
-from dpctl.dptensor.numpy_usm_shared import ndarray, functions_list, class_list
+import dpctl.tensor.numpy_usm_shared as nus
+from dpctl.tensor.numpy_usm_shared import ndarray, functions_list, class_list
 from . import target as dppy_target
+from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
 
 
 debug = config.DEBUG
@@ -73,7 +74,7 @@ for py_name, c_address in numba_dppy._dppy_rt.c_helpers.items():
     llb.add_symbol(py_name, c_address)
 
 
-class UsmSharedArrayType(types.Array):
+class UsmSharedArrayType(DPPYArray):
     """Creates a Numba type for Numpy arrays that are stored in USM shared
     memory.  We inherit from Numba's existing Numpy array type but overload
     how this type is printed during dumping of typing information and we
@@ -141,10 +142,8 @@ def typeof_ta_ndarray(val, c):
 
 # This tells Numba to use the default Numpy ndarray data layout for
 # object of type UsmArray.
-register_model(UsmSharedArrayType)(numba.core.datamodel.models.ArrayModel)
-dppy_target.spirv_data_model_manager.register(
-    UsmSharedArrayType, numba.core.datamodel.models.ArrayModel
-)
+register_model(UsmSharedArrayType)(DPPYArrayModel)
+dppy_target.spirv_data_model_manager.register(UsmSharedArrayType, DPPYArrayModel)
 
 # This tells Numba how to convert from its native representation
 # of a UsmArray in a njit function back to a Python UsmArray.
@@ -285,7 +284,7 @@ def numba_register_lower_builtin():
 
     for impl, func, types in todo + todo_builtin:
         try:
-            usmarray_func = eval("dpctl.dptensor.numpy_usm_shared." + func.__name__)
+            usmarray_func = eval("dpctl.tensor.numpy_usm_shared." + func.__name__)
         except:
             dprint("failed to eval", func.__name__)
             continue
@@ -340,7 +339,7 @@ def numba_register_typing():
         dprint("todo_classes:", val, typ, type(typ))
 
         try:
-            dptype = eval("dpctl.dptensor.numpy_usm_shared." + val.__name__)
+            dptype = eval("dpctl.tensor.numpy_usm_shared." + val.__name__)
         except:
             dprint("failed to eval", val.__name__)
             continue
@@ -355,7 +354,7 @@ def numba_register_typing():
         template = typ.templates[0]
         dprint("need to re-register for usmarray", val, typ, typ.typing_key)
         try:
-            dpval = eval("dpctl.dptensor.numpy_usm_shared." + val.__name__)
+            dpval = eval("dpctl.tensor.numpy_usm_shared." + val.__name__)
         except:
             dprint("failed to eval", val.__name__)
             continue

@@ -54,7 +54,7 @@ Run before each commit: `bandit -r numba_dppy -lll`
 
 Install Sphinx and plugins:
 ```bash
-pip install sphinx autodoc recommonmark sphinx-rtd-theme
+pip install sphinx autodoc recommonmark sphinx-rtd-theme sphinxcontrib-apidoc
 ```
 
 Generate HTML:

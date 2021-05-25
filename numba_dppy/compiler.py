@@ -31,12 +31,11 @@ import numpy as np
 
 from . import spirv_generator
 
-import os
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
+from numba_dppy.config import DEBUG
 
 
-DEBUG = os.environ.get("NUMBA_DPPY_DEBUG", None)
 _NUMBA_DPPY_READ_ONLY = "read_only"
 _NUMBA_DPPY_WRITE_ONLY = "write_only"
 _NUMBA_DPPY_READ_WRITE = "read_write"
@@ -168,7 +167,7 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
 def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug=False):
     if DEBUG:
         print("compile_kernel_parfor", args)
-        for a in args:
+        for a in args_with_addrspaces:
             print(a, type(a))
             if isinstance(a, types.npytypes.Array):
                 print("addrspace:", a.addrspace)
