@@ -58,6 +58,9 @@ from .dpnp_skip_test import dpnp_skip_test as skip_test
     ],
 )
 def test_diagonal(array, offset):
+    if skip_test("opencl:gpu:0"):
+        pytest.skip()
+
     a = np.array(array)
 
     def fn(a, offset):
