@@ -406,6 +406,9 @@ class DPPYKernel(DPPYKernelBase):
 
         kernelargs = []
         internal_device_arrs = []
+
+        sycl_context = self._identify_sycl_context(self.argument_types, args)
+
         for ty, val, access_type in zip(
             self.argument_types, args, self.ordered_arg_access_types
         ):
@@ -431,6 +434,45 @@ class DPPYKernel(DPPYKernelBase):
         ):
             self._pack_argument(ty, val, self.sycl_queue, i_dev_arr, access_type)
 
+    def _identify_sycl_context(self, arg_types, args):
+        sycl_context = None
+        chosen_idx = -1
+        for idx, (ty, val) in enumerate(zip(arg_types, args)):
+
+            if isinstance(ty, USMNdArrayType):
+                if sycl_context == None:
+                    sycl_context = val.sycl_context
+                    chosen_idx = idx
+                else:
+                    if sycl_context != val.sycl_context:
+                        raise ValueError(
+                            "SYCL context of data %d does not match with data %d"
+                            % (chosen_idx, idx)
+                        )
+
+            elif isinstance(ty, types.Array):
+                if hasattr(val.base, "__sycl_usm_array_interface__"):
+                    if sycl_context == None:
+                        sycl_context = val.base.sycl_context
+                        chosen_idx = idx
+                    else:
+                        if sycl_context != val.base.sycl_context:
+                            raise ValueError(
+                                "SYCL context of data %d does not match with data %d"
+                                % (chosen_idx, idx)
+                            )
+
+        # if we still do not have any SYCL context, we can simply return the context of the current_queue
+        if sycl_context == None:
+            return dpctl.get_current_queue().sycl_context
+        else:
+            if dpctl.get_current_queue().sycl_context != sycl_context:
+                raise ValueError(
+                    "SYCL queue specified to run computation and queue used for data allocation is different! Please use consistent SYCL queue for data allocation and computation."
+                )
+
+            return sycl_context
+
     def _pack_argument(self, ty, val, sycl_queue, device_arr, access_type):
         """
         Copy device data back to host
@@ -446,7 +488,9 @@ class DPPYKernel(DPPYKernelBase):
             usm_buf, usm_ndarr, orig_ndarray = device_arr
             np.copyto(orig_ndarray, usm_ndarr)
 
-    def _unpack_device_array_argument(self, val, kernelargs):
+    def _unpack_device_array_argument(
+        self, ndim, size, itemsize, ptr, shape, strides, kernelargs
+    ):
         """
         Implements the unpacking logic for array arguments.
         """
@@ -454,13 +498,13 @@ class DPPYKernel(DPPYKernelBase):
         kernelargs.append(ctypes.c_size_t(0))
         # parent
         kernelargs.append(ctypes.c_size_t(0))
-        kernelargs.append(ctypes.c_longlong(val.size))
-        kernelargs.append(ctypes.c_longlong(val.dtype.itemsize))
-        kernelargs.append(val.base)
-        for ax in range(val.ndim):
-            kernelargs.append(ctypes.c_longlong(val.shape[ax]))
-        for ax in range(val.ndim):
-            kernelargs.append(ctypes.c_longlong(val.strides[ax]))
+        kernelargs.append(ctypes.c_longlong(size))
+        kernelargs.append(ctypes.c_longlong(itemsize))
+        kernelargs.append(ptr)
+        for ax in range(ndim):
+            kernelargs.append(ctypes.c_longlong(shape[ax]))
+        for ax in range(ndim):
+            kernelargs.append(ctypes.c_longlong(strides[ax]))
 
     def _unpack_argument(
         self, ty, val, sycl_queue, kernelargs, device_arrs, access_type
@@ -493,11 +537,27 @@ class DPPYKernel(DPPYKernelBase):
         device_arrs.append(None)
 
         if isinstance(ty, USMNdArrayType):
-            raise NotImplementedError(ty, USMNdArrayType)
+            self._unpack_device_array_argument(
+                val.ndim,
+                val.size,
+                val.itemsize,
+                val.usm_data,
+                val.shape,
+                val.strides,
+                kernelargs,
+            )
 
-        if isinstance(ty, types.Array):
+        elif isinstance(ty, types.Array):
             if hasattr(val.base, "__sycl_usm_array_interface__"):
-                self._unpack_device_array_argument(val, kernelargs)
+                self._unpack_device_array_argument(
+                    val.ndim,
+                    val.size,
+                    val.dtype.itemsize,
+                    val.base,
+                    val.shape,
+                    val.strides,
+                    kernelargs,
+                )
             else:
                 default_behavior = self.check_for_invalid_access_type(access_type)
 
@@ -514,7 +574,15 @@ class DPPYKernel(DPPYKernelBase):
                     np.copyto(usm_ndarr, val)
 
                 device_arrs[-1] = (usm_buf, usm_ndarr, val)
-                self._unpack_device_array_argument(usm_ndarr, kernelargs)
+                self._unpack_device_array_argument(
+                    usm_ndarr.ndim,
+                    usm_ndarr.size,
+                    usm_ndarr.dtype.itemsize,
+                    usm_ndarr.base,
+                    usm_ndarr.shape,
+                    usm_ndarr.strides,
+                    kernelargs,
+                )
 
         elif ty == types.int64:
             cval = ctypes.c_longlong(val)

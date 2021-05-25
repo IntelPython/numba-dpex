@@ -14,7 +14,6 @@
 # limitations under the License.
 
 import dpctl
-import numpy.testing as testing
 import numba_dppy as dppy
 import numpy as np
 
@@ -31,12 +30,7 @@ def data_parallel_sum(a, b, c):
 
 
 def driver(a, b, c, global_size):
-    print("A : ", a)
-    print("B : ", b)
     data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
-    print("A + B = ")
-    print("C ", c)
-    testing.assert_equal(c, a + b)
 
 
 def main():
@@ -62,6 +56,10 @@ def main():
             dc = dpt.usm_ndarray(c.shape, dtype=c.dtype, buffer="shared")
 
             driver(da, db, dc, global_size)
+
+            res = dc.usm_data.copy_to_host().view(dc.dtype)
+            c = np.ndarray(c.shape, buffer=res, dtype=c.dtype)
+            assert np.array_equal(c, a + b)
     except ValueError:
         print("Failed to schedule on a SYCL device")
 
