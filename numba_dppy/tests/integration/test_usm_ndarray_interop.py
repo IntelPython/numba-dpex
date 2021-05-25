@@ -18,7 +18,8 @@ import numpy as np
 from numba import njit
 import pytest
 import numba_dppy as dppy
-import dpnp
+
+import dpctl.tensor as dpt
 
 list_of_dtype = [
     np.int32,
@@ -44,7 +45,7 @@ def usm_type(request):
     return request.param
 
 
-def test_consuming_array_from_dpnp(dtype):
+def test_consuming_usm_ndarray(dtype, usm_type):
     @dppy.kernel
     def data_parallel_sum(a, b, c):
         """
@@ -54,11 +55,20 @@ def test_consuming_array_from_dpnp(dtype):
         c[i] = a[i] + b[i]
 
     global_size = 1021
+    N = global_size
+
+    a = np.array(np.random.random(N), dtype=dtype)
+    b = np.array(np.random.random(N), dtype=dtype)
+    c = np.ones_like(a)
 
     with dpctl.device_context("level_zero:gpu"):
-        with pytest.raises(Exception):
-            a = dpnp.arange(global_size, dtype=dtype)
-            b = dpnp.arange(global_size, dtype=dtype)
-            c = dpnp.ones_like(a)
+        da = dpt.usm_ndarray(a.shape, dtype=a.dtype, buffer=usm_type)
+        da.usm_data.copy_from_host(a.reshape((-1)).view("|u1"))
 
-            data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
+        db = dpt.usm_ndarray(b.shape, dtype=b.dtype, buffer=usm_type)
+        db.usm_data.copy_from_host(b.reshape((-1)).view("|u1"))
+
+        dc = dpt.usm_ndarray(c.shape, dtype=c.dtype, buffer=usm_type)
+
+        with pytest.raises(Exception):
+            data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](da, db, dc)
