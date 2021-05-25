@@ -91,3 +91,17 @@ Numba-dppy is Licensed under Apache License 2.0 that can be found in
 `LICENSE <https://github.com/IntelPython/numba-dppy/blob/main/LICENSE>`_.
 All usage and contributions to the project are subject to the terms and
 conditions of this license.
+
+
+Indices and tables
+==================
+
+.. only:: builder_html
+
+   * :ref:`genindex`
+   * :ref:`modindex`
+   * :ref:`search`
+
+.. only:: not builder_html
+
+   * :ref:`modindex`
