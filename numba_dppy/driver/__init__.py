@@ -24,10 +24,10 @@ lightweight Python and C wrapper to a subset of DPC++'s runtime API. The
 """
 from numba_dppy.driver.dpctl_capi_fn_builder import DpctlCAPIFnBuilder
 from numba_dppy.driver.kernel_launch_ops import KernelLaunchOps
-from numba_dppy.driver.usm_ndarray_type import USM_NdArrayType
+from numba_dppy.driver.usm_ndarray_type import USMNdArrayType
 
 __all__ = [
     DpctlCAPIFnBuilder,
     KernelLaunchOps,
-    USM_NdArrayType,
+    USMNdArrayType,
 ]
