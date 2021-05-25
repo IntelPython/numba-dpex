@@ -36,6 +36,7 @@ rewrite_function_name_map = {
     "mean": (["numpy"], "mean"),
     "median": (["numpy"], "median"),
     "min": (["numpy"], "min"),
+    "partition": (["numpy"], "partition"),
     "vdot": (["numpy"], "vdot"),
     # random
     "beta": (["random"], "beta"),
