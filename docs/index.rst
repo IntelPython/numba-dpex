@@ -72,6 +72,13 @@ There are two ways to program SYCL devices using Numba-dppy:
     Debugging with GDB <user_guides/debugging.md>
     numba-dppy for numba.cuda Programmers <user_guides/migrating_from_numba_cuda.rst>
 
+.. toctree::
+    :maxdepth: 1
+    :caption: Developer Guides
+
+    developer_guides/dpnp_integration
+
+
 About
 =====
 
@@ -91,3 +98,17 @@ Numba-dppy is Licensed under Apache License 2.0 that can be found in
 `LICENSE <https://github.com/IntelPython/numba-dppy/blob/main/LICENSE>`_.
 All usage and contributions to the project are subject to the terms and
 conditions of this license.
+
+
+Indices and tables
+==================
+
+.. only:: builder_html
+
+   * :ref:`genindex`
+   * :ref:`modindex`
+   * :ref:`search`
+
+.. only:: not builder_html
+
+   * :ref:`modindex`
