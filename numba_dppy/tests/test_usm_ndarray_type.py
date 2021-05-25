@@ -19,7 +19,7 @@ import dpctl
 import dpctl.tensor as dpt
 from numba.misc.special import typeof
 from numba_dppy.tests._helper import skip_test
-from numba_dppy.driver import USM_NdArrayType
+from numba_dppy.driver import USMNdArrayType
 
 list_of_dtypes = [
     np.int32,
@@ -53,5 +53,5 @@ def test_usm_ndarray_type(offload_device, dtype, usm_type):
     a = np.array(np.random.random(10), dtype)
     da = dpt.usm_ndarray(a.shape, dtype=a.dtype, buffer=usm_type)
 
-    assert isinstance(typeof(da), USM_NdArrayType)
+    assert isinstance(typeof(da), USMNdArrayType)
     assert da.usm_type == usm_type
