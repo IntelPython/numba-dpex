@@ -12,7 +12,7 @@ sudo usermod -a -G video <username>
 
 ### NEO driver
 
-For the debugger to work correctly, you need to install a version of NEO drivers at least `21.15.19533`.
+NEO driver at least `21.15.19533` version is required to make debugger work correctly.
 
 Follow the [link](https://github.com/intel/compute-runtime/releases/tag/21.15.19533) below to download the drivers.
 
@@ -21,15 +21,16 @@ Follow the [link](https://github.com/intel/compute-runtime/releases/tag/21.15.19
 sudo dpkg -i *.deb
 ```
 
-2) You can also install NEO drivers locally. In that folder with NEO, run the following commands: 
+2) To install the NEO driver locally follow the commands below:
 
 ```bash
+cd /path/to/my/neo
 for file in `ls *.deb`; do dpkg -x $file .; done
 export MY_ACTIVE_NEO=/path/to/my/neo/usr/local/lib
 export LD_LIBRARY_PATH=${MY_ACTIVE_NEO}:${MY_ACTIVE_NEO}/intel-opencl:$LD_LIBRARY_PATH
 ```
 
-You will also need to add environment variables to change the behavior of the ICD. Info about [OCL_ICD_...](https://github.com/KhronosGroup/OpenCL-ICD-Loader). 
+The Installable Client Driver (ICD) uses the system implementation for OpenCL by default. You will also need to add environment variables to change the behavior of the ICD. Info about [OCL_ICD_...](https://github.com/KhronosGroup/OpenCL-ICD-Loader). 
 Add all needed from "/etc/OpenCL/vendors/" and custom to `OCL_ICD_FILENAMES`.
 ```bash
 export OCL_ICD_FILENAMES=/path/to/my/neo/usr/local/lib/intel-opencl/libigdrcl.so:/optional/from/vendors/libintelocl.so
@@ -56,4 +57,4 @@ Also, you must remove the driver from the system if you want to install a differ
 sudo dpkg -r igfxdcd
 ```
 
-If you are installing dsd for the first time, you need to create keys. More details [here](https://software.intel.com/content/www/us/en/develop/documentation/get-started-with-debugging-dpcpp-linux/top.html).
+If you are installing DCD for the first time, you need to create keys. More details [here](https://software.intel.com/content/www/us/en/develop/documentation/get-started-with-debugging-dpcpp-linux/top.html).
