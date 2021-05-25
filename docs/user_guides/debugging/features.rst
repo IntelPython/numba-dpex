@@ -6,5 +6,5 @@ offloaded SYCL kernels.
 .. toctree::
     :maxdepth: 2
 
-    local_variables.rst
-    limitations.rst
+    local_variables
+    limitations
