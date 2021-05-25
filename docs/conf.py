@@ -23,7 +23,7 @@ copyright = "2021, Intel"
 author = "Intel"
 
 # The full version, including alpha/beta/rc tags
-release = "0.13.1"
+release = "0.14.0"
 
 
 # -- General configuration ---------------------------------------------------
@@ -36,6 +36,7 @@ extensions = [
     "sphinx_rtd_theme",
     "sphinx.ext.autodoc",
     "sphinx.ext.todo",
+    "sphinxcontrib.apidoc",
 ]
 
 todo_include_todos = True
@@ -62,3 +63,11 @@ html_theme = "sphinx_rtd_theme"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+
+modindex_common_prefix = ["numba_dppy."]
+
+# See https://github.com/sphinx-contrib/apidoc
+apidoc_module_dir = "../numba_dppy"
+apidoc_output_dir = "apidoc"
+apidoc_excluded_paths = ["tests"]
+apidoc_separate_modules = True
