@@ -14,7 +14,7 @@ specifically to implement device functions.
 To use a device function from an another device function:
 
 .. literalinclude:: ../../../numba_dppy/examples/dppy_func.py
-   :pyobject: an_another_device_function
+   :pyobject: another_device_function
 
 To use a device function from a kernel function ``numba_dppy.kernel``:
 
