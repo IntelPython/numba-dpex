@@ -27,7 +27,7 @@ the relevant documentation can be found at `Intel® Distribution for GDB documen
 .. toctree::
     :maxdepth: 2
 
-    how_to_debug_numba_dppy
+    debugging_environment
 
 
 Example of GDB usage
