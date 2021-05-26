@@ -63,4 +63,4 @@ def is_available():
         return False
 
 
-initialize.initialize_all()
+initialize.load_dpctl_sycl_interface()

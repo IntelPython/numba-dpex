@@ -44,8 +44,8 @@ from numba.core.typing.templates import (
 from numba.core.typing.arraydecl import normalize_shape
 from numba.np.arrayobj import _array_copy
 
-import dpctl.dptensor.numpy_usm_shared as nus
-from dpctl.dptensor.numpy_usm_shared import ndarray, functions_list, class_list
+import dpctl.tensor.numpy_usm_shared as nus
+from dpctl.tensor.numpy_usm_shared import ndarray, functions_list, class_list
 from . import target as dppy_target
 from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
 
@@ -59,18 +59,12 @@ def dprint(*args):
         sys.stdout.flush()
 
 
-# # This code makes it so that Numba can contain calls into the DPPLSyclInterface library.
-# sycl_mem_lib = find_library('DPCTLSyclInterface')
-# dprint("sycl_mem_lib:", sycl_mem_lib)
-# # Load the symbols from the DPPL Sycl library.
-# llb.load_library_permanently(sycl_mem_lib)
-
 import dpctl
 from dpctl.memory import MemoryUSMShared
-import numba_dppy._dppy_rt
+import numba_dppy._usm_shared_allocator_ext
 
 # Register the helper function in dppl_rt so that we can insert calls to them via llvmlite.
-for py_name, c_address in numba_dppy._dppy_rt.c_helpers.items():
+for py_name, c_address in numba_dppy._usm_shared_allocator_ext.c_helpers.items():
     llb.add_symbol(py_name, c_address)
 
 
@@ -200,7 +194,9 @@ def is_usm_callback(obj):
         mobj = obj
         while isinstance(mobj, numba.core.runtime._nrt_python._MemInfo):
             ea = mobj.external_allocator
-            dppl_rt_allocator = numba_dppy._dppy_rt.get_external_allocator()
+            dppl_rt_allocator = (
+                numba_dppy._usm_shared_allocator_ext.get_external_allocator()
+            )
             dprint("Checking MemInfo:", ea)
             if ea == dppl_rt_allocator:
                 return True
@@ -284,7 +280,7 @@ def numba_register_lower_builtin():
 
     for impl, func, types in todo + todo_builtin:
         try:
-            usmarray_func = eval("dpctl.dptensor.numpy_usm_shared." + func.__name__)
+            usmarray_func = eval("dpctl.tensor.numpy_usm_shared." + func.__name__)
         except:
             dprint("failed to eval", func.__name__)
             continue
@@ -339,7 +335,7 @@ def numba_register_typing():
         dprint("todo_classes:", val, typ, type(typ))
 
         try:
-            dptype = eval("dpctl.dptensor.numpy_usm_shared." + val.__name__)
+            dptype = eval("dpctl.tensor.numpy_usm_shared." + val.__name__)
         except:
             dprint("failed to eval", val.__name__)
             continue
@@ -354,7 +350,7 @@ def numba_register_typing():
         template = typ.templates[0]
         dprint("need to re-register for usmarray", val, typ, typ.typing_key)
         try:
-            dpval = eval("dpctl.dptensor.numpy_usm_shared." + val.__name__)
+            dpval = eval("dpctl.tensor.numpy_usm_shared." + val.__name__)
         except:
             dprint("failed to eval", val.__name__)
             continue
