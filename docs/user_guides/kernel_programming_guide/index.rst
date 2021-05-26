@@ -4,11 +4,11 @@ Programming SYCL Kernels Using ``numba_dppy.kernel``
 .. toctree::
    :maxdepth: 2
 
-   writing_kernels.rst
-   memory-management.rst
-   synchronization.rst
-   device-functions.rst
-   atomic-operations.rst
-   reduction.rst
-   ufunc.rst
-   supported-python-features.rst
+   writing_kernels
+   memory-management
+   synchronization
+   device-functions
+   atomic-operations
+   reduction
+   ufunc
+   supported-python-features
