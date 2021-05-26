@@ -46,7 +46,7 @@ def usm_type(request):
     return request.param
 
 
-def test_consuming_usm_ndarray(dtype, usm_type):
+def test_consuming_usm_ndarray(offload_device, dtype, usm_type):
     @dppy.kernel
     def data_parallel_sum(a, b, c):
         """
@@ -62,7 +62,7 @@ def test_consuming_usm_ndarray(dtype, usm_type):
     b = np.array(np.random.random(N), dtype=dtype)
     c = np.ones_like(a)
 
-    with dpctl.device_context("level_zero:gpu"):
+    with dpctl.device_context(offload_device):
         da = dpt.usm_ndarray(a.shape, dtype=a.dtype, buffer=usm_type)
         da.usm_data.copy_from_host(a.reshape((-1)).view("|u1"))
 

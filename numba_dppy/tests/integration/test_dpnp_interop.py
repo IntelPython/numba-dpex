@@ -45,7 +45,7 @@ def usm_type(request):
     return request.param
 
 
-def test_consuming_array_from_dpnp(dtype):
+def test_consuming_array_from_dpnp(offload_device, dtype):
     @dppy.kernel
     def data_parallel_sum(a, b, c):
         """
@@ -56,10 +56,10 @@ def test_consuming_array_from_dpnp(dtype):
 
     global_size = 1021
 
-    with dpctl.device_context("level_zero:gpu"):
-        with pytest.raises(Exception):
-            a = dpnp.arange(global_size, dtype=dtype)
-            b = dpnp.arange(global_size, dtype=dtype)
-            c = dpnp.ones_like(a)
+    a = dpnp.arange(global_size, dtype=dtype)
+    b = dpnp.arange(global_size, dtype=dtype)
+    c = dpnp.ones_like(a)
 
+    with dpctl.device_context(offload_device):
+        with pytest.raises(Exception):
             data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
