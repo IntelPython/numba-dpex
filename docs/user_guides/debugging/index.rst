@@ -24,6 +24,11 @@ the relevant documentation can be found at `Intel® Distribution for GDB documen
 
 .. _`Intel® Distribution for GDB documentation`: https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-gdb.html
 
+.. toctree::
+    :maxdepth: 2
+
+    how_to_debug_numba_dppy
+
 
 Example of GDB usage
 --------------------

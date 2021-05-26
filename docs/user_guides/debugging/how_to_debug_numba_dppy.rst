@@ -1,28 +1,38 @@
-Debugging Numba-dppy
-===========================
+.. _debugging-environment:
 
-First you need to activate the debugger that you will be using:
+Configuring debugging environment
+=================================
 
-.. code-block:: bash
+Activate debugger and compiler
+------------------------------
 
-    source /path/to/oneapi/debugger/latest/env/vars.sh
-
-And dpcpp compiler for numba-dppy:
-
-.. code-block:: bash
-
-    source /path/to/oneapi/compiler/latest/env/vars.sh
-
-You will also need a conda environment with numba-dppy:
+First you need to activate the debugger that you will be using
+and dpcpp compiler for numba-dppy:
 
 .. code-block:: bash
 
+    export ONEAPI_ROOT=/path/to/oneapi
+    source $ONEAPI_ROOT/debugger/latest/env/vars.sh
+    source $ONEAPI_ROOT/compiler/latest/env/vars.sh
+
+Activate conda environment
+--------------------------
+
+You will also need to create and acrivate conda environment with installed `numba-dppy`:
+
+.. code-block:: bash
+
+    conda create numba-dppy-dev numba-dppy
     conda activate numba-dppy-dev
 
 .. note::
-    - Known issues:
-    - For stable work of the debugger, you need to use ``numba-dppy=0.13.1``, ``dpctl=0.6``, ``numba=0.52``
-  
+
+    Known issues:
+      - Debugging tested with following packages: ``numba-dppy=0.13.1``, ``dpctl=0.6``, ``numba=0.52``.
+
+Activate environment variables
+------------------------------
+
 You need to set the following variables for debugging:
 
 .. code-block:: bash
@@ -30,7 +40,13 @@ You need to set the following variables for debugging:
     export NUMBA_OPT=1
     export NUMBA_DPPY_DEBUG=1
 
-Further, if you want to use local NEO, you need to activate the variables for it.
+Activate NEO drivers
+--------------------
+
+Further, if you want to use local NEO driver, you need to activate the variables for it.
+
+Checking debuggin environment
+-----------------------------
 
 You can check the correctness of the work with the following example:
 
@@ -51,6 +67,7 @@ You can check the correctness of the work with the following example:
     a = np.array(np.random.random(N), dtype=np.float32)
     b = np.array(np.random.random(N), dtype=np.float32)
     c = np.ones_like(a)
+
     with dpctl.device_context("opencl:gpu") as gpu_queue:
         data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
@@ -58,9 +75,9 @@ Launch gdb and set a breakpoint in the kernel:
 
 .. code-block:: bash
 
-    gdb-oneapi -q --args python example.py  
-    (gdb) break example.py:7  
-    No source file named example.py.  
+    gdb-oneapi -q --args python example.py
+    (gdb) break example.py:7
+    No source file named example.py.
     Make breakpoint pending on future shared library load? (y or [n]) y
     Breakpoint 1 (example.py:7) pending.
     (gdb) run
