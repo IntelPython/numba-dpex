@@ -1,9 +1,10 @@
-GDB stepping
-===========================
+Stepping
+========
 
 .. note::
-    - Known issues:  
-    - Stepping works correctly only for kernels. Nested functions can cause problems.
+
+    Known issues:
+      - Stepping works correctly only for kernels. Nested functions can cause problems.
 
 Consider ``numba-dppy`` kernel code:
 
@@ -13,29 +14,32 @@ Consider ``numba-dppy`` kernel code:
     import numpy as np
     import numba_dppy as dppy
     import dpctl
-        
+
     @dppy.kernel
     def data_parallel_sum (a, b, c):
         i = dppy.get_global_id (0)  # numba-kernel-breakpoint
         l1 = a[i]                   # second-line
         l2 = b[i]                   # third-line
         c[i] = l1 + l2              # fourth-line
-    
+
     global_size = 10
     N = global_size
     a = np.array(np.random.random(N), dtype=np.float32)
     b = np.array(np.random.random(N), dtype=np.float32)
     c = np.ones_like(a)
+
     with dpctl.device_context("opencl:gpu") as gpu_queue:
         data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
-        
+
 ``step``
----------------
+--------
+
+Run debugger:
 
 .. code-block:: bash
 
-    export NUMBA_DPPY_DEBUG=1  
-    export NUMBA_OPT=1  
+    export NUMBA_DPPY_DEBUG=1
+    export NUMBA_OPT=1
     gdb-oneapi -q --args python stepping.py
     (gdb) b stepping.py:7
     No source file named stepping.py.
@@ -62,7 +66,7 @@ Consider ``numba-dppy`` kernel code:
     7           i = dppy.get_global_id (0)  # numba-kernel-breakpoint
     (gdb) s
 
-**GDB output**
+GDB output:
 
 .. code-block:: bash
 
@@ -84,10 +88,10 @@ Consider ``numba-dppy`` kernel code:
 
 .. note::
 
-    - Known issues:  
-    - Debug of the first line of the kernel works out twice.
+    Known issues:
+      - Debug of the first line of the kernel works out twice.
 
 ``next``
-------------------
+--------
 
 Stepping-like behavior.

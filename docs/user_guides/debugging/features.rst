@@ -22,3 +22,4 @@ Currently, the following debugging features are available:
     :maxdepth: 2
 
     local_variables
+    stepping
