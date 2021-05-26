@@ -159,3 +159,38 @@ def test_full(filter_str, full_name, input_array, get_shape, capfd):
 
     expected = fn(a, np.array([2]))
     np.testing.assert_allclose(actual, expected, rtol=1e-3, atol=0)
+
+
+@pytest.mark.parametrize("k",
+                         [-6, -1, 0, 1, 6],
+                         ids=['-6', '-1', '0', '1', '6'])
+@pytest.mark.parametrize("v",
+                         [[0, 1, 2, 3, 4],
+                          [1, 1, 1, 1, 1],
+                          [[0, 0], [0, 0]],
+                          [[1, 2], [1, 2]],
+                          [[1, 2], [3, 4]],
+                          [[0, 1, 2], [3, 4, 5], [6, 7, 8]],
+                          [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]]],
+                         ids=['[0, 1, 2, 3, 4]',
+                              '[1, 1, 1, 1, 1]',
+                              '[[0, 0], [0, 0]]',
+                              '[[1, 2], [1, 2]]',
+                              '[[1, 2], [3, 4]]',
+                              '[[0, 1, 2], [3, 4, 5], [6, 7, 8]]',
+                              '[[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]]'])
+def test_diag(v, k, filter_str):
+    if skip_test(filter_str):
+        pytest.skip()
+
+    a = np.array(array)
+
+    def fn(a, k):
+        return np.diag(a, k)
+
+    f = njit(fn)
+    with dpctl.device_context(filter_str), dpnp_debug():
+        actual = f(a, k)
+
+    expected = fn(a, k)
+    np.testing.assert_allclose(actual, expected, rtol=1e-3, atol=0)

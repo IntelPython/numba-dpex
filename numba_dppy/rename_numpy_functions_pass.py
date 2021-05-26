@@ -32,6 +32,7 @@ rewrite_function_name_map = {
     "argmin": (["numpy"], "argmin"),
     "argsort": (["numpy"], "argsort"),
     "cov": (["numpy"], "cov"),
+    "diag": (["numpy"], "diag"),
     "max": (["numpy"], "max"),
     "mean": (["numpy"], "mean"),
     "median": (["numpy"], "median"),

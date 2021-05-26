@@ -197,3 +197,82 @@ def dpnp_full_impl(a, b):
         return out
 
     return dpnp_impl
+
+
+@overload(stubs.dpnp.diag)
+def dpnp_diag_impl(v, k=0):
+    name = "diag"
+    dpnp_lowering.ensure_dpnp(name)
+
+    ret_type = types.void
+    """
+    dpnp source:
+    https://github.com/IntelPython/dpnp/blob/master/dpnp/backend/kernels/dpnp_krnl_arraycreation.cpp#L67
+
+    Function declaration:
+    void dpnp_diag_c(
+        void* v_in, void* result1, const int k, size_t* shape, size_t* res_shape, const size_t ndim, 
+        const size_t res_ndim)
+
+    """
+    sig = signature(
+        ret_type,
+        types.voidptr,
+        types.voidptr,
+        types.intp,
+        types.voidptr,
+        types.voidptr,
+        types.intp,
+        types.intp
+    )
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [v.dtype.name, "NONE"], sig)
+
+    PRINT_DEBUG = dpnp_lowering.DEBUG
+
+    def dpnp_impl(v, k=0):
+        if a.size == 0:
+            raise ValueError("Passed Empty array")
+
+        if v.ndim != 1 and v.ndim != 2:
+            raise ValueError("Not supported")
+
+        if not isinstance(k, int):
+            raise ValueError("Not supported")
+
+        if v.ndim == 1:
+            n = v.shape[0] + abs(k)
+
+            shape_result = (n, n)
+        else:
+            n = min(v.shape[0], v.shape[0] + k, v.shape[1], v.shape[1] - k)
+            if n < 0:
+                n = 0
+
+            shape_result = (n,)
+
+        out = np.zeros(shape_result, dtype=v.dtype)
+
+        sycl_queue = dpctl_functions.get_current_queue()
+
+        v_usm = dpctl_functions.malloc_shared(v.size * v.itemsize, sycl_queue)
+        dpctl_functions.queue_memcpy(sycl_queue, v_usm, v.ctypes, v.size * v.itemsize)
+
+        out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
+
+        dpnp_func(v_usm, out_usm, k, v.shapeptr, out.shapeptr, v.ndim, out.ndim)
+
+        dpctl_functions.queue_memcpy(
+            sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+        )
+
+        dpctl_functions.free_with_queue(a_usm, sycl_queue)
+        dpctl_functions.free_with_queue(out_usm, sycl_queue)
+
+        dpnp_ext._dummy_liveness_func([a.size, out.size])
+
+        if PRINT_DEBUG:
+            print("dpnp implementation")
+
+        return out
+
+    return dpnp_impl
