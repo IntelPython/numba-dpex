@@ -19,6 +19,7 @@ from . import stubs
 import numba_dppy.dpnp_glue as dpnp_lowering
 from numba.core.extending import overload, register_jitable
 import numpy as np
+import numba_dppy
 from numba_dppy import dpctl_functions
 
 
@@ -203,7 +204,7 @@ def dpnp_partition_impl(a, kth):
         if a.size == 0:
             raise ValueError("Passed Empty array")
 
-        kth_ = kth if kth >= 0 else (arr.ndim + kth)
+        kth_ = kth if kth >= 0 else (a.ndim + kth)
 
         arr2 = numba_dppy.dpnp.copy(a)
 
