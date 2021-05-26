@@ -8,6 +8,7 @@ cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncName":  # need this na
     cdef enum DPNPFuncName "DPNPFuncName":
         DPNP_FN_ABSOLUTE
         DPNP_FN_ADD
+        DPNP_FN_ALL
         DPNP_FN_ARANGE
         DPNP_FN_ARCCOS
         DPNP_FN_ARCCOSH
@@ -221,6 +222,8 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_COPY
     elif name == "dpnp_take":
         return DPNPFuncName.DPNP_FN_TAKE
+    elif name == "dpnp_all":
+        return DPNPFuncName.DPNP_FN_ALL
     else:
         raise ValueError("Unknown dpnp function requested: " + name.split("_")[1])
 

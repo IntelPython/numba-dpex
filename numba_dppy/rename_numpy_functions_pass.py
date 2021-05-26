@@ -26,6 +26,7 @@ from numba.core import types
 
 rewrite_function_name_map = {
     # numpy
+    "all": (["numpy"], "all"),
     "amax": (["numpy"], "amax"),
     "amin": (["numpy"], "amin"),
     "argmax": (["numpy"], "argmax"),
@@ -208,6 +209,7 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
         import numba_dppy.dpnp_glue.dpnp_randomimpl
         import numba_dppy.dpnp_glue.dpnp_array_creations_impl
         import numba_dppy.dpnp_glue.dpnp_array_ops_impl
+        import numba_dppy.dpnp_glue.dpnp_logic
 
     def run_pass(self, state):
         rewrite_function_name_pass = RewriteNumPyOverloadedFunctions(
