@@ -6,6 +6,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.1] - ???
+
+### Added
+
+- Update documentation:
+  use 0.14.0 (#378),
+  add recommendation for debugging (#323)
+  add note about Intel Python Numba (#389)
+- Update README:
+  add link to docs (#379),
+  add Cython and pytest in dependencies,
+  add test matrix (#305),
+- Improve error reporting when searching for dpctl. (#368)
+- Enable Python 3.8 in CI (#359)
+- Adds a new utils submodule to provide LLVM IR builder helpers. (#355)
+- Improve warning and error messages when parfor offload fails. (#353)
+- Extend itanium mangler to support numba.types.CPointer and add test (#339)
+- Enable optimization level setting (#62)
+- Improve message printed during parfor lowering. (#337)
+- Initial tests for debug info (#297)
+- Add Bandit checks (#264)
+
+### Changed
+- Update to dpctl 0.8 (#375)
+- Update to Numba 0.53 (#279), inluding
+  override get_ufunc_info in DPPYTargetContext (#367)
+- Update to DPNP 0.6 (#359)
+- Refactor test function generation (#374)
+- Ignore the cython generated cpp files inside dpnp_glue. (#351)
+- Add automerge main to gold/2021 (#349)
+- Fix dpnp version restriction in conda recipe (#347)
+- Change all Numba-dppy examples to work wih dpctl 0.7.0 (#309)
+- Restrict dpnp version (#344)
+- Feature changes related to dpctl 0.7 (#340)
+- Rename dpNP to dpnp (#334)
+- Ignore generated spir files (#333)
+- Use correct names for other products dpctl, Numba, dpnp (#310)
+- Remove dead code only if function name is replaced (#303)
+- Update license in conda recipe (#350)
+- Update blackscholes examples (#377)
+
+### Fixed
+- Update SYCL Filter String (#390)
+- Fix atomics (#346)
+- Fixes memory leaks in the usage of dpctl C API functions. (#369)
+- Fix SPIR-V validation (#354)
+- Fix run pre-commit check on main branch
+- Fix tests to skip if device is not available (#345)
+- Make Test Matrix table smaller in README (#308)
+- Fix black action. (#306)
+- Fix "subprocess.check_call" for Windows (#269)
+
 ## [0.13.1] - 2021-03-11
 ### Fixed
 - Add spir file to package.
