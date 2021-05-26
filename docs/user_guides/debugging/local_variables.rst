@@ -1,24 +1,24 @@
 Local variables
-===========================
+===============
 
 .. note::
-    - ``NUMBA_OPT=0`` "no optimization" level - all local variables of the kernel function are available.
 
-    - ``NUMBA_OPT=1`` or higher - some variables can be optimized out.
-    
+    - :samp:`NUMBA_OPT=0` "no optimization" level - all local variables of the kernel function are available.
+    - :samp:`NUMBA_OPT=1` or higher - some variables can be optimized out.
+
 .. note::
-    - Known issues:  
-    - ``NUMBA_OPT=0`` "no optimization" level may not work due to llvm issues.
 
-Consider ``numba-dppy`` kernel code:
-    
+    Known issues:
+      - :samp:`NUMBA_OPT=0` "no optimization" level may not work due to llvm issues.
+
+Consider `numba-dppy` kernel code:
+
 .. code-block:: python
     :linenos:
 
     import numpy as np
     import numba_dppy as dppy
     import dpctl
-
 
     @dppy.kernel
     def data_parallel_sum(a, b, c):
@@ -34,22 +34,25 @@ Consider ``numba-dppy`` kernel code:
     with dpctl.device_context("opencl:gpu") as gpu_queue:
         data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
+
 ``info locals``
 ---------------
 
+Run debugger:
+
 .. code-block:: bash
 
-    export NUMBA_DPPY_DEBUG=True  
-    export NUMBA_OPT=0  
-    gdb-oneapi -q --args python local_vars.py  
-    (gdb) break local_vars.py:9  
-    No source file named local_vars_ex.py.  
+    export NUMBA_DPPY_DEBUG=1
+    export NUMBA_OPT=0
+    gdb-oneapi -q --args python local_vars.py
+    (gdb) break local_vars.py:9
+    No source file named local_vars_ex.py.
     Make breakpoint pending on future shared library load? (y or [n]) y
     Breakpoint 1 (local_vars_ex.py:9) pending.
     (gdb) run
     (gdb) info locals
 
-**GDB output**
+GDB output:
 
 .. code-block:: bash
 
@@ -71,8 +74,9 @@ Consider ``numba-dppy`` kernel code:
 
 .. note::
 
-    - Known issues:  
-    - Representation of local variables values is currently not available.
+    Known issues:
+      - Representation of local variables values is currently not available.
+
 
 ``print variable``
 ------------------
@@ -80,14 +84,9 @@ Consider ``numba-dppy`` kernel code:
 .. code-block:: bash
 
     (gdb) print a
-
-**GDB output**
-
-.. code-block:: bash
-
     $1 = '\000' <repeats 55 times>
 
 .. note::
 
-    - Known issues:  
-    - Kernel variables are shown in IR representation.
+    Known issues:
+      - Kernel variables are shown in IR representation.
