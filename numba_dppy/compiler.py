@@ -435,6 +435,12 @@ class DPPYKernel(DPPYKernelBase):
             self._pack_argument(ty, val, self.sycl_queue, i_dev_arr, access_type)
 
     def _identify_sycl_context(self, arg_types, args):
+        """
+        This function raises error if we find USM data allocated in different SYCL context.
+        If there are no USM data the SYCL context of current SYCL queue is returned. We also
+        check if the SYCL context of USM data and the intended SYCL context for launching
+        the Kernel is consistent and raise error in case of inconsistency.
+        """
         sycl_context = None
         chosen_idx = -1
         for idx, (ty, val) in enumerate(zip(arg_types, args)):
