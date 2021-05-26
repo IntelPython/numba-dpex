@@ -45,8 +45,8 @@ Activate NEO drivers
 
 Further, if you want to use local NEO driver, you need to activate the variables for it.
 
-Checking debuggin environment
------------------------------
+Checking debugging environment
+------------------------------
 
 You can check the correctness of the work with the following example:
 

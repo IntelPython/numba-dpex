@@ -27,6 +27,7 @@ the relevant documentation can be found at `Intel® Distribution for GDB documen
 .. toctree::
     :maxdepth: 2
 
+    set_up_machine
     debugging_environment
 
 
