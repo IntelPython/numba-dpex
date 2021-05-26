@@ -1,5 +1,5 @@
-Programming SYCL Kernels Using ``numba_dppy.kernel``
-====================================================
+Programming SYCL Kernels Using :func:`~numba_dppy.decorators.kernel`
+====================================================================
 
 .. toctree::
    :maxdepth: 2
