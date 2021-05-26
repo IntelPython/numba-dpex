@@ -23,3 +23,4 @@ Currently, the following debugging features are available:
 
     local_variables
     stepping
+    info
