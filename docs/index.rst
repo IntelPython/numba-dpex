@@ -67,10 +67,10 @@ There are two ways to program SYCL devices using Numba-dppy:
    :maxdepth: 1
    :caption: User Guides
 
-    Getting Started <user_guides/getting_started.rst>
-    Programming SYCL Kernels <user_guides/kernel_programming_guide/index.rst>
-    Debugging with GDB <user_guides/debugging.md>
-    numba-dppy for numba.cuda Programmers <user_guides/migrating_from_numba_cuda.rst>
+    Getting Started <user_guides/getting_started>
+    Programming SYCL Kernels <user_guides/kernel_programming_guide/index>
+    Debugging with GDB <user_guides/debugging>
+    numba-dppy for numba.cuda Programmers <user_guides/migrating_from_numba_cuda>
 
 .. toctree::
     :maxdepth: 1
