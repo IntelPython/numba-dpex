@@ -205,3 +205,6 @@ class dpnp(Stub):
 
     class take(Stub):
         pass
+
+    class repeat(Stub):
+        pass

@@ -71,6 +71,7 @@ cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncName":  # need this na
         DPNP_FN_RADIANS
         DPNP_FN_REMAINDER
         DPNP_FN_RECIP
+        DPNP_FN_REPEAT
         DPNP_FN_RIGHT_SHIFT
         DPNP_FN_RNG_BETA
         DPNP_FN_RNG_BINOMIAL
@@ -221,6 +222,8 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_COPY
     elif name == "dpnp_take":
         return DPNPFuncName.DPNP_FN_TAKE
+    elif name == "dpnp_repeat":
+        return DPNPFuncName.DPNP_FN_REPEAT
     else:
         raise ValueError("Unknown dpnp function requested: " + name.split("_")[1])
 

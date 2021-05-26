@@ -36,6 +36,7 @@ rewrite_function_name_map = {
     "mean": (["numpy"], "mean"),
     "median": (["numpy"], "median"),
     "min": (["numpy"], "min"),
+    "repeat": (["numpy"], "repeat"),
     "vdot": (["numpy"], "vdot"),
     # random
     "beta": (["random"], "beta"),
@@ -208,6 +209,7 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
         import numba_dppy.dpnp_glue.dpnp_randomimpl
         import numba_dppy.dpnp_glue.dpnp_array_creations_impl
         import numba_dppy.dpnp_glue.dpnp_array_ops_impl
+        import numba_dppy.dpnp_glue.dpnp_manipulation
 
     def run_pass(self, state):
         rewrite_function_name_pass = RewriteNumPyOverloadedFunctions(
