@@ -119,14 +119,14 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
         "[[[[8, 2], [3, 0]], [[5, 2], [0, 1]]], [[[1, 3], [3, 1]], [[5, 2], [0, 1]]]]",
     ],
 )
-def test_partition(array, kth):
+def test_partition(array, kth, filter_str):
     if skip_test(filter_str):
         pytest.skip()
 
     a = np.array(array)
 
     def fn(a, kth):
-        return np.diagonal(a, kth)
+        return np.partition(a, kth)
 
     f = njit(fn)
     with dpctl.device_context(filter_str), dpnp_debug():
