@@ -24,4 +24,3 @@ if platform == "Windows":
     from . import test_usm_ndarray_interop
 elif platform == "Linux":
     from . import *
-
