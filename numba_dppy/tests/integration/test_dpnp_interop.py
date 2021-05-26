@@ -18,7 +18,7 @@ import numpy as np
 from numba import njit
 import pytest
 import numba_dppy as dppy
-import dpnp
+from numba_dppy.testing import ensure_dpnp
 
 list_of_dtype = [
     np.int32,
@@ -46,6 +46,9 @@ def usm_type(request):
 
 
 def test_consuming_array_from_dpnp(offload_device, dtype):
+    if not ensure_dpnp():
+        pytest.skip()
+
     @dppy.kernel
     def data_parallel_sum(a, b, c):
         """
@@ -53,6 +56,8 @@ def test_consuming_array_from_dpnp(offload_device, dtype):
         """
         i = dppy.get_global_id(0)
         c[i] = a[i] + b[i]
+
+    import dpnp
 
     global_size = 1021
 
