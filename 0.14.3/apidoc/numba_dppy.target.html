@@ -1,0 +1,397 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>numba_dppy.target module &mdash; numba-dppy 0.14.3 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> numba-dppy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Core Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html">Code-generation based on a device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/getting_started.html"> Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/debugging/index.html"> Debugging with GDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">numba-dppy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>numba_dppy.target module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/apidoc/numba_dppy.target.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-numba_dppy.target">
+<span id="numba-dppy-target-module"></span><h1>numba_dppy.target module<a class="headerlink" href="#module-numba_dppy.target" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYCallConv">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">DPPYCallConv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYCallConv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.callconv.MinimalCallConv</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYCallConv.call_function">
+<span class="sig-name descname"><span class="pre">call_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callee</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYCallConv.call_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call the Numba-compiled <em>callee</em>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">DPPYTargetContext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typing_context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.base.BaseContext</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.addrspacecast">
+<span class="sig-name descname"><span class="pre">addrspacecast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addrspace</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.addrspacecast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle addrspacecast</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.call_conv">
+<span class="sig-name descname"><span class="pre">call_conv</span></span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.call_conv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator that converts a method with a single self argument into a
+property cached on the instance.</p>
+<p>Optional <code class="docutils literal notranslate"><span class="pre">name</span></code> argument allows you to make cached properties of other
+methods. (e.g.  url = cached_property(get_absolute_url, name=’url’) )</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.codegen">
+<span class="sig-name descname"><span class="pre">codegen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.codegen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.declare_function">
+<span class="sig-name descname"><span class="pre">declare_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fndesc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.declare_function" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.generate_kernel_wrapper">
+<span class="sig-name descname"><span class="pre">generate_kernel_wrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtypes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.generate_kernel_wrapper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.generic_addrspace">
+<span class="sig-name descname"><span class="pre">generic_addrspace</span></span><em class="property"> <span class="pre">=</span> <span class="pre">4</span></em><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.generic_addrspace" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.get_ufunc_info">
+<span class="sig-name descname"><span class="pre">get_ufunc_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ufunc_key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.get_ufunc_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the ufunc implementation for a given ufunc object.</p>
+<p>The default implementation in BaseContext always raises a
+<code class="docutils literal notranslate"><span class="pre">NotImplementedError</span></code> exception. Subclasses may raise <code class="docutils literal notranslate"><span class="pre">KeyError</span></code>
+to signal that the given <code class="docutils literal notranslate"><span class="pre">ufunc_key</span></code> is not available.</p>
+<p>ufunc_key : NumPy ufunc</p>
+<dl class="simple">
+<dt>res<span class="classifier">dict[str, callable]</span></dt><dd><p>A mapping of a NumPy ufunc type signature to a lower-level
+implementation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.implement_powi_as_math_call">
+<span class="sig-name descname"><span class="pre">implement_powi_as_math_call</span></span><em class="property"> <span class="pre">=</span> <span class="pre">True</span></em><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.implement_powi_as_math_call" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.init">
+<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>For subclasses to add initializer</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.insert_const_string">
+<span class="sig-name descname"><span class="pre">insert_const_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mod</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.insert_const_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>This returns a a pointer in the spir generic addrspace.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.load_additional_registries">
+<span class="sig-name descname"><span class="pre">load_additional_registries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.load_additional_registries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load target-specific registries.  Can be overridden by subclasses.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.make_constant_array">
+<span class="sig-name descname"><span class="pre">make_constant_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ary</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.make_constant_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dummy value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.mangler">
+<span class="sig-name descname"><span class="pre">mangler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtypes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.mangler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform name mangling.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.mark_ocl_device">
+<span class="sig-name descname"><span class="pre">mark_ocl_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.mark_ocl_device" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.prepare_ocl_kernel">
+<span class="sig-name descname"><span class="pre">prepare_ocl_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtypes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.prepare_ocl_kernel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.replace_numpy_ufunc_with_opencl_supported_functions">
+<span class="sig-name descname"><span class="pre">replace_numpy_ufunc_with_opencl_supported_functions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.replace_numpy_ufunc_with_opencl_supported_functions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.target_data">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">target_data</span></span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.target_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTypingContext">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">DPPYTypingContext</span></span><a class="headerlink" href="#numba_dppy.target.DPPYTypingContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.typing.context.BaseContext</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.target.DPPYTypingContext.load_additional_registries">
+<span class="sig-name descname"><span class="pre">load_additional_registries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYTypingContext.load_additional_registries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load target-specific registries.  Can be overridden by subclasses.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.target.GenericPointerModel">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">GenericPointerModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dmm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fe_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.GenericPointerModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.datamodel.models.PrimitiveModel</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dppy.target.gen_arg_access_qual_md">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">gen_arg_access_qual_md</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.gen_arg_access_qual_md" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate kernel_arg_access_qual metadata</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dppy.target.gen_arg_addrspace_md">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">gen_arg_addrspace_md</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.gen_arg_addrspace_md" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate kernel_arg_addr_space metadata</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dppy.target.gen_arg_base_type">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">gen_arg_base_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.gen_arg_base_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate kernel_arg_base_type metadata</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dppy.target.gen_arg_type">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">gen_arg_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.gen_arg_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate kernel_arg_type metadata</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dppy.target.gen_arg_type_qual">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">gen_arg_type_qual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.gen_arg_type_qual" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate kernel_arg_type_qual metadata</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dppy.target.set_dppy_kernel">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">set_dppy_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fn</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.set_dppy_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensure <cite>fn</cite> is usable as a SPIR kernel.
+- Fix calling convention
+- Add metadata</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Intel.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

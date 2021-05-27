@@ -1,0 +1,7 @@
+numba\_dppy.ocl.atomics.atomic\_helper module
+=============================================
+
+.. automodule:: numba_dppy.ocl.atomics.atomic_helper
+   :members:
+   :undoc-members:
+   :show-inheritance:

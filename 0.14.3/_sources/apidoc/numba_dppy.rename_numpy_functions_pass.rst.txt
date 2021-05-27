@@ -1,0 +1,7 @@
+numba\_dppy.rename\_numpy\_functions\_pass module
+=================================================
+
+.. automodule:: numba_dppy.rename_numpy_functions_pass
+   :members:
+   :undoc-members:
+   :show-inheritance:
