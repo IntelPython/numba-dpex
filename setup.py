@@ -95,14 +95,12 @@ def _get_cmdclass():
 
 def spirv_compile():
     if IS_LIN:
-        compiler = os.path.join(
-            os.environ.get("ONEAPI_ROOT"), "compiler/latest/linux/bin/clang"
-        )
+        compiler = "compiler/latest/linux/bin/clang"
+        compiler = os.path.join(os.environ.get("ONEAPI_ROOT"), compiler)
+        compiler = shlex.quote(compiler)
     if IS_WIN:
-        compiler = os.path.join(
-            os.environ.get("ONEAPI_ROOT"), "compiler\\latest\\windows\\bin\\clang.exe"
-        )
-    compiler = shlex.quote(compiler)
+        compiler = "compiler\\latest\\windows\\bin\\clang.exe"
+        compiler = os.path.join(os.environ.get("ONEAPI_ROOT"), compiler)
     clang_args = [
         compiler,
         "-flto",
