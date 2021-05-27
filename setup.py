@@ -102,13 +102,18 @@ def _get_cmdclass():
 
 
 def spirv_compile():
+    ONEAPI_ROOT = os.environ.get("ONEAPI_ROOT")
+    if not os.path.isdir(ONEAPI_ROOT):
+        raise ValueError(f"ONEAPI_ROOT is not a directory: {ONEAPI_ROOT}")
+
     if IS_LIN:
         compiler = "compiler/latest/linux/bin/clang"
-        compiler = os.path.join(os.environ.get("ONEAPI_ROOT"), compiler)
+        compiler = os.path.join(ONEAPI_ROOT, compiler)
         compiler = shlex.quote(compiler)
     if IS_WIN:
         compiler = "compiler\\latest\\windows\\bin\\clang.exe"
-        compiler = os.path.join(os.environ.get("ONEAPI_ROOT"), compiler)
+        compiler = os.path.join(ONEAPI_ROOT, compiler)
+
     clang_args = [
         compiler,
         "-flto",
