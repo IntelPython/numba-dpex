@@ -6,10 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.3] - 2021-05-27
+
+### Fixed
+
+- Add check for ONEAPI_ROOT dir (#411)
+- Fix using unquoted environment variable for clang path (#386)
+- Fix kernel caching (#408)
+
 ## [0.14.2] - 2021-05-26
 
 ### Added
-
 - Update documentation: version 0.14 (#378), API docs (#388),
   note about Intel Python Numba (#389),
 - Update User Guides about Debugging (#380), recommendations (#323),
