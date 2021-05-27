@@ -34,6 +34,7 @@ from . import spirv_generator
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dppy.config import DEBUG
+from numba_dppy.driver import USMNdArrayType
 
 
 _NUMBA_DPPY_READ_ONLY = "read_only"
@@ -542,6 +543,9 @@ class DPPYKernel(DPPYKernelBase):
 
         device_arrs.append(None)
 
+        if isinstance(ty, USMNdArrayType):
+            raise NotImplementedError(ty, USMNdArrayType)
+
         if isinstance(ty, types.Array):
             if is_device_array(val):
                 self._unpack_device_array_argument(val, kernelargs)
@@ -643,7 +647,8 @@ class JitDPPYKernel(DPPYKernelBase):
         # We specialize for argtypes and queue. These two are used as key for
         # caching as well.
         assert queue is not None
-        q = None
+
+        sycl_ctx = None
         kernel = None
         # we were previously using the _env_ptr of the device_env, the sycl_queue
         # should be sufficient to cache the compiled kernel for now, but we should
@@ -652,11 +657,13 @@ class JitDPPYKernel(DPPYKernelBase):
         key_definitions = argtypes
         result = self.definitions.get(key_definitions)
         if result:
-            q, kernel = result
+            sycl_ctx, kernel = result
 
-        if q == queue:
+        if sycl_ctx and sycl_ctx == self.sycl_queue.sycl_context:
             return kernel
         else:
-            kernel = compile_kernel(queue, self.py_func, argtypes, self.access_types)
-            self.definitions[key_definitions] = (queue, kernel)
+            kernel = compile_kernel(
+                self.sycl_queue, self.py_func, argtypes, self.access_types
+            )
+            self.definitions[key_definitions] = (self.sycl_queue.sycl_context, kernel)
         return kernel

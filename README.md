@@ -22,13 +22,13 @@ https://intelpython.github.io/dpnp/
 ## Dependencies
 
 * numba 0.53.* (IntelPython/numba)
-* dpctl 0.7.*
+* dpctl 0.8.*
 * dpnp 0.6.* (optional)
 * llvm-spirv (SPIRV generation from LLVM IR)
 * llvmdev (LLVM IR generation)
 * spirv-tools
 * cython (for building)
-* pytest (for testing) 
+* pytest (for testing)
 * scipy (for testing)
 
 ## dppy
@@ -40,7 +40,7 @@ to change in the future to rely on Sycl/DPC++ or Intel Level-0 driver API.
 
 ## Installation
 
-Use setup.py or conda (see conda-recipe).
+Please follow the instructions provided [here](https://intelpython.github.io/numba-dppy/latest/user_guides/getting_started.html).
 
 ## Testing
 
@@ -66,7 +66,7 @@ python numba_dppy/examples/sum.py
 
 ## Debugging
 
-Please follow instructions in the [debugging.md](docs/user_guides/debugging.md)
+Please follow instructions in the [debugging](docs/user_guides/debugging.rst)
 
 ## Reporting issues
 

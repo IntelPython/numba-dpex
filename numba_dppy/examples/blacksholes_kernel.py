@@ -85,10 +85,14 @@ def main():
     griddim = int(math.ceil(float(OPT_N) / blockdim[0])), 1
 
     try:
-        gpu = dpctl.select_gpu_device()
-        with dpctl.device_context(gpu):
+        # Device can be selected using envar SYCL_DEVICE_FILTER.
+        # For example:
+        #    SYCL_DEVICE_FILTER=opencl:gpu python blacksholes_kernel.py
+        # Currently, SYCL_DEVICE_FILTER=host is not supported
+        sycl_device = dpctl.select_default_device()
+        with dpctl.device_context(sycl_device):
             print("Offloading to ...")
-            gpu.print_device_info()
+            sycl_device.print_device_info()
             time1 = time.time()
             for i in range(iterations):
                 black_scholes_dppy[blockdim, griddim](
@@ -101,7 +105,7 @@ def main():
                     VOLATILITY,
                 )
     except ValueError:
-        print("No SYCL gpu found")
+        print("No SYCL device found")
 
     print("callResult : \n", callResult)
     print("putResult : \n", putResult)

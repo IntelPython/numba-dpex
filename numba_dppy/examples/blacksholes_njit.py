@@ -70,10 +70,14 @@ def main():
     options = args.options
 
     # Run the example of a deafult GPU device
-    gpu_device = dpctl.select_gpu_device()
-    with dpctl.device_context(gpu_device):
+    # Device can be selected using envar SYCL_DEVICE_FILTER.
+    # For example:
+    #   SYCL_DEVICE_FILTER=opencl:gpu python blacksholes_njit.py
+    # Currently, SYCL_DEVICE_FILTER=host is not supported
+    sycl_device = dpctl.select_default_device()
+    with dpctl.device_context(sycl_device):
         print("Offloading to ...")
-        gpu_device.print_device_info()
+        sycl_device.print_device_info()
         run(10)
 
 
