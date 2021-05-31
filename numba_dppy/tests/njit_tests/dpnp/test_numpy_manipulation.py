@@ -37,9 +37,11 @@ def filter_str(request):
     return request.param
 
 
-@pytest.mark.parametrize("arr",
-                         [[1, 2, 3, 4], [1, 2, 3, 4, 5, 6, 7, 8, 9]],
-                         ids=['[1, 2, 3, 4]', '[1, 2, 3, 4, 5, 6, 7, 8, 9]'])
+@pytest.mark.parametrize(
+    "arr",
+    [[1, 2, 3, 4], [1, 2, 3, 4, 5, 6, 7, 8, 9]],
+    ids=["[1, 2, 3, 4]", "[1, 2, 3, 4, 5, 6, 7, 8, 9]"],
+)
 def test_repeat(filter_str, arr):
     if skip_test(filter_str):
         pytest.skip()

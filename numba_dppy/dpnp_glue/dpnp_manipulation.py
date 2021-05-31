@@ -35,13 +35,7 @@ def dpnp_repeat_impl(a, repeats):
     Function declaration:
     void dpnp_repeat_c(const void* array1_in, void* result1, const size_t repeats, const size_t size)
     """
-    sig = signature(
-        ret_type,
-        types.voidptr,
-        types.voidptr,
-        types.intp,
-        types.intp,
-    )
+    sig = signature(ret_type, types.voidptr, types.voidptr, types.intp, types.intp,)
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     PRINT_DEBUG = dpnp_lowering.DEBUG
