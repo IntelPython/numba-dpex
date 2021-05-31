@@ -230,13 +230,10 @@ def dpnp_diag_impl(v, k=0):
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(v, k=0):
-        if a.size == 0:
+        if v.size == 0:
             raise ValueError("Passed Empty array")
 
         if v.ndim != 1 and v.ndim != 2:
-            raise ValueError("Not supported")
-
-        if not isinstance(k, int):
             raise ValueError("Not supported")
 
         if v.ndim == 1:
@@ -265,10 +262,10 @@ def dpnp_diag_impl(v, k=0):
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
         )
 
-        dpctl_functions.free_with_queue(a_usm, sycl_queue)
+        dpctl_functions.free_with_queue(v_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
 
-        dpnp_ext._dummy_liveness_func([a.size, out.size])
+        dpnp_ext._dummy_liveness_func([v.size, out.size])
 
         if PRINT_DEBUG:
             print("dpnp implementation")

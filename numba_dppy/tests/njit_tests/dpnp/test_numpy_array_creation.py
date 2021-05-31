@@ -161,6 +161,18 @@ def test_full(filter_str, full_name, input_array, get_shape, capfd):
     np.testing.assert_allclose(actual, expected, rtol=1e-3, atol=0)
 
 
+list_of_filter_diag_strs = [
+    "opencl:gpu:0",
+    "level_zero:gpu:0",
+    # "opencl:cpu:0",
+]
+
+
+@pytest.fixture(params=list_of_filter_diag_strs)
+def filter_diag_str(request):
+    return request.param
+
+
 @pytest.mark.parametrize("k",
                          [-6, -1, 0, 1, 6],
                          ids=['-6', '-1', '0', '1', '6'])
@@ -171,25 +183,27 @@ def test_full(filter_str, full_name, input_array, get_shape, capfd):
                           [[1, 2], [1, 2]],
                           [[1, 2], [3, 4]],
                           [[0, 1, 2], [3, 4, 5], [6, 7, 8]],
-                          [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]]],
+                          [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]]
+                          ],
                          ids=['[0, 1, 2, 3, 4]',
                               '[1, 1, 1, 1, 1]',
                               '[[0, 0], [0, 0]]',
                               '[[1, 2], [1, 2]]',
                               '[[1, 2], [3, 4]]',
                               '[[0, 1, 2], [3, 4, 5], [6, 7, 8]]',
-                              '[[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]]'])
-def test_diag(v, k, filter_str):
-    if skip_test(filter_str):
+                              '[[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]]'
+                              ])
+def test_diag(v, k, filter_diag_str):
+    if skip_test(filter_diag_str):
         pytest.skip()
 
-    a = np.array(array)
+    a = np.array(v)
 
     def fn(a, k):
         return np.diag(a, k)
 
     f = njit(fn)
-    with dpctl.device_context(filter_str), dpnp_debug():
+    with dpctl.device_context(filter_diag_str), dpnp_debug():
         actual = f(a, k)
 
     expected = fn(a, k)
