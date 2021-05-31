@@ -105,7 +105,7 @@ class CmdLine(object):
             llvm_spirv_call_args = ["llvm-spirv"]
         if llvm_spirv_args is not None:
             llvm_spirv_call_args += llvm_spirv_args
-        llvm_spirv_call_args += ["-o", opath, ipath + ".bc"]
+        llvm_spirv_call_args += [*llvm_spirv_flags, "-o", opath, ipath + ".bc"]
         check_call(llvm_spirv_call_args)
 
         if dppy_config.SAVE_IR_FILES == 0:
