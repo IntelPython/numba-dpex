@@ -25,11 +25,23 @@ from numba_dppy.testing import dpnp_debug
 from .dpnp_skip_test import dpnp_skip_test as skip_test
 
 
+list_of_filter_strs = [
+    "opencl:gpu:0",
+    "level_zero:gpu:0",
+    "opencl:cpu:0",
+]
+
+
+@pytest.fixture(params=list_of_filter_strs)
+def filter_str(request):
+    return request.param
+
+
 @pytest.mark.parametrize("arr",
-                         [[], [1, 2, 3, 4], [[1, 2], [3, 4]], [[[1], [2]], [[3], [4]]]],
-                         ids=['[]', '[1, 2, 3, 4]', '[[1, 2], [3, 4]]', '[[[1], [2]], [[3], [4]]]'])
-def test_diagonal(arr):
-    if skip_test("opencl:gpu:0"):
+                         [[1, 2, 3, 4], [1, 2, 3, 4, 5, 6, 7, 8, 9]],
+                         ids=['[1, 2, 3, 4]', '[1, 2, 3, 4, 5, 6, 7, 8, 9]'])
+def test_repeat(filter_str, arr):
+    if skip_test(filter_str):
         pytest.skip()
 
     a = np.array(arr)
@@ -39,7 +51,7 @@ def test_diagonal(arr):
         return np.repeat(a, repeats)
 
     f = njit(fn)
-    with dpctl.device_context("opencl:gpu:0"), dpnp_debug():
+    with dpctl.device_context(filter_str), dpnp_debug():
         actual = f(a, repeats)
 
     expected = fn(a, repeats)

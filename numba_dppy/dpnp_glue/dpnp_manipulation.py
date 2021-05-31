@@ -53,14 +53,9 @@ def dpnp_repeat_impl(a, repeats):
         if a.ndim >= 2:
             raise ValueError("Not supported in dpnp")
 
-        if not np.isscalar(repeats) and len(repeats) > 1:
-            raise ValueError("Not supported in dpnp")
-
-        repeat_val = repeats if np.isscalar(repeats) else repeats[0]
-
         new_size = a.size * repeats
 
-        out = np.zeros((new_size, ), dtype=a.dtype)
+        out = np.zeros(new_size, dtype=a.dtype)
 
         sycl_queue = dpctl_functions.get_current_queue()
 
@@ -69,7 +64,7 @@ def dpnp_repeat_impl(a, repeats):
 
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
-        dpnp_func(a_usm, out_usm, repeat_val, a.size)
+        dpnp_func(a_usm, out_usm, repeats, a.size)
 
         dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
