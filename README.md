@@ -66,7 +66,7 @@ python numba_dppy/examples/sum.py
 
 ## Debugging
 
-Please follow instructions in the [debugging.md](docs/user_guides/debugging.md)
+Please follow instructions in the [debugging](docs/user_guides/debugging.rst)
 
 ## Reporting issues
 

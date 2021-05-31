@@ -6,18 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.14.1] - ???
+## [0.14.3] - 2021-05-27
+
+### Fixed
+
+- Add check for ONEAPI_ROOT dir (#411)
+- Fix using unquoted environment variable for clang path (#386)
+- Fix kernel caching (#408)
+
+## [0.14.2] - 2021-05-26
 
 ### Added
-
-- Update documentation:
-  use 0.14.0 (#378),
-  add recommendation for debugging (#323)
-  add note about Intel Python Numba (#389)
-- Update README:
-  add link to docs (#379),
-  add Cython and pytest in dependencies,
-  add test matrix (#305),
+- Update documentation: version 0.14 (#378), API docs (#388),
+  note about Intel Python Numba (#389),
+- Update User Guides about Debugging (#380), recommendations (#323),
+  locals (#394), stepping (#400), configure environment (#402),
+  set up machine (#396), info functions (#405)
+- Update Developer Guides about DPNP integration (#362)
+- Update README: add link to docs (#379), add Cython and pytest in dependencies,
+  add test matrix (#305)
+- Add initial integration testing with dpnp and usm_ndarray (#403)
+- Introduce type in Numba-dppy to represent dpctl.tensor.usm_ndarray (#391)
 - Improve error reporting when searching for dpctl. (#368)
 - Enable Python 3.8 in CI (#359)
 - Adds a new utils submodule to provide LLVM IR builder helpers. (#355)
@@ -48,6 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update blackscholes examples (#377)
 
 ### Fixed
+- Fix dppy_rt extension (#393)
 - Update SYCL Filter String (#390)
 - Fix atomics (#346)
 - Fixes memory leaks in the usage of dpctl C API functions. (#369)
