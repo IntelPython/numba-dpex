@@ -223,7 +223,7 @@ def dpnp_diag_impl(v, k=0):
         types.voidptr,
         types.voidptr,
         types.intp,
-        types.intp
+        types.intp,
     )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [v.dtype.name, "NONE"], sig)
 
