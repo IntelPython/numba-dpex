@@ -515,8 +515,6 @@ Supported NumPy Functions:
 
 """
 
-from __future__ import print_function, absolute_import, division
-
 import numba.testing
 
 from .config import dppy_present
