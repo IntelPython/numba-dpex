@@ -663,7 +663,7 @@ class JitDPPYKernel(DPPYKernelBase):
             return kernel
         else:
             kernel = compile_kernel(
-                self.sycl_queue, self.py_func, argtypes, self.access_types
+                queue, self.py_func, argtypes, self.access_types
             )
             self.definitions[key_definitions] = (self.sycl_queue.sycl_context, kernel)
         return kernel
