@@ -363,21 +363,46 @@ def is_device_array(arr):
     Function to determine if a given array is SYCL device accessible.
 
     Args:
-        arr : Array_like object.
+        arr: Array_like object.
 
     Retruns:
         bool: True if array is device accessible, False otherwise.
     """
-    if hasattr(arr, "base"):
-        return hasattr(arr.base, "__sycl_usm_array_interface__")
-    else:
-        return False
+    rc = False
+    if hasattr(arr, "__sycl_usm_array_interface__"):
+        rc = True
+    elif hasattr(arr, "base"):
+        rc = hasattr(arr.base, "__sycl_usm_array_interface__")
 
+    return rc
 
 def device_array(shape, dtype, queue):
+    """
+    Allocate USM shared buffer and create a np.ndarray
+    using that buffer.
+
+    Args:
+        shape (int, tuple of int): Shape of the resulting array.
+        dtype (np.dtype): Numpy dtype (np.int32, np.float32, etc.).
+        queue (dpctl._sycl_queue.SyclQueue): SYCL queue used to create the buffer.
+
+    Returns:
+        np.ndarray: NumPy array created using a USM shared buffer.
+
+    Raises:
+        TypeError: if any argument is not of permitted type.
+    """
+    if not (isinstance(shape, int) or isinstance(shape, tuple)):
+        raise TypeError("Shape has to be a integer or tuple of integers. Got %s" % (type(shape)))
+    if not isinstance(dtype, np.dtype):
+        raise TypeError("dtype has to be of type np.dtype. Got %s" % (type(dtype)))
+    if not isinstance(queue, dpctl._sycl_queue.SyclQueue):
+        raise TypeError("queue has to be of dpctl._sycl_queue.SyclQueue type. Got %s" % (type(queue)))
+
     size = 1
     for i in shape:
         size *= i
+
     usm_buf = dpctl_mem.MemoryUSMShared(size * dtype.itemsize, queue=queue)
     usm_ndarr = np.ndarray(shape, buffer=usm_buf, dtype=dtype)
 
@@ -385,8 +410,26 @@ def device_array(shape, dtype, queue):
 
 
 def to_device(hostary, queue):
+    """
+    Create a np.ndarray using USM shared buffer and copy the data from
+    provided array to the newly allocated buffer.
+
+    Args:
+        hostary (np.ndarray): Array data will be copied from.
+        queue (dpctl._sycl_queue.SyclQueue): SYCL queue used to create the buffer.
+
+    Returns:
+        np.ndarray: Device accessible NumPy array with same data as hostary.
+
+    Raises:
+        TypeError: if any argument is not of permitted type.
+    """
+    if not isinstance(hostary, np.ndarray):
+        raise TypeError("hostary has to be of type np.ndarray. Got %s" % (type(dtype)))
+
     usm_ndarr = device_array(hostary.shape, hostary.dtype, queue)
     np.copyto(usm_ndarr, hostary)
+
     return usm_ndarr
 
 
@@ -531,10 +574,6 @@ class DPPYKernel(DPPYKernelBase):
                 default_behavior = self.check_for_invalid_access_type(access_type)
 
                 usm_ndarr = device_array(val.shape, val.dtype, sycl_queue)
-                # usm_buf = dpctl_mem.MemoryUSMShared(
-                #    val.size * val.dtype.itemsize, queue=sycl_queue
-                # )
-                # usm_ndarr = np.ndarray(val.shape, buffer=usm_buf, dtype=val.dtype)
 
                 if (
                     default_behavior
@@ -622,7 +661,7 @@ class JitDPPYKernel(DPPYKernelBase):
         cfg(*args)
 
     def specialize(self, argtypes, queue):
-        # We specialize for argtypes and queue. These two are used as key for
+        # We specialize for argtypes and SYCL context. These two are used as key for
         # caching as well.
         assert queue is not None
 
@@ -630,8 +669,7 @@ class JitDPPYKernel(DPPYKernelBase):
         kernel = None
         # we were previously using the _env_ptr of the device_env, the sycl_queue
         # should be sufficient to cache the compiled kernel for now, but we should
-        # use the device type to cache such kernels
-        # key_definitions = (self.sycl_queue, argtypes)
+        # use the device type to cache such kernels.
         key_definitions = argtypes
         result = self.definitions.get(key_definitions)
         if result:
