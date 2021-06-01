@@ -54,38 +54,45 @@ class DPPYVectorize(deviceufunc.DeviceVectorize):
 
 class DPPYUFuncDispatcher(object):
     """
-    Invoke the HSA ufunc specialization for the given inputs.
+    Invoke the dppy ufunc specialization for the given inputs.
     """
 
     def __init__(self, types_to_retty_kernels):
         self.functions = types_to_retty_kernels
-        # self.functions = tuple([self.typingctx.resolve_argument_type(a) for a in args])
 
     def __call__(self, *args, **kws):
         """
-        *args: numpy arrays
-        **kws:
-            stream -- hsa stream; when defined, asynchronous mode is used.
-            out    -- output array. Can be a numpy array or DeviceArrayBase
-                      depending on the input arguments.  Type must match
-                      the input arguments.
+        Call the DPPY kernel launching mechanism
+
+        Args:
+            *args (np.ndarray): NumPy arrays
+            **kws (optional):
+                queue (dpctl._sycl_queue.SyclQueue): SYCL queue.
+                out (np.ndarray): Output array.
         """
         return DPPYUFuncMechanism.call(self.functions, args, kws)
 
-    def reduce(self, arg, stream=0):
+    def reduce(self, arg, queue=0):
         raise NotImplementedError
 
 
 class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
     """
-    Provide OpenCL specialization
+    Mechanism to process Input to a SYCL kernel and launch that kernel
     """
 
     @classmethod
     def call(cls, typemap, args, kws):
-        """Perform the entire ufunc call mechanism."""
+        """
+        Perform the entire ufunc call mechanism.
+
+        Args:
+            typemap (dict): Signature mapped to kernel.
+            args: Arguments to the @vectorize function.
+            kws (optional): Optional keywords. Not supported.
+        """
         # Handle keywords
-        stream = dpctl.get_current_queue()
+        queue = dpctl.get_current_queue()
         out = kws.pop("out", None)
 
         if kws:
@@ -116,8 +123,8 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
                 # For device array, retry ravel on the host by first
                 # copying it back.
                 else:
-                    hostary = cr.to_host(a, stream).ravel()
-                    return cr.to_device(hostary, stream)
+                    hostary = cr.to_host(a, queue).ravel()
+                    return cr.to_device(hostary, queue)
 
         if args[0].ndim > 1:
             args = [attempt_ravel(a) for a in args]
@@ -129,17 +136,17 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
             if cr.is_device_array(a):
                 devarys.append(a)
             else:
-                dev_a = cr.to_device(a, stream=stream)
+                dev_a = cr.to_device(a, queue=queue)
                 devarys.append(dev_a)
 
         # Launch
         shape = args[0].shape
         if out is None:
             # No output is provided
-            devout = cr.device_array(shape, resty, stream=stream)
+            devout = cr.device_array(shape, resty, queue=queue)
 
             devarys.extend([devout])
-            cr.launch(func, shape[0], stream, devarys)
+            cr.launch(func, shape[0], queue, devarys)
 
             if any_device:
                 # If any of the arguments are on device,
@@ -157,7 +164,7 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
                 out = attempt_ravel(out)
             devout = out
             devarys.extend([devout])
-            cr.launch(func, shape[0], stream, devarys)
+            cr.launch(func, shape[0], queue, devarys)
             return devout.reshape(outshape)
 
         else:
@@ -165,9 +172,9 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
             # Return host array
             assert out.shape == shape
             assert out.dtype == resty
-            devout = cr.device_array(shape, resty, stream=stream)
+            devout = cr.device_array(shape, resty, queue=queue)
             devarys.extend([devout])
-            cr.launch(func, shape[0], stream, devarys)
+            cr.launch(func, shape[0], queue, devarys)
             return devout.reshape(outshape)
 
     def is_device_array(self, obj):
@@ -176,17 +183,17 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
     def is_host_array(self, obj):
         return not dppy_is_device_array(obj)
 
-    def to_device(self, hostary, stream):
-        return dppy_to_device(hostary, stream)
+    def to_device(self, hostary, queue):
+        return dppy_to_device(hostary, queue)
 
-    def to_host(self, devary, stream):
+    def to_host(self, devary, queue):
         raise NotImplementedError("device to_host NIY")
 
-    def launch(self, func, count, stream, args):
+    def launch(self, func, count, queue, args):
         func[count, dppy.DEFAULT_LOCAL_SIZE](*args)
 
-    def device_array(self, shape, dtype, stream):
-        return dppy_device_array(shape, dtype, stream)
+    def device_array(self, shape, dtype, queue):
+        return dppy_device_array(shape, dtype, queue)
 
     def broadcast_device(self, ary, shape):
         raise NotImplementedError("device broadcast_device NIY")
