@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import numpy as np
-from numba import vectorize
+from numba import vectorize, float64
 import dpctl
 
 
@@ -34,7 +34,7 @@ def get_device():
     return device
 
 
-def test_ufunc():
+def test_njit():
     N = 10
     dtype = np.float64
 
@@ -48,5 +48,19 @@ def test_ufunc():
     print(C)
 
 
+@vectorize([float64(float64, float64)], target='dppy')
+def vector_add(a, b):
+    return a + b
+
+def test_vectorize():
+    A = np.arange(10, dtype=np.float64).reshape((5,2))
+    B = np.arange(10, dtype=np.float64).reshape((5,2))
+
+    with dpctl.device_context("opencl:gpu:0"):
+        C = vector_add(A, B)
+
+    print(C)
+
 if __name__ == "__main__":
-    test_ufunc()
+    test_njit()
+    test_vectorize()
