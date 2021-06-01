@@ -195,6 +195,7 @@ def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug
     # argtypes=cres.signature.args)
     return oclkern
 
+
 def compile_dppy_func(pyfunc, return_type, args, debug=False):
     cres = compile_with_dppy(pyfunc, return_type, args, debug=debug)
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
@@ -376,6 +377,7 @@ def is_device_array(arr):
 
     return rc
 
+
 def device_array(shape, dtype, queue):
     """
     Allocate USM shared buffer and create a np.ndarray
@@ -393,11 +395,16 @@ def device_array(shape, dtype, queue):
         TypeError: if any argument is not of permitted type.
     """
     if not (isinstance(shape, int) or isinstance(shape, tuple)):
-        raise TypeError("Shape has to be a integer or tuple of integers. Got %s" % (type(shape)))
+        raise TypeError(
+            "Shape has to be a integer or tuple of integers. Got %s" % (type(shape))
+        )
     if not isinstance(dtype, np.dtype):
         raise TypeError("dtype has to be of type np.dtype. Got %s" % (type(dtype)))
     if not isinstance(queue, dpctl._sycl_queue.SyclQueue):
-        raise TypeError("queue has to be of dpctl._sycl_queue.SyclQueue type. Got %s" % (type(queue)))
+        raise TypeError(
+            "queue has to be of dpctl._sycl_queue.SyclQueue type. Got %s"
+            % (type(queue))
+        )
 
     size = 1
     for i in shape:
@@ -678,8 +685,6 @@ class JitDPPYKernel(DPPYKernelBase):
         if sycl_ctx and sycl_ctx == queue.sycl_context:
             return kernel
         else:
-            kernel = compile_kernel(
-                queue, self.py_func, argtypes, self.access_types
-            )
+            kernel = compile_kernel(queue, self.py_func, argtypes, self.access_types)
             self.definitions[key_definitions] = (queue.sycl_context, kernel)
         return kernel
