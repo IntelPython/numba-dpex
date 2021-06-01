@@ -22,6 +22,8 @@ from numba import njit
 import pytest
 from numba_dppy.testing import dpnp_debug
 from .dpnp_skip_test import dpnp_skip_test as skip_test
+from ._helper import wrapper_function, args_string
+
 
 # From https://github.com/IntelPython/dpnp/blob/0.4.0/tests/test_linalg.py#L8
 def vvsort(val, vec):
@@ -45,7 +47,7 @@ def vvsort(val, vec):
 
 list_of_filter_strs = [
     "opencl:gpu:0",
-    # "level0:gpu:0",
+    # "level_zero:gpu:0",
     # "opencl:cpu:0",
 ]
 
@@ -55,20 +57,9 @@ def filter_str(request):
     return request.param
 
 
-def get_fn(name, args):
-    # func_str = "def fn(a):\n    return np.linalg." + name + "(a)"
-    func_str = "def fn("
-    for i in range(args):
-        func_str += chr(97 + i) + ","
-    func_str = func_str[:-1] + "):\n\treturn np." + name + "("
-    for i in range(args):
-        func_str += chr(97 + i) + ","
-    func_str = func_str[:-1] + ")"
-
-    ldict = {}
-    exec(func_str, globals(), ldict)
-    fn = ldict["fn"]
-    return fn
+def get_fn(name, nargs):
+    args = args_string(nargs)
+    return wrapper_function(args, f"np.{name}({args})", globals())
 
 
 list_of_dtypes = [
@@ -97,7 +88,7 @@ def test_eig(filter_str, eig_input, capfd):
         pytest.skip()
 
     if filter_str == "opencl:cpu:0":
-        pytest.skip("Segfaults with device type level0:gpu:0")
+        pytest.skip("Segfaults with device type level_zero:gpu:0")
     a = eig_input
     fn = get_fn("linalg.eig", 1)
     f = njit(fn)
@@ -188,8 +179,8 @@ def test_matmul(filter_str, dtype, capfd):
     if skip_test(filter_str):
         pytest.skip()
 
-    if filter_str == "level0:gpu:0":
-        pytest.skip("Segfaults with device type level0:gpu:0")
+    if filter_str == "level_zero:gpu:0":
+        pytest.skip("Segfaults with device type level_zero:gpu:0")
 
     a = np.array(np.random.random(10 * 2), dtype=dtype).reshape(10, 2)
     b = np.array(np.random.random(2 * 10), dtype=dtype).reshape(2, 10)
@@ -261,8 +252,8 @@ def test_multi_dot(filter_str, capfd):
     if skip_test(filter_str):
         pytest.skip()
 
-    if filter_str == "level0:gpu:0":
-        pytest.skip("Segfaults with device type level0:gpu:0")
+    if filter_str == "level_zero:gpu:0":
+        pytest.skip("Segfaults with device type level_zero:gpu:0")
 
     def fn(A, B, C, D):
         c = np.linalg.multi_dot([A, B, C, D])
@@ -307,8 +298,8 @@ def test_matrix_power(filter_str, matrix_power_input, power, dtype, capfd):
     if skip_test(filter_str):
         pytest.skip()
 
-    if filter_str == "level0:gpu:0":
-        pytest.skip("Segfaults with device type level0:gpu:0")
+    if filter_str == "level_zero:gpu:0":
+        pytest.skip("Segfaults with device type level_zero:gpu:0")
 
     a = np.array(matrix_power_input, dtype=dtype)
     fn = get_fn("linalg.matrix_power", 2)
@@ -352,8 +343,8 @@ def test_eigvals(filter_str, eig_input, capfd):
     if skip_test(filter_str):
         pytest.skip()
 
-    if filter_str == "level0:gpu:0":
-        pytest.skip("Segfaults with device type level0:gpu:0")
+    if filter_str == "level_zero:gpu:0":
+        pytest.skip("Segfaults with device type level_zero:gpu:0")
 
     a = eig_input
     fn = get_fn("linalg.eigvals", 1)

@@ -17,7 +17,7 @@ import sys
 import setuptools.command.install as orig_install
 import setuptools.command.develop as orig_develop
 import subprocess
-import shutil
+import shlex
 from setuptools import Extension, find_packages, setup
 from Cython.Build import cythonize
 
@@ -37,12 +37,20 @@ elif sys.platform in ["win32", "cygwin"]:
 def get_ext_modules():
     ext_modules = []
 
-    import numba
+    import numba, dpctl
+
+    dpctl_runtime_library_dirs = []
+
+    if IS_LIN:
+        dpctl_runtime_library_dirs.append(os.path.dirname(dpctl.__file__))
 
     ext_dppy = Extension(
-        name="numba_dppy._dppy_rt",
-        sources=["numba_dppy/dppy_rt.c"],
-        include_dirs=[numba.core.extending.include_path()],
+        name="numba_dppy._usm_shared_allocator_ext",
+        sources=["numba_dppy/driver/usm_shared_allocator_ext.c"],
+        include_dirs=[numba.core.extending.include_path(), dpctl.get_include()],
+        libraries=["DPCTLSyclInterface"],
+        library_dirs=[os.path.dirname(dpctl.__file__)],
+        runtime_library_dirs=dpctl_runtime_library_dirs,
     )
     ext_modules += [ext_dppy]
 
@@ -94,14 +102,18 @@ def _get_cmdclass():
 
 
 def spirv_compile():
+    ONEAPI_ROOT = os.environ.get("ONEAPI_ROOT")
+    if not os.path.isdir(ONEAPI_ROOT):
+        raise ValueError(f"ONEAPI_ROOT is not a directory: {ONEAPI_ROOT}")
+
     if IS_LIN:
-        compiler = os.path.join(
-            os.environ.get("ONEAPI_ROOT"), "compiler/latest/linux", "bin/clang"
-        )
+        compiler = "compiler/latest/linux/bin/clang"
+        compiler = os.path.join(ONEAPI_ROOT, compiler)
+        compiler = shlex.quote(compiler)
     if IS_WIN:
-        compiler = os.path.join(
-            os.environ.get("ONEAPI_ROOT"), "compiler/latest/windows", "bin/clang.exe"
-        )
+        compiler = "compiler\\latest\\windows\\bin\\clang.exe"
+        compiler = os.path.join(ONEAPI_ROOT, compiler)
+
     clang_args = [
         compiler,
         "-flto",
@@ -124,18 +136,14 @@ def spirv_compile():
         "numba_dppy/ocl/atomics/atomic_ops.spir",
         "numba_dppy/ocl/atomics/atomic_ops.bc",
     ]
-    if IS_LIN:
-        subprocess.check_call(clang_args, stderr=subprocess.STDOUT, shell=False)
-        subprocess.check_call(spirv_args, stderr=subprocess.STDOUT, shell=False)
-    if IS_WIN:
-        subprocess.check_call(clang_args, stderr=subprocess.STDOUT, shell=True)
-        subprocess.check_call(spirv_args, stderr=subprocess.STDOUT, shell=True)
+    subprocess.check_call(clang_args, stderr=subprocess.STDOUT, shell=False)
+    subprocess.check_call(spirv_args, stderr=subprocess.STDOUT, shell=False)
 
 
 packages = find_packages(include=["numba_dppy", "numba_dppy.*"])
 build_requires = ["cython"]
 install_requires = [
-    "numba",
+    "numba >={},<{}".format("0.53.1", "0.54"),
     "dpctl",
 ]
 

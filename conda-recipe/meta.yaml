@@ -18,18 +18,18 @@ requirements:
         - python
         - setuptools
         - cython
-        - numba 0.52.*
-        - dpctl 0.6.*
-        - dpnp >=0.5.1  # [linux]
+        - numba 0.53*
+        - dpctl 0.8.*
+        - dpnp >=0.6*,<0.7*  # [linux]
         - wheel
     run:
         - python
-        - numba 0.52.*
-        - dpctl 0.6.*
+        - numba 0.53*
+        - dpctl 0.8.*
         - spirv-tools
         - llvm-spirv
         - llvmdev
-        - dpnp >=0.5.1  # [linux]
+        - dpnp >=0.6*,<0.7*  # [linux]
 
 test:
   requires:
@@ -37,9 +37,9 @@ test:
 
 about:
     home: https://github.com/IntelPython/numba-dppy
-    license: BSD-2-Clause
-    license_file: LICENSE
     summary: "Numba extension for Intel CPU and GPU backend"
+    license: Apache-2.0
+    license_file: LICENSE
     description: |
         <strong>LEGAL NOTICE: Use of this software package is subject to the
         software license agreement (as set forth above, in the license section of
@@ -47,7 +47,7 @@ about:
         disclaimers or license terms for third party or open source software
         included in or with the software.</strong>
         <br/><br/>
-        EULA: <a href="https://opensource.org/licenses/BSD-2-Clause" target="_blank">BSD-2-Clause</a>
+        EULA: <a href="https://opensource.org/licenses/Apache-2.0" target="_blank">Apache-2.0</a>
         <br/><br/>
 
 extra:

@@ -1,4 +1,4 @@
-# Copyright 2021 Intel Corporation
+# Copyright 2020, 2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,14 +13,10 @@
 # limitations under the License.
 
 from time import time
-import numba
-from numba import int32, float32
-from math import ceil, sqrt
+from math import sqrt
 import numpy as np
 import argparse
-import timeit
-
-import numba_dppy, numba_dppy as dppy
+import numba_dppy as dppy
 import dpctl
 import dpctl.memory as dpctl_mem
 
@@ -44,6 +40,10 @@ D = np.empty((args.n, args.n))
 
 @dppy.kernel
 def pairwise_distance(X, D, xshape0, xshape1):
+    """
+    An Euclidean pairwise distance computation implemented as
+    a ``kernel`` function.
+    """
     idx = dppy.get_global_id(0)
 
     # for i in range(xshape0):
@@ -86,18 +86,29 @@ def driver():
 def main():
     times = None
 
-    if dpctl.has_gpu_queues():
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
+    try:
+        gpu = dpctl.select_gpu_device()
+        print("Running on the following SYCL GPU device")
+        gpu.print_device_info()
+        with dpctl.device_context(gpu):
             times = driver()
-    elif dpctl.has_cpu_queues():
-        with dpctl.device_context("opencl:cpu") as cpu_queue:
-            times = driver()
-    else:
-        print("No device found")
-        exit()
+    except ValueError:
+        print("No SYCL GPU device found")
 
     times = np.asarray(times, dtype=np.float32)
-    print("Average time of %d runs is = %fs" % (args.r, times.mean()))
+    print("GPU: Average time of %d runs is = %fs" % (args.r, times.mean()))
+
+    try:
+        cpu = dpctl.select_cpu_device()
+        print("Running on the following SYCL CPU device")
+        cpu.print_device_info()
+        with dpctl.device_context(cpu):
+            times = driver()
+    except ValueError:
+        print("No SYCL CPU device found")
+
+    times = np.asarray(times, dtype=np.float32)
+    print("CPU: Average time of %d runs is = %fs" % (args.r, times.mean()))
 
 
 if __name__ == "__main__":

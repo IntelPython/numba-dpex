@@ -2,7 +2,7 @@
 
 # numba-dppy
 
-## Numba + dpPy + dpCtl + dpNP = numba-dppy
+## Numba + dppy + dpctl + dpnp = numba-dppy
 
 `numba-dppy` extends Numba with a new backend to support compilation
 for Intel CPU and GPU architectures.
@@ -21,24 +21,26 @@ https://intelpython.github.io/dpnp/
 
 ## Dependencies
 
-* numba 0.52.* (IntelPython/numba)
-* dpCtl 0.6.*
-* dpNP >=0.5.1 (optional)
+* numba 0.53.* (IntelPython/numba)
+* dpctl 0.8.*
+* dpnp 0.6.* (optional)
 * llvm-spirv (SPIRV generation from LLVM IR)
 * llvmdev (LLVM IR generation)
 * spirv-tools
+* cython (for building)
+* pytest (for testing)
 * scipy (for testing)
 
-## dpPy
+## dppy
 
-dpPy is a proof-of-concept backend for NUMBA to support compilation for
+dppy is a proof-of-concept backend for Numba to support compilation for
 Intel CPU and GPU architectures.
 The present implementation of dpPy is based on OpenCL 2.1, but is likely
 to change in the future to rely on Sycl/DPC++ or Intel Level-0 driver API.
 
 ## Installation
 
-Use setup.py or conda (see conda-recipe).
+Please follow the instructions provided [here](https://intelpython.github.io/numba-dppy/latest/user_guides/getting_started.html).
 
 ## Testing
 
@@ -64,7 +66,7 @@ python numba_dppy/examples/sum.py
 
 ## Debugging
 
-Please follow instructions in the [debugging.md](docs/user_guides/debugging.md)
+Please follow instructions in the [debugging](docs/user_guides/debugging.rst)
 
 ## Reporting issues
 
@@ -73,3 +75,15 @@ Please use https://github.com/IntelPython/numba-dppy/issues to report issues and
 ## Features
 
 Read this guide for additional features [INDEX.md](docs/INDEX.md)
+
+## Test Matrix:
+
+|   #   |   OS    | Distribution | Python |  Architecture   | Test type | IntelOneAPI | Build Commands |    Dependencies    |   Backend   |
+| :---: | :-----: | :----------: | :----: | :-------------: | :-------: | :---------: | :------------: | :----------------: | :---------: |
+|   1   |  Linux  | Ubuntu 20.04 |  3.7   | Gen9 Integrated |    CI     |   2021.2    |      (1)       | Numba, NumPy, dpnp | OCL, L0-1.0 |
+|   2   |  Linux  | Ubuntu 20.04 |  3.7   | Gen12 Discrete  |  Manual   |   2021.2    |      (1)       | Numba, NumPy, dpnp | OCL, L0-1.0 |
+|   3   |  Linux  | Ubuntu 20.04 |  3.7   |    i7-10710U    |    CI     |   2021.2    |      (1)       | Numba, NumPy, dpnp | OCL, L0-1.0 |
+|   4   | Windows |      10      |  3.7   | Gen9 Integrated |    CI     |   2021.2    |      (1)       |    Numba, NumPy    |     OCL     |
+|   5   | Windows |      10      |  3.7   |    i7-10710     |    CI     |   2021.2    |      (1)       |    Numba, NumPy    |     OCL     |
+
+(1): `python setup.py install; pytest -q -ra --disable-warnings --pyargs numba_dppy -vv`

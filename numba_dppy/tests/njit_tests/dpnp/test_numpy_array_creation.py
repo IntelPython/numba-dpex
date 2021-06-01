@@ -22,10 +22,12 @@ from numba import njit
 import pytest
 from numba_dppy.testing import dpnp_debug
 from .dpnp_skip_test import dpnp_skip_test as skip_test
+from ._helper import wrapper_function, args_string
+
 
 list_of_filter_strs = [
     "opencl:gpu:0",
-    "level0:gpu:0",
+    "level_zero:gpu:0",
     "opencl:cpu:0",
 ]
 
@@ -83,17 +85,8 @@ def binary_op(request):
 
 
 def get_op_fn(name, nargs):
-    func_str = "def fn("
-    for i in range(nargs):
-        func_str += chr(97 + i) + ","
-    func_str = func_str[:-1] + "):\n\treturn np." + name + "("
-    for i in range(nargs):
-        func_str += chr(97 + i) + ","
-    func_str = func_str[:-1] + ")"
-    ldict = {}
-    exec(func_str, globals(), ldict)
-    fn = ldict["fn"]
-    return fn
+    args = args_string(nargs)
+    return wrapper_function(args, f"np.{name}({args})", globals())
 
 
 def test_unary_ops(filter_str, unary_op, input_array, capfd):

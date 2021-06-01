@@ -3,17 +3,17 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to numba-dppy's documentation!
+Welcome to Numba-dppy's documentation!
 ======================================
 
-``numba-dppy`` is a standalone extension to the `Numba
+`Numba-dppy <https://github.com/IntelPython/numba-dppy>`_ is a standalone extension to the `Numba
 <https://numba.pydata.org/>`_ JIT compiler that adds `SYCL
 <https://www.khronos.org/sycl/>`_ programming capabilities to Numba.
-``numba-dppy`` uses `dpCtl <https://github.com/IntelPython/dpctl>`_ to support
+Numba-dppy uses `dpctl <https://github.com/IntelPython/dpctl>`_ to support
 SYCL features and currently Intel's `DPC++ <https://github.com/intel/llvm/blob/sycl/sycl/doc/GetStartedGuide.md>`_ is the only SYCL runtime supported by
-``numba-dppy``.
+Numba-dppy.
 
-There are two ways to program SYCL devices using ``numba-dppy``:
+There are two ways to program SYCL devices using Numba-dppy:
 
   - An explicit kernel programming mode.
 
@@ -67,27 +67,48 @@ There are two ways to program SYCL devices using ``numba-dppy``:
    :maxdepth: 1
    :caption: User Guides
 
-    Getting Started <user_guides/getting_started.rst>
-    Programming SYCL Kernels <user_guides/kernel_programming_guide/index.rst>
-    Debugging with GDB <user_guides/debugging.md>
-    numba-dppy for numba.cuda Programmers <user_guides/migrating_from_numba_cuda.rst>
+    Getting Started <user_guides/getting_started>
+    Programming SYCL Kernels <user_guides/kernel_programming_guide/index>
+    Debugging with GDB <user_guides/debugging/index>
+    numba-dppy for numba.cuda Programmers <user_guides/migrating_from_numba_cuda>
+
+.. toctree::
+    :maxdepth: 1
+    :caption: Developer Guides
+
+    developer_guides/dpnp_integration
+
 
 About
 =====
 
-``numba-dppy`` is developed by Intel and is part of the `Intel Distribution for
+Numba-dppy is developed by Intel and is part of the `Intel Distribution for
 Python <https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-python.html>`_.
 
 Contributing
 ============
 
 Refer the `contributing guide <https://github.com/IntelPython/numba-dppy/blob/main/CONTRIBUTING>`_
-for information on coding style and standards used in ``numba-dppy``.
+for information on coding style and standards used in Numba-dppy.
 
 License
 =======
 
-numba-dppy is Licensed under Apache License 2.0 that can be found in
+Numba-dppy is Licensed under Apache License 2.0 that can be found in
 `LICENSE <https://github.com/IntelPython/numba-dppy/blob/main/LICENSE>`_.
 All usage and contributions to the project are subject to the terms and
 conditions of this license.
+
+
+Indices and tables
+==================
+
+.. only:: builder_html
+
+   * :ref:`genindex`
+   * :ref:`modindex`
+   * :ref:`search`
+
+.. only:: not builder_html
+
+   * :ref:`modindex`

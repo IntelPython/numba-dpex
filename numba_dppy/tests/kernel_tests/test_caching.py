@@ -12,16 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
 import numpy as np
 import numba_dppy as dppy
 import pytest
 import dpctl
-from numba_dppy.tests.skip_tests import skip_test
+from numba_dppy.tests._helper import skip_test
 
 list_of_filter_strs = [
     "opencl:gpu:0",
-    "level0:gpu:0",
+    "level_zero:gpu:0",
     "opencl:cpu:0",
 ]
 
@@ -31,29 +30,71 @@ def filter_str(request):
     return request.param
 
 
-def data_parallel_sum(a, b, c):
-    i = dppy.get_global_id(0)
-    c[i] = a[i] + b[i]
+def test_caching_kernel_using_same_queue(filter_str):
+    """Test kernel caching when the same queue is used to submit a kernel
+    multiple times.
 
-
-def test_caching_kernel(filter_str):
+    Args:
+        filter_str: SYCL filter selector string
+    """
     if skip_test(filter_str):
         pytest.skip()
     global_size = 10
     N = global_size
 
+    def data_parallel_sum(a, b, c):
+        i = dppy.get_global_id(0)
+        c[i] = a[i] + b[i]
+
     a = np.array(np.random.random(N), dtype=np.float32)
     b = np.array(np.random.random(N), dtype=np.float32)
     c = np.ones_like(a)
 
-    with dpctl.device_context(filter_str) as gpu_queue:
+    with dpctl.device_context(filter_str):
         func = dppy.kernel(data_parallel_sum)
-        caching_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
+        cached_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
             func.get_argtypes(a, b, c), gpu_queue
         )
 
         for i in range(10):
-            cached_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
+            _kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
                 func.get_argtypes(a, b, c), gpu_queue
             )
-            assert caching_kernel == cached_kernel
+            assert _kernel == cached_kernel
+
+
+def test_caching_kernel_using_same_context(filter_str):
+    """Test kernel caching for the scenario where different SYCL queues that
+    share a SYCL context are used to submit a kernel.
+
+    Args:
+        filter_str: SYCL filter selector string
+    """
+    if skip_test(filter_str):
+        pytest.skip()
+    global_size = 10
+    N = global_size
+
+    def data_parallel_sum(a, b, c):
+        i = dppy.get_global_id(0)
+        c[i] = a[i] + b[i]
+
+    a = np.array(np.random.random(N), dtype=np.float32)
+    b = np.array(np.random.random(N), dtype=np.float32)
+    c = np.ones_like(a)
+
+    # Set the global queue to the default device so that the cached_kernel gets
+    # created for that device
+    dpctl.set_global_queue(filter_str)
+    func = dppy.kernel(data_parallel_sum)
+    default_queue = dpctl.get_current_queue()
+    cached_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
+        func.get_argtypes(a, b, c), default_queue
+    )
+    for i in range(0, 10):
+        # Each iteration create a fresh queue that will share the same context
+        with dpctl.device_context(filter_str) as gpu_queue:
+            _kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
+                func.get_argtypes(a, b, c), gpu_queue
+            )
+            assert _kernel == cached_kernel

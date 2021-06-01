@@ -1,4 +1,4 @@
-# Copyright 2021 Intel Corporation
+# Copyright 2020, 2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,25 +13,45 @@
 # limitations under the License.
 
 import numpy as np
-
-import numba
-import numba_dppy, numba_dppy as dppy
-import unittest
+import numba_dppy as dppy
 import dpctl
 
 
 def main():
+    """
+    The example demonstrates the use of numba_dppy's ``atomic_add`` intrinsic
+    function on a SYCL GPU device. The ``dpctl.select_gpu_device`` is
+    equivalent to ``sycl::gpu_selector`` and returns a sycl::device of type GPU.
+
+    If we want to generate native floating point atomics for spported
+    SYCL devices we need to set two environment variables:
+    NUMBA_DPPY_ACTIVATE_ATOMCIS_FP_NATIVE=1
+    NUMBA_DPPY_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv
+
+    To run this example:
+    NUMBA_DPPY_ACTIVATE_ATOMCIS_FP_NATIVE=1 NUMBA_DPPY_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv python atomic_op.py
+
+    Without these two environment variables Numba_dppy will use other
+    implementation for floating point atomics.
+    """
+
     @dppy.kernel
     def atomic_add(a):
         dppy.atomic.add(a, 0, 1)
 
     global_size = 100
-    a = np.array([0])
+    a = np.array([0], dtype=np.float32)
 
-    with dpctl.device_context("opencl:gpu") as gpu_queue:
-        atomic_add[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
-        # Expected 100, because global_size = 100
-        print(a)
+    try:
+        d = dpctl.select_gpu_device()
+        with dpctl.device_context(d):
+            print("Offloading to ...")
+            d.print_device_info()
+            atomic_add[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
+            # Expected 100, because global_size = 100
+            print(a)
+    except ValueError as e:
+        print(e)
 
 
 if __name__ == "__main__":

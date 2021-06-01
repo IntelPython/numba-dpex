@@ -22,11 +22,13 @@ from numba import njit
 import pytest
 from numba_dppy.testing import dpnp_debug
 from .dpnp_skip_test import dpnp_skip_test as skip_test
-from numba_dppy.tests.skip_tests import is_gen12
+from numba_dppy.tests._helper import is_gen12
+from ._helper import wrapper_function
+
 
 list_of_filter_strs = [
     "opencl:gpu:0",
-    "level0:gpu:0",
+    "level_zero:gpu:0",
     "opencl:cpu:0",
 ]
 
@@ -91,12 +93,8 @@ list_of_nan_ops = [
 ]
 
 
-def get_func(param):
-    name = param
-    func_str = "def fn(a):\n    return np." + name + "(a)"
-    ldict = {}
-    exec(func_str, globals(), ldict)
-    return ldict["fn"]
+def get_func(name):
+    return wrapper_function("a", f"np.{name}(a)", globals())
 
 
 @pytest.fixture(params=list_of_unary_ops + list_of_nan_ops)

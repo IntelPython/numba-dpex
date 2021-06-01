@@ -6,7 +6,7 @@
 
 We use [black](https://black.readthedocs.io/en/stable/) code formatter.
 
-- Revision: `20.8b1` or branch `stable`.
+- Revision: `20.8b1`.
 - See configuration in `pyproject.toml`.
 
 Install:
@@ -54,13 +54,17 @@ Run before each commit: `bandit -r numba_dppy -lll`
 
 Install Sphinx and plugins:
 ```bash
-pip install sphinx autodoc recommonmark sphinx-rtd-theme
+pip install sphinx autodoc recommonmark sphinx-rtd-theme sphinxcontrib-apidoc
 ```
 
 Generate HTML:
 ```bash
-cd docs
-make html
+cd docs && make html
+```
+
+Run HTTP server:
+```bash
+cd docs/_build/html && python -m http.server 8000
 ```
 
 Generated documentation will be in `docs/_build/html`.

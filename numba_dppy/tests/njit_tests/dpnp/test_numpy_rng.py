@@ -22,12 +22,14 @@ from numba import njit
 import pytest
 from numba_dppy.testing import dpnp_debug
 from .dpnp_skip_test import dpnp_skip_test as skip_test
+from ._helper import wrapper_function
+
 
 # dpnp throws -30 (CL_INVALID_VALUE) when invoked with multiple kinds of
-# devices at runtime, so testing for level0 only
+# devices at runtime, so testing for level_zero only
 list_of_filter_strs = [
     # "opencl:gpu:0",
-    "level0:gpu:0",
+    "level_zero:gpu:0",
     # "opencl:cpu:0",
 ]
 
@@ -69,11 +71,10 @@ list_of_one_arg = [
 
 @pytest.fixture(params=list_of_one_arg)
 def one_arg_fn(request):
-    func_str = "def fn(size):\n    return np.random." + request.param[0] + "(size)"
-    ldict = {}
-    exec(func_str, globals(), ldict)
-    fn = ldict["fn"]
-    return fn, request.param
+    function = wrapper_function(
+        "size", f"np.random.{request.param[0]}(size)", globals()
+    )
+    return function, request.param
 
 
 def test_one_arg_fn(filter_str, one_arg_fn, unary_size, capfd):
@@ -112,15 +113,7 @@ def two_arg_fn(request):
 
 
 def get_two_arg_fn(op_name):
-    func_str = (
-        "def fn(first_arg, second_arg):\n\treturn np.random."
-        + op_name
-        + "(first_arg, second_arg)"
-    )
-    ldict = {}
-    exec(func_str, globals(), ldict)
-    fn = ldict["fn"]
-    return fn
+    return wrapper_function("a, b", f"np.random.{op_name}(a, b)", globals())
 
 
 def test_two_arg_fn(filter_str, two_arg_fn, unary_size, capfd):
@@ -168,15 +161,7 @@ def three_arg_fn(request):
 
 
 def get_three_arg_fn(op_name):
-    func_str = (
-        "def fn(first_arg, second_arg, third_arg):\n\treturn np.random."
-        + op_name
-        + "(first_arg, second_arg, third_arg)"
-    )
-    ldict = {}
-    exec(func_str, globals(), ldict)
-    fn = ldict["fn"]
-    return fn
+    return wrapper_function("a, b, c", f"np.random.{op_name}(a, b, c)", globals())
 
 
 def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
