@@ -95,15 +95,17 @@ def test_function_with_debuginfo(offload_device):
         for i in range(len(a)):
             c[i] = a[i] + b[i]
 
-    N = 10
-    a = np.array(np.random.random(N), dtype=np.float32)
-    b = np.array(np.random.random(N), dtype=np.float32)
+    n = 10
+    global_size = n
+    a = np.array(np.random.random(n), dtype=np.float32)
+    b = np.array(np.random.random(n), dtype=np.float32)
     expect_arr = np.ones_like(a)
     got_arr = np.ones_like(a)
 
-    foo(a, b, expect_arr)
-
     with dpctl.device_context(offload_device):
-        kernel_foo(a, b, got_arr)
+        kernel_foo[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, got_arr)
+        foo(a, b, expect_arr)
 
-        assert got_arr == expect_arr
+        assert (got_arr == expect_arr).all()
+
+    dppy.config.DEBUG = None  # Return to the default state
