@@ -195,28 +195,6 @@ def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug
     # argtypes=cres.signature.args)
     return oclkern
 
-
-def insert_device_function_typing(typingctx, devfn, function_template):
-    typingctx.insert_user_function(devfn, function_template)
-    # insert it into cpu typing context as well to be discoverable from
-    # @vectorize
-    # typingctx.cpu_context.insert_user_function(devfn, function_template)
-
-
-def insert_device_function_target(targetctx, devfn, fndesc, libs):
-    targetctx.insert_user_function(devfn, fndesc, libs)
-    # insert it into cpu target context as well to be discoverable from
-    # @vectorize
-    # targetctx.cpu_context.insert_user_function(devfn, fndesc, libs)
-
-
-def add_device_function_target(targetctx, devfn, fndesc, libs):
-    targetctx.add_user_function(devfn, fndesc, libs)
-    # insert it into cpu target context as well to be discoverable from
-    # @vectorize
-    # targetctx.cpu_context.add_user_function(devfn, fndesc, libs)
-
-
 def compile_dppy_func(pyfunc, return_type, args, debug=False):
     cres = compile_with_dppy(pyfunc, return_type, args, debug=debug)
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
@@ -227,11 +205,9 @@ def compile_dppy_func(pyfunc, return_type, args, debug=False):
         key = devfn
         cases = [cres.signature]
 
-    # cres.typing_context.insert_user_function(devfn, dppy_function_template)
-    insert_device_function_typing(cres.typing_context, devfn, dppy_function_template)
+    cres.typing_context.insert_user_function(devfn, dppy_function_template)
     libs = [cres.library]
-    # cres.target_context.insert_user_function(devfn, cres.fndesc, libs)
-    insert_device_function_target(cres.target_context, devfn, cres.fndesc, libs)
+    cres.target_context.insert_user_function(devfn, cres.fndesc, libs)
     return devfn
 
 
@@ -250,8 +226,7 @@ def compile_dppy_func_template(pyfunc):
             return dft.compile(args)
 
     typingctx = dppy_target.typing_context
-    # typingctx.insert_user_function(dft, dppy_function_template)
-    insert_device_function_typing(typingctx, dft, dppy_function_template)
+    typingctx.insert_user_function(dft, dppy_function_template)
     return dft
 
 
@@ -280,14 +255,9 @@ class DPPYFunctionTemplate(object):
 
             if first_definition:
                 # First definition
-                # cres.target_context.insert_user_function(self, cres.fndesc, libs)
-                insert_device_function_target(
-                    cres.target_context, self, cres.fndesc, libs
-                )
+                cres.target_context.insert_user_function(self, cres.fndesc, libs)
             else:
-                # cres.target_context.add_user_function(self, cres.fndesc, libs)
-                add_device_function_target(cres.target_context, self, cres.fndesc, libs)
-
+                cres.target_context.add_user_function(self, cres.fndesc, libs)
         else:
             cres = self._compileinfos[args]
 
@@ -347,7 +317,6 @@ class DPPYKernelBase(object):
     def __init__(self):
         self.global_size = []
         self.local_size = []
-        self.sycl_queue = None
 
         # list of supported access types, stored in dict for fast lookup
         self.valid_access_types = {
@@ -389,9 +358,18 @@ class DPPYKernelBase(object):
         return self.configure(sycl_queue, gs, ls)
 
 
-def is_device_array(obj):
-    if hasattr(obj, "base"):
-        return hasattr(obj.base, "__sycl_usm_array_interface__")
+def is_device_array(arr):
+    """
+    Function to determine if a given array is SYCL device accessible.
+
+    Args:
+        arr : Array_like object.
+
+    Retruns:
+        bool: True if array is device accessible, False otherwise.
+    """
+    if hasattr(arr, "base"):
+        return hasattr(arr.base, "__sycl_usm_array_interface__")
     else:
         return False
 
@@ -659,11 +637,11 @@ class JitDPPYKernel(DPPYKernelBase):
         if result:
             sycl_ctx, kernel = result
 
-        if sycl_ctx and sycl_ctx == self.sycl_queue.sycl_context:
+        if sycl_ctx and sycl_ctx == queue.sycl_context:
             return kernel
         else:
             kernel = compile_kernel(
                 queue, self.py_func, argtypes, self.access_types
             )
-            self.definitions[key_definitions] = (self.sycl_queue.sycl_context, kernel)
+            self.definitions[key_definitions] = (queue.sycl_context, kernel)
         return kernel
