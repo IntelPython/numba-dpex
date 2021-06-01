@@ -113,7 +113,7 @@ Limitations
 -----------
 
 Using Numba-dppy requires `Intel Python Numba`_ as that version of Numba has
-patches needed to recognize a ``dpctl.device_context`` scope and trigger
+patches needed to recognize :func:`dpctl.device_context` scope and trigger
 code-generation for a SYCL device. Work in underway to upstream all patches, so
 that in future Numba-dppy can work with upstream Numba.
 

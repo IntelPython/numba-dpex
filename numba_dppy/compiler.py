@@ -588,7 +588,7 @@ class JitDPPYKernel(DPPYKernelBase):
 
     def specialize(self, *args):
         argtypes = tuple([self.typingctx.resolve_argument_type(a) for a in args])
-        q = None
+        sycl_ctx = None
         kernel = None
         # we were previously using the _env_ptr of the device_env, the sycl_queue
         # should be sufficient to cache the compiled kernel for now, but we should
@@ -597,13 +597,13 @@ class JitDPPYKernel(DPPYKernelBase):
         key_definitions = argtypes
         result = self.definitions.get(key_definitions)
         if result:
-            q, kernel = result
+            sycl_ctx, kernel = result
 
-        if q == self.sycl_queue:
+        if sycl_ctx and sycl_ctx == self.sycl_queue.sycl_context:
             return kernel
         else:
             kernel = compile_kernel(
                 self.sycl_queue, self.py_func, argtypes, self.access_types
             )
-            self.definitions[key_definitions] = (self.sycl_queue, kernel)
+            self.definitions[key_definitions] = (self.sycl_queue.sycl_context, kernel)
         return kernel
