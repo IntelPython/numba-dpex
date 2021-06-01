@@ -51,7 +51,7 @@ def test_all(shape, filter_str):
     for i in range(2 ** size):
         t = i
 
-        a = np.empty(size)
+        a = np.empty(size, dtype=np.bool)
 
         for j in range(size):
             a[j] = 0 if t % 2 == 0 else j + 1
