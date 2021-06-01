@@ -62,9 +62,8 @@ def test_debug_flag_generates_ir_with_debuginfo(offload_device, debug_option):
     def foo(x):
         return x
 
-    with dpctl.device_context(offload_device):
+    with dpctl.device_context(offload_device) as sycl_queue:
         sig = (types.int32,)
-        sycl_queue = dpctl.get_current_queue()
         kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=debug_option)
 
         expect = debug_option
