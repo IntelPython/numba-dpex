@@ -17,6 +17,7 @@ import re
 import pytest
 
 import dpctl
+import numpy as np
 from numba.core import types
 
 import numba_dppy as dppy
@@ -70,3 +71,39 @@ def test_debug_flag_generates_ir_with_debuginfo(offload_device, debug_option):
         got = make_check(kernel_ir)
 
         assert expect == got
+
+
+def test_function_with_debuginfo(offload_device):
+    """
+    Check dppy function call if debug parameter is set to True
+    """
+
+    dppy.config.DEBUG = 1  # Run test in debug mode
+
+    if skip_test(offload_device):
+        pytest.skip()
+
+    if offload_device in "level_zero:gpu:0":
+        pytest.xfail("Failing compilation: SyclProgramCompilationError")
+
+    @dppy.kernel
+    def kernel_foo(a, b, c):
+        i = dppy.get_global_id(0)
+        c[i] = a[i] + b[i]
+
+    def foo(a, b, c):
+        for i in range(len(a)):
+            c[i] = a[i] + b[i]
+
+    N = 10
+    a = np.array(np.random.random(N), dtype=np.float32)
+    b = np.array(np.random.random(N), dtype=np.float32)
+    expect_arr = np.ones_like(a)
+    got_arr = np.ones_like(a)
+
+    foo(a, b, expect_arr)
+
+    with dpctl.device_context(offload_device):
+        kernel_foo(a, b, got_arr)
+
+        assert got_arr == expect_arr
