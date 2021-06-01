@@ -48,18 +48,20 @@ def test_njit():
     print(C)
 
 
-@vectorize([float64(float64, float64)], target='dppy')
+@vectorize([float64(float64, float64)], target="dppy")
 def vector_add(a, b):
     return a + b
 
+
 def test_vectorize():
-    A = np.arange(10, dtype=np.float64).reshape((5,2))
-    B = np.arange(10, dtype=np.float64).reshape((5,2))
+    A = np.arange(10, dtype=np.float64).reshape((5, 2))
+    B = np.arange(10, dtype=np.float64).reshape((5, 2))
 
     with dpctl.device_context("opencl:gpu:0"):
         C = vector_add(A, B)
 
     print(C)
+
 
 if __name__ == "__main__":
     test_njit()
