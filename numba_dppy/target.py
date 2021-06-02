@@ -20,6 +20,7 @@ from llvmlite import ir as llvmir
 from llvmlite import binding as ll
 
 from numba.core import typing, types, utils, cgutils
+from numba import typeof
 from numba.core.utils import cached_property
 from numba.core import datamodel
 from numba.core.base import BaseContext
@@ -27,6 +28,7 @@ from numba.core.registry import cpu_target
 from numba.core.callconv import MinimalCallConv
 from . import codegen
 from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
+from numba_dppy.utils import convert_to_dppy_array, address_space
 
 
 CC_SPIR_KERNEL = "spir_kernel"
@@ -40,6 +42,30 @@ CC_SPIR_FUNC = "spir_func"
 class DPPYTypingContext(typing.BaseContext):
     def init(self):
         self.cpu_context = cpu_target.target_context.typing_context
+
+    def resolve_argument_type(self, val):
+        """Return the Numba type of a Python value used as a function argument.
+
+        Overrides the implementation of ``numba.core.typing.BaseContext`` to
+        handle the special case of ``numba.core.types.npytypes.Array``. Whenever
+        a NumPy ndarray argument is encountered as an argument to a ``kernel``
+        function, it is converted to a ``DPPYArray`` type.
+
+        Args:
+            val : A Python value that is passed as an argument to a ``kernel``
+                  function.
+
+        Returns: The Numba type corresponding to the Python value.
+
+        Raises:
+            ValueError: If the type of the Python value is not supported.
+
+        """
+        if typeof(val, types.npytypes.Array):
+            # convert npytypes.Array to DPPYArray
+            return convert_to_dppy_array(typeof(val))
+        else:
+            super.resolve_argument_type(val)
 
     def load_additional_registries(self):
         # Declarations for OpenCL API functions and OpenCL Math functions
@@ -59,13 +85,6 @@ class DPPYTypingContext(typing.BaseContext):
 VALID_CHARS = re.compile(r"[^a-z0-9]", re.I)
 
 
-# Address spaces
-SPIR_PRIVATE_ADDRSPACE = 0
-SPIR_GLOBAL_ADDRSPACE = 1
-SPIR_CONSTANT_ADDRSPACE = 2
-SPIR_LOCAL_ADDRSPACE = 3
-SPIR_GENERIC_ADDRSPACE = 4
-
 SPIR_VERSION = (2, 0)
 
 
@@ -78,7 +97,7 @@ class GenericPointerModel(datamodel.PrimitiveModel):
         adrsp = (
             fe_type.addrspace
             if fe_type.addrspace is not None
-            else SPIR_GLOBAL_ADDRSPACE
+            else address_space.SPIR_GLOBAL
         )
         be_type = dmm.lookup(fe_type.dtype).get_data_type().as_pointer(adrsp)
         super(GenericPointerModel, self).__init__(dmm, fe_type, be_type)
@@ -96,7 +115,7 @@ spirv_data_model_manager = _init_data_model_manager()
 
 class DPPYTargetContext(BaseContext):
     implement_powi_as_math_call = True
-    generic_addrspace = SPIR_GENERIC_ADDRSPACE
+    generic_addrspace = address_space.SPIR_GENERIC
 
     def init(self):
         self._internal_codegen = codegen.JITSPIRVCodegen("numba_dppy.jit")
@@ -214,12 +233,10 @@ class DPPYTargetContext(BaseContext):
     def generate_kernel_wrapper(self, func, argtypes):
         module = func.module
         arginfo = self.get_arg_packer(argtypes)
-        # print(module)
-        breakpoint()
 
         def sub_gen_with_global(lty):
             if isinstance(lty, llvmir.PointerType):
-                if lty.addrspace == SPIR_LOCAL_ADDRSPACE:
+                if lty.addrspace == address_space.SPIR_LOCAL:
                     return lty, None
                 # # DRD : Cast all pointer types to global address space.
                 # if lty.addrspace != SPIR_GLOBAL_ADDRSPACE:  # jcaraban
@@ -319,7 +336,7 @@ class DPPYTargetContext(BaseContext):
         except KeyError as e:
             # Not defined yet
             gv = mod.add_global_variable(
-                text.type, name=name, addrspace=SPIR_GENERIC_ADDRSPACE
+                text.type, name=name, addrspace=address_space.SPIR_GENERIC
             )
             gv.linkage = "internal"
             gv.global_constant = True
@@ -327,7 +344,7 @@ class DPPYTargetContext(BaseContext):
 
         # Cast to a i8* pointer
         charty = gv.type.pointee.element
-        return lc.Constant.bitcast(gv, charty.as_pointer(SPIR_GENERIC_ADDRSPACE))
+        return lc.Constant.bitcast(gv, charty.as_pointer(address_space.SPIR_GENERIC))
 
     def addrspacecast(self, builder, src, addrspace):
         """
@@ -407,9 +424,9 @@ def gen_arg_addrspace_md(fn):
 
     for a in fnty.args:
         if cgutils.is_pointer(a):
-            codes.append(SPIR_GLOBAL_ADDRSPACE)
+            codes.append(address_space.SPIR_GLOBAL)
         else:
-            codes.append(SPIR_PRIVATE_ADDRSPACE)
+            codes.append(address_space.SPIR_PRIVATE)
 
     consts = [lc.Constant.int(lc.Type.int(), x) for x in codes]
     name = lc.MetaDataString.get(mod, "kernel_arg_addr_space")
@@ -514,12 +531,12 @@ class DPPYCallConv(MinimalCallConv):
             argtype = arginfo.argument_types[argnum]
             if (
                 isinstance(argtype, llvmir.PointerType)
-                and argtype.addrspace != SPIR_GLOBAL_ADDRSPACE
+                and argtype.addrspace != address_space.SPIR_GLOBAL
             ):
                 ptras = llvmir.PointerType(
-                    arg.type.pointee, addrspace=SPIR_GENERIC_ADDRSPACE
+                    arg.type.pointee, addrspace=address_space.SPIR_GENERIC
                 )
                 arg = builder.addrspacecast(arg, ptras)
             args_list.append(arg)
-
+        breakpoint()
         return arginfo.from_arguments(builder, tuple(args_list))

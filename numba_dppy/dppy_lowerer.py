@@ -56,7 +56,11 @@ from numba_dppy.driver import KernelLaunchOps
 import dpctl
 from numba_dppy.target import DPPYTargetContext
 from numba_dppy.dppy_array_type import DPPYArray
+<<<<<<< HEAD
 from numba_dppy.utils import address_space, convert_to_dppy_array
+=======
+from numba_dppy.utils.constants import address_space
+>>>>>>> Add an array type coversion fn
 
 
 def _print_block(block):

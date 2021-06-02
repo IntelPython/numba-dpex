@@ -130,7 +130,6 @@ def compile_with_dppy(pyfunc, return_type, args, debug):
     else:
         assert 0
     # Linking depending libraries
-    # targetctx.link_dependencies(cres.llvm_module, cres.target_context.linking)
     library = cres.library
     library.finalize()
 
@@ -179,11 +178,8 @@ def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug
         print("compile_kernel_parfor signature", cres.signature.args)
         for a in cres.signature.args:
             print(a, type(a))
-    #            if isinstance(a, types.npytypes.Array):
-    #                print("addrspace:", a.addrspace)
 
     kernel = cres.target_context.prepare_ocl_kernel(func, cres.signature.args)
-    # kernel = cres.target_context.prepare_ocl_kernel(func, args_with_addrspaces)
     oclkern = DPPYKernel(
         context=cres.target_context,
         sycl_queue=sycl_queue,
@@ -191,7 +187,7 @@ def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug
         name=kernel.name,
         argtypes=args_with_addrspaces,
     )
-    # argtypes=cres.signature.args)
+
     return oclkern
 
 
