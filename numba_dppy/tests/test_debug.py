@@ -17,6 +17,8 @@ import re
 import pytest
 
 import dpctl
+import numpy as np
+from numba import config
 from numba.core import types
 
 import numba_dppy as dppy
@@ -37,12 +39,12 @@ def get_kernel_ir(fn, sig, debug=False):
     return kernel.assembly
 
 
-def make_check(ir):
+def make_check(ir, val_to_search):
     """
     Check the compiled assembly for debuginfo.
     """
 
-    m = re.search(r"!dbg", ir, re.I)
+    m = re.search(val_to_search, ir, re.I)
     got = m is not None
     return got
 
@@ -67,6 +69,44 @@ def test_debug_flag_generates_ir_with_debuginfo(offload_device, debug_option):
         kernel_ir = get_kernel_ir(foo, sig, debug=debug_option)
 
         expect = debug_option
-        got = make_check(kernel_ir)
+        got = make_check(kernel_ir, r"!dbg")
 
         assert expect == got
+
+
+def test_debug_tag_generated_for_kernel_vars(offload_device):
+    """
+    Check llvm debug tag DILocalVariable is emitting to IR for all variables if debug parameter is set to True
+    """
+
+    pytest.xfail("Assertion Cast->getSrcTy()->getPointerAddressSpace() == SPIRAS_Generic")
+
+    if skip_test(offload_device):
+        pytest.skip()
+
+    @dppy.kernel
+    def foo(var_a, var_b, var_c):
+        i = dppy.get_global_id(0)
+        var_d = var_b[i]
+        var_c[i] = var_a[i] + var_d
+
+    ir_tag_var_a = r'!DILocalVariable\(name: "var_a"'
+    ir_tag_var_b = r'!DILocalVariable\(name: "var_b"'
+    ir_tag_var_c = r'!DILocalVariable\(name: "var_c"'
+    ir_tag_var_i = r'!DILocalVariable\(name: "i"'
+
+    ir_tags = (ir_tag_var_a, ir_tag_var_b, ir_tag_var_c, ir_tag_var_i)
+
+    config.OPT = 0  # All variables are available on no opt level
+
+    with dpctl.device_context(offload_device):
+        sig = (types.float32[:], types.float32[:], types.float32[:])
+        kernel_ir = get_kernel_ir(foo, sig, debug=True)
+
+        expect = True  # Expect tag is emitted
+
+        for tag in ir_tags:
+            got = make_check(kernel_ir, tag)
+            assert expect == got
+
+    config.OPT = 3  # Return to the default value
