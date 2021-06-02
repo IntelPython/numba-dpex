@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function, absolute_import
 from numba.core import types, ir, typing
 
 from numba_dppy.target import SPIR_LOCAL_ADDRSPACE

@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function, division, absolute_import
 from numba import types
 from numba.core.typing.npydecl import register_number_classes, parse_dtype, parse_shape
 from numba.core.typing.templates import (
