@@ -79,7 +79,9 @@ def test_debug_tag_generated_for_kernel_vars(offload_device):
     Check llvm debug tag DILocalVariable is emitting to IR for all variables if debug parameter is set to True
     """
 
-    pytest.xfail("Assertion Cast->getSrcTy()->getPointerAddressSpace() == SPIRAS_Generic")
+    pytest.xfail(
+        "Assertion Cast->getSrcTy()->getPointerAddressSpace() == SPIRAS_Generic"
+    )
 
     if skip_test(offload_device):
         pytest.skip()
