@@ -35,7 +35,7 @@ def filter_str(request):
 
 
 def skip_if_win():
-    return sys.platform in ["win32", "cygwin"]:
+    return sys.platform in ["win32", "cygwin"]
 
 
 def test_proper_lowering(filter_str):
