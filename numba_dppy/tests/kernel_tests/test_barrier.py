@@ -12,11 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import sys
+
 import numpy as np
-import numba_dppy as dppy
 import pytest
 import dpctl
-import sys
+
+import numba_dppy as dppy
 from numba_dppy.tests._helper import skip_test
 
 
@@ -33,9 +35,7 @@ def filter_str(request):
 
 
 def skip_if_win():
-    if sys.platform in ["win32", "cygwin"]:
-        return True
-    return False
+    return sys.platform in ["win32", "cygwin"]:
 
 
 def test_proper_lowering(filter_str):

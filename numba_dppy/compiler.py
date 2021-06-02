@@ -576,7 +576,9 @@ class JitDPPYKernel(DPPYKernelBase):
         self.typingctx = dppy_target.typing_context
 
     def get_argtypes(self, *args):
-        # Convenience function to get the type of each argument.
+        """
+        Convenience function to get the type of each argument.
+        """
         return tuple([self.typingctx.resolve_argument_type(a) for a in args])
 
     def __call__(self, *args, **kwargs):
