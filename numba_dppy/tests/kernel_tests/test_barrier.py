@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
+import platform
 
 import numpy as np
 import pytest
@@ -35,7 +35,7 @@ def filter_str(request):
 
 
 def skip_if_win():
-    return sys.platform in ["win32", "cygwin"]
+    return platform.system == "Windows"
 
 
 def test_proper_lowering(filter_str):
