@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import dpctl
 from numba.core import sigutils, types
+
 from .compiler import (
     compile_kernel,
     JitDPPYKernel,
@@ -20,7 +22,6 @@ from .compiler import (
     compile_dppy_func,
     get_ordered_arg_access_types,
 )
-import dpctl
 
 
 def kernel(signature=None, access_types=None, debug=False):
