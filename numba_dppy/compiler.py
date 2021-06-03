@@ -574,7 +574,7 @@ class JitDPPYKernel(DPPYKernelBase):
 
         self.typingctx = dppy_target.typing_context
 
-    def get_argtypes(self, *args):
+    def _get_argtypes(self, *args):
         """
         Convenience function to get the type of each argument.
         """
@@ -587,7 +587,7 @@ class JitDPPYKernel(DPPYKernelBase):
         except:
             _raise_no_device_found_error()
 
-        argtypes = self.get_argtypes(*args)
+        argtypes = self._get_argtypes(*args)
         kernel = self.specialize(argtypes, current_queue)
         cfg = kernel.configure(self.sycl_queue, self.global_size, self.local_size)
         cfg(*args)
