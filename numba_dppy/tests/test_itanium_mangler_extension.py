@@ -35,11 +35,10 @@ def dtypes(request):
 
 
 list_of_addrspaces = [
-    (address_space.SPIR_PRIVATE, "3AS0"),
-    (address_space.SPIR_GLOBAL, "3AS1"),
-    (address_space.SPIR_CONSTANT, "3AS2"),
-    (address_space.SPIR_LOCAL, "3AS3"),
-    (address_space.SPIR_GENERIC, "3AS4"),
+    (address_space.PRIVATE, "3AS0"),
+    (address_space.GLOBAL, "3AS1"),
+    (address_space.LOCAL, "3AS3"),
+    (address_space.GENERIC, "3AS4"),
 ]
 
 

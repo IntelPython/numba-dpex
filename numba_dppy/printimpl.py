@@ -19,14 +19,14 @@ import llvmlite.llvmpy.core as lc
 from numba.core import types, typing, cgutils
 from numba.core.imputils import Registry
 
-from numba_dppy.utils.constants import address_space
+from numba_dppy.utils import address_space
 
 registry = Registry()
 lower = registry.lower
 
 
 def declare_print(lmod):
-    voidptrty = lc.Type.pointer(lc.Type.int(8), addrspace=address_space.SPIR_GENERIC)
+    voidptrty = lc.Type.pointer(lc.Type.int(8), addrspace=address_space.GENERIC)
     printfty = lc.Type.function(lc.Type.int(), [voidptrty], var_arg=True)
     printf = lmod.get_or_insert_function(printfty, "printf")
     return printf

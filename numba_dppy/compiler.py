@@ -28,7 +28,7 @@ import dpctl.memory as dpctl_mem
 import dpctl.program as dpctl_prog
 import numpy as np
 
-from . import spirv_generator
+from . import spirv_generator, target
 
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
@@ -145,13 +145,14 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
         raise ValueError("SYCL queue is required for compiling a kernel")
 
     cres = compile_with_dppy(pyfunc, None, args, debug=debug)
-    func = cres.library.get_function(cres.fndesc.llvm_func_name)
-    kernel = cres.target_context.prepare_ocl_kernel(func, cres.signature.args)
-    # The kernel objet should have a reference to the target context it is compiled for.
-    # This is needed as we intend to shape the behavior of the kernel down the line
-    # depending on the target context. For example, we want to link our kernel object
-    # with implementation containing atomic operations only when atomic operations
-    # are being used in the kernel.
+    kernel = cres.library.get_function(cres.fndesc.llvm_func_name)
+    breakpoint()
+    target.set_dppy_kernel(kernel)
+    # kernel = cres.target_context.prepare_ocl_kernel(func, cres.signature.args)
+    # A reference to the target context is stored in the DPPYKernel to
+    # reference the context later in code generation. For example, we link
+    # the kernel object with a spir_func defining atomic operations only
+    # when atomic operations are used in the kernel.
     oclkern = DPPYKernel(
         context=cres.target_context,
         sycl_queue=sycl_queue,
@@ -170,7 +171,6 @@ def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug
             print(a, type(a))
             if isinstance(a, types.npytypes.Array):
                 print("addrspace:", a.addrspace)
-
     cres = compile_with_dppy(func_ir, None, args_with_addrspaces, debug=debug)
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
 
@@ -269,7 +269,7 @@ class DPPYFunction(object):
 def _ensure_valid_work_item_grid(val, sycl_queue):
 
     if not isinstance(val, (tuple, list, int)):
-        error_message = "Cannot create work item dimension from " "provided argument"
+        error_message = "Cannot create work item dimension from provided argument"
         raise ValueError(error_message)
 
     if isinstance(val, int):
@@ -290,7 +290,7 @@ def _ensure_valid_work_item_grid(val, sycl_queue):
 def _ensure_valid_work_group_size(val, work_item_grid):
 
     if not isinstance(val, (tuple, list, int)):
-        error_message = "Cannot create work item dimension from " "provided argument"
+        error_message = "Cannot create work item dimension from provided argument"
         raise ValueError(error_message)
 
     if isinstance(val, int):
