@@ -28,7 +28,7 @@ from numba.core.registry import cpu_target
 from numba.core.callconv import MinimalCallConv
 from . import codegen
 from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
-from numba_dppy.utils import convert_to_dppy_array, address_space
+from numba_dppy.utils import convert_to_dppy_array, address_space, calling_conv
 
 
 CC_SPIR_KERNEL = "spir_kernel"
@@ -95,9 +95,7 @@ LLVM_SPIRV_ARGS = 112
 class GenericPointerModel(datamodel.PrimitiveModel):
     def __init__(self, dmm, fe_type):
         adrsp = (
-            fe_type.addrspace
-            if fe_type.addrspace is not None
-            else address_space.SPIR_GLOBAL
+            fe_type.addrspace if fe_type.addrspace is not None else address_space.GLOBAL
         )
         be_type = dmm.lookup(fe_type.dtype).get_data_type().as_pointer(adrsp)
         super(GenericPointerModel, self).__init__(dmm, fe_type, be_type)
@@ -115,7 +113,7 @@ spirv_data_model_manager = _init_data_model_manager()
 
 class DPPYTargetContext(BaseContext):
     implement_powi_as_math_call = True
-    generic_addrspace = address_space.SPIR_GENERIC
+    generic_addrspace = address_space.GENERIC
 
     def init(self):
         self._internal_codegen = codegen.JITSPIRVCodegen("numba_dppy.jit")
@@ -236,7 +234,7 @@ class DPPYTargetContext(BaseContext):
 
         def sub_gen_with_global(lty):
             if isinstance(lty, llvmir.PointerType):
-                if lty.addrspace == address_space.SPIR_LOCAL:
+                if lty.addrspace == address_space.LOCAL:
                     return lty, None
                 # # DRD : Cast all pointer types to global address space.
                 # if lty.addrspace != SPIR_GLOBAL_ADDRSPACE:  # jcaraban
@@ -257,7 +255,6 @@ class DPPYTargetContext(BaseContext):
 
         argtys = list(arginfo.argument_types)
         fnty = lc.Type.function(
-            # lc.Type.int(), [self.call_conv.get_return_type(types.pyobject)] + argtys
             lc.Type.int(),
             [self.call_conv.get_return_type(types.pyobject)] + argtys,
         )
@@ -299,18 +296,24 @@ class DPPYTargetContext(BaseContext):
         return wrapper
 
     def declare_function(self, module, fndesc):
+        """Create the LLVM function from a ``numba_dppy.kernel`` decorated
+        function.
+
+        Args:
+            module (llvmlite.llvmpy.core.Module) : The LLVM module into which
+                the kernel function will be inserted.
+            fndesc (numba.core.funcdesc.PythonFunctionDescriptor) : The
+                signature of the function.
+
+        Returns:
+            llvmlite.ir.values.Function: The reference to the LLVM Function
+                that was inserted into the module.
+
+        """
         fnty = self.call_conv.get_function_type(fndesc.restype, fndesc.argtypes)
-        fn = module.get_or_insert_function(fnty, name=fndesc.mangled_name)
-
-        if not self.enable_debuginfo:
-            fn.attributes.add("alwaysinline")
-
+        module.get_or_insert_function(fnty, name=fndesc.mangled_name)
         ret = super(DPPYTargetContext, self).declare_function(module, fndesc)
-
-        # XXX: Refactor fndesc instead of this special case
-        # if fndesc.llvm_func_name.startswith("dppy_py_devfn"):
-        #    ret.calling_convention = CC_SPIR_FUNC
-        ret.calling_convention = CC_SPIR_FUNC
+        ret.calling_convention = calling_conv.CC_SPIR_KERNEL
         return ret
 
     def make_constant_array(self, builder, typ, ary):
@@ -333,10 +336,10 @@ class DPPYTargetContext(BaseContext):
         # Try to reuse existing global
         try:
             gv = mod.get_global(name)
-        except KeyError as e:
+        except KeyError:
             # Not defined yet
             gv = mod.add_global_variable(
-                text.type, name=name, addrspace=address_space.SPIR_GENERIC
+                text.type, name=name, addrspace=address_space.GENERIC
             )
             gv.linkage = "internal"
             gv.global_constant = True
@@ -344,7 +347,7 @@ class DPPYTargetContext(BaseContext):
 
         # Cast to a i8* pointer
         charty = gv.type.pointee.element
-        return lc.Constant.bitcast(gv, charty.as_pointer(address_space.SPIR_GENERIC))
+        return lc.Constant.bitcast(gv, charty.as_pointer(address_space.GENERIC))
 
     def addrspacecast(self, builder, src, addrspace):
         """
@@ -365,12 +368,9 @@ def set_dppy_kernel(fn):
     - Add metadata
     """
     mod = fn.module
-
-    # Set nounwind
-    # fn.add_attribute(lc.ATTR_NO_UNWIND)
-
-    # Set SPIR kernel calling convention
-    fn.calling_convention = CC_SPIR_KERNEL
+    breakpoint()
+    # Set norecurse
+    # fn.attributes.add("norecurse")
 
     # Mark kernels
     ocl_kernels = mod.get_or_insert_named_metadata("opencl.kernels")
@@ -424,9 +424,9 @@ def gen_arg_addrspace_md(fn):
 
     for a in fnty.args:
         if cgutils.is_pointer(a):
-            codes.append(address_space.SPIR_GLOBAL)
+            codes.append(address_space.GLOBAL)
         else:
-            codes.append(address_space.SPIR_PRIVATE)
+            codes.append(address_space.PRIVATE)
 
     consts = [lc.Constant.int(lc.Type.int(), x) for x in codes]
     name = lc.MetaDataString.get(mod, "kernel_arg_addr_space")
@@ -515,28 +515,27 @@ class DPPYCallConv(MinimalCallConv):
         builder.store(retval, retptr)
         builder.ret_void()
 
-    def decode_arguments(self, builder, argtypes, func):
-        """
-        Get the decoded (unpacked) Python arguments with *argtypes*
-        from LLVM function *func*.  A tuple of LLVM values is returned.
-        """
-        raw_args = self.get_arguments(func)
-        arginfo = self._get_arg_packer(argtypes)
-        args_list = []
-
-        # Cast all global address space pointer args generic address space
-        # pointers
-        for argnum in range(len(raw_args)):
-            arg = raw_args[argnum]
-            argtype = arginfo.argument_types[argnum]
-            if (
-                isinstance(argtype, llvmir.PointerType)
-                and argtype.addrspace != address_space.SPIR_GLOBAL
-            ):
-                ptras = llvmir.PointerType(
-                    arg.type.pointee, addrspace=address_space.SPIR_GENERIC
-                )
-                arg = builder.addrspacecast(arg, ptras)
-            args_list.append(arg)
-        breakpoint()
-        return arginfo.from_arguments(builder, tuple(args_list))
+    # def decode_arguments(self, builder, argtypes, func):
+    #     """
+    #     Get the decoded (unpacked) Python arguments with *argtypes*
+    #     from LLVM function *func*.  A tuple of LLVM values is returned.
+    #     """
+    #     raw_args = self.get_arguments(func)
+    #     arginfo = self._get_arg_packer(argtypes)
+    #     args_list = []
+    #     # Cast all global address space pointer args generic address space
+    #     # pointers
+    #     for argnum in range(len(raw_args)):
+    #         arg = raw_args[argnum]
+    #         argtype = arginfo.argument_types[argnum]
+    #         if (
+    #             isinstance(argtype, llvmir.PointerType)
+    #             and argtype.addrspace == address_space.SPIR_GLOBAL_ADDRSPACE
+    #         ):
+    #             ptras = llvmir.PointerType(
+    #                 arg.type.pointee, addrspace=address_space.SPIR_GENERIC_ADDRSPACE
+    #             )
+    #             arg = builder.addrspacecast(arg, ptras)
+    #         args_list.append(arg)
+    #     breakpoint()
+    #     return arginfo.from_arguments(builder, tuple(args_list))
