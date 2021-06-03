@@ -92,12 +92,13 @@ def test_debug_tag_generated_for_kernel_vars(offload_device):
         var_d = var_b[i]
         var_c[i] = var_a[i] + var_d
 
-    ir_tag_var_a = r'!DILocalVariable\(name: "var_a"'
-    ir_tag_var_b = r'!DILocalVariable\(name: "var_b"'
-    ir_tag_var_c = r'!DILocalVariable\(name: "var_c"'
-    ir_tag_var_i = r'!DILocalVariable\(name: "i"'
+    ir_tag_var_a = r'\!DILocalVariable\(name: "var_a"'
+    ir_tag_var_b = r'\!DILocalVariable\(name: "var_b"'
+    ir_tag_var_c = r'\!DILocalVariable\(name: "var_c"'
+    ir_tag_var_d = r'\!DILocalVariable\(name: "var_d"'
+    ir_tag_var_i = r'\!DILocalVariable\(name: "i"'
 
-    ir_tags = (ir_tag_var_a, ir_tag_var_b, ir_tag_var_c, ir_tag_var_i)
+    ir_tags = (ir_tag_var_a, ir_tag_var_b, ir_tag_var_c, ir_tag_var_d, ir_tag_var_i)
 
     config.OPT = 0  # All variables are available on no opt level
 
