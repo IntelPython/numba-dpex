@@ -14,7 +14,6 @@
 
 from numba.core import types, ir, typing
 
-from numba_dppy.target import SPIR_LOCAL_ADDRSPACE
 import numpy as np
 import numba
 from numba.np import numpy_support
