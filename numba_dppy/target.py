@@ -61,11 +61,11 @@ class DPPYTypingContext(typing.BaseContext):
             ValueError: If the type of the Python value is not supported.
 
         """
-        if typeof(val, types.npytypes.Array):
+        if typeof(val) == types.npytypes.Array:
             # convert npytypes.Array to DPPYArray
             return convert_to_dppy_array(typeof(val))
         else:
-            super.resolve_argument_type(val)
+            return super().resolve_argument_type(val)
 
     def load_additional_registries(self):
         # Declarations for OpenCL API functions and OpenCL Math functions
@@ -212,12 +212,12 @@ class DPPYTargetContext(BaseContext):
         mangled = VALID_CHARS.sub(repl, qualified)
         return "dppy_py_devfn_" + mangled
 
-    def prepare_ocl_kernel(self, func, argtypes):
-        module = func.module
-        func.linkage = "linkonce_odr"
+        # def prepare_ocl_kernel(self, func, argtypes):
+        #     module = func.module
+        #     func.linkage = "linkonce_odr"
 
-        module.data_layout = codegen.SPIR_DATA_LAYOUT[self.address_size]
-        wrapper = self.generate_kernel_wrapper(func, argtypes)
+        #     module.data_layout = codegen.SPIR_DATA_LAYOUT[self.address_size]
+        #     wrapper = self.generate_kernel_wrapper(func, argtypes)
 
         return wrapper
 
@@ -227,72 +227,72 @@ class DPPYTargetContext(BaseContext):
         func.linkage = "linkonce_odr"
         return func
 
-    def generate_kernel_wrapper(self, func, argtypes):
-        module = func.module
-        arginfo = self.get_arg_packer(argtypes)
+    # def generate_kernel_wrapper(self, func, argtypes):
+    #     module = func.module
+    #     arginfo = self.get_arg_packer(argtypes)
 
-        def sub_gen_with_global(lty):
-            if isinstance(lty, llvmir.PointerType):
-                if lty.addrspace == address_space.LOCAL:
-                    return lty, None
-                # # DRD : Cast all pointer types to global address space.
-                # if lty.addrspace != SPIR_GLOBAL_ADDRSPACE:  # jcaraban
-                #     return (
-                #         lty.pointee.as_pointer(SPIR_GLOBAL_ADDRSPACE),
-                #         lty.addrspace,
-                #     )
-            return lty, None
+    #     def sub_gen_with_global(lty):
+    #         if isinstance(lty, llvmir.PointerType):
+    #             if lty.addrspace == address_space.LOCAL:
+    #                 return lty, None
+    #             # # DRD : Cast all pointer types to global address space.
+    #             # if lty.addrspace != SPIR_GLOBAL_ADDRSPACE:  # jcaraban
+    #             #     return (
+    #             #         lty.pointee.as_pointer(SPIR_GLOBAL_ADDRSPACE),
+    #             #         lty.addrspace,
+    #             #     )
+    #         return lty, None
 
-        if len(arginfo.argument_types) > 0:
-            llargtys, changed = zip(*map(sub_gen_with_global, arginfo.argument_types))
-        else:
-            llargtys = changed = ()
-        wrapperfnty = lc.Type.function(lc.Type.void(), llargtys)
+    #     if len(arginfo.argument_types) > 0:
+    #         llargtys, changed = zip(*map(sub_gen_with_global, arginfo.argument_types))
+    #     else:
+    #         llargtys = changed = ()
+    #     wrapperfnty = lc.Type.function(lc.Type.void(), llargtys)
 
-        wrapper_module = self.create_module("dppy.kernel.wrapper")
-        wrappername = "dppyPy_{name}".format(name=func.name)
+    #     wrapper_module = self.create_module("dppy.kernel.wrapper")
+    #     wrappername = "dppyPy_{name}".format(name=func.name)
 
-        argtys = list(arginfo.argument_types)
-        fnty = lc.Type.function(
-            lc.Type.int(),
-            [self.call_conv.get_return_type(types.pyobject)] + argtys,
-        )
+    #     argtys = list(arginfo.argument_types)
+    #     fnty = lc.Type.function(
+    #         lc.Type.int(),
+    #         [self.call_conv.get_return_type(types.pyobject)] + argtys,
+    #     )
 
-        func = wrapper_module.add_function(fnty, name=func.name)
-        func.calling_convention = CC_SPIR_FUNC
+    #     func = wrapper_module.add_function(fnty, name=func.name)
+    #     func.calling_convention = CC_SPIR_FUNC
 
-        wrapper = wrapper_module.add_function(wrapperfnty, name=wrappername)
+    #     wrapper = wrapper_module.add_function(wrapperfnty, name=wrappername)
 
-        builder = lc.Builder(wrapper.append_basic_block(""))
+    #     builder = lc.Builder(wrapper.append_basic_block(""))
 
-        # Adjust address space of each kernel argument
-        fixed_args = []
-        for av, adrsp in zip(wrapper.args, changed):
-            if adrsp is not None:
-                casted = self.addrspacecast(builder, av, adrsp)
-                fixed_args.append(casted)
-            else:
-                fixed_args.append(av)
+    #     # Adjust address space of each kernel argument
+    #     fixed_args = []
+    #     for av, adrsp in zip(wrapper.args, changed):
+    #         if adrsp is not None:
+    #             casted = self.addrspacecast(builder, av, adrsp)
+    #             fixed_args.append(casted)
+    #         else:
+    #             fixed_args.append(av)
 
-        callargs = arginfo.from_arguments(builder, fixed_args)
+    #     callargs = arginfo.from_arguments(builder, fixed_args)
 
-        # XXX handle error status
-        status, _ = self.call_conv.call_function(
-            builder, func, types.void, argtypes, callargs
-        )
-        builder.ret_void()
+    #     # XXX handle error status
+    #     status, _ = self.call_conv.call_function(
+    #         builder, func, types.void, argtypes, callargs
+    #     )
+    #     builder.ret_void()
 
-        set_dppy_kernel(wrapper)
+    #     set_dppy_kernel(wrapper)
 
-        # print(str(wrapper_module))
-        # Link
-        module.link_in(ll.parse_assembly(str(wrapper_module)))
-        # To enable inlining which is essential because addrspacecast 1->0 is
-        # illegal.  Inlining will optimize the addrspacecast out.
-        func.linkage = "internal"
-        wrapper = module.get_function(wrapper.name)
-        module.get_function(func.name).linkage = "internal"
-        return wrapper
+    #     # print(str(wrapper_module))
+    #     # Link
+    #     module.link_in(ll.parse_assembly(str(wrapper_module)))
+    #     # To enable inlining which is essential because addrspacecast 1->0 is
+    #     # illegal.  Inlining will optimize the addrspacecast out.
+    #     func.linkage = "internal"
+    #     wrapper = module.get_function(wrapper.name)
+    #     module.get_function(func.name).linkage = "internal"
+    #     return wrapper
 
     def declare_function(self, module, fndesc):
         """Create the LLVM function from a ``numba_dppy.kernel`` decorated
@@ -315,18 +315,18 @@ class DPPYTargetContext(BaseContext):
         ret.calling_convention = calling_conv.CC_SPIR_KERNEL
         return ret
 
-    def make_constant_array(self, builder, typ, ary):
-        """
-        Return dummy value.
-        """
-        #
-        # a = self.make_array(typ)(self, builder)
-        # return a._getvalue()
-        raise NotImplementedError
+    # def make_constant_array(self, builder, typ, ary):
+    #     """
+    #     Return dummy value.
+    #     """
+    #     #
+    #     # a = self.make_array(typ)(self, builder)
+    #     # return a._getvalue()
+    #     raise NotImplementedError
 
     def insert_const_string(self, mod, string):
         """
-        This returns a a pointer in the spir generic addrspace.
+        This returns a pointer in the spir generic addrspace.
         """
         text = lc.Constant.stringz(string)
 
@@ -360,122 +360,127 @@ class DPPYTargetContext(BaseContext):
         return self.ufunc_db[ufunc_key]
 
 
-def set_dppy_kernel(fn):
-    """
-    Ensure `fn` is usable as a SPIR kernel.
-    - Fix calling convention
-    - Add metadata
-    """
-    mod = fn.module
-    breakpoint()
-    # Set norecurse
-    # fn.attributes.add("norecurse")
+# def set_dppy_kernel(fn):
+#     """
+#     Ensure `fn` is usable as a SPIR kernel.
+#     - Fix calling convention
+#     - Add metadata
+#     """
+#     mod = fn.module
+#     breakpoint()
+#     # Set norecurse
+#     # fn.attributes.add("norecurse")
 
-    # Mark kernels
-    ocl_kernels = mod.get_or_insert_named_metadata("opencl.kernels")
-    ocl_kernels.add(
-        lc.MetaData.get(
-            mod,
-            [
-                fn,
-                gen_arg_addrspace_md(fn),
-                gen_arg_access_qual_md(fn),
-                gen_arg_type(fn),
-                gen_arg_type_qual(fn),
-                gen_arg_base_type(fn),
-            ],
-        )
-    )
+#     # Mark kernels
+#     ocl_kernels = mod.get_or_insert_named_metadata("opencl.kernels")
+#     ocl_kernels.add(
+#         lc.MetaData.get(
+#             mod,
+#             [
+#                 fn,
+#                 gen_arg_addrspace_md(fn),
+#                 gen_arg_access_qual_md(fn),
+#                 gen_arg_type(fn),
+#                 gen_arg_type_qual(fn),
+#                 gen_arg_base_type(fn),
+#             ],
+#         )
+#     )
 
-    # SPIR version 2.0
-    make_constant = lambda x: lc.Constant.int(lc.Type.int(), x)
-    spir_version_constant = [make_constant(x) for x in SPIR_VERSION]
+#     # SPIR version 2.0
+#     make_constant = lambda x: lc.Constant.int(lc.Type.int(), x)
+#     spir_version_constant = [make_constant(x) for x in SPIR_VERSION]
 
-    spir_version = mod.get_or_insert_named_metadata("dppy.spir.version")
-    if not spir_version.operands:
-        spir_version.add(lc.MetaData.get(mod, spir_version_constant))
+#     spir_version = mod.get_or_insert_named_metadata("dppy.spir.version")
+#     if not spir_version.operands:
+#         spir_version.add(lc.MetaData.get(mod, spir_version_constant))
 
-    ocl_version = mod.get_or_insert_named_metadata("dppy.ocl.version")
-    if not ocl_version.operands:
-        ocl_version.add(lc.MetaData.get(mod, spir_version_constant))
+#     ocl_version = mod.get_or_insert_named_metadata("dppy.ocl.version")
+#     if not ocl_version.operands:
+#         ocl_version.add(lc.MetaData.get(mod, spir_version_constant))
 
-    # Other metadata
-    empty_md = lc.MetaData.get(mod, ())
-    others = [
-        "opencl.used.extensions",
-        "opencl.used.optional.core.features",
-        "opencl.compiler.options",
-    ]
+#     # Other metadata
+#     empty_md = lc.MetaData.get(mod, ())
+#     others = [
+#         "opencl.used.extensions",
+#         "opencl.used.optional.core.features",
+#         "opencl.compiler.options",
+#     ]
 
-    for name in others:
-        nmd = mod.get_or_insert_named_metadata(name)
-        if not nmd.operands:
-            nmd.add(empty_md)
-
-
-def gen_arg_addrspace_md(fn):
-    """
-    Generate kernel_arg_addr_space metadata
-    """
-    mod = fn.module
-    fnty = fn.type.pointee
-    codes = []
-
-    for a in fnty.args:
-        if cgutils.is_pointer(a):
-            codes.append(address_space.GLOBAL)
-        else:
-            codes.append(address_space.PRIVATE)
-
-    consts = [lc.Constant.int(lc.Type.int(), x) for x in codes]
-    name = lc.MetaDataString.get(mod, "kernel_arg_addr_space")
-    return lc.MetaData.get(mod, [name] + consts)
+#     for name in others:
+#         nmd = mod.get_or_insert_named_metadata(name)
+#         if not nmd.operands:
+#             nmd.add(empty_md)
 
 
-def gen_arg_access_qual_md(fn):
-    """
-    Generate kernel_arg_access_qual metadata
-    """
-    mod = fn.module
-    consts = [lc.MetaDataString.get(mod, "none")] * len(fn.args)
-    name = lc.MetaDataString.get(mod, "kernel_arg_access_qual")
-    return lc.MetaData.get(mod, [name] + consts)
+# def gen_arg_addrspace_md(fn):
+#     """
+#     Generate kernel_arg_addr_space metadata
+#     """
+#     mod = fn.module
+#     fnty = fn.type.pointee
+#     codes = []
+
+#     for a in fnty.args:
+#         if cgutils.is_pointer(a):
+#             codes.append(address_space.GLOBAL)
+#         else:
+#             codes.append(address_space.PRIVATE)
+
+#     consts = [lc.Constant.int(lc.Type.int(), x) for x in codes]
+#     name = lc.MetaDataString.get(mod, "kernel_arg_addr_space")
+#     return lc.MetaData.get(mod, [name] + consts)
 
 
-def gen_arg_type(fn):
-    """
-    Generate kernel_arg_type metadata
-    """
-    mod = fn.module
-    fnty = fn.type.pointee
-    consts = [lc.MetaDataString.get(mod, str(a)) for a in fnty.args]
-    name = lc.MetaDataString.get(mod, "kernel_arg_type")
-    return lc.MetaData.get(mod, [name] + consts)
+# def gen_arg_access_qual_md(fn):
+#     """
+#     Generate kernel_arg_access_qual metadata
+#     """
+#     mod = fn.module
+#     consts = [lc.MetaDataString.get(mod, "none")] * len(fn.args)
+#     name = lc.MetaDataString.get(mod, "kernel_arg_access_qual")
+#     return lc.MetaData.get(mod, [name] + consts)
 
 
-def gen_arg_type_qual(fn):
-    """
-    Generate kernel_arg_type_qual metadata
-    """
-    mod = fn.module
-    fnty = fn.type.pointee
-    consts = [lc.MetaDataString.get(mod, "") for _ in fnty.args]
-    name = lc.MetaDataString.get(mod, "kernel_arg_type_qual")
-    return lc.MetaData.get(mod, [name] + consts)
+# def gen_arg_type(fn):
+#     """
+#     Generate kernel_arg_type metadata
+#     """
+#     mod = fn.module
+#     fnty = fn.type.pointee
+#     consts = [lc.MetaDataString.get(mod, str(a)) for a in fnty.args]
+#     name = lc.MetaDataString.get(mod, "kernel_arg_type")
+#     return lc.MetaData.get(mod, [name] + consts)
 
 
-def gen_arg_base_type(fn):
-    """
-    Generate kernel_arg_base_type metadata
-    """
-    mod = fn.module
-    fnty = fn.type.pointee
-    consts = [lc.MetaDataString.get(mod, str(a)) for a in fnty.args]
-    name = lc.MetaDataString.get(mod, "kernel_arg_base_type")
-    return lc.MetaData.get(mod, [name] + consts)
+# def gen_arg_type_qual(fn):
+#     """
+#     Generate kernel_arg_type_qual metadata
+#     """
+#     mod = fn.module
+#     fnty = fn.type.pointee
+#     consts = [lc.MetaDataString.get(mod, "") for _ in fnty.args]
+#     name = lc.MetaDataString.get(mod, "kernel_arg_type_qual")
+#     return lc.MetaData.get(mod, [name] + consts)
+
+
+# def gen_arg_base_type(fn):
+#     """
+#     Generate kernel_arg_base_type metadata
+#     """
+#     mod = fn.module
+#     fnty = fn.type.pointee
+#     consts = [lc.MetaDataString.get(mod, str(a)) for a in fnty.args]
+#     name = lc.MetaDataString.get(mod, "kernel_arg_base_type")
+#     return lc.MetaData.get(mod, [name] + consts)
 
 
 class DPPYCallConv(MinimalCallConv):
+    """Calling convention class used by numba-dppy that derives from
+    :class:`numba.core.callconv import MinimalCallConv`.
+
+    """
+
     def call_function(self, builder, callee, resty, argtys, args, env=None):
         """
         Call the Numba-compiled *callee*.
@@ -485,7 +490,6 @@ class DPPYCallConv(MinimalCallConv):
         retvaltmp = cgutils.alloca_once(builder, retty)
         # initialize return value
         builder.store(cgutils.get_null_value(retty), retvaltmp)
-
         arginfo = self.context.get_arg_packer(argtys)
         args = arginfo.as_arguments(builder, args)
         realargs = [retvaltmp] + list(args)
@@ -501,15 +505,24 @@ class DPPYCallConv(MinimalCallConv):
         """
         arginfo = self._get_arg_packer(argtypes)
         argtypes = list(arginfo.argument_types)
-        resptr = self.get_return_type(restype)
-        fnty = llvmir.FunctionType(llvmir.VoidType(), [resptr] + argtypes)
+        fnty = llvmir.FunctionType(llvmir.VoidType(), argtypes)
         return fnty
 
+    def decorate_function(self, fn, args, fe_argtypes, noalias=False):
+        """
+        Set names and attributes of function arguments.
+        """
+        assert not noalias
+        arginfo = self._get_arg_packer(fe_argtypes)
+        arginfo.assign_names(self.get_arguments(fn), ["arg." + a for a in args])
+        fn.args[0].name = ".ret"
+        return fn
+
     def return_value(self, builder, retval):
-        retptr = builder.function.args[0]
-        assert retval.type == retptr.type.pointee, (
-            str(retval.type),
-            str(retptr.type.pointee),
-        )
-        builder.store(retval, retptr)
         builder.ret_void()
+
+    def get_arguments(self, func):
+        """
+        Get the Python-level arguments of LLVM *func*.
+        """
+        return func.args

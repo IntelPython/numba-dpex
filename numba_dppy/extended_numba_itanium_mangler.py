@@ -13,7 +13,6 @@
 # limitations under the License.
 
 from numba.core import itanium_mangler, types
-from numba_dppy.utils import target
 
 
 def mangle_type_or_value(typ):
