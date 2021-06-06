@@ -113,7 +113,6 @@ spirv_data_model_manager = _init_data_model_manager()
 
 class DPPYTargetContext(BaseContext):
     implement_powi_as_math_call = True
-    generic_addrspace = address_space.GENERIC
 
     def init(self):
         self._internal_codegen = codegen.JITSPIRVCodegen("numba_dppy.jit")
@@ -514,28 +513,3 @@ class DPPYCallConv(MinimalCallConv):
         )
         builder.store(retval, retptr)
         builder.ret_void()
-
-    # def decode_arguments(self, builder, argtypes, func):
-    #     """
-    #     Get the decoded (unpacked) Python arguments with *argtypes*
-    #     from LLVM function *func*.  A tuple of LLVM values is returned.
-    #     """
-    #     raw_args = self.get_arguments(func)
-    #     arginfo = self._get_arg_packer(argtypes)
-    #     args_list = []
-    #     # Cast all global address space pointer args generic address space
-    #     # pointers
-    #     for argnum in range(len(raw_args)):
-    #         arg = raw_args[argnum]
-    #         argtype = arginfo.argument_types[argnum]
-    #         if (
-    #             isinstance(argtype, llvmir.PointerType)
-    #             and argtype.addrspace == address_space.SPIR_GLOBAL_ADDRSPACE
-    #         ):
-    #             ptras = llvmir.PointerType(
-    #                 arg.type.pointee, addrspace=address_space.SPIR_GENERIC_ADDRSPACE
-    #             )
-    #             arg = builder.addrspacecast(arg, ptras)
-    #         args_list.append(arg)
-    #     breakpoint()
-    #     return arginfo.from_arguments(builder, tuple(args_list))

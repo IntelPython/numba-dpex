@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import copy
-from collections import namedtuple
 
 from .dppy_passbuilder import DPPYPassBuilder
 from numba.core.typing.templates import ConcreteTemplate
@@ -28,7 +27,7 @@ import dpctl.memory as dpctl_mem
 import dpctl.program as dpctl_prog
 import numpy as np
 
-from . import spirv_generator, target
+from . import spirv_generator
 
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
@@ -43,7 +42,7 @@ _NUMBA_DPPY_READ_WRITE = "read_write"
 
 def _raise_no_device_found_error():
     error_message = (
-        "No OpenCL device specified. "
+        "No SYCL device specified. "
         "Usage : jit_fn[device, globalsize, localsize](...)"
     )
     raise ValueError(error_message)
@@ -147,7 +146,7 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
     cres = compile_with_dppy(pyfunc, None, args, debug=debug)
     kernel = cres.library.get_function(cres.fndesc.llvm_func_name)
     breakpoint()
-    target.set_dppy_kernel(kernel)
+    # target.set_dppy_kernel(kernel)
     # kernel = cres.target_context.prepare_ocl_kernel(func, cres.signature.args)
     # A reference to the target context is stored in the DPPYKernel to
     # reference the context later in code generation. For example, we link
