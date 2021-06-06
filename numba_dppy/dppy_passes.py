@@ -290,7 +290,7 @@ class SpirvFriendlyLowering(LoweringPass):
         targetctx = state.targetctx
 
         library = state.library
-        interp = state.func_ir  # why is it called this?!
+        interp = state.func_ir
         typemap = state.typemap
         restype = state.return_type
         calltypes = state.calltypes
