@@ -32,8 +32,8 @@ def debug_option(request):
     return request.param
 
 
-def get_kernel_ir(fn, sig, debug=False):
-    kernel = compiler.compile_kernel(fn.sycl_queue, fn.py_func, sig, None, debug=debug)
+def get_kernel_ir(sycl_queue, fn, sig, debug=False):
+    kernel = compiler.compile_kernel(sycl_queue, fn.py_func, sig, None, debug=debug)
     return kernel.assembly
 
 
@@ -62,9 +62,9 @@ def test_debug_flag_generates_ir_with_debuginfo(offload_device, debug_option):
     def foo(x):
         return x
 
-    with dpctl.device_context(offload_device):
+    with dpctl.device_context(offload_device) as sycl_queue:
         sig = (types.int32,)
-        kernel_ir = get_kernel_ir(foo, sig, debug=debug_option)
+        kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=debug_option)
 
         expect = debug_option
         got = make_check(kernel_ir)
