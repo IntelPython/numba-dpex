@@ -145,9 +145,9 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
 
     cres = compile_with_dppy(pyfunc, None, args, debug=debug)
     kernel = cres.library.get_function(cres.fndesc.llvm_func_name)
-    breakpoint()
-    # target.set_dppy_kernel(kernel)
+
     # kernel = cres.target_context.prepare_ocl_kernel(func, cres.signature.args)
+
     # A reference to the target context is stored in the DPPYKernel to
     # reference the context later in code generation. For example, we link
     # the kernel object with a spir_func defining atomic operations only
