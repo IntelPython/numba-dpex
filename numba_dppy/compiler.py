@@ -166,6 +166,7 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
 
 def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug=False):
     if DEBUG:
+        debug = True
         print("compile_kernel_parfor", args)
         for a in args_with_addrspaces:
             print(a, type(a))
@@ -196,6 +197,8 @@ def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug
 
 
 def compile_dppy_func(pyfunc, return_type, args, debug=False):
+    if DEBUG:
+        debug = True
     cres = compile_with_dppy(pyfunc, return_type, args, debug=debug)
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
     cres.target_context.mark_ocl_device(func)
@@ -246,7 +249,9 @@ class DPPYFunctionTemplate(object):
         this object.
         """
         if args not in self._compileinfos:
-            cres = compile_with_dppy(self.py_func, None, args, debug=self.debug)
+            if DEBUG:
+                debug = True
+            cres = compile_with_dppy(self.py_func, None, args, debug=debug)
             func = cres.library.get_function(cres.fndesc.llvm_func_name)
             cres.target_context.mark_ocl_device(func)
             first_definition = not self._compileinfos
