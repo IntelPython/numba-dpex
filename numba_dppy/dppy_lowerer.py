@@ -56,6 +56,7 @@ from numba_dppy.driver import KernelLaunchOps
 import dpctl
 from numba_dppy.target import DPPYTargetContext
 from numba_dppy.dppy_array_type import DPPYArray
+from numba_dppy.utils import address_space, convert_to_dppy_array
 
 
 def _print_block(block):
@@ -357,7 +358,7 @@ def _create_gufunc_for_parfor_body(
                 addrspaces.append(None)
         return addrspaces
 
-    addrspaces = addrspace_from(parfor_params, numba_dppy.target.SPIR_GLOBAL_ADDRSPACE)
+    addrspaces = addrspace_from(parfor_params, address_space.GLOBAL)
 
     if config.DEBUG_ARRAY_OPT >= 1:
         print("parfor_params = ", parfor_params, type(parfor_params))
@@ -395,21 +396,12 @@ def _create_gufunc_for_parfor_body(
     assert len(param_types_addrspaces) == len(addrspaces)
     for i in range(len(param_types_addrspaces)):
         if addrspaces[i] is not None:
-            # print("before:", id(param_types_addrspaces[i]))
-            assert isinstance(param_types_addrspaces[i], types.npytypes.Array)
-            _param = param_types_addrspaces[i]
-            param_types_addrspaces[i] = DPPYArray(
-                _param.dtype,
-                _param.ndim,
-                _param.layout,
-                _param.py_type,
-                not _param.mutable,
-                _param.name,
-                _param.aligned,
-                addrspace=addrspaces[i],
+            # Convert Numba's npytype.Array to DPPYArray data type. DPPYArray
+            # allows us to specify an address space for the data and other
+            # pointer arguments for the array.
+            param_types_addrspaces[i] = convert_to_dppy_array(
+                param_types_addrspaces[i], addrspaces[i]
             )
-            # print("setting param type", i, param_types[i], id(param_types[i]),
-            #      "to addrspace", param_types_addrspaces[i].addrspace)
 
     def print_arg_with_addrspaces(args):
         for a in args:
