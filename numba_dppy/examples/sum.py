@@ -42,9 +42,9 @@ def main():
     N = global_size
     print("N", N)
 
-    a = np.array(np.random.random(N), dtype=np.float32)
-    b = np.array(np.random.random(N), dtype=np.float32)
-    c = np.ones_like(a)
+    a = np.arange(N, dtype=np.float32)
+    b = np.arange(N, dtype=np.float32)
+    c = np.empty_like(a)
 
     # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
     # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
