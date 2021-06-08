@@ -12,10 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import platform
+
 import numpy as np
-import numba_dppy as dppy
 import pytest
 import dpctl
+
+import numba_dppy as dppy
 from numba_dppy.tests._helper import skip_test
 
 
@@ -31,11 +34,26 @@ def filter_str(request):
     return request.param
 
 
+def skip_if_win():
+    return platform.system == "Windows"
+
+
 def test_proper_lowering(filter_str):
     if skip_test(filter_str):
         pytest.skip()
-    # @dppy.kernel("void(float32[::1])")
-    @dppy.kernel
+
+    # We perform eager compilation at the site of
+    # @dppy.kernel. This takes the default dpctl
+    # queue which is level_zero backed. Level_zero
+    # is not yet supported on Windows platform and
+    # hence we skip these tests if the platform is
+    # Windows regardless of which backend filter_str
+    # specifies.
+    if skip_if_win():
+        pytest.skip()
+
+    # This will trigger eager compilation
+    @dppy.kernel("void(float32[::1])")
     def twice(A):
         i = dppy.get_global_id(0)
         d = A[i]
@@ -56,8 +74,11 @@ def test_proper_lowering(filter_str):
 def test_no_arg_barrier_support(filter_str):
     if skip_test(filter_str):
         pytest.skip()
-    # @dppy.kernel("void(float32[::1])")
-    @dppy.kernel
+
+    if skip_if_win():
+        pytest.skip()
+
+    @dppy.kernel("void(float32[::1])")
     def twice(A):
         i = dppy.get_global_id(0)
         d = A[i]
@@ -81,8 +102,10 @@ def test_local_memory(filter_str):
         pytest.skip()
     blocksize = 10
 
-    # @dppy.kernel("void(float32[::1])")
-    @dppy.kernel
+    if skip_if_win():
+        pytest.skip()
+
+    @dppy.kernel("void(float32[::1])")
     def reverse_array(A):
         lm = dppy.local.array(shape=10, dtype=np.float32)
         i = dppy.get_global_id(0)

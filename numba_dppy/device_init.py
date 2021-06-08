@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function, absolute_import, division
-
 # Re export
 from .ocl.stubs import (
     get_global_id,
@@ -63,4 +61,4 @@ def is_available():
         return False
 
 
-initialize.initialize_all()
+initialize.load_dpctl_sycl_interface()
