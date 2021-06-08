@@ -22,6 +22,7 @@ def func_sum(a_in_func, b_in_func):
     s = a_in_func + b_in_func
     return s
 
+
 @dppy.kernel
 def kernel_sum(a_in_kernel, b_in_kernel, c_in_kernel):
     i = dppy.get_global_id(0)
@@ -57,5 +58,5 @@ def main():
     print("Done...")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
