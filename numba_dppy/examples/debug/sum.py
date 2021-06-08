@@ -15,52 +15,40 @@
 import numpy as np
 import numba_dppy as dppy
 import dpctl
-import sys
 
 
 @dppy.kernel
-def data_parallel_sum(a, b, c):
-    i = dppy.get_global_id(0)   # numba-kernel-breakpoint
-    l1 = a[i]                   # second-line
-    l2 = b[i]                   # third-line
-    c[i] = l1 + l2              # fourth-line
+def data_parallel_sum(a_in_kernel, b_in_kernel, c_in_kernel):
+    i = dppy.get_global_id(0)             # numba-kernel-breakpoint
+    l1 = a_in_kernel[i]                   # second-line
+    l2 = b_in_kernel[i]                   # third-line
+    c_in_kernel[i] = l1 + l2              # fourth-line
 
 
-def driver(args):
-    a = args[0]
-    b = args[1]
-    c = args[2]
-    global_size = args[3]
+def driver(a, b, c, global_size):
+    print("before : ", a)
+    print("before : ", b)
+    print("before : ", c)
     data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
-
-
-def get_context():
-    if len(sys.argv) == 1 or sys.argv[1] == "gpu":
-        device = dpctl.select_gpu_device()
-    elif sys.argv[1] == "cpu":
-        device = dpctl.select_cpu_device()
-    else:
-        raise Exception("Device doesn't supported.")
-    print("Scheduling on ...")
-    device.print_device_info()
-    return device
+    print("after : ", c)
 
 
 def main():
     global_size = 10
     N = global_size
 
-    a = np.array(np.random.random(N), dtype=np.float32)
-    b = np.array(np.random.random(N), dtype=np.float32)
-    c = np.ones_like(a)
+    a = np.arange(N, dtype=np.float32)
+    b = np.arange(N, dtype=np.float32)
+    c = np.empty_like(a)
 
-    # Schedule on the queue requested at the command line.
-    args = [a, b, c, global_size]
+    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
+    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
+    device = dpctl.select_default_device()
+    print("Scheduling on ...")
+    device.print_device_info()
 
-    context = get_context()
-
-    with dpctl.device_context(context):
-        driver(args)
+    with dpctl.device_context(device):
+        driver(a, b, c, global_size)
 
     print("Done...")
 
