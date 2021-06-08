@@ -97,4 +97,5 @@ FALLBACK_ON_CPU = _readenv("NUMBA_DPPY_FALLBACK_ON_CPU", int, 1)
 NATIVE_FP_ATOMICS = _readenv("NUMBA_DPPY_ACTIVATE_ATOMCIS_FP_NATIVE", int, 0)
 LLVM_SPIRV_ROOT = _readenv("NUMBA_DPPY_LLVM_SPIRV_ROOT", str, "")
 # Emit debug info
-DEBUG = os.environ.get("NUMBA_DPPY_DEBUG", None)
+DEBUG = _readenv("NUMBA_DPPY_DEBUG", int, 0)
+DEBUGINFO = _readenv("NUMBA_DPPY_DEBUGINFO", int, 0)

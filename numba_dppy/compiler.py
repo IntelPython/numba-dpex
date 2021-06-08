@@ -33,7 +33,7 @@ from . import spirv_generator
 
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
-from numba_dppy.config import DEBUG
+from numba_dppy.config import DEBUG, DEBUGINFO
 
 
 _NUMBA_DPPY_READ_ONLY = "read_only"
@@ -98,7 +98,7 @@ def compile_with_dppy(pyfunc, return_type, args, debug):
 
     flags = compiler.Flags()
     # Do not compile (generate native code), just lower (to LLVM)
-    if debug:
+    if DEBUGINFO:
         flags.set("debuginfo")
     flags.set("no_compile")
     flags.set("no_cpython_wrapper")
@@ -166,7 +166,6 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
 
 def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug=False):
     if DEBUG:
-        debug = True
         print("compile_kernel_parfor", args)
         for a in args_with_addrspaces:
             print(a, type(a))
@@ -197,8 +196,6 @@ def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug
 
 
 def compile_dppy_func(pyfunc, return_type, args, debug=False):
-    if DEBUG:
-        debug = True
     cres = compile_with_dppy(pyfunc, return_type, args, debug=debug)
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
     cres.target_context.mark_ocl_device(func)
@@ -249,9 +246,7 @@ class DPPYFunctionTemplate(object):
         this object.
         """
         if args not in self._compileinfos:
-            if DEBUG:
-                debug = True
-            cres = compile_with_dppy(self.py_func, None, args, debug=debug)
+            cres = compile_with_dppy(self.py_func, None, args, debug=self.debug)
             func = cres.library.get_function(cres.fndesc.llvm_func_name)
             cres.target_context.mark_ocl_device(func)
             first_definition = not self._compileinfos
