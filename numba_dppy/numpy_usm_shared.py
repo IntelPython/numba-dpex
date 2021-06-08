@@ -136,8 +136,10 @@ def typeof_ta_ndarray(val, c):
 
 # This tells Numba to use the default Numpy ndarray data layout for
 # object of type UsmArray.
-register_model(UsmSharedArrayType)(DPPYArrayModel)
-dppy_target.spirv_data_model_manager.register(UsmSharedArrayType, DPPYArrayModel)
+#register_model(UsmSharedArrayType)(DPPYArrayModel)
+register_model(UsmSharedArrayType)(numba.core.datamodel.models.ArrayModel)
+#dppy_target.spirv_data_model_manager.register(UsmSharedArrayType, DPPYArrayModel)
+dppy_target.spirv_data_model_manager.register(UsmSharedArrayType, numba.core.datamodel.models.ArrayModel)
 
 # This tells Numba how to convert from its native representation
 # of a UsmArray in a njit function back to a Python UsmArray.
