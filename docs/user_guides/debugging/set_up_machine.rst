@@ -61,6 +61,8 @@ See also:
   - `OpenCL ICD Loader <https://github.com/KhronosGroup/OpenCL-ICD-Loader>`_
 
 
+.. _debugging-machine-dcd-driver:
+
 DCD driver
 ----------
 

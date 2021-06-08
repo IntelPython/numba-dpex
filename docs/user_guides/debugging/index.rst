@@ -72,6 +72,16 @@ Running GDB and creating breakpoint in kernel:
     (gdb) next
     8          c[i] = a[i] + b[i]
 
+If breakpoint does not work and you see in output
+
+.. code-block:: bash
+
+    ...
+    intelgt: gdbserver-gt failed to start.  Check if igfxdcd is installed, or use
+    env variable INTELGT_AUTO_ATTACH_DISABLE=1 to disable auto-attach.
+    ...
+
+then see :ref:`debugging-machine-dcd-driver`.
 
 .. _debugging-features-and-limitations:
 
