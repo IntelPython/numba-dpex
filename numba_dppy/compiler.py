@@ -144,9 +144,8 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
         raise ValueError("SYCL queue is required for compiling a kernel")
 
     cres = compile_with_dppy(pyfunc, None, args, debug=debug)
-    kernel = cres.library.get_function(cres.fndesc.llvm_func_name)
-
-    # kernel = cres.target_context.prepare_ocl_kernel(func, cres.signature.args)
+    func = cres.library.get_function(cres.fndesc.llvm_func_name)
+    kernel = cres.target_context.prepare_ocl_kernel(func, cres.signature.args)
 
     # A reference to the target context is stored in the DPPYKernel to
     # reference the context later in code generation. For example, we link
@@ -170,6 +169,7 @@ def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug
             print(a, type(a))
             if isinstance(a, types.npytypes.Array):
                 print("addrspace:", a.addrspace)
+
     cres = compile_with_dppy(func_ir, None, args_with_addrspaces, debug=debug)
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
 
