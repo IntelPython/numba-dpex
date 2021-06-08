@@ -134,7 +134,7 @@ def test_debug_kernel_local_vars_in_ir(offload_device):
     ir_tags = (ir_tag_var_index, ir_tag_var_local_d)
 
     with dpctl.device_context(offload_device):
-        sig = (types.float32[:])
+        sig = (types.float32[:],)
         kernel_ir = get_kernel_ir(foo, sig, debug=True)
 
         expect = True  # Expect tag is emitted
