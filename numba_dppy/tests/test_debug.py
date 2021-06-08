@@ -74,9 +74,10 @@ def test_debug_flag_generates_ir_with_debuginfo(offload_device, debug_option):
         assert expect == got
 
 
-def test_debug_tag_generated_for_kernel_vars(offload_device):
+def test_debug_info_locals_vars_on_no_opt(offload_device):
     """
     Check llvm debug tag DILocalVariable is emitting to IR for all variables if debug parameter is set to True
+    and optimization is O0
     """
 
     pytest.xfail(
@@ -89,16 +90,14 @@ def test_debug_tag_generated_for_kernel_vars(offload_device):
     @dppy.kernel
     def foo(var_a, var_b, var_c):
         i = dppy.get_global_id(0)
-        var_d = var_b[i]
-        var_c[i] = var_a[i] + var_d
+        var_c[i] = var_a[i] + var_b[i]
 
     ir_tag_var_a = r'\!DILocalVariable\(name: "var_a"'
     ir_tag_var_b = r'\!DILocalVariable\(name: "var_b"'
     ir_tag_var_c = r'\!DILocalVariable\(name: "var_c"'
-    ir_tag_var_d = r'\!DILocalVariable\(name: "var_d"'
     ir_tag_var_i = r'\!DILocalVariable\(name: "i"'
 
-    ir_tags = (ir_tag_var_a, ir_tag_var_b, ir_tag_var_c, ir_tag_var_d, ir_tag_var_i)
+    ir_tags = (ir_tag_var_a, ir_tag_var_b, ir_tag_var_c, ir_tag_var_i)
 
     config.OPT = 0  # All variables are available on no opt level
 
@@ -113,3 +112,33 @@ def test_debug_tag_generated_for_kernel_vars(offload_device):
             assert expect == got
 
     config.OPT = 3  # Return to the default value
+
+
+def test_debug_kernel_local_vars_in_ir(offload_device):
+    """
+    Check llvm debug tag DILocalVariable is emitting to IR for variables created in kernel
+    """
+
+    if skip_test(offload_device):
+        pytest.skip()
+
+    @dppy.kernel
+    def foo(arr):
+        index = dppy.get_global_id(0)
+        local_d = 9 * 99 + 5
+        arr[index] = local_d + 100
+
+    ir_tag_var_index = r'\!DILocalVariable\(name: "index"'
+    ir_tag_var_local_d = r'\!DILocalVariable\(name: "local_d"'
+
+    ir_tags = (ir_tag_var_index, ir_tag_var_local_d)
+
+    with dpctl.device_context(offload_device):
+        sig = (types.float32[:])
+        kernel_ir = get_kernel_ir(foo, sig, debug=True)
+
+        expect = True  # Expect tag is emitted
+
+        for tag in ir_tags:
+            got = make_check(kernel_ir, tag)
+            assert expect == got
