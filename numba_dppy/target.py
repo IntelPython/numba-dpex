@@ -222,7 +222,6 @@ class DPPYTargetContext(BaseContext):
 
     def generate_kernel_wrapper(self, func, argtypes):
         module = func.module
-        breakpoint()
         arginfo = self.get_arg_packer(argtypes)
 
         # def sub_gen_with_global(lty):
@@ -366,9 +365,11 @@ def set_dppy_kernel(fn):
     - Add metadata
     """
     mod = fn.module
-    breakpoint()
     # Set norecurse
     # fn.attributes.add("norecurse")
+
+    # Set SPIR kernel calling convention
+    fn.calling_convention = CC_SPIR_KERNEL
 
     # Mark kernels
     ocl_kernels = mod.get_or_insert_named_metadata("opencl.kernels")
