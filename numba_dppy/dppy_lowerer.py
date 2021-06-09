@@ -1246,6 +1246,7 @@ class ModifiedLower(Lower):
         #  - environment: the python execution environment
         self.context = context.subtarget(environment=self.env, fndesc=self.fndesc)
 
+        # Debuginfo
         if self.context.enable_debuginfo:
             self.debuginfo = DPPYDIBuilder(
                 module=self.module, filepath=func_ir.loc.filename
@@ -1275,8 +1276,6 @@ class DPPYLower(ModifiedLower):
     def __init__(self, context, library, fndesc, func_ir, metadata=None):
         ModifiedLower.__init__(self, context, library, fndesc, func_ir, metadata)
         memo = {}
-        # self.qwe = qualifying_prefix(fndesc.modname, fndesc.qualname)
-        # self.mangled_qwe = default_mangler(self.qwe, fndesc.argtypes)
 
         fndesc_cpu = relatively_deep_copy(fndesc, memo)
         func_ir_cpu = relatively_deep_copy(func_ir, memo)
