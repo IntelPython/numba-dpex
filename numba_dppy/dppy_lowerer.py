@@ -633,7 +633,7 @@ def _create_gufunc_for_parfor_body(
         gufunc_ir.dump()
 
     kernel_func = numba_dppy.compiler.compile_kernel_parfor(
-        dpctl.get_current_queue(), gufunc_ir, gufunc_param_types, param_types_addrspaces
+        dpctl.get_current_queue(), gufunc_ir, gufunc_param_types, param_types_addrspaces, debug=flags.debuginfo
     )
 
     flags.noalias = old_alias

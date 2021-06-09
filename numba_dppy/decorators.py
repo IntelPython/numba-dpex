@@ -31,10 +31,10 @@ def kernel(signature=None, access_types=None, debug=False):
     same restrictions as definined by SPIR_KERNEL calling convention.
     """
     if signature is None:
-        return autojit(debug=False, access_types=access_types)
+        return autojit(debug=debug, access_types=access_types)
     elif not sigutils.is_signature(signature):
         func = signature
-        return autojit(debug=False, access_types=access_types)(func)
+        return autojit(debug=debug, access_types=access_types)(func)
     else:
         return _kernel_jit(signature, debug, access_types)
 
@@ -67,24 +67,30 @@ def _kernel_jit(signature, debug, access_types):
     return _wrapped
 
 
-def func(signature=None):
+def func(signature=None, debug=False):
     if signature is None:
-        return _func_autojit
+        return _func_autojit_wrapper(debug=debug)
     elif not sigutils.is_signature(signature):
         func = signature
-        return _func_autojit(func)
+        return _func_autojit(func, debug=debug)
     else:
-        return _func_jit(signature)
+        return _func_jit(signature, debug=debug)
 
 
-def _func_jit(signature):
+def _func_jit(signature, debug=False):
     argtypes, restype = sigutils.normalize_signature(signature)
 
     def _wrapped(pyfunc):
-        return compile_dppy_func(pyfunc, restype, argtypes)
+        return compile_dppy_func(pyfunc, restype, argtypes, debug=debug)
 
     return _wrapped
 
 
-def _func_autojit(pyfunc):
-    return compile_dppy_func_template(pyfunc)
+def _func_autojit_wrapper(debug=False):
+    def _func_autojit(pyfunc, debug=debug):
+        return compile_dppy_func_template(pyfunc, debug=debug)
+    return _func_autojit
+
+
+def _func_autojit(pyfunc, debug=False):
+    return compile_dppy_func_template(pyfunc, debug=debug)
