@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function, absolute_import
 import copy
 from collections import namedtuple
 
@@ -651,7 +650,7 @@ class JitDPPYKernel(DPPYKernelBase):
 
         self.typingctx = dppy_target.typing_context
 
-    def get_argtypes(self, *args):
+    def _get_argtypes(self, *args):
         """
         Convenience function to get the type of each argument.
         """
@@ -664,13 +663,13 @@ class JitDPPYKernel(DPPYKernelBase):
         except:
             _raise_no_device_found_error()
 
-        argtypes = self.get_argtypes(*args)
+        argtypes = self._get_argtypes(*args)
         kernel = self.specialize(argtypes, current_queue)
-        cfg = kernel.configure(current_queue, self.global_size, self.local_size)
+        cfg = kernel.configure(self.sycl_queue, self.global_size, self.local_size)
         cfg(*args)
 
     def specialize(self, argtypes, queue):
-        # We specialize for argtypes and SYCL context. These two are used as key for
+        # We specialize for argtypes and queue. These two are used as key for
         # caching as well.
         assert queue is not None
 

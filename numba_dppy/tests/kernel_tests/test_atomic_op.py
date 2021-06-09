@@ -202,7 +202,7 @@ def test_atomic_fp_native(filter_str, return_list_of_op, fdtype):
 
     with dpctl.device_context(filter_str) as sycl_queue:
         kern = kernel[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
-            kernel.get_argtypes(a), sycl_queue
+            kernel._get_argtypes(a), sycl_queue
         )
         if filter_str != "opencl:cpu:0":
             assert "__spirv_AtomicFAddEXT" in kern.assembly
@@ -216,6 +216,6 @@ def test_atomic_fp_native(filter_str, return_list_of_op, fdtype):
     kernel = dppy.kernel(f)
     with dpctl.device_context(filter_str) as sycl_queue:
         kern = kernel[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
-            kernel.get_argtypes(a), sycl_queue
+            kernel._get_argtypes(a), sycl_queue
         )
         assert "__spirv_AtomicFAddEXT" not in kern.assembly

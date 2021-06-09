@@ -25,11 +25,17 @@ from numba_dppy.utils.llvm_codegen_helpers import (
     get_one,
 )
 
+from numba_dppy.utils.type_conversion_fns import convert_to_dppy_array
+from numba_dppy.utils.constants import address_space, calling_conv
+
 __all__ = [
-    LLVMTypes,
-    get_llvm_type,
-    get_llvm_ptr_type,
-    create_null_ptr,
-    get_zero,
-    get_one,
+    "LLVMTypes",
+    "get_llvm_type",
+    "get_llvm_ptr_type",
+    "create_null_ptr",
+    "get_zero",
+    "get_one",
+    "convert_to_dppy_array",
+    "address_space",
+    "calling_conv",
 ]

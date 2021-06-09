@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function, absolute_import, division
 import math
 from numba.core import types, utils
 from numba.core.typing.templates import (
