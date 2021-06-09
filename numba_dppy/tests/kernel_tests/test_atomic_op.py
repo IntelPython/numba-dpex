@@ -200,8 +200,10 @@ def test_atomic_fp_native(filter_str, return_list_of_op, fdtype):
     LLVM_SPIRV_ROOT_old_val = dppy.config.LLVM_SPIRV_ROOT
     dppy.config.LLVM_SPIRV_ROOT = LLVM_SPIRV_ROOT
 
-    with dpctl.device_context(filter_str):
-        kern = kernel[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(a)
+    with dpctl.device_context(filter_str) as sycl_queue:
+        kern = kernel[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
+            kernel._get_argtypes(a), sycl_queue
+        )
         if filter_str != "opencl:cpu:0":
             assert "__spirv_AtomicFAddEXT" in kern.assembly
         else:
@@ -212,6 +214,8 @@ def test_atomic_fp_native(filter_str, return_list_of_op, fdtype):
 
     # To bypass caching
     kernel = dppy.kernel(f)
-    with dpctl.device_context(filter_str):
-        kern = kernel[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(a)
+    with dpctl.device_context(filter_str) as sycl_queue:
+        kern = kernel[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
+            kernel._get_argtypes(a), sycl_queue
+        )
         assert "__spirv_AtomicFAddEXT" not in kern.assembly
