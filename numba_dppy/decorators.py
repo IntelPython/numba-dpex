@@ -89,6 +89,7 @@ def _func_jit(signature, debug=False):
 def _func_autojit_wrapper(debug=False):
     def _func_autojit(pyfunc, debug=debug):
         return compile_dppy_func_template(pyfunc, debug=debug)
+
     return _func_autojit
 
 

@@ -611,6 +611,8 @@ class JitDPPYKernel(DPPYKernelBase):
         if sycl_ctx and sycl_ctx == queue.sycl_context:
             return kernel
         else:
-            kernel = compile_kernel(queue, self.py_func, argtypes, self.access_types, self.debug)
+            kernel = compile_kernel(
+                queue, self.py_func, argtypes, self.access_types, self.debug
+            )
             self.definitions[key_definitions] = (queue.sycl_context, kernel)
         return kernel
