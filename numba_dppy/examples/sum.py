@@ -19,7 +19,7 @@ import numba_dppy as dppy
 import numpy as np
 
 
-@dppy.kernel("void(float32[:], float32[:], float32[:])")
+@dppy.kernel
 def data_parallel_sum(a, b, c):
     """
     Vector addition using the ``kernel`` decorator.
