@@ -44,10 +44,10 @@ def main():
     c = np.ones(N)
 
     try:
-        sycl_device = dpctl.select_gpu_device()
-        with dpctl.device_context(sycl_device):
+        device = dpctl.select_default_device()
+        with dpctl.device_context(device):
             print("Offloading to ...")
-            sycl_device.print_device_info()
+            device.print_device_info()
             result = add_two_arrays(b, c)
         print("GPU device found. Result :", result)
     except ValueError:
