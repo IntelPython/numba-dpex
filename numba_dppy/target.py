@@ -27,7 +27,7 @@ from numba.core.registry import cpu_target
 from numba.core.callconv import MinimalCallConv
 from . import codegen
 from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
-from numba.core.extending_hardware import GPU, hardware_registry
+from numba.core.target_extension import GPU, target_registry
 
 
 CC_SPIR_KERNEL = "spir_kernel"
@@ -98,7 +98,7 @@ class SyclDevice(GPU):
     """
 
 
-hardware_registry['SyclDevice'] = SyclDevice
+target_registry['SyclDevice'] = SyclDevice
 
 class DPPYTargetContext(BaseContext):
     implement_powi_as_math_call = True

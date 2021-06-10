@@ -52,7 +52,7 @@ def get_ext_modules():
         library_dirs=[os.path.dirname(dpctl.__file__)],
         runtime_library_dirs=dpctl_runtime_library_dirs,
     )
-    ext_modules += [ext_dppy]
+    #ext_modules += [ext_dppy]
 
     dpnp_present = False
     try:
@@ -143,7 +143,6 @@ def spirv_compile():
 packages = find_packages(include=["numba_dppy", "numba_dppy.*"])
 build_requires = ["cython"]
 install_requires = [
-    "numba >={},<{}".format("0.53.1", "0.54"),
     "dpctl",
 ]
 
