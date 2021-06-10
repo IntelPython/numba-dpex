@@ -46,22 +46,13 @@ def main():
     c = np.ones_like(a).reshape(X, Y)
 
     try:
-        device = dpctl.select_gpu_device()
+        device = dpctl.select_default_device()
         print("Scheduling on ...")
         device.print_device_info()
         with dpctl.device_context(device):
             driver(a, b, c, global_size)
     except ValueError:
         print("Failed to schedule on a SYCL GPU device")
-
-    try:
-        device = dpctl.select_cpu_device()
-        print("Scheduling on ...")
-        device.print_device_info()
-        with dpctl.device_context(device):
-            driver(a, b, c, global_size)
-    except ValueError:
-        print("Failed to schedule on a SYCL CPU device")
 
     print("Done...")
 
