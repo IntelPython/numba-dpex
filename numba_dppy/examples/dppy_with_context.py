@@ -43,6 +43,8 @@ def main():
     b = np.ones(N)
     c = np.ones(N)
 
+    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
+    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
     device = dpctl.select_default_device()
     print("Using device ...")
     device.print_device_info()

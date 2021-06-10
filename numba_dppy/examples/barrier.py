@@ -37,6 +37,8 @@ def no_arg_barrier_support():
     arr = np.arange(N).astype(np.float32)
     print(arr)
 
+    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
+    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
     device = dpctl.select_default_device()
     print("Using device ...")
     device.print_device_info()
@@ -71,6 +73,8 @@ def local_memory():
     arr = np.arange(blocksize).astype(np.float32)
     print(arr)
 
+    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
+    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
     device = dpctl.select_default_device()
     print("Using device ...")
     device.print_device_info()

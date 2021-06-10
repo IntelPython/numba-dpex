@@ -42,6 +42,8 @@ def main():
     global_size = 100
     a = np.array([0], dtype=np.float32)
 
+    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
+    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
     device = dpctl.select_default_device()
     print("Using device ...")
     device.print_device_info()

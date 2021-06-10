@@ -84,10 +84,8 @@ def main():
     blockdim = 512, 1
     griddim = int(math.ceil(float(OPT_N) / blockdim[0])), 1
 
-    # Device can be selected using envar SYCL_DEVICE_FILTER.
-    # For example:
-    #    SYCL_DEVICE_FILTER=opencl:gpu python blacksholes_kernel.py
-    # Currently, SYCL_DEVICE_FILTER=host is not supported
+    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
+    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
     device = dpctl.select_default_device()
     print("Using device ...")
     device.print_device_info()
