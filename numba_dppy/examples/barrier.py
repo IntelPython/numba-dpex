@@ -38,10 +38,10 @@ def no_arg_barrier_support():
     print(arr)
 
     try:
-        gpu = dpctl.select_gpu_device()
-        with dpctl.device_context(gpu):
+        device = dpctl.select_default_device()
+        with dpctl.device_context(device):
             print("Offloading to ...")
-            gpu.print_device_info()
+            device.print_device_info()
             twice[N, dppy.DEFAULT_LOCAL_SIZE](arr)
     except ValueError:
         print("No SYCL GPU found")
@@ -73,10 +73,10 @@ def local_memory():
     print(arr)
 
     try:
-        gpu = dpctl.select_gpu_device()
-        with dpctl.device_context(gpu):
+        device = dpctl.select_default_device()
+        with dpctl.device_context(device):
             print("Offloading to ...")
-            gpu.print_device_info()
+            device.print_device_info()
             reverse_array[blocksize, dppy.DEFAULT_LOCAL_SIZE](arr)
     except ValueError:
         print("No SYCL GPU found")
