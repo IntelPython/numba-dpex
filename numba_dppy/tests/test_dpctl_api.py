@@ -14,6 +14,7 @@
 
 import pytest
 import dpctl
+from numba_dppy.tests._helper import skip_test
 
 
 list_of_filter_strs = [
@@ -29,6 +30,9 @@ def filter_str(request):
 
 
 def test_dpctl_api(filter_str):
+    if skip_test(filter_str):
+        pytest.skip()
+
     with dpctl.device_context(filter_str):
         dpctl.lsplatform()
         dpctl.get_current_queue()

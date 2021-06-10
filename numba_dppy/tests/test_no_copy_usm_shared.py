@@ -18,7 +18,7 @@ from numba import njit, prange
 
 from numba.core import compiler, cpu
 
-import dpctl.dptensor.numpy_usm_shared as usmarray
+import dpctl.tensor.numpy_usm_shared as usmarray
 import numba_dppy.numpy_usm_shared as nus
 import dpctl
 
@@ -50,8 +50,7 @@ def test_no_copy_usm_shared(capfd):
     try:
         device = dpctl.SyclDevice("opencl:gpu:0")
     except ValueError:
-        print("Device not found")
-        exit()
+        pytest.skip("Device not found")
 
     with dpctl.device_context("opencl:gpu:0"):
         cres = compiler.compile_extra(

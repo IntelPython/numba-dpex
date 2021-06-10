@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function, division, absolute_import
 from numba import types
-from numba.core.typing.npydecl import register_number_classes, parse_dtype, parse_shape
+from numba.core.typing.npydecl import parse_dtype, parse_shape
 from numba.core.typing.templates import (
     AttributeTemplate,
     ConcreteTemplate,
@@ -23,8 +22,9 @@ from numba.core.typing.templates import (
     signature,
     Registry,
 )
-import numba_dppy, numba_dppy as dppy
-from numba_dppy import target
+import numba_dppy as dppy
+from numba_dppy.dppy_array_type import DPPYArray
+from numba_dppy.utils import address_space
 
 registry = Registry()
 intrinsic = registry.register
@@ -164,11 +164,11 @@ class OCL_local_array(CallableTemplate):
             ndim = parse_shape(shape)
             nb_dtype = parse_dtype(dtype)
             if nb_dtype is not None and ndim is not None:
-                return types.Array(
+                return DPPYArray(
                     dtype=nb_dtype,
                     ndim=ndim,
                     layout="C",
-                    addrspace=target.SPIR_LOCAL_ADDRSPACE,
+                    addrspace=address_space.LOCAL,
                 )
 
         return typer

@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function, division, absolute_import
 from contextlib import contextmanager
 import warnings
 
@@ -226,6 +225,7 @@ class DPPYParforPass(FunctionPass):
             state.typingctx,
             state.flags.auto_parallel,
             state.flags,
+            state.metadata,
             state.parfor_diagnostics,
         )
 

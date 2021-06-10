@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function
 from timeit import default_timer as time
 import numpy as np
 import numba_dppy as dppy

@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function, absolute_import
 import copy
 from collections import namedtuple
 
@@ -31,12 +30,12 @@ import numpy as np
 
 from . import spirv_generator
 
-import os
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
+from numba_dppy.config import DEBUG
+from numba_dppy.driver import USMNdArrayType
 
 
-DEBUG = os.environ.get("NUMBA_DPPY_DEBUG", None)
 _NUMBA_DPPY_READ_ONLY = "read_only"
 _NUMBA_DPPY_WRITE_ONLY = "write_only"
 _NUMBA_DPPY_READ_WRITE = "read_write"
@@ -143,8 +142,8 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
         print("compile_kernel", args)
         debug = True
     if not sycl_queue:
-        # This will be get_current_queue
-        sycl_queue = dpctl.get_current_queue()
+        # We expect the sycl_queue to be provided when this function is called
+        raise ValueError("SYCL queue is required for compiling a kernel")
 
     cres = compile_with_dppy(pyfunc, None, args, debug=debug)
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
@@ -168,7 +167,7 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
 def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug=False):
     if DEBUG:
         print("compile_kernel_parfor", args)
-        for a in args:
+        for a in args_with_addrspaces:
             print(a, type(a))
             if isinstance(a, types.npytypes.Array):
                 print("addrspace:", a.addrspace)
@@ -492,6 +491,9 @@ class DPPYKernel(DPPYKernelBase):
 
         device_arrs.append(None)
 
+        if isinstance(ty, USMNdArrayType):
+            raise NotImplementedError(ty, USMNdArrayType)
+
         if isinstance(ty, types.Array):
             if hasattr(val.base, "__sycl_usm_array_interface__"):
                 self._unpack_device_array_argument(val, kernelargs)
@@ -559,33 +561,43 @@ class DPPYKernel(DPPYKernelBase):
 
 
 class JitDPPYKernel(DPPYKernelBase):
-    def __init__(self, func, access_types):
+    def __init__(self, func, debug, access_types):
 
         super(JitDPPYKernel, self).__init__()
 
         self.py_func = func
         self.definitions = {}
+        self.debug = debug
         self.access_types = access_types
 
         from .descriptor import dppy_target
 
         self.typingctx = dppy_target.typing_context
 
+    def _get_argtypes(self, *args):
+        """
+        Convenience function to get the type of each argument.
+        """
+        return tuple([self.typingctx.resolve_argument_type(a) for a in args])
+
     def __call__(self, *args, **kwargs):
         assert not kwargs, "Keyword Arguments are not supported"
-        if self.sycl_queue is None:
-            try:
-                self.sycl_queue = dpctl.get_current_queue()
-            except:
-                _raise_no_device_found_error()
+        try:
+            current_queue = dpctl.get_current_queue()
+        except:
+            _raise_no_device_found_error()
 
-        kernel = self.specialize(*args)
+        argtypes = self._get_argtypes(*args)
+        kernel = self.specialize(argtypes, current_queue)
         cfg = kernel.configure(self.sycl_queue, self.global_size, self.local_size)
         cfg(*args)
 
-    def specialize(self, *args):
-        argtypes = tuple([self.typingctx.resolve_argument_type(a) for a in args])
-        q = None
+    def specialize(self, argtypes, queue):
+        # We specialize for argtypes and queue. These two are used as key for
+        # caching as well.
+        assert queue is not None
+
+        sycl_ctx = None
         kernel = None
         # we were previously using the _env_ptr of the device_env, the sycl_queue
         # should be sufficient to cache the compiled kernel for now, but we should
@@ -594,13 +606,11 @@ class JitDPPYKernel(DPPYKernelBase):
         key_definitions = argtypes
         result = self.definitions.get(key_definitions)
         if result:
-            q, kernel = result
+            sycl_ctx, kernel = result
 
-        if q == self.sycl_queue:
+        if sycl_ctx and sycl_ctx == queue.sycl_context:
             return kernel
         else:
-            kernel = compile_kernel(
-                self.sycl_queue, self.py_func, argtypes, self.access_types
-            )
-            self.definitions[key_definitions] = (self.sycl_queue, kernel)
+            kernel = compile_kernel(queue, self.py_func, argtypes, self.access_types)
+            self.definitions[key_definitions] = (queue.sycl_context, kernel)
         return kernel

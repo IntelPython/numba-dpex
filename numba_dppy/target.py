@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function, absolute_import
-
 import re
 import numpy as np
 
@@ -28,6 +26,7 @@ from numba.core.base import BaseContext
 from numba.core.registry import cpu_target
 from numba.core.callconv import MinimalCallConv
 from . import codegen
+from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
 
 
 CC_SPIR_KERNEL = "spir_kernel"
@@ -67,6 +66,7 @@ SPIR_VERSION = (2, 0)
 
 
 LINK_ATOMIC = 111
+LLVM_SPIRV_ARGS = 112
 
 
 class GenericPointerModel(datamodel.PrimitiveModel):
@@ -85,6 +85,7 @@ class GenericPointerModel(datamodel.PrimitiveModel):
 def _init_data_model_manager():
     dmm = datamodel.default_manager.copy()
     dmm.register(types.CPointer, GenericPointerModel)
+    dmm.register(DPPYArray, DPPYArrayModel)
     return dmm
 
 
@@ -102,7 +103,7 @@ class DPPYTargetContext(BaseContext):
         )
         # Override data model manager to SPIR model
         self.data_model_manager = spirv_data_model_manager
-        self.link_binaries = dict()
+        self.extra_compile_options = dict()
 
         from numba.np.ufunc_db import _lazy_init_db
         import copy
@@ -326,6 +327,10 @@ class DPPYTargetContext(BaseContext):
         """
         ptras = llvmir.PointerType(src.type.pointee, addrspace=addrspace)
         return builder.addrspacecast(src, ptras)
+
+    # Overrides
+    def get_ufunc_info(self, ufunc_key):
+        return self.ufunc_db[ufunc_key]
 
 
 def set_dppy_kernel(fn):
