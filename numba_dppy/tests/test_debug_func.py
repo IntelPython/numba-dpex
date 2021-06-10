@@ -23,14 +23,15 @@ import numba_dppy as dppy
 from numba_dppy import compiler
 from numba_dppy.tests._helper import skip_test
 
-from numba.tests.support import captured_stdout
-import numpy as np
-import os
+
+def get_kernel_ir(sycl_queue, fn, sig, debug=False):
+    kernel = compiler.compile_kernel(sycl_queue, fn.py_func, sig, None, debug=debug)
+    return kernel.assembly
 
 
 def make_check(ir, val_to_search):
     """
-    Check the IR for instruction.
+    Check the compiled assembly for debuginfo.
     """
 
     m = re.search(val_to_search, ir, re.I)
@@ -63,21 +64,16 @@ def test_debug_flag_generates_ir_with_debuginfo_for_func(offload_device):
     ir_tag_data_parallel_sum = r'\!DISubprogram\(name: "test_debug_flag_generates_ir_with_debuginfo_for_func.<locals>.data_parallel_sum"'
     ir_tags = (ir_tag_func_sum, ir_tag_data_parallel_sum)
 
-    global_size = 10
-    a = np.arange(global_size, dtype=np.float32)
-    b = np.arange(global_size, dtype=np.float32)
-    c = np.empty_like(a)
-
-    os.environ["NUMBA_DUMP_OPTIMIZED"] = "1"
-
-    with captured_stdout() as out:
-        with dpctl.device_context(offload_device) as sycl_queue:
-            data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
-
-    os.environ["NUMBA_DUMP_OPTIMIZED"] = "0"
+    with dpctl.device_context(offload_device) as sycl_queue:
+        sig = (
+            types.float32[:],
+            types.float32[:],
+            types.float32[:],
+        )
+        kernel_ir = get_kernel_ir(sycl_queue, data_parallel_sum, sig, debug=True)
 
     for tag in ir_tags:
-        got = make_check(out.getvalue(), tag)
+        got = make_check(kernel_ir, tag)
         assert got == True
 
 
@@ -106,21 +102,18 @@ def test_env_var_generates_ir_with_debuginfo_for_func(offload_device):
     ir_tag_data_parallel_sum = r'\!DISubprogram\(name: "test_env_var_generates_ir_with_debuginfo_for_func.<locals>.data_parallel_sum"'
     ir_tags = (ir_tag_func_sum, ir_tag_data_parallel_sum)
 
-    global_size = 10
-    a = np.arange(global_size, dtype=np.float32)
-    b = np.arange(global_size, dtype=np.float32)
-    c = np.empty_like(a)
-
     dppy.compiler.DEBUGINFO = 1
-    os.environ["NUMBA_DUMP_OPTIMIZED"] = "1"
 
-    with captured_stdout() as out:
-        with dpctl.device_context(offload_device) as sycl_queue:
-            data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
+    with dpctl.device_context(offload_device) as sycl_queue:
+        sig = (
+            types.float32[:],
+            types.float32[:],
+            types.float32[:],
+        )
+        kernel_ir = get_kernel_ir(sycl_queue, data_parallel_sum, sig, debug=True)
 
-    os.environ["NUMBA_DUMP_OPTIMIZED"] = "0"
     dppy.compiler.DEBUGINFO = 0
 
     for tag in ir_tags:
-        got = make_check(out.getvalue(), tag)
+        got = make_check(kernel_ir, tag)
         assert got == True
