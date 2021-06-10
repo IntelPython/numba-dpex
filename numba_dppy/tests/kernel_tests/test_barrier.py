@@ -53,8 +53,7 @@ def test_proper_lowering(filter_str):
         pytest.skip()
 
     # This will trigger eager compilation
-    #@dppy.kernel("void(float32[::1])")
-    @dppy.kernel
+    @dppy.kernel("void(float32[::1])")
     def twice(A):
         i = dppy.get_global_id(0)
         d = A[i]
@@ -79,8 +78,7 @@ def test_no_arg_barrier_support(filter_str):
     if skip_if_win():
         pytest.skip()
 
-    #@dppy.kernel("void(float32[::1])")
-    @dppy.kernel
+    @dppy.kernel("void(float32[::1])")
     def twice(A):
         i = dppy.get_global_id(0)
         d = A[i]
@@ -107,8 +105,7 @@ def test_local_memory(filter_str):
     if skip_if_win():
         pytest.skip()
 
-    #@dppy.kernel("void(float32[::1])")
-    @dppy.kernel
+    @dppy.kernel("void(float32[::1])")
     def reverse_array(A):
         lm = dppy.local.array(shape=10, dtype=np.float32)
         i = dppy.get_global_id(0)
