@@ -53,22 +53,13 @@ def main():
     c = np.ones_like(a).reshape(X, X)
 
     try:
-        gpu = dpctl.select_gpu_device()
+        device = dpctl.select_default_device()
         print("Running on the following SYCL GPU device")
-        gpu.print_device_info()
-        with dpctl.device_context(gpu):
+        device.print_device_info()
+        with dpctl.device_context(device):
             driver(a, b, c)
     except ValueError:
         print("No SYCL GPU device found")
-
-    try:
-        cpu = dpctl.select_cpu_device()
-        print("Running on the following SYCL CPU device")
-        cpu.print_device_info()
-        with dpctl.device_context(cpu):
-            driver(a, b, c)
-    except ValueError:
-        print("No SYCL CPU device found")
 
     # Host compute using standard NumPy
     Amat = np.matrix(a)
