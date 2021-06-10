@@ -50,10 +50,10 @@ def main():
     b = np.ones(N)
 
     try:
-        gpu = dpctl.select_gpu_device()
-        with dpctl.device_context(gpu):
+        device = dpctl.select_default_device()
+        with dpctl.device_context(device):
             print("Offloading to ...")
-            gpu.print_device_info()
+            device.print_device_info()
             driver(a, b, N)
     except ValueError:
         print("No SYCL device found")
