@@ -50,10 +50,10 @@ def main():
     scale = 3.0
 
     try:
-        gpu = dpctl.select_gpu_device()
-        print("Running on the following SYCL GPU device")
-        gpu.print_device_info()
-        with dpctl.device_context(gpu):
+        device = dpctl.select_default_device()
+        print("Offloading to ...")
+        device.print_device_info()
+        with dpctl.device_context(device):
             result = rand()
             # Random values in a given shape (3, 2)
             print(result)
