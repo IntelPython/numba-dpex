@@ -88,6 +88,8 @@ def main():
     no_arg_barrier_support()
     local_memory()
 
+    print("Done...")
+
 
 if __name__ == "__main__":
     main()

@@ -58,6 +58,8 @@ def main():
     except ValueError:
         print("No SYCL device found")
 
+    print("Done...")
+
 
 if __name__ == "__main__":
     main()

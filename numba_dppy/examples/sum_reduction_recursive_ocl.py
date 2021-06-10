@@ -130,6 +130,8 @@ def test_sum_reduce():
 
     assert actual == expected
 
+    print("Done...")
+
 
 if __name__ == "__main__":
     test_sum_reduce()

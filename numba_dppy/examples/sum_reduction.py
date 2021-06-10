@@ -63,6 +63,8 @@ def test_sum_reduce():
 
     assert expected - actual < 1e-2
 
+    print("Done...")
+
 
 if __name__ == "__main__":
     test_sum_reduce()

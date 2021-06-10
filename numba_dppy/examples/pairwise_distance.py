@@ -98,6 +98,8 @@ def main():
     times = np.asarray(times, dtype=np.float32)
     print("Average time of %d runs is = %fs" % (args.r, times.mean()))
 
+    print("Done...")
+
 
 if __name__ == "__main__":
     main()

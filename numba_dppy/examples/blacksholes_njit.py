@@ -80,6 +80,8 @@ def main():
         sycl_device.print_device_info()
         run(10)
 
+    print("Done...")
+
 
 if __name__ == "__main__":
     main()

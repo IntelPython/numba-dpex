@@ -50,6 +50,8 @@ def main():
     except ValueError:
         print("Could not find an SYCL GPU device")
 
+    print("Done...")
+
 
 if __name__ == "__main__":
     main()
