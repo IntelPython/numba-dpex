@@ -58,21 +58,19 @@ def sum_reduce(A):
 
     partial_sums = np.zeros(nb_work_groups).astype(A.dtype)
 
-    try:
-        device = dpctl.select_default_device()
-        with dpctl.device_context(device):
-            print("Using device ...")
-            device.print_device_info()
-            sum_reduction_kernel[global_size, work_group_size](A, partial_sums)
-        final_sum = 0
-        # calculate the final sum in HOST
-        for i in range(nb_work_groups):
-            final_sum += partial_sums[i]
+    device = dpctl.select_default_device()
+    print("Using device ...")
+    device.print_device_info()
 
-        return final_sum
-    except ValueError:
-        print("No SYCL GPU device found. Failed to perform the summation.")
-        return -1
+    with dpctl.device_context(device):
+        sum_reduction_kernel[global_size, work_group_size](A, partial_sums)
+
+    final_sum = 0
+    # calculate the final sum in HOST
+    for i in range(nb_work_groups):
+        final_sum += partial_sums[i]
+
+    return final_sum
 
 
 def test_sum_reduce():

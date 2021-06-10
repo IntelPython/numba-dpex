@@ -43,15 +43,14 @@ def main():
     b = np.ones(N)
     c = np.ones(N)
 
-    try:
-        device = dpctl.select_default_device()
-        with dpctl.device_context(device):
-            print("Using device ...")
-            device.print_device_info()
-            result = add_two_arrays(b, c)
-        print("GPU device found. Result :", result)
-    except ValueError:
-        print("No SYCL GPU device found")
+    device = dpctl.select_default_device()
+    print("Using device ...")
+    device.print_device_info()
+
+    with dpctl.device_context(device):
+        result = add_two_arrays(b, c)
+
+    print("Result :", result)
 
     print("Done...")
 

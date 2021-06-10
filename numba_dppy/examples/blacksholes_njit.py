@@ -74,10 +74,11 @@ def main():
     # For example:
     #   SYCL_DEVICE_FILTER=opencl:gpu python blacksholes_njit.py
     # Currently, SYCL_DEVICE_FILTER=host is not supported
-    sycl_device = dpctl.select_default_device()
-    with dpctl.device_context(sycl_device):
-        print("Using device ...")
-        sycl_device.print_device_info()
+    device = dpctl.select_default_device()
+    print("Using device ...")
+    device.print_device_info()
+
+    with dpctl.device_context(device):
         run(10)
 
     print("Done...")

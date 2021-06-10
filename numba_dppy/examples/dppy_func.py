@@ -49,14 +49,12 @@ def main():
     a = np.ones(N)
     b = np.ones(N)
 
-    try:
-        device = dpctl.select_default_device()
-        with dpctl.device_context(device):
-            print("Using device ...")
-            device.print_device_info()
-            driver(a, b, N)
-    except ValueError:
-        print("No SYCL device found")
+    device = dpctl.select_default_device()
+    print("Using device ...")
+    device.print_device_info()
+
+    with dpctl.device_context(device):
+        driver(a, b, N)
 
     print("Done...")
 

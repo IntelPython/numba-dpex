@@ -45,14 +45,14 @@ def main():
     b = np.array(np.random.random(X * Y), dtype=np.float32).reshape(X, Y)
     c = np.ones_like(a).reshape(X, Y)
 
-    try:
-        device = dpctl.select_default_device()
-        print("Using device ...")
-        device.print_device_info()
-        with dpctl.device_context(device):
-            driver(a, b, c, global_size)
-    except ValueError:
-        print("Failed to schedule on a SYCL GPU device")
+    device = dpctl.select_default_device()
+    print("Using device ...")
+    device.print_device_info()
+
+    with dpctl.device_context(device):
+        driver(a, b, c, global_size)
+
+    print(c)
 
     print("Done...")
 

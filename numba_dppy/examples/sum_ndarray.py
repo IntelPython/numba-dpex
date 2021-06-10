@@ -41,10 +41,10 @@ def main():
     # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
     # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
     device = dpctl.select_default_device()
+    print("Using device ...")
+    device.print_device_info()
 
-    with dpctl.device_context(device) as queue:
-        print("Using device ...")
-        queue.get_sycl_device().print_device_info()
+    with dpctl.device_context(device):
         print("before A: ", a)
         print("before B: ", b)
         data_parallel_sum[global_size, local_size](a, b, c)

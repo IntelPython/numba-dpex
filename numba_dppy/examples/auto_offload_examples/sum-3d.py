@@ -34,22 +34,20 @@ print("b:", b, hex(b.ctypes.data))
 
 
 def main():
-    try:
-        device = dpctl.select_default_device()
-        with dpctl.device_context(device):
-            print("Using device ...")
-            device.print_device_info()
-            c = f1(a, b)
+    device = dpctl.select_default_device()
+    print("Using device ...")
+    device.print_device_info()
 
-        print("c:", c, hex(c.ctypes.data))
-        for i in range(N):
-            for j in range(N):
-                for k in range(N):
-                    if c[i, j, k] != 2.0:
-                        print("First index not equal to 2.0 was", i, j, k)
-                        break
-    except ValueError:
-        print("Could not find a SYCL GPU device")
+    with dpctl.device_context(device):
+        c = f1(a, b)
+
+    print("c:", c, hex(c.ctypes.data))
+    for i in range(N):
+        for j in range(N):
+            for k in range(N):
+                if c[i, j, k] != 2.0:
+                    print("First index not equal to 2.0 was", i, j, k)
+                    break
 
     print("Done...")
 

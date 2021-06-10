@@ -86,14 +86,12 @@ def driver():
 def main():
     times = None
 
-    try:
-        device = dpctl.select_default_device()
-        print("Running on the following SYCL GPU device")
-        device.print_device_info()
-        with dpctl.device_context(device):
-            times = driver()
-    except ValueError:
-        print("No SYCL GPU device found")
+    device = dpctl.select_default_device()
+    print("Using device ...")
+    device.print_device_info()
+
+    with dpctl.device_context(device):
+        times = driver()
 
     times = np.asarray(times, dtype=np.float32)
     print("Average time of %d runs is = %fs" % (args.r, times.mean()))

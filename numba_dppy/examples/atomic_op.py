@@ -42,16 +42,15 @@ def main():
     global_size = 100
     a = np.array([0], dtype=np.float32)
 
-    try:
-        device = dpctl.select_default_device()
-        with dpctl.device_context(device):
-            print("Using device ...")
-            device.print_device_info()
-            atomic_add[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
-            # Expected 100, because global_size = 100
-            print(a)
-    except ValueError as e:
-        print(e)
+    device = dpctl.select_default_device()
+    print("Using device ...")
+    device.print_device_info()
+
+    with dpctl.device_context(device):
+        atomic_add[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
+
+    # Expected 100, because global_size = 100
+    print(a)
 
     print("Done...")
 

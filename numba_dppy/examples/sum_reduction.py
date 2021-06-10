@@ -34,9 +34,10 @@ def sum_reduce(A):
     R = np.array(np.random.random(math.ceil(total / 2)), dtype=A.dtype)
 
     device = dpctl.select_default_device()
+    print("Using device ...")
+    device.print_device_info()
+
     with dpctl.device_context(device):
-        print("Using device ...")
-        device.print_device_info()
         while total > 1:
             global_size = total // 2
             sum_reduction_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](
