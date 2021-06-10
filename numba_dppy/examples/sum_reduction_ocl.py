@@ -59,10 +59,10 @@ def sum_reduce(A):
     partial_sums = np.zeros(nb_work_groups).astype(A.dtype)
 
     try:
-        gpu = dpctl.select_gpu_device()
-        with dpctl.device_context(gpu):
+        device = dpctl.select_gpu_device()
+        with dpctl.device_context(device):
             print("Offloading to ...")
-            gpu.print_device_info()
+            device.print_device_info()
             sum_reduction_kernel[global_size, work_group_size](A, partial_sums)
         final_sum = 0
         # calculate the final sum in HOST
