@@ -76,7 +76,7 @@ def main():
     # Currently, SYCL_DEVICE_FILTER=host is not supported
     sycl_device = dpctl.select_default_device()
     with dpctl.device_context(sycl_device):
-        print("Offloading to ...")
+        print("Using device ...")
         sycl_device.print_device_info()
         run(10)
 

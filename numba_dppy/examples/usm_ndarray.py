@@ -50,7 +50,7 @@ def main():
 
     try:
         device = dpctl.select_default_device()
-        print("Scheduling on ...")
+        print("Using device ...")
         device.print_device_info()
         with dpctl.device_context(device):
             da = dpt.usm_ndarray(a.shape, dtype=a.dtype, buffer="shared")

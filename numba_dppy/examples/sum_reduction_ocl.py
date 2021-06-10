@@ -61,7 +61,7 @@ def sum_reduce(A):
     try:
         device = dpctl.select_default_device()
         with dpctl.device_context(device):
-            print("Offloading to ...")
+            print("Using device ...")
             device.print_device_info()
             sum_reduction_kernel[global_size, work_group_size](A, partial_sums)
         final_sum = 0

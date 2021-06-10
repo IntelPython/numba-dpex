@@ -46,7 +46,7 @@ def main():
     try:
         device = dpctl.select_default_device()
         with dpctl.device_context(device):
-            print("Offloading to ...")
+            print("Using device ...")
             device.print_device_info()
             result = add_two_arrays(b, c)
         print("GPU device found. Result :", result)

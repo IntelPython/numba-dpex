@@ -42,7 +42,7 @@ def main():
     B = np.arange(N, dtype=dtype) * 10
 
     device = dpctl.select_default_device()
-    print("Scheduling on ...")
+    print("Using device ...")
     device.print_device_info()
 
     with dpctl.device_context(device):

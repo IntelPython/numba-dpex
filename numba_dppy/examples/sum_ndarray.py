@@ -43,7 +43,7 @@ def main():
     device = dpctl.select_default_device()
 
     with dpctl.device_context(device) as queue:
-        print("Offloading to ...")
+        print("Using device ...")
         queue.get_sycl_device().print_device_info()
         print("before A: ", a)
         print("before B: ", b)

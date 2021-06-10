@@ -40,7 +40,7 @@ def no_arg_barrier_support():
     try:
         device = dpctl.select_default_device()
         with dpctl.device_context(device):
-            print("Offloading to ...")
+            print("Using device ...")
             device.print_device_info()
             twice[N, dppy.DEFAULT_LOCAL_SIZE](arr)
     except ValueError:
@@ -75,7 +75,7 @@ def local_memory():
     try:
         device = dpctl.select_default_device()
         with dpctl.device_context(device):
-            print("Offloading to ...")
+            print("Using device ...")
             device.print_device_info()
             reverse_array[blocksize, dppy.DEFAULT_LOCAL_SIZE](arr)
     except ValueError:

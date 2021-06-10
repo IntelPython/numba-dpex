@@ -35,7 +35,7 @@ def sum_reduce(A):
 
     device = dpctl.select_default_device()
     with dpctl.device_context(device):
-        print("Offloading to ...")
+        print("Using device ...")
         device.print_device_info()
         while total > 1:
             global_size = total // 2

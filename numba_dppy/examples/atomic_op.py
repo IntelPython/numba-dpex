@@ -45,7 +45,7 @@ def main():
     try:
         device = dpctl.select_default_device()
         with dpctl.device_context(device):
-            print("Offloading to ...")
+            print("Using device ...")
             device.print_device_info()
             atomic_add[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
             # Expected 100, because global_size = 100

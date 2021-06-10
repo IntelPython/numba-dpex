@@ -94,7 +94,7 @@ def sum_reduce(A):
 
     device = dpctl.select_default_device()
     with dpctl.device_context(device):
-        print("Offloading to ...")
+        print("Using device ...")
         device.print_device_info()
         inp_buf = dpctl_mem.MemoryUSMShared(A.size * A.dtype.itemsize)
         inp_ndarray = np.ndarray(A.shape, buffer=inp_buf, dtype=A.dtype)
