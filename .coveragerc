@@ -3,5 +3,8 @@ branch = True
 source = numba_dppy
 omit = */numba_dppy/tests/*
 
+[report]
+precision=2
+
 [pytest]
 addopts = --cov=numba_dppy
