@@ -31,44 +31,25 @@ global_size = 64
 local_size = 32
 N = global_size * local_size
 
-a = np.array(np.random.random(N), dtype=np.float32)
-b = np.array(np.random.random(N), dtype=np.float32)
-c = np.ones_like(a)
+a = np.arange(N, dtype=np.float32)
+b = np.arange(N, dtype=np.float32)
+c = np.empty_like(a)
 
 
 def main():
-    if has_gpu():
-        with dpctl.device_context("opencl:gpu") as queue:
-            print("Offloading to ...")
-            queue.get_sycl_device().print_device_info()
-            print("before A: ", a)
-            print("before B: ", b)
-            data_parallel_sum[global_size, local_size](a, b, c)
-            print("after  C: ", c)
-    else:
-        print("Could not find an OpenCL GPU device")
 
-    if has_cpu():
-        with dpctl.device_context("opencl:cpu") as queue:
-            print("Offloading to ...")
-            queue.get_sycl_device().print_device_info()
-            print("before A: ", a)
-            print("before B: ", b)
-            data_parallel_sum[global_size, local_size](a, b, c)
-            print("after  C: ", c)
-    else:
-        print("Could not find an OpenCL CPU device")
+    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
+    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
+    device = dpctl.select_default_device()
 
-    if has_gpu("level_zero"):
-        with dpctl.device_context("level_zero:gpu") as queue:
-            print("Offloading to ...")
-            queue.get_sycl_device().print_device_info()
-            print("before A: ", a)
-            print("before B: ", b)
-            data_parallel_sum[global_size, local_size](a, b, c)
-            print("after  C: ", c)
-    else:
-        print("Could not find an Level Zero GPU device")
+    with dpctl.device_context(device) as queue:
+        print("Offloading to ...")
+        queue.get_sycl_device().print_device_info()
+        print("before A: ", a)
+        print("before B: ", b)
+        data_parallel_sum[global_size, local_size](a, b, c)
+        print("after  C: ", c)
+
     print("Done...")
 
 
