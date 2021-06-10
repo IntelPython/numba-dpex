@@ -59,7 +59,7 @@ def sum_reduce(A):
     partial_sums = np.zeros(nb_work_groups).astype(A.dtype)
 
     try:
-        device = dpctl.select_gpu_device()
+        device = dpctl.select_default_device()
         with dpctl.device_context(device):
             print("Offloading to ...")
             device.print_device_info()
