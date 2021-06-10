@@ -19,8 +19,8 @@ import dpctl
 
 @dppy.func
 def func_sum(a_in_func, b_in_func):
-    s = a_in_func + b_in_func
-    return s
+    result = a_in_func + b_in_func
+    return result
 
 
 @dppy.kernel
@@ -30,11 +30,11 @@ def kernel_sum(a_in_kernel, b_in_kernel, c_in_kernel):
 
 
 def driver(a, b, c, global_size):
-    print("before : ", a)
-    print("before : ", b)
-    print("before : ", c)
+    print("a = ", a)
+    print("b = ", b)
+    print("c = ", c)
     kernel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
-    print("after : ", c)
+    print("a + b = ", c)
 
 
 def main():
