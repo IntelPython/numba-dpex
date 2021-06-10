@@ -35,7 +35,7 @@ print("b:", b, hex(b.ctypes.data))
 
 def main():
     try:
-        device = dpctl.select_gpu_device()
+        device = dpctl.select_default_device()
         with dpctl.device_context(device):
             print("Offloading to ...")
             device.print_device_info()
