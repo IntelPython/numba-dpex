@@ -43,10 +43,10 @@ def main():
     a = np.array([0], dtype=np.float32)
 
     try:
-        d = dpctl.select_gpu_device()
-        with dpctl.device_context(d):
+        device = dpctl.select_default_device()
+        with dpctl.device_context(device):
             print("Offloading to ...")
-            d.print_device_info()
+            device.print_device_info()
             atomic_add[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
             # Expected 100, because global_size = 100
             print(a)
