@@ -27,25 +27,13 @@ def sum_reduction_kernel(A, R, stride):
     A[i] = R[i]
 
 
-def get_device():
-    device = None
-    try:
-        device = dpctl.select_gpu_device()
-    except:
-        try:
-            device = dpctl.select_cpu_device()
-        except:
-            raise RuntimeError("No device found")
-    return device
-
-
 def sum_reduce(A):
     """Size of A should be power of two."""
     total = len(A)
     # max size will require half the size of A to store sum
     R = np.array(np.random.random(math.ceil(total / 2)), dtype=A.dtype)
 
-    device = get_device()
+    device = dpctl.select_default_device()
     with dpctl.device_context(device):
         print("Offloading to ...")
         device.print_device_info()
