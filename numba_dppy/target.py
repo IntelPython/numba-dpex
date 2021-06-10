@@ -105,7 +105,6 @@ def _init_data_model_manager():
 
 spirv_data_model_manager = _init_data_model_manager()
 
-
 class SyclDevice(GPU):
     """Mark the hardware target as SYCL Device.
     """
@@ -265,7 +264,8 @@ class DPPYTargetContext(BaseContext):
             codegen.SPIR_DATA_LAYOUT[utils.MACHINE_BITS]
         )
         # Override data model manager to SPIR model
-        self.data_model_manager = spirv_data_model_manager
+        import numba.cpython.unicode
+        self.data_model_manager = _init_data_model_manager()
         self.extra_compile_options = dict()
 
         from numba.np.ufunc_db import _lazy_init_db
@@ -276,6 +276,10 @@ class DPPYTargetContext(BaseContext):
 
         self.ufunc_db = copy.deepcopy(ufunc_db)
         self.cpu_context = cpu_target.target_context
+
+    # Overrides
+    def create_module(self, name):
+        return self._internal_codegen._create_empty_module(name)
 
     def replace_numpy_ufunc_with_opencl_supported_functions(self):
         from numba_dppy.ocl.mathimpl import lower_ocl_impl, sig_mapper

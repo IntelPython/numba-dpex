@@ -716,7 +716,7 @@ def _lower_parfor_gufunc(lowerer, parfor):
 
     # compile parfor body as a separate function to be used with GUFuncWrapper
     flags = copy.copy(parfor.flags)
-    flags.set("error_model", "numpy")
+    flags.error_model = "numpy"
 
     # Can't get here unless flags.set('auto_parallel', ParallelOptions(True))
     index_var_typ = typemap[parfor.loop_nests[0].index_variable.name]

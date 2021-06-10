@@ -18,6 +18,7 @@ from .dppy_passbuilder import DPPYPassBuilder
 from numba.core.typing.templates import ConcreteTemplate
 from numba.core import types, compiler, ir
 from numba.core.typing.templates import AbstractTemplate
+from numba.core.compiler_lock import global_compiler_lock
 import ctypes
 from types import FunctionType
 from inspect import signature
@@ -89,6 +90,7 @@ class DPPYCompiler(CompilerBase):
         return pms
 
 
+@global_compiler_lock
 def compile_with_dppy(pyfunc, return_type, args, debug=None):
     # First compilation will trigger the initialization of the OpenCL backend.
     from .descriptor import dppy_target
