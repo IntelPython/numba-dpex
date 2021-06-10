@@ -74,15 +74,12 @@ def test_debug_flag_generates_ir_with_debuginfo(offload_device, debug_option):
         assert expect == got
 
 
+@pytest.mark.xfail(strict=True)
 def test_debug_info_locals_vars_on_no_opt(offload_device):
     """
     Check llvm debug tag DILocalVariable is emitting to IR for all variables if debug parameter is set to True
     and optimization is O0
     """
-
-    pytest.xfail(
-        "Assertion Cast->getSrcTy()->getPointerAddressSpace() == SPIRAS_Generic"
-    )
 
     if skip_test(offload_device):
         pytest.skip()
