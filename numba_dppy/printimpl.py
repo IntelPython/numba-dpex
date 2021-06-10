@@ -28,7 +28,7 @@ lower = registry.lower
 def declare_print(lmod):
     voidptrty = lc.Type.pointer(lc.Type.int(8), addrspace=SPIR_GENERIC_ADDRSPACE)
     printfty = lc.Type.function(lc.Type.int(), [voidptrty], var_arg=True)
-    printf = lmod.get_or_insert_function(printfty, "printf")
+    printf = cgutils.get_or_insert_function(lmod, printfty, "printf")
     return printf
 
 
