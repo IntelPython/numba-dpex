@@ -18,7 +18,6 @@ from collections import OrderedDict
 import linecache
 import os
 import sys
-from numba import core
 import numpy as np
 
 import numba
@@ -1210,66 +1209,25 @@ def relatively_deep_copy(obj, memo):
 
 from numba.core.funcdesc import qualifying_prefix, default_mangler
 from numba_dppy.dppy_debuginfo import DPPYDIBuilder
-from numba.core.environment import Environment
-from numba.core import utils, types, ir, debuginfo, funcdesc, config
+from numba.core import types, ir, debuginfo, funcdesc, config
 
 
 class ModifiedLower(Lower):
     def __init__(self, context, library, fndesc, func_ir, metadata=None):
-        self.library = library
-        self.fndesc = fndesc
-        self.blocks = utils.SortedMap(func_ir.blocks.items())
-        self.func_ir = func_ir
-        self.call_conv = context.call_conv
-        self.generator_info = func_ir.generator_info
-        self.metadata = metadata
-
+        Lower.__init__(self, context, library, fndesc, func_ir, metadata)
         self.qualprefix = qualifying_prefix(fndesc.modname, fndesc.qualname)
         self.mangled_qualname = default_mangler(self.qualprefix, fndesc.argtypes)
 
-        # Initialize LLVM
-        self.module = self.library.create_ir_module(self.fndesc.unique_name)
-
-        # Python execution environment (will be available to the compiled
-        # function).
-        self.env = Environment.from_fndesc(self.fndesc)
-
-        # Internal states
-        self.blkmap = {}
-        self.pending_phis = {}
-        self.varmap = {}
-        self.firstblk = min(self.blocks.keys())
-        self.loc = -1
-
-        # Specializes the target context as seen inside the Lowerer
-        # This adds:
-        #  - environment: the python execution environment
-        self.context = context.subtarget(environment=self.env, fndesc=self.fndesc)
-
-        # Debuginfo
         if self.context.enable_debuginfo:
             self.debuginfo = DPPYDIBuilder(
-                module=self.module, filepath=func_ir.loc.filename
+                module=self.module,
+                filepath=func_ir.loc.filename,
+                mangled_qualname=self.mangled_qualname,
             )
         else:
             self.debuginfo = debuginfo.DummyDIBuilder(
                 module=self.module, filepath=func_ir.loc.filename
             )
-
-        self.init()
-
-    def pre_lower(self):
-        """
-        Called before lowering all blocks.
-        """
-        # A given Lower object can be used for several LL functions
-        # (for generators) and it's important to use a new API and
-        # EnvironmentManager.
-        self.pyapi = None
-        names = (self.fndesc.qualname, self.mangled_qualname)
-        self.debuginfo.mark_subprogram(
-            function=self.builder.function, name=names, loc=self.func_ir.loc
-        )
 
 
 class DPPYLower(ModifiedLower):
