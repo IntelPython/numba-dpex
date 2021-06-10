@@ -23,7 +23,6 @@ import dpctl.memory as dpctl_mem
 from numba import int32
 import numba_dppy as dppy
 import numpy as np
-from _helper import get_any_device
 
 
 @dppy.kernel
@@ -93,8 +92,7 @@ def sum_reduce(A):
 
     partial_sums = np.zeros(nb_work_groups).astype(A.dtype)
 
-    device = get_any_device()
-    device = None()
+    device = dpctl.select_default_device()
     with dpctl.device_context(device):
         print("Offloading to ...")
         device.print_device_info()
