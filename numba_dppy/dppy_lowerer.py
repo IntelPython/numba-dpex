@@ -1215,14 +1215,14 @@ from numba.core import types, ir, debuginfo, funcdesc, config
 class ModifiedLower(Lower):
     def __init__(self, context, library, fndesc, func_ir, metadata=None):
         Lower.__init__(self, context, library, fndesc, func_ir, metadata)
-        self.qualprefix = qualifying_prefix(fndesc.modname, fndesc.qualname)
-        self.mangled_qualname = default_mangler(self.qualprefix, fndesc.argtypes)
+        qualprefix = qualifying_prefix(fndesc.modname, fndesc.qualname)
+        self.mangled_qualname = default_mangler(qualprefix, fndesc.argtypes)
 
         if self.context.enable_debuginfo:
             self.debuginfo = DPPYDIBuilder(
                 module=self.module,
                 filepath=func_ir.loc.filename,
-                mangled_qualname=self.mangled_qualname,
+                linkage_name=self.mangled_qualname,
             )
         else:
             self.debuginfo = debuginfo.DummyDIBuilder(

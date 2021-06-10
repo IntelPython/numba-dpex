@@ -13,12 +13,13 @@
 # limitations under the License.
 
 from numba.core.debuginfo import DIBuilder
+from llvmlite import ir
 
 
 class DPPYDIBuilder(DIBuilder):
-    def __init__(self, module, filepath, mangled_qualname):
+    def __init__(self, module, filepath, linkage_name):
         DIBuilder.__init__(self, module, filepath)
-        self.linkage_name = mangled_qualname
+        self.linkage_name = linkage_name
 
     def mark_subprogram(self, function, name, loc):
         di_subp = self._add_subprogram(
@@ -27,3 +28,17 @@ class DPPYDIBuilder(DIBuilder):
         function.set_metadata("dbg", di_subp)
         # disable inlining for this function for easier debugging
         function.attributes.add("noinline")
+
+    def _di_compile_unit(self):
+        return self.module.add_debug_info(
+            "DICompileUnit",
+            {
+                "language": ir.DIToken("DW_LANG_C_plus_plus"),
+                "file": self.difile,
+                "producer": "Numba",
+                "runtimeVersion": 0,
+                "isOptimized": True,
+                "emissionKind": 1,  # 0-NoDebug, 1-FullDebug
+            },
+            is_distinct=True,
+        )
