@@ -15,7 +15,6 @@
 from numba.core.types.npytypes import Array
 from numba.core import types
 from numba.core.datamodel.models import StructModel
-import numpy as np
 
 
 class DPPYArray(Array):
@@ -28,7 +27,6 @@ class DPPYArray(Array):
         dtype,
         ndim,
         layout,
-        py_type=np.ndarray,
         readonly=False,
         name=None,
         aligned=True,
@@ -39,7 +37,6 @@ class DPPYArray(Array):
             dtype,
             ndim,
             layout,
-            py_type=py_type,
             readonly=readonly,
             name=name,
             aligned=aligned,

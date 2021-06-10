@@ -95,9 +95,13 @@ spirv_data_model_manager = _init_data_model_manager()
 class SyclDevice(GPU):
     """Mark the hardware target as SYCL Device.
     """
+    pass
+
 
 
 target_registry['SyclDevice'] = SyclDevice
+
+import numba_dppy.dppy_offload_dispatcher
 
 class DPPYTargetContext(BaseContext):
     implement_powi_as_math_call = True
