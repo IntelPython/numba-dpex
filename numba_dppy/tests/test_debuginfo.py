@@ -114,13 +114,10 @@ def test_debug_info_locals_vars_on_no_opt(offload_device):
     config.OPT = 3  # Return to the default value
 
 
-def test_debug_kernel_local_vars_in_ir(offload_device):
+def test_debug_kernel_local_vars_in_ir():
     """
     Check llvm debug tag DILocalVariable is emitting to IR for variables created in kernel
     """
-
-    if skip_test(offload_device):
-        pytest.skip()
 
     @dppy.kernel
     def foo(arr):
@@ -128,17 +125,15 @@ def test_debug_kernel_local_vars_in_ir(offload_device):
         local_d = 9 * 99 + 5
         arr[index] = local_d + 100
 
-    ir_tag_var_index = r'\!DILocalVariable\(name: "index"'
-    ir_tag_var_local_d = r'\!DILocalVariable\(name: "local_d"'
+    ir_tags = [
+        '!DILocalVariable(name: "index"',
+        '!DILocalVariable(name: "local_d"'
+    ]
 
-    ir_tags = (ir_tag_var_index, ir_tag_var_local_d)
+    sycl_queue = dpctl.get_current_queue()
+    sig = (types.float32[:],)
 
-    with dpctl.device_context(offload_device) as sycl_queue:
-        sig = (types.float32[:],)
-        kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
+    kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
 
-        expect = True  # Expect tag is emitted
-
-        for tag in ir_tags:
-            got = make_check(kernel_ir, tag)
-            assert expect == got
+    for tag in ir_tags:
+        assert tag in kernel_ir
