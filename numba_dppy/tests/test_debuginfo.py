@@ -165,8 +165,8 @@ def test_debug_flag_generates_ir_with_debuginfo_for_func(offload_device):
         i = dppy.get_global_id(0)
         c[i] = func_sum(a[i], b[i])
 
-    ir_tag_func_sum = r'\!DISubprogram\(name: "test_debug_flag_generates_ir_with_debuginfo_for_func.<locals>.func_sum"'
-    ir_tag_data_parallel_sum = r'\!DISubprogram\(name: "test_debug_flag_generates_ir_with_debuginfo_for_func.<locals>.data_parallel_sum"'
+    ir_tag_func_sum = r'\!DISubprogram\(name: ".*func_sum"'
+    ir_tag_data_parallel_sum = r'\!DISubprogram\(name: ".*data_parallel_sum"'
     ir_tags = (ir_tag_func_sum, ir_tag_data_parallel_sum)
 
     with dpctl.device_context(offload_device) as sycl_queue:
@@ -203,8 +203,8 @@ def test_env_var_generates_ir_with_debuginfo_for_func(offload_device):
         i = dppy.get_global_id(0)
         c[i] = func_sum(a[i], b[i])
 
-    ir_tag_func_sum = r'\!DISubprogram\(name: "test_env_var_generates_ir_with_debuginfo_for_func.<locals>.func_sum"'
-    ir_tag_data_parallel_sum = r'\!DISubprogram\(name: "test_env_var_generates_ir_with_debuginfo_for_func.<locals>.data_parallel_sum"'
+    ir_tag_func_sum = r'\!DISubprogram\(name: ".*func_sum"'
+    ir_tag_data_parallel_sum = r'\!DISubprogram\(name: ".*data_parallel_sum"'
     ir_tags = (ir_tag_func_sum, ir_tag_data_parallel_sum)
 
     dppy.compiler.DEBUGINFO_DEFAULT = 1
