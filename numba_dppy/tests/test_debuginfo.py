@@ -125,10 +125,7 @@ def test_debug_kernel_local_vars_in_ir():
         local_d = 9 * 99 + 5
         arr[index] = local_d + 100
 
-    ir_tags = [
-        '!DILocalVariable(name: "index"',
-        '!DILocalVariable(name: "local_d"'
-    ]
+    ir_tags = ['!DILocalVariable(name: "index"', '!DILocalVariable(name: "local_d"']
 
     sycl_queue = dpctl.get_current_queue()
     sig = (types.float32[:],)
