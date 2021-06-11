@@ -33,6 +33,7 @@ from numba.core.compiler import DefaultPassBuilder, CompilerBase
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dppy.config import DEBUG
 from numba_dppy.driver import USMNdArrayType
+from numba_dppy.dppy_array_type import DPPYArray
 
 
 _NUMBA_DPPY_READ_ONLY = "read_only"
@@ -136,6 +137,14 @@ def compile_with_dppy(pyfunc, return_type, args, debug):
 
 
 def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
+    # For any array we only accept numba_dppy.dppy_array_type.DPPYArray
+    for arg in args:
+        if isinstance(arg, types.npytypes.Array) and not isinstance(arg, DPPYArray):
+            raise TypeError(
+                "We only accept DPPYArray as type of array-like objects. We received %s"
+                % (type(arg))
+            )
+
     if DEBUG:
         print("compile_kernel", args)
         debug = True
@@ -163,7 +172,15 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
 
 
 def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug=False):
+    # For any array we only accept numba_dppy.dppy_array_type.DPPYArray
+    for arg in args_with_addrspaces:
+        if isinstance(arg, types.npytypes.Array) and not isinstance(arg, DPPYArray):
+            raise TypeError(
+                "We only accept DPPYArray as type of array-like objects. We received %s"
+                % (type(arg))
+            )
     if DEBUG:
+
         print("compile_kernel_parfor", args)
         for a in args_with_addrspaces:
             print(a, type(a))

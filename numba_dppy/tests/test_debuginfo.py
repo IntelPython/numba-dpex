@@ -24,6 +24,7 @@ from numba.core import types
 import numba_dppy as dppy
 from numba_dppy import compiler
 from numba_dppy.tests._helper import skip_test
+from numba_dppy.utils import convert_to_dppy_array
 
 
 debug_options = [True, False]
@@ -102,7 +103,11 @@ def test_debug_info_locals_vars_on_no_opt(offload_device):
     config.OPT = 0  # All variables are available on no opt level
 
     with dpctl.device_context(offload_device) as sycl_queue:
-        sig = (types.float32[:], types.float32[:], types.float32[:])
+        sig = (
+            convert_to_dppy_array(types.float32[:]),
+            convert_to_dppy_array(types.float32[:]),
+            convert_to_dppy_array(types.float32[:]),
+        )
         kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
 
         expect = True  # Expect tag is emitted
@@ -134,7 +139,7 @@ def test_debug_kernel_local_vars_in_ir(offload_device):
     ir_tags = (ir_tag_var_index, ir_tag_var_local_d)
 
     with dpctl.device_context(offload_device) as sycl_queue:
-        sig = (types.float32[:],)
+        sig = (convert_to_dppy_array(types.float32[:]),)
         kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
 
         expect = True  # Expect tag is emitted
