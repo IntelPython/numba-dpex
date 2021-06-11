@@ -24,7 +24,7 @@ from .compiler import (
 )
 
 
-def kernel(signature=None, access_types=None, debug=False):
+def kernel(signature=None, access_types=None, debug=None):
     """JIT compile a python function conforming using the DPPY backend.
 
     A kernel is equvalent to an OpenCL kernel function, and has the
@@ -39,7 +39,7 @@ def kernel(signature=None, access_types=None, debug=False):
         return _kernel_jit(signature, debug, access_types)
 
 
-def autojit(debug=False, access_types=None):
+def autojit(debug=None, access_types=None):
     def _kernel_autojit(pyfunc):
         ordered_arg_access_types = get_ordered_arg_access_types(pyfunc, access_types)
         return JitDPPYKernel(pyfunc, debug, ordered_arg_access_types)
@@ -67,7 +67,7 @@ def _kernel_jit(signature, debug, access_types):
     return _wrapped
 
 
-def func(signature=None, debug=False):
+def func(signature=None, debug=None):
     if signature is None:
         return _func_autojit_wrapper(debug=debug)
     elif not sigutils.is_signature(signature):
@@ -77,7 +77,7 @@ def func(signature=None, debug=False):
         return _func_jit(signature, debug=debug)
 
 
-def _func_jit(signature, debug=False):
+def _func_jit(signature, debug=None):
     argtypes, restype = sigutils.normalize_signature(signature)
 
     def _wrapped(pyfunc):
@@ -86,12 +86,12 @@ def _func_jit(signature, debug=False):
     return _wrapped
 
 
-def _func_autojit_wrapper(debug=False):
+def _func_autojit_wrapper(debug=None):
     def _func_autojit(pyfunc, debug=debug):
         return compile_dppy_func_template(pyfunc, debug=debug)
 
     return _func_autojit
 
 
-def _func_autojit(pyfunc, debug=False):
+def _func_autojit(pyfunc, debug=None):
     return compile_dppy_func_template(pyfunc, debug=debug)

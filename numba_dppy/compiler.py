@@ -137,7 +137,7 @@ def compile_with_dppy(pyfunc, return_type, args, debug):
     return cres
 
 
-def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
+def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
     if DEBUG:
         print("compile_kernel", args)
         debug = True
@@ -164,7 +164,7 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
     return oclkern
 
 
-def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug=False):
+def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug=None):
     if DEBUG:
         print("compile_kernel_parfor", args)
         for a in args_with_addrspaces:
@@ -195,7 +195,7 @@ def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug
     return oclkern
 
 
-def compile_dppy_func(pyfunc, return_type, args, debug=False):
+def compile_dppy_func(pyfunc, return_type, args, debug=None):
     cres = compile_with_dppy(pyfunc, return_type, args, debug=debug)
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
     cres.target_context.mark_ocl_device(func)
@@ -212,7 +212,7 @@ def compile_dppy_func(pyfunc, return_type, args, debug=False):
 
 
 # Compile dppy function template
-def compile_dppy_func_template(pyfunc, debug=False):
+def compile_dppy_func_template(pyfunc, debug=None):
     """Compile a DPPYFunctionTemplate"""
     from .descriptor import dppy_target
 
@@ -233,7 +233,7 @@ def compile_dppy_func_template(pyfunc, debug=False):
 class DPPYFunctionTemplate(object):
     """Unmaterialized dppy function"""
 
-    def __init__(self, pyfunc, debug=False):
+    def __init__(self, pyfunc, debug=None):
         self.py_func = pyfunc
         self.debug = debug
         # self.inline = inline

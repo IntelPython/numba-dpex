@@ -34,7 +34,7 @@ def debug_option(request):
     return request.param
 
 
-def get_kernel_ir(sycl_queue, fn, sig, debug=False):
+def get_kernel_ir(sycl_queue, fn, sig, debug=None):
     kernel = compiler.compile_kernel(sycl_queue, fn.py_func, sig, None, debug=debug)
     return kernel.assembly
 
