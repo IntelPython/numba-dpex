@@ -15,6 +15,7 @@
 
 import re
 import pytest
+import os
 
 import dpctl
 import numpy as np
@@ -99,6 +100,7 @@ def test_debug_info_locals_vars_on_no_opt(offload_device):
 
     ir_tags = (ir_tag_var_a, ir_tag_var_b, ir_tag_var_c, ir_tag_var_i)
 
+    opt_curr_value = os.environ.get("NUMBA_OPT", 3)  # 3 is a default value
     config.OPT = 0  # All variables are available on no opt level
 
     with dpctl.device_context(offload_device) as sycl_queue:
@@ -111,7 +113,7 @@ def test_debug_info_locals_vars_on_no_opt(offload_device):
             got = make_check(kernel_ir, tag)
             assert expect == got
 
-    config.OPT = 3  # Return to the default value
+    config.OPT = opt_curr_value  # Return to the previous value
 
 
 def test_debug_kernel_local_vars_in_ir(offload_device):
