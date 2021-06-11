@@ -207,6 +207,7 @@ def test_env_var_generates_ir_with_debuginfo_for_func(offload_device):
     ir_tag_data_parallel_sum = r'\!DISubprogram\(name: ".*data_parallel_sum"'
     ir_tags = (ir_tag_func_sum, ir_tag_data_parallel_sum)
 
+    OLD_DEBUGINFO_DEFAULT = dppy.compiler.DEBUGINFO_DEFAULT
     dppy.compiler.DEBUGINFO_DEFAULT = 1
 
     with dpctl.device_context(offload_device) as sycl_queue:
@@ -217,7 +218,7 @@ def test_env_var_generates_ir_with_debuginfo_for_func(offload_device):
         )
         kernel_ir = get_kernel_ir(sycl_queue, data_parallel_sum, sig, debug=True)
 
-    dppy.compiler.DEBUGINFO_DEFAULT = 0
+    dppy.compiler.DEBUGINFO_DEFAULT = OLD_DEBUGINFO_DEFAULT
 
     for tag in ir_tags:
         got = make_check(kernel_ir, tag)
