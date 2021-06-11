@@ -52,23 +52,14 @@ def main():
     b = np.array(np.random.random(X * X), dtype=np.float32).reshape(X, X)
     c = np.ones_like(a).reshape(X, X)
 
-    try:
-        gpu = dpctl.select_gpu_device()
-        print("Running on the following SYCL GPU device")
-        gpu.print_device_info()
-        with dpctl.device_context(gpu):
-            driver(a, b, c)
-    except ValueError:
-        print("No SYCL GPU device found")
+    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
+    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
+    device = dpctl.select_default_device()
+    print("Using device ...")
+    device.print_device_info()
 
-    try:
-        cpu = dpctl.select_cpu_device()
-        print("Running on the following SYCL CPU device")
-        cpu.print_device_info()
-        with dpctl.device_context(cpu):
-            driver(a, b, c)
-    except ValueError:
-        print("No SYCL CPU device found")
+    with dpctl.device_context(device):
+        driver(a, b, c)
 
     # Host compute using standard NumPy
     Amat = np.matrix(a)
@@ -77,6 +68,7 @@ def main():
 
     # Check result
     assert np.allclose(c, Cans)
+
     print("Done...")
 
 

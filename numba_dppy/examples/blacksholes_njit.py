@@ -69,16 +69,16 @@ def main():
     args = parser.parse_args()
     options = args.options
 
-    # Run the example of a deafult GPU device
-    # Device can be selected using envar SYCL_DEVICE_FILTER.
-    # For example:
-    #   SYCL_DEVICE_FILTER=opencl:gpu python blacksholes_njit.py
-    # Currently, SYCL_DEVICE_FILTER=host is not supported
-    sycl_device = dpctl.select_default_device()
-    with dpctl.device_context(sycl_device):
-        print("Offloading to ...")
-        sycl_device.print_device_info()
+    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
+    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
+    device = dpctl.select_default_device()
+    print("Using device ...")
+    device.print_device_info()
+
+    with dpctl.device_context(device):
         run(10)
+
+    print("Done...")
 
 
 if __name__ == "__main__":
