@@ -15,7 +15,7 @@
 import os
 import warnings
 from packaging import version
-from numba.core.config import DEBUGINFO_DEFAULT
+from numba.core import config
 
 
 class DpctlMinimumVersionRequiredError(Exception):
@@ -98,5 +98,5 @@ FALLBACK_ON_CPU = _readenv("NUMBA_DPPY_FALLBACK_ON_CPU", int, 1)
 NATIVE_FP_ATOMICS = _readenv("NUMBA_DPPY_ACTIVATE_ATOMCIS_FP_NATIVE", int, 0)
 LLVM_SPIRV_ROOT = _readenv("NUMBA_DPPY_LLVM_SPIRV_ROOT", str, "")
 # Emit debug info
-DEBUG = _readenv("NUMBA_DPPY_DEBUG", int, 0)
-DEBUGINFO = _readenv("NUMBA_DPPY_DEBUGINFO", int, DEBUGINFO_DEFAULT)
+DEBUG = _readenv("NUMBA_DPPY_DEBUG", int, config.DEBUG)
+DEBUGINFO_DEFAULT = _readenv("NUMBA_DPPY_DEBUGINFO", int, config.DEBUGINFO_DEFAULT)
