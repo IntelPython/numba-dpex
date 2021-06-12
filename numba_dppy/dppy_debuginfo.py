@@ -35,7 +35,7 @@ class DPPYDIBuilder(DIBuilder):
             {
                 "language": ir.DIToken("DW_LANG_C_plus_plus"),
                 "file": self.difile,
-                "producer": "Numba",
+                "producer": "numba-dppy",
                 "runtimeVersion": 0,
                 "isOptimized": True,
                 "emissionKind": 1,  # 0-NoDebug, 1-FullDebug
