@@ -526,7 +526,7 @@ else:
 
 
 def test(*args, **kwargs):
-    if not dppy_present and not is_available():
+    if not config.dppy_present and not is_available():
         raise RuntimeError("numba-dppy could not be imported")
 
     return numba.testing.test("numba_dppy.tests", *args, **kwargs)
