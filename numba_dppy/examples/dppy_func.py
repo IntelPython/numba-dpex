@@ -49,14 +49,16 @@ def main():
     a = np.ones(N)
     b = np.ones(N)
 
-    try:
-        gpu = dpctl.select_gpu_device()
-        with dpctl.device_context(gpu):
-            print("Offloading to ...")
-            gpu.print_device_info()
-            driver(a, b, N)
-    except ValueError:
-        print("No SYCL device found")
+    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
+    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
+    device = dpctl.select_default_device()
+    print("Using device ...")
+    device.print_device_info()
+
+    with dpctl.device_context(device):
+        driver(a, b, N)
+
+    print("Done...")
 
 
 if __name__ == "__main__":

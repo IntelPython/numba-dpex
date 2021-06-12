@@ -108,7 +108,7 @@ def test_kernel_atomic_simple(filter_str, input_arrays, kernel_result_pair):
     assert a[0] == expected
 
 
-def get_kernel_local(op_type, dtype):
+def get_func_local(op_type, dtype):
     op = getattr(dppy.atomic, op_type)
 
     def f(a):
@@ -119,7 +119,7 @@ def get_kernel_local(op_type, dtype):
         dppy.barrier(dppy.CLK_GLOBAL_MEM_FENCE)
         a[0] = lm[0]
 
-    return dppy.kernel(f)
+    return f
 
 
 def test_kernel_atomic_local(filter_str, input_arrays, return_list_of_op):
@@ -128,7 +128,8 @@ def test_kernel_atomic_local(filter_str, input_arrays, return_list_of_op):
 
     a, dtype = input_arrays
     op_type, expected = return_list_of_op
-    kernel = get_kernel_local(op_type, dtype)
+    f = get_func_local(op_type, dtype)
+    kernel = dppy.kernel(f)
     with dpctl.device_context(filter_str):
         kernel[global_size, global_size](a)
     assert a[0] == expected
@@ -176,7 +177,15 @@ def test_kernel_atomic_multi_dim(
     assert a[0] == expected
 
 
-def test_atomic_fp_native(filter_str, return_list_of_op, fdtype):
+list_of_addrspace = ["global", "local"]
+
+
+@pytest.fixture(params=list_of_addrspace)
+def addrspace(request):
+    return request.param
+
+
+def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, addrspace):
     LLVM_SPIRV_ROOT = os.environ.get("NUMBA_DPPY_LLVM_SPIRV_ROOT")
     if LLVM_SPIRV_ROOT == "" or LLVM_SPIRV_ROOT == None:
         pytest.skip("Please set envar NUMBA_DPPY_LLVM_SPIRV_ROOT to run this test")
@@ -187,10 +196,15 @@ def test_atomic_fp_native(filter_str, return_list_of_op, fdtype):
     a = np.array([0], fdtype)
 
     op_type, expected = return_list_of_op
-    op = getattr(dppy.atomic, op_type)
 
-    def f(a):
-        op(a, 0, 1)
+    if addrspace == "global":
+        op = getattr(dppy.atomic, op_type)
+
+        def f(a):
+            op(a, 0, 1)
+
+    elif addrspace == "local":
+        f = get_func_local(op_type, fdtype)
 
     kernel = dppy.kernel(f)
 
