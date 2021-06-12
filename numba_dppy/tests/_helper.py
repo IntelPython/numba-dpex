@@ -13,7 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import contextlib
 import dpctl
+from numba_dppy import config
 
 
 def has_gpu_queues(backend="opencl"):
@@ -79,3 +81,17 @@ def skip_test(device_type):
             skip = True
 
     return skip
+
+
+@contextlib.contextmanager
+def override_config(name, value, config=config):
+    """
+    Extends `numba/tests/support.py:override_config()` with argument `config`
+    which is `numba_dppy.config` by default.
+    """
+    old_value = getattr(config, name)
+    setattr(config, name, value)
+    try:
+        yield
+    finally:
+        setattr(config, name, old_value)
