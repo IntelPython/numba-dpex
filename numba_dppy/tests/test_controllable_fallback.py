@@ -68,7 +68,7 @@ class TestDPPYFallback(unittest.TestCase):
 
         try:
             config.DEBUG = 1
-            numba_dppy.config.FALLBACK_ON_CPU = 0
+            config.FALLBACK_ON_CPU = 0
             with warnings.catch_warnings(record=True) as w:
                 with dpctl.device_context("opencl:gpu"):
                     dppy = numba.njit(parallel=True)(inner_call_fallback)
@@ -76,7 +76,7 @@ class TestDPPYFallback(unittest.TestCase):
 
         finally:
             ref_result = inner_call_fallback()
-            numba_dppy.config.FALLBACK_ON_CPU = 1
+            config.FALLBACK_ON_CPU = 1
             config.DEBUG = 0
 
             not np.testing.assert_array_equal(dppy_fallback_false, ref_result)

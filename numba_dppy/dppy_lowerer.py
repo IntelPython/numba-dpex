@@ -1297,7 +1297,7 @@ class DPPYLower(Lower):
                 )
                 print(traceback.format_exc())
 
-            if numba_dppy.config.FALLBACK_ON_CPU == 1:
+            if config.FALLBACK_ON_CPU == 1:
                 self.cpu_lower.context.lower_extensions[
                     parfor.Parfor
                 ] = _lower_parfor_parallel
