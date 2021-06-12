@@ -15,13 +15,13 @@
 import contextlib
 import sys
 
-from numba.core import config
 import unittest
 from numba.tests.support import (
     captured_stdout,
     redirect_c_stdout,
 )
 import numba_dppy
+from numba_dppy import config
 
 
 @contextlib.contextmanager
@@ -91,13 +91,13 @@ def assert_auto_offloading(parfor_offloaded=1, parfor_offloaded_failure=0):
     expect all parfors present in the code to be successfully
     offloaded to GPU.
     """
-    old_debug = numba_dppy.compiler.DEBUG
-    numba_dppy.compiler.DEBUG = 1
+    old_debug = config.DEBUG
+    config.DEBUG = 1
 
     with captured_stdout() as stdout:
         yield
 
-    numba_dppy.compiler.DEBUG = old_debug
+    config.DEBUG = old_debug
 
     got_parfor_offloaded = stdout.getvalue().count("Parfor offloaded to")
     assert parfor_offloaded == got_parfor_offloaded, (
