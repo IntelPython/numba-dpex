@@ -79,10 +79,6 @@ def test_debug_info_locals_vars_on_no_opt():
     and optimization is O0
     """
 
-    pytest.xfail(
-        "Assertion Cast->getSrcTy()->getPointerAddressSpace() == SPIRAS_Generic"
-    )
-
     @dppy.kernel
     def foo(var_a, var_b, var_c):
         i = dppy.get_global_id(0)
