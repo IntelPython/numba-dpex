@@ -49,26 +49,26 @@ def make_check(ir, val_to_search):
     return got
 
 
-def test_debug_flag_generates_ir_with_debuginfo(offload_device, debug_option):
+def test_debug_flag_generates_ir_with_debuginfo(debug_option):
     """
     Check debug info is emitting to IR if debug parameter is set to True
     """
-
-    if skip_test(offload_device):
-        pytest.skip()
 
     @dppy.kernel
     def foo(x):
         return x
 
-    with dpctl.device_context(offload_device) as sycl_queue:
-        sig = (types.int32,)
-        kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=debug_option)
+    sycl_queue = dpctl.get_current_queue()
+    sig = (types.int32,)
 
-        expect = debug_option
-        got = make_check(kernel_ir, r"!dbg")
+    kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=debug_option)
 
-        assert expect == got
+    tag = "!dbg"
+
+    if debug_option:
+        assert tag in kernel_ir
+    else:
+        assert tag not in kernel_ir
 
 
 def test_debug_info_locals_vars_on_no_opt(offload_device):
