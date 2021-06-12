@@ -23,6 +23,7 @@ from numba.core import types
 
 import numba_dppy as dppy
 from numba_dppy import compiler
+from numba_dppy import config
 from numba_dppy.tests._helper import skip_test
 
 
@@ -181,8 +182,8 @@ def test_env_var_generates_ir_with_debuginfo_for_func(debug_option):
         r'\!DISubprogram\(name: ".*data_parallel_sum"',
     ]
 
-    OLD_DEBUGINFO_DEFAULT = dppy.compiler.DEBUGINFO_DEFAULT
-    dppy.compiler.DEBUGINFO_DEFAULT = int(debug_option)
+    OLD_DEBUGINFO_DEFAULT = config.DEBUGINFO_DEFAULT
+    config.DEBUGINFO_DEFAULT = int(debug_option)
 
     sycl_queue = dpctl.get_current_queue()
     sig = (
@@ -193,7 +194,7 @@ def test_env_var_generates_ir_with_debuginfo_for_func(debug_option):
 
     kernel_ir = get_kernel_ir(sycl_queue, data_parallel_sum, sig)
 
-    dppy.compiler.DEBUGINFO_DEFAULT = OLD_DEBUGINFO_DEFAULT
+    config.DEBUGINFO_DEFAULT = OLD_DEBUGINFO_DEFAULT
 
     for tag in ir_tags:
         assert debug_option == make_check(kernel_ir, tag)

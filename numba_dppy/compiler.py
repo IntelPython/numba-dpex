@@ -32,7 +32,8 @@ from . import spirv_generator
 
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
-from numba_dppy.config import DEBUG, DEBUGINFO_DEFAULT
+from numba_dppy.config import DEBUG
+from numba_dppy import config
 from numba_dppy.driver import USMNdArrayType
 
 
@@ -98,7 +99,7 @@ def compile_with_dppy(pyfunc, return_type, args, debug):
 
     flags = compiler.Flags()
     # Do not compile (generate native code), just lower (to LLVM)
-    if debug or DEBUGINFO_DEFAULT:
+    if debug or config.DEBUGINFO_DEFAULT:
         flags.set("debuginfo")
     flags.set("no_compile")
     flags.set("no_cpython_wrapper")
