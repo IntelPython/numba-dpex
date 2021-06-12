@@ -90,7 +90,7 @@ class DPPYCompiler(CompilerBase):
         return pms
 
 
-def compile_with_dppy(pyfunc, return_type, args, debug):
+def compile_with_dppy(pyfunc, return_type, args, debug=None):
     # First compilation will trigger the initialization of the OpenCL backend.
     from .descriptor import dppy_target
 
@@ -99,11 +99,13 @@ def compile_with_dppy(pyfunc, return_type, args, debug):
 
     flags = compiler.Flags()
     # Do not compile (generate native code), just lower (to LLVM)
-    if debug or config.DEBUGINFO_DEFAULT:
-        flags.set("debuginfo")
+    flags.debuginfo = config.DEBUGINFO_DEFAULT
     flags.set("no_compile")
     flags.set("no_cpython_wrapper")
     flags.unset("nrt")
+
+    if debug is not None:
+        flags.debuginfo = debug
 
     # Run compilation pipeline
     if isinstance(pyfunc, FunctionType):
