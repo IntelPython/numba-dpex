@@ -21,7 +21,7 @@ import sys
 import numpy as np
 
 import numba
-from numba.core import compiler, ir, types, sigutils, lowering, funcdesc, config
+from numba.core import compiler, ir, types, sigutils, lowering, funcdesc
 from numba.parfors import parfor
 from numba.parfors.parfor_lowering import _lower_parfor_parallel
 import numba_dppy, numba_dppy as dppy
@@ -54,6 +54,7 @@ from numba.core.errors import NumbaParallelSafetyWarning, NumbaPerformanceWarnin
 from .dufunc_inliner import dufunc_inliner
 from numba_dppy.driver import KernelLaunchOps
 import dpctl
+from numba_dppy import config
 from numba_dppy.target import DPPYTargetContext
 from numba_dppy.dppy_array_type import DPPYArray
 from numba_dppy.utils import address_space, convert_to_dppy_array
@@ -1263,7 +1264,7 @@ class DPPYLower(Lower):
                 lower_extension_parfor = context.lower_extensions[parfor.Parfor]
                 context.lower_extensions[parfor.Parfor] = lower_parfor_rollback
             except Exception as e:
-                if numba_dppy.compiler.DEBUG:
+                if config.DEBUG:
                     print(e)
                 pass
 
@@ -1280,11 +1281,11 @@ class DPPYLower(Lower):
             try:
                 context.lower_extensions[parfor.Parfor] = lower_extension_parfor
             except Exception as e:
-                if numba_dppy.compiler.DEBUG:
+                if config.DEBUG:
                     print(e)
                 pass
         except Exception as e:
-            if numba_dppy.compiler.DEBUG:
+            if config.DEBUG:
                 import traceback
 
                 device_filter_str = (
@@ -1322,7 +1323,7 @@ def copy_block(block):
 def lower_parfor_rollback(lowerer, parfor):
     try:
         _lower_parfor_gufunc(lowerer, parfor)
-        if numba_dppy.compiler.DEBUG:
+        if config.DEBUG:
 
             device_filter_str = (
                 dpctl.get_current_queue().get_sycl_device().filter_string
@@ -1339,7 +1340,7 @@ def lower_parfor_rollback(lowerer, parfor):
             "at https://github.com/IntelPython/numba-dppy. To help us debug "
             "the issue, please add the traceback to the bug report."
         )
-        if not numba_dppy.compiler.DEBUG:
+        if not config.DEBUG:
             msg += " Set the environment variable NUMBA_DPPY_DEBUG to 1 to "
             msg += "generate a traceback."
 

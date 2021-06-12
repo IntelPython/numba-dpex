@@ -32,7 +32,6 @@ from . import spirv_generator
 
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
-from numba_dppy.config import DEBUG
 from numba_dppy import config
 from numba_dppy.driver import USMNdArrayType
 
