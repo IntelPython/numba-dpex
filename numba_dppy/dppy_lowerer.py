@@ -1212,8 +1212,9 @@ def relatively_deep_copy(obj, memo):
 
 
 from numba.core.funcdesc import qualifying_prefix, default_mangler
-from numba_dppy.dppy_debuginfo import DPPYDIBuilder
 from numba.core import types, ir, debuginfo, funcdesc, config
+
+from numba_dppy.dppy_debuginfo import DPPYDIBuilder
 
 
 class ModifiedLower(Lower):
