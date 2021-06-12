@@ -23,7 +23,8 @@ from numba.core import types
 
 import numba_dppy as dppy
 from numba_dppy import compiler
-from numba_dppy.tests._helper import skip_test
+from numba_dppy.tests._helper import skip_test, override_config
+from numba_dppy import config
 from numba_dppy.utils import convert_to_dppy_array
 
 
@@ -35,7 +36,7 @@ def debug_option(request):
     return request.param
 
 
-def get_kernel_ir(sycl_queue, fn, sig, debug=False):
+def get_kernel_ir(sycl_queue, fn, sig, debug=None):
     kernel = compiler.compile_kernel(sycl_queue, fn.py_func, sig, None, debug=debug)
     return kernel.assembly
 
@@ -50,32 +51,29 @@ def make_check(ir, val_to_search):
     return got
 
 
-def test_debug_flag_generates_ir_with_debuginfo(offload_device, debug_option):
+def test_debug_flag_generates_ir_with_debuginfo(debug_option):
     """
     Check debug info is emitting to IR if debug parameter is set to True
     """
-
-    if skip_test(offload_device):
-        pytest.skip()
-
-    if offload_device in "level_zero:gpu:0":
-        pytest.xfail("Failing compilation: SyclProgramCompilationError")
 
     @dppy.kernel
     def foo(x):
         return x
 
-    with dpctl.device_context(offload_device) as sycl_queue:
-        sig = (types.int32,)
-        kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=debug_option)
+    sycl_queue = dpctl.get_current_queue()
+    sig = (types.int32,)
 
-        expect = debug_option
-        got = make_check(kernel_ir, r"!dbg")
+    kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=debug_option)
 
-        assert expect == got
+    tag = "!dbg"
+
+    if debug_option:
+        assert tag in kernel_ir
+    else:
+        assert tag not in kernel_ir
 
 
-def test_debug_info_locals_vars_on_no_opt(offload_device):
+def test_debug_info_locals_vars_on_no_opt():
     """
     Check llvm debug tag DILocalVariable is emitting to IR for all variables if debug parameter is set to True
     and optimization is O0
@@ -85,47 +83,39 @@ def test_debug_info_locals_vars_on_no_opt(offload_device):
         "Assertion Cast->getSrcTy()->getPointerAddressSpace() == SPIRAS_Generic"
     )
 
-    if skip_test(offload_device):
-        pytest.skip()
-
     @dppy.kernel
     def foo(var_a, var_b, var_c):
         i = dppy.get_global_id(0)
         var_c[i] = var_a[i] + var_b[i]
 
-    ir_tag_var_a = r'\!DILocalVariable\(name: "var_a"'
-    ir_tag_var_b = r'\!DILocalVariable\(name: "var_b"'
-    ir_tag_var_c = r'\!DILocalVariable\(name: "var_c"'
-    ir_tag_var_i = r'\!DILocalVariable\(name: "i"'
-
-    ir_tags = (ir_tag_var_a, ir_tag_var_b, ir_tag_var_c, ir_tag_var_i)
+    ir_tags = [
+        '!DILocalVariable(name: "var_a"',
+        '!DILocalVariable(name: "var_b"',
+        '!DILocalVariable(name: "var_c"',
+        '!DILocalVariable(name: "i"',
+    ]
 
     config.OPT = 0  # All variables are available on no opt level
 
-    with dpctl.device_context(offload_device) as sycl_queue:
-        sig = (
-            convert_to_dppy_array(types.float32[:]),
-            convert_to_dppy_array(types.float32[:]),
-            convert_to_dppy_array(types.float32[:]),
-        )
-        kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
+    sycl_queue = dpctl.get_current_queue()
+    sig = (
+        convert_to_dppy_array(types.float32[:]),
+        convert_to_dppy_array(types.float32[:]),
+        convert_to_dppy_array(types.float32[:]),
+    )
 
-        expect = True  # Expect tag is emitted
+    kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
 
-        for tag in ir_tags:
-            got = make_check(kernel_ir, tag)
-            assert expect == got
+    for tag in ir_tags:
+        assert tag in kernel_ir
 
     config.OPT = 3  # Return to the default value
 
 
-def test_debug_kernel_local_vars_in_ir(offload_device):
+def test_debug_kernel_local_vars_in_ir():
     """
     Check llvm debug tag DILocalVariable is emitting to IR for variables created in kernel
     """
-
-    if skip_test(offload_device):
-        pytest.skip()
 
     @dppy.kernel
     def foo(arr):
@@ -133,17 +123,79 @@ def test_debug_kernel_local_vars_in_ir(offload_device):
         local_d = 9 * 99 + 5
         arr[index] = local_d + 100
 
-    ir_tag_var_index = r'\!DILocalVariable\(name: "index"'
-    ir_tag_var_local_d = r'\!DILocalVariable\(name: "local_d"'
+    ir_tags = ['!DILocalVariable(name: "index"', '!DILocalVariable(name: "local_d"']
 
-    ir_tags = (ir_tag_var_index, ir_tag_var_local_d)
+    sycl_queue = dpctl.get_current_queue()
+    sig = (convert_to_dppy_array(types.float32[:]),)
 
-    with dpctl.device_context(offload_device) as sycl_queue:
-        sig = (convert_to_dppy_array(types.float32[:]),)
-        kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
+    kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
 
-        expect = True  # Expect tag is emitted
+    for tag in ir_tags:
+        assert tag in kernel_ir
 
-        for tag in ir_tags:
-            got = make_check(kernel_ir, tag)
-            assert expect == got
+
+def test_debug_flag_generates_ir_with_debuginfo_for_func(debug_option):
+    """
+    Check debug info is emitting to IR if debug parameter is set to True
+    """
+
+    @dppy.func(debug=debug_option)
+    def func_sum(a, b):
+        result = a + b
+        return result
+
+    @dppy.kernel(debug=debug_option)
+    def data_parallel_sum(a, b, c):
+        i = dppy.get_global_id(0)
+        c[i] = func_sum(a[i], b[i])
+
+    ir_tags = [
+        r'\!DISubprogram\(name: ".*func_sum"',
+        r'\!DISubprogram\(name: ".*data_parallel_sum"',
+    ]
+
+    sycl_queue = dpctl.get_current_queue()
+    sig = (
+        convert_to_dppy_array(types.float32[:]),
+        convert_to_dppy_array(types.float32[:]),
+        convert_to_dppy_array(types.float32[:]),
+    )
+
+    kernel_ir = get_kernel_ir(sycl_queue, data_parallel_sum, sig, debug=debug_option)
+
+    for tag in ir_tags:
+        assert debug_option == make_check(kernel_ir, tag)
+
+
+def test_env_var_generates_ir_with_debuginfo_for_func(debug_option):
+    """
+    Check debug info is emitting to IR if NUMBA_DPPY_DEBUGINFO is set to 1
+    """
+
+    @dppy.func
+    def func_sum(a, b):
+        result = a + b
+        return result
+
+    @dppy.kernel
+    def data_parallel_sum(a, b, c):
+        i = dppy.get_global_id(0)
+        c[i] = func_sum(a[i], b[i])
+
+    ir_tags = [
+        r'\!DISubprogram\(name: ".*func_sum"',
+        r'\!DISubprogram\(name: ".*data_parallel_sum"',
+    ]
+
+    sycl_queue = dpctl.get_current_queue()
+    sig = (
+        convert_to_dppy_array(types.float32[:]),
+        convert_to_dppy_array(types.float32[:]),
+        convert_to_dppy_array(types.float32[:]),
+    )
+
+    with override_config("DEBUGINFO_DEFAULT", int(debug_option)):
+        kernel_ir = get_kernel_ir(sycl_queue, data_parallel_sum, sig)
+
+    for tag in ir_tags:
+        assert debug_option == make_check(kernel_ir, tag)

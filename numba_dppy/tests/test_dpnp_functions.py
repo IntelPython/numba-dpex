@@ -29,7 +29,7 @@ class Testdpnp_functions(unittest.TestCase):
 
     a = np.array(np.random.random(N), dtype=np.float32)
     b = np.array(np.random.random(N), dtype=np.float32)
-    tys = [np.int32, np.uint32, np.int64, np.uint64, np.float, np.double]
+    tys = [np.int32, np.uint32, np.int64, np.uint64, np.float32, np.double]
 
     def test_dpnp_interacting_with_parfor(self):
         def f(a, b):
