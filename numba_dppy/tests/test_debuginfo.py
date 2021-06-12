@@ -49,32 +49,29 @@ def make_check(ir, val_to_search):
     return got
 
 
-def test_debug_flag_generates_ir_with_debuginfo(offload_device, debug_option):
+def test_debug_flag_generates_ir_with_debuginfo(debug_option):
     """
     Check debug info is emitting to IR if debug parameter is set to True
     """
-
-    if skip_test(offload_device):
-        pytest.skip()
-
-    if offload_device in "level_zero:gpu:0":
-        pytest.xfail("Failing compilation: SyclProgramCompilationError")
 
     @dppy.kernel
     def foo(x):
         return x
 
-    with dpctl.device_context(offload_device) as sycl_queue:
-        sig = (types.int32,)
-        kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=debug_option)
+    sycl_queue = dpctl.get_current_queue()
+    sig = (types.int32,)
 
-        expect = debug_option
-        got = make_check(kernel_ir, r"!dbg")
+    kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=debug_option)
 
-        assert expect == got
+    tag = "!dbg"
+
+    if debug_option:
+        assert tag in kernel_ir
+    else:
+        assert tag not in kernel_ir
 
 
-def test_debug_info_locals_vars_on_no_opt(offload_device):
+def test_debug_info_locals_vars_on_no_opt():
     """
     Check llvm debug tag DILocalVariable is emitting to IR for all variables if debug parameter is set to True
     and optimization is O0
@@ -84,43 +81,35 @@ def test_debug_info_locals_vars_on_no_opt(offload_device):
         "Assertion Cast->getSrcTy()->getPointerAddressSpace() == SPIRAS_Generic"
     )
 
-    if skip_test(offload_device):
-        pytest.skip()
-
     @dppy.kernel
     def foo(var_a, var_b, var_c):
         i = dppy.get_global_id(0)
         var_c[i] = var_a[i] + var_b[i]
 
-    ir_tag_var_a = r'\!DILocalVariable\(name: "var_a"'
-    ir_tag_var_b = r'\!DILocalVariable\(name: "var_b"'
-    ir_tag_var_c = r'\!DILocalVariable\(name: "var_c"'
-    ir_tag_var_i = r'\!DILocalVariable\(name: "i"'
-
-    ir_tags = (ir_tag_var_a, ir_tag_var_b, ir_tag_var_c, ir_tag_var_i)
+    ir_tags = [
+        '!DILocalVariable(name: "var_a"',
+        '!DILocalVariable(name: "var_b"',
+        '!DILocalVariable(name: "var_c"',
+        '!DILocalVariable(name: "i"',
+    ]
 
     config.OPT = 0  # All variables are available on no opt level
 
-    with dpctl.device_context(offload_device) as sycl_queue:
-        sig = (types.float32[:], types.float32[:], types.float32[:])
-        kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
+    sycl_queue = dpctl.get_current_queue()
+    sig = (types.float32[:], types.float32[:], types.float32[:])
 
-        expect = True  # Expect tag is emitted
+    kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
 
-        for tag in ir_tags:
-            got = make_check(kernel_ir, tag)
-            assert expect == got
+    for tag in ir_tags:
+        assert tag in kernel_ir
 
     config.OPT = 3  # Return to the default value
 
 
-def test_debug_kernel_local_vars_in_ir(offload_device):
+def test_debug_kernel_local_vars_in_ir():
     """
     Check llvm debug tag DILocalVariable is emitting to IR for variables created in kernel
     """
-
-    if skip_test(offload_device):
-        pytest.skip()
 
     @dppy.kernel
     def foo(arr):
@@ -128,20 +117,15 @@ def test_debug_kernel_local_vars_in_ir(offload_device):
         local_d = 9 * 99 + 5
         arr[index] = local_d + 100
 
-    ir_tag_var_index = r'\!DILocalVariable\(name: "index"'
-    ir_tag_var_local_d = r'\!DILocalVariable\(name: "local_d"'
+    ir_tags = ['!DILocalVariable(name: "index"', '!DILocalVariable(name: "local_d"']
 
-    ir_tags = (ir_tag_var_index, ir_tag_var_local_d)
+    sycl_queue = dpctl.get_current_queue()
+    sig = (types.float32[:],)
 
-    with dpctl.device_context(offload_device) as sycl_queue:
-        sig = (types.float32[:],)
-        kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
+    kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
 
-        expect = True  # Expect tag is emitted
-
-        for tag in ir_tags:
-            got = make_check(kernel_ir, tag)
-            assert expect == got
+    for tag in ir_tags:
+        assert tag in kernel_ir
 
 
 def test_debug_flag_generates_ir_with_debuginfo_for_func(offload_device):
