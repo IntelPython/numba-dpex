@@ -90,8 +90,6 @@ def test_debug_info_locals_vars_on_no_opt():
         '!DILocalVariable(name: "i"',
     ]
 
-    config.OPT = 0  # All variables are available on no opt level
-
     sycl_queue = dpctl.get_current_queue()
     sig = (
         convert_to_dppy_array(types.float32[:]),
@@ -99,12 +97,11 @@ def test_debug_info_locals_vars_on_no_opt():
         convert_to_dppy_array(types.float32[:]),
     )
 
-    kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
+    with override_config("OPT", 0):
+        kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
 
     for tag in ir_tags:
         assert tag in kernel_ir
-
-    config.OPT = 3  # Return to the default value
 
 
 def test_debug_kernel_local_vars_in_ir():
