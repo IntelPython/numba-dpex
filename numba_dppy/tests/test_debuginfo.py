@@ -57,9 +57,6 @@ def test_debug_flag_generates_ir_with_debuginfo(offload_device, debug_option):
     if skip_test(offload_device):
         pytest.skip()
 
-    if offload_device in "level_zero:gpu:0":
-        pytest.xfail("Failing compilation: SyclProgramCompilationError")
-
     @dppy.kernel
     def foo(x):
         return x
