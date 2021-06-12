@@ -22,8 +22,8 @@ from numba.core import types
 
 import numba_dppy as dppy
 from numba_dppy import compiler
-from numba_dppy.tests._helper import skip_test, override_config
 from numba_dppy import config
+from numba_dppy.tests._helper import skip_test, override_config
 from numba_dppy.utils import convert_to_dppy_array
 
 
