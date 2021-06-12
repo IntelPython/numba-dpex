@@ -58,21 +58,21 @@ def sum_reduce(A):
 
     partial_sums = np.zeros(nb_work_groups).astype(A.dtype)
 
-    try:
-        gpu = dpctl.select_gpu_device()
-        with dpctl.device_context(gpu):
-            print("Offloading to ...")
-            gpu.print_device_info()
-            sum_reduction_kernel[global_size, work_group_size](A, partial_sums)
-        final_sum = 0
-        # calculate the final sum in HOST
-        for i in range(nb_work_groups):
-            final_sum += partial_sums[i]
+    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
+    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
+    device = dpctl.select_default_device()
+    print("Using device ...")
+    device.print_device_info()
 
-        return final_sum
-    except ValueError:
-        print("No SYCL GPU device found. Failed to perform the summation.")
-        return -1
+    with dpctl.device_context(device):
+        sum_reduction_kernel[global_size, work_group_size](A, partial_sums)
+
+    final_sum = 0
+    # calculate the final sum in HOST
+    for i in range(nb_work_groups):
+        final_sum += partial_sums[i]
+
+    return final_sum
 
 
 def test_sum_reduce():
@@ -88,6 +88,8 @@ def test_sum_reduce():
     print("Expected:", expected)
 
     assert actual == expected
+
+    print("Done...")
 
 
 if __name__ == "__main__":
