@@ -161,16 +161,10 @@ def test_debug_flag_generates_ir_with_debuginfo_for_func(debug_option):
         assert debug_option == make_check(kernel_ir, tag)
 
 
-def test_env_var_generates_ir_with_debuginfo_for_func(offload_device):
+def test_env_var_generates_ir_with_debuginfo_for_func(debug_option):
     """
     Check debug info is emitting to IR if NUMBA_DPPY_DEBUGINFO is set to 1
     """
-
-    if skip_test(offload_device):
-        pytest.skip()
-
-    if offload_device in "level_zero:gpu:0":
-        pytest.xfail("Failing compilation: SyclProgramCompilationError")
 
     @dppy.func
     def func_sum(a, b):
@@ -182,23 +176,24 @@ def test_env_var_generates_ir_with_debuginfo_for_func(offload_device):
         i = dppy.get_global_id(0)
         c[i] = func_sum(a[i], b[i])
 
-    ir_tag_func_sum = r'\!DISubprogram\(name: ".*func_sum"'
-    ir_tag_data_parallel_sum = r'\!DISubprogram\(name: ".*data_parallel_sum"'
-    ir_tags = (ir_tag_func_sum, ir_tag_data_parallel_sum)
+    ir_tags = [
+        r'\!DISubprogram\(name: ".*func_sum"',
+        r'\!DISubprogram\(name: ".*data_parallel_sum"',
+    ]
 
     OLD_DEBUGINFO_DEFAULT = dppy.compiler.DEBUGINFO_DEFAULT
-    dppy.compiler.DEBUGINFO_DEFAULT = 1
+    dppy.compiler.DEBUGINFO_DEFAULT = int(debug_option)
 
-    with dpctl.device_context(offload_device) as sycl_queue:
-        sig = (
-            types.float32[:],
-            types.float32[:],
-            types.float32[:],
-        )
-        kernel_ir = get_kernel_ir(sycl_queue, data_parallel_sum, sig, debug=True)
+    sycl_queue = dpctl.get_current_queue()
+    sig = (
+        types.float32[:],
+        types.float32[:],
+        types.float32[:],
+    )
+
+    kernel_ir = get_kernel_ir(sycl_queue, data_parallel_sum, sig)
 
     dppy.compiler.DEBUGINFO_DEFAULT = OLD_DEBUGINFO_DEFAULT
 
     for tag in ir_tags:
-        got = make_check(kernel_ir, tag)
-        assert got == True
+        assert debug_option == make_check(kernel_ir, tag)
