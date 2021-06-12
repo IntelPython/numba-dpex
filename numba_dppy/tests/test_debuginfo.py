@@ -23,7 +23,8 @@ from numba.core import types
 
 import numba_dppy as dppy
 from numba_dppy import compiler
-from numba_dppy.tests._helper import skip_test
+from numba_dppy import config
+from numba_dppy.tests._helper import skip_test, override_config
 
 
 debug_options = [True, False]
@@ -34,7 +35,7 @@ def debug_option(request):
     return request.param
 
 
-def get_kernel_ir(sycl_queue, fn, sig, debug=False):
+def get_kernel_ir(sycl_queue, fn, sig, debug=None):
     kernel = compiler.compile_kernel(sycl_queue, fn.py_func, sig, None, debug=debug)
     return kernel.assembly
 
@@ -126,3 +127,70 @@ def test_debug_kernel_local_vars_in_ir():
 
     for tag in ir_tags:
         assert tag in kernel_ir
+
+
+def test_debug_flag_generates_ir_with_debuginfo_for_func(debug_option):
+    """
+    Check debug info is emitting to IR if debug parameter is set to True
+    """
+
+    @dppy.func(debug=debug_option)
+    def func_sum(a, b):
+        result = a + b
+        return result
+
+    @dppy.kernel(debug=debug_option)
+    def data_parallel_sum(a, b, c):
+        i = dppy.get_global_id(0)
+        c[i] = func_sum(a[i], b[i])
+
+    ir_tags = [
+        r'\!DISubprogram\(name: ".*func_sum"',
+        r'\!DISubprogram\(name: ".*data_parallel_sum"',
+    ]
+
+    sycl_queue = dpctl.get_current_queue()
+    sig = (
+        types.float32[:],
+        types.float32[:],
+        types.float32[:],
+    )
+
+    kernel_ir = get_kernel_ir(sycl_queue, data_parallel_sum, sig, debug=debug_option)
+
+    for tag in ir_tags:
+        assert debug_option == make_check(kernel_ir, tag)
+
+
+def test_env_var_generates_ir_with_debuginfo_for_func(debug_option):
+    """
+    Check debug info is emitting to IR if NUMBA_DPPY_DEBUGINFO is set to 1
+    """
+
+    @dppy.func
+    def func_sum(a, b):
+        result = a + b
+        return result
+
+    @dppy.kernel
+    def data_parallel_sum(a, b, c):
+        i = dppy.get_global_id(0)
+        c[i] = func_sum(a[i], b[i])
+
+    ir_tags = [
+        r'\!DISubprogram\(name: ".*func_sum"',
+        r'\!DISubprogram\(name: ".*data_parallel_sum"',
+    ]
+
+    sycl_queue = dpctl.get_current_queue()
+    sig = (
+        types.float32[:],
+        types.float32[:],
+        types.float32[:],
+    )
+
+    with override_config("DEBUGINFO_DEFAULT", int(debug_option)):
+        kernel_ir = get_kernel_ir(sycl_queue, data_parallel_sum, sig)
+
+    for tag in ir_tags:
+        assert debug_option == make_check(kernel_ir, tag)
