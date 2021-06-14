@@ -17,6 +17,7 @@ import platform
 import numpy as np
 import pytest
 import dpctl
+from numba_dppy.context_manager import offload_to_sycl_device
 
 import numba_dppy as dppy
 from numba_dppy.tests._helper import skip_test

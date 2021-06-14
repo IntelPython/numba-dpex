@@ -52,7 +52,7 @@ def get_ext_modules():
         library_dirs=[os.path.dirname(dpctl.__file__)],
         runtime_library_dirs=dpctl_runtime_library_dirs,
     )
-    #ext_modules += [ext_dppy]
+    # ext_modules += [ext_dppy]
 
     dpnp_present = False
     try:
@@ -171,12 +171,12 @@ metadata = dict(
         "Topic :: Software Development :: Compilers",
     ],
 )
-'''
+"""
 entry_points={
     "numba_extensions": [
         "init = numba_dppy.numpy_usm_shared:numba_register",
     ]
 },
-'''
+"""
 
 setup(**metadata)

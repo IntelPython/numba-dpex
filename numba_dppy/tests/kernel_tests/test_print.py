@@ -16,6 +16,7 @@ import numpy as np
 import numba_dppy as dppy
 import pytest
 import dpctl
+from numba_dppy.context_manager import offload_to_sycl_device
 from numba_dppy.tests._helper import skip_test
 
 list_of_filter_strs = [
@@ -31,7 +32,8 @@ def filter_str(request):
 @pytest.mark.xfail
 def test_print_only_str(filter_str):
     try:
-        with dpctl.device_context(filter_str):
+        device = dpctl.SyclDevice(filter_str)
+        with offload_to_sycl_device(device):
             pass
     except Exception:
         pytest.skip()
@@ -75,7 +77,8 @@ def test_print(filter_str, input_arrays, capfd):
     a = input_arrays
     global_size = 3
 
-    with dpctl.device_context(filter_str):
+    device = dpctl.SyclDevice(filter_str)
+    with offload_to_sycl_device(device):
         f[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
         captured = capfd.readouterr()
         assert "test" in captured.out

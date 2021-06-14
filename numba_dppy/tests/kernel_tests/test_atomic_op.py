@@ -19,6 +19,7 @@ import os
 import numba_dppy as dppy
 import pytest
 import dpctl
+from numba_dppy.context_manager import offload_to_sycl_device
 
 
 global_size = 100
@@ -103,7 +104,8 @@ def test_kernel_atomic_simple(filter_str, input_arrays, kernel_result_pair):
 
     a, dtype = input_arrays
     kernel, expected = kernel_result_pair
-    with dpctl.device_context(filter_str):
+    device = dpctl.SyclDevice(filter_str)
+    with offload_to_sycl_device(device):
         kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
     assert a[0] == expected
 
@@ -129,7 +131,8 @@ def test_kernel_atomic_local(filter_str, input_arrays, return_list_of_op):
     a, dtype = input_arrays
     op_type, expected = return_list_of_op
     kernel = get_kernel_local(op_type, dtype)
-    with dpctl.device_context(filter_str):
+    device = dpctl.SyclDevice(filter_str)
+    with offload_to_sycl_device(device):
         kernel[global_size, global_size](a)
     assert a[0] == expected
 
@@ -171,7 +174,8 @@ def test_kernel_atomic_multi_dim(
     dim = return_list_of_dim
     kernel = get_kernel_multi_dim(op_type, len(dim))
     a = np.zeros(dim, return_dtype)
-    with dpctl.device_context(filter_str):
+    device = dpctl.SyclDevice(filter_str)
+    with offload_to_sycl_device(device):
         kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
     assert a[0] == expected
 

@@ -92,22 +92,23 @@ def _init_data_model_manager():
 
 spirv_data_model_manager = _init_data_model_manager()
 
+
 class SyclDevice(GPU):
-    """Mark the hardware target as SYCL Device.
-    """
+    """Mark the hardware target as SYCL Device."""
+
     pass
 
 
-
-target_registry['SyclDevice'] = SyclDevice
+target_registry["SyclDevice"] = SyclDevice
 
 import numba_dppy.dppy_offload_dispatcher
+
 
 class DPPYTargetContext(BaseContext):
     implement_powi_as_math_call = True
     generic_addrspace = SPIR_GENERIC_ADDRSPACE
 
-    def __init__(self, typingctx, target='SyclDevice'):
+    def __init__(self, typingctx, target="SyclDevice"):
         super().__init__(typingctx, target)
 
     def init(self):
@@ -117,6 +118,7 @@ class DPPYTargetContext(BaseContext):
         )
         # Override data model manager to SPIR model
         import numba.cpython.unicode
+
         self.data_model_manager = _init_data_model_manager()
         self.extra_compile_options = dict()
 
@@ -181,6 +183,7 @@ class DPPYTargetContext(BaseContext):
         from . import printimpl
 
         from numba.cpython import numbers, tupleobj, slicing
+
         self.insert_func_defn(oclimpl.registry.functions)
         self.insert_func_defn(mathimpl.registry.functions)
         self.insert_func_defn(npyimpl.registry.functions)

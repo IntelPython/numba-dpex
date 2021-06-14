@@ -16,6 +16,7 @@ import numpy as np
 import numba_dppy as dppy
 import pytest
 import dpctl
+from numba_dppy.context_manager import offload_to_sycl_device
 from numba_dppy.tests._helper import skip_test
 
 list_of_filter_strs = [

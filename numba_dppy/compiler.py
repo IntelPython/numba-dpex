@@ -89,6 +89,7 @@ class DPPYCompiler(CompilerBase):
             pms.append(DefaultPassBuilder.define_objectmode_pipeline(self.state))
         return pms
 
+
 @global_compiler_lock
 def compile_with_dppy(pyfunc, return_type, args, debug):
     # First compilation will trigger the initialization of the OpenCL backend.

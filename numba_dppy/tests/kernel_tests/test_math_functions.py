@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import dpctl
+from numba_dppy.context_manager import offload_to_sycl_device
 import numba_dppy as dppy
 import numpy as np
 import pytest
@@ -67,7 +68,8 @@ def test_binary_ops(filter_str, unary_op, input_arrays):
         i = dppy.get_global_id(0)
         b[i] = uop(a[i])
 
-    with dpctl.device_context(filter_str):
+    device = dpctl.SyclDevice(filter_str)
+    with offload_to_sycl_device(device):
         f[a.size, dppy.DEFAULT_LOCAL_SIZE](a, actual)
 
     expected = np_uop(a)

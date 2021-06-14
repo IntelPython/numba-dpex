@@ -66,7 +66,6 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
         return None
 
 
-
 class JITSPIRVCodegen(CPUCodegen):
     """
     This codegen implementation generates optimized SPIR 2.0

@@ -6,16 +6,18 @@ from numba._dispatcher import set_use_tls_target_stack
 from numba.core.dispatcher import TargetConfig
 
 
-
 def dppy_target(cpu_disp):
     kernel = njit(_target="SyclDevice")(cpu_disp.py_func)
     return kernel
 
+
 @contextmanager
 def offload_to_sycl_device(dpctl_device):
     if not isinstance(dpctl_device, dpctl.SyclDevice):
-        raise TypeError("Unrecognized device. Only dpctl.SyclDevice is accepted. Passed %s." % (type(dpctl_device))
-    # __enter__
+        raise TypeError(
+            "Unrecognized device. Only dpctl.SyclDevice is accepted. Passed %s."
+            % (type(dpctl_device))
+        )
 
     with dpctl.device_context(dpctl_device):
         tc = TargetConfig()

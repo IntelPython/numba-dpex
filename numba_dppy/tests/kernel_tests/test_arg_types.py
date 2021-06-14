@@ -16,6 +16,7 @@ import numpy as np
 import numba_dppy as dppy
 import pytest
 import dpctl
+from numba_dppy.context_manager import offload_to_sycl_device
 from numba_dppy.tests._helper import skip_test
 
 global_size = 1054
@@ -63,7 +64,8 @@ def test_kernel_arg_types(filter_str, input_arrays):
     kernel = dppy.kernel(mul_kernel)
     a, actual, c = input_arrays
     expected = a * c
-    with dpctl.device_context(filter_str):
+    device = dpctl.SyclDevice(filter_str)
+    with offload_to_sycl_device(device):
         kernel[global_size, local_size](a, actual, c)
     np.testing.assert_allclose(actual, expected, rtol=1e-5, atol=0)
 
@@ -82,7 +84,8 @@ def test_bool_type(filter_str):
     kernel = dppy.kernel(check_bool_kernel)
     a = np.array([2], np.int64)
 
-    with dpctl.device_context(filter_str):
+    device = dpctl.SyclDevice(filter_str)
+    with offload_to_sycl_device(device):
         kernel[a.size, dppy.DEFAULT_LOCAL_SIZE](a, True)
         assert a[0] == 111
         kernel[a.size, dppy.DEFAULT_LOCAL_SIZE](a, False)
