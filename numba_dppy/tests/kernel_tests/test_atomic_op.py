@@ -17,6 +17,7 @@ from numba_dppy.tests._helper import skip_test
 
 import os
 import numba_dppy as dppy
+from numba_dppy import config
 import pytest
 import dpctl
 
@@ -208,11 +209,11 @@ def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, addrspace):
 
     kernel = dppy.kernel(f)
 
-    NATIVE_FP_ATOMICS_old_val = dppy.config.NATIVE_FP_ATOMICS
-    dppy.config.NATIVE_FP_ATOMICS = 1
+    NATIVE_FP_ATOMICS_old_val = config.NATIVE_FP_ATOMICS
+    config.NATIVE_FP_ATOMICS = 1
 
-    LLVM_SPIRV_ROOT_old_val = dppy.config.LLVM_SPIRV_ROOT
-    dppy.config.LLVM_SPIRV_ROOT = LLVM_SPIRV_ROOT
+    LLVM_SPIRV_ROOT_old_val = config.LLVM_SPIRV_ROOT
+    config.LLVM_SPIRV_ROOT = LLVM_SPIRV_ROOT
 
     with dpctl.device_context(filter_str) as sycl_queue:
         kern = kernel[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
@@ -223,8 +224,8 @@ def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, addrspace):
         else:
             assert "__spirv_AtomicFAddEXT" not in kern.assembly
 
-    dppy.config.NATIVE_FP_ATOMICS = NATIVE_FP_ATOMICS_old_val
-    dppy.config.LLVM_SPIRV_ROOT = LLVM_SPIRV_ROOT_old_val
+    config.NATIVE_FP_ATOMICS = NATIVE_FP_ATOMICS_old_val
+    config.LLVM_SPIRV_ROOT = LLVM_SPIRV_ROOT_old_val
 
     # To bypass caching
     kernel = dppy.kernel(f)

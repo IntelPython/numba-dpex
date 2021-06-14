@@ -19,4 +19,4 @@ from os.path import dirname, join
 """
 
 import numba_dppy
-import numba_dppy.config as dppy_config
+from numba_dppy import config

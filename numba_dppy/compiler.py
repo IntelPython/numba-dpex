@@ -32,7 +32,6 @@ from . import spirv_generator
 
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
-from numba_dppy.config import DEBUG
 from numba_dppy import config
 from numba_dppy.driver import USMNdArrayType
 
@@ -141,7 +140,7 @@ def compile_with_dppy(pyfunc, return_type, args, debug=None):
 
 
 def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
-    if DEBUG:
+    if config.DEBUG:
         print("compile_kernel", args)
         debug = True
     if not sycl_queue:
@@ -168,7 +167,7 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
 
 
 def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug=None):
-    if DEBUG:
+    if config.DEBUG:
         print("compile_kernel_parfor", args)
         for a in args_with_addrspaces:
             print(a, type(a))
@@ -178,7 +177,7 @@ def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug
     cres = compile_with_dppy(func_ir, None, args_with_addrspaces, debug=debug)
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
 
-    if DEBUG:
+    if config.DEBUG:
         print("compile_kernel_parfor signature", cres.signature.args)
         for a in cres.signature.args:
             print(a, type(a))
@@ -387,7 +386,7 @@ class DPPYKernel(DPPYKernelBase):
         self.sycl_queue = sycl_queue
         self.context = context
         # First-time compilation using SPIRV-Tools
-        if DEBUG:
+        if config.DEBUG:
             with open("llvm_kernel.ll", "w") as f:
                 f.write(self.binary)
 

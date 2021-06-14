@@ -19,8 +19,7 @@ import os
 from subprocess import check_call, CalledProcessError, call
 import tempfile
 
-from numba import config
-from numba_dppy import config as dppy_config
+from numba_dppy import config
 from numba_dppy.target import LINK_ATOMIC, LLVM_SPIRV_ARGS
 
 
@@ -85,13 +84,13 @@ class CmdLine(object):
         opt_level_option = f"-O{config.OPT}"
 
         llvm_spirv_flags = []
-        if dppy_config.DEBUG:
+        if config.DEBUG:
             llvm_spirv_flags.append("--spirv-debug-info-version=ocl-100")
 
         check_call(["opt", opt_level_option, "-o", ipath + ".bc", ipath])
 
-        if dppy_config.NATIVE_FP_ATOMICS == 1:
-            llvm_spirv_root = dppy_config.LLVM_SPIRV_ROOT
+        if config.NATIVE_FP_ATOMICS == 1:
+            llvm_spirv_root = config.LLVM_SPIRV_ROOT
 
             if llvm_spirv_root == "":
                 raise ValueError(
@@ -108,7 +107,7 @@ class CmdLine(object):
         llvm_spirv_call_args += ["-o", opath, ipath + ".bc"]
         check_call(llvm_spirv_call_args)
 
-        if dppy_config.SAVE_IR_FILES == 0:
+        if config.SAVE_IR_FILES == 0:
             os.unlink(ipath + ".bc")
 
     def link(self, opath, binaries):
@@ -132,12 +131,12 @@ class Module(object):
     def __del__(self):
         # Remove all temporary files
         for afile in self._tempfiles:
-            if dppy_config.SAVE_IR_FILES != 0:
+            if config.SAVE_IR_FILES != 0:
                 print(afile)
             else:
                 os.unlink(afile)
         # Remove directory
-        if dppy_config.SAVE_IR_FILES == 0:
+        if config.SAVE_IR_FILES == 0:
             os.rmdir(self._tmpdir)
 
     def _create_temp_file(self, name, mode="wb"):
@@ -190,7 +189,7 @@ class Module(object):
             self._cmd.link(spirv_path, binary_paths)
 
         # Validate the SPIR-V code
-        if dppy_config.SPIRV_VAL == 1:
+        if config.SPIRV_VAL == 1:
             try:
                 self._cmd.validate(ipath=spirv_path)
             except CalledProcessError:

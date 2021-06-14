@@ -18,7 +18,6 @@ import pytest
 
 import dpctl
 import numpy as np
-from numba import config
 from numba.core import types
 
 import numba_dppy as dppy
