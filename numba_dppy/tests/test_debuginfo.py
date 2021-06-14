@@ -205,8 +205,8 @@ def test_debuginfo_DISubprogram_linkageName():
 
     sycl_queue = dpctl.get_current_queue()
     sig = (
-        types.float32[:],
-        types.float32[:],
+        convert_to_dppy_array(types.float32[:]),
+        convert_to_dppy_array(types.float32[:]),
     )
 
     kernel_ir = get_kernel_ir(sycl_queue, func, sig, debug=True)
@@ -228,8 +228,8 @@ def test_debuginfo_DICompileUnit_language_and_producer():
 
     sycl_queue = dpctl.get_current_queue()
     sig = (
-        types.float32[:],
-        types.float32[:],
+        convert_to_dppy_array(types.float32[:]),
+        convert_to_dppy_array(types.float32[:]),
     )
 
     kernel_ir = get_kernel_ir(sycl_queue, func, sig, debug=True)
