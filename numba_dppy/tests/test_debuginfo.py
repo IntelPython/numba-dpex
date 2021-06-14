@@ -193,3 +193,48 @@ def test_env_var_generates_ir_with_debuginfo_for_func(debug_option):
 
     for tag in ir_tags:
         assert debug_option == make_check(kernel_ir, tag)
+
+
+def test_debuginfo_DISubprogram_linkageName():
+    @dppy.kernel
+    def func(a, b):
+        i = dppy.get_global_id(0)
+        b[i] = a[i]
+
+    ir_tags = [
+        r'\!DISubprogram\(.*linkageName: ".*e4func.*"',  # e4func is func(), e8func$241 is func$1()
+    ]
+
+    sycl_queue = dpctl.get_current_queue()
+    sig = (
+        types.float32[:],
+        types.float32[:],
+    )
+
+    kernel_ir = get_kernel_ir(sycl_queue, func, sig, debug=True)
+
+    for tag in ir_tags:
+        assert make_check(kernel_ir, tag)
+
+
+def test_debuginfo_DICompileUnit_language_and_producer():
+    @dppy.kernel
+    def func(a, b):
+        i = dppy.get_global_id(0)
+        b[i] = a[i]
+
+    ir_tags = [
+        r"\!DICompileUnit\(language: DW_LANG_C_plus_plus,",
+        r'\!DICompileUnit\(.*producer: "numba-dppy"',
+    ]
+
+    sycl_queue = dpctl.get_current_queue()
+    sig = (
+        types.float32[:],
+        types.float32[:],
+    )
+
+    kernel_ir = get_kernel_ir(sycl_queue, func, sig, debug=True)
+
+    for tag in ir_tags:
+        assert make_check(kernel_ir, tag)
