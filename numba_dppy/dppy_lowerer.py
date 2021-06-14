@@ -1212,12 +1212,6 @@ def relatively_deep_copy(obj, memo):
     return cpy
 
 
-from numba.core.funcdesc import qualifying_prefix, default_mangler
-from numba.core import types, ir, debuginfo, funcdesc, config
-
-from numba_dppy.dppy_debuginfo import DPPYDIBuilder
-
-
 class DPPYLower(Lower):
     def __init__(self, context, library, fndesc, func_ir, metadata=None):
         Lower.__init__(self, context, library, fndesc, func_ir, metadata)
@@ -1240,6 +1234,9 @@ class DPPYLower(Lower):
 
         # Debuginfo
         if context.enable_debuginfo:
+            from numba.core.funcdesc import qualifying_prefix, default_mangler
+            from numba_dppy.dppy_debuginfo import DPPYDIBuilder
+
             qualprefix = qualifying_prefix(fndesc.modname, fndesc.qualname)
             mangled_qualname = default_mangler(qualprefix, fndesc.argtypes)
 
