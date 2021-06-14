@@ -30,15 +30,9 @@ class DPPYDIBuilder(DIBuilder):
         function.attributes.add("noinline")
 
     def _di_compile_unit(self):
-        return self.module.add_debug_info(
-            "DICompileUnit",
-            {
-                "language": ir.DIToken("DW_LANG_C_plus_plus"),
-                "file": self.difile,
-                "producer": "numba-dppy",
-                "runtimeVersion": 0,
-                "isOptimized": True,
-                "emissionKind": 1,  # 0-NoDebug, 1-FullDebug
-            },
-            is_distinct=True,
-        )
+        di = super()._di_compile_unit()
+        operands = dict(di.operands)
+        operands["language"] = ir.DIToken("DW_LANG_C_plus_plus")
+        operands["producer"] = "numba-dppy"
+        di.operands = tuple(operands.items())
+        return di
