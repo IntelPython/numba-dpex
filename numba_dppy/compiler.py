@@ -407,9 +407,7 @@ def device_array(shape, dtype, queue):
             % (type(queue))
         )
 
-    size = 1
-    for i in shape:
-        size *= i
+    size = np.prod(shape)
 
     usm_buf = dpctl_mem.MemoryUSMShared(size * dtype.itemsize, queue=queue)
     usm_ndarr = np.ndarray(shape, buffer=usm_buf, dtype=dtype)
