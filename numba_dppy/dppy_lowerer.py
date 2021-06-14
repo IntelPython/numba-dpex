@@ -1218,24 +1218,6 @@ from numba.core import types, ir, debuginfo, funcdesc, config
 from numba_dppy.dppy_debuginfo import DPPYDIBuilder
 
 
-class ModifiedLower(Lower):
-    def __init__(self, context, library, fndesc, func_ir, metadata=None):
-        Lower.__init__(self, context, library, fndesc, func_ir, metadata)
-        qualprefix = qualifying_prefix(fndesc.modname, fndesc.qualname)
-        self.mangled_qualname = default_mangler(qualprefix, fndesc.argtypes)
-
-        if self.context.enable_debuginfo:
-            self.debuginfo = DPPYDIBuilder(
-                module=self.module,
-                filepath=func_ir.loc.filename,
-                linkage_name=self.mangled_qualname,
-            )
-        else:
-            self.debuginfo = debuginfo.DummyDIBuilder(
-                module=self.module, filepath=func_ir.loc.filename
-            )
-
-
 class DPPYLower(Lower):
     def __init__(self, context, library, fndesc, func_ir, metadata=None):
         Lower.__init__(self, context, library, fndesc, func_ir, metadata)
@@ -1247,10 +1229,27 @@ class DPPYLower(Lower):
         cpu_context = (
             context.cpu_context if isinstance(context, DPPYTargetContext) else context
         )
-        self.gpu_lower = ModifiedLower(context, library, fndesc, func_ir, metadata)
-        self.cpu_lower = ModifiedLower(
+        self.gpu_lower = self._lower(context, library, fndesc, func_ir, metadata)
+        self.cpu_lower = self._lower(
             cpu_context, library, fndesc_cpu, func_ir_cpu, metadata
         )
+
+    def _lower(self, context, library, fndesc, func_ir, metadata):
+        """Create Lower with changed linkageName in debug info"""
+        lower = Lower(context, library, fndesc, func_ir, metadata)
+
+        # Debuginfo
+        if context.enable_debuginfo:
+            qualprefix = qualifying_prefix(fndesc.modname, fndesc.qualname)
+            mangled_qualname = default_mangler(qualprefix, fndesc.argtypes)
+
+            lower.debuginfo = DPPYDIBuilder(
+                module=lower.module,
+                filepath=func_ir.loc.filename,
+                linkage_name=mangled_qualname,
+            )
+
+        return lower
 
     def lower(self):
         """Numba-dppy's custom lowering function.
