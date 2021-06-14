@@ -523,7 +523,7 @@ class DPPYKernel(DPPYKernelBase):
             # we get the date back to host if have created a
             # device_array or if access_type of this device_array
             # is not of type read_only and read_write
-            usm_buf, usm_ndarr, orig_ndarray = device_arr
+            usm_ndarr, orig_ndarray = device_arr
             np.copyto(orig_ndarray, usm_ndarr)
 
     def _unpack_device_array_argument(self, val, kernelargs):
@@ -590,7 +590,7 @@ class DPPYKernel(DPPYKernelBase):
                 ):
                     np.copyto(usm_ndarr, val)
 
-                device_arrs[-1] = (None, usm_ndarr, val)
+                device_arrs[-1] = (usm_ndarr, val)
                 self._unpack_device_array_argument(usm_ndarr, kernelargs)
 
         elif ty == types.int64:
