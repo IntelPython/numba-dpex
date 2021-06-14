@@ -13,6 +13,8 @@ def dppy_target(cpu_disp):
 
 @contextmanager
 def offload_to_sycl_device(dpctl_device):
+    if not isinstance(dpctl_device, dpctl.SyclDevice):
+        raise TypeError("Unrecognized device. Only dpctl.SyclDevice is accepted. Passed %s." % (type(dpctl_device))
     # __enter__
 
     with dpctl.device_context(dpctl_device):
