@@ -1223,8 +1223,30 @@ class DPPYLower(Lower):
         cpu_context = (
             context.cpu_context if isinstance(context, DPPYTargetContext) else context
         )
-        self.gpu_lower = Lower(context, library, fndesc, func_ir, metadata)
-        self.cpu_lower = Lower(cpu_context, library, fndesc_cpu, func_ir_cpu, metadata)
+        self.gpu_lower = self._lower(context, library, fndesc, func_ir, metadata)
+        self.cpu_lower = self._lower(
+            cpu_context, library, fndesc_cpu, func_ir_cpu, metadata
+        )
+
+    def _lower(self, context, library, fndesc, func_ir, metadata):
+        """Create Lower with changed linkageName in debug info"""
+        lower = Lower(context, library, fndesc, func_ir, metadata)
+
+        # Debuginfo
+        if context.enable_debuginfo:
+            from numba.core.funcdesc import qualifying_prefix, default_mangler
+            from numba_dppy.dppy_debuginfo import DPPYDIBuilder
+
+            qualprefix = qualifying_prefix(fndesc.modname, fndesc.qualname)
+            mangled_qualname = default_mangler(qualprefix, fndesc.argtypes)
+
+            lower.debuginfo = DPPYDIBuilder(
+                module=lower.module,
+                filepath=func_ir.loc.filename,
+                linkage_name=mangled_qualname,
+            )
+
+        return lower
 
     def lower(self):
         """Numba-dppy's custom lowering function.
