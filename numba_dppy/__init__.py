@@ -517,16 +517,16 @@ Supported NumPy Functions:
 
 import numba.testing
 
-from .config import dppy_present
+from . import config
 
-if dppy_present:
+if config.dppy_present:
     from .device_init import *
 else:
     raise ImportError("Importing numba_dppy failed")
 
 
 def test(*args, **kwargs):
-    if not dppy_present and not is_available():
+    if not config.dppy_present and not is_available():
         raise RuntimeError("numba-dppy could not be imported")
 
     return numba.testing.test("numba_dppy.tests", *args, **kwargs)

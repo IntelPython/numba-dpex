@@ -41,11 +41,18 @@ def test_njit():
     A = np.arange(N, dtype=dtype)
     B = np.arange(N, dtype=dtype) * 10
 
-    device = get_device()
+    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
+    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
+    device = dpctl.select_default_device()
+    print("Using device ...")
+    device.print_device_info()
+
     with dpctl.device_context(device):
         C = ufunc_kernel(A, B)
 
     print(C)
+
+    print("Done...")
 
 
 @vectorize([float64(float64, float64)], target="dppy")

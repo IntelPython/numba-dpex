@@ -1,4 +1,4 @@
-# Copyright 2021 Intel Corporation
+# Copyright 2020, 2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,28 +12,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba import njit
 import numpy as np
+import numba_dppy as dppy
 import dpctl
 
 
-@njit
-def f1(a, b):
-    c = a + b
-    return c
+@dppy.kernel
+def data_parallel_sum(a_in_kernel, b_in_kernel, c_in_kernel):
+    i = dppy.get_global_id(0)  # numba-kernel-breakpoint
+    l1 = a_in_kernel[i]  # second-line
+    l2 = b_in_kernel[i]  # third-line
+    c_in_kernel[i] = l1 + l2  # fourth-line
+
+
+def driver(a, b, c, global_size):
+    print("before : ", a)
+    print("before : ", b)
+    print("before : ", c)
+    data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
+    print("after : ", c)
 
 
 def main():
-    global_size = 64
-    local_size = 32
-    N = global_size * local_size
-    print("N", N)
+    global_size = 10
+    N = global_size
 
-    a = np.ones(N, dtype=np.float32)
-    b = np.ones(N, dtype=np.float32)
-
-    print("a:", a, hex(a.ctypes.data))
-    print("b:", b, hex(b.ctypes.data))
+    a = np.arange(N, dtype=np.float32)
+    b = np.arange(N, dtype=np.float32)
+    c = np.empty_like(a)
 
     # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
     # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
@@ -42,13 +48,7 @@ def main():
     device.print_device_info()
 
     with dpctl.device_context(device):
-        c = f1(a, b)
-
-    print("RESULT c:", c, hex(c.ctypes.data))
-    for i in range(N):
-        if c[i] != 2.0:
-            print("First index not equal to 2.0 was", i)
-            break
+        driver(a, b, c, global_size)
 
     print("Done...")
 

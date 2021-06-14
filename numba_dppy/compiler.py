@@ -32,7 +32,7 @@ from . import spirv_generator
 
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
-from numba_dppy.config import DEBUG
+from numba_dppy import config
 from numba_dppy.driver import USMNdArrayType
 
 
@@ -89,7 +89,7 @@ class DPPYCompiler(CompilerBase):
         return pms
 
 
-def compile_with_dppy(pyfunc, return_type, args, debug):
+def compile_with_dppy(pyfunc, return_type, args, debug=None):
     # First compilation will trigger the initialization of the OpenCL backend.
     from .descriptor import dppy_target
 
@@ -98,11 +98,13 @@ def compile_with_dppy(pyfunc, return_type, args, debug):
 
     flags = compiler.Flags()
     # Do not compile (generate native code), just lower (to LLVM)
-    if debug:
-        flags.set("debuginfo")
+    flags.debuginfo = config.DEBUGINFO_DEFAULT
     flags.set("no_compile")
     flags.set("no_cpython_wrapper")
     flags.unset("nrt")
+
+    if debug is not None:
+        flags.debuginfo = debug
 
     # Run compilation pipeline
     if isinstance(pyfunc, FunctionType):
@@ -137,8 +139,8 @@ def compile_with_dppy(pyfunc, return_type, args, debug):
     return cres
 
 
-def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
-    if DEBUG:
+def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
+    if config.DEBUG:
         print("compile_kernel", args)
         debug = True
     if not sycl_queue:
@@ -164,8 +166,8 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
     return oclkern
 
 
-def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug=False):
-    if DEBUG:
+def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug=None):
+    if config.DEBUG:
         print("compile_kernel_parfor", args)
         for a in args_with_addrspaces:
             print(a, type(a))
@@ -175,7 +177,7 @@ def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug
     cres = compile_with_dppy(func_ir, None, args_with_addrspaces, debug=debug)
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
 
-    if DEBUG:
+    if config.DEBUG:
         print("compile_kernel_parfor signature", cres.signature.args)
         for a in cres.signature.args:
             print(a, type(a))
@@ -195,7 +197,7 @@ def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug
     return oclkern
 
 
-def compile_dppy_func(pyfunc, return_type, args, debug=False):
+def compile_dppy_func(pyfunc, return_type, args, debug=None):
     cres = compile_with_dppy(pyfunc, return_type, args, debug=debug)
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
     cres.target_context.mark_ocl_device(func)
@@ -212,11 +214,11 @@ def compile_dppy_func(pyfunc, return_type, args, debug=False):
 
 
 # Compile dppy function template
-def compile_dppy_func_template(pyfunc):
+def compile_dppy_func_template(pyfunc, debug=None):
     """Compile a DPPYFunctionTemplate"""
     from .descriptor import dppy_target
 
-    dft = DPPYFunctionTemplate(pyfunc)
+    dft = DPPYFunctionTemplate(pyfunc, debug=debug)
 
     class dppy_function_template(AbstractTemplate):
         key = dft
@@ -233,7 +235,7 @@ def compile_dppy_func_template(pyfunc):
 class DPPYFunctionTemplate(object):
     """Unmaterialized dppy function"""
 
-    def __init__(self, pyfunc, debug=False):
+    def __init__(self, pyfunc, debug=None):
         self.py_func = pyfunc
         self.debug = debug
         # self.inline = inline
@@ -463,7 +465,7 @@ class DPPYKernel(DPPYKernelBase):
         self.sycl_queue = sycl_queue
         self.context = context
         # First-time compilation using SPIRV-Tools
-        if DEBUG:
+        if config.DEBUG:
             with open("llvm_kernel.ll", "w") as f:
                 f.write(self.binary)
 
@@ -686,6 +688,8 @@ class JitDPPYKernel(DPPYKernelBase):
         if sycl_ctx and sycl_ctx == queue.sycl_context:
             return kernel
         else:
-            kernel = compile_kernel(queue, self.py_func, argtypes, self.access_types)
+            kernel = compile_kernel(
+                queue, self.py_func, argtypes, self.access_types, self.debug
+            )
             self.definitions[key_definitions] = (queue.sycl_context, kernel)
         return kernel
