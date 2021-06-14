@@ -1236,9 +1236,9 @@ class ModifiedLower(Lower):
             )
 
 
-class DPPYLower(ModifiedLower):
+class DPPYLower(Lower):
     def __init__(self, context, library, fndesc, func_ir, metadata=None):
-        ModifiedLower.__init__(self, context, library, fndesc, func_ir, metadata)
+        Lower.__init__(self, context, library, fndesc, func_ir, metadata)
         memo = {}
 
         fndesc_cpu = relatively_deep_copy(fndesc, memo)
