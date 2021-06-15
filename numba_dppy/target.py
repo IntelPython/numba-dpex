@@ -28,7 +28,7 @@ from numba.core.registry import cpu_target
 from numba.core.callconv import MinimalCallConv
 from . import codegen
 from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
-from numba_dppy.utils import convert_to_dppy_array, address_space, calling_conv
+from numba_dppy.utils import npytypes_array_to_dppy_array, address_space, calling_conv
 
 
 CC_SPIR_KERNEL = "spir_kernel"
@@ -59,8 +59,8 @@ class DPPYTypingContext(typing.BaseContext):
 
         """
         if isinstance(typeof(val), types.npytypes.Array):
-            # convert npytypes.Array to DPPYArray
-            return convert_to_dppy_array(typeof(val))
+            # Convert npytypes.Array to DPPYArray
+            return npytypes_array_to_dppy_array(typeof(val))
         else:
             return super().resolve_argument_type(val)
 
