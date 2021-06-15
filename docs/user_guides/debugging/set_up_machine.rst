@@ -28,7 +28,7 @@ NEO driver
 
 NEO driver at least `21.15.19533` version is required to make debugger work correctly.
 
-Follow the `link <https://github.com/intel/compute-runtime/releases/tag/21.15.19533>`_ below to download the drivers.
+You can download the driver from the following `link <https://github.com/intel/compute-runtime/releases/tag/21.15.19533>`_.
 
 1) To install the driver on the system, use the command:
 
