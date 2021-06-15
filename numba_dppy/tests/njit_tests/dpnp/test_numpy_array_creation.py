@@ -17,6 +17,7 @@
 ################################################################################
 
 import dpctl
+from numba_dppy.context_manager import offload_to_sycl_device
 import numpy as np
 from numba import njit
 import pytest
@@ -99,7 +100,8 @@ def test_unary_ops(filter_str, unary_op, input_array, capfd):
     expected = np.empty(shape=a.shape, dtype=a.dtype)
 
     f = njit(fn)
-    with dpctl.device_context(filter_str), dpnp_debug():
+    device = dpctl.SyclDevice(filter_str)
+    with offload_to_sycl_device(device), dpnp_debug():
         actual = f(a)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -123,7 +125,8 @@ def test_binary_op(filter_str, binary_op, input_array, dtype, get_shape, capfd):
     expected = np.empty(shape=a.shape, dtype=a.dtype)
 
     f = njit(fn)
-    with dpctl.device_context(filter_str), dpnp_debug():
+    device = dpctl.SyclDevice(filter_str)
+    with offload_to_sycl_device(device), dpnp_debug():
         actual = f(a, dtype)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -152,7 +155,8 @@ def test_full(filter_str, full_name, input_array, get_shape, capfd):
     expected = np.empty(shape=a.shape, dtype=a.dtype)
 
     f = njit(fn)
-    with dpctl.device_context(filter_str), dpnp_debug():
+    device = dpctl.SyclDevice(filter_str)
+    with offload_to_sycl_device(device), dpnp_debug():
         actual = f(a, np.array([2]))
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out

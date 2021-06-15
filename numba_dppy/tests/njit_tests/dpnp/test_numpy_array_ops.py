@@ -17,6 +17,7 @@
 ################################################################################
 
 import dpctl
+from numba_dppy.context_manager import offload_to_sycl_device
 import numpy as np
 from numba import njit
 import pytest
@@ -111,7 +112,8 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
     expected = np.empty(shape=a.shape, dtype=a.dtype)
 
     f = njit(op)
-    with dpctl.device_context(filter_str), dpnp_debug():
+    device = dpctl.SyclDevice(filter_str)
+    with offload_to_sycl_device(device), dpnp_debug():
         actual = f(a)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -146,7 +148,8 @@ def test_take(filter_str, input_arrays, indices, capfd):
     expected = np.empty(shape=a.shape, dtype=a.dtype)
 
     f = njit(fn)
-    with dpctl.device_context(filter_str), dpnp_debug():
+    device = dpctl.SyclDevice(filter_str)
+    with offload_to_sycl_device(device), dpnp_debug():
         actual = f(a, indices)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out

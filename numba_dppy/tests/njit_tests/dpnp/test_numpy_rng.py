@@ -17,6 +17,7 @@
 ################################################################################
 
 import dpctl
+from numba_dppy.context_manager import offload_to_sycl_device
 import numpy as np
 from numba import njit
 import pytest
@@ -84,7 +85,8 @@ def test_one_arg_fn(filter_str, one_arg_fn, unary_size, capfd):
     op, params = one_arg_fn
     name, low, high = params
     f = njit(op)
-    with dpctl.device_context(filter_str), dpnp_debug():
+    device = dpctl.SyclDevice(filter_str)
+    with offload_to_sycl_device(device), dpnp_debug():
         actual = f(unary_size)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -126,7 +128,8 @@ def test_two_arg_fn(filter_str, two_arg_fn, unary_size, capfd):
         pytest.skip("AttributeError: 'NoneType' object has no attribute 'ravel'")
     op = get_two_arg_fn(op_name)
     f = njit(op)
-    with dpctl.device_context(filter_str), dpnp_debug():
+    device = dpctl.SyclDevice(filter_str)
+    with offload_to_sycl_device(device), dpnp_debug():
         actual = f(first_arg, unary_size)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -184,7 +187,8 @@ def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
 
     op = get_three_arg_fn(op_name)
     f = njit(op)
-    with dpctl.device_context(filter_str), dpnp_debug():
+    device = dpctl.SyclDevice(filter_str)
+    with offload_to_sycl_device(device), dpnp_debug():
         actual = f(first_arg, second_arg, three_arg_size)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -218,7 +222,8 @@ def test_rand(filter_str):
         c = np.random.rand(3, 2)
         return c
 
-    with dpctl.device_context(filter_str), dpnp_debug():
+    device = dpctl.SyclDevice(filter_str)
+    with offload_to_sycl_device(device), dpnp_debug():
         actual = f()
 
         actual = actual.ravel()
@@ -236,7 +241,8 @@ def test_hypergeometric(filter_str, three_arg_size):
         return res
 
     ngood, nbad, nsamp = 100, 2, 10
-    with dpctl.device_context(filter_str), dpnp_debug():
+    device = dpctl.SyclDevice(filter_str)
+    with offload_to_sycl_device(device), dpnp_debug():
         actual = f(ngood, nbad, nsamp, three_arg_size)
 
         if np.isscalar(actual):
