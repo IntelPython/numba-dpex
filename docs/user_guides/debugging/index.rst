@@ -2,9 +2,9 @@ Debugging with GDB
 ==================
 
 `numba-dppy` allows SYCL kernels to be debugged with the GDB debugger.
-Setting the debug environment variable :envvar:`NUMBA_DPPY_DEBUG`
-(e.g. :samp:`export NUMBA_DPPY_DEBUG=1`) enables the emission of debug information.
-To disable debugging, unset the variable (e.g. :samp:`unset NUMBA_DPPY_DEBUG`).
+Setting the debug environment variable :envvar:`NUMBA_DPPY_DEBUGINFO`
+(e.g. :samp:`export NUMBA_DPPY_DEBUGINFO=1`) enables the emission of debug information.
+To disable debugging, unset the variable (e.g. :samp:`unset NUMBA_DPPY_DEBUGINFO`).
 
 .. note::
 
