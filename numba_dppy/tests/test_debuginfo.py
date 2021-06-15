@@ -17,13 +17,12 @@ import re
 import pytest
 
 import dpctl
-import numpy as np
 from numba.core import types
 
 import numba_dppy as dppy
 from numba_dppy import compiler
-from numba_dppy import config
-from numba_dppy.tests._helper import skip_test, override_config
+from numba_dppy.tests._helper import override_config
+from numba_dppy.utils import npytypes_array_to_dppy_array
 
 
 debug_options = [True, False]
@@ -77,10 +76,6 @@ def test_debug_info_locals_vars_on_no_opt():
     and optimization is O0
     """
 
-    pytest.xfail(
-        "Assertion Cast->getSrcTy()->getPointerAddressSpace() == SPIRAS_Generic"
-    )
-
     @dppy.kernel
     def foo(var_a, var_b, var_c):
         i = dppy.get_global_id(0)
@@ -93,17 +88,18 @@ def test_debug_info_locals_vars_on_no_opt():
         '!DILocalVariable(name: "i"',
     ]
 
-    config.OPT = 0  # All variables are available on no opt level
-
     sycl_queue = dpctl.get_current_queue()
-    sig = (types.float32[:], types.float32[:], types.float32[:])
+    sig = (
+        npytypes_array_to_dppy_array(types.float32[:]),
+        npytypes_array_to_dppy_array(types.float32[:]),
+        npytypes_array_to_dppy_array(types.float32[:]),
+    )
 
-    kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
+    with override_config("OPT", 0):
+        kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
 
     for tag in ir_tags:
         assert tag in kernel_ir
-
-    config.OPT = 3  # Return to the default value
 
 
 def test_debug_kernel_local_vars_in_ir():
@@ -120,7 +116,7 @@ def test_debug_kernel_local_vars_in_ir():
     ir_tags = ['!DILocalVariable(name: "index"', '!DILocalVariable(name: "local_d"']
 
     sycl_queue = dpctl.get_current_queue()
-    sig = (types.float32[:],)
+    sig = (npytypes_array_to_dppy_array(types.float32[:]),)
 
     kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
 
@@ -150,9 +146,9 @@ def test_debug_flag_generates_ir_with_debuginfo_for_func(debug_option):
 
     sycl_queue = dpctl.get_current_queue()
     sig = (
-        types.float32[:],
-        types.float32[:],
-        types.float32[:],
+        npytypes_array_to_dppy_array(types.float32[:]),
+        npytypes_array_to_dppy_array(types.float32[:]),
+        npytypes_array_to_dppy_array(types.float32[:]),
     )
 
     kernel_ir = get_kernel_ir(sycl_queue, data_parallel_sum, sig, debug=debug_option)
@@ -183,9 +179,9 @@ def test_env_var_generates_ir_with_debuginfo_for_func(debug_option):
 
     sycl_queue = dpctl.get_current_queue()
     sig = (
-        types.float32[:],
-        types.float32[:],
-        types.float32[:],
+        npytypes_array_to_dppy_array(types.float32[:]),
+        npytypes_array_to_dppy_array(types.float32[:]),
+        npytypes_array_to_dppy_array(types.float32[:]),
     )
 
     with override_config("DEBUGINFO_DEFAULT", int(debug_option)):
@@ -207,8 +203,8 @@ def test_debuginfo_DISubprogram_linkageName():
 
     sycl_queue = dpctl.get_current_queue()
     sig = (
-        types.float32[:],
-        types.float32[:],
+        npytypes_array_to_dppy_array(types.float32[:]),
+        npytypes_array_to_dppy_array(types.float32[:]),
     )
 
     kernel_ir = get_kernel_ir(sycl_queue, func, sig, debug=True)
@@ -230,8 +226,8 @@ def test_debuginfo_DICompileUnit_language_and_producer():
 
     sycl_queue = dpctl.get_current_queue()
     sig = (
-        types.float32[:],
-        types.float32[:],
+        npytypes_array_to_dppy_array(types.float32[:]),
+        npytypes_array_to_dppy_array(types.float32[:]),
     )
 
     kernel_ir = get_kernel_ir(sycl_queue, func, sig, debug=True)

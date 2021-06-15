@@ -15,6 +15,8 @@
 import dpctl
 from numba.core import sigutils, types
 
+from numba_dppy.utils import npytypes_array_to_dppy_array
+
 from .compiler import (
     compile_kernel,
     JitDPPYKernel,
@@ -49,6 +51,14 @@ def autojit(debug=None, access_types=None):
 
 def _kernel_jit(signature, debug, access_types):
     argtypes, restype = sigutils.normalize_signature(signature)
+    argtypes = tuple(
+        [
+            npytypes_array_to_dppy_array(ty)
+            if isinstance(ty, types.npytypes.Array)
+            else ty
+            for ty in argtypes
+        ]
+    )
 
     if restype is not None and restype != types.void:
         msg = "DPPY kernel must have void return type but got {restype}"
@@ -79,6 +89,14 @@ def func(signature=None, debug=None):
 
 def _func_jit(signature, debug=None):
     argtypes, restype = sigutils.normalize_signature(signature)
+    argtypes = tuple(
+        [
+            npytypes_array_to_dppy_array(ty)
+            if isinstance(ty, types.npytypes.Array)
+            else ty
+            for ty in argtypes
+        ]
+    )
 
     def _wrapped(pyfunc):
         return compile_dppy_func(pyfunc, restype, argtypes, debug=debug)

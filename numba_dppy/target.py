@@ -20,6 +20,7 @@ from llvmlite import ir as llvmir
 from llvmlite import binding as ll
 
 from numba.core import typing, types, utils, cgutils
+from numba import typeof
 from numba.core.utils import cached_property
 from numba.core import datamodel
 from numba.core.base import BaseContext
@@ -27,19 +28,55 @@ from numba.core.registry import cpu_target
 from numba.core.callconv import MinimalCallConv
 from . import codegen
 from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
+from numba_dppy.utils import npytypes_array_to_dppy_array, address_space, calling_conv
 
 
 CC_SPIR_KERNEL = "spir_kernel"
 CC_SPIR_FUNC = "spir_func"
-
-
-# -----------------------------------------------------------------------------
-# Typing
+VALID_CHARS = re.compile(r"[^a-z0-9]", re.I)
+LINK_ATOMIC = 111
+LLVM_SPIRV_ARGS = 112
 
 
 class DPPYTypingContext(typing.BaseContext):
+    """A numba_dppy-specific typing context inheriting Numba's ``BaseContext``.
+
+    :class:`DPPYTypingContext` is a customized typing context that inherits from
+    Numba's ``typing.BaseContext`` class. We add two specific functionalities
+    to the basic Numba typing context features: An overridden
+    :func:`resolve_argument_type` that changes all ``npytypes.Array`` to
+    numba-dppy's :class:`dppy_array_type.DppyArray`. An overridden
+    :func:`load_additional_registries` that registers OpenCL math and other
+    functions to the typing context.
+
+    """
+
+    def resolve_argument_type(self, val):
+        """Return the Numba type of a Python value used as a function argument.
+
+        Overrides the implementation of ``numba.core.typing.BaseContext`` to
+        handle the special case of ``numba.core.types.npytypes.Array``. Whenever
+        a NumPy ndarray argument is encountered as an argument to a ``kernel``
+        function, it is converted to a ``DPPYArray`` type.
+
+        Args:
+            val : A Python value that is passed as an argument to a ``kernel``
+                  function.
+
+        Returns: The Numba type corresponding to the Python value.
+
+        Raises:
+            ValueError: If the type of the Python value is not supported.
+
+        """
+        if isinstance(typeof(val), types.npytypes.Array):
+            # Convert npytypes.Array to DPPYArray
+            return npytypes_array_to_dppy_array(typeof(val))
+        else:
+            return super().resolve_argument_type(val)
+
     def load_additional_registries(self):
-        # Declarations for OpenCL API functions and OpenCL Math functions
+        """Register the OpenCL API and math and other functions."""
         from .ocl import ocldecl, mathdecl
         from numba.core.typing import cmathdecl, npydecl
 
@@ -49,35 +86,11 @@ class DPPYTypingContext(typing.BaseContext):
         self.install_registry(npydecl.registry)
 
 
-# -----------------------------------------------------------------------------
-# Implementation
-
-VALID_CHARS = re.compile(r"[^a-z0-9]", re.I)
-
-
-# Address spaces
-SPIR_PRIVATE_ADDRSPACE = 0
-SPIR_GLOBAL_ADDRSPACE = 1
-SPIR_CONSTANT_ADDRSPACE = 2
-SPIR_LOCAL_ADDRSPACE = 3
-SPIR_GENERIC_ADDRSPACE = 4
-
-SPIR_VERSION = (2, 0)
-
-
-LINK_ATOMIC = 111
-LLVM_SPIRV_ARGS = 112
-
-
 class GenericPointerModel(datamodel.PrimitiveModel):
     def __init__(self, dmm, fe_type):
-        # print("GenericPointerModel:", dmm, fe_type, fe_type.addrspace)
         adrsp = (
-            fe_type.addrspace
-            if fe_type.addrspace is not None
-            else SPIR_GENERIC_ADDRSPACE
+            fe_type.addrspace if fe_type.addrspace is not None else address_space.GLOBAL
         )
-        # adrsp = SPIR_GENERIC_ADDRSPACE
         be_type = dmm.lookup(fe_type.dtype).get_data_type().as_pointer(adrsp)
         super(GenericPointerModel, self).__init__(dmm, fe_type, be_type)
 
@@ -93,8 +106,146 @@ spirv_data_model_manager = _init_data_model_manager()
 
 
 class DPPYTargetContext(BaseContext):
+    """A numba_dppy-specific target context inheriting Numba's ``BaseContext``.
+
+    :class:`DPPYTargetContext` is a customized target context that inherits
+    from Numba's ``numba.core.base.BaseContext`` class. The class defines
+    helper functions to mark LLVM functions as SPIR-V kernels. The class also
+    registers OpenCL math and API functions, helper functions for inserting
+    LLVM address space cast instructions, and other functionalities used by
+    numba_dppy's compiler passes.
+
+    """
+
     implement_powi_as_math_call = True
-    generic_addrspace = SPIR_GENERIC_ADDRSPACE
+
+    def _gen_arg_addrspace_md(self, fn):
+        """Generate kernel_arg_addr_space metadata."""
+        mod = fn.module
+        fnty = fn.type.pointee
+        codes = []
+
+        for a in fnty.args:
+            if cgutils.is_pointer(a):
+                codes.append(address_space.GLOBAL)
+            else:
+                codes.append(address_space.PRIVATE)
+
+        consts = [lc.Constant.int(lc.Type.int(), x) for x in codes]
+        name = lc.MetaDataString.get(mod, "kernel_arg_addr_space")
+        return lc.MetaData.get(mod, [name] + consts)
+
+    def _gen_arg_access_qual_md(self, fn):
+        """Generate kernel_arg_access_qual metadata."""
+        mod = fn.module
+        consts = [lc.MetaDataString.get(mod, "none")] * len(fn.args)
+        name = lc.MetaDataString.get(mod, "kernel_arg_access_qual")
+        return lc.MetaData.get(mod, [name] + consts)
+
+    def _gen_arg_type(self, fn):
+        """Generate kernel_arg_type metadata."""
+        mod = fn.module
+        fnty = fn.type.pointee
+        consts = [lc.MetaDataString.get(mod, str(a)) for a in fnty.args]
+        name = lc.MetaDataString.get(mod, "kernel_arg_type")
+        return lc.MetaData.get(mod, [name] + consts)
+
+    def _gen_arg_type_qual(self, fn):
+        """Generate kernel_arg_type_qual metadata."""
+        mod = fn.module
+        fnty = fn.type.pointee
+        consts = [lc.MetaDataString.get(mod, "") for _ in fnty.args]
+        name = lc.MetaDataString.get(mod, "kernel_arg_type_qual")
+        return lc.MetaData.get(mod, [name] + consts)
+
+    def _gen_arg_base_type(self, fn):
+        """Generate kernel_arg_base_type metadata."""
+        mod = fn.module
+        fnty = fn.type.pointee
+        consts = [lc.MetaDataString.get(mod, str(a)) for a in fnty.args]
+        name = lc.MetaDataString.get(mod, "kernel_arg_base_type")
+        return lc.MetaData.get(mod, [name] + consts)
+
+    def _finalize_wrapper_module(self, fn):
+        """Add metadata and calling convention to the wrapper function.
+
+        The helper function adds function metadata to the wrapper function and
+        also module level metadata to the LLVM module containing the wrapper.
+        We also make sure the wrapper function has ``spir_kernel`` calling
+        convention, without which the function cannot be used as a kernel.
+
+        Args:
+            fn: LLVM function representing the "kernel" wrapper function.
+
+        """
+        mod = fn.module
+        # Set norecurse
+        fn.attributes.add("norecurse")
+        # Set SPIR kernel calling convention
+        fn.calling_convention = CC_SPIR_KERNEL
+
+        # Mark kernels
+        ocl_kernels = mod.get_or_insert_named_metadata("opencl.kernels")
+        ocl_kernels.add(
+            lc.MetaData.get(
+                mod,
+                [
+                    fn,
+                    self._gen_arg_addrspace_md(fn),
+                    self._gen_arg_access_qual_md(fn),
+                    self._gen_arg_type(fn),
+                    self._gen_arg_type_qual(fn),
+                    self._gen_arg_base_type(fn),
+                ],
+            )
+        )
+
+        # Other metadata
+        empty_md = lc.MetaData.get(mod, ())
+        others = [
+            "opencl.used.extensions",
+            "opencl.used.optional.core.features",
+            "opencl.compiler.options",
+        ]
+
+        for name in others:
+            nmd = mod.get_or_insert_named_metadata(name)
+            if not nmd.operands:
+                nmd.add(empty_md)
+
+    def _generate_kernel_wrapper(self, func, argtypes):
+        module = func.module
+        arginfo = self.get_arg_packer(argtypes)
+        wrapperfnty = lc.Type.function(lc.Type.void(), arginfo.argument_types)
+        wrapper_module = self.create_module("dppy.kernel.wrapper")
+        wrappername = "dppyPy_{name}".format(name=func.name)
+        argtys = list(arginfo.argument_types)
+        fnty = lc.Type.function(
+            lc.Type.int(),
+            [self.call_conv.get_return_type(types.pyobject)] + argtys,
+        )
+        func = wrapper_module.add_function(fnty, name=func.name)
+        func.calling_convention = CC_SPIR_FUNC
+        wrapper = wrapper_module.add_function(wrapperfnty, name=wrappername)
+        builder = lc.Builder(wrapper.append_basic_block(""))
+
+        callargs = arginfo.from_arguments(builder, wrapper.args)
+
+        # XXX handle error status
+        status, _ = self.call_conv.call_function(
+            builder, func, types.void, argtypes, callargs
+        )
+        builder.ret_void()
+
+        self._finalize_wrapper_module(wrapper)
+
+        # Link the spir_func module to the wrapper module
+        module.link_in(ll.parse_assembly(str(wrapper_module)))
+        # Make sure the spir_func has internal linkage to be inlinable.
+        func.linkage = "internal"
+        wrapper = module.get_function(wrapper.name)
+        module.get_function(func.name).linkage = "internal"
+        return wrapper
 
     def init(self):
         self._internal_codegen = codegen.JITSPIRVCodegen("numba_dppy.jit")
@@ -112,10 +263,6 @@ class DPPYTargetContext(BaseContext):
         from numba.np.ufunc_db import _ufunc_db as ufunc_db
 
         self.ufunc_db = copy.deepcopy(ufunc_db)
-
-        from numba.core.cpu import CPUContext
-        from numba.core.typing import Context as TypingContext
-
         self.cpu_context = cpu_target.target_context
 
     def replace_numpy_ufunc_with_opencl_supported_functions(self):
@@ -157,19 +304,24 @@ class DPPYTargetContext(BaseContext):
                     self.ufunc_db[ufunc][sig] = lower_ocl_impl[(name, sig_mapper[sig])]
 
     def load_additional_registries(self):
+        """Register OpenCL functions into numba-dppy's target context.
+
+        To make sure we are calling supported OpenCL math functions, we
+        replace some of NUMBA's NumPy ufunc with OpenCL versions of those
+        functions. The replacement is done after the OpenCL functions have
+        been registered into the target context.
+
+        """
         from .ocl import oclimpl, mathimpl
         from numba.np import npyimpl
+
         from . import printimpl
 
         self.insert_func_defn(oclimpl.registry.functions)
         self.insert_func_defn(mathimpl.registry.functions)
         self.insert_func_defn(npyimpl.registry.functions)
         self.install_registry(printimpl.registry)
-
-        """ To make sure we are calling supported OpenCL math
-            functions we will redirect some of NUMBA's NumPy
-            ufunc with OpenCL's.
-        """
+        # Replace NumPy functions with their OpenCL versions.
         self.replace_numpy_ufunc_with_opencl_supported_functions()
 
     @cached_property
@@ -195,111 +347,51 @@ class DPPYTargetContext(BaseContext):
     def prepare_ocl_kernel(self, func, argtypes):
         module = func.module
         func.linkage = "linkonce_odr"
-
         module.data_layout = codegen.SPIR_DATA_LAYOUT[self.address_size]
-        wrapper = self.generate_kernel_wrapper(func, argtypes)
-
+        wrapper = self._generate_kernel_wrapper(func, argtypes)
         return wrapper
 
     def mark_ocl_device(self, func):
         # Adapt to SPIR
-        # module = func.module
         func.calling_convention = CC_SPIR_FUNC
         func.linkage = "linkonce_odr"
         return func
 
-    def generate_kernel_wrapper(self, func, argtypes):
-        module = func.module
-        arginfo = self.get_arg_packer(argtypes)
-
-        def sub_gen_with_global(lty):
-            if isinstance(lty, llvmir.PointerType):
-                if lty.addrspace == SPIR_LOCAL_ADDRSPACE:
-                    return lty, None
-                # DRD : Cast all pointer types to global address space.
-                if lty.addrspace != SPIR_GLOBAL_ADDRSPACE:  # jcaraban
-                    return (
-                        lty.pointee.as_pointer(SPIR_GLOBAL_ADDRSPACE),
-                        lty.addrspace,
-                    )
-            return lty, None
-
-        if len(arginfo.argument_types) > 0:
-            llargtys, changed = zip(*map(sub_gen_with_global, arginfo.argument_types))
-        else:
-            llargtys = changed = ()
-        wrapperfnty = lc.Type.function(lc.Type.void(), llargtys)
-
-        wrapper_module = self.create_module("dppy.kernel.wrapper")
-        wrappername = "dppyPy_{name}".format(name=func.name)
-
-        argtys = list(arginfo.argument_types)
-        fnty = lc.Type.function(
-            lc.Type.int(), [self.call_conv.get_return_type(types.pyobject)] + argtys
-        )
-
-        func = wrapper_module.add_function(fnty, name=func.name)
-        func.calling_convention = CC_SPIR_FUNC
-
-        wrapper = wrapper_module.add_function(wrapperfnty, name=wrappername)
-
-        builder = lc.Builder(wrapper.append_basic_block(""))
-
-        # Adjust address space of each kernel argument
-        fixed_args = []
-        for av, adrsp in zip(wrapper.args, changed):
-            if adrsp is not None:
-                casted = self.addrspacecast(builder, av, adrsp)
-                fixed_args.append(casted)
-            else:
-                fixed_args.append(av)
-
-        callargs = arginfo.from_arguments(builder, fixed_args)
-
-        # XXX handle error status
-        status, _ = self.call_conv.call_function(
-            builder, func, types.void, argtypes, callargs
-        )
-        builder.ret_void()
-
-        set_dppy_kernel(wrapper)
-
-        # print(str(wrapper_module))
-        # Link
-        module.link_in(ll.parse_assembly(str(wrapper_module)))
-        # To enable inlining which is essential because addrspacecast 1->0 is
-        # illegal.  Inlining will optimize the addrspacecast out.
-        func.linkage = "internal"
-        wrapper = module.get_function(wrapper.name)
-        module.get_function(func.name).linkage = "internal"
-        return wrapper
-
     def declare_function(self, module, fndesc):
+        """Create the LLVM function from a ``numba_dppy.kernel`` decorated
+        function.
+
+        Args:
+            module (llvmlite.llvmpy.core.Module) : The LLVM module into which
+                the kernel function will be inserted.
+            fndesc (numba.core.funcdesc.PythonFunctionDescriptor) : The
+                signature of the function.
+
+        Returns:
+            llvmlite.ir.values.Function: The reference to the LLVM Function
+                that was inserted into the module.
+
+        """
         fnty = self.call_conv.get_function_type(fndesc.restype, fndesc.argtypes)
         fn = module.get_or_insert_function(fnty, name=fndesc.mangled_name)
-
         if not self.enable_debuginfo:
             fn.attributes.add("alwaysinline")
-
         ret = super(DPPYTargetContext, self).declare_function(module, fndesc)
-
-        # XXX: Refactor fndesc instead of this special case
-        if fndesc.llvm_func_name.startswith("dppy_py_devfn"):
-            ret.calling_convention = CC_SPIR_FUNC
+        ret.calling_convention = calling_conv.CC_SPIR_FUNC
         return ret
 
-    def make_constant_array(self, builder, typ, ary):
-        """
-        Return dummy value.
-        """
-        #
-        # a = self.make_array(typ)(self, builder)
-        # return a._getvalue()
-        raise NotImplementedError
-
     def insert_const_string(self, mod, string):
-        """
-        This returns a a pointer in the spir generic addrspace.
+        """Create a global string from the passed in string argument and return
+        a void* in the GENERIC address space pointing to that string.
+
+        Args:
+            mod: LLVM module where the global string value is to be inserted.
+            string: A Python string that will be converted to a global constant
+                    string and inserted into the module.
+
+        Returns: A LLVM Constant pointing to the global string value inserted
+                 into the module.
+
         """
         text = lc.Constant.stringz(string)
 
@@ -308,10 +400,10 @@ class DPPYTargetContext(BaseContext):
         # Try to reuse existing global
         try:
             gv = mod.get_global(name)
-        except KeyError as e:
+        except KeyError:
             # Not defined yet
             gv = mod.add_global_variable(
-                text.type, name=name, addrspace=SPIR_GENERIC_ADDRSPACE
+                text.type, name=name, addrspace=address_space.GENERIC
             )
             gv.linkage = "internal"
             gv.global_constant = True
@@ -319,11 +411,13 @@ class DPPYTargetContext(BaseContext):
 
         # Cast to a i8* pointer
         charty = gv.type.pointee.element
-        return lc.Constant.bitcast(gv, charty.as_pointer(SPIR_GENERIC_ADDRSPACE))
+        return lc.Constant.bitcast(gv, charty.as_pointer(address_space.GENERIC))
 
     def addrspacecast(self, builder, src, addrspace):
-        """
-        Handle addrspacecast
+        """Insert an LLVM addressspace cast instruction into the module.
+
+        FIXME: Move this function into utils.
+
         """
         ptras = llvmir.PointerType(src.type.pointee, addrspace=addrspace)
         return builder.addrspacecast(src, ptras)
@@ -333,135 +427,22 @@ class DPPYTargetContext(BaseContext):
         return self.ufunc_db[ufunc_key]
 
 
-def set_dppy_kernel(fn):
-    """
-    Ensure `fn` is usable as a SPIR kernel.
-    - Fix calling convention
-    - Add metadata
-    """
-    mod = fn.module
-
-    # Set nounwind
-    # fn.add_attribute(lc.ATTR_NO_UNWIND)
-
-    # Set SPIR kernel calling convention
-    fn.calling_convention = CC_SPIR_KERNEL
-
-    # Mark kernels
-    ocl_kernels = mod.get_or_insert_named_metadata("opencl.kernels")
-    ocl_kernels.add(
-        lc.MetaData.get(
-            mod,
-            [
-                fn,
-                gen_arg_addrspace_md(fn),
-                gen_arg_access_qual_md(fn),
-                gen_arg_type(fn),
-                gen_arg_type_qual(fn),
-                gen_arg_base_type(fn),
-            ],
-        )
-    )
-
-    # SPIR version 2.0
-    make_constant = lambda x: lc.Constant.int(lc.Type.int(), x)
-    spir_version_constant = [make_constant(x) for x in SPIR_VERSION]
-
-    spir_version = mod.get_or_insert_named_metadata("dppy.spir.version")
-    if not spir_version.operands:
-        spir_version.add(lc.MetaData.get(mod, spir_version_constant))
-
-    ocl_version = mod.get_or_insert_named_metadata("dppy.ocl.version")
-    if not ocl_version.operands:
-        ocl_version.add(lc.MetaData.get(mod, spir_version_constant))
-
-    # Other metadata
-    empty_md = lc.MetaData.get(mod, ())
-    others = [
-        "opencl.used.extensions",
-        "opencl.used.optional.core.features",
-        "opencl.compiler.options",
-    ]
-
-    for name in others:
-        nmd = mod.get_or_insert_named_metadata(name)
-        if not nmd.operands:
-            nmd.add(empty_md)
-
-
-def gen_arg_addrspace_md(fn):
-    """
-    Generate kernel_arg_addr_space metadata
-    """
-    mod = fn.module
-    fnty = fn.type.pointee
-    codes = []
-
-    for a in fnty.args:
-        if cgutils.is_pointer(a):
-            codes.append(SPIR_GLOBAL_ADDRSPACE)
-        else:
-            codes.append(SPIR_PRIVATE_ADDRSPACE)
-
-    consts = [lc.Constant.int(lc.Type.int(), x) for x in codes]
-    name = lc.MetaDataString.get(mod, "kernel_arg_addr_space")
-    return lc.MetaData.get(mod, [name] + consts)
-
-
-def gen_arg_access_qual_md(fn):
-    """
-    Generate kernel_arg_access_qual metadata
-    """
-    mod = fn.module
-    consts = [lc.MetaDataString.get(mod, "none")] * len(fn.args)
-    name = lc.MetaDataString.get(mod, "kernel_arg_access_qual")
-    return lc.MetaData.get(mod, [name] + consts)
-
-
-def gen_arg_type(fn):
-    """
-    Generate kernel_arg_type metadata
-    """
-    mod = fn.module
-    fnty = fn.type.pointee
-    consts = [lc.MetaDataString.get(mod, str(a)) for a in fnty.args]
-    name = lc.MetaDataString.get(mod, "kernel_arg_type")
-    return lc.MetaData.get(mod, [name] + consts)
-
-
-def gen_arg_type_qual(fn):
-    """
-    Generate kernel_arg_type_qual metadata
-    """
-    mod = fn.module
-    fnty = fn.type.pointee
-    consts = [lc.MetaDataString.get(mod, "") for _ in fnty.args]
-    name = lc.MetaDataString.get(mod, "kernel_arg_type_qual")
-    return lc.MetaData.get(mod, [name] + consts)
-
-
-def gen_arg_base_type(fn):
-    """
-    Generate kernel_arg_base_type metadata
-    """
-    mod = fn.module
-    fnty = fn.type.pointee
-    consts = [lc.MetaDataString.get(mod, str(a)) for a in fnty.args]
-    name = lc.MetaDataString.get(mod, "kernel_arg_base_type")
-    return lc.MetaData.get(mod, [name] + consts)
-
-
 class DPPYCallConv(MinimalCallConv):
+    """Custom calling convention class used by numba-dppy.
+
+    Numba-dppy's calling convention derives from
+    :class:`numba.core.callconv import MinimalCallConv`. The
+    :class:`DPPYCallConv` overriddes :func:`call_function`.
+
+    """
+
     def call_function(self, builder, callee, resty, argtys, args, env=None):
-        """
-        Call the Numba-compiled *callee*.
-        """
+        """Call the Numba-compiled *callee*."""
         assert env is None
         retty = callee.args[0].type.pointee
         retvaltmp = cgutils.alloca_once(builder, retty)
         # initialize return value
         builder.store(cgutils.get_null_value(retty), retvaltmp)
-
         arginfo = self.context.get_arg_packer(argtys)
         args = arginfo.as_arguments(builder, args)
         realargs = [retvaltmp] + list(args)

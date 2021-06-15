@@ -15,26 +15,27 @@
 """ Provides helper functions to convert from numba types to numba_dppy types.
 
 Currently the module supports the following converter functions:
-    - convert_to_dppy_array: types.npytypes.Array to
-                             numba_dppy.dppy_array_type.DPPYArray.
+    - npytypes_array_to_dppy_array: types.npytypes.Array to
+                                    numba_dppy.dppy_array_type.DPPYArray.
 
 """
 from numba.core import types
 from numba_dppy import dppy_array_type
 from .constants import address_space
 
-__all__ = ["convert_to_dppy_array"]
+__all__ = ["npytypes_array_to_dppy_array"]
 
 
-def convert_to_dppy_array(arrtype, addrspace=address_space.GLOBAL):
+def npytypes_array_to_dppy_array(arrtype, addrspace=address_space.GLOBAL):
     """Convert   Numba's Array type to numba_dppy's DPPYArray type.
 
     Numba's ``Array`` type does not have a notion of address space for the data
-    pointer. For this reason, numba_dppy defines its own array type (DPPYArray).
-    The DPPYArray type is similar to Numba's Array, but the data pointer has an
-    address space associated with it. The converter function converts the Numba
-    Array type to DPPYArray type with address space of pointer members typed to
-    the specified address space.
+    pointer. numba_dppy defines its own array type, DPPYArray, that is similar
+    to Numba's Array, but the data pointer has an associated address space.
+    In addition, the ``meminfo`` and the ``parent`` attributes of ``Array``
+    are stored as ``CPointer`` types instead of ``PyObject``. The converter
+    function converts the Numba ``Array`` type to ``DPPYArray`` type with
+    address space of pointer members typed to the specified address space.
 
     Args:
         arrtype (numba.types): A numba data type that should be

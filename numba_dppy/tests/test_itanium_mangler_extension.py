@@ -17,13 +17,7 @@ import pytest
 import numba_dppy.extended_numba_itanium_mangler as itanium_mangler
 from numba import int32, int64, uint32, uint64, float32, float64
 from numba.core import types
-from numba_dppy.target import (
-    SPIR_PRIVATE_ADDRSPACE,
-    SPIR_GLOBAL_ADDRSPACE,
-    SPIR_CONSTANT_ADDRSPACE,
-    SPIR_LOCAL_ADDRSPACE,
-    SPIR_GENERIC_ADDRSPACE,
-)
+from numba_dppy.utils import address_space
 
 list_of_dtypes = [
     (int32, "i"),
@@ -41,11 +35,10 @@ def dtypes(request):
 
 
 list_of_addrspaces = [
-    (SPIR_PRIVATE_ADDRSPACE, "3AS0"),
-    (SPIR_GLOBAL_ADDRSPACE, "3AS1"),
-    (SPIR_CONSTANT_ADDRSPACE, "3AS2"),
-    (SPIR_LOCAL_ADDRSPACE, "3AS3"),
-    (SPIR_GENERIC_ADDRSPACE, "3AS4"),
+    (address_space.PRIVATE, "3AS0"),
+    (address_space.GLOBAL, "3AS1"),
+    (address_space.LOCAL, "3AS3"),
+    (address_space.GENERIC, "3AS4"),
 ]
 
 
