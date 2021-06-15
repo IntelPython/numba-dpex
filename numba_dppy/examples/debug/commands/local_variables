@@ -1,0 +1,20 @@
+# Run: NUMBA_DPPY_DEBUGINFO=1 gdb-oneapi -q -command commands/local_variables python
+break sum.py:25
+run sum.py
+# Expected:
+# Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at sum.py:25
+# 25          c_in_kernel[i] = l1 + l2  # fourth-line
+info locals
+# ?????
+# i = 0
+# l1 = 0
+# l2 = 0
+next
+# Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at sum.py:25
+# 25          c_in_kernel[i] = l1 + l2  # fourth-line
+info locals
+# i = 0
+# l1 = 0
+# l2 = 0
+echo Done\n
+quit
