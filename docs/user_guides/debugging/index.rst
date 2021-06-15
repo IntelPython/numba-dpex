@@ -34,43 +34,27 @@ the relevant documentation can be found at `Intel® Distribution for GDB documen
 Example of GDB usage
 --------------------
 
-For example, given the following `numba-dppy` kernel code:
+For example, given the following `numba-dppy` kernel code (:file:`simple_sum.py`):
 
-.. code-block:: python
-    :caption: sum.py
+.. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
     :linenos:
-
-    import numpy as np
-    import numba_dppy as dppy
-    import dpctl
-
-    @dppy.kernel
-    def data_parallel_sum(a, b, c):
-        i = dppy.get_global_id(0)
-        c[i] = a[i] + b[i]
-
-    global_size = 10
-    N = global_size
-
-    a = np.array(np.random.random(N), dtype=np.float32)
-    b = np.array(np.random.random(N), dtype=np.float32)
-    c = np.ones_like(a)
-
-    with dpctl.device_context("opencl:gpu") as gpu_queue:
-        data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
 Running GDB and creating breakpoint in kernel:
 
 .. code-block:: bash
 
-    $ export NUMBA_DPPY_DEBUG=1
-    $ gdb-oneapi -q --args python sum.py
-    (gdb) break sum.py:7  # Set breakpoint in kernel
+    $ export NUMBA_DPPY_DEBUGINFO=1
+    $ gdb-oneapi -q --args python simple_sum.py
+    (gdb) break simple_sum.py:8  ### Set breakpoint in kernel
     (gdb) run
-    Thread 2.2 hit Breakpoint 1,  with SIMD lanes [0-7], dppl_py_devfn__5F__5F_main_5F__5F__2E_data_5F_parallel_5F_sum_24_1_2E_array_28_float32_2C__20_1d_2C__20_C_29__2E_array_28_float32_2C__20_1d_2C__20_C_29__2E_array_28_float32_2C__20_1d_2C__20_C_29_ () at sum.py:7
-    7          i = dppy.get_global_id(0)
+    ...
+    Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:8
+    8           i = dppy.get_global_id(0)
     (gdb) next
-    8          c[i] = a[i] + b[i]
+    9           c[i] = a[i] + b[i]
+    (gdb) continue
+    Done...
+    ...
 
 
 .. _debugging-features-and-limitations:
