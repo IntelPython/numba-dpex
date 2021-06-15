@@ -43,7 +43,7 @@ You need to set the following variables for debugging:
 Activate NEO drivers
 --------------------
 
-Further, if you want to use local NEO driver, you need to activate the variables for it.
+Further, if you want to use local NEO driver, you need to activate the variables for it. See `Setting up the machine for debugging`.
 
 Checking debugging environment
 ------------------------------
@@ -82,7 +82,7 @@ Launch gdb and set a breakpoint in the kernel:
     Breakpoint 1 (example.py:7) pending.
     (gdb) run
 
-In the output you can see that the breakpoint was set successfully:
+In the output you can see that the breakpoint was hit successfully:
 
 .. code-block:: bash
 

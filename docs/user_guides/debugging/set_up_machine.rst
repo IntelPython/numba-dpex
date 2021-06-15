@@ -36,7 +36,7 @@ Follow the `link <https://github.com/intel/compute-runtime/releases/tag/21.15.19
 
     sudo dpkg -i *.deb
 
-2) To install the NEO driver locally follow the commands below:
+2) To install the NEO driver locally, you need to add the path to NEO files in `LD_LIBRARY_PATH`. Follow the commands below:
 
 .. code-block:: bash
 
@@ -48,6 +48,7 @@ Follow the `link <https://github.com/intel/compute-runtime/releases/tag/21.15.19
 The Installable Client Driver (ICD) uses the system implementation for OpenCL by default.
 You will also need to add environment variables to change the behavior of the ICD.
 Add all needed from "/etc/OpenCL/vendors/" and custom to `OCL_ICD_FILENAMES`.
+To overwrite the default behavior, set `OCL_ICD_VENDORS` to empty.
 
 .. code-block:: bash
 
@@ -82,7 +83,7 @@ Also, you must remove the driver from the system if you want to install a differ
 
     sudo dpkg -r igfxdcd
 
-If you are installing DCD for the first time, you need to create keys.
+If you are installing DCD for the first time, you need to create keys. For more details, see the link at the end of this page.
 
 See also:
 
