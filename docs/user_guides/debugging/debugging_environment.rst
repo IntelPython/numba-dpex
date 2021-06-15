@@ -18,7 +18,7 @@ and dpcpp compiler for numba-dppy:
 Activate conda environment
 --------------------------
 
-You will also need to create and acrivate conda environment with installed `numba-dppy`:
+You will also need to create and activate conda environment with installed `numba-dppy`:
 
 .. code-block:: bash
 
