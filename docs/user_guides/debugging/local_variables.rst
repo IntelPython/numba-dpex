@@ -42,7 +42,7 @@ Run debugger:
 
 .. code-block:: bash
 
-    export NUMBA_DPPY_DEBUG=1
+    export NUMBA_DPPY_DEBUGINFO=1
     export NUMBA_OPT=0
     gdb-oneapi -q --args python local_vars.py
     (gdb) break local_vars.py:9

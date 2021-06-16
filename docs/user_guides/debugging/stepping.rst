@@ -38,7 +38,7 @@ Run debugger:
 
 .. code-block:: bash
 
-    export NUMBA_DPPY_DEBUG=1
+    export NUMBA_DPPY_DEBUGINFO=1
     export NUMBA_OPT=1
     gdb-oneapi -q --args python stepping.py
     (gdb) b stepping.py:7
