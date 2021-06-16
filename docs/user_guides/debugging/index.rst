@@ -46,13 +46,13 @@ Running GDB and creating breakpoint in kernel:
 
     $ export NUMBA_DPPY_DEBUGINFO=1
     $ gdb-oneapi -q --args python simple_sum.py
-    (gdb) break simple_sum.py:8  ### Set breakpoint in kernel
+    (gdb) break simple_sum.py:22  ### Set breakpoint in kernel
     (gdb) run
     ...
-    Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:8
+    Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:22
     8           i = dppy.get_global_id(0)
     (gdb) next
-    9           c[i] = a[i] + b[i]
+    23           c[i] = a[i] + b[i]
     (gdb) continue
     Done...
     ...
