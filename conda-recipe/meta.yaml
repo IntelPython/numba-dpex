@@ -18,13 +18,13 @@ requirements:
         - python
         - setuptools
         - cython
-        - numba 0.53*
+        - numba >=0.53.0,<0.55*
         - dpctl 0.8.*
         - dpnp >=0.6*,<0.7*  # [linux]
         - wheel
     run:
         - python
-        - numba 0.53*
+        - numba >=0.53.0,<0.55*
         - dpctl 0.8.*
         - spirv-tools
         - llvm-spirv
