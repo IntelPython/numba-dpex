@@ -28,7 +28,7 @@ You will also need to create and acrivate conda environment with installed `numb
 .. note::
 
     Known issues:
-      - Debugging tested with following packages: ``numba-dppy=0.13.1``, ``dpctl=0.6``, ``numba=0.52``.
+      - Debugging tested with following packages: ``numba-dppy=0.15``, ``dpctl=0.8``, ``numba=0.53``.
 
 Activate environment variables
 ------------------------------
@@ -43,7 +43,7 @@ You need to set the following variables for debugging:
 Activate NEO drivers
 --------------------
 
-Further, if you want to use local NEO driver, you need to activate the variables for it. See `Setting up the machine for debugging`.
+Further, if you want to use local NEO driver, you need to activate the variables for it. See :ref:`NEO-driver`.
 
 Checking debugging environment
 ------------------------------

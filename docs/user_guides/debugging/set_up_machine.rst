@@ -22,6 +22,7 @@ to a group ID used by your user base:
 
     sudo usermod -a -G video <username>
 
+.. _NEO-driver:
 
 NEO driver
 ----------
@@ -48,7 +49,7 @@ Follow the `link <https://github.com/intel/compute-runtime/releases/tag/21.15.19
 The Installable Client Driver (ICD) uses the system implementation for OpenCL by default.
 You will also need to add environment variables to change the behavior of the ICD.
 Add all needed from "/etc/OpenCL/vendors/" and custom to `OCL_ICD_FILENAMES`.
-To overwrite the default behavior, set `OCL_ICD_VENDORS` to empty.
+To overwrite the default behavior, use :samp:`export OCL_ICD_VENDORS=`.
 
 .. code-block:: bash
 
@@ -88,3 +89,4 @@ If you are installing DCD for the first time, you need to create keys. For more 
 See also:
 
   - `Get Started with Intel® Distribution for GDB* on Linux* OS Host <https://software.intel.com/content/www/us/en/develop/documentation/get-started-with-debugging-dpcpp-linux/top.html>`_
+  - `Public signature key <https://software.intel.com/content/www/us/en/develop/documentation/get-started-with-debugging-dpcpp-linux/top.html#:~:text=sudo%20modprobe%20igfxdcd-,The%20host%20system%20does%20not%20recognize%20the%20igfxdcd%20signature%20if,gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB,-If%20you%20have>`_
