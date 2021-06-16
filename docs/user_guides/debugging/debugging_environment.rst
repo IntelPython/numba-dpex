@@ -28,7 +28,7 @@ You will also need to create and activate conda environment with installed `numb
 .. note::
 
     Known issues:
-      - Debugging tested with following packages: ``numba-dppy=0.15``, ``dpctl=0.8``, ``numba=0.53``.
+      - Debugging tested with following packages: ``numba-dppy=0.14``, ``dpctl=0.8``, ``numba=0.53``.
 
 Activate environment variables
 ------------------------------
