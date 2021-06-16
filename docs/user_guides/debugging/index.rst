@@ -37,6 +37,7 @@ Example of GDB usage
 For example, given the following `numba-dppy` kernel code (:file:`simple_sum.py`):
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
+    :lines: 15-
     :linenos:
 
 Running GDB and creating breakpoint in kernel:

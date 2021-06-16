@@ -17,18 +17,22 @@ import numba_dppy as dppy
 import dpctl
 
 
+@dppy.func
+def func_sum(a_in_func, b_in_func):
+    result = a_in_func + b_in_func
+    return result
+
+
 @dppy.kernel
-def data_parallel_sum(a, b, c):
+def kernel_sum(a_in_kernel, b_in_kernel, c_in_kernel):
     i = dppy.get_global_id(0)
-    c[i] = a[i] + b[i]
+    c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
 
 
 global_size = 10
-N = global_size
-
-a = np.array(np.random.random(N), dtype=np.float32)
-b = np.array(np.random.random(N), dtype=np.float32)
-c = np.ones_like(a)
+a = np.arange(global_size, dtype=np.float32)
+b = np.arange(global_size, dtype=np.float32)
+c = np.empty_like(a)
 
 # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
 # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
