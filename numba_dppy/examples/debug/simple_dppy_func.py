@@ -34,13 +34,7 @@ a = np.arange(global_size, dtype=np.float32)
 b = np.arange(global_size, dtype=np.float32)
 c = np.empty_like(a)
 
-# Use the environment variable SYCL_DEVICE_FILTER to change the default device.
-# See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
-device = dpctl.select_default_device()
-print("Using device ...")
-device.print_device_info()
-
-with dpctl.device_context(device):
+with dpctl.device_context("opencl:gpu") as gpu_queue:
     kernel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
 print("Done...")
