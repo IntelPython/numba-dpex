@@ -172,13 +172,13 @@ def allocator_UsmArray(context, builder, size, align):
 
     # Get the Numba external allocator for USM memory.
     ext_allocator_fnty = ir.FunctionType(cgutils.voidptr_t, [])
-    ext_allocator_fn = mod.get_or_insert_function(
+    ext_allocator_fn = cgutils.get_or_insert_function(mod,
         ext_allocator_fnty, name="usmarray_get_ext_allocator"
     )
     ext_allocator = builder.call(ext_allocator_fn, [])
     # Get the Numba function to allocate an aligned array with an external allocator.
     fnty = ir.FunctionType(cgutils.voidptr_t, [cgutils.intp_t, u32, cgutils.voidptr_t])
-    fn = mod.get_or_insert_function(
+    fn = cgutils.get_or_insert_function(mod,
         fnty, name="NRT_MemInfo_alloc_safe_aligned_external"
     )
     fn.return_value.add_attribute("noalias")

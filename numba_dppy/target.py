@@ -193,7 +193,7 @@ class DPPYTargetContext(BaseContext):
         fn.calling_convention = CC_SPIR_KERNEL
 
         # Mark kernels
-        ocl_kernels = mod.get_or_insert_named_metadata("opencl.kernels")
+        ocl_kernels = cgutils.get_or_insert_named_metadata(mod, "opencl.kernels")
         ocl_kernels.add(
             lc.MetaData.get(
                 mod,
@@ -217,7 +217,7 @@ class DPPYTargetContext(BaseContext):
         ]
 
         for name in others:
-            nmd = mod.get_or_insert_named_metadata(name)
+            nmd = cgutils.get_or_insert_named_metadata(mod, name)
             if not nmd.operands:
                 nmd.add(empty_md)
 
@@ -389,7 +389,7 @@ class DPPYTargetContext(BaseContext):
 
         """
         fnty = self.call_conv.get_function_type(fndesc.restype, fndesc.argtypes)
-        fn = module.get_or_insert_function(fnty, name=fndesc.mangled_name)
+        fn = cgutils.get_or_insert_function(module, fnty, name=fndesc.mangled_name)
         if not self.enable_debuginfo:
             fn.attributes.add("alwaysinline")
         ret = super(DPPYTargetContext, self).declare_function(module, fndesc)
