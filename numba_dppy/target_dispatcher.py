@@ -15,6 +15,7 @@
 from numba.core import registry, serialize, dispatcher
 from numba import types
 from numba.core.errors import UnsupportedError
+from numba.core.target_extension import resolve_dispatcher_from_str, target_registry, dispatcher_registry
 import dpctl
 from numba.core.compiler_lock import global_compiler_lock
 
@@ -90,30 +91,31 @@ class TargetDispatcher(serialize.ReduceMixin, metaclass=dispatcher.DispatcherMet
 
             if target is None:
                 if dpctl.get_current_device_type() == dpctl.device_type.gpu:
-                    return registry.dispatcher_registry[
+                    return dispatcher_registry[target_registry[
                         TargetDispatcher.target_offload_gpu
-                    ]
+                    ]]
                 elif dpctl.get_current_device_type() == dpctl.device_type.cpu:
-                    return registry.dispatcher_registry[
+                    return dispatcher_registry[target_registry[
                         TargetDispatcher.target_offload_cpu
-                    ]
+                    ]]
                 else:
                     if dpctl.is_in_device_context():
                         raise UnsupportedError("Unknown dppy device type")
                     if offload:
                         if dpctl.has_gpu_queues():
-                            return registry.dispatcher_registry[
+                            return dispatcher_registry[target_registry[
                                 TargetDispatcher.target_offload_gpu
-                            ]
+                            ]]
                         elif dpctl.has_cpu_queues():
-                            return registry.dispatcher_registry[
+                            return dispatcher_registry[target_registry[
                                 TargetDispatcher.target_offload_cpu
-                            ]
+                            ]]
 
         if target is None:
             target = "cpu"
 
-        return registry.dispatcher_registry[target]
+        return resolve_dispatcher_from_str(target)
+
 
     def _reduce_states(self):
         return dict(

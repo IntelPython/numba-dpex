@@ -13,8 +13,10 @@
 # limitations under the License.
 
 from numba.core import dispatcher, compiler
-from numba.core.registry import cpu_target, dispatcher_registry
+from numba.core.registry import cpu_target
+from numba.core.target_extension import dispatcher_registry, target_registry
 from numba_dppy import config
+from numba_dppy.target import SyclDevice
 
 
 class DppyOffloadDispatcher(dispatcher.Dispatcher):
@@ -60,5 +62,7 @@ class DppyOffloadDispatcher(dispatcher.Dispatcher):
             )
 
 
-dispatcher_registry["__dppy_offload_gpu__"] = DppyOffloadDispatcher
-dispatcher_registry["__dppy_offload_cpu__"] = DppyOffloadDispatcher
+target_registry['__dppy_offload_gpu__'] = SyclDevice
+target_registry['__dppy_offload_cpu__'] = SyclDevice
+
+dispatcher_registry[SyclDevice] = DppyOffloadDispatcher
