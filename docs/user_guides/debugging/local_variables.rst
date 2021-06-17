@@ -111,3 +111,7 @@ Variable type may be printed by the command ``ptype variable`` and ``whatis vari
 
     (gdb) ptype a
     type = byte [56]
+
+See also:
+
+    - `Local variables in GDB <https://sourceware.org/gdb/current/onlinedocs/gdb/Frame-Info.html#Frame-Info>`_
