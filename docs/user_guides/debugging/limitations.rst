@@ -2,15 +2,10 @@ Limitations
 ===========
 
 Currently, `numba-dppy` provides only initial support of debugging SYCL kernels.
-The following functionalities are **not supported**:
+The following functionalities are **limited** or **not supported**:
 
-  - Printing kernel local variables (e.g. :samp:`info locals`).
-  - Stepping over several offloaded functions.
-
-
-Local variables debugging limitations:
-
-  - No information about variable values while debugging.
+  - Information about variable values may not match the actual values while debugging.
   - Information about variable types is limited.
+  - Printing kernel arguments is not supported.
   - Overwriting the value of a variable is not supported.
   - Accessing elements of a complex variable type is not supported.
