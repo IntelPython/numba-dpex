@@ -44,7 +44,6 @@ Running GDB and creating breakpoint in kernel:
 
 .. code-block:: bash
 
-    $ export NUMBA_DPPY_DEBUGINFO=1
     $ gdb-oneapi -q --args python simple_sum.py
     (gdb) break simple_sum.py:22  ### Set breakpoint in kernel
     (gdb) run

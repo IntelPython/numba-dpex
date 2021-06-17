@@ -17,13 +17,13 @@ import numba_dppy as dppy
 import dpctl
 
 
-@dppy.func
+@dppy.func(debug=True)
 def func_sum(a_in_func, b_in_func):
     result = a_in_func + b_in_func
     return result
 
 
-@dppy.kernel
+@dppy.kernel(debug=True)
 def kernel_sum(a_in_kernel, b_in_kernel, c_in_kernel):
     i = dppy.get_global_id(0)
     c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])

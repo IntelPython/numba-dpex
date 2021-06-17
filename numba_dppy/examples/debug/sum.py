@@ -17,7 +17,7 @@ import numba_dppy as dppy
 import dpctl
 
 
-@dppy.kernel
+@dppy.kernel(debug=True)
 def data_parallel_sum(a_in_kernel, b_in_kernel, c_in_kernel):
     i = dppy.get_global_id(0)  # numba-kernel-breakpoint
     l1 = a_in_kernel[i]  # second-line
