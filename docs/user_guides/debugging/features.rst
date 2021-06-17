@@ -21,7 +21,8 @@ Currently, the following debugging features are available:
 .. toctree::
     :maxdepth: 2
 
-    local_variables
+    breakpoints
     stepping
-    info
+    local_variables
     backtrace
+    info
