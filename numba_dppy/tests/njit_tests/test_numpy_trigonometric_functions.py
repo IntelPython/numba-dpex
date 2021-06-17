@@ -17,6 +17,7 @@
 ################################################################################
 
 import dpctl
+from numba_dppy.context_manager import offload_to_sycl_device
 import numpy as np
 from numba import njit
 import pytest
@@ -104,7 +105,8 @@ def test_trigonometric_fn(filter_str, trig_op, input_arrays):
         def f(a, b):
             return trig_fn(a, b)
 
-        with dpctl.device_context(filter_str):
+        device = dpctl.SyclDevice(filter_str)
+        with offload_to_sycl_device(device):
             actual = f(a, b)
         expected = trig_fn(a, b)
     else:
@@ -113,7 +115,8 @@ def test_trigonometric_fn(filter_str, trig_op, input_arrays):
         def f(a):
             return trig_fn(a)
 
-        with dpctl.device_context(filter_str):
+        device = dpctl.SyclDevice(filter_str)
+        with offload_to_sycl_device(device):
             actual = f(a)
         expected = trig_fn(a)
 

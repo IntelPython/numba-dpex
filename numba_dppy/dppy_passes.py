@@ -17,7 +17,7 @@ import warnings
 
 import numpy as np
 import numba
-from numba.core import ir
+from numba.core import ir, lowering
 import weakref
 from collections import namedtuple, deque
 import operator
@@ -240,7 +240,32 @@ class DPPYParforPass(FunctionPass):
 
         parfor_pass.run()
 
-        remove_dels(state.func_ir.blocks)
+        #remove_dels(state.func_ir.blocks)
+        '''
+        # check the parfor pass worked and warn if it didn't
+        has_parfor = False
+        for blk in state.func_ir.blocks.values():
+            for stmnt in blk.body:
+                if isinstance(stmnt, Parfor):
+                    has_parfor = True
+                    break
+            else:
+                continue
+            break
+
+        if not has_parfor:
+            # parfor calls the compiler chain again with a string
+            if not (config.DISABLE_PERFORMANCE_WARNINGS or
+                    state.func_ir.loc.filename == '<string>'):
+                url = ("https://numba.pydata.org/numba-doc/latest/user/"
+                       "parallel.html#diagnostics")
+                msg = ("\nThe keyword argument 'parallel=True' was specified "
+                       "but no transformation for parallel execution was "
+                       "possible.\n\nTo find out why, try turning on parallel "
+                       "diagnostics, see %s for help." % url)
+                warnings.warn(errors.NumbaPerformanceWarning(msg,
+                                                             state.func_ir.loc))
+        '''
 
         if config.DEBUG or config.DUMP_IR:
             name = state.func_ir.func_id.func_qualname
@@ -323,6 +348,8 @@ class SpirvFriendlyLowering(LoweringPass):
 
             with targetctx.push_code_library(library):
                 lower = DPPYLower(targetctx, library, fndesc, interp, metadata=metadata)
+                #lower = lowering.Lower(targetctx, library, fndesc, interp,
+                #                       metadata=metadata)
                 lower.lower()
                 if not flags.no_cpython_wrapper:
                     lower.create_cpython_wrapper(flags.release_gil)

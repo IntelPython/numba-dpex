@@ -43,6 +43,9 @@ from numba.core.typed_passes import (
     IRLegalization,
     InlineOverloads,
     PreLowerStripPhis,
+    LegalizeForTarget,
+    NoPythonBackend,
+    NativeLowering
 )
 
 from .dppy_passes import (
@@ -90,13 +93,16 @@ class DPPYPassBuilder(object):
             "dppy constant size for static local memory",
         )
 
+        # inline closures early in case they are using nonlocal's
+        # see issue #6585.
+        pm.add_pass(InlineClosureLikes, "inline calls to locally defined closures")
+
         # pre typing
         if not state.flags.no_rewrites:
             pm.add_pass(RewriteSemanticConstants, "rewrite semantic constants")
             pm.add_pass(DeadBranchPrune, "dead branch pruning")
             pm.add_pass(GenericRewrites, "nopython rewrites")
 
-        pm.add_pass(InlineClosureLikes, "inline calls to locally defined closures")
         # convert any remaining closures into functions
         pm.add_pass(
             MakeFunctionToJitFunction, "convert make_function into JIT functions"
@@ -114,8 +120,11 @@ class DPPYPassBuilder(object):
 
         if state.flags.enable_ssa:
             pm.add_pass(ReconstructSSA, "ssa")
+
         # typing
         pm.add_pass(NopythonTypeInference, "nopython frontend")
+        # Add pass that checks for callee's target_backend
+        pm.add_pass(LegalizeForTarget, "legalize for target")
         pm.add_pass(AnnotateTypes, "annotate types")
 
         pm.add_pass(
@@ -137,9 +146,11 @@ class DPPYPassBuilder(object):
 
         # Intel GPU/CPU specific optimizations
         pm.add_pass(DPPYPreParforPass, "Preprocessing for parfors")
+        #pm.add_pass(PreParforPass, "Preprocessing for parfors")
         if not state.flags.no_rewrites:
             pm.add_pass(NopythonRewrites, "nopython rewrites")
         pm.add_pass(DPPYParforPass, "convert to parfors")
+        #pm.add_pass(ParforPass, "convert to parfors")
 
         # legalise
         pm.add_pass(IRLegalization, "ensure IR is legal prior to lowering")
@@ -147,6 +158,8 @@ class DPPYPassBuilder(object):
         # lower
         pm.add_pass(SpirvFriendlyLowering, "SPIRV-friendly lowering pass")
         pm.add_pass(DPPYNoPythonBackend, "nopython mode backend")
+        #pm.add_pass(NativeLowering, "native lowering")
+        #pm.add_pass(NoPythonBackend, "nopython mode backend")
         pm.add_pass(DPPYDumpParforDiagnostics, "dump parfor diagnostics")
         pm.finalize()
         return pm
