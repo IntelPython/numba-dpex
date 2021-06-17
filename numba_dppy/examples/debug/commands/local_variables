@@ -1,4 +1,7 @@
 # Run: NUMBA_DPPY_DEBUGINFO=1 gdb-oneapi -q -command commands/local_variables python
+set trace-commands on
+set pagination off
+set breakpoint pending on
 break sum.py:25
 run sum.py
 # Expected:

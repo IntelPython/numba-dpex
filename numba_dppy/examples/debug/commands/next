@@ -1,5 +1,6 @@
 # Run: NUMBA_DPPY_DEBUGINFO=1 gdb-oneapi -q -command commands/next python
 set trace-commands on
+set pagination off
 set breakpoint pending on
 break dppy_func.py:29
 run dppy_func.py
