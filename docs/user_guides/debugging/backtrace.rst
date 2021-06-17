@@ -10,6 +10,11 @@ Let's consider the work of the command ``backtrace`` in the following example ``
     :lines: 15-
     :linenos:
 
+.. note::
+
+    Known issues:
+        - Debug of the first line of the kernel and functions works out twice. See :ref:`single_stepping`.
+
 Run debugger:
 
 .. code-block:: bash
@@ -42,3 +47,7 @@ Next, we can see the call stack from the kernel and from the nested function:
     #1  __main__::kernel_sum () at simple_dppy_func.py:29
     (gdb) continue
     Continuing.
+
+See also:
+
+    - `Backtraces in GDB <https://sourceware.org/gdb/current/onlinedocs/gdb/Backtrace.html#Backtrace>`_

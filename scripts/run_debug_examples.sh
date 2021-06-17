@@ -11,6 +11,7 @@ run_checks() {
   check commands/function_breakpoint
   # check commands/local_variables
   check commands/stepping
+  check commands/backtrace
 }
 
 run_with_device() {
