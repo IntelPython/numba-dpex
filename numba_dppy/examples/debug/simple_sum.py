@@ -17,7 +17,7 @@ import numba_dppy as dppy
 import dpctl
 
 
-@dppy.kernel
+@dppy.kernel(debug=True)
 def data_parallel_sum(a, b, c):
     i = dppy.get_global_id(0)
     c[i] = a[i] + b[i]

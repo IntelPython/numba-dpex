@@ -33,12 +33,11 @@ You will also need to create and activate conda environment with installed `numb
 Activate environment variables
 ------------------------------
 
-You need to set the following variables for debugging:
+You need to set the following variable for debugging:
 
 .. code-block:: bash
 
-    export NUMBA_OPT=1
-    export NUMBA_DPPY_DEBUGINFO=1
+    export NUMBA_OPT=0
 
 Activate NEO drivers
 --------------------
