@@ -11,7 +11,7 @@ Example with a nested function ``numba_dppy/examples/debug/simple_dppy_func.py``
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_dppy_func.py
     :lines: 15-
-    :linenos:   
+    :linenos:
 
 .. note::
 
@@ -76,7 +76,7 @@ GDB output:
     Continuing.
 
 ``stepi``
---------
+---------
 
 The command allows you to move forward in machine instructions. The example uses an additional command ``x/i $pc``, which print the instruction to be executed.
 
@@ -98,18 +98,18 @@ GDB output:
     (gdb) display/i $pc
     1: x/i $pc
     => 0xfffeb5d0 <_ZN8__main__17data_parallel_sumE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE+1488>:
-        (W)     mov (1|M0)               r53.1<1>:w    0:w                              
+        (W)     mov (1|M0)               r53.1<1>:w    0:w
     (gdb) stepi
     0x00000000fffeb5e0      22          i = dppy.get_global_id(0)
     1: x/i $pc
-    => 0xfffeb5e0 <_ZN8__main__17data_parallel_sumE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE+1504>: (W)     cmp (1|M0)    (eq)f0.0   null<1>:w     r53.1<0;1,0>:w    0:w              
+    => 0xfffeb5e0 <_ZN8__main__17data_parallel_sumE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE+1504>: (W)     cmp (1|M0)    (eq)f0.0   null<1>:w     r53.1<0;1,0>:w    0:w
     (gdb) stepi
     [Switching to Thread 1.1073742080 lane 0]
 
     Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at simple_sum.py:22
     22          i = dppy.get_global_id(0)
     1: x/i $pc
-    => 0xfffeb5d0 <_ZN8__main__17data_parallel_sumE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE+1488>: (W)     mov (1|M0)               r53.1<1>:w    0:w                              
+    => 0xfffeb5d0 <_ZN8__main__17data_parallel_sumE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE+1488>: (W)     mov (1|M0)               r53.1<1>:w    0:w
     (gdb) continue
     Continuing.
     Done...
@@ -181,4 +181,3 @@ See also:
 
 - `Single Stepping <https://software.intel.com/content/www/us/en/develop/documentation/debugging-dpcpp-linux/top/debug-a-dpc-application-on-a-cpu/single-stepping.html>`_
 - `Continuing and Stepping in GDB <https://sourceware.org/gdb/current/onlinedocs/gdb/Continuing-and-Stepping.html#Continuing-and-Stepping>`_
-  
