@@ -1,4 +1,5 @@
 # Run: NUMBA_DPPY_DEBUGINFO=1 gdb-oneapi -q -command commands/next python
+set trace-commands on
 set breakpoint pending on
 break dppy_func.py:29
 run dppy_func.py
@@ -11,8 +12,7 @@ next
 # Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at dppy_func.py:29
 # 29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
 next
-# Expected:
-# 28          i = dppy.get_global_id(0)
-continue
+# a + b =  [ 0.  2.  4.  6.  8. 10. 12. 14. 16. 18.]
+# Done...
 echo Done\n
 quit
