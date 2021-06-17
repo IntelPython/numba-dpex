@@ -1,4 +1,6 @@
 # Run: NUMBA_DPPY_DEBUGINFO=1 gdb-oneapi -q -command commands/sheduler_locking python
+set trace-commands on
+set pagination off
 set breakpoint pending on
 break dppy_func.py:29
 run dppy_func.py
@@ -8,10 +10,22 @@ run dppy_func.py
 set scheduler-locking step
 step
 # Expected:
-# 28          i = dppy.get_global_id(0)
+# __main__::func_sum () at dppy_func.py:22
+# 22          result = a_in_func + b_in_func
 step
 # Expected:
+# 23          return result
+continue
+# Expected:
+# Continuing.
+# [Switching to Thread 1.1073742080 lane 0]
+
+# Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at dppy_func.py:29
 # 29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
 continue
+# Expected:
+# Continuing.
+# a + b =  [ 0.  2.  4.  6.  8. 10. 12. 14. 16. 18.]
+# Done...
 echo Done\n
 quit
