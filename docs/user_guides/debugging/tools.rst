@@ -16,8 +16,8 @@ Example with njit:
 Getting the DWARF from .elf file
 --------------------------------
 
-If you need to get the DWARF information from a specific kernel, you need to do the following.
-You need to set ``IGC_ShaderDumpEnable``, IGC will write number of dumps into ``/tmp/IntelIGC``.
+If you need to get the DWARF information from a specific kernel, just enable ``IGC_ShaderDumpEnable`` variable.
+IGC will write number of dumps into ``/tmp/IntelIGC``.
 
 .. code-block:: bash
 
@@ -35,30 +35,27 @@ To do that, run the Python script in a debugger, and set a breakpoint in the ker
     (gdb) break simple_sum.py:22     # Assumes the kernel is in file simple_sum.py, at line 22
     (gdb) run
 
-Once the breakpoint hits, the kernel has been generated and offloaded.
+Once the breakpoint is hit, the kernel has been generated and offloaded.
 At that point, the IGFX driver (i.e. our debugger driver) has copied the kernel into a file, and saved it at ``/tmp``.
-All files saved at ``/tmp/IntelIGC/pytho_xxx/``
+All files saved at ``/tmp/IntelIGC/python_xxx/``
 
-Then, to read the DWARF in that kernel binary (elf), use tool llvm-dwarfdump.
-The app outputs the contents of the DWARF.
-So for example, to create a text file DWARF.dump with the contents of the DWARF data:
+Dump generated DWARF from the kernel binary (elf) via llvm-dwarfdump tool:
 
 .. code-block:: bash
 
-    llvm-dwarfdump xxx.elf > DWARF
+    llvm-dwarfdump xxx.elf
 
 Getting the DWARF from Numba assembly (for njit)
 --------------------------------------------------
 
-We need to set Numba environment variable ``NUMBA_DUMP_ASSEMBLY`` that dump the native assembly code of compiled functions.
-Then we run script and get info:
+Setting Numba environment variable ``NUMBA_DUMP_ASSEMBLY`` dumps the native assembly code of compiled functions.
 
 .. code-block:: bash
 
     NUMBA_DUMP_ASSEMBLY=1 python njit-basic.py > njit-basic-asm.txt
 
 Clear file from prints and unrecognized characters (-, =, !, )
-Get compiled from asm:
+Get compiled from assembler:
 
 .. code-block:: bash
 
