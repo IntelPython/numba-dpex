@@ -25,8 +25,7 @@ Run debugger:
 
 .. code-block:: bash
 
-    export NUMBA_DPPY_DEBUGINFO=1
-    export NUMBA_OPT=1
+    export NUMBA_OPT=0
     gdb-oneapi -q --args python simple_sum.py
 
 GDB output:
@@ -52,8 +51,7 @@ Another use of stepping when there is a nested function. Below example:
 
 .. code-block:: bash
 
-    export NUMBA_DPPY_DEBUGINFO=1
-    export NUMBA_OPT=1
+    export NUMBA_OPT=0
     gdb-oneapi -q --args python simple_dppy_func.py
 
 GDB output:
@@ -84,8 +82,7 @@ The command allows you to move forward in machine instructions. The example uses
 
 .. code-block:: bash
 
-    export NUMBA_DPPY_DEBUGINFO=1
-    export NUMBA_OPT=1
+    export NUMBA_OPT=0
     gdb-oneapi -q --args python simple_sum.py
 
 GDB output:
@@ -124,8 +121,7 @@ Stepping-like behavior, but the command does not go into nested functions.
 
 .. code-block:: bash
 
-    export NUMBA_DPPY_DEBUGINFO=1
-    export NUMBA_OPT=1
+    export NUMBA_OPT=0
     gdb-oneapi -q --args python simple_dppy_func.py
 
 GDB output:
@@ -158,8 +154,7 @@ To ensure the current thread executes a single line without interference, set th
 
 .. code-block:: bash
 
-    export NUMBA_DPPY_DEBUGINFO=1
-    export NUMBA_OPT=1
+    export NUMBA_OPT=0
     gdb-oneapi -q --args python simple_dppy_func.py
 
 GDB output:
