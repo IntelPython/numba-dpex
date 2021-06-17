@@ -19,11 +19,10 @@ Run debugger:
 
 .. code-block:: bash
 
-    export NUMBA_DPPY_DEBUGINFO=1
-    export NUMBA_OPT=1
+    export NUMBA_OPT=0
     gdb-oneapi -q --args python simple_dppy_func.py
 
-Next, we can see the call stack from the kernel and from the nested function:
+Next we see the call stack from the kernel and the nested function:
 
 .. code-block:: bash
 
