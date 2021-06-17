@@ -14,6 +14,7 @@ run_checks() {
   check commands/sheduler_locking
   check commands/stepi
   check commands/stepping
+  check commands/backtrace
 }
 
 run_with_device() {
