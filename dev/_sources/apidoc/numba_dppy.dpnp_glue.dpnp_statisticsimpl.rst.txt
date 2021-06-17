@@ -1,0 +1,7 @@
+numba\_dppy.dpnp\_glue.dpnp\_statisticsimpl module
+==================================================
+
+.. automodule:: numba_dppy.dpnp_glue.dpnp_statisticsimpl
+   :members:
+   :undoc-members:
+   :show-inheritance:

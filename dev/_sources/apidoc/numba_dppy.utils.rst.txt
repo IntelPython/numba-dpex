@@ -1,0 +1,20 @@
+numba\_dppy.utils package
+=========================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dppy.utils.constants
+   numba_dppy.utils.llvm_codegen_helpers
+   numba_dppy.utils.type_conversion_fns
+
+Module contents
+---------------
+
+.. automodule:: numba_dppy.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

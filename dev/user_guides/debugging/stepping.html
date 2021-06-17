@@ -1,0 +1,450 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Stepping &mdash; numba-dppy 0.14.3 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Local variables" href="local_variables.html" />
+    <link rel="prev" title="Breakpoints" href="breakpoints.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> numba-dppy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Core Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html">Code-generation based on a device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html"> Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html"> Debugging with GDB</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#example-of-gdb-usage">Example of GDB usage</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#features-and-limitations">Features and Limitations</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="features.html">Supported GDB Features</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="breakpoints.html">Breakpoints</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Stepping</a></li>
+<li class="toctree-l4"><a class="reference internal" href="local_variables.html">Local variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="backtrace.html">Backtrace</a></li>
+<li class="toctree-l4"><a class="reference internal" href="info.html">Information</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="limitations.html">Limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tools.html">Additional tools</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">numba-dppy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Debugging with GDB</a> &raquo;</li>
+        
+          <li><a href="features.html">Supported GDB Features</a> &raquo;</li>
+        
+      <li>Stepping</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/user_guides/debugging/stepping.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="stepping">
+<h1>Stepping<a class="headerlink" href="#stepping" title="Permalink to this headline">¶</a></h1>
+<p>Consider the following two examples. <code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/debug/simple_sum.py</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
+<span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">dpctl</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos"> 7</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+<span class="linenos"> 8</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos"> 9</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span><span class="n">global_size</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="linenos">13</span><span class="n">N</span> <span class="o">=</span> <span class="n">global_size</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">16</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">17</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">gpu_queue</span><span class="p">:</span>
+<span class="linenos">20</span>    <span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+<span class="linenos">21</span>
+<span class="linenos">22</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Example with a nested function <code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/debug/simple_dppy_func.py</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
+<span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">dpctl</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos"> 7</span><span class="k">def</span> <span class="nf">func_sum</span><span class="p">(</span><span class="n">a_in_func</span><span class="p">,</span> <span class="n">b_in_func</span><span class="p">):</span>
+<span class="linenos"> 8</span>    <span class="n">result</span> <span class="o">=</span> <span class="n">a_in_func</span> <span class="o">+</span> <span class="n">b_in_func</span>
+<span class="linenos"> 9</span>    <span class="k">return</span> <span class="n">result</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">13</span><span class="k">def</span> <span class="nf">kernel_sum</span><span class="p">(</span><span class="n">a_in_kernel</span><span class="p">,</span> <span class="n">b_in_kernel</span><span class="p">,</span> <span class="n">c_in_kernel</span><span class="p">):</span>
+<span class="linenos">14</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">15</span>    <span class="n">c_in_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">func_sum</span><span class="p">(</span><span class="n">a_in_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">b_in_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<span class="linenos">16</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span><span class="n">global_size</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="linenos">19</span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">20</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">21</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="linenos">22</span>
+<span class="linenos">23</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">gpu_queue</span><span class="p">:</span>
+<span class="linenos">24</span>    <span class="n">kernel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+<span class="linenos">25</span>
+<span class="linenos">26</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>Known issues:</dt><dd><ul class="simple">
+<li><p>Debug of the first line of the kernel and functions works out twice. See <a class="reference internal" href="#single-stepping"><span class="std std-ref">set scheduler-locking step</span></a>.</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="step">
+<h2><code class="docutils literal notranslate"><span class="pre">step</span></code><a class="headerlink" href="#step" title="Permalink to this headline">¶</a></h2>
+<p>Run debugger:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span>
+gdb-oneapi -q --args python simple_sum.py
+</pre></div>
+</div>
+<p>GDB output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break</span> simple_sum.py:22
+Breakpoint <span class="m">1</span> <span class="o">(</span>simple_sum.py:22<span class="o">)</span> pending.
+<span class="o">(</span>gdb<span class="o">)</span> run
+...
+Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::data_parallel_sum <span class="o">()</span> at simple_sum.py:22
+<span class="m">22</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
+<span class="o">(</span>gdb<span class="o">)</span> step
+Thread <span class="m">2</span>.3 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-1<span class="o">]</span>, __main__::data_parallel_sum <span class="o">()</span> at simple_sum.py:22
+<span class="m">22</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
+<span class="o">(</span>gdb<span class="o">)</span> step
+<span class="m">23</span>          c<span class="o">[</span>i<span class="o">]</span> <span class="o">=</span> a<span class="o">[</span>i<span class="o">]</span> + b<span class="o">[</span>i<span class="o">]</span>
+<span class="o">(</span>gdb<span class="o">)</span> <span class="k">continue</span>
+Continuing.
+Done...
+</pre></div>
+</div>
+<p>Another use of stepping when there is a nested function. Below example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span>
+gdb-oneapi -q --args python simple_dppy_func.py
+</pre></div>
+</div>
+<p>GDB output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break</span> simple_dppy_func.py:28
+Breakpoint <span class="m">1</span> <span class="o">(</span>simple_dppy_func.py:28<span class="o">)</span> pending.
+<span class="o">(</span>gdb<span class="o">)</span> run
+...
+Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::kernel_sum <span class="o">()</span> at simple_dppy_func.py:28
+<span class="m">28</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
+<span class="o">(</span>gdb<span class="o">)</span> step
+Thread <span class="m">2</span>.3 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-1<span class="o">]</span>, __main__::kernel_sum <span class="o">()</span> at simple_dppy_func.py:28
+<span class="m">28</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
+<span class="o">(</span>gdb<span class="o">)</span> step
+<span class="m">29</span>          c_in_kernel<span class="o">[</span>i<span class="o">]</span> <span class="o">=</span> func_sum<span class="o">(</span>a_in_kernel<span class="o">[</span>i<span class="o">]</span>, b_in_kernel<span class="o">[</span>i<span class="o">])</span>
+<span class="o">(</span>gdb<span class="o">)</span> step
+__main__::func_sum <span class="o">()</span> at simple_dppy_func.py:22
+<span class="m">22</span>          <span class="nv">result</span> <span class="o">=</span> a_in_func + b_in_func
+<span class="o">(</span>gdb<span class="o">)</span> <span class="k">continue</span>
+Continuing.
+</pre></div>
+</div>
+</div>
+<div class="section" id="stepi">
+<h2><code class="docutils literal notranslate"><span class="pre">stepi</span></code><a class="headerlink" href="#stepi" title="Permalink to this headline">¶</a></h2>
+<p>The command allows you to move forward in machine instructions. The example uses an additional command <code class="docutils literal notranslate"><span class="pre">x/i</span> <span class="pre">$pc</span></code>, which print the instruction to be executed.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span>
+gdb-oneapi -q --args python simple_sum.py
+</pre></div>
+</div>
+<p>GDB output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break</span> simple_sum.py:22
+Breakpoint <span class="m">1</span> <span class="o">(</span>simple_sum.py:22<span class="o">)</span> pending.
+<span class="o">(</span>gdb<span class="o">)</span> run
+...
+Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::data_parallel_sum <span class="o">()</span> at simple_sum.py:22
+<span class="m">22</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
+<span class="o">(</span>gdb<span class="o">)</span> display/i <span class="nv">$pc</span>
+<span class="m">1</span>: x/i <span class="nv">$pc</span>
+<span class="o">=</span>&gt; 0xfffeb5d0 &lt;_ZN8__main__17data_parallel_sumE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE+1488&gt;:
+    <span class="o">(</span>W<span class="o">)</span>     mov <span class="o">(</span><span class="m">1</span><span class="p">|</span>M0<span class="o">)</span>               r53.1&lt;<span class="m">1</span>&gt;:w    <span class="m">0</span>:w
+<span class="o">(</span>gdb<span class="o">)</span> stepi
+0x00000000fffeb5e0      <span class="m">22</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
+<span class="m">1</span>: x/i <span class="nv">$pc</span>
+<span class="o">=</span>&gt; 0xfffeb5e0 &lt;_ZN8__main__17data_parallel_sumE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE+1504&gt;: <span class="o">(</span>W<span class="o">)</span>     cmp <span class="o">(</span><span class="m">1</span><span class="p">|</span>M0<span class="o">)</span>    <span class="o">(</span>eq<span class="o">)</span>f0.0   null&lt;<span class="m">1</span>&gt;:w     r53.1&lt;<span class="m">0</span><span class="p">;</span><span class="m">1</span>,0&gt;:w    <span class="m">0</span>:w
+<span class="o">(</span>gdb<span class="o">)</span> stepi
+<span class="o">[</span>Switching to Thread <span class="m">1</span>.1073742080 lane <span class="m">0</span><span class="o">]</span>
+
+Thread <span class="m">2</span>.3 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-1<span class="o">]</span>, __main__::data_parallel_sum <span class="o">()</span> at simple_sum.py:22
+<span class="m">22</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
+<span class="m">1</span>: x/i <span class="nv">$pc</span>
+<span class="o">=</span>&gt; 0xfffeb5d0 &lt;_ZN8__main__17data_parallel_sumE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE+1488&gt;: <span class="o">(</span>W<span class="o">)</span>     mov <span class="o">(</span><span class="m">1</span><span class="p">|</span>M0<span class="o">)</span>               r53.1&lt;<span class="m">1</span>&gt;:w    <span class="m">0</span>:w
+<span class="o">(</span>gdb<span class="o">)</span> <span class="k">continue</span>
+Continuing.
+Done...
+</pre></div>
+</div>
+</div>
+<div class="section" id="next">
+<h2><code class="docutils literal notranslate"><span class="pre">next</span></code><a class="headerlink" href="#next" title="Permalink to this headline">¶</a></h2>
+<p>Stepping-like behavior, but the command does not go into nested functions.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span>
+gdb-oneapi -q --args python simple_dppy_func.py
+</pre></div>
+</div>
+<p>GDB output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break</span> simple_dppy_func.py:28
+Breakpoint <span class="m">1</span> <span class="o">(</span>simple_dppy_func.py:28<span class="o">)</span> pending.
+<span class="o">(</span>gdb<span class="o">)</span> run
+...
+Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::kernel_sum <span class="o">()</span> at simple_dppy_func.py:28
+<span class="m">28</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
+<span class="o">(</span>gdb<span class="o">)</span> next
+Thread <span class="m">2</span>.3 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-1<span class="o">]</span>, __main__::kernel_sum <span class="o">()</span> at simple_dppy_func.py:28
+<span class="m">28</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
+<span class="o">(</span>gdb<span class="o">)</span> next
+<span class="m">29</span>          c_in_kernel<span class="o">[</span>i<span class="o">]</span> <span class="o">=</span> func_sum<span class="o">(</span>a_in_kernel<span class="o">[</span>i<span class="o">]</span>, b_in_kernel<span class="o">[</span>i<span class="o">])</span>
+<span class="o">(</span>gdb<span class="o">)</span> next
+Done...
+</pre></div>
+</div>
+</div>
+<div class="section" id="set-scheduler-locking-step">
+<span id="single-stepping"></span><h2><code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">scheduler-locking</span> <span class="pre">step</span></code><a class="headerlink" href="#set-scheduler-locking-step" title="Permalink to this headline">¶</a></h2>
+<p>Debug of the first line of the kernel and functions works out twice.
+This happens because you are debugging a multi-threaded program and multiple events may be received from different threads.
+This is the default behavior, but you can configure it for more efficient debugging.
+To ensure the current thread executes a single line without interference, set the scheduler-locking setting to on or step:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span>
+gdb-oneapi -q --args python simple_dppy_func.py
+</pre></div>
+</div>
+<p>GDB output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break</span> simple_dppy_func.py:28
+Breakpoint <span class="m">1</span> <span class="o">(</span>simple_dppy_func.py:28<span class="o">)</span> pending.
+<span class="o">(</span>gdb<span class="o">)</span> run
+...
+Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::kernel_sum <span class="o">()</span> at simple_dppy_func.py:28
+<span class="m">28</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
+<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">set</span> scheduler-locking step
+<span class="o">(</span>gdb<span class="o">)</span> step
+<span class="m">29</span>          c_in_kernel<span class="o">[</span>i<span class="o">]</span> <span class="o">=</span> func_sum<span class="o">(</span>a_in_kernel<span class="o">[</span>i<span class="o">]</span>, b_in_kernel<span class="o">[</span>i<span class="o">])</span>
+<span class="o">(</span>gdb<span class="o">)</span> step
+__main__::func_sum <span class="o">()</span> at simple_dppy_func.py:22
+<span class="m">22</span>          <span class="nv">result</span> <span class="o">=</span> a_in_func + b_in_func
+<span class="o">(</span>gdb<span class="o">)</span> <span class="k">continue</span>
+Continuing.
+Done...
+</pre></div>
+</div>
+<p>See also:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/debugging-dpcpp-linux/top/debug-a-dpc-application-on-a-cpu/single-stepping.html">Single Stepping</a></p></li>
+<li><p><a class="reference external" href="https://sourceware.org/gdb/current/onlinedocs/gdb/Continuing-and-Stepping.html#Continuing-and-Stepping">Continuing and Stepping in GDB</a></p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="local_variables.html" class="btn btn-neutral float-right" title="Local variables" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="breakpoints.html" class="btn btn-neutral float-left" title="Breakpoints" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Intel.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

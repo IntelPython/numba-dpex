@@ -1,0 +1,7 @@
+numba\_dppy.dpnp\_glue.dpnp\_sort\_search\_countimpl module
+===========================================================
+
+.. automodule:: numba_dppy.dpnp_glue.dpnp_sort_search_countimpl
+   :members:
+   :undoc-members:
+   :show-inheritance:

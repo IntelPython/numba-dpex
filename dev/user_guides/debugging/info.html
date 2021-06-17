@@ -1,0 +1,348 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Information &mdash; numba-dppy 0.14.3 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Limitations" href="limitations.html" />
+    <link rel="prev" title="Backtrace" href="backtrace.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> numba-dppy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Core Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html">Code-generation based on a device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">User Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html"> Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html"> Debugging with GDB</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#example-of-gdb-usage">Example of GDB usage</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#features-and-limitations">Features and Limitations</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="features.html">Supported GDB Features</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="breakpoints.html">Breakpoints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stepping.html">Stepping</a></li>
+<li class="toctree-l4"><a class="reference internal" href="local_variables.html">Local variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="backtrace.html">Backtrace</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Information</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="limitations.html">Limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tools.html">Additional tools</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Developer Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">numba-dppy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Debugging with GDB</a> &raquo;</li>
+        
+          <li><a href="features.html">Supported GDB Features</a> &raquo;</li>
+        
+      <li>Information</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/user_guides/debugging/info.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="information">
+<h1>Information<a class="headerlink" href="#information" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="info-functions-command">
+<h2><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">functions</span></code> command<a class="headerlink" href="#info-functions-command" title="Permalink to this headline">¶</a></h2>
+<p>Investigating <strong>info func</strong> command on <cite>CPU</cite> in <cite>jit</cite> code.</p>
+<p>Displays the list of functions in the debugged program.</p>
+<div class="section" id="syntax">
+<h3>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">info</span> <span class="n">functions</span>
+<span class="n">info</span> <span class="n">functions</span> <span class="p">[</span><span class="n">Regex</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
+<p><cite>Regex</cite></p>
+<p>If specified, the info functions command will list the functions matching the regex.
+If omitted, the command will list all functions in all loaded modules (main program and shared libraries).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Running the <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">functions</span></code> command without arguments can produce a lot of output
+as the list of all functions in all loaded shared libraries is typically very long.</p>
+</div>
+</div>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<p>Consider Python script <code class="file docutils literal notranslate"><span class="pre">njit-basic.py</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">njit</span>
+<span class="nd">@njit</span> <span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">foo</span> <span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="n">l1</span> <span class="o">=</span> <span class="n">arg</span> <span class="o">+</span> <span class="mi">6</span>            <span class="c1"># numba-kernel-breakpoint</span>
+    <span class="n">l2</span> <span class="o">=</span> <span class="n">arg</span> <span class="o">*</span> <span class="mf">5.43</span>             <span class="c1"># second-line</span>
+    <span class="n">l3</span> <span class="o">=</span> <span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">)</span>   <span class="c1"># third-line</span>
+    <span class="nb">print</span> <span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="n">l3</span><span class="p">)</span>     <span class="c1"># fourth-line</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">foo</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">result1</span> <span class="o">=</span> <span class="n">foo</span><span class="p">(</span><span class="mf">5.3</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Run debuger:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> <span class="nv">$ONEAPI_ROOT</span>/debugger/latest/env/vars.sh
+<span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q python
+</pre></div>
+</div>
+<p>Set breakpoint, run and see information aboud functions when debugger stops on the breakpoint:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(gdb) break njit-basic.py:45         #Set breakpoint in jit code
+(gdb) run njit-basic.py
+
+Breakpoint 1, __main__::foo$241 () at njit-basic.py:45
+45          print (arg, l1, l2, l3)     # fourth-line
+(gdb) info func foo
+All functions matching regular expression &quot;foo&quot;:
+
+File njit-basic.py:
+40:     void __main__::foo$241(long long);
+
+Non-debugging symbols:
+0x00007ffff634f190  lzma_stream_footer_encode@plt
+0x00007ffff634f3c0  lzma_stream_footer_decode@plt
+0x00007ffff6358190  lzma_stream_footer_encode
+0x00007ffff635dd00  lzma_stream_footer_decode
+0x00007fffefd4dd90  mkl_sparse_d_void_foo@plt
+0x00007fffefd4f4f0  mkl_sparse_s_void_foo@plt
+</pre></div>
+</div>
+<p>After <code class="samp docutils literal notranslate"><span class="pre">run</span> <span class="pre">njit-basic.py</span></code> command, we get to the jit function compiled for the <code class="xref py py-obj docutils literal notranslate"><span class="pre">result</span></code> variable.
+We have only one compiled jit function at this stage, so <code class="samp docutils literal notranslate"><span class="pre">info</span> <span class="pre">func</span> <span class="pre">foo</span></code> will show one void function.</p>
+<p>Use <code class="samp docutils literal notranslate"><span class="pre">с</span></code> to jump to the breakpoint of the jit function for the <code class="xref py py-obj docutils literal notranslate"><span class="pre">result1</span></code> variable:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(gdb) c
+Continuing.
+5 11 27.15 (5, 11, 27.15, &#39;bar&#39;)
+
+Breakpoint 1, __main__::foo$242 () at njit-basic.py:45
+45          print (arg, l1, l2, l3)     # fourth-line
+(gdb) info func foo
+All functions matching regular expression &quot;foo&quot;:
+
+File njit-basic.py:
+40:     void __main__::foo$241(long long);
+40:     void __main__::foo$242(double);
+
+Non-debugging symbols:
+0x00007ffff634f190  lzma_stream_footer_encode@plt
+0x00007ffff634f3c0  lzma_stream_footer_decode@plt
+0x00007ffff6358190  lzma_stream_footer_encode
+0x00007ffff635dd00  lzma_stream_footer_decode
+0x00007fffefd4dd90  mkl_sparse_d_void_foo@plt
+</pre></div>
+</div>
+<p>We have two compiled jit functions at this stage, so <code class="samp docutils literal notranslate"><span class="pre">info</span> <span class="pre">func</span> <span class="pre">foo</span></code> will show two void functions.</p>
+<p>Use Regex parameter to remove <cite>Non-debugging symbols</cite> output, e.g. <code class="samp docutils literal notranslate"><span class="pre">^__.*foo</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(gdb) info func ^__.*foo
+All functions matching regular expression &quot;^__.*foo&quot;:
+
+File njit-basic.py:
+40:     void __main__::foo$241(long long);
+40:     void __main__::foo$242(double);
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="limitations.html" class="btn btn-neutral float-right" title="Limitations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="backtrace.html" class="btn btn-neutral float-left" title="Backtrace" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Intel.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

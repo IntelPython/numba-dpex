@@ -1,0 +1,7 @@
+numba\_dppy.testing module
+==========================
+
+.. automodule:: numba_dppy.testing
+   :members:
+   :undoc-members:
+   :show-inheritance:
