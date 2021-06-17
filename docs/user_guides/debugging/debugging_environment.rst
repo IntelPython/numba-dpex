@@ -33,12 +33,21 @@ You will also need to create and activate conda environment with installed `numb
 Activate environment variables
 ------------------------------
 
-You need to set the following variables for debugging:
+Debugging on "no optimization" level is more stable. Local variable are not optimized out.
+You need to set the following variable for debugging:
 
 .. code-block:: bash
 
-    export NUMBA_OPT=1
-    export NUMBA_DPPY_DEBUGINFO=1
+    export NUMBA_OPT=0
+
+You can use ``NUMBA_DPPY_DEBUGINFO`` instead of ``debug`` option.
+If set to non-zero, enable debug for the full application by setting the default value of the debug option in jit.
+Default value equals to the value of ``NUMBA_DEBUGINFO``.
+
+See also:
+
+    - `Debugging JIT compiled code with GDB <http://numba.pydata.org/numba-doc/latest/user/troubleshoot.html#debugging-jit-compiled-code-with-gdb>`_
+    - `NUMBA_DEBUGINFO <https://numba.pydata.org/numba-doc/dev/reference/envvars.html#envvar-NUMBA_DEBUGINFO>`_
 
 Activate NEO drivers
 --------------------
