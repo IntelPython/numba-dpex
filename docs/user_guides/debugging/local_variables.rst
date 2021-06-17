@@ -96,7 +96,7 @@ GDB output on "O1 optimization" level ``NUMBA_OPT=1``:
 ``ptype variable``
 ------------------
 
-Variable types may be printed by the command ``ptype variable`` and ``whatis variable``:
+Variable type may be printed by the command ``ptype variable`` and ``whatis variable``:
 
 .. code-block:: bash
 
@@ -105,3 +105,9 @@ Variable types may be printed by the command ``ptype variable`` and ``whatis var
 
     (gdb) whatis i
     type = i64
+
+    (gdb) whatis a
+    type = byte [56]
+
+    (gdb) ptype a
+    type = byte [56]
