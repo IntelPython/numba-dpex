@@ -18,9 +18,11 @@ from numba import njit, prange
 
 from numba.core import compiler, cpu
 
+import dpctl
 import dpctl.tensor.numpy_usm_shared as usmarray
 import numba_dppy.numpy_usm_shared as nus
 import dpctl
+from numba_dppy.context_manager import offload_to_sycl_device
 
 from numba_dppy.compiler import DPPYCompiler
 from numba.core.registry import cpu_target
@@ -52,7 +54,7 @@ def test_no_copy_usm_shared(capfd):
     except ValueError:
         pytest.skip("Device not found")
 
-    with dpctl.device_context("opencl:gpu:0"):
+    with offload_to_sycl_device(device):
         cres = compiler.compile_extra(
             typingctx=typingctx,
             targetctx=targetctx,

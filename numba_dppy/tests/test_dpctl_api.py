@@ -14,6 +14,7 @@
 
 import pytest
 import dpctl
+from numba_dppy.context_manager import offload_to_sycl_device
 from numba_dppy.tests._helper import skip_test
 
 
@@ -33,7 +34,8 @@ def test_dpctl_api(filter_str):
     if skip_test(filter_str):
         pytest.skip()
 
-    with dpctl.device_context(filter_str):
+    device = dpctl.SyclDevice(filter_str)
+    with offload_to_sycl_device(device):
         dpctl.lsplatform()
         dpctl.get_current_queue()
         dpctl.get_num_activated_queues()

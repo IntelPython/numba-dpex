@@ -20,6 +20,7 @@ import time
 import numba_dppy as dppy
 import unittest
 import dpctl
+from numba_dppy.context_manager import offload_to_sycl_device
 
 
 RISKFREE = 0.02

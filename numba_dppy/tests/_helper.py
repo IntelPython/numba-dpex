@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import dpctl
+from numba_dppy.context_manager import offload_to_sycl_device
 
 
 def has_gpu_queues(backend="opencl"):

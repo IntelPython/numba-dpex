@@ -16,7 +16,8 @@ import numba
 import numpy
 import unittest
 
-import dpctl.tensor.numpy_usm_shared as usmarray
+import dpctl
+from numba_dppy.context_manager import offload_to_sycl_device.tensor.numpy_usm_shared as usmarray
 
 
 @numba.njit()

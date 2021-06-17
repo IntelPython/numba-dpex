@@ -17,6 +17,7 @@ from . import _helper
 import numpy as np
 import numba_dppy as dppy
 import dpctl
+from numba_dppy.context_manager import offload_to_sycl_device
 import unittest
 
 
