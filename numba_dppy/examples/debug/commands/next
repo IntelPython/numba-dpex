@@ -13,5 +13,6 @@ next
 next
 # Expected:
 # 28          i = dppy.get_global_id(0)
+continue
 echo Done\n
 quit

@@ -185,4 +185,5 @@ GDB output:
 See also:
 
 - `Single Stepping <https://software.intel.com/content/www/us/en/develop/documentation/debugging-dpcpp-linux/top/debug-a-dpc-application-on-a-cpu/single-stepping.html>`_
+- `Continuing and Stepping in GDB <https://sourceware.org/gdb/current/onlinedocs/gdb/Continuing-and-Stepping.html#Continuing-and-Stepping>`_
   
