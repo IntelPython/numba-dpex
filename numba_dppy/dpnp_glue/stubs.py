@@ -208,3 +208,9 @@ class dpnp(Stub):
 
     class partition(Stub):
         pass
+
+    class trace(Stub):
+        pass
+
+    class diagonal(Stub):
+        pass
