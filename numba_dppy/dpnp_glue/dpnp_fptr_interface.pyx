@@ -67,6 +67,7 @@ cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncName":  # need this na
         DPNP_FN_MINIMUM
         DPNP_FN_MODF
         DPNP_FN_MULTIPLY
+        DPNP_FN_PARTITION
         DPNP_FN_POWER
         DPNP_FN_PROD
         DPNP_FN_RADIANS
@@ -223,6 +224,8 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_COPY
     elif name == "dpnp_take":
         return DPNPFuncName.DPNP_FN_TAKE
+    elif name == "dpnp_partition":
+        return DPNPFuncName.DPNP_FN_PARTITION
     elif name == "dpnp_trace":
         return DPNPFuncName.DPNP_FN_TRACE
     elif name == "dpnp_diagonal":

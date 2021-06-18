@@ -97,3 +97,40 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
 
     expected = op(a)
     np.testing.assert_allclose(actual, expected, rtol=1e-3, atol=0)
+
+
+@pytest.mark.parametrize("kth", [0, 1], ids=["0", "1"])
+@pytest.mark.parametrize(
+    "array",
+    [
+        [3, 4, 2, 1],
+        [[1, 0], [3, 0]],
+        [[3, 2], [1, 6]],
+        [[4, 2, 3], [3, 4, 1]],
+        [[[1, -3], [3, 0]], [[5, 2], [0, 1]], [[1, 0], [0, 1]]],
+        [[[[8, 2], [3, 0]], [[5, 2], [0, 1]]], [[[1, 3], [3, 1]], [[5, 2], [0, 1]]]],
+    ],
+    ids=[
+        "[3, 4, 2, 1]",
+        "[[1, 0], [3, 0]]",
+        "[[3, 2], [1, 6]]",
+        "[[4, 2, 3], [3, 4, 1]]",
+        "[[[1, -3], [3, 0]], [[5, 2], [0, 1]], [[1, 0], [0, 1]]]",
+        "[[[[8, 2], [3, 0]], [[5, 2], [0, 1]]], [[[1, 3], [3, 1]], [[5, 2], [0, 1]]]]",
+    ],
+)
+def test_partition(array, kth, filter_str):
+    if skip_test(filter_str):
+        pytest.skip()
+
+    a = np.array(array)
+
+    def fn(a, kth):
+        return np.partition(a, kth)
+
+    f = njit(fn)
+    with dpctl.device_context(filter_str), dpnp_debug():
+        actual = f(a, kth)
+
+    expected = fn(a, kth)
+    np.testing.assert_allclose(actual, expected, rtol=1e-3, atol=0)
