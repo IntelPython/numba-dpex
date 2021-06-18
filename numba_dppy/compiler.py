@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import copy
-from collections import namedtuple
 
 from .dppy_passbuilder import DPPYPassBuilder
 from numba.core.typing.templates import ConcreteTemplate
@@ -34,6 +33,7 @@ from numba.core.compiler import DefaultPassBuilder, CompilerBase
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dppy import config
 from numba_dppy.driver import USMNdArrayType
+from numba_dppy.dppy_array_type import DPPYArray
 
 
 _NUMBA_DPPY_READ_ONLY = "read_only"
@@ -43,7 +43,7 @@ _NUMBA_DPPY_READ_WRITE = "read_write"
 
 def _raise_no_device_found_error():
     error_message = (
-        "No OpenCL device specified. "
+        "No SYCL device specified. "
         "Usage : jit_fn[device, globalsize, localsize](...)"
     )
     raise ValueError(error_message)
@@ -132,7 +132,6 @@ def compile_with_dppy(pyfunc, return_type, args, debug=None):
     else:
         assert 0
     # Linking depending libraries
-    # targetctx.link_dependencies(cres.llvm_module, cres.target_context.linking)
     library = cres.library
     library.finalize()
 
@@ -140,6 +139,14 @@ def compile_with_dppy(pyfunc, return_type, args, debug=None):
 
 
 def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
+    # For any array we only accept numba_dppy.dppy_array_type.DPPYArray
+    for arg in args:
+        if isinstance(arg, types.npytypes.Array) and not isinstance(arg, DPPYArray):
+            raise TypeError(
+                "We only accept DPPYArray as type of array-like objects. We received %s"
+                % (type(arg))
+            )
+
     if config.DEBUG:
         print("compile_kernel", args)
         debug = True
@@ -150,11 +157,11 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
     cres = compile_with_dppy(pyfunc, None, args, debug=debug)
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
     kernel = cres.target_context.prepare_ocl_kernel(func, cres.signature.args)
-    # The kernel objet should have a reference to the target context it is compiled for.
-    # This is needed as we intend to shape the behavior of the kernel down the line
-    # depending on the target context. For example, we want to link our kernel object
-    # with implementation containing atomic operations only when atomic operations
-    # are being used in the kernel.
+
+    # A reference to the target context is stored in the DPPYKernel to
+    # reference the context later in code generation. For example, we link
+    # the kernel object with a spir_func defining atomic operations only
+    # when atomic operations are used in the kernel.
     oclkern = DPPYKernel(
         context=cres.target_context,
         sycl_queue=sycl_queue,
@@ -167,6 +174,13 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
 
 
 def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug=None):
+    # For any array we only accept numba_dppy.dppy_array_type.DPPYArray
+    for arg in args_with_addrspaces:
+        if isinstance(arg, types.npytypes.Array) and not isinstance(arg, DPPYArray):
+            raise TypeError(
+                "We only accept DPPYArray as type of array-like objects. We received %s"
+                % (type(arg))
+            )
     if config.DEBUG:
         print("compile_kernel_parfor", args)
         for a in args_with_addrspaces:
@@ -181,11 +195,8 @@ def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug
         print("compile_kernel_parfor signature", cres.signature.args)
         for a in cres.signature.args:
             print(a, type(a))
-    #            if isinstance(a, types.npytypes.Array):
-    #                print("addrspace:", a.addrspace)
 
     kernel = cres.target_context.prepare_ocl_kernel(func, cres.signature.args)
-    # kernel = cres.target_context.prepare_ocl_kernel(func, args_with_addrspaces)
     oclkern = DPPYKernel(
         context=cres.target_context,
         sycl_queue=sycl_queue,
@@ -193,7 +204,7 @@ def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug
         name=kernel.name,
         argtypes=args_with_addrspaces,
     )
-    # argtypes=cres.signature.args)
+
     return oclkern
 
 
@@ -274,7 +285,7 @@ class DPPYFunction(object):
 def _ensure_valid_work_item_grid(val, sycl_queue):
 
     if not isinstance(val, (tuple, list, int)):
-        error_message = "Cannot create work item dimension from " "provided argument"
+        error_message = "Cannot create work item dimension from provided argument"
         raise ValueError(error_message)
 
     if isinstance(val, int):
@@ -295,7 +306,7 @@ def _ensure_valid_work_item_grid(val, sycl_queue):
 def _ensure_valid_work_group_size(val, work_item_grid):
 
     if not isinstance(val, (tuple, list, int)):
-        error_message = "Cannot create work item dimension from " "provided argument"
+        error_message = "Cannot create work item dimension from provided argument"
         raise ValueError(error_message)
 
     if isinstance(val, int):

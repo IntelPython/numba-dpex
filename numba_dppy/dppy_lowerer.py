@@ -57,7 +57,7 @@ import dpctl
 from numba_dppy import config
 from numba_dppy.target import DPPYTargetContext
 from numba_dppy.dppy_array_type import DPPYArray
-from numba_dppy.utils import address_space, convert_to_dppy_array
+from numba_dppy.utils import address_space, npytypes_array_to_dppy_array
 
 
 def _print_block(block):
@@ -400,7 +400,7 @@ def _create_gufunc_for_parfor_body(
             # Convert Numba's npytype.Array to DPPYArray data type. DPPYArray
             # allows us to specify an address space for the data and other
             # pointer arguments for the array.
-            param_types_addrspaces[i] = convert_to_dppy_array(
+            param_types_addrspaces[i] = npytypes_array_to_dppy_array(
                 param_types_addrspaces[i], addrspaces[i]
             )
 

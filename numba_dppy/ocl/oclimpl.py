@@ -272,11 +272,8 @@ def native_atomic_add(context, builder, sig, args):
     assert name != ""
 
     ptr_type = context.get_value_type(dtype).as_pointer()
-    if not hasattr(aryty, "addrspace"):
-        ptr_type.addrspace = address_space.GLOBAL
-        ptr = context.addrspacecast(builder, ptr, address_space.GLOBAL)
-    else:
-        ptr_type.addrspace = address_space.LOCAL
+    ptr_type.addrspace = aryty.addrspace
+
     retty = context.get_value_type(sig.return_type)
     spirv_fn_arg_types = [
         ptr_type,
