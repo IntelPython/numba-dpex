@@ -130,103 +130,62 @@ cdef extern from "dpnp_iface_fptr.hpp":
     DPNPFuncData get_dpnp_function_ptr(DPNPFuncName name, DPNPFuncType first_type, DPNPFuncType second_type)
 
 
+_DPNPFuncName_from_str = {
+    "dpnp_dot": DPNPFuncName.DPNP_FN_DOT,
+    "dpnp_matmul": DPNPFuncName.DPNP_FN_MATMUL,
+    "dpnp_sum": DPNPFuncName.DPNP_FN_SUM,
+    "dpnp_prod": DPNPFuncName.DPNP_FN_PROD,
+    "dpnp_argmax": DPNPFuncName.DPNP_FN_ARGMAX,
+    "dpnp_max": DPNPFuncName.DPNP_FN_MAX,
+    "dpnp_argmin": DPNPFuncName.DPNP_FN_ARGMIN,
+    "dpnp_min": DPNPFuncName.DPNP_FN_MIN,
+    "dpnp_mean": DPNPFuncName.DPNP_FN_MEAN,
+    "dpnp_median": DPNPFuncName.DPNP_FN_MEDIAN,
+    "dpnp_argsort": DPNPFuncName.DPNP_FN_ARGSORT,
+    "dpnp_cov": DPNPFuncName.DPNP_FN_COV,
+    "dpnp_eig": DPNPFuncName.DPNP_FN_EIG,
+    "dpnp_random_sample": DPNPFuncName.DPNP_FN_RNG_UNIFORM,
+    "dpnp_beta": DPNPFuncName.DPNP_FN_RNG_BETA,
+    "dpnp_binomial": DPNPFuncName.DPNP_FN_RNG_BINOMIAL,
+    "dpnp_chisquare": DPNPFuncName.DPNP_FN_RNG_CHISQUARE,
+    "dpnp_exponential": DPNPFuncName.DPNP_FN_RNG_EXPONENTIAL,
+    "dpnp_gamma": DPNPFuncName.DPNP_FN_RNG_GAMMA,
+    "dpnp_geometric": DPNPFuncName.DPNP_FN_RNG_GEOMETRIC,
+    "dpnp_gumbel": DPNPFuncName.DPNP_FN_RNG_GUMBEL,
+    "dpnp_hypergeometric": DPNPFuncName.DPNP_FN_RNG_HYPERGEOMETRIC,
+    "dpnp_laplace": DPNPFuncName.DPNP_FN_RNG_LAPLACE,
+    "dpnp_lognormal": DPNPFuncName.DPNP_FN_RNG_LOGNORMAL,
+    "dpnp_multinomial": DPNPFuncName.DPNP_FN_RNG_MULTINOMIAL,
+    "dpnp_multivariate_normal": DPNPFuncName.DPNP_FN_RNG_MULTIVARIATE_NORMAL,
+    "dpnp_negative_binomial": DPNPFuncName.DPNP_FN_RNG_NEGATIVE_BINOMIAL,
+    "dpnp_normal": DPNPFuncName.DPNP_FN_RNG_NORMAL,
+    "dpnp_poisson": DPNPFuncName.DPNP_FN_RNG_POISSON,
+    "dpnp_rayleigh": DPNPFuncName.DPNP_FN_RNG_RAYLEIGH,
+    "dpnp_standard_cauchy": DPNPFuncName.DPNP_FN_RNG_STANDARD_CAUCHY,
+    "dpnp_standard_exponential": DPNPFuncName.DPNP_FN_RNG_STANDARD_EXPONENTIAL,
+    "dpnp_standard_gamma": DPNPFuncName.DPNP_FN_RNG_STANDARD_GAMMA,
+    "dpnp_uniform": DPNPFuncName.DPNP_FN_RNG_UNIFORM,
+    "dpnp_weibull": DPNPFuncName.DPNP_FN_RNG_WEIBULL,
+    "dpnp_vdot": DPNPFuncName.DPNP_FN_DOT,
+    "dpnp_cholesky": DPNPFuncName.DPNP_FN_CHOLESKY,
+    "dpnp_det": DPNPFuncName.DPNP_FN_DET,
+    "dpnp_matrix_rank": DPNPFuncName.DPNP_FN_MATRIX_RANK,
+    "dpnp_full": DPNPFuncName.DPNP_FN_FULL,
+    "dpnp_ones_like": DPNPFuncName.DPNP_FN_INITVAL,
+    "dpnp_zeros_like": DPNPFuncName.DPNP_FN_INITVAL,
+    "dpnp_full_like": DPNPFuncName.DPNP_FN_INITVAL,
+    "dpnp_cumsum": DPNPFuncName.DPNP_FN_CUMSUM,
+    "dpnp_cumprod": DPNPFuncName.DPNP_FN_CUMPROD,
+    "dpnp_sort": DPNPFuncName.DPNP_FN_SORT,
+    "dpnp_copy": DPNPFuncName.DPNP_FN_COPY,
+    "dpnp_take": DPNPFuncName.DPNP_FN_TAKE,
+    "dpnp_trace": DPNPFuncName.DPNP_FN_TRACE,
+    "dpnp_diagonal": DPNPFuncName.DPNP_FN_DIAGONAL,
+}
+
 cdef DPNPFuncName get_DPNPFuncName_from_str(name):
-    if name == "dpnp_dot":
-        return DPNPFuncName.DPNP_FN_DOT
-    elif name == "dpnp_matmul":
-        return DPNPFuncName.DPNP_FN_MATMUL
-    elif name == "dpnp_sum":
-        return DPNPFuncName.DPNP_FN_SUM
-    elif name == "dpnp_prod":
-        return DPNPFuncName.DPNP_FN_PROD
-    elif name == "dpnp_argmax":
-        return DPNPFuncName.DPNP_FN_ARGMAX
-    elif name == "dpnp_max":
-        return DPNPFuncName.DPNP_FN_MAX
-    elif name == "dpnp_argmin":
-        return DPNPFuncName.DPNP_FN_ARGMIN
-    elif name == "dpnp_min":
-        return DPNPFuncName.DPNP_FN_MIN
-    elif name == "dpnp_mean":
-        return DPNPFuncName.DPNP_FN_MEAN
-    elif name == "dpnp_median":
-        return DPNPFuncName.DPNP_FN_MEDIAN
-    elif name == "dpnp_argsort":
-        return DPNPFuncName.DPNP_FN_ARGSORT
-    elif name == "dpnp_cov":
-        return DPNPFuncName.DPNP_FN_COV
-    elif name == "dpnp_eig":
-        return DPNPFuncName.DPNP_FN_EIG
-    elif name == "dpnp_random_sample":
-        return DPNPFuncName.DPNP_FN_RNG_UNIFORM
-    elif name == "dpnp_beta":
-        return DPNPFuncName.DPNP_FN_RNG_BETA
-    elif name == "dpnp_binomial":
-        return DPNPFuncName.DPNP_FN_RNG_BINOMIAL
-    elif name == "dpnp_chisquare":
-        return DPNPFuncName.DPNP_FN_RNG_CHISQUARE
-    elif name == "dpnp_exponential":
-        return DPNPFuncName.DPNP_FN_RNG_EXPONENTIAL
-    elif name == "dpnp_gamma":
-        return DPNPFuncName.DPNP_FN_RNG_GAMMA
-    elif name == "dpnp_geometric":
-        return DPNPFuncName.DPNP_FN_RNG_GEOMETRIC
-    elif name == "dpnp_gumbel":
-        return DPNPFuncName.DPNP_FN_RNG_GUMBEL
-    elif name == "dpnp_hypergeometric":
-        return DPNPFuncName.DPNP_FN_RNG_HYPERGEOMETRIC
-    elif name == "dpnp_laplace":
-        return DPNPFuncName.DPNP_FN_RNG_LAPLACE
-    elif name == "dpnp_lognormal":
-        return DPNPFuncName.DPNP_FN_RNG_LOGNORMAL
-    elif name == "dpnp_multinomial":
-        return DPNPFuncName.DPNP_FN_RNG_MULTINOMIAL
-    elif name == "dpnp_multivariate_normal":
-        return DPNPFuncName.DPNP_FN_RNG_MULTIVARIATE_NORMAL
-    elif name == "dpnp_negative_binomial":
-        return DPNPFuncName.DPNP_FN_RNG_NEGATIVE_BINOMIAL
-    elif name == "dpnp_normal":
-        return DPNPFuncName.DPNP_FN_RNG_NORMAL
-    elif name == "dpnp_poisson":
-        return DPNPFuncName.DPNP_FN_RNG_POISSON
-    elif name == "dpnp_rayleigh":
-        return DPNPFuncName.DPNP_FN_RNG_RAYLEIGH
-    elif name == "dpnp_standard_cauchy":
-        return DPNPFuncName.DPNP_FN_RNG_STANDARD_CAUCHY
-    elif name == "dpnp_standard_exponential":
-        return DPNPFuncName.DPNP_FN_RNG_STANDARD_EXPONENTIAL
-    elif name == "dpnp_standard_gamma":
-        return DPNPFuncName.DPNP_FN_RNG_STANDARD_GAMMA
-    elif name == "dpnp_uniform":
-        return DPNPFuncName.DPNP_FN_RNG_UNIFORM
-    elif name == "dpnp_weibull":
-        return DPNPFuncName.DPNP_FN_RNG_WEIBULL
-    elif name == "dpnp_vdot":
-        return DPNPFuncName.DPNP_FN_DOT
-    elif name == "dpnp_cholesky":
-        return DPNPFuncName.DPNP_FN_CHOLESKY
-    elif name == "dpnp_det":
-        return DPNPFuncName.DPNP_FN_DET
-    elif name == "dpnp_matrix_rank":
-        return DPNPFuncName.DPNP_FN_MATRIX_RANK
-    elif name == "dpnp_full":
-        return DPNPFuncName.DPNP_FN_FULL
-    elif name == "dpnp_ones_like" or name == "dpnp_zeros_like" or name == "dpnp_full_like":
-        return DPNPFuncName.DPNP_FN_INITVAL
-    elif name == "dpnp_cumsum":
-        return DPNPFuncName.DPNP_FN_CUMSUM
-    elif name == "dpnp_cumprod":
-        return DPNPFuncName.DPNP_FN_CUMPROD
-    elif name == "dpnp_sort":
-        return DPNPFuncName.DPNP_FN_SORT
-    elif name == "dpnp_copy":
-        return DPNPFuncName.DPNP_FN_COPY
-    elif name == "dpnp_take":
-        return DPNPFuncName.DPNP_FN_TAKE
-    elif name == "dpnp_trace":
-        return DPNPFuncName.DPNP_FN_TRACE
-    elif name == "dpnp_diagonal":
-        return DPNPFuncName.DPNP_FN_DIAGONAL
+    if name in _DPNPFuncName_from_str:
+        return _DPNPFuncName_from_str[name]
     else:
         raise ValueError("Unknown dpnp function requested: " + name.split("_")[1])
 
