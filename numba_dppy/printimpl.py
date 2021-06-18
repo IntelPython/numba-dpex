@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function, absolute_import, division
-
 from functools import singledispatch
 
 import llvmlite.llvmpy.core as lc
@@ -21,14 +19,14 @@ import llvmlite.llvmpy.core as lc
 from numba.core import types, typing, cgutils
 from numba.core.imputils import Registry
 
-from .target import SPIR_GENERIC_ADDRSPACE
+from numba_dppy.utils import address_space
 
 registry = Registry()
 lower = registry.lower
 
 
 def declare_print(lmod):
-    voidptrty = lc.Type.pointer(lc.Type.int(8), addrspace=SPIR_GENERIC_ADDRSPACE)
+    voidptrty = lc.Type.pointer(lc.Type.int(8), addrspace=address_space.GENERIC)
     printfty = lc.Type.function(lc.Type.int(), [voidptrty], var_arg=True)
     printf = lmod.get_or_insert_function(printfty, "printf")
     return printf

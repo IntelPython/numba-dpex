@@ -50,12 +50,16 @@ def test_caching_kernel_using_same_queue(filter_str):
     b = np.array(np.random.random(N), dtype=np.float32)
     c = np.ones_like(a)
 
-    with dpctl.device_context(filter_str):
+    with dpctl.device_context(filter_str) as gpu_queue:
         func = dppy.kernel(data_parallel_sum)
-        cached_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(a, b, c)
+        cached_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
+            func._get_argtypes(a, b, c), gpu_queue
+        )
 
         for i in range(10):
-            _kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(a, b, c)
+            _kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
+                func._get_argtypes(a, b, c), gpu_queue
+            )
             assert _kernel == cached_kernel
 
 
@@ -83,9 +87,14 @@ def test_caching_kernel_using_same_context(filter_str):
     # created for that device
     dpctl.set_global_queue(filter_str)
     func = dppy.kernel(data_parallel_sum)
-    cached_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(a, b, c)
+    default_queue = dpctl.get_current_queue()
+    cached_kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
+        func._get_argtypes(a, b, c), default_queue
+    )
     for i in range(0, 10):
         # Each iteration create a fresh queue that will share the same context
-        with dpctl.device_context(filter_str):
-            _kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(a, b, c)
+        with dpctl.device_context(filter_str) as gpu_queue:
+            _kernel = func[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
+                func._get_argtypes(a, b, c), gpu_queue
+            )
             assert _kernel == cached_kernel

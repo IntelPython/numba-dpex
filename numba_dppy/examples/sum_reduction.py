@@ -27,28 +27,19 @@ def sum_reduction_kernel(A, R, stride):
     A[i] = R[i]
 
 
-def get_device():
-    device = None
-    try:
-        device = dpctl.select_gpu_device()
-    except:
-        try:
-            device = dpctl.select_cpu_device()
-        except:
-            raise RuntimeError("No device found")
-    return device
-
-
 def sum_reduce(A):
     """Size of A should be power of two."""
     total = len(A)
     # max size will require half the size of A to store sum
     R = np.array(np.random.random(math.ceil(total / 2)), dtype=A.dtype)
 
-    device = get_device()
+    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
+    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
+    device = dpctl.select_default_device()
+    print("Using device ...")
+    device.print_device_info()
+
     with dpctl.device_context(device):
-        print("Offloading to ...")
-        device.print_device_info()
         while total > 1:
             global_size = total // 2
             sum_reduction_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](
@@ -74,6 +65,8 @@ def test_sum_reduce():
     print("Expected:", expected)
 
     assert expected - actual < 1e-2
+
+    print("Done...")
 
 
 if __name__ == "__main__":

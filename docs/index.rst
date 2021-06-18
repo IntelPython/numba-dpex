@@ -24,7 +24,7 @@ There are two ways to program SYCL devices using Numba-dppy:
         import dpctl
 
         @dppy.kernel
-            def sum(a, b, c):
+        def sum(a, b, c):
             i = dppy.get_global_id(0)
             c[i] = a[i] + b[i]
 

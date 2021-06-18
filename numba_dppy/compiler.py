@@ -12,9 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function, absolute_import
 import copy
-from collections import namedtuple
 
 from .dppy_passbuilder import DPPYPassBuilder
 from numba.core.typing.templates import ConcreteTemplate
@@ -33,8 +31,9 @@ from . import spirv_generator
 
 from numba.core.compiler import DefaultPassBuilder, CompilerBase
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
-from numba_dppy.config import DEBUG
+from numba_dppy import config
 from numba_dppy.driver import USMNdArrayType
+from numba_dppy.dppy_array_type import DPPYArray
 
 
 _NUMBA_DPPY_READ_ONLY = "read_only"
@@ -44,7 +43,7 @@ _NUMBA_DPPY_READ_WRITE = "read_write"
 
 def _raise_no_device_found_error():
     error_message = (
-        "No OpenCL device specified. "
+        "No SYCL device specified. "
         "Usage : jit_fn[device, globalsize, localsize](...)"
     )
     raise ValueError(error_message)
@@ -90,7 +89,7 @@ class DPPYCompiler(CompilerBase):
         return pms
 
 
-def compile_with_dppy(pyfunc, return_type, args, debug):
+def compile_with_dppy(pyfunc, return_type, args, debug=None):
     # First compilation will trigger the initialization of the OpenCL backend.
     from .descriptor import dppy_target
 
@@ -99,11 +98,13 @@ def compile_with_dppy(pyfunc, return_type, args, debug):
 
     flags = compiler.Flags()
     # Do not compile (generate native code), just lower (to LLVM)
-    if debug:
-        flags.set("debuginfo")
+    flags.debuginfo = config.DEBUGINFO_DEFAULT
     flags.set("no_compile")
     flags.set("no_cpython_wrapper")
     flags.unset("nrt")
+
+    if debug is not None:
+        flags.debuginfo = debug
 
     # Run compilation pipeline
     if isinstance(pyfunc, FunctionType):
@@ -131,29 +132,36 @@ def compile_with_dppy(pyfunc, return_type, args, debug):
     else:
         assert 0
     # Linking depending libraries
-    # targetctx.link_dependencies(cres.llvm_module, cres.target_context.linking)
     library = cres.library
     library.finalize()
 
     return cres
 
 
-def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
-    if DEBUG:
+def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
+    # For any array we only accept numba_dppy.dppy_array_type.DPPYArray
+    for arg in args:
+        if isinstance(arg, types.npytypes.Array) and not isinstance(arg, DPPYArray):
+            raise TypeError(
+                "We only accept DPPYArray as type of array-like objects. We received %s"
+                % (type(arg))
+            )
+
+    if config.DEBUG:
         print("compile_kernel", args)
         debug = True
     if not sycl_queue:
-        # This will be get_current_queue
-        sycl_queue = dpctl.get_current_queue()
+        # We expect the sycl_queue to be provided when this function is called
+        raise ValueError("SYCL queue is required for compiling a kernel")
 
     cres = compile_with_dppy(pyfunc, None, args, debug=debug)
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
     kernel = cres.target_context.prepare_ocl_kernel(func, cres.signature.args)
-    # The kernel objet should have a reference to the target context it is compiled for.
-    # This is needed as we intend to shape the behavior of the kernel down the line
-    # depending on the target context. For example, we want to link our kernel object
-    # with implementation containing atomic operations only when atomic operations
-    # are being used in the kernel.
+
+    # A reference to the target context is stored in the DPPYKernel to
+    # reference the context later in code generation. For example, we link
+    # the kernel object with a spir_func defining atomic operations only
+    # when atomic operations are used in the kernel.
     oclkern = DPPYKernel(
         context=cres.target_context,
         sycl_queue=sycl_queue,
@@ -165,8 +173,15 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=False):
     return oclkern
 
 
-def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug=False):
-    if DEBUG:
+def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug=None):
+    # For any array we only accept numba_dppy.dppy_array_type.DPPYArray
+    for arg in args_with_addrspaces:
+        if isinstance(arg, types.npytypes.Array) and not isinstance(arg, DPPYArray):
+            raise TypeError(
+                "We only accept DPPYArray as type of array-like objects. We received %s"
+                % (type(arg))
+            )
+    if config.DEBUG:
         print("compile_kernel_parfor", args)
         for a in args_with_addrspaces:
             print(a, type(a))
@@ -176,15 +191,12 @@ def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug
     cres = compile_with_dppy(func_ir, None, args_with_addrspaces, debug=debug)
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
 
-    if DEBUG:
+    if config.DEBUG:
         print("compile_kernel_parfor signature", cres.signature.args)
         for a in cres.signature.args:
             print(a, type(a))
-    #            if isinstance(a, types.npytypes.Array):
-    #                print("addrspace:", a.addrspace)
 
     kernel = cres.target_context.prepare_ocl_kernel(func, cres.signature.args)
-    # kernel = cres.target_context.prepare_ocl_kernel(func, args_with_addrspaces)
     oclkern = DPPYKernel(
         context=cres.target_context,
         sycl_queue=sycl_queue,
@@ -192,11 +204,11 @@ def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug
         name=kernel.name,
         argtypes=args_with_addrspaces,
     )
-    # argtypes=cres.signature.args)
+
     return oclkern
 
 
-def compile_dppy_func(pyfunc, return_type, args, debug=False):
+def compile_dppy_func(pyfunc, return_type, args, debug=None):
     cres = compile_with_dppy(pyfunc, return_type, args, debug=debug)
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
     cres.target_context.mark_ocl_device(func)
@@ -213,11 +225,11 @@ def compile_dppy_func(pyfunc, return_type, args, debug=False):
 
 
 # Compile dppy function template
-def compile_dppy_func_template(pyfunc):
+def compile_dppy_func_template(pyfunc, debug=None):
     """Compile a DPPYFunctionTemplate"""
     from .descriptor import dppy_target
 
-    dft = DPPYFunctionTemplate(pyfunc)
+    dft = DPPYFunctionTemplate(pyfunc, debug=debug)
 
     class dppy_function_template(AbstractTemplate):
         key = dft
@@ -234,7 +246,7 @@ def compile_dppy_func_template(pyfunc):
 class DPPYFunctionTemplate(object):
     """Unmaterialized dppy function"""
 
-    def __init__(self, pyfunc, debug=False):
+    def __init__(self, pyfunc, debug=None):
         self.py_func = pyfunc
         self.debug = debug
         # self.inline = inline
@@ -274,7 +286,7 @@ class DPPYFunction(object):
 def _ensure_valid_work_item_grid(val, sycl_queue):
 
     if not isinstance(val, (tuple, list, int)):
-        error_message = "Cannot create work item dimension from " "provided argument"
+        error_message = "Cannot create work item dimension from provided argument"
         raise ValueError(error_message)
 
     if isinstance(val, int):
@@ -295,7 +307,7 @@ def _ensure_valid_work_item_grid(val, sycl_queue):
 def _ensure_valid_work_group_size(val, work_item_grid):
 
     if not isinstance(val, (tuple, list, int)):
-        error_message = "Cannot create work item dimension from " "provided argument"
+        error_message = "Cannot create work item dimension from provided argument"
         raise ValueError(error_message)
 
     if isinstance(val, int):
@@ -385,7 +397,7 @@ class DPPYKernel(DPPYKernelBase):
         self.sycl_queue = sycl_queue
         self.context = context
         # First-time compilation using SPIRV-Tools
-        if DEBUG:
+        if config.DEBUG:
             with open("llvm_kernel.ll", "w") as f:
                 f.write(self.binary)
 
@@ -562,32 +574,42 @@ class DPPYKernel(DPPYKernelBase):
 
 
 class JitDPPYKernel(DPPYKernelBase):
-    def __init__(self, func, access_types):
+    def __init__(self, func, debug, access_types):
 
         super(JitDPPYKernel, self).__init__()
 
         self.py_func = func
         self.definitions = {}
+        self.debug = debug
         self.access_types = access_types
 
         from .descriptor import dppy_target
 
         self.typingctx = dppy_target.typing_context
 
+    def _get_argtypes(self, *args):
+        """
+        Convenience function to get the type of each argument.
+        """
+        return tuple([self.typingctx.resolve_argument_type(a) for a in args])
+
     def __call__(self, *args, **kwargs):
         assert not kwargs, "Keyword Arguments are not supported"
-        if self.sycl_queue is None:
-            try:
-                self.sycl_queue = dpctl.get_current_queue()
-            except:
-                _raise_no_device_found_error()
+        try:
+            current_queue = dpctl.get_current_queue()
+        except:
+            _raise_no_device_found_error()
 
-        kernel = self.specialize(*args)
+        argtypes = self._get_argtypes(*args)
+        kernel = self.specialize(argtypes, current_queue)
         cfg = kernel.configure(self.sycl_queue, self.global_size, self.local_size)
         cfg(*args)
 
-    def specialize(self, *args):
-        argtypes = tuple([self.typingctx.resolve_argument_type(a) for a in args])
+    def specialize(self, argtypes, queue):
+        # We specialize for argtypes and queue. These two are used as key for
+        # caching as well.
+        assert queue is not None
+
         sycl_ctx = None
         kernel = None
         # we were previously using the _env_ptr of the device_env, the sycl_queue
@@ -599,11 +621,11 @@ class JitDPPYKernel(DPPYKernelBase):
         if result:
             sycl_ctx, kernel = result
 
-        if sycl_ctx and sycl_ctx == self.sycl_queue.sycl_context:
+        if sycl_ctx and sycl_ctx == queue.sycl_context:
             return kernel
         else:
             kernel = compile_kernel(
-                self.sycl_queue, self.py_func, argtypes, self.access_types
+                queue, self.py_func, argtypes, self.access_types, self.debug
             )
-            self.definitions[key_definitions] = (self.sycl_queue.sycl_context, kernel)
+            self.definitions[key_definitions] = (queue.sycl_context, kernel)
         return kernel
