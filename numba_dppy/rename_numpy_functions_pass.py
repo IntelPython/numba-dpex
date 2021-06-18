@@ -203,14 +203,14 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
 
         import numba_dppy.dpnp_glue.dpnpdecl
         import numba_dppy.dpnp_glue.dpnpimpl
-        import numba_dppy.dpnp_glue.dpnp_linalgimpl
-        import numba_dppy.dpnp_glue.dpnp_transcendentalsimpl
-        import numba_dppy.dpnp_glue.dpnp_statisticsimpl
-        import numba_dppy.dpnp_glue.dpnp_sort_search_countimpl
-        import numba_dppy.dpnp_glue.dpnp_randomimpl
         import numba_dppy.dpnp_glue.dpnp_array_creations_impl
         import numba_dppy.dpnp_glue.dpnp_array_ops_impl
         import numba_dppy.dpnp_glue.dpnp_indexing
+        import numba_dppy.dpnp_glue.dpnp_linalgimpl
+        import numba_dppy.dpnp_glue.dpnp_randomimpl
+        import numba_dppy.dpnp_glue.dpnp_sort_search_countimpl
+        import numba_dppy.dpnp_glue.dpnp_statisticsimpl
+        import numba_dppy.dpnp_glue.dpnp_transcendentalsimpl
 
     def run_pass(self, state):
         rewrite_function_name_pass = RewriteNumPyOverloadedFunctions(
