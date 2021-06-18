@@ -182,7 +182,7 @@ def dpnp_partition_impl(a, kth):
     ret_type = types.void
     """
     dpnp source:
-    https://github.com/Rubtsowa/dpnp/blob/master/dpnp/backend/kernels/dpnp_krnl_sorting.cpp#L90
+    https://github.com/IntelPython/dpnp/blob/0.6.2/dpnp/backend/kernels/dpnp_krnl_sorting.cpp#L90
     Function declaration:
     void dpnp_partition_c(
         void* array1_in, void* array2_in, void* result1, const size_t kth, const size_t* shape_, const size_t ndim)
