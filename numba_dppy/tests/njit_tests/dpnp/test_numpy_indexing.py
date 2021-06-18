@@ -19,7 +19,6 @@
 import dpctl
 import numpy as np
 from numba import njit
-import numba_dppy
 import pytest
 from numba_dppy.testing import dpnp_debug
 from .dpnp_skip_test import dpnp_skip_test as skip_test
