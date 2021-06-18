@@ -1,0 +1,20 @@
+$ NUMBA_DPPY_DEBUGINFO=1 gdb-oneapi -q -command commands/stepping python
+(gdb) set trace-commands on
+(gdb) set pagination off
+(gdb) set breakpoint pending on
+(gdb) break dppy_func.py:29
+(gdb) run dppy_func.py
+Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at dppy_func.py:29
+29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
+(gdb) step
+why first steps does not go into the function?
+Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at dppy_func.py:29
+29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
+(gdb) step
+__main__::func_sum () at dppy_func.py:22
+22          result = a_in_func + b_in_func
+(gdb) backtrace
+#0  __main__::func_sum () at dppy_func.py:23
+#1  __main__::kernel_sum () at dppy_func.py:29
+(gdb) echo Done\n
+(gdb) quit
