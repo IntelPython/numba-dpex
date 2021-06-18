@@ -6,7 +6,6 @@ Currently the following debugging features are available:
 - Source location (filename and line number).
 - Setting break points by the line number.
 - Stepping over break points.
-- Providing information about local variables.
 
 .. note::
 
