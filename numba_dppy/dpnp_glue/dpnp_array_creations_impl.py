@@ -234,7 +234,7 @@ def dpnp_trace_impl(a):
     ret_type = types.void
     """
     dpnp source:
-    https://github.com/IntelPython/dpnp/blob/0.5.1/dpnp/backend/kernels/dpnp_krnl_arraycreation.cpp#L218
+    https://github.com/IntelPython/dpnp/blob/0.6.2/dpnp/backend/kernels/dpnp_krnl_arraycreation.cpp#L218
 
     Function declaration:
     void dpnp_trace_c(const void* array1_in, void* result1, const size_t* shape_, const size_t ndim)
