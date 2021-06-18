@@ -15,10 +15,10 @@
 from numba.np.ufunc import deviceufunc
 import numba_dppy as dppy
 from numba_dppy.dppy_offload_dispatcher import DppyOffloadDispatcher
-from numba_dppy.compiler import (
-    is_device_array as dppy_is_device_array,
-    device_array as dppy_device_array,
-    to_device as dppy_to_device,
+from numba_dppy.utils.array_utils import (
+    _is_device_accessible_array,
+    _as_device_accessible_array,
+    _to_device_accessible_array,
 )
 from numba_dppy.descriptor import dppy_target
 import dpctl
@@ -178,13 +178,13 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
             return devout.reshape(outshape)
 
     def is_device_array(self, obj):
-        return dppy_is_device_array(obj)
+        return _is_device_accessible_array(obj)
 
     def is_host_array(self, obj):
-        return not dppy_is_device_array(obj)
+        return not _is_device_accessible_array(obj)
 
     def to_device(self, hostary, queue):
-        return dppy_to_device(hostary, queue)
+        return _to_device_accessible_array(hostary, queue)
 
     def to_host(self, devary, queue):
         raise NotImplementedError("device to_host NIY")
@@ -193,7 +193,7 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
         func[count, dppy.DEFAULT_LOCAL_SIZE](*args)
 
     def device_array(self, shape, dtype, queue):
-        return dppy_device_array(shape, dtype, queue)
+        return _as_device_accessible_array(shape, dtype, queue)
 
     def broadcast_device(self, ary, shape):
         raise NotImplementedError("device broadcast_device NIY")
