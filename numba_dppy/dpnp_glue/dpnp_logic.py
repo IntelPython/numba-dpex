@@ -30,7 +30,7 @@ def dpnp_all_impl(a):
     ret_type = types.void
     """
     dpnp source:
-    https://github.com/IntelPython/dpnp/blob/master/dpnp/backend/kernels/dpnp_krnl_logic.cpp#L36
+    https://github.com/IntelPython/dpnp/blob/0.6.2/dpnp/backend/kernels/dpnp_krnl_logic.cpp#L36
     Function declaration:
     void dpnp_all_c(const void* array1_in, void* result1, const size_t size)
     """
