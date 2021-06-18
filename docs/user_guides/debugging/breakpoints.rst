@@ -15,7 +15,7 @@ See also:
 
 .. _GDB documentation of breakpoints: https://sourceware.org/gdb/current/onlinedocs/gdb/Set-Breaks.html#Set-Breaks
 
-Consider ``numba-dppy`` kernel code. See source file ``numba_dppy/examples/debug/simple_sum.py``:
+Consider ``numba-dppy`` kernel code. See the source file ``numba_dppy/examples/debug/simple_sum.py``:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
     :lines: 15-
@@ -39,8 +39,8 @@ GDB output:
   Breakpoint 1 (data_parallel_sum) pending.
   (gdb) run
 
-  Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:20
-  20      @dppy.kernel
+  Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:6
+  6      @dppy.kernel
 
 ``break filename: linenumber``
 ------------------------------
@@ -49,12 +49,12 @@ GDB output:
 
 .. code-block:: bash
 
-  (gdb) break simple_sum.py:20
+  (gdb) break simple_sum.py:6
   Breakpoint 1 (simple_sum.py:20) pending.
   (gdb) run
   
-  Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:20
-  20      @dppy.kernel
+  Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:6
+  6      @dppy.kernel
 
 ``break filename: function``
 ----------------------------
@@ -67,8 +67,8 @@ GDB output:
   Breakpoint 1 (simple_sum.py:data_parallel_sum) pending.
   (gdb) run
   
-  Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:20
-  20      @dppy.kernel
+  Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:6
+  6      @dppy.kernel
 
 Breakpoints with nested functions
 -------------------------------------
@@ -83,11 +83,10 @@ GDB output:
 
 .. code-block:: bash
 
-  export NUMBA_DPPY_DEBUGINFO=1
   gdb-oneapi -q --args python simple_sum.py
   (gdb) break func_sum
   Breakpoint 1 (func_sum) pending.
   (gdb) run
 
-  Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::func_sum () at simple_dppy_func.py:22
-  22      result = a_in_func + b_in_func
+  Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::func_sum () at simple_dppy_func.py:8
+  8      result = a_in_func + b_in_func

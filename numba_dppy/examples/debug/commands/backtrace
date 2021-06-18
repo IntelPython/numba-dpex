@@ -1,4 +1,4 @@
-# Run: NUMBA_DPPY_DEBUGINFO=1 gdb-oneapi -q -command commands/backtrace python
+# Run: NUMBA_OPT=0 gdb-oneapi -q -command commands/backtrace python
 set breakpoint pending on
 break dppy_func.py:22
 run dppy_func.py

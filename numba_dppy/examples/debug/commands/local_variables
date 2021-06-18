@@ -1,4 +1,4 @@
-# Run: NUMBA_DPPY_DEBUGINFO=1 NUMBA_OPT=0 gdb-oneapi -q -command commands/local_variables python
+# Run: NUMBA_OPT=0 gdb-oneapi -q -command commands/local_variables python
 set trace-commands on
 set pagination off
 set breakpoint pending on

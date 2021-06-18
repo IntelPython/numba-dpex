@@ -1,4 +1,4 @@
-# Run: NUMBA_DPPY_DEBUGINFO=1 gdb-oneapi -q -command commands/simple_sum python
+# Run: NUMBA_OPT=0 gdb-oneapi -q -command commands/simple_sum python
 set trace-commands on
 set pagination off
 set breakpoint pending on

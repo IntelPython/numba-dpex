@@ -19,7 +19,6 @@ Run debugger:
 
 .. code-block:: bash
 
-    export NUMBA_DPPY_DEBUGINFO=1
     export NUMBA_OPT=0
     gdb-oneapi -q --args python simple_sum.py
     (gdb) break simple_sum.py:8

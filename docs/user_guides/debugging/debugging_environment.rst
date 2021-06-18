@@ -6,8 +6,7 @@ Configuring debugging environment
 Activate debugger and compiler
 ------------------------------
 
-First you need to activate the debugger that you will be using
-and dpcpp compiler for numba-dppy:
+Activate the gdb debugger and compiler for numba-dppy:
 
 .. code-block:: bash
 
@@ -18,7 +17,7 @@ and dpcpp compiler for numba-dppy:
 Activate conda environment
 --------------------------
 
-You will also need to create and activate conda environment with installed `numba-dppy`:
+Create and activate conda environment with installed `numba-dppy`:
 
 .. code-block:: bash
 
@@ -28,7 +27,7 @@ You will also need to create and activate conda environment with installed `numb
 .. note::
 
     Known issues:
-      - Debugging tested with following packages: ``numba-dppy=0.14``, ``dpctl=0.8``, ``numba=0.53``.
+      - Debugging features were tested with following packages: ``numba-dppy=0.14``, ``dpctl=0.8``, ``numba=0.53``.
 
 Activate environment variables
 ------------------------------
@@ -40,9 +39,10 @@ You need to set the following variable for debugging:
 
     export NUMBA_OPT=0
 
-You can use ``NUMBA_DPPY_DEBUGINFO`` instead of ``debug`` option.
-If set to non-zero, enable debug for the full application by setting the default value of the debug option in jit.
-Default value equals to the value of ``NUMBA_DEBUGINFO``.
+It is possible to enable debug for the full application by setting environment variable ``NUMBA_DPPY_DEBUGINFO=1``
+instead of putting  ``debug`` option to the ``dppy.kernel`` decorator. If ``NUMBA_DPPY_DEBUGINFO`` is set to non-zero
+value, the debug data is emitted for the full application. Debug can be turned off on individual functions by setting
+``debug=False`` in ``dppy.kernel``.
 
 See also:
 
@@ -57,7 +57,7 @@ Further, if you want to use local NEO driver, you need to activate the variables
 Checking debugging environment
 ------------------------------
 
-You can check the correctness of the work with the following example:
+Check the correctness of the work with the following example:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
     :lines: 15-
@@ -68,18 +68,18 @@ Launch gdb and set a breakpoint in the kernel:
 .. code-block:: bash
 
     $ gdb-oneapi -q --args python simple_sum.py
-    (gdb) break simple_sum.py:22
+    (gdb) break simple_sum.py:8
     No source file named simple_sum.py.
     Make breakpoint pending on future shared library load? (y or [n]) y
-    Breakpoint 1 (simple_sum.py:22) pending.
+    Breakpoint 1 (simple_sum.py:8) pending.
     (gdb) run
 
-In the output you can see that the breakpoint was hit successfully:
+The output demonstrates that the breakpoint was hit successfully:
 
 .. code-block:: bash
 
-    Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:22
-    22           i = dppy.get_global_id(0)
+    Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:8
+    8            i = dppy.get_global_id(0)
     (gdb) continue
     Done...
     ...

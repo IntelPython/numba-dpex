@@ -1,4 +1,4 @@
-# Run: NUMBA_DPPY_DEBUGINFO=1 gdb-oneapi -q -command commands/sheduler_locking python
+# Run: NUMBA_OPT=0 gdb-oneapi -q -command commands/sheduler_locking python
 set trace-commands on
 set pagination off
 set breakpoint pending on
