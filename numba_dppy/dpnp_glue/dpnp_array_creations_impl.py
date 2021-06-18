@@ -207,11 +207,11 @@ def dpnp_diag_impl(v, k=0):
     ret_type = types.void
     """
     dpnp source:
-    https://github.com/IntelPython/dpnp/blob/master/dpnp/backend/kernels/dpnp_krnl_arraycreation.cpp#L67
+    https://github.com/IntelPython/dpnp/blob/0.6.2/dpnp/backend/kernels/dpnp_krnl_arraycreation.cpp#L67
 
     Function declaration:
     void dpnp_diag_c(
-        void* v_in, void* result1, const int k, size_t* shape, size_t* res_shape, const size_t ndim, 
+        void* v_in, void* result1, const int k, size_t* shape, size_t* res_shape, const size_t ndim,
         const size_t res_ndim)
 
     """
