@@ -20,7 +20,6 @@ import numba_dppy.dpnp_glue as dpnp_lowering
 from numba.core.extending import overload, register_jitable
 import numpy as np
 from numba_dppy import dpctl_functions
-import numba_dppy
 
 
 @register_jitable
