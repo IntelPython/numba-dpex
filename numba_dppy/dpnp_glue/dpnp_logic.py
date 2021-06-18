@@ -34,12 +34,7 @@ def dpnp_all_impl(a):
     Function declaration:
     void dpnp_all_c(const void* array1_in, void* result1, const size_t size)
     """
-    sig = signature(
-        ret_type,
-        types.voidptr,
-        types.voidptr,
-        types.intp
-    )
+    sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     PRINT_DEBUG = dpnp_lowering.DEBUG
@@ -48,7 +43,7 @@ def dpnp_all_impl(a):
         if a.size == 0:
             raise ValueError("Passed Empty array")
 
-        #TODO the output array must be of type bool, because currently this not working
+        # TODO the output array must be of type bool, because currently this not working
         out = np.empty((1,), dtype=np.bool)
 
         sycl_queue = dpctl_functions.get_current_queue()

@@ -37,9 +37,9 @@ def filter_str(request):
     return request.param
 
 
-@pytest.mark.parametrize("shape",
-                         [(0,), (4,), (2, 3), (2, 2, 2)],
-                         ids=['(0,)', '(4,)', '(2,3)', '(2,2,2)'])
+@pytest.mark.parametrize(
+    "shape", [(0,), (4,), (2, 3), (2, 2, 2)], ids=["(0,)", "(4,)", "(2,3)", "(2,2,2)"]
+)
 def test_all(shape, filter_str):
     if skip_test(filter_str):
         pytest.skip()
