@@ -86,29 +86,19 @@ def driver():
 def main():
     times = None
 
-    try:
-        gpu = dpctl.select_gpu_device()
-        print("Running on the following SYCL GPU device")
-        gpu.print_device_info()
-        with dpctl.device_context(gpu):
-            times = driver()
-    except ValueError:
-        print("No SYCL GPU device found")
+    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
+    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
+    device = dpctl.select_default_device()
+    print("Using device ...")
+    device.print_device_info()
+
+    with dpctl.device_context(device):
+        times = driver()
 
     times = np.asarray(times, dtype=np.float32)
-    print("GPU: Average time of %d runs is = %fs" % (args.r, times.mean()))
+    print("Average time of %d runs is = %fs" % (args.r, times.mean()))
 
-    try:
-        cpu = dpctl.select_cpu_device()
-        print("Running on the following SYCL CPU device")
-        cpu.print_device_info()
-        with dpctl.device_context(cpu):
-            times = driver()
-    except ValueError:
-        print("No SYCL CPU device found")
-
-    times = np.asarray(times, dtype=np.float32)
-    print("CPU: Average time of %d runs is = %fs" % (args.r, times.mean()))
+    print("Done...")
 
 
 if __name__ == "__main__":

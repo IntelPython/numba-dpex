@@ -15,6 +15,7 @@
 import numpy as np
 from numba import njit, prange
 import numba_dppy as dppy
+from numba_dppy import config
 import unittest
 from numba.tests.support import captured_stdout
 import dpctl
@@ -36,13 +37,13 @@ def prange_example():
 class TestParforMessage(unittest.TestCase):
     def test_parfor_message(self):
         with dpctl.device_context("opencl:gpu") as gpu_queue:
-            dppy.compiler.DEBUG = 1
+            config.DEBUG = 1
             jitted = njit(prange_example)
 
             with captured_stdout() as got:
                 jitted()
 
-            dppy.compiler.DEBUG = 0
+            config.DEBUG = 0
             self.assertTrue("Parfor offloaded " in got.getvalue())
 
 

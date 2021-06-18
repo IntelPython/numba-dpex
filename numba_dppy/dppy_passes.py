@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function, division, absolute_import
 from contextlib import contextmanager
 import warnings
 
@@ -48,15 +47,15 @@ from numba.core.compiler_machinery import (
     AnalysisPass,
 )
 
-from .dppy_lowerer import DPPYLower
-from numba_dppy import config as dppy_config
-
 from numba.parfors.parfor import (
     PreParforPass as _parfor_PreParforPass,
     replace_functions_map,
 )
 from numba.parfors.parfor import ParforPass as _parfor_ParforPass
 from numba.parfors.parfor import Parfor
+
+from .dppy_lowerer import DPPYLower
+from numba_dppy import config
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
@@ -291,7 +290,7 @@ class SpirvFriendlyLowering(LoweringPass):
         targetctx = state.targetctx
 
         library = state.library
-        interp = state.func_ir  # why is it called this?!
+        interp = state.func_ir
         typemap = state.typemap
         restype = state.return_type
         calltypes = state.calltypes
@@ -388,7 +387,7 @@ class DPPYDumpParforDiagnostics(AnalysisPass):
 
     def run_pass(self, state):
         # if state.flags.auto_parallel.enabled: //add in condition flag for kernels
-        if dppy_config.OFFLOAD_DIAGNOSTICS:
+        if config.OFFLOAD_DIAGNOSTICS:
             if state.parfor_diagnostics is not None:
                 state.parfor_diagnostics.dump(config.PARALLEL_DIAGNOSTICS)
             else:

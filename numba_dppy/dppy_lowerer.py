@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function, division, absolute_import
-
 import ast
 import copy
 from collections import OrderedDict
@@ -23,7 +21,7 @@ import sys
 import numpy as np
 
 import numba
-from numba.core import compiler, ir, types, sigutils, lowering, funcdesc, config
+from numba.core import compiler, ir, types, sigutils, lowering, funcdesc
 from numba.parfors import parfor
 from numba.parfors.parfor_lowering import _lower_parfor_parallel
 import numba_dppy, numba_dppy as dppy
@@ -56,8 +54,10 @@ from numba.core.errors import NumbaParallelSafetyWarning, NumbaPerformanceWarnin
 from .dufunc_inliner import dufunc_inliner
 from numba_dppy.driver import KernelLaunchOps
 import dpctl
+from numba_dppy import config
 from numba_dppy.target import DPPYTargetContext
 from numba_dppy.dppy_array_type import DPPYArray
+from numba_dppy.utils import address_space, npytypes_array_to_dppy_array
 
 
 def _print_block(block):
@@ -359,7 +359,7 @@ def _create_gufunc_for_parfor_body(
                 addrspaces.append(None)
         return addrspaces
 
-    addrspaces = addrspace_from(parfor_params, numba_dppy.target.SPIR_GLOBAL_ADDRSPACE)
+    addrspaces = addrspace_from(parfor_params, address_space.GLOBAL)
 
     if config.DEBUG_ARRAY_OPT >= 1:
         print("parfor_params = ", parfor_params, type(parfor_params))
@@ -397,21 +397,12 @@ def _create_gufunc_for_parfor_body(
     assert len(param_types_addrspaces) == len(addrspaces)
     for i in range(len(param_types_addrspaces)):
         if addrspaces[i] is not None:
-            # print("before:", id(param_types_addrspaces[i]))
-            assert isinstance(param_types_addrspaces[i], types.npytypes.Array)
-            _param = param_types_addrspaces[i]
-            param_types_addrspaces[i] = DPPYArray(
-                _param.dtype,
-                _param.ndim,
-                _param.layout,
-                _param.py_type,
-                not _param.mutable,
-                _param.name,
-                _param.aligned,
-                addrspace=addrspaces[i],
+            # Convert Numba's npytype.Array to DPPYArray data type. DPPYArray
+            # allows us to specify an address space for the data and other
+            # pointer arguments for the array.
+            param_types_addrspaces[i] = npytypes_array_to_dppy_array(
+                param_types_addrspaces[i], addrspaces[i]
             )
-            # print("setting param type", i, param_types[i], id(param_types[i]),
-            #      "to addrspace", param_types_addrspaces[i].addrspace)
 
     def print_arg_with_addrspaces(args):
         for a in args:
@@ -643,7 +634,11 @@ def _create_gufunc_for_parfor_body(
         gufunc_ir.dump()
 
     kernel_func = numba_dppy.compiler.compile_kernel_parfor(
-        dpctl.get_current_queue(), gufunc_ir, gufunc_param_types, param_types_addrspaces
+        dpctl.get_current_queue(),
+        gufunc_ir,
+        gufunc_param_types,
+        param_types_addrspaces,
+        debug=flags.debuginfo,
     )
 
     flags.noalias = old_alias
@@ -1228,25 +1223,62 @@ class DPPYLower(Lower):
         cpu_context = (
             context.cpu_context if isinstance(context, DPPYTargetContext) else context
         )
-        self.gpu_lower = Lower(context, library, fndesc, func_ir, metadata)
-        self.cpu_lower = Lower(cpu_context, library, fndesc_cpu, func_ir_cpu, metadata)
+        self.gpu_lower = self._lower(context, library, fndesc, func_ir, metadata)
+        self.cpu_lower = self._lower(
+            cpu_context, library, fndesc_cpu, func_ir_cpu, metadata
+        )
+
+    def _lower(self, context, library, fndesc, func_ir, metadata):
+        """Create Lower with changed linkageName in debug info"""
+        lower = Lower(context, library, fndesc, func_ir, metadata)
+
+        # Debuginfo
+        if context.enable_debuginfo:
+            from numba.core.funcdesc import qualifying_prefix, default_mangler
+            from numba_dppy.dppy_debuginfo import DPPYDIBuilder
+
+            qualprefix = qualifying_prefix(fndesc.modname, fndesc.qualname)
+            mangled_qualname = default_mangler(qualprefix, fndesc.argtypes)
+
+            lower.debuginfo = DPPYDIBuilder(
+                module=lower.module,
+                filepath=func_ir.loc.filename,
+                linkage_name=mangled_qualname,
+            )
+
+        return lower
 
     def lower(self):
-        # Basically we are trying to lower on GPU first and if failed - try to lower on CPU.
-        # This happens in next order:
-        # 1. Start lowering of parent function
-        # 2. Try to lower parfor on GPU
-        #     2.a. enter lower_parfor_rollback and prepare function to lower on GPU - insert get_global_id.
-        #         2.a.a. starting lower parfor body - enter this point (DPPYLower.lower()) second time.
-        #         2.a.b. If lowering on GPU failed - try on CPU.
-        #         2.a.d. Since get_global_id is NOT supported with CPU context - fail and throw exception
-        #     2.b. in lower_parfor_rollback catch exception and restore parfor body and other to its initial state
-        #     2.c. in lower_parfor_rollback throw expeption to catch it here (DPPYLower.lower())
-        # 3. Catch exception and start parfor lowering with CPU context.
+        """Numba-dppy's custom lowering function.
 
-        # WARNING: this approach only works in case no device specific modifications were added to
-        # parent function (function with parfor). In case parent function was patched with device specific
-        # different solution should be used.
+        The lowerer has a builtin fallback mechanism for parfor functions.
+        We first try to lower a parfor onto a SYCL device using numba-dppy's
+        pipeline, if the lowering fails then we fallback to the default Numba
+        lowering to CPU. The lowering follow the following steps:
+
+        1. Start lowering of parent function
+        2. Try to lower parfor onto the specified SYCL device
+            2.a. The ``lower_parfor_rollback`` function prepares function to
+                 lower onto to the specified SYCL device and inserts the
+                 ``get_global_id`` intrinsic function.
+                2.a.a. Start lowering the parfor body and execute
+                       ``DPPYLower.lower()`` again.
+                2.a.b. If the lowering fails, throw an exception.
+            2.b. The ``lower_parfor_rollback`` catches the exception and
+                 restores the parfor body to its initial state.
+            2.c. Then throw an exception inside ``lower_parfor_rollback``
+                 that will be caught inside ``DPPYLower.lower()``.
+        3. Catch exception and start parfor lowering with the default Numba CPU
+           context.
+
+        TODO/FIXME The rollback approach only works in case no device specific
+        modifications were added to function containing the parfor node. If the
+        function has any device specific modifications, a different solution
+        should be used.
+
+        Raises:
+            Exception: If a parfor node could not be lowered to a SYCL device.
+        """
         try:
             context = self.gpu_lower.context
             try:
@@ -1254,12 +1286,13 @@ class DPPYLower(Lower):
                 lower_extension_parfor = context.lower_extensions[parfor.Parfor]
                 context.lower_extensions[parfor.Parfor] = lower_parfor_rollback
             except Exception as e:
-                if numba_dppy.compiler.DEBUG:
+                if config.DEBUG:
                     print(e)
                 pass
 
             self.gpu_lower.lower()
-            # if lower dont crash, and parfor_diagnostics is empty then it is kernel
+            # if lower does not crash, and parfor_diagnostics is empty then it
+            # is a kernel function.
             if not self.gpu_lower.metadata["parfor_diagnostics"].extra_info:
                 str_name = dpctl.get_current_queue().get_sycl_device().filter_string
                 self.gpu_lower.metadata["parfor_diagnostics"].extra_info[
@@ -1270,11 +1303,11 @@ class DPPYLower(Lower):
             try:
                 context.lower_extensions[parfor.Parfor] = lower_extension_parfor
             except Exception as e:
-                if numba_dppy.compiler.DEBUG:
+                if config.DEBUG:
                     print(e)
                 pass
         except Exception as e:
-            if numba_dppy.compiler.DEBUG:
+            if config.DEBUG:
                 import traceback
 
                 device_filter_str = (
@@ -1286,7 +1319,7 @@ class DPPYLower(Lower):
                 )
                 print(traceback.format_exc())
 
-            if numba_dppy.config.FALLBACK_ON_CPU == 1:
+            if config.FALLBACK_ON_CPU == 1:
                 self.cpu_lower.context.lower_extensions[
                     parfor.Parfor
                 ] = _lower_parfor_parallel
@@ -1312,7 +1345,7 @@ def copy_block(block):
 def lower_parfor_rollback(lowerer, parfor):
     try:
         _lower_parfor_gufunc(lowerer, parfor)
-        if numba_dppy.compiler.DEBUG:
+        if config.DEBUG:
 
             device_filter_str = (
                 dpctl.get_current_queue().get_sycl_device().filter_string
@@ -1329,7 +1362,7 @@ def lower_parfor_rollback(lowerer, parfor):
             "at https://github.com/IntelPython/numba-dppy. To help us debug "
             "the issue, please add the traceback to the bug report."
         )
-        if not numba_dppy.compiler.DEBUG:
+        if not config.DEBUG:
             msg += " Set the environment variable NUMBA_DPPY_DEBUG to 1 to "
             msg += "generate a traceback."
 

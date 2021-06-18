@@ -18,7 +18,7 @@ and dpcpp compiler for numba-dppy:
 Activate conda environment
 --------------------------
 
-You will also need to create and acrivate conda environment with installed `numba-dppy`:
+You will also need to create and activate conda environment with installed `numba-dppy`:
 
 .. code-block:: bash
 
@@ -28,63 +28,58 @@ You will also need to create and acrivate conda environment with installed `numb
 .. note::
 
     Known issues:
-      - Debugging tested with following packages: ``numba-dppy=0.13.1``, ``dpctl=0.6``, ``numba=0.52``.
+      - Debugging tested with following packages: ``numba-dppy=0.14``, ``dpctl=0.8``, ``numba=0.53``.
 
 Activate environment variables
 ------------------------------
 
-You need to set the following variables for debugging:
+Debugging on "no optimization" level is more stable. Local variable are not optimized out.
+You need to set the following variable for debugging:
 
 .. code-block:: bash
 
-    export NUMBA_OPT=1
-    export NUMBA_DPPY_DEBUG=1
+    export NUMBA_OPT=0
+
+You can use ``NUMBA_DPPY_DEBUGINFO`` instead of ``debug`` option.
+If set to non-zero, enable debug for the full application by setting the default value of the debug option in jit.
+Default value equals to the value of ``NUMBA_DEBUGINFO``.
+
+See also:
+
+    - `Debugging JIT compiled code with GDB <http://numba.pydata.org/numba-doc/latest/user/troubleshoot.html#debugging-jit-compiled-code-with-gdb>`_
+    - `NUMBA_DEBUGINFO <https://numba.pydata.org/numba-doc/dev/reference/envvars.html#envvar-NUMBA_DEBUGINFO>`_
 
 Activate NEO drivers
 --------------------
 
-Further, if you want to use local NEO driver, you need to activate the variables for it.
+Further, if you want to use local NEO driver, you need to activate the variables for it. See :ref:`NEO-driver`.
 
 Checking debugging environment
 ------------------------------
 
 You can check the correctness of the work with the following example:
 
-.. code-block:: python
+.. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
+    :lines: 15-
     :linenos:
-
-    import numpy as np
-    import numba_dppy as dppy
-    import dpctl
-
-    @dppy.kernel
-    def data_parallel_sum(a, b, c):
-        i = dppy.get_global_id(0)
-        c[i] = a[i] + b[i]
-
-    global_size = 10
-    N = global_size
-    a = np.array(np.random.random(N), dtype=np.float32)
-    b = np.array(np.random.random(N), dtype=np.float32)
-    c = np.ones_like(a)
-
-    with dpctl.device_context("opencl:gpu") as gpu_queue:
-        data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
 Launch gdb and set a breakpoint in the kernel:
 
 .. code-block:: bash
 
-    gdb-oneapi -q --args python example.py
-    (gdb) break example.py:7
-    No source file named example.py.
+    $ gdb-oneapi -q --args python simple_sum.py
+    (gdb) break simple_sum.py:22
+    No source file named simple_sum.py.
     Make breakpoint pending on future shared library load? (y or [n]) y
-    Breakpoint 1 (example.py:7) pending.
+    Breakpoint 1 (simple_sum.py:22) pending.
     (gdb) run
 
-In the output you can see that the breakpoint was set successfully:
+In the output you can see that the breakpoint was hit successfully:
 
 .. code-block:: bash
 
-    Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], dppy_py_devfn__5F__5F_main_5F__5F__2E_data_5F_parallel_5F_sum_24_1_2E_array_28_float32_2C__20_1d_2C__20_C_29__2E_array_28_float32_2C__20_1d_2C__20_C_29__2E_array_28_float32_2C__20_1d_2C__20_C_29_ () at example.py:7
-    7           i = dppy.get_global_id(0)
+    Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:22
+    22           i = dppy.get_global_id(0)
+    (gdb) continue
+    Done...
+    ...
