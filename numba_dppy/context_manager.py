@@ -4,6 +4,9 @@ import dpctl
 from numba import njit
 from numba._dispatcher import set_use_tls_target_stack
 from numba.core.dispatcher import TargetConfig
+from numba.core.retarget import BasicRetarget
+
+TARGET = "SyclDevice"
 
 
 def dppy_target(cpu_disp):
@@ -11,19 +14,21 @@ def dppy_target(cpu_disp):
     return kernel
 
 
+class DPPYRetarget(BasicRetarget):
+    @property
+    def output_target(self):
+        return TARGET
+
+    def compile_retarget(self, cpu_disp):
+        kernel = njit(_target=TARGET)(cpu_disp.py_func)
+        return kernel
+
+
+retarget = DPPYRetarget()
+
+
 @contextmanager
 def offload_to_sycl_device(dpctl_device):
-    if not isinstance(dpctl_device, dpctl.SyclDevice):
-        raise TypeError(
-            "Unrecognized device. Only dpctl.SyclDevice is accepted. Passed %s."
-            % (type(dpctl_device))
-        )
-
     with dpctl.device_context(dpctl_device):
-        tc = TargetConfig()
-        tc.push(dppy_target)
-        set_use_tls_target_stack(True)
-        yield
-        # __exit__
-        tc.pop()
-        set_use_tls_target_stack(False)
+        with TargetConfig.switch_target(retarget):
+            yield

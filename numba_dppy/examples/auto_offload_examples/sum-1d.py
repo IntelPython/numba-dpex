@@ -15,6 +15,8 @@
 from numba import njit
 import numpy as np
 import dpctl
+import numba_dppy
+from numba_dppy.context_manager import offload_to_sycl_device
 
 
 @njit
@@ -35,9 +37,10 @@ def main():
     print("a:", a, hex(a.ctypes.data))
     print("b:", b, hex(b.ctypes.data))
 
+    numba_dppy.compiler.DEBUG = 1
     try:
-        device = dpctl.select_gpu_device()
-        with dpctl.device_context(device):
+        device = dpctl.SyclDevice("level_zero:gpu")
+        with offload_to_sycl_device(device):
             print("Offloading to ...")
             device.print_device_info()
             c = f1(a, b)

@@ -18,6 +18,7 @@ from numba import njit, vectorize
 from . import _helper
 import dpctl
 from numba_dppy.context_manager import offload_to_sycl_device
+import numba_dppy
 import unittest
 
 
@@ -42,6 +43,7 @@ class TestVectorize(unittest.TestCase):
         A = np.random.random(10)
         B = np.random.random(10)
 
+        numba_dppy.compiler.DEBUG = 1
         device = dpctl.SyclDevice("opencl:gpu")
         with offload_to_sycl_device(device):
             expected = f(A, B)

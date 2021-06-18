@@ -70,11 +70,12 @@ class TestWithDPPYContext(unittest.TestCase):
             with offload_to_sycl_device(device):
                 func(got_cpu)
 
-        numba_dppy.compiler.DEBUG = 0
-        func(expected)
+            numba_dppy.compiler.DEBUG = 0
+            func(expected)
 
         np.testing.assert_array_equal(expected, got_cpu)
         self.assertTrue("Parfor offloaded to opencl:cpu" in got_cpu_message.getvalue())
+
 
 if __name__ == "__main__":
     unittest.main()

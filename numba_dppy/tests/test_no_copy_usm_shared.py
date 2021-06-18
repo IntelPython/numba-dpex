@@ -20,8 +20,8 @@ from numba.core import compiler, cpu
 
 import dpctl
 import dpctl.tensor.numpy_usm_shared as usmarray
-import numba_dppy.numpy_usm_shared as nus
-import dpctl
+
+# import numba_dppy.numpy_usm_shared as nus
 from numba_dppy.context_manager import offload_to_sycl_device
 
 from numba_dppy.compiler import DPPYCompiler
@@ -34,6 +34,7 @@ def fn(a):
     return a
 
 
+@pytest.mark.skip()
 def test_no_copy_usm_shared(capfd):
     a = usmarray.ones(10, dtype=np.int64)
     b = np.ones(10, dtype=np.int64)

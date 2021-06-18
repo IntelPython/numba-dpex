@@ -41,12 +41,12 @@ class TestOffloadDiagnostics(unittest.TestCase):
             dppy_config.OFFLOAD_DIAGNOSTICS = 1
             jitted = njit(parallel=True)(prange_func)
 
-            #with captured_stdout() as got:
-            jitted()
+            with captured_stdout() as got:
+                jitted()
 
             dppy_config.OFFLOAD_DIAGNOSTICS = 0
-            #self.assertTrue("Auto-offloading" in got.getvalue())
-            #self.assertTrue("Device -" in got.getvalue())
+            self.assertTrue("Auto-offloading" in got.getvalue())
+            self.assertTrue("Device -" in got.getvalue())
 
     def test_kernel(self):
         @dppy.kernel

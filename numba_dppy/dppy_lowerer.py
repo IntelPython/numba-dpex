@@ -625,7 +625,11 @@ def _create_gufunc_for_parfor_body(
 
     # Inlining all DUFuncs
     dufunc_inliner(
-        gufunc_ir, lowerer.fndesc.calltypes, typemap, lowerer.context.typing_context
+        gufunc_ir,
+        lowerer.fndesc.calltypes,
+        typemap,
+        lowerer.context.typing_context,
+        lowerer.context,
     )
 
     if config.DEBUG_ARRAY_OPT:

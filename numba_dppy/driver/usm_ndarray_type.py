@@ -45,7 +45,6 @@ class USMNdArrayType(DPPYArray):
             dtype,
             ndim,
             layout,
-            py_type=usm_ndarray,
             readonly=readonly,
             name=name,
             addrspace=addrspace,

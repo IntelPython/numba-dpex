@@ -96,11 +96,11 @@ class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
                             # TODO: Find out why find_var can be None!
                             if find_var != None:
 
-                                '''
+                                """
                                 call_node = block.find_variable_assignment(
                                     expr.func.name
                                 ).value
-                                '''
+                                """
                                 call_node = find_var.value
                                 if (
                                     isinstance(call_node, ir.Expr)
@@ -143,7 +143,8 @@ class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
 
                                         else:
                                             if not isinstance(
-                                                func_ir.get_definition(arg.name), ir.Const
+                                                func_ir.get_definition(arg.name),
+                                                ir.Const,
                                             ):
                                                 error = True
                                                 break
@@ -240,8 +241,8 @@ class DPPYParforPass(FunctionPass):
 
         parfor_pass.run()
 
-        #remove_dels(state.func_ir.blocks)
-        '''
+        # remove_dels(state.func_ir.blocks)
+        """
         # check the parfor pass worked and warn if it didn't
         has_parfor = False
         for blk in state.func_ir.blocks.values():
@@ -265,7 +266,7 @@ class DPPYParforPass(FunctionPass):
                        "diagnostics, see %s for help." % url)
                 warnings.warn(errors.NumbaPerformanceWarning(msg,
                                                              state.func_ir.loc))
-        '''
+        """
 
         if config.DEBUG or config.DUMP_IR:
             name = state.func_ir.func_id.func_qualname
@@ -348,7 +349,7 @@ class SpirvFriendlyLowering(LoweringPass):
 
             with targetctx.push_code_library(library):
                 lower = DPPYLower(targetctx, library, fndesc, interp, metadata=metadata)
-                #lower = lowering.Lower(targetctx, library, fndesc, interp,
+                # lower = lowering.Lower(targetctx, library, fndesc, interp,
                 #                       metadata=metadata)
                 lower.lower()
                 if not flags.no_cpython_wrapper:
