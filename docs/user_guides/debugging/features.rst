@@ -16,11 +16,13 @@ Currently, the following debugging features are available:
 
 .. _`Debugging JIT compiled code with GDB`: https://numba.pydata.org/numba-doc/latest/user/troubleshoot.html?highlight=numba_opt#debugging-jit-compiled-code-with-gdb
 
-`numba-dppy` supports a subset of GDB commands that allow to debug offloaded SYCL kernels.
+`numba-dppy` supports at least following GDB commands:
 
 .. toctree::
     :maxdepth: 2
 
-    local_variables
+    breakpoints
     stepping
+    local_variables
+    backtrace
     info

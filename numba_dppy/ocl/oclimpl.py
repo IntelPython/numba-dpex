@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import, division, print_function
-
 import operator
 from functools import reduce
 
@@ -27,10 +25,12 @@ from numba.core.imputils import Registry
 from numba.core.itanium_mangler import mangle, mangle_c, mangle_type
 from numba.core.typing.npydecl import parse_dtype
 
+from numba_dppy import config
 from numba_dppy import target
 from numba_dppy.codegen import SPIR_DATA_LAYOUT
 from numba_dppy.dppy_array_type import DPPYArray
 from numba_dppy.ocl.atomics import atomic_helper
+from numba_dppy.utils import address_space
 
 from . import stubs
 
@@ -208,14 +208,14 @@ def insert_and_call_atomic_fn(
     else:
         raise TypeError("Atomic operation is not supported for type %s" % (dtype.name))
 
-    if addrspace == target.SPIR_LOCAL_ADDRSPACE:
+    if addrspace == address_space.LOCAL:
         name = name + "_local"
     else:
         name = name + "_global"
 
     assert ll_p != None
     assert name != ""
-    ll_p.addrspace = target.SPIR_GENERIC_ADDRSPACE
+    ll_p.addrspace = address_space.GENERIC
 
     mod = builder.module
     if sig.return_type == types.void:
@@ -229,7 +229,7 @@ def insert_and_call_atomic_fn(
     fn = mod.get_or_insert_function(fnty, name)
     fn.calling_convention = target.CC_SPIR_FUNC
 
-    generic_ptr = context.addrspacecast(builder, ptr, target.SPIR_GENERIC_ADDRSPACE)
+    generic_ptr = context.addrspacecast(builder, ptr, address_space.GENERIC)
 
     return builder.call(fn, [generic_ptr, val])
 
@@ -272,11 +272,8 @@ def native_atomic_add(context, builder, sig, args):
     assert name != ""
 
     ptr_type = context.get_value_type(dtype).as_pointer()
-    if not hasattr(aryty, "addrspace"):
-        ptr_type.addrspace = target.SPIR_GLOBAL_ADDRSPACE
-        ptr = context.addrspacecast(builder, ptr, target.SPIR_GLOBAL_ADDRSPACE)
-    else:
-        ptr_type.addrspace = target.SPIR_LOCAL_ADDRSPACE
+    ptr_type.addrspace = aryty.addrspace
+
     retty = context.get_value_type(sig.return_type)
     spirv_fn_arg_types = [
         ptr_type,
@@ -317,13 +314,11 @@ def native_atomic_add(context, builder, sig, args):
 @lower(stubs.atomic.add, types.Array, types.UniTuple, types.Any)
 @lower(stubs.atomic.add, types.Array, types.Tuple, types.Any)
 def atomic_add_tuple(context, builder, sig, args):
-    from numba_dppy.config import NATIVE_FP_ATOMICS
-
     device_type = dpctl.get_current_queue().sycl_device.device_type
     dtype = sig.args[0].dtype
 
     if dtype == types.float32 or dtype == types.float64:
-        if device_type == dpctl.device_type.gpu and NATIVE_FP_ATOMICS == 1:
+        if device_type == dpctl.device_type.gpu and config.NATIVE_FP_ATOMICS == 1:
             return native_atomic_add(context, builder, sig, args)
         else:
             # Currently, DPCPP only supports native floating point
@@ -363,13 +358,11 @@ def atomic_sub_wrapper(context, builder, sig, args):
 @lower(stubs.atomic.sub, types.Array, types.UniTuple, types.Any)
 @lower(stubs.atomic.sub, types.Array, types.Tuple, types.Any)
 def atomic_sub_tuple(context, builder, sig, args):
-    from numba_dppy.config import NATIVE_FP_ATOMICS
-
     device_type = dpctl.get_current_queue().sycl_device.device_type
     dtype = sig.args[0].dtype
 
     if dtype == types.float32 or dtype == types.float64:
-        if device_type == dpctl.device_type.gpu and NATIVE_FP_ATOMICS == 1:
+        if device_type == dpctl.device_type.gpu and config.NATIVE_FP_ATOMICS == 1:
             return atomic_sub_wrapper(context, builder, sig, args)
         else:
             # Currently, DPCPP only supports native floating point
@@ -410,10 +403,7 @@ def atomic_add(context, builder, sig, args, name):
         lary = context.make_array(aryty)(context, builder, ary)
         ptr = cgutils.get_item_pointer(context, builder, aryty, lary, indices)
 
-        if (
-            isinstance(aryty, DPPYArray)
-            and aryty.addrspace == target.SPIR_LOCAL_ADDRSPACE
-        ):
+        if isinstance(aryty, DPPYArray) and aryty.addrspace == address_space.LOCAL:
             return insert_and_call_atomic_fn(
                 context,
                 builder,
@@ -422,7 +412,7 @@ def atomic_add(context, builder, sig, args, name):
                 dtype,
                 ptr,
                 val,
-                target.SPIR_LOCAL_ADDRSPACE,
+                address_space.LOCAL,
             )
         else:
             return insert_and_call_atomic_fn(
@@ -433,7 +423,7 @@ def atomic_add(context, builder, sig, args, name):
                 dtype,
                 ptr,
                 val,
-                target.SPIR_GLOBAL_ADDRSPACE,
+                address_space.GLOBAL,
             )
     else:
         raise ImportError("Atomic support is not present, can not perform atomic_add")
@@ -449,7 +439,7 @@ def dppy_local_array_integer(context, builder, sig, args):
         shape=(length,),
         dtype=dtype,
         symbol_name="_dppy_lmem",
-        addrspace=target.SPIR_LOCAL_ADDRSPACE,
+        addrspace=address_space.LOCAL,
     )
 
 
@@ -464,7 +454,7 @@ def dppy_local_array_tuple(context, builder, sig, args):
         shape=shape,
         dtype=dtype,
         symbol_name="_dppy_lmem",
-        addrspace=target.SPIR_LOCAL_ADDRSPACE,
+        addrspace=address_space.LOCAL,
     )
 
 
@@ -477,7 +467,7 @@ def _generic_array(context, builder, shape, dtype, symbol_name, addrspace):
     lldtype = context.get_data_type(dtype)
     laryty = Type.array(lldtype, elemcount)
 
-    if addrspace == target.SPIR_LOCAL_ADDRSPACE:
+    if addrspace == address_space.LOCAL:
         lmod = builder.module
 
         # Create global variable in the requested address-space
@@ -510,7 +500,7 @@ def _make_array(
     dtype,
     shape,
     layout="C",
-    addrspace=target.SPIR_GENERIC_ADDRSPACE,
+    addrspace=address_space.GENERIC,
 ):
     ndim = len(shape)
     # Create array object
