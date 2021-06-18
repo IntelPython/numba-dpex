@@ -30,7 +30,7 @@ def dpnp_repeat_impl(a, repeats):
     ret_type = types.void
     """
     dpnp source:
-    https://github.com/Rubtsowa/dpnp/blob/master/dpnp/backend/kernels/dpnp_krnl_manipulation.cpp#L46
+    https://github.com/IntelPython/dpnp/blob/0.6.2/dpnp/backend/kernels/dpnp_krnl_manipulation.cpp#L46
     Function declaration:
     void dpnp_repeat_c(const void* array1_in, void* result1, const size_t repeats, const size_t size)
     """
