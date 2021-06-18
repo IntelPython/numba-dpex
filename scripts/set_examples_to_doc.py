@@ -2,11 +2,9 @@ import os
 
 commands_dir = os.getcwd() + "/numba_dppy/examples/debug/commands"
 examples = os.listdir(commands_dir)
-print(directory)
 os.chdir(commands_dir + "/docs")
 for file in examples:
     if file != "docs":
-        print(commands_dir + "/" + file)
         open_file = open(commands_dir + "/" + file, "r")
         read_lines = open_file.readlines()
         if os.path.exists(file):
