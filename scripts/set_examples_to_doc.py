@@ -1,16 +1,17 @@
 import os
 
-current_dir = os.getcwd()
-directory = os.listdir(current_dir + "/numba_dppy/examples/debug/commands")
-os.chdir(current_dir + "/numba_dppy/examples/debug/commands")
-for file in directory:
-    if not "_docs" in file:
-        open_file = open(file, "r")
+commands_dir = os.getcwd() + "/numba_dppy/examples/debug/commands"
+examples = os.listdir(commands_dir)
+print(directory)
+os.chdir(commands_dir + "/docs")
+for file in examples:
+    if file != "docs":
+        print(commands_dir + "/" + file)
+        open_file = open(commands_dir + "/" + file, "r")
         read_lines = open_file.readlines()
-        docs = file + "_docs"
-        if docs:
-            os.remove(docs)
-        write_file = open(docs, "a")
+        if os.path.exists(file):
+            os.remove(file)
+        write_file = open(file, "a")
         for line in read_lines:
             if line.startswith("# Expected"):
                 continue
