@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import print_function, division, absolute_import
-
 from numba.core import ir
 from numba.core.ir_utils import dead_code_elimination, simplify_CFG
 

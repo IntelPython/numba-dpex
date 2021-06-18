@@ -1,0 +1,23 @@
+# Run: NUMBA_DPPY_DEBUGINFO=1 gdb-oneapi -q -command commands/function_breakpoint python
+set trace-commands on
+set pagination off
+set breakpoint pending on
+break sum.py:data_parallel_sum
+run sum.py
+backtrace
+# Expected:
+# Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at sum.py:20
+# 20      @dppy.kernel
+# #0  __main__::data_parallel_sum () at sum.py:20
+next
+# Expected:
+# Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at sum.py:20
+# 20      @dppy.kernel
+next
+# Expected:
+# 22          i = dppy.get_global_id(0)  # numba-kernel-breakpoint
+backtrace
+# Expected:
+# #0  __main__::data_parallel_sum () at sum.py:22
+echo Done\n
+quit
