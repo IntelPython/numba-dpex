@@ -32,10 +32,12 @@ rewrite_function_name_map = {
     "argmin": (["numpy"], "argmin"),
     "argsort": (["numpy"], "argsort"),
     "cov": (["numpy"], "cov"),
+    "diagonal": (["numpy"], "diagonal"),
     "max": (["numpy"], "max"),
     "mean": (["numpy"], "mean"),
     "median": (["numpy"], "median"),
     "min": (["numpy"], "min"),
+    "trace": (["numpy"], "trace"),
     "vdot": (["numpy"], "vdot"),
     # random
     "beta": (["random"], "beta"),
@@ -208,6 +210,7 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
         import numba_dppy.dpnp_glue.dpnp_randomimpl
         import numba_dppy.dpnp_glue.dpnp_array_creations_impl
         import numba_dppy.dpnp_glue.dpnp_array_ops_impl
+        import numba_dppy.dpnp_glue.dpnp_indexing
 
     def run_pass(self, state):
         rewrite_function_name_pass = RewriteNumPyOverloadedFunctions(
