@@ -146,6 +146,9 @@ class dpnp(Stub):
     class ones_like(Stub):
         pass
 
+    class partition(Stub):
+        pass
+
     class poisson(Stub):
         pass
 

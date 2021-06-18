@@ -67,6 +67,7 @@ cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncName":  # need this na
         DPNP_FN_MINIMUM
         DPNP_FN_MODF
         DPNP_FN_MULTIPLY
+        DPNP_FN_PARTITION
         DPNP_FN_POWER
         DPNP_FN_PROD
         DPNP_FN_RADIANS
@@ -202,6 +203,8 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_RNG_NORMAL
     if name == "dpnp_ones_like":
         return DPNPFuncName.DPNP_FN_INITVAL
+    if name == "dpnp_partition":
+        return DPNPFuncName.DPNP_FN_PARTITION
     if name == "dpnp_poisson":
         return DPNPFuncName.DPNP_FN_RNG_POISSON
     if name == "dpnp_prod":
