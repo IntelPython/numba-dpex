@@ -149,6 +149,9 @@ class dpnp(Stub):
     class ones_like(Stub):
         pass
 
+    class partition(Stub):
+        pass
+
     class poisson(Stub):
         pass
 
@@ -174,6 +177,9 @@ class dpnp(Stub):
         pass
 
     class rayleigh(Stub):
+        pass
+
+    class repeat(Stub):
         pass
 
     class sample(Stub):
