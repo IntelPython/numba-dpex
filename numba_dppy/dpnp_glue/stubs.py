@@ -179,6 +179,9 @@ class dpnp(Stub):
     class rayleigh(Stub):
         pass
 
+    class repeat(Stub):
+        pass
+
     class sample(Stub):
         pass
 

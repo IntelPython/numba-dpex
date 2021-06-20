@@ -39,6 +39,7 @@ rewrite_function_name_map = {
     "median": (["numpy"], "median"),
     "min": (["numpy"], "min"),
     "partition": (["numpy"], "partition"),
+    "repeat": (["numpy"], "repeat"),
     "trace": (["numpy"], "trace"),
     "vdot": (["numpy"], "vdot"),
     # random
@@ -210,6 +211,7 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
         import numba_dppy.dpnp_glue.dpnp_indexing
         import numba_dppy.dpnp_glue.dpnp_linalgimpl
         import numba_dppy.dpnp_glue.dpnp_logic
+        import numba_dppy.dpnp_glue.dpnp_manipulation
         import numba_dppy.dpnp_glue.dpnp_randomimpl
         import numba_dppy.dpnp_glue.dpnp_sort_search_countimpl
         import numba_dppy.dpnp_glue.dpnp_statisticsimpl
