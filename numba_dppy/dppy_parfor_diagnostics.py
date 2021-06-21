@@ -37,6 +37,17 @@ class ExtendedParforDiagnostics(ParforDiagnostics):
     def print_auto_offloading(self, lines):
         sword = "+--"
         fac = len(sword)
+        fadj, froots = self.compute_graph_info(self.fusion_info)
+        nadj, _nroots = self.compute_graph_info(self.nested_fusion_info)
+
+        if len(fadj) > len(nadj):
+            lim = len(fadj)
+            tmp = nadj
+        else:
+            lim = len(nadj)
+            tmp = fadj
+        for x in range(len(tmp), lim):
+            tmp.append([])
 
         summary = dict()
         # region : {fused, serialized}
