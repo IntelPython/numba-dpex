@@ -18,7 +18,7 @@ from numba import njit, vectorize
 import dpctl
 import unittest
 
-from numba_dppy.testing import assert_auto_offloading
+from numba_dppy.tests._helper import assert_auto_offloading
 from . import _helper
 
 

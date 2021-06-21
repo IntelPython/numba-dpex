@@ -20,8 +20,7 @@ import dpctl
 import numpy as np
 from numba import njit
 import pytest
-from numba_dppy.tests._helper import skip_test
-from numba_dppy.testing import assert_auto_offloading
+from numba_dppy.tests._helper import skip_test, assert_auto_offloading
 
 list_of_filter_strs = [
     "opencl:gpu:0",
