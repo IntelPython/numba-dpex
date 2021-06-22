@@ -16,12 +16,12 @@ Example with a nested function ``numba_dppy/examples/debug/simple_dppy_func.py``
 .. note::
 
     Known issues:
-        - The first line of the kernel and functions is debugged twice. See :ref:`single_stepping`.
+        - The first line of the kernel and functions is hit twice. See :ref:`single_stepping`.
 
 ``step``
 --------
 
-Run debugger:
+Run GDB debugger:
 
 .. code-block:: bash
 

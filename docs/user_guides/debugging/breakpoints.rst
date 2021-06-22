@@ -15,13 +15,13 @@ See also:
 
 .. _GDB documentation of breakpoints: https://sourceware.org/gdb/current/onlinedocs/gdb/Set-Breaks.html#Set-Breaks
 
-Consider ``numba-dppy`` kernel code. See the source file ``numba_dppy/examples/debug/simple_sum.py``:
+Consider Numba-dppy kernel code. See the source file ``numba_dppy/examples/debug/simple_sum.py``:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
     :lines: 15-
     :linenos:
 
-Run debugger:
+Run GDB debugger:
 
 .. code-block:: bash
 
@@ -73,7 +73,7 @@ GDB output:
 Breakpoints with nested functions
 -------------------------------------
 
-Consider ``numba-dppy`` kernel code. See source file ``numba_dppy/examples/debug/simple_dppy_func.py``:
+Consider Numba-dppy kernel code. See source file ``numba_dppy/examples/debug/simple_dppy_func.py``:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_dppy_func.py
     :lines: 15-

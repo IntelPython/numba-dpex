@@ -8,7 +8,7 @@ Investigating **info func** command on `CPU` in `jit` code.
 
 Displays the list of functions in the debugged program.
 
-Syntax
+**Syntax**
 ``````
 
 .. code-block::
@@ -59,7 +59,7 @@ Run debuger:
 
     NUMBA_OPT=0 gdb-oneapi -q python
 
-Set breakpoint, run and see information about functions when debugger stops at the breakpoint:
+Set breakpoint, run and see information about functions when the GDB debugger stops at the breakpoint:
 
 .. code-block::
 

@@ -1,9 +1,6 @@
 Backtrace
 ==========
 
-``backtrace``
--------------
-
 Let's consider the work of the command ``backtrace`` in the following example ``numba_dppy/examples/debug/simple_dppy_func.py``:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_dppy_func.py
@@ -15,7 +12,7 @@ Let's consider the work of the command ``backtrace`` in the following example ``
     Known issues:
         - The first line of the kernel and functions is hit twice. See the :ref:`single_stepping`.
 
-Run debugger:
+Run GDB debugger:
 
 .. code-block:: bash
 

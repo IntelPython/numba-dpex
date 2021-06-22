@@ -7,14 +7,14 @@ Consider the following two examples. ``numba_dppy/examples/debug/simple_sum.py``
     :lines: 15-
     :linenos:
 
-Example with njit (Numba CPU):
+Example with njit:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/njit_basic.py
     :lines: 15-
     :linenos:
 
 Getting the DWARF from binary file
---------------------------------
+----------------------------------
 
 In order to get the DWARF information from a specific kernel, just enable ``IGC_ShaderDumpEnable`` variable.
 IGC will write number of dumps into ``/tmp/IntelIGC``.
@@ -24,7 +24,7 @@ IGC will write number of dumps into ``/tmp/IntelIGC``.
     export IGC_ShaderDumpEnable=1
 
 To read the DWARF of a kernel, a copy of the IGC generated kernel binary is needed.
-Run the Python script in a debugger mode, and set a breakpoint in the kernel:
+Run the Python script in a GDB debugger mode, and set a breakpoint in the kernel:
 
 .. code-block:: bash
 
@@ -35,7 +35,7 @@ Run the Python script in a debugger mode, and set a breakpoint in the kernel:
     (gdb) run
 
 Once the breakpoint is hit, the kernel has been generated and offloaded.
-At that point, the IGFX driver (i.e. our debugger driver) has copied the kernel into a file, and saved it at ``/tmp``.
+At that point, the IGFX driver (i.e. our GDB debugger driver) has copied the kernel into a file, and saved it at ``/tmp``.
 All files saved at ``/tmp/IntelIGC/python_xxx/``
 
 Dump generated DWARF from the kernel binary (elf) via llvm-dwarfdump tool:

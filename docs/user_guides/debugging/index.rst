@@ -1,7 +1,7 @@
 Debugging with GDB
 ==================
 
-`numba-dppy` allows SYCL kernels to be debugged with the GDB debugger.
+Numba-dppy allows SYCL kernels to be debugged with the GDB debugger.
 Setting the debug environment variable :envvar:`NUMBA_DPPY_DEBUGINFO`
 (e.g. :samp:`export NUMBA_DPPY_DEBUGINFO=1`) enables the emission of debug information.
 To disable debugging, unset the variable (e.g. :samp:`unset NUMBA_DPPY_DEBUGINFO`).
@@ -11,14 +11,14 @@ To disable debugging, unset the variable (e.g. :samp:`unset NUMBA_DPPY_DEBUGINFO
     Beware that enabling debug info significantly increases the memory consumption for each compiled kernel.
     For large application, this may cause out-of-memory error.
 
-Not all GDB features supported by `Numba` on CPUs are yet supported in `numba-dppy`.
+Not all GDB features supported by Numba on CPUs are yet supported in Numba-dppy.
 See :ref:`debugging-features-and-limitations`.
 
 
 Requirements
 ------------
 
-`Intel® Distribution for GDB` is required for `numba-dppy`'s debugging features to work.
+`Intel® Distribution for GDB` is required for Numba-dppy's debugging features to work.
 `Intel® Distribution for GDB` is part of `Intel oneAPI` and
 the relevant documentation can be found at `Intel® Distribution for GDB documentation`_.
 
@@ -34,7 +34,7 @@ the relevant documentation can be found at `Intel® Distribution for GDB documen
 Example of GDB usage
 --------------------
 
-For example, given the following `numba-dppy` kernel code (:file:`simple_sum.py`):
+For example, given the following Numba-dppy kernel code (:file:`simple_sum.py`):
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
     :lines: 15-
@@ -56,7 +56,7 @@ Running GDB and creating breakpoint in kernel:
     Done...
     ...
 
-If breakpoint is not hit and you see the following output:
+If the breakpoint is not hit, you will see the following output:
 
 .. code-block:: bash
 

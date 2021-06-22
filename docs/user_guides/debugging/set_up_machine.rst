@@ -27,7 +27,7 @@ to a group ID used by your user base:
 NEO driver
 ----------
 
-NEO driver at least `21.15.19533` version is required to make debugger work correctly.
+NEO driver at least `21.15.19533` version is required to make GDB debugger work correctly.
 
 You can download the driver from the following `link <https://github.com/intel/compute-runtime/releases/tag/21.15.19533>`_.
 
