@@ -1,15 +1,15 @@
-Additional tools
-=================
+Getting DWARF
+=============
 
 Consider the following two examples. ``numba_dppy/examples/debug/simple_sum.py``:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
+.. literalinclude:: ../../numba_dppy/examples/debug/simple_sum.py
     :lines: 15-
     :linenos:
 
 Example with njit:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/njit_basic.py
+.. literalinclude:: ../../numba_dppy/examples/debug/njit_basic.py
     :lines: 15-
     :linenos:
 
@@ -64,7 +64,7 @@ Get dwarf with objdump:
 
 .. code-block:: bash
 
-    objdump -W o > o_dwarf 
+    objdump -W o > o_dwarf
 
 See also:
 
