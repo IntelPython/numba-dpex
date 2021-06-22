@@ -20,9 +20,9 @@ import dpctl
 import numpy as np
 from numba import njit
 import pytest
-from numba_dppy.testing import dpnp_debug
 from .dpnp_skip_test import dpnp_skip_test as skip_test
 from ._helper import wrapper_function
+from numba_dppy.tests._helper import dpnp_debug
 
 
 list_of_filter_strs = [

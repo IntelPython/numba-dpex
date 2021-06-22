@@ -18,7 +18,7 @@ import numpy as np
 from numba import njit
 import pytest
 import numba_dppy as dppy
-from numba_dppy.testing import ensure_dpnp
+from numba_dppy.tests._helper import ensure_dpnp
 
 list_of_dtype = [
     np.int32,
