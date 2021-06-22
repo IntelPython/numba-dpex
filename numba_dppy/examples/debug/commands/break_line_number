@@ -5,6 +5,7 @@ set breakpoint pending on
 break simple_sum.py:20
 run simple_sum.py
 # Expected:
+# ...
 # Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:20
 # 20      @dppy.kernel(debug=True)
 continue
@@ -13,5 +14,7 @@ continue
 # 20      @dppy.kernel(debug=True)
 continue
 # Expected:
-# Done
+# Continuing.
+# Done...
+echo Done\n
 quit
