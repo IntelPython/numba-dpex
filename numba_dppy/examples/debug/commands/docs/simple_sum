@@ -15,4 +15,3 @@ Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum 
 (gdb) continue
 Continuing.
 Done...
-(gdb) echo Done\n

@@ -19,4 +19,3 @@ __main__::func_sum () at dppy_func.py:22
 (gdb) continue
 Continuing.
 Done...
-(gdb) echo Done\n

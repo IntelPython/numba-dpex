@@ -16,4 +16,3 @@ Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at s
 (gdb) continue
 Continuing.
 Done...
-(gdb) echo Done\n

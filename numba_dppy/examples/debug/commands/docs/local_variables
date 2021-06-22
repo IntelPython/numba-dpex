@@ -33,4 +33,3 @@ type = i64
 (gdb) continue
 Continuing.
 Done...
-(gdb) echo Done\n

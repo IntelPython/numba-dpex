@@ -17,7 +17,7 @@ def convert_commands_to_docs():
             for line in read_lines:
                 if (
                     line.startswith("# Expected")
-                    or line.startswith("echo Done\n")
+                    or line.startswith("echo Done")
                     or line.startswith("quit")
                 ):
                     continue
