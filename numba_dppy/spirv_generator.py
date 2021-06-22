@@ -76,18 +76,9 @@ class CmdLine(object):
         )
 
     def generate(self, ipath, opath, llvm_spirv_args):
-        # DRD : Temporary hack to get SPIR-V code generation to work.
-        # The opt step is needed for:
-        #     a) generate a bitcode file from the text IR file
-        #     b) hoist all allocas to the enty block of the module
-        # Get optimization level from NUMBA_OPT
-        opt_level_option = f"-O{config.OPT}"
-
         llvm_spirv_flags = []
         if config.DEBUG:
             llvm_spirv_flags.append("--spirv-debug-info-version=ocl-100")
-
-        check_call(["opt", opt_level_option, "-o", ipath + ".bc", ipath])
 
         if config.NATIVE_FP_ATOMICS == 1:
             llvm_spirv_root = config.LLVM_SPIRV_ROOT
@@ -104,11 +95,9 @@ class CmdLine(object):
             llvm_spirv_call_args = ["llvm-spirv"]
         if llvm_spirv_args is not None:
             llvm_spirv_call_args += llvm_spirv_args
-        llvm_spirv_call_args += ["-o", opath, ipath + ".bc"]
+        llvm_spirv_call_args += ["-o", opath, ipath]
         check_call(llvm_spirv_call_args)
 
-        if config.SAVE_IR_FILES == 0:
-            os.unlink(ipath + ".bc")
 
     def link(self, opath, binaries):
         params = ["spirv-link", "--allow-partial-linkage", "-o", opath]
@@ -149,14 +138,14 @@ class Module(object):
         self._tempfiles.append(path)
         return path
 
-    def load_llvm(self, llvmir):
+    def load_llvm(self, llvmbc):
         """
         Load LLVM with "SPIR-V friendly" SPIR 2.0 spec
         """
         # Create temp file to store the input file
         tmp_llvm_ir, llvm_path = self._create_temp_file("llvm-friendly-spir")
         with tmp_llvm_ir:
-            tmp_llvm_ir.write(llvmir.encode())
+            tmp_llvm_ir.write(llvmbc)
 
         self._llvmfile = llvm_path
 
