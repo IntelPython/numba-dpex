@@ -1,15 +1,15 @@
-Additional tools
-=================
+Tools for debugging the pipeline
+================================
 
 Consider the following two examples. ``numba_dppy/examples/debug/simple_sum.py``:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
+.. literalinclude:: ../../numba_dppy/examples/debug/simple_sum.py
     :lines: 15-
     :linenos:
 
 Example with njit:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/njit_basic.py
+.. literalinclude:: ../../numba_dppy/examples/debug/njit_basic.py
     :lines: 15-
     :linenos:
 
@@ -31,7 +31,7 @@ To do that, run the Python script in a debugger, and set a breakpoint in the ker
     export NUMBA_DPPY_DEBUGINFO=1
     export NUMBA_OPT=1
     gdb-oneapi -q --args python simple_sum.py
-    gdb-oneapi -q python 
+    gdb-oneapi -q python
     (gdb) break simple_sum.py:22     # Assumes the kernel is in file simple_sum.py, at line 22
     (gdb) run
 
@@ -65,7 +65,7 @@ Get dwarf with objdump:
 
 .. code-block:: bash
 
-    objdump -W o > o_dwarf 
+    objdump -W o > o_dwarf
 
 See also:
 
