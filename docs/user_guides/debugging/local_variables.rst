@@ -6,7 +6,7 @@ Local variables
     - :samp:`NUMBA_OPT=0` "no optimization" level - all local variables of the kernel function are available.
     - :samp:`NUMBA_OPT=1` or higher - some variables may be optimized out.
 
-Consider `numba-dppy` kernel code :file:`simple_sum.py`
+Consider Numba-dppy kernel code :file:`simple_sum.py`
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
     :lines: 15-
@@ -15,11 +15,10 @@ Consider `numba-dppy` kernel code :file:`simple_sum.py`
 ``info locals``
 ---------------
 
-Run debugger:
+Run GDB debugger:
 
 .. code-block:: bash
 
-    export NUMBA_DPPY_DEBUGINFO=1
     export NUMBA_OPT=0
     gdb-oneapi -q --args python simple_sum.py
     (gdb) break simple_sum.py:8
@@ -70,12 +69,12 @@ GDB output on "O1 optimization" level ``NUMBA_OPT=1``:
 
 .. note::
 
-    The debugger does not show the local variables ``a``, ``b`` and ``c``, they are optimized out on "O1" optimization level.
+    The GDB debugger does not show the local variables ``a``, ``b`` and ``c``, they are optimized out on "O1" optimization level.
 
 .. note::
 
     Known issues:
-      - Debugger can show the variable values, but these values may not match the actual value of the referred variables.
+      - GDB debugger can show the variable values, but these values may not match the actual value of the referred variables.
 
 ``print variable``
 ------------------

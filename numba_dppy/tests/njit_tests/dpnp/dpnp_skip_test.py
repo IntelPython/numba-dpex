@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba_dppy.tests._helper import skip_test
-from numba_dppy.testing import ensure_dpnp
+from numba_dppy.tests._helper import skip_test, ensure_dpnp
 
 
 def dpnp_skip_test(device_type):
