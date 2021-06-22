@@ -7,7 +7,7 @@ Consider the following two examples. ``numba_dppy/examples/debug/simple_sum.py``
     :lines: 15-
     :linenos:
 
-Example with njit:
+Example of default Numba execution on a CPU:
 
 .. literalinclude:: ../../numba_dppy/examples/debug/njit_basic.py
     :lines: 15-
