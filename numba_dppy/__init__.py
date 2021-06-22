@@ -525,13 +525,6 @@ else:
     raise ImportError("Importing numba_dppy failed")
 
 
-def test(*args, **kwargs):
-    if not config.dppy_present and not is_available():
-        raise RuntimeError("numba-dppy could not be imported")
-
-    return numba.testing.test("numba_dppy.tests", *args, **kwargs)
-
-
 from ._version import get_versions
 
 __version__ = get_versions()["version"]
