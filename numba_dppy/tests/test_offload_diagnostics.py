@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import unittest
 import numpy as np
 from numba import njit, prange
 from numba.tests.support import captured_stdout
@@ -19,7 +20,6 @@ import dpctl
 
 import numba_dppy as dppy
 from numba_dppy import config
-from numba_dppy.testing import unittest
 from . import _helper
 
 

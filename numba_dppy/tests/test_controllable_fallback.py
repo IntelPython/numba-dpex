@@ -14,11 +14,11 @@
 
 from . import _helper
 import numpy as np
+import unittest
 
 import numba
 import numba_dppy
 from numba_dppy import config
-from numba_dppy.testing import unittest
 import dpctl
 import warnings
 

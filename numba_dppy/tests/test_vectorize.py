@@ -15,9 +15,11 @@
 
 import numpy as np
 from numba import njit, vectorize
-from . import _helper
 import dpctl
 import unittest
+
+from numba_dppy.tests._helper import assert_auto_offloading
+from . import _helper
 
 
 @unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
@@ -41,7 +43,7 @@ class TestVectorize(unittest.TestCase):
         A = np.random.random(10)
         B = np.random.random(10)
 
-        with dpctl.device_context("opencl:gpu"):
+        with dpctl.device_context("opencl:gpu"), assert_auto_offloading():
             expected = f(A, B)
 
         actual = f_np(A, B)
