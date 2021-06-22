@@ -34,6 +34,7 @@ from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dppy import config
 from numba_dppy.driver import USMNdArrayType
 from numba_dppy.dppy_array_type import DPPYArray
+from numba_dppy.utils.array_utils import (is_device_accessible_array, as_usm_backed_ndarray, to_usm_backed_ndarray)
 
 
 _NUMBA_DPPY_READ_ONLY = "read_only"
@@ -452,11 +453,10 @@ class DPPYKernel(DPPYKernelBase):
             or access_type in self.valid_access_types
             and self.valid_access_types[access_type] != _NUMBA_DPPY_READ_ONLY
         ):
-            # we get the date back to host if have created a
-            # device_array or if access_type of this device_array
-            # is not of type read_only and read_write
-            usm_buf, usm_ndarr, orig_ndarray = device_arr
-            np.copyto(orig_ndarray, usm_ndarr)
+            # We copy the data back from usm backed data
+            # container to original data container.
+            usm_ndarr, orig_ndarr = device_arr
+            np.copyto(orig_ndarr, usm_ndarr)
 
     def _unpack_device_array_argument(self, val, kernelargs):
         """
@@ -508,15 +508,12 @@ class DPPYKernel(DPPYKernelBase):
             raise NotImplementedError(ty, USMNdArrayType)
 
         if isinstance(ty, types.Array):
-            if hasattr(val.base, "__sycl_usm_array_interface__"):
+            if is_device_accessible_array(val):
                 self._unpack_device_array_argument(val, kernelargs)
             else:
                 default_behavior = self.check_for_invalid_access_type(access_type)
 
-                usm_buf = dpctl_mem.MemoryUSMShared(
-                    val.size * val.dtype.itemsize, queue=sycl_queue
-                )
-                usm_ndarr = np.ndarray(val.shape, buffer=usm_buf, dtype=val.dtype)
+                usm_ndarr = as_usm_backed_ndarray(val.shape, val.dtype, sycl_queue)
 
                 if (
                     default_behavior
@@ -525,7 +522,7 @@ class DPPYKernel(DPPYKernelBase):
                 ):
                     np.copyto(usm_ndarr, val)
 
-                device_arrs[-1] = (usm_buf, usm_ndarr, val)
+                device_arrs[-1] = (usm_ndarr, val)
                 self._unpack_device_array_argument(usm_ndarr, kernelargs)
 
         elif ty == types.int64:
@@ -614,8 +611,7 @@ class JitDPPYKernel(DPPYKernelBase):
         kernel = None
         # we were previously using the _env_ptr of the device_env, the sycl_queue
         # should be sufficient to cache the compiled kernel for now, but we should
-        # use the device type to cache such kernels
-        # key_definitions = (self.sycl_queue, argtypes)
+        # use the device type to cache such kernels.
         key_definitions = argtypes
         result = self.definitions.get(key_definitions)
         if result:
