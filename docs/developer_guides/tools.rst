@@ -1,5 +1,5 @@
-Getting DWARF
-=============
+Debugging the compilation pipeline
+==================================
 
 Consider the following two examples. ``numba_dppy/examples/debug/simple_sum.py``:
 
