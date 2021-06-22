@@ -1,4 +1,4 @@
-# Run: gdb-oneapi -q -command commands/break_func python
+# Run: NUMBA_OPT=0 gdb-oneapi -q -command commands/break_func python
 set trace-commands on
 set pagination off
 set breakpoint pending on
