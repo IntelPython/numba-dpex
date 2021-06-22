@@ -22,7 +22,7 @@ run_with_device() {
   SYCL_DEVICE_FILTER=$1 run_checks
 }
 
-run_with_device level_zero:gpu:0
+# run_with_device level_zero:gpu:0
 run_with_device opencl:gpu:0
 # run_with_device opencl:cpu:0
 
