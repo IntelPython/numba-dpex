@@ -42,19 +42,7 @@ For example, given the following `numba-dppy` kernel code (:file:`simple_sum.py`
 
 Running GDB and creating breakpoint in kernel:
 
-.. code-block:: bash
-
-    $ gdb-oneapi -q --args python simple_sum.py
-    (gdb) break simple_sum.py:22  ### Set breakpoint in kernel
-    (gdb) run
-    ...
-    Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:22
-    8           i = dppy.get_global_id(0)
-    (gdb) next
-    23           c[i] = a[i] + b[i]
-    (gdb) continue
-    Done...
-    ...
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/simple_sum
 
 If breakpoint does not work and you see in output
 

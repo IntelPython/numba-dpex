@@ -15,7 +15,11 @@ def convert_commands_to_docs():
                 os.remove(file)
             write_file = open(file, "a")
             for line in read_lines:
-                if line.startswith("# Expected"):
+                if (
+                    line.startswith("# Expected")
+                    or line.startswith("echo Done\n")
+                    or line.startswith("quit")
+                ):
                     continue
                 if line.startswith("# Run: "):
                     line = line.replace("# Run:", "$")
