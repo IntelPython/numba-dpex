@@ -44,7 +44,7 @@ def dpnp_all_impl(a):
             raise ValueError("Passed Empty array")
 
         # TODO the output array must be of type bool, because currently this not working
-        out = np.empty((1,), dtype=np.bool)
+        out = np.empty(1, dtype=np.bool_)
 
         sycl_queue = dpctl_functions.get_current_queue()
 
@@ -67,6 +67,7 @@ def dpnp_all_impl(a):
         if PRINT_DEBUG:
             print("dpnp implementation")
 
-        return out
+        # TODO: sometimes all() returns ndarray
+        return out[0]
 
     return dpnp_impl
