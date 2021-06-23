@@ -77,6 +77,7 @@ There are two ways to program SYCL devices using Numba-dppy:
     :caption: Developer Guides
 
     developer_guides/dpnp_integration
+    developer_guides/tools
 
 
 About
