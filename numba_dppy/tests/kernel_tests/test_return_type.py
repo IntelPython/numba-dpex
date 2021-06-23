@@ -13,10 +13,10 @@
 # limitations under the License.
 
 import numpy as np
-import numba_dppy as dppy
 import pytest
 import dpctl
 from numba_dppy.tests._helper import skip_test
+import numba_dppy as dppy
 
 
 def f(a):
@@ -40,7 +40,7 @@ def test_return(offload_device, sig):
 
     a = np.array(np.random.random(122), np.int32)
 
-    with pytest.raises(Exception):
+    with pytest.raises(TypeError):
         kernel = dppy.kernel(sig)(f)
 
         with dpctl.device_context(offload_device):
