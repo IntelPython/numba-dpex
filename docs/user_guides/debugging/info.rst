@@ -9,7 +9,7 @@ Investigating **info func** command on `CPU` in `jit` code.
 Displays the list of functions in the debugged program.
 
 **Syntax**
-``````
+``````````
 
 .. code-block::
 
