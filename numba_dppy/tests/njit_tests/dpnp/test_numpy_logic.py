@@ -19,7 +19,6 @@
 import dpctl
 import numpy as np
 from numba import njit
-import numba_dppy
 import pytest
 from numba_dppy.testing import dpnp_debug
 from .dpnp_skip_test import dpnp_skip_test as skip_test
@@ -38,9 +37,14 @@ def filter_str(request):
 
 
 @pytest.mark.parametrize(
-    "shape", [(0,), (4,), (2, 3), (2, 2, 2)], ids=["(0,)", "(4,)", "(2,3)", "(2,2,2)"]
+    "dtype", [np.bool_, np.int32, np.int64, np.float32, np.float64]
 )
-def test_all(shape, filter_str):
+@pytest.mark.parametrize(
+    "shape",
+    [(0,), (4,), (2, 3)],
+    ids=["(0,)", "(4,)", "(2, 3)"],
+)
+def test_all(dtype, shape, filter_str):
     if skip_test(filter_str):
         pytest.skip()
 
@@ -51,7 +55,7 @@ def test_all(shape, filter_str):
     for i in range(2 ** size):
         t = i
 
-        a = np.empty(size, dtype=np.bool)
+        a = np.empty(size, dtype=dtype)
 
         for j in range(size):
             a[j] = 0 if t % 2 == 0 else j + 1
