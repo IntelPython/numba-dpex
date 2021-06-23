@@ -95,10 +95,8 @@ class CmdLine(object):
             llvm_spirv_call_args = ["llvm-spirv"]
         if llvm_spirv_args is not None:
             llvm_spirv_call_args += llvm_spirv_args
-        #llvm_spirv_call_args += [*llvm_spirv_flags, "-o", opath, ipath]
-        llvm_spirv_call_args += ["-o", opath, ipath]
+        llvm_spirv_call_args += [*llvm_spirv_flags, "-o", opath, ipath]
         check_call(llvm_spirv_call_args)
-
 
     def link(self, opath, binaries):
         params = ["spirv-link", "--allow-partial-linkage", "-o", opath]

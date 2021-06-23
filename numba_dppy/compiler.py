@@ -406,7 +406,9 @@ class DPPYKernel(DPPYKernelBase):
             with open("llvm_kernel.ll", "w") as f:
                 f.write(self.binary)
 
-        self.spirv_bc = spirv_generator.llvm_to_spirv(self.context, self._llvm_module.as_bitcode())
+        self.spirv_bc = spirv_generator.llvm_to_spirv(
+            self.context, self._llvm_module.as_bitcode()
+        )
 
         # create a program
         self.program = dpctl_prog.create_program_from_spirv(
