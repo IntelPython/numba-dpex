@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Information &mdash; numba-dppy 0.14.3 documentation</title>
+  <title>Info commands &mdash; numba-dppy 0.14.3 documentation</title>
   
 
   
@@ -105,11 +105,10 @@
 <li class="toctree-l4"><a class="reference internal" href="stepping.html">Stepping</a></li>
 <li class="toctree-l4"><a class="reference internal" href="local_variables.html">Local variables</a></li>
 <li class="toctree-l4"><a class="reference internal" href="backtrace.html">Backtrace</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">Information</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Info commands</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="limitations.html">Limitations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tools.html">Additional tools</a></li>
 </ul>
 </li>
 </ul>
@@ -119,6 +118,7 @@
 <p class="caption"><span class="caption-text">Developer Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
             
@@ -171,7 +171,7 @@
         
           <li><a href="features.html">Supported GDB Features</a> &raquo;</li>
         
-      <li>Information</li>
+      <li>Info commands</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -190,14 +190,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="information">
-<h1>Information<a class="headerlink" href="#information" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="info-commands">
+<h1>Info commands<a class="headerlink" href="#info-commands" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="info-functions-command">
 <h2><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">functions</span></code> command<a class="headerlink" href="#info-functions-command" title="Permalink to this headline">¶</a></h2>
 <p>Investigating <strong>info func</strong> command on <cite>CPU</cite> in <cite>jit</cite> code.</p>
 <p>Displays the list of functions in the debugged program.</p>
 <div class="section" id="syntax">
-<h3>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h3>
+<h3><strong>Syntax</strong><a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">info</span> <span class="n">functions</span>
 <span class="n">info</span> <span class="n">functions</span> <span class="p">[</span><span class="n">Regex</span><span class="p">]</span>
 </pre></div>
@@ -206,49 +206,49 @@
 <div class="section" id="parameters">
 <h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
 <p><cite>Regex</cite></p>
-<p>If specified, the info functions command will list the functions matching the regex.
-If omitted, the command will list all functions in all loaded modules (main program and shared libraries).</p>
+<p>If specified, the info functions command lists the functions matching the regex.
+If omitted, the command lists all functions in all loaded modules (main program and shared libraries).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Running the <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">functions</span></code> command without arguments can produce a lot of output
+<p>Running the <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">functions</span></code> command without arguments may produce a lot of output
 as the list of all functions in all loaded shared libraries is typically very long.</p>
 </div>
 </div>
 <div class="section" id="example">
 <h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
 <p>Consider Python script <code class="file docutils literal notranslate"><span class="pre">njit-basic.py</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">njit</span>
-<span class="nd">@njit</span> <span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">foo</span> <span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-    <span class="n">l1</span> <span class="o">=</span> <span class="n">arg</span> <span class="o">+</span> <span class="mi">6</span>            <span class="c1"># numba-kernel-breakpoint</span>
-    <span class="n">l2</span> <span class="o">=</span> <span class="n">arg</span> <span class="o">*</span> <span class="mf">5.43</span>             <span class="c1"># second-line</span>
-    <span class="n">l3</span> <span class="o">=</span> <span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">)</span>   <span class="c1"># third-line</span>
-    <span class="nb">print</span> <span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="n">l3</span><span class="p">)</span>     <span class="c1"># fourth-line</span>
-
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">foo</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-    <span class="n">result1</span> <span class="o">=</span> <span class="n">foo</span><span class="p">(</span><span class="mf">5.3</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">main</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">njit</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="nd">@njit</span> <span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos"> 4</span><span class="k">def</span> <span class="nf">foo</span> <span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+<span class="linenos"> 5</span>    <span class="n">l1</span> <span class="o">=</span> <span class="n">arg</span> <span class="o">+</span> <span class="mi">6</span>            <span class="c1"># numba-kernel-breakpoint</span>
+<span class="linenos"> 6</span>    <span class="n">l2</span> <span class="o">=</span> <span class="n">arg</span> <span class="o">*</span> <span class="mf">5.43</span>             <span class="c1"># second-line</span>
+<span class="linenos"> 7</span>    <span class="n">l3</span> <span class="o">=</span> <span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">)</span>   <span class="c1"># third-line</span>
+<span class="linenos"> 8</span>    <span class="nb">print</span> <span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="n">l3</span><span class="p">)</span>     <span class="c1"># fourth-line</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="linenos">11</span>    <span class="n">result</span> <span class="o">=</span> <span class="n">foo</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="linenos">12</span>    <span class="n">result1</span> <span class="o">=</span> <span class="n">foo</span><span class="p">(</span><span class="mf">5.3</span><span class="p">)</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="linenos">15</span>    <span class="n">main</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Run debuger:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> <span class="nv">$ONEAPI_ROOT</span>/debugger/latest/env/vars.sh
-<span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q python
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q python
 </pre></div>
 </div>
-<p>Set breakpoint, run and see information aboud functions when debugger stops on the breakpoint:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(gdb) break njit-basic.py:45         #Set breakpoint in jit code
+<p>Set breakpoint, run and see information about functions when the GDB debugger stops at the breakpoint:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(gdb) break njit-basic.py:8         # Set breakpoint in jit code
 (gdb) run njit-basic.py
 
-Breakpoint 1, __main__::foo$241 () at njit-basic.py:45
-45          print (arg, l1, l2, l3)     # fourth-line
+Breakpoint 1, __main__::foo$241 () at njit-basic.py:8
+8          print (arg, l1, l2, l3)     # fourth-line
 (gdb) info func foo
 All functions matching regular expression &quot;foo&quot;:
 
 File njit-basic.py:
-40:     void __main__::foo$241(long long);
+4:      void __main__::foo$241(long long);
 
 Non-debugging symbols:
 0x00007ffff634f190  lzma_stream_footer_encode@plt
@@ -259,21 +259,21 @@ Non-debugging symbols:
 0x00007fffefd4f4f0  mkl_sparse_s_void_foo@plt
 </pre></div>
 </div>
-<p>After <code class="samp docutils literal notranslate"><span class="pre">run</span> <span class="pre">njit-basic.py</span></code> command, we get to the jit function compiled for the <code class="xref py py-obj docutils literal notranslate"><span class="pre">result</span></code> variable.
+<p>After <code class="samp docutils literal notranslate"><span class="pre">run</span> <span class="pre">njit-basic.py</span></code> command, we get the jit function compiled for the <code class="xref py py-obj docutils literal notranslate"><span class="pre">result</span></code> variable.
 We have only one compiled jit function at this stage, so <code class="samp docutils literal notranslate"><span class="pre">info</span> <span class="pre">func</span> <span class="pre">foo</span></code> will show one void function.</p>
 <p>Use <code class="samp docutils literal notranslate"><span class="pre">с</span></code> to jump to the breakpoint of the jit function for the <code class="xref py py-obj docutils literal notranslate"><span class="pre">result1</span></code> variable:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(gdb) c
 Continuing.
 5 11 27.15 (5, 11, 27.15, &#39;bar&#39;)
 
-Breakpoint 1, __main__::foo$242 () at njit-basic.py:45
-45          print (arg, l1, l2, l3)     # fourth-line
+Breakpoint 1, __main__::foo$242 () at njit-basic.py:8
+8           print (arg, l1, l2, l3)     # fourth-line
 (gdb) info func foo
 All functions matching regular expression &quot;foo&quot;:
 
 File njit-basic.py:
-40:     void __main__::foo$241(long long);
-40:     void __main__::foo$242(double);
+4:      void __main__::foo$241(long long);
+4:      void __main__::foo$242(double);
 
 Non-debugging symbols:
 0x00007ffff634f190  lzma_stream_footer_encode@plt
@@ -289,8 +289,8 @@ Non-debugging symbols:
 All functions matching regular expression &quot;^__.*foo&quot;:
 
 File njit-basic.py:
-40:     void __main__::foo$241(long long);
-40:     void __main__::foo$242(double);
+4:      void __main__::foo$241(long long);
+4:      void __main__::foo$242(double);
 </pre></div>
 </div>
 </div>

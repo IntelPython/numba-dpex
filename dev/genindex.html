@@ -100,6 +100,7 @@
 <p class="caption"><span class="caption-text">Developer Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="developer_guides/dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
             
@@ -215,17 +216,13 @@
 </li>
       <li><a href="apidoc/numba_dppy.numpy_usm_shared.html#numba_dppy.numpy_usm_shared.argspec_to_string">argspec_to_string() (in module numba_dppy.numpy_usm_shared)</a>
 </li>
-      <li><a href="apidoc/numba_dppy.ocl.stubs.html#numba_dppy.ocl.stubs.local.array">array() (numba_dppy.ocl.stubs.local method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dppy.ocl.stubs.html#numba_dppy.ocl.stubs.local.array">array() (numba_dppy.ocl.stubs.local method)</a>
+</li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnpimpl.html#numba_dppy.dpnp_glue.dpnpimpl.array_shape">array_shape() (in module numba_dppy.dpnp_glue.dpnpimpl)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnpdecl.html#numba_dppy.dpnp_glue.dpnpdecl.ArrayAttribute">ArrayAttribute (class in numba_dppy.dpnp_glue.dpnpdecl)</a>
-</li>
-      <li><a href="apidoc/numba_dppy.testing.html#numba_dppy.testing.assert_auto_offloading">assert_auto_offloading() (in module numba_dppy.testing)</a>
-</li>
-      <li><a href="apidoc/numba_dppy.testing.html#numba_dppy.testing.assert_dpnp_implementaion">assert_dpnp_implementaion() (in module numba_dppy.testing)</a>
 </li>
       <li><a href="apidoc/numba_dppy.ocl.stubs.html#numba_dppy.ocl.stubs.atomic">atomic (class in numba_dppy.ocl.stubs)</a>
 </li>
@@ -291,8 +288,6 @@
         <li><a href="apidoc/numba_dppy.utils.constants.html#numba_dppy.utils.constants.calling_conv">(class in numba_dppy.utils.constants)</a>
 </li>
       </ul></li>
-      <li><a href="apidoc/numba_dppy.testing.html#numba_dppy.testing.captured_dppy_stdout">captured_dppy_stdout() (in module numba_dppy.testing)</a>
-</li>
       <li><a href="apidoc/numba_dppy.ocl.mathdecl.html#numba_dppy.ocl.mathdecl.Math_atan2.cases">cases (numba_dppy.ocl.mathdecl.Math_atan2 attribute)</a>
 
       <ul>
@@ -351,8 +346,6 @@
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_linalgimpl.html#numba_dppy.dpnp_glue.dpnp_linalgimpl.common_dot_impl">common_dot_impl() (in module numba_dppy.dpnp_glue.dpnp_linalgimpl)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_array_creations_impl.html#numba_dppy.dpnp_glue.dpnp_array_creations_impl.common_impl">common_impl() (in module numba_dppy.dpnp_glue.dpnp_array_creations_impl)</a>
 
       <ul>
@@ -363,6 +356,8 @@
         <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_transcendentalsimpl.html#numba_dppy.dpnp_glue.dpnp_transcendentalsimpl.common_impl">(in module numba_dppy.dpnp_glue.dpnp_transcendentalsimpl)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_randomimpl.html#numba_dppy.dpnp_glue.dpnp_randomimpl.common_impl_0_arg">common_impl_0_arg() (in module numba_dppy.dpnp_glue.dpnp_randomimpl)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_randomimpl.html#numba_dppy.dpnp_glue.dpnp_randomimpl.common_impl_1_arg">common_impl_1_arg() (in module numba_dppy.dpnp_glue.dpnp_randomimpl)</a>
@@ -376,6 +371,8 @@
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_randomimpl.html#numba_dppy.dpnp_glue.dpnp_randomimpl.common_impl_multivariate_normal">common_impl_multivariate_normal() (in module numba_dppy.dpnp_glue.dpnp_randomimpl)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_linalgimpl.html#numba_dppy.dpnp_glue.dpnp_linalgimpl.common_matmul_impl">common_matmul_impl() (in module numba_dppy.dpnp_glue.dpnp_linalgimpl)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_array_creations_impl.html#numba_dppy.dpnp_glue.dpnp_array_creations_impl.common_shape_impl">common_shape_impl() (in module numba_dppy.dpnp_glue.dpnp_array_creations_impl)</a>
 </li>
       <li><a href="apidoc/numba_dppy.compiler.html#numba_dppy.compiler.DPPYFunctionTemplate.compile">compile() (numba_dppy.compiler.DPPYFunctionTemplate method)</a>
 </li>
@@ -491,6 +488,8 @@
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.stubs.html#numba_dppy.dpnp_glue.stubs.dpnp.det">dpnp.det (class in numba_dppy.dpnp_glue.stubs)</a>
 </li>
+      <li><a href="apidoc/numba_dppy.dpnp_glue.stubs.html#numba_dppy.dpnp_glue.stubs.dpnp.diagonal">dpnp.diagonal (class in numba_dppy.dpnp_glue.stubs)</a>
+</li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.stubs.html#numba_dppy.dpnp_glue.stubs.dpnp.dot">dpnp.dot (class in numba_dppy.dpnp_glue.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.stubs.html#numba_dppy.dpnp_glue.stubs.dpnp.eig">dpnp.eig (class in numba_dppy.dpnp_glue.stubs)</a>
@@ -545,6 +544,8 @@
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.stubs.html#numba_dppy.dpnp_glue.stubs.dpnp.ones_like">dpnp.ones_like (class in numba_dppy.dpnp_glue.stubs)</a>
 </li>
+      <li><a href="apidoc/numba_dppy.dpnp_glue.stubs.html#numba_dppy.dpnp_glue.stubs.dpnp.partition">dpnp.partition (class in numba_dppy.dpnp_glue.stubs)</a>
+</li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.stubs.html#numba_dppy.dpnp_glue.stubs.dpnp.poisson">dpnp.poisson (class in numba_dppy.dpnp_glue.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.stubs.html#numba_dppy.dpnp_glue.stubs.dpnp.prod">dpnp.prod (class in numba_dppy.dpnp_glue.stubs)</a>
@@ -563,6 +564,8 @@
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.stubs.html#numba_dppy.dpnp_glue.stubs.dpnp.rayleigh">dpnp.rayleigh (class in numba_dppy.dpnp_glue.stubs)</a>
 </li>
+      <li><a href="apidoc/numba_dppy.dpnp_glue.stubs.html#numba_dppy.dpnp_glue.stubs.dpnp.repeat">dpnp.repeat (class in numba_dppy.dpnp_glue.stubs)</a>
+</li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.stubs.html#numba_dppy.dpnp_glue.stubs.dpnp.sample">dpnp.sample (class in numba_dppy.dpnp_glue.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.stubs.html#numba_dppy.dpnp_glue.stubs.dpnp.sort">dpnp.sort (class in numba_dppy.dpnp_glue.stubs)</a>
@@ -580,6 +583,8 @@
       <li><a href="apidoc/numba_dppy.dpnp_glue.stubs.html#numba_dppy.dpnp_glue.stubs.dpnp.sum">dpnp.sum (class in numba_dppy.dpnp_glue.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.stubs.html#numba_dppy.dpnp_glue.stubs.dpnp.take">dpnp.take (class in numba_dppy.dpnp_glue.stubs)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.dpnp_glue.stubs.html#numba_dppy.dpnp_glue.stubs.dpnp.trace">dpnp.trace (class in numba_dppy.dpnp_glue.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.stubs.html#numba_dppy.dpnp_glue.stubs.dpnp.uniform">dpnp.uniform (class in numba_dppy.dpnp_glue.stubs)</a>
 </li>
@@ -609,9 +614,9 @@
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_array_ops_impl.html#numba_dppy.dpnp_glue.dpnp_array_ops_impl.dpnp_cumsum_impl">dpnp_cumsum_impl() (in module numba_dppy.dpnp_glue.dpnp_array_ops_impl)</a>
 </li>
-      <li><a href="apidoc/numba_dppy.testing.html#numba_dppy.testing.dpnp_debug">dpnp_debug() (in module numba_dppy.testing)</a>
-</li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_linalgimpl.html#numba_dppy.dpnp_glue.dpnp_linalgimpl.dpnp_det_impl">dpnp_det_impl() (in module numba_dppy.dpnp_glue.dpnp_linalgimpl)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_indexing.html#numba_dppy.dpnp_glue.dpnp_indexing.dpnp_diagonal_impl">dpnp_diagonal_impl() (in module numba_dppy.dpnp_glue.dpnp_indexing)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_linalgimpl.html#numba_dppy.dpnp_glue.dpnp_linalgimpl.dpnp_dot_impl">dpnp_dot_impl() (in module numba_dppy.dpnp_glue.dpnp_linalgimpl)</a>
 </li>
@@ -641,15 +646,21 @@
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_array_creations_impl.html#numba_dppy.dpnp_glue.dpnp_array_creations_impl.dpnp_ones_like_impl">dpnp_ones_like_impl() (in module numba_dppy.dpnp_glue.dpnp_array_creations_impl)</a>
 </li>
+      <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_sort_search_countimpl.html#numba_dppy.dpnp_glue.dpnp_sort_search_countimpl.dpnp_partition_impl">dpnp_partition_impl() (in module numba_dppy.dpnp_glue.dpnp_sort_search_countimpl)</a>
+</li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_transcendentalsimpl.html#numba_dppy.dpnp_glue.dpnp_transcendentalsimpl.dpnp_prod_impl">dpnp_prod_impl() (in module numba_dppy.dpnp_glue.dpnp_transcendentalsimpl)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_randomimpl.html#numba_dppy.dpnp_glue.dpnp_randomimpl.dpnp_random_impl">dpnp_random_impl() (in module numba_dppy.dpnp_glue.dpnp_randomimpl)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_manipulation.html#numba_dppy.dpnp_glue.dpnp_manipulation.dpnp_repeat_impl">dpnp_repeat_impl() (in module numba_dppy.dpnp_glue.dpnp_manipulation)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_array_ops_impl.html#numba_dppy.dpnp_glue.dpnp_array_ops_impl.dpnp_sort_impl">dpnp_sort_impl() (in module numba_dppy.dpnp_glue.dpnp_array_ops_impl)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_transcendentalsimpl.html#numba_dppy.dpnp_glue.dpnp_transcendentalsimpl.dpnp_sum_impl">dpnp_sum_impl() (in module numba_dppy.dpnp_glue.dpnp_transcendentalsimpl)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_array_ops_impl.html#numba_dppy.dpnp_glue.dpnp_array_ops_impl.dpnp_take_impl">dpnp_take_impl() (in module numba_dppy.dpnp_glue.dpnp_array_ops_impl)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_array_creations_impl.html#numba_dppy.dpnp_glue.dpnp_array_creations_impl.dpnp_trace_impl">dpnp_trace_impl() (in module numba_dppy.dpnp_glue.dpnp_array_creations_impl)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_linalgimpl.html#numba_dppy.dpnp_glue.dpnp_linalgimpl.dpnp_vdot_impl">dpnp_vdot_impl() (in module numba_dppy.dpnp_glue.dpnp_linalgimpl)</a>
 </li>
@@ -722,11 +733,7 @@
       <li><a href="apidoc/numba_dppy.driver.kernel_launch_ops.html#numba_dppy.driver.kernel_launch_ops.KernelLaunchOps.enqueue_kernel_and_copy_back">enqueue_kernel_and_copy_back() (numba_dppy.driver.kernel_launch_ops.KernelLaunchOps method)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.html#numba_dppy.dpnp_glue.ensure_dpnp">ensure_dpnp() (in module numba_dppy.dpnp_glue)</a>
-
-      <ul>
-        <li><a href="apidoc/numba_dppy.testing.html#numba_dppy.testing.ensure_dpnp">(in module numba_dppy.testing)</a>
 </li>
-      </ul></li>
       <li>
     environment variable
 
@@ -738,8 +745,6 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="apidoc/numba_dppy.testing.html#numba_dppy.testing.expectedFailureIf">expectedFailureIf() (in module numba_dppy.testing)</a>
-</li>
       <li><a href="apidoc/numba_dppy.dppy_parfor_diagnostics.html#numba_dppy.dppy_parfor_diagnostics.ExtendedParforDiagnostics">ExtendedParforDiagnostics (class in numba_dppy.dppy_parfor_diagnostics)</a>
 </li>
   </ul></td>
@@ -1260,7 +1265,11 @@
 </li>
         <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_fptr_interface.html#module-numba_dppy.dpnp_glue.dpnp_fptr_interface">numba_dppy.dpnp_glue.dpnp_fptr_interface</a>
 </li>
+        <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_indexing.html#module-numba_dppy.dpnp_glue.dpnp_indexing">numba_dppy.dpnp_glue.dpnp_indexing</a>
+</li>
         <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_linalgimpl.html#module-numba_dppy.dpnp_glue.dpnp_linalgimpl">numba_dppy.dpnp_glue.dpnp_linalgimpl</a>
+</li>
+        <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_manipulation.html#module-numba_dppy.dpnp_glue.dpnp_manipulation">numba_dppy.dpnp_glue.dpnp_manipulation</a>
 </li>
         <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_randomimpl.html#module-numba_dppy.dpnp_glue.dpnp_randomimpl">numba_dppy.dpnp_glue.dpnp_randomimpl</a>
 </li>
@@ -1331,8 +1340,6 @@
         <li><a href="apidoc/numba_dppy.target.html#module-numba_dppy.target">numba_dppy.target</a>
 </li>
         <li><a href="apidoc/numba_dppy.target_dispatcher.html#module-numba_dppy.target_dispatcher">numba_dppy.target_dispatcher</a>
-</li>
-        <li><a href="apidoc/numba_dppy.testing.html#module-numba_dppy.testing">numba_dppy.testing</a>
 </li>
         <li><a href="apidoc/numba_dppy.utils.html#module-numba_dppy.utils">numba_dppy.utils</a>
 </li>
@@ -1446,10 +1453,24 @@
 </li>
       </ul></li>
       <li>
+    numba_dppy.dpnp_glue.dpnp_indexing
+
+      <ul>
+        <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_indexing.html#module-numba_dppy.dpnp_glue.dpnp_indexing">module</a>
+</li>
+      </ul></li>
+      <li>
     numba_dppy.dpnp_glue.dpnp_linalgimpl
 
       <ul>
         <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_linalgimpl.html#module-numba_dppy.dpnp_glue.dpnp_linalgimpl">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dppy.dpnp_glue.dpnp_manipulation
+
+      <ul>
+        <li><a href="apidoc/numba_dppy.dpnp_glue.dpnp_manipulation.html#module-numba_dppy.dpnp_glue.dpnp_manipulation">module</a>
 </li>
       </ul></li>
       <li>
@@ -1543,6 +1564,8 @@
         <li><a href="apidoc/numba_dppy.dppy_passbuilder.html#module-numba_dppy.dppy_passbuilder">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     numba_dppy.dppy_passes
 
@@ -1550,8 +1573,6 @@
         <li><a href="apidoc/numba_dppy.dppy_passes.html#module-numba_dppy.dppy_passes">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     numba_dppy.driver
 
@@ -1697,13 +1718,6 @@
 
       <ul>
         <li><a href="apidoc/numba_dppy.target_dispatcher.html#module-numba_dppy.target_dispatcher">module</a>
-</li>
-      </ul></li>
-      <li>
-    numba_dppy.testing
-
-      <ul>
-        <li><a href="apidoc/numba_dppy.testing.html#module-numba_dppy.testing">module</a>
 </li>
       </ul></li>
       <li>
@@ -2107,8 +2121,6 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dppy.target_dispatcher.html#numba_dppy.target_dispatcher.TargetDispatcher">TargetDispatcher (class in numba_dppy.target_dispatcher)</a>
-</li>
-      <li><a href="apidoc/numba_dppy.html#numba_dppy.test">test() (in module numba_dppy)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dppy_lowerer.html#numba_dppy.dppy_lowerer.to_scalar_from_0d">to_scalar_from_0d() (in module numba_dppy.dppy_lowerer)</a>
 </li>

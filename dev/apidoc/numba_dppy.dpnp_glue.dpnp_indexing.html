@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>numba_dppy.dppy_passbuilder module &mdash; numba-dppy 0.14.3 documentation</title>
+  <title>numba_dppy.dpnp_glue.dpnp_indexing module &mdash; numba-dppy 0.14.3 documentation</title>
   
 
   
@@ -149,13 +149,13 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>numba_dppy.dppy_passbuilder module</li>
+      <li>numba_dppy.dpnp_glue.dpnp_indexing module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/apidoc/numba_dppy.dppy_passbuilder.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/apidoc/numba_dppy.dpnp_glue.dpnp_indexing.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -168,28 +168,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-numba_dppy.dppy_passbuilder">
-<span id="numba-dppy-dppy-passbuilder-module"></span><h1>numba_dppy.dppy_passbuilder module<a class="headerlink" href="#module-numba_dppy.dppy_passbuilder" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dppy.dppy_passbuilder.DPPYPassBuilder">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.dppy_passbuilder.</span></span><span class="sig-name descname"><span class="pre">DPPYPassBuilder</span></span><a class="headerlink" href="#numba_dppy.dppy_passbuilder.DPPYPassBuilder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This is the DPPY pass builder to run Intel GPU/CPU specific
-code-generation and optimization passes. This pass builder does
-not offer objectmode and interpreted passes.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dppy.dppy_passbuilder.DPPYPassBuilder.default_numba_nopython_pipeline">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">default_numba_nopython_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dppy_passbuilder.DPPYPassBuilder.default_numba_nopython_pipeline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds the default set of NUMBA passes to the pass manager</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dppy.dppy_passbuilder.DPPYPassBuilder.define_nopython_pipeline">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">define_nopython_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dppy_nopython'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dppy_passbuilder.DPPYPassBuilder.define_nopython_pipeline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns an nopython mode pipeline based PassManager</p>
-</dd></dl>
-
-</dd></dl>
+  <div class="section" id="module-numba_dppy.dpnp_glue.dpnp_indexing">
+<span id="numba-dppy-dpnp-glue-dpnp-indexing-module"></span><h1>numba_dppy.dpnp_glue.dpnp_indexing module<a class="headerlink" href="#module-numba_dppy.dpnp_glue.dpnp_indexing" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dppy.dpnp_glue.dpnp_indexing.dpnp_diagonal_impl">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.dpnp_glue.dpnp_indexing.</span></span><span class="sig-name descname"><span class="pre">dpnp_diagonal_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpnp_glue.dpnp_indexing.dpnp_diagonal_impl" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 

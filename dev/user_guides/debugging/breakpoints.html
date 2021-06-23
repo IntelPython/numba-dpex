@@ -105,11 +105,10 @@
 <li class="toctree-l4"><a class="reference internal" href="stepping.html">Stepping</a></li>
 <li class="toctree-l4"><a class="reference internal" href="local_variables.html">Local variables</a></li>
 <li class="toctree-l4"><a class="reference internal" href="backtrace.html">Backtrace</a></li>
-<li class="toctree-l4"><a class="reference internal" href="info.html">Information</a></li>
+<li class="toctree-l4"><a class="reference internal" href="info.html">Info commands</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="limitations.html">Limitations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tools.html">Additional tools</a></li>
 </ul>
 </li>
 </ul>
@@ -119,6 +118,7 @@
 <p class="caption"><span class="caption-text">Developer Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
             
@@ -206,7 +206,7 @@
 </ul>
 </dd>
 </dl>
-<p>Consider <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> kernel code. See source file <code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/debug/simple_sum.py</span></code>:</p>
+<p>Consider Numba-dppy kernel code. See the source file <code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/debug/simple_sum.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
 <span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">dpctl</span>
@@ -231,7 +231,7 @@
 <span class="linenos">22</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Run debugger:</p>
+<p>Run GDB debugger:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">NUMBA_DPPY_DEBUGINFO</span><span class="o">=</span><span class="m">1</span>
 gdb-oneapi -q --args python simple_sum.py
 </pre></div>
@@ -243,20 +243,20 @@ gdb-oneapi -q --args python simple_sum.py
 Breakpoint <span class="m">1</span> <span class="o">(</span>data_parallel_sum<span class="o">)</span> pending.
 <span class="o">(</span>gdb<span class="o">)</span> run
 
-Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::data_parallel_sum <span class="o">()</span> at simple_sum.py:20
-<span class="m">20</span>      @dppy.kernel
+Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::data_parallel_sum <span class="o">()</span> at simple_sum.py:6
+<span class="m">6</span>      @dppy.kernel
 </pre></div>
 </div>
 </div>
 <div class="section" id="break-filename-linenumber">
 <h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">filename:</span> <span class="pre">linenumber</span></code><a class="headerlink" href="#break-filename-linenumber" title="Permalink to this headline">¶</a></h2>
 <p>GDB output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break</span> simple_sum.py:20
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break</span> simple_sum.py:6
 Breakpoint <span class="m">1</span> <span class="o">(</span>simple_sum.py:20<span class="o">)</span> pending.
 <span class="o">(</span>gdb<span class="o">)</span> run
 
-Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::data_parallel_sum <span class="o">()</span> at simple_sum.py:20
-<span class="m">20</span>      @dppy.kernel
+Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::data_parallel_sum <span class="o">()</span> at simple_sum.py:6
+<span class="m">6</span>      @dppy.kernel
 </pre></div>
 </div>
 </div>
@@ -267,14 +267,14 @@ Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with 
 Breakpoint <span class="m">1</span> <span class="o">(</span>simple_sum.py:data_parallel_sum<span class="o">)</span> pending.
 <span class="o">(</span>gdb<span class="o">)</span> run
 
-Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::data_parallel_sum <span class="o">()</span> at simple_sum.py:20
-<span class="m">20</span>      @dppy.kernel
+Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::data_parallel_sum <span class="o">()</span> at simple_sum.py:6
+<span class="m">6</span>      @dppy.kernel
 </pre></div>
 </div>
 </div>
 <div class="section" id="breakpoints-with-nested-functions">
 <h2>Breakpoints with nested functions<a class="headerlink" href="#breakpoints-with-nested-functions" title="Permalink to this headline">¶</a></h2>
-<p>Consider <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> kernel code. See source file <code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/debug/simple_dppy_func.py</span></code>:</p>
+<p>Consider Numba-dppy kernel code. See source file <code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/debug/simple_dppy_func.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
 <span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">dpctl</span>
@@ -304,14 +304,13 @@ Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with 
 </pre></div>
 </div>
 <p>GDB output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">NUMBA_DPPY_DEBUGINFO</span><span class="o">=</span><span class="m">1</span>
-gdb-oneapi -q --args python simple_sum.py
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gdb-oneapi -q --args python simple_sum.py
 <span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break</span> func_sum
 Breakpoint <span class="m">1</span> <span class="o">(</span>func_sum<span class="o">)</span> pending.
 <span class="o">(</span>gdb<span class="o">)</span> run
 
-Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::func_sum <span class="o">()</span> at simple_dppy_func.py:22
-<span class="m">22</span>      <span class="nv">result</span> <span class="o">=</span> a_in_func + b_in_func
+Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::func_sum <span class="o">()</span> at simple_dppy_func.py:8
+<span class="m">8</span>      <span class="nv">result</span> <span class="o">=</span> a_in_func + b_in_func
 </pre></div>
 </div>
 </div>

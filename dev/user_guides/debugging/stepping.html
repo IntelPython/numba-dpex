@@ -105,11 +105,10 @@
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Stepping</a></li>
 <li class="toctree-l4"><a class="reference internal" href="local_variables.html">Local variables</a></li>
 <li class="toctree-l4"><a class="reference internal" href="backtrace.html">Backtrace</a></li>
-<li class="toctree-l4"><a class="reference internal" href="info.html">Information</a></li>
+<li class="toctree-l4"><a class="reference internal" href="info.html">Info commands</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="limitations.html">Limitations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tools.html">Additional tools</a></li>
 </ul>
 </li>
 </ul>
@@ -119,6 +118,7 @@
 <p class="caption"><span class="caption-text">Developer Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
             
@@ -250,90 +250,76 @@
 <p class="admonition-title">Note</p>
 <dl class="simple">
 <dt>Known issues:</dt><dd><ul class="simple">
-<li><p>Debug of the first line of the kernel and functions works out twice. See <a class="reference internal" href="#single-stepping"><span class="std std-ref">set scheduler-locking step</span></a>.</p></li>
+<li><p>The first line of the kernel and functions is hit twice. See <a class="reference internal" href="#single-stepping"><span class="std std-ref">set scheduler-locking step</span></a>.</p></li>
 </ul>
 </dd>
 </dl>
 </div>
 <div class="section" id="step">
 <h2><code class="docutils literal notranslate"><span class="pre">step</span></code><a class="headerlink" href="#step" title="Permalink to this headline">¶</a></h2>
-<p>Run debugger:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span>
-gdb-oneapi -q --args python simple_sum.py
-</pre></div>
-</div>
-<p>GDB output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break</span> simple_sum.py:22
-Breakpoint <span class="m">1</span> <span class="o">(</span>simple_sum.py:22<span class="o">)</span> pending.
-<span class="o">(</span>gdb<span class="o">)</span> run
+<p>Run debugger and do following commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ NUMBA_OPT=0 gdb-oneapi -q -command commands/step_sum python
+(gdb) set trace-commands on
+(gdb) set pagination off
+(gdb) set breakpoint pending on
+(gdb) break simple_sum.py:22
+(gdb) run simple_sum.py
 ...
-Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::data_parallel_sum <span class="o">()</span> at simple_sum.py:22
-<span class="m">22</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
-<span class="o">(</span>gdb<span class="o">)</span> step
-Thread <span class="m">2</span>.3 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-1<span class="o">]</span>, __main__::data_parallel_sum <span class="o">()</span> at simple_sum.py:22
-<span class="m">22</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
-<span class="o">(</span>gdb<span class="o">)</span> step
-<span class="m">23</span>          c<span class="o">[</span>i<span class="o">]</span> <span class="o">=</span> a<span class="o">[</span>i<span class="o">]</span> + b<span class="o">[</span>i<span class="o">]</span>
-<span class="o">(</span>gdb<span class="o">)</span> <span class="k">continue</span>
+Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:22
+22           i = dppy.get_global_id(0)
+(gdb) step
+[Switching to Thread 1.1073742080 lane 0]
+Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at simple_sum.py:22
+22          i = dppy.get_global_id(0)
+(gdb) step
+23          c[i] = a[i] + b[i]
+(gdb) continue
 Continuing.
 Done...
 </pre></div>
 </div>
 <p>Another use of stepping when there is a nested function. Below example:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span>
-gdb-oneapi -q --args python simple_dppy_func.py
-</pre></div>
-</div>
-<p>GDB output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break</span> simple_dppy_func.py:28
-Breakpoint <span class="m">1</span> <span class="o">(</span>simple_dppy_func.py:28<span class="o">)</span> pending.
-<span class="o">(</span>gdb<span class="o">)</span> run
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ NUMBA_OPT=0 gdb-oneapi -q -command commands/step_dppy_func python
+(gdb) set trace-commands on
+(gdb) set pagination off
+(gdb) set breakpoint pending on
+(gdb) break simple_dppy_func.py:29
+(gdb) run simple_dppy_func.py
 ...
-Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::kernel_sum <span class="o">()</span> at simple_dppy_func.py:28
-<span class="m">28</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
-<span class="o">(</span>gdb<span class="o">)</span> step
-Thread <span class="m">2</span>.3 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-1<span class="o">]</span>, __main__::kernel_sum <span class="o">()</span> at simple_dppy_func.py:28
-<span class="m">28</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
-<span class="o">(</span>gdb<span class="o">)</span> step
-<span class="m">29</span>          c_in_kernel<span class="o">[</span>i<span class="o">]</span> <span class="o">=</span> func_sum<span class="o">(</span>a_in_kernel<span class="o">[</span>i<span class="o">]</span>, b_in_kernel<span class="o">[</span>i<span class="o">])</span>
-<span class="o">(</span>gdb<span class="o">)</span> step
-__main__::func_sum <span class="o">()</span> at simple_dppy_func.py:22
-<span class="m">22</span>          <span class="nv">result</span> <span class="o">=</span> a_in_func + b_in_func
-<span class="o">(</span>gdb<span class="o">)</span> <span class="k">continue</span>
+Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:29
+29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
+(gdb) step
+[Switching to Thread 1.1073742080 lane 0]
+Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:29
+29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
+(gdb) step
+__main__::func_sum () at simple_dppy_func.py:22
+22          result = a_in_func + b_in_func
+(gdb) continue
 Continuing.
+Done...
 </pre></div>
 </div>
 </div>
 <div class="section" id="stepi">
 <h2><code class="docutils literal notranslate"><span class="pre">stepi</span></code><a class="headerlink" href="#stepi" title="Permalink to this headline">¶</a></h2>
-<p>The command allows you to move forward in machine instructions. The example uses an additional command <code class="docutils literal notranslate"><span class="pre">x/i</span> <span class="pre">$pc</span></code>, which print the instruction to be executed.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span>
-gdb-oneapi -q --args python simple_sum.py
-</pre></div>
-</div>
-<p>GDB output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break</span> simple_sum.py:22
-Breakpoint <span class="m">1</span> <span class="o">(</span>simple_sum.py:22<span class="o">)</span> pending.
-<span class="o">(</span>gdb<span class="o">)</span> run
+<p>The command allows you to move forward in machine instructions. The example uses an additional command <code class="docutils literal notranslate"><span class="pre">x/i</span> <span class="pre">$pc</span></code>, which prints the instruction to be executed.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ NUMBA_OPT=0 gdb-oneapi -q -command commands/stepi python
+(gdb) set trace-commands on
+(gdb) set pagination off
+(gdb) set breakpoint pending on
+(gdb) break simple_dppy_func.py:29
+(gdb) run simple_dppy_func.py
 ...
-Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::data_parallel_sum <span class="o">()</span> at simple_sum.py:22
-<span class="m">22</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
-<span class="o">(</span>gdb<span class="o">)</span> display/i <span class="nv">$pc</span>
-<span class="m">1</span>: x/i <span class="nv">$pc</span>
-<span class="o">=</span>&gt; 0xfffeb5d0 &lt;_ZN8__main__17data_parallel_sumE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE+1488&gt;:
-    <span class="o">(</span>W<span class="o">)</span>     mov <span class="o">(</span><span class="m">1</span><span class="p">|</span>M0<span class="o">)</span>               r53.1&lt;<span class="m">1</span>&gt;:w    <span class="m">0</span>:w
-<span class="o">(</span>gdb<span class="o">)</span> stepi
-0x00000000fffeb5e0      <span class="m">22</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
-<span class="m">1</span>: x/i <span class="nv">$pc</span>
-<span class="o">=</span>&gt; 0xfffeb5e0 &lt;_ZN8__main__17data_parallel_sumE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE+1504&gt;: <span class="o">(</span>W<span class="o">)</span>     cmp <span class="o">(</span><span class="m">1</span><span class="p">|</span>M0<span class="o">)</span>    <span class="o">(</span>eq<span class="o">)</span>f0.0   null&lt;<span class="m">1</span>&gt;:w     r53.1&lt;<span class="m">0</span><span class="p">;</span><span class="m">1</span>,0&gt;:w    <span class="m">0</span>:w
-<span class="o">(</span>gdb<span class="o">)</span> stepi
-<span class="o">[</span>Switching to Thread <span class="m">1</span>.1073742080 lane <span class="m">0</span><span class="o">]</span>
-
-Thread <span class="m">2</span>.3 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-1<span class="o">]</span>, __main__::data_parallel_sum <span class="o">()</span> at simple_sum.py:22
-<span class="m">22</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
-<span class="m">1</span>: x/i <span class="nv">$pc</span>
-<span class="o">=</span>&gt; 0xfffeb5d0 &lt;_ZN8__main__17data_parallel_sumE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE9DPPYArrayIfLi1E1C7mutable7alignedE+1488&gt;: <span class="o">(</span>W<span class="o">)</span>     mov <span class="o">(</span><span class="m">1</span><span class="p">|</span>M0<span class="o">)</span>               r53.1&lt;<span class="m">1</span>&gt;:w    <span class="m">0</span>:w
-<span class="o">(</span>gdb<span class="o">)</span> <span class="k">continue</span>
+Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:29
+29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
+(gdb) stepi
+0x00000000fffeb630      29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
+(gdb) stepi
+[Switching to Thread 1.1073742080 lane 0]
+Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:29
+29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
+(gdb) continue
 Continuing.
 Done...
 </pre></div>
@@ -342,51 +328,52 @@ Done...
 <div class="section" id="next">
 <h2><code class="docutils literal notranslate"><span class="pre">next</span></code><a class="headerlink" href="#next" title="Permalink to this headline">¶</a></h2>
 <p>Stepping-like behavior, but the command does not go into nested functions.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span>
-gdb-oneapi -q --args python simple_dppy_func.py
-</pre></div>
-</div>
-<p>GDB output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break</span> simple_dppy_func.py:28
-Breakpoint <span class="m">1</span> <span class="o">(</span>simple_dppy_func.py:28<span class="o">)</span> pending.
-<span class="o">(</span>gdb<span class="o">)</span> run
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ NUMBA_OPT=0 gdb-oneapi -q -command commands/next python
+(gdb) set trace-commands on
+(gdb) set pagination off
+(gdb) set breakpoint pending on
+(gdb) break simple_dppy_func.py:29
+(gdb) run simple_dppy_func.py
 ...
-Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::kernel_sum <span class="o">()</span> at simple_dppy_func.py:28
-<span class="m">28</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
-<span class="o">(</span>gdb<span class="o">)</span> next
-Thread <span class="m">2</span>.3 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-1<span class="o">]</span>, __main__::kernel_sum <span class="o">()</span> at simple_dppy_func.py:28
-<span class="m">28</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
-<span class="o">(</span>gdb<span class="o">)</span> next
-<span class="m">29</span>          c_in_kernel<span class="o">[</span>i<span class="o">]</span> <span class="o">=</span> func_sum<span class="o">(</span>a_in_kernel<span class="o">[</span>i<span class="o">]</span>, b_in_kernel<span class="o">[</span>i<span class="o">])</span>
-<span class="o">(</span>gdb<span class="o">)</span> next
+Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:29
+29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
+(gdb) next
+[Switching to Thread 1.1073742080 lane 0]
+Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:29
+29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
+(gdb) next
+Continuing.
 Done...
 </pre></div>
 </div>
 </div>
 <div class="section" id="set-scheduler-locking-step">
 <span id="single-stepping"></span><h2><code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">scheduler-locking</span> <span class="pre">step</span></code><a class="headerlink" href="#set-scheduler-locking-step" title="Permalink to this headline">¶</a></h2>
-<p>Debug of the first line of the kernel and functions works out twice.
-This happens because you are debugging a multi-threaded program and multiple events may be received from different threads.
+<p>The first line of the kernel and functions is debugged twice.
+This happens because you are debugging a multi-threaded program, so multiple events may be received from different threads.
 This is the default behavior, but you can configure it for more efficient debugging.
 To ensure the current thread executes a single line without interference, set the scheduler-locking setting to on or step:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span>
-gdb-oneapi -q --args python simple_dppy_func.py
-</pre></div>
-</div>
-<p>GDB output:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break</span> simple_dppy_func.py:28
-Breakpoint <span class="m">1</span> <span class="o">(</span>simple_dppy_func.py:28<span class="o">)</span> pending.
-<span class="o">(</span>gdb<span class="o">)</span> run
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ NUMBA_OPT=0 gdb-oneapi -q -command commands/sheduler_locking python
+(gdb) set trace-commands on
+(gdb) set pagination off
+(gdb) set breakpoint pending on
+(gdb) break simple_dppy_func.py:29
+(gdb) run simple_dppy_func.py
 ...
-Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::kernel_sum <span class="o">()</span> at simple_dppy_func.py:28
-<span class="m">28</span>          <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
-<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">set</span> scheduler-locking step
-<span class="o">(</span>gdb<span class="o">)</span> step
-<span class="m">29</span>          c_in_kernel<span class="o">[</span>i<span class="o">]</span> <span class="o">=</span> func_sum<span class="o">(</span>a_in_kernel<span class="o">[</span>i<span class="o">]</span>, b_in_kernel<span class="o">[</span>i<span class="o">])</span>
-<span class="o">(</span>gdb<span class="o">)</span> step
-__main__::func_sum <span class="o">()</span> at simple_dppy_func.py:22
-<span class="m">22</span>          <span class="nv">result</span> <span class="o">=</span> a_in_func + b_in_func
-<span class="o">(</span>gdb<span class="o">)</span> <span class="k">continue</span>
+Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:29
+29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
+(gdb) set scheduler-locking step
+(gdb) step
+__main__::func_sum () at dppy_func.py:22
+22          result = a_in_func + b_in_func
+(gdb) step
+23          return result
+(gdb) continue
+Continuing.
+[Switching to Thread 1.1073742080 lane 0]
+Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:29
+29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
+(gdb) continue
 Continuing.
 Done...
 </pre></div>

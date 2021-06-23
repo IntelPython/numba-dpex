@@ -41,7 +41,6 @@ Submodules
    numba_dppy.spirv_generator
    numba_dppy.target
    numba_dppy.target_dispatcher
-   numba_dppy.testing
 
 Module contents
 ---------------

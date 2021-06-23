@@ -100,6 +100,7 @@
 <p class="caption"><span class="caption-text">Developer Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
             
@@ -175,7 +176,7 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.typing.templates.AttributeTemplate</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.ocl.mathdecl.MathModuleAttribute.key">
-<span class="sig-name descname"><span class="pre">key</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Module(&lt;module</span> <span class="pre">'math'</span> <span class="pre">from</span> <span class="pre">'/localdisk/work/spokhode/miniconda3/envs/numba-dppy-numba0.53-py38/lib/python3.8/lib-dynload/math.cpython-38-x86_64-linux-gnu.so'&gt;)</span></em><a class="headerlink" href="#numba_dppy.ocl.mathdecl.MathModuleAttribute.key" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">key</span></span><em class="property"> <span class="pre">=</span> <span class="pre">Module(&lt;module</span> <span class="pre">'math'</span> <span class="pre">from</span> <span class="pre">'/localdisk/work/spokhode/miniconda3/envs/numba-dppy-numba0.53-py38/lib/python3.7/lib-dynload/math.cpython-37m-x86_64-linux-gnu.so'&gt;)</span></em><a class="headerlink" href="#numba_dppy.ocl.mathdecl.MathModuleAttribute.key" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -431,7 +432,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.ocl.mathdecl.Math_atan2.key">
-<span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.mathdecl.Math_atan2.key" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">x</span></em>, <em class="sig-param"><span class="pre">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.mathdecl.Math_atan2.key" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the arc tangent (measured in radians) of y/x.</p>
 <p>Unlike atan(y/x), the signs of both x and y are considered.</p>
 </dd></dl>
@@ -480,7 +481,7 @@
 <dd><p>Bases: <a class="reference internal" href="#numba_dppy.ocl.mathdecl.Math_binary" title="numba_dppy.ocl.mathdecl.Math_binary"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dppy.ocl.mathdecl.Math_binary</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.ocl.mathdecl.Math_copysign.key">
-<span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.mathdecl.Math_copysign.key" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.mathdecl.Math_copysign.key" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a float with the magnitude (absolute value) of x but the sign of y.</p>
 <p>On platforms that support signed zeros, copysign(1.0, -0.0)
 returns -1.0.</p>
@@ -604,7 +605,7 @@ returns -1.0.</p>
 <dd><p>Bases: <a class="reference internal" href="#numba_dppy.ocl.mathdecl.Math_binary" title="numba_dppy.ocl.mathdecl.Math_binary"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dppy.ocl.mathdecl.Math_binary</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.ocl.mathdecl.Math_fmod.key">
-<span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.mathdecl.Math_fmod.key" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.mathdecl.Math_fmod.key" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return fmod(x, y), according to platform C.</p>
 <p>x % y may differ.</p>
 </dd></dl>
@@ -719,7 +720,7 @@ Return the logarithm of x to the given base.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.ocl.mathdecl.Math_pow.key">
-<span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.mathdecl.Math_pow.key" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">y</span></em>, <em class="sig-param"><span class="pre">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.mathdecl.Math_pow.key" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return x**y (x to the power of y).</p>
 </dd></dl>
 

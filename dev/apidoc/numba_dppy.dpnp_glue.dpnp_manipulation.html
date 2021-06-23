@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>numba_dppy.testing module &mdash; numba-dppy 0.14.3 documentation</title>
+  <title>numba_dppy.dpnp_glue.dpnp_manipulation module &mdash; numba-dppy 0.14.3 documentation</title>
   
 
   
@@ -100,6 +100,7 @@
 <p class="caption"><span class="caption-text">Developer Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
             
@@ -148,13 +149,13 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>numba_dppy.testing module</li>
+      <li>numba_dppy.dpnp_glue.dpnp_manipulation module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/apidoc/numba_dppy.testing.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/apidoc/numba_dppy.dpnp_glue.dpnp_manipulation.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -167,47 +168,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-numba_dppy.testing">
-<span id="numba-dppy-testing-module"></span><h1>numba_dppy.testing module<a class="headerlink" href="#module-numba_dppy.testing" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-numba_dppy.dpnp_glue.dpnp_manipulation">
+<span id="numba-dppy-dpnp-glue-dpnp-manipulation-module"></span><h1>numba_dppy.dpnp_glue.dpnp_manipulation module<a class="headerlink" href="#module-numba_dppy.dpnp_glue.dpnp_manipulation" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.testing.assert_auto_offloading">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.testing.</span></span><span class="sig-name descname"><span class="pre">assert_auto_offloading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parfor_offloaded</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_offloaded_failure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.testing.assert_auto_offloading" title="Permalink to this definition">¶</a></dt>
-<dd><p>If <code class="docutils literal notranslate"><span class="pre">parfor_offloaded</span></code> is not provided this context_manager
-will check for 1 occurrance of success message. Developers
-can always specify how many parfor offload success message
-is expected.
-If <code class="docutils literal notranslate"><span class="pre">parfor_offloaded_failure</span></code> is not provided the default
-behavior is to expect 0 failure message, in other words, we
-expect all parfors present in the code to be successfully
-offloaded to GPU.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.testing.assert_dpnp_implementaion">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.testing.</span></span><span class="sig-name descname"><span class="pre">assert_dpnp_implementaion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.testing.assert_dpnp_implementaion" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="numba_dppy.dpnp_glue.dpnp_manipulation.dpnp_repeat_impl">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.dpnp_glue.dpnp_manipulation.</span></span><span class="sig-name descname"><span class="pre">dpnp_repeat_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repeats</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpnp_glue.dpnp_manipulation.dpnp_repeat_impl" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.testing.captured_dppy_stdout">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.testing.</span></span><span class="sig-name descname"><span class="pre">captured_dppy_stdout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.testing.captured_dppy_stdout" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a minimal stream-like object capturing the text output of dppy</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.testing.dpnp_debug">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.testing.</span></span><span class="sig-name descname"><span class="pre">dpnp_debug</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.testing.dpnp_debug" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.testing.ensure_dpnp">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.testing.</span></span><span class="sig-name descname"><span class="pre">ensure_dpnp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.testing.ensure_dpnp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.testing.expectedFailureIf">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.testing.</span></span><span class="sig-name descname"><span class="pre">expectedFailureIf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">condition</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.testing.expectedFailureIf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Expected failure for a test if the condition is true.</p>
-</dd></dl>
 
 </div>
 

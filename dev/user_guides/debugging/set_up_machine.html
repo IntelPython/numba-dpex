@@ -116,6 +116,7 @@
 <p class="caption"><span class="caption-text">Developer Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
             
@@ -189,16 +190,16 @@
 <h1>Setting up the machine for debugging<a class="headerlink" href="#setting-up-the-machine-for-debugging" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="graphics-driver">
 <h2>Graphics driver<a class="headerlink" href="#graphics-driver" title="Permalink to this headline">¶</a></h2>
-<p>You need to install drivers using following guides:</p>
+<p>Install drivers using the following guides:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><a class="reference external" href="https://dgpu-docs.intel.com/installation-guides/index.html">GPGPU Documents / Installation guides</a></p></li>
 <li><p><a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/installation-guide-for-intel-oneapi-toolkits-linux/top/prerequisites/install-intel-gpu-drivers.html">Intel® oneAPI Toolkits Installation Guide for Linux* OS / Installation Guide / Install Intel GPU Drivers</a></p></li>
 </ul>
 </div></blockquote>
-<p>It is also important that the user is in the group “video” (on Ubuntu* 18, Fedora* 30, and SLES* 15 SP1)
-or “render” (on Ubuntu* 19 and higher, CentOS* 8, and Fedora* 31).
-An administrator with sudo or root privilege can change the group owner of <cite>/dev/dri/renderD*</cite> and <cite>/dev/dri/card*</cite>
+<p>The user should be in the “video” group (on Ubuntu* 18, Fedora* 30, and SLES* 15 SP1)
+or “render” group (on Ubuntu* 19 and higher, CentOS* 8, and Fedora* 31).
+An administrator with sudo or root privileges can change the group owner of <cite>/dev/dri/renderD*</cite> and <cite>/dev/dri/card*</cite>
 to a group ID used by your user base:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo usermod -a -G video &lt;username&gt;
 </pre></div>
@@ -206,7 +207,7 @@ to a group ID used by your user base:</p>
 </div>
 <div class="section" id="neo-driver">
 <span id="id1"></span><h2>NEO driver<a class="headerlink" href="#neo-driver" title="Permalink to this headline">¶</a></h2>
-<p>NEO driver at least <cite>21.15.19533</cite> version is required to make debugger work correctly.</p>
+<p>NEO driver at least <cite>21.15.19533</cite> version is required to make GDB debugger work correctly.</p>
 <p>You can download the driver from the following <a class="reference external" href="https://github.com/intel/compute-runtime/releases/tag/21.15.19533">link</a>.</p>
 <ol class="arabic simple">
 <li><p>To install the driver on the system, use the command:</p></li>
@@ -241,7 +242,7 @@ To overwrite the default behavior, use <code class="samp docutils literal notran
 </div></blockquote>
 </div>
 <div class="section" id="dcd-driver">
-<h2>DCD driver<a class="headerlink" href="#dcd-driver" title="Permalink to this headline">¶</a></h2>
+<span id="debugging-machine-dcd-driver"></span><h2>DCD driver<a class="headerlink" href="#dcd-driver" title="Permalink to this headline">¶</a></h2>
 <p>To install the DCD (Debugger Companion Driver) driver from oneAPI into the system, use the following command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo dpkg -i /path/to/oneapi/debugger/latest/igfxdcd-*-Linux.deb
 </pre></div>

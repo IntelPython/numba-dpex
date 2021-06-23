@@ -105,11 +105,10 @@
 <li class="toctree-l4"><a class="reference internal" href="stepping.html">Stepping</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Local variables</a></li>
 <li class="toctree-l4"><a class="reference internal" href="backtrace.html">Backtrace</a></li>
-<li class="toctree-l4"><a class="reference internal" href="info.html">Information</a></li>
+<li class="toctree-l4"><a class="reference internal" href="info.html">Info commands</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="limitations.html">Limitations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tools.html">Additional tools</a></li>
 </ul>
 </li>
 </ul>
@@ -119,6 +118,7 @@
 <p class="caption"><span class="caption-text">Developer Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
             
@@ -199,7 +199,7 @@
 <li><p><code class="samp docutils literal notranslate"><span class="pre">NUMBA_OPT=1</span></code> or higher - some variables may be optimized out.</p></li>
 </ul>
 </div>
-<p>Consider <cite>numba-dppy</cite> kernel code <code class="file docutils literal notranslate"><span class="pre">simple_sum.py</span></code></p>
+<p>Consider Numba-dppy kernel code <code class="file docutils literal notranslate"><span class="pre">simple_sum.py</span></code></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
 <span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">dpctl</span>
@@ -226,41 +226,37 @@
 </div>
 <div class="section" id="info-locals">
 <h2><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code><a class="headerlink" href="#info-locals" title="Permalink to this headline">¶</a></h2>
-<p>Run debugger:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">NUMBA_DPPY_DEBUGINFO</span><span class="o">=</span><span class="m">1</span>
-<span class="nb">export</span> <span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span>
-gdb-oneapi -q --args python simple_sum.py
-<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break</span> simple_sum.py:8
-No <span class="nb">source</span> file named simple_sum.py.
-Make breakpoint pending on future shared library load? <span class="o">(</span>y or <span class="o">[</span>n<span class="o">])</span> y
-Breakpoint <span class="m">1</span> <span class="o">(</span>simple_sum.py:8<span class="o">)</span> pending.
-<span class="o">(</span>gdb<span class="o">)</span> run
-<span class="o">(</span>gdb<span class="o">)</span> info locals
+<p>Run GDB debugger:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ NUMBA_OPT=0 gdb-oneapi -q -command commands/local_variables python
+(gdb) set trace-commands on
+(gdb) set pagination off
+(gdb) set breakpoint pending on
+(gdb) break simple_sum.py:22
+(gdb) run simple_sum.py
+...
+Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:22
+   22           i = dppy.get_global_id(0)
 </pre></div>
 </div>
 <p>GDB output on “no optimization” level <code class="docutils literal notranslate"><span class="pre">NUMBA_OPT=0</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Thread <span class="m">2</span>.1 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::data_parallel_sum <span class="o">()</span> at simple_sum.py:8
-<span class="m">8</span>           <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
-
-<span class="nv">a</span> <span class="o">=</span> <span class="s2">&quot;@\001\000\000\000\000\000\000 \000\000\000\000\000\000\000@A\177YUU\000\000\030\a\200YUU\000\000\000\000\000\000U\003\000\000\241\000\000\000\000\000\000\000\240C\177YUU\000&quot;</span>
-<span class="nv">b</span> <span class="o">=</span> <span class="s2">&quot;\000\003\000\000\000\000\000\000 \000\000\000\000\000\000\000\200B\177YUU\000\000\060\b\200YUU\000\000\000\000\000\000U\003\000\000!\000\000\000\000\000\000\000\060\304\357YUU\000&quot;</span>
-<span class="nv">c</span> <span class="o">=</span> <span class="s2">&quot;\000d\356Y\001\000`\000(\n@&amp;\240\001&quot;</span>, <span class="s1">&#39;\000&#39;</span> &lt;repeats <span class="m">15</span> times&gt;, <span class="s2">&quot;U\000\000p\025\000\000\000\000\000\000\000\000\356YUU\000\000\000i\356Y\001\000`&quot;</span>
-<span class="nv">i</span> <span class="o">=</span> <span class="m">0</span>
-<span class="nv">__ocl_dbg_gid0</span> <span class="o">=</span> <span class="m">4</span>
-<span class="nv">__ocl_dbg_gid1</span> <span class="o">=</span> <span class="m">2</span>
-<span class="nv">__ocl_dbg_gid2</span> <span class="o">=</span> <span class="m">2</span>
-<span class="nv">__ocl_dbg_lid0</span> <span class="o">=</span> <span class="m">0</span>
-<span class="nv">__ocl_dbg_lid1</span> <span class="o">=</span> <span class="m">7</span>
-<span class="nv">__ocl_dbg_lid2</span> <span class="o">=</span> <span class="m">0</span>
-<span class="nv">__ocl_dbg_grid0</span> <span class="o">=</span> <span class="m">5</span>
-<span class="nv">__ocl_dbg_grid1</span> <span class="o">=</span> <span class="m">0</span>
-<span class="nv">__ocl_dbg_grid2</span> <span class="o">=</span> <span class="m">0</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">info</span> <span class="nb">locals</span>
+<span class="n">a</span> <span class="o">=</span> <span class="s2">&quot;@</span><span class="se">\001\000\000\000\000\000\000</span><span class="s2"> </span><span class="se">\000\000\000\000\000\000\000</span><span class="s2">@A</span><span class="se">\177</span><span class="s2">YUU</span><span class="se">\000\000\030\a\200</span><span class="s2">YUU</span><span class="se">\000\000\000\000\000\000</span><span class="s2">U</span><span class="se">\003\000\000\241\000\000\000\000\000\000\000\240</span><span class="s2">C</span><span class="se">\177</span><span class="s2">YUU</span><span class="se">\000</span><span class="s2">&quot;</span>
+<span class="n">b</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\000\003\000\000\000\000\000\000</span><span class="s2"> </span><span class="se">\000\000\000\000\000\000\000\200</span><span class="s2">B</span><span class="se">\177</span><span class="s2">YUU</span><span class="se">\000\000\060\b\200</span><span class="s2">YUU</span><span class="se">\000\000\000\000\000\000</span><span class="s2">U</span><span class="se">\003\000\000</span><span class="s2">!</span><span class="se">\000\000\000\000\000\000\000\060\304\357</span><span class="s2">YUU</span><span class="se">\000</span><span class="s2">&quot;</span>
+<span class="n">c</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\000</span><span class="s2">d</span><span class="se">\356</span><span class="s2">Y</span><span class="se">\001\000</span><span class="s2">`</span><span class="se">\000</span><span class="s2">(</span><span class="se">\n</span><span class="s2">@&amp;</span><span class="se">\240\001</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\000</span><span class="s1">&#39;</span> <span class="o">&lt;</span><span class="n">repeats</span> <span class="mi">15</span> <span class="n">times</span><span class="o">&gt;</span><span class="p">,</span> <span class="s2">&quot;U</span><span class="se">\000\000</span><span class="s2">p</span><span class="se">\025\000\000\000\000\000\000\000\000\356</span><span class="s2">YUU</span><span class="se">\000\000\000</span><span class="s2">i</span><span class="se">\356</span><span class="s2">Y</span><span class="se">\001\000</span><span class="s2">`&quot;</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">__ocl_dbg_gid0</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">__ocl_dbg_gid1</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">__ocl_dbg_gid2</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">__ocl_dbg_lid0</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">__ocl_dbg_lid1</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">__ocl_dbg_lid2</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">__ocl_dbg_grid0</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">__ocl_dbg_grid1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">__ocl_dbg_grid2</span> <span class="o">=</span> <span class="mi">0</span>
 </pre></div>
 </div>
 <p>GDB output on “O1 optimization” level <code class="docutils literal notranslate"><span class="pre">NUMBA_OPT=1</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Thread <span class="m">2</span>.1 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::data_parallel_sum <span class="o">()</span> at simple_sum.py:8
-<span class="m">8</span>           <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
-<span class="o">(</span>gdb<span class="o">)</span> info locals
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span> info locals
 <span class="nv">__ocl_dbg_gid0</span> <span class="o">=</span> <span class="m">0</span>
 <span class="nv">__ocl_dbg_gid1</span> <span class="o">=</span> <span class="m">0</span>
 <span class="nv">__ocl_dbg_gid2</span> <span class="o">=</span> <span class="m">0</span>
@@ -275,13 +271,13 @@ Breakpoint <span class="m">1</span> <span class="o">(</span>simple_sum.py:8<span
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The debugger does not show the local variables <code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">b</span></code> and <code class="docutils literal notranslate"><span class="pre">c</span></code>, they are optimized out on “O1” optimization level.</p>
+<p>The GDB debugger does not show the local variables <code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">b</span></code> and <code class="docutils literal notranslate"><span class="pre">c</span></code>, they are optimized out on “O1” optimization level.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <dl class="simple">
 <dt>Known issues:</dt><dd><ul class="simple">
-<li><p>Debugger can show the variable values, but these values may not match the actual value of the referred variables.</p></li>
+<li><p>GDB debugger can show the variable values, but these values may not match the actual value of the referred variables.</p></li>
 </ul>
 </dd>
 </dl>
@@ -289,11 +285,8 @@ Breakpoint <span class="m">1</span> <span class="o">(</span>simple_sum.py:8<span
 </div>
 <div class="section" id="print-variable">
 <h2><code class="docutils literal notranslate"><span class="pre">print</span> <span class="pre">variable</span></code><a class="headerlink" href="#print-variable" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span> print a
-<span class="nv">$1</span> <span class="o">=</span> <span class="s2">&quot;\000\f\335YUU\000\000\260\200\250YUU\000\000*.\367!\n\026\364?\000\000\000\000\000\000\000\000\330|\177YUU\000\000Q\002\000\000\000\000\000\000\000\217\250YUU\000&quot;</span>
-
-<span class="o">(</span>gdb<span class="o">)</span> print i
-<span class="nv">$1</span> <span class="o">=</span> <span class="m">93823560581120</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(gdb) print i
+$1 = 93823560581120
 </pre></div>
 </div>
 <div class="admonition note">
@@ -309,17 +302,10 @@ Breakpoint <span class="m">1</span> <span class="o">(</span>simple_sum.py:8<span
 <div class="section" id="ptype-variable">
 <h2><code class="docutils literal notranslate"><span class="pre">ptype</span> <span class="pre">variable</span></code><a class="headerlink" href="#ptype-variable" title="Permalink to this headline">¶</a></h2>
 <p>Variable type may be printed by the command <code class="docutils literal notranslate"><span class="pre">ptype</span> <span class="pre">variable</span></code> and <code class="docutils literal notranslate"><span class="pre">whatis</span> <span class="pre">variable</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span> ptype i
-<span class="nb">type</span> <span class="o">=</span> i64
-
-<span class="o">(</span>gdb<span class="o">)</span> whatis i
-<span class="nb">type</span> <span class="o">=</span> i64
-
-<span class="o">(</span>gdb<span class="o">)</span> whatis a
-<span class="nb">type</span> <span class="o">=</span> byte <span class="o">[</span><span class="m">56</span><span class="o">]</span>
-
-<span class="o">(</span>gdb<span class="o">)</span> ptype a
-<span class="nb">type</span> <span class="o">=</span> byte <span class="o">[</span><span class="m">56</span><span class="o">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">ptype</span> <span class="n">i</span>
+<span class="nb">type</span> <span class="o">=</span> <span class="n">i64</span>
+<span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">whatis</span> <span class="n">i</span>
+<span class="nb">type</span> <span class="o">=</span> <span class="n">i64</span>
 </pre></div>
 </div>
 <p>See also:</p>

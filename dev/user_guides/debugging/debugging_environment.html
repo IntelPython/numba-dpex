@@ -99,14 +99,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html"> Debugging with GDB</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#requirements">Requirements</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="set_up_machine.html">Setting up the machine for debugging</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Configuring debugging environment</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#activate-debugger-and-compiler">Activate debugger and compiler</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#activate-conda-environment">Activate conda environment</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#activate-environment-variables">Activate environment variables</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#activate-neo-drivers">Activate NEO drivers</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#checking-debugging-environment">Checking debugging environment</a></li>
-</ul>
-</li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Configuring debugging environment</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#example-of-gdb-usage">Example of GDB usage</a></li>
@@ -118,6 +111,7 @@
 <p class="caption"><span class="caption-text">Developer Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
             
@@ -189,43 +183,33 @@
             
   <div class="section" id="configuring-debugging-environment">
 <span id="debugging-environment"></span><h1>Configuring debugging environment<a class="headerlink" href="#configuring-debugging-environment" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="activate-debugger-and-compiler">
-<h2>Activate debugger and compiler<a class="headerlink" href="#activate-debugger-and-compiler" title="Permalink to this headline">¶</a></h2>
-<p>First you need to activate the debugger that you will be using
-and dpcpp compiler for numba-dppy:</p>
+<p><strong>Activate GDB debugger and compiler</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">ONEAPI_ROOT</span><span class="o">=</span>/path/to/oneapi
 <span class="nb">source</span> <span class="nv">$ONEAPI_ROOT</span>/debugger/latest/env/vars.sh
 <span class="nb">source</span> <span class="nv">$ONEAPI_ROOT</span>/compiler/latest/env/vars.sh
 </pre></div>
 </div>
-</div>
-<div class="section" id="activate-conda-environment">
-<h2>Activate conda environment<a class="headerlink" href="#activate-conda-environment" title="Permalink to this headline">¶</a></h2>
-<p>You will also need to create and activate conda environment with installed <cite>numba-dppy</cite>:</p>
+<p>Create and activate conda environment with installed Numba-dppy:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda create numba-dppy-dev numba-dppy
 conda activate numba-dppy-dev
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<dl class="simple">
-<dt>Known issues:</dt><dd><ul class="simple">
-<li><p>Debugging tested with following packages: <code class="docutils literal notranslate"><span class="pre">numba-dppy=0.14</span></code>, <code class="docutils literal notranslate"><span class="pre">dpctl=0.8</span></code>, <code class="docutils literal notranslate"><span class="pre">numba=0.53</span></code>.</p></li>
+<ul class="simple">
+<li><p>Debugging features were tested with following packages: <code class="docutils literal notranslate"><span class="pre">numba-dppy=0.14</span></code>, <code class="docutils literal notranslate"><span class="pre">dpctl=0.8</span></code>, <code class="docutils literal notranslate"><span class="pre">numba=0.53</span></code>.</p></li>
 </ul>
-</dd>
-</dl>
 </div>
-</div>
-<div class="section" id="activate-environment-variables">
-<h2>Activate environment variables<a class="headerlink" href="#activate-environment-variables" title="Permalink to this headline">¶</a></h2>
+<p><strong>Activate environment variables</strong></p>
 <p>Debugging on “no optimization” level is more stable. Local variable are not optimized out.
 You need to set the following variable for debugging:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span>
 </pre></div>
 </div>
-<p>You can use <code class="docutils literal notranslate"><span class="pre">NUMBA_DPPY_DEBUGINFO</span></code> instead of <code class="docutils literal notranslate"><span class="pre">debug</span></code> option.
-If set to non-zero, enable debug for the full application by setting the default value of the debug option in jit.
-Default value equals to the value of <code class="docutils literal notranslate"><span class="pre">NUMBA_DEBUGINFO</span></code>.</p>
+<p>It is possible to enable debug mode for the full application by setting the environment variable <code class="docutils literal notranslate"><span class="pre">NUMBA_DPPY_DEBUGINFO=1</span></code>
+instead of <code class="docutils literal notranslate"><span class="pre">debug</span></code> option inside the <code class="docutils literal notranslate"><span class="pre">dppy.kernel</span></code> decorator. This sets the default value of the debug option in
+<code class="docutils literal notranslate"><span class="pre">dppy.kernel</span></code>. If <code class="docutils literal notranslate"><span class="pre">NUMBA_DPPY_DEBUGINFO</span></code> is set to a non-zero value, the debug data is emitted for the full application.
+Debug mode can be turned off on individual functions by setting <code class="docutils literal notranslate"><span class="pre">debug=False</span></code> in <code class="docutils literal notranslate"><span class="pre">dppy.kernel</span></code>.</p>
 <p>See also:</p>
 <blockquote>
 <div><ul class="simple">
@@ -233,13 +217,9 @@ Default value equals to the value of <code class="docutils literal notranslate">
 <li><p><a class="reference external" href="https://numba.pydata.org/numba-doc/dev/reference/envvars.html#envvar-NUMBA_DEBUGINFO">NUMBA_DEBUGINFO</a></p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="activate-neo-drivers">
-<h2>Activate NEO drivers<a class="headerlink" href="#activate-neo-drivers" title="Permalink to this headline">¶</a></h2>
+<p><strong>Activate NEO drivers</strong></p>
 <p>Further, if you want to use local NEO driver, you need to activate the variables for it. See <a class="reference internal" href="set_up_machine.html#neo-driver"><span class="std std-ref">NEO driver</span></a>.</p>
-</div>
-<div class="section" id="checking-debugging-environment">
-<h2>Checking debugging environment<a class="headerlink" href="#checking-debugging-environment" title="Permalink to this headline">¶</a></h2>
+<p><strong>Check debugging environment</strong></p>
 <p>You can check the correctness of the work with the following example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
@@ -281,7 +261,6 @@ Breakpoint <span class="m">1</span> <span class="o">(</span>simple_sum.py:22<spa
 Done...
 ...
 </pre></div>
-</div>
 </div>
 </div>
 

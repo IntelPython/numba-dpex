@@ -106,7 +106,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#features-and-limitations">Features and Limitations</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="features.html">Supported GDB Features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="limitations.html">Limitations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tools.html">Additional tools</a></li>
 </ul>
 </li>
 </ul>
@@ -116,6 +115,7 @@
 <p class="caption"><span class="caption-text">Developer Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
             
@@ -185,7 +185,7 @@
             
   <div class="section" id="debugging-with-gdb">
 <h1>Debugging with GDB<a class="headerlink" href="#debugging-with-gdb" title="Permalink to this headline">¶</a></h1>
-<p><cite>numba-dppy</cite> allows SYCL kernels to be debugged with the GDB debugger.
+<p>Numba-dppy allows SYCL kernels to be debugged with the GDB debugger.
 Setting the debug environment variable <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">NUMBA_DPPY_DEBUGINFO</span></code>
 (e.g. <code class="samp docutils literal notranslate"><span class="pre">export</span> <span class="pre">NUMBA_DPPY_DEBUGINFO=1</span></code>) enables the emission of debug information.
 To disable debugging, unset the variable (e.g. <code class="samp docutils literal notranslate"><span class="pre">unset</span> <span class="pre">NUMBA_DPPY_DEBUGINFO</span></code>).</p>
@@ -194,11 +194,11 @@ To disable debugging, unset the variable (e.g. <code class="samp docutils litera
 <p>Beware that enabling debug info significantly increases the memory consumption for each compiled kernel.
 For large application, this may cause out-of-memory error.</p>
 </div>
-<p>Not all GDB features supported by <cite>Numba</cite> on CPUs are yet supported in <cite>numba-dppy</cite>.
+<p>Not all GDB features supported by Numba on CPUs are yet supported in Numba-dppy.
 See <a class="reference internal" href="#debugging-features-and-limitations"><span class="std std-ref">Features and Limitations</span></a>.</p>
 <div class="section" id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
-<p><cite>Intel® Distribution for GDB</cite> is needed for <cite>numba-dppy</cite>’s debugging features to work.
+<p><cite>Intel® Distribution for GDB</cite> is required for Numba-dppy’s debugging features to work.
 <cite>Intel® Distribution for GDB</cite> is part of <cite>Intel oneAPI</cite> and
 the relevant documentation can be found at <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-gdb.html">Intel® Distribution for GDB documentation</a>.</p>
 <div class="toctree-wrapper compound">
@@ -209,20 +209,13 @@ the relevant documentation can be found at <a class="reference external" href="h
 <li class="toctree-l2"><a class="reference internal" href="set_up_machine.html#dcd-driver">DCD driver</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="debugging_environment.html">Configuring debugging environment</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="debugging_environment.html#activate-debugger-and-compiler">Activate debugger and compiler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="debugging_environment.html#activate-conda-environment">Activate conda environment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="debugging_environment.html#activate-environment-variables">Activate environment variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="debugging_environment.html#activate-neo-drivers">Activate NEO drivers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="debugging_environment.html#checking-debugging-environment">Checking debugging environment</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="debugging_environment.html">Configuring debugging environment</a></li>
 </ul>
 </div>
 </div>
 <div class="section" id="example-of-gdb-usage">
 <h2>Example of GDB usage<a class="headerlink" href="#example-of-gdb-usage" title="Permalink to this headline">¶</a></h2>
-<p>For example, given the following <cite>numba-dppy</cite> kernel code (<code class="file docutils literal notranslate"><span class="pre">simple_sum.py</span></code>):</p>
+<p>For example, given the following Numba-dppy kernel code (<code class="file docutils literal notranslate"><span class="pre">simple_sum.py</span></code>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
 <span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">dpctl</span>
@@ -248,19 +241,33 @@ the relevant documentation can be found at <a class="reference external" href="h
 </pre></div>
 </div>
 <p>Running GDB and creating breakpoint in kernel:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ gdb-oneapi -q --args python simple_sum.py
-<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break</span> simple_sum.py:22  <span class="c1">### Set breakpoint in kernel</span>
-<span class="o">(</span>gdb<span class="o">)</span> run
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ NUMBA_OPT=0 gdb-oneapi -q -command commands/simple_sum python
+(gdb) set trace-commands on
+(gdb) set pagination off
+(gdb) set breakpoint pending on
+(gdb) break simple_sum.py:22
+(gdb) run simple_sum.py
 ...
-Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::data_parallel_sum <span class="o">()</span> at simple_sum.py:22
-<span class="m">8</span>           <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
-<span class="o">(</span>gdb<span class="o">)</span> next
-<span class="m">23</span>           c<span class="o">[</span>i<span class="o">]</span> <span class="o">=</span> a<span class="o">[</span>i<span class="o">]</span> + b<span class="o">[</span>i<span class="o">]</span>
-<span class="o">(</span>gdb<span class="o">)</span> <span class="k">continue</span>
+Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:22
+22           i = dppy.get_global_id(0)
+(gdb) next
+Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at simple_sum.py:22
+22           i = dppy.get_global_id(0)
+(gdb) next
+23           c[i] = a[i] + b[i]
+(gdb) continue
+Continuing.
 Done...
+</pre></div>
+</div>
+<p>If the breakpoint is not hit, you will see the following output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>...
+intelgt: gdbserver-gt failed to start.  Check <span class="k">if</span> igfxdcd is installed, or use
+env variable <span class="nv">INTELGT_AUTO_ATTACH_DISABLE</span><span class="o">=</span><span class="m">1</span> to disable auto-attach.
 ...
 </pre></div>
 </div>
+<p>See the <a class="reference internal" href="set_up_machine.html#debugging-machine-dcd-driver"><span class="std std-ref">DCD driver</span></a>.</p>
 </div>
 <div class="section" id="features-and-limitations">
 <span id="debugging-features-and-limitations"></span><h2>Features and Limitations<a class="headerlink" href="#features-and-limitations" title="Permalink to this headline">¶</a></h2>
@@ -271,15 +278,10 @@ Done...
 <li class="toctree-l2"><a class="reference internal" href="stepping.html">Stepping</a></li>
 <li class="toctree-l2"><a class="reference internal" href="local_variables.html">Local variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="backtrace.html">Backtrace</a></li>
-<li class="toctree-l2"><a class="reference internal" href="info.html">Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="info.html">Info commands</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="limitations.html">Limitations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tools.html">Additional tools</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tools.html#getting-the-dwarf-from-elf-file">Getting the DWARF from .elf file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tools.html#getting-the-dwarf-from-numba-assembly-for-njit">Getting the DWARF from Numba assembly (for njit)</a></li>
-</ul>
-</li>
 </ul>
 </div>
 </div>
