@@ -12,37 +12,11 @@ Let's consider the work of the command ``backtrace`` in the following example ``
     Known issues:
         - The first line of the kernel and functions is hit twice. See the :ref:`single_stepping`.
 
-Run GDB debugger:
+Below are examples showing the backtrace for the kernel and for the nested function.
+The call stack for the kernel consists of one function (``kernel_sum ()``), and the call colline for the func consists of two functions (``func_sum ()``, ``kernel_sum ()``).
+Run debugger and do following commands:
 
-.. code-block:: bash
-
-    export NUMBA_OPT=0
-    gdb-oneapi -q --args python simple_dppy_func.py
-
-The call stack from the kernel and the nested function:
-
-.. code-block:: bash
-
-    (gdb) break simple_dppy_func.py:14
-    Breakpoint 1 (simple_dppy_func.py:14) pending.
-    (gdb) run
-    Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:14
-    14          i = dppy.get_global_id(0)
-    (gdb) backtrace
-    #0  __main__::kernel_sum () at simple_dppy_func.py:14
-    (gdb) step
-    Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:14
-    14          i = dppy.get_global_id(0)
-    (gdb) step
-    15          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
-    (gdb) step
-    __main__::func_sum () at simple_dppy_func.py:8
-    8          result = a_in_func + b_in_func
-    (gdb) backtrace
-    #0  __main__::func_sum () at simple_dppy_func.py:8
-    #1  __main__::kernel_sum () at simple_dppy_func.py:15
-    (gdb) continue
-    Continuing.
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/backtrace
 
 See also:
 
