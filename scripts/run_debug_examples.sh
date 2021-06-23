@@ -8,13 +8,16 @@ check() {
 }
 
 run_checks() {
-  check commands/function_breakpoint
-  # check commands/local_variables
+  check commands/local_variables
   check commands/next
   check commands/sheduler_locking
   check commands/stepi
   check commands/stepping
   check commands/backtrace
+  check commands/break_func
+  check commands/break_file_func
+  check commands/break_line_number
+  check commands/break_nested_func
 }
 
 run_with_device() {
