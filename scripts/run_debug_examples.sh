@@ -13,6 +13,9 @@ run_checks() {
   check commands/sheduler_locking
   check commands/stepi
   check commands/stepping
+  check commands/step_dppy_func
+  check commands/step_sum
+  check commands/simple_sum
   check commands/backtrace
   check commands/break_func
   check commands/break_file_func
