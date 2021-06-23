@@ -131,6 +131,12 @@ def compile_with_dppy(pyfunc, return_type, args, debug=None):
         )
     else:
         assert 0
+
+    retty = cres.signature.return_type
+    if retty is not None and retty != types.void:
+        msg = "DPPY kernel must have void return type but got {retty}"
+        raise TypeError(msg.format(retty=retty))
+
     # Linking depending libraries
     library = cres.library
     library.finalize()
