@@ -60,6 +60,7 @@ def _kernel_jit(signature, debug, access_types):
         ]
     )
 
+    # Raises TypeError when users return anything inside @dppy.kernel.
     assert_no_return(rettype)
 
     def _wrapped(pyfunc):
