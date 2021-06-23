@@ -34,6 +34,7 @@ from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dppy import config
 from numba_dppy.driver import USMNdArrayType
 from numba_dppy.dppy_array_type import DPPYArray
+from numba_dppy.utils import assert_no_return
 
 
 _NUMBA_DPPY_READ_ONLY = "read_only"
@@ -89,7 +90,7 @@ class DPPYCompiler(CompilerBase):
         return pms
 
 
-def compile_with_dppy(pyfunc, return_type, args, debug=None):
+def compile_with_dppy(pyfunc, return_type, args, is_kernel, debug=None):
     # First compilation will trigger the initialization of the OpenCL backend.
     from .descriptor import dppy_target
 
@@ -132,10 +133,8 @@ def compile_with_dppy(pyfunc, return_type, args, debug=None):
     else:
         assert 0
 
-    retty = cres.signature.return_type
-    if retty is not None and retty != types.void:
-        msg = "DPPY kernel must have void return type but got {retty}"
-        raise TypeError(msg.format(retty=retty))
+    if is_kernel:
+        assert_no_return(cres.signature.return_type)
 
     # Linking depending libraries
     library = cres.library
@@ -160,7 +159,7 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
         # We expect the sycl_queue to be provided when this function is called
         raise ValueError("SYCL queue is required for compiling a kernel")
 
-    cres = compile_with_dppy(pyfunc, None, args, debug=debug)
+    cres = compile_with_dppy(pyfunc, None, args, True, debug=debug)
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
     kernel = cres.target_context.prepare_ocl_kernel(func, cres.signature.args)
 
@@ -194,7 +193,7 @@ def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug
             if isinstance(a, types.npytypes.Array):
                 print("addrspace:", a.addrspace)
 
-    cres = compile_with_dppy(func_ir, None, args_with_addrspaces, debug=debug)
+    cres = compile_with_dppy(func_ir, None, args_with_addrspaces, True, debug=debug)
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
 
     if config.DEBUG:
@@ -215,7 +214,7 @@ def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug
 
 
 def compile_dppy_func(pyfunc, return_type, args, debug=None):
-    cres = compile_with_dppy(pyfunc, return_type, args, debug=debug)
+    cres = compile_with_dppy(pyfunc, return_type, args, False, debug=debug)
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
     cres.target_context.mark_ocl_device(func)
     devfn = DPPYFunction(cres)
@@ -265,7 +264,7 @@ class DPPYFunctionTemplate(object):
         this object.
         """
         if args not in self._compileinfos:
-            cres = compile_with_dppy(self.py_func, None, args, debug=self.debug)
+            cres = compile_with_dppy(self.py_func, None, args, False, debug=self.debug)
             func = cres.library.get_function(cres.fndesc.llvm_func_name)
             cres.target_context.mark_ocl_device(func)
             first_definition = not self._compileinfos

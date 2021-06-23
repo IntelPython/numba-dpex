@@ -27,6 +27,7 @@ from numba_dppy.utils.llvm_codegen_helpers import (
 
 from numba_dppy.utils.type_conversion_fns import npytypes_array_to_dppy_array
 from numba_dppy.utils.constants import address_space, calling_conv
+from numba_dppy.utils.misc import assert_no_return
 
 __all__ = [
     "LLVMTypes",
@@ -38,4 +39,5 @@ __all__ = [
     "npytypes_array_to_dppy_array",
     "address_space",
     "calling_conv",
+    "assert_no_return",
 ]
