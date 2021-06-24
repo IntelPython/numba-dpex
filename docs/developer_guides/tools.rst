@@ -26,11 +26,10 @@ IGC will write number of dumps into ``/tmp/IntelIGC``.
 To read the DWARF of a kernel, a copy of the IGC generated kernel binary is needed.
 Run the Python script in a GDB debugger mode, and set a breakpoint in the kernel:
 
-.. code-block:: bash
+.. code-block:: shell-session
 
-    export NUMBA_OPT=1
-    gdb-oneapi -q --args python simple_sum.py
-    gdb-oneapi -q python 
+    $ export NUMBA_OPT=1
+    $ gdb-oneapi -q --args python simple_sum.py
     (gdb) break simple_sum.py:8     # Assumes the kernel is in file simple_sum.py, at line 8
     (gdb) run
 

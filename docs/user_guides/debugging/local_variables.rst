@@ -18,16 +18,19 @@ Consider Numba-dppy kernel code :file:`sum_local_vars.py`
 Run GDB debugger:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+    :language: shell-session
     :lines: 1-6
 
 GDB output on "no optimization" level ``NUMBA_OPT=0``:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+    :language: shell-session
     :lines: 8-48
 
 Since GDB debugger does not hit a line with target variable, the value of this variable is equal to 0. The true value of the variable ``l1`` is shown after stepping to line 22.
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+    :language: shell-session
     :lines: 49-66
 
 When GDB debugger hits the last line of the kernel, ``info locals`` command returns all the local variables with their values.
@@ -40,6 +43,7 @@ When GDB debugger hits the last line of the kernel, ``info locals`` command retu
 GDB output on "O1 optimization" level ``NUMBA_OPT=1``:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_1
+    :language: shell-session
     :lines: 8-23
 
 .. note::
@@ -50,6 +54,7 @@ GDB output on "O1 optimization" level ``NUMBA_OPT=1``:
 ------------------
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+    :language: shell-session
     :lines: 67-72
 
 .. note::
@@ -63,6 +68,7 @@ GDB output on "O1 optimization" level ``NUMBA_OPT=1``:
 Variable type may be printed by the command ``ptype variable`` and ``whatis variable``:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+    :language: shell-session
     :lines: 73-81
 
 See also:

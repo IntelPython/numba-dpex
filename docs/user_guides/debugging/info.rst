@@ -36,6 +36,7 @@ Consider Numba-dppy kernel code. See the source file ``numba_dppy/examples/debug
 Run GDB debugger:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/info_func
+    :language: shell-session
 
 See also:
 

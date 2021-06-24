@@ -34,6 +34,7 @@ Run GDB debugger:
 GDB output:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_func
+    :language: shell-session
 
 ``break filename: linenumber``
 ------------------------------
@@ -41,6 +42,7 @@ GDB output:
 GDB output:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_line_number
+    :language: shell-session
 
 ``break filename: function``
 ----------------------------
@@ -48,6 +50,7 @@ GDB output:
 GDB output:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_file_func
+    :language: shell-session
 
 Breakpoints with nested functions
 -------------------------------------
@@ -61,3 +64,4 @@ Consider Numba-dppy kernel code. See source file ``numba_dppy/examples/debug/sim
 GDB output:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_nested_func
+    :language: shell-session

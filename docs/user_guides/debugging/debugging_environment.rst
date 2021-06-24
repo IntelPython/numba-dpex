@@ -55,7 +55,7 @@ You can check the correctness of the work with the following example:
 
 Launch gdb and set a breakpoint in the kernel:
 
-.. code-block:: bash
+.. code-block:: shell-session
 
     $ gdb-oneapi -q --args python simple_sum.py
     (gdb) break simple_sum.py:22
@@ -66,7 +66,7 @@ Launch gdb and set a breakpoint in the kernel:
 
 In the output you can see that the breakpoint was hit successfully:
 
-.. code-block:: bash
+.. code-block:: shell-session
 
     Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:22
     22           i = dppy.get_global_id(0)

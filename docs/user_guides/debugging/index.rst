@@ -43,6 +43,7 @@ For example, given the following Numba-dppy kernel code (:file:`simple_sum.py`):
 Running GDB and creating breakpoint in kernel:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/simple_sum
+    :language: shell-session
 
 If the breakpoint is not hit, you will see the following output:
 

@@ -19,10 +19,12 @@ The second example presents the case where the kernel function invokes a numba_d
 Example 1:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/backtrace_kernel
+    :language: shell-session
 
 Example 2:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/backtrace
+    :language: shell-session
 
 See also:
 
