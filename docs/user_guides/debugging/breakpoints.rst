@@ -9,7 +9,7 @@ You have several ways to set breakpoints:
   - break function
   - break filename:function
   - break filename:linenumber
-  
+
 See also:
   - `GDB documentation of breakpoints`_.
 
@@ -20,6 +20,7 @@ Consider Numba-dppy kernel code. See the source file ``numba_dppy/examples/debug
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
     :lines: 15-
     :linenos:
+    :lineno-match:
 
 Run GDB debugger:
 
@@ -60,6 +61,7 @@ Consider Numba-dppy kernel code. See source file ``numba_dppy/examples/debug/sim
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_dppy_func.py
     :lines: 15-
     :linenos:
+    :lineno-match:
 
 GDB output:
 

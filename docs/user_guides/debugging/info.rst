@@ -32,6 +32,7 @@ Consider Numba-dppy kernel code. See the source file ``numba_dppy/examples/debug
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
     :lines: 15-
     :linenos:
+    :lineno-match:
 
 Run GDB debugger:
 

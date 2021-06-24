@@ -6,12 +6,14 @@ Consider the following two examples. ``numba_dppy/examples/debug/simple_sum.py``
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
     :lines: 15-
     :linenos:
+    :lineno-match:
 
 Example with a nested function ``numba_dppy/examples/debug/simple_dppy_func.py``:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_dppy_func.py
     :lines: 15-
     :linenos:
+    :lineno-match:
 
 .. note::
 

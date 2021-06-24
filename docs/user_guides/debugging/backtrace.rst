@@ -6,6 +6,7 @@ Let's consider the work of the command ``backtrace`` in the following example ``
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_dppy_func.py
     :lines: 15-
     :linenos:
+    :lineno-match:
 
 .. note::
 

@@ -11,6 +11,7 @@ Consider Numba-dppy kernel code :file:`sum_local_vars.py`
 .. literalinclude:: ../../../numba_dppy/examples/debug/sum_local_vars.py
     :lines: 15-
     :linenos:
+    :lineno-match:
 
 ``info locals``
 ---------------
