@@ -442,7 +442,7 @@ class DPPYKernel(DPPYKernelBase):
                 f.write(self.binary)
 
         self.spirv_bc = spirv_generator.llvm_to_spirv(
-            self.context, self._llvm_module.as_bitcode()
+            self.context, self.assembly, self._llvm_module.as_bitcode()
         )
 
         # create a program
