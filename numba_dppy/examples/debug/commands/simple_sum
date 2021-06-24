@@ -17,7 +17,7 @@ next
 # 23           c[i] = a[i] + b[i]
 continue
 # Expected:
-# Continuing.
+# ...
 # Done...
 echo Done\n
 quit

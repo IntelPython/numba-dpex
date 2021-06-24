@@ -79,5 +79,5 @@ type = double
 (gdb) whatis l1
 type = double
 (gdb) continue
-Continuing.
+...
 Done...

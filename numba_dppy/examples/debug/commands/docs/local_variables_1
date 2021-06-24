@@ -22,5 +22,5 @@ i = 0
 l1 = 0
 l2 = 0
 (gdb) continue
-Continuing.
+...
 Done...

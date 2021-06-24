@@ -81,7 +81,7 @@ whatis l1
 # type = double
 continue
 # Expected:
-# Continuing.
+# ...
 # Done...
 echo Done\n
 quit

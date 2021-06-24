@@ -24,7 +24,7 @@ info locals
 # l2 = 0
 continue
 # Expected:
-# Continuing.
+# ...
 # Done...
 echo Done\n
 quit

@@ -17,5 +17,5 @@ __main__::func_sum () at dppy_func.py:22
 #0  __main__::func_sum () at simple_dppy_func.py:22
 #1  __main__::kernel_sum () at simple_dppy_func.py:29
 (gdb) continue
-Continuing.
+...
 Done...

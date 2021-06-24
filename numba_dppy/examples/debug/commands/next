@@ -15,7 +15,7 @@ next
 # 29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
 next
 # Expected:
-# Continuing.
+# ...
 # Done...
 echo Done\n
 quit

@@ -15,5 +15,5 @@ File simple_sum.py:
 All functions matching regular expression "__main__":
 20:         void __main__::data_parallel_sum(DPPYArray<float, 1, C, mutable, aligned>, DPPYArray<float, 1, C, mutable, aligned>, DPPYArray<float, 1, C, mutable, aligned>);
 (gdb) continue
-Continuing.
+...
 Done...
