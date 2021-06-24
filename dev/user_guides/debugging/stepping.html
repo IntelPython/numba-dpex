@@ -193,57 +193,57 @@
   <div class="section" id="stepping">
 <h1>Stepping<a class="headerlink" href="#stepping" title="Permalink to this headline">¶</a></h1>
 <p>Consider the following two examples. <code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/debug/simple_sum.py</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
-<span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">dpctl</span>
-<span class="linenos"> 4</span>
-<span class="linenos"> 5</span>
-<span class="linenos"> 6</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="linenos"> 7</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-<span class="linenos"> 8</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="linenos"> 9</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-<span class="linenos">10</span>
-<span class="linenos">11</span>
-<span class="linenos">12</span><span class="n">global_size</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="linenos">13</span><span class="n">N</span> <span class="o">=</span> <span class="n">global_size</span>
-<span class="linenos">14</span>
-<span class="linenos">15</span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-<span class="linenos">16</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-<span class="linenos">17</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos">16</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
+<span class="linenos">17</span><span class="kn">import</span> <span class="nn">dpctl</span>
 <span class="linenos">18</span>
-<span class="linenos">19</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">gpu_queue</span><span class="p">:</span>
-<span class="linenos">20</span>    <span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
-<span class="linenos">21</span>
-<span class="linenos">22</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
+<span class="linenos">19</span>
+<span class="linenos">20</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">21</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+<span class="linenos">22</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">23</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="linenos">24</span>
+<span class="linenos">25</span>
+<span class="linenos">26</span><span class="n">global_size</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="linenos">27</span><span class="n">N</span> <span class="o">=</span> <span class="n">global_size</span>
+<span class="linenos">28</span>
+<span class="linenos">29</span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">30</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">31</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="linenos">32</span>
+<span class="linenos">33</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">gpu_queue</span><span class="p">:</span>
+<span class="linenos">34</span>    <span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+<span class="linenos">35</span>
+<span class="linenos">36</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Example with a nested function <code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/debug/simple_dppy_func.py</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
-<span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">dpctl</span>
-<span class="linenos"> 4</span>
-<span class="linenos"> 5</span>
-<span class="linenos"> 6</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="linenos"> 7</span><span class="k">def</span> <span class="nf">func_sum</span><span class="p">(</span><span class="n">a_in_func</span><span class="p">,</span> <span class="n">b_in_func</span><span class="p">):</span>
-<span class="linenos"> 8</span>    <span class="n">result</span> <span class="o">=</span> <span class="n">a_in_func</span> <span class="o">+</span> <span class="n">b_in_func</span>
-<span class="linenos"> 9</span>    <span class="k">return</span> <span class="n">result</span>
-<span class="linenos">10</span>
-<span class="linenos">11</span>
-<span class="linenos">12</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="linenos">13</span><span class="k">def</span> <span class="nf">kernel_sum</span><span class="p">(</span><span class="n">a_in_kernel</span><span class="p">,</span> <span class="n">b_in_kernel</span><span class="p">,</span> <span class="n">c_in_kernel</span><span class="p">):</span>
-<span class="linenos">14</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="linenos">15</span>    <span class="n">c_in_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">func_sum</span><span class="p">(</span><span class="n">a_in_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">b_in_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-<span class="linenos">16</span>
-<span class="linenos">17</span>
-<span class="linenos">18</span><span class="n">global_size</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="linenos">19</span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-<span class="linenos">20</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-<span class="linenos">21</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="linenos">22</span>
-<span class="linenos">23</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">gpu_queue</span><span class="p">:</span>
-<span class="linenos">24</span>    <span class="n">kernel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos">16</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
+<span class="linenos">17</span><span class="kn">import</span> <span class="nn">dpctl</span>
+<span class="linenos">18</span>
+<span class="linenos">19</span>
+<span class="linenos">20</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">21</span><span class="k">def</span> <span class="nf">func_sum</span><span class="p">(</span><span class="n">a_in_func</span><span class="p">,</span> <span class="n">b_in_func</span><span class="p">):</span>
+<span class="linenos">22</span>    <span class="n">result</span> <span class="o">=</span> <span class="n">a_in_func</span> <span class="o">+</span> <span class="n">b_in_func</span>
+<span class="linenos">23</span>    <span class="k">return</span> <span class="n">result</span>
+<span class="linenos">24</span>
 <span class="linenos">25</span>
-<span class="linenos">26</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
+<span class="linenos">26</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">27</span><span class="k">def</span> <span class="nf">kernel_sum</span><span class="p">(</span><span class="n">a_in_kernel</span><span class="p">,</span> <span class="n">b_in_kernel</span><span class="p">,</span> <span class="n">c_in_kernel</span><span class="p">):</span>
+<span class="linenos">28</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">29</span>    <span class="n">c_in_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">func_sum</span><span class="p">(</span><span class="n">a_in_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">b_in_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<span class="linenos">30</span>
+<span class="linenos">31</span>
+<span class="linenos">32</span><span class="n">global_size</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="linenos">33</span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">34</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">35</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="linenos">36</span>
+<span class="linenos">37</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">gpu_queue</span><span class="p">:</span>
+<span class="linenos">38</span>    <span class="n">kernel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+<span class="linenos">39</span>
+<span class="linenos">40</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -258,92 +258,92 @@
 <div class="section" id="step">
 <h2><code class="docutils literal notranslate"><span class="pre">step</span></code><a class="headerlink" href="#step" title="Permalink to this headline">¶</a></h2>
 <p>Run debugger and do following commands:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ NUMBA_OPT=0 gdb-oneapi -q -command commands/step_sum python
-(gdb) set trace-commands on
-(gdb) set pagination off
-(gdb) set breakpoint pending on
-(gdb) break simple_sum.py:22
-(gdb) run simple_sum.py
-...
-Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:22
-22           i = dppy.get_global_id(0)
-(gdb) step
-[Switching to Thread 1.1073742080 lane 0]
-Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at simple_sum.py:22
-22          i = dppy.get_global_id(0)
-(gdb) step
-23          c[i] = a[i] + b[i]
-(gdb) continue
-Continuing.
-Done...
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/step_sum python
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_sum.py:22</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_sum.py</span>
+<span class="go">...</span>
+<span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:22</span>
+<span class="go">22           i = dppy.get_global_id(0)</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">step</span>
+<span class="go">[Switching to Thread 1.1073742080 lane 0]</span>
+<span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at simple_sum.py:22</span>
+<span class="go">22          i = dppy.get_global_id(0)</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">step</span>
+<span class="go">23          c[i] = a[i] + b[i]</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="go">...</span>
+<span class="go">Done...</span>
 </pre></div>
 </div>
 <p>Another use of stepping when there is a nested function. Below example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ NUMBA_OPT=0 gdb-oneapi -q -command commands/step_dppy_func python
-(gdb) set trace-commands on
-(gdb) set pagination off
-(gdb) set breakpoint pending on
-(gdb) break simple_dppy_func.py:29
-(gdb) run simple_dppy_func.py
-...
-Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:29
-29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
-(gdb) step
-[Switching to Thread 1.1073742080 lane 0]
-Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:29
-29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
-(gdb) step
-__main__::func_sum () at simple_dppy_func.py:22
-22          result = a_in_func + b_in_func
-(gdb) continue
-Continuing.
-Done...
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/step_dppy_func python
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_dppy_func.py:29</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_dppy_func.py</span>
+<span class="go">...</span>
+<span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:29</span>
+<span class="go">29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">step</span>
+<span class="go">[Switching to Thread 1.1073742080 lane 0]</span>
+<span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:29</span>
+<span class="go">29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">step</span>
+<span class="go">__main__::func_sum () at simple_dppy_func.py:22</span>
+<span class="go">22          result = a_in_func + b_in_func</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="go">...</span>
+<span class="go">Done...</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="stepi">
 <h2><code class="docutils literal notranslate"><span class="pre">stepi</span></code><a class="headerlink" href="#stepi" title="Permalink to this headline">¶</a></h2>
 <p>The command allows you to move forward in machine instructions. The example uses an additional command <code class="docutils literal notranslate"><span class="pre">x/i</span> <span class="pre">$pc</span></code>, which prints the instruction to be executed.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ NUMBA_OPT=0 gdb-oneapi -q -command commands/stepi python
-(gdb) set trace-commands on
-(gdb) set pagination off
-(gdb) set breakpoint pending on
-(gdb) break simple_dppy_func.py:29
-(gdb) run simple_dppy_func.py
-...
-Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:29
-29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
-(gdb) stepi
-0x00000000fffeb630      29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
-(gdb) stepi
-[Switching to Thread 1.1073742080 lane 0]
-Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:29
-29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
-(gdb) continue
-Continuing.
-Done...
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/stepi python
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_dppy_func.py:29</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_dppy_func.py</span>
+<span class="go">...</span>
+<span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:29</span>
+<span class="go">29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">stepi</span>
+<span class="go">0x00000000fffeb630      29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">stepi</span>
+<span class="go">[Switching to Thread 1.1073742080 lane 0]</span>
+<span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:29</span>
+<span class="go">29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="go">...</span>
+<span class="go">Done...</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="next">
 <h2><code class="docutils literal notranslate"><span class="pre">next</span></code><a class="headerlink" href="#next" title="Permalink to this headline">¶</a></h2>
 <p>Stepping-like behavior, but the command does not go into nested functions.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ NUMBA_OPT=0 gdb-oneapi -q -command commands/next python
-(gdb) set trace-commands on
-(gdb) set pagination off
-(gdb) set breakpoint pending on
-(gdb) break simple_dppy_func.py:29
-(gdb) run simple_dppy_func.py
-...
-Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:29
-29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
-(gdb) next
-[Switching to Thread 1.1073742080 lane 0]
-Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:29
-29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
-(gdb) next
-Continuing.
-Done...
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/next python
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_dppy_func.py:29</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_dppy_func.py</span>
+<span class="go">...</span>
+<span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:29</span>
+<span class="go">29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">next</span>
+<span class="go">[Switching to Thread 1.1073742080 lane 0]</span>
+<span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:29</span>
+<span class="go">29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">next</span>
+<span class="go">...</span>
+<span class="go">Done...</span>
 </pre></div>
 </div>
 </div>
@@ -353,29 +353,29 @@ Done...
 This happens because you are debugging a multi-threaded program, so multiple events may be received from different threads.
 This is the default behavior, but you can configure it for more efficient debugging.
 To ensure the current thread executes a single line without interference, set the scheduler-locking setting to on or step:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ NUMBA_OPT=0 gdb-oneapi -q -command commands/sheduler_locking python
-(gdb) set trace-commands on
-(gdb) set pagination off
-(gdb) set breakpoint pending on
-(gdb) break simple_dppy_func.py:29
-(gdb) run simple_dppy_func.py
-...
-Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:29
-29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
-(gdb) set scheduler-locking step
-(gdb) step
-__main__::func_sum () at dppy_func.py:22
-22          result = a_in_func + b_in_func
-(gdb) step
-23          return result
-(gdb) continue
-Continuing.
-[Switching to Thread 1.1073742080 lane 0]
-Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:29
-29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
-(gdb) continue
-Continuing.
-Done...
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/sheduler_locking python
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_dppy_func.py:29</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_dppy_func.py</span>
+<span class="go">...</span>
+<span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:29</span>
+<span class="go">29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set scheduler-locking step</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">step</span>
+<span class="go">__main__::func_sum () at dppy_func.py:22</span>
+<span class="go">22          result = a_in_func + b_in_func</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">step</span>
+<span class="go">23          return result</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="go">...</span>
+<span class="go">[Switching to Thread 1.1073742080 lane 0]</span>
+<span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:29</span>
+<span class="go">29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="go">...</span>
+<span class="go">Done...</span>
 </pre></div>
 </div>
 <p>See also:</p>

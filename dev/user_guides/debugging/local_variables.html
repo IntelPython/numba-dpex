@@ -199,94 +199,151 @@
 <li><p><code class="samp docutils literal notranslate"><span class="pre">NUMBA_OPT=1</span></code> or higher - some variables may be optimized out.</p></li>
 </ul>
 </div>
-<p>Consider Numba-dppy kernel code <code class="file docutils literal notranslate"><span class="pre">simple_sum.py</span></code></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
-<span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">dpctl</span>
-<span class="linenos"> 4</span>
-<span class="linenos"> 5</span>
-<span class="linenos"> 6</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="linenos"> 7</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-<span class="linenos"> 8</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="linenos"> 9</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-<span class="linenos">10</span>
-<span class="linenos">11</span>
-<span class="linenos">12</span><span class="n">global_size</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="linenos">13</span><span class="n">N</span> <span class="o">=</span> <span class="n">global_size</span>
-<span class="linenos">14</span>
-<span class="linenos">15</span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-<span class="linenos">16</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-<span class="linenos">17</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<p>Consider Numba-dppy kernel code <code class="file docutils literal notranslate"><span class="pre">sum_local_vars.py</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos">16</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
+<span class="linenos">17</span><span class="kn">import</span> <span class="nn">dpctl</span>
 <span class="linenos">18</span>
-<span class="linenos">19</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">gpu_queue</span><span class="p">:</span>
-<span class="linenos">20</span>    <span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
-<span class="linenos">21</span>
-<span class="linenos">22</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
+<span class="linenos">19</span>
+<span class="linenos">20</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">21</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+<span class="linenos">22</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">23</span>    <span class="n">l1</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.5</span>
+<span class="linenos">24</span>    <span class="n">l2</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.3</span>
+<span class="linenos">25</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l1</span> <span class="o">+</span> <span class="n">l2</span>
+<span class="linenos">26</span>
+<span class="linenos">27</span>
+<span class="linenos">28</span><span class="n">global_size</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="linenos">29</span><span class="n">N</span> <span class="o">=</span> <span class="n">global_size</span>
+<span class="linenos">30</span>
+<span class="linenos">31</span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">32</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">33</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="linenos">34</span>
+<span class="linenos">35</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">gpu_queue</span><span class="p">:</span>
+<span class="linenos">36</span>    <span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+<span class="linenos">37</span>
+<span class="linenos">38</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="section" id="info-locals">
 <h2><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code><a class="headerlink" href="#info-locals" title="Permalink to this headline">¶</a></h2>
 <p>Run GDB debugger:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ NUMBA_OPT=0 gdb-oneapi -q -command commands/local_variables python
-(gdb) set trace-commands on
-(gdb) set pagination off
-(gdb) set breakpoint pending on
-(gdb) break simple_sum.py:22
-(gdb) run simple_sum.py
-...
-Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:22
-   22           i = dppy.get_global_id(0)
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/local_variables_0 python
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break sum_local_vars.py:22</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run sum_local_vars.py</span>
 </pre></div>
 </div>
 <p>GDB output on “no optimization” level <code class="docutils literal notranslate"><span class="pre">NUMBA_OPT=0</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">info</span> <span class="nb">locals</span>
-<span class="n">a</span> <span class="o">=</span> <span class="s2">&quot;@</span><span class="se">\001\000\000\000\000\000\000</span><span class="s2"> </span><span class="se">\000\000\000\000\000\000\000</span><span class="s2">@A</span><span class="se">\177</span><span class="s2">YUU</span><span class="se">\000\000\030\a\200</span><span class="s2">YUU</span><span class="se">\000\000\000\000\000\000</span><span class="s2">U</span><span class="se">\003\000\000\241\000\000\000\000\000\000\000\240</span><span class="s2">C</span><span class="se">\177</span><span class="s2">YUU</span><span class="se">\000</span><span class="s2">&quot;</span>
-<span class="n">b</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\000\003\000\000\000\000\000\000</span><span class="s2"> </span><span class="se">\000\000\000\000\000\000\000\200</span><span class="s2">B</span><span class="se">\177</span><span class="s2">YUU</span><span class="se">\000\000\060\b\200</span><span class="s2">YUU</span><span class="se">\000\000\000\000\000\000</span><span class="s2">U</span><span class="se">\003\000\000</span><span class="s2">!</span><span class="se">\000\000\000\000\000\000\000\060\304\357</span><span class="s2">YUU</span><span class="se">\000</span><span class="s2">&quot;</span>
-<span class="n">c</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\000</span><span class="s2">d</span><span class="se">\356</span><span class="s2">Y</span><span class="se">\001\000</span><span class="s2">`</span><span class="se">\000</span><span class="s2">(</span><span class="se">\n</span><span class="s2">@&amp;</span><span class="se">\240\001</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\000</span><span class="s1">&#39;</span> <span class="o">&lt;</span><span class="n">repeats</span> <span class="mi">15</span> <span class="n">times</span><span class="o">&gt;</span><span class="p">,</span> <span class="s2">&quot;U</span><span class="se">\000\000</span><span class="s2">p</span><span class="se">\025\000\000\000\000\000\000\000\000\356</span><span class="s2">YUU</span><span class="se">\000\000\000</span><span class="s2">i</span><span class="se">\356</span><span class="s2">Y</span><span class="se">\001\000</span><span class="s2">`&quot;</span>
-<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">__ocl_dbg_gid0</span> <span class="o">=</span> <span class="mi">4</span>
-<span class="n">__ocl_dbg_gid1</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">__ocl_dbg_gid2</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">__ocl_dbg_lid0</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">__ocl_dbg_lid1</span> <span class="o">=</span> <span class="mi">7</span>
-<span class="n">__ocl_dbg_lid2</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">__ocl_dbg_grid0</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="n">__ocl_dbg_grid1</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">__ocl_dbg_grid2</span> <span class="o">=</span> <span class="mi">0</span>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at sum_local_vars.py:22</span>
+<span class="go">22          i = dppy.get_global_id(0)</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">info locals</span>
+<span class="go">a = &#39;\000&#39; &lt;repeats 55 times&gt;</span>
+<span class="go">b = &#39;\000&#39; &lt;repeats 55 times&gt;</span>
+<span class="go">c = &#39;\000&#39; &lt;repeats 55 times&gt;</span>
+<span class="go">i = 0</span>
+<span class="go">l1 = 0</span>
+<span class="go">l2 = 0</span>
+<span class="go">__ocl_dbg_gid0 = 0</span>
+<span class="go">__ocl_dbg_gid1 = 0</span>
+<span class="go">__ocl_dbg_gid2 = 0</span>
+<span class="go">__ocl_dbg_lid0 = 0</span>
+<span class="go">__ocl_dbg_lid1 = 0</span>
+<span class="go">__ocl_dbg_lid2 = 0</span>
+<span class="go">__ocl_dbg_grid0 = 0</span>
+<span class="go">__ocl_dbg_grid1 = 0</span>
+<span class="go">__ocl_dbg_grid2 = 0</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">next</span>
+<span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at sum_local_vars.py:22</span>
+<span class="go">22          i = dppy.get_global_id(0)</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">next</span>
+<span class="go">23          l1 = a[i] + 2.5</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">next</span>
+<span class="go">24          l2 = b[i] * 0.3</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">info locals</span>
+<span class="go">a = &#39;\000&#39; &lt;repeats 55 times&gt;</span>
+<span class="go">b = &#39;\000&#39; &lt;repeats 16 times&gt;, &quot;\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000\000\000\240\016XUU\000\000\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000&quot;</span>
+<span class="go">c = &#39;\000&#39; &lt;repeats 16 times&gt;, &quot;\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000\000\000@\256WUU\000\000\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000&quot;</span>
+<span class="go">i = 8</span>
+<span class="go">l1 = 2.5931931659579277</span>
+<span class="go">l2 = 0</span>
+<span class="go">__ocl_dbg_gid0 = 0</span>
+<span class="go">__ocl_dbg_gid1 = 0</span>
+<span class="go">__ocl_dbg_gid2 = 0</span>
+<span class="go">__ocl_dbg_lid0 = 42949672970</span>
+<span class="go">__ocl_dbg_lid1 = 0</span>
+<span class="go">__ocl_dbg_lid2 = 93825037590528</span>
+<span class="go">__ocl_dbg_grid0 = 4612811918334230528</span>
+<span class="go">__ocl_dbg_grid1 = 0</span>
+<span class="go">__ocl_dbg_grid2 = 0</span>
 </pre></div>
 </div>
+<p>Since GDB debugger does not hit a line with target variable, the value of this variable is equal to 0. The true value of the variable <code class="docutils literal notranslate"><span class="pre">l1</span></code> is shown after stepping to line 22.</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">next</span>
+<span class="go">25          c[i] = l1 + l2</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">info locals</span>
+<span class="go">a = &#39;\000&#39; &lt;repeats 55 times&gt;</span>
+<span class="go">b = &#39;\000&#39; &lt;repeats 55 times&gt;</span>
+<span class="go">c = &#39;\000&#39; &lt;repeats 16 times&gt;, &quot;\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000\000\000@\256WUU\000\000\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000&quot;</span>
+<span class="go">i = 8</span>
+<span class="go">l1 = 2.5931931659579277</span>
+<span class="go">l2 = 0.22954882979393004</span>
+<span class="go">__ocl_dbg_gid0 = 0</span>
+<span class="go">__ocl_dbg_gid1 = 8</span>
+<span class="go">__ocl_dbg_gid2 = 8</span>
+<span class="go">__ocl_dbg_lid0 = 93825034429928</span>
+<span class="go">__ocl_dbg_lid1 = 0</span>
+<span class="go">__ocl_dbg_lid2 = 93825034429936</span>
+<span class="go">__ocl_dbg_grid0 = 4599075939470750515</span>
+<span class="go">__ocl_dbg_grid1 = 0</span>
+<span class="go">__ocl_dbg_grid2 = 0</span>
+</pre></div>
+</div>
+<p>When GDB debugger hits the last line of the kernel, <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code> command returns all the local variables with their values.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<dl class="simple">
+<dt>Known issues:</dt><dd><ul class="simple">
+<li><p>GDB debugger can show the variable values, but these values may be equal to 0 after the variable is explicitly deleted or the function scope is ended. For more information refer to <a class="reference external" href="https://numba.pydata.org/numba-doc/latest/developer/live_variable_analysis.html?highlight=delete#live-variable-analysis">Numba variable policy</a>.</p></li>
+</ul>
+</dd>
+</dl>
+</div>
 <p>GDB output on “O1 optimization” level <code class="docutils literal notranslate"><span class="pre">NUMBA_OPT=1</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">(</span>gdb<span class="o">)</span> info locals
-<span class="nv">__ocl_dbg_gid0</span> <span class="o">=</span> <span class="m">0</span>
-<span class="nv">__ocl_dbg_gid1</span> <span class="o">=</span> <span class="m">0</span>
-<span class="nv">__ocl_dbg_gid2</span> <span class="o">=</span> <span class="m">0</span>
-<span class="nv">__ocl_dbg_lid0</span> <span class="o">=</span> <span class="m">0</span>
-<span class="nv">__ocl_dbg_lid1</span> <span class="o">=</span> <span class="m">0</span>
-<span class="nv">__ocl_dbg_lid2</span> <span class="o">=</span> <span class="m">0</span>
-<span class="nv">__ocl_dbg_grid0</span> <span class="o">=</span> <span class="m">0</span>
-<span class="nv">__ocl_dbg_grid1</span> <span class="o">=</span> <span class="m">0</span>
-<span class="nv">__ocl_dbg_grid2</span> <span class="o">=</span> <span class="m">0</span>
-<span class="nv">i</span> <span class="o">=</span> <span class="m">0</span>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at sum_local_vars.py:22</span>
+<span class="go">22           i = dppy.get_global_id(0)</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">info locals</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">(gdb) info locals</span>
+<span class="go">__ocl_dbg_gid0 = 8</span>
+<span class="go">__ocl_dbg_gid1 = 0</span>
+<span class="go">__ocl_dbg_gid2 = 0</span>
+<span class="go">__ocl_dbg_lid0 = 8</span>
+<span class="go">__ocl_dbg_lid1 = 0</span>
+<span class="go">__ocl_dbg_lid2 = 0</span>
+<span class="go">__ocl_dbg_grid0 = 0</span>
+<span class="go">__ocl_dbg_grid1 = 0</span>
+<span class="go">__ocl_dbg_grid2 = 0</span>
+<span class="go">i = 0</span>
+<span class="go">l1 = 0</span>
+<span class="go">l2 = 0</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The GDB debugger does not show the local variables <code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">b</span></code> and <code class="docutils literal notranslate"><span class="pre">c</span></code>, they are optimized out on “O1” optimization level.</p>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<dl class="simple">
-<dt>Known issues:</dt><dd><ul class="simple">
-<li><p>GDB debugger can show the variable values, but these values may not match the actual value of the referred variables.</p></li>
-</ul>
-</dd>
-</dl>
-</div>
 </div>
 <div class="section" id="print-variable">
 <h2><code class="docutils literal notranslate"><span class="pre">print</span> <span class="pre">variable</span></code><a class="headerlink" href="#print-variable" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(gdb) print i
-$1 = 93823560581120
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">print a</span>
+<span class="gp">$</span><span class="nv">1</span> <span class="o">=</span> <span class="s1">&#39;\000&#39;</span> &lt;repeats <span class="m">55</span> times&gt;
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">print l1</span>
+<span class="gp">$</span><span class="nv">3</span> <span class="o">=</span> <span class="m">2</span>.5931931659579277
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">print l2</span>
+<span class="gp">$</span><span class="nv">4</span> <span class="o">=</span> <span class="m">0</span>.22954882979393004
 </pre></div>
 </div>
 <div class="admonition note">
@@ -302,10 +359,15 @@ $1 = 93823560581120
 <div class="section" id="ptype-variable">
 <h2><code class="docutils literal notranslate"><span class="pre">ptype</span> <span class="pre">variable</span></code><a class="headerlink" href="#ptype-variable" title="Permalink to this headline">¶</a></h2>
 <p>Variable type may be printed by the command <code class="docutils literal notranslate"><span class="pre">ptype</span> <span class="pre">variable</span></code> and <code class="docutils literal notranslate"><span class="pre">whatis</span> <span class="pre">variable</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">ptype</span> <span class="n">i</span>
-<span class="nb">type</span> <span class="o">=</span> <span class="n">i64</span>
-<span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">whatis</span> <span class="n">i</span>
-<span class="nb">type</span> <span class="o">=</span> <span class="n">i64</span>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">ptype a</span>
+<span class="go">type = byte [56]</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">whatis a</span>
+<span class="go">type = byte [56]</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">ptype l1</span>
+<span class="go">type = double</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">whatis l1</span>
+<span class="go">type = double</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
 </pre></div>
 </div>
 <p>See also:</p>

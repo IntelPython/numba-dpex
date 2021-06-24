@@ -246,20 +246,20 @@ Debug mode can be turned off on individual functions by setting <code class="doc
 </pre></div>
 </div>
 <p>Launch gdb and set a breakpoint in the kernel:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ gdb-oneapi -q --args python simple_sum.py
-<span class="o">(</span>gdb<span class="o">)</span> <span class="nb">break</span> simple_sum.py:22
-No <span class="nb">source</span> file named simple_sum.py.
-Make breakpoint pending on future shared library load? <span class="o">(</span>y or <span class="o">[</span>n<span class="o">])</span> y
-Breakpoint <span class="m">1</span> <span class="o">(</span>simple_sum.py:22<span class="o">)</span> pending.
-<span class="o">(</span>gdb<span class="o">)</span> run
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>gdb-oneapi -q --args python simple_sum.py
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_sum.py:22</span>
+<span class="go">No source file named simple_sum.py.</span>
+<span class="go">Make breakpoint pending on future shared library load? (y or [n]) y</span>
+<span class="go">Breakpoint 1 (simple_sum.py:22) pending.</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run</span>
 </pre></div>
 </div>
 <p>In the output you can see that the breakpoint was hit successfully:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Thread <span class="m">2</span>.2 hit Breakpoint <span class="m">1</span>, with SIMD lanes <span class="o">[</span><span class="m">0</span>-7<span class="o">]</span>, __main__::data_parallel_sum <span class="o">()</span> at simple_sum.py:22
-<span class="m">22</span>           <span class="nv">i</span> <span class="o">=</span> dppy.get_global_id<span class="o">(</span><span class="m">0</span><span class="o">)</span>
-<span class="o">(</span>gdb<span class="o">)</span> <span class="k">continue</span>
-Done...
-...
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:22</span>
+<span class="go">22           i = dppy.get_global_id(0)</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="go">Done...</span>
+<span class="go">...</span>
 </pre></div>
 </div>
 </div>

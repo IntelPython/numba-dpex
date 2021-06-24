@@ -6,43 +6,26 @@ Let's consider the work of the command ``backtrace`` in the following example ``
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_dppy_func.py
     :lines: 15-
     :linenos:
+    :lineno-match:
 
 .. note::
 
     Known issues:
         - The first line of the kernel and functions is hit twice. See the :ref:`single_stepping`.
 
-Run GDB debugger:
+The section presents two examples of using GDB to generate backtrace from a numa_dppy.kernel function.
+The first example presents the case where the kernel function does not invoke any other function.
+The second example presents the case where the kernel function invokes a numba_dppy.func.
 
-.. code-block:: bash
+Example 1:
 
-    export NUMBA_OPT=0
-    gdb-oneapi -q --args python simple_dppy_func.py
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/backtrace_kernel
+    :language: shell-session
 
-The call stack from the kernel and the nested function:
+Example 2:
 
-.. code-block:: bash
-
-    (gdb) break simple_dppy_func.py:14
-    Breakpoint 1 (simple_dppy_func.py:14) pending.
-    (gdb) run
-    Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:14
-    14          i = dppy.get_global_id(0)
-    (gdb) backtrace
-    #0  __main__::kernel_sum () at simple_dppy_func.py:14
-    (gdb) step
-    Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:14
-    14          i = dppy.get_global_id(0)
-    (gdb) step
-    15          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
-    (gdb) step
-    __main__::func_sum () at simple_dppy_func.py:8
-    8          result = a_in_func + b_in_func
-    (gdb) backtrace
-    #0  __main__::func_sum () at simple_dppy_func.py:8
-    #1  __main__::kernel_sum () at simple_dppy_func.py:15
-    (gdb) continue
-    Continuing.
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/backtrace
+    :language: shell-session
 
 See also:
 
