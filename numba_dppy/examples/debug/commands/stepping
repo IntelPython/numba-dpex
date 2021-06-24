@@ -22,7 +22,7 @@ backtrace
 # #1  __main__::kernel_sum () at simple_dppy_func.py:29
 continue
 # Expected:
-# Continuing.
+# ...
 # Done...
 echo Done\n
 quit

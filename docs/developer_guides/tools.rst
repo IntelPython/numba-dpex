@@ -6,12 +6,14 @@ Consider the following two examples. ``numba_dppy/examples/debug/simple_sum.py``
 .. literalinclude:: ../../numba_dppy/examples/debug/simple_sum.py
     :lines: 15-
     :linenos:
+    :lineno-match:
 
 Example of default Numba execution on a CPU:
 
 .. literalinclude:: ../../numba_dppy/examples/debug/njit_basic.py
     :lines: 15-
     :linenos:
+    :lineno-match:
 
 Getting the DWARF from binary file
 ----------------------------------
@@ -26,12 +28,11 @@ IGC will write number of dumps into ``/tmp/IntelIGC``.
 To read the DWARF of a kernel, a copy of the IGC generated kernel binary is needed.
 Run the Python script in a GDB debugger mode, and set a breakpoint in the kernel:
 
-.. code-block:: bash
+.. code-block:: shell-session
 
-    export NUMBA_OPT=1
-    gdb-oneapi -q --args python simple_sum.py
-    gdb-oneapi -q python 
-    (gdb) break simple_sum.py:8     # Assumes the kernel is in file simple_sum.py, at line 8
+    $ export NUMBA_OPT=1
+    $ gdb-oneapi -q --args python simple_sum.py
+    (gdb) break simple_sum.py:22
     (gdb) run
 
 Once the breakpoint is hit, the kernel has been generated and offloaded.

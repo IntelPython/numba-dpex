@@ -10,31 +10,29 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
-# limitations under the License.
+# limitations under the License.import numpy as np
 
 import numpy as np
 import numba_dppy as dppy
 import dpctl
 
 
-@dppy.func(debug=True)
-def func_sum(a_in_func, b_in_func):
-    result = a_in_func + b_in_func
-    return result
-
-
 @dppy.kernel(debug=True)
-def kernel_sum(a_in_kernel, b_in_kernel, c_in_kernel):
+def data_parallel_sum(a, b, c):
     i = dppy.get_global_id(0)
-    c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
+    l1 = a[i] + 2.5
+    l2 = b[i] * 0.3
+    c[i] = l1 + l2
 
 
 global_size = 10
-a = np.arange(global_size, dtype=np.float32)
-b = np.arange(global_size, dtype=np.float32)
-c = np.empty_like(a)
+N = global_size
+
+a = np.array(np.random.random(N), dtype=np.float32)
+b = np.array(np.random.random(N), dtype=np.float32)
+c = np.ones_like(a)
 
 with dpctl.device_context("opencl:gpu"):
-    kernel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
+    data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
 print("Done...")

@@ -14,7 +14,7 @@ continue
 # 22          result = a_in_func + b_in_func
 continue
 # Expected:
-# Continuing.
+# ...
 # Done...
 echo Done\n
 quit

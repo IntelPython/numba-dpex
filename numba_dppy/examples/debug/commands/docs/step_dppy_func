@@ -15,5 +15,5 @@ Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at s
 __main__::func_sum () at simple_dppy_func.py:22
 22          result = a_in_func + b_in_func
 (gdb) continue
-Continuing.
+...
 Done...

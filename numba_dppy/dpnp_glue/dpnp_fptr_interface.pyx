@@ -8,6 +8,7 @@ cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncName":  # need this na
     cdef enum DPNPFuncName "DPNPFuncName":
         DPNP_FN_ABSOLUTE
         DPNP_FN_ADD
+        DPNP_FN_ALL
         DPNP_FN_ARANGE
         DPNP_FN_ARCCOS
         DPNP_FN_ARCCOSH
@@ -123,6 +124,7 @@ cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncType":  # need this na
         DPNP_FT_LONG
         DPNP_FT_FLOAT
         DPNP_FT_DOUBLE
+        DPNP_FT_BOOL
 
 cdef extern from "dpnp_iface_fptr.hpp":
     struct DPNPFuncData:
@@ -134,6 +136,8 @@ cdef extern from "dpnp_iface_fptr.hpp":
 
 
 cdef DPNPFuncName get_DPNPFuncName_from_str(name):
+    if name == "dpnp_all":
+        return DPNPFuncName.DPNP_FN_ALL
     if name == "dpnp_argmax":
         return DPNPFuncName.DPNP_FN_ARGMAX
     if name == "dpnp_argmin":
@@ -245,12 +249,14 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
 cdef DPNPFuncType get_DPNPFuncType_from_str(name):
     if name == "float32":
         return DPNPFuncType.DPNP_FT_FLOAT
-    elif name == "int32" or name == "uint32" or name == "bool":
+    elif name == "int32" or name == "uint32":
         return DPNPFuncType.DPNP_FT_INT
     elif name == "float64":
         return DPNPFuncType.DPNP_FT_DOUBLE
     elif name == "int64" or name == "uint64":
         return DPNPFuncType.DPNP_FT_LONG
+    elif name == "bool":
+        return DPNPFuncType.DPNP_FT_BOOL
     else:
         return DPNPFuncType.DPNP_FT_NONE
 
