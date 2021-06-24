@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# A wrapper to connect to the SPIR-V binaries (Tools, Translator).
-# Currently, connect to commandline interface.
+"""A wrapper to connect to the SPIR-V binaries (Tools, Translator)."""
+
 import sys
 import os
 from subprocess import check_call, CalledProcessError, call
@@ -42,12 +42,6 @@ class CmdLine:
         """
         Disassemble a spirv module.
 
-        Possible flags to be used with spirv-dis:
-        - "--no-indent"
-        - "--no-header"
-        - "--raw-id"
-        - "--offsets"
-
         Args:
             ipath: Input file path of the spirv module.
             opath: Output file path of the disassembled spirv module.
@@ -68,17 +62,6 @@ class CmdLine:
     def optimize(self, ipath, opath):
         """
         Optimize a spirv module.
-
-        Possible flags to be used with spirv-dis:
-        - "--strip-debug",
-        - "--freeze-spec-const",
-        - "--eliminate-dead-const",
-        - "--fold-spec-const-op-composite",
-        - "--set-spec-const-default-value '<spec id>:<default value> ...'",
-        - "--unify-const",
-        - "--inline-entry-points-exhaustive",
-        - "--flatten-decorations",
-        - "--compact-ids",
 
         Args:
             ipath: Input file path of the spirv module.
@@ -251,10 +234,18 @@ class Module(object):
         return spirv
 
 
-# Public llvm_to_spirv function ###############################################
-
-
 def llvm_to_spirv(context, llvmir, llvmbc):
+    """
+    Generate SPIR-V from LLVM Bitcode.
+
+    Args:
+        context: Numba target context.
+        llvmir: LLVM IR.
+        llvmbc: LLVM Bitcode.
+
+    Returns:
+        spirv: SPIR-V binary.
+    """
     mod = Module(context, llvmir, llvmbc)
     mod.load_llvm()
     return mod.finalize()
