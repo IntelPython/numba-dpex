@@ -55,7 +55,7 @@ GDB output on "O1 optimization" level ``NUMBA_OPT=1``:
 .. note::
 
     Known issues:
-      - Kernel variables are shown in intermidiate representation view (with "$" sign). The actual values of the variables are currently not available.
+      - Kernel variables are shown in intermidiate representation view (with "$" sign). The actual values of the arrays are currently not available.
 
 ``ptype variable``
 ------------------
@@ -63,7 +63,7 @@ GDB output on "O1 optimization" level ``NUMBA_OPT=1``:
 Variable type may be printed by the command ``ptype variable`` and ``whatis variable``:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
-    :lines: 73-81
+    :lines: 73-80
 
 See also:
 

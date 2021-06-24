@@ -7,10 +7,6 @@ Let's consider the work of the command ``backtrace`` in the following example ``
     :lines: 15-
     :linenos:
 
-.. note::
-
-    Known issues:
-        - The first line of the kernel and functions is hit twice. See the :ref:`single_stepping`.
 
 Run GDB debugger:
 

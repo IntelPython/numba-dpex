@@ -13,10 +13,6 @@ Example with a nested function ``numba_dppy/examples/debug/simple_dppy_func.py``
     :lines: 15-
     :linenos:
 
-.. note::
-
-    Known issues:
-        - The first line of the kernel and functions is hit twice. See :ref:`single_stepping`.
 
 ``step``
 --------
@@ -46,7 +42,7 @@ Stepping-like behavior, but the command does not go into nested functions.
 .. _single_stepping:
 
 ``set scheduler-locking step``
--------------------------------
+------------------------------
 
 The first line of the kernel and functions is debugged twice.
 This happens because you are debugging a multi-threaded program, so multiple events may be received from different threads.
