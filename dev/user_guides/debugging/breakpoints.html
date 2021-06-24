@@ -199,6 +199,7 @@
 <li><p>break function</p></li>
 <li><p>break filename:function</p></li>
 <li><p>break filename:linenumber</p></li>
+<li><p>break … if cond</p></li>
 </ul>
 </dd>
 <dt>See also:</dt><dd><ul class="simple">
@@ -225,7 +226,7 @@
 <span class="linenos">30</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 <span class="linenos">31</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 <span class="linenos">32</span>
-<span class="linenos">33</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">gpu_queue</span><span class="p">:</span>
+<span class="linenos">33</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">):</span>
 <span class="linenos">34</span>    <span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
 <span class="linenos">35</span>
 <span class="linenos">36</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
@@ -258,7 +259,7 @@ gdb-oneapi -q --args python simple_sum.py
 </div>
 </div>
 <div class="section" id="break-filename-linenumber">
-<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">filename:</span> <span class="pre">linenumber</span></code><a class="headerlink" href="#break-filename-linenumber" title="Permalink to this headline">¶</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">filename:linenumber</span></code><a class="headerlink" href="#break-filename-linenumber" title="Permalink to this headline">¶</a></h2>
 <p>GDB output:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/break_line_number python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
@@ -279,7 +280,7 @@ gdb-oneapi -q --args python simple_sum.py
 </div>
 </div>
 <div class="section" id="break-filename-function">
-<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">filename:</span> <span class="pre">function</span></code><a class="headerlink" href="#break-filename-function" title="Permalink to this headline">¶</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">filename:function</span></code><a class="headerlink" href="#break-filename-function" title="Permalink to this headline">¶</a></h2>
 <p>GDB output:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/break_file_func python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
@@ -293,6 +294,26 @@ gdb-oneapi -q --args python simple_sum.py
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
 <span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at simple_sum.py:20</span>
 <span class="go">20          @dppy.kernel(debug=True)</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="go">...</span>
+<span class="go">Done...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="break-if-cond">
+<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">…</span> <span class="pre">if</span> <span class="pre">cond</span></code><a class="headerlink" href="#break-if-cond" title="Permalink to this headline">¶</a></h2>
+<p>GDB output:</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/break_conditional python
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_sum.py:23 if i == 1</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_sum.py</span>
+<span class="go">...</span>
+<span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lane 1, __main__::data_parallel_sum () at simple_sum.py:23</span>
+<span class="go">23          c[i] = a[i] + b[i]</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">print i</span>
+<span class="gp">$</span><span class="nv">1</span> <span class="o">=</span> <span class="m">1</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
 <span class="go">...</span>
 <span class="go">Done...</span>
@@ -324,7 +345,7 @@ gdb-oneapi -q --args python simple_sum.py
 <span class="linenos">34</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 <span class="linenos">35</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 <span class="linenos">36</span>
-<span class="linenos">37</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">gpu_queue</span><span class="p">:</span>
+<span class="linenos">37</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">):</span>
 <span class="linenos">38</span>    <span class="n">kernel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
 <span class="linenos">39</span>
 <span class="linenos">40</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
