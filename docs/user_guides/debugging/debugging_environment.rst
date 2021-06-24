@@ -52,6 +52,7 @@ You can check the correctness of the work with the following example:
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
     :lines: 15-
     :linenos:
+    :lineno-match:
 
 Launch gdb and set a breakpoint in the kernel:
 
