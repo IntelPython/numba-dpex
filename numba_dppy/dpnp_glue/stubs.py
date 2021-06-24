@@ -20,6 +20,9 @@ class dpnp(Stub):
 
     _description_ = "<dpnp>"
 
+    class all(Stub):
+        pass
+
     class amax(Stub):
         pass
 
