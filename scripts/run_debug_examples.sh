@@ -8,7 +8,9 @@ check() {
 }
 
 run_checks() {
-  check commands/local_variables
+  check commands/function_breakpoint
+  check commands/local_variables_0
+  check commands/local_variables_1
   check commands/next
   check commands/sheduler_locking
   check commands/stepi
