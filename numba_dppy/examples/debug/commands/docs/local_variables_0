@@ -2,11 +2,11 @@ $ NUMBA_OPT=0 gdb-oneapi -q -command commands/local_variables_0 python
 (gdb) set trace-commands on
 (gdb) set pagination off
 (gdb) set breakpoint pending on
-(gdb) break sum_local_vars.py:21
+(gdb) break sum_local_vars.py:22
 (gdb) run sum_local_vars.py
 ...
-Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at sum_local_vars.py:8
-21           i = dppy.get_global_id(0)
+Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at sum_local_vars.py:22
+22          i = dppy.get_global_id(0)
 (gdb) info locals
 a = '\000' <repeats 55 times>
 b = '\000' <repeats 55 times>
@@ -24,12 +24,12 @@ __ocl_dbg_grid0 = 0
 __ocl_dbg_grid1 = 0
 __ocl_dbg_grid2 = 0
 (gdb) next
-Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at sum_local_vars.py:8
-21           i = dppy.get_global_id(0)
+Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at sum_local_vars.py:22
+22          i = dppy.get_global_id(0)
 (gdb) next
-22           l1 = a[i] + 2.5
+23          l1 = a[i] + 2.5
 (gdb) next
-23           l2 = b[i] * 0.3
+24          l2 = b[i] * 0.3
 (gdb) info locals
 a = '\000' <repeats 55 times>
 b = '\000' <repeats 16 times>, "\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000\000\000\240\016XUU\000\000\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000"
@@ -47,7 +47,7 @@ __ocl_dbg_grid0 = 4612811918334230528
 __ocl_dbg_grid1 = 0
 __ocl_dbg_grid2 = 0
 (gdb) next
-24          c[i] = l1 + l2
+25          c[i] = l1 + l2
 (gdb) info locals
 a = '\000' <repeats 55 times>
 b = '\000' <repeats 55 times>
@@ -79,5 +79,5 @@ type = double
 (gdb) whatis l1
 type = double
 (gdb) continue
-Continuing.
+...
 Done...

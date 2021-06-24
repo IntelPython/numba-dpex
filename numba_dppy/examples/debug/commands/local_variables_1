@@ -2,12 +2,12 @@
 set trace-commands on
 set pagination off
 set breakpoint pending on
-break sum_local_vars.py:21
+break sum_local_vars.py:22
 run sum_local_vars.py
 # Expected:
 # ...
-# Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at sum_local_vars.py:8
-# 21           i = dppy.get_global_id(0)
+# Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at sum_local_vars.py:22
+# 22           i = dppy.get_global_id(0)
 info locals
 (gdb) info locals
 # __ocl_dbg_gid0 = 8
@@ -24,7 +24,7 @@ info locals
 # l2 = 0
 continue
 # Expected:
-# Continuing.
+# ...
 # Done...
 echo Done\n
 quit

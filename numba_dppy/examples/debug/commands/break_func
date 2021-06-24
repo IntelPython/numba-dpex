@@ -14,7 +14,7 @@ continue
 # 20          @dppy.kernel(debug=True)
 continue
 # Expected:
-# Continuing.
+# ...
 # Done...
 echo Done\n
 quit

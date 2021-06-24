@@ -39,10 +39,12 @@ For example, given the following Numba-dppy kernel code (:file:`simple_sum.py`):
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
     :lines: 15-
     :linenos:
+    :lineno-match:
 
 Running GDB and creating breakpoint in kernel:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/simple_sum
+    :language: shell-session
 
 .. _debugging-features-and-limitations:
 

@@ -18,7 +18,7 @@ info functions __main__
 # 20:         void __main__::data_parallel_sum(DPPYArray<float, 1, C, mutable, aligned>, DPPYArray<float, 1, C, mutable, aligned>, DPPYArray<float, 1, C, mutable, aligned>);
 continue
 # Expected:
-# Continuing.
+# ...
 # Done...
 echo Done\n
 quit
