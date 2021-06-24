@@ -32,7 +32,7 @@ a = np.array(np.random.random(N), dtype=np.float32)
 b = np.array(np.random.random(N), dtype=np.float32)
 c = np.ones_like(a)
 
-with dpctl.device_context("opencl:gpu") as gpu_queue:
+with dpctl.device_context("opencl:gpu"):
     data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
 print("Done...")
