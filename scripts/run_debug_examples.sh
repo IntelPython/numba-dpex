@@ -17,6 +17,7 @@ run_checks() {
   check commands/step_sum
   check commands/simple_sum
   check commands/backtrace
+  check commands/backtrace_kernel
   check commands/break_func
   check commands/break_file_func
   check commands/break_line_number
