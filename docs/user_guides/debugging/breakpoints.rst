@@ -9,6 +9,7 @@ You have several ways to set breakpoints:
   - break function
   - break filename:function
   - break filename:linenumber
+  - break … if cond
 
 See also:
   - `GDB documentation of breakpoints`_.
@@ -37,24 +38,32 @@ GDB output:
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_func
     :language: shell-session
 
-``break filename: linenumber``
-------------------------------
+``break filename:linenumber``
+-----------------------------
 
 GDB output:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_line_number
     :language: shell-session
 
-``break filename: function``
-----------------------------
+``break filename:function``
+---------------------------
 
 GDB output:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_file_func
     :language: shell-session
 
+``break … if cond``
+-------------------
+
+GDB output:
+
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_conditional
+    :language: shell-session
+
 Breakpoints with nested functions
--------------------------------------
+---------------------------------
 
 Consider Numba-dppy kernel code. See source file ``numba_dppy/examples/debug/simple_dppy_func.py``:
 
