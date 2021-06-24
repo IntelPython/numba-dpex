@@ -1,0 +1,15 @@
+$ NUMBA_OPT=0 gdb-oneapi -q -command commands/break_file_func python
+(gdb) set trace-commands on
+(gdb) set pagination off
+(gdb) set breakpoint pending on
+(gdb) break simple_sum.py:data_parallel_sum
+(gdb) run simple_sum.py
+...
+Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:20
+20          @dppy.kernel(debug=True)
+(gdb) continue
+Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at simple_sum.py:20
+20          @dppy.kernel(debug=True)
+(gdb) continue
+Continuing.
+Done...
