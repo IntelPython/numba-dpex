@@ -176,6 +176,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="numba_dppy.utils.constants.html">numba_dppy.utils.constants module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="numba_dppy.utils.llvm_codegen_helpers.html">numba_dppy.utils.llvm_codegen_helpers module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dppy.utils.misc.html">numba_dppy.utils.misc module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="numba_dppy.utils.type_conversion_fns.html">numba_dppy.utils.type_conversion_fns module</a></li>
 </ul>
 </div>
@@ -288,6 +289,23 @@
 <span class="sig-name descname"><span class="pre">PRIVATE</span></span><em class="property"> <span class="pre">=</span> <span class="pre">0</span></em><a class="headerlink" href="#numba_dppy.utils.address_space.PRIVATE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dppy.utils.assert_no_return">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.utils.</span></span><span class="sig-name descname"><span class="pre">assert_no_return</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rettype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.utils.assert_no_return" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure the type of return is void/None.</p>
+<p>&#64;dppy.kernel does not allow users to return any value and this
+function raises TypeError when users do return something.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>rettype: Numba type representing the return value.</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>TypeError: Only None and types.void is allowed. In case</dt><dd><p>of any other type TypeError is raised.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py class">

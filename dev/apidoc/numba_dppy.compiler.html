@@ -268,8 +268,27 @@ this object.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dppy.compiler.compile_with_dppy">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">compile_with_dppy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.compile_with_dppy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">compile_with_dppy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.compile_with_dppy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compiles with Numba_dppy’s pipeline and returns the compiled result.</p>
+<dl>
+<dt>Args:</dt><dd><p>pyfunc: The Python function to be compiled.
+return_type: The Numba type of the return value.
+args: The list of arguments sent to the Python function.
+is_kernel (bool): Indicates whether the function is decorated</p>
+<blockquote>
+<div><p>with &#64;dppy.kernel or not.</p>
+</div></blockquote>
+<p>debug (bool): Flag to turn debug mode ON/OFF.</p>
+</dd>
+<dt>Returns:</dt><dd><p>cres: Compiled result.</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>TypeError: &#64;dppy.kernel does not allow users to return any</dt><dd><p>value. TypeError is raised when users do.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dppy.compiler.get_ordered_arg_access_types">
