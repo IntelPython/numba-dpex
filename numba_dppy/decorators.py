@@ -15,7 +15,7 @@
 import dpctl
 from numba.core import sigutils, types
 
-from numba_dppy.utils import npytypes_array_to_dppy_array
+from numba_dppy.utils import npytypes_array_to_dppy_array, assert_no_return
 
 from .compiler import (
     compile_kernel,
@@ -50,7 +50,7 @@ def autojit(debug=None, access_types=None):
 
 
 def _kernel_jit(signature, debug, access_types):
-    argtypes, restype = sigutils.normalize_signature(signature)
+    argtypes, rettype = sigutils.normalize_signature(signature)
     argtypes = tuple(
         [
             npytypes_array_to_dppy_array(ty)
@@ -60,9 +60,8 @@ def _kernel_jit(signature, debug, access_types):
         ]
     )
 
-    if restype is not None and restype != types.void:
-        msg = "DPPY kernel must have void return type but got {restype}"
-        raise TypeError(msg.format(restype=restype))
+    # Raises TypeError when users return anything inside @dppy.kernel.
+    assert_no_return(rettype)
 
     def _wrapped(pyfunc):
         current_queue = dpctl.get_current_queue()

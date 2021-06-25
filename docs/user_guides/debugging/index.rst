@@ -1,7 +1,7 @@
-Debugging with GDB
-==================
+Debugging with Intel® Distribution for GDB
+==========================================
 
-`numba-dppy` allows SYCL kernels to be debugged with the GDB debugger.
+Numba-dppy allows SYCL kernels to be debugged with Intel® Distribution for GDB.
 Setting the debug environment variable :envvar:`NUMBA_DPPY_DEBUGINFO`
 (e.g. :samp:`export NUMBA_DPPY_DEBUGINFO=1`) enables the emission of debug information.
 To disable debugging, unset the variable (e.g. :samp:`unset NUMBA_DPPY_DEBUGINFO`).
@@ -11,14 +11,13 @@ To disable debugging, unset the variable (e.g. :samp:`unset NUMBA_DPPY_DEBUGINFO
     Beware that enabling debug info significantly increases the memory consumption for each compiled kernel.
     For large application, this may cause out-of-memory error.
 
-Not all GDB features supported by `Numba` on CPUs are yet supported in `numba-dppy`.
+Not all GDB features supported by Numba on CPUs are yet supported in Numba-dppy.
 See :ref:`debugging-features-and-limitations`.
-
 
 Requirements
 ------------
 
-`Intel® Distribution for GDB` is needed for `numba-dppy`'s debugging features to work.
+`Intel® Distribution for GDB` is required for Numba-dppy's debugging features to work.
 `Intel® Distribution for GDB` is part of `Intel oneAPI` and
 the relevant documentation can be found at `Intel® Distribution for GDB documentation`_.
 
@@ -34,38 +33,17 @@ the relevant documentation can be found at `Intel® Distribution for GDB documen
 Example of GDB usage
 --------------------
 
-For example, given the following `numba-dppy` kernel code (:file:`simple_sum.py`):
+For example, given the following Numba-dppy kernel code (:file:`simple_sum.py`):
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
     :lines: 15-
     :linenos:
+    :lineno-match:
 
 Running GDB and creating breakpoint in kernel:
 
-.. code-block:: bash
-
-    $ gdb-oneapi -q --args python simple_sum.py
-    (gdb) break simple_sum.py:22  ### Set breakpoint in kernel
-    (gdb) run
-    ...
-    Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:22
-    8           i = dppy.get_global_id(0)
-    (gdb) next
-    23           c[i] = a[i] + b[i]
-    (gdb) continue
-    Done...
-    ...
-
-If breakpoint does not work and you see in output
-
-.. code-block:: bash
-
-    ...
-    intelgt: gdbserver-gt failed to start.  Check if igfxdcd is installed, or use
-    env variable INTELGT_AUTO_ATTACH_DISABLE=1 to disable auto-attach.
-    ...
-
-then see :ref:`debugging-machine-dcd-driver`.
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/simple_sum
+    :language: shell-session
 
 .. _debugging-features-and-limitations:
 
@@ -77,4 +55,4 @@ Features and Limitations
 
     features
     limitations
-    tools
+    common_issues

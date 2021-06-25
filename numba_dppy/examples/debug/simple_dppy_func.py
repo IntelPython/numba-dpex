@@ -34,7 +34,7 @@ a = np.arange(global_size, dtype=np.float32)
 b = np.arange(global_size, dtype=np.float32)
 c = np.empty_like(a)
 
-with dpctl.device_context("opencl:gpu") as gpu_queue:
+with dpctl.device_context("opencl:gpu"):
     kernel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
 print("Done...")

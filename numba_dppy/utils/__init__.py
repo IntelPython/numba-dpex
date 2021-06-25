@@ -33,6 +33,7 @@ from numba_dppy.utils.array_utils import (
     copy_to_usm_backed,
     copy_from_usm_backed,
 )
+from numba_dppy.utils.misc import assert_no_return
 
 __all__ = [
     "LLVMTypes",
@@ -48,4 +49,5 @@ __all__ = [
     "as_usm_backed",
     "copy_to_usm_backed",
     "copy_from_usm_backed",
+    "assert_no_return",
 ]

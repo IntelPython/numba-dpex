@@ -20,7 +20,7 @@ import dpctl
 import numpy as np
 from numba import njit
 import pytest
-from numba_dppy.tests._helper import skip_test
+from numba_dppy.tests._helper import skip_test, assert_auto_offloading
 
 list_of_filter_strs = [
     "opencl:gpu:0",
@@ -87,7 +87,7 @@ def test_binary_ops(filter_str, binary_op, input_arrays):
     def f(a, b):
         return binop(a, b)
 
-    with dpctl.device_context(filter_str):
+    with dpctl.device_context(filter_str), assert_auto_offloading():
         actual = f(a, b)
 
     expected = binop(a, b)
@@ -107,7 +107,7 @@ def test_unary_ops(filter_str, unary_op, input_arrays):
     def f(a):
         return uop(a)
 
-    with dpctl.device_context(filter_str):
+    with dpctl.device_context(filter_str), assert_auto_offloading():
         actual = f(a)
 
     expected = uop(a)

@@ -18,7 +18,7 @@ import numpy as np
 import numba
 from numba import typeof
 import numba_dppy
-from numba_dppy.testing import ensure_dpnp
+from numba_dppy.tests._helper import ensure_dpnp
 from numba.core import compiler, typing, cpu
 from numba_dppy.rename_numpy_functions_pass import (
     DPPYRewriteOverloadedNumPyFunctions,

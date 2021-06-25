@@ -35,8 +35,20 @@ class ExtendedParforDiagnostics(ParforDiagnostics):
             print(_termwidth * "-")
 
     def print_auto_offloading(self, lines):
+        # Code partially borrowed from https://github.com/IntelPython/numba/blob/97fe221b3704bd17567b57ea47f4fc6604476cf9/numba/parfors/parfor.py#L982
         sword = "+--"
         fac = len(sword)
+        fadj, froots = self.compute_graph_info(self.fusion_info)
+        nadj, _nroots = self.compute_graph_info(self.nested_fusion_info)
+
+        if len(fadj) > len(nadj):
+            lim = len(fadj)
+            tmp = nadj
+        else:
+            lim = len(nadj)
+            tmp = fadj
+        for x in range(len(tmp), lim):
+            tmp.append([])
 
         summary = dict()
         # region : {fused, serialized}
