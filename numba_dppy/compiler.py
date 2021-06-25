@@ -34,7 +34,11 @@ from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dppy import config
 from numba_dppy.driver import USMNdArrayType
 from numba_dppy.dppy_array_type import DPPYArray
-from numba_dppy.utils.array_utils import (is_device_accessible_array, as_usm_backed_ndarray, to_usm_backed_ndarray)
+from numba_dppy.utils import (is_usm_backed,
+                              as_usm_backed,
+                              copy_to_usm_backed,
+                              copy_from_usm_backed)
+
 
 
 _NUMBA_DPPY_READ_ONLY = "read_only"
@@ -455,10 +459,13 @@ class DPPYKernel(DPPYKernelBase):
         ):
             # We copy the data back from usm backed data
             # container to original data container.
-            usm_ndarr, orig_ndarr = device_arr
-            np.copyto(orig_ndarr, usm_ndarr)
+            usm_mem, orig_ndarr = device_arr
+            copy_from_usm_backed(usm_mem, orig_ndarr)
 
-    def _unpack_device_array_argument(self, val, kernelargs):
+    def _unpack_device_array_argument(self,
+                                      size, itemsize,
+                                      buf, shape, strides,
+                                      ndim, kernelargs):
         """
         Implements the unpacking logic for array arguments.
         """
@@ -466,13 +473,13 @@ class DPPYKernel(DPPYKernelBase):
         kernelargs.append(ctypes.c_size_t(0))
         # parent
         kernelargs.append(ctypes.c_size_t(0))
-        kernelargs.append(ctypes.c_longlong(val.size))
-        kernelargs.append(ctypes.c_longlong(val.dtype.itemsize))
-        kernelargs.append(val.base)
-        for ax in range(val.ndim):
-            kernelargs.append(ctypes.c_longlong(val.shape[ax]))
-        for ax in range(val.ndim):
-            kernelargs.append(ctypes.c_longlong(val.strides[ax]))
+        kernelargs.append(ctypes.c_longlong(size))
+        kernelargs.append(ctypes.c_longlong(itemsize))
+        kernelargs.append(buf)
+        for ax in range(ndim):
+            kernelargs.append(ctypes.c_longlong(shape[ax]))
+        for ax in range(ndim):
+            kernelargs.append(ctypes.c_longlong(strides[ax]))
 
     def _unpack_argument(
         self, ty, val, sycl_queue, kernelargs, device_arrs, access_type
@@ -506,25 +513,23 @@ class DPPYKernel(DPPYKernelBase):
 
         if isinstance(ty, USMNdArrayType):
             raise NotImplementedError(ty, USMNdArrayType)
-
-        if isinstance(ty, types.Array):
-            if is_device_accessible_array(val):
-                self._unpack_device_array_argument(val, kernelargs)
-            else:
+        elif isinstance(ty, types.Array):
+            usm_mem = is_usm_backed(val)
+            if usm_mem is None:
                 default_behavior = self.check_for_invalid_access_type(access_type)
-
-                usm_ndarr = as_usm_backed_ndarray(val.shape, val.dtype, sycl_queue)
-
+                usm_mem = as_usm_backed(val, queue=sycl_queue, copy=False)
                 if (
                     default_behavior
                     or self.valid_access_types[access_type] == _NUMBA_DPPY_READ_ONLY
                     or self.valid_access_types[access_type] == _NUMBA_DPPY_READ_WRITE
                 ):
-                    np.copyto(usm_ndarr, val)
+                    copy_to_usm_backed(usm_mem, val)
 
-                device_arrs[-1] = (usm_ndarr, val)
-                self._unpack_device_array_argument(usm_ndarr, kernelargs)
+                device_arrs[-1] = (usm_mem, val)
 
+            self._unpack_device_array_argument(val.size, val.dtype.itemsize,
+                                               usm_mem, val.shape, val.strides,
+                                               val.ndim, kernelargs)
         elif ty == types.int64:
             cval = ctypes.c_longlong(val)
             kernelargs.append(cval)
