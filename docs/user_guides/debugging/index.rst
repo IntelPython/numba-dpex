@@ -1,5 +1,5 @@
 Debugging with Intel® Distribution for GDB
-===========================================
+==========================================
 
 Numba-dppy allows SYCL kernels to be debugged with Intel® Distribution for GDB.
 Setting the debug environment variable :envvar:`NUMBA_DPPY_DEBUGINFO`
