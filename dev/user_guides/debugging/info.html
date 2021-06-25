@@ -109,6 +109,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="limitations.html">Limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="common_issues.html">Common issues and tips</a></li>
 </ul>
 </li>
 </ul>
@@ -167,7 +168,7 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="index.html">Debugging with GDB</a> &raquo;</li>
+          <li><a href="index.html">Debugging with Intel® Distribution for GDB</a> &raquo;</li>
         
           <li><a href="features.html">Supported GDB Features</a> &raquo;</li>
         
@@ -201,17 +202,17 @@
 info functions <span class="o">[</span>Regex<span class="o">]</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="parameters">
-<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
-<p><cite>Regex</cite></p>
-<p>If specified, the info functions command lists the functions matching the regex.
-If omitted, the command lists all functions in all loaded modules (main program and shared libraries).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Running the <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">functions</span></code> command without arguments may produce a lot of output
 as the list of all functions in all loaded shared libraries is typically very long.</p>
 </div>
+</div>
+<div class="section" id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
+<p><strong>Regex</strong></p>
+<p>If specified, the info functions command lists the functions matching the regex.
+If omitted, the command lists all functions in all loaded modules (main program and shared libraries).</p>
 <p>Consider Numba-dppy kernel code. See the source file <code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/debug/simple_sum.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="linenos">16</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
@@ -239,17 +240,15 @@ as the list of all functions in all loaded shared libraries is typically very lo
 </div>
 <p>Run GDB debugger:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/info_func python
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_sum.py:22</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_sum.py</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">info functions data_parallel_sum</span>
-<span class="go">...</span>
-<span class="go">All functions matching regular expression &quot;data_parallel_sum&quot;:</span>
-<span class="go">File simple_sum.py:</span>
-<span class="go">20:         void __main__::data_parallel_sum(DPPYArray&lt;float, 1, C, mutable, aligned&gt;, DPPYArray&lt;float, 1, C, mutable, aligned&gt;, DPPYArray&lt;float, 1, C, mutable, aligned&gt;);</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">info functions data_parallel_sum</span>
+</span><span class="hll"><span class="go">...</span>
+</span><span class="hll"><span class="go">All functions matching regular expression &quot;data_parallel_sum&quot;:</span>
+</span><span class="hll"><span class="go">File simple_sum.py:</span>
+</span><span class="hll"><span class="go">20:         void __main__::data_parallel_sum(DPPYArray&lt;float, 1, C, mutable, aligned&gt;, DPPYArray&lt;float, 1, C, mutable, aligned&gt;, DPPYArray&lt;float, 1, C, mutable, aligned&gt;);</span>
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">info functions __main__</span>
 <span class="go">...</span>
 <span class="go">All functions matching regular expression &quot;__main__&quot;:</span>

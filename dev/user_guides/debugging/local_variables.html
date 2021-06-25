@@ -109,6 +109,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="limitations.html">Limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="common_issues.html">Common issues and tips</a></li>
 </ul>
 </li>
 </ul>
@@ -167,7 +168,7 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="index.html">Debugging with GDB</a> &raquo;</li>
+          <li><a href="index.html">Debugging with Intel® Distribution for GDB</a> &raquo;</li>
         
           <li><a href="features.html">Supported GDB Features</a> &raquo;</li>
         
@@ -230,76 +231,76 @@
 <h2><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code><a class="headerlink" href="#info-locals" title="Permalink to this headline">¶</a></h2>
 <p>Run GDB debugger:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/local_variables_0 python
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break sum_local_vars.py:22</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run sum_local_vars.py</span>
+<span class="go">...</span>
+<span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at sum_local_vars.py:22</span>
 </pre></div>
 </div>
 <p>GDB output on “no optimization” level <code class="docutils literal notranslate"><span class="pre">NUMBA_OPT=0</span></code>:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at sum_local_vars.py:22</span>
-<span class="go">22          i = dppy.get_global_id(0)</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">info locals</span>
-<span class="go">a = &#39;\000&#39; &lt;repeats 55 times&gt;</span>
-<span class="go">b = &#39;\000&#39; &lt;repeats 55 times&gt;</span>
-<span class="go">c = &#39;\000&#39; &lt;repeats 55 times&gt;</span>
-<span class="go">i = 0</span>
-<span class="go">l1 = 0</span>
-<span class="go">l2 = 0</span>
-<span class="go">__ocl_dbg_gid0 = 0</span>
-<span class="go">__ocl_dbg_gid1 = 0</span>
-<span class="go">__ocl_dbg_gid2 = 0</span>
-<span class="go">__ocl_dbg_lid0 = 0</span>
-<span class="go">__ocl_dbg_lid1 = 0</span>
-<span class="go">__ocl_dbg_lid2 = 0</span>
-<span class="go">__ocl_dbg_grid0 = 0</span>
-<span class="go">__ocl_dbg_grid1 = 0</span>
-<span class="go">__ocl_dbg_grid2 = 0</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">next</span>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">info locals</span>
+</span><span class="hll"><span class="go">a = &#39;\000&#39; &lt;repeats 55 times&gt;</span>
+</span><span class="hll"><span class="go">b = &#39;\000&#39; &lt;repeats 55 times&gt;</span>
+</span><span class="hll"><span class="go">c = &#39;\000&#39; &lt;repeats 55 times&gt;</span>
+</span><span class="hll"><span class="go">i = 0</span>
+</span><span class="hll"><span class="go">l1 = 0</span>
+</span><span class="hll"><span class="go">l2 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_gid0 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_gid1 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_gid2 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_lid0 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_lid1 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_lid2 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_grid0 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_grid1 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_grid2 = 0</span>
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">next</span>
 <span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at sum_local_vars.py:22</span>
 <span class="go">22          i = dppy.get_global_id(0)</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">next</span>
 <span class="go">23          l1 = a[i] + 2.5</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">next</span>
 <span class="go">24          l2 = b[i] * 0.3</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">info locals</span>
-<span class="go">a = &#39;\000&#39; &lt;repeats 55 times&gt;</span>
-<span class="go">b = &#39;\000&#39; &lt;repeats 16 times&gt;, &quot;\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000\000\000\240\016XUU\000\000\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000&quot;</span>
-<span class="go">c = &#39;\000&#39; &lt;repeats 16 times&gt;, &quot;\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000\000\000@\256WUU\000\000\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000&quot;</span>
-<span class="go">i = 8</span>
-<span class="go">l1 = 2.5931931659579277</span>
-<span class="go">l2 = 0</span>
-<span class="go">__ocl_dbg_gid0 = 0</span>
-<span class="go">__ocl_dbg_gid1 = 0</span>
-<span class="go">__ocl_dbg_gid2 = 0</span>
-<span class="go">__ocl_dbg_lid0 = 42949672970</span>
-<span class="go">__ocl_dbg_lid1 = 0</span>
-<span class="go">__ocl_dbg_lid2 = 93825037590528</span>
-<span class="go">__ocl_dbg_grid0 = 4612811918334230528</span>
-<span class="go">__ocl_dbg_grid1 = 0</span>
-<span class="go">__ocl_dbg_grid2 = 0</span>
+<span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">info locals</span>
+</span><span class="hll"><span class="go">a = &#39;\000&#39; &lt;repeats 55 times&gt;</span>
+</span><span class="hll"><span class="go">b = &#39;\000&#39; &lt;repeats 16 times&gt;, &quot;\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000\000\000\240\016XUU\000\000\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000&quot;</span>
+</span><span class="hll"><span class="go">c = &#39;\000&#39; &lt;repeats 16 times&gt;, &quot;\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000\000\000@\256WUU\000\000\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000&quot;</span>
+</span><span class="hll"><span class="go">i = 8</span>
+</span><span class="hll"><span class="go">l1 = 2.5931931659579277</span>
+</span><span class="hll"><span class="go">l2 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_gid0 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_gid1 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_gid2 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_lid0 = 42949672970</span>
+</span><span class="hll"><span class="go">__ocl_dbg_lid1 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_lid2 = 93825037590528</span>
+</span><span class="hll"><span class="go">__ocl_dbg_grid0 = 4612811918334230528</span>
+</span><span class="hll"><span class="go">__ocl_dbg_grid1 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_grid2 = 0</span>
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">next</span>
+<span class="go">25          c[i] = l1 + l2</span>
 </pre></div>
 </div>
 <p>Since GDB debugger does not hit a line with target variable, the value of this variable is equal to 0. The true value of the variable <code class="docutils literal notranslate"><span class="pre">l1</span></code> is shown after stepping to line 22.</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">next</span>
-<span class="go">25          c[i] = l1 + l2</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">info locals</span>
-<span class="go">a = &#39;\000&#39; &lt;repeats 55 times&gt;</span>
-<span class="go">b = &#39;\000&#39; &lt;repeats 55 times&gt;</span>
-<span class="go">c = &#39;\000&#39; &lt;repeats 16 times&gt;, &quot;\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000\000\000@\256WUU\000\000\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000&quot;</span>
-<span class="go">i = 8</span>
-<span class="go">l1 = 2.5931931659579277</span>
-<span class="go">l2 = 0.22954882979393004</span>
-<span class="go">__ocl_dbg_gid0 = 0</span>
-<span class="go">__ocl_dbg_gid1 = 8</span>
-<span class="go">__ocl_dbg_gid2 = 8</span>
-<span class="go">__ocl_dbg_lid0 = 93825034429928</span>
-<span class="go">__ocl_dbg_lid1 = 0</span>
-<span class="go">__ocl_dbg_lid2 = 93825034429936</span>
-<span class="go">__ocl_dbg_grid0 = 4599075939470750515</span>
-<span class="go">__ocl_dbg_grid1 = 0</span>
-<span class="go">__ocl_dbg_grid2 = 0</span>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">info locals</span>
+</span><span class="hll"><span class="go">a = &#39;\000&#39; &lt;repeats 55 times&gt;</span>
+</span><span class="hll"><span class="go">b = &#39;\000&#39; &lt;repeats 55 times&gt;</span>
+</span><span class="hll"><span class="go">c = &#39;\000&#39; &lt;repeats 16 times&gt;, &quot;\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000\000\000@\256WUU\000\000\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000&quot;</span>
+</span><span class="hll"><span class="go">i = 8</span>
+</span><span class="hll"><span class="go">l1 = 2.5931931659579277</span>
+</span><span class="hll"><span class="go">l2 = 0.22954882979393004</span>
+</span><span class="hll"><span class="go">__ocl_dbg_gid0 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_gid1 = 8</span>
+</span><span class="hll"><span class="go">__ocl_dbg_gid2 = 8</span>
+</span><span class="hll"><span class="go">__ocl_dbg_lid0 = 93825034429928</span>
+</span><span class="hll"><span class="go">__ocl_dbg_lid1 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_lid2 = 93825034429936</span>
+</span><span class="hll"><span class="go">__ocl_dbg_grid0 = 4599075939470750515</span>
+</span><span class="hll"><span class="go">__ocl_dbg_grid1 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_grid2 = 0</span>
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">print a</span>
+<span class="gp">$</span><span class="nv">1</span> <span class="o">=</span> <span class="s1">&#39;\000&#39;</span> &lt;repeats <span class="m">55</span> times&gt;
 </pre></div>
 </div>
 <p>When GDB debugger hits the last line of the kernel, <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code> command returns all the local variables with their values.</p>
@@ -313,22 +314,22 @@
 </dl>
 </div>
 <p>GDB output on “O1 optimization” level <code class="docutils literal notranslate"><span class="pre">NUMBA_OPT=1</span></code>:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="go">Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at sum_local_vars.py:22</span>
-<span class="go">22           i = dppy.get_global_id(0)</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">info locals</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">(gdb) info locals</span>
-<span class="go">__ocl_dbg_gid0 = 8</span>
-<span class="go">__ocl_dbg_gid1 = 0</span>
-<span class="go">__ocl_dbg_gid2 = 0</span>
-<span class="go">__ocl_dbg_lid0 = 8</span>
-<span class="go">__ocl_dbg_lid1 = 0</span>
-<span class="go">__ocl_dbg_lid2 = 0</span>
-<span class="go">__ocl_dbg_grid0 = 0</span>
-<span class="go">__ocl_dbg_grid1 = 0</span>
-<span class="go">__ocl_dbg_grid2 = 0</span>
-<span class="go">i = 0</span>
-<span class="go">l1 = 0</span>
-<span class="go">l2 = 0</span>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">info locals</span>
+</span><span class="hll"><span class="go">__ocl_dbg_gid0 = 8</span>
+</span><span class="hll"><span class="go">__ocl_dbg_gid1 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_gid2 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_lid0 = 8</span>
+</span><span class="hll"><span class="go">__ocl_dbg_lid1 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_lid2 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_grid0 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_grid1 = 0</span>
+</span><span class="hll"><span class="go">__ocl_dbg_grid2 = 0</span>
+</span><span class="hll"><span class="go">i = 0</span>
+</span><span class="hll"><span class="go">l1 = 0</span>
+</span><span class="hll"><span class="go">l2 = 0</span>
+</span><span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+</span><span class="go">...</span>
+<span class="go">Done...</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -338,19 +339,19 @@
 </div>
 <div class="section" id="print-variable">
 <h2><code class="docutils literal notranslate"><span class="pre">print</span> <span class="pre">variable</span></code><a class="headerlink" href="#print-variable" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">print a</span>
-<span class="gp">$</span><span class="nv">1</span> <span class="o">=</span> <span class="s1">&#39;\000&#39;</span> &lt;repeats <span class="m">55</span> times&gt;
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">print l1</span>
-<span class="gp">$</span><span class="nv">3</span> <span class="o">=</span> <span class="m">2</span>.5931931659579277
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">print l2</span>
-<span class="gp">$</span><span class="nv">4</span> <span class="o">=</span> <span class="m">0</span>.22954882979393004
-</pre></div>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">print l1</span>
+</span><span class="hll"><span class="gp">$</span><span class="nv">3</span> <span class="o">=</span> <span class="m">2</span>.5931931659579277
+</span><span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">print l2</span>
+</span><span class="hll"><span class="gp">$</span><span class="nv">4</span> <span class="o">=</span> <span class="m">0</span>.22954882979393004
+</span><span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">ptype a</span>
+</span><span class="hll"><span class="go">type = byte [56]</span>
+</span></pre></div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <dl class="simple">
 <dt>Known issues:</dt><dd><ul class="simple">
-<li><p>Kernel variables are shown in intermidiate representation view (with “$” sign). The actual values of the variables are currently not available.</p></li>
+<li><p>Kernel variables are shown in intermidiate representation view (with “$” sign). The actual values of the arrays are currently not available.</p></li>
 </ul>
 </dd>
 </dl>
@@ -359,15 +360,15 @@
 <div class="section" id="ptype-variable">
 <h2><code class="docutils literal notranslate"><span class="pre">ptype</span> <span class="pre">variable</span></code><a class="headerlink" href="#ptype-variable" title="Permalink to this headline">¶</a></h2>
 <p>Variable type may be printed by the command <code class="docutils literal notranslate"><span class="pre">ptype</span> <span class="pre">variable</span></code> and <code class="docutils literal notranslate"><span class="pre">whatis</span> <span class="pre">variable</span></code>:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">ptype a</span>
-<span class="go">type = byte [56]</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">whatis a</span>
-<span class="go">type = byte [56]</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">ptype l1</span>
-<span class="go">type = double</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">whatis l1</span>
-<span class="go">type = double</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">whatis a</span>
+</span><span class="hll"><span class="go">type = byte [56]</span>
+</span><span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">ptype l1</span>
+</span><span class="hll"><span class="go">type = double</span>
+</span><span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">whatis l1</span>
+</span><span class="hll"><span class="go">type = double</span>
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="go">...</span>
+<span class="go">Done...</span>
 </pre></div>
 </div>
 <p>See also:</p>

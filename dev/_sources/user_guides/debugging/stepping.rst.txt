@@ -15,10 +15,6 @@ Example with a nested function ``numba_dppy/examples/debug/simple_dppy_func.py``
     :linenos:
     :lineno-match:
 
-.. note::
-
-    Known issues:
-        - The first line of the kernel and functions is hit twice. See :ref:`single_stepping`.
 
 ``step``
 --------
@@ -27,11 +23,13 @@ Run debugger and do following commands:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/step_sum
     :language: shell-session
+    :emphasize-lines: 8-13
 
 Another use of stepping when there is a nested function. Below example:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/step_dppy_func
     :language: shell-session
+    :emphasize-lines: 8-14
 
 ``stepi``
 ---------
@@ -40,6 +38,7 @@ The command allows you to move forward in machine instructions. The example uses
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/stepi
     :language: shell-session
+    :emphasize-lines: 8-13
 
 ``next``
 --------
@@ -48,11 +47,12 @@ Stepping-like behavior, but the command does not go into nested functions.
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/next
     :language: shell-session
+    :emphasize-lines: 8-14
 
 .. _single_stepping:
 
 ``set scheduler-locking step``
--------------------------------
+------------------------------
 
 The first line of the kernel and functions is debugged twice.
 This happens because you are debugging a multi-threaded program, so multiple events may be received from different threads.
@@ -61,6 +61,7 @@ To ensure the current thread executes a single line without interference, set th
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/sheduler_locking
     :language: shell-session
+    :emphasize-lines: 8-13
 
 See also:
 

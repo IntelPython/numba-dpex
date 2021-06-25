@@ -109,6 +109,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="limitations.html">Limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="common_issues.html">Common issues and tips</a></li>
 </ul>
 </li>
 </ul>
@@ -167,7 +168,7 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="index.html">Debugging with GDB</a> &raquo;</li>
+          <li><a href="index.html">Debugging with Intel® Distribution for GDB</a> &raquo;</li>
         
           <li><a href="features.html">Supported GDB Features</a> &raquo;</li>
         
@@ -232,20 +233,13 @@
 <span class="linenos">36</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Run GDB debugger:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">NUMBA_DPPY_DEBUGINFO</span><span class="o">=</span><span class="m">1</span>
-gdb-oneapi -q --args python simple_sum.py
-</pre></div>
-</div>
 <div class="section" id="break-function">
 <h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">function</span></code><a class="headerlink" href="#break-function" title="Permalink to this headline">¶</a></h2>
 <p>GDB output:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/break_func python
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break data_parallel_sum</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_sum.py</span>
+<span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break data_parallel_sum</span>
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_sum.py</span>
 <span class="go">...</span>
 <span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:20</span>
 <span class="go">20          @dppy.kernel(debug=True)</span>
@@ -262,11 +256,9 @@ gdb-oneapi -q --args python simple_sum.py
 <h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">filename:linenumber</span></code><a class="headerlink" href="#break-filename-linenumber" title="Permalink to this headline">¶</a></h2>
 <p>GDB output:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/break_line_number python
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_sum.py:20</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_sum.py</span>
+<span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_sum.py:20</span>
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_sum.py</span>
 <span class="go">...</span>
 <span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:20</span>
 <span class="go">20          @dppy.kernel(debug=True)</span>
@@ -283,11 +275,9 @@ gdb-oneapi -q --args python simple_sum.py
 <h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">filename:function</span></code><a class="headerlink" href="#break-filename-function" title="Permalink to this headline">¶</a></h2>
 <p>GDB output:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/break_file_func python
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_sum.py:data_parallel_sum</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_sum.py</span>
+<span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_sum.py:data_parallel_sum</span>
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_sum.py</span>
 <span class="go">...</span>
 <span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:20</span>
 <span class="go">20          @dppy.kernel(debug=True)</span>
@@ -304,11 +294,9 @@ gdb-oneapi -q --args python simple_sum.py
 <h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">…</span> <span class="pre">if</span> <span class="pre">cond</span></code><a class="headerlink" href="#break-if-cond" title="Permalink to this headline">¶</a></h2>
 <p>GDB output:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/break_conditional python
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_sum.py:23 if i == 1</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_sum.py</span>
+<span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_sum.py:23 if i == 1</span>
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_sum.py</span>
 <span class="go">...</span>
 <span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lane 1, __main__::data_parallel_sum () at simple_sum.py:23</span>
 <span class="go">23          c[i] = a[i] + b[i]</span>
@@ -353,11 +341,9 @@ gdb-oneapi -q --args python simple_sum.py
 </div>
 <p>GDB output:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/break_nested_func python
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_dppy_func.py:func_sum</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_dppy_func.py</span>
+<span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_dppy_func.py:func_sum</span>
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_dppy_func.py</span>
 <span class="go">...</span>
 <span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::func_sum () at simple_dppy_func.py:22</span>
 <span class="go">22          result = a_in_func + b_in_func</span>

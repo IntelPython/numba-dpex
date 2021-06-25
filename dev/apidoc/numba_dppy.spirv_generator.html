@@ -170,6 +170,7 @@
             
   <div class="section" id="module-numba_dppy.spirv_generator">
 <span id="numba-dppy-spirv-generator-module"></span><h1>numba_dppy.spirv_generator module<a class="headerlink" href="#module-numba_dppy.spirv_generator" title="Permalink to this headline">¶</a></h1>
+<p>A wrapper to connect to the SPIR-V binaries (Tools, Translator).</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dppy.spirv_generator.CmdLine">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.spirv_generator.</span></span><span class="sig-name descname"><span class="pre">CmdLine</span></span><a class="headerlink" href="#numba_dppy.spirv_generator.CmdLine" title="Permalink to this definition">¶</a></dt>
@@ -177,33 +178,64 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.spirv_generator.CmdLine.disassemble">
 <span class="sig-name descname"><span class="pre">disassemble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ipath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.spirv_generator.CmdLine.disassemble" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Disassemble a spirv module.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>ipath: Input file path of the spirv module.
+opath: Output file path of the disassembled spirv module.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.spirv_generator.CmdLine.generate">
-<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ipath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llvm_spirv_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.spirv_generator.CmdLine.generate" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">generate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">llvm_spirv_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ipath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.spirv_generator.CmdLine.generate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a spirv module from llvm bitcode.</p>
+<p>We use llvm-spirv tool to translate a llvm bitcode into spirv.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>llvm_spirv_args: Args to be provided to llvm-spirv tool.
+ipath: Input file path of the llvm bitcode.
+opath: Output file path of the generated spirv.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.spirv_generator.CmdLine.link">
 <span class="sig-name descname"><span class="pre">link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">opath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binaries</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.spirv_generator.CmdLine.link" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Link spirv modules.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>opath: Output file path of the linked final spirv.
+binaries: Spirv modules to be linked.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.spirv_generator.CmdLine.optimize">
 <span class="sig-name descname"><span class="pre">optimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ipath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.spirv_generator.CmdLine.optimize" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Optimize a spirv module.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>ipath: Input file path of the spirv module.
+opath: Output file path of the optimized spirv module.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.spirv_generator.CmdLine.validate">
 <span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ipath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.spirv_generator.CmdLine.validate" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Validate a spirv module.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>ipath: Input file path of the spirv module.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dppy.spirv_generator.Module">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.spirv_generator.</span></span><span class="sig-name descname"><span class="pre">Module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.spirv_generator.Module" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.spirv_generator.</span></span><span class="sig-name descname"><span class="pre">Module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llvmir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llvmbc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.spirv_generator.Module" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.spirv_generator.Module.finalize">
@@ -213,7 +245,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.spirv_generator.Module.load_llvm">
-<span class="sig-name descname"><span class="pre">load_llvm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">llvmir</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.spirv_generator.Module.load_llvm" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">load_llvm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.spirv_generator.Module.load_llvm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load LLVM with “SPIR-V friendly” SPIR 2.0 spec</p>
 </dd></dl>
 
@@ -226,8 +258,17 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dppy.spirv_generator.llvm_to_spirv">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.spirv_generator.</span></span><span class="sig-name descname"><span class="pre">llvm_to_spirv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bitcode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.spirv_generator.llvm_to_spirv" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.spirv_generator.</span></span><span class="sig-name descname"><span class="pre">llvm_to_spirv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llvmir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llvmbc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.spirv_generator.llvm_to_spirv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate SPIR-V from LLVM Bitcode.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>context: Numba target context.
+llvmir: LLVM IR.
+llvmbc: LLVM Bitcode.</p>
+</dd>
+<dt>Returns:</dt><dd><p>spirv: SPIR-V binary.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </div>
 

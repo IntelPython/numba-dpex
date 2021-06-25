@@ -109,6 +109,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="limitations.html">Limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="common_issues.html">Common issues and tips</a></li>
 </ul>
 </li>
 </ul>
@@ -167,7 +168,7 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="index.html">Debugging with GDB</a> &raquo;</li>
+          <li><a href="index.html">Debugging with Intel® Distribution for GDB</a> &raquo;</li>
         
           <li><a href="features.html">Supported GDB Features</a> &raquo;</li>
         
@@ -221,31 +222,20 @@
 <span class="linenos">40</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<dl class="simple">
-<dt>Known issues:</dt><dd><ul class="simple">
-<li><p>The first line of the kernel and functions is hit twice. See the <a class="reference internal" href="stepping.html#single-stepping"><span class="std std-ref">set scheduler-locking step</span></a>.</p></li>
-</ul>
-</dd>
-</dl>
-</div>
 <p>The section presents two examples of using GDB to generate backtrace from a numa_dppy.kernel function.
 The first example presents the case where the kernel function does not invoke any other function.
 The second example presents the case where the kernel function invokes a numba_dppy.func.</p>
 <p>Example 1:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/backtrace python
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_dppy_func.py:28</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_dppy_func.py</span>
 <span class="go">...</span>
 <span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:28</span>
 <span class="go">28          i = dppy.get_global_id(0)</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">backtrace</span>
-<span class="gp">#</span><span class="m">0</span>  __main__::kernel_sum <span class="o">()</span> at simple_dppy_func.py:28
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">backtrace</span>
+</span><span class="hll"><span class="gp">#</span><span class="m">0</span>  __main__::kernel_sum <span class="o">()</span> at simple_dppy_func.py:28
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
 <span class="go">...</span>
 <span class="go">[Switching to Thread 1.1073742080 lane 0]</span>
 <span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:28</span>
@@ -257,18 +247,16 @@ The second example presents the case where the kernel function invokes a numba_d
 </div>
 <p>Example 2:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/backtrace python
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_dppy_func.py:22</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_dppy_func.py</span>
 <span class="go">...</span>
 <span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::func_sum () at simple_dppy_func.py:22</span>
 <span class="go">22          result = a_in_func + b_in_func</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">backtrace</span>
-<span class="gp">#</span><span class="m">0</span>  __main__::func_sum <span class="o">()</span> at simple_dppy_func.py:22
-<span class="gp">#</span><span class="m">1</span>  __main__::kernel_sum <span class="o">()</span> at simple_dppy_func.py:29
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">backtrace</span>
+</span><span class="hll"><span class="gp">#</span><span class="m">0</span>  __main__::func_sum <span class="o">()</span> at simple_dppy_func.py:22
+</span><span class="hll"><span class="gp">#</span><span class="m">1</span>  __main__::kernel_sum <span class="o">()</span> at simple_dppy_func.py:29
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
 <span class="go">...</span>
 <span class="go">[Switching to Thread 1.1073742080 lane 0]</span>
 <span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::func_sum () at simple_dppy_func.py:22</span>

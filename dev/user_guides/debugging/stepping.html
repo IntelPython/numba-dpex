@@ -109,6 +109,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="limitations.html">Limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="common_issues.html">Common issues and tips</a></li>
 </ul>
 </li>
 </ul>
@@ -167,7 +168,7 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="index.html">Debugging with GDB</a> &raquo;</li>
+          <li><a href="index.html">Debugging with Intel® Distribution for GDB</a> &raquo;</li>
         
           <li><a href="features.html">Supported GDB Features</a> &raquo;</li>
         
@@ -246,56 +247,43 @@
 <span class="linenos">40</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<dl class="simple">
-<dt>Known issues:</dt><dd><ul class="simple">
-<li><p>The first line of the kernel and functions is hit twice. See <a class="reference internal" href="#single-stepping"><span class="std std-ref">set scheduler-locking step</span></a>.</p></li>
-</ul>
-</dd>
-</dl>
-</div>
 <div class="section" id="step">
 <h2><code class="docutils literal notranslate"><span class="pre">step</span></code><a class="headerlink" href="#step" title="Permalink to this headline">¶</a></h2>
 <p>Run debugger and do following commands:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/step_sum python
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_sum.py:22</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_sum.py</span>
 <span class="go">...</span>
 <span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:22</span>
 <span class="go">22           i = dppy.get_global_id(0)</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">step</span>
-<span class="go">[Switching to Thread 1.1073742080 lane 0]</span>
-<span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at simple_sum.py:22</span>
-<span class="go">22          i = dppy.get_global_id(0)</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">step</span>
-<span class="go">23          c[i] = a[i] + b[i]</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">step</span>
+</span><span class="hll"><span class="go">[Switching to Thread 1.1073742080 lane 0]</span>
+</span><span class="hll"><span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at simple_sum.py:22</span>
+</span><span class="hll"><span class="go">22          i = dppy.get_global_id(0)</span>
+</span><span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">step</span>
+</span><span class="hll"><span class="go">23          c[i] = a[i] + b[i]</span>
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
 <span class="go">...</span>
 <span class="go">Done...</span>
 </pre></div>
 </div>
 <p>Another use of stepping when there is a nested function. Below example:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/step_dppy_func python
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_dppy_func.py:29</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_dppy_func.py</span>
 <span class="go">...</span>
 <span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:29</span>
 <span class="go">29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">step</span>
-<span class="go">[Switching to Thread 1.1073742080 lane 0]</span>
-<span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:29</span>
-<span class="go">29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">step</span>
-<span class="go">__main__::func_sum () at simple_dppy_func.py:22</span>
-<span class="go">22          result = a_in_func + b_in_func</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">step</span>
+</span><span class="hll"><span class="go">[Switching to Thread 1.1073742080 lane 0]</span>
+</span><span class="hll"><span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:29</span>
+</span><span class="hll"><span class="go">29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
+</span><span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">step</span>
+</span><span class="hll"><span class="go">__main__::func_sum () at simple_dppy_func.py:22</span>
+</span><span class="hll"><span class="go">22          result = a_in_func + b_in_func</span>
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
 <span class="go">...</span>
 <span class="go">Done...</span>
 </pre></div>
@@ -305,21 +293,19 @@
 <h2><code class="docutils literal notranslate"><span class="pre">stepi</span></code><a class="headerlink" href="#stepi" title="Permalink to this headline">¶</a></h2>
 <p>The command allows you to move forward in machine instructions. The example uses an additional command <code class="docutils literal notranslate"><span class="pre">x/i</span> <span class="pre">$pc</span></code>, which prints the instruction to be executed.</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/stepi python
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_dppy_func.py:29</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_dppy_func.py</span>
 <span class="go">...</span>
 <span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:29</span>
 <span class="go">29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">stepi</span>
-<span class="go">0x00000000fffeb630      29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">stepi</span>
-<span class="go">[Switching to Thread 1.1073742080 lane 0]</span>
-<span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:29</span>
-<span class="go">29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">stepi</span>
+</span><span class="hll"><span class="go">0x00000000fffeb630      29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
+</span><span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">stepi</span>
+</span><span class="hll"><span class="go">[Switching to Thread 1.1073742080 lane 0]</span>
+</span><span class="hll"><span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:29</span>
+</span><span class="hll"><span class="go">29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
 <span class="go">...</span>
 <span class="go">Done...</span>
 </pre></div>
@@ -329,22 +315,20 @@
 <h2><code class="docutils literal notranslate"><span class="pre">next</span></code><a class="headerlink" href="#next" title="Permalink to this headline">¶</a></h2>
 <p>Stepping-like behavior, but the command does not go into nested functions.</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/next python
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_dppy_func.py:29</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_dppy_func.py</span>
 <span class="go">...</span>
 <span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:29</span>
 <span class="go">29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">next</span>
-<span class="go">[Switching to Thread 1.1073742080 lane 0]</span>
-<span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:29</span>
-<span class="go">29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">next</span>
-<span class="go">...</span>
-<span class="go">Done...</span>
-</pre></div>
+<span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">next</span>
+</span><span class="hll"><span class="go">[Switching to Thread 1.1073742080 lane 0]</span>
+</span><span class="hll"><span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:29</span>
+</span><span class="hll"><span class="go">29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
+</span><span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">next</span>
+</span><span class="hll"><span class="go">...</span>
+</span><span class="hll"><span class="go">Done...</span>
+</span></pre></div>
 </div>
 </div>
 <div class="section" id="set-scheduler-locking-step">
@@ -354,21 +338,19 @@ This happens because you are debugging a multi-threaded program, so multiple eve
 This is the default behavior, but you can configure it for more efficient debugging.
 To ensure the current thread executes a single line without interference, set the scheduler-locking setting to on or step:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/sheduler_locking python
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set trace-commands on</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set pagination off</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_dppy_func.py:29</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_dppy_func.py</span>
 <span class="go">...</span>
 <span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:29</span>
 <span class="go">29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set scheduler-locking step</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">step</span>
-<span class="go">__main__::func_sum () at dppy_func.py:22</span>
-<span class="go">22          result = a_in_func + b_in_func</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">step</span>
-<span class="go">23          return result</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set scheduler-locking step</span>
+</span><span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">step</span>
+</span><span class="hll"><span class="go">__main__::func_sum () at dppy_func.py:22</span>
+</span><span class="hll"><span class="go">22          result = a_in_func + b_in_func</span>
+</span><span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">step</span>
+</span><span class="hll"><span class="go">23          return result</span>
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
 <span class="go">...</span>
 <span class="go">[Switching to Thread 1.1073742080 lane 0]</span>
 <span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:29</span>

@@ -8,10 +8,6 @@ Let's consider the work of the command ``backtrace`` in the following example ``
     :linenos:
     :lineno-match:
 
-.. note::
-
-    Known issues:
-        - The first line of the kernel and functions is hit twice. See the :ref:`single_stepping`.
 
 The section presents two examples of using GDB to generate backtrace from a numa_dppy.kernel function.
 The first example presents the case where the kernel function does not invoke any other function.
@@ -21,11 +17,13 @@ Example 1:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/backtrace_kernel
     :language: shell-session
+    :emphasize-lines: 8,9
 
 Example 2:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/backtrace
     :language: shell-session
+    :emphasize-lines: 8-10
 
 See also:
 
