@@ -242,7 +242,7 @@ the relevant documentation can be found at <a class="reference external" href="h
 </pre></div>
 </div>
 <p>Running GDB and creating breakpoint in kernel:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/simple_sum python
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_sum.py:22</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_sum.py</span>

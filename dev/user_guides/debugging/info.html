@@ -239,7 +239,7 @@ If omitted, the command lists all functions in all loaded modules (main program 
 </pre></div>
 </div>
 <p>Run GDB debugger:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/info_func python
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_sum.py:22</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_sum.py</span>

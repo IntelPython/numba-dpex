@@ -226,7 +226,7 @@
 The first example presents the case where the kernel function does not invoke any other function.
 The second example presents the case where the kernel function invokes a numba_dppy.func.</p>
 <p>Example 1:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/backtrace python
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_dppy_func.py:28</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_dppy_func.py</span>
@@ -246,7 +246,7 @@ The second example presents the case where the kernel function invokes a numba_d
 </pre></div>
 </div>
 <p>Example 2:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q -command commands/backtrace python
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_dppy_func.py:22</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_dppy_func.py</span>
