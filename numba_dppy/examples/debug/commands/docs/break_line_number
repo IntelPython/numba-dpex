@@ -1,6 +1,4 @@
 $ NUMBA_OPT=0 gdb-oneapi -q -command commands/break_line_number python
-(gdb) set trace-commands on
-(gdb) set pagination off
 (gdb) set breakpoint pending on
 (gdb) break simple_sum.py:20
 (gdb) run simple_sum.py

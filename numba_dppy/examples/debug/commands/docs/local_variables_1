@@ -1,6 +1,4 @@
 $ NUMBA_OPT=1 gdb-oneapi -q -command commands/local_variables_1 python
-(gdb) set trace-commands on
-(gdb) set pagination off
 (gdb) set breakpoint pending on
 (gdb) break sum_local_vars.py:22
 (gdb) run sum_local_vars.py

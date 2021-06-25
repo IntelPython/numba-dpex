@@ -23,13 +23,6 @@ Consider Numba-dppy kernel code. See the source file ``numba_dppy/examples/debug
     :linenos:
     :lineno-match:
 
-Run GDB debugger:
-
-.. code-block:: bash
-
-    export NUMBA_DPPY_DEBUGINFO=1
-    gdb-oneapi -q --args python simple_sum.py
-
 ``break function``
 ------------------
 
@@ -37,6 +30,7 @@ GDB output:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_func
     :language: shell-session
+    :emphasize-lines: 3
 
 ``break filename:linenumber``
 -----------------------------
@@ -45,6 +39,7 @@ GDB output:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_line_number
     :language: shell-session
+    :emphasize-lines: 3
 
 ``break filename:function``
 ---------------------------
@@ -53,6 +48,7 @@ GDB output:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_file_func
     :language: shell-session
+    :emphasize-lines: 3
 
 ``break … if cond``
 -------------------
@@ -61,6 +57,7 @@ GDB output:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_conditional
     :language: shell-session
+    :emphasize-lines: 3
 
 Breakpoints with nested functions
 ---------------------------------
@@ -76,3 +73,4 @@ GDB output:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_nested_func
     :language: shell-session
+    :emphasize-lines: 3

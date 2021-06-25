@@ -21,11 +21,13 @@ Example 1:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/backtrace_kernel
     :language: shell-session
+    :emphasize-lines: 8,9
 
 Example 2:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/backtrace
     :language: shell-session
+    :emphasize-lines: 8-10
 
 See also:
 
