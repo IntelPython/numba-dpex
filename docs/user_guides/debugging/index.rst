@@ -14,9 +14,6 @@ To disable debugging, unset the variable (e.g. :samp:`unset NUMBA_DPPY_DEBUGINFO
 Not all GDB features supported by Numba on CPUs are yet supported in Numba-dppy.
 See :ref:`debugging-features-and-limitations`.
 
-.. [#GDB]_ Intel® Distribution for GDB.
-
-
 Requirements
 ------------
 
