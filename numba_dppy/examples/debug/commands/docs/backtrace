@@ -1,6 +1,4 @@
 $ NUMBA_OPT=0 gdb-oneapi -q -command commands/backtrace python
-(gdb) set trace-commands on
-(gdb) set pagination off
 (gdb) set breakpoint pending on
 (gdb) break simple_dppy_func.py:22
 (gdb) run simple_dppy_func.py

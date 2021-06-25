@@ -27,11 +27,13 @@ Run debugger and do following commands:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/step_sum
     :language: shell-session
+    :emphasize-lines: 8-13
 
 Another use of stepping when there is a nested function. Below example:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/step_dppy_func
     :language: shell-session
+    :emphasize-lines: 8-14
 
 ``stepi``
 ---------
@@ -40,6 +42,7 @@ The command allows you to move forward in machine instructions. The example uses
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/stepi
     :language: shell-session
+    :emphasize-lines: 8-13
 
 ``next``
 --------
@@ -48,6 +51,7 @@ Stepping-like behavior, but the command does not go into nested functions.
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/next
     :language: shell-session
+    :emphasize-lines: 8-14
 
 .. _single_stepping:
 
@@ -61,6 +65,7 @@ To ensure the current thread executes a single line without interference, set th
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/sheduler_locking
     :language: shell-session
+    :emphasize-lines: 8-13
 
 See also:
 

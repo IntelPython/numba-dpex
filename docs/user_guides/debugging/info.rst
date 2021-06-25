@@ -38,6 +38,7 @@ Run GDB debugger:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/info_func
     :language: shell-session
+    :emphasize-lines: 5-9
 
 See also:
 

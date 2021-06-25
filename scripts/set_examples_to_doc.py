@@ -19,6 +19,8 @@ def convert_commands_to_docs():
                     line.startswith("# Expected")
                     or line.startswith("echo Done")
                     or line.startswith("quit")
+                    or line.startswith("set trace-commands")
+                    or line.startswith("set pagination")
                 ):
                     continue
                 if line.startswith("# Run: "):
