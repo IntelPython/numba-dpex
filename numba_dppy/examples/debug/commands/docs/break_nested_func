@@ -1,4 +1,4 @@
-$ NUMBA_OPT=0 gdb-oneapi -q -command commands/break_nested_func python
+$ NUMBA_OPT=0 gdb-oneapi -q python
 (gdb) set breakpoint pending on
 (gdb) break simple_dppy_func.py:func_sum
 (gdb) run simple_dppy_func.py

@@ -1,4 +1,4 @@
-$ NUMBA_OPT=0 gdb-oneapi -q -command commands/info_func python
+$ NUMBA_OPT=0 gdb-oneapi -q python
 (gdb) set breakpoint pending on
 (gdb) break simple_sum.py:22
 (gdb) run simple_sum.py

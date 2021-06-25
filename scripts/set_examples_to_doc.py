@@ -25,6 +25,12 @@ def convert_commands_to_docs():
                     continue
                 if line.startswith("# Run: "):
                     line = line.replace("# Run:", "$")
+                    words = line.split()
+                    for i in range(len(words)):
+                        if words[i] == "-command" or words[i].startswith("commands"):
+                            words[i] = ""
+                    line = " ".join(words)
+                    line = " ".join(line.split()) + "\n"
                 elif line.startswith("# "):
                     line = line.replace("# ", "")
                 else:

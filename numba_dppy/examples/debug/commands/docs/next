@@ -1,4 +1,4 @@
-$ NUMBA_OPT=0 gdb-oneapi -q -command commands/next python
+$ NUMBA_OPT=0 gdb-oneapi -q python
 (gdb) set breakpoint pending on
 (gdb) break simple_dppy_func.py:29
 (gdb) run simple_dppy_func.py
