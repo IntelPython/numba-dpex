@@ -8,7 +8,6 @@ $ NUMBA_OPT=1 gdb-oneapi -q -command commands/local_variables_1 python
 Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at sum_local_vars.py:22
 22           i = dppy.get_global_id(0)
 (gdb) info locals
-(gdb) (gdb) info locals
 __ocl_dbg_gid0 = 8
 __ocl_dbg_gid1 = 0
 __ocl_dbg_gid2 = 0
