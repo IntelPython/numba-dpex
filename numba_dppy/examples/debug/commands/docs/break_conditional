@@ -1,4 +1,4 @@
-$ NUMBA_OPT=0 gdb-oneapi -q -command commands/break_conditional python
+$ NUMBA_OPT=0 gdb-oneapi -q python
 (gdb) set breakpoint pending on
 (gdb) break simple_sum.py:23 if i == 1
 (gdb) run simple_sum.py
