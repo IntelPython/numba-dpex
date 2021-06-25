@@ -19,9 +19,7 @@ import dpctl
 import dpctl.tensor as dpt
 import dpctl.memory as dpctl_mem
 from . import _helper
-from numba_dppy.utils import (is_usm_backed,
-                              as_usm_backed,
-                              copy_from_usm_backed)
+from numba_dppy.utils import is_usm_backed, as_usm_backed, copy_from_usm_backed
 
 
 def test_is_usm_backed(offload_device):

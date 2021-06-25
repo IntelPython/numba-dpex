@@ -27,10 +27,12 @@ from numba_dppy.utils.llvm_codegen_helpers import (
 
 from numba_dppy.utils.type_conversion_fns import npytypes_array_to_dppy_array
 from numba_dppy.utils.constants import address_space, calling_conv
-from numba_dppy.utils.array_utils import (is_usm_backed,
-                                          as_usm_backed,
-                                          copy_to_usm_backed,
-                                          copy_from_usm_backed)
+from numba_dppy.utils.array_utils import (
+    is_usm_backed,
+    as_usm_backed,
+    copy_to_usm_backed,
+    copy_from_usm_backed,
+)
 
 __all__ = [
     "LLVMTypes",

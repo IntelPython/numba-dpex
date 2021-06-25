@@ -34,11 +34,12 @@ from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dppy import config
 from numba_dppy.driver import USMNdArrayType
 from numba_dppy.dppy_array_type import DPPYArray
-from numba_dppy.utils import (is_usm_backed,
-                              as_usm_backed,
-                              copy_to_usm_backed,
-                              copy_from_usm_backed)
-
+from numba_dppy.utils import (
+    is_usm_backed,
+    as_usm_backed,
+    copy_to_usm_backed,
+    copy_from_usm_backed,
+)
 
 
 _NUMBA_DPPY_READ_ONLY = "read_only"
@@ -462,10 +463,9 @@ class DPPYKernel(DPPYKernelBase):
             usm_mem, orig_ndarr = device_arr
             copy_from_usm_backed(usm_mem, orig_ndarr)
 
-    def _unpack_device_array_argument(self,
-                                      size, itemsize,
-                                      buf, shape, strides,
-                                      ndim, kernelargs):
+    def _unpack_device_array_argument(
+        self, size, itemsize, buf, shape, strides, ndim, kernelargs
+    ):
         """
         Implements the unpacking logic for array arguments.
         """
@@ -527,9 +527,15 @@ class DPPYKernel(DPPYKernelBase):
 
                 device_arrs[-1] = (usm_mem, val)
 
-            self._unpack_device_array_argument(val.size, val.dtype.itemsize,
-                                               usm_mem, val.shape, val.strides,
-                                               val.ndim, kernelargs)
+            self._unpack_device_array_argument(
+                val.size,
+                val.dtype.itemsize,
+                usm_mem,
+                val.shape,
+                val.strides,
+                val.ndim,
+                kernelargs,
+            )
         elif ty == types.int64:
             cval = ctypes.c_longlong(val)
             kernelargs.append(cval)

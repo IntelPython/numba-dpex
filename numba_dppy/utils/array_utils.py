@@ -16,8 +16,14 @@ import numpy as np
 import dpctl
 import dpctl.memory as dpctl_mem
 
-supported_numpy_dtype = [np.int32, np.int64, np.uint32,
-                         np.int64, np.float32, np.float64]
+supported_numpy_dtype = [
+    np.int32,
+    np.int64,
+    np.uint32,
+    np.int64,
+    np.float32,
+    np.float64,
+]
 
 
 def is_usm_backed(obj):
@@ -42,6 +48,7 @@ def is_usm_backed(obj):
 
     return usm_mem
 
+
 def copy_to_usm_backed(usm_backed, obj):
     """
     Copy from supported objects to USM backed data.
@@ -59,21 +66,27 @@ def copy_to_usm_backed(usm_backed, obj):
         raise TypeError("Source is not USM backed.")
 
     if not isinstance(obj, np.ndarray):
-        raise TypeError("Obj is not USM backed and is not of type "
-                        "numpy.ndarray. Obj type: %s" % (type(obj)))
+        raise TypeError(
+            "Obj is not USM backed and is not of type "
+            "numpy.ndarray. Obj type: %s" % (type(obj))
+        )
 
     if obj.dtype not in [np.dtype(typ) for typ in supported_numpy_dtype]:
-        raise ValueError("dtype is not supprted. Supported dtypes "
-                         "are: %s" % (supported_numpy_dtype))
+        raise ValueError(
+            "dtype is not supprted. Supported dtypes "
+            "are: %s" % (supported_numpy_dtype)
+        )
 
     size = np.prod(obj.shape)
     if usm_mem.size != (obj.dtype.itemsize * size):
-        raise ValueError("Size (Bytes) of data does not match. USM backed "
-                         "memory size %d, supported object size: %d" %
-                         (usm_mem.size, (obj.dtype.itemsize * size)))
+        raise ValueError(
+            "Size (Bytes) of data does not match. USM backed "
+            "memory size %d, supported object size: %d"
+            % (usm_mem.size, (obj.dtype.itemsize * size))
+        )
 
     obj_memview = memoryview(obj)
-    obj_memview = obj_memview.cast('B')
+    obj_memview = obj_memview.cast("B")
     usm_mem.copy_from_host(obj_memview)
 
 
@@ -95,24 +108,28 @@ def copy_from_usm_backed(usm_backed, obj):
         raise TypeError("Source is not USM backed.")
 
     if not isinstance(obj, np.ndarray):
-        raise TypeError("Obj is not USM backed and is not of type "
-                        "numpy.ndarray. Obj type: %s" % (type(obj)))
+        raise TypeError(
+            "Obj is not USM backed and is not of type "
+            "numpy.ndarray. Obj type: %s" % (type(obj))
+        )
 
     if obj.dtype not in [np.dtype(typ) for typ in supported_numpy_dtype]:
-        raise ValueError("dtype is not supprted. Supported dtypes "
-                         "are: %s" % (supported_numpy_dtype))
+        raise ValueError(
+            "dtype is not supprted. Supported dtypes "
+            "are: %s" % (supported_numpy_dtype)
+        )
 
     size = np.prod(obj.shape)
     if usm_mem.size != (obj.dtype.itemsize * size):
-        raise ValueError("Size (Bytes) of data does not match. USM backed "
-                         "memory size %d, supported object size: %d" %
-                         (usm_mem.size, (obj.dtype.itemsize * size)))
-
+        raise ValueError(
+            "Size (Bytes) of data does not match. USM backed "
+            "memory size %d, supported object size: %d"
+            % (usm_mem.size, (obj.dtype.itemsize * size))
+        )
 
     obj_memview = memoryview(obj)
-    obj_memview = obj_memview.cast('B')
+    obj_memview = obj_memview.cast("B")
     usm_mem.copy_to_host(obj_memview)
-
 
 
 def as_usm_backed(obj, queue=None, usm_type="shared", copy=True):
@@ -149,33 +166,37 @@ def as_usm_backed(obj, queue=None, usm_type="shared", copy=True):
     usm_mem = is_usm_backed(obj)
 
     if queue is None:
-        raise ValueError("Queue can not be None. Please provide "
-                         "the SYCL queue to be used.")
+        raise ValueError(
+            "Queue can not be None. Please provide " "the SYCL queue to be used."
+        )
     if not isinstance(queue, dpctl.SyclQueue):
         raise TypeError(
-            "queue has to be of dpctl.SyclQueue type. Got %s"
-            % (type(queue))
+            "queue has to be of dpctl.SyclQueue type. Got %s" % (type(queue))
         )
 
     if usm_mem is None:
         if not isinstance(obj, np.ndarray):
-            raise TypeError("Obj is not USM backed and is not of type "
-                            "numpy.ndarray. Obj type: %s" % (type(obj)))
+            raise TypeError(
+                "Obj is not USM backed and is not of type "
+                "numpy.ndarray. Obj type: %s" % (type(obj))
+            )
 
         if obj.dtype not in [np.dtype(typ) for typ in supported_numpy_dtype]:
-            raise ValueError("dtype is not supprted. Supported dtypes "
-                             "are: %s" % (supported_numpy_dtype))
+            raise ValueError(
+                "dtype is not supprted. Supported dtypes "
+                "are: %s" % (supported_numpy_dtype)
+            )
 
         size = np.prod(obj.shape)
         if usm_type == "shared":
-            usm_mem = dpctl_mem.MemoryUSMShared(size * obj.dtype.itemsize,
-                                                queue=queue)
+            usm_mem = dpctl_mem.MemoryUSMShared(size * obj.dtype.itemsize, queue=queue)
         elif usm_type == "device":
-            usm_mem = dpctl_mem.MemoryUSMDevice(size * obj.dtype.itemsize,
-                                                queue=queue)
+            usm_mem = dpctl_mem.MemoryUSMDevice(size * obj.dtype.itemsize, queue=queue)
         else:
-            raise ValueError("Supported usm_type are: 'shared' and "
-                             "'device'. Provided: %s" % (usm_type))
+            raise ValueError(
+                "Supported usm_type are: 'shared' and "
+                "'device'. Provided: %s" % (usm_type)
+            )
 
         if copy:
             # Copy data from numpy.ndarray
