@@ -14,18 +14,18 @@ Displays the list of functions in the debugged program.
     info functions
     info functions [Regex]
 
-Parameters
-``````````
-
-`Regex`
-
-If specified, the info functions command lists the functions matching the regex.
-If omitted, the command lists all functions in all loaded modules (main program and shared libraries).
-
 .. note::
 
     Running the ``info functions`` command without arguments may produce a lot of output
     as the list of all functions in all loaded shared libraries is typically very long.
+
+Parameters
+``````````
+
+**Regex**
+
+If specified, the info functions command lists the functions matching the regex.
+If omitted, the command lists all functions in all loaded modules (main program and shared libraries).
 
 Consider Numba-dppy kernel code. See the source file ``numba_dppy/examples/debug/simple_sum.py``:
 
