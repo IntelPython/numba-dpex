@@ -65,7 +65,7 @@ GDB output on "O1 optimization" level ``NUMBA_OPT=1``:
 .. note::
 
     Known issues:
-      - Kernel variables are shown in intermidiate representation view (with "$" sign). The actual values of the variables are currently not available.
+      - Kernel variables are shown in intermidiate representation view (with "$" sign). The actual values of the arrays are currently not available.
 
 ``ptype variable``
 ------------------

@@ -46,17 +46,6 @@ Running GDB and creating breakpoint in kernel:
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/simple_sum
     :language: shell-session
 
-If the breakpoint is not hit, you will see the following output:
-
-.. code-block:: bash
-
-    ...
-    intelgt: gdbserver-gt failed to start.  Check if igfxdcd is installed, or use
-    env variable INTELGT_AUTO_ATTACH_DISABLE=1 to disable auto-attach.
-    ...
-
-See the :ref:`debugging-machine-dcd-driver`.
-
 .. _debugging-features-and-limitations:
 
 Features and Limitations
@@ -67,3 +56,4 @@ Features and Limitations
 
     features
     limitations
+    common_issues

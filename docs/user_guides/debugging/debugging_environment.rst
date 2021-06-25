@@ -22,25 +22,6 @@ Create and activate conda environment with installed Numba-dppy:
 
     - Debugging features were tested with following packages: ``numba-dppy=0.14``, ``dpctl=0.8``, ``numba=0.53``.
 
-**Activate environment variables**
-
-Debugging on "no optimization" level is more stable. Local variable are not optimized out.
-You need to set the following variable for debugging:
-
-.. code-block:: bash
-
-    export NUMBA_OPT=0
-
-It is possible to enable debug mode for the full application by setting the environment variable ``NUMBA_DPPY_DEBUGINFO=1``
-instead of ``debug`` option inside the ``dppy.kernel`` decorator. This sets the default value of the debug option in
-``dppy.kernel``. If ``NUMBA_DPPY_DEBUGINFO`` is set to a non-zero value, the debug data is emitted for the full application.
-Debug mode can be turned off on individual functions by setting ``debug=False`` in ``dppy.kernel``.
-
-See also:
-
-    - `Debugging JIT compiled code with GDB <http://numba.pydata.org/numba-doc/latest/user/troubleshoot.html#debugging-jit-compiled-code-with-gdb>`_
-    - `NUMBA_DEBUGINFO <https://numba.pydata.org/numba-doc/dev/reference/envvars.html#envvar-NUMBA_DEBUGINFO>`_
-
 **Activate NEO drivers**
 
 Further, if you want to use local NEO driver, you need to activate the variables for it. See :ref:`NEO-driver`.

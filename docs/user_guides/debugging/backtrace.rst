@@ -8,10 +8,6 @@ Let's consider the work of the command ``backtrace`` in the following example ``
     :linenos:
     :lineno-match:
 
-.. note::
-
-    Known issues:
-        - The first line of the kernel and functions is hit twice. See the :ref:`single_stepping`.
 
 The section presents two examples of using GDB to generate backtrace from a numa_dppy.kernel function.
 The first example presents the case where the kernel function does not invoke any other function.
