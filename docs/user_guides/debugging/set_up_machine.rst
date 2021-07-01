@@ -4,7 +4,7 @@ Setting up the machine for debugging
 Graphics driver
 ---------------
 
-You need to install drivers using following guides:
+Install drivers using the following guides:
 
     - `GPGPU Documents / Installation guides`_
     - `Intel® oneAPI Toolkits Installation Guide for Linux* OS / Installation Guide / Install Intel GPU Drivers`_
@@ -13,22 +13,23 @@ You need to install drivers using following guides:
 .. _`Intel® oneAPI Toolkits Installation Guide for Linux* OS / Installation Guide / Install Intel GPU Drivers`:
     https://software.intel.com/content/www/us/en/develop/documentation/installation-guide-for-intel-oneapi-toolkits-linux/top/prerequisites/install-intel-gpu-drivers.html
 
-It is also important that the user is in the group "video" (on Ubuntu* 18, Fedora* 30, and SLES* 15 SP1)
-or "render" (on Ubuntu* 19 and higher, CentOS* 8, and Fedora* 31).
-An administrator with sudo or root privilege can change the group owner of `/dev/dri/renderD*` and `/dev/dri/card*`
+The user should be in the "video" group (on Ubuntu* 18, Fedora* 30, and SLES* 15 SP1)
+or "render" group (on Ubuntu* 19 and higher, CentOS* 8, and Fedora* 31).
+An administrator with sudo or root privileges can change the group owner of `/dev/dri/renderD*` and `/dev/dri/card*`
 to a group ID used by your user base:
 
 .. code-block:: bash
 
     sudo usermod -a -G video <username>
 
+.. _NEO-driver:
 
 NEO driver
 ----------
 
-NEO driver at least `21.15.19533` version is required to make debugger work correctly.
+NEO driver at least `21.15.19533` version is required to make GDB debugger work correctly.
 
-Follow the `link <https://github.com/intel/compute-runtime/releases/tag/21.15.19533>`_ below to download the drivers.
+You can download the driver from the following `link <https://github.com/intel/compute-runtime/releases/tag/21.15.19533>`_.
 
 1) To install the driver on the system, use the command:
 
@@ -36,7 +37,7 @@ Follow the `link <https://github.com/intel/compute-runtime/releases/tag/21.15.19
 
     sudo dpkg -i *.deb
 
-2) To install the NEO driver locally follow the commands below:
+2) To install the NEO driver locally, you need to add the path to NEO files in `LD_LIBRARY_PATH`. Follow the commands below:
 
 .. code-block:: bash
 
@@ -48,6 +49,7 @@ Follow the `link <https://github.com/intel/compute-runtime/releases/tag/21.15.19
 The Installable Client Driver (ICD) uses the system implementation for OpenCL by default.
 You will also need to add environment variables to change the behavior of the ICD.
 Add all needed from "/etc/OpenCL/vendors/" and custom to `OCL_ICD_FILENAMES`.
+To overwrite the default behavior, use :samp:`export OCL_ICD_VENDORS=`.
 
 .. code-block:: bash
 
@@ -60,6 +62,8 @@ See also:
   - `Intel(R) Graphics Compute Runtime Releases <https://github.com/intel/compute-runtime/releases>`_
   - `OpenCL ICD Loader <https://github.com/KhronosGroup/OpenCL-ICD-Loader>`_
 
+
+.. _debugging-machine-dcd-driver:
 
 DCD driver
 ----------
@@ -82,8 +86,9 @@ Also, you must remove the driver from the system if you want to install a differ
 
     sudo dpkg -r igfxdcd
 
-If you are installing DCD for the first time, you need to create keys.
+If you are installing DCD for the first time, you need to create keys. For more details, see the link at the end of this page.
 
 See also:
 
   - `Get Started with Intel® Distribution for GDB* on Linux* OS Host <https://software.intel.com/content/www/us/en/develop/documentation/get-started-with-debugging-dpcpp-linux/top.html>`_
+  - `Public signature key <https://software.intel.com/content/www/us/en/develop/documentation/get-started-with-debugging-dpcpp-linux/top.html#:~:text=sudo%20modprobe%20igfxdcd-,The%20host%20system%20does%20not%20recognize%20the%20igfxdcd%20signature%20if,gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB,-If%20you%20have>`_

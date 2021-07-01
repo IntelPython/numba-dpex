@@ -15,6 +15,8 @@
 import dpctl
 from numba.core import sigutils, types
 
+from numba_dppy.utils import npytypes_array_to_dppy_array, assert_no_return
+
 from .compiler import (
     compile_kernel,
     JitDPPYKernel,
@@ -24,22 +26,22 @@ from .compiler import (
 )
 
 
-def kernel(signature=None, access_types=None, debug=False):
+def kernel(signature=None, access_types=None, debug=None):
     """JIT compile a python function conforming using the DPPY backend.
 
     A kernel is equvalent to an OpenCL kernel function, and has the
     same restrictions as definined by SPIR_KERNEL calling convention.
     """
     if signature is None:
-        return autojit(debug=False, access_types=access_types)
+        return autojit(debug=debug, access_types=access_types)
     elif not sigutils.is_signature(signature):
         func = signature
-        return autojit(debug=False, access_types=access_types)(func)
+        return autojit(debug=debug, access_types=access_types)(func)
     else:
         return _kernel_jit(signature, debug, access_types)
 
 
-def autojit(debug=False, access_types=None):
+def autojit(debug=None, access_types=None):
     def _kernel_autojit(pyfunc):
         ordered_arg_access_types = get_ordered_arg_access_types(pyfunc, access_types)
         return JitDPPYKernel(pyfunc, debug, ordered_arg_access_types)
@@ -48,11 +50,18 @@ def autojit(debug=False, access_types=None):
 
 
 def _kernel_jit(signature, debug, access_types):
-    argtypes, restype = sigutils.normalize_signature(signature)
+    argtypes, rettype = sigutils.normalize_signature(signature)
+    argtypes = tuple(
+        [
+            npytypes_array_to_dppy_array(ty)
+            if isinstance(ty, types.npytypes.Array)
+            else ty
+            for ty in argtypes
+        ]
+    )
 
-    if restype is not None and restype != types.void:
-        msg = "DPPY kernel must have void return type but got {restype}"
-        raise TypeError(msg.format(restype=restype))
+    # Raises TypeError when users return anything inside @dppy.kernel.
+    assert_no_return(rettype)
 
     def _wrapped(pyfunc):
         current_queue = dpctl.get_current_queue()
@@ -67,24 +76,39 @@ def _kernel_jit(signature, debug, access_types):
     return _wrapped
 
 
-def func(signature=None):
+def func(signature=None, debug=None):
     if signature is None:
-        return _func_autojit
+        return _func_autojit_wrapper(debug=debug)
     elif not sigutils.is_signature(signature):
         func = signature
-        return _func_autojit(func)
+        return _func_autojit(func, debug=debug)
     else:
-        return _func_jit(signature)
+        return _func_jit(signature, debug=debug)
 
 
-def _func_jit(signature):
+def _func_jit(signature, debug=None):
     argtypes, restype = sigutils.normalize_signature(signature)
+    argtypes = tuple(
+        [
+            npytypes_array_to_dppy_array(ty)
+            if isinstance(ty, types.npytypes.Array)
+            else ty
+            for ty in argtypes
+        ]
+    )
 
     def _wrapped(pyfunc):
-        return compile_dppy_func(pyfunc, restype, argtypes)
+        return compile_dppy_func(pyfunc, restype, argtypes, debug=debug)
 
     return _wrapped
 
 
-def _func_autojit(pyfunc):
-    return compile_dppy_func_template(pyfunc)
+def _func_autojit_wrapper(debug=None):
+    def _func_autojit(pyfunc, debug=debug):
+        return compile_dppy_func_template(pyfunc, debug=debug)
+
+    return _func_autojit
+
+
+def _func_autojit(pyfunc, debug=None):
+    return compile_dppy_func_template(pyfunc, debug=debug)

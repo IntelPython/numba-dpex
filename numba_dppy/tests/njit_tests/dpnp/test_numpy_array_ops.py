@@ -21,9 +21,8 @@ from numba_dppy.context_manager import offload_to_sycl_device
 import numpy as np
 from numba import njit
 import pytest
-from numba_dppy.testing import dpnp_debug
 from .dpnp_skip_test import dpnp_skip_test as skip_test
-from numba_dppy.tests._helper import is_gen12
+from numba_dppy.tests._helper import is_gen12, dpnp_debug
 from ._helper import wrapper_function
 
 

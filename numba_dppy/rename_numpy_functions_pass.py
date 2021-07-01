@@ -26,16 +26,21 @@ from numba.core import types
 
 rewrite_function_name_map = {
     # numpy
+    "all": (["numpy"], "all"),
     "amax": (["numpy"], "amax"),
     "amin": (["numpy"], "amin"),
     "argmax": (["numpy"], "argmax"),
     "argmin": (["numpy"], "argmin"),
     "argsort": (["numpy"], "argsort"),
     "cov": (["numpy"], "cov"),
+    "diagonal": (["numpy"], "diagonal"),
     "max": (["numpy"], "max"),
     "mean": (["numpy"], "mean"),
     "median": (["numpy"], "median"),
     "min": (["numpy"], "min"),
+    "partition": (["numpy"], "partition"),
+    "repeat": (["numpy"], "repeat"),
+    "trace": (["numpy"], "trace"),
     "vdot": (["numpy"], "vdot"),
     # random
     "beta": (["random"], "beta"),
@@ -201,13 +206,16 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
 
         import numba_dppy.dpnp_glue.dpnpdecl
         import numba_dppy.dpnp_glue.dpnpimpl
-        import numba_dppy.dpnp_glue.dpnp_linalgimpl
-        import numba_dppy.dpnp_glue.dpnp_transcendentalsimpl
-        import numba_dppy.dpnp_glue.dpnp_statisticsimpl
-        import numba_dppy.dpnp_glue.dpnp_sort_search_countimpl
-        import numba_dppy.dpnp_glue.dpnp_randomimpl
         import numba_dppy.dpnp_glue.dpnp_array_creations_impl
         import numba_dppy.dpnp_glue.dpnp_array_ops_impl
+        import numba_dppy.dpnp_glue.dpnp_indexing
+        import numba_dppy.dpnp_glue.dpnp_linalgimpl
+        import numba_dppy.dpnp_glue.dpnp_logic
+        import numba_dppy.dpnp_glue.dpnp_manipulation
+        import numba_dppy.dpnp_glue.dpnp_randomimpl
+        import numba_dppy.dpnp_glue.dpnp_sort_search_countimpl
+        import numba_dppy.dpnp_glue.dpnp_statisticsimpl
+        import numba_dppy.dpnp_glue.dpnp_transcendentalsimpl
 
     def run_pass(self, state):
         rewrite_function_name_pass = RewriteNumPyOverloadedFunctions(

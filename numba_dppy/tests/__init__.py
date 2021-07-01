@@ -12,11 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""
-from numba.testing import SerialSuite
-from numba.testing import load_testsuite
-from os.path import dirname, join
-"""
-
 import numba_dppy
-import numba_dppy.config as dppy_config
+from numba_dppy import config

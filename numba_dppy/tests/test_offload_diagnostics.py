@@ -12,15 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import unittest
 import numpy as np
 from numba import njit, prange
-import numba_dppy as dppy
-from numba_dppy import config as dppy_config
-from numba_dppy.testing import unittest
 from numba.tests.support import captured_stdout
-from . import _helper
 import dpctl
 from numba_dppy.context_manager import offload_to_sycl_device
+
+import numba_dppy as dppy
+from numba_dppy import dppy_config
+from . import _helper
 
 
 @unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
@@ -44,7 +45,7 @@ class TestOffloadDiagnostics(unittest.TestCase):
             with captured_stdout() as got:
                 jitted()
 
-            dppy_config.OFFLOAD_DIAGNOSTICS = 0
+            config.OFFLOAD_DIAGNOSTICS = 0
             self.assertTrue("Auto-offloading" in got.getvalue())
             self.assertTrue("Device -" in got.getvalue())
 
@@ -68,7 +69,7 @@ class TestOffloadDiagnostics(unittest.TestCase):
             with captured_stdout() as got:
                 parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
-            dppy_config.OFFLOAD_DIAGNOSTICS = 0
+            config.OFFLOAD_DIAGNOSTICS = 0
             self.assertTrue("Auto-offloading" in got.getvalue())
             self.assertTrue("Device -" in got.getvalue())
 

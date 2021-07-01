@@ -21,9 +21,9 @@ from numba_dppy.context_manager import offload_to_sycl_device
 import numpy as np
 from numba import njit
 import pytest
-from numba_dppy.testing import dpnp_debug
 from .dpnp_skip_test import dpnp_skip_test as skip_test
 from ._helper import wrapper_function, args_string
+from numba_dppy.tests._helper import dpnp_debug
 
 
 # From https://github.com/IntelPython/dpnp/blob/0.4.0/tests/test_linalg.py#L8

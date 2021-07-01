@@ -4,89 +4,79 @@ Local variables
 .. note::
 
     - :samp:`NUMBA_OPT=0` "no optimization" level - all local variables of the kernel function are available.
-    - :samp:`NUMBA_OPT=1` or higher - some variables can be optimized out.
+    - :samp:`NUMBA_OPT=1` or higher - some variables may be optimized out.
 
-.. note::
+Consider Numba-dppy kernel code :file:`sum_local_vars.py`
 
-    Known issues:
-      - :samp:`NUMBA_OPT=0` "no optimization" level may not work due to llvm issues.
-
-Consider `numba-dppy` kernel code:
-
-.. code-block:: python
+.. literalinclude:: ../../../numba_dppy/examples/debug/sum_local_vars.py
+    :lines: 15-
     :linenos:
-
-    import numpy as np
-    import numba_dppy as dppy
-    import dpctl
-
-    @dppy.kernel
-    def data_parallel_sum(a, b, c):
-        i = dppy.get_global_id(0)
-        c[i] = a[i] + b[i]
-
-    global_size = 10
-    N = global_size
-    a = np.array(np.random.random(N), dtype=np.float32)
-    b = np.array(np.random.random(N), dtype=np.float32)
-    c = np.ones_like(a)
-
-    with dpctl.device_context("opencl:gpu") as gpu_queue:
-        data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
-
+    :lineno-match:
 
 ``info locals``
 ---------------
 
-Run debugger:
+Run GDB debugger:
 
-.. code-block:: bash
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+    :language: shell-session
+    :lines: 1-6
 
-    export NUMBA_DPPY_DEBUG=1
-    export NUMBA_OPT=0
-    gdb-oneapi -q --args python local_vars.py
-    (gdb) break local_vars.py:9
-    No source file named local_vars_ex.py.
-    Make breakpoint pending on future shared library load? (y or [n]) y
-    Breakpoint 1 (local_vars_ex.py:9) pending.
-    (gdb) run
-    (gdb) info locals
+GDB output on "no optimization" level ``NUMBA_OPT=0``:
 
-GDB output:
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+    :language: shell-session
+    :lines: 8-48
+    :emphasize-lines: 1-16, 24-39
 
-.. code-block:: bash
+Since GDB debugger does not hit a line with target variable, the value of this variable is equal to 0. The true value of the variable ``l1`` is shown after stepping to line 22.
 
-    Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], dppy_py_devfn__5F__5F_main_5F__5F__2E_data_5F_parallel_5F_sum_24_1_2E_array_28_float32_2C__20_1d_2C__20_C_29__2E_array_28_float32_2C__20_1d_2C__20_C_29__2E_array_28_float32_2C__20_1d_2C__20_C_29_ () at local_vars.py:9
-    9           c[i] = a[i] + b[i]
-    (gdb) info locals
-    a = '\000' <repeats 55 times>
-    b = '\000' <repeats 55 times>
-    c = '\000' <repeats 55 times>
-    __ocl_dbg_gid0 = 0
-    __ocl_dbg_gid1 = 0
-    __ocl_dbg_gid2 = 0
-    __ocl_dbg_lid0 = 0
-    __ocl_dbg_lid1 = 0
-    __ocl_dbg_lid2 = 93825017857072
-    __ocl_dbg_grid0 = 0
-    __ocl_dbg_grid1 = 0
-    __ocl_dbg_grid2 = 0
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+    :language: shell-session
+    :lines: 49-66
+    :emphasize-lines: 1-16
+
+When GDB debugger hits the last line of the kernel, ``info locals`` command returns all the local variables with their values.
 
 .. note::
 
     Known issues:
-      - Representation of local variables values is currently not available.
+      - GDB debugger can show the variable values, but these values may be equal to 0 after the variable is explicitly deleted or the function scope is ended. For more information refer to `Numba variable policy <https://numba.pydata.org/numba-doc/latest/developer/live_variable_analysis.html?highlight=delete#live-variable-analysis>`_.
 
+GDB output on "O1 optimization" level ``NUMBA_OPT=1``:
+
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_1
+    :language: shell-session
+    :lines: 8-23
+    :emphasize-lines: 1-14
+
+.. note::
+
+    The GDB debugger does not show the local variables ``a``, ``b`` and ``c``, they are optimized out on "O1" optimization level.
 
 ``print variable``
 ------------------
 
-.. code-block:: bash
-
-    (gdb) print a
-    $1 = '\000' <repeats 55 times>
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+    :language: shell-session
+    :lines: 67-72
+    :emphasize-lines: 1-6
 
 .. note::
 
     Known issues:
-      - Kernel variables are shown in IR representation.
+      - Kernel variables are shown in intermidiate representation view (with "$" sign). The actual values of the arrays are currently not available.
+
+``ptype variable``
+------------------
+
+Variable type may be printed by the command ``ptype variable`` and ``whatis variable``:
+
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+    :language: shell-session
+    :lines: 73-81
+    :emphasize-lines: 1-6
+
+See also:
+
+    - `Local variables in GDB <https://sourceware.org/gdb/current/onlinedocs/gdb/Frame-Info.html#Frame-Info>`_

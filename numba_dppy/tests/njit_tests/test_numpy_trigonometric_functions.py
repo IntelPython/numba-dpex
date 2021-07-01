@@ -21,7 +21,7 @@ from numba_dppy.context_manager import offload_to_sycl_device
 import numpy as np
 from numba import njit
 import pytest
-from numba_dppy.tests._helper import skip_test, is_gen12
+from numba_dppy.tests._helper import skip_test, is_gen12, assert_auto_offloading
 
 list_of_filter_strs = [
     "opencl:gpu:0",
@@ -106,7 +106,7 @@ def test_trigonometric_fn(filter_str, trig_op, input_arrays):
             return trig_fn(a, b)
 
         device = dpctl.SyclDevice(filter_str)
-        with offload_to_sycl_device(device):
+        with offload_to_sycl_device(device), assert_auto_offloading():
             actual = f(a, b)
         expected = trig_fn(a, b)
     else:
@@ -116,7 +116,7 @@ def test_trigonometric_fn(filter_str, trig_op, input_arrays):
             return trig_fn(a)
 
         device = dpctl.SyclDevice(filter_str)
-        with offload_to_sycl_device(device):
+        with offload_to_sycl_device(device), assert_auto_offloading():
             actual = f(a)
         expected = trig_fn(a)
 

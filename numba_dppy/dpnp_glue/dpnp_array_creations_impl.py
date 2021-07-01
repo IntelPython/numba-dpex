@@ -50,6 +50,33 @@ def common_impl(a, b, out, dpnp_func, PRINT_DEBUG):
         print("dpnp implementation")
 
 
+@register_jitable
+def common_shape_impl(a, out, dpnp_func, PRINT_DEBUG):
+    if a.size == 0:
+        raise ValueError("Passed Empty array")
+
+    sycl_queue = dpctl_functions.get_current_queue()
+
+    a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
+    dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+
+    out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
+
+    dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim)
+
+    dpctl_functions.queue_memcpy(
+        sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
+    )
+
+    dpctl_functions.free_with_queue(a_usm, sycl_queue)
+    dpctl_functions.free_with_queue(out_usm, sycl_queue)
+
+    dpnp_ext._dummy_liveness_func([a.size, out.size])
+
+    if PRINT_DEBUG:
+        print("dpnp implementation")
+
+
 @overload(stubs.dpnp.zeros_like)
 def dpnp_zeros_like_impl(a, dtype=None):
     name = "zeros_like"
@@ -194,6 +221,34 @@ def dpnp_full_impl(a, b):
 
         if PRINT_DEBUG:
             print("dpnp implementation")
+        return out
+
+    return dpnp_impl
+
+
+@overload(stubs.dpnp.trace)
+def dpnp_trace_impl(a):
+    name = "trace"
+    dpnp_lowering.ensure_dpnp(name)
+
+    ret_type = types.void
+    """
+    dpnp source:
+    https://github.com/IntelPython/dpnp/blob/0.6.2/dpnp/backend/kernels/dpnp_krnl_arraycreation.cpp#L218
+
+    Function declaration:
+    void dpnp_trace_c(const void* array1_in, void* result1, const size_t* shape_, const size_t ndim)
+
+    """
+    sig = signature(ret_type, types.voidptr, types.voidptr, types.voidptr, types.intp)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
+
+    PRINT_DEBUG = dpnp_lowering.DEBUG
+
+    def dpnp_impl(a):
+        diag_arr = numba_dppy.dpnp.diagonal(a, 0)
+        out = np.zeros(diag_arr.shape[:-1], dtype=a.dtype)
+        common_shape_impl(diag_arr, out, dpnp_func, PRINT_DEBUG)
         return out
 
     return dpnp_impl
