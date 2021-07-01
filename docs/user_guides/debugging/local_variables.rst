@@ -16,34 +16,33 @@ Consider Numba-dppy kernel code :file:`sum_local_vars.py`
 ``info locals``
 ---------------
 
-Run GDB debugger:
+Run the debugger:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
     :language: shell-session
     :lines: 1-6
 
-GDB output on "no optimization" level ``NUMBA_OPT=0``:
+Run the ``info locals`` command. The sample output on "no optimization" level ``NUMBA_OPT=0`` is as follows:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
     :language: shell-session
     :lines: 8-48
     :emphasize-lines: 1-16, 24-39
 
-Since GDB debugger does not hit a line with target variable, the value of this variable is equal to 0. The true value of the variable ``l1`` is shown after stepping to line 22.
+Since the debugger does not hit a line with the target variable ``l1``, the value equals 0. The true value of the variable ``l1`` is shown after stepping to line 22.
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
     :language: shell-session
     :lines: 49-66
     :emphasize-lines: 1-16
 
-When GDB debugger hits the last line of the kernel, ``info locals`` command returns all the local variables with their values.
+When the debugger hits the last line of the kernel, ``info locals`` command returns all the local variables with their values.
 
 .. note::
 
-    Known issues:
-      - GDB debugger can show the variable values, but these values may be equal to 0 after the variable is explicitly deleted or the function scope is ended. For more information refer to `Numba variable policy <https://numba.pydata.org/numba-doc/latest/developer/live_variable_analysis.html?highlight=delete#live-variable-analysis>`_.
+    The debugger can show the variable values, but these values may be equal to 0 after the variable is explicitly deleted or the function scope is ended. For more information, refer to `Numba variable policy <https://numba.pydata.org/numba-doc/latest/developer/live_variable_analysis.html?highlight=delete#live-variable-analysis>`_.
 
-GDB output on "O1 optimization" level ``NUMBA_OPT=1``:
+When you use "O1 optimization" level ``NUMBA_OPT=1`` and run the ``info locals`` command, the output is as follows:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_1
     :language: shell-session
@@ -52,10 +51,12 @@ GDB output on "O1 optimization" level ``NUMBA_OPT=1``:
 
 .. note::
 
-    The GDB debugger does not show the local variables ``a``, ``b`` and ``c``, they are optimized out on "O1" optimization level.
+    The debugger does not show the local variables ``a``, ``b`` and ``c``, they are optimized out on "O1 optimization" level.
 
-``print variable``
+``print <variable>``
 ------------------
+
+To print the value of a variable, run the ``print <variable>`` command.
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
     :language: shell-session
@@ -64,13 +65,12 @@ GDB output on "O1 optimization" level ``NUMBA_OPT=1``:
 
 .. note::
 
-    Known issues:
-      - Kernel variables are shown in intermidiate representation view (with "$" sign). The actual values of the arrays are currently not available.
+    Kernel variables are shown in intermidiate representation view (with "$" sign). The actual values of the arrays are currently not available.
 
-``ptype variable``
+``ptype <variable>``
 ------------------
 
-Variable type may be printed by the command ``ptype variable`` and ``whatis variable``:
+To print the type of a variable, run the ``ptype <variable>`` or ``whatis <variable>`` commands:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
     :language: shell-session
@@ -79,4 +79,4 @@ Variable type may be printed by the command ``ptype variable`` and ``whatis vari
 
 See also:
 
-    - `Local variables in GDB <https://sourceware.org/gdb/current/onlinedocs/gdb/Frame-Info.html#Frame-Info>`_
+    - `Local variables in GDB* <https://sourceware.org/gdb/current/onlinedocs/gdb/Frame-Info.html#Frame-Info>`_
