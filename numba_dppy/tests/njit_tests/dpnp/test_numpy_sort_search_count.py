@@ -131,7 +131,8 @@ def test_partition(array, kth, filter_str):
         return np.partition(a, kth)
 
     f = njit(fn)
-    with dpctl.device_context(filter_str), dpnp_debug():
+    device = dpctl.SyclDevice(filter_str)
+    with offload_to_sycl_device(device), dpnp_debug():
         actual = f(a, kth)
 
     expected = fn(a, kth)

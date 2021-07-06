@@ -45,7 +45,7 @@ class TestOffloadDiagnostics(unittest.TestCase):
             with captured_stdout() as got:
                 jitted()
 
-            config.OFFLOAD_DIAGNOSTICS = 0
+            dppy_config.OFFLOAD_DIAGNOSTICS = 0
             self.assertTrue("Auto-offloading" in got.getvalue())
             self.assertTrue("Device -" in got.getvalue())
 
@@ -69,7 +69,7 @@ class TestOffloadDiagnostics(unittest.TestCase):
             with captured_stdout() as got:
                 parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
-            config.OFFLOAD_DIAGNOSTICS = 0
+            dppy_config.OFFLOAD_DIAGNOSTICS = 0
             self.assertTrue("Auto-offloading" in got.getvalue())
             self.assertTrue("Device -" in got.getvalue())
 
