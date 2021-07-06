@@ -20,7 +20,7 @@ import dpctl
 from numba_dppy.context_manager import offload_to_sycl_device
 
 import numba_dppy as dppy
-from numba_dppy import dppy_config
+from numba_dppy import config as dppy_config
 from . import _helper
 
 
