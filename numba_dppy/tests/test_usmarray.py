@@ -81,7 +81,6 @@ def numba_reshape(x):
     return x.reshape((4, 3))
 
 
-@pytest.mark.skip()
 class TestUsmArray(unittest.TestCase):
     def ndarray(self):
         """Create NumPy array"""

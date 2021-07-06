@@ -18,14 +18,15 @@ from numbers import Number
 import numba
 from types import FunctionType as ftype, BuiltinFunctionType as bftype
 from numba import types
-from numba.extending import typeof_impl, register_model, type_callable, lower_builtin
+from numba.extending import (typeof_impl, register_model, type_callable,
+                             lower_builtin, intrinsic, overload_classmethod)
 from numba.core.datamodel.registry import register_default as register_model_default
 from numba.np import numpy_support
-from numba.core.pythonapi import box, allocator
+from numba.core.pythonapi import box
 from llvmlite import ir
 import llvmlite.llvmpy.core as lc
 import llvmlite.binding as llb
-from numba.core import types, cgutils, config
+from numba.core import types, cgutils, config, typing
 import builtins
 import sys
 from ctypes.util import find_library
@@ -49,6 +50,7 @@ from dpctl.tensor.numpy_usm_shared import ndarray, functions_list, class_list
 from . import target as dppy_target
 from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
 
+from numba.core.overload_glue import _overload_glue
 
 debug = config.DEBUG
 
@@ -94,7 +96,7 @@ class UsmSharedArrayType(DPPYArray):
             dtype,
             ndim,
             layout,
-            py_type=ndarray,
+            #py_type=ndarray,
             readonly=readonly,
             name=name,
             addrspace=addrspace,
@@ -120,6 +122,9 @@ class UsmSharedArrayType(DPPYArray):
         else:
             return None
 
+    @property
+    def box_type(self):
+        return ndarray
 
 # This tells Numba how to create a UsmSharedArrayType when a usmarray is passed
 # into a njit function.
@@ -161,33 +166,90 @@ def box_array(typ, val, c):
         return parent
 
 
+#==================================================================
+
+@overload_classmethod(UsmSharedArrayType, "_allocate")
+def _ol_array_allocate(cls, allocsize, align):
+    """Implements a Numba-only classmethod on the array type.
+    """
+    def impl(cls, allocsize, align):
+        #log("LOG _ol_array_allocate", allocsize, align)
+        return allocator_UsmArray(allocsize, align)
+
+    return impl
+
+
+@intrinsic
+def allocator_MyArray(typingctx, allocsize, align):
+    def impl(context, builder, sig, args):
+        context.nrt._require_nrt()
+        size, align = args
+
+        mod = builder.module
+        u32 = ir.IntType(32)
+        voidptr = cgutils.voidptr_t
+
+        get_alloc_fnty = ir.FunctionType(voidptr, ())
+        get_alloc_fn = cgutils.get_or_insert_function(
+            mod, get_alloc_fnty, name="_nrt_get_sample_external_allocator"
+        )
+        ext_alloc = builder.call(get_alloc_fn, ())
+
+        fnty = ir.FunctionType(voidptr, [cgutils.intp_t, u32, voidptr])
+        fn = cgutils.get_or_insert_function(
+            mod, fnty, name="NRT_MemInfo_alloc_safe_aligned_external"
+        )
+        fn.return_value.add_attribute("noalias")
+        if isinstance(align, builtins.int):
+            align = context.get_constant(types.uint32, align)
+        else:
+            assert align.type == u32, "align must be a uint32"
+        call = builder.call(fn, [size, align, ext_alloc])
+        call.name = "allocate_MyArray"
+        return call
+
+    mip = types.MemInfoPointer(types.voidptr)  # return untyped pointer
+    sig = typing.signature(mip, allocsize, align)
+    return sig, impl
+
+#==================================================================
+
 # This tells Numba to use this function when it needs to allocate a
 # UsmArray in a njit function.
-@allocator(UsmSharedArrayType)
-def allocator_UsmArray(context, builder, size, align):
-    context.nrt._require_nrt()
+@intrinsic
+def allocator_UsmArray(typingctx, allocsize, align):
+    def impl(context, builder, sig, args):
+        context.nrt._require_nrt()
+        size, align = args
 
-    mod = builder.module
-    u32 = ir.IntType(32)
+        mod = builder.module
+        u32 = ir.IntType(32)
 
-    # Get the Numba external allocator for USM memory.
-    ext_allocator_fnty = ir.FunctionType(cgutils.voidptr_t, [])
-    ext_allocator_fn = mod.get_or_insert_function(
-        ext_allocator_fnty, name="usmarray_get_ext_allocator"
-    )
-    ext_allocator = builder.call(ext_allocator_fn, [])
-    # Get the Numba function to allocate an aligned array with an external allocator.
-    fnty = ir.FunctionType(cgutils.voidptr_t, [cgutils.intp_t, u32, cgutils.voidptr_t])
-    fn = mod.get_or_insert_function(
-        fnty, name="NRT_MemInfo_alloc_safe_aligned_external"
-    )
-    fn.return_value.add_attribute("noalias")
-    if isinstance(align, builtins.int):
-        align = context.get_constant(types.uint32, align)
-    else:
-        assert align.type == u32, "align must be a uint32"
-    return builder.call(fn, [size, align, ext_allocator])
+        # Get the Numba external allocator for USM memory.
+        ext_allocator_fnty = ir.FunctionType(cgutils.voidptr_t, [])
+        ext_allocator_fn = cgutils.get_or_insert_function(
+            mod, ext_allocator_fnty, name="usmarray_get_ext_allocator"
+        )
+        ext_allocator = builder.call(ext_allocator_fn, [])
+        # Get the Numba function to allocate an aligned array with an external allocator.
+        fnty = ir.FunctionType(cgutils.voidptr_t, [cgutils.intp_t, u32, cgutils.voidptr_t])
+        fn = cgutils.get_or_insert_function(
+            mod, fnty, name="NRT_MemInfo_alloc_safe_aligned_external"
+        )
+        fn.return_value.add_attribute("noalias")
+        if isinstance(align, builtins.int):
+            align = context.get_constant(types.uint32, align)
+        else:
+            assert align.type == u32, "align must be a uint32"
+        call = builder.call(fn, [size, align, ext_allocator])
+        call.name = "allocate_UsmArray"
+        return call
 
+    mip = types.MemInfoPointer(types.voidptr)  # return untyped pointer
+    sig = typing.signature(mip, allocsize, align)
+    return sig, impl
+
+#==================================================================
 
 _registered = False
 
@@ -314,6 +376,23 @@ def numba_register_typing():
     todo = []
     todo_classes = []
     todo_getattr = []
+
+    breakpoint()
+    for k, v in _overload_glue._registered.items():
+        ig = (k, v)
+        val, typ = ig
+        dprint("Numpy registered:", val, type(val), typ, type(typ))
+        # If it is a Numpy function...
+        if isinstance(val, (ftype, bftype)):
+            # If we have overloaded that function in the usmarray module (always True right now)...
+            if val.__name__ in functions_list:
+                todo.append(ig)
+        if isinstance(val, type):
+            if isinstance(typ, numba.core.types.functions.Function):
+                todo.append(ig)
+            elif isinstance(typ, numba.core.types.functions.NumberClass):
+                pass
+
 
     # For all Numpy identifiers that have been registered for typing in Numba...
     for ig in typing_registry.globals:

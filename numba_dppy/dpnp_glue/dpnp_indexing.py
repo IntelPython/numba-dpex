@@ -22,10 +22,6 @@ import numpy as np
 from numba_dppy import dpctl_functions
 
 
-@register_jitable
-def tuplizer(a):
-    return ({", ".join(f"a[{i}]" for i in range(a.ndim - 1))})
-
 @overload(stubs.dpnp.diagonal)
 def dpnp_diagonal_impl(a, offset=0):
     name = "diagonal"
@@ -60,7 +56,6 @@ def tuplizer(a):
 """
     locals = {}
     exec(function_text, globals(), locals)
-    print(a.ndim, function_text)
     tuplizer = register_jitable(locals["tuplizer"])
 
     def dpnp_impl(a, offset=0):
@@ -83,7 +78,7 @@ def tuplizer(a):
 
         shape = tuplizer(res_shape)
 
-        out = np.zeros(shape, dtype=a.dtype)
+        out = np.empty(shape, dtype=a.dtype)
 
         sycl_queue = dpctl_functions.get_current_queue()
 
