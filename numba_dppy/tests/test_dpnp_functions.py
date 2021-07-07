@@ -18,8 +18,13 @@ from numba import njit
 import dpctl
 import unittest
 from numba_dppy.context_manager import offload_to_sycl_device
-from numba_dppy.tests._helper import (ensure_dpnp, assert_auto_offloading,
-                                      dpnp_debug, has_gpu_queues)
+from numba_dppy.tests._helper import (
+    ensure_dpnp,
+    assert_auto_offloading,
+    dpnp_debug,
+    has_gpu_queues,
+)
+
 
 @unittest.skipUnless(
     ensure_dpnp() and has_gpu_queues(),

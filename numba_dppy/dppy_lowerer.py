@@ -1222,6 +1222,7 @@ class WrapperDefaultLower(Lower):
         """For numba_dppy's case we always return True."""
         return True
 
+
 class DPPYLower(Lower):
     def __init__(self, context, library, fndesc, func_ir, metadata=None):
         Lower.__init__(self, context, library, fndesc, func_ir, metadata)

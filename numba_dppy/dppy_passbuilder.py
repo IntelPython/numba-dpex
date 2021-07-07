@@ -151,8 +151,10 @@ class DPPYPassBuilder(object):
         # pm.add_pass(ParforPass, "convert to parfors")
 
         # legalise
-        pm.add_pass(NoPythonSupportedFeatureValidation,
-                    "ensure features that are in use are in a valid form")
+        pm.add_pass(
+            NoPythonSupportedFeatureValidation,
+            "ensure features that are in use are in a valid form",
+        )
         pm.add_pass(IRLegalization, "ensure IR is legal prior to lowering")
 
         # lower

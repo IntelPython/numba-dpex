@@ -8,6 +8,7 @@ from numba.core.retarget import BasicRetarget
 
 TARGET = "SyclDevice"
 
+
 class DPPYRetarget(BasicRetarget):
     def __init__(self, filter_str):
         self.filter_str = filter_str
@@ -20,6 +21,7 @@ class DPPYRetarget(BasicRetarget):
     def compile_retarget(self, cpu_disp):
         kernel = njit(_target=TARGET)(cpu_disp.py_func)
         return kernel
+
 
 first_level_cache = dict()
 

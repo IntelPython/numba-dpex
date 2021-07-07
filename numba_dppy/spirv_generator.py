@@ -189,7 +189,6 @@ class Module(object):
             print("generated_llvm.bc")
             print("".center(80, "="))
 
-
         self._cmd.generate(
             llvm_spirv_args=llvm_spirv_args, ipath=self._llvmfile, opath=spirv_path
         )

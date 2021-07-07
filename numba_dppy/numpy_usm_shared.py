@@ -18,8 +18,14 @@ from numbers import Number
 import numba
 from types import FunctionType as ftype, BuiltinFunctionType as bftype
 from numba import types
-from numba.extending import (typeof_impl, register_model, type_callable,
-                             lower_builtin, intrinsic, overload_classmethod)
+from numba.extending import (
+    typeof_impl,
+    register_model,
+    type_callable,
+    lower_builtin,
+    intrinsic,
+    overload_classmethod,
+)
 from numba.core.datamodel.registry import register_default as register_model_default
 from numba.np import numpy_support
 from numba.core.pythonapi import box
@@ -96,7 +102,7 @@ class UsmSharedArrayType(DPPYArray):
             dtype,
             ndim,
             layout,
-            #py_type=ndarray,
+            # py_type=ndarray,
             readonly=readonly,
             name=name,
             addrspace=addrspace,
@@ -125,6 +131,7 @@ class UsmSharedArrayType(DPPYArray):
     @property
     def box_type(self):
         return ndarray
+
 
 # This tells Numba how to create a UsmSharedArrayType when a usmarray is passed
 # into a njit function.
@@ -166,14 +173,15 @@ def box_array(typ, val, c):
         return parent
 
 
-#==================================================================
+# ==================================================================
+
 
 @overload_classmethod(UsmSharedArrayType, "_allocate")
 def _ol_array_allocate(cls, allocsize, align):
-    """Implements a Numba-only classmethod on the array type.
-    """
+    """Implements a Numba-only classmethod on the array type."""
+
     def impl(cls, allocsize, align):
-        #log("LOG _ol_array_allocate", allocsize, align)
+        # log("LOG _ol_array_allocate", allocsize, align)
         return allocator_UsmArray(allocsize, align)
 
     return impl
@@ -212,7 +220,8 @@ def allocator_MyArray(typingctx, allocsize, align):
     sig = typing.signature(mip, allocsize, align)
     return sig, impl
 
-#==================================================================
+
+# ==================================================================
 
 # This tells Numba to use this function when it needs to allocate a
 # UsmArray in a njit function.
@@ -232,7 +241,9 @@ def allocator_UsmArray(typingctx, allocsize, align):
         )
         ext_allocator = builder.call(ext_allocator_fn, [])
         # Get the Numba function to allocate an aligned array with an external allocator.
-        fnty = ir.FunctionType(cgutils.voidptr_t, [cgutils.intp_t, u32, cgutils.voidptr_t])
+        fnty = ir.FunctionType(
+            cgutils.voidptr_t, [cgutils.intp_t, u32, cgutils.voidptr_t]
+        )
         fn = cgutils.get_or_insert_function(
             mod, fnty, name="NRT_MemInfo_alloc_safe_aligned_external"
         )
@@ -249,7 +260,8 @@ def allocator_UsmArray(typingctx, allocsize, align):
     sig = typing.signature(mip, allocsize, align)
     return sig, impl
 
-#==================================================================
+
+# ==================================================================
 
 _registered = False
 
@@ -332,7 +344,6 @@ def numba_register_lower_builtin():
             if isinstance(func, str) and func.startswith("array."):
                 todo_array_member_func.append(ig)
 
-
     # For all Numpy identifiers that have been registered for typing in Numba...
     # this registry contains functions, getattrs, setattrs, casts and constants...
     for ig in lower_registry.functions:
@@ -411,7 +422,6 @@ def numba_register_typing():
             if val.__name__ in functions_list:
                 todo.append(ig)
 
-
     # For all Numpy identifiers that have been registered for typing in Numba...
     for ig in typing_registry.globals:
         val, typ = ig
@@ -426,7 +436,7 @@ def numba_register_typing():
         if isinstance(val, type):
             if isinstance(typ, numba.core.types.functions.Function):
                 assert len(typ.templates) == 1
-                #todo.append(ig)
+                # todo.append(ig)
                 todo.append((val, typ.templates[0]))
             elif isinstance(typ, numba.core.types.functions.NumberClass):
                 pass
@@ -450,26 +460,26 @@ def numba_register_typing():
         )
 
     for val, typ in todo:
-        #assert len(typ.templates) == 1
+        # assert len(typ.templates) == 1
         # template is the typing class to invoke generic() upon.
-        #template = typ.templates[0]
+        # template = typ.templates[0]
         template = typ
-        #dprint("need to re-register for usmarray", val, typ, typ.typing_key)
+        # dprint("need to re-register for usmarray", val, typ, typ.typing_key)
         try:
             dpval = eval("dpctl.tensor.numpy_usm_shared." + val.__name__)
         except:
             dprint("failed to eval", val.__name__)
             continue
         dprint("--------------------------------------------------------------")
-        #dprint("need to re-register for usmarray", val, typ, typ.typing_key)
+        # dprint("need to re-register for usmarray", val, typ, typ.typing_key)
         dprint("val:", val, type(val), "dir val", dir(val))
         dprint("typ:", typ, type(typ), "dir typ", dir(typ))
-        '''
+        """
         dprint("typing key:", typ.typing_key)
         dprint("name:", typ.name)
         dprint("key:", typ.key)
         dprint("templates:", typ.templates)
-        '''
+        """
         dprint("template:", template, type(template))
         dprint("dpval:", dpval, type(dpval))
         dprint("--------------------------------------------------------------")
