@@ -121,11 +121,12 @@ def compile_with_dppy(pyfunc, return_type, args, is_kernel, debug=None):
     flags = compiler.Flags()
     # Do not compile (generate native code), just lower (to LLVM)
     flags.debuginfo = config.DEBUGINFO_DEFAULT
-    if debug:
-        flags.debuginfo = True
     flags.no_compile = True
     flags.no_cpython_wrapper = True
     flags.nrt = False
+
+    if debug is not None:
+        flags.debuginfo = debug
 
     # Run compilation pipeline
     if isinstance(pyfunc, FunctionType):
