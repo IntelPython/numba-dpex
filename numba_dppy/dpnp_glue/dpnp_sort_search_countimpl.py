@@ -208,7 +208,7 @@ def dpnp_partition_impl(a, kth):
 
         arr2 = numba_dppy.dpnp.copy(a)
 
-        out = np.zeros(a.shape, dtype=a.dtype)
+        out = np.empty(a.shape, dtype=a.dtype)
 
         sycl_queue = dpctl_functions.get_current_queue()
 
