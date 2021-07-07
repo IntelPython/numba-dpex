@@ -308,6 +308,31 @@ def numba_register_lower_builtin():
     todo_getattr = []
     todo_array_member_func = []
 
+    for k, v in _overload_glue._registered.items():
+        func = k
+
+        for types, impl in v._BIND_TYPES.items():
+            ig = (impl, func, types)
+            dprint("Numpy lowered registry functions:", impl, func, type(func), types)
+            # If it is a Numpy function...
+            if isinstance(func, ftype):
+                dprint("is ftype")
+                if func.__module__ == np.__name__:
+                    dprint("is Numpy module")
+                    # If we have overloaded that function in the usmarray module (always True right now)...
+                    if func.__name__ in functions_list:
+                        todo.append(ig)
+            if isinstance(func, bftype):
+                dprint("is bftype")
+                if func.__module__ == np.__name__:
+                    dprint("is Numpy module")
+                    # If we have overloaded that function in the usmarray module (always True right now)...
+                    if func.__name__ in functions_list:
+                        todo.append(ig)
+            if isinstance(func, str) and func.startswith("array."):
+                todo_array_member_func.append(ig)
+
+
     # For all Numpy identifiers that have been registered for typing in Numba...
     # this registry contains functions, getattrs, setattrs, casts and constants...
     for ig in lower_registry.functions:
@@ -377,35 +402,32 @@ def numba_register_typing():
     todo_classes = []
     todo_getattr = []
 
-    breakpoint()
     for k, v in _overload_glue._registered.items():
-        ig = (k, v)
+        ig = (k, v._TYPER)
         val, typ = ig
         dprint("Numpy registered:", val, type(val), typ, type(typ))
-        # If it is a Numpy function...
         if isinstance(val, (ftype, bftype)):
             # If we have overloaded that function in the usmarray module (always True right now)...
             if val.__name__ in functions_list:
                 todo.append(ig)
-        if isinstance(val, type):
-            if isinstance(typ, numba.core.types.functions.Function):
-                todo.append(ig)
-            elif isinstance(typ, numba.core.types.functions.NumberClass):
-                pass
 
 
     # For all Numpy identifiers that have been registered for typing in Numba...
     for ig in typing_registry.globals:
         val, typ = ig
+
         dprint("Numpy registered:", val, type(val), typ, type(typ))
         # If it is a Numpy function...
         if isinstance(val, (ftype, bftype)):
             # If we have overloaded that function in the usmarray module (always True right now)...
             if val.__name__ in functions_list:
-                todo.append(ig)
+                assert len(typ.templates) == 1
+                todo.append((val, typ.templates[0]))
         if isinstance(val, type):
             if isinstance(typ, numba.core.types.functions.Function):
-                todo.append(ig)
+                assert len(typ.templates) == 1
+                #todo.append(ig)
+                todo.append((val, typ.templates[0]))
             elif isinstance(typ, numba.core.types.functions.NumberClass):
                 pass
 
@@ -428,23 +450,26 @@ def numba_register_typing():
         )
 
     for val, typ in todo:
-        assert len(typ.templates) == 1
+        #assert len(typ.templates) == 1
         # template is the typing class to invoke generic() upon.
-        template = typ.templates[0]
-        dprint("need to re-register for usmarray", val, typ, typ.typing_key)
+        #template = typ.templates[0]
+        template = typ
+        #dprint("need to re-register for usmarray", val, typ, typ.typing_key)
         try:
             dpval = eval("dpctl.tensor.numpy_usm_shared." + val.__name__)
         except:
             dprint("failed to eval", val.__name__)
             continue
         dprint("--------------------------------------------------------------")
-        dprint("need to re-register for usmarray", val, typ, typ.typing_key)
+        #dprint("need to re-register for usmarray", val, typ, typ.typing_key)
         dprint("val:", val, type(val), "dir val", dir(val))
         dprint("typ:", typ, type(typ), "dir typ", dir(typ))
+        '''
         dprint("typing key:", typ.typing_key)
         dprint("name:", typ.name)
         dprint("key:", typ.key)
         dprint("templates:", typ.templates)
+        '''
         dprint("template:", template, type(template))
         dprint("dpval:", dpval, type(dpval))
         dprint("--------------------------------------------------------------")
