@@ -178,7 +178,6 @@ def _ol_array_allocate(cls, allocsize, align):
     """Implements a Numba-only classmethod on the array type."""
 
     def impl(cls, allocsize, align):
-        # log("LOG _ol_array_allocate", allocsize, align)
         return allocator_UsmArray(allocsize, align)
 
     return impl
@@ -221,8 +220,6 @@ def allocator_UsmArray(typingctx, allocsize, align):
     sig = typing.signature(mip, allocsize, align)
     return sig, impl
 
-
-# ==================================================================
 
 _registered = False
 
@@ -420,18 +417,13 @@ def numba_register_typing():
         )
 
     for val, typ in todo:
-        # assert len(typ.templates) == 1
-        # template is the typing class to invoke generic() upon.
-        # template = typ.templates[0]
         template = typ
-        # dprint("need to re-register for usmarray", val, typ, typ.typing_key)
         try:
             dpval = eval("dpctl.tensor.numpy_usm_shared." + val.__name__)
         except:
             dprint("failed to eval", val.__name__)
             continue
         dprint("--------------------------------------------------------------")
-        # dprint("need to re-register for usmarray", val, typ, typ.typing_key)
         dprint("val:", val, type(val), "dir val", dir(val))
         dprint("typ:", typ, type(typ), "dir typ", dir(typ))
         dprint("template:", template, type(template))

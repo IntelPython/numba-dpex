@@ -261,7 +261,7 @@ class DPPYTargetContext(BaseContext):
         module.get_function(func.name).linkage = "internal"
         return wrapper
 
-    def __init__(self, typingctx, target="SyclDevice"):
+    def __init__(self, typingctx, target=DPPY_TARGET_NAME):
         super().__init__(typingctx, target)
 
     def init(self):
@@ -337,9 +337,7 @@ class DPPYTargetContext(BaseContext):
         """
         from .ocl import oclimpl, mathimpl
         from numba.np import npyimpl
-
         from . import printimpl
-
         from numba.cpython import numbers, tupleobj, slicing
 
         self.insert_func_defn(oclimpl.registry.functions)

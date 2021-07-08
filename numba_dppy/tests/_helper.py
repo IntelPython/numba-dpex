@@ -18,7 +18,6 @@ import contextlib
 
 import unittest
 import dpctl
-from numba_dppy.context_manager import offload_to_sycl_device
 from numba.tests.support import (
     captured_stdout,
     redirect_c_stdout,
