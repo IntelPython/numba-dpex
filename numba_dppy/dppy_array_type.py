@@ -15,6 +15,7 @@
 from numba.core.types.npytypes import Array
 from numba.core import types
 from numba.core.datamodel.models import StructModel
+import numpy as np
 
 
 class DPPYArray(Array):
@@ -72,6 +73,10 @@ class DPPYArray(Array):
             self.aligned,
             self.addrspace,
         )
+
+    @property
+    def box_type(self):
+        return np.ndarray
 
     def is_precise(self):
         return self.dtype.is_precise()
