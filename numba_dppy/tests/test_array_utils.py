@@ -43,6 +43,7 @@ def test_has_usm_memory(offload_device):
 
 def test_as_usm_backed(offload_device):
     a = np.ones(1023, dtype=np.float32)
+    b = a * 3
 
     with dpctl.device_context(offload_device) as queue:
         a_copy = np.empty_like(a)
@@ -50,7 +51,7 @@ def test_as_usm_backed(offload_device):
         copy_to_numpy_from_usm_obj(usm_mem, a_copy)
         assert np.all(a == a_copy)
 
-        a_copy = np.empty_like(a)
-        usm_mem = as_usm_backed(a, queue=queue, copy=False)
-        copy_to_numpy_from_usm_obj(usm_mem, a_copy)
-        assert np.any(np.not_equal(a, a_copy))
+        b_copy = np.empty_like(b)
+        usm_mem = as_usm_backed(b, queue=queue, copy=False)
+        copy_to_numpy_from_usm_obj(usm_mem, b_copy)
+        assert np.any(np.not_equal(b, b_copy))

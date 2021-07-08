@@ -93,8 +93,7 @@ def copy_from_numpy_to_usm_obj(usm_backed, obj):
         )
 
     if not obj.flags.c_contiguous:
-        raise ValueError("Only C-contiguous numpy.ndarray is currently "
-                         "supported!")
+        raise ValueError("Only C-contiguous numpy.ndarray is currently " "supported!")
 
     size = np.prod(obj.shape)
     if usm_mem.size != (obj.dtype.itemsize * size):
@@ -141,8 +140,7 @@ def copy_to_numpy_from_usm_obj(usm_backed, obj):
         )
 
     if not obj.flags.c_contiguous:
-        raise ValueError("Only C-contiguous numpy.ndarray is currently "
-                         "supported!")
+        raise ValueError("Only C-contiguous numpy.ndarray is currently " "supported!")
 
     size = np.prod(obj.shape)
     if usm_mem.size != (obj.dtype.itemsize * size):
