@@ -6,6 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.4] - 2021-07-12
+
+### Fixed
+- Fix emission of debug information (#424)
+- Fix examples (#455)
+- Remove address space cast (#432)
+- Fix Debugging of local variables (#432)
+
+### Added
+- Add examples for Debugging (#426)
+- Add NUMBA_DPPY_DEBUGINFO environment variable (#460)
+- Add debug option to dppy.kernel decorator (#424)
+- Enable Debugging of nested GPU functions (#424)
+- Enable setting breakpoints by function names while Debugging (#434) 
+- Update documentation about Debugging: common issues (#479), local variables (#474), breakpoints (#475), 
+breakpoints by condition(#480), backtrace (#475), info commands (#477), developer guides (#468), stepping (#450)
+- Add automatic generation of commands for Debugging (#463)
+- Add tests on Debugging local variables (#421)
+
 ## [0.14.3] - 2021-05-27
 
 ### Fixed
