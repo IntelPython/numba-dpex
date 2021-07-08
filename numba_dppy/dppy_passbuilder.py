@@ -43,8 +43,6 @@ from numba.core.typed_passes import (
     IRLegalization,
     InlineOverloads,
     PreLowerStripPhis,
-    NoPythonBackend,
-    NativeLowering,
     NoPythonSupportedFeatureValidation,
 )
 
@@ -144,11 +142,9 @@ class DPPYPassBuilder(object):
 
         # Intel GPU/CPU specific optimizations
         pm.add_pass(DPPYPreParforPass, "Preprocessing for parfors")
-        # pm.add_pass(PreParforPass, "Preprocessing for parfors")
         if not state.flags.no_rewrites:
             pm.add_pass(NopythonRewrites, "nopython rewrites")
         pm.add_pass(DPPYParforPass, "convert to parfors")
-        # pm.add_pass(ParforPass, "convert to parfors")
 
         # legalise
         pm.add_pass(
@@ -160,8 +156,6 @@ class DPPYPassBuilder(object):
         # lower
         pm.add_pass(SpirvFriendlyLowering, "SPIRV-friendly lowering pass")
         pm.add_pass(DPPYNoPythonBackend, "nopython mode backend")
-        # pm.add_pass(NativeLowering, "native lowering")
-        # pm.add_pass(NoPythonBackend, "nopython mode backend")
         pm.add_pass(DPPYDumpParforDiagnostics, "dump parfor diagnostics")
         pm.finalize()
         return pm
