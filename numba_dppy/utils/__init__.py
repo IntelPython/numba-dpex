@@ -28,10 +28,10 @@ from numba_dppy.utils.llvm_codegen_helpers import (
 from numba_dppy.utils.type_conversion_fns import npytypes_array_to_dppy_array
 from numba_dppy.utils.constants import address_space, calling_conv
 from numba_dppy.utils.array_utils import (
-    is_usm_backed,
+    has_usm_memory,
     as_usm_backed,
-    copy_to_usm_backed,
-    copy_from_usm_backed,
+    copy_from_numpy_to_usm_obj,
+    copy_to_numpy_from_usm_obj,
 )
 from numba_dppy.utils.misc import assert_no_return
 
@@ -45,9 +45,9 @@ __all__ = [
     "npytypes_array_to_dppy_array",
     "address_space",
     "calling_conv",
-    "is_usm_backed",
+    "has_usm_memory",
     "as_usm_backed",
-    "copy_to_usm_backed",
-    "copy_from_usm_backed",
+    "copy_from_numpy_to_usm_obj",
+    "copy_to_numpy_from_usm_obj",
     "assert_no_return",
 ]

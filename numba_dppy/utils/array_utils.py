@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""This module provides utilities to interact with USM memory."""
+
 import numpy as np
 import dpctl
 import dpctl.memory as dpctl_mem
@@ -26,9 +28,14 @@ supported_numpy_dtype = [
 ]
 
 
-def is_usm_backed(obj):
+def has_usm_memory(obj):
     """
     Determine and return a SYCL device accesible object.
+
+    as_usm_memory() converts Python object with `__sycl_usm_array_interface__`
+    property to one of :class:`.MemoryUSMShared`, :class:`.MemoryUSMDevice`, or
+    :class:`.MemoryUSMHost` instances. For more information please refer:
+    https://github.com/IntelPython/dpctl/blob/0.8.0/dpctl/memory/_memory.pyx#L673
 
     Args:
         obj: Object to be tested and data copied from.
@@ -49,19 +56,27 @@ def is_usm_backed(obj):
     return usm_mem
 
 
-def copy_to_usm_backed(usm_backed, obj):
+def copy_from_numpy_to_usm_obj(usm_backed, obj):
     """
     Copy from supported objects to USM backed data.
 
+    This function copies the data of a supported Python type (only
+    numpy.ndarray is supported at this point) into object that
+    defines a __sycl_usm_array_interface__ attribute. For more information
+    please refer to the specification of __sycl_usm_array_interface__:
+    https://github.com/IntelPython/dpctl/wiki/Zero-copy-data-exchange-using-SYCL-USM#sycl-usm-array-interface
+
     Args:
-        usm_backed: Object conformant to __sycl_usm_array_interface__.
+        usm_backed: An object that should define a
+            __sycl_usm_array_interface__ dictionary. A TypeError is thrown
+            if the object does not have such an attribute.
         obj (numpy.ndarray): Numpy ndarray, the data will be copied into.
 
     Raises:
         TypeError: If any argument is not of permitted type.
         ValueError: If size of data does not match.
     """
-    usm_mem = is_usm_backed(usm_backed)
+    usm_mem = has_usm_memory(usm_backed)
     if usm_mem is None:
         raise TypeError("Source is not USM backed.")
 
@@ -76,6 +91,10 @@ def copy_to_usm_backed(usm_backed, obj):
             "dtype is not supprted. Supported dtypes "
             "are: %s" % (supported_numpy_dtype)
         )
+
+    if not obj.flags.c_contiguous:
+        raise ValueError("Only C-contiguous numpy.ndarray is currently "
+                         "supported!")
 
     size = np.prod(obj.shape)
     if usm_mem.size != (obj.dtype.itemsize * size):
@@ -90,12 +109,14 @@ def copy_to_usm_backed(usm_backed, obj):
     usm_mem.copy_from_host(obj_memview)
 
 
-def copy_from_usm_backed(usm_backed, obj):
+def copy_to_numpy_from_usm_obj(usm_backed, obj):
     """
     Copy from USM backed data to supported objects.
 
     Args:
-        usm_backed: Object conformant to __sycl_usm_array_interface__.
+        usm_backed: An object that should define a
+            __sycl_usm_array_interface__ dictionary. A TypeError is thrown
+            if the object does not have such an attribute.
         obj (numpy.ndarray): Numpy ndarray, the data will be copied into.
 
 
@@ -103,7 +124,7 @@ def copy_from_usm_backed(usm_backed, obj):
         TypeError: If any argument is not of permitted type.
         ValueError: If size of data does not match.
     """
-    usm_mem = is_usm_backed(usm_backed)
+    usm_mem = has_usm_memory(usm_backed)
     if usm_mem is None:
         raise TypeError("Source is not USM backed.")
 
@@ -118,6 +139,10 @@ def copy_from_usm_backed(usm_backed, obj):
             "dtype is not supprted. Supported dtypes "
             "are: %s" % (supported_numpy_dtype)
         )
+
+    if not obj.flags.c_contiguous:
+        raise ValueError("Only C-contiguous numpy.ndarray is currently "
+                         "supported!")
 
     size = np.prod(obj.shape)
     if usm_mem.size != (obj.dtype.itemsize * size):
@@ -136,16 +161,17 @@ def as_usm_backed(obj, queue=None, usm_type="shared", copy=True):
     """
     Determine and return a SYCL device accesible object.
 
-    We try to determine if the provided object conforms to
-    __sycl_usm_array_interface__. If not, we create a USM memory of `usm_type`
-    and try to copy the data obj holds. If obj is not already backed by USM,
-    only numpy.ndarray is supported currently.
+    We try to determine if the provided object defines a dictionary called
+    sycl_usm_array_interface that conforms to __sycl_usm_array_interface__.
+    If not, we create a USM memory of `usm_type` and try to copy the data
+    `obj` holds. Only numpy.ndarray is supported currently as `obj` if
+    the object is not already backed by USM.
 
     Args:
         obj: Object to be tested and data copied from.
         usm_type: USM type used in case obj is not already backed by USM.
-        queue (dpctl.SyclQueue): SYCL queue to be used in case obj is not
-            already USM backed.
+        queue (dpctl.SyclQueue): SYCL queue to be used to allocate USM
+            memory in case obj is not already USM backed.
         copy (bool): Flag to determine if we copy data from obj.
 
     Returns:
@@ -153,7 +179,7 @@ def as_usm_backed(obj, queue=None, usm_type="shared", copy=True):
 
     Raises:
         TypeError:
-            1. If obj is not already backed by USM and is not of type
+            1. If obj is not allocated on USM memory or is not of type
                numpy.ndarray, TypeError is raised.
             2. If queue is not of type dpctl.SyclQueue.
         ValueError:
@@ -163,11 +189,11 @@ def as_usm_backed(obj, queue=None, usm_type="shared", copy=True):
             2. If usm_type is not valid.
             3. If dtype of the passed ndarray(obj) is not supported.
     """
-    usm_mem = is_usm_backed(obj)
+    usm_mem = has_usm_memory(obj)
 
     if queue is None:
         raise ValueError(
-            "Queue can not be None. Please provide " "the SYCL queue to be used."
+            "Queue can not be None. Please provide the SYCL queue to be used."
         )
     if not isinstance(queue, dpctl.SyclQueue):
         raise TypeError(
@@ -192,14 +218,16 @@ def as_usm_backed(obj, queue=None, usm_type="shared", copy=True):
             usm_mem = dpctl_mem.MemoryUSMShared(size * obj.dtype.itemsize, queue=queue)
         elif usm_type == "device":
             usm_mem = dpctl_mem.MemoryUSMDevice(size * obj.dtype.itemsize, queue=queue)
+        elif usm_type == "host":
+            usm_mem = dpctl_mem.MemoryUSMHost(size * obj.dtype.itemsize, queue=queue)
         else:
             raise ValueError(
-                "Supported usm_type are: 'shared' and "
-                "'device'. Provided: %s" % (usm_type)
+                "Supported usm_type are: 'shared', "
+                "'device' and 'host'. Provided: %s" % (usm_type)
             )
 
         if copy:
             # Copy data from numpy.ndarray
-            copy_to_usm_backed(usm_mem, obj)
+            copy_from_numpy_to_usm_obj(usm_mem, obj)
 
     return usm_mem

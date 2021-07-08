@@ -36,10 +36,10 @@ from numba_dppy.driver import USMNdArrayType
 from numba_dppy.dppy_array_type import DPPYArray
 from numba_dppy.utils import (
     assert_no_return,
-    is_usm_backed,
+    has_usm_memory,
     as_usm_backed,
-    copy_to_usm_backed,
-    copy_from_usm_backed,
+    copy_from_numpy_to_usm_obj,
+    copy_to_numpy_from_usm_obj,
 )
 
 
@@ -503,13 +503,21 @@ class DPPYKernel(DPPYKernelBase):
             # We copy the data back from usm backed data
             # container to original data container.
             usm_mem, orig_ndarr = device_arr
-            copy_from_usm_backed(usm_mem, orig_ndarr)
+            copy_to_numpy_from_usm_obj(usm_mem, orig_ndarr)
 
     def _unpack_device_array_argument(
         self, size, itemsize, buf, shape, strides, ndim, kernelargs
     ):
         """
         Implements the unpacking logic for array arguments.
+
+        Args:
+            size: Total number of elements in the array.
+            itemsize: Size in bytes of each element in the array.
+            buf: The pointer to the memory.
+            shape: The shape of the array.
+            ndim: Number of dimension.
+            kernelargs: Array where the arguments of the kernel is stored.
         """
         # meminfo
         kernelargs.append(ctypes.c_size_t(0))
@@ -556,7 +564,7 @@ class DPPYKernel(DPPYKernelBase):
         if isinstance(ty, USMNdArrayType):
             raise NotImplementedError(ty, USMNdArrayType)
         elif isinstance(ty, types.Array):
-            usm_mem = is_usm_backed(val)
+            usm_mem = has_usm_memory(val)
             if usm_mem is None:
                 default_behavior = self.check_for_invalid_access_type(access_type)
                 usm_mem = as_usm_backed(val, queue=sycl_queue, copy=False)
@@ -565,7 +573,7 @@ class DPPYKernel(DPPYKernelBase):
                     or self.valid_access_types[access_type] == _NUMBA_DPPY_READ_ONLY
                     or self.valid_access_types[access_type] == _NUMBA_DPPY_READ_WRITE
                 ):
-                    copy_to_usm_backed(usm_mem, val)
+                    copy_from_numpy_to_usm_obj(usm_mem, val)
 
                 device_arrs[-1] = (usm_mem, val)
 
