@@ -108,8 +108,7 @@ class ExtendedParforDiagnostics(ParforDiagnostics):
                 if pf_id not in reported:
                     region_id = print_fuse("f", pf_id, adj, 0, region_id)
             elif opt_ty == "nest":
-                pass
-                # region_id = print_nest(fadj, nadj, pf_id, reported, region_id)
+                region_id = print_nest(fadj, nadj, pf_id, reported, region_id)
             else:
                 assert 0
 
