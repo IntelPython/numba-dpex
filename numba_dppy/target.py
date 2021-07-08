@@ -416,17 +416,16 @@ class DPPYTargetContext(BaseContext):
                  into the module.
 
         """
-        text = lc.Constant.stringz(string)
+        text = cgutils.make_bytearray(string.encode("utf-8") + b"\x00")
 
         name = "$".join(["__conststring__", self.mangler(string, ["str"])])
 
         # Try to reuse existing global
-        try:
-            gv = mod.get_global(name)
-        except KeyError:
+        gv = mod.globals.get(name)
+        if gv is None:
             # Not defined yet
-            gv = mod.add_global_variable(
-                text.type, name=name, addrspace=address_space.GENERIC
+            gv = cgutils.add_global_variable(mod, text.type, name=name,
+                    addrspace=address_space.GENERIC
             )
             gv.linkage = "internal"
             gv.global_constant = True
@@ -434,7 +433,7 @@ class DPPYTargetContext(BaseContext):
 
         # Cast to a i8* pointer
         charty = gv.type.pointee.element
-        return lc.Constant.bitcast(gv, charty.as_pointer(address_space.GENERIC))
+        return gv.bitcast(charty.as_pointer(address_space.GENERIC))
 
     def addrspacecast(self, builder, src, addrspace):
         """Insert an LLVM addressspace cast instruction into the module.

@@ -17,7 +17,6 @@ import numpy as np
 import numba_dppy as dppy
 import unittest
 import dpctl
-from numba_dppy.context_manager import offload_to_sycl_device
 from . import _helper
 
 
@@ -38,7 +37,8 @@ class TestDPPYFunc(unittest.TestCase):
         a = np.ones(self.N)
         b = np.ones(self.N)
 
-        with dpctl.device_context("opencl:gpu"):
+        device = dpctl.SyclDevice("opencl:gpu")
+        with dppy.offload_to_sycl_device(device):
             f[self.N, dppy.DEFAULT_LOCAL_SIZE](a, b)
 
         self.assertTrue(np.all(b == 2))
@@ -61,7 +61,8 @@ class TestDPPYFunc(unittest.TestCase):
         a = np.ones(self.N)
         b = np.ones(self.N)
 
-        with dpctl.device_context("opencl:gpu"):
+        device = dpctl.SyclDevice("opencl:gpu")
+        with dppy.offload_to_sycl_device(device):
             f[self.N, dppy.DEFAULT_LOCAL_SIZE](a, b)
 
             self.assertTrue(np.all(b == 2))

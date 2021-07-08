@@ -15,7 +15,7 @@
 from numba.core import cgutils, types
 from numba.core.ir_utils import legalize_names
 
-# from numba_dppy import numpy_usm_shared as nus
+from numba_dppy import numpy_usm_shared as nus
 from numba_dppy import utils
 from numba_dppy.driver import DpctlCAPIFnBuilder
 from numba_dppy.driver._helpers import numba_type_to_dpctl_typenum
@@ -237,8 +237,7 @@ class KernelLaunchOps:
             legal_names = legalize_names([var])
             ty = numba_type_to_dpctl_typenum(context=self.context, type=types.voidptr)
 
-            # if isinstance(arg_type, nus.UsmSharedArrayType):
-            if False:
+            if isinstance(arg_type, nus.UsmSharedArrayType):
                 self._form_kernel_arg_and_arg_ty(
                     self.builder.bitcast(
                         self.builder.load(data_member),

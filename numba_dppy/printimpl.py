@@ -80,10 +80,16 @@ def print_varargs(context, builder, sig, args):
     formats = []
     values = []
 
+    only_str = True
     for i, (argtype, argval) in enumerate(zip(sig.args, args)):
         argfmt, argvals = print_item(argtype, context, builder, argval)
         formats.append(argfmt)
         values.extend(argvals)
+        if argfmt != "%s":
+            only_str = False
+
+    if only_str:
+        raise ValueError("We do not support printing string alone!")
 
     rawfmt = " ".join(formats) + "\n"
     fmt = context.insert_const_string(builder.module, rawfmt)

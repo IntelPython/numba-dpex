@@ -28,11 +28,12 @@ first_level_cache = dict()
 
 @contextmanager
 def offload_to_sycl_device(dpctl_device):
-    with dpctl.device_context(dpctl_device):
-        retarget = first_level_cache.get(dpctl_device.filter_string, None)
+    with dpctl.device_context(dpctl_device) as sycl_queue:
+        filter_string = sycl_queue.sycl_device.filter_string
+        retarget = first_level_cache.get(filter_string, None)
 
         if retarget is None:
-            retarget = DPPYRetarget(dpctl_device.filter_string)
-            first_level_cache[dpctl_device.filter_string] = retarget
+            retarget = DPPYRetarget(filter_string)
+            first_level_cache[filter_string] = retarget
         with TargetConfig.switch_target(retarget):
-            yield
+            yield sycl_queue

@@ -39,7 +39,7 @@ def sum_reduce(A):
     print("Using device ...")
     device.print_device_info()
 
-    with dpctl.device_context(device):
+    with dppy.offload_to_sycl_device(device):
         while total > 1:
             global_size = total // 2
             sum_reduction_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](

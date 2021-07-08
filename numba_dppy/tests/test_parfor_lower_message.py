@@ -19,7 +19,6 @@ from numba_dppy import config
 import unittest
 from numba.tests.support import captured_stdout
 import dpctl
-from numba_dppy.context_manager import offload_to_sycl_device
 from . import _helper
 
 
@@ -38,7 +37,7 @@ def prange_example():
 class TestParforMessage(unittest.TestCase):
     def test_parfor_message(self):
         device = dpctl.SyclDevice("opencl:gpu")
-        with offload_to_sycl_device(device):
+        with dppy.offload_to_sycl_device(device):
             config.DEBUG = 1
             jitted = njit(prange_example)
 

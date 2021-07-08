@@ -15,8 +15,7 @@
 from numba import njit
 import numpy as np
 import dpctl
-import numba_dppy
-from numba_dppy.context_manager import offload_to_sycl_device
+import numba_dppy as dppy
 
 
 @njit
@@ -44,7 +43,7 @@ def main():
     print("Using device ...")
     device.print_device_info()
 
-    with dpctl.device_context(device):
+    with dppy.offload_to_sycl_device(device):
         c = f1(a, b)
 
     print("RESULT c:", c, hex(c.ctypes.data))

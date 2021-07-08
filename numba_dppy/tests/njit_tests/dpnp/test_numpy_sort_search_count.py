@@ -17,13 +17,13 @@
 ################################################################################
 
 import dpctl
-from numba_dppy.context_manager import offload_to_sycl_device
 import numpy as np
 from numba import njit
 import pytest
 from .dpnp_skip_test import dpnp_skip_test as skip_test
 from ._helper import wrapper_function
 from numba_dppy.tests._helper import dpnp_debug
+import numba_dppy as dppy
 
 
 list_of_filter_strs = [
@@ -92,7 +92,7 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
 
     f = njit(op)
     device = dpctl.SyclDevice(filter_str)
-    with offload_to_sycl_device(device), dpnp_debug():
+    with dppy.offload_to_sycl_device(device), dpnp_debug():
         actual = f(a)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -132,7 +132,7 @@ def test_partition(array, kth, filter_str):
 
     f = njit(fn)
     device = dpctl.SyclDevice(filter_str)
-    with offload_to_sycl_device(device), dpnp_debug():
+    with dppy.offload_to_sycl_device(device), dpnp_debug():
         actual = f(a, kth)
 
     expected = fn(a, kth)

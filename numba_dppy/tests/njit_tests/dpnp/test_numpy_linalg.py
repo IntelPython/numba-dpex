@@ -17,13 +17,13 @@
 ################################################################################
 
 import dpctl
-from numba_dppy.context_manager import offload_to_sycl_device
 import numpy as np
 from numba import njit
 import pytest
 from .dpnp_skip_test import dpnp_skip_test as skip_test
 from ._helper import wrapper_function, args_string
 from numba_dppy.tests._helper import dpnp_debug
+import numba_dppy as dppy
 
 
 # From https://github.com/IntelPython/dpnp/blob/0.4.0/tests/test_linalg.py#L8
@@ -95,7 +95,7 @@ def test_eig(filter_str, eig_input, capfd):
     f = njit(fn)
 
     device = dpctl.SyclDevice(filter_str)
-    with offload_to_sycl_device(device), dpnp_debug():
+    with dppy.offload_to_sycl_device(device), dpnp_debug():
         actual_val, actual_vec = f(a)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -169,7 +169,7 @@ def test_dot(filter_str, dot_name, dot_input, dtype, capfd):
     f = njit(fn)
 
     device = dpctl.SyclDevice(filter_str)
-    with offload_to_sycl_device(device), dpnp_debug():
+    with dppy.offload_to_sycl_device(device), dpnp_debug():
         actual = f(a, b)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -191,7 +191,7 @@ def test_matmul(filter_str, dtype, capfd):
     f = njit(fn)
 
     device = dpctl.SyclDevice(filter_str)
-    with offload_to_sycl_device(device), dpnp_debug():
+    with dppy.offload_to_sycl_device(device), dpnp_debug():
         actual = f(a, b)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -210,7 +210,7 @@ def test_cholesky(filter_str, dtype, capfd):
     f = njit(fn)
 
     device = dpctl.SyclDevice(filter_str)
-    with offload_to_sycl_device(device), dpnp_debug():
+    with dppy.offload_to_sycl_device(device), dpnp_debug():
         actual = f(a)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -245,7 +245,7 @@ def test_det(filter_str, det_input, dtype, capfd):
     f = njit(fn)
 
     device = dpctl.SyclDevice(filter_str)
-    with offload_to_sycl_device(device), dpnp_debug():
+    with dppy.offload_to_sycl_device(device), dpnp_debug():
         actual = f(a)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -272,7 +272,7 @@ def test_multi_dot(filter_str, capfd):
     f = njit(fn)
 
     device = dpctl.SyclDevice(filter_str)
-    with offload_to_sycl_device(device), dpnp_debug():
+    with dppy.offload_to_sycl_device(device), dpnp_debug():
         actual = f(A, B, C, D)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -313,7 +313,7 @@ def test_matrix_power(filter_str, matrix_power_input, power, dtype, capfd):
     f = njit(fn)
 
     device = dpctl.SyclDevice(filter_str)
-    with offload_to_sycl_device(device), dpnp_debug():
+    with dppy.offload_to_sycl_device(device), dpnp_debug():
         actual = f(a, power)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -339,7 +339,7 @@ def test_matrix_rank(filter_str, matrix_rank_input, capfd):
     f = njit(fn)
 
     device = dpctl.SyclDevice(filter_str)
-    with offload_to_sycl_device(device), dpnp_debug():
+    with dppy.offload_to_sycl_device(device), dpnp_debug():
         actual = f(matrix_rank_input)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -360,7 +360,7 @@ def test_eigvals(filter_str, eig_input, capfd):
     f = njit(fn)
 
     device = dpctl.SyclDevice(filter_str)
-    with offload_to_sycl_device(device), dpnp_debug():
+    with dppy.offload_to_sycl_device(device), dpnp_debug():
         actual_val = f(a)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out

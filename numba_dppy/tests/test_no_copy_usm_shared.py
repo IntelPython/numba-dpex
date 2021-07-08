@@ -15,17 +15,13 @@
 import pytest
 import numpy as np
 from numba import njit, prange
-
 from numba.core import compiler, cpu
-
+from numba.core.registry import cpu_target
 import dpctl
 import dpctl.tensor.numpy_usm_shared as usmarray
-
-# import numba_dppy.numpy_usm_shared as nus
-from numba_dppy.context_manager import offload_to_sycl_device
-
+import numba_dppy.numpy_usm_shared as nus
 from numba_dppy.compiler import DPPYCompiler
-from numba.core.registry import cpu_target
+import numba_dppy as dppy
 
 
 def fn(a):
@@ -34,17 +30,16 @@ def fn(a):
     return a
 
 
-@pytest.mark.skip()
 def test_no_copy_usm_shared(capfd):
     a = usmarray.ones(10, dtype=np.int64)
     b = np.ones(10, dtype=np.int64)
-    f = njit(fn)
+    #f = njit(fn)
 
     flags = compiler.Flags()
-    flags.set("no_compile")
-    flags.set("no_cpython_wrapper")
-    flags.set("auto_parallel", cpu.ParallelOptions(True))
-    flags.unset("nrt")
+    flags.no_compile = True
+    flags.no_cpython_wrapper = True
+    flags.nrt = False
+    flags.auto_parallel = cpu.ParallelOptions(True)
 
     typingctx = cpu_target.typing_context
     targetctx = cpu_target.target_context
@@ -55,7 +50,7 @@ def test_no_copy_usm_shared(capfd):
     except ValueError:
         pytest.skip("Device not found")
 
-    with offload_to_sycl_device(device):
+    with dppy.offload_to_sycl_device(device):
         cres = compiler.compile_extra(
             typingctx=typingctx,
             targetctx=targetctx,

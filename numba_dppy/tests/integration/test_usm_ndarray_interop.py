@@ -62,7 +62,7 @@ def test_consuming_usm_ndarray(offload_device, dtype, usm_type):
     b = np.array(np.random.random(N), dtype=dtype)
     c = np.ones_like(a)
 
-    with dpctl.device_context(offload_device):
+    with dppy.offload_to_sycl_device(offload_device):
         da = dpt.usm_ndarray(a.shape, dtype=a.dtype, buffer=usm_type)
         da.usm_data.copy_from_host(a.reshape((-1)).view("|u1"))
 

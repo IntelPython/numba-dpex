@@ -519,6 +519,8 @@ import numba.testing
 
 from . import config
 
+from numba_dppy.context_manager import offload_to_sycl_device
+
 if config.dppy_present:
     from .device_init import *
 else:
@@ -529,3 +531,7 @@ from ._version import get_versions
 
 __version__ = get_versions()["version"]
 del get_versions
+
+__all__ = [
+    "offload_to_sycl_device"
+]

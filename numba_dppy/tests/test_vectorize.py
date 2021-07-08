@@ -16,10 +16,9 @@
 import numpy as np
 from numba import njit, vectorize
 import dpctl
-from numba_dppy.context_manager import offload_to_sycl_device
-import numba_dppy
 import unittest
 
+import numba_dppy as dppy
 from numba_dppy.tests._helper import assert_auto_offloading
 from . import _helper
 
@@ -46,7 +45,7 @@ class TestVectorize(unittest.TestCase):
         B = np.random.random(10)
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with offload_to_sycl_device(device), assert_auto_offloading():
+        with dppy.offload_to_sycl_device(device), assert_auto_offloading():
             expected = f(A, B)
 
         actual = f_np(A, B)

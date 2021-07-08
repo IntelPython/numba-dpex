@@ -17,11 +17,11 @@
 ################################################################################
 
 import dpctl
-from numba_dppy.context_manager import offload_to_sycl_device
 import numpy as np
 from numba import njit
 import pytest
 from numba_dppy.tests._helper import skip_test, is_gen12, assert_auto_offloading
+import numba_dppy as dppy
 
 list_of_filter_strs = [
     "opencl:gpu:0",
@@ -116,7 +116,7 @@ def test_binary_ops(filter_str, binary_op, input_arrays):
         return binop(a, b)
 
     device = dpctl.SyclDevice(filter_str)
-    with offload_to_sycl_device(device), assert_auto_offloading():
+    with dppy.offload_to_sycl_device(device), assert_auto_offloading():
         actual = f(a, b)
 
     expected = binop(a, b)
@@ -142,7 +142,7 @@ def test_unary_ops(filter_str, unary_op, input_arrays):
         return uop(a)
 
     device = dpctl.SyclDevice(filter_str)
-    with offload_to_sycl_device(device), assert_auto_offloading():
+    with dppy.offload_to_sycl_device(device), assert_auto_offloading():
         actual = f(a)
 
     expected = uop(a)

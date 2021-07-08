@@ -17,7 +17,7 @@ import numpy as np
 from numba import njit
 import dpctl
 import unittest
-from numba_dppy.context_manager import offload_to_sycl_device
+import numba_dppy as dppy
 from numba_dppy.tests._helper import (
     ensure_dpnp,
     assert_auto_offloading,
@@ -45,7 +45,7 @@ class Testdpnp_functions(unittest.TestCase):
             return d
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with offload_to_sycl_device(device), assert_auto_offloading(), dpnp_debug():
+        with dppy.offload_to_sycl_device(device), assert_auto_offloading(), dpnp_debug():
             njit_f = njit(f)
             got = njit_f(self.a, self.b)
         expected = f(self.a, self.b)

@@ -136,7 +136,7 @@ class TestUsmArray(unittest.TestCase):
         self.assertIsInstance(b, usmarray.ndarray, type(b))
         self.assertTrue(usmarray.has_array_interface(b))
 
-    @unittest.expectedFailure
+    @unittest.skip
     def test_numba_usmarray_mul_add(self):
         """Testing Numba usmarray"""
         # fails if run tests in bunch

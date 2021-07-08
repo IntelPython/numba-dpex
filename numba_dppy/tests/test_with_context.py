@@ -21,7 +21,7 @@ from numba.core import errors
 from numba.tests.support import captured_stdout
 from . import _helper
 import dpctl
-from numba_dppy.context_manager import offload_to_sycl_device
+import numba_dppy as dppy
 
 
 class TestWithDPPYContext(unittest.TestCase):
@@ -42,7 +42,7 @@ class TestWithDPPYContext(unittest.TestCase):
 
         with captured_stdout() as got_gpu_message:
             device = dpctl.SyclDevice("opencl:gpu")
-            with offload_to_sycl_device(device):
+            with dppy.offload_to_sycl_device(device):
                 func(got_gpu)
 
         config.DEBUG = 0
@@ -68,7 +68,7 @@ class TestWithDPPYContext(unittest.TestCase):
 
         with captured_stdout() as got_cpu_message:
             device = dpctl.SyclDevice("opencl:cpu")
-            with offload_to_sycl_device(device):
+            with dppy.offload_to_sycl_device(device):
                 func(got_cpu)
 
         config.DEBUG = 0

@@ -17,7 +17,6 @@ import numpy as np
 from numba import njit, prange
 from numba.tests.support import captured_stdout
 import dpctl
-from numba_dppy.context_manager import offload_to_sycl_device
 
 import numba_dppy as dppy
 from numba_dppy import config as dppy_config
@@ -38,7 +37,7 @@ class TestOffloadDiagnostics(unittest.TestCase):
             return a
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with offload_to_sycl_device(device):
+        with dppy.offload_to_sycl_device(device):
             dppy_config.OFFLOAD_DIAGNOSTICS = 1
             jitted = njit(parallel=True)(prange_func)
 
@@ -63,7 +62,7 @@ class TestOffloadDiagnostics(unittest.TestCase):
         c = np.ones_like(a)
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with offload_to_sycl_device(device):
+        with dppy.offload_to_sycl_device(device):
             dppy_config.OFFLOAD_DIAGNOSTICS = 1
 
             with captured_stdout() as got:

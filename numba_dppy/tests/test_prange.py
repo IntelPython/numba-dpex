@@ -16,10 +16,10 @@
 from . import _helper
 import numpy as np
 import dpctl
-from numba_dppy.context_manager import offload_to_sycl_device
 from numba import njit, prange
 import unittest
 from numba_dppy.tests._helper import assert_auto_offloading
+import numba_dppy as dppy
 
 
 @unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
@@ -36,7 +36,7 @@ class TestPrange(unittest.TestCase):
         b = np.ones((m, n))
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with assert_auto_offloading(), offload_to_sycl_device(device):
+        with assert_auto_offloading(), dppy.offload_to_sycl_device(device):
             f(a, b)
 
         for i in range(4):
@@ -57,7 +57,7 @@ class TestPrange(unittest.TestCase):
         b = np.ones((m, n))
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with assert_auto_offloading(), offload_to_sycl_device(device):
+        with assert_auto_offloading(), dppy.offload_to_sycl_device(device):
             f(a, b)
 
         self.assertTrue(np.all(b == 10))
@@ -82,7 +82,7 @@ class TestPrange(unittest.TestCase):
         b = np.ones((m, n))
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with assert_auto_offloading(parfor_offloaded=2), offload_to_sycl_device(device):
+        with assert_auto_offloading(parfor_offloaded=2), dppy.offload_to_sycl_device(device):
             f(a, b)
 
         self.assertTrue(np.all(b == 10))
@@ -107,7 +107,7 @@ class TestPrange(unittest.TestCase):
         b = np.ones((m, n, o))
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with assert_auto_offloading(parfor_offloaded=1), offload_to_sycl_device(device):
+        with assert_auto_offloading(parfor_offloaded=1), dppy.offload_to_sycl_device(device):
             f(a, b)
 
         self.assertTrue(np.all(b == 12))
@@ -127,7 +127,7 @@ class TestPrange(unittest.TestCase):
         jitted = njit(prange_example)
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with assert_auto_offloading(parfor_offloaded=2), offload_to_sycl_device(device):
+        with assert_auto_offloading(parfor_offloaded=2), dppy.offload_to_sycl_device(device):
             jitted_res = jitted()
 
         res = prange_example()
@@ -149,7 +149,7 @@ class TestPrange(unittest.TestCase):
         jitted = njit(prange_example)
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with assert_auto_offloading(parfor_offloaded=2), offload_to_sycl_device(device):
+        with assert_auto_offloading(parfor_offloaded=2), dppy.offload_to_sycl_device(device):
             jitted_res = jitted()
 
         res = prange_example()

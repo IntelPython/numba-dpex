@@ -16,7 +16,6 @@ import numpy as np
 import numba_dppy as dppy
 import pytest
 import dpctl
-from numba_dppy.context_manager import offload_to_sycl_device
 from numba_dppy.tests._helper import skip_test
 
 list_of_filter_strs = [
@@ -33,21 +32,22 @@ def filter_str(request):
 def test_print_only_str(filter_str):
     try:
         device = dpctl.SyclDevice(filter_str)
-        with offload_to_sycl_device(device):
+        with dppy.offload_to_sycl_device(device):
             pass
     except Exception:
         pytest.skip()
 
     @dppy.kernel
     def f():
-        print("test")
+        print("test", "test2")
 
     # This test will fail, we currently can not print only string.
     # The LLVM generated for printf() function with only string gets
     # replaced by a puts() which fails due to lack of addrspace in the
     # puts function signature right now, and would fail in general due
     # to lack of support for puts() in OpenCL.
-    with dpctl.device_context(filter_str), captured_stdout() as stdout:
+
+    with dppy.offload_to_sycl_device(filter_str):
         f[3, dppy.DEFAULT_LOCAL_SIZE]()
 
 
@@ -78,7 +78,7 @@ def test_print(filter_str, input_arrays, capfd):
     global_size = 3
 
     device = dpctl.SyclDevice(filter_str)
-    with offload_to_sycl_device(device):
+    with dppy.offload_to_sycl_device(device):
         f[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
         captured = capfd.readouterr()
         assert "test" in captured.out

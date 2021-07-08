@@ -18,7 +18,6 @@ import math
 import numba_dppy as dppy
 import unittest
 import dpctl
-from numba_dppy.context_manager import offload_to_sycl_device
 
 
 @dppy.kernel
@@ -43,7 +42,7 @@ class TestDPPYSumReduction(unittest.TestCase):
         R = np.array(np.random.random(math.ceil(N / 2)), dtype=np.float32)
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with offload_to_sycl_device(device):
+        with dppy.offload_to_sycl_device(device):
             total = N
 
             while total > 1:
