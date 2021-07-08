@@ -173,9 +173,6 @@ def box_array(typ, val, c):
         return parent
 
 
-# ==================================================================
-
-
 @overload_classmethod(UsmSharedArrayType, "_allocate")
 def _ol_array_allocate(cls, allocsize, align):
     """Implements a Numba-only classmethod on the array type."""
@@ -186,42 +183,6 @@ def _ol_array_allocate(cls, allocsize, align):
 
     return impl
 
-
-@intrinsic
-def allocator_MyArray(typingctx, allocsize, align):
-    def impl(context, builder, sig, args):
-        context.nrt._require_nrt()
-        size, align = args
-
-        mod = builder.module
-        u32 = ir.IntType(32)
-        voidptr = cgutils.voidptr_t
-
-        get_alloc_fnty = ir.FunctionType(voidptr, ())
-        get_alloc_fn = cgutils.get_or_insert_function(
-            mod, get_alloc_fnty, name="_nrt_get_sample_external_allocator"
-        )
-        ext_alloc = builder.call(get_alloc_fn, ())
-
-        fnty = ir.FunctionType(voidptr, [cgutils.intp_t, u32, voidptr])
-        fn = cgutils.get_or_insert_function(
-            mod, fnty, name="NRT_MemInfo_alloc_safe_aligned_external"
-        )
-        fn.return_value.add_attribute("noalias")
-        if isinstance(align, builtins.int):
-            align = context.get_constant(types.uint32, align)
-        else:
-            assert align.type == u32, "align must be a uint32"
-        call = builder.call(fn, [size, align, ext_alloc])
-        call.name = "allocate_MyArray"
-        return call
-
-    mip = types.MemInfoPointer(types.voidptr)  # return untyped pointer
-    sig = typing.signature(mip, allocsize, align)
-    return sig, impl
-
-
-# ==================================================================
 
 # This tells Numba to use this function when it needs to allocate a
 # UsmArray in a njit function.
@@ -323,9 +284,9 @@ def numba_register_lower_builtin():
     for k, v in _overload_glue._registered.items():
         func = k
 
-        for types, impl in v._BIND_TYPES.items():
-            ig = (impl, func, types)
-            dprint("Numpy lowered registry functions:", impl, func, type(func), types)
+        for typs, impl in v._BIND_TYPES.items():
+            ig = (impl, func, typs)
+            dprint("Numpy lowered registry functions:", impl, func, type(func), typs)
             # If it is a Numpy function...
             if isinstance(func, ftype):
                 dprint("is ftype")
@@ -436,7 +397,6 @@ def numba_register_typing():
         if isinstance(val, type):
             if isinstance(typ, numba.core.types.functions.Function):
                 assert len(typ.templates) == 1
-                # todo.append(ig)
                 todo.append((val, typ.templates[0]))
             elif isinstance(typ, numba.core.types.functions.NumberClass):
                 pass
@@ -474,12 +434,6 @@ def numba_register_typing():
         # dprint("need to re-register for usmarray", val, typ, typ.typing_key)
         dprint("val:", val, type(val), "dir val", dir(val))
         dprint("typ:", typ, type(typ), "dir typ", dir(typ))
-        """
-        dprint("typing key:", typ.typing_key)
-        dprint("name:", typ.name)
-        dprint("key:", typ.key)
-        dprint("templates:", typ.templates)
-        """
         dprint("template:", template, type(template))
         dprint("dpval:", dpval, type(dpval))
         dprint("--------------------------------------------------------------")

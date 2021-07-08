@@ -17,7 +17,7 @@ numba_dppy can run several of the numpy.random RNG functions called inside
 a JIT function on a SYCL device using dpnp
 (https://github.com/IntelPython/dpnp). As with the rest of numba_dppy examples,
 this feature is also available by simply invoking a ``numba.jit`` function with
-the numpy.random calls from within a ``dppy.offload_to_sycl_device``scope.
+the numpy.random calls from within a ``numba_dppy.offload_to_sycl_device``scope.
 """
 
 import numba

@@ -66,7 +66,7 @@ def run(iterations):
 
 def main():
     parser = argparse.ArgumentParser(description="Black-Scholes")
-    parser.add_argument("--iter", dest="iterations", type=int, default=10)
+    parser.add_argument("--iter", dest="iter", type=int, default=10)
     args = parser.parse_args()
     iter = args.iter
 
