@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix examples (#455)
 - Remove address space cast (#432)
 - Fix Debugging of local variables (#432)
+- Assert offload to SYCL devices in tests (#466)
+- Removed calling opt to convert LLVM IR to LLVM Bitcode (#481)
 
 ### Added
 - Add examples for Debugging (#426)
@@ -24,6 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 breakpoints by condition(#480), backtrace (#475), info commands (#477), developer guides (#468), stepping (#450)
 - Add automatic generation of commands for Debugging (#463)
 - Add tests on Debugging local variables (#421)
+- Enable eager compilation of dppy.kernel (#291)
+- Increase test coverage for native atomic ops (#435)
+- Check and deter users from returning values from dppy.kernel (#476)
 
 ## [0.14.3] - 2021-05-27
 
