@@ -112,7 +112,9 @@ class SyclDevice(GPU):
     pass
 
 
-target_registry["SyclDevice"] = SyclDevice
+DPPY_TARGET_NAME = "SyclDevice"
+
+target_registry[DPPY_TARGET_NAME] = SyclDevice
 
 import numba_dppy.dppy_offload_dispatcher
 

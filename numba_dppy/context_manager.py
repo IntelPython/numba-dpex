@@ -19,8 +19,7 @@ from numba import njit
 from numba._dispatcher import set_use_tls_target_stack
 from numba.core.dispatcher import TargetConfig
 from numba.core.retarget import BasicRetarget
-
-TARGET = "SyclDevice"
+from numba_dppy.target import DPPY_TARGET_NAME
 
 
 class DPPYRetarget(BasicRetarget):
@@ -30,10 +29,10 @@ class DPPYRetarget(BasicRetarget):
 
     @property
     def output_target(self):
-        return TARGET
+        return DPPY_TARGET_NAME
 
     def compile_retarget(self, cpu_disp):
-        kernel = njit(_target=TARGET)(cpu_disp.py_func)
+        kernel = njit(_target=DPPY_TARGET_NAME)(cpu_disp.py_func)
         return kernel
 
 

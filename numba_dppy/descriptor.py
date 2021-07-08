@@ -16,7 +16,7 @@ from numba.core.descriptors import TargetDescriptor
 from numba.core.options import TargetOptions
 
 from numba.core import dispatcher, utils, typing
-from .target import DPPYTargetContext, DPPYTypingContext
+from .target import DPPYTargetContext, DPPYTypingContext, DPPY_TARGET_NAME
 
 from numba.core.cpu import CPUTargetOptions
 
@@ -50,4 +50,4 @@ class DPPYTarget(TargetDescriptor):
 
 
 # The global DPPY target
-dppy_target = DPPYTarget("SyclDevice")
+dppy_target = DPPYTarget(DPPY_TARGET_NAME)
