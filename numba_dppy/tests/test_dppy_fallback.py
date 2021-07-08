@@ -39,7 +39,9 @@ class TestDPPYFallback(unittest.TestCase):
             return a
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with warnings.catch_warnings(record=True) as w, numba_dppy.offload_to_sycl_device(device):
+        with warnings.catch_warnings(
+            record=True
+        ) as w, numba_dppy.offload_to_sycl_device(device):
             dppy = numba.njit(inner_call_fallback)
             dppy_result = dppy()
 
@@ -57,7 +59,9 @@ class TestDPPYFallback(unittest.TestCase):
 
         a = np.ones(10)
         device = dpctl.SyclDevice("opencl:gpu")
-        with warnings.catch_warnings(record=True) as w, numba_dppy.offload_to_sycl_device(device):
+        with warnings.catch_warnings(
+            record=True
+        ) as w, numba_dppy.offload_to_sycl_device(device):
             dppy = numba.njit(reduction)
             dppy_result = dppy(a)
 

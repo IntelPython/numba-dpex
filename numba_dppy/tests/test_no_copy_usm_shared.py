@@ -33,7 +33,7 @@ def fn(a):
 def test_no_copy_usm_shared(capfd):
     a = usmarray.ones(10, dtype=np.int64)
     b = np.ones(10, dtype=np.int64)
-    #f = njit(fn)
+    # f = njit(fn)
 
     flags = compiler.Flags()
     flags.no_compile = True

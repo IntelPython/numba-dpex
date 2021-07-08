@@ -45,7 +45,9 @@ class Testdpnp_functions(unittest.TestCase):
             return d
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with dppy.offload_to_sycl_device(device), assert_auto_offloading(), dpnp_debug():
+        with dppy.offload_to_sycl_device(
+            device
+        ), assert_auto_offloading(), dpnp_debug():
             njit_f = njit(f)
             got = njit_f(self.a, self.b)
         expected = f(self.a, self.b)

@@ -17,6 +17,7 @@ import numpy as np
 import dpctl
 import numba_dppy as dppy
 
+
 @njit
 def f1(a, b):
     c = a + b

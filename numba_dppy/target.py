@@ -424,8 +424,8 @@ class DPPYTargetContext(BaseContext):
         gv = mod.globals.get(name)
         if gv is None:
             # Not defined yet
-            gv = cgutils.add_global_variable(mod, text.type, name=name,
-                    addrspace=address_space.GENERIC
+            gv = cgutils.add_global_variable(
+                mod, text.type, name=name, addrspace=address_space.GENERIC
             )
             gv.linkage = "internal"
             gv.global_constant = True
