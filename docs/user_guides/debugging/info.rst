@@ -1,10 +1,7 @@
 Info commands
 =============
 
-``info functions``
-------------------
-
-Displays the list of functions in the debugged program.
+The ``info functions`` command displays the list of functions in the debugged program.
 
 **Syntax**
 ``````````
@@ -24,7 +21,7 @@ Parameters
 
 **Regex**
 
-If specified, the info functions command lists the functions matching the regex.
+If the regex is specified, the ``info functions`` command lists the functions matching the regex.
 If omitted, the command lists all functions in all loaded modules (main program and shared libraries).
 
 Consider Numba-dppy kernel code. See the source file ``numba_dppy/examples/debug/simple_sum.py``:
@@ -34,7 +31,7 @@ Consider Numba-dppy kernel code. See the source file ``numba_dppy/examples/debug
     :linenos:
     :lineno-match:
 
-Run GDB debugger:
+Run the debugger and use the ``info functions`` command. The output is as follows:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/info_func
     :language: shell-session
@@ -42,4 +39,4 @@ Run GDB debugger:
 
 See also:
 
-- `Info functions <https://sourceware.org/gdb/onlinedocs/gdb/Symbols.html>`_
+- `Info functions in GDB* <https://sourceware.org/gdb/onlinedocs/gdb/Symbols.html>`_
