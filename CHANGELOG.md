@@ -6,6 +6,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.4] - 2021-07-09
+
+### Fixed
+- Fix emission of debug information (#424)
+- Fix examples demonstrating GDB usage on a numba_dppy.kernel function. (#455)
+- Remove address space cast from global to generic inside numba_dppy.kernel (#432)
+- Fix debugging of local variables (#432)
+- Assert offload to SYCL devices in tests (#466)
+- Removed calling opt to convert LLVM IR to LLVM Bitcode (#481)
+
+### Added
+- Add examples for debugging (#426)
+- Added a new NUMBA_DPPY_DEBUGINFO environment variable to control GDB usage (#460)
+- Add debug option to dppy.kernel decorator (#424)
+- Enable debugging of nested GPU functions (#424)
+- Enable setting breakpoints by function names while Debugging (#434)
+- Various fixes and improvements to documentation about debugging
+  (#479, #474, #475, #480, #475, #477, #468,#450)
+- Add automatic generation of commands for debugging (#463)
+- Add tests on debugging local variables (#421)
+- Enable eager compilation of numba_dppy.kernel (#291)
+- Increase test coverage for native atomic ops (#435)
+- Check and deter users from returning values from numba_dppy.kernel (#476)
+
 ## [0.14.3] - 2021-05-27
 
 ### Fixed
