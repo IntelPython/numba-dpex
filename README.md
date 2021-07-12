@@ -70,7 +70,7 @@ Documentation is provided [here](https://intelpython.github.io/numba-dppy).
 
 ## Debugging
 
-Please follow instructions in the [debugging](docs/user_guides/debugging.rst).
+Please follow instructions in the [debugging](https://intelpython.github.io/numba-dppy/latest/user_guides/debugging/).
 
 ## Reporting issues
 
