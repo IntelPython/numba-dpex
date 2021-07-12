@@ -64,17 +64,22 @@ Run examples:
 python numba_dppy/examples/sum.py
 ```
 
+## Documentation
+
+Detailed documentation including user guides is hosted at [https://intelpython.github.io/numba-dppy](https://intelpython.github.io/numba-dppy).
+
 ## Debugging
 
-Please follow instructions in the [debugging](docs/user_guides/debugging.rst)
+Please follow instructions in the [debugging manual](https://intelpython.github.io/numba-dppy/latest/user_guides/debugging/).
 
 ## Reporting issues
 
-Please use https://github.com/IntelPython/numba-dppy/issues to report issues and bugs.
+Please use [this link](https://github.com/IntelPython/numba-dppy/issues) to report issues and bugs.
 
 ## Features
 
-Read this guide for additional features [INDEX.md](docs/INDEX.md)
+For a detailed description of features currently supported by numba-dppy, refer the documentation hosted at
+[https://intelpython.github.io/numba-dppy](https://intelpython.github.io/numba-dppy).
 
 ## Test Matrix:
 
