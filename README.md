@@ -66,7 +66,7 @@ python numba_dppy/examples/sum.py
 
 ## Documentation
 
-Documentation is provided [here](intelpython.github.io/numba-dppy).
+Documentation is provided [here](https://intelpython.github.io/numba-dppy).
 
 ## Debugging
 
@@ -74,11 +74,11 @@ Please follow instructions in the [debugging](docs/user_guides/debugging.rst).
 
 ## Reporting issues
 
-Please use https://github.com/IntelPython/numba-dppy/issues to report issues and bugs.
+Please use [this link](https://github.com/IntelPython/numba-dppy/issues) to report issues and bugs.
 
 ## Features
 
-Read this guide for additional features [here](intelpython.github.io/numba-dppy).
+Read this guide for additional features [here](https://intelpython.github.io/numba-dppy).
 
 ## Test Matrix:
 
