@@ -46,12 +46,14 @@ def has_usm_memory(obj):
     usm_mem = None
     try:
         usm_mem = dpctl_mem.as_usm_memory(obj)
-    except:
+    except Exception as e:
         if hasattr(obj, "base"):
             try:
                 usm_mem = dpctl_mem.as_usm_memory(obj.base)
-            except Exception:
-                pass
+            except Exception as e:
+                print(e)
+        else:
+            print(e)
 
     return usm_mem
 
@@ -93,7 +95,7 @@ def copy_from_numpy_to_usm_obj(usm_backed, obj):
         )
 
     if not obj.flags.c_contiguous:
-        raise ValueError("Only C-contiguous numpy.ndarray is currently " "supported!")
+        raise ValueError("Only C-contiguous numpy.ndarray is supported!")
 
     size = np.prod(obj.shape)
     if usm_mem.size != (obj.dtype.itemsize * size):
