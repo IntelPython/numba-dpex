@@ -571,17 +571,19 @@ class DPPYKernel(DPPYKernelBase):
                 default_behavior = self.check_for_invalid_access_type(access_type)
                 usm_mem = as_usm_backed(val, queue=sycl_queue, copy=False)
 
-                packed_val = val
                 orig_val = val
+                packed_val = val
                 packed = False
+                if not val.flags.c_contiguous:
+                    packed_val = val.flatten(order="C")
+                    packed = True
+
                 if (
                     default_behavior
                     or self.valid_access_types[access_type] == _NUMBA_DPPY_READ_ONLY
                     or self.valid_access_types[access_type] == _NUMBA_DPPY_READ_WRITE
                 ):
-                    orig_val, packed_val, packed = copy_from_numpy_to_usm_obj(
-                        usm_mem, val
-                    )
+                    copy_from_numpy_to_usm_obj(usm_mem, packed_val)
 
                 device_arrs[-1] = (usm_mem, orig_val, packed_val, packed)
 

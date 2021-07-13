@@ -78,16 +78,11 @@ def copy_from_numpy_to_usm_obj(usm_backed, obj):
             if the object does not have such an attribute.
         obj (numpy.ndarray): Numpy ndarray, the data will be copied into.
 
-    Return:
-        obj: The original numpy.ndarray.
-        packed_obj: If the original numpy.ndarray is not C-contiguous
-            this represents the new packed numpy.ndarray.
-        packed: Flag to indicate packing of strided array into a
-            contiguous array.
-
     Raises:
         TypeError: If any argument is not of permitted type.
-        ValueError: If size of data does not match.
+        ValueError:
+            1. If size of data does not match.
+            2. If obj is not C-contiguous.
     """
     usm_mem = has_usm_memory(usm_backed)
     if usm_mem is None:
@@ -105,26 +100,20 @@ def copy_from_numpy_to_usm_obj(usm_backed, obj):
             "are: %s" % (supported_numpy_dtype)
         )
 
-    packed = False
     if not obj.flags.c_contiguous:
-        packed_obj = obj.flatten(order="C")
-        packed = True
-    else:
-        packed_obj = obj
+        raise ValueError("Only C-contiguous numpy.ndarray is currently supported!")
 
-    size = np.prod(packed_obj.shape)
-    if usm_mem.size != (packed_obj.dtype.itemsize * size):
+    size = np.prod(obj.shape)
+    if usm_mem.size != (obj.dtype.itemsize * size):
         raise ValueError(
             "Size (Bytes) of data does not match. USM backed "
             "memory size %d, supported object size: %d"
-            % (usm_mem.size, (packed_obj.dtype.itemsize * size))
+            % (usm_mem.size, (obj.dtype.itemsize * size))
         )
 
-    obj_memview = memoryview(packed_obj)
+    obj_memview = memoryview(obj)
     obj_memview = obj_memview.cast("B")
     usm_mem.copy_from_host(obj_memview)
-
-    return (obj, packed_obj, packed)
 
 
 def copy_to_numpy_from_usm_obj(usm_backed, obj):
