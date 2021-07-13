@@ -502,8 +502,10 @@ class DPPYKernel(DPPYKernelBase):
         ):
             # We copy the data back from usm backed data
             # container to original data container.
-            usm_mem, orig_ndarr = device_arr
-            copy_to_numpy_from_usm_obj(usm_mem, orig_ndarr)
+            usm_mem, orig_ndarr, packed_ndarr, packed = device_arr
+            copy_to_numpy_from_usm_obj(usm_mem, packed_ndarr)
+            if packed:
+                np.copyto(orig_ndarr, packed_ndarr)
 
     def _unpack_device_array_argument(
         self, size, itemsize, buf, shape, strides, ndim, kernelargs
@@ -568,22 +570,28 @@ class DPPYKernel(DPPYKernelBase):
             if usm_mem is None:
                 default_behavior = self.check_for_invalid_access_type(access_type)
                 usm_mem = as_usm_backed(val, queue=sycl_queue, copy=False)
+
+                packed_val = val
+                orig_val = val
+                packed = False
                 if (
                     default_behavior
                     or self.valid_access_types[access_type] == _NUMBA_DPPY_READ_ONLY
                     or self.valid_access_types[access_type] == _NUMBA_DPPY_READ_WRITE
                 ):
-                    copy_from_numpy_to_usm_obj(usm_mem, val)
+                    orig_val, packed_val, packed = copy_from_numpy_to_usm_obj(
+                        usm_mem, val
+                    )
 
-                device_arrs[-1] = (usm_mem, val)
+                device_arrs[-1] = (usm_mem, orig_val, packed_val, packed)
 
             self._unpack_device_array_argument(
-                val.size,
-                val.dtype.itemsize,
+                packed_val.size,
+                packed_val.dtype.itemsize,
                 usm_mem,
-                val.shape,
-                val.strides,
-                val.ndim,
+                packed_val.shape,
+                packed_val.strides,
+                packed_val.ndim,
                 kernelargs,
             )
         elif ty == types.int64:
