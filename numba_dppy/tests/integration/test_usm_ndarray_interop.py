@@ -71,5 +71,5 @@ def test_consuming_usm_ndarray(offload_device, dtype, usm_type):
 
         dc = dpt.usm_ndarray(c.shape, dtype=c.dtype, buffer=usm_type)
 
-        with pytest.raises(Exception):
+        with pytest.raises(NotImplementedError):
             data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](da, db, dc)

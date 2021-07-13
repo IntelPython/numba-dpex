@@ -34,7 +34,13 @@ from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dppy import config
 from numba_dppy.driver import USMNdArrayType
 from numba_dppy.dppy_array_type import DPPYArray
-from numba_dppy.utils import assert_no_return
+from numba_dppy.utils import (
+    assert_no_return,
+    has_usm_memory,
+    as_usm_backed,
+    copy_from_numpy_to_usm_obj,
+    copy_to_numpy_from_usm_obj,
+)
 
 
 _NUMBA_DPPY_READ_ONLY = "read_only"
@@ -494,27 +500,38 @@ class DPPYKernel(DPPYKernelBase):
             or access_type in self.valid_access_types
             and self.valid_access_types[access_type] != _NUMBA_DPPY_READ_ONLY
         ):
-            # we get the date back to host if have created a
-            # device_array or if access_type of this device_array
-            # is not of type read_only and read_write
-            usm_buf, usm_ndarr, orig_ndarray = device_arr
-            np.copyto(orig_ndarray, usm_ndarr)
+            # We copy the data back from usm backed data
+            # container to original data container.
+            usm_mem, orig_ndarr, packed_ndarr, packed = device_arr
+            copy_to_numpy_from_usm_obj(usm_mem, packed_ndarr)
+            if packed:
+                np.copyto(orig_ndarr, packed_ndarr)
 
-    def _unpack_device_array_argument(self, val, kernelargs):
+    def _unpack_device_array_argument(
+        self, size, itemsize, buf, shape, strides, ndim, kernelargs
+    ):
         """
         Implements the unpacking logic for array arguments.
+
+        Args:
+            size: Total number of elements in the array.
+            itemsize: Size in bytes of each element in the array.
+            buf: The pointer to the memory.
+            shape: The shape of the array.
+            ndim: Number of dimension.
+            kernelargs: Array where the arguments of the kernel is stored.
         """
         # meminfo
         kernelargs.append(ctypes.c_size_t(0))
         # parent
         kernelargs.append(ctypes.c_size_t(0))
-        kernelargs.append(ctypes.c_longlong(val.size))
-        kernelargs.append(ctypes.c_longlong(val.dtype.itemsize))
-        kernelargs.append(val.base)
-        for ax in range(val.ndim):
-            kernelargs.append(ctypes.c_longlong(val.shape[ax]))
-        for ax in range(val.ndim):
-            kernelargs.append(ctypes.c_longlong(val.strides[ax]))
+        kernelargs.append(ctypes.c_longlong(size))
+        kernelargs.append(ctypes.c_longlong(itemsize))
+        kernelargs.append(buf)
+        for ax in range(ndim):
+            kernelargs.append(ctypes.c_longlong(shape[ax]))
+        for ax in range(ndim):
+            kernelargs.append(ctypes.c_longlong(strides[ax]))
 
     def _unpack_argument(
         self, ty, val, sycl_queue, kernelargs, device_arrs, access_type
@@ -548,28 +565,37 @@ class DPPYKernel(DPPYKernelBase):
 
         if isinstance(ty, USMNdArrayType):
             raise NotImplementedError(ty, USMNdArrayType)
-
-        if isinstance(ty, types.Array):
-            if hasattr(val.base, "__sycl_usm_array_interface__"):
-                self._unpack_device_array_argument(val, kernelargs)
-            else:
+        elif isinstance(ty, types.Array):
+            usm_mem = has_usm_memory(val)
+            if usm_mem is None:
                 default_behavior = self.check_for_invalid_access_type(access_type)
+                usm_mem = as_usm_backed(val, queue=sycl_queue, copy=False)
 
-                usm_buf = dpctl_mem.MemoryUSMShared(
-                    val.size * val.dtype.itemsize, queue=sycl_queue
-                )
-                usm_ndarr = np.ndarray(val.shape, buffer=usm_buf, dtype=val.dtype)
+                orig_val = val
+                packed_val = val
+                packed = False
+                if not val.flags.c_contiguous:
+                    packed_val = val.flatten(order="C")
+                    packed = True
 
                 if (
                     default_behavior
                     or self.valid_access_types[access_type] == _NUMBA_DPPY_READ_ONLY
                     or self.valid_access_types[access_type] == _NUMBA_DPPY_READ_WRITE
                 ):
-                    np.copyto(usm_ndarr, val)
+                    copy_from_numpy_to_usm_obj(usm_mem, packed_val)
 
-                device_arrs[-1] = (usm_buf, usm_ndarr, val)
-                self._unpack_device_array_argument(usm_ndarr, kernelargs)
+                device_arrs[-1] = (usm_mem, orig_val, packed_val, packed)
 
+            self._unpack_device_array_argument(
+                packed_val.size,
+                packed_val.dtype.itemsize,
+                usm_mem,
+                packed_val.shape,
+                packed_val.strides,
+                packed_val.ndim,
+                kernelargs,
+            )
         elif ty == types.int64:
             cval = ctypes.c_longlong(val)
             kernelargs.append(cval)
@@ -656,8 +682,7 @@ class JitDPPYKernel(DPPYKernelBase):
         kernel = None
         # we were previously using the _env_ptr of the device_env, the sycl_queue
         # should be sufficient to cache the compiled kernel for now, but we should
-        # use the device type to cache such kernels
-        # key_definitions = (self.sycl_queue, argtypes)
+        # use the device type to cache such kernels.
         key_definitions = argtypes
         result = self.definitions.get(key_definitions)
         if result:
