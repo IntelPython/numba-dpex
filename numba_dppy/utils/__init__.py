@@ -29,7 +29,7 @@ from numba_dppy.utils.type_conversion_fns import npytypes_array_to_dppy_array
 from numba_dppy.utils.constants import address_space, calling_conv
 from numba_dppy.utils.array_utils import (
     has_usm_memory,
-    as_usm_backed,
+    as_usm_obj,
     copy_from_numpy_to_usm_obj,
     copy_to_numpy_from_usm_obj,
 )
@@ -46,7 +46,7 @@ __all__ = [
     "address_space",
     "calling_conv",
     "has_usm_memory",
-    "as_usm_backed",
+    "as_usm_obj",
     "copy_from_numpy_to_usm_obj",
     "copy_to_numpy_from_usm_obj",
     "assert_no_return",

@@ -19,7 +19,7 @@ import dpctl
 import dpctl.tensor as dpt
 import dpctl.memory as dpctl_mem
 from . import _helper
-from numba_dppy.utils import has_usm_memory, as_usm_backed, copy_to_numpy_from_usm_obj
+from numba_dppy.utils import has_usm_memory, as_usm_obj, copy_to_numpy_from_usm_obj
 
 
 def test_has_usm_memory(offload_device):
@@ -31,7 +31,7 @@ def test_has_usm_memory(offload_device):
         usm_mem = has_usm_memory(da)
         assert da.usm_data._pointer == usm_mem._pointer
 
-        # test usm backed numpy.ndarray
+        # test usm allocated numpy.ndarray
         buf = dpctl_mem.MemoryUSMShared(a.size * a.dtype.itemsize)
         ary_buf = np.ndarray(a.shape, buffer=buf, dtype=a.dtype)
         usm_mem = has_usm_memory(ary_buf)
@@ -41,17 +41,17 @@ def test_has_usm_memory(offload_device):
         assert usm_mem is None
 
 
-def test_as_usm_backed(offload_device):
+def test_as_usm_obj(offload_device):
     a = np.ones(1023, dtype=np.float32)
     b = a * 3
 
     with dpctl.device_context(offload_device) as queue:
         a_copy = np.empty_like(a)
-        usm_mem = as_usm_backed(a, queue=queue)
+        usm_mem = as_usm_obj(a, queue=queue)
         copy_to_numpy_from_usm_obj(usm_mem, a_copy)
         assert np.all(a == a_copy)
 
         b_copy = np.empty_like(b)
-        usm_mem = as_usm_backed(b, queue=queue, copy=False)
+        usm_mem = as_usm_obj(b, queue=queue, copy=False)
         copy_to_numpy_from_usm_obj(usm_mem, b_copy)
         assert np.any(np.not_equal(b, b_copy))
