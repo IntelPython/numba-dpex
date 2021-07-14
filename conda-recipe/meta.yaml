@@ -28,7 +28,7 @@ requirements:
         - dpctl 0.8.*
         - spirv-tools
         - llvm-spirv
-        - llvmdev
+        - packaging
         - dpnp >=0.6*,<0.7*  # [linux]
 
 test:
