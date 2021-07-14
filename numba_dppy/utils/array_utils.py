@@ -165,8 +165,8 @@ def as_usm_obj(obj, queue=None, usm_type="shared", copy=True):
     """
     Determine and return a SYCL device accesible object.
 
-    We try to determine if the provided object defines a dictionary called
-    sycl_usm_array_interface that conforms to __sycl_usm_array_interface__.
+    We try to determine if the provided object defines a valid
+    __sycl_usm_array_interface__ dictionary.
     If not, we create a USM memory of `usm_type` and try to copy the data
     `obj` holds. Only numpy.ndarray is supported currently as `obj` if
     the object is not already allocated using USM.
