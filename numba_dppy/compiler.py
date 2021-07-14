@@ -37,7 +37,7 @@ from numba_dppy.dppy_array_type import DPPYArray
 from numba_dppy.utils import (
     assert_no_return,
     has_usm_memory,
-    as_usm_backed,
+    as_usm_obj,
     copy_from_numpy_to_usm_obj,
     copy_to_numpy_from_usm_obj,
 )
@@ -500,7 +500,7 @@ class DPPYKernel(DPPYKernelBase):
             or access_type in self.valid_access_types
             and self.valid_access_types[access_type] != _NUMBA_DPPY_READ_ONLY
         ):
-            # We copy the data back from usm backed data
+            # We copy the data back from usm allocated data
             # container to original data container.
             usm_mem, orig_ndarr, packed_ndarr, packed = device_arr
             copy_to_numpy_from_usm_obj(usm_mem, packed_ndarr)
@@ -570,11 +570,19 @@ class DPPYKernel(DPPYKernelBase):
             usm_mem = has_usm_memory(val)
             if usm_mem is None:
                 default_behavior = self.check_for_invalid_access_type(access_type)
-                usm_mem = as_usm_backed(val, queue=sycl_queue, copy=False)
+                usm_mem = as_usm_obj(val, queue=sycl_queue, copy=False)
 
                 orig_val = val
                 packed = False
                 if not val.flags.c_contiguous:
+                    # If the numpy.ndarray is not C-contiguous
+                    # we pack the strided array into a packed array.
+                    # This allows us to treat the data from here on as C-contiguous.
+                    # While packing we treat the data as C-contiguous.
+                    # We store the reference of both (strided and packed)
+                    # array and during unpacking we use numpy.copyto() to copy
+                    # the data back from the packed temporary array to the
+                    # original strided array.
                     packed_val = val.flatten(order="C")
                     packed = True
 

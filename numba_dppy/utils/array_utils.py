@@ -43,7 +43,8 @@ def has_usm_memory(obj):
         obj: Object to be tested and data copied from.
 
     Returns:
-        obj: USM backed object if object is USM backed, None otherwise.
+        A Python object allocated using USM memory if argument is already
+        allocated using USM (zero-copy), None otherwise.
     """
     usm_mem = None
     try:
@@ -62,9 +63,9 @@ def has_usm_memory(obj):
     return usm_mem
 
 
-def copy_from_numpy_to_usm_obj(usm_backed, obj):
+def copy_from_numpy_to_usm_obj(usm_allocated, obj):
     """
-    Copy from supported objects to USM backed data.
+    Copy from supported objects to USM allocated data.
 
     This function copies the data of a supported Python type (only
     numpy.ndarray is supported at this point) into object that
@@ -73,7 +74,7 @@ def copy_from_numpy_to_usm_obj(usm_backed, obj):
     https://github.com/IntelPython/dpctl/wiki/Zero-copy-data-exchange-using-SYCL-USM#sycl-usm-array-interface
 
     Args:
-        usm_backed: An object that should define a
+        usm_allocated: An object that should define a
             __sycl_usm_array_interface__ dictionary. A TypeError is thrown
             if the object does not have such an attribute.
         obj (numpy.ndarray): Numpy ndarray, the data will be copied into.
@@ -84,13 +85,13 @@ def copy_from_numpy_to_usm_obj(usm_backed, obj):
             1. If size of data does not match.
             2. If obj is not C-contiguous.
     """
-    usm_mem = has_usm_memory(usm_backed)
+    usm_mem = has_usm_memory(usm_allocated)
     if usm_mem is None:
-        raise TypeError("Source is not USM backed.")
+        raise TypeError("Source is not USM allocated.")
 
     if not isinstance(obj, np.ndarray):
         raise TypeError(
-            "Obj is not USM backed and is not of type "
+            "Obj is not USM allocated and is not of type "
             "numpy.ndarray. Obj type: %s" % (type(obj))
         )
 
@@ -106,7 +107,7 @@ def copy_from_numpy_to_usm_obj(usm_backed, obj):
     size = np.prod(obj.shape)
     if usm_mem.size != (obj.dtype.itemsize * size):
         raise ValueError(
-            "Size (Bytes) of data does not match. USM backed "
+            "Size (Bytes) of data does not match. USM allocated "
             "memory size %d, supported object size: %d"
             % (usm_mem.size, (obj.dtype.itemsize * size))
         )
@@ -116,12 +117,12 @@ def copy_from_numpy_to_usm_obj(usm_backed, obj):
     usm_mem.copy_from_host(obj_memview)
 
 
-def copy_to_numpy_from_usm_obj(usm_backed, obj):
+def copy_to_numpy_from_usm_obj(usm_allocated, obj):
     """
-    Copy from USM backed data to supported objects.
+    Copy from USM allocated data to supported objects.
 
     Args:
-        usm_backed: An object that should define a
+        usm_allocated: An object that should define a
             __sycl_usm_array_interface__ dictionary. A TypeError is thrown
             if the object does not have such an attribute.
         obj (numpy.ndarray): Numpy ndarray, the data will be copied into.
@@ -131,13 +132,13 @@ def copy_to_numpy_from_usm_obj(usm_backed, obj):
         TypeError: If any argument is not of permitted type.
         ValueError: If size of data does not match.
     """
-    usm_mem = has_usm_memory(usm_backed)
+    usm_mem = has_usm_memory(usm_allocated)
     if usm_mem is None:
-        raise TypeError("Source is not USM backed.")
+        raise TypeError("Source is not USM allocated.")
 
     if not isinstance(obj, np.ndarray):
         raise TypeError(
-            "Obj is not USM backed and is not of type "
+            "Obj is not USM allocated and is not of type "
             "numpy.ndarray. Obj type: %s" % (type(obj))
         )
 
@@ -150,7 +151,7 @@ def copy_to_numpy_from_usm_obj(usm_backed, obj):
     size = np.prod(obj.shape)
     if usm_mem.size != (obj.dtype.itemsize * size):
         raise ValueError(
-            "Size (Bytes) of data does not match. USM backed "
+            "Size (Bytes) of data does not match. USM allocated "
             "memory size %d, supported object size: %d"
             % (usm_mem.size, (obj.dtype.itemsize * size))
         )
@@ -160,7 +161,7 @@ def copy_to_numpy_from_usm_obj(usm_backed, obj):
     usm_mem.copy_to_host(obj_memview)
 
 
-def as_usm_backed(obj, queue=None, usm_type="shared", copy=True):
+def as_usm_obj(obj, queue=None, usm_type="shared", copy=True):
     """
     Determine and return a SYCL device accesible object.
 
@@ -168,17 +169,17 @@ def as_usm_backed(obj, queue=None, usm_type="shared", copy=True):
     sycl_usm_array_interface that conforms to __sycl_usm_array_interface__.
     If not, we create a USM memory of `usm_type` and try to copy the data
     `obj` holds. Only numpy.ndarray is supported currently as `obj` if
-    the object is not already backed by USM.
+    the object is not already allocated using USM.
 
     Args:
         obj: Object to be tested and data copied from.
-        usm_type: USM type used in case obj is not already backed by USM.
+        usm_type: USM type used in case obj is not already allocated using USM.
         queue (dpctl.SyclQueue): SYCL queue to be used to allocate USM
-            memory in case obj is not already USM backed.
+            memory in case obj is not already USM allocated.
         copy (bool): Flag to determine if we copy data from obj.
 
     Returns:
-        obj: USM backed memory.
+        A Python object allocated using USM memory.
 
     Raises:
         TypeError:
@@ -186,7 +187,7 @@ def as_usm_backed(obj, queue=None, usm_type="shared", copy=True):
                numpy.ndarray, TypeError is raised.
             2. If queue is not of type dpctl.SyclQueue.
         ValueError:
-            1. In case obj is not USM backed, users need to pass
+            1. In case obj is not USM allocated, users need to pass
                the SYCL queue to be used for creating new memory. ValuieError
                is raised if queue argument is not provided.
             2. If usm_type is not valid.
@@ -206,7 +207,7 @@ def as_usm_backed(obj, queue=None, usm_type="shared", copy=True):
     if usm_mem is None:
         if not isinstance(obj, np.ndarray):
             raise TypeError(
-                "Obj is not USM backed and is not of type "
+                "Obj is not USM allocated and is not of type "
                 "numpy.ndarray. Obj type: %s" % (type(obj))
             )
 
