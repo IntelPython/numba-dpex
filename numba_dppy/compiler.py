@@ -566,13 +566,13 @@ class DPPYKernel(DPPYKernelBase):
         if isinstance(ty, USMNdArrayType):
             raise NotImplementedError(ty, USMNdArrayType)
         elif isinstance(ty, types.Array):
+            packed_val = val
             usm_mem = has_usm_memory(val)
             if usm_mem is None:
                 default_behavior = self.check_for_invalid_access_type(access_type)
                 usm_mem = as_usm_backed(val, queue=sycl_queue, copy=False)
 
                 orig_val = val
-                packed_val = val
                 packed = False
                 if not val.flags.c_contiguous:
                     packed_val = val.flatten(order="C")
