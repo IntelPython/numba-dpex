@@ -20,7 +20,7 @@ import numba_dppy as dppy
 from numba_dppy.dppy_offload_dispatcher import DppyOffloadDispatcher
 from numba_dppy.utils import (
     has_usm_memory,
-    as_usm_backed,
+    as_usm_obj,
     copy_from_numpy_to_usm_obj,
     copy_to_numpy_from_usm_obj,
 )
@@ -190,7 +190,7 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
         return not self.is_device_array(obj)
 
     def to_device(self, hostary, queue):
-        usm_mem = as_usm_backed(hostary, queue=queue, usm_type="shared")
+        usm_mem = as_usm_obj(hostary, queue=queue, usm_type="shared")
         usm_backed_ndary = np.ndarray(
             hostary.shape, buffer=usm_mem, dtype=hostary.dtype
         )
