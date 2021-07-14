@@ -191,7 +191,9 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
 
     def to_device(self, hostary, queue):
         usm_mem = as_usm_backed(hostary, queue=queue, usm_type="shared")
-        usm_backed_ndary = np.ndarray(hostary.shape, buffer=usm_mem, dtype=hostary.dtype)
+        usm_backed_ndary = np.ndarray(
+            hostary.shape, buffer=usm_mem, dtype=hostary.dtype
+        )
         return usm_backed_ndary
 
     def to_host(self, devary, queue):
