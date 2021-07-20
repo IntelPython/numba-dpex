@@ -449,6 +449,7 @@ class DPPYKernel(DPPYKernelBase):
             with open("llvm_kernel.ll", "w") as f:
                 f.write(self.binary)
 
+        if config.DEBUG or config.OPT == 0:
             # if debug is ON we need to pass additional
             # flags to igc.
             dpctl_create_program_from_spirv_flags = ["-g", "-cl-opt-disable"]
