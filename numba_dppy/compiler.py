@@ -442,10 +442,17 @@ class DPPYKernel(DPPYKernelBase):
         self._argloc = []
         self.sycl_queue = sycl_queue
         self.context = context
+
+        dpctl_create_program_from_spirv_flags = []
         # First-time compilation using SPIRV-Tools
         if config.DEBUG:
             with open("llvm_kernel.ll", "w") as f:
                 f.write(self.binary)
+
+            # if debug is ON we need to pass additional
+            # flags to igc.
+            dpctl_create_program_from_spirv_flags = ["-g", "-cl-opt-disable"]
+
 
         self.spirv_bc = spirv_generator.llvm_to_spirv(
             self.context, self.assembly, self._llvm_module.as_bitcode()
@@ -453,7 +460,7 @@ class DPPYKernel(DPPYKernelBase):
 
         # create a program
         self.program = dpctl_prog.create_program_from_spirv(
-            self.sycl_queue, self.spirv_bc
+            self.sycl_queue, self.spirv_bc, ' '.join(dpctl_create_program_from_spirv_flags)
         )
         #  create a kernel
         self.kernel = self.program.get_sycl_kernel(self.entry_name)
