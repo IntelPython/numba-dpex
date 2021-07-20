@@ -454,14 +454,15 @@ class DPPYKernel(DPPYKernelBase):
             # flags to igc.
             dpctl_create_program_from_spirv_flags = ["-g", "-cl-opt-disable"]
 
-
         self.spirv_bc = spirv_generator.llvm_to_spirv(
             self.context, self.assembly, self._llvm_module.as_bitcode()
         )
 
         # create a program
         self.program = dpctl_prog.create_program_from_spirv(
-            self.sycl_queue, self.spirv_bc, ' '.join(dpctl_create_program_from_spirv_flags)
+            self.sycl_queue,
+            self.spirv_bc,
+            " ".join(dpctl_create_program_from_spirv_flags),
         )
         #  create a kernel
         self.kernel = self.program.get_sycl_kernel(self.entry_name)
