@@ -64,7 +64,8 @@ def test_vectorize():
     A = np.arange(10, dtype=np.float64).reshape((5, 2))
     B = np.arange(10, dtype=np.float64).reshape((5, 2))
 
-    with dpctl.device_context("opencl:gpu:0"):
+    device = dpctl.select_default_device()
+    with dpctl.device_context(device):
         C = vector_add(A, B)
 
     print(C)
