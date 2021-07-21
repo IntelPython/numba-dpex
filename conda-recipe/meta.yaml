@@ -8,12 +8,13 @@ source:
 build:
     number: {{ GIT_DESCRIBE_NUMBER }}
     script_env:
-        - ONEAPI_ROOT
+        - ONEAPI_ROOT  # [not linux]
         - WHEELS_OUTPUT_FOLDER
 
 requirements:
     build:
         - {{ compiler('cxx') }}
+        - {{ compiler('dpcpp') }}  # [linux]
     host:
         - python
         - setuptools
