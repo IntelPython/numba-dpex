@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""Provide @vectorize(target="dppy") support."""
+
 import numpy as np
 from numba.np.ufunc import deviceufunc
 import dpctl
