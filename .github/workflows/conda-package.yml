@@ -1,0 +1,17 @@
+name: Conda package
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Add conda to system path
+        run: echo $CONDA/bin >> $GITHUB_PATH
+      - name: Install conda-build
+        run: conda install conda-build
+      - name: Build conda package
+        run: ./scripts/conda_build.sh
