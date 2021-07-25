@@ -14,4 +14,18 @@ jobs:
       - name: Install conda-build
         run: conda install conda-build
       - name: Build conda package
-        run: ./scripts/conda_build.sh
+        run: |
+          CHANNELS="-c intel -c defaults --override-channels"
+          VERSIONS="--python 3.8"
+          TEST="--no-test"
+
+          conda build \
+            $TEST \
+            $VERSIONS \
+            $CHANNELS \
+            conda-recipe
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: numba-dppy ${{ runner.os }}
+          path: /usr/share/miniconda/conda-bld/linux-64/numba-dppy-*.tar.bz2
