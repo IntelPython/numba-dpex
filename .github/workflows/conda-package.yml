@@ -29,3 +29,49 @@ jobs:
         with:
           name: numba-dppy ${{ runner.os }}
           path: /usr/share/miniconda/conda-bld/linux-64/numba-dppy-*.tar.bz2
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: numba-dppy ${{ runner.os }}
+      - name: Add conda to system path
+        run: echo $CONDA/bin >> $GITHUB_PATH
+      - name: Install conda-build
+        run: conda install conda-build
+      - name: Create conda channel
+        run: |
+          mkdir -p $GITHUB_WORKSPACE/channel/linux-64
+          mv numba-dppy-*.tar.bz2 $GITHUB_WORKSPACE/channel/linux-64
+          conda index $GITHUB_WORKSPACE/channel
+          # Test channel
+          conda search numba-dppy -c $GITHUB_WORKSPACE/channel --override-channels
+      - name: Collect dependencies
+        run: |
+          CHANNELS="-c $GITHUB_WORKSPACE/channel -c intel -c defaults --override-channels"
+          conda install numba-dppy $CHANNELS --only-deps --dry-run > lockfile
+      - name: Set pkgs_dirs
+        run: |
+          echo "pkgs_dirs: [~/.conda/pkgs]" >> ~/.condarc
+      - name: Cache conda packages
+        uses: actions/cache@v2
+        env:
+          CACHE_NUMBER: 0  # Increase to reset cache
+        with:
+          path: ~/.conda/pkgs
+          key:
+            ${{ runner.os }}-conda-test-${{ env.CACHE_NUMBER }}-${{hashFiles('lockfile') }}
+      - name: Install numba-dppy
+        run: |
+          CHANNELS="-c $GITHUB_WORKSPACE/channel -c intel -c defaults --override-channels"
+          conda install numba-dppy pytest $CHANNELS
+          # Test installed packages
+          conda list
+      - name: Run tests
+        run: |
+          # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
+          export OCL_ICD_FILENAMES=libintelocl.so
+          python -m pytest --pyargs numba_dppy
