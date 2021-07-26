@@ -88,3 +88,25 @@ jobs:
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
           export OCL_ICD_FILENAMES=libintelocl.so
           python -m pytest --pyargs numba_dppy
+
+  upload:
+    needs: test
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: numba-dppy ${{ runner.os }}
+
+      - name: Install anaconda-client
+        run: conda install anaconda-client
+      - name: Add conda to system path
+        run: echo $CONDA/bin >> $GITHUB_PATH
+
+      - name: Upload
+        env:
+          ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
+        run: |
+          conda install anaconda-client
+          anaconda --token $ANACONDA_TOKEN upload --user dppy --label dev numba-dppy-*.tar.bz2
