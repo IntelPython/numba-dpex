@@ -29,6 +29,9 @@ def sum(a, b, c):
 
 
 def test_strided_array_kernel(offload_device):
+    if skip_test(offload_device):
+        pytest.skip()
+
     global_size = 606
     a = np.arange(global_size * 2, dtype="i4")[::2]
     b = np.arange(global_size, dtype="i4")[::-1]
