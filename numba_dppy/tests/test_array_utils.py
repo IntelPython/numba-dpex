@@ -20,9 +20,13 @@ import dpctl.tensor as dpt
 import dpctl.memory as dpctl_mem
 from . import _helper
 from numba_dppy.utils import has_usm_memory, as_usm_obj, copy_to_numpy_from_usm_obj
+from numba_dppy.tests._helper import skip_test
 
 
 def test_has_usm_memory(offload_device):
+    if skip_test(offload_device):
+        pytest.skip()
+
     a = np.ones(1023, dtype=np.float32)
 
     with dpctl.device_context(offload_device):
@@ -42,6 +46,9 @@ def test_has_usm_memory(offload_device):
 
 
 def test_as_usm_obj(offload_device):
+    if skip_test(offload_device):
+        pytest.skip()
+
     a = np.ones(1023, dtype=np.float32)
     b = a * 3
 
