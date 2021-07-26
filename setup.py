@@ -143,6 +143,7 @@ build_requires = ["cython"]
 install_requires = [
     "numba >={},<{}".format("0.53.1", "0.54"),
     "dpctl",
+    "packaging",
 ]
 
 metadata = dict(

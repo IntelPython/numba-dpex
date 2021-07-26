@@ -12,6 +12,7 @@ Numba-dppy depends on following components:
 * `llvm-spirv`_ (SPIRV generation from LLVM IR)
 * `llvmdev`_ (LLVM IR generation)
 * `spirv-tools`_
+* `packaging`_
 * `cython`_ (for building)
 * `scipy`_ (for testing)
 * `pytest`_ (for testing)
@@ -124,6 +125,7 @@ that in future Numba-dppy can work with upstream Numba.
 .. _`llvm-spirv`: https://anaconda.org/intel/llvm-spirv
 .. _`llvmdev`: https://anaconda.org/intel/llvmdev
 .. _`spirv-tools`: https://anaconda.org/intel/spirv-tools
+.. _`packaging`: https://packaging.pypa.io/
 .. _`scipy`: https://anaconda.org/intel/scipy
 .. _`cython`: https://cython.org
 .. _`pytest`: https://docs.pytest.org

@@ -31,6 +31,7 @@ requirements:
         - llvm-spirv
         - llvmdev
         - dpnp >=0.6*,<0.7*  # [linux]
+        - packaging
 
 test:
   requires:
