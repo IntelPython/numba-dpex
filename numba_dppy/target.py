@@ -69,7 +69,7 @@ class DPPYTypingContext(typing.BaseContext):
             ValueError: If the type of the Python value is not supported.
 
         """
-        if isinstance(typeof(val), types.npytypes.Array):
+        if type(typeof(val)) is types.npytypes.Array:
             # Convert npytypes.Array to DPPYArray
             return npytypes_array_to_dppy_array(typeof(val))
         else:
