@@ -23,7 +23,6 @@ import dpctl.memory as dpctl_mem
 from numba import int32
 import numba_dppy as dppy
 import numpy as np
-from _helper import get_any_device
 
 
 @dppy.kernel
@@ -93,11 +92,13 @@ def sum_reduce(A):
 
     partial_sums = np.zeros(nb_work_groups).astype(A.dtype)
 
-    device = get_any_device()
-    device = None()
+    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
+    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
+    device = dpctl.select_default_device()
+    print("Using device ...")
+    device.print_device_info()
+
     with dpctl.device_context(device):
-        print("Offloading to ...")
-        device.print_device_info()
         inp_buf = dpctl_mem.MemoryUSMShared(A.size * A.dtype.itemsize)
         inp_ndarray = np.ndarray(A.shape, buffer=inp_buf, dtype=A.dtype)
         np.copyto(inp_ndarray, A)
@@ -131,6 +132,8 @@ def test_sum_reduce():
     print("Expected:", expected)
 
     assert actual == expected
+
+    print("Done...")
 
 
 if __name__ == "__main__":

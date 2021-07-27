@@ -14,10 +14,11 @@
 
 from . import _helper
 import numpy as np
+import unittest
 
 import numba
 import numba_dppy
-from numba_dppy.testing import unittest
+from numba_dppy import config
 import dpctl
 import warnings
 
@@ -38,14 +39,14 @@ class TestDPPYFallback(unittest.TestCase):
 
             return a
 
-        numba_dppy.compiler.DEBUG = 1
+        config.DEBUG = 1
         with warnings.catch_warnings(record=True) as w:
             with dpctl.device_context("opencl:gpu"):
                 dppy = numba.njit(parallel=True)(inner_call_fallback)
                 dppy_fallback_true = dppy()
 
         ref_result = inner_call_fallback()
-        numba_dppy.compiler.DEBUG = 0
+        config.DEBUG = 0
 
         np.testing.assert_array_equal(dppy_fallback_true, ref_result)
         self.assertIn("Failed to offload parfor", str(w[-1].message))
@@ -66,8 +67,8 @@ class TestDPPYFallback(unittest.TestCase):
             return a
 
         try:
-            numba_dppy.compiler.DEBUG = 1
-            numba_dppy.config.FALLBACK_ON_CPU = 0
+            config.DEBUG = 1
+            config.FALLBACK_ON_CPU = 0
             with warnings.catch_warnings(record=True) as w:
                 with dpctl.device_context("opencl:gpu"):
                     dppy = numba.njit(parallel=True)(inner_call_fallback)
@@ -75,8 +76,8 @@ class TestDPPYFallback(unittest.TestCase):
 
         finally:
             ref_result = inner_call_fallback()
-            numba_dppy.config.FALLBACK_ON_CPU = 1
-            numba_dppy.compiler.DEBUG = 0
+            config.FALLBACK_ON_CPU = 1
+            config.DEBUG = 0
 
             not np.testing.assert_array_equal(dppy_fallback_false, ref_result)
             self.assertNotIn("Failed to offload parfor", str(w[-1].message))

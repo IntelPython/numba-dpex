@@ -14,7 +14,7 @@
 
 from numba.core import dispatcher, compiler
 from numba.core.registry import cpu_target, dispatcher_registry
-import numba_dppy.config as dppy_config
+from numba_dppy import config
 
 
 class DppyOffloadDispatcher(dispatcher.Dispatcher):
@@ -28,7 +28,7 @@ class DppyOffloadDispatcher(dispatcher.Dispatcher):
         impl_kind="direct",
         pipeline_class=compiler.Compiler,
     ):
-        if dppy_config.dppy_present:
+        if config.dppy_present:
             from numba_dppy.compiler import DPPYCompiler
 
             targetoptions["parallel"] = True

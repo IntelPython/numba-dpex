@@ -20,7 +20,7 @@ import dpctl
 import numpy as np
 from numba import njit
 import pytest
-from numba_dppy.testing import dpnp_debug
+from numba_dppy.tests._helper import dpnp_debug
 from .dpnp_skip_test import dpnp_skip_test as skip_test
 from ._helper import wrapper_function, args_string
 
@@ -66,6 +66,7 @@ def get_shape(request):
 
 list_of_unary_op = [
     "copy",
+    "trace",
 ]
 
 list_of_binary_op = [
@@ -94,6 +95,8 @@ def test_unary_ops(filter_str, unary_op, input_array, capfd):
         pytest.skip()
 
     a = input_array
+    if unary_op == "trace":
+        a = input_array.reshape((2, 5))
     fn = get_op_fn(unary_op, 1)
     actual = np.empty(shape=a.shape, dtype=a.dtype)
     expected = np.empty(shape=a.shape, dtype=a.dtype)

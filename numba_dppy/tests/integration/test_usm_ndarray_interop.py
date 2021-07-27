@@ -18,6 +18,7 @@ import numpy as np
 from numba import njit
 import pytest
 import numba_dppy as dppy
+from numba_dppy.tests._helper import skip_test
 
 import dpctl.tensor as dpt
 
@@ -47,6 +48,9 @@ def usm_type(request):
 
 
 def test_consuming_usm_ndarray(offload_device, dtype, usm_type):
+    if skip_test(offload_device):
+        pytest.skip()
+
     @dppy.kernel
     def data_parallel_sum(a, b, c):
         """
@@ -71,5 +75,5 @@ def test_consuming_usm_ndarray(offload_device, dtype, usm_type):
 
         dc = dpt.usm_ndarray(c.shape, dtype=c.dtype, buffer=usm_type)
 
-        with pytest.raises(Exception):
+        with pytest.raises(NotImplementedError):
             data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](da, db, dc)

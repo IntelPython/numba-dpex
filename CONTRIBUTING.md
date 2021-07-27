@@ -69,6 +69,26 @@ cd docs/_build/html && python -m http.server 8000
 
 Generated documentation will be in `docs/_build/html`.
 
+#### Documentation common issues
+
+1. Use `:language: shell-session` for GDB shell sessions:
+```
+.. literalinclude:: <...>
+  :language: shell-session
+```
+2. Use `:language: bash` for commands which could be inserted in shell or script:
+
+```
+.. code-block:: bash
+    export IGC_ShaderDumpEnable=1
+```
+3. Use `:lineno-match:` if line numbers matter and example file contains license header:
+```
+.. literalinclude:: <...>
+    :linenos:
+    :lineno-match:
+```
+
 ### Uploading to GitHub Pages
 
 Documentation for GitHub Pages is placed in following branch

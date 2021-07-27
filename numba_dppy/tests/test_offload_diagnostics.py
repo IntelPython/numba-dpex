@@ -12,14 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import unittest
 import numpy as np
 from numba import njit, prange
-import numba_dppy as dppy
-from numba_dppy import config as dppy_config
-from numba_dppy.testing import unittest
 from numba.tests.support import captured_stdout
-from . import _helper
 import dpctl
+
+import numba_dppy as dppy
+from numba_dppy import config
+from . import _helper
 
 
 @unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
@@ -36,13 +37,13 @@ class TestOffloadDiagnostics(unittest.TestCase):
             return a
 
         with dpctl.device_context("opencl:gpu"):
-            dppy_config.OFFLOAD_DIAGNOSTICS = 1
+            config.OFFLOAD_DIAGNOSTICS = 1
             jitted = njit(parallel=True)(prange_func)
 
             with captured_stdout() as got:
                 jitted()
 
-            dppy_config.OFFLOAD_DIAGNOSTICS = 0
+            config.OFFLOAD_DIAGNOSTICS = 0
             self.assertTrue("Auto-offloading" in got.getvalue())
             self.assertTrue("Device -" in got.getvalue())
 
@@ -60,12 +61,12 @@ class TestOffloadDiagnostics(unittest.TestCase):
         c = np.ones_like(a)
 
         with dpctl.device_context("opencl:gpu"):
-            dppy_config.OFFLOAD_DIAGNOSTICS = 1
+            config.OFFLOAD_DIAGNOSTICS = 1
 
             with captured_stdout() as got:
                 parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
-            dppy_config.OFFLOAD_DIAGNOSTICS = 0
+            config.OFFLOAD_DIAGNOSTICS = 0
             self.assertTrue("Auto-offloading" in got.getvalue())
             self.assertTrue("Device -" in got.getvalue())
 

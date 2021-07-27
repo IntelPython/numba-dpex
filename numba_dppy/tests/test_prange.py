@@ -18,7 +18,7 @@ import numpy as np
 import dpctl
 from numba import njit, prange
 import unittest
-from numba_dppy.testing import assert_auto_offloading
+from numba_dppy.tests._helper import assert_auto_offloading
 
 
 @unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")

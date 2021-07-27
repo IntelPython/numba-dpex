@@ -1,97 +1,73 @@
 Stepping
 ========
 
-.. note::
+Stepping allows you to go through the program by lines of source code or by machine instructions.
 
-    Known issues:
-      - Stepping works correctly only for kernels. Nested functions can cause problems.
+Consider the following examples. 
 
-Consider ``numba-dppy`` kernel code:
+``numba_dppy/examples/debug/simple_sum.py``:
 
-.. code-block:: python
+.. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
+    :lines: 15-
     :linenos:
+    :lineno-match:
 
-    import numpy as np
-    import numba_dppy as dppy
-    import dpctl
+Example with a nested function ``numba_dppy/examples/debug/simple_dppy_func.py``:
 
-    @dppy.kernel
-    def data_parallel_sum (a, b, c):
-        i = dppy.get_global_id (0)  # numba-kernel-breakpoint
-        l1 = a[i]                   # second-line
-        l2 = b[i]                   # third-line
-        c[i] = l1 + l2              # fourth-line
+.. literalinclude:: ../../../numba_dppy/examples/debug/simple_dppy_func.py
+    :lines: 15-
+    :linenos:
+    :lineno-match:
 
-    global_size = 10
-    N = global_size
-    a = np.array(np.random.random(N), dtype=np.float32)
-    b = np.array(np.random.random(N), dtype=np.float32)
-    c = np.ones_like(a)
-
-    with dpctl.device_context("opencl:gpu") as gpu_queue:
-        data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
 ``step``
 --------
 
-Run debugger:
+Run the debugger and use the following commands:
 
-.. code-block:: bash
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/step_sum
+    :language: shell-session
+    :emphasize-lines: 8-13
 
-    export NUMBA_DPPY_DEBUG=1
-    export NUMBA_OPT=1
-    gdb-oneapi -q --args python stepping.py
-    (gdb) b stepping.py:7
-    No source file named stepping.py.
-    Make breakpoint pending on future shared library load? (y or [n]) y
-    Breakpoint 1 (stepping.py:7) pending.
-    (gdb) r
-    Starting program: /localdisk/work/etotmeni/miniconda3/envs/numba-dppy-docs/bin/python stepping.py
-    [Thread debugging using libthread_db enabled]
-    Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
-    [Detaching after fork from child process 10505]
-    [New Thread 0x7fffd601f700 (LWP 10513)]
-    intelgt: gdbserver-gt started for process 10491.
-    intelgt: attached to device 1 of 1; id 0x5927 (Gen9)
-    [New Thread 0x7fffc593d700 (LWP 10530)]
-    [Detaching after fork from child process 10531]
-    compile_kernel (array(float32, 1d, C), array(float32, 1d, C), array(float32, 1d, C))
-    [Detaching after fork from child process 10532]
-    [Detaching after fork from child process 10533]
-    [New Thread 1.1073741824]
-    [New Thread 1.1073742080]
-    [Switching to Thread 1.1073741824 lane 0]
+You can use stepping to switch to a nested function. See the example below:
 
-    Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], dppy_py_devfn__5F__5F_main_5F__5F__2E_data_5F_parallel_5F_sum_24_1_2E_array_28_float32_2C__20_1d_2C__20_C_29__2E_array_28_float32_2C__20_1d_2C__20_C_29__2E_array_28_float32_2C__20_1d_2C__20_C_29_ () at stepping.py:7
-    7           i = dppy.get_global_id (0)  # numba-kernel-breakpoint
-    (gdb) s
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/step_dppy_func
+    :language: shell-session
+    :emphasize-lines: 8-14
 
-GDB output:
+``stepi``
+---------
 
-.. code-block:: bash
+The command allows you to move forward by machine instructions. The example uses an additional command ``x/i $pc``, which prints the instruction to be executed.
 
-    [Switching to Thread 1.1073742080 lane 0]
-
-    Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], dppy_py_devfn__5F__5F_main_5F__5F__2E_data_5F_parallel_5F_sum_24_1_2E_array_28_float32_2C__20_1d_2C__20_C_29__2E_array_28_float32_2C__20_1d_2C__20_C_29__2E_array_28_float32_2C__20_1d_2C__20_C_29_ () at stepping.py:7
-    7           i = dppy.get_global_id (0)  # numba-kernel-breakpoint
-    (gdb) s
-    8           l1 = a[i]                   # second-line
-    (gdb) s
-    9           l2 = b[i]                   # third-line
-    (gdb) s
-    10          c[i] = l1 + l2              # fourth-line
-    (gdb) s
-    [Thread 0x7fffc593d700 (LWP 10530) exited]
-    [Thread 0x7ffff7fd1740 (LWP 10491) exited]
-    [Inferior 2 (process 1) exited normally]
-    intelgt: inferior 2 (gdbserver-gt) has been removed.
-
-.. note::
-
-    Known issues:
-      - Debug of the first line of the kernel works out twice.
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/stepi
+    :language: shell-session
+    :emphasize-lines: 8-13
 
 ``next``
 --------
 
-Stepping-like behavior.
+The command has stepping-like behavior, but it skips nested functions.
+
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/next
+    :language: shell-session
+    :emphasize-lines: 8-14
+
+.. _single_stepping:
+
+``set scheduler-locking step``
+------------------------------
+
+The first line of the kernel and functions is debugged twice.
+This happens because you are debugging a multi-threaded program, so multiple events may be received from different threads.
+This is the default behavior, but you can configure it for more efficient debugging.
+To ensure the current thread executes a single line without interference, set the scheduler-locking setting to `on` or `step`:
+
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/sheduler_locking
+    :language: shell-session
+    :emphasize-lines: 8-13
+
+See also:
+
+- `Single Stepping <https://software.intel.com/content/www/us/en/develop/documentation/debugging-dpcpp-linux/top/debug-a-dpc-application-on-a-cpu/single-stepping.html>`_
+- `Continuing and Stepping in GDB* <https://sourceware.org/gdb/current/onlinedocs/gdb/Continuing-and-Stepping.html#Continuing-and-Stepping>`_
