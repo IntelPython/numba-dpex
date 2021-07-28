@@ -573,7 +573,15 @@ class DPPYKernel(DPPYKernelBase):
         device_arrs.append(None)
 
         if isinstance(ty, USMNdArrayType):
-            raise NotImplementedError(ty, USMNdArrayType)
+            self._unpack_device_array_argument(
+                val.size,
+                val.dtype.itemsize,
+                val.usm_data,
+                val.shape,
+                val.strides,
+                val.ndim,
+                kernelargs,
+            )
         elif isinstance(ty, types.Array):
             packed_val = val
             usm_mem = has_usm_memory(val)
