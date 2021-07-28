@@ -47,6 +47,9 @@ def test_njit(filter_str):
     if _helper.platform_not_supported(filter_str):
         pytest.skip()
 
+    if _helper.skip_test(filter_str):
+        pytest.skip()
+
     @vectorize(nopython=True)
     def axy(a, x, y):
         return a * x + y
@@ -89,6 +92,9 @@ def input_type(request):
 
 def test_vectorize(filter_str, shape, dtypes, input_type):
     if _helper.platform_not_supported(filter_str):
+        pytest.skip()
+
+    if _helper.skip_test(filter_str):
         pytest.skip()
 
     def vector_add(a, b):
