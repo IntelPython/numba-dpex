@@ -64,7 +64,7 @@ def test_consuming_usm_ndarray(offload_device, dtype, usm_type):
 
     a = np.array(np.random.random(N), dtype=dtype)
     b = np.array(np.random.random(N), dtype=dtype)
-    c = np.ones_like(a)
+    got = np.ones_like(a)
 
     with dpctl.device_context(offload_device) as gpu_queue:
         da = dpt.usm_ndarray(
@@ -84,10 +84,16 @@ def test_consuming_usm_ndarray(offload_device, dtype, usm_type):
         db.usm_data.copy_from_host(b.reshape((-1)).view("|u1"))
 
         dc = dpt.usm_ndarray(
-            c.shape,
-            dtype=c.dtype,
+            got.shape,
+            dtype=got.dtype,
             buffer=usm_type,
             buffer_ctor_kwargs={"queue": gpu_queue},
         )
 
         data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](da, db, dc)
+
+        dc.usm_data.copy_to_host(got.reshape((-1)).view("|u1"))
+
+        expected = a + b
+
+        assert np.array_equal(got, expected)
