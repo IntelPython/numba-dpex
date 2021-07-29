@@ -14,43 +14,107 @@
 # limitations under the License.
 
 import numpy as np
-from numba import njit, vectorize
+from numba import njit, vectorize, int32, float32, int64, float64
 import dpctl
-import unittest
-
-from numba_dppy.tests._helper import assert_auto_offloading
+import pytest
 from . import _helper
 
+list_of_filter_strs = [
+    "opencl:gpu:0",
+    "level_zero:gpu:0",
+    "opencl:cpu:0",
+]
 
-@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
-class TestVectorize(unittest.TestCase):
-    def test_vectorize(self):
-        @vectorize(nopython=True)
-        def axy(a, x, y):
-            return a * x + y
 
-        @njit
-        def f(a0, a1):
-            return np.cos(axy(a0, np.sin(a1) - 1.0, 1.0))
+@pytest.fixture(params=list_of_filter_strs)
+def filter_str(request):
+    return request.param
 
-        def f_np(a0, a1):
-            sin_res = np.sin(a1)
-            res = []
-            for i in range(len(a0)):
-                res.append(axy(a0[i], sin_res[i] - 1.0, 1.0))
-            return np.cos(np.array(res))
 
-        A = np.random.random(10)
-        B = np.random.random(10)
+list_of_shape = [
+    (100, 100),
+    (100, (10, 10)),
+    (100, (2, 5, 10)),
+]
 
-        with dpctl.device_context("opencl:gpu"), assert_auto_offloading():
-            expected = f(A, B)
 
-        actual = f_np(A, B)
+@pytest.fixture(params=list_of_shape)
+def shape(request):
+    return request.param
+
+
+def test_njit(filter_str):
+    if _helper.platform_not_supported(filter_str):
+        pytest.skip()
+
+    if _helper.skip_test(filter_str):
+        pytest.skip()
+
+    @vectorize(nopython=True)
+    def axy(a, x, y):
+        return a * x + y
+
+    def f(a0, a1):
+        return np.cos(axy(a0, np.sin(a1) - 1.0, 1.0))
+
+    A = np.random.random(10)
+    B = np.random.random(10)
+
+    with dpctl.device_context(filter_str):
+        f_njit = njit(f)
+        expected = f_njit(A, B)
+        actual = f(A, B)
 
         max_abs_err = expected.sum() - actual.sum()
-        self.assertTrue(max_abs_err < 1e-5)
+        assert max_abs_err < 1e-5
 
 
-if __name__ == "__main__":
-    unittest.main()
+list_of_dtype = [
+    (np.int32, int32),
+    (np.float32, float32),
+    (np.int64, int64),
+    (np.float64, float64),
+]
+
+
+@pytest.fixture(params=list_of_dtype)
+def dtypes(request):
+    return request.param
+
+
+list_of_input_type = ["array", "scalar"]
+
+
+@pytest.fixture(params=list_of_input_type)
+def input_type(request):
+    return request.param
+
+
+def test_vectorize(filter_str, shape, dtypes, input_type):
+    if _helper.platform_not_supported(filter_str):
+        pytest.skip()
+
+    if _helper.skip_test(filter_str):
+        pytest.skip()
+
+    def vector_add(a, b):
+        return a + b
+
+    dtype, sig_dtype = dtypes
+    sig = [sig_dtype(sig_dtype, sig_dtype)]
+    size, shape = shape
+
+    if input_type == "array":
+        A = np.arange(size, dtype=dtype).reshape(shape)
+        B = np.arange(size, dtype=dtype).reshape(shape)
+    elif input_type == "scalar":
+        A = dtype(1.2)
+        B = dtype(2.3)
+
+    with dpctl.device_context(filter_str):
+        f = vectorize(sig, target="dppy")(vector_add)
+        expected = f(A, B)
+        actual = vector_add(A, B)
+
+        max_abs_err = np.sum(expected) - np.sum(actual)
+        assert max_abs_err < 1e-5

@@ -14,6 +14,8 @@
 
 import llvmlite.binding as ll
 import os
+from numba_dppy.vectorizers import DPPYVectorize
+from numba.np.ufunc.decorators import Vectorize
 
 
 def init_jit():
@@ -51,3 +53,8 @@ def load_dpctl_sycl_interface():
         ll.load_library_permanently(paths[0])
     else:
         raise ImportError
+
+    def init_dppy_vectorize():
+        return DPPYVectorize
+
+    Vectorize.target_registry.ondemand["dppy"] = init_dppy_vectorize
