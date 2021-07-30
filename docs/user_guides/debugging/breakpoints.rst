@@ -3,18 +3,18 @@ Breakpoints
 
 A `breakpoint` makes your program stop whenever a certain point in the program is reached.
 
-You can set breakpoints with the ``break`` command to specify the place where your program should stop in the kernel by line number or function name.
+You can set breakpoints with the ``break`` command to specify the place where your program should stop in the kernel. Define breakpoints by line numbers or function names.
 
 You have several ways to set breakpoints:
-  - break function
-  - break filename:function
-  - break filename:linenumber
-  - break … if cond
+  - break <function>
+  - break <filename>:<linenumber>
+  - break <filename>:<function>
+  - break … if <condition>
 
 See also:
-  - `GDB documentation of breakpoints`_.
+  - `Breakpoints in GDB*`_.
 
-.. _GDB documentation of breakpoints: https://sourceware.org/gdb/current/onlinedocs/gdb/Set-Breaks.html#Set-Breaks
+.. _Breakpoints in GDB*: https://sourceware.org/gdb/current/onlinedocs/gdb/Set-Breaks.html#Set-Breaks
 
 Consider Numba-dppy kernel code. See the source file ``numba_dppy/examples/debug/simple_sum.py``:
 
@@ -26,7 +26,7 @@ Consider Numba-dppy kernel code. See the source file ``numba_dppy/examples/debug
 ``break function``
 ------------------
 
-GDB output:
+The debugger output:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_func
     :language: shell-session
@@ -35,7 +35,7 @@ GDB output:
 ``break filename:linenumber``
 -----------------------------
 
-GDB output:
+The debugger output:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_line_number
     :language: shell-session
@@ -44,7 +44,7 @@ GDB output:
 ``break filename:function``
 ---------------------------
 
-GDB output:
+The debugger output:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_file_func
     :language: shell-session
@@ -53,7 +53,7 @@ GDB output:
 ``break … if cond``
 -------------------
 
-GDB output:
+The debugger output:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_conditional
     :language: shell-session
@@ -62,14 +62,14 @@ GDB output:
 Breakpoints with nested functions
 ---------------------------------
 
-Consider Numba-dppy kernel code. See source file ``numba_dppy/examples/debug/simple_dppy_func.py``:
+Consider Numba-dppy kernel code. See the source file ``numba_dppy/examples/debug/simple_dppy_func.py``:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_dppy_func.py
     :lines: 15-
     :linenos:
     :lineno-match:
 
-GDB output:
+The debugger output:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_nested_func
     :language: shell-session

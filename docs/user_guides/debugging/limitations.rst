@@ -1,7 +1,7 @@
 Limitations
 ===========
 
-Currently Numba-dppy provides only initial support of debugging SYCL kernels.
+Currently Numba-dppy provides only initial support of debugging SYCL* kernels.
 The following functionality is **limited** or **not supported**:
 
   - Information about variable values may not match the actual values while debugging.

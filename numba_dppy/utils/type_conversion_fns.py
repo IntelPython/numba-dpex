@@ -51,7 +51,11 @@ def npytypes_array_to_dppy_array(arrtype, addrspace=address_space.GLOBAL):
                              ``numba.types.Array``
 
     """
-    if isinstance(arrtype, types.npytypes.Array):
+    # We are not using isinstance() here as we want to
+    # strictly match with types.Array. There are Numba-dppy types
+    # that inherit from types.Array and those type would
+    # also get trapped if isinstance() is used.
+    if type(arrtype) is types.npytypes.Array:
         return dppy_array_type.DPPYArray(
             arrtype.dtype,
             arrtype.ndim,

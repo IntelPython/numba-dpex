@@ -1,13 +1,13 @@
-Supported GDB Features
-======================
+Supported Features
+====================
 
 The following debugging features are available:
 
 - Source location (filename and line number).
-- Setting break points by the line number.
-- Stepping over break points.
+- Setting breakpoints by the line number.
+- Stepping over breakpoints.
 
-Numba-dppy supports at least following GDB commands:
+Numba-dppy supports the following Intel® Distribution for GDB* commands:
 
 .. toctree::
     :maxdepth: 2

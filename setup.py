@@ -102,15 +102,13 @@ def _get_cmdclass():
 
 
 def spirv_compile():
-    ONEAPI_ROOT = os.environ.get("ONEAPI_ROOT")
-    if not os.path.isdir(ONEAPI_ROOT):
-        raise ValueError(f"ONEAPI_ROOT is not a directory: {ONEAPI_ROOT}")
-
     if IS_LIN:
-        compiler = "compiler/latest/linux/bin/clang"
-        compiler = os.path.join(ONEAPI_ROOT, compiler)
-        compiler = shlex.quote(compiler)
+        compiler = "clang"
     if IS_WIN:
+        ONEAPI_ROOT = os.environ.get("ONEAPI_ROOT")
+        if not os.path.isdir(ONEAPI_ROOT):
+            raise ValueError(f"ONEAPI_ROOT is not a directory: {ONEAPI_ROOT}")
+
         compiler = "compiler\\latest\\windows\\bin\\clang.exe"
         compiler = os.path.join(ONEAPI_ROOT, compiler)
 
@@ -145,6 +143,7 @@ build_requires = ["cython"]
 install_requires = [
     "numba >={}".format("0.54.0rc"),
     "dpctl",
+    "packaging",
 ]
 
 metadata = dict(
