@@ -46,6 +46,15 @@ jobs:
   test:
     needs: build
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        integration_channels:
+          - ""
+          - -c dppy/label/dev
+    env:
+      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults --override-channels
+
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v2
@@ -64,7 +73,7 @@ jobs:
           conda search numba-dppy -c $GITHUB_WORKSPACE/channel --override-channels
       - name: Collect dependencies
         run: |
-          CHANNELS="-c $GITHUB_WORKSPACE/channel -c intel -c defaults --override-channels"
+          CHANNELS="-c $GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}"
           conda install numba-dppy $CHANNELS --only-deps --dry-run > lockfile
       - name: Set pkgs_dirs
         run: |
@@ -79,7 +88,7 @@ jobs:
             ${{ runner.os }}-conda-test-${{ env.CACHE_NUMBER }}-${{hashFiles('lockfile') }}
       - name: Install numba-dppy
         run: |
-          CHANNELS="-c $GITHUB_WORKSPACE/channel -c intel -c defaults --override-channels"
+          CHANNELS="-c $GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}"
           conda install numba-dppy pytest $CHANNELS
           # Test installed packages
           conda list
