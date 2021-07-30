@@ -5,6 +5,9 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.8"]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -20,7 +23,10 @@ jobs:
         with:
           path: ~/.conda/pkgs
           key:
-            ${{ runner.os }}-conda-build-${{ env.CACHE_NUMBER }}-${{hashFiles('**/meta.yaml') }}
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-${{hashFiles('**/meta.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
 
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
@@ -29,7 +35,7 @@ jobs:
       - name: Build conda package
         run: |
           CHANNELS="-c intel -c defaults --override-channels"
-          VERSIONS="--python 3.8"
+          VERSIONS="--python ${{ matrix.python }}"
           TEST="--no-test"
 
           conda build \
@@ -40,7 +46,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: numba-dppy ${{ runner.os }}
+          name: numba-dppy ${{ runner.os }} Python ${{ matrix.python }}
           path: /usr/share/miniconda/conda-bld/linux-64/numba-dppy-*.tar.bz2
 
   test:
@@ -49,6 +55,7 @@ jobs:
 
     strategy:
       matrix:
+        python: ["3.8"]
         integration_channels:
           - ""
           - -c dppy/label/dev
@@ -59,7 +66,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          name: numba-dppy ${{ runner.os }}
+          name: numba-dppy ${{ runner.os }} Python ${{ matrix.python }}
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
       - name: Install conda-build
@@ -71,10 +78,11 @@ jobs:
           conda index $GITHUB_WORKSPACE/channel
           # Test channel
           conda search numba-dppy -c $GITHUB_WORKSPACE/channel --override-channels
+
       - name: Collect dependencies
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}"
-          conda install numba-dppy $CHANNELS --only-deps --dry-run > lockfile
+          conda install numba-dppy python=${{ matrix.python }} $CHANNELS --only-deps --dry-run > lockfile
       - name: Set pkgs_dirs
         run: |
           echo "pkgs_dirs: [~/.conda/pkgs]" >> ~/.condarc
@@ -85,11 +93,15 @@ jobs:
         with:
           path: ~/.conda/pkgs
           key:
-            ${{ runner.os }}-conda-test-${{ env.CACHE_NUMBER }}-${{hashFiles('lockfile') }}
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-${{hashFiles('lockfile') }}
+          restore-keys: |
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
+
       - name: Install numba-dppy
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}"
-          conda install numba-dppy pytest $CHANNELS
+          conda install numba-dppy pytest python=${{ matrix.python }} $CHANNELS
           # Test installed packages
           conda list
       - name: Run tests
@@ -102,11 +114,14 @@ jobs:
     needs: test
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.8"]
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          name: numba-dppy ${{ runner.os }}
+          name: numba-dppy ${{ runner.os }} Python ${{ matrix.python }}
 
       - name: Install anaconda-client
         run: conda install anaconda-client
