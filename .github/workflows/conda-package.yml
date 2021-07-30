@@ -56,9 +56,13 @@ jobs:
     strategy:
       matrix:
         python: ["3.8"]
-        integration_channels:
-          - ""
-          - -c dppy/label/dev
+        channels: [""]
+        experimental: [false]
+        include:
+          - python: ["3.8"]
+            channels: -c dppy/label/dev
+            experimental: true
+    continue-on-error: ${{ matrix.experimental }}
     env:
       CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults --override-channels
 
