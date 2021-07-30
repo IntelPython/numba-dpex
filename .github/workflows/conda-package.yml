@@ -24,6 +24,9 @@ jobs:
           path: ~/.conda/pkgs
           key:
             ${{ runner.os }}-conda-build-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-${{hashFiles('**/meta.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-conda-build-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
+            ${{ runner.os }}-conda-build-${{ env.CACHE_NUMBER }}-
 
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
@@ -83,6 +86,11 @@ jobs:
           path: ~/.conda/pkgs
           key:
             ${{ runner.os }}-conda-test-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-${{hashFiles('lockfile') }}
+          restore-keys: |
+            ${{ runner.os }}-conda-test-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
+            ${{ runner.os }}-conda-build-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
+            ${{ runner.os }}-conda-test-${{ env.CACHE_NUMBER }}-
+            ${{ runner.os }}-conda-build-${{ env.CACHE_NUMBER }}-
       - name: Install numba-dppy
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel -c intel -c defaults --override-channels"
