@@ -5,6 +5,9 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.8"]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -29,7 +32,7 @@ jobs:
       - name: Build conda package
         run: |
           CHANNELS="-c intel -c defaults --override-channels"
-          VERSIONS="--python 3.8"
+          VERSIONS="--python ${{ matrix.python }}"
           TEST="--no-test"
 
           conda build \
@@ -40,17 +43,20 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: numba-dppy ${{ runner.os }}
+          name: numba-dppy ${{ runner.os }} Python ${{ matrix.python }}
           path: /usr/share/miniconda/conda-bld/linux-64/numba-dppy-*.tar.bz2
 
   test:
     needs: build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.8"]
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          name: numba-dppy ${{ runner.os }}
+          name: numba-dppy ${{ runner.os }} Python ${{ matrix.python }}
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
       - name: Install conda-build
@@ -65,7 +71,7 @@ jobs:
       - name: Collect dependencies
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel -c intel -c defaults --override-channels"
-          conda install numba-dppy $CHANNELS --only-deps --dry-run > lockfile
+          conda install numba-dppy python=${{ matrix.python }} $CHANNELS --only-deps --dry-run > lockfile
       - name: Set pkgs_dirs
         run: |
           echo "pkgs_dirs: [~/.conda/pkgs]" >> ~/.condarc
@@ -80,7 +86,7 @@ jobs:
       - name: Install numba-dppy
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel -c intel -c defaults --override-channels"
-          conda install numba-dppy pytest $CHANNELS
+          conda install numba-dppy pytest python=${{ matrix.python }} $CHANNELS
           # Test installed packages
           conda list
       - name: Run tests
@@ -93,11 +99,14 @@ jobs:
     needs: test
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.8"]
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          name: numba-dppy ${{ runner.os }}
+          name: numba-dppy ${{ runner.os }} Python ${{ matrix.python }}
 
       - name: Install anaconda-client
         run: conda install anaconda-client
