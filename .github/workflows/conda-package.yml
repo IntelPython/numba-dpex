@@ -2,9 +2,16 @@ name: Conda package
 
 on: push
 
+env:
+  PACKAGE_NAME: numba-dppy
+  MODULE_NAME: numba_dppy
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.8"]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -20,7 +27,10 @@ jobs:
         with:
           path: ~/.conda/pkgs
           key:
-            ${{ runner.os }}-conda-build-${{ env.CACHE_NUMBER }}-${{hashFiles('**/meta.yaml') }}
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-${{hashFiles('**/meta.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
 
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
@@ -29,7 +39,7 @@ jobs:
       - name: Build conda package
         run: |
           CHANNELS="-c intel -c defaults --override-channels"
-          VERSIONS="--python 3.8"
+          VERSIONS="--python ${{ matrix.python }}"
           TEST="--no-test"
 
           conda build \
@@ -40,17 +50,31 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: numba-dppy ${{ runner.os }}
-          path: /usr/share/miniconda/conda-bld/linux-64/numba-dppy-*.tar.bz2
+          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
+          path: /usr/share/miniconda/conda-bld/linux-64/${{ env.PACKAGE_NAME }}-*.tar.bz2
 
   test:
     needs: build
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python: ["3.8"]
+        integration_channels: [""]
+        experimental: [false]
+        include:
+          - python: "3.8"
+            integration_channels: -c dppy/label/dev
+            experimental: true
+    continue-on-error: ${{ matrix.experimental }}
+    env:
+      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults --override-channels
+
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          name: numba-dppy ${{ runner.os }}
+          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
       - name: Install conda-build
@@ -58,14 +82,15 @@ jobs:
       - name: Create conda channel
         run: |
           mkdir -p $GITHUB_WORKSPACE/channel/linux-64
-          mv numba-dppy-*.tar.bz2 $GITHUB_WORKSPACE/channel/linux-64
+          mv ${PACKAGE_NAME}-*.tar.bz2 $GITHUB_WORKSPACE/channel/linux-64
           conda index $GITHUB_WORKSPACE/channel
           # Test channel
-          conda search numba-dppy -c $GITHUB_WORKSPACE/channel --override-channels
+          conda search $PACKAGE_NAME -c $GITHUB_WORKSPACE/channel --override-channels
+
       - name: Collect dependencies
         run: |
-          CHANNELS="-c $GITHUB_WORKSPACE/channel -c intel -c defaults --override-channels"
-          conda install numba-dppy $CHANNELS --only-deps --dry-run > lockfile
+          CHANNELS="-c $GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}"
+          conda install $PACKAGE_NAME python=${{ matrix.python }} $CHANNELS --only-deps --dry-run > lockfile
       - name: Set pkgs_dirs
         run: |
           echo "pkgs_dirs: [~/.conda/pkgs]" >> ~/.condarc
@@ -76,28 +101,35 @@ jobs:
         with:
           path: ~/.conda/pkgs
           key:
-            ${{ runner.os }}-conda-test-${{ env.CACHE_NUMBER }}-${{hashFiles('lockfile') }}
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-${{hashFiles('lockfile') }}
+          restore-keys: |
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
+
       - name: Install numba-dppy
         run: |
-          CHANNELS="-c $GITHUB_WORKSPACE/channel -c intel -c defaults --override-channels"
-          conda install numba-dppy pytest $CHANNELS
+          CHANNELS="-c $GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}"
+          conda install $PACKAGE_NAME pytest python=${{ matrix.python }} $CHANNELS
           # Test installed packages
           conda list
       - name: Run tests
         run: |
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
           export OCL_ICD_FILENAMES=libintelocl.so
-          python -m pytest --pyargs numba_dppy
+          python -m pytest --pyargs $MODULE_NAME
 
   upload:
     needs: test
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.8"]
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          name: numba-dppy ${{ runner.os }}
+          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 
       - name: Install anaconda-client
         run: conda install anaconda-client
@@ -109,4 +141,4 @@ jobs:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
           conda install anaconda-client
-          anaconda --token $ANACONDA_TOKEN upload --user dppy --label dev numba-dppy-*.tar.bz2
+          anaconda --token $ANACONDA_TOKEN upload --user dppy --label dev ${PACKAGE_NAME}-*.tar.bz2
