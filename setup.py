@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+try:
+    import dpnp
+except:
+    pass
+
 import os
 import sys
 import setuptools.command.install as orig_install
