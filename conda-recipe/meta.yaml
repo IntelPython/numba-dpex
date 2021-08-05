@@ -21,7 +21,7 @@ requirements:
         - cython
         - numba 0.53*
         - dpctl 0.8.*
-        - dpnp >=0.6*,<0.7*  # [linux]
+        - dpnp >=0.6*,<0.8*  # [linux]
         - wheel
     run:
         - python
@@ -29,7 +29,7 @@ requirements:
         - dpctl 0.8.*
         - spirv-tools
         - llvm-spirv
-        - dpnp >=0.6*,<0.7*  # [linux]
+        - dpnp >=0.6*,<0.8*  # [linux]
         - packaging
 
 test:
