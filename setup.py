@@ -12,11 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-try:
-    import dpnp
-except:
-    pass
-
 import os
 import sys
 import setuptools.command.install as orig_install
@@ -42,6 +37,14 @@ elif sys.platform in ["win32", "cygwin"]:
 def get_ext_modules():
     ext_modules = []
 
+    dpnp_present = False
+    try:
+        import dpnp
+    except:
+        pass
+    else:
+        dpnp_present = True
+
     import numba, dpctl
 
     dpctl_runtime_library_dirs = []
@@ -58,14 +61,6 @@ def get_ext_modules():
         runtime_library_dirs=dpctl_runtime_library_dirs,
     )
     ext_modules += [ext_dppy]
-
-    dpnp_present = False
-    try:
-        import dpnp
-    except:
-        pass
-    else:
-        dpnp_present = True
 
     if dpnp_present:
         dpnp_lib_path = []
