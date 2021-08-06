@@ -22,7 +22,7 @@ https://intelpython.github.io/dpnp/
 ## Dependencies
 
 * numba 0.53.* (IntelPython/numba)
-* dpctl 0.8.*
+* dpctl 0.9.*
 * dpnp 0.6.* (optional)
 * llvm-spirv (SPIRV generation from LLVM IR)
 * llvmdev (LLVM IR generation)
