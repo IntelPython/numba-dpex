@@ -6,6 +6,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.15.0] - xxxx-xx-xx
+
+### Added
+- Introduce array ultilites to check, allocate and copy memory using SYCL USM (#489)
+- Add packaging in run dependencies (#505)
+- Add skipping tests for run without GPU (#508)
+- Add CI pipeline on GitHub Actions for Linux (#507)
+- Enable dpctl.tensor.usm_ndarray for @dppy.kernel (#509)
+- Enable @vectorize for target dppy (#497)
+- Add integration channels to GitHub Actions and make workflow consistent with dpctl (#510)
+
+### Changed
+- Update to dpctl 0.9 (#514)
+- Use dpcpp compiler package for Linux (#502)
+- Update go version (#515)
+
+### Removed
+- Remove llvmdev from runtime dependecies (#498)
+
+### Fixed
+- Fix required compiler flags for processing genreated DWARF symbols (#500)
+
 ## [0.14.4] - 2021-07-09
 
 ### Fixed
