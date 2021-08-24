@@ -23,6 +23,7 @@ import pytest
 from .dpnp_skip_test import dpnp_skip_test as skip_test
 from numba_dppy.tests._helper import is_gen12, dpnp_debug
 from ._helper import wrapper_function
+import numba_dppy as dppy
 
 
 list_of_filter_strs = [
@@ -123,7 +124,8 @@ def test_unary_ops(filter_str, unary_op, input_array, get_shape, capfd):
     expected = np.empty(shape=a.shape, dtype=a.dtype)
 
     f = njit(op)
-    with dpctl.device_context(filter_str), dpnp_debug():
+    device = dpctl.SyclDevice(filter_str)
+    with dppy.offload_to_sycl_device(device), dpnp_debug():
         actual = f(a)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -147,7 +149,8 @@ def test_unary_nan_ops(filter_str, unary_nan_op, input_nan_array, get_shape, cap
         pytest.skip()
 
     f = njit(op)
-    with dpctl.device_context(filter_str), dpnp_debug():
+    device = dpctl.SyclDevice(filter_str)
+    with dppy.offload_to_sycl_device(device), dpnp_debug():
         actual = f(a)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out

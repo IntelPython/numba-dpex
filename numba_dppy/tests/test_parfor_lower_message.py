@@ -36,7 +36,8 @@ def prange_example():
 @unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
 class TestParforMessage(unittest.TestCase):
     def test_parfor_message(self):
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
+        device = dpctl.SyclDevice("opencl:gpu")
+        with dppy.offload_to_sycl_device(device):
             config.DEBUG = 1
             jitted = njit(prange_example)
 

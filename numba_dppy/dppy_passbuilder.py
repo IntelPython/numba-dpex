@@ -43,6 +43,7 @@ from numba.core.typed_passes import (
     IRLegalization,
     InlineOverloads,
     PreLowerStripPhis,
+    NoPythonSupportedFeatureValidation,
 )
 
 from .dppy_passes import (
@@ -90,13 +91,16 @@ class DPPYPassBuilder(object):
             "dppy constant size for static local memory",
         )
 
+        # inline closures early in case they are using nonlocal's
+        # see issue #6585.
+        pm.add_pass(InlineClosureLikes, "inline calls to locally defined closures")
+
         # pre typing
         if not state.flags.no_rewrites:
             pm.add_pass(RewriteSemanticConstants, "rewrite semantic constants")
             pm.add_pass(DeadBranchPrune, "dead branch pruning")
             pm.add_pass(GenericRewrites, "nopython rewrites")
 
-        pm.add_pass(InlineClosureLikes, "inline calls to locally defined closures")
         # convert any remaining closures into functions
         pm.add_pass(
             MakeFunctionToJitFunction, "convert make_function into JIT functions"
@@ -114,6 +118,7 @@ class DPPYPassBuilder(object):
 
         if state.flags.enable_ssa:
             pm.add_pass(ReconstructSSA, "ssa")
+
         # typing
         pm.add_pass(NopythonTypeInference, "nopython frontend")
         pm.add_pass(AnnotateTypes, "annotate types")
@@ -142,6 +147,10 @@ class DPPYPassBuilder(object):
         pm.add_pass(DPPYParforPass, "convert to parfors")
 
         # legalise
+        pm.add_pass(
+            NoPythonSupportedFeatureValidation,
+            "ensure features that are in use are in a valid form",
+        )
         pm.add_pass(IRLegalization, "ensure IR is legal prior to lowering")
 
         # lower

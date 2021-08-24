@@ -22,6 +22,7 @@ from numba import njit
 import pytest
 from numba_dppy.tests._helper import dpnp_debug
 from .dpnp_skip_test import dpnp_skip_test as skip_test
+import numba_dppy as dppy
 
 
 list_of_filter_strs = [
@@ -78,7 +79,8 @@ def test_diagonal(array, offset, filter_str):
         return np.diagonal(a, offset)
 
     f = njit(fn)
-    with dpctl.device_context(filter_str), dpnp_debug():
+    device = dpctl.SyclDevice(filter_str)
+    with dppy.offload_to_sycl_device(device), dpnp_debug():
         actual = f(a, offset)
 
     expected = fn(a, offset)

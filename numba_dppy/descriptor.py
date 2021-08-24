@@ -16,20 +16,18 @@ from numba.core.descriptors import TargetDescriptor
 from numba.core.options import TargetOptions
 
 from numba.core import dispatcher, utils, typing
-from .target import DPPYTargetContext, DPPYTypingContext
+from .target import DPPYTargetContext, DPPYTypingContext, DPPY_TARGET_NAME
 
 from numba.core.cpu import CPUTargetOptions
 
 
 class DPPYTarget(TargetDescriptor):
     options = CPUTargetOptions
-    # typingctx = DPPYTypingContext()
-    # targetctx = DPPYTargetContext(typingctx)
 
     @utils.cached_property
     def _toplevel_target_context(self):
         # Lazily-initialized top-level target context, for all threads
-        return DPPYTargetContext(self.typing_context)
+        return DPPYTargetContext(self.typing_context, self._target_name)
 
     @utils.cached_property
     def _toplevel_typing_context(self):
@@ -52,4 +50,4 @@ class DPPYTarget(TargetDescriptor):
 
 
 # The global DPPY target
-dppy_target = DPPYTarget()
+dppy_target = DPPYTarget(DPPY_TARGET_NAME)

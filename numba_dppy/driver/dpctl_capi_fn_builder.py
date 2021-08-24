@@ -19,7 +19,7 @@ declarations into an LLVM module.
 
 import llvmlite.llvmpy.core as lc
 from llvmlite.ir import builder
-from numba.core import types
+from numba.core import types, cgutils
 
 import numba_dppy.utils as utils
 
@@ -48,7 +48,7 @@ class DpctlCAPIFnBuilder:
 
         """
         func_ty = lc.Type.function(return_ty, arg_list)
-        fn = builder.module.get_or_insert_function(func_ty, func_name)
+        fn = cgutils.get_or_insert_function(builder.module, func_ty, func_name)
         return fn
 
     @staticmethod

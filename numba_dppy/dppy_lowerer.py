@@ -626,7 +626,11 @@ def _create_gufunc_for_parfor_body(
 
     # Inlining all DUFuncs
     dufunc_inliner(
-        gufunc_ir, lowerer.fndesc.calltypes, typemap, lowerer.context.typing_context
+        gufunc_ir,
+        lowerer.fndesc.calltypes,
+        typemap,
+        lowerer.context.typing_context,
+        lowerer.context,
     )
 
     if config.DEBUG_ARRAY_OPT:
@@ -670,14 +674,14 @@ def _lower_parfor_gufunc(lowerer, parfor):
     orig_typemap = lowerer.fndesc.typemap
     # replace original typemap with copy and restore the original at the end.
     lowerer.fndesc.typemap = copy.copy(orig_typemap)
+    if config.DEBUG_ARRAY_OPT:
+        print("lowerer.fndesc", lowerer.fndesc, type(lowerer.fndesc))
     typemap = lowerer.fndesc.typemap
     varmap = lowerer.varmap
 
     if config.DEBUG_ARRAY_OPT:
         print("_lower_parfor_parallel")
         parfor.dump()
-    if config.DEBUG_ARRAY_OPT:
-        sys.stdout.flush()
 
     loc = parfor.init_block.loc
     scope = parfor.init_block.scope
@@ -708,7 +712,7 @@ def _lower_parfor_gufunc(lowerer, parfor):
     # run get_parfor_outputs() and get_parfor_reductions() before
     # gufunc creation since Jumps are modified so CFG of loop_body
     # dict will become invalid
-    assert parfor.params != None
+    assert parfor.params is not None
 
     parfor_output_arrays = numba.parfors.parfor.get_parfor_outputs(
         parfor, parfor.params
@@ -716,7 +720,7 @@ def _lower_parfor_gufunc(lowerer, parfor):
 
     # compile parfor body as a separate function to be used with GUFuncWrapper
     flags = copy.copy(parfor.flags)
-    flags.set("error_model", "numpy")
+    flags.error_model = "numpy"
 
     # Can't get here unless flags.set('auto_parallel', ParallelOptions(True))
     index_var_typ = typemap[parfor.loop_nests[0].index_variable.name]
@@ -1212,6 +1216,13 @@ def relatively_deep_copy(obj, memo):
     return cpy
 
 
+class WrapperDefaultLower(Lower):
+    @property
+    def _disable_sroa_like_opt(self):
+        """For numba_dppy's case we always return True."""
+        return True
+
+
 class DPPYLower(Lower):
     def __init__(self, context, library, fndesc, func_ir, metadata=None):
         Lower.__init__(self, context, library, fndesc, func_ir, metadata)
@@ -1230,7 +1241,7 @@ class DPPYLower(Lower):
 
     def _lower(self, context, library, fndesc, func_ir, metadata):
         """Create Lower with changed linkageName in debug info"""
-        lower = Lower(context, library, fndesc, func_ir, metadata)
+        lower = WrapperDefaultLower(context, library, fndesc, func_ir, metadata)
 
         # Debuginfo
         if context.enable_debuginfo:

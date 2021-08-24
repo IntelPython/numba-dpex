@@ -58,7 +58,7 @@ def main():
     print("Using device ...")
     device.print_device_info()
 
-    with dpctl.device_context(device):
+    with dppy.offload_to_sycl_device(device):
         driver(a, b, c)
 
     # Host compute using standard NumPy

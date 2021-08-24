@@ -28,7 +28,6 @@ class DPPYArray(Array):
         dtype,
         ndim,
         layout,
-        py_type=np.ndarray,
         readonly=False,
         name=None,
         aligned=True,
@@ -39,7 +38,6 @@ class DPPYArray(Array):
             dtype,
             ndim,
             layout,
-            py_type=py_type,
             readonly=readonly,
             name=name,
             aligned=aligned,
@@ -75,6 +73,10 @@ class DPPYArray(Array):
             self.aligned,
             self.addrspace,
         )
+
+    @property
+    def box_type(self):
+        return np.ndarray
 
     def is_precise(self):
         return self.dtype.is_precise()

@@ -18,6 +18,7 @@ import numpy as np
 import math
 import argparse
 import time
+import numba_dppy as dppy
 
 
 @numba.vectorize(nopython=True)
@@ -65,9 +66,9 @@ def run(iterations):
 
 def main():
     parser = argparse.ArgumentParser(description="Black-Scholes")
-    parser.add_argument("--options", dest="options", type=int, default=10000000)
+    parser.add_argument("--iter", dest="iter", type=int, default=10)
     args = parser.parse_args()
-    options = args.options
+    iter = args.iter
 
     # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
     # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
@@ -75,8 +76,8 @@ def main():
     print("Using device ...")
     device.print_device_info()
 
-    with dpctl.device_context(device):
-        run(10)
+    with dppy.offload_to_sycl_device(device):
+        run(iter)
 
     print("Done...")
 

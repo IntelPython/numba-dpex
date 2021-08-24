@@ -205,7 +205,7 @@ def dpnp_full_impl(a, b):
         b_usm = dpctl_functions.malloc_shared(b.size * b.itemsize, sycl_queue)
         dpctl_functions.queue_memcpy(sycl_queue, b_usm, b.ctypes, b.size * b.itemsize)
 
-        out = np.arange(a.size, dtype=res_dtype)
+        out = np.arange(0, a.size, 1, res_dtype)
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
         dpnp_func(b_usm, out_usm, a.size)

@@ -19,7 +19,7 @@ from numba.tests.support import captured_stdout
 import dpctl
 
 import numba_dppy as dppy
-from numba_dppy import config
+from numba_dppy import config as dppy_config
 from . import _helper
 
 
@@ -36,14 +36,15 @@ class TestOffloadDiagnostics(unittest.TestCase):
 
             return a
 
-        with dpctl.device_context("opencl:gpu"):
-            config.OFFLOAD_DIAGNOSTICS = 1
+        device = dpctl.SyclDevice("opencl:gpu")
+        with dppy.offload_to_sycl_device(device):
+            dppy_config.OFFLOAD_DIAGNOSTICS = 1
             jitted = njit(parallel=True)(prange_func)
 
             with captured_stdout() as got:
                 jitted()
 
-            config.OFFLOAD_DIAGNOSTICS = 0
+            dppy_config.OFFLOAD_DIAGNOSTICS = 0
             self.assertTrue("Auto-offloading" in got.getvalue())
             self.assertTrue("Device -" in got.getvalue())
 
@@ -60,13 +61,14 @@ class TestOffloadDiagnostics(unittest.TestCase):
         b = np.array(np.random.random(N), dtype=np.float32)
         c = np.ones_like(a)
 
-        with dpctl.device_context("opencl:gpu"):
-            config.OFFLOAD_DIAGNOSTICS = 1
+        device = dpctl.SyclDevice("opencl:gpu")
+        with dppy.offload_to_sycl_device(device):
+            dppy_config.OFFLOAD_DIAGNOSTICS = 1
 
             with captured_stdout() as got:
                 parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
-            config.OFFLOAD_DIAGNOSTICS = 0
+            dppy_config.OFFLOAD_DIAGNOSTICS = 0
             self.assertTrue("Auto-offloading" in got.getvalue())
             self.assertTrue("Device -" in got.getvalue())
 
