@@ -16,6 +16,9 @@
 import numpy as np
 from numba import njit, vectorize, int32, float32, int64, float64
 import dpctl
+
+import numba_dppy as dppy
+from numba_dppy.tests._helper import assert_auto_offloading
 import pytest
 from . import _helper
 
@@ -60,7 +63,8 @@ def test_njit(filter_str):
     A = np.random.random(10)
     B = np.random.random(10)
 
-    with dpctl.device_context(filter_str):
+    device = dpctl.SyclDevice(filter_str)
+    with dppy.offload_to_sycl_device(device), assert_auto_offloading():
         f_njit = njit(f)
         expected = f_njit(A, B)
         actual = f(A, B)
@@ -111,7 +115,7 @@ def test_vectorize(filter_str, shape, dtypes, input_type):
         A = dtype(1.2)
         B = dtype(2.3)
 
-    with dpctl.device_context(filter_str):
+    with dppy.offload_to_sycl_device(filter_str):
         f = vectorize(sig, target="dppy")(vector_add)
         expected = f(A, B)
         actual = vector_add(A, B)

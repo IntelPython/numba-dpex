@@ -16,9 +16,10 @@ import numpy as np
 
 import numba
 import unittest
-import dpctl
-from . import _helper
 import warnings
+import dpctl
+import numba_dppy
+from . import _helper
 
 
 @unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
@@ -37,9 +38,10 @@ class TestDPPYFallback(unittest.TestCase):
 
             return a
 
-        with warnings.catch_warnings(record=True) as w, dpctl.device_context(
-            "opencl:gpu"
-        ):
+        device = dpctl.SyclDevice("opencl:gpu")
+        with warnings.catch_warnings(
+            record=True
+        ) as w, numba_dppy.offload_to_sycl_device(device):
             dppy = numba.njit(inner_call_fallback)
             dppy_result = dppy()
 
@@ -56,9 +58,10 @@ class TestDPPYFallback(unittest.TestCase):
             return b
 
         a = np.ones(10)
-        with warnings.catch_warnings(record=True) as w, dpctl.device_context(
-            "opencl:gpu"
-        ):
+        device = dpctl.SyclDevice("opencl:gpu")
+        with warnings.catch_warnings(
+            record=True
+        ) as w, numba_dppy.offload_to_sycl_device(device):
             dppy = numba.njit(reduction)
             dppy_result = dppy(a)
 

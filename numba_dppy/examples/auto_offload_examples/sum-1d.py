@@ -15,6 +15,7 @@
 from numba import njit
 import numpy as np
 import dpctl
+import numba_dppy as dppy
 
 
 @njit
@@ -35,13 +36,14 @@ def main():
     print("a:", a, hex(a.ctypes.data))
     print("b:", b, hex(b.ctypes.data))
 
-    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
-    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
+    # Use the environment variable SYCL_DEVICE_FILTER to change
+    # the default device. See
+    # https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
     device = dpctl.select_default_device()
     print("Using device ...")
     device.print_device_info()
 
-    with dpctl.device_context(device):
+    with dppy.offload_to_sycl_device(device):
         c = f1(a, b)
 
     print("RESULT c:", c, hex(c.ctypes.data))

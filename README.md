@@ -10,9 +10,6 @@ for Intel CPU and GPU architectures.
 For more information about Numba, see the Numba homepage:
 http://numba.pydata.org.
 
-Note: `numba-dppy` requires patched version of Numba.
-See https://github.com/IntelPython/numba.
-
 For more information about dpCtl, see the dpCtl homepage:
 https://intelpython.github.io/dpctl/
 
@@ -21,8 +18,8 @@ https://intelpython.github.io/dpnp/
 
 ## Dependencies
 
-* numba 0.53.* (IntelPython/numba)
-* dpctl 0.8.*
+* numba 0.54.*
+* dpctl 0.9.*
 * dpnp 0.6.* (optional)
 * llvm-spirv (SPIRV generation from LLVM IR)
 * llvmdev (LLVM IR generation)

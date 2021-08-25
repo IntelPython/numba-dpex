@@ -16,13 +16,18 @@
 import numpy as np
 from numba import njit
 import dpctl
-from . import _helper
 import unittest
-from numba_dppy.tests._helper import ensure_dpnp, assert_auto_offloading, dpnp_debug
+import numba_dppy as dppy
+from numba_dppy.tests._helper import (
+    ensure_dpnp,
+    assert_auto_offloading,
+    dpnp_debug,
+    has_gpu_queues,
+)
 
 
 @unittest.skipUnless(
-    ensure_dpnp() and _helper.has_gpu_queues(),
+    ensure_dpnp() and has_gpu_queues(),
     "test only when dpnp and GPU is available",
 )
 class Testdpnp_functions(unittest.TestCase):
@@ -39,7 +44,10 @@ class Testdpnp_functions(unittest.TestCase):
             d = c + e
             return d
 
-        with dpctl.device_context("opencl:gpu"), assert_auto_offloading(), dpnp_debug():
+        device = dpctl.SyclDevice("opencl:gpu")
+        with dppy.offload_to_sycl_device(
+            device
+        ), assert_auto_offloading(), dpnp_debug():
             njit_f = njit(f)
             got = njit_f(self.a, self.b)
         expected = f(self.a, self.b)

@@ -153,7 +153,7 @@ def dpnp_argsort_impl(a):
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
         dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
 
-        out = np.arange(a.size, dtype=res_dtype)
+        out = np.arange(0, a.size, 1, res_dtype)
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
         dpnp_func(a_usm, out_usm, a.size)
@@ -208,7 +208,7 @@ def dpnp_partition_impl(a, kth):
 
         arr2 = numba_dppy.dpnp.copy(a)
 
-        out = np.zeros(a.shape, dtype=a.dtype)
+        out = np.empty(a.shape, dtype=a.dtype)
 
         sycl_queue = dpctl_functions.get_current_queue()
 

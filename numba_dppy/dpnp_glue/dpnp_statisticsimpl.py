@@ -139,7 +139,7 @@ def dpnp_amin_impl(a):
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
 
-        dpnp_ext._dummy_liveness_func([out.size])
+        dpnp_ext._dummy_liveness_func([a.size, out.size])
 
         if PRINT_DEBUG:
             print("dpnp implementation")

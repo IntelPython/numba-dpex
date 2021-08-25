@@ -41,7 +41,8 @@ class TestDPPYSumReduction(unittest.TestCase):
         # at max we will require half the size of A to store sum
         R = np.array(np.random.random(math.ceil(N / 2)), dtype=np.float32)
 
-        with dpctl.device_context("opencl:gpu"):
+        device = dpctl.SyclDevice("opencl:gpu")
+        with dppy.offload_to_sycl_device(device):
             total = N
 
             while total > 1:

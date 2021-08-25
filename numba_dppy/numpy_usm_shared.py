@@ -18,14 +18,21 @@ from numbers import Number
 import numba
 from types import FunctionType as ftype, BuiltinFunctionType as bftype
 from numba import types
-from numba.extending import typeof_impl, register_model, type_callable, lower_builtin
+from numba.extending import (
+    typeof_impl,
+    register_model,
+    type_callable,
+    lower_builtin,
+    intrinsic,
+    overload_classmethod,
+)
 from numba.core.datamodel.registry import register_default as register_model_default
 from numba.np import numpy_support
-from numba.core.pythonapi import box, allocator
+from numba.core.pythonapi import box
 from llvmlite import ir
 import llvmlite.llvmpy.core as lc
 import llvmlite.binding as llb
-from numba.core import types, cgutils, config
+from numba.core import types, cgutils, config, typing
 import builtins
 import sys
 from ctypes.util import find_library
@@ -49,6 +56,7 @@ from dpctl.tensor.numpy_usm_shared import ndarray, functions_list, class_list
 from . import target as dppy_target
 from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
 
+from numba.core.overload_glue import _overload_glue
 
 debug = config.DEBUG
 
@@ -94,7 +102,7 @@ class UsmSharedArrayType(DPPYArray):
             dtype,
             ndim,
             layout,
-            py_type=ndarray,
+            # py_type=ndarray,
             readonly=readonly,
             name=name,
             addrspace=addrspace,
@@ -119,6 +127,10 @@ class UsmSharedArrayType(DPPYArray):
             return UsmSharedArrayType
         else:
             return None
+
+    @property
+    def box_type(self):
+        return ndarray
 
 
 # This tells Numba how to create a UsmSharedArrayType when a usmarray is passed
@@ -161,32 +173,52 @@ def box_array(typ, val, c):
         return parent
 
 
+@overload_classmethod(UsmSharedArrayType, "_allocate")
+def _ol_array_allocate(cls, allocsize, align):
+    """Implements a Numba-only classmethod on the array type."""
+
+    def impl(cls, allocsize, align):
+        return allocator_UsmArray(allocsize, align)
+
+    return impl
+
+
 # This tells Numba to use this function when it needs to allocate a
 # UsmArray in a njit function.
-@allocator(UsmSharedArrayType)
-def allocator_UsmArray(context, builder, size, align):
-    context.nrt._require_nrt()
+@intrinsic
+def allocator_UsmArray(typingctx, allocsize, align):
+    def impl(context, builder, sig, args):
+        context.nrt._require_nrt()
+        size, align = args
 
-    mod = builder.module
-    u32 = ir.IntType(32)
+        mod = builder.module
+        u32 = ir.IntType(32)
 
-    # Get the Numba external allocator for USM memory.
-    ext_allocator_fnty = ir.FunctionType(cgutils.voidptr_t, [])
-    ext_allocator_fn = mod.get_or_insert_function(
-        ext_allocator_fnty, name="usmarray_get_ext_allocator"
-    )
-    ext_allocator = builder.call(ext_allocator_fn, [])
-    # Get the Numba function to allocate an aligned array with an external allocator.
-    fnty = ir.FunctionType(cgutils.voidptr_t, [cgutils.intp_t, u32, cgutils.voidptr_t])
-    fn = mod.get_or_insert_function(
-        fnty, name="NRT_MemInfo_alloc_safe_aligned_external"
-    )
-    fn.return_value.add_attribute("noalias")
-    if isinstance(align, builtins.int):
-        align = context.get_constant(types.uint32, align)
-    else:
-        assert align.type == u32, "align must be a uint32"
-    return builder.call(fn, [size, align, ext_allocator])
+        # Get the Numba external allocator for USM memory.
+        ext_allocator_fnty = ir.FunctionType(cgutils.voidptr_t, [])
+        ext_allocator_fn = cgutils.get_or_insert_function(
+            mod, ext_allocator_fnty, name="usmarray_get_ext_allocator"
+        )
+        ext_allocator = builder.call(ext_allocator_fn, [])
+        # Get the Numba function to allocate an aligned array with an external allocator.
+        fnty = ir.FunctionType(
+            cgutils.voidptr_t, [cgutils.intp_t, u32, cgutils.voidptr_t]
+        )
+        fn = cgutils.get_or_insert_function(
+            mod, fnty, name="NRT_MemInfo_alloc_safe_aligned_external"
+        )
+        fn.return_value.add_attribute("noalias")
+        if isinstance(align, builtins.int):
+            align = context.get_constant(types.uint32, align)
+        else:
+            assert align.type == u32, "align must be a uint32"
+        call = builder.call(fn, [size, align, ext_allocator])
+        call.name = "allocate_UsmArray"
+        return call
+
+    mip = types.MemInfoPointer(types.voidptr)  # return untyped pointer
+    sig = typing.signature(mip, allocsize, align)
+    return sig, impl
 
 
 _registered = False
@@ -245,6 +277,30 @@ def numba_register_lower_builtin():
     todo_builtin = []
     todo_getattr = []
     todo_array_member_func = []
+
+    for k, v in _overload_glue._registered.items():
+        func = k
+
+        for typs, impl in v._BIND_TYPES.items():
+            ig = (impl, func, typs)
+            dprint("Numpy lowered registry functions:", impl, func, type(func), typs)
+            # If it is a Numpy function...
+            if isinstance(func, ftype):
+                dprint("is ftype")
+                if func.__module__ == np.__name__:
+                    dprint("is Numpy module")
+                    # If we have overloaded that function in the usmarray module (always True right now)...
+                    if func.__name__ in functions_list:
+                        todo.append(ig)
+            if isinstance(func, bftype):
+                dprint("is bftype")
+                if func.__module__ == np.__name__:
+                    dprint("is Numpy module")
+                    # If we have overloaded that function in the usmarray module (always True right now)...
+                    if func.__name__ in functions_list:
+                        todo.append(ig)
+            if isinstance(func, str) and func.startswith("array."):
+                todo_array_member_func.append(ig)
 
     # For all Numpy identifiers that have been registered for typing in Numba...
     # this registry contains functions, getattrs, setattrs, casts and constants...
@@ -315,18 +371,30 @@ def numba_register_typing():
     todo_classes = []
     todo_getattr = []
 
+    for k, v in _overload_glue._registered.items():
+        ig = (k, v._TYPER)
+        val, typ = ig
+        dprint("Numpy registered:", val, type(val), typ, type(typ))
+        if isinstance(val, (ftype, bftype)):
+            # If we have overloaded that function in the usmarray module (always True right now)...
+            if val.__name__ in functions_list:
+                todo.append(ig)
+
     # For all Numpy identifiers that have been registered for typing in Numba...
     for ig in typing_registry.globals:
         val, typ = ig
+
         dprint("Numpy registered:", val, type(val), typ, type(typ))
         # If it is a Numpy function...
         if isinstance(val, (ftype, bftype)):
             # If we have overloaded that function in the usmarray module (always True right now)...
             if val.__name__ in functions_list:
-                todo.append(ig)
+                assert len(typ.templates) == 1
+                todo.append((val, typ.templates[0]))
         if isinstance(val, type):
             if isinstance(typ, numba.core.types.functions.Function):
-                todo.append(ig)
+                assert len(typ.templates) == 1
+                todo.append((val, typ.templates[0]))
             elif isinstance(typ, numba.core.types.functions.NumberClass):
                 pass
 
@@ -349,23 +417,15 @@ def numba_register_typing():
         )
 
     for val, typ in todo:
-        assert len(typ.templates) == 1
-        # template is the typing class to invoke generic() upon.
-        template = typ.templates[0]
-        dprint("need to re-register for usmarray", val, typ, typ.typing_key)
+        template = typ
         try:
             dpval = eval("dpctl.tensor.numpy_usm_shared." + val.__name__)
         except:
             dprint("failed to eval", val.__name__)
             continue
         dprint("--------------------------------------------------------------")
-        dprint("need to re-register for usmarray", val, typ, typ.typing_key)
         dprint("val:", val, type(val), "dir val", dir(val))
         dprint("typ:", typ, type(typ), "dir typ", dir(typ))
-        dprint("typing key:", typ.typing_key)
-        dprint("name:", typ.name)
-        dprint("key:", typ.key)
-        dprint("templates:", typ.templates)
         dprint("template:", template, type(template))
         dprint("dpval:", dpval, type(dpval))
         dprint("--------------------------------------------------------------")

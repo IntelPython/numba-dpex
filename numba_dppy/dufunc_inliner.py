@@ -29,6 +29,7 @@ def _run_inliner(
     typemap,
     calltypes,
     typingctx,
+    targetctx,
 ):
     from numba.core.inline_closurecall import inline_closure_call, callee_ir_validator
 
@@ -40,6 +41,7 @@ def _run_inliner(
         i,
         py_func,
         typingctx=typingctx,
+        targetctx=targetctx,
         arg_typs=arg_typs,
         typemap=typemap,
         calltypes=calltypes,
@@ -50,7 +52,18 @@ def _run_inliner(
     return True
 
 
-def _inline(func_ir, work_list, block, i, expr, py_func, typemap, calltypes, typingctx):
+def _inline(
+    func_ir,
+    work_list,
+    block,
+    i,
+    expr,
+    py_func,
+    typemap,
+    calltypes,
+    typingctx,
+    targetctx,
+):
     # try and get a definition for the call, this isn't always possible as
     # it might be a eval(str)/part generated awaiting update etc. (parfors)
     to_inline = None
@@ -97,6 +110,7 @@ def _inline(func_ir, work_list, block, i, expr, py_func, typemap, calltypes, typ
         typemap,
         calltypes,
         typingctx,
+        targetctx,
     )
 
 
@@ -109,7 +123,7 @@ def _is_dufunc_callsite(expr, block):
     return None
 
 
-def dufunc_inliner(func_ir, calltypes, typemap, typingctx):
+def dufunc_inliner(func_ir, calltypes, typemap, typingctx, targetctx):
     _DEBUG = False
     modified = False
 
@@ -140,6 +154,7 @@ def dufunc_inliner(func_ir, calltypes, typemap, typingctx):
                             typemap,
                             calltypes,
                             typingctx,
+                            targetctx,
                         )
                         if workfn:
                             modified = True

@@ -23,7 +23,7 @@ jobs:
             experimental: true
     continue-on-error: ${{ matrix.experimental }}
     env:
-      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults --override-channels
+      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c numba/label/dev --override-channels
 
     steps:
       - uses: actions/checkout@v2
@@ -82,7 +82,7 @@ jobs:
             experimental: true
     continue-on-error: ${{ matrix.experimental }}
     env:
-      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults --override-channels
+      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c dppy/label/dev -c numba/label/dev --override-channels
 
     steps:
       - name: Download artifact

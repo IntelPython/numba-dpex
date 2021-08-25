@@ -44,7 +44,7 @@ def main():
     print("Using device ...")
     device.print_device_info()
 
-    with dpctl.device_context(device):
+    with dppy.offload_to_sycl_device(device):
         print("before A: ", a)
         print("before B: ", b)
         data_parallel_sum[global_size, local_size](a, b, c)

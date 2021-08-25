@@ -15,6 +15,7 @@
 import numpy as np
 from numba import vectorize, float64
 import dpctl
+import numba_dppy as dppy
 
 
 @vectorize(nopython=True)
@@ -47,7 +48,7 @@ def test_njit():
     print("Using device ...")
     device.print_device_info()
 
-    with dpctl.device_context(device):
+    with dppy.offload_to_sycl_device(device):
         C = ufunc_kernel(A, B)
 
     print(C)

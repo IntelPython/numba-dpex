@@ -60,7 +60,6 @@ def npytypes_array_to_dppy_array(arrtype, addrspace=address_space.GLOBAL):
             arrtype.dtype,
             arrtype.ndim,
             arrtype.layout,
-            arrtype.py_type,
             not arrtype.mutable,
             arrtype.name,
             arrtype.aligned,

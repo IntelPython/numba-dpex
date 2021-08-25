@@ -21,9 +21,9 @@ class DPPYDIBuilder(DIBuilder):
         DIBuilder.__init__(self, module, filepath)
         self.linkage_name = linkage_name
 
-    def mark_subprogram(self, function, name, loc):
+    def mark_subprogram(self, function, name, line):
         di_subp = self._add_subprogram(
-            name=name, linkagename=self.linkage_name, line=loc.line
+            name=name, linkagename=self.linkage_name, line=line
         )
         function.set_metadata("dbg", di_subp)
         # disable inlining for this function for easier debugging

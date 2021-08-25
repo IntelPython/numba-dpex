@@ -17,7 +17,7 @@ import warnings
 
 import numpy as np
 import numba
-from numba.core import ir
+from numba.core import ir, lowering
 import weakref
 from collections import namedtuple, deque
 import operator
@@ -49,7 +49,7 @@ from numba.core.compiler_machinery import (
 
 from numba.parfors.parfor import (
     PreParforPass as _parfor_PreParforPass,
-    replace_functions_map,
+    swap_functions_map,
 )
 from numba.parfors.parfor import ParforPass as _parfor_ParforPass
 from numba.parfors.parfor import Parfor
@@ -92,63 +92,64 @@ class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
                     expr = instr.value
                     if isinstance(expr, ir.Expr):
                         if expr.op == "call":
-                            call_node = block.find_variable_assignment(
-                                expr.func.name
-                            ).value
-                            if (
-                                isinstance(call_node, ir.Expr)
-                                and call_node.op == "getattr"
-                                and call_node.attr == "array"
-                            ):
-                                # let's check if it is from numba_dppy.local
-                                attr_node = block.find_variable_assignment(
-                                    call_node.value.name
-                                ).value
+                            find_var = block.find_variable_assignment(expr.func.name)
+                            if find_var is not None:
+                                call_node = find_var.value
                                 if (
-                                    isinstance(attr_node, ir.Expr)
-                                    and attr_node.op == "getattr"
-                                    and attr_node.attr == "local"
+                                    isinstance(call_node, ir.Expr)
+                                    and call_node.op == "getattr"
+                                    and call_node.attr == "array"
                                 ):
+                                    # let's check if it is from numba_dppy.local
+                                    attr_node = block.find_variable_assignment(
+                                        call_node.value.name
+                                    ).value
+                                    if (
+                                        isinstance(attr_node, ir.Expr)
+                                        and attr_node.op == "getattr"
+                                        and attr_node.attr == "local"
+                                    ):
 
-                                    arg = None
-                                    # at first look in keyword arguments to get the shape, which has to be
-                                    # constant
-                                    if expr.kws:
-                                        for _arg in expr.kws:
-                                            if _arg[0] == "shape":
-                                                arg = _arg[1]
+                                        arg = None
+                                        # at first look in keyword arguments to get the shape, which has to be
+                                        # constant
+                                        if expr.kws:
+                                            for _arg in expr.kws:
+                                                if _arg[0] == "shape":
+                                                    arg = _arg[1]
 
-                                    if not arg:
-                                        arg = expr.args[0]
+                                        if not arg:
+                                            arg = expr.args[0]
 
-                                    error = False
-                                    # arg can be one constant or a tuple of constant items
-                                    arg_type = func_ir.get_definition(arg.name)
-                                    if isinstance(arg_type, ir.Expr):
-                                        # we have a tuple
-                                        for item in arg_type.items:
+                                        error = False
+                                        # arg can be one constant or a tuple of constant items
+                                        arg_type = func_ir.get_definition(arg.name)
+                                        if isinstance(arg_type, ir.Expr):
+                                            # we have a tuple
+                                            for item in arg_type.items:
+                                                if not isinstance(
+                                                    func_ir.get_definition(item.name),
+                                                    ir.Const,
+                                                ):
+                                                    error = True
+                                                    break
+
+                                        else:
                                             if not isinstance(
-                                                func_ir.get_definition(item.name),
+                                                func_ir.get_definition(arg.name),
                                                 ir.Const,
                                             ):
                                                 error = True
                                                 break
 
-                                    else:
-                                        if not isinstance(
-                                            func_ir.get_definition(arg.name), ir.Const
-                                        ):
-                                            error = True
-                                            break
-
-                                    if error:
-                                        warnings.warn_explicit(
-                                            "The size of the Local memory has to be constant",
-                                            errors.NumbaError,
-                                            state.func_id.filename,
-                                            state.func_id.firstlineno,
-                                        )
-                                        raise
+                                        if error:
+                                            warnings.warn_explicit(
+                                                "The size of the Local memory has to be constant",
+                                                errors.NumbaError,
+                                                state.func_id.filename,
+                                                state.func_id.firstlineno,
+                                            )
+                                            raise
 
         if config.DEBUG or config.DUMP_IR:
             name = state.func_ir.func_id.func_qualname
@@ -173,7 +174,7 @@ class DPPYPreParforPass(FunctionPass):
 
         # Ensure we have an IR and type information.
         assert state.func_ir
-        functions_map = replace_functions_map.copy()
+        functions_map = swap_functions_map.copy()
         functions_map.pop(("dot", "numpy"), None)
         functions_map.pop(("sum", "numpy"), None)
         functions_map.pop(("prod", "numpy"), None)
@@ -188,6 +189,7 @@ class DPPYPreParforPass(FunctionPass):
             state.type_annotation.typemap,
             state.type_annotation.calltypes,
             state.typingctx,
+            state.targetctx,
             state.flags.auto_parallel,
             state.parfor_diagnostics.replaced_fns,
             replace_functions_map=functions_map,
@@ -223,6 +225,7 @@ class DPPYParforPass(FunctionPass):
             state.type_annotation.calltypes,
             state.return_type,
             state.typingctx,
+            state.targetctx,
             state.flags.auto_parallel,
             state.flags,
             state.metadata,
@@ -230,8 +233,6 @@ class DPPYParforPass(FunctionPass):
         )
 
         parfor_pass.run()
-
-        remove_dels(state.func_ir.blocks)
 
         if config.DEBUG or config.DUMP_IR:
             name = state.func_ir.func_id.func_qualname

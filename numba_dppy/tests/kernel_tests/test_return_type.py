@@ -43,5 +43,6 @@ def test_return(offload_device, sig):
     with pytest.raises(TypeError):
         kernel = dppy.kernel(sig)(f)
 
-        with dpctl.device_context(offload_device):
+        device = dpctl.SyclDevice(offload_device)
+        with dppy.offload_to_sycl_device(device):
             kernel[a.size, dppy.DEFAULT_LOCAL_SIZE](a)

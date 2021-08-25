@@ -64,9 +64,10 @@ def test_consuming_usm_ndarray(offload_device, dtype, usm_type):
 
     a = np.array(np.random.random(N), dtype=dtype)
     b = np.array(np.random.random(N), dtype=dtype)
+
     got = np.ones_like(a)
 
-    with dpctl.device_context(offload_device) as gpu_queue:
+    with dppy.offload_to_sycl_device(offload_device) as gpu_queue:
         da = dpt.usm_ndarray(
             a.shape,
             dtype=a.dtype,
