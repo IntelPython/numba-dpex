@@ -20,7 +20,7 @@ There are two ways to program SYCL devices using Numba-dppy:
     .. code-block:: python
 
         import numpy as np
-        import numba_dppy, numba_dppy as dppy
+        import numba_dppy as dppy
         import dpctl
 
         @dppy.kernel
