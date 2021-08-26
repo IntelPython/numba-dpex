@@ -9,9 +9,22 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         python: ["3.8"]
+        integration_channels: [""]
+        experimental: [false]
+        artifact_name: [""]
+        include:
+          - python: "3.8"
+            integration_channels: -c dppy/label/dev
+            artifact_name: -c dppy_label_dev
+            experimental: true
+    continue-on-error: ${{ matrix.experimental }}
+    env:
+      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c numba/label/dev --override-channels
+
     steps:
       - uses: actions/checkout@v2
         with:
@@ -38,7 +51,6 @@ jobs:
         run: conda install conda-build
       - name: Build conda package
         run: |
-          CHANNELS="-c intel -c defaults -c dppy/label/dev -c numba/label/dev --override-channels"
           VERSIONS="--python ${{ matrix.python }}"
           TEST="--no-test"
 
@@ -50,7 +62,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
+          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }} ${{ matrix.artifact_name }}
           path: /usr/share/miniconda/conda-bld/linux-64/${{ env.PACKAGE_NAME }}-*.tar.bz2
 
   test:
@@ -62,9 +74,11 @@ jobs:
         python: ["3.8"]
         integration_channels: [""]
         experimental: [false]
+        artifact_name: [""]
         include:
           - python: "3.8"
             integration_channels: -c dppy/label/dev
+            artifact_name: -c dppy_label_dev
             experimental: true
     continue-on-error: ${{ matrix.experimental }}
     env:
@@ -74,7 +88,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
+          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }} ${{ matrix.artifact_name }}
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
       - name: Install conda-build
