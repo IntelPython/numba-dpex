@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.15.0] - xxxx-xx-xx
+## [0.15.0] - 2021-08-25
 
 ### Added
 - Introduce array ultilites to check, allocate and copy memory using SYCL USM (#489)
@@ -18,7 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add integration channels to GitHub Actions and make workflow consistent with dpctl (#510)
 
 ### Changed
+- Update to Numba 0.54.0 (#493)
 - Update to dpctl 0.9 (#514)
+- Update to dpnp 0.7 (#513)
 - Use dpcpp compiler package for Linux (#502)
 - Update go version (#515)
 
