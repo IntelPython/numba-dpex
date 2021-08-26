@@ -105,12 +105,7 @@ def spirv_compile():
     if IS_LIN:
         compiler = "clang"
     if IS_WIN:
-        ONEAPI_ROOT = os.environ.get("ONEAPI_ROOT")
-        if not os.path.isdir(ONEAPI_ROOT):
-            raise ValueError(f"ONEAPI_ROOT is not a directory: {ONEAPI_ROOT}")
-
-        compiler = "compiler\\latest\\windows\\bin\\clang.exe"
-        compiler = os.path.join(ONEAPI_ROOT, compiler)
+        compiler = "clang.exe"
 
     clang_args = [
         compiler,
