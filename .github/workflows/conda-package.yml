@@ -75,11 +75,13 @@ jobs:
         integration_channels: [""]
         experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
+        dependencies: [""]
         include:
           - python: "3.8"
             integration_channels: -c dppy/label/dev
             artifact_name: -c dppy_label_dev
             experimental: true
+            dependencies: dpnp=0.7.1=*_41
     continue-on-error: ${{ matrix.experimental }}
     env:
       CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c dppy/label/dev -c numba/label/dev --override-channels
@@ -123,7 +125,7 @@ jobs:
       - name: Install numba-dppy
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}"
-          conda install $PACKAGE_NAME pytest python=${{ matrix.python }} $CHANNELS
+          conda install $PACKAGE_NAME pytest python=${{ matrix.python }} ${{ matrix.dependencies }} $CHANNELS
           # Test installed packages
           conda list
       - name: Run tests
