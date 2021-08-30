@@ -14,7 +14,7 @@ jobs:
       matrix:
         python: ["3.8"]
         integration_channels: [""]
-        experimental: [false]
+        experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
         include:
           - python: "3.8"
