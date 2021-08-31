@@ -81,6 +81,11 @@ jobs:
             integration_channels: -c dppy/label/dev
             artifact_name: -c dppy_label_dev
             experimental: true
+            dependencies: ""
+          - python: "3.8"
+            integration_channels: -c dppy/label/dev
+            artifact_name: -c dppy_label_dev
+            experimental: true
             dependencies: dpnp=0.7.1=*_41 numba=0.54.0 llvmlite=0.37.0
     continue-on-error: ${{ matrix.experimental }}
     env:
