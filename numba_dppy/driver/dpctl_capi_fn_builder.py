@@ -119,7 +119,8 @@ class DpctlCAPIFnBuilder:
         void_ptr_t = utils.get_llvm_type(context=context, type=types.voidptr)
         return DpctlCAPIFnBuilder._build_dpctl_function(
             builder,
-            return_ty=utils.LLVMTypes.void_t,
+            return_ty=void_ptr_t,
+            #return_ty=utils.LLVMTypes.void_t,
             arg_list=[
                 void_ptr_t,
                 void_ptr_t,

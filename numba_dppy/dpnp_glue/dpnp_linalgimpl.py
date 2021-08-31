@@ -66,6 +66,8 @@ def dpnp_eig_impl(a):
         wr_usm = dpctl_functions.malloc_shared(wr.size * wr.itemsize, sycl_queue)
         vr_usm = dpctl_functions.malloc_shared(vr.size * vr.itemsize, sycl_queue)
 
+        dpctl_functions.queue_wait(sycl_queue)
+
         dpnp_eig(a_usm, wr_usm, vr_usm, n)
 
         dpctl_functions.queue_memcpy(
@@ -74,6 +76,8 @@ def dpnp_eig_impl(a):
         dpctl_functions.queue_memcpy(
             sycl_queue, vr.ctypes, vr_usm, vr.size * vr.itemsize
         )
+
+        dpctl_functions.queue_wait(sycl_queue)
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(wr_usm, sycl_queue)
@@ -100,11 +104,15 @@ def common_matmul_impl(dpnp_func, a, b, out, m, n, k, print_debug):
 
     out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
+    dpctl_functions.queue_wait(sycl_queue)
+
     dpnp_func(a_usm, b_usm, out_usm, m, n, k)
 
     dpctl_functions.queue_memcpy(
         sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
     )
+
+    dpctl_functions.queue_wait(sycl_queue)
 
     dpctl_functions.free_with_queue(a_usm, sycl_queue)
     dpctl_functions.free_with_queue(b_usm, sycl_queue)
@@ -138,6 +146,8 @@ def common_dot_impl(dpnp_func, a, b, out, m, print_debug):
     input2_shape_ndim = b.ndim
     where = 0
 
+    dpctl_functions.queue_wait(sycl_queue)
+
     dpnp_func(
         result_out,
         input1_in,
@@ -154,6 +164,8 @@ def common_dot_impl(dpnp_func, a, b, out, m, print_debug):
     dpctl_functions.queue_memcpy(
         sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
     )
+
+    dpctl_functions.queue_wait(sycl_queue)
 
     dpctl_functions.free_with_queue(a_usm, sycl_queue)
     dpctl_functions.free_with_queue(b_usm, sycl_queue)
@@ -439,11 +451,15 @@ def dpnp_cholesky_impl(a):
 
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
+        dpctl_functions.queue_wait(sycl_queue)
+
         dpnp_func(a_usm, out_usm, a.shapeptr)
 
         dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
         )
+
+        dpctl_functions.queue_wait(sycl_queue)
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
@@ -493,11 +509,15 @@ def dpnp_det_impl(a):
 
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
+        dpctl_functions.queue_wait(sycl_queue)
+
         dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim)
 
         dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
         )
+
+        dpctl_functions.queue_wait(sycl_queue)
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
@@ -550,11 +570,15 @@ def dpnp_matrix_rank_impl(M, tol=None, hermitian=False):
 
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
+        dpctl_functions.queue_wait(sycl_queue)
+
         dpnp_func(M_usm, out_usm, M.shapeptr, M.ndim)
 
         dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
         )
+
+        dpctl_functions.queue_wait(sycl_queue)
 
         dpctl_functions.free_with_queue(M_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
