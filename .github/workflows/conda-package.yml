@@ -89,7 +89,7 @@ jobs:
             dependencies: dpnp=0.7.1=*_41 numba=0.54.0 llvmlite=0.37.0
     continue-on-error: ${{ matrix.experimental }}
     env:
-      # conda-forge: llvm-spirv 11
+      # conda-forge: llvm-spirv 11 not on intel channel yet
       CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c dppy/label/dev -c numba/label/dev -c conda-forge --override-channels
 
     steps:
