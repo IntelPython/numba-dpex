@@ -8,28 +8,27 @@ source:
 build:
     number: {{ GIT_DESCRIBE_NUMBER }}
     script_env:
-        - ONEAPI_ROOT  # [not linux]
         - WHEELS_OUTPUT_FOLDER
 
 requirements:
     build:
         - {{ compiler('cxx') }}
-        - {{ compiler('dpcpp') }}  # [linux]
+        - {{ compiler('dpcpp') }}  # [not osx]
     host:
         - python
         - setuptools
         - cython
-        - numba 0.53*
-        - dpctl 0.8.*
-        - dpnp >=0.6*,<0.7*  # [linux]
+        - numba 0.54*
+        - dpctl >=0.9*
+        - dpnp >=0.7*  # [linux]
         - wheel
     run:
         - python
-        - numba 0.53*
-        - dpctl 0.8.*
+        - numba 0.54*
+        - dpctl >=0.9*
         - spirv-tools
         - llvm-spirv
-        - dpnp >=0.6*,<0.7*  # [linux]
+        - dpnp >=0.7* # [linux]
         - packaging
 
 test:

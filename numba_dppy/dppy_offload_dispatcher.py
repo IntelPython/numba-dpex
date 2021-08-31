@@ -13,8 +13,10 @@
 # limitations under the License.
 
 from numba.core import dispatcher, compiler
-from numba.core.registry import cpu_target, dispatcher_registry
-from numba_dppy import config
+from numba.core.registry import cpu_target
+from numba.core.target_extension import dispatcher_registry, target_registry
+import numba_dppy.config as dppy_config
+from numba_dppy.target import DPPY_TARGET_NAME
 
 
 class DppyOffloadDispatcher(dispatcher.Dispatcher):
@@ -28,7 +30,7 @@ class DppyOffloadDispatcher(dispatcher.Dispatcher):
         impl_kind="direct",
         pipeline_class=compiler.Compiler,
     ):
-        if config.dppy_present:
+        if dppy_config.dppy_present:
             from numba_dppy.compiler import DPPYCompiler
 
             targetoptions["parallel"] = True
@@ -60,5 +62,4 @@ class DppyOffloadDispatcher(dispatcher.Dispatcher):
             )
 
 
-dispatcher_registry["__dppy_offload_gpu__"] = DppyOffloadDispatcher
-dispatcher_registry["__dppy_offload_cpu__"] = DppyOffloadDispatcher
+dispatcher_registry[target_registry[DPPY_TARGET_NAME]] = DppyOffloadDispatcher

@@ -23,6 +23,7 @@ import pytest
 from .dpnp_skip_test import dpnp_skip_test as skip_test
 from ._helper import wrapper_function
 from numba_dppy.tests._helper import dpnp_debug
+import numba_dppy as dppy
 
 
 list_of_filter_strs = [
@@ -90,7 +91,8 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
     expected = np.empty(shape=a.shape, dtype=a.dtype)
 
     f = njit(op)
-    with dpctl.device_context(filter_str), dpnp_debug():
+    device = dpctl.SyclDevice(filter_str)
+    with dppy.offload_to_sycl_device(device), dpnp_debug():
         actual = f(a)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -129,7 +131,8 @@ def test_partition(array, kth, filter_str):
         return np.partition(a, kth)
 
     f = njit(fn)
-    with dpctl.device_context(filter_str), dpnp_debug():
+    device = dpctl.SyclDevice(filter_str)
+    with dppy.offload_to_sycl_device(device), dpnp_debug():
         actual = f(a, kth)
 
     expected = fn(a, kth)

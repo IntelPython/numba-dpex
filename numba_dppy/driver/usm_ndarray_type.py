@@ -17,6 +17,7 @@ from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
 import numba_dppy.target as dppy_target
 from dpctl.tensor import usm_ndarray
 from numba.np import numpy_support
+from numba_dppy.utils import address_space
 
 
 class USMNdArrayType(DPPYArray):
@@ -45,7 +46,6 @@ class USMNdArrayType(DPPYArray):
             dtype,
             ndim,
             layout,
-            py_type=usm_ndarray,
             readonly=readonly,
             name=name,
             addrspace=addrspace,
@@ -71,4 +71,11 @@ def typeof_usm_ndarray(val, c):
         raise ValueError("Unsupported array dtype: %s" % (val.dtype,))
     layout = "C"
     readonly = False
-    return USMNdArrayType(dtype, val.ndim, layout, val.usm_type, readonly=readonly)
+    return USMNdArrayType(
+        dtype,
+        val.ndim,
+        layout,
+        val.usm_type,
+        readonly=readonly,
+        addrspace=address_space.GLOBAL,
+    )

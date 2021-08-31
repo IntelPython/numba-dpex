@@ -28,6 +28,7 @@ from numba.core.registry import cpu_target
 from numba.core.callconv import MinimalCallConv
 from . import codegen
 from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
+from numba.core.target_extension import GPU, target_registry
 from numba_dppy.utils import npytypes_array_to_dppy_array, address_space, calling_conv
 
 
@@ -69,7 +70,7 @@ class DPPYTypingContext(typing.BaseContext):
             ValueError: If the type of the Python value is not supported.
 
         """
-        if isinstance(typeof(val), types.npytypes.Array):
+        if type(typeof(val)) is types.npytypes.Array:
             # Convert npytypes.Array to DPPYArray
             return npytypes_array_to_dppy_array(typeof(val))
         else:
@@ -103,6 +104,19 @@ def _init_data_model_manager():
 
 
 spirv_data_model_manager = _init_data_model_manager()
+
+
+class SyclDevice(GPU):
+    """Mark the hardware target as SYCL Device."""
+
+    pass
+
+
+DPPY_TARGET_NAME = "SyclDevice"
+
+target_registry[DPPY_TARGET_NAME] = SyclDevice
+
+import numba_dppy.dppy_offload_dispatcher
 
 
 class DPPYTargetContext(BaseContext):
@@ -247,13 +261,18 @@ class DPPYTargetContext(BaseContext):
         module.get_function(func.name).linkage = "internal"
         return wrapper
 
+    def __init__(self, typingctx, target=DPPY_TARGET_NAME):
+        super().__init__(typingctx, target)
+
     def init(self):
         self._internal_codegen = codegen.JITSPIRVCodegen("numba_dppy.jit")
         self._target_data = ll.create_target_data(
             codegen.SPIR_DATA_LAYOUT[utils.MACHINE_BITS]
         )
         # Override data model manager to SPIR model
-        self.data_model_manager = spirv_data_model_manager
+        import numba.cpython.unicode
+
+        self.data_model_manager = _init_data_model_manager()
         self.extra_compile_options = dict()
 
         from numba.np.ufunc_db import _lazy_init_db
@@ -264,6 +283,10 @@ class DPPYTargetContext(BaseContext):
 
         self.ufunc_db = copy.deepcopy(ufunc_db)
         self.cpu_context = cpu_target.target_context
+
+    # Overrides
+    def create_module(self, name):
+        return self._internal_codegen._create_empty_module(name)
 
     def replace_numpy_ufunc_with_opencl_supported_functions(self):
         from numba_dppy.ocl.mathimpl import lower_ocl_impl, sig_mapper
@@ -314,8 +337,8 @@ class DPPYTargetContext(BaseContext):
         """
         from .ocl import oclimpl, mathimpl
         from numba.np import npyimpl
-
         from . import printimpl
+        from numba.cpython import numbers, tupleobj, slicing
 
         self.insert_func_defn(oclimpl.registry.functions)
         self.insert_func_defn(mathimpl.registry.functions)
@@ -393,17 +416,16 @@ class DPPYTargetContext(BaseContext):
                  into the module.
 
         """
-        text = lc.Constant.stringz(string)
+        text = cgutils.make_bytearray(string.encode("utf-8") + b"\x00")
 
         name = "$".join(["__conststring__", self.mangler(string, ["str"])])
 
         # Try to reuse existing global
-        try:
-            gv = mod.get_global(name)
-        except KeyError:
+        gv = mod.globals.get(name)
+        if gv is None:
             # Not defined yet
-            gv = mod.add_global_variable(
-                text.type, name=name, addrspace=address_space.GENERIC
+            gv = cgutils.add_global_variable(
+                mod, text.type, name=name, addrspace=address_space.GENERIC
             )
             gv.linkage = "internal"
             gv.global_constant = True
@@ -411,7 +433,7 @@ class DPPYTargetContext(BaseContext):
 
         # Cast to a i8* pointer
         charty = gv.type.pointee.element
-        return lc.Constant.bitcast(gv, charty.as_pointer(address_space.GENERIC))
+        return gv.bitcast(charty.as_pointer(address_space.GENERIC))
 
     def addrspacecast(self, builder, src, addrspace):
         """Insert an LLVM addressspace cast instruction into the module.

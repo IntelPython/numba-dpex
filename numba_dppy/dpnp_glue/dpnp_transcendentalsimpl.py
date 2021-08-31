@@ -150,15 +150,15 @@ def dpnp_nansum_impl(a):
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(a):
-        a_copy = a.copy()
-        a_copy = np.ravel(a_copy)
+        a_ravel = a.ravel()
+        a_ravel_copy = np.copy(a_ravel)
 
-        for i in range(len(a_copy)):
-            if np.isnan(a_copy[i]):
-                a_copy[i] = 0
+        for i in range(len(a_ravel_copy)):
+            if np.isnan(a_ravel_copy[i]):
+                a_ravel_copy[i] = 0
 
-        result = numba_dppy.dpnp.sum(a_copy)
-        dpnp_ext._dummy_liveness_func([a_copy.size])
+        result = numba_dppy.dpnp.sum(a_ravel_copy)
+        dpnp_ext._dummy_liveness_func([a.size, a_ravel_copy.size])
 
         if PRINT_DEBUG:
             print("dpnp implementation")
@@ -176,15 +176,15 @@ def dpnp_nanprod_impl(a):
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(a):
-        a_copy = a.copy()
-        a_copy = np.ravel(a_copy)
+        a_ravel = a.ravel()
+        a_ravel_copy = np.copy(a_ravel)
 
-        for i in range(len(a_copy)):
-            if np.isnan(a_copy[i]):
-                a_copy[i] = 1
+        for i in range(len(a_ravel_copy)):
+            if np.isnan(a_ravel_copy[i]):
+                a_ravel_copy[i] = 1
 
-        result = numba_dppy.dpnp.prod(a_copy)
-        dpnp_ext._dummy_liveness_func([a_copy.size])
+        result = numba_dppy.dpnp.prod(a_ravel_copy)
+        dpnp_ext._dummy_liveness_func([a.size, a_ravel_copy.size])
 
         if PRINT_DEBUG:
             print("dpnp implementation")

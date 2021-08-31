@@ -67,7 +67,7 @@ def dpnp_cumsum_impl(a):
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(a):
-        out = np.arange(a.size, dtype=a.dtype)
+        out = np.arange(0, a.size, 1, a.dtype)
         common_impl(a, out, dpnp_func, PRINT_DEBUG)
 
         return out
@@ -97,7 +97,7 @@ def dpnp_cumprod_impl(a):
         ret_dtype = a.dtype
 
     def dpnp_impl(a):
-        out = np.arange(a.size, dtype=ret_dtype)
+        out = np.arange(0, a.size, 1, ret_dtype)
         common_impl(a, out, dpnp_func, PRINT_DEBUG)
 
         return out
@@ -132,7 +132,7 @@ def dpnp_copy_impl(a):
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
         dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
 
-        out = np.arange(a.size, dtype=res_dtype)
+        out = np.arange(0, a.size, 1, res_dtype)
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
         dpnp_func(a_usm, out_usm, a.size)
@@ -182,7 +182,7 @@ def dpnp_sort_impl(a):
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
         dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
 
-        out = np.arange(a.size, dtype=res_dtype)
+        out = np.arange(0, a.size, 1, res_dtype)
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
         dpnp_func(a_usm, out_usm, a.size)
@@ -235,7 +235,7 @@ def dpnp_take_impl(a, ind):
             sycl_queue, ind_usm, ind.ctypes, ind.size * ind.itemsize
         )
 
-        out = np.arange(ind.size, dtype=res_dtype).reshape(ind.shape)
+        out = np.arange(0, ind.size, 1, res_dtype).reshape(ind.shape)
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
         dpnp_func(a_usm, ind_usm, out_usm, ind.size)

@@ -93,6 +93,7 @@ class TestDPPYBlackScholes(unittest.TestCase):
                 RISKFREE,
                 VOLATILITY,
             )
+
         # numba-dppy
         @dppy.kernel
         def black_scholes_dppy(callResult, putResult, S, X, T, R, V):
@@ -130,7 +131,7 @@ class TestDPPYBlackScholes(unittest.TestCase):
         blockdim = 512, 1
         griddim = int(math.ceil(float(OPT_N) / blockdim[0])), 1
 
-        with dpctl.device_context("opencl:gpu") as gpu_queue:
+        with dppy.offload_to_sycl_device("opencl:gpu"):
             time1 = time.time()
             for i in range(iterations):
                 black_scholes_dppy[blockdim, griddim](

@@ -20,6 +20,7 @@ import dpctl
 import numpy as np
 from numba import njit
 import pytest
+import numba_dppy as dppy
 from numba_dppy.tests._helper import dpnp_debug
 from .dpnp_skip_test import dpnp_skip_test as skip_test
 
@@ -67,7 +68,7 @@ def test_all(dtype, shape, filter_str):
             return np.all(a)
 
         f = njit(fn)
-        with dpctl.device_context(filter_str), dpnp_debug():
+        with dppy.offload_to_sycl_device(filter_str), dpnp_debug():
             actual = f(a)
 
         expected = fn(a)

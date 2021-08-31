@@ -64,16 +64,37 @@ def test_consuming_usm_ndarray(offload_device, dtype, usm_type):
 
     a = np.array(np.random.random(N), dtype=dtype)
     b = np.array(np.random.random(N), dtype=dtype)
-    c = np.ones_like(a)
 
-    with dpctl.device_context(offload_device):
-        da = dpt.usm_ndarray(a.shape, dtype=a.dtype, buffer=usm_type)
+    got = np.ones_like(a)
+
+    with dppy.offload_to_sycl_device(offload_device) as gpu_queue:
+        da = dpt.usm_ndarray(
+            a.shape,
+            dtype=a.dtype,
+            buffer=usm_type,
+            buffer_ctor_kwargs={"queue": gpu_queue},
+        )
         da.usm_data.copy_from_host(a.reshape((-1)).view("|u1"))
 
-        db = dpt.usm_ndarray(b.shape, dtype=b.dtype, buffer=usm_type)
+        db = dpt.usm_ndarray(
+            b.shape,
+            dtype=b.dtype,
+            buffer=usm_type,
+            buffer_ctor_kwargs={"queue": gpu_queue},
+        )
         db.usm_data.copy_from_host(b.reshape((-1)).view("|u1"))
 
-        dc = dpt.usm_ndarray(c.shape, dtype=c.dtype, buffer=usm_type)
+        dc = dpt.usm_ndarray(
+            got.shape,
+            dtype=got.dtype,
+            buffer=usm_type,
+            buffer_ctor_kwargs={"queue": gpu_queue},
+        )
 
-        with pytest.raises(NotImplementedError):
-            data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](da, db, dc)
+        data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](da, db, dc)
+
+        dc.usm_data.copy_to_host(got.reshape((-1)).view("|u1"))
+
+        expected = a + b
+
+        assert np.array_equal(got, expected)

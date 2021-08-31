@@ -92,7 +92,7 @@ def main():
     print("Using device ...")
     device.print_device_info()
 
-    with dpctl.device_context(device):
+    with dppy.offload_to_sycl_device(device):
         times = driver()
 
     times = np.asarray(times, dtype=np.float32)

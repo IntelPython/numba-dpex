@@ -13,8 +13,9 @@
 # limitations under the License.
 
 import numpy as np
-from numba import vectorize
+from numba import vectorize, float64
 import dpctl
+import numba_dppy as dppy
 
 
 @vectorize(nopython=True)
@@ -34,7 +35,7 @@ def get_device():
     return device
 
 
-def main():
+def test_njit():
     N = 10
     dtype = np.float64
 
@@ -47,7 +48,7 @@ def main():
     print("Using device ...")
     device.print_device_info()
 
-    with dpctl.device_context(device):
+    with dppy.offload_to_sycl_device(device):
         C = ufunc_kernel(A, B)
 
     print(C)
@@ -55,5 +56,22 @@ def main():
     print("Done...")
 
 
+@vectorize([float64(float64, float64)], target="dppy")
+def vector_add(a, b):
+    return a + b
+
+
+def test_vectorize():
+    A = np.arange(10, dtype=np.float64).reshape((5, 2))
+    B = np.arange(10, dtype=np.float64).reshape((5, 2))
+
+    device = dpctl.select_default_device()
+    with dpctl.device_context(device):
+        C = vector_add(A, B)
+
+    print(C)
+
+
 if __name__ == "__main__":
-    main()
+    test_njit()
+    test_vectorize()

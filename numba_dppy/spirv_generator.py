@@ -175,6 +175,20 @@ class Module(object):
                 llvm_spirv_args = self.context.extra_compile_options[key]
             del self.context.extra_compile_options[key]
 
+        if config.SAVE_IR_FILES != 0:
+            # Dump the llvmir and llvmbc in file
+            with open("generated_llvm.ir", "w") as f:
+                f.write(self._llvmir)
+            with open("generated_llvm.bc", "wb") as f:
+                f.write(self._llvmbc)
+
+            print("Generated LLVM IR".center(80, "-"))
+            print("generated_llvm.ir")
+            print("".center(80, "="))
+            print("Generated LLVM Bitcode".center(80, "-"))
+            print("generated_llvm.bc")
+            print("".center(80, "="))
+
         self._cmd.generate(
             llvm_spirv_args=llvm_spirv_args, ipath=self._llvmfile, opath=spirv_path
         )
@@ -185,21 +199,11 @@ class Module(object):
 
         if config.SAVE_IR_FILES != 0:
             # Dump the llvmir and llvmbc in file
-            with open("generated_llvm.ir", "w") as f:
-                f.write(self._llvmir)
-            with open("generated_llvm.bc", "wb") as f:
-                f.write(self._llvmbc)
             with open("generated_spirv.spir", "wb") as f1:
                 with open(spirv_path, "rb") as f2:
                     spirv_content = f2.read()
                     f1.write(spirv_content)
 
-            print("Generated LLVM IR".center(80, "-"))
-            print("generated_llvm.ir")
-            print("".center(80, "="))
-            print("Generated LLVM Bitcode".center(80, "-"))
-            print("generated_llvm.bc")
-            print("".center(80, "="))
             print("Generated SPIRV".center(80, "-"))
             print("generated_spirv.spir")
             print("".center(80, "="))

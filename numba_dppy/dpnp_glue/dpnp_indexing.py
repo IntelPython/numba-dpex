@@ -78,7 +78,7 @@ def tuplizer(a):
 
         shape = tuplizer(res_shape)
 
-        out = np.zeros(shape, dtype=a.dtype)
+        out = np.empty(shape, dtype=a.dtype)
 
         sycl_queue = dpctl_functions.get_current_queue()
 

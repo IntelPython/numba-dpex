@@ -37,6 +37,14 @@ elif sys.platform in ["win32", "cygwin"]:
 def get_ext_modules():
     ext_modules = []
 
+    dpnp_present = False
+    try:
+        import dpnp
+    except:
+        pass
+    else:
+        dpnp_present = True
+
     import numba, dpctl
 
     dpctl_runtime_library_dirs = []
@@ -53,14 +61,6 @@ def get_ext_modules():
         runtime_library_dirs=dpctl_runtime_library_dirs,
     )
     ext_modules += [ext_dppy]
-
-    dpnp_present = False
-    try:
-        import dpnp
-    except:
-        pass
-    else:
-        dpnp_present = True
 
     if dpnp_present:
         dpnp_lib_path = []
@@ -105,12 +105,7 @@ def spirv_compile():
     if IS_LIN:
         compiler = "clang"
     if IS_WIN:
-        ONEAPI_ROOT = os.environ.get("ONEAPI_ROOT")
-        if not os.path.isdir(ONEAPI_ROOT):
-            raise ValueError(f"ONEAPI_ROOT is not a directory: {ONEAPI_ROOT}")
-
-        compiler = "compiler\\latest\\windows\\bin\\clang.exe"
-        compiler = os.path.join(ONEAPI_ROOT, compiler)
+        compiler = "clang.exe"
 
     clang_args = [
         compiler,
@@ -141,7 +136,7 @@ def spirv_compile():
 packages = find_packages(include=["numba_dppy", "numba_dppy.*"])
 build_requires = ["cython"]
 install_requires = [
-    "numba >={},<{}".format("0.53.1", "0.54"),
+    "numba >={},<{}".format("0.54.0", "0.55"),
     "dpctl",
     "packaging",
 ]

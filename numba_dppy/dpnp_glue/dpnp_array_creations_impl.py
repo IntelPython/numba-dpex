@@ -92,7 +92,7 @@ def dpnp_zeros_like_impl(a, dtype=None):
 
     """
     res_dtype = dtype
-    if dtype == types.none:
+    if dtype == types.none or dtype is None:
         res_dtype = a.dtype
         name_dtype = res_dtype.name
     else:
@@ -127,7 +127,7 @@ def dpnp_ones_like_impl(a, dtype=None):
 
     """
     res_dtype = dtype
-    if dtype == types.none:
+    if dtype == types.none or dtype is None:
         res_dtype = a.dtype
         name_dtype = res_dtype.name
     else:
@@ -205,7 +205,7 @@ def dpnp_full_impl(a, b):
         b_usm = dpctl_functions.malloc_shared(b.size * b.itemsize, sycl_queue)
         dpctl_functions.queue_memcpy(sycl_queue, b_usm, b.ctypes, b.size * b.itemsize)
 
-        out = np.arange(a.size, dtype=res_dtype)
+        out = np.arange(0, a.size, 1, res_dtype)
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
         dpnp_func(b_usm, out_usm, a.size)

@@ -64,7 +64,7 @@ def test_proper_lowering(filter_str):
     arr = np.random.random(N).astype(np.float32)
     orig = arr.copy()
 
-    with dpctl.device_context(filter_str) as gpu_queue:
+    with dppy.offload_to_sycl_device(filter_str):
         twice[N, N // 2](arr)
 
     # The computation is correct?
@@ -90,7 +90,7 @@ def test_no_arg_barrier_support(filter_str):
     arr = np.random.random(N).astype(np.float32)
     orig = arr.copy()
 
-    with dpctl.device_context(filter_str) as gpu_queue:
+    with dppy.offload_to_sycl_device(filter_str):
         twice[N, dppy.DEFAULT_LOCAL_SIZE](arr)
 
     # The computation is correct?
@@ -120,7 +120,7 @@ def test_local_memory(filter_str):
     arr = np.arange(blocksize).astype(np.float32)
     orig = arr.copy()
 
-    with dpctl.device_context(filter_str) as gpu_queue:
+    with dppy.offload_to_sycl_device(filter_str):
         reverse_array[blocksize, blocksize](arr)
 
     expected = orig[::-1] + orig

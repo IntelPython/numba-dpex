@@ -31,21 +31,23 @@ def filter_str(request):
 @pytest.mark.xfail
 def test_print_only_str(filter_str):
     try:
-        with dpctl.device_context(filter_str):
+        device = dpctl.SyclDevice(filter_str)
+        with dppy.offload_to_sycl_device(device):
             pass
     except Exception:
         pytest.skip()
 
     @dppy.kernel
     def f():
-        print("test")
+        print("test", "test2")
 
     # This test will fail, we currently can not print only string.
     # The LLVM generated for printf() function with only string gets
     # replaced by a puts() which fails due to lack of addrspace in the
     # puts function signature right now, and would fail in general due
     # to lack of support for puts() in OpenCL.
-    with dpctl.device_context(filter_str), captured_stdout() as stdout:
+
+    with dppy.offload_to_sycl_device(filter_str):
         f[3, dppy.DEFAULT_LOCAL_SIZE]()
 
 
@@ -75,7 +77,8 @@ def test_print(filter_str, input_arrays, capfd):
     a = input_arrays
     global_size = 3
 
-    with dpctl.device_context(filter_str):
+    device = dpctl.SyclDevice(filter_str)
+    with dppy.offload_to_sycl_device(device):
         f[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
         captured = capfd.readouterr()
         assert "test" in captured.out

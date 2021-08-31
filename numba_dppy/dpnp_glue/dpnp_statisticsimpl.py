@@ -31,11 +31,11 @@ def dpnp_amax_impl(a):
     ret_type = types.void
     """
     dpnp source:
-    https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels_statistics.cpp#L129
+    https://github.com/IntelPython/dpnp/blob/0.7.0/dpnp/backend/kernels/dpnp_krnl_statistics.cpp#L147
 
     Function declaration:
-    void custom_max_c(void* array1_in, void* result1, const size_t* shape,
-                      size_t ndim, const size_t* axis, size_t naxis)
+    void dpnp_max_c(void* array1_in, void* result1, const size_t* shape,
+                    size_t ndim, const size_t* axis, size_t naxis)
 
     We are using void * in case of size_t * as Numba currently does not have
     any type to represent size_t *. Since, both the types are pointers,
@@ -65,7 +65,9 @@ def dpnp_amax_impl(a):
 
         out_usm = dpctl_functions.malloc_shared(a.itemsize, sycl_queue)
 
-        dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim, a.shapeptr, a.ndim)
+        axis, naxis = 0, 0
+
+        dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim, axis, naxis)
 
         out = np.empty(1, dtype=a.dtype)
         dpctl_functions.queue_memcpy(
@@ -75,7 +77,7 @@ def dpnp_amax_impl(a):
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
 
-        dpnp_ext._dummy_liveness_func([out.size])
+        dpnp_ext._dummy_liveness_func([a.size, out.size])
 
         if PRINT_DEBUG:
             print("dpnp implementation")
@@ -137,7 +139,7 @@ def dpnp_amin_impl(a):
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
 
-        dpnp_ext._dummy_liveness_func([out.size])
+        dpnp_ext._dummy_liveness_func([a.size, out.size])
 
         if PRINT_DEBUG:
             print("dpnp implementation")
