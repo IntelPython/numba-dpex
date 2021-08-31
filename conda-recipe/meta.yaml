@@ -27,7 +27,7 @@ requirements:
         - numba 0.54*
         - dpctl >=0.9*
         - spirv-tools
-        - llvm-spirv
+        - llvm-spirv 11.*
         - dpnp >=0.7* # [linux]
         - packaging
 
