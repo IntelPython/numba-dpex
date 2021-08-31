@@ -82,7 +82,7 @@ jobs:
             experimental: true
     continue-on-error: ${{ matrix.experimental }}
     env:
-      # conda-forge: llvm-spirv 11
+      # conda-forge: llvm-spirv 11 not on intel channel yet
       CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c dppy/label/dev -c numba/label/dev -c conda-forge --override-channels
 
     steps:
