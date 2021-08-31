@@ -82,7 +82,8 @@ jobs:
             experimental: true
     continue-on-error: ${{ matrix.experimental }}
     env:
-      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c dppy/label/dev -c numba/label/dev --override-channels
+      # conda-forge: llvm-spirv 11 not on intel channel yet
+      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c dppy/label/dev -c numba/label/dev -c conda-forge --override-channels
 
     steps:
       - name: Download artifact
