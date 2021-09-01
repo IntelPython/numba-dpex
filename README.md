@@ -20,7 +20,7 @@ https://intelpython.github.io/dpnp/
 
 * numba 0.54.*
 * dpctl 0.9.*
-* dpnp 0.6.* (optional)
+* dpnp 0.7.* (optional)
 * llvm-spirv 11.* (SPIRV generation from LLVM IR)
 * spirv-tools
 * packaging
