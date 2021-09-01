@@ -41,7 +41,9 @@ def filter_str(request):
     "dtype", [np.bool_, np.int32, np.int64, np.float32, np.float64]
 )
 @pytest.mark.parametrize(
-    "shape", [(0,), (4,), (2, 3)], ids=["(0,)", "(4,)", "(2, 3)"],
+    "shape",
+    [(0,), (4,), (2, 3)],
+    ids=["(0,)", "(4,)", "(2, 3)"],
 )
 def test_all(dtype, shape, filter_str):
     if skip_test(filter_str):

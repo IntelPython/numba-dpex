@@ -35,7 +35,12 @@ class DPPYArray(Array):
     ):
         self.addrspace = addrspace
         super(DPPYArray, self).__init__(
-            dtype, ndim, layout, readonly=readonly, name=name, aligned=aligned,
+            dtype,
+            ndim,
+            layout,
+            readonly=readonly,
+            name=name,
+            aligned=aligned,
         )
 
     def copy(self, dtype=None, ndim=None, layout=None, readonly=None, addrspace=None):

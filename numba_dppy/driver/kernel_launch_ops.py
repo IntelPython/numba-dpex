@@ -477,12 +477,18 @@ class KernelLaunchOps:
 
             self.builder.call(
                 free_fn,
-                [self.builder.load(buffer_ptr), self.builder.load(sycl_queue_val),],
+                [
+                    self.builder.load(buffer_ptr),
+                    self.builder.load(sycl_queue_val),
+                ],
             )
 
         for read_buff in self.read_only_buffs:
             buffer_ptr, total_size, data_member = read_buff
             self.builder.call(
                 free_fn,
-                [self.builder.load(buffer_ptr), self.builder.load(sycl_queue_val),],
+                [
+                    self.builder.load(buffer_ptr),
+                    self.builder.load(sycl_queue_val),
+                ],
             )

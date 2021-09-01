@@ -405,11 +405,25 @@ def atomic_add(context, builder, sig, args, name):
 
         if isinstance(aryty, DPPYArray) and aryty.addrspace == address_space.LOCAL:
             return insert_and_call_atomic_fn(
-                context, builder, sig, name, dtype, ptr, val, address_space.LOCAL,
+                context,
+                builder,
+                sig,
+                name,
+                dtype,
+                ptr,
+                val,
+                address_space.LOCAL,
             )
         else:
             return insert_and_call_atomic_fn(
-                context, builder, sig, name, dtype, ptr, val, address_space.GLOBAL,
+                context,
+                builder,
+                sig,
+                name,
+                dtype,
+                ptr,
+                val,
+                address_space.GLOBAL,
             )
     else:
         raise ImportError("Atomic support is not present, can not perform atomic_add")

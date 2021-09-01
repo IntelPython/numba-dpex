@@ -235,7 +235,8 @@ class DPPYTargetContext(BaseContext):
         wrappername = "dppyPy_{name}".format(name=func.name)
         argtys = list(arginfo.argument_types)
         fnty = lc.Type.function(
-            lc.Type.int(), [self.call_conv.get_return_type(types.pyobject)] + argtys,
+            lc.Type.int(),
+            [self.call_conv.get_return_type(types.pyobject)] + argtys,
         )
         func = wrapper_module.add_function(fnty, name=func.name)
         func.calling_convention = CC_SPIR_FUNC
