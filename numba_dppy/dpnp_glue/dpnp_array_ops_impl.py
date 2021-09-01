@@ -30,15 +30,19 @@ def common_impl(a, out, dpnp_func, print_debug):
 
     sycl_queue = dpctl_functions.get_current_queue()
     a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-    dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+    event = dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
 
     out_usm = dpctl_functions.malloc_shared(a.itemsize, sycl_queue)
 
     dpnp_func(a_usm, out_usm, a.size)
 
-    dpctl_functions.queue_memcpy(
+    event = dpctl_functions.queue_memcpy(
         sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
     )
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
 
     dpctl_functions.free_with_queue(a_usm, sycl_queue)
     dpctl_functions.free_with_queue(out_usm, sycl_queue)
@@ -130,16 +134,20 @@ def dpnp_copy_impl(a):
         sycl_queue = dpctl_functions.get_current_queue()
 
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         out = np.arange(0, a.size, 1, res_dtype)
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
         dpnp_func(a_usm, out_usm, a.size)
 
-        dpctl_functions.queue_memcpy(
+        event = dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
         )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
@@ -180,16 +188,20 @@ def dpnp_sort_impl(a):
         sycl_queue = dpctl_functions.get_current_queue()
 
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         out = np.arange(0, a.size, 1, res_dtype)
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
         dpnp_func(a_usm, out_usm, a.size)
 
-        dpctl_functions.queue_memcpy(
+        event = dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
         )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
@@ -228,21 +240,27 @@ def dpnp_take_impl(a, ind):
         sycl_queue = dpctl_functions.get_current_queue()
 
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         ind_usm = dpctl_functions.malloc_shared(ind.size * ind.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(
+        event = dpctl_functions.queue_memcpy(
             sycl_queue, ind_usm, ind.ctypes, ind.size * ind.itemsize
         )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         out = np.arange(0, ind.size, 1, res_dtype).reshape(ind.shape)
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
         dpnp_func(a_usm, ind_usm, out_usm, ind.size)
 
-        dpctl_functions.queue_memcpy(
+        event = dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
         )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(ind_usm, sycl_queue)
