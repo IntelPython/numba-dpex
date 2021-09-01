@@ -120,7 +120,7 @@ class DpctlCAPIFnBuilder:
         return DpctlCAPIFnBuilder._build_dpctl_function(
             builder,
             return_ty=void_ptr_t,
-            #return_ty=utils.LLVMTypes.void_t,
+            # return_ty=utils.LLVMTypes.void_t,
             arg_list=[
                 void_ptr_t,
                 void_ptr_t,

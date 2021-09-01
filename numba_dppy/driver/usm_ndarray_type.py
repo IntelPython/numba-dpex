@@ -43,12 +43,7 @@ class USMNdArrayType(DPPYArray):
         # This name defines how this type will be shown in Numba's type dumps.
         name = "USM:ndarray(%s, %sd, %s)" % (dtype, ndim, layout)
         super(USMNdArrayType, self).__init__(
-            dtype,
-            ndim,
-            layout,
-            readonly=readonly,
-            name=name,
-            addrspace=addrspace,
+            dtype, ndim, layout, readonly=readonly, name=name, addrspace=addrspace,
         )
 
     def copy(self, *args, **kwargs):

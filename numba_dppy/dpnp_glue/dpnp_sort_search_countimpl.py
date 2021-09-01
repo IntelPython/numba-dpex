@@ -51,7 +51,9 @@ def dpnp_argmax_impl(a):
         sycl_queue = dpctl_functions.get_current_queue()
 
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        event = dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(
+            sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+        )
         dpctl_functions.event_wait(event)
         dpctl_functions.event_delete(event)
 
@@ -106,7 +108,9 @@ def dpnp_argmin_impl(a):
         sycl_queue = dpctl_functions.get_current_queue()
 
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        event = dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(
+            sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+        )
         dpctl_functions.event_wait(event)
         dpctl_functions.event_delete(event)
 
@@ -159,7 +163,9 @@ def dpnp_argsort_impl(a):
         sycl_queue = dpctl_functions.get_current_queue()
 
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        event = dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(
+            sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+        )
         dpctl_functions.event_wait(event)
         dpctl_functions.event_delete(event)
 
@@ -225,7 +231,9 @@ def dpnp_partition_impl(a, kth):
         sycl_queue = dpctl_functions.get_current_queue()
 
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        event = dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(
+            sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+        )
         dpctl_functions.event_wait(event)
         dpctl_functions.event_delete(event)
 

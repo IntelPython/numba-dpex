@@ -34,13 +34,7 @@ def dpnp_repeat_impl(a, repeats):
     Function declaration:
     void dpnp_repeat_c(const void* array1_in, void* result1, const size_t repeats, const size_t size)
     """
-    sig = signature(
-        ret_type,
-        types.voidptr,
-        types.voidptr,
-        types.intp,
-        types.intp,
-    )
+    sig = signature(ret_type, types.voidptr, types.voidptr, types.intp, types.intp,)
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     PRINT_DEBUG = dpnp_lowering.DEBUG
@@ -59,7 +53,9 @@ def dpnp_repeat_impl(a, repeats):
         sycl_queue = dpctl_functions.get_current_queue()
 
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        event = dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(
+            sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+        )
         dpctl_functions.event_wait(event)
         dpctl_functions.event_delete(event)
 

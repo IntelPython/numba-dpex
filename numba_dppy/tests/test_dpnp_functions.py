@@ -27,8 +27,7 @@ from numba_dppy.tests._helper import (
 
 
 @unittest.skipUnless(
-    ensure_dpnp() and has_gpu_queues(),
-    "test only when dpnp and GPU is available",
+    ensure_dpnp() and has_gpu_queues(), "test only when dpnp and GPU is available",
 )
 class Testdpnp_functions(unittest.TestCase):
     N = 10

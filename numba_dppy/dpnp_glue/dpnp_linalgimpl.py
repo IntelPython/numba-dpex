@@ -61,7 +61,9 @@ def dpnp_eig_impl(a):
 
         sycl_queue = dpctl_functions.get_current_queue()
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        event = dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(
+            sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+        )
         dpctl_functions.event_wait(event)
         dpctl_functions.event_delete(event)
 
@@ -102,7 +104,9 @@ def common_matmul_impl(dpnp_func, a, b, out, m, n, k, print_debug):
     dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
 
     b_usm = dpctl_functions.malloc_shared(b.size * b.itemsize, sycl_queue)
-    event = dpctl_functions.queue_memcpy(sycl_queue, b_usm, b.ctypes, b.size * b.itemsize)
+    event = dpctl_functions.queue_memcpy(
+        sycl_queue, b_usm, b.ctypes, b.size * b.itemsize
+    )
     dpctl_functions.event_wait(event)
     dpctl_functions.event_delete(event)
 
@@ -130,12 +134,16 @@ def common_matmul_impl(dpnp_func, a, b, out, m, n, k, print_debug):
 def common_dot_impl(dpnp_func, a, b, out, m, print_debug):
     sycl_queue = dpctl_functions.get_current_queue()
     a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-    event = dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+    event = dpctl_functions.queue_memcpy(
+        sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+    )
     dpctl_functions.event_wait(event)
     dpctl_functions.event_delete(event)
 
     b_usm = dpctl_functions.malloc_shared(b.size * b.itemsize, sycl_queue)
-    event = dpctl_functions.queue_memcpy(sycl_queue, b_usm, b.ctypes, b.size * b.itemsize)
+    event = dpctl_functions.queue_memcpy(
+        sycl_queue, b_usm, b.ctypes, b.size * b.itemsize
+    )
     dpctl_functions.event_wait(event)
     dpctl_functions.event_delete(event)
 
@@ -451,7 +459,9 @@ def dpnp_cholesky_impl(a):
 
         sycl_queue = dpctl_functions.get_current_queue()
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        event = dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(
+            sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+        )
         dpctl_functions.event_wait(event)
         dpctl_functions.event_delete(event)
 
@@ -509,7 +519,9 @@ def dpnp_det_impl(a):
 
         sycl_queue = dpctl_functions.get_current_queue()
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        event = dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(
+            sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+        )
         dpctl_functions.event_wait(event)
         dpctl_functions.event_delete(event)
 
@@ -570,7 +582,9 @@ def dpnp_matrix_rank_impl(M, tol=None, hermitian=False):
 
         sycl_queue = dpctl_functions.get_current_queue()
         M_usm = dpctl_functions.malloc_shared(M.size * M.itemsize, sycl_queue)
-        event = dpctl_functions.queue_memcpy(sycl_queue, M_usm, M.ctypes, M.size * M.itemsize)
+        event = dpctl_functions.queue_memcpy(
+            sycl_queue, M_usm, M.ctypes, M.size * M.itemsize
+        )
         dpctl_functions.event_wait(event)
         dpctl_functions.event_delete(event)
 
