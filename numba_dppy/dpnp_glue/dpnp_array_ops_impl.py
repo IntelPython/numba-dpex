@@ -211,11 +211,18 @@ def dpnp_take_impl(a, ind):
     ret_type = types.void
     """
     dpnp source:
-    https://github.com/IntelPython/dpnp/blob/0.5.1/dpnp/backend/kernels/dpnp_krnl_indexing.cpp#L34
+    https://github.com/IntelPython/dpnp/blob/ca6eb1b8fc561957402b6f258529f862c4a8f945/dpnp/backend/kernels/dpnp_krnl_indexing.cpp#L479
     Function declaration:
-    void dpnp_take_c(void* array1_in, void* indices1, void* result1, size_t size)
+    void dpnp_take_c(void* array1_in, const size_t array1_size, void* indices1, void* result1, size_t size)
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr, types.voidptr, types.intp)
+    sig = signature(
+        ret_type,
+        types.voidptr,
+        types.intp,
+        types.voidptr,
+        types.voidptr,
+        types.intp,
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     res_dtype = a.dtype
@@ -238,7 +245,7 @@ def dpnp_take_impl(a, ind):
         out = np.arange(0, ind.size, 1, res_dtype).reshape(ind.shape)
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
-        dpnp_func(a_usm, ind_usm, out_usm, ind.size)
+        dpnp_func(a_usm, a.size * a.itemsize, ind_usm, out_usm, ind.size)
 
         dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
