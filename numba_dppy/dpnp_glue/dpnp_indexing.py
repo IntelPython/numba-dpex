@@ -88,7 +88,15 @@ def tuplizer(a):
 
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
-        dpnp_func(a_usm, a.size * a.itemsize, out_usm, offset, a.shapeptr, out.shapeptr, out.ndim)
+        dpnp_func(
+            a_usm,
+            a.size * a.itemsize,
+            out_usm,
+            offset,
+            a.shapeptr,
+            out.shapeptr,
+            out.ndim,
+        )
 
         dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize

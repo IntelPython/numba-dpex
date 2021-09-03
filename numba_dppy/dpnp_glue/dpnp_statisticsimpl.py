@@ -129,7 +129,9 @@ def dpnp_amin_impl(a):
 
         out_usm = dpctl_functions.malloc_shared(a.itemsize, sycl_queue)
 
-        dpnp_func(a_usm, out_usm, a.size * a.itemsize, a.shapeptr, a.ndim, a.shapeptr, 0)
+        dpnp_func(
+            a_usm, out_usm, a.size * a.itemsize, a.shapeptr, a.ndim, a.shapeptr, 0
+        )
 
         out = np.empty(1, dtype=a.dtype)
         dpctl_functions.queue_memcpy(
