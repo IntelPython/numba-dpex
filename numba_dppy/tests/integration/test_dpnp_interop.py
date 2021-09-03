@@ -64,10 +64,29 @@ def test_consuming_array_from_dpnp(offload_device, dtype):
 
     global_size = 1021
 
-    a = dpnp.arange(global_size, dtype=dtype)
-    b = dpnp.arange(global_size, dtype=dtype)
-    c = dpnp.ones_like(a)
+    # bug in DPNP https://github.com/IntelPython/dpnp/issues/723
+    if offload_device == "opencl:gpu:0":
+        a = dpnp.arange(global_size, dtype=dtype)
+        b = dpnp.arange(global_size, dtype=dtype)
+        c = dpnp.ones_like(a)
 
-    with dppy.offload_to_sycl_device(offload_device):
-        with pytest.raises(Exception):
+        with dppy.offload_to_sycl_device(offload_device) as queue:
+            with pytest.raises(Exception):
+                data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
+
+    else:
+
+        with dppy.offload_to_sycl_device(offload_device) as queue:
+            a = dpnp.arange(global_size, dtype=dtype)
+            b = dpnp.arange(global_size, dtype=dtype)
+            c = dpnp.ones_like(a)
+
             data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
+
+        # bug in DPNP: context does not influence on array creation
+        default_filter_string = dpctl.get_current_queue().sycl_device.filter_string
+        with dppy.offload_to_sycl_device(offload_device):
+            a = dpnp.arange(global_size, dtype=dtype)
+            assert dpctl.get_current_queue().sycl_device.filter_string == offload_device
+            assert a.sycl_device.filter_string == default_filter_string
+            # should be: a.sycl_device.filter_string == offload_device
