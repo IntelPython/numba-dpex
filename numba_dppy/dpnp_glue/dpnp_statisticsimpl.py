@@ -95,11 +95,10 @@ def dpnp_amin_impl(a):
     ret_type = types.void
     """
     dpnp source:
-    https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels_statistics.cpp#L247
+    https://github.com/IntelPython/dpnp/blob/57caae8beb607992f40cdbe00f2666ee84358a97/dpnp/backend/kernels/dpnp_krnl_statistics.cpp#L412
 
     Function declaration:
-    void custom_min_c(void* array1_in, void* result1, const size_t* shape,
-                      size_t ndim, const size_t* axis, size_t naxis)
+    void dpnp_min_c(void* array1_in, void* result1, const size_t result_size, const size_t* shape, size_t ndim, const size_t* axis, size_t naxis)
 
     We are using void * in case of size_t * as Numba currently does not have
     any type to represent size_t *. Since, both the types are pointers,
@@ -110,6 +109,7 @@ def dpnp_amin_impl(a):
         ret_type,
         types.voidptr,
         types.voidptr,
+        types.intp,
         types.voidptr,
         types.intp,
         types.voidptr,
@@ -129,7 +129,7 @@ def dpnp_amin_impl(a):
 
         out_usm = dpctl_functions.malloc_shared(a.itemsize, sycl_queue)
 
-        dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim, a.shapeptr, 0)
+        dpnp_func(a_usm, out_usm, a.size * a.itemsize, a.shapeptr, a.ndim, a.shapeptr, 0)
 
         out = np.empty(1, dtype=a.dtype)
         dpctl_functions.queue_memcpy(
