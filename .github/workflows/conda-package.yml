@@ -14,7 +14,7 @@ jobs:
       matrix:
         python: ["3.8"]
         integration_channels: [""]
-        experimental: [false]
+        experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
         include:
           - python: "3.8"
@@ -73,13 +73,20 @@ jobs:
       matrix:
         python: ["3.8"]
         integration_channels: [""]
-        experimental: [false]
+        experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
+        dependencies: [""]
         include:
           - python: "3.8"
             integration_channels: -c dppy/label/dev
             artifact_name: -c dppy_label_dev
             experimental: true
+            dependencies: ""
+          - python: "3.8"
+            integration_channels: -c dppy/label/dev
+            artifact_name: -c dppy_label_dev
+            experimental: false  # current stable
+            dependencies: dpctl=0.9.0=*_21 dpnp=0.7.1=*_41 numba=0.54.0 llvmlite=0.37.0
     continue-on-error: ${{ matrix.experimental }}
     env:
       # conda-forge: llvm-spirv 11 not on intel channel yet
@@ -124,7 +131,7 @@ jobs:
       - name: Install numba-dppy
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}"
-          conda install $PACKAGE_NAME pytest python=${{ matrix.python }} $CHANNELS
+          conda install $PACKAGE_NAME pytest python=${{ matrix.python }} ${{ matrix.dependencies }} $CHANNELS
           # Test installed packages
           conda list
       - name: Run tests
@@ -144,7 +151,8 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
+          # `-c dppy_label_dev`: packages not published on `-c intel` yet
+          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }} -c dppy_label_dev
 
       - name: Install anaconda-client
         run: conda install anaconda-client
