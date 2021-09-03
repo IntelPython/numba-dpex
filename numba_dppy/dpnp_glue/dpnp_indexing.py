@@ -30,16 +30,17 @@ def dpnp_diagonal_impl(a, offset=0):
     ret_type = types.void
     """
     dpnp source:
-    https://github.com/IntelPython/dpnp/blob/master/dpnp/backend/kernels/dpnp_krnl_indexing.cpp#L38
+    https://github.com/IntelPython/dpnp/blob/e389248c709531b181be8bf33b1a270fca812a92/dpnp/backend/kernels/dpnp_krnl_indexing.cpp#L39
 
     Function declaration:
     void dpnp_diagonal_c(
-        void* array1_in, void* result1, const size_t offset, size_t* shape, size_t* res_shape, const size_t res_ndim)
+        void* array1_in, const size_t input1_size, void* result1, const size_t offset, size_t* shape, size_t* res_shape, const size_t res_ndim)
 
     """
     sig = signature(
         ret_type,
         types.voidptr,
+        types.intp,
         types.voidptr,
         types.intp,
         types.voidptr,
@@ -87,7 +88,7 @@ def tuplizer(a):
 
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
-        dpnp_func(a_usm, out_usm, offset, a.shapeptr, out.shapeptr, out.ndim)
+        dpnp_func(a_usm, a.size * a.itemsize, out_usm, offset, a.shapeptr, out.shapeptr, out.ndim)
 
         dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
