@@ -86,7 +86,7 @@ jobs:
             integration_channels: -c dppy/label/dev
             artifact_name: -c dppy_label_dev
             experimental: false  # current stable
-            dependencies: dpctl=0.9.0=*_21 dpnp=0.7.1=*_41
+            dependencies: dpnp=0.7.1=*_41
     continue-on-error: ${{ matrix.experimental }}
     env:
       # conda-forge: llvm-spirv 11 not on intel channel yet
