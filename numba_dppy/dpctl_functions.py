@@ -29,9 +29,21 @@ def dpctl_malloc_shared():
 
 
 def dpctl_queue_memcpy():
-    ret_type = types.void
+    ret_type = types.voidptr
     sig = signature(ret_type, types.voidptr, types.voidptr, types.voidptr, types.int64)
     return types.ExternalFunction("DPCTLQueue_Memcpy", sig)
+
+
+def dpctl_event_wait():
+    ret_type = types.voidptr
+    sig = signature(ret_type, types.voidptr)
+    return types.ExternalFunction("DPCTLEvent_Wait", sig)
+
+
+def dpctl_event_delete():
+    ret_type = types.void
+    sig = signature(ret_type, types.voidptr)
+    return types.ExternalFunction("DPCTLEvent_Delete", sig)
 
 
 def dpctl_free_with_queue():
@@ -40,7 +52,16 @@ def dpctl_free_with_queue():
     return types.ExternalFunction("DPCTLfree_with_queue", sig)
 
 
+def dpctl_queue_wait():
+    ret_type = types.void
+    sig = signature(ret_type, types.voidptr)
+    return types.ExternalFunction("DPCTLQueue_Wait", sig)
+
+
 get_current_queue = dpctl_get_current_queue()
 malloc_shared = dpctl_malloc_shared()
 queue_memcpy = dpctl_queue_memcpy()
 free_with_queue = dpctl_free_with_queue()
+event_wait = dpctl_event_wait()
+event_delete = dpctl_event_delete()
+queue_wait = dpctl_queue_wait()

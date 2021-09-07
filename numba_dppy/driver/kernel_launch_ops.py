@@ -252,6 +252,12 @@ class KernelLaunchOps:
                 memcpy_fn = DpctlCAPIFnBuilder.get_dpctl_queue_memcpy(
                     builder=self.builder, context=self.context
                 )
+                event_del_fn = DpctlCAPIFnBuilder.get_dpctl_event_delete(
+                    builder=self.builder, context=self.context
+                )
+                event_wait_fn = DpctlCAPIFnBuilder.get_dpctl_event_wait(
+                    builder=self.builder, context=self.context
+                )
 
                 # Not known to be USM so we need to copy to USM.
                 buffer_name = "buffer_ptr" + str(self.cur_arg)
@@ -287,7 +293,9 @@ class KernelLaunchOps:
                         ),
                         self.builder.load(total_size),
                     ]
-                    self.builder.call(memcpy_fn, args)
+                    event_ref = self.builder.call(memcpy_fn, args)
+                    self.builder.call(event_wait_fn, [event_ref])
+                    self.builder.call(event_del_fn, [event_ref])
 
                 self._form_kernel_arg_and_arg_ty(self.builder.load(buffer_ptr), ty)
 
@@ -384,6 +392,9 @@ class KernelLaunchOps:
         free_fn = DpctlCAPIFnBuilder.get_dpctl_free_with_queue(
             builder=self.builder, context=self.context
         )
+        event_wait_fn = DpctlCAPIFnBuilder.get_dpctl_event_wait(
+            builder=self.builder, context=self.context
+        )
 
         # the assumption is loop_ranges will always be less than or equal to 3
         # dimensions
@@ -432,10 +443,13 @@ class KernelLaunchOps:
             ),
             self.context.get_constant(types.uintp, 0),
         ]
+
         # Submit the kernel
         event_ref = self.builder.call(submit_fn, args)
+
         # Add a wait on the queue
         self.builder.call(queue_wait_fn, [self.builder.load(sycl_queue_val)])
+
         # Note that the dpctl_queue_wait call waits on the event and then
         # decrements the ref count of the sycl::event C++ object. However, the
         # event object returned by the get_dpctl_queue_submit_range call still
@@ -457,7 +471,9 @@ class KernelLaunchOps:
             # FIXME: In future, when the DctlQueue_Memcpy is made non-blocking
             # the returned event should be explicitly freed by calling
             # get_dpctl_event_delete.
-            self.builder.call(memcpy_fn, args)
+            event_ref = self.builder.call(memcpy_fn, args)
+            self.builder.call(event_wait_fn, [event_ref])
+            self.builder.call(event_del_fn, [event_ref])
 
             self.builder.call(
                 free_fn,
