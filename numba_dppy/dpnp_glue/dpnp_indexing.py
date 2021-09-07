@@ -84,7 +84,11 @@ def tuplizer(a):
         sycl_queue = dpctl_functions.get_current_queue()
 
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(
+            sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+        )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
@@ -98,9 +102,11 @@ def tuplizer(a):
             out.ndim,
         )
 
-        dpctl_functions.queue_memcpy(
+        event = dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
         )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
