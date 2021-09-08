@@ -182,7 +182,7 @@ passing to dummy function `revive()`) at the end of the function. So numba will
 not insert `del a` until the end of the function.
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/sum_local_vars_revive.py
-    :lines: 20-30
+    :lines: 20-31
     :linenos:
     :lineno-match:
 
