@@ -21,6 +21,7 @@ import dpctl
 def revive(x):
     return x
 
+
 @dppy.kernel(debug=True)
 def data_parallel_sum(a, b, c):
     i = dppy.get_global_id(0)
@@ -28,6 +29,7 @@ def data_parallel_sum(a, b, c):
     l2 = b[i] * 0.3
     c[i] = l1 + l2
     revive(a)  # pass variable to dummy function
+
 
 global_size = 10
 N = global_size
