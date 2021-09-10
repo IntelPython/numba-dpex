@@ -1,0 +1,7 @@
+numba\_dppy.target module
+=========================
+
+.. automodule:: numba_dppy.target
+   :members:
+   :undoc-members:
+   :show-inheritance:

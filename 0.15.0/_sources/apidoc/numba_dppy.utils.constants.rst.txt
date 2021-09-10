@@ -1,0 +1,7 @@
+numba\_dppy.utils.constants module
+==================================
+
+.. automodule:: numba_dppy.utils.constants
+   :members:
+   :undoc-members:
+   :show-inheritance:
