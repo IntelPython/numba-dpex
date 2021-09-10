@@ -86,19 +86,19 @@
               
             
             
-              <p class="caption"><span class="caption-text">Core Features</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html">Code-generation based on a device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
 </ul>
-<p class="caption"><span class="caption-text">User Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/getting_started.html"> Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/debugging/index.html"> Debugging with GDB</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Developer Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="dpnp_integration.html">DPNP integration</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Debugging the compilation pipeline</a><ul>
@@ -194,10 +194,11 @@
 <span class="linenos">30</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 <span class="linenos">31</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 <span class="linenos">32</span>
-<span class="linenos">33</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">):</span>
-<span class="linenos">34</span>    <span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
-<span class="linenos">35</span>
-<span class="linenos">36</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
+<span class="linenos">33</span><span class="n">device</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">SyclDevice</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">)</span>
+<span class="linenos">34</span><span class="k">with</span> <span class="n">dppy</span><span class="o">.</span><span class="n">offload_to_sycl_device</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
+<span class="linenos">35</span>    <span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+<span class="linenos">36</span>
+<span class="linenos">37</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Example of default Numba execution on a CPU:</p>

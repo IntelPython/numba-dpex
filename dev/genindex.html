@@ -85,19 +85,19 @@
               
             
             
-              <p class="caption"><span class="caption-text">Core Features</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="CoreFeatures.html">Code-generation based on a device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
 </ul>
-<p class="caption"><span class="caption-text">User Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/getting_started.html"> Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/debugging/index.html"> Debugging with GDB</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Developer Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="developer_guides/dpnp_integration.html">DPNP integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developer_guides/tools.html">Debugging the compilation pipeline</a></li>
@@ -177,6 +177,7 @@
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#J"><strong>J</strong></a>
  | <a href="#K"><strong>K</strong></a>
@@ -212,18 +213,24 @@
 </li>
       <li><a href="apidoc/numba_dppy.driver.kernel_launch_ops.html#numba_dppy.driver.kernel_launch_ops.KernelLaunchOps.allocate_kernel_arg_array">allocate_kernel_arg_array() (numba_dppy.driver.kernel_launch_ops.KernelLaunchOps method)</a>
 </li>
-      <li><a href="apidoc/numba_dppy.numpy_usm_shared.html#numba_dppy.numpy_usm_shared.allocator_UsmArray">allocator_UsmArray() (in module numba_dppy.numpy_usm_shared)</a>
-</li>
       <li><a href="apidoc/numba_dppy.numpy_usm_shared.html#numba_dppy.numpy_usm_shared.argspec_to_string">argspec_to_string() (in module numba_dppy.numpy_usm_shared)</a>
 </li>
       <li><a href="apidoc/numba_dppy.ocl.stubs.html#numba_dppy.ocl.stubs.local.array">array() (numba_dppy.ocl.stubs.local method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnpimpl.html#numba_dppy.dpnp_glue.dpnpimpl.array_shape">array_shape() (in module numba_dppy.dpnp_glue.dpnpimpl)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dpnp_glue.dpnpdecl.html#numba_dppy.dpnp_glue.dpnpdecl.ArrayAttribute">ArrayAttribute (class in numba_dppy.dpnp_glue.dpnpdecl)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dppy.vectorizers.html#numba_dppy.vectorizers.DPPYUFuncMechanism.as_device_array">as_device_array() (numba_dppy.vectorizers.DPPYUFuncMechanism method)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.utils.html#numba_dppy.utils.as_usm_obj">as_usm_obj() (in module numba_dppy.utils)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dppy.utils.array_utils.html#numba_dppy.utils.array_utils.as_usm_obj">(in module numba_dppy.utils.array_utils)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/numba_dppy.utils.html#numba_dppy.utils.assert_no_return">assert_no_return() (in module numba_dppy.utils)</a>
 
       <ul>
@@ -258,14 +265,24 @@
 </li>
       <li><a href="apidoc/numba_dppy.numpy_usm_shared.html#numba_dppy.numpy_usm_shared.box_array">box_array() (in module numba_dppy.numpy_usm_shared)</a>
 </li>
+      <li><a href="apidoc/numba_dppy.dppy_array_type.html#numba_dppy.dppy_array_type.DPPYArray.box_type">box_type (numba_dppy.dppy_array_type.DPPYArray property)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dppy.numpy_usm_shared.html#numba_dppy.numpy_usm_shared.UsmSharedArrayType.box_type">(numba_dppy.numpy_usm_shared.UsmSharedArrayType property)</a>
+</li>
+      </ul></li>
+      <li><a href="apidoc/numba_dppy.vectorizers.html#numba_dppy.vectorizers.DPPYUFuncMechanism.broadcast_device">broadcast_device() (numba_dppy.vectorizers.DPPYUFuncMechanism method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dppy.vectorizers.html#numba_dppy.vectorizers.DPPYVectorize.build_ufunc">build_ufunc() (numba_dppy.vectorizers.DPPYVectorize method)</a>
+</li>
       <li><a href="apidoc/numba_dppy.utils.llvm_codegen_helpers.html#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.byte_ptr_ptr_t">byte_ptr_ptr_t (numba_dppy.utils.llvm_codegen_helpers.LLVMTypes attribute)</a>
 
       <ul>
         <li><a href="apidoc/numba_dppy.utils.html#numba_dppy.utils.LLVMTypes.byte_ptr_ptr_t">(numba_dppy.utils.LLVMTypes attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dppy.utils.llvm_codegen_helpers.html#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.byte_ptr_t">byte_ptr_t (numba_dppy.utils.llvm_codegen_helpers.LLVMTypes attribute)</a>
 
       <ul>
@@ -284,7 +301,9 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="apidoc/numba_dppy.target.html#numba_dppy.target.DPPYTargetContext.call_conv">call_conv (numba_dppy.target.DPPYTargetContext attribute)</a>
+      <li><a href="apidoc/numba_dppy.vectorizers.html#numba_dppy.vectorizers.DPPYUFuncMechanism.call">call() (numba_dppy.vectorizers.DPPYUFuncMechanism class method)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.target.html#numba_dppy.target.DPPYTargetContext.call_conv">call_conv (numba_dppy.target.DPPYTargetContext property)</a>
 </li>
       <li><a href="apidoc/numba_dppy.target.html#numba_dppy.target.DPPYCallConv.call_function">call_function() (numba_dppy.target.DPPYCallConv method)</a>
 </li>
@@ -390,6 +409,8 @@
 </li>
       <li><a href="apidoc/numba_dppy.compiler.html#numba_dppy.compiler.compile_kernel_parfor">compile_kernel_parfor() (in module numba_dppy.compiler)</a>
 </li>
+      <li><a href="apidoc/numba_dppy.retarget.html#numba_dppy.retarget.DPPYRetarget.compile_retarget">compile_retarget() (numba_dppy.retarget.DPPYRetarget method)</a>
+</li>
       <li><a href="apidoc/numba_dppy.compiler.html#numba_dppy.compiler.compile_with_dppy">compile_with_dppy() (in module numba_dppy.compiler)</a>
 </li>
       <li><a href="apidoc/numba_dppy.compiler.html#numba_dppy.compiler.DPPYKernelBase.configure">configure() (numba_dppy.compiler.DPPYKernelBase method)</a>
@@ -416,11 +437,25 @@
       </ul></li>
       <li><a href="apidoc/numba_dppy.dppy_lowerer.html#numba_dppy.dppy_lowerer.copy_block">copy_block() (in module numba_dppy.dppy_lowerer)</a>
 </li>
+      <li><a href="apidoc/numba_dppy.utils.html#numba_dppy.utils.copy_from_numpy_to_usm_obj">copy_from_numpy_to_usm_obj() (in module numba_dppy.utils)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dppy.utils.array_utils.html#numba_dppy.utils.array_utils.copy_from_numpy_to_usm_obj">(in module numba_dppy.utils.array_utils)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/numba_dppy.numpy_usm_shared.html#numba_dppy.numpy_usm_shared.copy_func_for_usmarray">copy_func_for_usmarray() (in module numba_dppy.numpy_usm_shared)</a>
 </li>
+      <li><a href="apidoc/numba_dppy.utils.html#numba_dppy.utils.copy_to_numpy_from_usm_obj">copy_to_numpy_from_usm_obj() (in module numba_dppy.utils)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dppy.utils.array_utils.html#numba_dppy.utils.array_utils.copy_to_numpy_from_usm_obj">(in module numba_dppy.utils.array_utils)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/numba_dppy.dppy_lowerer.html#numba_dppy.dppy_lowerer.CopyIRException">CopyIRException</a>
 </li>
       <li><a href="apidoc/numba_dppy.dppy_lowerer.html#numba_dppy.dppy_lowerer.DPPYLower.create_cpython_wrapper">create_cpython_wrapper() (numba_dppy.dppy_lowerer.DPPYLower method)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.target.html#numba_dppy.target.DPPYTargetContext.create_module">create_module() (numba_dppy.target.DPPYTargetContext method)</a>
 </li>
       <li><a href="apidoc/numba_dppy.utils.html#numba_dppy.utils.create_null_ptr">create_null_ptr() (in module numba_dppy.utils)</a>
 
@@ -446,11 +481,17 @@
 </li>
       <li><a href="apidoc/numba_dppy.ocl.atomics.atomic_helper.html#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope.device">device (numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope attribute)</a>
 </li>
+      <li><a href="apidoc/numba_dppy.vectorizers.html#numba_dppy.vectorizers.DPPYUFuncMechanism.device_array">device_array() (numba_dppy.vectorizers.DPPYUFuncMechanism method)</a>
+</li>
       <li><a href="apidoc/numba_dppy.spirv_generator.html#numba_dppy.spirv_generator.CmdLine.disassemble">disassemble() (numba_dppy.spirv_generator.CmdLine method)</a>
 </li>
       <li><a href="apidoc/numba_dppy.numpy_usm_shared.html#numba_dppy.numpy_usm_shared.DparrayAsNdarray">DparrayAsNdarray (class in numba_dppy.numpy_usm_shared)</a>
 </li>
       <li><a href="apidoc/numba_dppy.numpy_usm_shared.html#numba_dppy.numpy_usm_shared.DparrayFromNdarray">DparrayFromNdarray (class in numba_dppy.numpy_usm_shared)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.dpctl_functions.html#numba_dppy.dpctl_functions.dpctl_event_delete">dpctl_event_delete() (in module numba_dppy.dpctl_functions)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.dpctl_functions.html#numba_dppy.dpctl_functions.dpctl_event_wait">dpctl_event_wait() (in module numba_dppy.dpctl_functions)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dpctl_functions.html#numba_dppy.dpctl_functions.dpctl_free_with_queue">dpctl_free_with_queue() (in module numba_dppy.dpctl_functions)</a>
 </li>
@@ -459,6 +500,8 @@
       <li><a href="apidoc/numba_dppy.dpctl_functions.html#numba_dppy.dpctl_functions.dpctl_malloc_shared">dpctl_malloc_shared() (in module numba_dppy.dpctl_functions)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dpctl_functions.html#numba_dppy.dpctl_functions.dpctl_queue_memcpy">dpctl_queue_memcpy() (in module numba_dppy.dpctl_functions)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.dpctl_functions.html#numba_dppy.dpctl_functions.dpctl_queue_wait">dpctl_queue_wait() (in module numba_dppy.dpctl_functions)</a>
 </li>
       <li><a href="apidoc/numba_dppy.driver.dpctl_capi_fn_builder.html#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder">DpctlCAPIFnBuilder (class in numba_dppy.driver.dpctl_capi_fn_builder)</a>
 </li>
@@ -718,6 +761,8 @@
 </li>
       <li><a href="apidoc/numba_dppy.dppy_passes.html#numba_dppy.dppy_passes.DPPYPreParforPass">DPPYPreParforPass (class in numba_dppy.dppy_passes)</a>
 </li>
+      <li><a href="apidoc/numba_dppy.retarget.html#numba_dppy.retarget.DPPYRetarget">DPPYRetarget (class in numba_dppy.retarget)</a>
+</li>
       <li><a href="apidoc/numba_dppy.rename_numpy_functions_pass.html#numba_dppy.rename_numpy_functions_pass.DPPYRewriteNdarrayFunctions">DPPYRewriteNdarrayFunctions (class in numba_dppy.rename_numpy_functions_pass)</a>
 </li>
       <li><a href="apidoc/numba_dppy.rename_numpy_functions_pass.html#numba_dppy.rename_numpy_functions_pass.DPPYRewriteOverloadedNumPyFunctions">DPPYRewriteOverloadedNumPyFunctions (class in numba_dppy.rename_numpy_functions_pass)</a>
@@ -727,6 +772,12 @@
       <li><a href="apidoc/numba_dppy.target.html#numba_dppy.target.DPPYTargetContext">DPPYTargetContext (class in numba_dppy.target)</a>
 </li>
       <li><a href="apidoc/numba_dppy.target.html#numba_dppy.target.DPPYTypingContext">DPPYTypingContext (class in numba_dppy.target)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.vectorizers.html#numba_dppy.vectorizers.DPPYUFuncDispatcher">DPPYUFuncDispatcher (class in numba_dppy.vectorizers)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.vectorizers.html#numba_dppy.vectorizers.DPPYUFuncMechanism">DPPYUFuncMechanism (class in numba_dppy.vectorizers)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.vectorizers.html#numba_dppy.vectorizers.DPPYVectorize">DPPYVectorize (class in numba_dppy.vectorizers)</a>
 </li>
       <li><a href="apidoc/numba_dppy.numpy_usm_shared.html#numba_dppy.numpy_usm_shared.dprint">dprint() (in module numba_dppy.numpy_usm_shared)</a>
 </li>
@@ -815,10 +866,6 @@
 </li>
       <li><a href="apidoc/numba_dppy.ocl.atomics.html#numba_dppy.ocl.atomics.get_atomic_spirv_path">get_atomic_spirv_path() (in module numba_dppy.ocl.atomics)</a>
 </li>
-      <li><a href="apidoc/numba_dppy.target_dispatcher.html#numba_dppy.target_dispatcher.TargetDispatcher.get_compiled">get_compiled() (numba_dppy.target_dispatcher.TargetDispatcher method)</a>
-</li>
-      <li><a href="apidoc/numba_dppy.target_dispatcher.html#numba_dppy.target_dispatcher.TargetDispatcher.get_current_disp">get_current_disp() (numba_dppy.target_dispatcher.TargetDispatcher method)</a>
-</li>
       <li><a href="apidoc/numba_dppy.driver.kernel_launch_ops.html#numba_dppy.driver.kernel_launch_ops.KernelLaunchOps.get_current_queue">get_current_queue() (numba_dppy.driver.kernel_launch_ops.KernelLaunchOps method)</a>
 </li>
       <li><a href="apidoc/numba_dppy.driver.dpctl_capi_fn_builder.html#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_event_delete">get_dpctl_event_delete() (numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder static method)</a>
@@ -845,10 +892,10 @@
 </li>
       <li><a href="apidoc/numba_dppy.rename_numpy_functions_pass.html#numba_dppy.rename_numpy_functions_pass.get_dpnp_func_typ">get_dpnp_func_typ() (in module numba_dppy.rename_numpy_functions_pass)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dppy.ocl.stubs.html#numba_dppy.ocl.stubs.get_global_id">get_global_id() (in module numba_dppy.ocl.stubs)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dppy.ocl.oclimpl.html#numba_dppy.ocl.oclimpl.get_global_id_impl">get_global_id_impl() (in module numba_dppy.ocl.oclimpl)</a>
 </li>
       <li><a href="apidoc/numba_dppy.ocl.stubs.html#numba_dppy.ocl.stubs.get_global_size">get_global_size() (in module numba_dppy.ocl.stubs)</a>
@@ -918,6 +965,18 @@
   </ul></td>
 </tr></table>
 
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dppy.utils.html#numba_dppy.utils.has_usm_memory">has_usm_memory() (in module numba_dppy.utils)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dppy.utils.array_utils.html#numba_dppy.utils.array_utils.has_usm_memory">(in module numba_dppy.utils.array_utils)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -960,6 +1019,10 @@
       <li><a href="apidoc/numba_dppy.printimpl.html#numba_dppy.printimpl.int_print_impl">int_print_impl() (in module numba_dppy.printimpl)</a>
 </li>
       <li><a href="apidoc/numba_dppy.device_init.html#numba_dppy.device_init.is_available">is_available() (in module numba_dppy.device_init)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.vectorizers.html#numba_dppy.vectorizers.DPPYUFuncMechanism.is_device_array">is_device_array() (numba_dppy.vectorizers.DPPYUFuncMechanism method)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.vectorizers.html#numba_dppy.vectorizers.DPPYUFuncMechanism.is_host_array">is_host_array() (numba_dppy.vectorizers.DPPYUFuncMechanism method)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dppy_array_type.html#numba_dppy.dppy_array_type.DPPYArray.is_precise">is_precise() (numba_dppy.dppy_array_type.DPPYArray method)</a>
 </li>
@@ -1109,6 +1172,8 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dppy.vectorizers.html#numba_dppy.vectorizers.DPPYUFuncMechanism.launch">launch() (numba_dppy.vectorizers.DPPYUFuncMechanism method)</a>
+</li>
       <li><a href="apidoc/numba_dppy.dppy_lowerer.html#numba_dppy.dppy_lowerer.legalize_names_with_typemap">legalize_names_with_typemap() (in module numba_dppy.dppy_lowerer)</a>
 </li>
       <li><a href="apidoc/numba_dppy.spirv_generator.html#numba_dppy.spirv_generator.CmdLine.link">link() (numba_dppy.spirv_generator.CmdLine method)</a>
@@ -1125,14 +1190,14 @@
         <li><a href="apidoc/numba_dppy.utils.llvm_codegen_helpers.html#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes">(class in numba_dppy.utils.llvm_codegen_helpers)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dppy.target.html#numba_dppy.target.DPPYTargetContext.load_additional_registries">load_additional_registries() (numba_dppy.target.DPPYTargetContext method)</a>
 
       <ul>
         <li><a href="apidoc/numba_dppy.target.html#numba_dppy.target.DPPYTypingContext.load_additional_registries">(numba_dppy.target.DPPYTypingContext method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dppy.initialize.html#numba_dppy.initialize.load_dpctl_sycl_interface">load_dpctl_sycl_interface() (in module numba_dppy.initialize)</a>
 </li>
       <li><a href="apidoc/numba_dppy.spirv_generator.html#numba_dppy.spirv_generator.Module.load_llvm">load_llvm() (numba_dppy.spirv_generator.Module method)</a>
@@ -1347,13 +1412,15 @@
 </li>
         <li><a href="apidoc/numba_dppy.rename_numpy_functions_pass.html#module-numba_dppy.rename_numpy_functions_pass">numba_dppy.rename_numpy_functions_pass</a>
 </li>
+        <li><a href="apidoc/numba_dppy.retarget.html#module-numba_dppy.retarget">numba_dppy.retarget</a>
+</li>
         <li><a href="apidoc/numba_dppy.spirv_generator.html#module-numba_dppy.spirv_generator">numba_dppy.spirv_generator</a>
 </li>
         <li><a href="apidoc/numba_dppy.target.html#module-numba_dppy.target">numba_dppy.target</a>
 </li>
-        <li><a href="apidoc/numba_dppy.target_dispatcher.html#module-numba_dppy.target_dispatcher">numba_dppy.target_dispatcher</a>
-</li>
         <li><a href="apidoc/numba_dppy.utils.html#module-numba_dppy.utils">numba_dppy.utils</a>
+</li>
+        <li><a href="apidoc/numba_dppy.utils.array_utils.html#module-numba_dppy.utils.array_utils">numba_dppy.utils.array_utils</a>
 </li>
         <li><a href="apidoc/numba_dppy.utils.constants.html#module-numba_dppy.utils.constants">numba_dppy.utils.constants</a>
 </li>
@@ -1362,6 +1429,8 @@
         <li><a href="apidoc/numba_dppy.utils.misc.html#module-numba_dppy.utils.misc">numba_dppy.utils.misc</a>
 </li>
         <li><a href="apidoc/numba_dppy.utils.type_conversion_fns.html#module-numba_dppy.utils.type_conversion_fns">numba_dppy.utils.type_conversion_fns</a>
+</li>
+        <li><a href="apidoc/numba_dppy.vectorizers.html#module-numba_dppy.vectorizers">numba_dppy.vectorizers</a>
 </li>
       </ul></li>
   </ul></td>
@@ -1585,8 +1654,6 @@
         <li><a href="apidoc/numba_dppy.dppy_passbuilder.html#module-numba_dppy.dppy_passbuilder">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     numba_dppy.dppy_passes
 
@@ -1594,6 +1661,8 @@
         <li><a href="apidoc/numba_dppy.dppy_passes.html#module-numba_dppy.dppy_passes">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     numba_dppy.driver
 
@@ -1721,6 +1790,13 @@
 </li>
       </ul></li>
       <li>
+    numba_dppy.retarget
+
+      <ul>
+        <li><a href="apidoc/numba_dppy.retarget.html#module-numba_dppy.retarget">module</a>
+</li>
+      </ul></li>
+      <li>
     numba_dppy.spirv_generator
 
       <ul>
@@ -1735,17 +1811,17 @@
 </li>
       </ul></li>
       <li>
-    numba_dppy.target_dispatcher
-
-      <ul>
-        <li><a href="apidoc/numba_dppy.target_dispatcher.html#module-numba_dppy.target_dispatcher">module</a>
-</li>
-      </ul></li>
-      <li>
     numba_dppy.utils
 
       <ul>
         <li><a href="apidoc/numba_dppy.utils.html#module-numba_dppy.utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dppy.utils.array_utils
+
+      <ul>
+        <li><a href="apidoc/numba_dppy.utils.array_utils.html#module-numba_dppy.utils.array_utils">module</a>
 </li>
       </ul></li>
       <li>
@@ -1774,6 +1850,13 @@
 
       <ul>
         <li><a href="apidoc/numba_dppy.utils.type_conversion_fns.html#module-numba_dppy.utils.type_conversion_fns">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dppy.vectorizers
+
+      <ul>
+        <li><a href="apidoc/numba_dppy.vectorizers.html#module-numba_dppy.vectorizers">module</a>
 </li>
       </ul></li>
       <li><a href="user_guides/debugging/index.html#index-0">NUMBA_DPPY_DEBUGINFO</a>
@@ -1810,10 +1893,10 @@
 </li>
       <li><a href="apidoc/numba_dppy.ocl.ocldecl.html#numba_dppy.ocl.ocldecl.Ocl_get_num_groups">Ocl_get_num_groups (class in numba_dppy.ocl.ocldecl)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dppy.ocl.ocldecl.html#numba_dppy.ocl.ocldecl.Ocl_get_work_dim">Ocl_get_work_dim (class in numba_dppy.ocl.ocldecl)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dppy.ocl.ocldecl.html#numba_dppy.ocl.ocldecl.OCL_local_array">OCL_local_array (class in numba_dppy.ocl.ocldecl)</a>
 </li>
       <li><a href="apidoc/numba_dppy.ocl.ocldecl.html#numba_dppy.ocl.ocldecl.Ocl_mem_fence">Ocl_mem_fence (class in numba_dppy.ocl.ocldecl)</a>
@@ -1826,9 +1909,17 @@
 </li>
       <li><a href="apidoc/numba_dppy.ocl.ocldecl.html#numba_dppy.ocl.ocldecl.OclModuleTemplate">OclModuleTemplate (class in numba_dppy.ocl.ocldecl)</a>
 </li>
+      <li><a href="apidoc/numba_dppy.html#numba_dppy.offload_to_sycl_device">offload_to_sycl_device() (in module numba_dppy)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dppy.retarget.html#numba_dppy.retarget.offload_to_sycl_device">(in module numba_dppy.retarget)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/numba_dppy.spirv_generator.html#numba_dppy.spirv_generator.CmdLine.optimize">optimize() (numba_dppy.spirv_generator.CmdLine method)</a>
 </li>
       <li><a href="apidoc/numba_dppy.descriptor.html#numba_dppy.descriptor.DPPYTarget.options">options (numba_dppy.descriptor.DPPYTarget attribute)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.retarget.html#numba_dppy.retarget.DPPYRetarget.output_target">output_target (numba_dppy.retarget.DPPYRetarget property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1881,6 +1972,8 @@
       <li><a href="apidoc/numba_dppy.ocl.atomics.html#numba_dppy.ocl.atomics.read_atomic_spirv_file">read_atomic_spirv_file() (in module numba_dppy.ocl.atomics)</a>
 </li>
       <li><a href="apidoc/numba_dppy.printimpl.html#numba_dppy.printimpl.real_print_impl">real_print_impl() (in module numba_dppy.printimpl)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.vectorizers.html#numba_dppy.vectorizers.DPPYUFuncDispatcher.reduce">reduce() (numba_dppy.vectorizers.DPPYUFuncDispatcher method)</a>
 </li>
       <li><a href="apidoc/numba_dppy.dppy_lowerer.html#numba_dppy.dppy_lowerer.relatively_deep_copy">relatively_deep_copy() (in module numba_dppy.dppy_lowerer)</a>
 </li>
@@ -2126,6 +2219,8 @@
 </li>
       <li><a href="apidoc/numba_dppy.ocl.atomics.atomic_helper.html#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope">sycl_memory_scope (class in numba_dppy.ocl.atomics.atomic_helper)</a>
 </li>
+      <li><a href="apidoc/numba_dppy.target.html#numba_dppy.target.SyclDevice">SyclDevice (class in numba_dppy.target)</a>
+</li>
       <li><a href="apidoc/numba_dppy.ocl.atomics.atomic_helper.html#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope.system">system (numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope attribute)</a>
 </li>
   </ul></td>
@@ -2138,18 +2233,14 @@
 </li>
       <li><a href="apidoc/numba_dppy.target.html#numba_dppy.target.DPPYTargetContext.target_data">target_data (numba_dppy.target.DPPYTargetContext property)</a>
 </li>
-      <li><a href="apidoc/numba_dppy.target_dispatcher.html#numba_dppy.target_dispatcher.TargetDispatcher.target_dppy">target_dppy (numba_dppy.target_dispatcher.TargetDispatcher attribute)</a>
-</li>
-      <li><a href="apidoc/numba_dppy.target_dispatcher.html#numba_dppy.target_dispatcher.TargetDispatcher.target_offload_cpu">target_offload_cpu (numba_dppy.target_dispatcher.TargetDispatcher attribute)</a>
-</li>
-      <li><a href="apidoc/numba_dppy.target_dispatcher.html#numba_dppy.target_dispatcher.TargetDispatcher.target_offload_gpu">target_offload_gpu (numba_dppy.target_dispatcher.TargetDispatcher attribute)</a>
-</li>
       <li><a href="apidoc/numba_dppy.dppy_offload_dispatcher.html#numba_dppy.dppy_offload_dispatcher.DppyOffloadDispatcher.targetdescr">targetdescr (numba_dppy.dppy_offload_dispatcher.DppyOffloadDispatcher attribute)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.vectorizers.html#numba_dppy.vectorizers.DPPYUFuncMechanism.to_device">to_device() (numba_dppy.vectorizers.DPPYUFuncMechanism method)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.vectorizers.html#numba_dppy.vectorizers.DPPYUFuncMechanism.to_host">to_host() (numba_dppy.vectorizers.DPPYUFuncMechanism method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="apidoc/numba_dppy.target_dispatcher.html#numba_dppy.target_dispatcher.TargetDispatcher">TargetDispatcher (class in numba_dppy.target_dispatcher)</a>
-</li>
       <li><a href="apidoc/numba_dppy.dppy_lowerer.html#numba_dppy.dppy_lowerer.to_scalar_from_0d">to_scalar_from_0d() (in module numba_dppy.dppy_lowerer)</a>
 </li>
       <li><a href="apidoc/numba_dppy.numpy_usm_shared.html#numba_dppy.numpy_usm_shared.typeof_ta_ndarray">typeof_ta_ndarray() (in module numba_dppy.numpy_usm_shared)</a>
@@ -2204,11 +2295,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dppy.ocl.atomics.atomic_helper.html#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope.work_group">work_group (numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dppy.ocl.atomics.atomic_helper.html#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope.work_item">work_item (numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dppy.dppy_lowerer.html#numba_dppy.dppy_lowerer.wrap_loop_body">wrap_loop_body() (in module numba_dppy.dppy_lowerer)</a>
+</li>
+      <li><a href="apidoc/numba_dppy.dppy_lowerer.html#numba_dppy.dppy_lowerer.WrapperDefaultLower">WrapperDefaultLower (class in numba_dppy.dppy_lowerer)</a>
 </li>
   </ul></td>
 </tr></table>

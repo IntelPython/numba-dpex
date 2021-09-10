@@ -87,20 +87,20 @@
               
             
             
-              <p class="caption"><span class="caption-text">Core Features</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html">Code-generation based on a device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
 </ul>
-<p class="caption"><span class="caption-text">User Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html"> Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html"> Debugging with GDB</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="index.html#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#example-of-gdb-usage">Example of GDB usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#example-of-intel-distribution-for-gdb-usage">Example of Intel® Distribution for GDB* usage</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#features-and-limitations">Features and Limitations</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="features.html">Supported GDB Features</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="features.html">Supported Features</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="breakpoints.html">Breakpoints</a></li>
 <li class="toctree-l4"><a class="reference internal" href="stepping.html">Stepping</a></li>
 <li class="toctree-l4"><a class="reference internal" href="local_variables.html">Local variables</a></li>
@@ -116,7 +116,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Developer Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
@@ -168,9 +168,9 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="index.html">Debugging with Intel® Distribution for GDB</a> &raquo;</li>
+          <li><a href="index.html">Debugging with Intel® Distribution for GDB*</a> &raquo;</li>
         
-          <li><a href="features.html">Supported GDB Features</a> &raquo;</li>
+          <li><a href="features.html">Supported Features</a> &raquo;</li>
         
       <li>Backtrace</li>
     
@@ -193,7 +193,7 @@
             
   <div class="section" id="backtrace">
 <h1>Backtrace<a class="headerlink" href="#backtrace" title="Permalink to this headline">¶</a></h1>
-<p>Let’s consider the work of the command <code class="docutils literal notranslate"><span class="pre">backtrace</span></code> in the following example <code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/debug/simple_dppy_func.py</span></code>:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">backtrace</span></code> command displays a summary of how your program got where it is. Consider the following example <code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/debug/simple_dppy_func.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="linenos">16</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
 <span class="linenos">17</span><span class="kn">import</span> <span class="nn">dpctl</span>
@@ -216,13 +216,14 @@
 <span class="linenos">34</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 <span class="linenos">35</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 <span class="linenos">36</span>
-<span class="linenos">37</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">):</span>
-<span class="linenos">38</span>    <span class="n">kernel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
-<span class="linenos">39</span>
-<span class="linenos">40</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
+<span class="linenos">37</span><span class="n">device</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">SyclDevice</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">)</span>
+<span class="linenos">38</span><span class="k">with</span> <span class="n">dppy</span><span class="o">.</span><span class="n">offload_to_sycl_device</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
+<span class="linenos">39</span>    <span class="n">kernel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+<span class="linenos">40</span>
+<span class="linenos">41</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The section presents two examples of using GDB to generate backtrace from a numa_dppy.kernel function.
+<p>The section presents two examples of using Intel Distribution for GDB* to generate backtrace from a numa_dppy.kernel function.
 The first example presents the case where the kernel function does not invoke any other function.
 The second example presents the case where the kernel function invokes a numba_dppy.func.</p>
 <p>Example 1:</p>
@@ -269,7 +270,7 @@ The second example presents the case where the kernel function invokes a numba_d
 <p>See also:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><a class="reference external" href="https://sourceware.org/gdb/current/onlinedocs/gdb/Backtrace.html#Backtrace">Backtraces in GDB</a></p></li>
+<li><p><a class="reference external" href="https://sourceware.org/gdb/current/onlinedocs/gdb/Backtrace.html#Backtrace">Backtraces in GDB*</a></p></li>
 </ul>
 </div></blockquote>
 </div>

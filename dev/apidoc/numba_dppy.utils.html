@@ -85,19 +85,19 @@
               
             
             
-              <p class="caption"><span class="caption-text">Core Features</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html">Code-generation based on a device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
 </ul>
-<p class="caption"><span class="caption-text">User Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/getting_started.html"> Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/debugging/index.html"> Debugging with GDB</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Developer Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../developer_guides/dpnp_integration.html">DPNP integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
@@ -174,6 +174,7 @@
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="numba_dppy.utils.array_utils.html">numba_dppy.utils.array_utils module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="numba_dppy.utils.constants.html">numba_dppy.utils.constants module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="numba_dppy.utils.llvm_codegen_helpers.html">numba_dppy.utils.llvm_codegen_helpers module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="numba_dppy.utils.misc.html">numba_dppy.utils.misc module</a></li>
@@ -292,6 +293,46 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="numba_dppy.utils.as_usm_obj">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.utils.</span></span><span class="sig-name descname"><span class="pre">as_usm_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'shared'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.utils.as_usm_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine and return a SYCL device accesible object.</p>
+<p>We try to determine if the provided object defines a valid
+__sycl_usm_array_interface__ dictionary.
+If not, we create a USM memory of <cite>usm_type</cite> and try to copy the data
+<cite>obj</cite> holds. Only numpy.ndarray is supported currently as <cite>obj</cite> if
+the object is not already allocated using USM.</p>
+<dl>
+<dt>Args:</dt><dd><p>obj: Object to be tested and data copied from.
+usm_type: USM type used in case obj is not already allocated using USM.
+queue (dpctl.SyclQueue): SYCL queue to be used to allocate USM</p>
+<blockquote>
+<div><p>memory in case obj is not already USM allocated.</p>
+</div></blockquote>
+<p>copy (bool): Flag to determine if we copy data from obj.</p>
+</dd>
+<dt>Returns:</dt><dd><p>A Python object allocated using USM memory.</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>TypeError:</dt><dd><ol class="arabic simple">
+<li><p>If obj is not allocated on USM memory or is not of type
+numpy.ndarray, TypeError is raised.</p></li>
+<li><p>If queue is not of type dpctl.SyclQueue.</p></li>
+</ol>
+</dd>
+<dt>ValueError:</dt><dd><ol class="arabic simple">
+<li><p>In case obj is not USM allocated, users need to pass
+the SYCL queue to be used for creating new memory. ValuieError
+is raised if queue argument is not provided.</p></li>
+<li><p>If usm_type is not valid.</p></li>
+<li><p>If dtype of the passed ndarray(obj) is not supported.</p></li>
+</ol>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="numba_dppy.utils.assert_no_return">
 <span class="sig-prename descclassname"><span class="pre">numba_dppy.utils.</span></span><span class="sig-name descname"><span class="pre">assert_no_return</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rettype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.utils.assert_no_return" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make sure the type of return is void/None.</p>
@@ -322,6 +363,53 @@ function raises TypeError when users do return something.</p>
 <span class="sig-name descname"><span class="pre">CC_SPIR_KERNEL</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'spir_kernel'</span></em><a class="headerlink" href="#numba_dppy.utils.calling_conv.CC_SPIR_KERNEL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dppy.utils.copy_from_numpy_to_usm_obj">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.utils.</span></span><span class="sig-name descname"><span class="pre">copy_from_numpy_to_usm_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">usm_allocated</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.utils.copy_from_numpy_to_usm_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy from supported objects to USM allocated data.</p>
+<p>This function copies the data of a supported Python type (only
+numpy.ndarray is supported at this point) into object that
+defines a __sycl_usm_array_interface__ attribute. For more information
+please refer to the specification of __sycl_usm_array_interface__:
+<a class="reference external" href="https://github.com/IntelPython/dpctl/wiki/Zero-copy-data-exchange-using-SYCL-USM#sycl-usm-array-interface">https://github.com/IntelPython/dpctl/wiki/Zero-copy-data-exchange-using-SYCL-USM#sycl-usm-array-interface</a></p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>usm_allocated: An object that should define a</dt><dd><p>__sycl_usm_array_interface__ dictionary. A TypeError is thrown
+if the object does not have such an attribute.</p>
+</dd>
+</dl>
+<p>obj (numpy.ndarray): Numpy ndarray, the data will be copied into.</p>
+</dd>
+<dt>Raises:</dt><dd><p>TypeError: If any argument is not of permitted type.
+ValueError:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>If size of data does not match.</p></li>
+<li><p>If obj is not C-contiguous.</p></li>
+</ol>
+</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dppy.utils.copy_to_numpy_from_usm_obj">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.utils.</span></span><span class="sig-name descname"><span class="pre">copy_to_numpy_from_usm_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">usm_allocated</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.utils.copy_to_numpy_from_usm_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy from USM allocated data to supported objects.</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>usm_allocated: An object that should define a</dt><dd><p>__sycl_usm_array_interface__ dictionary. A TypeError is thrown
+if the object does not have such an attribute.</p>
+</dd>
+</dl>
+<p>obj (numpy.ndarray): Numpy ndarray, the data will be copied into.</p>
+</dd>
+<dt>Raises:</dt><dd><p>TypeError: If any argument is not of permitted type.
+ValueError: If size of data does not match.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -384,6 +472,23 @@ context: The LLVM IR builder context.</p>
 </dd>
 </dl>
 <p>Returns: An LLVM Contant Value storing zero.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dppy.utils.has_usm_memory">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.utils.</span></span><span class="sig-name descname"><span class="pre">has_usm_memory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.utils.has_usm_memory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine and return a SYCL device accesible object.</p>
+<p>as_usm_memory() converts Python object with <cite>__sycl_usm_array_interface__</cite>
+property to one of <code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryUSMShared</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryUSMDevice</span></code>, or
+<code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryUSMHost</span></code> instances. For more information please refer:
+<a class="reference external" href="https://github.com/IntelPython/dpctl/blob/0.8.0/dpctl/memory/_memory.pyx#L673">https://github.com/IntelPython/dpctl/blob/0.8.0/dpctl/memory/_memory.pyx#L673</a></p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>obj: Object to be tested and data copied from.</p>
+</dd>
+<dt>Returns:</dt><dd><p>A Python object allocated using USM memory if argument is already
+allocated using USM (zero-copy), None otherwise.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">

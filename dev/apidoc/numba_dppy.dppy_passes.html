@@ -85,19 +85,19 @@
               
             
             
-              <p class="caption"><span class="caption-text">Core Features</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html">Code-generation based on a device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
 </ul>
-<p class="caption"><span class="caption-text">User Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/getting_started.html"> Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/debugging/index.html"> Debugging with GDB</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Developer Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../developer_guides/dpnp_integration.html">DPNP integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
@@ -176,7 +176,7 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.compiler_machinery.FunctionPass</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.dppy_passes.DPPYConstantSizeStaticLocalMemoryPass.pass_id">
-<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"> <span class="pre">=</span> <span class="pre">37</span></em><a class="headerlink" href="#numba_dppy.dppy_passes.DPPYConstantSizeStaticLocalMemoryPass.pass_id" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"> <span class="pre">=</span> <span class="pre">38</span></em><a class="headerlink" href="#numba_dppy.dppy_passes.DPPYConstantSizeStaticLocalMemoryPass.pass_id" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -193,7 +193,7 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.compiler_machinery.AnalysisPass</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.dppy_passes.DPPYDumpParforDiagnostics.pass_id">
-<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"> <span class="pre">=</span> <span class="pre">42</span></em><a class="headerlink" href="#numba_dppy.dppy_passes.DPPYDumpParforDiagnostics.pass_id" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"> <span class="pre">=</span> <span class="pre">43</span></em><a class="headerlink" href="#numba_dppy.dppy_passes.DPPYDumpParforDiagnostics.pass_id" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -211,7 +211,7 @@ statement level modification took place.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.compiler_machinery.FunctionPass</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.dppy_passes.DPPYNoPythonBackend.pass_id">
-<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"> <span class="pre">=</span> <span class="pre">41</span></em><a class="headerlink" href="#numba_dppy.dppy_passes.DPPYNoPythonBackend.pass_id" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"> <span class="pre">=</span> <span class="pre">42</span></em><a class="headerlink" href="#numba_dppy.dppy_passes.DPPYNoPythonBackend.pass_id" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -228,7 +228,7 @@ statement level modification took place.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.compiler_machinery.FunctionPass</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.dppy_passes.DPPYParforPass.pass_id">
-<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"> <span class="pre">=</span> <span class="pre">39</span></em><a class="headerlink" href="#numba_dppy.dppy_passes.DPPYParforPass.pass_id" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"> <span class="pre">=</span> <span class="pre">40</span></em><a class="headerlink" href="#numba_dppy.dppy_passes.DPPYParforPass.pass_id" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -245,7 +245,7 @@ statement level modification took place.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.compiler_machinery.FunctionPass</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.dppy_passes.DPPYPreParforPass.pass_id">
-<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"> <span class="pre">=</span> <span class="pre">38</span></em><a class="headerlink" href="#numba_dppy.dppy_passes.DPPYPreParforPass.pass_id" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"> <span class="pre">=</span> <span class="pre">39</span></em><a class="headerlink" href="#numba_dppy.dppy_passes.DPPYPreParforPass.pass_id" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -262,7 +262,7 @@ statement level modification took place.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.compiler_machinery.LoweringPass</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.dppy_passes.SpirvFriendlyLowering.pass_id">
-<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"> <span class="pre">=</span> <span class="pre">40</span></em><a class="headerlink" href="#numba_dppy.dppy_passes.SpirvFriendlyLowering.pass_id" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"> <span class="pre">=</span> <span class="pre">41</span></em><a class="headerlink" href="#numba_dppy.dppy_passes.SpirvFriendlyLowering.pass_id" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">

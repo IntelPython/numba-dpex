@@ -38,9 +38,10 @@ Submodules
    numba_dppy.numpy_usm_shared
    numba_dppy.printimpl
    numba_dppy.rename_numpy_functions_pass
+   numba_dppy.retarget
    numba_dppy.spirv_generator
    numba_dppy.target
-   numba_dppy.target_dispatcher
+   numba_dppy.vectorizers
 
 Module contents
 ---------------

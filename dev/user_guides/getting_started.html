@@ -87,12 +87,12 @@
               
             
             
-              <p class="caption"><span class="caption-text">Core Features</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html">Code-generation based on a device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
 </ul>
-<p class="caption"><span class="caption-text">User Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#"> Getting Started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
@@ -100,14 +100,13 @@
 <li class="toctree-l2"><a class="reference internal" href="#build-and-install-with-setuptools">Build and Install with setuptools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#limitations">Limitations</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="debugging/index.html"> Debugging with GDB</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Developer Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../developer_guides/dpnp_integration.html">DPNP integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
@@ -184,22 +183,17 @@
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>Numba-dppy depends on following components:</p>
 <ul class="simple">
-<li><p>numba 0.53.* (<a class="reference external" href="https://github.com/IntelPython/numba">Intel Python Numba</a>)</p></li>
-<li><p>dpctl 0.8.* (<a class="reference external" href="https://github.com/IntelPython/dpctl">Intel Python dpctl</a>)</p></li>
+<li><p>numba 0.54.* (<a class="reference external" href="https://github.com/numba/numba">Numba</a>)</p></li>
+<li><p>dpctl 0.9.* (<a class="reference external" href="https://github.com/IntelPython/dpctl">Intel Python dpctl</a>)</p></li>
 <li><p>dpnp &gt;=0.6.* (optional, <a class="reference external" href="https://github.com/IntelPython/dpnp">Intel Python DPNP</a>)</p></li>
 <li><p><a class="reference external" href="https://anaconda.org/intel/llvm-spirv">llvm-spirv</a> (SPIRV generation from LLVM IR)</p></li>
 <li><p><a class="reference external" href="https://anaconda.org/intel/llvmdev">llvmdev</a> (LLVM IR generation)</p></li>
 <li><p><a class="reference external" href="https://anaconda.org/intel/spirv-tools">spirv-tools</a></p></li>
+<li><p><a class="reference external" href="https://packaging.pypa.io/">packaging</a></p></li>
 <li><p><a class="reference external" href="https://cython.org">cython</a> (for building)</p></li>
 <li><p><a class="reference external" href="https://anaconda.org/intel/scipy">scipy</a> (for testing)</p></li>
 <li><p><a class="reference external" href="https://docs.pytest.org">pytest</a> (for testing)</p></li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Numba-dppy does not yet work with stock <a class="reference external" href="https://github.com/numba/numba">Numba</a>.
-For now, we need a patched Numba version included in <a class="reference external" href="https://github.com/IntelPython/numba">Intel Python Numba</a>.
-See <a class="reference internal" href="#limitations">limitations</a> for details.</p>
-</div>
 <p>It is recommended to use conda packages from <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-python.html">Intel Distribution for Python</a>
 channel or <a class="reference external" href="https://anaconda.org/intel">anaconda.org/intel</a> channel.
 <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-python.html">Intel Distribution for Python</a> is available from <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/tools/oneapi.html">Intel oneAPI</a>.</p>
@@ -263,13 +257,6 @@ conda activate numba-dppy-env
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python numba_dppy/examples/sum.py
 </pre></div>
 </div>
-</div>
-<div class="section" id="limitations">
-<span id="id1"></span><h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
-<p>Using Numba-dppy requires <a class="reference external" href="https://github.com/IntelPython/numba">Intel Python Numba</a> as that version of Numba has
-patches needed to recognize <code class="xref py py-func docutils literal notranslate"><span class="pre">dpctl.device_context()</span></code> scope and trigger
-code-generation for a SYCL device. Work in underway to upstream all patches, so
-that in future Numba-dppy can work with upstream Numba.</p>
 </div>
 </div>
 

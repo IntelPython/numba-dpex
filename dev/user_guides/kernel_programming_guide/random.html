@@ -85,19 +85,19 @@
               
             
             
-              <p class="caption"><span class="caption-text">Core Features</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html">Code-generation based on a device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
 </ul>
-<p class="caption"><span class="caption-text">User Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html"> Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="index.html"> Programming SYCL Kernels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../debugging/index.html"> Debugging with GDB</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Developer Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
@@ -238,12 +238,13 @@ SYCL-supported device via integration with <a class="reference external" href="h
 <span class="sd">a JIT function on a SYCL device using dpnp</span>
 <span class="sd">(https://github.com/IntelPython/dpnp). As with the rest of numba_dppy examples,</span>
 <span class="sd">this feature is also available by simply invoking a ``numba.jit`` function with</span>
-<span class="sd">the numpy.random calls from within a ``dpctl.device_context``scope.</span>
+<span class="sd">the numpy.random calls from within a ``numba_dppy.offload_to_sycl_device``scope.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numba</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">dpctl</span>
+<span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
 
 
 <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span>
@@ -276,7 +277,7 @@ SYCL-supported device via integration with <a class="reference external" href="h
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using device ...&quot;</span><span class="p">)</span>
     <span class="n">device</span><span class="o">.</span><span class="n">print_device_info</span><span class="p">()</span>
 
-    <span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">dppy</span><span class="o">.</span><span class="n">offload_to_sycl_device</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">rand</span><span class="p">()</span>
         <span class="c1"># Random values in a given shape (3, 2)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>

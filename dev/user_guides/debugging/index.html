@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Debugging with Intel® Distribution for GDB &mdash; numba-dppy 0.14.3 documentation</title>
+  <title>Debugging with Intel® Distribution for GDB* &mdash; numba-dppy 0.14.3 documentation</title>
   
 
   
@@ -41,7 +41,7 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Setting up the machine for debugging" href="set_up_machine.html" />
+    <link rel="next" title="Set up the machine for debugging" href="set_up_machine.html" />
     <link rel="prev" title="Supported Python Features in a numba-dppy Kernel" href="../kernel_programming_guide/supported-python-features.html" /> 
 </head>
 
@@ -87,24 +87,24 @@
               
             
             
-              <p class="caption"><span class="caption-text">Core Features</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html">Code-generation based on a device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
 </ul>
-<p class="caption"><span class="caption-text">User Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html"> Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#"> Debugging with GDB</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="set_up_machine.html">Setting up the machine for debugging</a></li>
-<li class="toctree-l3"><a class="reference internal" href="debugging_environment.html">Configuring debugging environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="set_up_machine.html">Set up the machine for debugging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debugging_environment.html">Configure debugging environment</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#example-of-gdb-usage">Example of GDB usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-of-intel-distribution-for-gdb-usage">Example of Intel® Distribution for GDB* usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#features-and-limitations">Features and Limitations</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="features.html">Supported GDB Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="features.html">Supported Features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="limitations.html">Limitations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="common_issues.html">Common issues and tips</a></li>
 </ul>
@@ -113,7 +113,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Developer Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
@@ -165,7 +165,7 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Debugging with Intel® Distribution for GDB</li>
+      <li>Debugging with Intel® Distribution for GDB*</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -185,38 +185,38 @@
            <div itemprop="articleBody">
             
   <div class="section" id="debugging-with-intel-distribution-for-gdb">
-<h1>Debugging with Intel® Distribution for GDB<a class="headerlink" href="#debugging-with-intel-distribution-for-gdb" title="Permalink to this headline">¶</a></h1>
-<p>Numba-dppy allows SYCL kernels to be debugged with Intel® Distribution for GDB.
-Setting the debug environment variable <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">NUMBA_DPPY_DEBUGINFO</span></code>
-(e.g. <code class="samp docutils literal notranslate"><span class="pre">export</span> <span class="pre">NUMBA_DPPY_DEBUGINFO=1</span></code>) enables the emission of debug information.
-To disable debugging, unset the variable (e.g. <code class="samp docutils literal notranslate"><span class="pre">unset</span> <span class="pre">NUMBA_DPPY_DEBUGINFO</span></code>).</p>
+<h1>Debugging with Intel® Distribution for GDB*<a class="headerlink" href="#debugging-with-intel-distribution-for-gdb" title="Permalink to this headline">¶</a></h1>
+<p>Numba-dppy allows you to debug SYCL* kernels with Intel® Distribution for GDB*.
+To enable the emission of debug information, set the debug environment variable <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">NUMBA_DPPY_DEBUGINFO</span></code>, for example:
+<code class="samp docutils literal notranslate"><span class="pre">export</span> <span class="pre">NUMBA_DPPY_DEBUGINFO=1</span></code>
+To disable debugging, unset the variable:
+<code class="samp docutils literal notranslate"><span class="pre">unset</span> <span class="pre">NUMBA_DPPY_DEBUGINFO</span></code></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Beware that enabling debug info significantly increases the memory consumption for each compiled kernel.
-For large application, this may cause out-of-memory error.</p>
+<p>Enabling debug information significantly increases the memory consumption for each compiled kernel.
+For a large application, this may cause out-of-memory error.</p>
 </div>
-<p>Not all GDB features supported by Numba on CPUs are yet supported in Numba-dppy.
+<p>Not all debugging features supported by Numba on CPUs are yet supported by Numba-dppy.
 See <a class="reference internal" href="#debugging-features-and-limitations"><span class="std std-ref">Features and Limitations</span></a>.</p>
 <div class="section" id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
-<p><cite>Intel® Distribution for GDB</cite> is required for Numba-dppy’s debugging features to work.
-<cite>Intel® Distribution for GDB</cite> is part of <cite>Intel oneAPI</cite> and
-the relevant documentation can be found at <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-gdb.html">Intel® Distribution for GDB documentation</a>.</p>
+<p><cite>Intel® Distribution for GDB*</cite> is required for Numba-dppy debugging features to work.
+<cite>Intel® Distribution for GDB*</cite> is part of <cite>Intel oneAPI</cite>. For relevant documentation, refer to the <a href="#id1"><span class="problematic" id="id2">`Intel® Distribution for GDB* product page`_</span></a>.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="set_up_machine.html">Setting up the machine for debugging</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="set_up_machine.html">Set up the machine for debugging</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="set_up_machine.html#graphics-driver">Graphics driver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_up_machine.html#neo-driver">NEO driver</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set_up_machine.html#dcd-driver">DCD driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set_up_machine.html#debug-companion-driver-dcd">Debug companion driver (DCD)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="debugging_environment.html">Configuring debugging environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="debugging_environment.html">Configure debugging environment</a></li>
 </ul>
 </div>
 </div>
-<div class="section" id="example-of-gdb-usage">
-<h2>Example of GDB usage<a class="headerlink" href="#example-of-gdb-usage" title="Permalink to this headline">¶</a></h2>
-<p>For example, given the following Numba-dppy kernel code (<code class="file docutils literal notranslate"><span class="pre">simple_sum.py</span></code>):</p>
+<div class="section" id="example-of-intel-distribution-for-gdb-usage">
+<h2>Example of Intel® Distribution for GDB* usage<a class="headerlink" href="#example-of-intel-distribution-for-gdb-usage" title="Permalink to this headline">¶</a></h2>
+<p>You can use a sample Numba-dppy kernel code, <code class="file docutils literal notranslate"><span class="pre">simple_sum.py</span></code>, for basic debugging:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="linenos">16</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
 <span class="linenos">17</span><span class="kn">import</span> <span class="nn">dpctl</span>
@@ -235,13 +235,14 @@ the relevant documentation can be found at <a class="reference external" href="h
 <span class="linenos">30</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 <span class="linenos">31</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 <span class="linenos">32</span>
-<span class="linenos">33</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">):</span>
-<span class="linenos">34</span>    <span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
-<span class="linenos">35</span>
-<span class="linenos">36</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
+<span class="linenos">33</span><span class="n">device</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">SyclDevice</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">)</span>
+<span class="linenos">34</span><span class="k">with</span> <span class="n">dppy</span><span class="o">.</span><span class="n">offload_to_sycl_device</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
+<span class="linenos">35</span>    <span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+<span class="linenos">36</span>
+<span class="linenos">37</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Running GDB and creating breakpoint in kernel:</p>
+<p>Use the following commands to create a breakpoint inside the kernel and run the debugger:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_sum.py:22</span>
@@ -264,7 +265,7 @@ the relevant documentation can be found at <a class="reference external" href="h
 <span id="debugging-features-and-limitations"></span><h2>Features and Limitations<a class="headerlink" href="#features-and-limitations" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="features.html">Supported GDB Features</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Supported Features</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="breakpoints.html">Breakpoints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stepping.html">Stepping</a></li>
 <li class="toctree-l2"><a class="reference internal" href="local_variables.html">Local variables</a></li>
@@ -290,7 +291,7 @@ the relevant documentation can be found at <a class="reference external" href="h
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="set_up_machine.html" class="btn btn-neutral float-right" title="Setting up the machine for debugging" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="set_up_machine.html" class="btn btn-neutral float-right" title="Set up the machine for debugging" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="../kernel_programming_guide/supported-python-features.html" class="btn btn-neutral float-left" title="Supported Python Features in a numba-dppy Kernel" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

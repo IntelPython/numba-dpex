@@ -87,20 +87,20 @@
               
             
             
-              <p class="caption"><span class="caption-text">Core Features</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html">Code-generation based on a device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
 </ul>
-<p class="caption"><span class="caption-text">User Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html"> Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html"> Debugging with GDB</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="index.html#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="index.html#example-of-gdb-usage">Example of GDB usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#example-of-intel-distribution-for-gdb-usage">Example of Intel® Distribution for GDB* usage</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#features-and-limitations">Features and Limitations</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="features.html">Supported GDB Features</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="features.html">Supported Features</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="breakpoints.html">Breakpoints</a></li>
 <li class="toctree-l4"><a class="reference internal" href="stepping.html">Stepping</a></li>
 <li class="toctree-l4"><a class="reference internal" href="local_variables.html">Local variables</a></li>
@@ -116,7 +116,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Developer Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
@@ -168,9 +168,9 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="index.html">Debugging with Intel® Distribution for GDB</a> &raquo;</li>
+          <li><a href="index.html">Debugging with Intel® Distribution for GDB*</a> &raquo;</li>
         
-          <li><a href="features.html">Supported GDB Features</a> &raquo;</li>
+          <li><a href="features.html">Supported Features</a> &raquo;</li>
         
       <li>Info commands</li>
     
@@ -193,11 +193,9 @@
             
   <div class="section" id="info-commands">
 <h1>Info commands<a class="headerlink" href="#info-commands" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="info-functions">
-<h2><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">functions</span></code><a class="headerlink" href="#info-functions" title="Permalink to this headline">¶</a></h2>
-<p>Displays the list of functions in the debugged program.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">functions</span></code> command displays the list of functions in the debugged program.</p>
 <div class="section" id="syntax">
-<h3><strong>Syntax</strong><a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h3>
+<h2><strong>Syntax</strong><a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>info functions
 info functions <span class="o">[</span>Regex<span class="o">]</span>
 </pre></div>
@@ -209,9 +207,9 @@ as the list of all functions in all loaded shared libraries is typically very lo
 </div>
 </div>
 <div class="section" id="parameters">
-<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
+<h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
 <p><strong>Regex</strong></p>
-<p>If specified, the info functions command lists the functions matching the regex.
+<p>If the regex is specified, the <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">functions</span></code> command lists the functions matching the regex.
 If omitted, the command lists all functions in all loaded modules (main program and shared libraries).</p>
 <p>Consider Numba-dppy kernel code. See the source file <code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/debug/simple_sum.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -232,13 +230,14 @@ If omitted, the command lists all functions in all loaded modules (main program 
 <span class="linenos">30</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 <span class="linenos">31</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 <span class="linenos">32</span>
-<span class="linenos">33</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">):</span>
-<span class="linenos">34</span>    <span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
-<span class="linenos">35</span>
-<span class="linenos">36</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
+<span class="linenos">33</span><span class="n">device</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">SyclDevice</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">)</span>
+<span class="linenos">34</span><span class="k">with</span> <span class="n">dppy</span><span class="o">.</span><span class="n">offload_to_sycl_device</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
+<span class="linenos">35</span>    <span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+<span class="linenos">36</span>
+<span class="linenos">37</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Run GDB debugger:</p>
+<p>Run the debugger and use the <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">functions</span></code> command. The output is as follows:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_sum.py:22</span>
@@ -260,9 +259,8 @@ If omitted, the command lists all functions in all loaded modules (main program 
 </div>
 <p>See also:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://sourceware.org/gdb/onlinedocs/gdb/Symbols.html">Info functions</a></p></li>
+<li><p><a class="reference external" href="https://sourceware.org/gdb/onlinedocs/gdb/Symbols.html">Info functions in GDB*</a></p></li>
 </ul>
-</div>
 </div>
 </div>
 
