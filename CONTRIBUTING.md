@@ -67,6 +67,11 @@ Run HTTP server:
 cd docs/_build/html && python -m http.server 8000
 ```
 
+Don't forget to change the version in `docs/conf.py` before generating.
+```python
+release = "<VERSION>"
+```
+
 Generated documentation will be in `docs/_build/html`.
 
 #### Documentation common issues
