@@ -85,19 +85,19 @@
               
             
             
-              <p class="caption"><span class="caption-text">Core Features</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html">Code-generation based on a device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
 </ul>
-<p class="caption"><span class="caption-text">User Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/getting_started.html"> Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/debugging/index.html"> Debugging with GDB</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Developer Guides</span></p>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../developer_guides/dpnp_integration.html">DPNP integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
@@ -351,17 +351,18 @@ type gets combined with scalars and regular Numpy types.
 We re-use Numpy functions as well but those are going to return Numpy
 arrays allocated in USM and we use the overloaded copy function to
 convert such USM-backed Numpy arrays into typed USM arrays.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dppy.numpy_usm_shared.UsmSharedArrayType.box_type">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">box_type</span></span><a class="headerlink" href="#numba_dppy.numpy_usm_shared.UsmSharedArrayType.box_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the Python type to box to.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.numpy_usm_shared.UsmSharedArrayType.copy">
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy_usm_shared.UsmSharedArrayType.copy" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.numpy_usm_shared.allocator_UsmArray">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.numpy_usm_shared.</span></span><span class="sig-name descname"><span class="pre">allocator_UsmArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy_usm_shared.allocator_UsmArray" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dppy.numpy_usm_shared.argspec_to_string">

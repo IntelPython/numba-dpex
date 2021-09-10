@@ -1,27 +1,27 @@
-Debugging with Intel® Distribution for GDB
-==========================================
+Debugging with Intel® Distribution for GDB*
+===========================================
 
-Numba-dppy allows SYCL kernels to be debugged with Intel® Distribution for GDB.
-Setting the debug environment variable :envvar:`NUMBA_DPPY_DEBUGINFO`
-(e.g. :samp:`export NUMBA_DPPY_DEBUGINFO=1`) enables the emission of debug information.
-To disable debugging, unset the variable (e.g. :samp:`unset NUMBA_DPPY_DEBUGINFO`).
+Numba-dppy allows you to debug SYCL* kernels with Intel® Distribution for GDB*.
+To enable the emission of debug information, set the debug environment variable :envvar:`NUMBA_DPPY_DEBUGINFO`, for example:
+:samp:`export NUMBA_DPPY_DEBUGINFO=1`
+To disable debugging, unset the variable:
+:samp:`unset NUMBA_DPPY_DEBUGINFO`
 
 .. note::
 
-    Beware that enabling debug info significantly increases the memory consumption for each compiled kernel.
-    For large application, this may cause out-of-memory error.
+    Enabling debug information significantly increases the memory consumption for each compiled kernel.
+    For a large application, this may cause out-of-memory error.
 
-Not all GDB features supported by Numba on CPUs are yet supported in Numba-dppy.
+Not all debugging features supported by Numba on CPUs are yet supported by Numba-dppy.
 See :ref:`debugging-features-and-limitations`.
 
 Requirements
 ------------
 
-`Intel® Distribution for GDB` is required for Numba-dppy's debugging features to work.
-`Intel® Distribution for GDB` is part of `Intel oneAPI` and
-the relevant documentation can be found at `Intel® Distribution for GDB documentation`_.
+`Intel® Distribution for GDB*` is required for Numba-dppy debugging features to work.
+`Intel® Distribution for GDB*` is part of `Intel oneAPI`. For relevant documentation, refer to the `Intel® Distribution for GDB* product page`_.
 
-.. _`Intel® Distribution for GDB documentation`: https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-gdb.html
+.. _`Intel® Distribution for GDB* documentation`: https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-gdb.html
 
 .. toctree::
     :maxdepth: 2
@@ -30,17 +30,17 @@ the relevant documentation can be found at `Intel® Distribution for GDB documen
     debugging_environment
 
 
-Example of GDB usage
---------------------
+Example of Intel® Distribution for GDB* usage
+--------------------------------------------
 
-For example, given the following Numba-dppy kernel code (:file:`simple_sum.py`):
+You can use a sample Numba-dppy kernel code, :file:`simple_sum.py`, for basic debugging:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
     :lines: 15-
     :linenos:
     :lineno-match:
 
-Running GDB and creating breakpoint in kernel:
+Use the following commands to create a breakpoint inside the kernel and run the debugger:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/simple_sum
     :language: shell-session

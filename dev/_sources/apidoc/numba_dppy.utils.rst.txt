@@ -7,6 +7,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   numba_dppy.utils.array_utils
    numba_dppy.utils.constants
    numba_dppy.utils.llvm_codegen_helpers
    numba_dppy.utils.misc
