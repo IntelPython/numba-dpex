@@ -14,7 +14,7 @@
 
 import math
 
-from numba.core import types, utils
+from numba.core import types
 from numba.core.typing.templates import (AttributeTemplate, ConcreteTemplate,
                                          Registry, signature)
 
