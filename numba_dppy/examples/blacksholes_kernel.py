@@ -92,7 +92,6 @@ def main():
     device.print_device_info()
 
     with dppy.offload_to_sycl_device(device):
-        time1 = time.time()
         for i in range(iterations):
             black_scholes_dppy[blockdim, griddim](
                 callResult,
