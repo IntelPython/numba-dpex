@@ -4,7 +4,17 @@ set -euxo pipefail
 
 pytest -q -ra --disable-warnings --pyargs numba_dppy -vv
 
-source ${ONEAPI_ROOT}/compiler/latest/env/vars.sh
-NUMBA_DPPY_LLVM_SPIRV_ROOT=${ONEAPI_ROOT}/compiler/latest/linux/bin/ pytest -q -ra --disable-warnings --pyargs numba_dppy.tests.kernel_tests.test_atomic_op::test_atomic_fp_native -vv
+if [[ -v ONEAPI_ROOT ]]; then
+    # shellcheck disable=SC1091
+    source "${ONEAPI_ROOT}/compiler/latest/env/vars.sh"
+    export NUMBA_DPPY_LLVM_SPIRV_ROOT="${ONEAPI_ROOT}/compiler/latest/linux/bin"
+    echo "Using llvm-spirv from oneAPI"
+else
+    export NUMBA_DPPY_LLVM_SPIRV_ROOT="${CONDA_PREFIX}/bin"
+    echo "Using llvm-spirv from conda environment"
+fi
+
+pytest -q -ra --disable-warnings -vv \
+    --pyargs numba_dppy.tests.kernel_tests.test_atomic_op::test_atomic_fp_native
 
 exit 0
