@@ -12,10 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba.core import dispatcher, typing, utils
+from numba.core import utils
 from numba.core.cpu import CPUTargetOptions
 from numba.core.descriptors import TargetDescriptor
-from numba.core.options import TargetOptions
 
 from .target import DPPY_TARGET_NAME, DPPYTargetContext, DPPYTypingContext
 
