@@ -14,7 +14,7 @@
 
 """
 The ``driver`` module implements Numba's interface to the dpctl library, a
-lightweight Python and C wrapper to a subset of DPC++'s runtime API. The 
+lightweight Python and C wrapper to a subset of DPC++'s runtime API. The
 ``driver`` module includes:
 
 - LLVM IR builders for dpctl C API functions to be called directly from a Numba
