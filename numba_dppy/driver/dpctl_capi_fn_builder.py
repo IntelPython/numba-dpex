@@ -18,7 +18,6 @@ declarations into an LLVM module.
 """
 
 import llvmlite.llvmpy.core as lc
-from llvmlite.ir import builder
 from numba.core import cgutils, types
 
 import numba_dppy.utils as utils
