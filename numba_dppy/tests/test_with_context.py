@@ -17,7 +17,6 @@ import unittest
 import dpctl
 import numpy as np
 from numba import njit
-from numba.core import errors
 from numba.tests.support import captured_stdout
 
 import numba_dppy
