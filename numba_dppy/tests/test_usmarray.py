@@ -14,11 +14,9 @@
 
 import unittest
 
-import dpctl
 import dpctl.tensor.numpy_usm_shared as usmarray
 import numba
 import numpy
-import pytest
 
 
 @numba.njit()
