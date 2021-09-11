@@ -16,7 +16,6 @@ import math
 import time
 import unittest
 
-import dpctl
 import numpy as np
 
 import numba_dppy as dppy
