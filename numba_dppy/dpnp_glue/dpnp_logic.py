@@ -14,7 +14,7 @@
 
 import numpy as np
 from numba import types
-from numba.core.extending import overload, register_jitable
+from numba.core.extending import overload
 from numba.core.typing import signature
 
 import numba_dppy.dpnp_glue as dpnp_lowering
