@@ -14,17 +14,17 @@
 # limitations under the License.
 
 import unittest
-import numpy as np
+
 import numba
+import numpy as np
 from numba import typeof
+from numba.core import compiler, cpu, typing
+from numba.core.typed_passes import AnnotateTypes, NopythonTypeInference
+
 import numba_dppy
-from numba_dppy.tests._helper import ensure_dpnp
-from numba.core import compiler, typing, cpu
 from numba_dppy.rename_numpy_functions_pass import (
-    DPPYRewriteOverloadedNumPyFunctions,
-    DPPYRewriteNdarrayFunctions,
-)
-from numba.core.typed_passes import NopythonTypeInference, AnnotateTypes
+    DPPYRewriteNdarrayFunctions, DPPYRewriteOverloadedNumPyFunctions)
+from numba_dppy.tests._helper import ensure_dpnp
 
 
 class MyPipeline(object):

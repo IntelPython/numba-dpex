@@ -13,24 +13,24 @@
 # limitations under the License.
 
 import re
+
 import numpy as np
-
-from llvmlite.llvmpy import core as lc
-from llvmlite import ir as llvmir
 from llvmlite import binding as ll
-
-from numba.core import typing, types, utils, cgutils
+from llvmlite import ir as llvmir
+from llvmlite.llvmpy import core as lc
 from numba import typeof
-from numba.core.utils import cached_property
-from numba.core import datamodel
+from numba.core import cgutils, datamodel, types, typing, utils
 from numba.core.base import BaseContext
-from numba.core.registry import cpu_target
 from numba.core.callconv import MinimalCallConv
-from . import codegen
-from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
+from numba.core.registry import cpu_target
 from numba.core.target_extension import GPU, target_registry
-from numba_dppy.utils import npytypes_array_to_dppy_array, address_space, calling_conv
+from numba.core.utils import cached_property
 
+from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
+from numba_dppy.utils import (address_space, calling_conv,
+                              npytypes_array_to_dppy_array)
+
+from . import codegen
 
 CC_SPIR_KERNEL = "spir_kernel"
 CC_SPIR_FUNC = "spir_func"
@@ -78,8 +78,9 @@ class DPPYTypingContext(typing.BaseContext):
 
     def load_additional_registries(self):
         """Register the OpenCL API and math and other functions."""
-        from .ocl import ocldecl, mathdecl
         from numba.core.typing import cmathdecl, npydecl
+
+        from .ocl import mathdecl, ocldecl
 
         self.install_registry(ocldecl.registry)
         self.install_registry(mathdecl.registry)
@@ -275,8 +276,9 @@ class DPPYTargetContext(BaseContext):
         self.data_model_manager = _init_data_model_manager()
         self.extra_compile_options = dict()
 
-        from numba.np.ufunc_db import _lazy_init_db
         import copy
+
+        from numba.np.ufunc_db import _lazy_init_db
 
         _lazy_init_db()
         from numba.np.ufunc_db import _ufunc_db as ufunc_db
@@ -335,10 +337,11 @@ class DPPYTargetContext(BaseContext):
         been registered into the target context.
 
         """
-        from .ocl import oclimpl, mathimpl
+        from numba.cpython import numbers, slicing, tupleobj
         from numba.np import npyimpl
+
         from . import printimpl
-        from numba.cpython import numbers, tupleobj, slicing
+        from .ocl import mathimpl, oclimpl
 
         self.insert_func_defn(oclimpl.registry.functions)
         self.insert_func_defn(mathimpl.registry.functions)

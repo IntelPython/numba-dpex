@@ -13,13 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from . import _helper
-import numpy as np
-import dpctl
-from numba import njit, prange
 import unittest
-from numba_dppy.tests._helper import assert_auto_offloading
+
+import dpctl
+import numpy as np
+from numba import njit, prange
+
 import numba_dppy as dppy
+from numba_dppy.tests._helper import assert_auto_offloading
+
+from . import _helper
 
 
 @unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")

@@ -12,12 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
-from . import _helper
 import math
-import numba_dppy as dppy
 import unittest
+
 import dpctl
+import numpy as np
+
+import numba_dppy as dppy
+
+from . import _helper
 
 
 @dppy.kernel

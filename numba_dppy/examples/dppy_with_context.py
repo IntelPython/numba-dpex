@@ -24,9 +24,10 @@ functionality. Note that numba_dppy should be installed in your
 environment for the example to work.
 """
 
+import dpctl
 import numpy as np
 from numba import njit, prange
-import dpctl
+
 import numba_dppy as dppy
 
 

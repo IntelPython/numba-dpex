@@ -12,10 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba.core import types, ir, typing
-
-import numpy as np
 import numba
+import numpy as np
+from numba.core import ir, types, typing
 from numba.np import numpy_support
 
 _stub_error = NotImplementedError("This is a stub.")

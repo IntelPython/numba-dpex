@@ -14,10 +14,10 @@
 
 """A wrapper to connect to the SPIR-V binaries (Tools, Translator)."""
 
-import sys
 import os
-from subprocess import check_call, CalledProcessError, call
+import sys
 import tempfile
+from subprocess import CalledProcessError, call, check_call
 
 from numba_dppy import config
 from numba_dppy.target import LINK_ATOMIC, LLVM_SPIRV_ARGS

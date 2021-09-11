@@ -15,8 +15,9 @@
 import dpctl
 import dpctl.tensor as dpt
 import numpy as np
-from numba import njit
 import pytest
+from numba import njit
+
 import numba_dppy as dppy
 from numba_dppy.tests._helper import ensure_dpnp, skip_test
 

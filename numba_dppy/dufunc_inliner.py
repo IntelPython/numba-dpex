@@ -31,7 +31,8 @@ def _run_inliner(
     typingctx,
     targetctx,
 ):
-    from numba.core.inline_closurecall import inline_closure_call, callee_ir_validator
+    from numba.core.inline_closurecall import (callee_ir_validator,
+                                               inline_closure_call)
 
     # pass is typed so use the callee globals
     inline_closure_call(

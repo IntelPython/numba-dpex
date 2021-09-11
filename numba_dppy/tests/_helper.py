@@ -13,15 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
 import contextlib
-
+import sys
 import unittest
+
 import dpctl
-from numba.tests.support import (
-    captured_stdout,
-    redirect_c_stdout,
-)
+from numba.tests.support import captured_stdout, redirect_c_stdout
 
 import numba_dppy
 from numba_dppy import config
@@ -114,7 +111,7 @@ def captured_dppy_stdout():
     # Prevent accidentally capturing previously output text
     sys.stdout.flush()
 
-    import numba_dppy, numba_dppy as dppy
+    import numba_dppy as dppy
 
     with redirect_c_stdout() as stream:
         yield DPPYTextCapture(stream)

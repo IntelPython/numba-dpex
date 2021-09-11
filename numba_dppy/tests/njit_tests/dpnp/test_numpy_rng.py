@@ -18,13 +18,14 @@
 
 import dpctl
 import numpy as np
-from numba import njit
 import pytest
-from numba_dppy.tests._helper import dpnp_debug
-from .dpnp_skip_test import dpnp_skip_test as skip_test
-from ._helper import wrapper_function
-import numba_dppy as dppy
+from numba import njit
 
+import numba_dppy as dppy
+from numba_dppy.tests._helper import dpnp_debug
+
+from ._helper import wrapper_function
+from .dpnp_skip_test import dpnp_skip_test as skip_test
 
 # dpnp throws -30 (CL_INVALID_VALUE) when invoked with multiple kinds of
 # devices at runtime, so testing for level_zero only

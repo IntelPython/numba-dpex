@@ -12,15 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from . import _helper
-import numpy as np
 import math
 import time
+import unittest
+
+import dpctl
+import numpy as np
 
 import numba_dppy as dppy
-import unittest
-import dpctl
 
+from . import _helper
 
 RISKFREE = 0.02
 VOLATILITY = 0.30

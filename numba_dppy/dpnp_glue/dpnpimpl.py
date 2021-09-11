@@ -12,14 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba.core.imputils import lower_builtin
-from numba.core import types
-from numba.core.extending import register_jitable
 import numpy as np
 from llvmlite import ir
-from numba.core.imputils import lower_getattr
+from numba.core import types
+from numba.core.extending import register_jitable
+from numba.core.imputils import lower_builtin, lower_getattr
 from numba.cpython import listobj
-
 
 ll_void_p = ir.IntType(8).as_pointer()
 

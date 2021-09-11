@@ -13,13 +13,10 @@
 # limitations under the License.
 
 import math
+
 from numba.core import types, utils
-from numba.core.typing.templates import (
-    AttributeTemplate,
-    ConcreteTemplate,
-    signature,
-    Registry,
-)
+from numba.core.typing.templates import (AttributeTemplate, ConcreteTemplate,
+                                         Registry, signature)
 
 registry = Registry()
 builtin_attr = registry.register_attr

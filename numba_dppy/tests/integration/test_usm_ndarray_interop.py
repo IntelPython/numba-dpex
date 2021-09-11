@@ -15,12 +15,11 @@
 import dpctl
 import dpctl.tensor as dpt
 import numpy as np
-from numba import njit
 import pytest
+from numba import njit
+
 import numba_dppy as dppy
 from numba_dppy.tests._helper import skip_test
-
-import dpctl.tensor as dpt
 
 list_of_dtype = [
     np.int32,

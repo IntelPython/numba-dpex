@@ -14,11 +14,11 @@
 # limitations under the License.
 
 import dpctl
-import numpy.testing as testing
-import numba_dppy as dppy
-import numpy as np
-
 import dpctl.tensor as dpt
+import numpy as np
+import numpy.testing as testing
+
+import numba_dppy as dppy
 
 
 @dppy.kernel

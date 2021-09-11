@@ -12,11 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import math
+
 import dpctl
-import numba_dppy as dppy
 import numpy as np
 import pytest
-import math
+
+import numba_dppy as dppy
 from numba_dppy.tests._helper import skip_test
 
 list_of_filter_strs = [

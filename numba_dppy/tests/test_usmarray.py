@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numba
-import numpy
 import unittest
-import pytest
 
 import dpctl
 import dpctl.tensor.numpy_usm_shared as usmarray
+import numba
+import numpy
+import pytest
 
 
 @numba.njit()

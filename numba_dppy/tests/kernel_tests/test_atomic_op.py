@@ -12,15 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
-from numba_dppy.tests._helper import skip_test
-
 import os
+
+import dpctl
+import numpy as np
+import pytest
+
 import numba_dppy as dppy
 from numba_dppy import config
-import pytest
-import dpctl
-
+from numba_dppy.tests._helper import skip_test
 
 global_size = 100
 N = global_size

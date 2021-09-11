@@ -12,17 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba.core import ir
+from numba.core import ir, types
 from numba.core.compiler_machinery import FunctionPass, register_pass
-from numba.core.ir_utils import (
-    find_topo_order,
-    mk_unique_var,
-    remove_dead,
-    simplify_CFG,
-)
-import numba_dppy
-from numba.core import types
+from numba.core.ir_utils import (find_topo_order, mk_unique_var, remove_dead,
+                                 simplify_CFG)
 
+import numba_dppy
 
 rewrite_function_name_map = {
     # numpy
@@ -204,8 +199,6 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
     def __init__(self):
         FunctionPass.__init__(self)
 
-        import numba_dppy.dpnp_glue.dpnpdecl
-        import numba_dppy.dpnp_glue.dpnpimpl
         import numba_dppy.dpnp_glue.dpnp_array_creations_impl
         import numba_dppy.dpnp_glue.dpnp_array_ops_impl
         import numba_dppy.dpnp_glue.dpnp_indexing
@@ -216,6 +209,8 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
         import numba_dppy.dpnp_glue.dpnp_sort_search_countimpl
         import numba_dppy.dpnp_glue.dpnp_statisticsimpl
         import numba_dppy.dpnp_glue.dpnp_transcendentalsimpl
+        import numba_dppy.dpnp_glue.dpnpdecl
+        import numba_dppy.dpnp_glue.dpnpimpl
 
     def run_pass(self, state):
         rewrite_function_name_pass = RewriteNumPyOverloadedFunctions(

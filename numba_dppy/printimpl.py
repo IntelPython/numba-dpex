@@ -15,8 +15,7 @@
 from functools import singledispatch
 
 import llvmlite.llvmpy.core as lc
-
-from numba.core import types, typing, cgutils
+from numba.core import cgutils, types, typing
 from numba.core.imputils import Registry
 
 from numba_dppy.utils import address_space

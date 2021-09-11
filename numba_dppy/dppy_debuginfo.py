@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba.core.debuginfo import DIBuilder
 from llvmlite import ir
+from numba.core.debuginfo import DIBuilder
 
 
 class DPPYDIBuilder(DIBuilder):

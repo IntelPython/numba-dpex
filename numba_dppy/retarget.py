@@ -19,6 +19,7 @@ from numba import njit
 from numba._dispatcher import set_use_tls_target_stack
 from numba.core.dispatcher import TargetConfig
 from numba.core.retarget import BasicRetarget
+
 from numba_dppy.target import DPPY_TARGET_NAME
 
 

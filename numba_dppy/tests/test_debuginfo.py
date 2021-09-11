@@ -14,16 +14,15 @@
 # limitations under the License.
 
 import re
-import pytest
 
 import dpctl
+import pytest
 from numba.core import types
 
 import numba_dppy as dppy
 from numba_dppy import compiler
 from numba_dppy.tests._helper import override_config
 from numba_dppy.utils import npytypes_array_to_dppy_array
-
 
 debug_options = [True, False]
 

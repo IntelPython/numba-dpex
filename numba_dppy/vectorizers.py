@@ -14,20 +14,17 @@
 
 """Provide @vectorize(target="dppy") support."""
 
+import warnings
+
+import dpctl
 import numpy as np
 from numba.np.ufunc import deviceufunc
-import dpctl
-import warnings
-import numba_dppy as dppy
-from numba_dppy.dppy_offload_dispatcher import DppyOffloadDispatcher
-from numba_dppy.utils import (
-    has_usm_memory,
-    as_usm_obj,
-    copy_from_numpy_to_usm_obj,
-    copy_to_numpy_from_usm_obj,
-)
 
+import numba_dppy as dppy
 from numba_dppy.descriptor import dppy_target
+from numba_dppy.dppy_offload_dispatcher import DppyOffloadDispatcher
+from numba_dppy.utils import (as_usm_obj, copy_from_numpy_to_usm_obj,
+                              copy_to_numpy_from_usm_obj, has_usm_memory)
 
 vectorizer_stager_source = """
 def __vectorized_{name}({args}, __out__):

@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
 import os
-import pytest
+
 import dpctl
+import numpy as np
+import pytest
 
 import numba_dppy
 from numba_dppy import config

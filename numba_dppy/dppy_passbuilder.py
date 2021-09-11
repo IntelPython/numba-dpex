@@ -13,52 +13,29 @@
 # limitations under the License.
 
 from numba.core.compiler_machinery import PassManager
+from numba.core.typed_passes import (AnnotateTypes, DumpParforDiagnostics,
+                                     InlineOverloads, IRLegalization,
+                                     NopythonRewrites,
+                                     NoPythonSupportedFeatureValidation,
+                                     NopythonTypeInference, ParforPass,
+                                     PreLowerStripPhis, PreParforPass)
+from numba.core.untyped_passes import (CanonicalizeLoopEntry,
+                                       CanonicalizeLoopExit, DeadBranchPrune,
+                                       ExtractByteCode, FindLiterallyCalls,
+                                       FixupArgs, GenericRewrites,
+                                       InlineClosureLikes, InlineInlinables,
+                                       IRProcessing, LiteralUnroll,
+                                       MakeFunctionToJitFunction,
+                                       ReconstructSSA,
+                                       RewriteSemanticConstants,
+                                       TranslateByteCode, WithLifting)
 
-from numba.core.untyped_passes import (
-    ExtractByteCode,
-    TranslateByteCode,
-    FixupArgs,
-    IRProcessing,
-    DeadBranchPrune,
-    RewriteSemanticConstants,
-    InlineClosureLikes,
-    GenericRewrites,
-    WithLifting,
-    InlineInlinables,
-    FindLiterallyCalls,
-    MakeFunctionToJitFunction,
-    CanonicalizeLoopExit,
-    CanonicalizeLoopEntry,
-    ReconstructSSA,
-    LiteralUnroll,
-)
-
-from numba.core.typed_passes import (
-    NopythonTypeInference,
-    AnnotateTypes,
-    NopythonRewrites,
-    PreParforPass,
-    ParforPass,
-    DumpParforDiagnostics,
-    IRLegalization,
-    InlineOverloads,
-    PreLowerStripPhis,
-    NoPythonSupportedFeatureValidation,
-)
-
-from .dppy_passes import (
-    DPPYConstantSizeStaticLocalMemoryPass,
-    DPPYPreParforPass,
-    DPPYParforPass,
-    SpirvFriendlyLowering,
-    DPPYNoPythonBackend,
-    DPPYDumpParforDiagnostics,
-)
-
-from .rename_numpy_functions_pass import (
-    DPPYRewriteOverloadedNumPyFunctions,
-    DPPYRewriteNdarrayFunctions,
-)
+from .dppy_passes import (DPPYConstantSizeStaticLocalMemoryPass,
+                          DPPYDumpParforDiagnostics, DPPYNoPythonBackend,
+                          DPPYParforPass, DPPYPreParforPass,
+                          SpirvFriendlyLowering)
+from .rename_numpy_functions_pass import (DPPYRewriteNdarrayFunctions,
+                                          DPPYRewriteOverloadedNumPyFunctions)
 
 
 class DPPYPassBuilder(object):

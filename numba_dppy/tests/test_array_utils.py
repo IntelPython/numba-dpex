@@ -13,14 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import dpctl
+import dpctl.memory as dpctl_mem
+import dpctl.tensor as dpt
 import numpy as np
 import pytest
-import dpctl
-import dpctl.tensor as dpt
-import dpctl.memory as dpctl_mem
-from . import _helper
-from numba_dppy.utils import has_usm_memory, as_usm_obj, copy_to_numpy_from_usm_obj
+
 from numba_dppy.tests._helper import skip_test
+from numba_dppy.utils import (as_usm_obj, copy_to_numpy_from_usm_obj,
+                              has_usm_memory)
+
+from . import _helper
 
 
 def test_has_usm_memory(offload_device):

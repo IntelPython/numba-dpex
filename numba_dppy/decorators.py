@@ -15,15 +15,11 @@
 import dpctl
 from numba.core import sigutils, types
 
-from numba_dppy.utils import npytypes_array_to_dppy_array, assert_no_return
+from numba_dppy.utils import assert_no_return, npytypes_array_to_dppy_array
 
-from .compiler import (
-    compile_kernel,
-    JitDPPYKernel,
-    compile_dppy_func_template,
-    compile_dppy_func,
-    get_ordered_arg_access_types,
-)
+from .compiler import (JitDPPYKernel, compile_dppy_func,
+                       compile_dppy_func_template, compile_kernel,
+                       get_ordered_arg_access_types)
 
 
 def kernel(signature=None, access_types=None, debug=None):
