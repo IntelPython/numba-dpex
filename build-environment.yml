@@ -1,0 +1,6 @@
+name: build
+channels:
+  - defaults
+dependencies:
+  - conda-build
+  - python=3.8
