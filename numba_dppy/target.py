@@ -337,7 +337,6 @@ class DPPYTargetContext(BaseContext):
         been registered into the target context.
 
         """
-        from numba.cpython import numbers, slicing, tupleobj
         from numba.np import npyimpl
 
         from . import printimpl
