@@ -19,6 +19,7 @@ docs/gh-pages/
 dist/
 htmlcov/
 .idea/
+.vscode/settings.json
 .mypy_cache/
 .ipynb_checkpoints/
 __pycache__/
