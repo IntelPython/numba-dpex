@@ -14,7 +14,7 @@
 
 import dpctl
 import numpy as np
-from numba import gdb, njit
+from numba import njit
 
 import numba_dppy as dppy
 
