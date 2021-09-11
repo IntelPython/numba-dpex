@@ -18,7 +18,6 @@ from inspect import signature
 from types import FunctionType
 
 import dpctl
-import dpctl.memory as dpctl_mem
 import dpctl.program as dpctl_prog
 import numpy as np
 from numba.core import compiler, ir, types
