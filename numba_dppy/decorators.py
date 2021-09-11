@@ -18,7 +18,7 @@ from numba.core import sigutils, types
 from numba_dppy.utils import assert_no_return, npytypes_array_to_dppy_array
 
 from .compiler import (JitDPPYKernel, compile_dppy_func,
-                       compile_dppy_func_template, compile_kernel,
+                       compile_dppy_func_template,
                        get_ordered_arg_access_types)
 
 
