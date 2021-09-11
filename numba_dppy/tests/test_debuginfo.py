@@ -54,7 +54,7 @@ def test_debug_flag_generates_ir_with_debuginfo(debug_option):
 
     @dppy.kernel
     def foo(x):
-        x = 1
+        x = 1  # noqa
 
     sycl_queue = dpctl.get_current_queue()
     sig = (types.int32,)
