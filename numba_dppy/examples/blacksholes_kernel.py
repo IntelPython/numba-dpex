@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import math
-import time
 
 import dpctl
 import numpy as np
