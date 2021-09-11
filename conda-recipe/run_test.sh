@@ -1,7 +1,6 @@
 #!/bin/bash
 
-set -e
-set -x
+set -euxo pipefail
 
 pytest -q -ra --disable-warnings --pyargs numba_dppy -vv
 
