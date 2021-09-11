@@ -570,9 +570,9 @@ def dpnp_matrix_rank_impl(M, tol=None, hermitian=False):
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(M, tol=None, hermitian=False):
-        if tol != None:
+        if tol is not None:
             raise ValueError("tol is not supported for np.linalg.matrix_rank(M)")
-        if hermitian == True:
+        if hermitian:
             raise ValueError("hermitian is not supported for np.linalg.matrix_rank(M)")
 
         if M.ndim > 2:
