@@ -1,3 +1,16 @@
 [flake8]
 # E501 line too long
-ignore = E501
+# E722 do not use bare 'except'
+# F401 imported but unused
+# W503 line break before binary operator
+ignore = E501,E722,F401,W503
+per-file-ignores =
+    # redefinition of unused 'dpnp_random_impl'
+    dpnp_randomimpl.py: F811
+    # module level import not at top of file
+    device_init.py: E402
+exclude =
+    .git,
+    __pycache__,
+    _version.py,
+    numpy_usm_shared.py,
