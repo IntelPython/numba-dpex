@@ -29,9 +29,13 @@ from numba_dppy import config
 from numba_dppy.dppy_array_type import DPPYArray
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dppy.driver import USMNdArrayType
-from numba_dppy.utils import (as_usm_obj, assert_no_return,
-                              copy_from_numpy_to_usm_obj,
-                              copy_to_numpy_from_usm_obj, has_usm_memory)
+from numba_dppy.utils import (
+    as_usm_obj,
+    assert_no_return,
+    copy_from_numpy_to_usm_obj,
+    copy_to_numpy_from_usm_obj,
+    has_usm_memory,
+)
 
 from . import spirv_generator
 from .dppy_passbuilder import DPPYPassBuilder

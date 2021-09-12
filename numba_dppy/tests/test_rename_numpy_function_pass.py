@@ -23,7 +23,9 @@ from numba.core.typed_passes import AnnotateTypes, NopythonTypeInference
 
 import numba_dppy
 from numba_dppy.rename_numpy_functions_pass import (
-    DPPYRewriteNdarrayFunctions, DPPYRewriteOverloadedNumPyFunctions)
+    DPPYRewriteNdarrayFunctions,
+    DPPYRewriteOverloadedNumPyFunctions,
+)
 from numba_dppy.tests._helper import ensure_dpnp
 
 

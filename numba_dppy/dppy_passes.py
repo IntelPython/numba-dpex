@@ -20,12 +20,19 @@ from contextlib import contextmanager
 
 import numba
 import numpy as np
-from numba.core import (errors, funcdesc, ir, lowering, types, typing,
-                        utils)
-from numba.core.compiler_machinery import (AnalysisPass, FunctionPass,
-                                           LoweringPass, register_pass)
-from numba.core.errors import (LiteralTypingError, LoweringError, TypingError,
-                               new_error_context)
+from numba.core import errors, funcdesc, ir, lowering, types, typing, utils
+from numba.core.compiler_machinery import (
+    AnalysisPass,
+    FunctionPass,
+    LoweringPass,
+    register_pass,
+)
+from numba.core.errors import (
+    LiteralTypingError,
+    LoweringError,
+    TypingError,
+    new_error_context,
+)
 from numba.core.ir_utils import remove_dels
 from numba.parfors.parfor import Parfor
 from numba.parfors.parfor import ParforPass as _parfor_ParforPass

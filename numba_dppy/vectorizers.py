@@ -21,8 +21,7 @@ import numpy as np
 from numba.np.ufunc import deviceufunc
 
 import numba_dppy as dppy
-from numba_dppy.utils import (as_usm_obj, copy_to_numpy_from_usm_obj,
-                              has_usm_memory)
+from numba_dppy.utils import as_usm_obj, copy_to_numpy_from_usm_obj, has_usm_memory
 
 vectorizer_stager_source = """
 def __vectorized_{name}({args}, __out__):

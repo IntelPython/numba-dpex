@@ -14,9 +14,14 @@
 
 from numba import types
 from numba.core.typing.npydecl import parse_dtype, parse_shape
-from numba.core.typing.templates import (AbstractTemplate, AttributeTemplate,
-                                         CallableTemplate, ConcreteTemplate,
-                                         Registry, signature)
+from numba.core.typing.templates import (
+    AbstractTemplate,
+    AttributeTemplate,
+    CallableTemplate,
+    ConcreteTemplate,
+    Registry,
+    signature,
+)
 
 import numba_dppy as dppy
 from numba_dppy.dppy_array_type import DPPYArray

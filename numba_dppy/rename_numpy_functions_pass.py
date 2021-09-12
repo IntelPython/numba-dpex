@@ -14,8 +14,12 @@
 
 from numba.core import ir, types
 from numba.core.compiler_machinery import FunctionPass, register_pass
-from numba.core.ir_utils import (find_topo_order, mk_unique_var, remove_dead,
-                                 simplify_CFG)
+from numba.core.ir_utils import (
+    find_topo_order,
+    mk_unique_var,
+    remove_dead,
+    simplify_CFG,
+)
 
 import numba_dppy
 

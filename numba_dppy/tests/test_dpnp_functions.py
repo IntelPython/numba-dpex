@@ -20,8 +20,12 @@ import numpy as np
 from numba import njit
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import (assert_auto_offloading, dpnp_debug,
-                                      ensure_dpnp, has_gpu_queues)
+from numba_dppy.tests._helper import (
+    assert_auto_offloading,
+    dpnp_debug,
+    ensure_dpnp,
+    has_gpu_queues,
+)
 
 
 @unittest.skipUnless(

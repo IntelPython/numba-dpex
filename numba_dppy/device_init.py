@@ -13,10 +13,22 @@
 # limitations under the License.
 
 # Re export
-from .ocl.stubs import (CLK_GLOBAL_MEM_FENCE, CLK_LOCAL_MEM_FENCE, atomic,
-                        barrier, get_global_id, get_global_size, get_group_id,
-                        get_local_id, get_local_size, get_num_groups,
-                        get_work_dim, local, mem_fence, sub_group_barrier)
+from .ocl.stubs import (
+    CLK_GLOBAL_MEM_FENCE,
+    CLK_LOCAL_MEM_FENCE,
+    atomic,
+    barrier,
+    get_global_id,
+    get_global_size,
+    get_group_id,
+    get_local_id,
+    get_local_size,
+    get_num_groups,
+    get_work_dim,
+    local,
+    mem_fence,
+    sub_group_barrier,
+)
 
 """
 We are importing dpnp stub module to make Numba recognize the

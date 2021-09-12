@@ -22,8 +22,7 @@ import pytest
 from numba import njit
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import (assert_auto_offloading, is_gen12,
-                                      skip_test)
+from numba_dppy.tests._helper import assert_auto_offloading, is_gen12, skip_test
 
 list_of_filter_strs = [
     "opencl:gpu:0",

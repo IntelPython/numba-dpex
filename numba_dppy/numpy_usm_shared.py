@@ -32,19 +32,27 @@ from dpctl.tensor.numpy_usm_shared import class_list, functions_list, ndarray
 from llvmlite import ir
 from numba import types
 from numba.core import cgutils, config, types, typing
-from numba.core.datamodel.registry import \
-    register_default as register_model_default
+from numba.core.datamodel.registry import register_default as register_model_default
 from numba.core.imputils import builtin_registry as lower_registry
 from numba.core.overload_glue import _overload_glue
 from numba.core.pythonapi import box
 from numba.core.typing.arraydecl import normalize_shape
 from numba.core.typing.npydecl import registry as typing_registry
-from numba.core.typing.templates import (AttributeTemplate, CallableTemplate,
-                                         bound_function)
+from numba.core.typing.templates import (
+    AttributeTemplate,
+    CallableTemplate,
+    bound_function,
+)
 from numba.core.typing.templates import builtin_registry as templates_registry
 from numba.core.typing.templates import signature
-from numba.extending import (intrinsic, lower_builtin, overload_classmethod,
-                             register_model, type_callable, typeof_impl)
+from numba.extending import (
+    intrinsic,
+    lower_builtin,
+    overload_classmethod,
+    register_model,
+    type_callable,
+    typeof_impl,
+)
 from numba.np import numpy_support
 from numba.np.arrayobj import _array_copy
 

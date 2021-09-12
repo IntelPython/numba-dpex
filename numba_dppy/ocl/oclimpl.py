@@ -281,8 +281,7 @@ def native_atomic_add(context, builder, sig, args):
         context.get_value_type(sig.args[2]),
     ]
 
-    from numba_dppy import \
-        extended_numba_itanium_mangler as ext_itanium_mangler
+    from numba_dppy import extended_numba_itanium_mangler as ext_itanium_mangler
 
     numba_ptr_ty = types.CPointer(dtype, addrspace=ptr_type.addrspace)
     mangled_fn_name = ext_itanium_mangler.mangle(
