@@ -92,9 +92,9 @@ def test_one_arg_fn(filter_str, one_arg_fn, unary_size, capfd):
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
 
-        if low != None:
+        if low is not None:
             assert np.all(actual >= low)
-        if high != None:
+        if high is not None:
             assert np.all(actual < high)
 
 
@@ -135,7 +135,7 @@ def test_two_arg_fn(filter_str, two_arg_fn, unary_size, capfd):
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
 
-        if low != None and high == None:
+        if low is not None and high is None:
             if np.isscalar(actual):
                 assert actual >= low
             else:
@@ -194,7 +194,7 @@ def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
 
-        if low != None and high == None:
+        if low is not None and high is None:
             if second_arg:
                 low = first_arg
                 high = second_arg
@@ -204,7 +204,7 @@ def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
                 high = first_arg
                 assert np.all(actual >= low)
                 assert np.all(actual <= high)
-        elif low != None and high != None:
+        elif low is not None and high is not None:
             if np.isscalar(actual):
                 assert actual >= low
                 assert actual <= high
