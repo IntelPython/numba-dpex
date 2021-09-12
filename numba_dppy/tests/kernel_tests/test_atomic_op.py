@@ -191,7 +191,7 @@ def addrspace(request):
 
 def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, addrspace):
     LLVM_SPIRV_ROOT = os.environ.get("NUMBA_DPPY_LLVM_SPIRV_ROOT")
-    if LLVM_SPIRV_ROOT == "" or LLVM_SPIRV_ROOT == None:
+    if LLVM_SPIRV_ROOT == "" or LLVM_SPIRV_ROOT is None:
         pytest.skip("Please set envar NUMBA_DPPY_LLVM_SPIRV_ROOT to run this test")
 
     if atomic_skip_test(filter_str):

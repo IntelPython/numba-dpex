@@ -212,7 +212,7 @@ def insert_and_call_atomic_fn(
     else:
         name = name + "_global"
 
-    assert ll_p != None
+    assert ll_p is not None
     assert name != ""
     ll_p.addrspace = address_space.GENERIC
 
