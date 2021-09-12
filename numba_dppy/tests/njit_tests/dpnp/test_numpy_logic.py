@@ -16,7 +16,6 @@
 # limitations under the License.
 ################################################################################
 
-import dpctl
 import numpy as np
 import pytest
 from numba import njit
