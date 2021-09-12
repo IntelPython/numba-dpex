@@ -49,7 +49,7 @@ def main():
     for i in range(N):
         for j in range(N):
             for k in range(N):
-                for l in range(N):
+                for l in range(N):  # noqa
                     if c[i, j, k, l] != 2.0:
                         print("First index not equal to 2.0 was", i, j, k, l)
                         break
