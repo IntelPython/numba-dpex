@@ -14,41 +14,43 @@
 
 import builtins
 import functools
+import importlib
 import inspect
 import sys
+from ctypes.util import find_library
+from inspect import getmembers, isbuiltin, isclass, isfunction
+from numbers import Number
 from types import BuiltinFunctionType as bftype
 from types import FunctionType as ftype
 
 import dpctl.tensor.numpy_usm_shared as nus
 import llvmlite.binding as llb
+import llvmlite.llvmpy.core as lc
 import numba
 import numpy as np
-from dpctl.tensor.numpy_usm_shared import functions_list, ndarray
+from dpctl.tensor.numpy_usm_shared import class_list, functions_list, ndarray
 from llvmlite import ir
+from numba import types
 from numba.core import cgutils, config, types, typing
+from numba.core.datamodel.registry import \
+    register_default as register_model_default
 from numba.core.imputils import builtin_registry as lower_registry
 from numba.core.overload_glue import _overload_glue
 from numba.core.pythonapi import box
 from numba.core.typing.arraydecl import normalize_shape
 from numba.core.typing.npydecl import registry as typing_registry
-from numba.core.typing.templates import (
-    AttributeTemplate,
-    CallableTemplate,
-    bound_function,
-)
+from numba.core.typing.templates import (AttributeTemplate, CallableTemplate,
+                                         bound_function)
 from numba.core.typing.templates import builtin_registry as templates_registry
 from numba.core.typing.templates import signature
-from numba.extending import intrinsic, overload_classmethod, register_model, typeof_impl
+from numba.extending import (intrinsic, lower_builtin, overload_classmethod,
+                             register_model, type_callable, typeof_impl)
 from numba.np import numpy_support
 from numba.np.arrayobj import _array_copy
 
-from numba_dppy.dppy_array_type import DPPYArray
-
-# from numba_dppy.dppy_array_type import DPPYArrayModel
+from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
 
 from . import target as dppy_target
-
-import numba_dppy._usm_shared_allocator_ext
 
 debug = config.DEBUG
 
@@ -58,6 +60,11 @@ def dprint(*args):
         print(*args)
         sys.stdout.flush()
 
+
+import dpctl
+from dpctl.memory import MemoryUSMShared
+
+import numba_dppy._usm_shared_allocator_ext
 
 # Register the helper function in dppl_rt so that we can insert calls to them via llvmlite.
 for py_name, c_address in numba_dppy._usm_shared_allocator_ext.c_helpers.items():
