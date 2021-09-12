@@ -11,6 +11,8 @@ per-file-ignores =
     device_init.py: E402
     # 'from . import *' used; unable to detect undefined names
     __init__.py: F403
+    # module level import not at top of file
+    target.py: E402
 exclude =
     .git,
     __pycache__,
