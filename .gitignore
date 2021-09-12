@@ -13,6 +13,7 @@
 tags
 MANIFEST
 
+.tmp/
 build/
 docs/_build/
 docs/gh-pages/
