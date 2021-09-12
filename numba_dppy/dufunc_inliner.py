@@ -86,7 +86,6 @@ def _inline(
         return False
 
     sig = calltypes[expr]
-    is_method = False
 
     templates = getattr(func_ty, "templates", None)
     arg_typs = sig.args
