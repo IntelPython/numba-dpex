@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "ms-python.python",
-    "timonwong.shellcheck"
+    "timonwong.shellcheck",
+    "eamodio.gitlens"
   ]
 }
