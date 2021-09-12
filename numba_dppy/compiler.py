@@ -653,7 +653,7 @@ class DPPYKernel(DPPYKernelBase):
                 msg += " %s |" % (key)
 
             msg = msg[:-1] + "]"
-            if access_type != None:
+            if access_type is not None:
                 print(msg)
             return True
         else:
