@@ -9,6 +9,8 @@ per-file-ignores =
     dpnp_randomimpl.py: F811
     # module level import not at top of file
     device_init.py: E402
+    # 'from . import *' used; unable to detect undefined names
+    __init__.py: F403
 exclude =
     .git,
     __pycache__,
