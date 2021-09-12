@@ -144,7 +144,7 @@ class TestDPPYBlackScholes(unittest.TestCase):
                     VOLATILITY,
                 )
 
-        dt = time1 - time0
+        dt = time1 - time0  # noqa
 
         delta = np.abs(callResultNumpy - callResultNumbapro)
         L1norm = delta.sum() / np.abs(callResultNumpy).sum()
