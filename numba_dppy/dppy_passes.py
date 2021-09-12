@@ -20,7 +20,7 @@ from contextlib import contextmanager
 
 import numba
 import numpy as np
-from numba.core import (config, errors, funcdesc, ir, lowering, types, typing,
+from numba.core import (errors, funcdesc, ir, lowering, types, typing,
                         utils)
 from numba.core.compiler_machinery import (AnalysisPass, FunctionPass,
                                            LoweringPass, register_pass)
