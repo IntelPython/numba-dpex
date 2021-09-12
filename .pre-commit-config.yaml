@@ -12,11 +12,6 @@ repos:
     hooks:
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
--   repo: https://github.com/psf/black
-    rev: 21.4b2
-    hooks:
-    -   id: black
-        exclude: "versioneer.py|numba_dppy/_version.py"
 -   repo: https://github.com/pycqa/isort
     rev: 5.8.0
     hooks:
