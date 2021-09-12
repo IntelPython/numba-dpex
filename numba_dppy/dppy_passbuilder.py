@@ -13,14 +13,11 @@
 # limitations under the License.
 
 from numba.core.compiler_machinery import PassManager
-from numba.core.typed_passes import (AnnotateTypes,
-                                     InlineOverloads, IRLegalization,
-                                     NopythonRewrites,
+from numba.core.typed_passes import (AnnotateTypes, InlineOverloads,
+                                     IRLegalization, NopythonRewrites,
                                      NoPythonSupportedFeatureValidation,
-                                     NopythonTypeInference,
-                                     PreLowerStripPhis)
-from numba.core.untyped_passes import (DeadBranchPrune,
-                                       FindLiterallyCalls,
+                                     NopythonTypeInference, PreLowerStripPhis)
+from numba.core.untyped_passes import (DeadBranchPrune, FindLiterallyCalls,
                                        FixupArgs, GenericRewrites,
                                        InlineClosureLikes, InlineInlinables,
                                        IRProcessing, LiteralUnroll,
