@@ -246,7 +246,7 @@ def dpnp_median_impl(a):
 
     Function declaration:
     void custom_median_c(void* array1_in, void* result1, const size_t* shape,
-			 size_t ndim, const size_t* axis, size_t naxis)
+                         size_t ndim, const size_t* axis, size_t naxis)
 
     We are using void * in case of size_t * as Numba currently does not have
     any type to represent size_t *. Since, both the types are pointers,
