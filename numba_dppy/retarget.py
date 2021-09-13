@@ -25,18 +25,18 @@ from numba_dppy.target import DPPY_TARGET_NAME
 class DPPYRetarget(BasicRetarget):
     def __init__(self, filter_str):
         self.filter_str = filter_str
-        super(DPPYRetarget, self).__init__()
+        super().__init__()
 
     @property
     def output_target(self):
         return DPPY_TARGET_NAME
 
-    def compile_retarget(self, cpu_disp):
-        kernel = njit(_target=DPPY_TARGET_NAME)(cpu_disp.py_func)
+    def compile_retarget(self, orig_disp):
+        kernel = njit(_target=DPPY_TARGET_NAME)(orig_disp.py_func)
         return kernel
 
 
-first_level_cache = dict()
+first_level_cache = {}
 
 
 @contextmanager
