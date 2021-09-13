@@ -29,6 +29,8 @@ repos:
     rev: v2.10.2
     hooks:
     -   id: pylint
+        language: system
+        types: [python]
         args: ["--errors-only"]
 -   repo: https://github.com/koalaman/shellcheck-precommit
     rev: v0.7.2
