@@ -23,10 +23,12 @@ There are two ways to program SYCL devices using Numba-dppy:
         import numba_dppy as dppy
         import dpctl
 
+
         @dppy.kernel
         def sum(a, b, c):
             i = dppy.get_global_id(0)
             c[i] = a[i] + b[i]
+
 
         a = np.array(np.random.random(20), dtype=np.float32)
         b = np.array(np.random.random(20), dtype=np.float32)
@@ -44,10 +46,12 @@ There are two ways to program SYCL devices using Numba-dppy:
         import numpy as np
         import dpctl
 
+
         @njit
         def f1(a, b):
             c = a + b
             return c
+
 
         global_size = 64
         local_size = 32
