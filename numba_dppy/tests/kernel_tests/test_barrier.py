@@ -14,13 +14,12 @@
 
 import platform
 
+import dpctl
 import numpy as np
 import pytest
-import dpctl
 
 import numba_dppy as dppy
 from numba_dppy.tests._helper import skip_test
-
 
 list_of_filter_strs = [
     "opencl:gpu:0",

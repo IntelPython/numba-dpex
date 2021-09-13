@@ -12,14 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
-import numba_dppy as dppy
-import pytest
-import dpctl
 import dpctl.tensor as dpt
+import numpy as np
+import pytest
 from numba.misc.special import typeof
-from numba_dppy.tests._helper import skip_test
+
 from numba_dppy.driver import USMNdArrayType
+from numba_dppy.tests._helper import skip_test
 
 list_of_dtypes = [
     np.int32,

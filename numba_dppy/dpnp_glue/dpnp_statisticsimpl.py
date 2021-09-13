@@ -12,14 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
-from numba.core import types, cgutils
-from numba.core.typing import signature
-from . import stubs
-import numba_dppy.dpnp_glue as dpnp_lowering
-from numba.core.extending import overload, register_jitable
 import numpy as np
+from numba.core import cgutils, types
+from numba.core.extending import overload, register_jitable
+from numba.core.typing import signature
+
+import numba_dppy.dpnp_glue as dpnp_lowering
+import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
 from numba_dppy import dpctl_functions
+
+from . import stubs
 
 
 @overload(stubs.dpnp.max)
@@ -244,7 +246,7 @@ def dpnp_median_impl(a):
 
     Function declaration:
     void custom_median_c(void* array1_in, void* result1, const size_t* shape,
-			 size_t ndim, const size_t* axis, size_t naxis)
+                         size_t ndim, const size_t* axis, size_t naxis)
 
     We are using void * in case of size_t * as Numba currently does not have
     any type to represent size_t *. Since, both the types are pointers,

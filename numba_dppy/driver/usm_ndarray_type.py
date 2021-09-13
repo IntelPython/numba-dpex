@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba.extending import typeof_impl, register_model
-from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
-import numba_dppy.target as dppy_target
 from dpctl.tensor import usm_ndarray
+from numba.extending import register_model, typeof_impl
 from numba.np import numpy_support
+
+import numba_dppy.target as dppy_target
+from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
 from numba_dppy.utils import address_space
 
 

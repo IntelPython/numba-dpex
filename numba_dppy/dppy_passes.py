@@ -12,50 +12,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from contextlib import contextmanager
-import warnings
-
-import numpy as np
-import numba
-from numba.core import ir, lowering
-import weakref
-from collections import namedtuple, deque
 import operator
+import warnings
+import weakref
+from collections import deque, namedtuple
+from contextlib import contextmanager
 
-from numba.core import (
-    config,
-    errors,
-    funcdesc,
-    utils,
-    typing,
-    types,
-)
-
-from numba.core.ir_utils import remove_dels
-
-from numba.core.errors import (
-    LoweringError,
-    new_error_context,
-    TypingError,
-    LiteralTypingError,
-)
-
+import numba
+import numpy as np
+from numba.core import errors, funcdesc, ir, lowering, types, typing, utils
 from numba.core.compiler_machinery import (
+    AnalysisPass,
     FunctionPass,
     LoweringPass,
     register_pass,
-    AnalysisPass,
 )
-
-from numba.parfors.parfor import (
-    PreParforPass as _parfor_PreParforPass,
-    swap_functions_map,
+from numba.core.errors import (
+    LiteralTypingError,
+    LoweringError,
+    TypingError,
+    new_error_context,
 )
-from numba.parfors.parfor import ParforPass as _parfor_ParforPass
+from numba.core.ir_utils import remove_dels
 from numba.parfors.parfor import Parfor
+from numba.parfors.parfor import ParforPass as _parfor_ParforPass
+from numba.parfors.parfor import PreParforPass as _parfor_PreParforPass
+from numba.parfors.parfor import swap_functions_map
+
+from numba_dppy import config
 
 from .dppy_lowerer import DPPYLower
-from numba_dppy import config
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)

@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
-from numba import vectorize, float64
 import dpctl
+import numpy as np
+from numba import float64, vectorize
+
 import numba_dppy as dppy
 
 

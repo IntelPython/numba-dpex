@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numba_dppy as dppy
 import pytest
-import numba_dppy.extended_numba_itanium_mangler as itanium_mangler
-from numba import int32, int64, uint32, uint64, float32, float64
+from numba import float32, float64, int32, int64, uint32, uint64
 from numba.core import types
+
+import numba_dppy as dppy
+import numba_dppy.extended_numba_itanium_mangler as itanium_mangler
 from numba_dppy.utils import address_space
 
 list_of_dtypes = [
@@ -54,7 +55,7 @@ def test_mangling_arg_type(dtypes):
     assert got == expected
 
 
-def test_mangling_arg_type(dtypes, addrspaces):
+def test_mangling_arg_type_2(dtypes, addrspaces):
     dtype, expected_dtype_str = dtypes
     addrspace, expected_addrspace_str = addrspaces
     got = itanium_mangler.mangle_type(types.CPointer(dtype, addrspace=addrspace))

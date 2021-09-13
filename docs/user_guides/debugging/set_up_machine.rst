@@ -31,8 +31,8 @@ NEO driver `21.15.19533` or higher is required to make the debugger work correct
 
 1) Download the driver from `GitHub <https://github.com/intel/compute-runtime/releases/tag/21.15.19533>`_.
 
-2) Install the NEO driver on the system or locally. 
-    
+2) Install the NEO driver on the system or locally.
+
     * To install the driver on the system, use the command:
 
         .. code-block:: bash
@@ -40,7 +40,7 @@ NEO driver `21.15.19533` or higher is required to make the debugger work correct
             sudo dpkg -i *.deb
 
     * To install the driver locally:
-    
+
         1) Add the path to NEO files in `LD_LIBRARY_PATH`:
 
             .. code-block:: bash

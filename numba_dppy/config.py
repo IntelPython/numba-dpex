@@ -14,8 +14,9 @@
 
 import os
 import warnings
-from packaging import version
+
 from numba.core import config
+from packaging import version
 
 
 class DpctlMinimumVersionRequiredError(Exception):

@@ -12,15 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
-from numba import types
-from numba.core.typing import signature
-from . import stubs
-import numba_dppy.dpnp_glue as dpnp_lowering
-from numba.core.extending import overload, register_jitable
 import numpy as np
-from numba_dppy import dpctl_functions
+from numba import types
+from numba.core.extending import overload, register_jitable
+from numba.core.typing import signature
+
 import numba_dppy
+import numba_dppy.dpnp_glue as dpnp_lowering
+import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
+from numba_dppy import dpctl_functions
+
+from . import stubs
 
 
 @overload(stubs.dpnp.eig)
@@ -568,9 +570,9 @@ def dpnp_matrix_rank_impl(M, tol=None, hermitian=False):
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(M, tol=None, hermitian=False):
-        if tol != None:
+        if tol is not None:
             raise ValueError("tol is not supported for np.linalg.matrix_rank(M)")
-        if hermitian == True:
+        if hermitian:
             raise ValueError("hermitian is not supported for np.linalg.matrix_rank(M)")
 
         if M.ndim > 2:

@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba.core.typing.templates import AttributeTemplate, infer_getattr
-import numba_dppy
 from numba import types
-from numba.core.types.misc import RawPointer
+from numba.core.typing.templates import AttributeTemplate, infer_getattr
+
+import numba_dppy
 
 
 @infer_getattr

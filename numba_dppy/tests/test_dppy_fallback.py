@@ -12,13 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
-
-import numba
 import unittest
 import warnings
+
 import dpctl
+import numba
+import numpy as np
+
 import numba_dppy
+
 from . import _helper
 
 
