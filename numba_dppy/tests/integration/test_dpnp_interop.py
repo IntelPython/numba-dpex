@@ -82,6 +82,7 @@ def test_consuming_array_from_dpnp(offload_device, dtype):
             data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
         # bug in DPNP: context does not influence on array creation
+        import dpctl
         default_filter_string = dpctl.get_current_queue().sycl_device.filter_string
         with dppy.offload_to_sycl_device(offload_device):
             a = dpnp.arange(global_size, dtype=dtype)
