@@ -13,12 +13,13 @@
 # limitations under the License.
 
 import math
-from numba.core import types, utils
+
+from numba.core import types
 from numba.core.typing.templates import (
     AttributeTemplate,
     ConcreteTemplate,
-    signature,
     Registry,
+    signature,
 )
 
 registry = Registry()

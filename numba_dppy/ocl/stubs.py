@@ -12,12 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba.core import types, ir, typing
-
-import numpy as np
-import numba
-from numba.np import numpy_support
-
 _stub_error = NotImplementedError("This is a stub.")
 
 # mem fence

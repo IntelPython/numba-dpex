@@ -14,9 +14,9 @@
 
 """This module provides utilities to interact with USM memory."""
 
-import numpy as np
 import dpctl
 import dpctl.memory as dpctl_mem
+import numpy as np
 
 from numba_dppy import config
 

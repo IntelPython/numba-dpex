@@ -12,16 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import unittest
+
+import dpctl
 import numpy as np
 from numba import njit
-import numba_dppy
-from numba_dppy import config
-import unittest
-from numba.core import errors
 from numba.tests.support import captured_stdout
-from . import _helper
-import dpctl
+
+import numba_dppy
 import numba_dppy as dppy
+from numba_dppy import config
+
+from . import _helper
 
 
 class TestWithDPPYContext(unittest.TestCase):

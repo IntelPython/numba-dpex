@@ -12,14 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba.core.imputils import lower_builtin
-from numba.core import types
-from numba.core.extending import register_jitable
 import numpy as np
 from llvmlite import ir
+from numba.core import types
+from numba.core.extending import register_jitable
 from numba.core.imputils import lower_getattr
 from numba.cpython import listobj
-
 
 ll_void_p = ir.IntType(8).as_pointer()
 
@@ -61,7 +59,7 @@ pass around.
 
 
 @lower_getattr(types.Array, "shapeptr")
-def array_shape(context, builder, typ, value):
+def array_shapeptr(context, builder, typ, value):
     shape_ptr = builder.gep(
         value.operands[0],
         [context.get_constant(types.int32, 0), context.get_constant(types.int32, 5)],
@@ -71,7 +69,7 @@ def array_shape(context, builder, typ, value):
 
 
 @lower_getattr(types.List, "size")
-def list_itemsize(context, builder, typ, value):
+def list_size(context, builder, typ, value):
     inst = listobj.ListInstance(context, builder, typ, value)
     return inst.size
 
@@ -83,6 +81,6 @@ def list_itemsize(context, builder, typ, value):
 
 
 @lower_getattr(types.List, "ctypes")
-def list_itemsize(context, builder, typ, value):
+def list_ctypes(context, builder, typ, value):
     inst = listobj.ListInstance(context, builder, typ, value)
     return builder.bitcast(inst.data, ll_void_p)

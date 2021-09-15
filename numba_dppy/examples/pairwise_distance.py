@@ -12,13 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from time import time
-from math import sqrt
-import numpy as np
 import argparse
-import numba_dppy as dppy
+from math import sqrt
+from time import time
+
 import dpctl
 import dpctl.memory as dpctl_mem
+import numpy as np
+
+import numba_dppy as dppy
 
 parser = argparse.ArgumentParser(description="Program to compute pairwise distance")
 

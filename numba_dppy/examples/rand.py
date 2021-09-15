@@ -20,9 +20,10 @@ this feature is also available by simply invoking a ``numba.jit`` function with
 the numpy.random calls from within a ``numba_dppy.offload_to_sycl_device``scope.
 """
 
+import dpctl
 import numba
 import numpy as np
-import dpctl
+
 import numba_dppy as dppy
 
 

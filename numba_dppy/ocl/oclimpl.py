@@ -25,8 +25,7 @@ from numba.core.imputils import Registry
 from numba.core.itanium_mangler import mangle, mangle_c, mangle_type
 from numba.core.typing.npydecl import parse_dtype
 
-from numba_dppy import config
-from numba_dppy import target
+from numba_dppy import config, target
 from numba_dppy.codegen import SPIR_DATA_LAYOUT
 from numba_dppy.dppy_array_type import DPPYArray
 from numba_dppy.ocl.atomics import atomic_helper
@@ -213,7 +212,7 @@ def insert_and_call_atomic_fn(
     else:
         name = name + "_global"
 
-    assert ll_p != None
+    assert ll_p is not None
     assert name != ""
     ll_p.addrspace = address_space.GENERIC
 

@@ -12,14 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
-from numba import types
-from numba.core.typing import signature
-from . import stubs
-import numba_dppy.dpnp_glue as dpnp_lowering
-from numba.core.extending import overload, register_jitable
 import numpy as np
+from numba import types
+from numba.core.extending import overload, register_jitable
+from numba.core.typing import signature
+
+import numba_dppy.dpnp_glue as dpnp_lowering
+import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
 from numba_dppy import dpctl_functions
+
+from . import stubs
 
 
 @overload(stubs.dpnp.diagonal)

@@ -12,10 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import llvmlite.binding as ll
 import os
-from numba_dppy.vectorizers import DPPYVectorize
+
+import llvmlite.binding as ll
 from numba.np.ufunc.decorators import Vectorize
+
+from numba_dppy.vectorizers import DPPYVectorize
 
 
 def init_jit():
@@ -35,9 +37,10 @@ def load_dpctl_sycl_interface():
     Raises:
         ImportError: If the ``DPCTLSyclInterface`` library could not be loaded.
     """
-    import dpctl
     import glob
     import platform as plt
+
+    import dpctl
 
     platform = plt.system()
     if platform == "Windows":

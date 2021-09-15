@@ -13,13 +13,14 @@
 tags
 MANIFEST
 
+.tmp/
 build/
 docs/_build/
 docs/gh-pages/
 dist/
 htmlcov/
 .idea/
-.vscode/
+.vscode/settings.json
 .mypy_cache/
 .ipynb_checkpoints/
 __pycache__/

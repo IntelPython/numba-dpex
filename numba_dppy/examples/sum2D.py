@@ -14,8 +14,9 @@
 # limitations under the License.
 
 import dpctl
-import numba_dppy as dppy
 import numpy as np
+
+import numba_dppy as dppy
 
 
 @dppy.kernel

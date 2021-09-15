@@ -7,3 +7,25 @@ repos:
     -   id: bandit
         pass_filenames: false
         args: ["-r", "numba_dppy", "-lll"]
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+-   repo: https://github.com/pycqa/isort
+    rev: 5.8.0
+    hooks:
+    -   id: isort
+        name: isort (python)
+        exclude: "dppy_lowerer.py"
+    -   id: isort
+        name: isort (cython)
+        types: [cython]
+-   repo: https://gitlab.com/pycqa/flake8
+    rev: 3.9.1
+    hooks:
+    -   id: flake8
+-   repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.7.2
+    hooks:
+    -   id: shellcheck
