@@ -114,26 +114,26 @@ def common_matmul_impl(dpnp_func, a, b, out, m, n, k, print_debug):
 
     out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
-    a_m = np.empty((m, k), dtype=a.dtype)
-    b_m = np.empty((k, n), dtype=b.dtype)
-    out_m = np.empty((m, n), dtype=out.dtype)
+    a_m = np.array((m, k))
+    b_m = np.array((k, n))
+    out_m = np.array((m, n))
 
     result_out = out_usm
     result_size = out.size
-    result_ndim = out_m.ndim
-    result_shape = out_m.shapeptr
+    result_ndim = 2
+    result_shape = out_m.ctypes
     result_strides = 0
 
     input1_in = a_usm
     input1_size = a.size
-    input1_ndim = a_m.ndim
-    input1_shape = a_m.shapeptr
+    input1_ndim = 2
+    input1_shape = a_m.ctypes
     input1_strides = 0
 
     input2_in = b_usm
     input2_size = b.size
-    input2_ndim = b_m.ndim
-    input2_shape = b_m.shapeptr
+    input2_ndim = 2
+    input2_shape = b_m.ctypes
     input2_strides = 0
 
     dpnp_func(
