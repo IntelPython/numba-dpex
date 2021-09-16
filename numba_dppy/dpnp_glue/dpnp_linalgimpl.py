@@ -142,13 +142,11 @@ def common_matmul_impl(dpnp_func, a, b, out, m, n, k, print_debug):
         result_ndim,
         result_shape,
         result_strides,
-
         input1_in,
         input1_size,
         input1_ndim,
         input1_shape,
         input1_strides,
-
         input2_in,
         input2_size,
         input2_ndim,
@@ -216,13 +214,11 @@ def common_dot_impl(dpnp_func, a, b, out, m, print_debug):
         result_ndim,
         result_shape,
         result_strides,
-
         input1_in,
         input1_size,
         input1_ndim,
         input1_shape,
         input1_strides,
-
         input2_in,
         input2_size,
         input2_ndim,
@@ -313,19 +309,16 @@ def dpnp_dot_impl(a, b):
     """
     sig = signature(
         ret_type,
-
         types.voidptr,
         types.intp,
         types.intp,
         types.voidptr,
         types.voidptr,
-
         types.voidptr,
         types.intp,
         types.intp,
         types.voidptr,
         types.voidptr,
-
         types.voidptr,
         types.intp,
         types.intp,
@@ -411,19 +404,16 @@ def dpnp_dot_impl(a, b):
         """
         sig = signature(
             ret_type,
-
             types.voidptr,
             types.intp,
             types.intp,
             types.voidptr,
             types.voidptr,
-
             types.voidptr,
             types.intp,
             types.intp,
             types.voidptr,
             types.voidptr,
-
             types.voidptr,
             types.intp,
             types.intp,
