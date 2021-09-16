@@ -68,13 +68,13 @@ def test_consuming_array_from_dpnp(offload_device, dtype):
         b = dpnp.arange(global_size, dtype=dtype)
         c = dpnp.ones_like(a)
 
-        with dppy.offload_to_sycl_device(offload_device) as queue:
+        with dppy.offload_to_sycl_device(offload_device):
             with pytest.raises(Exception):
                 data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
     else:
 
-        with dppy.offload_to_sycl_device(offload_device) as queue:
+        with dppy.offload_to_sycl_device(offload_device):
             a = dpnp.arange(global_size, dtype=dtype)
             b = dpnp.arange(global_size, dtype=dtype)
             c = dpnp.ones_like(a)
