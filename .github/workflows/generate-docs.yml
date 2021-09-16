@@ -49,20 +49,18 @@ jobs:
       - name: Create conda channel
         run: |
           mkdir -p $GITHUB_WORKSPACE/channel/linux-64
-          mv ${PACKAGE_NAME}-*.tar.bz2 $GITHUB_WORKSPACE/channel/linux-64
+          mv /usr/share/miniconda/conda-bld/linux-64/numba-dppy-*.tar.bz2 $GITHUB_WORKSPACE/channel/linux-64
           conda index $GITHUB_WORKSPACE/channel
           # Test channel
-          conda search $PACKAGE_NAME -c $GITHUB_WORKSPACE/channel --override-channels
+          conda search numba-dppy -c $GITHUB_WORKSPACE/channel --override-channels
       - name: Install numba-dppy
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}"
-          conda install $PACKAGE_NAME python=3.8 ${{ env.dependencies }} $CHANNELS
+          conda install numba-dppy python=3.8 $CHANNELS
           # Test installed packages
           conda list
       - name: Add library
         run: echo "OCL_ICD_FILENAMES=libintelocl.so" >> $GITHUB_ENV
-      - name: Check version
-        run: python -c "import numba_dppy; print(numba_dppy.__version__)"
 
       - name: Install documentation tools
         run: pip install sphinx autodoc recommonmark sphinx-rtd-theme sphinxcontrib-apidoc
