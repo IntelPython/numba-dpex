@@ -19,6 +19,8 @@ from subprocess import Popen, PIPE
 import os
 import pytest
 
+import contextlib
+
 
 def make_check(text, val_to_search):
     m = re.search(val_to_search, text, re.I)
@@ -32,14 +34,38 @@ def utils():
     os.environ["NUMBA_OPT"] = "0"
 
 
-# out = Popen(["ls", "-la", "."], stdout=PIPE)
-def test_backtrace():
-    # utils()
+@contextlib.contextmanager
+def run_command(command_name):
     previous_dir = os.getcwd()
     previous_numba_opt = os.environ.get("NUMBA_OPT")
     os.chdir(previous_dir + "/numba_dppy/examples/debug")
     os.environ["NUMBA_OPT"] = "0"
 
+    process = Popen(
+        [
+            "gdb-oneapi",
+            "-q",
+            "-command",
+            command_name,
+            "python",
+        ],
+        stdout=PIPE,
+        stderr=PIPE,
+    )
+    (output, err) = process.communicate()
+    process.wait()
+    output_str = str(output)
+    yield output_str
+
+    os.chdir(previous_dir)
+    if previous_numba_opt:
+        os.environ["NUMBA_OPT"] = previous_numba_opt
+    else:
+        os.environ.pop("NUMBA_OPT")
+
+
+# out = Popen(["ls", "-la", "."], stdout=PIPE)
+def test_backtrace():
     expected_commands = [
         r"Thread .*",
         r"Thread .\.. hit Breakpoint ., with SIMD lanes \[.\-.\], __main__::func_sum \(\) at simple_dppy_func.py:..",
@@ -51,30 +77,19 @@ def test_backtrace():
         r".*result = a_in_func \+ b_in_func",
         r"Done\.\.\.",
     ]
-    process = Popen(
-        [
-            "gdb-oneapi",
-            "-q",
-            "-command",
-            "commands/backtrace",
-            "python",
-        ],
-        # cwd=wd,
-        stdout=PIPE,
-        stderr=PIPE,
-    )
-    (output, err) = process.communicate()
-    exit_code = process.wait()
 
-    output_str = str(output)
-    # print("!!!!!!!!!!!!!", output_str, "!!!!!!!!!!!!!")
-    for command in expected_commands:
-        # print(command)
-        # assert command in output
-        assert make_check(output_str, command)
+    with run_command("commands/backtrace") as backtrace_out:
+        for command in expected_commands:
+            assert make_check(backtrace_out, command)
 
-    os.chdir(previous_dir)
-    if previous_numba_opt:
-        os.environ["NUMBA_OPT"] = previous_numba_opt
-    else:
-        os.environ.pop("NUMBA_OPT")
+
+def test_break_func():
+    expected_commands = [
+        r"Thread .\.. hit Breakpoint ., with SIMD lanes \[.\-.\], __main__::data_parallel_sum \(\) at simple_sum.py:..",
+        r"i = dppy.get_global_id\(0\)",
+        r"Done\.\.\.",
+    ]
+
+    with run_command("commands/break_func") as break_func_out:
+        for command in expected_commands:
+            assert make_check(break_func_out, command)
