@@ -7,15 +7,8 @@ on:
     tags:
       - '[0-9]+.[0-9]+*'
 
-env:
-  PACKAGE_NAME: numba-dppy
-  python: 3.8
-  artifact_name: -c dppy_label_dev
-  dependencies: dpnp=0.7.1=*_41
-  CHANNELS: -c dppy/label/dev -c defaults -c numba -c intel -c numba/label/dev -c conda-forge --override-channels
-
 jobs:
-  build:
+  generate-docs:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,9 +26,9 @@ jobs:
         with:
           path: ~/.conda/pkgs
           key:
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ env.python }}-${{hashFiles('**/meta.yaml') }}
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-3.8-${{hashFiles('**/meta.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ env.python }}-
+            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-3.8-
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
@@ -43,46 +36,14 @@ jobs:
         run: conda install conda-build
       - name: Build conda package
         run: |
-          VERSIONS="--python ${{ env.python }}"
+          VERSIONS="--python 3.8"
           TEST="--no-test"
           conda build \
             $TEST \
             $VERSIONS \
             $CHANNELS \
             conda-recipe
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ env.python }} ${{ env.artifact_name }}
-          path: /usr/share/miniconda/conda-bld/linux-64/${{ env.PACKAGE_NAME }}-*.tar.bz2
 
-  generate-docs:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ env.python }} ${{ env.artifact_name }}
-      - name: Set pkgs_dirs
-        run: |
-          echo "pkgs_dirs: [~/.conda/pkgs]" >> ~/.condarc
-      - name: Cache conda packages
-        uses: actions/cache@v2
-        env:
-          CACHE_NUMBER: 0  # Increase to reset cache
-        with:
-          path: ~/.conda/pkgs
-          key:
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ env.python }}-${{hashFiles('**/meta.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ env.python }}-
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
-      - name: Add conda to system path
-        run: echo $CONDA/bin >> $GITHUB_PATH
-      - name: Install conda-build
-        run: conda install conda-build
       - name: Create conda channel
         run: |
           mkdir -p $GITHUB_WORKSPACE/channel/linux-64
@@ -92,8 +53,8 @@ jobs:
           conda search $PACKAGE_NAME -c $GITHUB_WORKSPACE/channel --override-channels
       - name: Install numba-dppy
         run: |
-          CHANNELS="-c $GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}"
-          conda install $PACKAGE_NAME python=${{ env.python }} ${{ env.dependencies }} $CHANNELS
+          CHANNELS="-c $GITHUB_WORKSPACE/channel -c defaults -c numba -c intel -c numba/label/dev -c dppy/label/dev -c conda-forge --override-channels"
+          conda install $PACKAGE_NAME python=3.8 ${{ env.dependencies }} $CHANNELS
           # Test installed packages
           conda list
       - name: Add library
