@@ -53,8 +53,10 @@ def test_dpnp_create_array_in_context(offload_device, dtype):
     if skip_test(offload_device):
         pytest.skip("No device for " + offload_device)
 
-    if ("opencl" not in dpctl.get_current_queue().sycl_device.filter_string and
-        "opencl" in offload_device):
+    if (
+        "opencl" not in dpctl.get_current_queue().sycl_device.filter_string
+        and "opencl" in offload_device
+    ):
         pytest.skip("Bug in DPNP. See: IntelPython/dpnp#723")
 
     with dpctl.device_context(offload_device):
@@ -70,8 +72,10 @@ def test_consuming_array_from_dpnp(offload_device, dtype):
     if skip_test(offload_device):
         pytest.skip("No device for " + offload_device)
 
-    if ("opencl" not in dpctl.get_current_queue().sycl_device.filter_string and
-        "opencl" in offload_device):
+    if (
+        "opencl" not in dpctl.get_current_queue().sycl_device.filter_string
+        and "opencl" in offload_device
+    ):
         pytest.skip("Bug in DPNP. See: IntelPython/dpnp#723")
 
     @dppy.kernel
