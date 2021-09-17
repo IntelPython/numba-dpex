@@ -60,7 +60,7 @@ def test_dpnp_create_array_in_context(offload_device, dtype):
         pytest.skip("Bug in DPNP. See: IntelPython/dpnp#723")
 
     with dpctl.device_context(offload_device):
-        a = dpnp.arange(1024, dtype=dtype)
+        a = dpnp.arange(1024, dtype=dtype)  # noqa
 
 
 def test_consuming_array_from_dpnp(offload_device, dtype):
