@@ -227,8 +227,7 @@ def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, addrspace):
         else:
             assert "__spirv_AtomicFAddEXT" not in kern.assembly
 
-    config.NATIVE_FP_ATOMICS = NATIVE_FP_ATOMICS_old_val
-    config.LLVM_SPIRV_ROOT = LLVM_SPIRV_ROOT_old_val
+    config.NATIVE_FP_ATOMICS = 0
 
     # To bypass caching
     kernel = dppy.kernel(f)
@@ -237,3 +236,6 @@ def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, addrspace):
             kernel._get_argtypes(a), sycl_queue
         )
         assert "__spirv_AtomicFAddEXT" not in kern.assembly
+
+    config.NATIVE_FP_ATOMICS = NATIVE_FP_ATOMICS_old_val
+    config.LLVM_SPIRV_ROOT = LLVM_SPIRV_ROOT_old_val
