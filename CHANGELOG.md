@@ -8,9 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Improve build and infra scripts (#544)
-- Add info about tags in documentation (#543)
-- Public CI for Windows (#536)
 - Add docs about local variables lifetime (#534)
+- Public CI for Windows (#536)
+- Add info about tags in documentation (#543)
 
 ### Changed
 - Update dpnp 0.8 (#524)
