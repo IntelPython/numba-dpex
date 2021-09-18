@@ -19,10 +19,12 @@ DPC++'s runtime.
         import numba_dppy, numba_dppy as dppy
         import dpctl
 
+
         @dppy.kernel
-            def sum(a, b, c):
+        def sum(a, b, c):
             i = dppy.get_global_id(0)
             c[i] = a[i] + b[i]
+
 
         a = np.array(np.random.random(20), dtype=np.float32)
         b = np.array(np.random.random(20), dtype=np.float32)
