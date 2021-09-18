@@ -80,12 +80,12 @@ For a detailed description of features currently supported by numba-dppy, refer 
 
 ## Test Matrix:
 
-|   #   |   OS    | Distribution | Python |  Architecture   | Test type | IntelOneAPI | Build Commands |    Dependencies    |   Backend   |
-| :---: | :-----: | :----------: | :----: | :-------------: | :-------: | :---------: | :------------: | :----------------: | :---------: |
-|   1   |  Linux  | Ubuntu 20.04 |  3.7   | Gen9 Integrated |    CI     |   2021.2    |      (1)       | Numba, NumPy, dpnp | OCL, L0-1.0 |
-|   2   |  Linux  | Ubuntu 20.04 |  3.7   | Gen12 Discrete  |  Manual   |   2021.2    |      (1)       | Numba, NumPy, dpnp | OCL, L0-1.0 |
-|   3   |  Linux  | Ubuntu 20.04 |  3.7   |    i7-10710U    |    CI     |   2021.2    |      (1)       | Numba, NumPy, dpnp | OCL, L0-1.0 |
-|   4   | Windows |      10      |  3.7   | Gen9 Integrated |    CI     |   2021.2    |      (1)       |    Numba, NumPy    |     OCL     |
-|   5   | Windows |      10      |  3.7   |    i7-10710     |    CI     |   2021.2    |      (1)       |    Numba, NumPy    |     OCL     |
+|   #   |   OS    | Distribution | Python |  Architecture   | Test type |  IntelOneAPI   | Build Commands |    Dependencies    |   Backend   |
+| :---: | :-----: | :----------: | :----: | :-------------: | :-------: | :------------: | :------------: | :----------------: | :---------: |
+|   1   |  Linux  | Ubuntu 20.04 |  3.8   | Gen9 Integrated |    CI     | 2021.3, 2021.4 |      (1)       | Numba, NumPy, dpnp | OCL, L0-1.1 |
+|   2   |  Linux  | Ubuntu 20.04 |  3.8   | Gen12 Discrete  |  Manual   | 2021.3, 2021.4 |      (1)       | Numba, NumPy, dpnp | OCL, L0-1.1 |
+|   3   |  Linux  | Ubuntu 20.04 |  3.8   |    i7-10710U    |    CI     | 2021.3, 2021.4 |      (1)       | Numba, NumPy, dpnp | OCL, L0-1.1 |
+|   4   | Windows |      10      |  3.8   | Gen9 Integrated |    CI     | 2021.3, 2021.4 |      (1)       |    Numba, NumPy    |     OCL     |
+|   5   | Windows |      10      |  3.8   |    i7-10710     |    CI     | 2021.3, 2021.4 |      (1)       |    Numba, NumPy    |     OCL     |
 
 (1): `python setup.py install; pytest -q -ra --disable-warnings --pyargs numba_dppy -vv`
