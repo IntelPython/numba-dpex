@@ -115,7 +115,7 @@ Implement python file coverage using `coverage` and `pytest-cov` packages.
 
 Install Coverage:
 ```bash
-conda install coverage
+pip install coverage
 ```
 
 Run Coverage:
