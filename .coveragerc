@@ -10,3 +10,8 @@ precision = 2
 omit =
   # Vendored packages
   numba_dppy/_version.py
+exclude_lines =
+  pragma: no cover
+  # numba compiled code
+  @register_jitable
+  def dpnp_impl
