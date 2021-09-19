@@ -4,7 +4,10 @@ source = numba_dppy
 omit = */numba_dppy/tests/*
 
 [report]
-precision=2
+precision = 2
+omit =
+  # Vendored packages
+  numba_dppy/_version.py
 
 [pytest]
 addopts = --cov=numba_dppy
