@@ -2,7 +2,7 @@
 
 set -euxo pipefail
 
-pytest -q -ra --disable-warnings --cov --cov-report term-missing --pyargs numba_dppy -vv
+pytest -q -ra --disable-warnings --pyargs numba_dppy -vv
 
 if [[ -v ONEAPI_ROOT ]]; then
     set +u

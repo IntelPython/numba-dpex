@@ -32,12 +32,8 @@ requirements:
         - packaging
 
 test:
-    requires:
-        - pytest
-        - pytest-cov
-    source_files:
-        - .coveragerc
-
+  requires:
+    - pytest
 
 about:
     home: https://github.com/IntelPython/numba-dppy
