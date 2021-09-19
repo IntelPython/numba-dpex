@@ -12,15 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
-from numba import types
-from numba.core.typing import signature
-from . import stubs
-import numba_dppy.dpnp_glue as dpnp_lowering
-from numba.core.extending import overload, register_jitable
 import numpy as np
-from numba_dppy import dpctl_functions
+from numba import types
+from numba.core.extending import overload, register_jitable
+from numba.core.typing import signature
+
 import numba_dppy
+import numba_dppy.dpnp_glue as dpnp_lowering
+import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
+from numba_dppy import dpctl_functions
+
+from . import stubs
 
 
 @overload(stubs.dpnp.eig)
@@ -61,19 +63,27 @@ def dpnp_eig_impl(a):
 
         sycl_queue = dpctl_functions.get_current_queue()
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(
+            sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+        )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         wr_usm = dpctl_functions.malloc_shared(wr.size * wr.itemsize, sycl_queue)
         vr_usm = dpctl_functions.malloc_shared(vr.size * vr.itemsize, sycl_queue)
 
         dpnp_eig(a_usm, wr_usm, vr_usm, n)
 
-        dpctl_functions.queue_memcpy(
+        event = dpctl_functions.queue_memcpy(
             sycl_queue, wr.ctypes, wr_usm, wr.size * wr.itemsize
         )
-        dpctl_functions.queue_memcpy(
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
+        event = dpctl_functions.queue_memcpy(
             sycl_queue, vr.ctypes, vr_usm, vr.size * vr.itemsize
         )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(wr_usm, sycl_queue)
@@ -96,21 +106,66 @@ def common_matmul_impl(dpnp_func, a, b, out, m, n, k, print_debug):
     dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
 
     b_usm = dpctl_functions.malloc_shared(b.size * b.itemsize, sycl_queue)
-    dpctl_functions.queue_memcpy(sycl_queue, b_usm, b.ctypes, b.size * b.itemsize)
+    event = dpctl_functions.queue_memcpy(
+        sycl_queue, b_usm, b.ctypes, b.size * b.itemsize
+    )
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
 
     out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
-    dpnp_func(a_usm, b_usm, out_usm, m, n, k)
+    a_m = np.array((m, k))
+    b_m = np.array((k, n))
+    out_m = np.array((m, n))
 
-    dpctl_functions.queue_memcpy(
+    result_out = out_usm
+    result_size = out.size
+    result_ndim = 2
+    result_shape = out_m.ctypes
+    result_strides = 0
+
+    input1_in = a_usm
+    input1_size = a.size
+    input1_ndim = 2
+    input1_shape = a_m.ctypes
+    input1_strides = 0
+
+    input2_in = b_usm
+    input2_size = b.size
+    input2_ndim = 2
+    input2_shape = b_m.ctypes
+    input2_strides = 0
+
+    dpnp_func(
+        result_out,
+        result_size,
+        result_ndim,
+        result_shape,
+        result_strides,
+        input1_in,
+        input1_size,
+        input1_ndim,
+        input1_shape,
+        input1_strides,
+        input2_in,
+        input2_size,
+        input2_ndim,
+        input2_shape,
+        input2_strides,
+    )
+
+    event = dpctl_functions.queue_memcpy(
         sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
     )
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
 
     dpctl_functions.free_with_queue(a_usm, sycl_queue)
     dpctl_functions.free_with_queue(b_usm, sycl_queue)
     dpctl_functions.free_with_queue(out_usm, sycl_queue)
 
     dpnp_ext._dummy_liveness_func([a.size, b.size, out.size])
+    dpnp_ext._dummy_liveness_func([a_m.size, b_m.size, out_m.size])
 
     if print_debug:
         print("dpnp implementation")
@@ -120,40 +175,62 @@ def common_matmul_impl(dpnp_func, a, b, out, m, n, k, print_debug):
 def common_dot_impl(dpnp_func, a, b, out, m, print_debug):
     sycl_queue = dpctl_functions.get_current_queue()
     a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-    dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+    event = dpctl_functions.queue_memcpy(
+        sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+    )
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
 
     b_usm = dpctl_functions.malloc_shared(b.size * b.itemsize, sycl_queue)
-    dpctl_functions.queue_memcpy(sycl_queue, b_usm, b.ctypes, b.size * b.itemsize)
+    event = dpctl_functions.queue_memcpy(
+        sycl_queue, b_usm, b.ctypes, b.size * b.itemsize
+    )
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
 
     out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
     result_out = out_usm
+    result_size = out.size
+    result_ndim = out.ndim
+    result_shape = out.shapeptr
+    result_strides = 0
+
     input1_in = a_usm
     input1_size = a.size
+    input1_ndim = a.ndim
     input1_shape = a.shapeptr
-    input1_shape_ndim = a.ndim
+    input1_strides = 0
+
     input2_in = b_usm
     input2_size = b.size
+    input2_ndim = b.ndim
     input2_shape = b.shapeptr
-    input2_shape_ndim = b.ndim
-    where = 0
+    input2_strides = 0
 
     dpnp_func(
         result_out,
+        result_size,
+        result_ndim,
+        result_shape,
+        result_strides,
         input1_in,
         input1_size,
+        input1_ndim,
         input1_shape,
-        input1_shape_ndim,
+        input1_strides,
         input2_in,
         input2_size,
+        input2_ndim,
         input2_shape,
-        input2_shape_ndim,
-        where,
+        input2_strides,
     )
 
-    dpctl_functions.queue_memcpy(
+    event = dpctl_functions.queue_memcpy(
         sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
     )
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
 
     dpctl_functions.free_with_queue(a_usm, sycl_queue)
     dpctl_functions.free_with_queue(b_usm, sycl_queue)
@@ -211,31 +288,42 @@ def dpnp_dot_impl(a, b):
     ret_type = types.void
     """
     dpnp source:
-    https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels.cpp#L42
-    https://github.com/IntelPython/dpnp/blob/0.6.1dev/dpnp/backend/kernels/dpnp_krnl_common.cpp#L78
+    https://github.com/IntelPython/dpnp/blame/67a101c90cf253cfe9b9ba80ac397811ce94edee/dpnp/backend/kernels/dpnp_krnl_common.cpp#L322
 
     Function declaration:
-    void dpnp_matmul_c(void* array1_in, void* array2_in, void* result1, size_t size_m,
-                       size_t size_n, size_t size_k)
-    void dpnp_dot_c(void* result_out,
-                const void* input1_in,
-                const size_t input1_size,
-                const size_t* input1_shape,
-                const size_t input1_shape_ndim,
-                const void* input2_in,
-                const size_t input2_size,
-                const size_t* input2_shape,
-                const size_t input2_shape_ndim,
-                const size_t* where)
+    void dpnp_matmul_c(void* result_out,
+                    const size_t result_size,
+                    const size_t result_ndim,
+                    const size_t* result_shape,
+                    const size_t* result_strides,
+                    const void* input1_in,
+                    const size_t input1_size,
+                    const size_t input1_ndim,
+                    const size_t* input1_shape,
+                    const size_t* input1_strides,
+                    const void* input2_in,
+                    const size_t input2_size,
+                    const size_t input2_ndim,
+                    const size_t* input2_shape,
+                    const size_t* input2_strides)
     """
     sig = signature(
         ret_type,
         types.voidptr,
+        types.intp,
+        types.intp,
         types.voidptr,
         types.voidptr,
+        types.voidptr,
         types.intp,
         types.intp,
+        types.voidptr,
+        types.voidptr,
+        types.voidptr,
         types.intp,
+        types.intp,
+        types.voidptr,
+        types.voidptr,
     )
 
     res_dtype = get_res_dtype(a, b)
@@ -293,18 +381,44 @@ def dpnp_dot_impl(a, b):
 
         return dot_2_vm
     elif ndims == [1, 1]:
+        """
+        dpnp source:
+        https://github.com/IntelPython/dpnp/blob/67a101c90cf253cfe9b9ba80ac397811ce94edee/dpnp/backend/kernels/dpnp_krnl_common.cpp#L79
+
+        Function declaration:
+        void dpnp_dot_c(void* result_out,
+                        const size_t result_size,
+                        const size_t result_ndim,
+                        const size_t* result_shape,
+                        const size_t* result_strides,
+                        const void* input1_in,
+                        const size_t input1_size,
+                        const size_t input1_ndim,
+                        const size_t* input1_shape,
+                        const size_t* input1_strides,
+                        const void* input2_in,
+                        const size_t input2_size,
+                        const size_t input2_ndim,
+                        const size_t* input2_shape,
+                        const size_t* input2_strides)
+        """
         sig = signature(
             ret_type,
-            types.voidptr,  # void* result_out,
-            types.voidptr,  # const void* input1_in,
-            types.intp,  # const size_t input1_size,
-            types.voidptr,  # const size_t* input1_shape,
-            types.intp,  # const size_t input1_shape_ndim,
-            types.voidptr,  # const void* input2_in,
-            types.intp,  # const size_t input2_size,
-            types.voidptr,  # const size_t* input2_shape,
-            types.intp,  # const size_t input2_shape_ndim,
-            types.voidptr,  # const size_t* where)
+            types.voidptr,
+            types.intp,
+            types.intp,
+            types.voidptr,
+            types.voidptr,
+            types.voidptr,
+            types.intp,
+            types.intp,
+            types.voidptr,
+            types.voidptr,
+            types.voidptr,
+            types.intp,
+            types.intp,
+            types.voidptr,
+            types.voidptr,
         )
         dpnp_func = dpnp_ext.dpnp_func("dpnp_dot", [a.dtype.name, "NONE"], sig)
 
@@ -435,15 +549,21 @@ def dpnp_cholesky_impl(a):
 
         sycl_queue = dpctl_functions.get_current_queue()
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(
+            sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+        )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
         dpnp_func(a_usm, out_usm, a.shapeptr)
 
-        dpctl_functions.queue_memcpy(
+        event = dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
         )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
@@ -489,15 +609,21 @@ def dpnp_det_impl(a):
 
         sycl_queue = dpctl_functions.get_current_queue()
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(
+            sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+        )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
         dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim)
 
-        dpctl_functions.queue_memcpy(
+        event = dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
         )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
@@ -532,9 +658,9 @@ def dpnp_matrix_rank_impl(M, tol=None, hermitian=False):
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(M, tol=None, hermitian=False):
-        if tol != None:
+        if tol is not None:
             raise ValueError("tol is not supported for np.linalg.matrix_rank(M)")
-        if hermitian == True:
+        if hermitian:
             raise ValueError("hermitian is not supported for np.linalg.matrix_rank(M)")
 
         if M.ndim > 2:
@@ -546,15 +672,21 @@ def dpnp_matrix_rank_impl(M, tol=None, hermitian=False):
 
         sycl_queue = dpctl_functions.get_current_queue()
         M_usm = dpctl_functions.malloc_shared(M.size * M.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(sycl_queue, M_usm, M.ctypes, M.size * M.itemsize)
+        event = dpctl_functions.queue_memcpy(
+            sycl_queue, M_usm, M.ctypes, M.size * M.itemsize
+        )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
         dpnp_func(M_usm, out_usm, M.shapeptr, M.ndim)
 
-        dpctl_functions.queue_memcpy(
+        event = dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
         )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         dpctl_functions.free_with_queue(M_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)

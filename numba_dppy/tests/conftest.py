@@ -15,7 +15,6 @@
 
 import pytest
 
-
 offload_devices = [
     "opencl:gpu:0",
     "level_zero:gpu:0",

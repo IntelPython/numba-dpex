@@ -12,16 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from . import _helper
-import numpy as np
 import unittest
 import warnings
 
-import numba
 import dpctl
+import numba
+import numpy as np
 
-from numba_dppy import config
 import numba_dppy
+from numba_dppy import config
+
+from . import _helper
 
 
 @unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")

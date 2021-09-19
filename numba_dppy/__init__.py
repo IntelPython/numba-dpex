@@ -517,9 +517,9 @@ Supported NumPy Functions:
 
 import numba.testing
 
-from . import config
-
 from numba_dppy.retarget import offload_to_sycl_device
+
+from . import config
 
 if config.dppy_present:
     from .device_init import *

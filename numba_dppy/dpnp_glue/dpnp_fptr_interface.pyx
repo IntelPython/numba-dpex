@@ -260,8 +260,9 @@ cdef DPNPFuncType get_DPNPFuncType_from_str(name):
     else:
         return DPNPFuncType.DPNP_FT_NONE
 
-from libc.stdio cimport printf
 from libc.stdint cimport uintptr_t
+from libc.stdio cimport printf
+
 
 cpdef get_dpnp_fn_ptr(name, types):
     cdef DPNPFuncName func_name = get_DPNPFuncName_from_str(name)

@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba import njit, gdb
-import numpy as np
 import dpctl
+import numpy as np
+from numba import njit
+
 import numba_dppy as dppy
 
 
@@ -48,7 +49,7 @@ def main():
     for i in range(N):
         for j in range(N):
             for k in range(N):
-                for l in range(N):
+                for l in range(N):  # noqa
                     if c[i, j, k, l] != 2.0:
                         print("First index not equal to 2.0 was", i, j, k, l)
                         break

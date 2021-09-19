@@ -13,15 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import unittest
+
+import dpctl
 import numpy as np
 from numba import njit
-import dpctl
-import unittest
+
 import numba_dppy as dppy
 from numba_dppy.tests._helper import (
-    ensure_dpnp,
     assert_auto_offloading,
     dpnp_debug,
+    ensure_dpnp,
     has_gpu_queues,
 )
 

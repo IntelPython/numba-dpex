@@ -18,13 +18,14 @@
 
 import dpctl
 import numpy as np
-from numba import njit
 import pytest
-from .dpnp_skip_test import dpnp_skip_test as skip_test
-from numba_dppy.tests._helper import is_gen12, dpnp_debug
-from ._helper import wrapper_function
-import numba_dppy as dppy
+from numba import njit
 
+import numba_dppy as dppy
+from numba_dppy.tests._helper import dpnp_debug, is_gen12
+
+from ._helper import wrapper_function
+from .dpnp_skip_test import dpnp_skip_test as skip_test
 
 list_of_filter_strs = [
     "opencl:gpu:0",

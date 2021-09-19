@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba import njit, gdb
-import numpy as np
 import dpctl
+import numpy as np
+from numba import njit
+
 import numba_dppy as dppy
 
 

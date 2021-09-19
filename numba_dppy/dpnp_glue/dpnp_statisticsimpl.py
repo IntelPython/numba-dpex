@@ -12,14 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
-from numba.core import types, cgutils
-from numba.core.typing import signature
-from . import stubs
-import numba_dppy.dpnp_glue as dpnp_lowering
-from numba.core.extending import overload, register_jitable
 import numpy as np
+from numba.core import cgutils, types
+from numba.core.extending import overload, register_jitable
+from numba.core.typing import signature
+
+import numba_dppy.dpnp_glue as dpnp_lowering
+import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
 from numba_dppy import dpctl_functions
+
+from . import stubs
 
 
 @overload(stubs.dpnp.max)
@@ -31,11 +33,10 @@ def dpnp_amax_impl(a):
     ret_type = types.void
     """
     dpnp source:
-    https://github.com/IntelPython/dpnp/blob/0.7.0/dpnp/backend/kernels/dpnp_krnl_statistics.cpp#L147
+    https://github.com/IntelPython/dpnp/blob/e389248c709531b181be8bf33b1a270fca812a92/dpnp/backend/kernels/dpnp_krnl_statistics.cpp#L149
 
     Function declaration:
-    void dpnp_max_c(void* array1_in, void* result1, const size_t* shape,
-                    size_t ndim, const size_t* axis, size_t naxis)
+    void dpnp_max_c(void* array1_in, void* result1, const size_t result_size, const size_t* shape, size_t ndim, const size_t* axis, size_t naxis)
 
     We are using void * in case of size_t * as Numba currently does not have
     any type to represent size_t *. Since, both the types are pointers,
@@ -46,6 +47,7 @@ def dpnp_amax_impl(a):
         ret_type,
         types.voidptr,
         types.voidptr,
+        types.intp,
         types.voidptr,
         types.intp,
         types.voidptr,
@@ -61,18 +63,24 @@ def dpnp_amax_impl(a):
         sycl_queue = dpctl_functions.get_current_queue()
 
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(
+            sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+        )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         out_usm = dpctl_functions.malloc_shared(a.itemsize, sycl_queue)
 
         axis, naxis = 0, 0
 
-        dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim, axis, naxis)
+        dpnp_func(a_usm, out_usm, a.size * a.itemsize, a.shapeptr, a.ndim, axis, naxis)
 
         out = np.empty(1, dtype=a.dtype)
-        dpctl_functions.queue_memcpy(
+        event = dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
         )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
@@ -95,11 +103,10 @@ def dpnp_amin_impl(a):
     ret_type = types.void
     """
     dpnp source:
-    https://github.com/IntelPython/dpnp/blob/0.4.0/dpnp/backend/custom_kernels_statistics.cpp#L247
+    https://github.com/IntelPython/dpnp/blob/57caae8beb607992f40cdbe00f2666ee84358a97/dpnp/backend/kernels/dpnp_krnl_statistics.cpp#L412
 
     Function declaration:
-    void custom_min_c(void* array1_in, void* result1, const size_t* shape,
-                      size_t ndim, const size_t* axis, size_t naxis)
+    void dpnp_min_c(void* array1_in, void* result1, const size_t result_size, const size_t* shape, size_t ndim, const size_t* axis, size_t naxis)
 
     We are using void * in case of size_t * as Numba currently does not have
     any type to represent size_t *. Since, both the types are pointers,
@@ -110,6 +117,7 @@ def dpnp_amin_impl(a):
         ret_type,
         types.voidptr,
         types.voidptr,
+        types.intp,
         types.voidptr,
         types.intp,
         types.voidptr,
@@ -125,16 +133,24 @@ def dpnp_amin_impl(a):
         sycl_queue = dpctl_functions.get_current_queue()
 
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(
+            sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+        )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         out_usm = dpctl_functions.malloc_shared(a.itemsize, sycl_queue)
 
-        dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim, a.shapeptr, 0)
+        dpnp_func(
+            a_usm, out_usm, a.size * a.itemsize, a.shapeptr, a.ndim, a.shapeptr, 0
+        )
 
         out = np.empty(1, dtype=a.dtype)
-        dpctl_functions.queue_memcpy(
+        event = dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
         )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
@@ -190,7 +206,11 @@ def dpnp_mean_impl(a):
         sycl_queue = dpctl_functions.get_current_queue()
 
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(
+            sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+        )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         out = np.empty(1, dtype=res_dtype)
         out_usm = dpctl_functions.malloc_shared(out.itemsize, sycl_queue)
@@ -199,9 +219,11 @@ def dpnp_mean_impl(a):
 
         dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim, axis, naxis)
 
-        dpctl_functions.queue_memcpy(
+        event = dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
         )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
@@ -226,7 +248,7 @@ def dpnp_median_impl(a):
 
     Function declaration:
     void custom_median_c(void* array1_in, void* result1, const size_t* shape,
-			 size_t ndim, const size_t* axis, size_t naxis)
+                         size_t ndim, const size_t* axis, size_t naxis)
 
     We are using void * in case of size_t * as Numba currently does not have
     any type to represent size_t *. Since, both the types are pointers,
@@ -256,16 +278,22 @@ def dpnp_median_impl(a):
         sycl_queue = dpctl_functions.get_current_queue()
 
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(
+            sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+        )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         out = np.empty(1, dtype=res_dtype)
         out_usm = dpctl_functions.malloc_shared(out.itemsize, sycl_queue)
 
         dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim, a.shapeptr, a.ndim)
 
-        dpctl_functions.queue_memcpy(
+        event = dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
         )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
@@ -315,12 +343,14 @@ def dpnp_cov_impl(a):
         a_usm = dpctl_functions.malloc_shared(
             a_copy_in_double.size * a_copy_in_double.itemsize, sycl_queue
         )
-        dpctl_functions.queue_memcpy(
+        event = dpctl_functions.queue_memcpy(
             sycl_queue,
             a_usm,
             a_copy_in_double.ctypes,
             a_copy_in_double.size * a_copy_in_double.itemsize,
         )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         if a.ndim == 2:
             rows = a.shape[0]
@@ -335,9 +365,11 @@ def dpnp_cov_impl(a):
 
         dpnp_func(a_usm, out_usm, rows, cols)
 
-        dpctl_functions.queue_memcpy(
+        event = dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
         )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)

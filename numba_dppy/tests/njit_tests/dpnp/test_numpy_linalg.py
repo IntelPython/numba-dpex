@@ -18,12 +18,14 @@
 
 import dpctl
 import numpy as np
-from numba import njit
 import pytest
-from .dpnp_skip_test import dpnp_skip_test as skip_test
-from ._helper import wrapper_function, args_string
-from numba_dppy.tests._helper import dpnp_debug
+from numba import njit
+
 import numba_dppy as dppy
+from numba_dppy.tests._helper import dpnp_debug
+
+from ._helper import args_string, wrapper_function
+from .dpnp_skip_test import dpnp_skip_test as skip_test
 
 
 # From https://github.com/IntelPython/dpnp/blob/0.4.0/tests/test_linalg.py#L8

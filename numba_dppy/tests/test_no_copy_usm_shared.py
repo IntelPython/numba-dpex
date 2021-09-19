@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytest
-import numpy as np
-from numba import njit, prange
-from numba.core import compiler, cpu
-from numba.core.registry import cpu_target
 import dpctl
 import dpctl.tensor.numpy_usm_shared as usmarray
-import numba_dppy.numpy_usm_shared as nus
-from numba_dppy.compiler import DPPYCompiler
+import numpy as np
+import pytest
+from numba import prange
+from numba.core import compiler, cpu
+from numba.core.registry import cpu_target
+
 import numba_dppy as dppy
+from numba_dppy.compiler import DPPYCompiler
 
 
 def fn(a):

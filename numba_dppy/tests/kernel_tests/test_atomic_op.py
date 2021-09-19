@@ -12,15 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
-from numba_dppy.tests._helper import skip_test
-
 import os
+
+import dpctl
+import numpy as np
+import pytest
+
 import numba_dppy as dppy
 from numba_dppy import config
-import pytest
-import dpctl
-
+from numba_dppy.tests._helper import skip_test
 
 global_size = 100
 N = global_size
@@ -191,7 +191,7 @@ def addrspace(request):
 
 def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, addrspace):
     LLVM_SPIRV_ROOT = os.environ.get("NUMBA_DPPY_LLVM_SPIRV_ROOT")
-    if LLVM_SPIRV_ROOT == "" or LLVM_SPIRV_ROOT == None:
+    if LLVM_SPIRV_ROOT == "" or LLVM_SPIRV_ROOT is None:
         pytest.skip("Please set envar NUMBA_DPPY_LLVM_SPIRV_ROOT to run this test")
 
     if atomic_skip_test(filter_str):
@@ -227,8 +227,7 @@ def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, addrspace):
         else:
             assert "__spirv_AtomicFAddEXT" not in kern.assembly
 
-    config.NATIVE_FP_ATOMICS = NATIVE_FP_ATOMICS_old_val
-    config.LLVM_SPIRV_ROOT = LLVM_SPIRV_ROOT_old_val
+    config.NATIVE_FP_ATOMICS = 0
 
     # To bypass caching
     kernel = dppy.kernel(f)
@@ -237,3 +236,6 @@ def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, addrspace):
             kernel._get_argtypes(a), sycl_queue
         )
         assert "__spirv_AtomicFAddEXT" not in kern.assembly
+
+    config.NATIVE_FP_ATOMICS = NATIVE_FP_ATOMICS_old_val
+    config.LLVM_SPIRV_ROOT = LLVM_SPIRV_ROOT_old_val

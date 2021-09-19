@@ -13,17 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
 import contextlib
-
 import unittest
-import dpctl
-from numba.tests.support import (
-    captured_stdout,
-    redirect_c_stdout,
-)
 
-import numba_dppy
+import dpctl
+from numba.tests.support import captured_stdout
+
 from numba_dppy import config
 
 
@@ -49,7 +44,7 @@ def has_sycl_platforms():
     """
     platforms = dpctl.get_platforms()
     for p in platforms:
-        if not p.backend is dpctl.backend_type.host:
+        if p.backend is not dpctl.backend_type.host:
             return True
     return False
 
@@ -104,20 +99,6 @@ def override_config(name, value, config=config):
         yield
     finally:
         setattr(config, name, old_value)
-
-
-@contextlib.contextmanager
-def captured_dppy_stdout():
-    """
-    Return a minimal stream-like object capturing the text output of dppy
-    """
-    # Prevent accidentally capturing previously output text
-    sys.stdout.flush()
-
-    import numba_dppy, numba_dppy as dppy
-
-    with redirect_c_stdout() as stream:
-        yield DPPYTextCapture(stream)
 
 
 def _id(obj):

@@ -41,4 +41,3 @@ This is the default behavior, but you can configure it for more efficient debugg
 To ensure that the current thread executes a single line without interference, activate the scheduler-locking setting.
 
 To activate the scheduler-locking setting, refer to the :ref:`single_stepping` section.
-

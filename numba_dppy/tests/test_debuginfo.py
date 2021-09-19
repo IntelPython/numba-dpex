@@ -14,16 +14,15 @@
 # limitations under the License.
 
 import re
-import pytest
 
 import dpctl
+import pytest
 from numba.core import types
 
 import numba_dppy as dppy
 from numba_dppy import compiler
 from numba_dppy.tests._helper import override_config
 from numba_dppy.utils import npytypes_array_to_dppy_array
-
 
 debug_options = [True, False]
 
@@ -55,7 +54,7 @@ def test_debug_flag_generates_ir_with_debuginfo(debug_option):
 
     @dppy.kernel
     def foo(x):
-        x = 1
+        x = 1  # noqa
 
     sycl_queue = dpctl.get_current_queue()
     sig = (types.int32,)
