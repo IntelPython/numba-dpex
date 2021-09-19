@@ -7,6 +7,8 @@ parallel = True
 
 [report]
 precision = 2
+; show_missing = True
+; sort = -cover
 omit =
   # Vendored packages
   numba_dppy/_version.py
