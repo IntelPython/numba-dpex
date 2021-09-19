@@ -2,6 +2,7 @@
   "recommendations": [
     "ms-python.python",
     "timonwong.shellcheck",
-    "eamodio.gitlens"
+    "eamodio.gitlens",
+    "ryanluker.vscode-coverage-gutters"
   ]
 }
