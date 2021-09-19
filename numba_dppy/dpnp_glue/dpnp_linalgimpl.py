@@ -334,7 +334,7 @@ def dpnp_dot_impl(a, b):
     if ndims == [2, 2]:
         dpnp_func = dpnp_ext.dpnp_func("dpnp_matmul", [a.dtype.name, "NONE"], sig)
 
-        def dot_2_mm(a, b):
+        def dpnp_impl_dot_2_mm(a, b):
             m, k = a.shape
             _k, n = b.shape
 
@@ -346,11 +346,11 @@ def dpnp_dot_impl(a, b):
 
             return out
 
-        return dot_2_mm
+        return dpnp_impl_dot_2_mm
     elif ndims == [2, 1]:
         dpnp_func = dpnp_ext.dpnp_func("dpnp_matmul", [a.dtype.name, "NONE"], sig)
 
-        def dot_2_mv(a, b):
+        def dpnp_impl_dot_2_mv(a, b):
             m, k = a.shape
             (_n,) = b.shape
             n = 1
@@ -363,11 +363,11 @@ def dpnp_dot_impl(a, b):
 
             return out
 
-        return dot_2_mv
+        return dpnp_impl_dot_2_mv
     elif ndims == [1, 2]:
         dpnp_func = dpnp_ext.dpnp_func("dpnp_matmul", [a.dtype.name, "NONE"], sig)
 
-        def dot_2_vm(a, b):
+        def dpnp_impl_dot_2_vm(a, b):
             (m,) = a.shape
             k, n = b.shape
 
@@ -379,7 +379,7 @@ def dpnp_dot_impl(a, b):
 
             return out
 
-        return dot_2_vm
+        return dpnp_impl_dot_2_vm
     elif ndims == [1, 1]:
         """
         dpnp source:
@@ -422,7 +422,7 @@ def dpnp_dot_impl(a, b):
         )
         dpnp_func = dpnp_ext.dpnp_func("dpnp_dot", [a.dtype.name, "NONE"], sig)
 
-        def dot_2_vv(a, b):
+        def dpnp_impl_dot_2_vv(a, b):
 
             (m,) = a.shape
             (n,) = b.shape
@@ -435,7 +435,7 @@ def dpnp_dot_impl(a, b):
 
             return out[0]
 
-        return dot_2_vv
+        return dpnp_impl_dot_2_vv
     else:
         assert 0
 
