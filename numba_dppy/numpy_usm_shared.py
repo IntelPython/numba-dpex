@@ -60,11 +60,9 @@ from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
 
 from . import target as dppy_target
 
-debug = config.DEBUG
-
 
 def dprint(*args):
-    if debug:
+    if config.DEBUG:
         print(*args)
         sys.stdout.flush()
 
