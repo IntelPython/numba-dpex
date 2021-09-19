@@ -21,6 +21,7 @@ dependencies:
   - pytest-xdist
   - pip
   - pip:
+    - coverage
     - pre-commit
     - flake8
     - black==20.8b1
