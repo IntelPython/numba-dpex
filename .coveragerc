@@ -12,6 +12,8 @@ omit =
   numba_dppy/_version.py
 exclude_lines =
   pragma: no cover
+  raise NotImplementedError
+  if config.DEBUG:
   # numba compiled code
   @register_jitable
   def dpnp_impl
