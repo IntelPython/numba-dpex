@@ -193,7 +193,7 @@ class RewriteNumPyOverloadedFunctions(object):
 
                 new_body.append(stmt)
             block.body = new_body
-            return replaced
+        return replaced
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
