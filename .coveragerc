@@ -1,7 +1,7 @@
 [run]
 branch = True
 source = numba_dppy
-omit = */numba_dppy/tests/*
+omit = numba_dppy/tests/*
 concurrency = multiprocessing
 parallel = True
 
