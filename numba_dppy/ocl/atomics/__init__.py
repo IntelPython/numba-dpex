@@ -17,10 +17,7 @@ import os.path
 
 
 def atomic_support_present():
-    if os.path.isfile(os.path.join(os.path.dirname(__file__), "atomic_ops.spir")):
-        return True
-    else:
-        return False
+    return os.path.isfile(os.path.join(os.path.dirname(__file__), "atomic_ops.spir"))
 
 
 def get_atomic_spirv_path():
