@@ -51,7 +51,7 @@ def vvsort(val, vec):
 list_of_filter_strs = [
     "opencl:gpu:0",
     # "level_zero:gpu:0",
-    # "opencl:cpu:0",
+    "opencl:cpu:0",
 ]
 
 
@@ -354,8 +354,11 @@ def test_eigvals(filter_str, eig_input, capfd):
     if skip_test(filter_str):
         pytest.skip()
 
-    if filter_str == "level_zero:gpu:0":
+    if "level_zero:gpu" in filter_str:
         pytest.skip("Segfaults with device type level_zero:gpu:0")
+
+    if "opencl:cpu" in filter_str:
+        pytest.skip("Segfaults with device type opencl:cpu:0")
 
     a = eig_input
     fn = get_fn("linalg.eigvals", 1)
