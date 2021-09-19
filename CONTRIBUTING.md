@@ -140,6 +140,11 @@ Produce annotated HTML listings with coverage results:
 coverage html
 ```
 
+Produce XML with coverage for VSCode plugin:
+```bash
+coverage xml
+```
+
 - The htmlcov folder will appear in the root folder of the project. It contains reports on python file coverage in html format.
 
 Erase previously collected coverage data:
