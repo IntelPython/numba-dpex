@@ -1,71 +1,32 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>numba_dppy.utils.array_utils module &mdash; numba-dppy main documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>numba_dppy.utils.array_utils module &mdash; numba-dppy 0.16.0rc1+4.ga460848 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../index.html" class="icon icon-home"> numba-dppy
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,18 +34,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html">Code-generation based on a device</a></li>
@@ -103,77 +53,36 @@
 <li class="toctree-l1"><a class="reference internal" href="../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">numba-dppy</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>numba_dppy.utils.array_utils module</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../_sources/apidoc/numba_dppy.utils.array_utils.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="module-numba_dppy.utils.array_utils">
-<span id="numba-dppy-utils-array-utils-module"></span><h1>numba_dppy.utils.array_utils module<a class="headerlink" href="#module-numba_dppy.utils.array_utils" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="module-numba_dppy.utils.array_utils">
+<span id="numba-dppy-utils-array-utils-module"></span><h1>numba_dppy.utils.array_utils module<a class="headerlink" href="#module-numba_dppy.utils.array_utils" title="Permalink to this headline"></a></h1>
 <p>This module provides utilities to interact with USM memory.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dppy.utils.array_utils.as_usm_obj">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.utils.array_utils.</span></span><span class="sig-name descname"><span class="pre">as_usm_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'shared'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.utils.array_utils.as_usm_obj" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.utils.array_utils.</span></span><span class="sig-name descname"><span class="pre">as_usm_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'shared'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.utils.array_utils.as_usm_obj" title="Permalink to this definition"></a></dt>
 <dd><p>Determine and return a SYCL device accesible object.</p>
 <p>We try to determine if the provided object defines a valid
 __sycl_usm_array_interface__ dictionary.
@@ -213,7 +122,7 @@ is raised if queue argument is not provided.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dppy.utils.array_utils.copy_from_numpy_to_usm_obj">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.utils.array_utils.</span></span><span class="sig-name descname"><span class="pre">copy_from_numpy_to_usm_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">usm_allocated</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.utils.array_utils.copy_from_numpy_to_usm_obj" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.utils.array_utils.</span></span><span class="sig-name descname"><span class="pre">copy_from_numpy_to_usm_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">usm_allocated</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.utils.array_utils.copy_from_numpy_to_usm_obj" title="Permalink to this definition"></a></dt>
 <dd><p>Copy from supported objects to USM allocated data.</p>
 <p>This function copies the data of a supported Python type (only
 numpy.ndarray is supported at this point) into object that
@@ -242,7 +151,7 @@ ValueError:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dppy.utils.array_utils.copy_to_numpy_from_usm_obj">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.utils.array_utils.</span></span><span class="sig-name descname"><span class="pre">copy_to_numpy_from_usm_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">usm_allocated</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.utils.array_utils.copy_to_numpy_from_usm_obj" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.utils.array_utils.</span></span><span class="sig-name descname"><span class="pre">copy_to_numpy_from_usm_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">usm_allocated</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.utils.array_utils.copy_to_numpy_from_usm_obj" title="Permalink to this definition"></a></dt>
 <dd><p>Copy from USM allocated data to supported objects.</p>
 <dl>
 <dt>Args:</dt><dd><dl class="simple">
@@ -260,7 +169,7 @@ ValueError: If size of data does not match.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dppy.utils.array_utils.has_usm_memory">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.utils.array_utils.</span></span><span class="sig-name descname"><span class="pre">has_usm_memory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.utils.array_utils.has_usm_memory" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.utils.array_utils.</span></span><span class="sig-name descname"><span class="pre">has_usm_memory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.utils.array_utils.has_usm_memory" title="Permalink to this definition"></a></dt>
 <dd><p>Determine and return a SYCL device accesible object.</p>
 <p>as_usm_memory() converts Python object with <cite>__sycl_usm_array_interface__</cite>
 property to one of <code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryUSMShared</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryUSMDevice</span></code>, or
@@ -275,50 +184,34 @@ allocated using USM (zero-copy), None otherwise.</p>
 </dl>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
-           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, Intel.
-
-    </p>
+    <p>&#169; Copyright 2021, Intel.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

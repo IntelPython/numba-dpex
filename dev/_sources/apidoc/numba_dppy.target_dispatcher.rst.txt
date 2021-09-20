@@ -1,7 +1,0 @@
-numba\_dppy.target\_dispatcher module
-=====================================
-
-.. automodule:: numba_dppy.target_dispatcher
-   :members:
-   :undoc-members:
-   :show-inheritance:

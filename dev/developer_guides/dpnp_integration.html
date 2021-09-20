@@ -1,73 +1,34 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>DPNP integration &mdash; numba-dppy main documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>DPNP integration &mdash; numba-dppy 0.16.0rc1+4.ga460848 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Debugging the compilation pipeline" href="tools.html" />
     <link rel="prev" title="numba-dppy For numba.cuda Developers" href="../user_guides/migrating_from_numba_cuda.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../index.html" class="icon icon-home"> numba-dppy
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,18 +36,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html">Code-generation based on a device</a></li>
@@ -119,76 +69,35 @@
 <li class="toctree-l1"><a class="reference internal" href="tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">numba-dppy</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>DPNP integration</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../_sources/developer_guides/dpnp_integration.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="dpnp-integration">
-<span id="id1"></span><h1>DPNP integration<a class="headerlink" href="#dpnp-integration" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="dpnp-integration">
+<span id="id1"></span><h1>DPNP integration<a class="headerlink" href="#dpnp-integration" title="Permalink to this headline"></a></h1>
 <p>Currently <cite>numba-dppy</cite> uses <a class="reference external" href="https://github.com/IntelPython/dpnp/tree/master/dpnp/backend">DPNP backend library</a>.</p>
-<div class="section" id="integration-with-dpnp-backend-library">
-<span id="integration-dpnp-backend"></span><h2>Integration with <a class="reference external" href="https://github.com/IntelPython/dpnp/tree/master/dpnp/backend">DPNP backend library</a><a class="headerlink" href="#integration-with-dpnp-backend-library" title="Permalink to this headline">¶</a></h2>
+<section id="integration-with-dpnp-backend-library">
+<span id="integration-dpnp-backend"></span><h2>Integration with <a class="reference external" href="https://github.com/IntelPython/dpnp/tree/master/dpnp/backend">DPNP backend library</a><a class="headerlink" href="#integration-with-dpnp-backend-library" title="Permalink to this headline"></a></h2>
 <p><cite>numba-dppy</cite> replaces <cite>NumPy</cite> function calls with <cite>DPNP</cite> function calls.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">njit</span>
@@ -207,16 +116,16 @@
 </pre></div>
 </div>
 <p><code class="samp docutils literal notranslate"><span class="pre">np.sum(a)</span></code> will be replaced with <a class="reference external" href="https://github.com/IntelPython/dpnp/blob/ef404c0f284b0c508ed1e556e140f02f76ae5551/dpnp/backend/kernels/dpnp_krnl_reduction.cpp#L58">dpnp_sum_c&lt;int, int&gt;(…)</a>.</p>
-<div class="section" id="repository-map">
-<span id="dpnp-integration-repository-map"></span><h3>Repository map<a class="headerlink" href="#repository-map" title="Permalink to this headline">¶</a></h3>
+<section id="repository-map">
+<span id="dpnp-integration-repository-map"></span><h3>Repository map<a class="headerlink" href="#repository-map" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Code for integration is mostly resides in <code class="file docutils literal notranslate"><span class="pre">numba_dppy/dpnp_glue</span></code>.</p></li>
 <li><p>Tests resides in <code class="file docutils literal notranslate"><span class="pre">numba_dppy/tests/njit_tests/dpnp</span></code>.</p></li>
 <li><p>Helper pass resides in <code class="file docutils literal notranslate"><span class="pre">numba_dppy/rename_numpy_functions_pass.py</span></code>.</p></li>
 </ul>
-</div>
-<div class="section" id="architecture">
-<span id="dpnp-integration-architecture"></span><h3>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="architecture">
+<span id="dpnp-integration-architecture"></span><h3>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline"></a></h3>
 <p><cite>numba-dppy</cite> modifies default <cite>Numba</cite> compiler pipeline and extends it with
 <code class="xref py py-class docutils literal notranslate"><span class="pre">DPPYRewriteOverloadedNumPyFunctions</span></code> pass.</p>
 <p>The main work is performed in <code class="xref py py-class docutils literal notranslate"><span class="pre">RewriteNumPyOverloadedFunctions</span></code> used by the pass.
@@ -245,9 +154,9 @@ It receives <cite>DPNP</cite> function pointer from <cite>DPNP</cite> and uses k
 The implementation calls <cite>DPNP</cite> function via creating <cite>Numba</cite> <code class="xref py py-class docutils literal notranslate"><span class="pre">ExternalFunctionPointer</span></code>.</p>
 <p>For more details about overloads implementation see <a class="reference internal" href="#overload-for-stub"><span class="std std-ref">Writing overload for stub function</span></a>.</p>
 <p>For more details about testing the integration see <a class="reference internal" href="#dpnp-integration-tests"><span class="std std-ref">Writing DPNP integration tests</span></a>.</p>
-</div>
-<div class="section" id="places-to-update">
-<span id="dpnp-integration-places"></span><h3>Places to update<a class="headerlink" href="#places-to-update" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="places-to-update">
+<span id="dpnp-integration-places"></span><h3>Places to update<a class="headerlink" href="#places-to-update" title="Permalink to this headline"></a></h3>
 <ol class="arabic simple">
 <li><p><code class="file docutils literal notranslate"><span class="pre">numba_dppy/dpnp_glue/stubs.py</span></code>: Add new class to <code class="xref py py-class docutils literal notranslate"><span class="pre">stubs.dpnp</span></code> class.</p></li>
 <li><p><code class="file docutils literal notranslate"><span class="pre">numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx</span></code>: Update items in <code class="xref py py-class docutils literal notranslate"><span class="pre">DPNPFuncName</span></code> enum.</p></li>
@@ -257,9 +166,9 @@ The implementation calls <cite>DPNP</cite> function via creating <cite>Numba</ci
 <li><p><code class="file docutils literal notranslate"><span class="pre">numba_dppy/rename_numpy_functions_pass.py</span></code>: Update imported modules in <code class="xref py py-meth docutils literal notranslate"><span class="pre">DPPYRewriteOverloadedNumPyFunctions.__init__()</span></code>.</p></li>
 <li><p>Add test in one of the <code class="file docutils literal notranslate"><span class="pre">numba_dppy/tests/njit_tests/dpnp</span></code> test modules or create new.</p></li>
 </ol>
-</div>
-<div class="section" id="writing-overload-for-stub-function">
-<span id="overload-for-stub"></span><h3>Writing overload for stub function<a class="headerlink" href="#writing-overload-for-stub-function" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="writing-overload-for-stub-function">
+<span id="overload-for-stub"></span><h3>Writing overload for stub function<a class="headerlink" href="#writing-overload-for-stub-function" title="Permalink to this headline"></a></h3>
 <p>Overloads for stub functions resides in <code class="file docutils literal notranslate"><span class="pre">numba_dppy/dpnp_glue/</span><em><span class="pre">*</span></em><span class="pre">.py</span></code> modules.
 If you need create new module try to name it corresponding to <cite>DPNP</cite> naming.
 I.e. <code class="file docutils literal notranslate"><span class="pre">dpnp/backend/kernels/dpnp_krnl_indexing.cpp</span></code> -&gt; <code class="file docutils literal notranslate"><span class="pre">numba_dppy/dpnp_glue/dpnp_indexing.py</span></code>.</p>
@@ -396,8 +305,8 @@ creating the new one.</p>
 <li><p>Disable dead code elimination for input and output arrays</p></li>
 <li><p>Print debug information used for testing</p></li>
 </ol>
-<div class="section" id="types-matching-for-numba-and-dpnp">
-<span id="dpnp-integration-types-matching"></span><h4>Types matching for Numba and DPNP<a class="headerlink" href="#types-matching-for-numba-and-dpnp" title="Permalink to this headline">¶</a></h4>
+<section id="types-matching-for-numba-and-dpnp">
+<span id="dpnp-integration-types-matching"></span><h4>Types matching for Numba and DPNP<a class="headerlink" href="#types-matching-for-numba-and-dpnp" title="Permalink to this headline"></a></h4>
 <ul class="simple">
 <li><p><code class="samp docutils literal notranslate"><span class="pre">[const]</span> <em><span class="pre">T</span></em><span class="pre">*</span></code> -&gt; <code class="xref py py-obj docutils literal notranslate"><span class="pre">types.voidptr</span></code></p></li>
 <li><p><cite>size_t</cite> -&gt; <code class="xref py py-obj docutils literal notranslate"><span class="pre">types.intp</span></code></p></li>
@@ -407,10 +316,10 @@ creating the new one.</p>
 any type to represent <cite>size_t *</cite>.
 Since, both the types are pointers, if the compiler allows there should not be
 any mismatch in the size of the container to hold different types of pointer.</p>
-</div>
-</div>
-<div class="section" id="writing-dpnp-integration-tests">
-<span id="dpnp-integration-tests"></span><h3>Writing <cite>DPNP</cite> integration tests<a class="headerlink" href="#writing-dpnp-integration-tests" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="writing-dpnp-integration-tests">
+<span id="dpnp-integration-tests"></span><h3>Writing <cite>DPNP</cite> integration tests<a class="headerlink" href="#writing-dpnp-integration-tests" title="Permalink to this headline"></a></h3>
 <p>See all <cite>DPNP</cite> integration tests in <code class="file docutils literal notranslate"><span class="pre">numba_dppy/tests/njit_tests/dpnp</span></code>.</p>
 <p>Usually adding new test is as easy as adding function name to the corresponding list of function names.
 Each item in the list is used as a parameter for tests.
@@ -457,9 +366,9 @@ and receive <code class="xref py py-obj docutils literal notranslate"><span clas
 <li><p>Run the compiled test function inside debug contex <code class="xref py py-func docutils literal notranslate"><span class="pre">dpnp_debug()</span></code></p></li>
 <li><p>Check that <cite>DPNP</cite> was usede as debug information was printed to output</p></li>
 </ol>
-</div>
-<div class="section" id="troubleshooting">
-<span id="dpnp-troubleshooting"></span><h3>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="troubleshooting">
+<span id="dpnp-troubleshooting"></span><h3>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline"></a></h3>
 <ol class="arabic simple">
 <li><p>Do not forget build <cite>numba-dppy</cite> with current installed version of <cite>DPNP</cite>.
 There is headers dependency in <cite>Cython</cite> files (i.e. <code class="file docutils literal notranslate"><span class="pre">numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx</span></code>).</p></li>
@@ -467,56 +376,39 @@ There is headers dependency in <cite>Cython</cite> files (i.e. <code class="file
 Dead code elimination could delete temporary variables before they are used for <cite>DPNP</cite> function call.
 As a result wrong data could be passed to <cite>DPNP</cite> function.</p></li>
 </ol>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="tools.html" class="btn btn-neutral float-right" title="Debugging the compilation pipeline" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../user_guides/migrating_from_numba_cuda.html" class="btn btn-neutral float-left" title="numba-dppy For numba.cuda Developers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tools.html" class="btn btn-neutral float-right" title="Debugging the compilation pipeline" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, Intel.
-
-    </p>
+    <p>&#169; Copyright 2021, Intel.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

@@ -1,73 +1,34 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Local variables &mdash; numba-dppy main documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>Local variables &mdash; numba-dppy 0.16.0rc1+4.ga460848 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Backtrace" href="backtrace.html" />
     <link rel="prev" title="Stepping" href="stepping.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> numba-dppy
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,18 +36,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html">Code-generation based on a device</a></li>
@@ -122,77 +72,34 @@
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">numba-dppy</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="index.html">Debugging with Intel® Distribution for GDB*</a> &raquo;</li>
-        
           <li><a href="features.html">Supported Features</a> &raquo;</li>
-        
       <li>Local variables</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/user_guides/debugging/local_variables.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="local-variables">
-<h1>Local variables<a class="headerlink" href="#local-variables" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="local-variables">
+<h1>Local variables<a class="headerlink" href="#local-variables" title="Permalink to this headline"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <ul class="simple">
@@ -201,35 +108,36 @@
 </ul>
 </div>
 <p>Consider Numba-dppy kernel code <code class="file docutils literal notranslate"><span class="pre">sum_local_vars.py</span></code></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="linenos">16</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
-<span class="linenos">17</span><span class="kn">import</span> <span class="nn">dpctl</span>
-<span class="linenos">18</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span><span class="kn">import</span> <span class="nn">dpctl</span>
+<span class="linenos">16</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
 <span class="linenos">19</span>
-<span class="linenos">20</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="linenos">21</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-<span class="linenos">22</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="linenos">23</span>    <span class="n">l1</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.5</span>
-<span class="linenos">24</span>    <span class="n">l2</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.3</span>
-<span class="linenos">25</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l1</span> <span class="o">+</span> <span class="n">l2</span>
-<span class="linenos">26</span>
+<span class="linenos">20</span>
+<span class="linenos">21</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">22</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+<span class="linenos">23</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">24</span>    <span class="n">l1</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.5</span>
+<span class="linenos">25</span>    <span class="n">l2</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.3</span>
+<span class="linenos">26</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l1</span> <span class="o">+</span> <span class="n">l2</span>
 <span class="linenos">27</span>
-<span class="linenos">28</span><span class="n">global_size</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="linenos">29</span><span class="n">N</span> <span class="o">=</span> <span class="n">global_size</span>
-<span class="linenos">30</span>
-<span class="linenos">31</span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-<span class="linenos">32</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-<span class="linenos">33</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="linenos">34</span>
-<span class="linenos">35</span><span class="n">device</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">SyclDevice</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">)</span>
-<span class="linenos">36</span><span class="k">with</span> <span class="n">dppy</span><span class="o">.</span><span class="n">offload_to_sycl_device</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
-<span class="linenos">37</span>    <span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
-<span class="linenos">38</span>
-<span class="linenos">39</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
+<span class="linenos">28</span>
+<span class="linenos">29</span><span class="n">global_size</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="linenos">30</span><span class="n">N</span> <span class="o">=</span> <span class="n">global_size</span>
+<span class="linenos">31</span>
+<span class="linenos">32</span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">33</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">34</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="linenos">35</span>
+<span class="linenos">36</span><span class="n">device</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">SyclDevice</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">)</span>
+<span class="linenos">37</span><span class="k">with</span> <span class="n">dppy</span><span class="o">.</span><span class="n">offload_to_sycl_device</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
+<span class="linenos">38</span>    <span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+<span class="linenos">39</span>
+<span class="linenos">40</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="section" id="info-locals">
-<h2><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code><a class="headerlink" href="#info-locals" title="Permalink to this headline">¶</a></h2>
+<section id="info-locals">
+<h2><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code><a class="headerlink" href="#info-locals" title="Permalink to this headline"></a></h2>
 <p>Run the debugger:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
@@ -334,9 +242,9 @@ For more info see <a class="reference internal" href="#local-variables-lifetime"
 <p class="admonition-title">Note</p>
 <p>The debugger does not show the local variables <code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">b</span></code> and <code class="docutils literal notranslate"><span class="pre">c</span></code>, they are optimized out on “O1 optimization” level.</p>
 </div>
-</div>
-<div class="section" id="print-variable">
-<h2><code class="docutils literal notranslate"><span class="pre">print</span> <span class="pre">&lt;variable&gt;</span></code><a class="headerlink" href="#print-variable" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="print-variable">
+<h2><code class="docutils literal notranslate"><span class="pre">print</span> <span class="pre">&lt;variable&gt;</span></code><a class="headerlink" href="#print-variable" title="Permalink to this headline"></a></h2>
 <p>To print the value of a variable, run the <code class="docutils literal notranslate"><span class="pre">print</span> <span class="pre">&lt;variable&gt;</span></code> command.</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">print l1</span>
 </span><span class="hll"><span class="gp">$</span><span class="nv">3</span> <span class="o">=</span> <span class="m">2</span>.5931931659579277
@@ -350,9 +258,9 @@ For more info see <a class="reference internal" href="#local-variables-lifetime"
 <p class="admonition-title">Note</p>
 <p>Kernel variables are shown in intermidiate representation view (with “$” sign). The actual values of the arrays are currently not available.</p>
 </div>
-</div>
-<div class="section" id="ptype-variable">
-<h2><code class="docutils literal notranslate"><span class="pre">ptype</span> <span class="pre">&lt;variable&gt;</span></code><a class="headerlink" href="#ptype-variable" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="ptype-variable">
+<h2><code class="docutils literal notranslate"><span class="pre">ptype</span> <span class="pre">&lt;variable&gt;</span></code><a class="headerlink" href="#ptype-variable" title="Permalink to this headline"></a></h2>
 <p>To print the type of a variable, run the <code class="docutils literal notranslate"><span class="pre">ptype</span> <span class="pre">&lt;variable&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">whatis</span> <span class="pre">&lt;variable&gt;</span></code> commands:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">whatis a</span>
 </span><span class="hll"><span class="go">type = byte [56]</span>
@@ -371,9 +279,9 @@ For more info see <a class="reference internal" href="#local-variables-lifetime"
 <li><p><a class="reference external" href="https://sourceware.org/gdb/current/onlinedocs/gdb/Frame-Info.html#Frame-Info">Local variables in GDB*</a></p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="lifetime-of-local-variables">
-<span id="local-variables-lifetime"></span><h2>Lifetime of local variables<a class="headerlink" href="#lifetime-of-local-variables" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="lifetime-of-local-variables">
+<span id="local-variables-lifetime"></span><h2>Lifetime of local variables<a class="headerlink" href="#lifetime-of-local-variables" title="Permalink to this headline"></a></h2>
 <p>Numba uses live variable analysis.
 Lifetime of Python variables are different from lifetime of variables in
 compiled code.</p>
@@ -383,12 +291,12 @@ compiled code.</p>
 </div>
 <p>It affects debugging experience in following way.</p>
 <p>Consider Numba-dppy kernel code from <code class="file docutils literal notranslate"><span class="pre">sum_local_vars.py</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">20</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="linenos">21</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-<span class="linenos">22</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="linenos">23</span>    <span class="n">l1</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.5</span>
-<span class="linenos">24</span>    <span class="n">l2</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.3</span>
-<span class="linenos">25</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l1</span> <span class="o">+</span> <span class="n">l2</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">20</span>
+<span class="linenos">21</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">22</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+<span class="linenos">23</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">24</span>    <span class="n">l1</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.5</span>
+<span class="linenos">25</span>    <span class="n">l2</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.3</span>
 </pre></div>
 </div>
 <p>Run this code with environment variable <code class="samp docutils literal notranslate"><span class="pre">NUMBA_DUMP_ANNOTATION=1</span></code> and it
@@ -460,18 +368,18 @@ variable <cite>a</cite> when you set breakpoint at <cite>LINE 24</cite>.</p>
 <p>As a workaround you can expand lifetime of the variable by using it (i.e.
 passing to dummy function <cite>revive()</cite>) at the end of the function. So numba will
 not insert <cite>del a</cite> until the end of the function.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">20</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">func</span>
-<span class="linenos">21</span><span class="k">def</span> <span class="nf">revive</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-<span class="linenos">22</span>    <span class="k">return</span> <span class="n">x</span>
-<span class="linenos">23</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">20</span>
+<span class="linenos">21</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">func</span>
+<span class="linenos">22</span><span class="k">def</span> <span class="nf">revive</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="linenos">23</span>    <span class="k">return</span> <span class="n">x</span>
 <span class="linenos">24</span>
-<span class="linenos">25</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="linenos">26</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-<span class="linenos">27</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="linenos">28</span>    <span class="n">l1</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.5</span>
-<span class="linenos">29</span>    <span class="n">l2</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.3</span>
-<span class="linenos">30</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l1</span> <span class="o">+</span> <span class="n">l2</span>
-<span class="linenos">31</span>    <span class="n">revive</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>  <span class="c1"># pass variable to dummy function</span>
+<span class="linenos">25</span>
+<span class="linenos">26</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">27</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+<span class="linenos">28</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">29</span>    <span class="n">l1</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.5</span>
+<span class="linenos">30</span>    <span class="n">l2</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.3</span>
+<span class="linenos">31</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l1</span> <span class="o">+</span> <span class="n">l2</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">-----------------------------------</span><span class="n">ANNOTATION</span><span class="o">-----------------------------------</span>
@@ -543,55 +451,38 @@ not insert <cite>del a</cite> until the end of the function.</p>
 <span class="linenos">67</span>    <span class="n">revive</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>  <span class="c1"># pass variable to dummy function</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="backtrace.html" class="btn btn-neutral float-right" title="Backtrace" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="stepping.html" class="btn btn-neutral float-left" title="Stepping" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="backtrace.html" class="btn btn-neutral float-right" title="Backtrace" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, Intel.
-
-    </p>
+    <p>&#169; Copyright 2021, Intel.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

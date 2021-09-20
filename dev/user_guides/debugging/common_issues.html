@@ -1,73 +1,34 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Common issues and tips &mdash; numba-dppy main documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>Common issues and tips &mdash; numba-dppy 0.16.0rc1+4.ga460848 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="numba-dppy For numba.cuda Developers" href="../migrating_from_numba_cuda.html" />
     <link rel="prev" title="Limitations" href="limitations.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> numba-dppy
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,18 +36,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html">Code-generation based on a device</a></li>
@@ -120,77 +70,35 @@
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">numba-dppy</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="index.html">Debugging with Intel® Distribution for GDB*</a> &raquo;</li>
-        
       <li>Common issues and tips</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/user_guides/debugging/common_issues.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="common-issues-and-tips">
-<h1>Common issues and tips<a class="headerlink" href="#common-issues-and-tips" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="breakpoints-are-not-hit">
-<h2>Breakpoints are not hit<a class="headerlink" href="#breakpoints-are-not-hit" title="Permalink to this headline">¶</a></h2>
+             
+  <section id="common-issues-and-tips">
+<h1>Common issues and tips<a class="headerlink" href="#common-issues-and-tips" title="Permalink to this headline"></a></h1>
+<section id="breakpoints-are-not-hit">
+<h2>Breakpoints are not hit<a class="headerlink" href="#breakpoints-are-not-hit" title="Permalink to this headline"></a></h2>
 <p>If the breakpoint is not hit, you will see the following output:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>...
 intelgt: gdbserver-gt failed to start.  Check <span class="k">if</span> igfxdcd is installed, or use
@@ -199,9 +107,9 @@ env variable <span class="nv">INTELGT_AUTO_ATTACH_DISABLE</span><span class="o">
 </pre></div>
 </div>
 <p>To install the debug companion driver (igfxdcd), refer to the <a class="reference internal" href="set_up_machine.html#debugging-machine-dcd-driver"><span class="std std-ref">Debug companion driver (DCD)</span></a> section.</p>
-</div>
-<div class="section" id="debugging-is-not-stable">
-<h2>Debugging is not stable<a class="headerlink" href="#debugging-is-not-stable" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="debugging-is-not-stable">
+<h2>Debugging is not stable<a class="headerlink" href="#debugging-is-not-stable" title="Permalink to this headline"></a></h2>
 <p>Debug features depend heavily on optimization level.
 At full optimization (equivalent to O3), most of the variables are optimized out.
 It is recommended to debug at “no optimization” level via <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">NUMBA_OPT</span></code> (e.g. <code class="samp docutils literal notranslate"><span class="pre">export</span> <span class="pre">NUMBA_OPT=0</span></code>).
@@ -217,63 +125,46 @@ Debug mode can be turned off on individual functions by setting <code class="doc
 <li><p><a class="reference external" href="https://numba.pydata.org/numba-doc/dev/reference/envvars.html#envvar-NUMBA_DEBUGINFO">NUMBA_DEBUGINFO</a></p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="breakpoint-is-hit-twice">
-<h2>Breakpoint is hit twice<a class="headerlink" href="#breakpoint-is-hit-twice" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="breakpoint-is-hit-twice">
+<h2>Breakpoint is hit twice<a class="headerlink" href="#breakpoint-is-hit-twice" title="Permalink to this headline"></a></h2>
 <p>The first line of the kernel and functions is hit twice.
 This happens because you are debugging a multi-threaded program, so multiple events may be received from different threads.
 This is the default behavior, but you can configure it for more efficient debugging.
 To ensure that the current thread executes a single line without interference, activate the scheduler-locking setting.</p>
 <p>To activate the scheduler-locking setting, refer to the <a class="reference internal" href="stepping.html#single-stepping"><span class="std std-ref">set scheduler-locking step</span></a> section.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="../migrating_from_numba_cuda.html" class="btn btn-neutral float-right" title="numba-dppy For numba.cuda Developers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="limitations.html" class="btn btn-neutral float-left" title="Limitations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../migrating_from_numba_cuda.html" class="btn btn-neutral float-right" title="numba-dppy For numba.cuda Developers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, Intel.
-
-    </p>
+    <p>&#169; Copyright 2021, Intel.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

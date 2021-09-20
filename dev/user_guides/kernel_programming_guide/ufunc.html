@@ -1,73 +1,34 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Universal Functions &mdash; numba-dppy main documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>Universal Functions &mdash; numba-dppy 0.16.0rc1+4.ga460848 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Supported Python Features in a numba-dppy Kernel" href="supported-python-features.html" />
     <link rel="prev" title="Reduction on SYCL-supported Devices" href="reduction.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> numba-dppy
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,18 +36,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html">Code-generation based on a device</a></li>
@@ -120,92 +70,50 @@
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">numba-dppy</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="index.html">Programming SYCL Kernels Using <code class="xref py py-func docutils literal notranslate"><span class="pre">kernel()</span></code></a> &raquo;</li>
-        
       <li>Universal Functions</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/user_guides/kernel_programming_guide/ufunc.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="universal-functions">
-<h1>Universal Functions<a class="headerlink" href="#universal-functions" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="universal-functions">
+<h1>Universal Functions<a class="headerlink" href="#universal-functions" title="Permalink to this headline"></a></h1>
 <p>Numba provides a <a class="reference external" href="https://numba.pydata.org/numba-doc/latest/user/vectorize.html">set of decorators</a> to create <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/ufuncs.html">NumPy universal functions</a>-like
 routines that are JIT compiled. Although, a close analog to NumPy universal functions Numba’s <code class="docutils literal notranslate"><span class="pre">&#64;vectorize</span></code> are not fully compatible with a regular NumPy
 ufunc.. Refer <a class="reference external" href="https://numba.pydata.org/numba-doc/latest/user/vectorize.html">Creating NumPy universal functions</a> for details.</p>
 <p><code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> only supports <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> decorator and not yet the
 <code class="docutils literal notranslate"><span class="pre">numba.guvectorize</span></code> decorator. Another present limitation is that <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> ufunc kernels cannot invoke <code class="docutils literal notranslate"><span class="pre">numba_dppy.kernel</span></code> functions.
 Ongoing work is in progress to address these limitations.</p>
-<div class="section" id="example-1-basic-example">
-<h2>Example 1: Basic Example<a class="headerlink" href="#example-1-basic-example" title="Permalink to this headline">¶</a></h2>
+<section id="example-1-basic-example">
+<h2>Example 1: Basic Example<a class="headerlink" href="#example-1-basic-example" title="Permalink to this headline"></a></h2>
 <p>Full example can be found at <code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/vectorize.py</span></code>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@vectorize</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">ufunc_kernel</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="example-2-calling-numba-vectorize-inside-a-numba-dppy-kernel">
-<h2>Example 2: Calling <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> inside a <code class="docutils literal notranslate"><span class="pre">numba_dppy.kernel</span></code><a class="headerlink" href="#example-2-calling-numba-vectorize-inside-a-numba-dppy-kernel" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="example-2-calling-numba-vectorize-inside-a-numba-dppy-kernel">
+<h2>Example 2: Calling <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> inside a <code class="docutils literal notranslate"><span class="pre">numba_dppy.kernel</span></code><a class="headerlink" href="#example-2-calling-numba-vectorize-inside-a-numba-dppy-kernel" title="Permalink to this headline"></a></h2>
 <p>Full example can be found at <code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/blacksholes_njit.py</span></code>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@numba</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">cndf2</span><span class="p">(</span><span class="n">inp</span><span class="p">):</span>
@@ -220,62 +128,45 @@ and <code class="docutils literal notranslate"><span class="pre">numba.guvectori
 <code class="docutils literal notranslate"><span class="pre">dpctl.device_context</span></code> in which the <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> function is
 called.</p>
 </div>
-</div>
-<div class="section" id="full-examples">
-<h2>Full Examples<a class="headerlink" href="#full-examples" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="full-examples">
+<h2>Full Examples<a class="headerlink" href="#full-examples" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/vectorize.py</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/blacksholes_njit.py</span></code></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="supported-python-features.html" class="btn btn-neutral float-right" title="Supported Python Features in a numba-dppy Kernel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="reduction.html" class="btn btn-neutral float-left" title="Reduction on SYCL-supported Devices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="supported-python-features.html" class="btn btn-neutral float-right" title="Supported Python Features in a numba-dppy Kernel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, Intel.
-
-    </p>
+    <p>&#169; Copyright 2021, Intel.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

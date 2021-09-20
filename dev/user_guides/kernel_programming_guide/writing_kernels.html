@@ -1,73 +1,34 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Writing SYCL Kernels &mdash; numba-dppy main documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>Writing SYCL Kernels &mdash; numba-dppy 0.16.0rc1+4.ga460848 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Memory Management" href="memory-management.html" />
     <link rel="prev" title="Programming SYCL Kernels Using kernel()" href="index.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> numba-dppy
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,18 +36,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html">Code-generation based on a device</a></li>
@@ -124,77 +74,35 @@
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">numba-dppy</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="index.html">Programming SYCL Kernels Using <code class="xref py py-func docutils literal notranslate"><span class="pre">kernel()</span></code></a> &raquo;</li>
-        
       <li>Writing SYCL Kernels</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/user_guides/kernel_programming_guide/writing_kernels.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="writing-sycl-kernels">
-<h1>Writing SYCL Kernels<a class="headerlink" href="#writing-sycl-kernels" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+             
+  <section id="writing-sycl-kernels">
+<h1>Writing SYCL Kernels<a class="headerlink" href="#writing-sycl-kernels" title="Permalink to this headline"></a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> offers a way of programming SYCL supporting devices using Python.
 Similar to SYCL’s C++ programming model for heterogeneous computing,
 <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> offers Python abstractions for expressing data-parallelism using
@@ -207,9 +115,9 @@ general with OpenCL, CUDA, or SYCL programming should find writing kernels in
 <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> extremely intuitive. Irrespective of the reader’s level of
 familiarity with GPU programming frameworks, this documentation should serves
 as a guide for using the current features available in <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code>.</p>
-</div>
-<div class="section" id="kernel-declaration">
-<h2>Kernel declaration<a class="headerlink" href="#kernel-declaration" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="kernel-declaration">
+<h2>Kernel declaration<a class="headerlink" href="#kernel-declaration" title="Permalink to this headline"></a></h2>
 <p>A kernel function is a device function that is meant to be called from host
 code, where a device can be any SYCL supported device such as a GPU, CPU, or an
 FPGA. The present focus of development of <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> is mainly on Intel’s
@@ -223,8 +131,8 @@ of thread blocks and the number of threads per block (note that while a kernel
 is compiled once, it can be called multiple times with different block sizes
 or grid sizes).</p></li>
 </ul>
-<div class="section" id="example">
-<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<section id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline"></a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ch">#! /usr/bin/env python</span>
 <span class="c1"># Copyright 2020, 2021 Intel Corporation</span>
 <span class="c1">#</span>
@@ -241,9 +149,10 @@ or grid sizes).</p></li>
 <span class="c1"># limitations under the License.</span>
 
 <span class="kn">import</span> <span class="nn">dpctl</span>
-<span class="kn">import</span> <span class="nn">numpy.testing</span> <span class="k">as</span> <span class="nn">testing</span>
-<span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy.testing</span> <span class="k">as</span> <span class="nn">testing</span>
+
+<span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
 
 
 <span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span>
@@ -289,10 +198,10 @@ or grid sizes).</p></li>
     <span class="n">main</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="kernel-invocation">
-<h2>Kernel invocation<a class="headerlink" href="#kernel-invocation" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="kernel-invocation">
+<h2>Kernel invocation<a class="headerlink" href="#kernel-invocation" title="Permalink to this headline"></a></h2>
 <p>A kernel is typically launched in the following way:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">driver</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">global_size</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A : &quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
@@ -303,9 +212,9 @@ or grid sizes).</p></li>
     <span class="n">testing</span><span class="o">.</span><span class="n">assert_equal</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="indexing-functions">
-<h2>Indexing functions<a class="headerlink" href="#indexing-functions" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="indexing-functions">
+<h2>Indexing functions<a class="headerlink" href="#indexing-functions" title="Permalink to this headline"></a></h2>
 <p>Currently, <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> supports the following indexing functions that have
 the same semantics as OpenCL.</p>
 <ul class="simple">
@@ -314,55 +223,38 @@ the same semantics as OpenCL.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">numba_dppy.get_group_id</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">numba_dppy.get_num_groups</span></code></p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="memory-management.html" class="btn btn-neutral float-right" title="Memory Management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="Programming SYCL Kernels Using kernel()" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="memory-management.html" class="btn btn-neutral float-right" title="Memory Management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, Intel.
-
-    </p>
+    <p>&#169; Copyright 2021, Intel.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
