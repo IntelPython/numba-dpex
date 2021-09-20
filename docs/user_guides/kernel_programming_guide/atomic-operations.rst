@@ -27,14 +27,14 @@ Numba-dppy supports generating native floating-point atomics.
 This feature is experimental. Users will need to provide
 the following environment variables to activate it.
 
-    NUMBA_DPPY_ACTIVATE_ATOMCIS_FP_NATIVE=1
+    NUMBA_DPPY_ACTIVATE_ATOMICS_FP_NATIVE=1
     NUMBA_DPPY_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv
 
 Example command:
 
 .. code-block:: bash
 
-    NUMBA_DPPY_ACTIVATE_ATOMCIS_FP_NATIVE=1 \
+    NUMBA_DPPY_ACTIVATE_ATOMICS_FP_NATIVE=1 \
     NUMBA_DPPY_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv \
     python program.py
 

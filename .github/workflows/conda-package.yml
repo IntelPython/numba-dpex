@@ -127,13 +127,8 @@ jobs:
           - python: "3.8"
             integration_channels: -c dppy/label/dev
             artifact_name: -c dppy_label_dev
-            experimental: true
-            dependencies: ""
-          - python: "3.8"
-            integration_channels: -c dppy/label/dev
-            artifact_name: -c dppy_label_dev
             experimental: false  # current stable
-            dependencies: dpnp=0.7.1=*_41
+            dependencies: ""
     continue-on-error: ${{ matrix.experimental }}
     env:
       # conda-forge: llvm-spirv 11 not on intel channel yet
@@ -279,7 +274,7 @@ jobs:
 
   upload_windows:
     needs: test_windows
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: windows-latest
     strategy:
       matrix:
