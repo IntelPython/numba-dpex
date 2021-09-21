@@ -26,8 +26,6 @@ def test_breakpoint_row_number():
     dppy_ref_test = True
 
     with run_debug_command("dppy_numba_jit") as command_out:
-        import pdb
-        pdb.set_trace()
         for ref in ref_output:
             numba_ref_test &= make_check(command_out, ref)
 
