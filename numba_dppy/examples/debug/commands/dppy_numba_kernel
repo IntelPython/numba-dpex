@@ -1,0 +1,20 @@
+# Run: NUMBA_OPT=0 gdb-oneapi -q -command commands/dppy_numba_kernel python
+set trace-commands on
+set pagination off
+set breakpoint pending on
+break dppy_numba_basic.py:24
+run dppy_numba_basic.py --dppy
+# Expected:
+# ...
+# Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::func () at dppy_numba.py:24
+# 24          param_c = param_a + 10  # Set breakpoint
+continue
+# Expected:
+# Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::func () at dppy_numba.py:24
+# 24          param_c = param_a + 10  # Set breakpoint
+continue
+# Expected:
+# ...
+# Done...
+echo Done\n
+quit

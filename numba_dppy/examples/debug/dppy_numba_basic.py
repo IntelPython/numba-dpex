@@ -45,8 +45,11 @@ def numba_func_driver(a, b, c):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dppy', required=False, action='store_true',
-        help="Start the dppy version of functions")
+    parser.add_argument('--dppy',
+                        required=False,
+                        action='store_true',
+                        help="Start the dppy version of functions",
+    )
 
     args = parser.parse_args()
 

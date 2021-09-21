@@ -15,8 +15,13 @@
 
 import contextlib
 import unittest
+import os
+import re
 
 import dpctl
+import numba_dppy
+
+from subprocess import Popen, PIPE
 from numba.tests.support import captured_stdout
 
 from numba_dppy import config
@@ -164,14 +169,45 @@ def assert_auto_offloading(parfor_offloaded=1, parfor_offloaded_failure=0):
 
     got_parfor_offloaded = stdout.getvalue().count("Parfor offloaded to")
     assert parfor_offloaded == got_parfor_offloaded, (
-        "Expected %d parfor(s) to be auto offloaded, instead got %d parfor(s) auto offloaded"
-        % (parfor_offloaded, got_parfor_offloaded)
+            "Expected %d parfor(s) to be auto offloaded, instead got %d parfor(s) auto offloaded"
+            % (parfor_offloaded, got_parfor_offloaded)
     )
 
     got_parfor_offloaded_failure = stdout.getvalue().count(
         "Failed to offload parfor to"
     )
     assert parfor_offloaded_failure == got_parfor_offloaded_failure, (
-        "Expected %d parfor(s) to be not auto offloaded, instead got %d parfor(s) not auto offloaded"
-        % (parfor_offloaded_failure, got_parfor_offloaded_failure)
+            "Expected %d parfor(s) to be not auto offloaded, instead got %d parfor(s) not auto offloaded"
+            % (parfor_offloaded_failure, got_parfor_offloaded_failure)
     )
+
+
+def make_check(text, val_to_search):
+    m = re.search(val_to_search, text, re.I)
+    got = m is not None
+    return got
+
+
+@contextlib.contextmanager
+def run_debug_command(command_name):
+    process_env = os.environ.copy()
+    process_env["NUMBA_OPT"] = "0"
+
+    command_path = os.path.dirname(os.path.abspath(numba_dppy.__file__)) + "/examples/debug/commands/" + command_name
+
+    process = Popen(
+        [
+            "gdb-oneapi",
+            "-q",
+            "-command",
+            command_path,
+            "python",
+        ],
+        stdout=PIPE,
+        stderr=PIPE,
+        env=process_env,
+    )
+    (output, err) = process.communicate()
+    process.wait()
+
+    yield str(output)
