@@ -13,24 +13,77 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba_dppy.tests._helper import skip_test, run_debug_command, make_check
+import shutil
+
+import pytest
+
+from numba_dppy.tests._helper import make_check, run_debug_command, skip_test
+import numba_dppy
+
+
+pytestmark = pytest.mark.skipif(
+    not shutil.which("gdb-oneapi"),
+    reason="Intel Distribution for GDB is not available",
+)
+
+
+# TODO: go to helper
+class gdb:
+    def __init__(self):
+        self.spawn()
+        self.setup_gdb()
+
+    def __del__(self):
+        self.teardown_gdb()
+
+    def spawn(self):
+        import pexpect
+        import sys
+        import os
+
+        env = os.environ.copy()
+        env["NUMBA_OPT"] = "0"
+
+        self.child = pexpect.spawn("gdb-oneapi -q python", env=env, encoding="utf-8")
+        self.child.logfile = sys.stdout
+
+    def setup_gdb(self):
+        self.child.expect("(gdb)", timeout=5)
+        self.child.sendline("set breakpoint pending on")
+        self.child.expect("(gdb)", timeout=5)
+        self.child.sendline("set style enabled off")  # disable colors symbols
+
+    def teardown_gdb(self):
+        self.child.expect("(gdb)", timeout=5)
+        self.child.sendline("quit")
+        self.child.expect("Quit anyway?", timeout=5)
+        self.child.sendline("y")
+
+    def breakpoint(self, breakpoint):
+        self.child.expect("(gdb)", timeout=5)
+        self.child.sendline("break " + breakpoint)
+
+    def run(self, script):
+        self.child.expect("(gdb)", timeout=5)
+        self.child.sendline("run " + self.script_path(script))
+
+    @staticmethod
+    def script_path(script):
+        import os
+
+        return os.path.join(
+            os.path.dirname(os.path.abspath(numba_dppy.__file__)),
+            "examples",
+            "debug",
+            script,
+        )
 
 
 def test_breakpoint_row_number():
-    ref_output = [
-        r"Thread .\.. hit Breakpoint ., with SIMD lanes [0-7], __main__::func.*at dppy_numba.py:24",
-        r"24 +param_c = param_a \+ 10 .*",
-    ]
+    app = gdb()
 
-    numba_ref_test = True
-    dppy_ref_test = True
+    app.breakpoint("dppy_numba_basic.py:24")
+    app.run("dppy_numba_basic.py")
 
-    with run_debug_command("dppy_numba_jit") as command_out:
-        for ref in ref_output:
-            numba_ref_test &= make_check(command_out, ref)
-
-    with run_debug_command("commands/dppy_numba_kernel") as command_out:
-        for ref in ref_output:
-            dppy_ref_test &= make_check(command_out, ref)
-
-    assert numba_ref_test and dppy_ref_test
+    app.child.expect("Thread .* hit Breakpoint .* at dppy_numba_basic.py:24")
+    app.child.expect("24\s+param_c = param_a \+ 10")
