@@ -30,7 +30,7 @@ def test_breakpoint_row_number():
     """
 
     ref_output = [
-        r'24.+param_c = param_a \+ 10',
+        r"24.+param_c = param_a \+ 10",
     ]
 
     numba_ref_test = True
