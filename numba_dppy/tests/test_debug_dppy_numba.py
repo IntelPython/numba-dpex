@@ -13,13 +13,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba_dppy.tests._helper import skip_test, run_debug_command, make_check
+import shutil
+import pytest
+
+from numba_dppy.tests._helper import run_debug_command, make_check
 
 
+@pytest.mark.skipif(
+    not shutil.which("gdb-oneapi"),
+    reason="Intel Distribution for GDB is not available",
+)
 def test_breakpoint_row_number():
+    """
+    break dppy_numba.py:24
+    run dppy_numba.py --dppy
+    """
+
     ref_output = [
-        r"Thread .\.. hit Breakpoint ., with SIMD lanes [0-7], __main__::func.*at dppy_numba.py:24",
-        r"24 +param_c = param_a \+ 10 .*",
+        r'24.+param_c = param_a \+ 10',
     ]
 
     numba_ref_test = True
@@ -29,7 +40,7 @@ def test_breakpoint_row_number():
         for ref in ref_output:
             numba_ref_test &= make_check(command_out, ref)
 
-    with run_debug_command("commands/dppy_numba_kernel") as command_out:
+    with run_debug_command("dppy_numba_kernel") as command_out:
         for ref in ref_output:
             dppy_ref_test &= make_check(command_out, ref)
 
