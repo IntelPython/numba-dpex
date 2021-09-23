@@ -45,10 +45,12 @@ def numba_func_driver(a, b, c):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dppy',
-                        required=False,
-                        action='store_true',
-                        help="Start the dppy version of functions",
+    parser.add_argument(
+        "--api",
+        required=False,
+        default="numba",
+        choices=["numba", "numba-dppy"],
+        help="Start the version of functions using numba or numba-dppy API",
     )
 
     args = parser.parse_args()
@@ -60,7 +62,9 @@ def main():
     b = np.arange(N, dtype=np.float32)
     c = np.empty_like(a)
 
-    if args.dppy:
+    print("Using API:", args.api)
+
+    if args.api == "numba-dppy":
         device = dpctl.select_default_device()
         with dppy.offload_to_sycl_device(device):
             dppy_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)

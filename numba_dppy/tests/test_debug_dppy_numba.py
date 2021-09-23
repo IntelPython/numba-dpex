@@ -70,12 +70,12 @@ class gdb:
         package_path = pathlib.Path(numba_dppy.__file__).parent
         return str(package_path / "examples/debug" / script)
 
-
-def test_breakpoint_row_number():
+@pytest.mark.parametrize("api", ["numba", "numba-dppy"])
+def test_breakpoint_row_number(api):
     app = gdb()
 
     app.breakpoint("dppy_numba_basic.py:24")
-    app.run("dppy_numba_basic.py")
+    app.run("dppy_numba_basic.py --api={api}".format(api=api))
 
     app.child.expect("Thread .* hit Breakpoint .* at dppy_numba_basic.py:24")
     app.child.expect("24\s+param_c = param_a \+ 10")
