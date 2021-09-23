@@ -118,23 +118,25 @@ def common_matmul_impl(dpnp_func, a, b, out, m, n, k, print_debug):
     b_m = np.array((k, n))
     out_m = np.array((m, n))
 
+    strides = np.array(1)
+
     result_out = out_usm
     result_size = out.size
     result_ndim = 2
     result_shape = out_m.ctypes
-    result_strides = 0
+    result_strides = strides.ctypes
 
     input1_in = a_usm
     input1_size = a.size
     input1_ndim = 2
     input1_shape = a_m.ctypes
-    input1_strides = 0
+    input1_strides = strides.ctypes
 
     input2_in = b_usm
     input2_size = b.size
     input2_ndim = 2
     input2_shape = b_m.ctypes
-    input2_strides = 0
+    input2_strides = strides.ctypes
 
     dpnp_func(
         result_out,
@@ -190,23 +192,25 @@ def common_dot_impl(dpnp_func, a, b, out, m, print_debug):
 
     out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
+    strides = np.array(1)
+
     result_out = out_usm
     result_size = out.size
     result_ndim = out.ndim
     result_shape = out.shapeptr
-    result_strides = 0
+    result_strides = strides.ctypes
 
     input1_in = a_usm
     input1_size = a.size
     input1_ndim = a.ndim
     input1_shape = a.shapeptr
-    input1_strides = 0
+    input1_strides = strides.ctypes
 
     input2_in = b_usm
     input2_size = b.size
     input2_ndim = b.ndim
     input2_shape = b.shapeptr
-    input2_strides = 0
+    input2_strides = strides.ctypes
 
     dpnp_func(
         result_out,
