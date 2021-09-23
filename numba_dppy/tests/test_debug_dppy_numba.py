@@ -123,14 +123,16 @@ def test_breakpoint_row_number(api):
 def test_backtrace():
     app = gdb()
 
-    app.breakpoint("simple_dppy_func.py:22")
+    app.breakpoint("simple_dppy_func.py:23")
     app.run("simple_dppy_func.py")
+
+    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:23")
+    app.child.expect(r"23\s+result = a_in_func \+ b_in_func")
+
     app.backtrace()
 
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:22")
-    app.child.expect(r"22\s+result = a_in_func \+ b_in_func")
-    app.child.expect(r"\#0\s+__main__::func_sum \(\) at simple_dppy_func.py:22")
-    app.child.expect(r"\#1\s+__main__::kernel_sum \(\) at simple_dppy_func.py:29")
+    app.child.expect(r"#0.*__main__::func_sum .* at simple_dppy_func.py:23")
+    app.child.expect(r"#1.*__main__::kernel_sum .* at simple_dppy_func.py:30")
 
 
 # commands/break_conditional
