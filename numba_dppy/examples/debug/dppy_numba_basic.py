@@ -55,14 +55,14 @@ def main():
 
     args = parser.parse_args()
 
+    print("Using API:", args.api)
+
     global_size = 10
     N = global_size
 
     a = np.arange(N, dtype=np.float32)
     b = np.arange(N, dtype=np.float32)
     c = np.empty_like(a)
-
-    print("Using API:", args.api)
 
     if args.api == "numba-dppy":
         device = dpctl.select_default_device()
