@@ -26,7 +26,7 @@ pexpect = pytest.importorskip("pexpect")
 
 pytestmark = pytest.mark.skipif(
     not shutil.which("gdb-oneapi"),
-    reason="Intel Distribution for GDB is not available",
+    reason="Intel® Distribution for GDB* is not available",
 )
 
 
