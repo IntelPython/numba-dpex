@@ -119,12 +119,12 @@ def test_breakpoint_row_number(api):
     app.child.expect(r"25\s+param_c = param_a \+ 10")
 
 
-@pytest.mark.parametrize("api", ["numba-dppy"])
-def test_backtrace(api):
+# commands/backtrace
+def test_backtrace():
     app = gdb()
 
     app.breakpoint("simple_dppy_func.py:22")
-    app.run("simple_dppy_func.py --api={api}".format(api=api))
+    app.run("simple_dppy_func.py")
     app.backtrace()
 
     app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:22")
@@ -133,12 +133,12 @@ def test_backtrace(api):
     app.child.expect(r"\#1\s+__main__::kernel_sum \(\) at simple_dppy_func.py:29")
 
 
-@pytest.mark.parametrize("api", ["numba-dppy"])
-def test_break_conditional(api):
+# commands/break_conditional
+def test_break_conditional():
     app = gdb()
 
     app.breakpoint("simple_sum.py:23 if i == 1")
-    app.run("simple_sum.py --api={api}".format(api=api))
+    app.run("simple_sum.py")
     app.print("i")
 
     app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:23")
@@ -146,58 +146,60 @@ def test_break_conditional(api):
     app.child.expect(r"\$1 = 1")
 
 
-@pytest.mark.parametrize("api", ["numba-dppy"])
-def test_break_file_function(api):
+# commands/break_file_func
+def test_break_file_function():
     app = gdb()
 
     app.breakpoint("simple_sum.py:data_parallel_sum")
-    app.run("simple_sum.py --api={api}".format(api=api))
+    app.run("simple_sum.py")
 
     app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:20")
     app.child.expect(r"20\s+@dppy\.kernel\(debug=True\)")
 
 
-@pytest.mark.parametrize("api", ["numba-dppy"])
-def test_break_function(api):
+# commands/break_func
+def test_break_function():
     app = gdb()
 
     app.breakpoint("data_parallel_sum")
-    app.run("simple_sum.py --api={api}".format(api=api))
+    app.run("simple_sum.py")
 
     app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:20")
     app.child.expect(r"20\s+@dppy\.kernel\(debug=True\)")
 
 
-@pytest.mark.parametrize("api", ["numba-dppy"])
-def test_break_nested_function(api):
+# commands/break_nested_func
+def test_break_nested_function():
     app = gdb()
 
     app.breakpoint("simple_dppy_func.py:func_sum")
-    app.run("simple_dppy_func.py --api={api}".format(api=api))
+    app.run("simple_dppy_func.py")
 
     app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:22")
     app.child.expect(r"22\s+result = a_in_func \+ b_in_func")
 
 
-@pytest.mark.parametrize("api", ["numba-dppy"])
-def test_info_functions(api):
+# commands/info_func
+def test_info_functions():
     app = gdb()
 
     app.breakpoint("simple_sum.py:22")
-    app.run("simple_sum.py --api={api}".format(api=api))
+    app.run("simple_sum.py")
     app.info_functions("data_parallel_sum")
 
     app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:22")
     app.child.expect(r"22\s+result = a_in_func \+ b_in_func")
-    app.child.expect(r"20:\s+void __main__::data_parallel_sum\(DPPYArray\<float, 1, C, mutable, aligned\>, .*\);")
+    app.child.expect(
+        r"20:\s+void __main__::data_parallel_sum\(DPPYArray\<float, 1, C, mutable, aligned\>, .*\);"
+    )
 
 
-@pytest.mark.parametrize("api", ["numba-dppy"])
-def test_local_variables(api):
+# commands/local_variables_0
+def test_local_variables():
     app = gdb()
 
     app.breakpoint("sum_local_vars.py:22")
-    app.run("sum_local_vars.py --api={api}".format(api=api))
+    app.run("sum_local_vars.py")
     app.info_locals()
     app.next()
     app.next()
@@ -235,43 +237,51 @@ def test_local_variables(api):
     app.child.expect(r"type = double")
 
 
-@pytest.mark.parametrize("api", ["numba-dppy"])
-def test_next(api):
+# commands/next
+def test_next():
     app = gdb()
 
     app.breakpoint("simple_dppy_func.py:29")
-    app.run("simple_dppy_func.py --api={api}".format(api=api))
+    app.run("simple_dppy_func.py")
     app.next()
     app.next()
 
     app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:29")
-    app.child.expect(r"29\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)")
+    app.child.expect(
+        r"29\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)"
+    )
     app.child.expect(r"Done\.\.\.")
 
 
-@pytest.mark.parametrize("api", ["numba-dppy"])
-def test_step(api):
+# commands/step_dppy_func
+def test_step():
     app = gdb()
 
     app.breakpoint("simple_dppy_func.py:29")
-    app.run("simple_dppy_func.py --api={api}".format(api=api))
+    app.run("simple_dppy_func.py")
     app.step()
     app.step()
 
     app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:29")
-    app.child.expect(r"29\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)")
+    app.child.expect(
+        r"29\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)"
+    )
     app.child.expect(r"__main__::func_sum \(\) at simple_dppy_func.py:22")
     app.child.expect(r"22\s+result = a_in_func \+ b_in_func")
 
 
-@pytest.mark.parametrize("api", ["numba-dppy"])
-def test_step(api):
+# commands/stepi
+def test_stepi():
     app = gdb()
 
     app.breakpoint("simple_dppy_func.py:29")
-    app.run("simple_dppy_func.py --api={api}".format(api=api))
+    app.run("simple_dppy_func.py")
     app.stepi()
 
     app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:29")
-    app.child.expect(r"29\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)")
-    app.child.expect(r".+29\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\])")
+    app.child.expect(
+        r"29\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)"
+    )
+    app.child.expect(
+        r".+29\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\])"
+    )
