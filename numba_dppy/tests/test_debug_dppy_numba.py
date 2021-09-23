@@ -20,7 +20,6 @@ import sys
 
 import pytest
 
-from numba_dppy.tests._helper import make_check, run_debug_command, skip_test
 import numba_dppy
 
 pexpect = pytest.importorskip("pexpect")
@@ -29,7 +28,6 @@ pytestmark = pytest.mark.skipif(
     not shutil.which("gdb-oneapi"),
     reason="Intel Distribution for GDB is not available",
 )
-
 
 # TODO: go to helper
 class gdb:
