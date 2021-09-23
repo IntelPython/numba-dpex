@@ -13,8 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import pathlib
 import shutil
+import sys
 
 import pytest
 
@@ -39,10 +41,6 @@ class gdb:
         self.teardown_gdb()
 
     def spawn(self):
-        import pexpect
-        import sys
-        import os
-
         env = os.environ.copy()
         env["NUMBA_OPT"] = "0"
 
