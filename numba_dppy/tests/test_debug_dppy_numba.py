@@ -29,6 +29,7 @@ pytestmark = pytest.mark.skipif(
     reason="Intel Distribution for GDB is not available",
 )
 
+
 # TODO: go to helper
 class gdb:
     def __init__(self):
@@ -75,8 +76,8 @@ class gdb:
 def test_breakpoint_row_number(api):
     app = gdb()
 
-    app.breakpoint("dppy_numba_basic.py:24")
+    app.breakpoint("dppy_numba_basic.py:25")
     app.run("dppy_numba_basic.py --api={api}".format(api=api))
 
-    app.child.expect("Thread .* hit Breakpoint .* at dppy_numba_basic.py:24")
-    app.child.expect("24\s+param_c = param_a \+ 10")
+    app.child.expect(r"Thread .* hit Breakpoint .* at dppy_numba_basic.py:25")
+    app.child.expect(r"25\s+param_c = param_a \+ 10")
