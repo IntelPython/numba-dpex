@@ -43,7 +43,7 @@ class gdb:
         env["NUMBA_OPT"] = "0"
 
         self.child = pexpect.spawn("gdb-oneapi -q python", env=env, encoding="utf-8")
-        self.child.logfile = sys.stdout
+        # self.child.logfile = sys.stdout
 
     def setup_gdb(self):
         self.child.expect("(gdb)", timeout=5)
@@ -69,6 +69,7 @@ class gdb:
     def script_path(script):
         package_path = pathlib.Path(numba_dppy.__file__).parent
         return str(package_path / "examples/debug" / script)
+
 
 @pytest.mark.parametrize("api", ["numba", "numba-dppy"])
 def test_breakpoint_row_number(api):
