@@ -69,14 +69,9 @@ class gdb:
 
     @staticmethod
     def script_path(script):
-        import os
+        import pathlib
 
-        return os.path.join(
-            os.path.dirname(os.path.abspath(numba_dppy.__file__)),
-            "examples",
-            "debug",
-            script,
-        )
+        return pathlib.Path(numba_dppy.__file__).parents[0] / 'examples/debug/'
 
 
 def test_breakpoint_row_number():
