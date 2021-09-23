@@ -1,0 +1,7 @@
+numba\_dppy.compiler module
+===========================
+
+.. automodule:: numba_dppy.compiler
+   :members:
+   :undoc-members:
+   :show-inheritance:
