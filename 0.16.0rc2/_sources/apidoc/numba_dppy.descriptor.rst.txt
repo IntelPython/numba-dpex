@@ -1,0 +1,7 @@
+numba\_dppy.descriptor module
+=============================
+
+.. automodule:: numba_dppy.descriptor
+   :members:
+   :undoc-members:
+   :show-inheritance:

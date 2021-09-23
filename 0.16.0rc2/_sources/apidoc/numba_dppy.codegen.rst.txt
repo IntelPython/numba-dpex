@@ -1,0 +1,7 @@
+numba\_dppy.codegen module
+==========================
+
+.. automodule:: numba_dppy.codegen
+   :members:
+   :undoc-members:
+   :show-inheritance:
