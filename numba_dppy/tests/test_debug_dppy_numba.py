@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import pathlib
 import shutil
 
 import pytest
@@ -70,9 +71,8 @@ class gdb:
 
     @staticmethod
     def script_path(script):
-        import pathlib
-
-        return pathlib.Path(numba_dppy.__file__).parents[0] / 'examples/debug/'
+        package_path = pathlib.Path(numba_dppy.__file__).parent
+        return str(package_path / "examples/debug" / script)
 
 
 def test_breakpoint_row_number():
