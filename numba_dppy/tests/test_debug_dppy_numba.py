@@ -158,7 +158,7 @@ def test_break_file_function():
     app.run("simple_sum.py")
 
     app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:23")
-    app.child.expect(r"23\s*i = dppy.get_global_id\(0\)")
+    app.child.expect(r"23\s+i = dppy.get_global_id\(0\)")
 
 
 # commands/break_func
@@ -169,7 +169,7 @@ def test_break_function():
     app.run("simple_sum.py")
 
     app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:23")
-    app.child.expect(r"23\s*i = dppy.get_global_id\(0\)")
+    app.child.expect(r"23\s+i = dppy.get_global_id\(0\)")
 
 
 # commands/break_nested_func
