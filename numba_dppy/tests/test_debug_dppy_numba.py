@@ -210,9 +210,9 @@ def test_local_variables():
 
     app.info_locals()
 
-    app.child.expect(r"a = .*")
-    app.child.expect(r"b = .*")
-    app.child.expect(r"c = .*")
+    app.child.expect(r"a =")
+    app.child.expect(r"b =")
+    app.child.expect(r"c =")
     app.child.expect(r"i = 0")
     app.child.expect(r"l1 = [0-9]\.[0-9]{3}")
     app.child.expect(r"l2 = [0-9]\.[0-9]{3}")
