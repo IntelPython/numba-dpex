@@ -202,42 +202,40 @@ def test_info_functions():
 def test_local_variables():
     app = gdb()
 
-    app.breakpoint("sum_local_vars.py:22")
+    app.breakpoint("sum_local_vars.py:26")
     app.run("sum_local_vars.py")
-    app.info_locals()
-    app.next()
-    app.next()
-    app.next()
-    app.next()
-    app.print("a")
-    app.print("l1")
-    app.print("l2")
-    app.ptype("a")
-    app.whatis("a")
-    app.ptype("l1")
-    app.whatis("l1")
 
-    app.child.expect(r"Thread .* hit Breakpoint .* at sum_local_vars.py:22")
-    app.child.expect(r"22\s+i = dppy.get_global_id\(0\)")
-    app.child.expect(r"a = '\\000' \<repeats .* times\>")
-    app.child.expect(r"b = '\\000' \<repeats .* times\>")
-    app.child.expect(r"c = '\\000' \<repeats .* times\>")
-    app.child.expect(r"i = .*")
-    app.child.expect(r"l1 = .*")
-    app.child.expect(r"l2 = .*")
-    app.child.expect(r"__ocl_dbg_gid0 = .*")
-    app.child.expect(r"__ocl_dbg_gid1 = .*")
-    app.child.expect(r"__ocl_dbg_gid2 = .*")
-    app.child.expect(r"__ocl_dbg_lid0 = .*")
-    app.child.expect(r"__ocl_dbg_lid1 = .*")
-    app.child.expect(r"__ocl_dbg_lid2 = .*")
-    app.child.expect(r"__ocl_dbg_grid0 = .*")
-    app.child.expect(r"__ocl_dbg_grid1 = .*")
-    app.child.expect(r"__ocl_dbg_grid2 = .*")
+    app.child.expect(r"Thread .* hit Breakpoint .* at sum_local_vars.py:26")
+    app.child.expect(r"26\s+c\[i\] = l1 \+ l2")
+
+    app.info_locals()
+
+    app.child.expect(r"a = .*")
+    app.child.expect(r"b = .*")
+    app.child.expect(r"c = .*")
+    app.child.expect(r"i = 0")
+    app.child.expect(r"l1 = [0-9]\.[0-9]{3}")
+    app.child.expect(r"l2 = [0-9]\.[0-9]{3}")
+
+    app.print("a")
     app.child.expect(r"\$1 = '\\000' \<repeats 55 times\>")
-    app.child.expect(r"\$3 = 2.5931931659579277")
-    app.child.expect(r"\$4 = 0.22954882979393004")
+
+    app.print("l1")
+    app.child.expect(r"\$2 = [0-9]\.[0-9]{3}")
+
+    app.print("l2")
+    app.child.expect(r"\$3 = [0-9]\.[0-9]{3}")
+
+    app.ptype("a")
     app.child.expect(r"type = byte \[56\]")
+
+    app.whatis("a")
+    app.child.expect(r"type = byte \[56\]")
+
+    app.ptype("l1")
+    app.child.expect(r"type = double")
+
+    app.whatis("l1")
     app.child.expect(r"type = double")
 
 
