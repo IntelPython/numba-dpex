@@ -261,17 +261,18 @@ def test_next():
 def test_step():
     app = gdb()
 
-    app.breakpoint("simple_dppy_func.py:29")
+    app.breakpoint("simple_dppy_func.py:30")
     app.run("simple_dppy_func.py")
+    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:30")
+    app.child.expect(
+        r"30\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)"
+    )
+
     app.step()
     app.step()
 
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:29")
-    app.child.expect(
-        r"29\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)"
-    )
-    app.child.expect(r"__main__::func_sum \(\) at simple_dppy_func.py:22")
-    app.child.expect(r"22\s+result = a_in_func \+ b_in_func")
+    app.child.expect(r"__main__::func_sum \(\) at simple_dppy_func.py:23")
+    app.child.expect(r"23\s+result = a_in_func \+ b_in_func")
 
 
 # commands/stepi
