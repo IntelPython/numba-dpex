@@ -108,10 +108,13 @@ class gdb:
         return str(package_path / "examples/debug" / script)
 
 
-@pytest.mark.parametrize("api", ["numba", "numba-dppy"])
-def test_breakpoint_row_number(api):
-    app = gdb()
+@pytest.fixture
+def app():
+    return gdb()
 
+
+@pytest.mark.parametrize("api", ["numba", "numba-dppy"])
+def test_breakpoint_row_number(app, api):
     app.breakpoint("dppy_numba_basic.py:25")
     app.run("dppy_numba_basic.py --api={api}".format(api=api))
 
@@ -120,9 +123,7 @@ def test_breakpoint_row_number(api):
 
 
 # commands/backtrace
-def test_backtrace():
-    app = gdb()
-
+def test_backtrace(app):
     app.breakpoint("simple_dppy_func.py:23")
     app.run("simple_dppy_func.py")
 
@@ -136,9 +137,7 @@ def test_backtrace():
 
 
 # commands/break_conditional
-def test_break_conditional():
-    app = gdb()
-
+def test_break_conditional(app):
     app.breakpoint("simple_sum.py:24 if i == 1")
     app.run("simple_sum.py")
 
@@ -151,9 +150,7 @@ def test_break_conditional():
 
 
 # commands/break_file_func
-def test_break_file_function():
-    app = gdb()
-
+def test_break_file_function(app):
     app.breakpoint("simple_sum.py:data_parallel_sum")
     app.run("simple_sum.py")
 
@@ -162,9 +159,7 @@ def test_break_file_function():
 
 
 # commands/break_func
-def test_break_function():
-    app = gdb()
-
+def test_break_function(app):
     app.breakpoint("data_parallel_sum")
     app.run("simple_sum.py")
 
@@ -173,9 +168,7 @@ def test_break_function():
 
 
 # commands/break_nested_func
-def test_break_nested_function():
-    app = gdb()
-
+def test_break_nested_function(app):
     app.breakpoint("simple_dppy_func.py:func_sum")
     app.run("simple_dppy_func.py")
 
@@ -184,9 +177,7 @@ def test_break_nested_function():
 
 
 # commands/info_func
-def test_info_functions():
-    app = gdb()
-
+def test_info_functions(app):
     app.breakpoint("simple_sum.py:22")
     app.run("simple_sum.py")
 
@@ -199,9 +190,7 @@ def test_info_functions():
 
 
 # commands/local_variables_0
-def test_local_variables():
-    app = gdb()
-
+def test_local_variables(app):
     app.breakpoint("sum_local_vars.py:26")
     app.run("sum_local_vars.py")
 
@@ -240,9 +229,7 @@ def test_local_variables():
 
 
 # commands/next
-def test_next():
-    app = gdb()
-
+def test_next(app):
     app.breakpoint("simple_dppy_func.py:30")
     app.run("simple_dppy_func.py")
 
@@ -258,9 +245,7 @@ def test_next():
 
 
 # commands/step_dppy_func
-def test_step():
-    app = gdb()
-
+def test_step(app):
     app.breakpoint("simple_dppy_func.py:30")
     app.run("simple_dppy_func.py")
     app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:30")
@@ -276,9 +261,7 @@ def test_step():
 
 
 # commands/stepi
-def test_stepi():
-    app = gdb()
-
+def test_stepi(app):
     app.breakpoint("simple_dppy_func.py:30")
     app.run("simple_dppy_func.py")
 
