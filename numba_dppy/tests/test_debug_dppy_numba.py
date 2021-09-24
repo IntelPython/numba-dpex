@@ -189,13 +189,13 @@ def test_info_functions():
 
     app.breakpoint("simple_sum.py:22")
     app.run("simple_sum.py")
+
+    app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:23")
+    app.child.expect(r"23\s+i = dppy.get_global_id\(0\)")
+
     app.info_functions("data_parallel_sum")
 
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:22")
-    app.child.expect(r"22\s+result = a_in_func \+ b_in_func")
-    app.child.expect(
-        r"20:\s+void __main__::data_parallel_sum\(DPPYArray\<float, 1, C, mutable, aligned\>, .*\);"
-    )
+    app.child.expect(r"21:\s+void __main__::data_parallel_sum\(.*\);")
 
 
 # commands/local_variables_0
