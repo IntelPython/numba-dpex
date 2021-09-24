@@ -58,49 +58,42 @@ class gdb:
         self.child.expect("Quit anyway?", timeout=5)
         self.child.sendline("y")
 
-    def breakpoint(self, breakpoint):
+    def _command(self, command):
         self.child.expect("(gdb)", timeout=5)
-        self.child.sendline("break " + breakpoint)
+        self.child.sendline(command)
+
+    def breakpoint(self, breakpoint):
+        self._command("break " + breakpoint)
 
     def run(self, script):
-        self.child.expect("(gdb)", timeout=5)
-        self.child.sendline("run " + self.script_path(script))
+        self._command("run " + self.script_path(script))
 
     def backtrace(self):
-        self.child.expect("(gdb)", timeout=5)
-        self.child.sendline("backtrace")
+        self._command("backtrace")
 
     def print(self, var):
-        self.child.expect("(gdb)", timeout=5)
-        self.child.sendline("print " + var)
+        self._command("print " + var)
 
     def info_functions(self, function):
-        self.child.expect("(gdb)", timeout=5)
-        self.child.sendline("info functions " + function)
+        self._command("info functions " + function)
 
     def info_locals(self):
-        self.child.expect("(gdb)", timeout=5)
-        self.child.sendline("info locals")
+        self._command("info locals")
 
     def next(self):
-        self.child.expect("(gdb)", timeout=5)
-        self.child.sendline("next")
+        self._command("next")
 
     def ptype(self, var):
-        self.child.expect("(gdb)", timeout=5)
-        self.child.sendline("ptype " + var)
+        self._command("ptype " + var)
 
     def whatis(self, var):
-        self.child.expect("(gdb)", timeout=5)
-        self.child.sendline("whatis " + var)
+        self._command("whatis " + var)
 
     def step(self):
-        self.child.expect("(gdb)", timeout=5)
-        self.child.sendline("step")
+        self._command("step")
 
     def stepi(self):
-        self.child.expect("(gdb)", timeout=5)
-        self.child.sendline("stepi")
+        self._command("stepi")
 
     @staticmethod
     def script_path(script):
