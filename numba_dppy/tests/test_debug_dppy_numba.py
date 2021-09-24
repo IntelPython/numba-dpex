@@ -179,8 +179,8 @@ def test_break_nested_function():
     app.breakpoint("simple_dppy_func.py:func_sum")
     app.run("simple_dppy_func.py")
 
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:22")
-    app.child.expect(r"22\s+result = a_in_func \+ b_in_func")
+    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:23")
+    app.child.expect(r"23\s+result = a_in_func \+ b_in_func")
 
 
 # commands/info_func
