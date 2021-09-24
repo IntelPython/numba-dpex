@@ -139,12 +139,14 @@ def test_backtrace():
 def test_break_conditional():
     app = gdb()
 
-    app.breakpoint("simple_sum.py:23 if i == 1")
+    app.breakpoint("simple_sum.py:24 if i == 1")
     app.run("simple_sum.py")
+
+    app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:24")
+    app.child.expect(r"24\s+c\[i\] = a\[i\] \+ b\[i\]")
+
     app.print("i")
 
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:23")
-    app.child.expect(r"23\s+c\[i\] = a\[i\] \+ b\[i\]")
     app.child.expect(r"\$1 = 1")
 
 
