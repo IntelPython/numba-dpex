@@ -157,8 +157,8 @@ def test_break_file_function():
     app.breakpoint("simple_sum.py:data_parallel_sum")
     app.run("simple_sum.py")
 
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:20")
-    app.child.expect(r"20\s+@dppy\.kernel\(debug=True\)")
+    app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:23")
+    app.child.expect(r"23\s*i = dppy.get_global_id\(0\)")
 
 
 # commands/break_func
