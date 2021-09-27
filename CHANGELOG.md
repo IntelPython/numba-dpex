@@ -4,21 +4,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.16.0] - 2021-09-21
+## [0.16.0] - 2021-09-xx
 
 ### Added
 - Improve build and infra scripts (#544)
 - Add docs about local variables lifetime (#534)
 - Public CI for Windows (#536, #558)
 - Add info about tags in documentation (#543)
+- Add code coverage configurations (#561)
+- Add support pytest-cov and pytest-xdist (#562)
+- Add documentation workflow (#547)
+- Test numba and numba-dppy API with GDB (#566)
+- Transform commands scripts for GDB to tests (#568)
 
 ### Changed
 - Update dpnp 0.8 (#524)
+- Fix passing strides array to DPNP dot and matmul (#565)
 - Use older compiler for backwards compatibility (#549)
 - Update conda recipe dependency for dpnp (#535)
 - Update dpctl 0.10 (memcpy async) (#529)
 - Change channels priority in public CI (#532)
 - Added runtime dependency `llvm-spirv 11.*` (#523)
+- Update test matrix in README (#560)
+- Use dpctl 0.10* and dpnp 0.8* in development configuration (environment.yml)
 
 ### Fixed
 - Update test and fix typo for atomics (#550)
