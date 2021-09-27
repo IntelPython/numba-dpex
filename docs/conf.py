@@ -16,6 +16,8 @@
 
 import sphinx_rtd_theme
 
+import numba_dppy
+
 # -- Project information -----------------------------------------------------
 
 project = "numba-dppy"
@@ -23,7 +25,7 @@ copyright = "2021, Intel"
 author = "Intel"
 
 # The full version, including alpha/beta/rc tags
-release = "0.14.3"
+release = numba_dppy.__version__
 
 
 # -- General configuration ---------------------------------------------------
