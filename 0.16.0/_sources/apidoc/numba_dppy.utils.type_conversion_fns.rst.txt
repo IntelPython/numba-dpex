@@ -1,0 +1,7 @@
+numba\_dppy.utils.type\_conversion\_fns module
+==============================================
+
+.. automodule:: numba_dppy.utils.type_conversion_fns
+   :members:
+   :undoc-members:
+   :show-inheritance:

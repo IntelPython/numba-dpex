@@ -1,0 +1,7 @@
+numba\_dppy.numpy\_usm\_shared module
+=====================================
+
+.. automodule:: numba_dppy.numpy_usm_shared
+   :members:
+   :undoc-members:
+   :show-inheritance:
