@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        python: ["3.8"]
+        python: [3.8, 3.9]
         integration_channels: [""]
         experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
@@ -68,7 +68,7 @@ jobs:
 
     strategy:
       matrix:
-        python: ["3.8"]
+        python: [3.8, 3.9]
         integration_channels: [""]
         experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
@@ -118,7 +118,7 @@ jobs:
 
     strategy:
       matrix:
-        python: ["3.8"]
+        python: [3.8, 3.9]
         integration_channels: [""]
         experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
@@ -186,7 +186,7 @@ jobs:
 
     strategy:
       matrix:
-        python: ["3.8"]
+        python: [3.8, 3.9]
         integration_channels: [""]
         experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
@@ -252,7 +252,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ["3.8"]
+        python: [3.8, 3.9]
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v2
@@ -278,7 +278,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python: [3.8]
+        python: [3.8, 3.9]
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v2
