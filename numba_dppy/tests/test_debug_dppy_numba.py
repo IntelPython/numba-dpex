@@ -21,6 +21,7 @@ import sys
 import pytest
 
 import numba_dppy
+from numba_dppy import config
 
 pexpect = pytest.importorskip("pexpect")
 
@@ -44,7 +45,8 @@ class gdb:
         env["NUMBA_OPT"] = "0"
 
         self.child = pexpect.spawn("gdb-oneapi -q python", env=env, encoding="utf-8")
-        # self.child.logfile = sys.stdout
+        if config.DEBUG:
+            self.child.logfile = sys.stdout
 
     def setup_gdb(self):
         self.child.expect("(gdb)", timeout=5)
