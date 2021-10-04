@@ -17,6 +17,7 @@ if [ -n "$NUMBA_DPPY_TESTING_GDB_ENABLE" ]; then
     fi
 fi
 
+# shellcheck disable=SC2086
 pytest $PYTEST_ARGS --pyargs $PYARGS
 
 if [[ -v ONEAPI_ROOT ]]; then
