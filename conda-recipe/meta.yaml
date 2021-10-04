@@ -34,6 +34,7 @@ requirements:
 test:
   requires:
     - pytest
+    - pexpect
 
 about:
     home: https://github.com/IntelPython/numba-dppy
