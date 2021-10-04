@@ -12,6 +12,7 @@ if [ -n "$NUMBA_DPPY_TESTING_GDB_ENABLE" ]; then
     # Activate debugger
     if [[ -v ONEAPI_ROOT ]]; then
         set +ux
+        # shellcheck disable=SC1090
         source "${ONEAPI_ROOT}/debugger/${DEBUGGER_VERSION}/env/vars.sh"
         set -ux
     fi
