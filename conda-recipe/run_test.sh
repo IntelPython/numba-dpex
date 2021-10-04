@@ -2,7 +2,21 @@
 
 set -euxo pipefail
 
-pytest -q -ra --disable-warnings --pyargs numba_dppy -vv
+PYTEST_ARGS="-q -ra --disable-warnings"
+PYARGS="numba_dppy -vv"
+
+if [ -n "$NUMBA_DPPY_TESTING_GDB_ENABLE" ]; then
+    PYARGS="$PYARGS -k test_debug_dppy_numba"
+
+    # Activate debugger
+    if [[ -v ONEAPI_ROOT ]]; then
+        set +ux
+        source "${ONEAPI_ROOT}/debugger/latest/env/vars.sh"
+        set -ux
+    fi
+fi
+
+pytest $PYTEST_ARGS --pyargs $PYARGS
 
 if [[ -v ONEAPI_ROOT ]]; then
     set +u
