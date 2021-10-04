@@ -4,6 +4,7 @@ set -euxo pipefail
 
 PYTEST_ARGS="-q -ra --disable-warnings"
 PYARGS="numba_dppy -vv"
+DEBUGGER_VERSION=10.1.2
 
 if [ -n "$NUMBA_DPPY_TESTING_GDB_ENABLE" ]; then
     PYARGS="$PYARGS -k test_debug_dppy_numba"
@@ -11,7 +12,7 @@ if [ -n "$NUMBA_DPPY_TESTING_GDB_ENABLE" ]; then
     # Activate debugger
     if [[ -v ONEAPI_ROOT ]]; then
         set +ux
-        source "${ONEAPI_ROOT}/debugger/latest/env/vars.sh"
+        source "${ONEAPI_ROOT}/debugger/${DEBUGGER_VERSION}/env/vars.sh"
         set -ux
     fi
 fi
