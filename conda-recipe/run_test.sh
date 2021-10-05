@@ -10,6 +10,7 @@ else
 fi
 
 if [[ -d "${DEBUGGER_DIR}" ]]; then
+    echo "Using debugger from: ${DEBUGGER_DIR}"
     set +x
     # shellcheck disable=SC1091
     . "${DEBUGGER_DIR}/env/vars.sh"
