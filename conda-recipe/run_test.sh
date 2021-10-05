@@ -2,9 +2,23 @@
 
 set -euxo pipefail
 
-PYARGS="-k test_debug_dppy_numba"
+echo GOOOOOOOOOOOOOOOOOOOOOOOD
 
-pytest -q -ra --disable-warnings --pyargs numba_dppy -vv ${PYARGS}
+exit 1
+
+if [[ -v ONEAPI_ROOT ]]; then
+    DEBUGGER_VERSION=10.1.2
+    DEBUGGER_DIR="${ONEAPI_ROOT}/debugger/${DEBUGGER_VERSION}"
+    if [[ -d "${DEBUGGER_DIR}" ]]; then
+        # shellcheck disable=SC1091
+        . "${DEBUGGER_DIR}/env/vars.sh"
+    else
+        echo "Debugger (${DEBUGGER_DIR}) not installed."
+    fi
+fi
+
+PYARGS="-k test_debug_dppy_numba -k dummy"
+pytest -q -ra --disable-warnings --pyargs numba_dppy -vv "${PYARGS}"
 
 # PYTEST_ARGS="-q -ra --disable-warnings"
 # PYARGS="numba_dppy -vv"
