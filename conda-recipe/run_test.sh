@@ -2,24 +2,28 @@
 
 set -euxo pipefail
 
-PYTEST_ARGS="-q -ra --disable-warnings"
-PYARGS="numba_dppy -vv"
-DEBUGGER_VERSION=10.1.2
+PYARGS="-k test_debug_dppy_numba"
 
-if [ -n "$NUMBA_DPPY_TESTING_GDB_ENABLE" ]; then
-    PYARGS="$PYARGS -k test_debug_dppy_numba"
+pytest -q -ra --disable-warnings --pyargs numba_dppy -vv ${PYARGS}
 
-    # Activate debugger
-    if [[ -v ONEAPI_ROOT ]]; then
-        set +ux
-        # shellcheck disable=SC1090
-        source "${ONEAPI_ROOT}/debugger/${DEBUGGER_VERSION}/env/vars.sh"
-        set -ux
-    fi
-fi
+# PYTEST_ARGS="-q -ra --disable-warnings"
+# PYARGS="numba_dppy -vv"
+# DEBUGGER_VERSION=10.1.2
 
-# shellcheck disable=SC2086
-pytest $PYTEST_ARGS --pyargs $PYARGS
+# if [ -n "$NUMBA_DPPY_TESTING_GDB_ENABLE" ]; then
+#     PYARGS="$PYARGS -k test_debug_dppy_numba"
+
+#     # Activate debugger
+#     if [[ -v ONEAPI_ROOT ]]; then
+#         set +ux
+#         # shellcheck disable=SC1090
+#         source "${ONEAPI_ROOT}/debugger/${DEBUGGER_VERSION}/env/vars.sh"
+#         set -ux
+#     fi
+# fi
+
+# # shellcheck disable=SC2086
+# pytest $PYTEST_ARGS --pyargs $PYARGS
 
 if [[ -v ONEAPI_ROOT ]]; then
     set +u
