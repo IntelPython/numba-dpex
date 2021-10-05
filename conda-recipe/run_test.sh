@@ -2,23 +2,26 @@
 
 set -euxo pipefail
 
-echo GOOOOOOOOOOOOOOOOOOOOOOOD
-
-exit 1
-
+DEBUGGER_VERSION=10.1.2
 if [[ -v ONEAPI_ROOT ]]; then
-    DEBUGGER_VERSION=10.1.2
     DEBUGGER_DIR="${ONEAPI_ROOT}/debugger/${DEBUGGER_VERSION}"
-    if [[ -d "${DEBUGGER_DIR}" ]]; then
-        # shellcheck disable=SC1091
-        . "${DEBUGGER_DIR}/env/vars.sh"
-    else
-        echo "Debugger (${DEBUGGER_DIR}) not installed."
-    fi
+else
+    DEBUGGER_DIR="/opt/intel/oneapi/debugger/${DEBUGGER_VERSION}"
+fi
+
+if [[ -d "${DEBUGGER_DIR}" ]]; then
+    set +x
+    # shellcheck disable=SC1091
+    . "${DEBUGGER_DIR}/env/vars.sh"
+    set -x
+else
+    echo "Debugger is not installed: ${DEBUGGER_DIR}"
 fi
 
 PYARGS="-k test_debug_dppy_numba -k dummy"
-pytest -q -ra --disable-warnings --pyargs numba_dppy -vv "${PYARGS}"
+pytest -q -ra --disable-warnings --pyargs numba_dppy -vv ${PYARGS}
+
+exit 0
 
 # PYTEST_ARGS="-q -ra --disable-warnings"
 # PYARGS="numba_dppy -vv"
