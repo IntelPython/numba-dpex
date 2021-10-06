@@ -25,10 +25,26 @@ from numba_dppy import config
 
 pexpect = pytest.importorskip("pexpect")
 
-pytestmark = pytest.mark.skipif(
-    not shutil.which("gdb-oneapi"),
-    reason="Intel® Distribution for GDB* is not available",
-)
+
+def module_loaded(module_name):
+    import subprocess
+
+    lsmod = subprocess.Popen(["lsmod"], stdout=subprocess.PIPE)
+    grep = subprocess.Popen(["grep", module_name], stdin=lsmod.stdout)
+    grep.communicate()
+    return grep.returncode == 0
+
+
+pytestmark = [
+    pytest.mark.skipif(
+        not shutil.which("gdb-oneapi"),
+        reason="Intel® Distribution for GDB* is not available",
+    ),
+    pytest.mark.skipif(
+        not module_loaded("igfxdcd"),
+        reason="Module igfxdcd is not loaded",
+    ),
+]
 
 
 # TODO: go to helper
@@ -45,8 +61,8 @@ class gdb:
         env["NUMBA_OPT"] = "0"
 
         self.child = pexpect.spawn("gdb-oneapi -q python", env=env, encoding="utf-8")
-        if config.DEBUG:
-            self.child.logfile = sys.stdout
+        # if config.DEBUG:
+        self.child.logfile = sys.stdout
 
     def setup_gdb(self):
         self.child.expect("(gdb)", timeout=5)
