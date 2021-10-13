@@ -17,13 +17,19 @@ from numba.core.debuginfo import DIBuilder
 
 
 class DPPYDIBuilder(DIBuilder):
-    def __init__(self, module, filepath, linkage_name):
-        DIBuilder.__init__(self, module, filepath)
+    def __init__(self, module, filepath, linkage_name, cgctx):
+        DIBuilder.__init__(self, module, filepath, cgctx)
         self.linkage_name = linkage_name
 
-    def mark_subprogram(self, function, name, line):
+    def mark_subprogram(self, function, fndesc, line):
+        name = fndesc.qualname
+        argmap = {argname: fndesc.typemap[argname] for argname in fndesc.args}
         di_subp = self._add_subprogram(
-            name=name, linkagename=self.linkage_name, line=line
+            name=name,
+            linkagename=self.linkage_name,
+            line=line,
+            function=function,
+            argmap=argmap,
         )
         function.set_metadata("dbg", di_subp)
         # disable inlining for this function for easier debugging
