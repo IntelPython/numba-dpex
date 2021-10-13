@@ -45,6 +45,13 @@ _NUMBA_DPPY_WRITE_ONLY = "write_only"
 _NUMBA_DPPY_READ_WRITE = "read_write"
 
 
+def _raise_datatype_mixed_error(argtypes):
+    error_message = (
+        "Datatypes of array passed to @numba_dppy.kernel"
+        "has to be uniform. Passes datatypes %s" % argtypes
+    )
+    raise TypeError(error_message)
+
 def _raise_no_device_found_error():
     error_message = (
         "No SYCL device specified. "
@@ -684,6 +691,16 @@ class JitDPPYKernel(DPPYKernelBase):
         """
         return tuple([self.typingctx.resolve_argument_type(a) for a in args])
 
+    def _datatype_uniform(self, argtypes):
+        m = len(argtypes)
+        array_type = None
+        for i in range(m):
+            if array_type is None and (isinstance(argtypes[i], USMNdArrayType) or isinstance(argtypes[i], types.Array)):
+                array_type = argtypes[i]
+            elif array_type is not None and type(argtypes[i]) is not type(array_type):
+                return False
+        return True
+
     def __call__(self, *args, **kwargs):
         assert not kwargs, "Keyword Arguments are not supported"
         try:
@@ -692,6 +709,10 @@ class JitDPPYKernel(DPPYKernelBase):
             _raise_no_device_found_error()
 
         argtypes = self._get_argtypes(*args)
+
+        if not self._datatype_uniform(argtypes):
+            _raise_datatype_mixed_error(argtypes)
+
         kernel = self.specialize(argtypes, current_queue)
         cfg = kernel.configure(self.sycl_queue, self.global_size, self.local_size)
         cfg(*args)
