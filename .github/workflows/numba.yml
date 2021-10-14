@@ -56,14 +56,16 @@ jobs:
           git log -1
           python setup.py install
 
-      - name: Test
+      - name: Test installation
         run: |
           conda list
 
-          # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
-          export OCL_ICD_FILENAMES=libintelocl.so
-
           python -c "import numba; print(numba.__file__)"
           python -c "import numba_dppy; print(numba_dppy.__file__)"
+
+      - name: Test
+        run: |
+          # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
+          export OCL_ICD_FILENAMES=libintelocl.so
 
           pytest -q -ra --disable-warnings --pyargs numba_dppy -vv
