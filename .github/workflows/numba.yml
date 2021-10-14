@@ -8,10 +8,10 @@ jobs:
 
     # Remove following line and add PR in the list
     if: false
-    strategy:
-      matrix:
-        pr: []
-      fail-fast: false
+    # strategy:
+    #   matrix:
+    #     pr: []
+    #   fail-fast: false
 
     env:
       ID: ${{ matrix.pr }}
