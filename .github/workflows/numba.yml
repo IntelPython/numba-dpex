@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        pr: [7177, 7421]
+        pr: []
       fail-fast: false
 
     env:
