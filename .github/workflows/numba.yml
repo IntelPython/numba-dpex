@@ -1,8 +1,6 @@
 name: Test w/ Numba PRs
 
 on:
-  # push:
-
   workflow_dispatch:
     inputs:
       numba_pr:
@@ -14,13 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    # strategy:
-    #   matrix:
-    #     pr: [7177, 7421]
-    #   fail-fast: false
-
     env:
-      # ID: ${{ matrix.pr }}
       ID: ${{ github.event.inputs.numba_pr }}
 
     steps:
