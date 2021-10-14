@@ -1,4 +1,4 @@
-name: Test with Numba PRs
+name: Test w/ Numba PRs
 
 on: push
 
