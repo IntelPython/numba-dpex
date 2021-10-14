@@ -6,6 +6,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    # Remove following line and add PR in the list
+    if: false
     strategy:
       matrix:
         pr: []
