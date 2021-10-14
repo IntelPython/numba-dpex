@@ -12,15 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
-from numba import types
-from numba.core.typing import signature
-from . import stubs
-import numba_dppy.dpnp_glue as dpnp_lowering
-from numba.core.extending import overload, register_jitable
 import numpy as np
+from numba import types
+from numba.core.extending import overload, register_jitable
+from numba.core.typing import signature
+
+import numba_dppy.dpnp_glue as dpnp_lowering
+import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
 from numba_dppy import dpctl_functions
-import os
+
+from . import stubs
 
 
 @register_jitable
@@ -38,9 +39,11 @@ def common_impl(low, high, res, dpnp_func, print_debug):
 
     dpnp_func(res_usm, low, high, res.size)
 
-    dpctl_functions.queue_memcpy(
+    event = dpctl_functions.queue_memcpy(
         sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
     )
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
     dpctl_functions.free_with_queue(res_usm, sycl_queue)
 
     dpnp_ext._dummy_liveness_func([res.size])
@@ -56,9 +59,11 @@ def common_impl_0_arg(res, dpnp_func, print_debug):
 
     dpnp_func(res_usm, res.size)
 
-    dpctl_functions.queue_memcpy(
+    event = dpctl_functions.queue_memcpy(
         sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
     )
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
     dpctl_functions.free_with_queue(res_usm, sycl_queue)
 
     dpnp_ext._dummy_liveness_func([res.size])
@@ -77,9 +82,11 @@ def common_impl_1_arg(arg1, res, dpnp_func, print_debug):
     except Exception:
         raise ValueError("Device not supported")
 
-    dpctl_functions.queue_memcpy(
+    event = dpctl_functions.queue_memcpy(
         sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
     )
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
     dpctl_functions.free_with_queue(res_usm, sycl_queue)
 
     dpnp_ext._dummy_liveness_func([res.size])
@@ -95,9 +102,11 @@ def common_impl_2_arg(arg1, arg2, res, dpnp_func, print_debug):
 
     dpnp_func(res_usm, arg1, arg2, res.size)
 
-    dpctl_functions.queue_memcpy(
+    event = dpctl_functions.queue_memcpy(
         sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
     )
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
     dpctl_functions.free_with_queue(res_usm, sycl_queue)
 
     dpnp_ext._dummy_liveness_func([res.size])
@@ -113,9 +122,11 @@ def common_impl_hypergeometric(ngood, nbad, nsample, res, dpnp_func, print_debug
 
     dpnp_func(res_usm, ngood, nbad, nsample, res.size)
 
-    dpctl_functions.queue_memcpy(
+    event = dpctl_functions.queue_memcpy(
         sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
     )
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
 
     dpctl_functions.free_with_queue(res_usm, sycl_queue)
 
@@ -131,15 +142,19 @@ def common_impl_multinomial(n, pvals, res, dpnp_func, print_debug):
     res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
 
     pvals_usm = dpctl_functions.malloc_shared(pvals.size * pvals.itemsize, sycl_queue)
-    dpctl_functions.queue_memcpy(
+    event = dpctl_functions.queue_memcpy(
         sycl_queue, pvals_usm, pvals.ctypes, pvals.size * pvals.itemsize
     )
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
 
     dpnp_func(res_usm, n, pvals_usm, pvals.size, res.size)
 
-    dpctl_functions.queue_memcpy(
+    event = dpctl_functions.queue_memcpy(
         sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
     )
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
 
     dpctl_functions.free_with_queue(res_usm, sycl_queue)
     dpctl_functions.free_with_queue(pvals_usm, sycl_queue)
@@ -158,20 +173,26 @@ def common_impl_multivariate_normal(
     res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
 
     mean_usm = dpctl_functions.malloc_shared(mean.size * mean.itemsize, sycl_queue)
-    dpctl_functions.queue_memcpy(
+    event = dpctl_functions.queue_memcpy(
         sycl_queue, mean_usm, mean.ctypes, mean.size * mean.itemsize
     )
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
 
     cov_usm = dpctl_functions.malloc_shared(cov.size * cov.itemsize, sycl_queue)
-    dpctl_functions.queue_memcpy(
+    event = dpctl_functions.queue_memcpy(
         sycl_queue, cov_usm, cov.ctypes, cov.size * cov.itemsize
     )
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
 
     dpnp_func(res_usm, mean.size, mean_usm, mean.size, cov_usm, cov.size, res.size)
 
-    dpctl_functions.queue_memcpy(
+    event = dpctl_functions.queue_memcpy(
         sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
     )
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
 
     dpctl_functions.free_with_queue(res_usm, sycl_queue)
     dpctl_functions.free_with_queue(mean_usm, sycl_queue)

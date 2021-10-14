@@ -13,36 +13,32 @@
 # limitations under the License.
 
 import copy
-
-from .dppy_passbuilder import DPPYPassBuilder
-from numba.core.typing.templates import ConcreteTemplate
-from numba.core import types, compiler, ir
-from numba.core.typing.templates import AbstractTemplate
-from numba.core.compiler_lock import global_compiler_lock
 import ctypes
-from types import FunctionType
 from inspect import signature
+from types import FunctionType
 
 import dpctl
-import dpctl.memory as dpctl_mem
 import dpctl.program as dpctl_prog
 import numpy as np
+from numba.core import compiler, ir, types
+from numba.core.compiler import CompilerBase, DefaultPassBuilder
+from numba.core.compiler_lock import global_compiler_lock
+from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
-from . import spirv_generator
-
-from numba.core.compiler import DefaultPassBuilder, CompilerBase
-from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dppy import config
-from numba_dppy.driver import USMNdArrayType
 from numba_dppy.dppy_array_type import DPPYArray
+from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
+from numba_dppy.driver import USMNdArrayType
 from numba_dppy.utils import (
-    assert_no_return,
-    has_usm_memory,
     as_usm_obj,
+    assert_no_return,
     copy_from_numpy_to_usm_obj,
     copy_to_numpy_from_usm_obj,
+    has_usm_memory,
 )
 
+from . import spirv_generator
+from .dppy_passbuilder import DPPYPassBuilder
 
 _NUMBA_DPPY_READ_ONLY = "read_only"
 _NUMBA_DPPY_WRITE_ONLY = "write_only"
@@ -661,7 +657,7 @@ class DPPYKernel(DPPYKernelBase):
                 msg += " %s |" % (key)
 
             msg = msg[:-1] + "]"
-            if access_type != None:
+            if access_type is not None:
                 print(msg)
             return True
         else:

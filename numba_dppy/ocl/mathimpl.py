@@ -13,12 +13,13 @@
 # limitations under the License.
 
 import math
-import numpy
 import warnings
 
-from numba.core.imputils import Registry
+import numpy
 from numba.core import types
+from numba.core.imputils import Registry
 from numba.core.itanium_mangler import mangle
+
 from .oclimpl import _declare_function
 
 registry = Registry()

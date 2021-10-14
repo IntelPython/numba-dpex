@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba.core import dispatcher, compiler
+from numba.core import compiler, dispatcher
 from numba.core.registry import cpu_target
 from numba.core.target_extension import dispatcher_registry, target_registry
+
 import numba_dppy.config as dppy_config
 from numba_dppy.target import DPPY_TARGET_NAME
 

@@ -13,10 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from timeit import default_timer as time
-import numpy as np
-import numba_dppy as dppy
 import dpctl
+import numpy as np
+
+import numba_dppy as dppy
 
 
 @dppy.kernel

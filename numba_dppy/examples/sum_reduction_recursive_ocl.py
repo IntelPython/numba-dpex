@@ -20,9 +20,10 @@ partial reductions in separate kernels.
 
 import dpctl
 import dpctl.memory as dpctl_mem
-from numba import int32
-import numba_dppy as dppy
 import numpy as np
+from numba import int32
+
+import numba_dppy as dppy
 
 
 @dppy.kernel

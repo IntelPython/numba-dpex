@@ -14,12 +14,10 @@
 
 from llvmlite import binding as ll
 from llvmlite.llvmpy import core as lc
-
-from numba.core.codegen import CPUCodegen, CPUCodeLibrary
 from numba.core import utils
+from numba.core.codegen import CPUCodegen, CPUCodeLibrary
 
 from numba_dppy import config
-
 
 SPIR_TRIPLE = {32: " spir-unknown-unknown", 64: "spir64-unknown-unknown"}
 

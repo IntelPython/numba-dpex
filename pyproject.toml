@@ -1,2 +1,5 @@
 [tool.black]
 exclude = 'versioneer.py'
+
+[tool.isort]
+profile = "black"

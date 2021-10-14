@@ -13,13 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
-from numba import njit, vectorize, int32, float32, int64, float64
 import dpctl
+import numpy as np
+import pytest
+from numba import float32, float64, int32, int64, njit, vectorize
 
 import numba_dppy as dppy
 from numba_dppy.tests._helper import assert_auto_offloading
-import pytest
+
 from . import _helper
 
 list_of_filter_strs = [

@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba.core.types.npytypes import Array
+import numpy as np
 from numba.core import types
 from numba.core.datamodel.models import StructModel
-import numpy as np
+from numba.core.types.npytypes import Array
 
 
 class DPPYArray(Array):

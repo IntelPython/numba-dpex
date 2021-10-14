@@ -15,8 +15,7 @@
 from functools import singledispatch
 
 import llvmlite.llvmpy.core as lc
-
-from numba.core import types, typing, cgutils
+from numba.core import cgutils, types, typing
 from numba.core.imputils import Registry
 
 from numba_dppy.utils import address_space
@@ -51,7 +50,7 @@ def int_print_impl(ty, context, builder, val):
     else:
         rawfmt = "%lld"
         dsttype = types.int64
-    fmt = context.insert_const_string(builder.module, rawfmt)
+    fmt = context.insert_const_string(builder.module, rawfmt)  # noqa
     lld = context.cast(builder, val, ty, dsttype)
     return rawfmt, [lld]
 

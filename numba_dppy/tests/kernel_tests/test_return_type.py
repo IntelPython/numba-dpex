@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import dpctl
 import numpy as np
 import pytest
-import dpctl
-from numba_dppy.tests._helper import skip_test
+
 import numba_dppy as dppy
+from numba_dppy.tests._helper import skip_test
 
 
 def f(a):

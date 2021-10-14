@@ -20,7 +20,9 @@ Currently the module supports the following converter functions:
 
 """
 from numba.core import types
+
 from numba_dppy import dppy_array_type
+
 from .constants import address_space
 
 __all__ = ["npytypes_array_to_dppy_array"]

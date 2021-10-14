@@ -12,12 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import argparse
+import math
+import time
+
 import dpctl
 import numba
 import numpy as np
-import math
-import argparse
-import time
+
 import numba_dppy as dppy
 
 
