@@ -44,18 +44,22 @@ jobs:
           conda list
           which python
 
+      - name: Install numba
+        run: |
           cd ../numba
           git log -1
           python setup.py install
 
+      - name: Install numba-dppy
+        run: |
           cd ../numba-dppy
           git log -1
           python setup.py install
 
-          conda list
-
       - name: Test
         run: |
+          conda list
+
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
           export OCL_ICD_FILENAMES=libintelocl.so
 
