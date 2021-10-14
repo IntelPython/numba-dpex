@@ -48,13 +48,13 @@ jobs:
         run: |
           cd numba
           git log -1
-          python setup.py install
+          python setup.py develop
 
       - name: Install numba-dppy
         run: |
           cd numba-dppy
           git log -1
-          python setup.py install
+          python setup.py develop
 
       - name: Test installation
         run: |
