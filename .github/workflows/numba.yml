@@ -40,6 +40,7 @@ jobs:
         run: |
           cd numba-dppy
           conda env update -n base -f environment.yml --prune
+          conda remove -n base numba --force
 
           conda list
           which python
@@ -59,6 +60,9 @@ jobs:
       - name: Test installation
         run: |
           conda list
+
+          # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
+          export OCL_ICD_FILENAMES=libintelocl.so
 
           python -c "import numba; print(numba.__file__)"
           python -c "import numba_dppy; print(numba_dppy.__file__)"
