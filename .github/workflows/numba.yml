@@ -6,12 +6,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    # Remove following line and add PR in the list
-    if: false
-    # strategy:
-    #   matrix:
-    #     pr: []
-    #   fail-fast: false
+    strategy:
+      matrix:
+        pr: [7177, 7421]
+      fail-fast: false
 
     env:
       ID: ${{ matrix.pr }}
