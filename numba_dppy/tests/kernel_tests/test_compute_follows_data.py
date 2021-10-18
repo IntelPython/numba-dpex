@@ -48,8 +48,6 @@ def input_arrays(request):
     return a, b, c
 
 def test_usm_ndarray_argtype(offload_device, input_arrays):
-    if offload_device != "level_zero:gpu:0":
-        pytest.skip()
     if skip_test(offload_device):
         pytest.skip()
 
@@ -93,8 +91,6 @@ def test_usm_ndarray_argtype(offload_device, input_arrays):
     assert np.array_equal(got, expected)
 
 def test_ndarray_argtype(offload_device, input_arrays):
-    if offload_device != "level_zero:gpu:0":
-        pytest.skip()
     if skip_test(offload_device):
         pytest.skip()
 
@@ -113,8 +109,6 @@ def test_ndarray_argtype(offload_device, input_arrays):
 
 
 def test_mix_argtype(offload_device, input_arrays):
-    if offload_device != "level_zero:gpu:0":
-        pytest.skip()
     if skip_test(offload_device):
         pytest.skip()
 
@@ -143,3 +137,98 @@ def test_mix_argtype(offload_device, input_arrays):
 
     with pytest.raises(TypeError):
         sum_kernel[global_size, local_size](da, b, dc)
+
+def test_context_manager_with_usm_ndarray(offload_device, input_arrays):
+    if skip_test(offload_device):
+        pytest.skip()
+
+    usm_type = "device"
+
+    a, b, expected = input_arrays
+    got = np.ones_like(a)
+
+    device = dpctl.SyclDevice(offload_device)
+    queue = dpctl.SyclQueue(device)
+
+    da = dpt.usm_ndarray(
+        a.shape,
+        dtype=a.dtype,
+        buffer=usm_type,
+        buffer_ctor_kwargs={"queue": queue},
+    )
+    da.usm_data.copy_from_host(a.reshape((-1)).view("|u1"))
+
+    db = dpt.usm_ndarray(
+        b.shape,
+        dtype=b.dtype,
+        buffer=usm_type,
+        buffer_ctor_kwargs={"queue": queue},
+    )
+    db.usm_data.copy_from_host(b.reshape((-1)).view("|u1"))
+
+    dc = dpt.usm_ndarray(
+        got.shape,
+        dtype=got.dtype,
+        buffer=usm_type,
+        buffer_ctor_kwargs={"queue": queue},
+    )
+
+    with pytest.raises(ValueError):
+        with numba_dppy.offload_to_sycl_device(offload_device):
+            sum_kernel[global_size, local_size](da, db, dc)
+
+
+    sum_kernel[global_size, local_size](da, db, dc)
+
+    dc.usm_data.copy_to_host(got.reshape((-1)).view("|u1"))
+
+    expected = a + b
+
+    assert np.array_equal(got, expected)
+
+def test_equivalent_usm_ndarray(input_arrays):
+    if skip_test("level_zero:gpu") or skip_test("opencl:gpu"):
+        pytest.skip()
+
+    usm_type = "device"
+
+    a, b, expected = input_arrays
+    got = np.ones_like(a)
+
+    device1 = dpctl.SyclDevice("level_zero:gpu")
+    queue1 = dpctl.SyclQueue(device1)
+
+    device2 = dpctl.SyclDevice("opencl:gpu")
+    queue2 = dpctl.SyclQueue(device2)
+
+    da = dpt.usm_ndarray(
+        a.shape,
+        dtype=a.dtype,
+        buffer=usm_type,
+        buffer_ctor_kwargs={"queue": queue1},
+    )
+    da.usm_data.copy_from_host(a.reshape((-1)).view("|u1"))
+
+    db = dpt.usm_ndarray(
+        b.shape,
+        dtype=b.dtype,
+        buffer=usm_type,
+        buffer_ctor_kwargs={"queue": queue2},
+    )
+    db.usm_data.copy_from_host(b.reshape((-1)).view("|u1"))
+
+    dc = dpt.usm_ndarray(
+        got.shape,
+        dtype=got.dtype,
+        buffer=usm_type,
+        buffer_ctor_kwargs={"queue": queue1},
+    )
+
+    # with pytest.raises(ValueError):
+    #    sum_kernel[global_size, local_size](da, db, dc)
+
+    #dc.usm_data.copy_to_host(got.reshape((-1)).view("|u1"))
+
+    #expected = a + b
+
+    #assert np.array_equal(got, expected)

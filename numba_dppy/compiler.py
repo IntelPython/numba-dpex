@@ -47,8 +47,8 @@ _NUMBA_DPPY_READ_WRITE = "read_write"
 
 def _raise_datatype_mixed_error(argtypes):
     error_message = (
-        "Datatypes of array passed to @numba_dppy.kernel"
-        "has to be uniform. Passes datatypes %s" % argtypes
+        "Datatypes of array passed to @numba_dppy.kernel "
+        "has to be uniform. Passed datatypes: %s" % str(argtypes)
     )
     raise TypeError(error_message)
 
@@ -692,29 +692,64 @@ class JitDPPYKernel(DPPYKernelBase):
         return tuple([self.typingctx.resolve_argument_type(a) for a in args])
 
     def _datatype_uniform(self, argtypes):
+        """
+        This function will determine if there is any argument of type array and
+        in case there are multiple array types if they are all of the same.
+
+        Args:
+            argtypes: Numba type for each argument passed to a JitDPPYKernel.
+
+        Returns:
+            array_type: None if there are no argument of type array, or the
+                        Numba type in case there is array type argument.
+            bool: True if no array type arguments or if all array type arguments
+                  are of same Numba type, False otherwise.
+
+        Raises:
+            TypeError: @dppy.kernel does not allow users to return any
+                value. TypeError is raised when users do.
+
+        """
         m = len(argtypes)
         array_type = None
         for i in range(m):
             if array_type is None and (isinstance(argtypes[i], USMNdArrayType) or isinstance(argtypes[i], types.Array)):
                 array_type = argtypes[i]
             elif array_type is not None and type(argtypes[i]) is not type(array_type):
-                return False
-        return True
+                return None, False
+        return array_type, True
 
     def __call__(self, *args, **kwargs):
         assert not kwargs, "Keyword Arguments are not supported"
-        try:
-            current_queue = dpctl.get_current_queue()
-        except:
-            _raise_no_device_found_error()
 
         argtypes = self._get_argtypes(*args)
+        current_queue = None
 
-        if not self._datatype_uniform(argtypes):
+        # Get the array type and whether all array are of same type or not
+        array_type, uniform = self._datatype_uniform(argtypes)
+        if not uniform:
             _raise_datatype_mixed_error(argtypes)
 
+        if type(array_type) == USMNdArrayType:
+            if dpctl.is_in_device_context():
+                raise ValueError("Compute will follow data! Please do not use context manager "
+                    "to specify a SYCL queue to submit the kernel. The queue will be selected "
+                    "from the data.")
+            # Placeholder to check if queues of each data are equivalent
+            if False:
+                raise ValueError("Data passed as argument are not equivalent. Please "
+                    "create dpctl.tensor.usm_ndarray with equivalent SYCL queue.")
+
+            current_queue = args[0].sycl_queue
+
+        if current_queue is None:
+            try:
+                current_queue = dpctl.get_current_queue()
+            except:
+                _raise_no_device_found_error()
+
         kernel = self.specialize(argtypes, current_queue)
-        cfg = kernel.configure(self.sycl_queue, self.global_size, self.local_size)
+        cfg = kernel.configure(kernel.sycl_queue, self.global_size, self.local_size)
         cfg(*args)
 
     def specialize(self, argtypes, queue):
