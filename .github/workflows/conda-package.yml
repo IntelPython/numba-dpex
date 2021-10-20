@@ -1,7 +1,7 @@
 name: Conda package
 
-on: 
-  push: 
+on:
+  push:
     branches:
     tags:
 
