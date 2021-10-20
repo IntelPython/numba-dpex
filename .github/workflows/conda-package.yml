@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        python: ["3.8"]
+        python: [3.8, 3.9]
         integration_channels: [""]
         experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
@@ -71,7 +71,7 @@ jobs:
 
     strategy:
       matrix:
-        python: ["3.8"]
+        python: [3.8, 3.9]
         integration_channels: [""]
         experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
@@ -121,13 +121,15 @@ jobs:
 
     strategy:
       matrix:
-        python: ["3.8"]
+        python: [3.8, 3.9]
+        numba: [0.54, 0.55]
         integration_channels: [""]
         experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
         dependencies: [""]
         include:
           - python: "3.8"
+            numba: 0.54
             integration_channels: -c dppy/label/dev
             artifact_name: -c dppy_label_dev
             experimental: false  # current stable
@@ -174,7 +176,7 @@ jobs:
       - name: Install numba-dppy
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}"
-          conda install $PACKAGE_NAME pytest python=${{ matrix.python }} ${{ matrix.dependencies }} $CHANNELS
+          conda install $PACKAGE_NAME pytest python=${{ matrix.python }} numba=${{ matrix.numba }} ${{ matrix.dependencies }} $CHANNELS
           # Test installed packages
           conda list
       - name: Run tests
@@ -189,7 +191,7 @@ jobs:
 
     strategy:
       matrix:
-        python: ["3.8"]
+        python: [3.8, 3.9]
         integration_channels: [""]
         experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
@@ -255,13 +257,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ["3.8"]
+        python: [3.8, 3.9]
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          # `-c dppy_label_dev`: packages not published on `-c intel` yet
-          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }} -c dppy_label_dev
+          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 
       - name: Install anaconda-client
         run: conda install anaconda-client
@@ -281,13 +282,12 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python: [3.8]
+        python: [3.8, 3.9]
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          # `-c dppy_label_dev`: packages not published on `-c intel` yet
-          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }} -c dppy_label_dev
+          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 
       - uses: conda-incubator/setup-miniconda@v2
         with:
