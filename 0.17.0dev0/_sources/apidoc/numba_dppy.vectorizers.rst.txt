@@ -1,0 +1,7 @@
+numba\_dppy.vectorizers module
+==============================
+
+.. automodule:: numba_dppy.vectorizers
+   :members:
+   :undoc-members:
+   :show-inheritance:
