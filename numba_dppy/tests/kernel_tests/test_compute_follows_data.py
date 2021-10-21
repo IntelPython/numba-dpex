@@ -99,8 +99,6 @@ def test_ndarray_argtype(offload_device, input_arrays):
     if skip_test(offload_device):
         pytest.skip()
 
-    usm_type = "device"
-
     a, b, expected = input_arrays
     got = np.ones_like(a)
 
