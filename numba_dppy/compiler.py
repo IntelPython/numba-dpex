@@ -17,8 +17,9 @@ import ctypes
 from inspect import signature
 from types import FunctionType
 
-import dpctl, dpctl.utils
+import dpctl
 import dpctl.program as dpctl_prog
+import dpctl.utils
 import numpy as np
 from numba.core import compiler, ir, types
 from numba.core.compiler import CompilerBase, DefaultPassBuilder
