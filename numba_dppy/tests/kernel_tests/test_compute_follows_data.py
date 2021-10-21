@@ -20,7 +20,6 @@ import pytest
 import numba_dppy
 from numba_dppy.tests._helper import skip_test
 
-
 global_size = 10
 local_size = 1
 N = global_size * local_size
