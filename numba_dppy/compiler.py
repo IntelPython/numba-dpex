@@ -17,7 +17,7 @@ import ctypes
 from inspect import signature
 from types import FunctionType
 
-import dpctl
+import dpctl, dpctl.utils
 import dpctl.program as dpctl_prog
 import numpy as np
 from numba.core import compiler, ir, types
@@ -694,7 +694,7 @@ class JitDPPYKernel(DPPYKernelBase):
     def _datatype_uniform(self, argtypes):
         """
         This function will determine if there is any argument of type array and
-        in case there are multiple array types if they are all of the same.
+        in case there are multiple array types if they are all of the same type.
 
         Args:
             argtypes: Numba type for each argument passed to a JitDPPYKernel.
@@ -713,9 +713,10 @@ class JitDPPYKernel(DPPYKernelBase):
         m = len(argtypes)
         array_type = None
         for i in range(m):
-            if array_type is None and (isinstance(argtypes[i], USMNdArrayType) or isinstance(argtypes[i], types.Array)):
+            arg_is_array_type = isinstance(argtypes[i], USMNdArrayType) or isinstance(argtypes[i], types.Array)
+            if array_type is None and arg_is_array_type:
                 array_type = argtypes[i]
-            elif array_type is not None and type(argtypes[i]) is not type(array_type):
+            elif array_type is not None and arg_is_array_type and type(argtypes[i]) is not type(array_type):
                 return None, False
         return array_type, True
 
@@ -735,12 +736,16 @@ class JitDPPYKernel(DPPYKernelBase):
                 raise ValueError("Compute will follow data! Please do not use context manager "
                     "to specify a SYCL queue to submit the kernel. The queue will be selected "
                     "from the data.")
-            # Placeholder to check if queues of each data are equivalent
-            if False:
+
+            queues = []
+            for i in range(len(argtypes)):
+                if type(argtypes[i]) == USMNdArrayType:
+                    queues.append(args[i].sycl_queue)
+
+            current_queue = dpctl.utils.get_execution_queue(queues)
+            if current_queue is None:
                 raise ValueError("Data passed as argument are not equivalent. Please "
                     "create dpctl.tensor.usm_ndarray with equivalent SYCL queue.")
-
-            current_queue = args[0].sycl_queue
 
         if current_queue is None:
             try:

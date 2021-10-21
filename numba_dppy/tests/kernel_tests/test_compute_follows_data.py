@@ -209,13 +209,22 @@ def test_equivalent_usm_ndarray(input_arrays):
     )
     da.usm_data.copy_from_host(a.reshape((-1)).view("|u1"))
 
-    db = dpt.usm_ndarray(
+    not_equivalent_db = dpt.usm_ndarray(
         b.shape,
         dtype=b.dtype,
         buffer=usm_type,
         buffer_ctor_kwargs={"queue": queue2},
     )
-    db.usm_data.copy_from_host(b.reshape((-1)).view("|u1"))
+    not_equivalent_db.usm_data.copy_from_host(b.reshape((-1)).view("|u1"))
+
+    equivalent_db = dpt.usm_ndarray(
+        b.shape,
+        dtype=b.dtype,
+        buffer=usm_type,
+        buffer_ctor_kwargs={"queue": queue1},
+    )
+    equivalent_db.usm_data.copy_from_host(b.reshape((-1)).view("|u1"))
+
 
     dc = dpt.usm_ndarray(
         got.shape,
@@ -224,11 +233,11 @@ def test_equivalent_usm_ndarray(input_arrays):
         buffer_ctor_kwargs={"queue": queue1},
     )
 
-    # with pytest.raises(ValueError):
-    #    sum_kernel[global_size, local_size](da, db, dc)
+    with pytest.raises(ValueError):
+        sum_kernel[global_size, local_size](da, not_equivalent_db, dc)
 
-    #dc.usm_data.copy_to_host(got.reshape((-1)).view("|u1"))
+    sum_kernel[global_size, local_size](da, equivalent_db, dc)
+    dc.usm_data.copy_to_host(got.reshape((-1)).view("|u1"))
 
-    #expected = a + b
-
-    #assert np.array_equal(got, expected)
+    expected = a + b
+    assert np.array_equal(got, expected)
