@@ -25,10 +25,12 @@ global_size = 10
 local_size = 1
 N = global_size * local_size
 
+
 @numba_dppy.kernel
 def sum_kernel(a, b, c):
     i = numba_dppy.get_global_id(0)
     c[i] = a[i] + b[i]
+
 
 list_of_uniform_types = [
     (np.array, np.array, np.array),
@@ -40,12 +42,14 @@ list_of_dtypes = [
     np.float64,
 ]
 
+
 @pytest.fixture(params=list_of_dtypes)
 def input_arrays(request):
     a = np.array(np.random.random(N), request.param)
     b = np.array(np.random.random(N), request.param)
     c = np.zeros_like(a)
     return a, b, c
+
 
 def test_usm_ndarray_argtype(offload_device, input_arrays):
     if skip_test(offload_device):
@@ -90,6 +94,7 @@ def test_usm_ndarray_argtype(offload_device, input_arrays):
 
     assert np.array_equal(got, expected)
 
+
 def test_ndarray_argtype(offload_device, input_arrays):
     if skip_test(offload_device):
         pytest.skip()
@@ -98,7 +103,6 @@ def test_ndarray_argtype(offload_device, input_arrays):
 
     a, b, expected = input_arrays
     got = np.ones_like(a)
-
 
     with numba_dppy.offload_to_sycl_device(offload_device):
         sum_kernel[global_size, local_size](a, b, got)
@@ -137,6 +141,7 @@ def test_mix_argtype(offload_device, input_arrays):
 
     with pytest.raises(TypeError):
         sum_kernel[global_size, local_size](da, b, dc)
+
 
 def test_context_manager_with_usm_ndarray(offload_device, input_arrays):
     if skip_test(offload_device):
@@ -177,7 +182,6 @@ def test_context_manager_with_usm_ndarray(offload_device, input_arrays):
         with numba_dppy.offload_to_sycl_device(offload_device):
             sum_kernel[global_size, local_size](da, db, dc)
 
-
     sum_kernel[global_size, local_size](da, db, dc)
 
     dc.usm_data.copy_to_host(got.reshape((-1)).view("|u1"))
@@ -185,6 +189,7 @@ def test_context_manager_with_usm_ndarray(offload_device, input_arrays):
     expected = a + b
 
     assert np.array_equal(got, expected)
+
 
 def test_equivalent_usm_ndarray(input_arrays):
     if skip_test("level_zero:gpu") or skip_test("opencl:gpu"):
@@ -224,7 +229,6 @@ def test_equivalent_usm_ndarray(input_arrays):
         buffer_ctor_kwargs={"queue": queue1},
     )
     equivalent_db.usm_data.copy_from_host(b.reshape((-1)).view("|u1"))
-
 
     dc = dpt.usm_ndarray(
         got.shape,

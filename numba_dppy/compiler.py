@@ -52,6 +52,7 @@ def _raise_datatype_mixed_error(argtypes):
     )
     raise TypeError(error_message)
 
+
 def _raise_no_device_found_error():
     error_message = (
         "No SYCL device specified. "
@@ -713,10 +714,16 @@ class JitDPPYKernel(DPPYKernelBase):
         m = len(argtypes)
         array_type = None
         for i in range(m):
-            arg_is_array_type = isinstance(argtypes[i], USMNdArrayType) or isinstance(argtypes[i], types.Array)
+            arg_is_array_type = isinstance(argtypes[i], USMNdArrayType) or isinstance(
+                argtypes[i], types.Array
+            )
             if array_type is None and arg_is_array_type:
                 array_type = argtypes[i]
-            elif array_type is not None and arg_is_array_type and type(argtypes[i]) is not type(array_type):
+            elif (
+                array_type is not None
+                and arg_is_array_type
+                and type(argtypes[i]) is not type(array_type)
+            ):
                 return None, False
         return array_type, True
 
@@ -733,9 +740,11 @@ class JitDPPYKernel(DPPYKernelBase):
 
         if type(array_type) == USMNdArrayType:
             if dpctl.is_in_device_context():
-                raise ValueError("Compute will follow data! Please do not use context manager "
+                raise ValueError(
+                    "Compute will follow data! Please do not use context manager "
                     "to specify a SYCL queue to submit the kernel. The queue will be selected "
-                    "from the data.")
+                    "from the data."
+                )
 
             queues = []
             for i in range(len(argtypes)):
@@ -744,8 +753,10 @@ class JitDPPYKernel(DPPYKernelBase):
 
             current_queue = dpctl.utils.get_execution_queue(queues)
             if current_queue is None:
-                raise ValueError("Data passed as argument are not equivalent. Please "
-                    "create dpctl.tensor.usm_ndarray with equivalent SYCL queue.")
+                raise ValueError(
+                    "Data passed as argument are not equivalent. Please "
+                    "create dpctl.tensor.usm_ndarray with equivalent SYCL queue."
+                )
 
         if current_queue is None:
             try:
