@@ -18,10 +18,6 @@ Configure debugging environment
         conda create numba-dppy-dev numba-dppy
         conda activate numba-dppy-dev
 
-    .. note::
-
-        Debugging features were tested with the following packages: ``numba-dppy=0.14``, ``dpctl=0.8``, ``numba=0.53``.
-
 3) Activate NEO drivers (optional).
 
     If you want to use the local NEO driver, activate the variables for it. See the :ref:`NEO-driver`.
