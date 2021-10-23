@@ -28,7 +28,7 @@ from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 from numba_dppy import config
 from numba_dppy.dppy_array_type import DPPYArray
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
-from numba_dppy.driver import USMNdArrayType
+from numba_dppy.driver import DPNPArrayType, USMNdArrayType
 from numba_dppy.utils import (
     as_usm_obj,
     assert_no_return,
@@ -570,7 +570,17 @@ class DPPYKernel(DPPYKernelBase):
 
         device_arrs.append(None)
 
-        if isinstance(ty, USMNdArrayType):
+        if isinstance(ty, DPNPArrayType):
+            self._unpack_device_array_argument(
+                val.size,
+                val.dtype.itemsize,
+                val._array_obj.usm_data,
+                val.shape,
+                val.strides,
+                val.ndim,
+                kernelargs,
+            )
+        elif isinstance(ty, USMNdArrayType):
             self._unpack_device_array_argument(
                 val.size,
                 val.dtype.itemsize,
