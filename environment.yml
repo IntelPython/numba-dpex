@@ -12,7 +12,7 @@ dependencies:
   - dpcpp_linux-64
   - cython
   - numba 0.55*
-  - dpctl 0.10*
+  - dpctl 0.11*
   - dpnp 0.8*
   - spirv-tools
   # - llvm-spirv 11.*
