@@ -8,7 +8,6 @@
 *.sw[po]
 *.out
 *.ll
-.coverage
 .nfs*
 tags
 MANIFEST
@@ -18,7 +17,6 @@ build/
 docs/_build/
 docs/gh-pages/
 dist/
-htmlcov/
 .idea/
 .vscode/settings.json
 .mypy_cache/
@@ -30,3 +28,8 @@ docs/source/developer/autogen*
 # Ignore generated cpp files
 numba_dppy/dpnp_glue/*.cpp
 numba_dppy/dpnp_glue/*.h
+
+# Ignore coverage results
+.coverage
+coverage.xml
+htmlcov/

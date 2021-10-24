@@ -135,7 +135,7 @@ def spirv_compile():
 packages = find_packages(include=["numba_dppy", "numba_dppy.*"])
 build_requires = ["cython"]
 install_requires = [
-    "numba >={},<{}".format("0.54.0", "0.55"),
+    "numba >={},<{}".format("0.54.0", "0.56"),
     "dpctl",
     "packaging",
 ]
