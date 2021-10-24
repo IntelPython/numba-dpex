@@ -1,6 +1,9 @@
 name: Conda package
 
-on: push
+on:
+  push:
+    branches:
+    tags:
 
 env:
   PACKAGE_NAME: numba-dppy
@@ -250,7 +253,7 @@ jobs:
 
   upload_linux:
     needs: test_linux
-    if: ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref }} == 'refs/heads/main' || ${{ github.ref }} == 'refs/heads/release*'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -275,7 +278,7 @@ jobs:
 
   upload_windows:
     needs: test_windows
-    if: ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref }} == 'refs/heads/main' || ${{ github.ref }} == 'refs/heads/release*'
     runs-on: windows-latest
     strategy:
       matrix:
