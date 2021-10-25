@@ -16,9 +16,16 @@ import dpctl
 import dpctl.tensor as dpt
 import numpy as np
 import pytest
+import warnings
 
 import numba_dppy
 from numba_dppy.tests._helper import skip_test
+from numba_dppy.utils import (
+    IndeterminateExecutionQueueError,
+    cfd_ctx_mgr_wrng_msg,
+    IndeterminateExecutionQueueError_msg,
+    mix_datatype_err_msg,
+)
 
 global_size = 10
 local_size = 1
@@ -136,8 +143,10 @@ def test_mix_argtype(offload_device, input_arrays):
         buffer_ctor_kwargs={"queue": queue},
     )
 
-    with pytest.raises(TypeError):
+    with pytest.raises(TypeError) as error_msg:
         sum_kernel[global_size, local_size](da, b, dc)
+
+        assert mix_datatype_err_msg in error_msg
 
 
 def test_context_manager_with_usm_ndarray(offload_device, input_arrays):
@@ -175,9 +184,11 @@ def test_context_manager_with_usm_ndarray(offload_device, input_arrays):
         buffer_ctor_kwargs={"queue": queue},
     )
 
-    with pytest.raises(ValueError):
+    with pytest.warns(Warning) as warning:
         with numba_dppy.offload_to_sycl_device(offload_device):
             sum_kernel[global_size, local_size](da, db, dc)
+        if not warning:
+            pytest.fail("Warning expected!")
 
     sum_kernel[global_size, local_size](da, db, dc)
 
@@ -234,8 +245,9 @@ def test_equivalent_usm_ndarray(input_arrays):
         buffer_ctor_kwargs={"queue": queue1},
     )
 
-    with pytest.raises(ValueError):
+    with pytest.raises(IndeterminateExecutionQueueError) as error_msg:
         sum_kernel[global_size, local_size](da, not_equivalent_db, dc)
+        assert IndeterminateExecutionQueueError_msg in str(error_msg.value)
 
     sum_kernel[global_size, local_size](da, equivalent_db, dc)
     dc.usm_data.copy_to_host(got.reshape((-1)).view("|u1"))
