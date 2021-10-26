@@ -162,6 +162,19 @@ def test_break_conditional_with_func_arg(app):
     app.child.expect(r"\$1 = 3")
 
 
+@pytest.mark.skip(reason="Need a Numba with PR7177")
+def test_break_conditional_by_func_name_with_func_arg(app):
+    app.breakpoint("func_sum if a_in_func == 3")
+    app.run("simple_dppy_func.py")
+
+    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:23")
+    app.child.expect(r"23\s+result = a_in_func \+ b_in_func")
+
+    app.print("a_in_func")
+
+    app.child.expect(r"\$1 = 3")
+
+
 # commands/break_file_func
 def test_break_file_function(app):
     app.breakpoint("simple_sum.py:data_parallel_sum")
