@@ -32,10 +32,10 @@ from numba_dppy.utils.llvm_codegen_helpers import (
     get_zero,
 )
 from numba_dppy.utils.misc import (
-    assert_no_return,
     IndeterminateExecutionQueueError,
-    cfd_ctx_mgr_wrng_msg,
     IndeterminateExecutionQueueError_msg,
+    assert_no_return,
+    cfd_ctx_mgr_wrng_msg,
     mix_datatype_err_msg,
 )
 from numba_dppy.utils.type_conversion_fns import npytypes_array_to_dppy_array

@@ -12,18 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import warnings
+
 import dpctl
 import dpctl.tensor as dpt
 import numpy as np
 import pytest
-import warnings
 
 import numba_dppy
 from numba_dppy.tests._helper import skip_test
 from numba_dppy.utils import (
     IndeterminateExecutionQueueError,
-    cfd_ctx_mgr_wrng_msg,
     IndeterminateExecutionQueueError_msg,
+    cfd_ctx_mgr_wrng_msg,
     mix_datatype_err_msg,
 )
 

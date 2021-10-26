@@ -14,9 +14,9 @@
 
 import copy
 import ctypes
+import warnings
 from inspect import signature
 from types import FunctionType
-import warnings
 
 import dpctl
 import dpctl.program as dpctl_prog
@@ -32,13 +32,13 @@ from numba_dppy.dppy_array_type import DPPYArray
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dppy.driver import USMNdArrayType
 from numba_dppy.utils import (
+    IndeterminateExecutionQueueError,
     as_usm_obj,
     assert_no_return,
+    cfd_ctx_mgr_wrng_msg,
     copy_from_numpy_to_usm_obj,
     copy_to_numpy_from_usm_obj,
     has_usm_memory,
-    IndeterminateExecutionQueueError,
-    cfd_ctx_mgr_wrng_msg,
     mix_datatype_err_msg,
 )
 
