@@ -30,7 +30,7 @@ def asarray(container):
         if isinstance(container, dpnp_array) and hasattr(container, "_array_obj"):
             import warnings
 
-            warnings.warn("asarray() use internals from dpnp.")
+            warnings.warn("asarray() uses internals from dpnp.")
             return container._array_obj
     except:
         pass
