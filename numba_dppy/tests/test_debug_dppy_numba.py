@@ -108,8 +108,8 @@ class gdb:
         return str(package_path / "examples/debug" / script)
 
 
-@pytest.fixture()
-def app(request):
+@pytest.fixture
+def app():
     return gdb()
 
 
