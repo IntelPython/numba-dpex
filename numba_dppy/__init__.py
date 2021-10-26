@@ -516,6 +516,7 @@ Supported NumPy Functions:
 """
 
 import numba.testing
+from numba_dppy.interop import asarray
 
 from numba_dppy.retarget import offload_to_sycl_device
 
