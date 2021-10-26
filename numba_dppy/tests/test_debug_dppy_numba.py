@@ -123,7 +123,6 @@ def test_breakpoint_row_number(app, api):
 
 
 # commands/backtrace
-@pytest.mark.xfail(raises=pexpect.TIMEOUT, reasos="CI fails")
 def test_backtrace(app):
     app.breakpoint("simple_dppy_func.py:23")
     app.run("simple_dppy_func.py")
@@ -138,7 +137,6 @@ def test_backtrace(app):
 
 
 # commands/break_conditional
-@pytest.mark.xfail(raises=pexpect.TIMEOUT, reasos="CI fails")
 def test_break_conditional(app):
     app.breakpoint("simple_sum.py:24 if i == 1")
     app.run("simple_sum.py")
@@ -165,7 +163,6 @@ def test_break_conditional_with_func_arg(app):
 
 
 # commands/break_file_func
-@pytest.mark.xfail(raises=pexpect.TIMEOUT, reasos="CI fails")
 def test_break_file_function(app):
     app.breakpoint("simple_sum.py:data_parallel_sum")
     app.run("simple_sum.py")
@@ -175,7 +172,6 @@ def test_break_file_function(app):
 
 
 # commands/break_func
-@pytest.mark.xfail(raises=pexpect.TIMEOUT, reasos="CI fails")
 def test_break_function(app):
     app.breakpoint("data_parallel_sum")
     app.run("simple_sum.py")
@@ -185,7 +181,6 @@ def test_break_function(app):
 
 
 # commands/break_nested_func
-@pytest.mark.xfail(raises=pexpect.TIMEOUT, reasos="CI fails")
 def test_break_nested_function(app):
     app.breakpoint("simple_dppy_func.py:func_sum")
     app.run("simple_dppy_func.py")
@@ -219,7 +214,7 @@ def test_info_args(app):
 
 
 # commands/info_func
-@pytest.mark.skip(reasos="Need a Numba with PR7177")
+@pytest.mark.skip(reason="Need a Numba with PR7177")
 def test_info_functions(app):
     app.breakpoint("simple_sum.py:23")
     app.run("simple_sum.py")
@@ -270,7 +265,6 @@ def test_local_variables(app):
 
 
 # commands/next
-@pytest.mark.xfail(raises=pexpect.TIMEOUT, reasos="CI fails")
 def test_next(app):
     app.breakpoint("simple_dppy_func.py:30")
     app.run("simple_dppy_func.py")
@@ -287,7 +281,6 @@ def test_next(app):
 
 
 # commands/step_dppy_func
-@pytest.mark.xfail(raises=pexpect.TIMEOUT, reasos="CI fails")
 def test_step(app):
     app.breakpoint("simple_dppy_func.py:30")
     app.run("simple_dppy_func.py")
@@ -305,7 +298,6 @@ def test_step(app):
 
 
 # commands/stepi
-@pytest.mark.xfail(raises=pexpect.TIMEOUT, reasos="CI fails")
 def test_stepi(app):
     app.breakpoint("simple_dppy_func.py:30")
     app.run("simple_dppy_func.py")
