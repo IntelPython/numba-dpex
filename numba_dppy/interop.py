@@ -14,16 +14,19 @@
 
 """Support for interoperability."""
 
-import dpctl
+import dpctl.tensor as dpt
 
 
 def asarray(container):
     """Convert container supported by interoperability to numba-dppy container.
-    Currently used dpctl.asarray().
+    Currently used dpctl.tensor.asarray().
     """
-    if hasattr(dpctl, "asarray"):
-        return dpctl.asarray(container)
+    try:
+        return dpt.asarray(container)
+    except:
+        pass
 
+    # Workaround for dpnp_array if dpctl asarray() does not support it.
     try:
         from dpnp.dpnp_array import dpnp_array
 
@@ -35,4 +38,4 @@ def asarray(container):
     except:
         pass
 
-    raise NotImplementedError("dpclt.asarray is not supported yet.")
+    raise NotImplementedError("dpctl asarray() does not support " + type(container))
