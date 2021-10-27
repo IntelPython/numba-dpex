@@ -86,6 +86,7 @@ def eig_input(request):
     return symm_a
 
 
+@pytest.mark.skip(reason="Freeze...")
 def test_eig(filter_str, eig_input, capfd):
     if skip_test(filter_str):
         pytest.skip()
@@ -350,6 +351,7 @@ def test_matrix_rank(filter_str, matrix_rank_input, capfd):
         assert np.allclose(actual, expected)
 
 
+@pytest.mark.skip(reason="Freeze...")
 def test_eigvals(filter_str, eig_input, capfd):
     if skip_test(filter_str):
         pytest.skip()
