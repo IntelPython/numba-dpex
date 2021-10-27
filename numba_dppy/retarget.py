@@ -16,7 +16,7 @@ from contextlib import contextmanager
 
 import dpctl
 from numba import njit
-from numba.core.dispatcher import TargetConfig
+from numba.core.dispatcher import TargetConfigurationStack
 from numba.core.retarget import BasicRetarget
 
 from numba_dppy.target import DPPY_TARGET_NAME
@@ -48,5 +48,5 @@ def offload_to_sycl_device(dpctl_device):
         if retarget is None:
             retarget = DPPYRetarget(filter_string)
             first_level_cache[filter_string] = retarget
-        with TargetConfig.switch_target(retarget):
+        with TargetConfigurationStack.switch_target(retarget):
             yield sycl_queue

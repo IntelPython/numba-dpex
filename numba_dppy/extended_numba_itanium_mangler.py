@@ -55,12 +55,12 @@ def mangle_args(argtys):
     return "".join([mangle_type_or_value(t) for t in argtys])
 
 
-def mangle(ident, argtys):
+def mangle(ident, argtys, *, abi_tags=()):
     """
-    Mangle identifier with Numba type objects and arbitrary values.
+    Mangle identifier with Numba type objects and abi-tags.
     """
     return (
         itanium_mangler.PREFIX
-        + itanium_mangler.mangle_identifier(ident)
+        + itanium_mangler.mangle_identifier(ident, abi_tags=abi_tags)
         + mangle_args(argtys)
     )

@@ -297,6 +297,7 @@ class SpirvFriendlyLowering(LoweringPass):
                 mangler=targetctx.mangler,
                 inline=flags.forceinline,
                 noalias=flags.noalias,
+                abi_tags=[flags.get_mangle_string()],
             )
 
             with targetctx.push_code_library(library):

@@ -1249,7 +1249,9 @@ class DPPYLower(Lower):
             from numba_dppy.dppy_debuginfo import DPPYDIBuilder
 
             qualprefix = qualifying_prefix(fndesc.modname, fndesc.qualname)
-            mangled_qualname = default_mangler(qualprefix, fndesc.argtypes)
+            mangled_qualname = default_mangler(
+                qualprefix, fndesc.argtypes, abi_tags=fndesc.abi_tags
+            )
 
             lower.debuginfo = DPPYDIBuilder(
                 module=lower.module,
