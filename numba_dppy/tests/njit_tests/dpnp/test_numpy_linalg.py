@@ -27,7 +27,6 @@ from numba_dppy.tests._helper import dpnp_debug
 from ._helper import args_string, wrapper_function
 from .dpnp_skip_test import dpnp_skip_test as skip_test
 
-
 filter_strings_with_skips_for_opencl = [
     "level_zero:gpu:0",
     pytest.param("opencl:gpu:0", marks=pytest.mark.skip(reason="Freeze")),
