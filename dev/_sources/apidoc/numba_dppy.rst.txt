@@ -35,6 +35,7 @@ Submodules
    numba_dppy.dufunc_inliner
    numba_dppy.extended_numba_itanium_mangler
    numba_dppy.initialize
+   numba_dppy.interop
    numba_dppy.numpy_usm_shared
    numba_dppy.printimpl
    numba_dppy.rename_numpy_functions_pass

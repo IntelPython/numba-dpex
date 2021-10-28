@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy.utils.type_conversion_fns module &mdash; numba-dppy 0.17.0dev0+3.gaddaf4b documentation</title>
+  <title>numba_dppy.interop module &mdash; numba-dppy 0.17.0dev0+3.gaddaf4b documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -67,9 +67,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>numba_dppy.utils.type_conversion_fns module</li>
+      <li>numba_dppy.interop module</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/apidoc/numba_dppy.utils.type_conversion_fns.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/apidoc/numba_dppy.interop.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -77,48 +77,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-numba_dppy.utils.type_conversion_fns">
-<span id="numba-dppy-utils-type-conversion-fns-module"></span><h1>numba_dppy.utils.type_conversion_fns module<a class="headerlink" href="#module-numba_dppy.utils.type_conversion_fns" title="Permalink to this headline"></a></h1>
-<p>Provides helper functions to convert from numba types to numba_dppy types.</p>
-<dl class="simple">
-<dt>Currently the module supports the following converter functions:</dt><dd><ul class="simple">
-<li><dl class="simple">
-<dt>npytypes_array_to_dppy_array: types.npytypes.Array to</dt><dd><p>numba_dppy.dppy_array_type.DPPYArray.</p>
-</dd>
-</dl>
-</li>
-</ul>
-</dd>
-</dl>
+  <section id="module-numba_dppy.interop">
+<span id="numba-dppy-interop-module"></span><h1>numba_dppy.interop module<a class="headerlink" href="#module-numba_dppy.interop" title="Permalink to this headline"></a></h1>
+<p>Support for interoperability.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.utils.type_conversion_fns.npytypes_array_to_dppy_array">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.utils.type_conversion_fns.</span></span><span class="sig-name descname"><span class="pre">npytypes_array_to_dppy_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arrtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addrspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.utils.type_conversion_fns.npytypes_array_to_dppy_array" title="Permalink to this definition"></a></dt>
-<dd><p>Convert   Numba’s Array type to numba_dppy’s DPPYArray type.</p>
-<p>Numba’s <code class="docutils literal notranslate"><span class="pre">Array</span></code> type does not have a notion of address space for the data
-pointer. numba_dppy defines its own array type, DPPYArray, that is similar
-to Numba’s Array, but the data pointer has an associated address space.
-In addition, the <code class="docutils literal notranslate"><span class="pre">meminfo</span></code> and the <code class="docutils literal notranslate"><span class="pre">parent</span></code> attributes of <code class="docutils literal notranslate"><span class="pre">Array</span></code>
-are stored as <code class="docutils literal notranslate"><span class="pre">CPointer</span></code> types instead of <code class="docutils literal notranslate"><span class="pre">PyObject</span></code>. The converter
-function converts the Numba <code class="docutils literal notranslate"><span class="pre">Array</span></code> type to <code class="docutils literal notranslate"><span class="pre">DPPYArray</span></code> type with
-address space of pointer members typed to the specified address space.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><dl class="simple">
-<dt>arrtype (numba.types): A numba data type that should be</dt><dd><p><code class="docutils literal notranslate"><span class="pre">numba.types.Array</span></code>.</p>
-</dd>
-<dt>specified: Defaults to <code class="docutils literal notranslate"><span class="pre">numba_dppy.utils.address_space.GLOBAL</span></code>.</dt><dd><p>The SPIR-V address space to which the data pointer of the array
-belongs.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>Returns: The numba_dppy data type corresponding to the input numba type.</p>
-<dl class="simple">
-<dt>Raises:</dt><dd><dl class="simple">
-<dt>NotImplementedError: If the input numba type is not</dt><dd><p><code class="docutils literal notranslate"><span class="pre">numba.types.Array</span></code></p>
-</dd>
-</dl>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="numba_dppy.interop.asarray">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.interop.</span></span><span class="sig-name descname"><span class="pre">asarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">container</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.interop.asarray" title="Permalink to this definition"></a></dt>
+<dd><p>Convert container supported by interoperability to numba-dppy container.
+Currently used dpctl.tensor.asarray().</p>
 </dd></dl>
 
 </section>
