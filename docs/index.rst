@@ -6,16 +6,31 @@
 Welcome to Numba-dppy's documentation!
 ======================================
 
-`Numba-dppy <https://github.com/IntelPython/numba-dppy>`_ is a standalone extension to the `Numba
-<https://numba.pydata.org/>`_ JIT compiler that adds `SYCL
-<https://www.khronos.org/sycl/>`_ programming capabilities to Numba.
-Numba-dppy uses `dpctl <https://github.com/IntelPython/dpctl>`_ to support
-SYCL features and currently Intel's `DPC++ <https://github.com/intel/llvm/blob/sycl/sycl/doc/GetStartedGuide.md>`_ is the only SYCL runtime supported by
-Numba-dppy.
+`Numba-dppy <https://github.com/IntelPython/numba-dppy>`_ is an Intel
+|reg|-developed extension to the `Numba <https://numba.pydata.org/>`_ JIT
+compiler that adds "XPU" programming capabilities to it. The
+`XPU vision <https://www.intel.com/content/www/us/en/newsroom/news/xpu-vision-oneapi-server-gpu.html#gs.ervs8m>`_
+is to make it extremely easy for programmers to write efficient and portable
+code for a mix of architectures across CPUs, GPUs, FPGAs and other
+accelerators. To provide XPU programming capabilities, Numba-dppy relies on
+`SYCL <https://www.khronos.org/sycl/>`_ that is an industry standard for writing
+cross-platform code using standard C++. Using a SYCL runtime library Numba-dppy
+can launch data-parallel kernels generated directly from Python bytecode on
+supported data-parallel architectures. Currently, support for
+SYCL is restricted to Intel's
+`DPC++ <https://github.com/intel/llvm/blob/sycl/sycl/doc/GetStartedGuide.md>`_
+via the `dpctl <https://github.com/IntelPython/dpctl>`_ package.
+Support for other SYCL runtime libraries may be added in the future.
 
-There are two ways to program SYCL devices using Numba-dppy:
+The main feature of Numba-dppy is to let programmers write data-parallel kernels
+directly in Python. Such kernels can be written in two different ways: an
+explicit API superficially similar to OpenCL, and an implicit API that generates
+kernels from NumPy library calls, Numba's ``prange`` statement, and `other
+"data-parallel by construction" expressions <https://numba.pydata.org/numba-doc/latest/user/parallel.html>`_
+that Numba is able to parallelize. Following are two examples to demonstrate
+the two ways in which kernels may be written in a Numba-dppy program.
 
-  - An explicit kernel programming mode.
+  - Defining a data-parallel kernel explicitly in Numba-dppy.
 
     .. code-block:: python
 
@@ -35,7 +50,7 @@ There are two ways to program SYCL devices using Numba-dppy:
         with dpctl.device_context("opencl:gpu"):
             sum[20, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
-  - An automatic offload mode for NumPy data-parallel expressions and
+  - Writing implicitly data-parallel expressions in the fashion of
     `Numba parallel loops <https://numba.pydata.org/numba-doc/dev/user/parallel.html#explicit-parallel-loops>`_.
 
     .. code-block:: python
@@ -113,3 +128,5 @@ Indices and tables
 .. only:: not builder_html
 
    * :ref:`modindex`
+
+.. |reg|    unicode:: U+000AE .. REGISTERED SIGN
