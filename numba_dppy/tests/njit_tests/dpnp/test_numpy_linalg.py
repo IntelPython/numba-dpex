@@ -28,6 +28,14 @@ from ._helper import args_string, wrapper_function
 from .dpnp_skip_test import dpnp_skip_test as skip_test
 
 
+filter_strings_with_skips_for_opencl = [
+    "level_zero:gpu:0",
+    pytest.param("opencl:gpu:0", marks=pytest.mark.skip(reason="Freeze")),
+    pytest.param("opencl:cpu:0", marks=pytest.mark.skip(reason="Segmentation fault")),
+    # pytest.param("opencl:cpu:0", marks=pytest.mark.xfail(reason="Segmentation fault")),  # run with --boxed
+]
+
+
 # From https://github.com/IntelPython/dpnp/blob/0.4.0/tests/test_linalg.py#L8
 def vvsort(val, vec):
     size = val.size
@@ -86,14 +94,7 @@ def eig_input(request):
     return symm_a
 
 
-filter_strings_for_eig = [
-    "level_zero:gpu:0",
-    pytest.param("opencl:gpu:0", marks=pytest.mark.skip(reason="Freeze")),
-    pytest.param("opencl:cpu:0", marks=pytest.mark.skip(reason="Segmentation fault")),
-]
-
-
-@pytest.mark.parametrize("filter_str", filter_strings_for_eig)
+@pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)
 def test_eig(filter_str, eig_input, capfd):
     if skip_test(filter_str):
         pytest.skip()
@@ -158,13 +159,10 @@ def dot_name(request):
     return request.param
 
 
-@pytest.mark.skip(reason="Freeze...")
+@pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)
 def test_dot(filter_str, dot_name, dot_input, dtype, capfd):
     if skip_test(filter_str):
         pytest.skip()
-
-    if filter_str == "opencl:cpu:0":
-        pytest.skip("dpnp produces error for OpenCL CPU device")
 
     a, b = dot_input
 
@@ -360,7 +358,7 @@ def test_matrix_rank(filter_str, matrix_rank_input, capfd):
         assert np.allclose(actual, expected)
 
 
-@pytest.mark.parametrize("filter_str", filter_strings_for_eig)
+@pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)
 def test_eigvals(filter_str, eig_input, capfd):
     if skip_test(filter_str):
         pytest.skip()
