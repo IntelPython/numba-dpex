@@ -185,13 +185,10 @@ def test_dot(filter_str, dot_name, dot_input, dtype, capfd):
         assert np.allclose(actual, expected)
 
 
-@pytest.mark.skip(reason="Freeze...")
+@pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)
 def test_matmul(filter_str, dtype, capfd):
     if skip_test(filter_str):
         pytest.skip()
-
-    if filter_str == "level_zero:gpu:0":
-        pytest.skip("Segfaults with device type level_zero:gpu:0")
 
     a = np.array(np.random.random(10 * 2), dtype=dtype).reshape(10, 2)
     b = np.array(np.random.random(2 * 10), dtype=dtype).reshape(2, 10)
