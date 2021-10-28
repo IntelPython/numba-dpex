@@ -307,13 +307,10 @@ def matrix_power_input(request):
     return request.param
 
 
-@pytest.mark.skip(reason="Freeze...")
+@pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)
 def test_matrix_power(filter_str, matrix_power_input, power, dtype, capfd):
     if skip_test(filter_str):
         pytest.skip()
-
-    if filter_str == "level_zero:gpu:0":
-        pytest.skip("Segfaults with device type level_zero:gpu:0")
 
     a = np.array(matrix_power_input, dtype=dtype)
     fn = get_fn("linalg.matrix_power", 2)
