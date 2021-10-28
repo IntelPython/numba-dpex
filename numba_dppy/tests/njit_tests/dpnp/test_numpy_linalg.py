@@ -86,14 +86,14 @@ def eig_input(request):
     return symm_a
 
 
-filter_strings = [
+filter_strings_for_eig = [
     "level_zero:gpu:0",
     pytest.param("opencl:gpu:0", marks=pytest.mark.skip(reason="Freeze")),
     pytest.param("opencl:cpu:0", marks=pytest.mark.skip(reason="Segmentation fault")),
 ]
 
 
-@pytest.mark.parametrize("filter_str", filter_strings)
+@pytest.mark.parametrize("filter_str", filter_strings_for_eig)
 def test_eig(filter_str, eig_input, capfd):
     if skip_test(filter_str):
         pytest.skip()
@@ -360,13 +360,10 @@ def test_matrix_rank(filter_str, matrix_rank_input, capfd):
         assert np.allclose(actual, expected)
 
 
-@pytest.mark.skip(reason="Freeze...")
+@pytest.mark.parametrize("filter_str", filter_strings_for_eig)
 def test_eigvals(filter_str, eig_input, capfd):
     if skip_test(filter_str):
         pytest.skip()
-
-    if filter_str == "level_zero:gpu:0":
-        pytest.skip("Segfaults with device type level_zero:gpu:0")
 
     a = eig_input
     fn = get_fn("linalg.eigvals", 1)
