@@ -21,16 +21,12 @@ class DPPYDIBuilder(DIBuilder):
         DIBuilder.__init__(self, module, filepath, cgctx)
         self.linkage_name = linkage_name
 
-    def mark_subprogram(self, function, fndesc, line):
-        name = fndesc.qualname
-        argmap = {argname: fndesc.typemap[argname] for argname in fndesc.args}
-        di_subp = self._add_subprogram(
-            name=name,
-            linkagename=self.linkage_name,
-            line=line,
-            function=function,
-            argmap=argmap,
-        )
+    def mark_subprogram(self, function, qualname, argnames, argtypes, line):
+        name = qualname
+        argmap = dict(zip(argnames, argtypes))
+        di_subp = self._add_subprogram(name=name, linkagename=self.linkage_name,
+                                       line=line, function=function,
+                                       argmap=argmap)
         function.set_metadata("dbg", di_subp)
         # disable inlining for this function for easier debugging
         function.attributes.add("noinline")
