@@ -11,9 +11,9 @@ dependencies:
   - gxx_linux-64
   - dpcpp_linux-64
   - cython
-  - numba 0.54*
-  - dpctl 0.10*
-  - dpnp 0.8*
+  - numba 0.55*
+  - dpctl 0.11*
+  - dpnp 0.9*
   - spirv-tools
   # - llvm-spirv 11.*
   - packaging
