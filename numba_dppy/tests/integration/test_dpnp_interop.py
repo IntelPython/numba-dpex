@@ -89,8 +89,8 @@ def test_consuming_array_from_dpnp(offload_device, dtype):
     global_size = 1021
 
     with dppy.offload_to_sycl_device(offload_device):
-        a = dpnp.arange(global_size, dtype=dtype)
-        b = dpnp.arange(global_size, dtype=dtype)
-        c = dpnp.ones_like(a)
+        a = dppy.asarray(dpnp.arange(global_size, dtype=dtype))
+        b = dppy.asarray(dpnp.arange(global_size, dtype=dtype))
+        c = dppy.asarray(dpnp.ones_like(a))
 
         data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
