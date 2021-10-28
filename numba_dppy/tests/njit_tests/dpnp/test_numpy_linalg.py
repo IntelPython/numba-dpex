@@ -86,13 +86,18 @@ def eig_input(request):
     return symm_a
 
 
-@pytest.mark.skip(reason="Freeze...")
+filter_strings = [
+    "level_zero:gpu:0",
+    pytest.param("opencl:gpu:0", marks=pytest.mark.skip(reason="Freeze")),
+    pytest.param("opencl:cpu:0", marks=pytest.mark.skip(reason="Segmentation fault")),
+]
+
+
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_eig(filter_str, eig_input, capfd):
     if skip_test(filter_str):
         pytest.skip()
 
-    if filter_str == "opencl:cpu:0":
-        pytest.skip("Segfaults with device type level_zero:gpu:0")
     a = eig_input
     fn = get_fn("linalg.eig", 1)
     f = njit(fn)
