@@ -237,7 +237,7 @@ def test_info_functions(app):
 
     app.info_functions("data_parallel_sum")
 
-    app.child.expect(r"22: \s+ .*__main__::data_parallel_sum\(.*\)")
+    app.child.expect(r"22:\s+.*__main__::data_parallel_sum\(.*\)")
 
 
 # commands/local_variables_0
