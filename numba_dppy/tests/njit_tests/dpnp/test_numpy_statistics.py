@@ -26,6 +26,7 @@ from numba_dppy.tests._helper import dpnp_debug
 
 from ._helper import wrapper_function
 from .dpnp_skip_test import dpnp_skip_test as skip_test
+from .test_numpy_linalg import filter_strings_with_skips_for_opencl
 
 list_of_filter_strs = [
     "opencl:gpu:0",
@@ -84,7 +85,7 @@ def unary_op(request):
     return wrapper_function("a", f"np.{request.param}(a)", globals()), request.param
 
 
-@pytest.mark.skip(reason="Freeze...")
+@pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)
 def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
     if skip_test(filter_str):
         pytest.skip()
@@ -93,9 +94,7 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
     op, name = unary_op
     if name != "cov":
         a = np.reshape(a, get_shape)
-    else:
-        if filter_str == "level_zero:gpu:0":
-            pytest.skip("Segfaults with device type level_zero:gpu:0")
+
     actual = np.empty(shape=a.shape, dtype=a.dtype)
     expected = np.empty(shape=a.shape, dtype=a.dtype)
 

@@ -27,6 +27,19 @@ from numba_dppy.tests._helper import dpnp_debug
 from ._helper import args_string, wrapper_function
 from .dpnp_skip_test import dpnp_skip_test as skip_test
 
+filter_strings = [
+    "level_zero:gpu:0",
+    "opencl:gpu:0",
+    "opencl:cpu:0",
+]
+
+filter_strings_with_skips_for_opencl = [
+    "level_zero:gpu:0",
+    pytest.param("opencl:gpu:0", marks=pytest.mark.skip(reason="Freeze")),
+    pytest.param("opencl:cpu:0", marks=pytest.mark.skip(reason="Segmentation fault")),
+    # pytest.param("opencl:cpu:0", marks=pytest.mark.xfail(reason="Segmentation fault")),  # run with --boxed
+]
+
 
 # From https://github.com/IntelPython/dpnp/blob/0.4.0/tests/test_linalg.py#L8
 def vvsort(val, vec):
@@ -46,18 +59,6 @@ def vvsort(val, vec):
                 temp = vec[k, i]
                 vec[k, i] = vec[k, imax]
                 vec[k, imax] = temp
-
-
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    # "level_zero:gpu:0",
-    # "opencl:cpu:0",
-]
-
-
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
 
 
 def get_fn(name, nargs):
@@ -86,13 +87,11 @@ def eig_input(request):
     return symm_a
 
 
-@pytest.mark.skip(reason="Freeze...")
+@pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)
 def test_eig(filter_str, eig_input, capfd):
     if skip_test(filter_str):
         pytest.skip()
 
-    if filter_str == "opencl:cpu:0":
-        pytest.skip("Segfaults with device type level_zero:gpu:0")
     a = eig_input
     fn = get_fn("linalg.eig", 1)
     f = njit(fn)
@@ -153,13 +152,10 @@ def dot_name(request):
     return request.param
 
 
-@pytest.mark.skip(reason="Freeze...")
+@pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)
 def test_dot(filter_str, dot_name, dot_input, dtype, capfd):
     if skip_test(filter_str):
         pytest.skip()
-
-    if filter_str == "opencl:cpu:0":
-        pytest.skip("dpnp produces error for OpenCL CPU device")
 
     a, b = dot_input
 
@@ -182,13 +178,10 @@ def test_dot(filter_str, dot_name, dot_input, dtype, capfd):
         assert np.allclose(actual, expected)
 
 
-@pytest.mark.skip(reason="Freeze...")
+@pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)
 def test_matmul(filter_str, dtype, capfd):
     if skip_test(filter_str):
         pytest.skip()
-
-    if filter_str == "level_zero:gpu:0":
-        pytest.skip("Segfaults with device type level_zero:gpu:0")
 
     a = np.array(np.random.random(10 * 2), dtype=dtype).reshape(10, 2)
     b = np.array(np.random.random(2 * 10), dtype=dtype).reshape(2, 10)
@@ -241,6 +234,7 @@ def det_input(request):
     return request.param
 
 
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_det(filter_str, det_input, dtype, capfd):
     if skip_test(filter_str):
         pytest.skip()
@@ -259,13 +253,10 @@ def test_det(filter_str, det_input, dtype, capfd):
         assert np.allclose(actual, expected)
 
 
-@pytest.mark.skip(reason="Freeze...")
+@pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)
 def test_multi_dot(filter_str, capfd):
     if skip_test(filter_str):
         pytest.skip()
-
-    if filter_str == "level_zero:gpu:0":
-        pytest.skip("Segfaults with device type level_zero:gpu:0")
 
     def fn(A, B, C, D):
         c = np.linalg.multi_dot([A, B, C, D])
@@ -307,13 +298,10 @@ def matrix_power_input(request):
     return request.param
 
 
-@pytest.mark.skip(reason="Freeze...")
+@pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)
 def test_matrix_power(filter_str, matrix_power_input, power, dtype, capfd):
     if skip_test(filter_str):
         pytest.skip()
-
-    if filter_str == "level_zero:gpu:0":
-        pytest.skip("Segfaults with device type level_zero:gpu:0")
 
     a = np.array(matrix_power_input, dtype=dtype)
     fn = get_fn("linalg.matrix_power", 2)
@@ -329,15 +317,21 @@ def test_matrix_power(filter_str, matrix_power_input, power, dtype, capfd):
         assert np.allclose(actual, expected)
 
 
-list_of_matrix_rank_input = [np.eye(4), np.ones((4,)), np.ones((4, 4)), np.zeros((4,))]
-
-
-@pytest.fixture(params=list_of_matrix_rank_input)
-def matrix_rank_input(request):
-    return request.param
-
-
-@pytest.mark.skip(reason="dpnp does not support it yet")
+@pytest.mark.parametrize("filter_str", filter_strings)
+@pytest.mark.parametrize(
+    "matrix_rank_input",
+    [
+        pytest.param(
+            np.eye(4), marks=pytest.mark.xfail(reason="dpnp does not support it yet")
+        ),
+        np.ones((4,)),
+        pytest.param(
+            np.ones((4, 4)),
+            marks=pytest.mark.xfail(reason="dpnp does not support it yet"),
+        ),
+        np.zeros((4,)),
+    ],
+)
 def test_matrix_rank(filter_str, matrix_rank_input, capfd):
     if skip_test(filter_str):
         pytest.skip()
@@ -355,13 +349,10 @@ def test_matrix_rank(filter_str, matrix_rank_input, capfd):
         assert np.allclose(actual, expected)
 
 
-@pytest.mark.skip(reason="Freeze...")
+@pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)
 def test_eigvals(filter_str, eig_input, capfd):
     if skip_test(filter_str):
         pytest.skip()
-
-    if filter_str == "level_zero:gpu:0":
-        pytest.skip("Segfaults with device type level_zero:gpu:0")
 
     a = eig_input
     fn = get_fn("linalg.eigvals", 1)
