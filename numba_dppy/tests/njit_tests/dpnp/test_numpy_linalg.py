@@ -258,13 +258,10 @@ def test_det(filter_str, det_input, dtype, capfd):
         assert np.allclose(actual, expected)
 
 
-@pytest.mark.skip(reason="Freeze...")
+@pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)
 def test_multi_dot(filter_str, capfd):
     if skip_test(filter_str):
         pytest.skip()
-
-    if filter_str == "level_zero:gpu:0":
-        pytest.skip("Segfaults with device type level_zero:gpu:0")
 
     def fn(A, B, C, D):
         c = np.linalg.multi_dot([A, B, C, D])
