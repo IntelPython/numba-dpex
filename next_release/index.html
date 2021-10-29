@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to Numba-dppy’s documentation! &mdash; numba-dppy 0.16.1+7.g0b212b4 documentation</title>
+  <title>Welcome to Numba-dppy’s documentation! &mdash; numba-dppy 0.17.0rc2 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -80,14 +80,31 @@
              
   <section id="welcome-to-numba-dppy-s-documentation">
 <h1>Welcome to Numba-dppy’s documentation!<a class="headerlink" href="#welcome-to-numba-dppy-s-documentation" title="Permalink to this headline"></a></h1>
-<p><a class="reference external" href="https://github.com/IntelPython/numba-dppy">Numba-dppy</a> is a standalone extension to the <a class="reference external" href="https://numba.pydata.org/">Numba</a> JIT compiler that adds <a class="reference external" href="https://www.khronos.org/sycl/">SYCL</a> programming capabilities to Numba.
-Numba-dppy uses <a class="reference external" href="https://github.com/IntelPython/dpctl">dpctl</a> to support
-SYCL features and currently Intel’s <a class="reference external" href="https://github.com/intel/llvm/blob/sycl/sycl/doc/GetStartedGuide.md">DPC++</a> is the only SYCL runtime supported by
-Numba-dppy.</p>
-<p>There are two ways to program SYCL devices using Numba-dppy:</p>
+<p><a class="reference external" href="https://github.com/IntelPython/numba-dppy">Numba-dppy</a> is an Intel
+®-developed extension to the <a class="reference external" href="https://numba.pydata.org/">Numba</a> JIT
+compiler that adds “XPU” programming capabilities to it. The
+<a class="reference external" href="https://www.intel.com/content/www/us/en/newsroom/news/xpu-vision-oneapi-server-gpu.html#gs.ervs8m">XPU vision</a>
+is to make it extremely easy for programmers to write efficient and portable
+code for a mix of architectures across CPUs, GPUs, FPGAs and other
+accelerators. To provide XPU programming capabilities, Numba-dppy relies on
+<a class="reference external" href="https://www.khronos.org/sycl/">SYCL</a> that is an industry standard for writing
+cross-platform code using standard C++. Using a SYCL runtime library Numba-dppy
+can launch data-parallel kernels generated directly from Python bytecode on
+supported data-parallel architectures. Currently, support for
+SYCL is restricted to Intel’s
+<a class="reference external" href="https://github.com/intel/llvm/blob/sycl/sycl/doc/GetStartedGuide.md">DPC++</a>
+via the <a class="reference external" href="https://github.com/IntelPython/dpctl">dpctl</a> package.
+Support for other SYCL runtime libraries may be added in the future.</p>
+<p>The main feature of Numba-dppy is to let programmers write data-parallel kernels
+directly in Python. Such kernels can be written in two different ways: an
+explicit API superficially similar to OpenCL, and an implicit API that generates
+kernels from NumPy library calls, Numba’s <code class="docutils literal notranslate"><span class="pre">prange</span></code> statement, and <a class="reference external" href="https://numba.pydata.org/numba-doc/latest/user/parallel.html">other
+“data-parallel by construction” expressions</a>
+that Numba is able to parallelize. Following are two examples to demonstrate
+the two ways in which kernels may be written in a Numba-dppy program.</p>
 <blockquote>
 <div><ul>
-<li><p>An explicit kernel programming mode.</p>
+<li><p>Defining a data-parallel kernel explicitly in Numba-dppy.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
 <span class="kn">import</span> <span class="nn">dpctl</span>
@@ -106,7 +123,7 @@ Numba-dppy.</p>
 </pre></div>
 </div>
 </li>
-<li><p>An automatic offload mode for NumPy data-parallel expressions and
+<li><p>Writing implicitly data-parallel expressions in the fashion of
 <a class="reference external" href="https://numba.pydata.org/numba-doc/dev/user/parallel.html#explicit-parallel-loops">Numba parallel loops</a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">njit</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
