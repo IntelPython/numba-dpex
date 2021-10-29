@@ -27,6 +27,12 @@ from numba_dppy.tests._helper import dpnp_debug
 from ._helper import args_string, wrapper_function
 from .dpnp_skip_test import dpnp_skip_test as skip_test
 
+filter_strings = [
+    "level_zero:gpu:0",
+    "opencl:gpu:0",
+    "opencl:cpu:0",
+]
+
 filter_strings_with_skips_for_opencl = [
     "level_zero:gpu:0",
     pytest.param("opencl:gpu:0", marks=pytest.mark.skip(reason="Freeze")),
@@ -322,15 +328,21 @@ def test_matrix_power(filter_str, matrix_power_input, power, dtype, capfd):
         assert np.allclose(actual, expected)
 
 
-list_of_matrix_rank_input = [np.eye(4), np.ones((4,)), np.ones((4, 4)), np.zeros((4,))]
-
-
-@pytest.fixture(params=list_of_matrix_rank_input)
-def matrix_rank_input(request):
-    return request.param
-
-
-@pytest.mark.skip(reason="dpnp does not support it yet")
+@pytest.mark.parametrize("filter_str", filter_strings)
+@pytest.mark.parametrize(
+    "matrix_rank_input",
+    [
+        pytest.param(
+            np.eye(4), marks=pytest.mark.xfail(reason="dpnp does not support it yet")
+        ),
+        np.ones((4,)),
+        pytest.param(
+            np.ones((4, 4)),
+            marks=pytest.mark.xfail(reason="dpnp does not support it yet"),
+        ),
+        np.zeros((4,)),
+    ],
+)
 def test_matrix_rank(filter_str, matrix_rank_input, capfd):
     if skip_test(filter_str):
         pytest.skip()
