@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.0] - 2021-10-xx
+
+### Added
+
+* Update to dpnp 0.9 (#599, #606)
+* Update to dpctl 0.11 (#595)
+* Clean up README. (#604)
+* Improve the documenatation landing page. (#601)
+* Upload packages for release* branches (#593, #596)
+* Manual run tests w/ Numba PR (#586)
+* Preliminary support Numba 0.55 (master branch) (#583)
+* Use Python 3.9 in public CI (#574)
+* Use NUMBA_DPPY_DEBUG for debugging GDB tests (#578)
+
+## [0.16.1] - 2021-10-20
+
+### Changed
+* Fix dpctl to 0.10 (#590)
+* Add Public CI trigger for tags (#589)
+
 ## [0.16.0] - 2021-09-28
 
 ### Added
