@@ -61,18 +61,6 @@ def vvsort(val, vec):
                 vec[k, imax] = temp
 
 
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    # "level_zero:gpu:0",
-    # "opencl:cpu:0",
-]
-
-
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
-
-
 def get_fn(name, nargs):
     args = args_string(nargs)
     return wrapper_function(args, f"np.{name}({args})", globals())
@@ -246,6 +234,7 @@ def det_input(request):
     return request.param
 
 
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_det(filter_str, det_input, dtype, capfd):
     if skip_test(filter_str):
         pytest.skip()
