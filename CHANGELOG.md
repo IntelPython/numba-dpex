@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [0.17.0] - 2021-11-xx
+
 ### Added
 * Use Python 3.9 [public CI] by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/574
 * Use `NUMBA_DPPY_DEBUG` for debugging GDB tests by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/578
