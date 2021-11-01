@@ -6,7 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.17.0] - 2021-11-xx
 ### Added
-
 * Use Python 3.9 [public CI] by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/574
 * Use `NUMBA_DPPY_DEBUG` for debugging GDB tests by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/578
 * Preliminary support Numba 0.55 (master branch) by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/583
