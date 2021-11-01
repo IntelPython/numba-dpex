@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.17.0] - 2021-11-xx
 
 ### Added
+
 * Use Python 3.9 [public CI] by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/574
 * Use `NUMBA_DPPY_DEBUG` for debugging GDB tests by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/578
 * Preliminary support Numba 0.55 (master branch) by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/583
@@ -17,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Update to dpnp 0.9 by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/599
 * Improve the documenatation landing page by @diptorupd in https://github.com/IntelPython/numba-dppy/pull/601
 * Clean up README by @diptorupd in https://github.com/IntelPython/numba-dppy/pull/604
+
 ### Fixed
 * Restrict dpctl to 0.10.* for release 0.16 by @1e-to in https://github.com/IntelPython/numba-dppy/pull/590
 * Fix upload from release branch by @1e-to in https://github.com/IntelPython/numba-dppy/pull/596
