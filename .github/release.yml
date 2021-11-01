@@ -17,7 +17,7 @@ changelog:
       labels:
         - removed-feature
     - title: Deprecated
-      label: 
+      labels:
         - deprecated-feature
     - title: Other Changes
       labels:
