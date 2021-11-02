@@ -67,6 +67,11 @@ Run HTTP server:
 cd docs/_build/html && python -m http.server 8000
 ```
 
+Don't forget to change the version in `docs/conf.py` before generating.
+```python
+release = "<VERSION>"
+```
+
 Generated documentation will be in `docs/_build/html`.
 
 #### Documentation common issues
@@ -110,7 +115,7 @@ Implement python file coverage using `coverage` and `pytest-cov` packages.
 
 Install Coverage:
 ```bash
-conda install coverage
+pip install coverage
 ```
 
 Run Coverage:
@@ -133,6 +138,11 @@ coverage report -m
 Produce annotated HTML listings with coverage results:
 ```bash
 coverage html
+```
+
+Produce XML with coverage for VSCode plugin:
+```bash
+coverage xml
 ```
 
 - The htmlcov folder will appear in the root folder of the project. It contains reports on python file coverage in html format.

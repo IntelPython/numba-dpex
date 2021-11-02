@@ -14,7 +14,7 @@
 
 import llvmlite.ir as lir
 import llvmlite.llvmpy.core as lc
-from numba.core import types, cgutils
+from numba.core import cgutils, types
 
 
 class LLVMTypes:

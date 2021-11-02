@@ -16,24 +16,23 @@
 Various utility functions and classes to aid LLVM IR building.
 
 """
-from numba_dppy.utils.llvm_codegen_helpers import (
-    LLVMTypes,
-    get_llvm_type,
-    get_llvm_ptr_type,
-    create_null_ptr,
-    get_zero,
-    get_one,
-)
-
-from numba_dppy.utils.type_conversion_fns import npytypes_array_to_dppy_array
-from numba_dppy.utils.constants import address_space, calling_conv
 from numba_dppy.utils.array_utils import (
-    has_usm_memory,
     as_usm_obj,
     copy_from_numpy_to_usm_obj,
     copy_to_numpy_from_usm_obj,
+    has_usm_memory,
+)
+from numba_dppy.utils.constants import address_space, calling_conv
+from numba_dppy.utils.llvm_codegen_helpers import (
+    LLVMTypes,
+    create_null_ptr,
+    get_llvm_ptr_type,
+    get_llvm_type,
+    get_one,
+    get_zero,
 )
 from numba_dppy.utils.misc import assert_no_return
+from numba_dppy.utils.type_conversion_fns import npytypes_array_to_dppy_array
 
 __all__ = [
     "LLVMTypes",

@@ -13,10 +13,9 @@
 # limitations under the License.
 
 import dpctl
-import dpctl.tensor as dpt
 import numpy as np
-from numba import njit
 import pytest
+
 import numba_dppy as dppy
 from numba_dppy.tests._helper import ensure_dpnp, skip_test
 
@@ -45,12 +44,39 @@ def usm_type(request):
     return request.param
 
 
-def test_consuming_array_from_dpnp(offload_device, dtype):
+def test_dpnp_create_array_in_context(offload_device, dtype):
     if not ensure_dpnp():
-        pytest.skip()
+        pytest.skip("No DPNP")
+
+    import dpnp
 
     if skip_test(offload_device):
-        pytest.skip()
+        pytest.skip("No device for " + offload_device)
+
+    if (
+        "opencl" not in dpctl.get_current_queue().sycl_device.filter_string
+        and "opencl" in offload_device
+    ):
+        pytest.skip("Bug in DPNP. See: IntelPython/dpnp#723")
+
+    with dpctl.device_context(offload_device):
+        a = dpnp.arange(1024, dtype=dtype)  # noqa
+
+
+def test_consuming_array_from_dpnp(offload_device, dtype):
+    if not ensure_dpnp():
+        pytest.skip("No DPNP")
+
+    import dpnp
+
+    if skip_test(offload_device):
+        pytest.skip("No device for " + offload_device)
+
+    if (
+        "opencl" not in dpctl.get_current_queue().sycl_device.filter_string
+        and "opencl" in offload_device
+    ):
+        pytest.skip("Bug in DPNP. See: IntelPython/dpnp#723")
 
     @dppy.kernel
     def data_parallel_sum(a, b, c):
@@ -60,14 +86,11 @@ def test_consuming_array_from_dpnp(offload_device, dtype):
         i = dppy.get_global_id(0)
         c[i] = a[i] + b[i]
 
-    import dpnp
-
     global_size = 1021
 
-    a = dpnp.arange(global_size, dtype=dtype)
-    b = dpnp.arange(global_size, dtype=dtype)
-    c = dpnp.ones_like(a)
-
     with dppy.offload_to_sycl_device(offload_device):
-        with pytest.raises(Exception):
-            data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
+        a = dppy.asarray(dpnp.arange(global_size, dtype=dtype))
+        b = dppy.asarray(dpnp.arange(global_size, dtype=dtype))
+        c = dppy.asarray(dpnp.ones_like(a))
+
+        data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)

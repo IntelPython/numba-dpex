@@ -4,7 +4,7 @@ set -e
 
 check() {
   echo "Run $1 ..."
-  python $1 | grep $SYCL_DEVICE_FILTER
+  python "$1" | grep "$SYCL_DEVICE_FILTER"
   # python $1 | grep Done
 }
 

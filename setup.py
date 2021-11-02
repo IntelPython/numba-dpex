@@ -13,17 +13,15 @@
 # limitations under the License.
 
 import os
-import sys
-import setuptools.command.install as orig_install
-import setuptools.command.develop as orig_develop
 import subprocess
-import shlex
-from setuptools import Extension, find_packages, setup
+import sys
+
+import setuptools.command.develop as orig_develop
+import setuptools.command.install as orig_install
 from Cython.Build import cythonize
+from setuptools import Extension, find_packages, setup
 
 import versioneer
-import sys
-
 
 IS_WIN = False
 IS_LIN = False
@@ -45,7 +43,8 @@ def get_ext_modules():
     else:
         dpnp_present = True
 
-    import numba, dpctl
+    import dpctl
+    import numba
 
     dpctl_runtime_library_dirs = []
 
@@ -136,7 +135,7 @@ def spirv_compile():
 packages = find_packages(include=["numba_dppy", "numba_dppy.*"])
 build_requires = ["cython"]
 install_requires = [
-    "numba >={},<{}".format("0.54.0", "0.55"),
+    "numba >={},<{}".format("0.54.0", "0.56"),
     "dpctl",
     "packaging",
 ]

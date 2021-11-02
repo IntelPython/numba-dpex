@@ -13,51 +13,42 @@
 # limitations under the License.
 
 from numba.core.compiler_machinery import PassManager
-
-from numba.core.untyped_passes import (
-    ExtractByteCode,
-    TranslateByteCode,
-    FixupArgs,
-    IRProcessing,
-    DeadBranchPrune,
-    RewriteSemanticConstants,
-    InlineClosureLikes,
-    GenericRewrites,
-    WithLifting,
-    InlineInlinables,
-    FindLiterallyCalls,
-    MakeFunctionToJitFunction,
-    CanonicalizeLoopExit,
-    CanonicalizeLoopEntry,
-    ReconstructSSA,
-    LiteralUnroll,
-)
-
 from numba.core.typed_passes import (
-    NopythonTypeInference,
     AnnotateTypes,
-    NopythonRewrites,
-    PreParforPass,
-    ParforPass,
-    DumpParforDiagnostics,
-    IRLegalization,
     InlineOverloads,
-    PreLowerStripPhis,
+    IRLegalization,
+    NopythonRewrites,
     NoPythonSupportedFeatureValidation,
+    NopythonTypeInference,
+    PreLowerStripPhis,
+)
+from numba.core.untyped_passes import (
+    DeadBranchPrune,
+    FindLiterallyCalls,
+    FixupArgs,
+    GenericRewrites,
+    InlineClosureLikes,
+    InlineInlinables,
+    IRProcessing,
+    LiteralUnroll,
+    MakeFunctionToJitFunction,
+    ReconstructSSA,
+    RewriteSemanticConstants,
+    TranslateByteCode,
+    WithLifting,
 )
 
 from .dppy_passes import (
     DPPYConstantSizeStaticLocalMemoryPass,
-    DPPYPreParforPass,
-    DPPYParforPass,
-    SpirvFriendlyLowering,
-    DPPYNoPythonBackend,
     DPPYDumpParforDiagnostics,
+    DPPYNoPythonBackend,
+    DPPYParforPass,
+    DPPYPreParforPass,
+    SpirvFriendlyLowering,
 )
-
 from .rename_numpy_functions_pass import (
-    DPPYRewriteOverloadedNumPyFunctions,
     DPPYRewriteNdarrayFunctions,
+    DPPYRewriteOverloadedNumPyFunctions,
 )
 
 

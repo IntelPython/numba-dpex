@@ -12,15 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
-from numba import types
-from numba.core.typing import signature
-from . import stubs
-import numba_dppy.dpnp_glue as dpnp_lowering
-from numba.core.extending import overload, register_jitable
 import numpy as np
-from numba_dppy import dpctl_functions
+from numba import types
+from numba.core.extending import overload, register_jitable
+from numba.core.typing import signature
+
 import numba_dppy
+import numba_dppy.dpnp_glue as dpnp_lowering
+import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
+from numba_dppy import dpctl_functions
+
+from . import stubs
 
 
 @register_jitable
@@ -30,7 +32,11 @@ def common_impl(a, out, dpnp_func, print_debug):
 
     sycl_queue = dpctl_functions.get_current_queue()
     a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-    dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+    event = dpctl_functions.queue_memcpy(
+        sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+    )
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
 
     out_usm = dpctl_functions.malloc_shared(a.itemsize, sycl_queue)
 
@@ -40,9 +46,11 @@ def common_impl(a, out, dpnp_func, print_debug):
 
     dpnp_func(out_usm, a_usm, a.shapeptr, a.ndim, axes, axes_ndim, initial, where)
 
-    dpctl_functions.queue_memcpy(
+    event = dpctl_functions.queue_memcpy(
         sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
     )
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
 
     dpctl_functions.free_with_queue(a_usm, sycl_queue)
     dpctl_functions.free_with_queue(out_usm, sycl_queue)

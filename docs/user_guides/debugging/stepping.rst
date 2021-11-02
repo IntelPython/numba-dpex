@@ -3,7 +3,7 @@ Stepping
 
 Stepping allows you to go through the program by lines of source code or by machine instructions.
 
-Consider the following examples. 
+Consider the following examples.
 
 ``numba_dppy/examples/debug/simple_sum.py``:
 

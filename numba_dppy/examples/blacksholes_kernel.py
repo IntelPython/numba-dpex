@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
 import math
-import time
-import numba_dppy as dppy
-import dpctl
 
+import dpctl
+import numpy as np
+
+import numba_dppy as dppy
 
 RISKFREE = 0.02
 VOLATILITY = 0.30
@@ -91,7 +91,6 @@ def main():
     device.print_device_info()
 
     with dppy.offload_to_sycl_device(device):
-        time1 = time.time()
         for i in range(iterations):
             black_scholes_dppy[blockdim, griddim](
                 callResult,

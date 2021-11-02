@@ -12,14 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
-from numba import types
-from numba.core.typing import signature
-from . import stubs
-import numba_dppy.dpnp_glue as dpnp_lowering
-from numba.core.extending import overload, register_jitable
 import numpy as np
+from numba import types
+from numba.core.extending import overload, register_jitable
+from numba.core.typing import signature
+
+import numba_dppy.dpnp_glue as dpnp_lowering
+import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
 from numba_dppy import dpctl_functions
+
+from . import stubs
 
 
 @overload(stubs.dpnp.diagonal)
@@ -30,16 +32,17 @@ def dpnp_diagonal_impl(a, offset=0):
     ret_type = types.void
     """
     dpnp source:
-    https://github.com/IntelPython/dpnp/blob/master/dpnp/backend/kernels/dpnp_krnl_indexing.cpp#L38
+    https://github.com/IntelPython/dpnp/blob/e389248c709531b181be8bf33b1a270fca812a92/dpnp/backend/kernels/dpnp_krnl_indexing.cpp#L39
 
     Function declaration:
     void dpnp_diagonal_c(
-        void* array1_in, void* result1, const size_t offset, size_t* shape, size_t* res_shape, const size_t res_ndim)
+        void* array1_in, const size_t input1_size, void* result1, const size_t offset, size_t* shape, size_t* res_shape, const size_t res_ndim)
 
     """
     sig = signature(
         ret_type,
         types.voidptr,
+        types.intp,
         types.voidptr,
         types.intp,
         types.voidptr,
@@ -83,15 +86,29 @@ def tuplizer(a):
         sycl_queue = dpctl_functions.get_current_queue()
 
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-        dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+        event = dpctl_functions.queue_memcpy(
+            sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+        )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
 
-        dpnp_func(a_usm, out_usm, offset, a.shapeptr, out.shapeptr, out.ndim)
+        dpnp_func(
+            a_usm,
+            a.size * a.itemsize,
+            out_usm,
+            offset,
+            a.shapeptr,
+            out.shapeptr,
+            out.ndim,
+        )
 
-        dpctl_functions.queue_memcpy(
+        event = dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
         )
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)

@@ -13,13 +13,15 @@
 # limitations under the License.
 
 import unittest
+
+import dpctl
 import numpy as np
 from numba import njit, prange
 from numba.tests.support import captured_stdout
-import dpctl
 
 import numba_dppy as dppy
 from numba_dppy import config as dppy_config
+
 from . import _helper
 
 

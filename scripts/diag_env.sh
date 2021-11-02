@@ -3,7 +3,7 @@
 # See https://dgpu-docs.intel.com/installation-guides/ubuntu/ubuntu-focal.html
 
 check_package_installed() {
-  apt list --installed 2>/dev/null $1 | grep $1 || echo "$1 not installed"
+  apt list --installed 2>/dev/null "$1" | grep "$1" || echo "$1 not installed"
 }
 
 check_package_installed    intel-opencl-icd
