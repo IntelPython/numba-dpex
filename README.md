@@ -47,19 +47,19 @@ python numba_dppy/examples/sum.py
 # Known Issue
 Floor division operator `//` is not supported inside @numba_dppy.kernel.
 
-The below code snippet will result in error reported in this [Issue](https://github.com/IntelPython/numba-dppy/issues/571)
+The below code snippet will result in error reported in this [Issue](https://github.com/IntelPython/numba-dppy/issues/571).
 ```
-import numpy as np, numba_dppy as dppy
-@dppy.kernel
-def copy_2d(dst, src, m):
+import numpy as np, numba_dppy
+@numba_dppy.kernel
+def div_kernel(dst, src, m):
     i = dppy.get_global_id(0)
     dst[i] = src[i] // m
 
 import dpctl
-with dppy.offload_to_sycl_device(dpctl.SyclQueue()):
+with numba_dppy.offload_to_sycl_device(dpctl.SyclQueue()):
     X = np.arange(10)
     Y = np.arange(10)
-    copy_2d[10, dppy.DEFAULT_LOCAL_SIZE](Y, X, 5)
+    div_kernel[10, numba_dppy.DEFAULT_LOCAL_SIZE](Y, X, 5)
     D = X//5
     print(Y, D)
 ```
