@@ -66,7 +66,8 @@ with numba_dppy.offload_to_sycl_device(dpctl.SyclQueue()):
 
 To bypass this issue we need latest `llvm-spirv` tool. Users can get it by explicitly installing `dpcpp` Conda package. The `llvm-spirv` tool is packaged as part of the `dpcpp` Conda package.
 
-`conda install dpcpp_linux-64`
+For linux: `conda install dpcpp_linux-64`
+For Windows: `conda install dpcpp_win-64`
 
 
 # Learn more?
