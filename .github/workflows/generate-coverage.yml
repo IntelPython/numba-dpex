@@ -1,0 +1,72 @@
+name: Generate coverage data
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  generate-coverage:
+    name: Generate coverage and push to Coveralls.io
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Add conda to system path
+        shell: bash
+        run: echo $CONDA/bin >> $GITHUB_PATH
+
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Configure environment
+        run: |
+          conda env update -n base -f environment.yml --prune
+
+      - name: Build numba-dppy
+        run: |
+          python setup.py develop
+
+      - name: Test installation
+        run: |
+          conda list
+          # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
+          export OCL_ICD_FILENAMES=libintelocl.so
+          python -c "import numba_dppy; print(numba_dppy.__file__)"
+
+      - name: Run tests with coverage
+        run: |
+          # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
+          export OCL_ICD_FILENAMES=libintelocl.so
+          pytest -q -ra --disable-warnings --cov --cov-report term-missing --pyargs numba_dppy -vv
+
+      - name: Install coveralls
+        shell: bash -l {0}
+        run: |
+          pip install coveralls==3.2.0
+
+      - name: Upload coverage data to coveralls.io
+        run: |
+          coveralls --service=github
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+          COVERALLS_PARALLEL: true
+
+  coveralls:
+    name: Indicate completion to coveralls.io
+    needs: generate-coverage
+    runs-on: ubuntu-latest
+    container: python:3-slim
+    steps:
+    - name: Coveralls Finished
+      run: |
+        pip3 install --upgrade coveralls
+        coveralls --finish
+      env:
+        GITHUB_TOKEN: ${{ secrets.github_token }}
+        COVERALLS_PARALLEL: true
