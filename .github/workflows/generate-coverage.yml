@@ -30,8 +30,8 @@ jobs:
 
       - name: Reinstall numba0.54
         run: |
-          conda remove -n base numba --force
-          conda install numba=0.54
+          conda remove -n base numba
+          conda install numba=0.54.1
 
       - name: Build numba-dppy
         run: |
