@@ -27,6 +27,11 @@ jobs:
       - name: Configure environment
         run: |
           conda env update -n base -f environment.yml --prune
+      
+      - name: Reinstall numba0.54
+        run: |
+          conda remove -n base numba --force
+          conda install numba=0.54
 
       - name: Build numba-dppy
         run: |
