@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>numba_dppy.rename_numpy_functions_pass module &mdash; numba-dppy 0.17.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> numba-dppy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html">Code-generation based on a device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/getting_started.html"> Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/debugging/index.html"> Debugging with GDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">numba-dppy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>numba_dppy.rename_numpy_functions_pass module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/apidoc/numba_dppy.rename_numpy_functions_pass.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-numba_dppy.rename_numpy_functions_pass">
+<span id="numba-dppy-rename-numpy-functions-pass-module"></span><h1>numba_dppy.rename_numpy_functions_pass module<a class="headerlink" href="#module-numba_dppy.rename_numpy_functions_pass" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.rename_numpy_functions_pass.DPPYRewriteNdarrayFunctions">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.rename_numpy_functions_pass.</span></span><span class="sig-name descname"><span class="pre">DPPYRewriteNdarrayFunctions</span></span><a class="headerlink" href="#numba_dppy.rename_numpy_functions_pass.DPPYRewriteNdarrayFunctions" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.compiler_machinery.FunctionPass</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dppy.rename_numpy_functions_pass.DPPYRewriteNdarrayFunctions.pass_id">
+<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"> <span class="pre">=</span> <span class="pre">45</span></em><a class="headerlink" href="#numba_dppy.rename_numpy_functions_pass.DPPYRewriteNdarrayFunctions.pass_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.rename_numpy_functions_pass.DPPYRewriteNdarrayFunctions.run_pass">
+<span class="sig-name descname"><span class="pre">run_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.rename_numpy_functions_pass.DPPYRewriteNdarrayFunctions.run_pass" title="Permalink to this definition"></a></dt>
+<dd><p>Runs the pass itself. Must return True/False depending on whether
+statement level modification took place.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.rename_numpy_functions_pass.DPPYRewriteOverloadedNumPyFunctions">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.rename_numpy_functions_pass.</span></span><span class="sig-name descname"><span class="pre">DPPYRewriteOverloadedNumPyFunctions</span></span><a class="headerlink" href="#numba_dppy.rename_numpy_functions_pass.DPPYRewriteOverloadedNumPyFunctions" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.compiler_machinery.FunctionPass</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dppy.rename_numpy_functions_pass.DPPYRewriteOverloadedNumPyFunctions.pass_id">
+<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"> <span class="pre">=</span> <span class="pre">44</span></em><a class="headerlink" href="#numba_dppy.rename_numpy_functions_pass.DPPYRewriteOverloadedNumPyFunctions.pass_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.rename_numpy_functions_pass.DPPYRewriteOverloadedNumPyFunctions.run_pass">
+<span class="sig-name descname"><span class="pre">run_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.rename_numpy_functions_pass.DPPYRewriteOverloadedNumPyFunctions.run_pass" title="Permalink to this definition"></a></dt>
+<dd><p>Runs the pass itself. Must return True/False depending on whether
+statement level modification took place.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.rename_numpy_functions_pass.RewriteNdarrayFunctions">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.rename_numpy_functions_pass.</span></span><span class="sig-name descname"><span class="pre">RewriteNdarrayFunctions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rewrite_function_name_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'all':</span> <span class="pre">(['numpy'],</span> <span class="pre">'all'),</span> <span class="pre">'amax':</span> <span class="pre">(['numpy'],</span> <span class="pre">'amax'),</span> <span class="pre">'amin':</span> <span class="pre">(['numpy'],</span> <span class="pre">'amin'),</span> <span class="pre">'argmax':</span> <span class="pre">(['numpy'],</span> <span class="pre">'argmax'),</span> <span class="pre">'argmin':</span> <span class="pre">(['numpy'],</span> <span class="pre">'argmin'),</span> <span class="pre">'argsort':</span> <span class="pre">(['numpy'],</span> <span class="pre">'argsort'),</span> <span class="pre">'beta':</span> <span class="pre">(['random'],</span> <span class="pre">'beta'),</span> <span class="pre">'binomial':</span> <span class="pre">(['random'],</span> <span class="pre">'binomial'),</span> <span class="pre">'chisquare':</span> <span class="pre">(['random'],</span> <span class="pre">'chisquare'),</span> <span class="pre">'cholesky':</span> <span class="pre">(['linalg'],</span> <span class="pre">'cholesky'),</span> <span class="pre">'copy':</span> <span class="pre">(['numpy'],</span> <span class="pre">'copy'),</span> <span class="pre">'cov':</span> <span class="pre">(['numpy'],</span> <span class="pre">'cov'),</span> <span class="pre">'cumprod':</span> <span class="pre">(['numpy'],</span> <span class="pre">'cumprod'),</span> <span class="pre">'cumsum':</span> <span class="pre">(['numpy'],</span> <span class="pre">'cumsum'),</span> <span class="pre">'det':</span> <span class="pre">(['linalg'],</span> <span class="pre">'det'),</span> <span class="pre">'diagonal':</span> <span class="pre">(['numpy'],</span> <span class="pre">'diagonal'),</span> <span class="pre">'dot':</span> <span class="pre">(['numpy'],</span> <span class="pre">'dot'),</span> <span class="pre">'eig':</span> <span class="pre">(['linalg'],</span> <span class="pre">'eig'),</span> <span class="pre">'eigvals':</span> <span class="pre">(['linalg'],</span> <span class="pre">'eigvals'),</span> <span class="pre">'exponential':</span> <span class="pre">(['random'],</span> <span class="pre">'exponential'),</span> <span class="pre">'full':</span> <span class="pre">(['numpy'],</span> <span class="pre">'full'),</span> <span class="pre">'full_like':</span> <span class="pre">(['numpy'],</span> <span class="pre">'full_like'),</span> <span class="pre">'gamma':</span> <span class="pre">(['random'],</span> <span class="pre">'gamma'),</span> <span class="pre">'geometric':</span> <span class="pre">(['random'],</span> <span class="pre">'geometric'),</span> <span class="pre">'gumbel':</span> <span class="pre">(['random'],</span> <span class="pre">'gumbel'),</span> <span class="pre">'hypergeometric':</span> <span class="pre">(['random'],</span> <span class="pre">'hypergeometric'),</span> <span class="pre">'laplace':</span> <span class="pre">(['random'],</span> <span class="pre">'laplace'),</span> <span class="pre">'lognormal':</span> <span class="pre">(['random'],</span> <span class="pre">'lognormal'),</span> <span class="pre">'matmul':</span> <span class="pre">(['numpy'],</span> <span class="pre">'matmul'),</span> <span class="pre">'matrix_power':</span> <span class="pre">(['linalg'],</span> <span class="pre">'matrix_power'),</span> <span class="pre">'matrix_rank':</span> <span class="pre">(['linalg'],</span> <span class="pre">'matrix_rank'),</span> <span class="pre">'max':</span> <span class="pre">(['numpy'],</span> <span class="pre">'max'),</span> <span class="pre">'mean':</span> <span class="pre">(['numpy'],</span> <span class="pre">'mean'),</span> <span class="pre">'median':</span> <span class="pre">(['numpy'],</span> <span class="pre">'median'),</span> <span class="pre">'min':</span> <span class="pre">(['numpy'],</span> <span class="pre">'min'),</span> <span class="pre">'multi_dot':</span> <span class="pre">(['linalg'],</span> <span class="pre">'multi_dot'),</span> <span class="pre">'multinomial':</span> <span class="pre">(['random'],</span> <span class="pre">'multinomial'),</span> <span class="pre">'multivariate_normal':</span> <span class="pre">(['random'],</span> <span class="pre">'multivariate_normal'),</span> <span class="pre">'nanprod':</span> <span class="pre">(['numpy'],</span> <span class="pre">'nanprod'),</span> <span class="pre">'nansum':</span> <span class="pre">(['numpy'],</span> <span class="pre">'nansum'),</span> <span class="pre">'negative_binomial':</span> <span class="pre">(['random'],</span> <span class="pre">'negative_binomial'),</span> <span class="pre">'normal':</span> <span class="pre">(['random'],</span> <span class="pre">'normal'),</span> <span class="pre">'ones_like':</span> <span class="pre">(['numpy'],</span> <span class="pre">'ones_like'),</span> <span class="pre">'partition':</span> <span class="pre">(['numpy'],</span> <span class="pre">'partition'),</span> <span class="pre">'poisson':</span> <span class="pre">(['random'],</span> <span class="pre">'poisson'),</span> <span class="pre">'prod':</span> <span class="pre">(['numpy'],</span> <span class="pre">'prod'),</span> <span class="pre">'rand':</span> <span class="pre">(['random'],</span> <span class="pre">'rand'),</span> <span class="pre">'randint':</span> <span class="pre">(['random'],</span> <span class="pre">'randint'),</span> <span class="pre">'random':</span> <span class="pre">(['random'],</span> <span class="pre">'random'),</span> <span class="pre">'random_integers':</span> <span class="pre">(['random'],</span> <span class="pre">'random_integers'),</span> <span class="pre">'random_sample':</span> <span class="pre">(['random'],</span> <span class="pre">'random_sample'),</span> <span class="pre">'ranf':</span> <span class="pre">(['random'],</span> <span class="pre">'ranf'),</span> <span class="pre">'rayleigh':</span> <span class="pre">(['random'],</span> <span class="pre">'rayleigh'),</span> <span class="pre">'repeat':</span> <span class="pre">(['numpy'],</span> <span class="pre">'repeat'),</span> <span class="pre">'sample':</span> <span class="pre">(['random'],</span> <span class="pre">'sample'),</span> <span class="pre">'sort':</span> <span class="pre">(['numpy'],</span> <span class="pre">'sort'),</span> <span class="pre">'standard_cauchy':</span> <span class="pre">(['random'],</span> <span class="pre">'standard_cauchy'),</span> <span class="pre">'standard_exponential':</span> <span class="pre">(['random'],</span> <span class="pre">'standard_exponential'),</span> <span class="pre">'standard_gamma':</span> <span class="pre">(['random'],</span> <span class="pre">'standard_gamma'),</span> <span class="pre">'standard_normal':</span> <span class="pre">(['random'],</span> <span class="pre">'standard_normal'),</span> <span class="pre">'sum':</span> <span class="pre">(['numpy'],</span> <span class="pre">'sum'),</span> <span class="pre">'take':</span> <span class="pre">(['numpy'],</span> <span class="pre">'take'),</span> <span class="pre">'trace':</span> <span class="pre">(['numpy'],</span> <span class="pre">'trace'),</span> <span class="pre">'uniform':</span> <span class="pre">(['random'],</span> <span class="pre">'uniform'),</span> <span class="pre">'vdot':</span> <span class="pre">(['numpy'],</span> <span class="pre">'vdot'),</span> <span class="pre">'weibull':</span> <span class="pre">(['random'],</span> <span class="pre">'weibull'),</span> <span class="pre">'zeros_like':</span> <span class="pre">(['numpy'],</span> <span class="pre">'zeros_like')}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.rename_numpy_functions_pass.RewriteNdarrayFunctions" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.rename_numpy_functions_pass.RewriteNdarrayFunctions.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.rename_numpy_functions_pass.RewriteNdarrayFunctions.run" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.rename_numpy_functions_pass.RewriteNumPyOverloadedFunctions">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.rename_numpy_functions_pass.</span></span><span class="sig-name descname"><span class="pre">RewriteNumPyOverloadedFunctions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rewrite_function_name_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'all':</span> <span class="pre">(['numpy'],</span> <span class="pre">'all'),</span> <span class="pre">'amax':</span> <span class="pre">(['numpy'],</span> <span class="pre">'amax'),</span> <span class="pre">'amin':</span> <span class="pre">(['numpy'],</span> <span class="pre">'amin'),</span> <span class="pre">'argmax':</span> <span class="pre">(['numpy'],</span> <span class="pre">'argmax'),</span> <span class="pre">'argmin':</span> <span class="pre">(['numpy'],</span> <span class="pre">'argmin'),</span> <span class="pre">'argsort':</span> <span class="pre">(['numpy'],</span> <span class="pre">'argsort'),</span> <span class="pre">'beta':</span> <span class="pre">(['random'],</span> <span class="pre">'beta'),</span> <span class="pre">'binomial':</span> <span class="pre">(['random'],</span> <span class="pre">'binomial'),</span> <span class="pre">'chisquare':</span> <span class="pre">(['random'],</span> <span class="pre">'chisquare'),</span> <span class="pre">'cholesky':</span> <span class="pre">(['linalg'],</span> <span class="pre">'cholesky'),</span> <span class="pre">'copy':</span> <span class="pre">(['numpy'],</span> <span class="pre">'copy'),</span> <span class="pre">'cov':</span> <span class="pre">(['numpy'],</span> <span class="pre">'cov'),</span> <span class="pre">'cumprod':</span> <span class="pre">(['numpy'],</span> <span class="pre">'cumprod'),</span> <span class="pre">'cumsum':</span> <span class="pre">(['numpy'],</span> <span class="pre">'cumsum'),</span> <span class="pre">'det':</span> <span class="pre">(['linalg'],</span> <span class="pre">'det'),</span> <span class="pre">'diagonal':</span> <span class="pre">(['numpy'],</span> <span class="pre">'diagonal'),</span> <span class="pre">'dot':</span> <span class="pre">(['numpy'],</span> <span class="pre">'dot'),</span> <span class="pre">'eig':</span> <span class="pre">(['linalg'],</span> <span class="pre">'eig'),</span> <span class="pre">'eigvals':</span> <span class="pre">(['linalg'],</span> <span class="pre">'eigvals'),</span> <span class="pre">'exponential':</span> <span class="pre">(['random'],</span> <span class="pre">'exponential'),</span> <span class="pre">'full':</span> <span class="pre">(['numpy'],</span> <span class="pre">'full'),</span> <span class="pre">'full_like':</span> <span class="pre">(['numpy'],</span> <span class="pre">'full_like'),</span> <span class="pre">'gamma':</span> <span class="pre">(['random'],</span> <span class="pre">'gamma'),</span> <span class="pre">'geometric':</span> <span class="pre">(['random'],</span> <span class="pre">'geometric'),</span> <span class="pre">'gumbel':</span> <span class="pre">(['random'],</span> <span class="pre">'gumbel'),</span> <span class="pre">'hypergeometric':</span> <span class="pre">(['random'],</span> <span class="pre">'hypergeometric'),</span> <span class="pre">'laplace':</span> <span class="pre">(['random'],</span> <span class="pre">'laplace'),</span> <span class="pre">'lognormal':</span> <span class="pre">(['random'],</span> <span class="pre">'lognormal'),</span> <span class="pre">'matmul':</span> <span class="pre">(['numpy'],</span> <span class="pre">'matmul'),</span> <span class="pre">'matrix_power':</span> <span class="pre">(['linalg'],</span> <span class="pre">'matrix_power'),</span> <span class="pre">'matrix_rank':</span> <span class="pre">(['linalg'],</span> <span class="pre">'matrix_rank'),</span> <span class="pre">'max':</span> <span class="pre">(['numpy'],</span> <span class="pre">'max'),</span> <span class="pre">'mean':</span> <span class="pre">(['numpy'],</span> <span class="pre">'mean'),</span> <span class="pre">'median':</span> <span class="pre">(['numpy'],</span> <span class="pre">'median'),</span> <span class="pre">'min':</span> <span class="pre">(['numpy'],</span> <span class="pre">'min'),</span> <span class="pre">'multi_dot':</span> <span class="pre">(['linalg'],</span> <span class="pre">'multi_dot'),</span> <span class="pre">'multinomial':</span> <span class="pre">(['random'],</span> <span class="pre">'multinomial'),</span> <span class="pre">'multivariate_normal':</span> <span class="pre">(['random'],</span> <span class="pre">'multivariate_normal'),</span> <span class="pre">'nanprod':</span> <span class="pre">(['numpy'],</span> <span class="pre">'nanprod'),</span> <span class="pre">'nansum':</span> <span class="pre">(['numpy'],</span> <span class="pre">'nansum'),</span> <span class="pre">'negative_binomial':</span> <span class="pre">(['random'],</span> <span class="pre">'negative_binomial'),</span> <span class="pre">'normal':</span> <span class="pre">(['random'],</span> <span class="pre">'normal'),</span> <span class="pre">'ones_like':</span> <span class="pre">(['numpy'],</span> <span class="pre">'ones_like'),</span> <span class="pre">'partition':</span> <span class="pre">(['numpy'],</span> <span class="pre">'partition'),</span> <span class="pre">'poisson':</span> <span class="pre">(['random'],</span> <span class="pre">'poisson'),</span> <span class="pre">'prod':</span> <span class="pre">(['numpy'],</span> <span class="pre">'prod'),</span> <span class="pre">'rand':</span> <span class="pre">(['random'],</span> <span class="pre">'rand'),</span> <span class="pre">'randint':</span> <span class="pre">(['random'],</span> <span class="pre">'randint'),</span> <span class="pre">'random':</span> <span class="pre">(['random'],</span> <span class="pre">'random'),</span> <span class="pre">'random_integers':</span> <span class="pre">(['random'],</span> <span class="pre">'random_integers'),</span> <span class="pre">'random_sample':</span> <span class="pre">(['random'],</span> <span class="pre">'random_sample'),</span> <span class="pre">'ranf':</span> <span class="pre">(['random'],</span> <span class="pre">'ranf'),</span> <span class="pre">'rayleigh':</span> <span class="pre">(['random'],</span> <span class="pre">'rayleigh'),</span> <span class="pre">'repeat':</span> <span class="pre">(['numpy'],</span> <span class="pre">'repeat'),</span> <span class="pre">'sample':</span> <span class="pre">(['random'],</span> <span class="pre">'sample'),</span> <span class="pre">'sort':</span> <span class="pre">(['numpy'],</span> <span class="pre">'sort'),</span> <span class="pre">'standard_cauchy':</span> <span class="pre">(['random'],</span> <span class="pre">'standard_cauchy'),</span> <span class="pre">'standard_exponential':</span> <span class="pre">(['random'],</span> <span class="pre">'standard_exponential'),</span> <span class="pre">'standard_gamma':</span> <span class="pre">(['random'],</span> <span class="pre">'standard_gamma'),</span> <span class="pre">'standard_normal':</span> <span class="pre">(['random'],</span> <span class="pre">'standard_normal'),</span> <span class="pre">'sum':</span> <span class="pre">(['numpy'],</span> <span class="pre">'sum'),</span> <span class="pre">'take':</span> <span class="pre">(['numpy'],</span> <span class="pre">'take'),</span> <span class="pre">'trace':</span> <span class="pre">(['numpy'],</span> <span class="pre">'trace'),</span> <span class="pre">'uniform':</span> <span class="pre">(['random'],</span> <span class="pre">'uniform'),</span> <span class="pre">'vdot':</span> <span class="pre">(['numpy'],</span> <span class="pre">'vdot'),</span> <span class="pre">'weibull':</span> <span class="pre">(['random'],</span> <span class="pre">'weibull'),</span> <span class="pre">'zeros_like':</span> <span class="pre">(['numpy'],</span> <span class="pre">'zeros_like')}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.rename_numpy_functions_pass.RewriteNumPyOverloadedFunctions" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.rename_numpy_functions_pass.RewriteNumPyOverloadedFunctions.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.rename_numpy_functions_pass.RewriteNumPyOverloadedFunctions.run" title="Permalink to this definition"></a></dt>
+<dd><p>This function rewrites the name of NumPy functions that exist in self.function_name_map
+e.g np.sum(a) would produce the following:</p>
+<p>np.sum() –&gt; numba_dppy.dpnp.sum()</p>
+<blockquote>
+<div><p>$2load_global.0 = global(np: &lt;module ‘numpy’ from ‘numpy/__init__.py’&gt;) [‘$2load_global.0’]
+$4load_method.1 = getattr(value=$2load_global.0, attr=sum) [‘$2load_global.0’, ‘$4load_method.1’]
+$8call_method.3 = call $4load_method.1(a, func=$4load_method.1, args=[Var(a, test_rewrite.py:7)],</p>
+<blockquote>
+<div><p>kws=(), vararg=None) [‘$4load_method.1’, ‘$8call_method.3’, ‘a’]</p>
+</div></blockquote>
+</div></blockquote>
+<blockquote>
+<div><p>$dppy_replaced_var.0 = global(numba_dppy: &lt;module ‘numba_dppy’ from ‘numba_dppy/__init__.py’&gt;) [‘$dppy_replaced_var.0’]
+$dpnp_var.1 = getattr(value=$dppy_replaced_var.0, attr=dpnp) [‘$dpnp_var.1’, ‘$dppy_replaced_var.0’]
+$4load_method.1 = getattr(value=$dpnp_var.1, attr=sum) [‘$4load_method.1’, ‘$dpnp_var.1’]
+$8call_method.3 = call $4load_method.1(a, func=$4load_method.1, args=[Var(a, test_rewrite.py:7)],</p>
+<blockquote>
+<div><p>kws=(), vararg=None) [‘$4load_method.1’, ‘$8call_method.3’, ‘a’]</p>
+</div></blockquote>
+</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dppy.rename_numpy_functions_pass.get_dpnp_func_typ">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.rename_numpy_functions_pass.</span></span><span class="sig-name descname"><span class="pre">get_dpnp_func_typ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.rename_numpy_functions_pass.get_dpnp_func_typ" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
