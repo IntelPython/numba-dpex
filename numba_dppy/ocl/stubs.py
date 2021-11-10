@@ -105,6 +105,21 @@ class Stub(object):
 
 
 # -------------------------------------------------------------------------------
+# private memory
+
+
+class private(Stub):
+    """private namespace"""
+
+    _description_ = "<private>"
+
+    def array(shape, dtype):
+        """private.array(shape, dtype)
+
+        Allocate a private array.
+        """
+
+# -------------------------------------------------------------------------------
 # local memory
 
 
