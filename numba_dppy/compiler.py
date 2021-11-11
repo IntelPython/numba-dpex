@@ -26,9 +26,9 @@ from numba.core.compiler_lock import global_compiler_lock
 from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
 from numba_dppy import config
+from numba_dppy.dpctl_iface import USMNdArrayType
 from numba_dppy.dppy_array_type import DPPYArray
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
-from numba_dppy.driver import USMNdArrayType
 from numba_dppy.utils import (
     as_usm_obj,
     assert_no_return,
