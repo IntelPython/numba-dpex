@@ -40,7 +40,7 @@ Integration with `DPNP backend library`_
 Repository map
 ``````````````
 
-- Code for integration is mostly resides in :file:`numba_dppy/dpnp_glue`.
+- Code for integration is mostly resides in :file:`numba_dppy/dpnp_iface`.
 - Tests resides in :file:`numba_dppy/tests/njit_tests/dpnp`.
 - Helper pass resides in :file:`numba_dppy/rename_numpy_functions_pass.py`.
 
@@ -61,7 +61,7 @@ It rewrites call for `NumPy` function in following way:
 
 .. code-block:: python
 
-    # numba_dppy/dpnp_glue/stubs.py - imported in numba_dppy.__init__.py
+    # numba_dppy/dpnp_iface/stubs.py - imported in numba_dppy.__init__.py
 
     class dpnp(Stub):
 
@@ -69,7 +69,7 @@ It rewrites call for `NumPy` function in following way:
         pass
 
 For the stub function call to be lowered with `Numba` compiler pipeline there
-is overload in :file:`numba_dppy/dpnp_glue/dpnp_transcendentalsimpl.py`:
+is overload in :file:`numba_dppy/dpnp_iface/dpnp_transcendentalsimpl.py`:
 
 .. code-block:: python
 
@@ -90,10 +90,10 @@ For more details about testing the integration see :ref:`dpnp-integration-tests`
 Places to update
 ````````````````
 
-1. :file:`numba_dppy/dpnp_glue/stubs.py`: Add new class to :class:`stubs.dpnp` class.
-2. :file:`numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx`: Update items in :class:`DPNPFuncName` enum.
-3. :file:`numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx`: Update if statements in :func:`get_DPNPFuncName_from_str` function.
-4. Add :samp:`@overload(stubs.dpnp.{YOUR_FUNCTION})` in one of the :file:`numba_dppy/dpnp_glue/{*}.py` modules or create new.
+1. :file:`numba_dppy/dpnp_iface/stubs.py`: Add new class to :class:`stubs.dpnp` class.
+2. :file:`numba_dppy/dpnp_iface/dpnp_fptr_interface.pyx`: Update items in :class:`DPNPFuncName` enum.
+3. :file:`numba_dppy/dpnp_iface/dpnp_fptr_interface.pyx`: Update if statements in :func:`get_DPNPFuncName_from_str` function.
+4. Add :samp:`@overload(stubs.dpnp.{YOUR_FUNCTION})` in one of the :file:`numba_dppy/dpnp_iface/{*}.py` modules or create new.
 5. :file:`numba_dppy/rename_numpy_functions_pass.py`: Update items in :obj:`rewrite_function_name_map` dict.
 6. :file:`numba_dppy/rename_numpy_functions_pass.py`: Update imported modules in :meth:`DPPYRewriteOverloadedNumPyFunctions.__init__`.
 7. Add test in one of the :file:`numba_dppy/tests/njit_tests/dpnp` test modules or create new.
@@ -103,14 +103,14 @@ Places to update
 Writing overload for stub function
 ``````````````````````````````````
 
-Overloads for stub functions resides in :file:`numba_dppy/dpnp_glue/{*}.py` modules.
+Overloads for stub functions resides in :file:`numba_dppy/dpnp_iface/{*}.py` modules.
 If you need create new module try to name it corresponding to `DPNP` naming.
-I.e. :file:`dpnp/backend/kernels/dpnp_krnl_indexing.cpp` -> :file:`numba_dppy/dpnp_glue/dpnp_indexing.py`.
+I.e. :file:`dpnp/backend/kernels/dpnp_krnl_indexing.cpp` -> :file:`numba_dppy/dpnp_iface/dpnp_indexing.py`.
 
 .. code-block:: python
 
     from numba.core.extending import overload
-    import numba_dppy.dpnp_glue as dpnp_lowering
+    import numba_dppy.dpnp_iface as dpnp_lowering
     ...
 
     @overload(stubs.dpnp.sum)
@@ -160,7 +160,7 @@ For mapping between `C` types and `Numba` types see :ref:`dpnp-integration-types
 
 .. code-block:: python
 
-    import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
+    import numba_dppy.dpnp_iface.dpnpimpl as dpnp_ext
     ...
     # continue of dpnp_sum_impl()
       dpnp_func = dpnp_ext.dpnp_func("dpnp_sum", [a.dtype.name, "NONE"], sig)
@@ -177,7 +177,7 @@ It receives:
 
 .. code-block:: python
 
-    import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
+    import numba_dppy.dpnp_iface.dpnpimpl as dpnp_ext
     ...
     # continue of dpnp_sum_impl()
       PRINT_DEBUG = dpnp_lowering.DEBUG
@@ -211,7 +211,7 @@ creating the new one.
 
     from numba.core.extending import register_jitable
     from numba_dppy import dpctl_functions
-    import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
+    import numba_dppy.dpnp_iface.dpnpimpl as dpnp_ext
     ...
 
     @register_jitable
@@ -329,7 +329,7 @@ Troubleshooting
 ```````````````
 
 1. Do not forget build `numba-dppy` with current installed version of `DPNP`.
-   There is headers dependency in `Cython` files (i.e. :file:`numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx`).
+   There is headers dependency in `Cython` files (i.e. :file:`numba_dppy/dpnp_iface/dpnp_fptr_interface.pyx`).
 2. Do not forget add array to :samp:`dpnp_ext._dummy_liveness_func([{YOUR_ARRAY}.size])`.
    Dead code elimination could delete temporary variables before they are used for `DPNP` function call.
    As a result wrong data could be passed to `DPNP` function.
