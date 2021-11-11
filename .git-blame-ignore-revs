@@ -2,3 +2,6 @@
 
 # Migrate code style to Black
 8bd62e61bb70fe0483bd494040e4103fd050252a
+
+# Set max line width to 80 in black
+c27b2b31b3f275225f8db5d7bd5924b4677bcce2
