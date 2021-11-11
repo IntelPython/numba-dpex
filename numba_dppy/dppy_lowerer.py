@@ -55,7 +55,7 @@ from numba.core.errors import (
 )
 
 from .dufunc_inliner import dufunc_inliner
-from numba_dppy.driver import KernelLaunchOps
+from numba_dppy.dpctl_iface import KernelLaunchOps
 import dpctl
 from numba_dppy import config
 from numba_dppy.target import DPPYTargetContext

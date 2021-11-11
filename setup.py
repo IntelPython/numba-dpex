@@ -53,7 +53,7 @@ def get_ext_modules():
 
     ext_dppy = Extension(
         name="numba_dppy._usm_shared_allocator_ext",
-        sources=["numba_dppy/driver/usm_shared_allocator_ext.c"],
+        sources=["numba_dppy/dpctl_iface/usm_shared_allocator_ext.c"],
         include_dirs=[numba.core.extending.include_path(), dpctl.get_include()],
         libraries=["DPCTLSyclInterface"],
         library_dirs=[os.path.dirname(dpctl.__file__)],
