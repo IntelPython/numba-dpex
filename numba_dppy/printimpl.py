@@ -38,7 +38,9 @@ def print_item(ty, context, builder, val):
     A (format string, [list of arguments]) is returned that will allow
     forming the final printf()-like call.
     """
-    raise NotImplementedError("printing unimplemented for values of type %s" % (ty,))
+    raise NotImplementedError(
+        "printing unimplemented for values of type %s" % (ty,)
+    )
 
 
 @print_item.register(types.Integer)

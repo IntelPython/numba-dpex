@@ -39,7 +39,9 @@ def dpnp_eig_impl(a):
     void dpnp_eig_c(const void* array_in, void* result1, void* result2, size_t size)
 
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr, types.voidptr, types.intp)
+    sig = signature(
+        ret_type, types.voidptr, types.voidptr, types.voidptr, types.intp
+    )
     dpnp_eig = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     res_dtype = np.float64
@@ -69,8 +71,12 @@ def dpnp_eig_impl(a):
         dpctl_functions.event_wait(event)
         dpctl_functions.event_delete(event)
 
-        wr_usm = dpctl_functions.malloc_shared(wr.size * wr.itemsize, sycl_queue)
-        vr_usm = dpctl_functions.malloc_shared(vr.size * vr.itemsize, sycl_queue)
+        wr_usm = dpctl_functions.malloc_shared(
+            wr.size * wr.itemsize, sycl_queue
+        )
+        vr_usm = dpctl_functions.malloc_shared(
+            vr.size * vr.itemsize, sycl_queue
+        )
 
         dpnp_eig(a_usm, wr_usm, vr_usm, n)
 
@@ -103,7 +109,9 @@ def common_matmul_impl(dpnp_func, a, b, out, m, n, k, print_debug):
     sycl_queue = dpctl_functions.get_current_queue()
 
     a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
-    dpctl_functions.queue_memcpy(sycl_queue, a_usm, a.ctypes, a.size * a.itemsize)
+    dpctl_functions.queue_memcpy(
+        sycl_queue, a_usm, a.ctypes, a.size * a.itemsize
+    )
 
     b_usm = dpctl_functions.malloc_shared(b.size * b.itemsize, sycl_queue)
     event = dpctl_functions.queue_memcpy(
@@ -336,7 +344,9 @@ def dpnp_dot_impl(a, b):
 
     ndims = [a.ndim, b.ndim]
     if ndims == [2, 2]:
-        dpnp_func = dpnp_ext.dpnp_func("dpnp_matmul", [a.dtype.name, "NONE"], sig)
+        dpnp_func = dpnp_ext.dpnp_func(
+            "dpnp_matmul", [a.dtype.name, "NONE"], sig
+        )
 
         def dot_2_mm(a, b):
             m, k = a.shape
@@ -352,7 +362,9 @@ def dpnp_dot_impl(a, b):
 
         return dot_2_mm
     elif ndims == [2, 1]:
-        dpnp_func = dpnp_ext.dpnp_func("dpnp_matmul", [a.dtype.name, "NONE"], sig)
+        dpnp_func = dpnp_ext.dpnp_func(
+            "dpnp_matmul", [a.dtype.name, "NONE"], sig
+        )
 
         def dot_2_mv(a, b):
             m, k = a.shape
@@ -369,7 +381,9 @@ def dpnp_dot_impl(a, b):
 
         return dot_2_mv
     elif ndims == [1, 2]:
-        dpnp_func = dpnp_ext.dpnp_func("dpnp_matmul", [a.dtype.name, "NONE"], sig)
+        dpnp_func = dpnp_ext.dpnp_func(
+            "dpnp_matmul", [a.dtype.name, "NONE"], sig
+        )
 
         def dot_2_vm(a, b):
             (m,) = a.shape
@@ -508,7 +522,9 @@ def dpnp_matrix_power_impl(a, n):
 
     def dpnp_impl(a, n):
         if n < 0:
-            raise ValueError("n < 0 is not supported for np.linalg.matrix_power(a, n)")
+            raise ValueError(
+                "n < 0 is not supported for np.linalg.matrix_power(a, n)"
+            )
 
         if n == 0:
             if PRINT_DEBUG:
@@ -559,7 +575,9 @@ def dpnp_cholesky_impl(a):
         dpctl_functions.event_wait(event)
         dpctl_functions.event_delete(event)
 
-        out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
+        out_usm = dpctl_functions.malloc_shared(
+            out.size * out.itemsize, sycl_queue
+        )
 
         dpnp_func(a_usm, out_usm, a.shapeptr)
 
@@ -594,7 +612,9 @@ def dpnp_det_impl(a):
     Function declaration:
     void custom_det_c(void* array1_in, void* result1, size_t* shape, size_t ndim)
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr, types.voidptr, types.intp)
+    sig = signature(
+        ret_type, types.voidptr, types.voidptr, types.voidptr, types.intp
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
@@ -619,7 +639,9 @@ def dpnp_det_impl(a):
         dpctl_functions.event_wait(event)
         dpctl_functions.event_delete(event)
 
-        out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
+        out_usm = dpctl_functions.malloc_shared(
+            out.size * out.itemsize, sycl_queue
+        )
 
         dpnp_func(a_usm, out_usm, a.shapeptr, a.ndim)
 
@@ -657,15 +679,21 @@ def dpnp_matrix_rank_impl(M, tol=None, hermitian=False):
     Function declaration:
     void custom_matrix_rank_c(void* array1_in, void* result1, size_t* shape, size_t ndim)
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr, types.voidptr, types.intp)
+    sig = signature(
+        ret_type, types.voidptr, types.voidptr, types.voidptr, types.intp
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [M.dtype.name, "NONE"], sig)
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(M, tol=None, hermitian=False):
         if tol is not None:
-            raise ValueError("tol is not supported for np.linalg.matrix_rank(M)")
+            raise ValueError(
+                "tol is not supported for np.linalg.matrix_rank(M)"
+            )
         if hermitian:
-            raise ValueError("hermitian is not supported for np.linalg.matrix_rank(M)")
+            raise ValueError(
+                "hermitian is not supported for np.linalg.matrix_rank(M)"
+            )
 
         if M.ndim > 2:
             raise ValueError(
@@ -682,7 +710,9 @@ def dpnp_matrix_rank_impl(M, tol=None, hermitian=False):
         dpctl_functions.event_wait(event)
         dpctl_functions.event_delete(event)
 
-        out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
+        out_usm = dpctl_functions.malloc_shared(
+            out.size * out.itemsize, sycl_queue
+        )
 
         dpnp_func(M_usm, out_usm, M.shapeptr, M.ndim)
 

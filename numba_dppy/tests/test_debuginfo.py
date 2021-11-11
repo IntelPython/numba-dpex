@@ -33,7 +33,9 @@ def debug_option(request):
 
 
 def get_kernel_ir(sycl_queue, fn, sig, debug=None):
-    kernel = compiler.compile_kernel(sycl_queue, fn.py_func, sig, None, debug=debug)
+    kernel = compiler.compile_kernel(
+        sycl_queue, fn.py_func, sig, None, debug=debug
+    )
     return kernel.assembly
 
 
@@ -112,7 +114,10 @@ def test_debug_kernel_local_vars_in_ir():
         local_d = 9 * 99 + 5
         arr[index] = local_d + 100
 
-    ir_tags = ['!DILocalVariable(name: "index"', '!DILocalVariable(name: "local_d"']
+    ir_tags = [
+        '!DILocalVariable(name: "index"',
+        '!DILocalVariable(name: "local_d"',
+    ]
 
     sycl_queue = dpctl.get_current_queue()
     sig = (npytypes_array_to_dppy_array(types.float32[:]),)
@@ -150,7 +155,9 @@ def test_debug_flag_generates_ir_with_debuginfo_for_func(debug_option):
         npytypes_array_to_dppy_array(types.float32[:]),
     )
 
-    kernel_ir = get_kernel_ir(sycl_queue, data_parallel_sum, sig, debug=debug_option)
+    kernel_ir = get_kernel_ir(
+        sycl_queue, data_parallel_sum, sig, debug=debug_option
+    )
 
     for tag in ir_tags:
         assert debug_option == make_check(kernel_ir, tag)

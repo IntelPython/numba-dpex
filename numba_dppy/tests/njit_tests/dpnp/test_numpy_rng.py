@@ -126,7 +126,9 @@ def test_two_arg_fn(filter_str, two_arg_fn, unary_size, capfd):
     op_name, first_arg, low, high = two_arg_fn
 
     if op_name == "gamma":
-        pytest.skip("AttributeError: 'NoneType' object has no attribute 'ravel'")
+        pytest.skip(
+            "AttributeError: 'NoneType' object has no attribute 'ravel'"
+        )
     op = get_two_arg_fn(op_name)
     f = njit(op)
     device = dpctl.SyclDevice(filter_str)
@@ -165,7 +167,9 @@ def three_arg_fn(request):
 
 
 def get_three_arg_fn(op_name):
-    return wrapper_function("a, b, c", f"np.random.{op_name}(a, b, c)", globals())
+    return wrapper_function(
+        "a, b, c", f"np.random.{op_name}(a, b, c)", globals()
+    )
 
 
 def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):

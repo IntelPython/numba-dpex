@@ -30,7 +30,9 @@ def dpctl_malloc_shared():
 
 def dpctl_queue_memcpy():
     ret_type = types.voidptr
-    sig = signature(ret_type, types.voidptr, types.voidptr, types.voidptr, types.int64)
+    sig = signature(
+        ret_type, types.voidptr, types.voidptr, types.voidptr, types.int64
+    )
     return types.ExternalFunction("DPCTLQueue_Memcpy", sig)
 
 

@@ -224,7 +224,9 @@ def dpnp_full_impl(a, b):
         dpctl_functions.event_delete(event)
 
         out = np.arange(0, a.size, 1, res_dtype)
-        out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
+        out_usm = dpctl_functions.malloc_shared(
+            out.size * out.itemsize, sycl_queue
+        )
 
         dpnp_func(b_usm, out_usm, a.size)
 
@@ -260,7 +262,9 @@ def dpnp_trace_impl(a):
     void dpnp_trace_c(const void* array1_in, void* result1, const size_t* shape_, const size_t ndim)
 
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr, types.voidptr, types.intp)
+    sig = signature(
+        ret_type, types.voidptr, types.voidptr, types.voidptr, types.intp
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     PRINT_DEBUG = dpnp_lowering.DEBUG

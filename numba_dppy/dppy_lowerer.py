@@ -49,7 +49,10 @@ from numba.core.ir_utils import (
 from numba.core.typing import signature
 
 import warnings
-from numba.core.errors import NumbaParallelSafetyWarning, NumbaPerformanceWarning
+from numba.core.errors import (
+    NumbaParallelSafetyWarning,
+    NumbaPerformanceWarning,
+)
 
 from .dufunc_inliner import dufunc_inliner
 from numba_dppy.driver import KernelLaunchOps
@@ -147,7 +150,9 @@ def _dbgprint_after_each_array_assignments(lowerer, loop_body, typemap):
                 new_block.append(assign_lhs)
 
                 # Make print node
-                print_node = ir.Print(args=[lhs, inst.target], vararg=None, loc=loc)
+                print_node = ir.Print(
+                    args=[lhs, inst.target], vararg=None, loc=loc
+                )
                 new_block.append(print_node)
                 sig = numba.typing.signature(
                     types.none, typemap[lhs.name], typemap[inst.target.name]
@@ -168,7 +173,9 @@ def replace_var_with_array_in_block(vars, block, typemap, calltypes):
             const_assign = ir.Assign(const_node, const_var, inst.loc)
             new_block.append(const_assign)
 
-            setitem_node = ir.SetItem(inst.target, const_var, inst.value, inst.loc)
+            setitem_node = ir.SetItem(
+                inst.target, const_var, inst.value, inst.loc
+            )
             calltypes[setitem_node] = signature(
                 types.none,
                 types.npytypes.Array(typemap[inst.target.name], 1, "C"),
@@ -181,7 +188,9 @@ def replace_var_with_array_in_block(vars, block, typemap, calltypes):
             replace_var_with_array_internal(
                 vars, {0: inst.init_block}, typemap, calltypes
             )
-            replace_var_with_array_internal(vars, inst.loop_body, typemap, calltypes)
+            replace_var_with_array_internal(
+                vars, inst.loop_body, typemap, calltypes
+            )
 
         new_block.append(inst)
     return new_block
@@ -189,7 +198,9 @@ def replace_var_with_array_in_block(vars, block, typemap, calltypes):
 
 def replace_var_with_array_internal(vars, loop_body, typemap, calltypes):
     for label, block in loop_body.items():
-        block.body = replace_var_with_array_in_block(vars, block, typemap, calltypes)
+        block.body = replace_var_with_array_in_block(
+            vars, block, typemap, calltypes
+        )
 
 
 def replace_var_with_array(vars, loop_body, typemap, calltypes):
@@ -317,7 +328,9 @@ def _create_gufunc_for_parfor_body(
             parfor_params.add(stop.name)
 
     # Get just the outputs of the parfor.
-    parfor_outputs = numba.parfors.parfor.get_parfor_outputs(parfor, parfor_params)
+    parfor_outputs = numba.parfors.parfor.get_parfor_outputs(
+        parfor, parfor_params
+    )
 
     # Get all parfor reduction vars, and operators.
     typemap = lowerer.fndesc.typemap
@@ -381,7 +394,11 @@ def _create_gufunc_for_parfor_body(
 
     if config.DEBUG_ARRAY_OPT >= 1:
         print("ind_dict = ", sorted(ind_dict.items()), type(ind_dict))
-        print("legal_loop_indices = ", legal_loop_indices, type(legal_loop_indices))
+        print(
+            "legal_loop_indices = ",
+            legal_loop_indices,
+            type(legal_loop_indices),
+        )
 
         for pd in parfor_params:
             print("pd = ", pd)
@@ -490,7 +507,9 @@ def _create_gufunc_for_parfor_body(
     # rename all variables in gufunc_ir afresh
     var_table = get_name_var_table(gufunc_ir.blocks)
     new_var_dict = {}
-    reserved_names = [sentinel_name] + list(param_dict.values()) + legal_loop_indices
+    reserved_names = (
+        [sentinel_name] + list(param_dict.values()) + legal_loop_indices
+    )
     for name, var in var_table.items():
         if not (name in reserved_names):
             new_var_dict[name] = mk_unique_var(name)
@@ -507,7 +526,10 @@ def _create_gufunc_for_parfor_body(
 
     if config.DEBUG_ARRAY_OPT:
         print(
-            "gufunc_param_types = ", type(gufunc_param_types), "\n", gufunc_param_types
+            "gufunc_param_types = ",
+            type(gufunc_param_types),
+            "\n",
+            gufunc_param_types,
         )
 
     gufunc_stub_last_label = max(gufunc_ir.blocks.keys()) + 1
@@ -541,7 +563,10 @@ def _create_gufunc_for_parfor_body(
 
     # store hoisted into diagnostics
     diagnostics = lowerer.metadata["parfor_diagnostics"]
-    diagnostics.hoist_info[parfor.id] = {"hoisted": hoisted, "not_hoisted": not_hoisted}
+    diagnostics.hoist_info[parfor.id] = {
+        "hoisted": hoisted,
+        "not_hoisted": not_hoisted,
+    }
 
     lowerer.metadata["parfor_diagnostics"].extra_info[str(parfor.id)] = str(
         dpctl.get_current_queue().get_sycl_device().name
@@ -554,7 +579,10 @@ def _create_gufunc_for_parfor_body(
     # Search all the block in the gufunc outline for the sentinel assignment.
     for label, block in gufunc_ir.blocks.items():
         for i, inst in enumerate(block.body):
-            if isinstance(inst, ir.Assign) and inst.target.name == sentinel_name:
+            if (
+                isinstance(inst, ir.Assign)
+                and inst.target.name == sentinel_name
+            ):
                 # We found the sentinel assignment.
                 loc = inst.loc
                 scope = block.scope
@@ -581,7 +609,9 @@ def _create_gufunc_for_parfor_body(
                 gufunc_ir.blocks[label] = prev_block
                 # Add a jump from the last parfor body block to the block
                 # containing statements after the sentinel.
-                gufunc_ir.blocks[body_last_label].append(ir.Jump(new_label, loc))
+                gufunc_ir.blocks[body_last_label].append(
+                    ir.Jump(new_label, loc)
+                )
                 break
         else:
             continue
@@ -772,7 +802,12 @@ def _lower_parfor_gufunc(lowerer, parfor):
         print("loop_ranges = ", loop_ranges)
 
     gu_signature = _create_shape_signature(
-        parfor.get_shape_classes, num_inputs, func_args, func_sig, parfor.races, typemap
+        parfor.get_shape_classes,
+        num_inputs,
+        func_args,
+        func_sig,
+        parfor.races,
+        typemap,
     )
 
     generate_kernel_launch_ops(
@@ -948,7 +983,9 @@ def generate_kernel_launch_ops(
             return None
 
     all_llvm_args = [getvar_or_none(lowerer, x) for x in expr_args[:ninouts]]
-    all_val_types = [val_type_or_none(context, lowerer, x) for x in expr_args[:ninouts]]
+    all_val_types = [
+        val_type_or_none(context, lowerer, x) for x in expr_args[:ninouts]
+    ]
     all_args = [loadvar_or_none(lowerer, x) for x in expr_args[:ninouts]]
 
     keep_alive_kernels.append(cres)
@@ -1128,7 +1165,9 @@ def relatively_deep_copy(obj, memo):
         return cpy
 
     if isinstance(obj, FreeVar):
-        cpy = FreeVar(index=obj.index, name=obj.name, value=obj.value, loc=obj.loc)
+        cpy = FreeVar(
+            index=obj.index, name=obj.name, value=obj.value, loc=obj.loc
+        )
         memo[obj_id] = cpy
 
         return cpy
@@ -1145,7 +1184,9 @@ def relatively_deep_copy(obj, memo):
         cpy = copy.copy(obj)
         cpy.clear()
         for key, item in obj.items():
-            cpy[relatively_deep_copy(key, memo)] = relatively_deep_copy(item, memo)
+            cpy[relatively_deep_copy(key, memo)] = relatively_deep_copy(
+                item, memo
+            )
         memo[obj_id] = cpy
         return cpy
     elif isinstance(obj, tuple):
@@ -1232,9 +1273,13 @@ class DPPYLower(Lower):
         func_ir_cpu = relatively_deep_copy(func_ir, memo)
 
         cpu_context = (
-            context.cpu_context if isinstance(context, DPPYTargetContext) else context
+            context.cpu_context
+            if isinstance(context, DPPYTargetContext)
+            else context
         )
-        self.gpu_lower = self._lower(context, library, fndesc, func_ir, metadata)
+        self.gpu_lower = self._lower(
+            context, library, fndesc, func_ir, metadata
+        )
         self.cpu_lower = self._lower(
             cpu_context, library, fndesc_cpu, func_ir_cpu, metadata
         )
@@ -1305,7 +1350,9 @@ class DPPYLower(Lower):
             # if lower does not crash, and parfor_diagnostics is empty then it
             # is a kernel function.
             if not self.gpu_lower.metadata["parfor_diagnostics"].extra_info:
-                str_name = dpctl.get_current_queue().get_sycl_device().filter_string
+                str_name = (
+                    dpctl.get_current_queue().get_sycl_device().filter_string
+                )
                 self.gpu_lower.metadata["parfor_diagnostics"].extra_info[
                     "kernel"
                 ] = str_name
@@ -1325,7 +1372,9 @@ class DPPYLower(Lower):
                     dpctl.get_current_queue().get_sycl_device().filter_string
                 )
                 print(
-                    "Failed to offload parfor to " + device_filter_str + ". Due to:\n",
+                    "Failed to offload parfor to "
+                    + device_filter_str
+                    + ". Due to:\n",
                     e,
                 )
                 print(traceback.format_exc())
@@ -1366,7 +1415,9 @@ def lower_parfor_rollback(lowerer, parfor):
             print(msg, parfor.loc)
     except Exception as e:
 
-        device_filter_str = dpctl.get_current_queue().get_sycl_device().filter_string
+        device_filter_str = (
+            dpctl.get_current_queue().get_sycl_device().filter_string
+        )
         msg = (
             "Failed to offload parfor to " + device_filter_str + ". Falling "
             "back to default CPU parallelization. Please file a bug report "
