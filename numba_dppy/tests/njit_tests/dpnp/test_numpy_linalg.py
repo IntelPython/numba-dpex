@@ -36,7 +36,9 @@ filter_strings = [
 filter_strings_with_skips_for_opencl = [
     "level_zero:gpu:0",
     pytest.param("opencl:gpu:0", marks=pytest.mark.skip(reason="Freeze")),
-    pytest.param("opencl:cpu:0", marks=pytest.mark.skip(reason="Segmentation fault")),
+    pytest.param(
+        "opencl:cpu:0", marks=pytest.mark.skip(reason="Segmentation fault")
+    ),
     # pytest.param("opencl:cpu:0", marks=pytest.mark.xfail(reason="Segmentation fault")),  # run with --boxed
 ]
 
@@ -322,7 +324,8 @@ def test_matrix_power(filter_str, matrix_power_input, power, dtype, capfd):
     "matrix_rank_input",
     [
         pytest.param(
-            np.eye(4), marks=pytest.mark.xfail(reason="dpnp does not support it yet")
+            np.eye(4),
+            marks=pytest.mark.xfail(reason="dpnp does not support it yet"),
         ),
         np.ones((4,)),
         pytest.param(

@@ -172,7 +172,9 @@ def dpnp_argsort_impl(a):
         dpctl_functions.event_delete(event)
 
         out = np.arange(0, a.size, 1, res_dtype)
-        out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
+        out_usm = dpctl_functions.malloc_shared(
+            out.size * out.itemsize, sycl_queue
+        )
 
         dpnp_func(a_usm, out_usm, a.size)
 
@@ -239,14 +241,18 @@ def dpnp_partition_impl(a, kth):
         dpctl_functions.event_wait(event)
         dpctl_functions.event_delete(event)
 
-        arr2_usm = dpctl_functions.malloc_shared(arr2.size * arr2.itemsize, sycl_queue)
+        arr2_usm = dpctl_functions.malloc_shared(
+            arr2.size * arr2.itemsize, sycl_queue
+        )
         event = dpctl_functions.queue_memcpy(
             sycl_queue, arr2_usm, arr2.ctypes, arr2.size * arr2.itemsize
         )
         dpctl_functions.event_wait(event)
         dpctl_functions.event_delete(event)
 
-        out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
+        out_usm = dpctl_functions.malloc_shared(
+            out.size * out.itemsize, sycl_queue
+        )
 
         dpnp_func(a_usm, arr2_usm, out_usm, kth_, a.shapeptr, a.ndim)
 

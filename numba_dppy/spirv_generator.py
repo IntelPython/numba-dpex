@@ -138,7 +138,9 @@ class Module(object):
         return fobj, path
 
     def _track_temp_file(self, name):
-        path = os.path.join(self._tmpdir, "{0}-{1}".format(len(self._tempfiles), name))
+        path = os.path.join(
+            self._tmpdir, "{0}-{1}".format(len(self._tempfiles), name)
+        )
         self._tempfiles.append(path)
         return path
 
@@ -189,7 +191,9 @@ class Module(object):
             print("".center(80, "="))
 
         self._cmd.generate(
-            llvm_spirv_args=llvm_spirv_args, ipath=self._llvmfile, opath=spirv_path
+            llvm_spirv_args=llvm_spirv_args,
+            ipath=self._llvmfile,
+            opath=spirv_path,
         )
 
         if len(binary_paths) > 1:
