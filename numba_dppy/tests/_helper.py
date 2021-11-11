@@ -116,7 +116,7 @@ def expectedFailureIf(condition):
 
 def ensure_dpnp():
     try:
-        from numba_dppy.dpnp_glue import dpnp_fptr_interface as dpnp_glue
+        from numba_dppy.dpnp_iface import dpnp_fptr_interface as dpnp_iface
 
         return True
     except:
@@ -125,7 +125,7 @@ def ensure_dpnp():
 
 @contextlib.contextmanager
 def dpnp_debug():
-    import numba_dppy.dpnp_glue as dpnp_lowering
+    import numba_dppy.dpnp_iface as dpnp_lowering
 
     old, dpnp_lowering.DEBUG = dpnp_lowering.DEBUG, 1
     yield
