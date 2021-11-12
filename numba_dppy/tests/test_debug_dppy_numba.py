@@ -62,8 +62,8 @@ class gdb:
         env["NUMBA_EXTEND_VARIABLE_LIFETIMES"] = "1"
 
         self.child = pexpect.spawn("gdb-oneapi -q python", env=env, encoding="utf-8")
-        # if config.DEBUG:
-        self.child.logfile = sys.stdout
+        if config.DEBUG:
+            self.child.logfile = sys.stdout
 
     def setup_gdb(self):
         self.child.expect("(gdb)", timeout=5)
