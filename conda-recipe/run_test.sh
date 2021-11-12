@@ -2,7 +2,7 @@
 
 set -euxo pipefail
 
-DEBUGGER_VERSION=10.1.2
+DEBUGGER_VERSION=10.2.4
 if [[ -v ONEAPI_ROOT ]]; then
     DEBUGGER_DIR="${ONEAPI_ROOT}/debugger/${DEBUGGER_VERSION}"
 else
@@ -19,8 +19,9 @@ else
     echo "Debugger is not installed: ${DEBUGGER_DIR}"
 fi
 
-PYARGS="-k test_debug_dppy_numba -k dummy"
-pytest -q -ra --disable-warnings --pyargs numba_dppy -vv ${PYARGS}
+PYARGS="-k test_debug_dppy_numba"
+# shellcheck disable=SC2086
+pytest -q -ra --disable-warnings --pyargs numba_dppy -vv $PYARGS
 
 exit 0
 

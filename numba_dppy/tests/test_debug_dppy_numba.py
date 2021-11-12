@@ -129,10 +129,6 @@ def app():
     return gdb()
 
 
-def test_dummy():
-    assert True
-
-
 @pytest.mark.parametrize("api", ["numba", "numba-dppy"])
 def test_breakpoint_row_number(app, api):
     app.breakpoint("dppy_numba_basic.py:25")
