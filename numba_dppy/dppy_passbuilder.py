@@ -38,7 +38,7 @@ from numba.core.untyped_passes import (
     WithLifting,
 )
 
-from .dppy_passes import (
+from numba_dppy.core.passes.dppy_passes import (
     DPPYConstantSizeStaticLocalMemoryPass,
     DPPYDumpParforDiagnostics,
     DPPYNoPythonBackend,
@@ -46,7 +46,7 @@ from .dppy_passes import (
     DPPYPreParforPass,
     SpirvFriendlyLowering,
 )
-from .rename_numpy_functions_pass import (
+from numba_dppy.core.passes.rename_numpy_functions_pass import (
     DPPYRewriteNdarrayFunctions,
     DPPYRewriteOverloadedNumPyFunctions,
 )
