@@ -42,11 +42,12 @@ def test_private_memory(filter_str):
         i = numba_dppy.get_global_id(0)
         prvt_mem = numba_dppy.private.array(shape=1, dtype=np.float32)
         prvt_mem[0] = i
+        numba_dppy.barrier(numba_dppy.CLK_LOCAL_MEM_FENCE)  # local mem fence
         A[i] = prvt_mem[0] * 2
 
     N = 64
-    arr = np.arange(N).astype(np.float32)
-    orig = arr.copy()
+    arr = np.zeros(N).astype(np.float32)
+    orig = np.arange(N).astype(np.float32)
 
     with numba_dppy.offload_to_sycl_device(filter_str):
         private_memory_kernel[N, N](arr)
