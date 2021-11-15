@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy.target module &mdash; numba-dppy 0.17.1 documentation</title>
+  <title>numba_dppy.target module &mdash; numba-dppy 0.17.1+1.g782d07f documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -81,7 +81,7 @@
 <span id="numba-dppy-target-module"></span><h1>numba_dppy.target module<a class="headerlink" href="#module-numba_dppy.target" title="Permalink to this headline"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dppy.target.DPPYCallConv">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">DPPYCallConv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYCallConv" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">DPPYCallConv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYCallConv" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.callconv.MinimalCallConv</span></code></p>
 <p>Custom calling convention class used by numba-dppy.</p>
 <p>Numba-dppy’s calling convention derives from
@@ -97,7 +97,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">DPPYTargetContext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typingctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SyclDevice'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">DPPYTargetContext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typingctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SyclDevice'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.base.BaseContext</span></code></p>
 <p>A numba_dppy-specific target context inheriting Numba’s <code class="docutils literal notranslate"><span class="pre">BaseContext</span></code>.</p>
 <p><a class="reference internal" href="#numba_dppy.target.DPPYTargetContext" title="numba_dppy.target.DPPYTargetContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">DPPYTargetContext</span></code></a> is a customized target context that inherits
@@ -115,7 +115,7 @@ numba_dppy’s compiler passes.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.call_conv">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">call_conv</span></span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.call_conv" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">call_conv</span></span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.call_conv" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -170,7 +170,7 @@ implementation.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.implement_powi_as_math_call">
-<span class="sig-name descname"><span class="pre">implement_powi_as_math_call</span></span><em class="property"> <span class="pre">=</span> <span class="pre">True</span></em><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.implement_powi_as_math_call" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">implement_powi_as_math_call</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.implement_powi_as_math_call" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -229,14 +229,14 @@ been registered into the target context.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.target_data">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">target_data</span></span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.target_data" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">target_data</span></span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.target_data" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dppy.target.DPPYTypingContext">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">DPPYTypingContext</span></span><a class="headerlink" href="#numba_dppy.target.DPPYTypingContext" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">DPPYTypingContext</span></span><a class="headerlink" href="#numba_dppy.target.DPPYTypingContext" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.typing.context.BaseContext</span></code></p>
 <p>A numba_dppy-specific typing context inheriting Numba’s <code class="docutils literal notranslate"><span class="pre">BaseContext</span></code>.</p>
 <p><a class="reference internal" href="#numba_dppy.target.DPPYTypingContext" title="numba_dppy.target.DPPYTypingContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">DPPYTypingContext</span></code></a> is a customized typing context that inherits from
@@ -278,13 +278,13 @@ function, it is converted to a <code class="docutils literal notranslate"><span 
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dppy.target.GenericPointerModel">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">GenericPointerModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dmm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fe_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.GenericPointerModel" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">GenericPointerModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dmm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fe_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.GenericPointerModel" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.datamodel.models.PrimitiveModel</span></code></p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dppy.target.SyclDevice">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">SyclDevice</span></span><a class="headerlink" href="#numba_dppy.target.SyclDevice" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">SyclDevice</span></span><a class="headerlink" href="#numba_dppy.target.SyclDevice" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.target_extension.GPU</span></code></p>
 <p>Mark the hardware target as SYCL Device.</p>
 </dd></dl>

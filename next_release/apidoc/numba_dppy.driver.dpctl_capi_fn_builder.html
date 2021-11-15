@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy.driver.dpctl_capi_fn_builder module &mdash; numba-dppy 0.17.1 documentation</title>
+  <title>numba_dppy.driver.dpctl_capi_fn_builder module &mdash; numba-dppy 0.17.1+1.g782d07f documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -83,13 +83,13 @@
 declarations into an LLVM module.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.driver.dpctl_capi_fn_builder.</span></span><span class="sig-name descname"><span class="pre">DpctlCAPIFnBuilder</span></span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.driver.dpctl_capi_fn_builder.</span></span><span class="sig-name descname"><span class="pre">DpctlCAPIFnBuilder</span></span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Defines a set of static functions to add declarations for dpctl C API
 library function into an LLVM module.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_event_delete">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_dpctl_event_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_event_delete" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_dpctl_event_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_event_delete" title="Permalink to this definition"></a></dt>
 <dd><p>Inserts an LLVM Function for <code class="docutils literal notranslate"><span class="pre">DPCTLEvent_Delete</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">DPCTLEvent_Delete</span></code> function deletes a <code class="docutils literal notranslate"><span class="pre">DPCTLSyclEventRef</span></code>
 opaque pointer.</p>
@@ -104,7 +104,7 @@ context: The LLVM IR builder context.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_event_wait">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_dpctl_event_wait</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_event_wait" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_dpctl_event_wait</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_event_wait" title="Permalink to this definition"></a></dt>
 <dd><p>Inserts an LLVM Function for <code class="docutils literal notranslate"><span class="pre">DPCTLEvent_Wait</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">DPCTLEvent_Wait</span></code> function is a wrapper over the
 <code class="docutils literal notranslate"><span class="pre">sycl::event</span></code> class’ <code class="docutils literal notranslate"><span class="pre">wait()</span></code> function.</p>
@@ -119,7 +119,7 @@ context: The LLVM IR builder context.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_free_with_queue">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_dpctl_free_with_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_free_with_queue" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_dpctl_free_with_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_free_with_queue" title="Permalink to this definition"></a></dt>
 <dd><p>Inserts an LLVM Function for <code class="docutils literal notranslate"><span class="pre">DPCTLfree_with_queue</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">DPCTLfree_with_queue</span></code> function is a wrapper over
 <code class="docutils literal notranslate"><span class="pre">sycl::free(void*,</span> <span class="pre">queue)</span></code> function. All the opaque pointers
@@ -135,7 +135,7 @@ context: The LLVM IR builder context.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_malloc_shared">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_dpctl_malloc_shared</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_malloc_shared" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_dpctl_malloc_shared</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_malloc_shared" title="Permalink to this definition"></a></dt>
 <dd><p>Inserts an LLVM Function for <code class="docutils literal notranslate"><span class="pre">DPCTLmalloc_shared</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">DPCTLmalloc_shared</span></code> is a wrapper over the
 <code class="docutils literal notranslate"><span class="pre">sycl::malloc_shared</span></code> function to allocate USM shared memory.</p>
@@ -150,7 +150,7 @@ context: The LLVM IR builder context.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queue_delete">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_dpctl_queue_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queue_delete" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_dpctl_queue_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queue_delete" title="Permalink to this definition"></a></dt>
 <dd><p>Inserts an LLVM Function for the <code class="docutils literal notranslate"><span class="pre">DPCTLQueue_Delete</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">DPCTLQueue_Delete</span></code> deletes a DPCTLSyclQueueRef opaque pointer.</p>
 <dl class="simple">
@@ -164,7 +164,7 @@ context: The LLVM IR builder context.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queue_memcpy">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_dpctl_queue_memcpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queue_memcpy" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_dpctl_queue_memcpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queue_memcpy" title="Permalink to this definition"></a></dt>
 <dd><p>Inserts an LLVM Function for the <code class="docutils literal notranslate"><span class="pre">DPCTLQueue_Memcpy</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">DPCTLQueue_Memcpy</span></code> function is a wrapper over <code class="docutils literal notranslate"><span class="pre">sycl::queue</span></code>
 class’ <code class="docutils literal notranslate"><span class="pre">event</span> <span class="pre">memcpy(void*</span> <span class="pre">dest,</span> <span class="pre">const</span> <span class="pre">void*</span> <span class="pre">src,</span> <span class="pre">size_t</span> <span class="pre">numBytes)</span></code>
@@ -183,7 +183,7 @@ context: The LLVM IR builder context.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queue_submit_range">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_dpctl_queue_submit_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queue_submit_range" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_dpctl_queue_submit_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queue_submit_range" title="Permalink to this definition"></a></dt>
 <dd><p>Inserts an LLVM Function for <code class="docutils literal notranslate"><span class="pre">DPCTLQueue_SubmitRange</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">DPCTLQueue_SubmitRange</span></code> function is a wrapper over the
 <code class="docutils literal notranslate"><span class="pre">sycl::queue</span></code> class’ <code class="docutils literal notranslate"><span class="pre">event</span> <span class="pre">parallel_for(range&lt;dimensions&gt;</span>
@@ -203,7 +203,7 @@ context: The LLVM IR builder context.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queue_wait">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_dpctl_queue_wait</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queue_wait" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_dpctl_queue_wait</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queue_wait" title="Permalink to this definition"></a></dt>
 <dd><p>Inserts an LLVM Function for <code class="docutils literal notranslate"><span class="pre">DPCTLQueue_Wait</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">DPCTLQueue_Wait</span></code> is a wrapper over <code class="docutils literal notranslate"><span class="pre">sycl::queue</span></code> class’
 <code class="docutils literal notranslate"><span class="pre">wait()</span></code> function.</p>
@@ -218,7 +218,7 @@ context: The LLVM IR builder context.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queuemgr_get_current_queue">
-<em class="property"><span class="pre">static</span> </em><span class="sig-name descname"><span class="pre">get_dpctl_queuemgr_get_current_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queuemgr_get_current_queue" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_dpctl_queuemgr_get_current_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queuemgr_get_current_queue" title="Permalink to this definition"></a></dt>
 <dd><p>Inserts an LLVM Function for <code class="docutils literal notranslate"><span class="pre">DPCTLQueueMgr_GetCurrentQueue</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">DPCTLQueueMgr_GetCurrentQueue</span></code> function returns the current
 top-of-the-stack SYCL queue that is stored in dpclt’s queue manager.</p>
