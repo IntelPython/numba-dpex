@@ -1,3 +1,7 @@
+# new llvm-spirv location
+# starting from dpcpp_impl_win-64=2022.0.0=intel_3638 location is env\Library\bin-llvm
+set PATH=%LIBRARY_PREFIX%\bin-llvm;%PATH%
+
 %PYTHON% setup.py install --single-version-externally-managed --record=record.txt
 
 rem Build wheel package
