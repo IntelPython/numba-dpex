@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy.ocl.atomics.atomic_helper module &mdash; numba-dppy 0.17.0+3.g90c411e documentation</title>
+  <title>numba_dppy.ocl.atomics.atomic_helper module &mdash; numba-dppy 0.17.2+4.gadf7169 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -97,7 +97,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dppy.ocl.atomics.atomic_helper.sycl_memory_order">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.ocl.atomics.atomic_helper.</span></span><span class="sig-name descname"><span class="pre">sycl_memory_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_order" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.ocl.atomics.atomic_helper.</span></span><span class="sig-name descname"><span class="pre">sycl_memory_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_order" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
 <p>An enumeration of SYCL memory order. For more details please refer to
 SYCL 2020 specification, section 3.8.3.1
@@ -137,34 +137,34 @@ SYCL 2020 specification, section 3.8.3.1
 </table>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.ocl.atomics.atomic_helper.sycl_memory_order.acq_rel">
-<span class="sig-name descname"><span class="pre">acq_rel</span></span><em class="property"> <span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_order.acq_rel" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">acq_rel</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_order.acq_rel" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.ocl.atomics.atomic_helper.sycl_memory_order.acquire">
-<span class="sig-name descname"><span class="pre">acquire</span></span><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_order.acquire" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">acquire</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_order.acquire" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.ocl.atomics.atomic_helper.sycl_memory_order.relaxed">
-<span class="sig-name descname"><span class="pre">relaxed</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_order.relaxed" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">relaxed</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_order.relaxed" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.ocl.atomics.atomic_helper.sycl_memory_order.release">
-<span class="sig-name descname"><span class="pre">release</span></span><em class="property"> <span class="pre">=</span> <span class="pre">4</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_order.release" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">release</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_order.release" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.ocl.atomics.atomic_helper.sycl_memory_order.seq_cst">
-<span class="sig-name descname"><span class="pre">seq_cst</span></span><em class="property"> <span class="pre">=</span> <span class="pre">6</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_order.seq_cst" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">seq_cst</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_order.seq_cst" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.ocl.atomics.atomic_helper.</span></span><span class="sig-name descname"><span class="pre">sycl_memory_scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.ocl.atomics.atomic_helper.</span></span><span class="sig-name descname"><span class="pre">sycl_memory_scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
 <p>An enumeration of SYCL memory scope. For more details please refer to
 SYCL 2020 specification, section 3.8.3.2
@@ -201,27 +201,27 @@ SYCL 2020 specification, section 3.8.3.2
 </table>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope.device">
-<span class="sig-name descname"><span class="pre">device</span></span><em class="property"> <span class="pre">=</span> <span class="pre">4</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope.device" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">device</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope.device" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope.sub_group">
-<span class="sig-name descname"><span class="pre">sub_group</span></span><em class="property"> <span class="pre">=</span> <span class="pre">2</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope.sub_group" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">sub_group</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope.sub_group" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope.system">
-<span class="sig-name descname"><span class="pre">system</span></span><em class="property"> <span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope.system" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">system</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope.system" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope.work_group">
-<span class="sig-name descname"><span class="pre">work_group</span></span><em class="property"> <span class="pre">=</span> <span class="pre">3</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope.work_group" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">work_group</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope.work_group" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope.work_item">
-<span class="sig-name descname"><span class="pre">work_item</span></span><em class="property"> <span class="pre">=</span> <span class="pre">1</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope.work_item" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">work_item</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#numba_dppy.ocl.atomics.atomic_helper.sycl_memory_scope.work_item" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>

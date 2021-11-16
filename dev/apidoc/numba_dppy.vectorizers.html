@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy.vectorizers module &mdash; numba-dppy 0.17.0+3.g90c411e documentation</title>
+  <title>numba_dppy.vectorizers module &mdash; numba-dppy 0.17.2+4.gadf7169 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -82,7 +82,7 @@
 <p>Provide &#64;vectorize(target=”dppy”) support.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dppy.vectorizers.DPPYUFuncDispatcher">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.vectorizers.</span></span><span class="sig-name descname"><span class="pre">DPPYUFuncDispatcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types_to_retty_kernels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.vectorizers.DPPYUFuncDispatcher" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.vectorizers.</span></span><span class="sig-name descname"><span class="pre">DPPYUFuncDispatcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types_to_retty_kernels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.vectorizers.DPPYUFuncDispatcher" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Invoke the dppy ufunc specialization for the given inputs.</p>
 <dl class="py method">
@@ -94,7 +94,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dppy.vectorizers.DPPYUFuncMechanism">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.vectorizers.</span></span><span class="sig-name descname"><span class="pre">DPPYUFuncMechanism</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.vectorizers.DPPYUFuncMechanism" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.vectorizers.</span></span><span class="sig-name descname"><span class="pre">DPPYUFuncMechanism</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.vectorizers.DPPYUFuncMechanism" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.np.ufunc.deviceufunc.UFuncMechanism</span></code></p>
 <p>Mechanism to process Input to a SYCL kernel and launch that kernel</p>
 <dl class="py method">
@@ -114,7 +114,7 @@ Override in subclass</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.vectorizers.DPPYUFuncMechanism.call">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kws</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.vectorizers.DPPYUFuncMechanism.call" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kws</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.vectorizers.DPPYUFuncMechanism.call" title="Permalink to this definition"></a></dt>
 <dd><p>Perform the entire ufunc call mechanism.
 Args:</p>
 <blockquote>
@@ -168,7 +168,7 @@ Override in subclass</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dppy.vectorizers.DPPYVectorize">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.vectorizers.</span></span><span class="sig-name descname"><span class="pre">DPPYVectorize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetoptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.vectorizers.DPPYVectorize" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.vectorizers.</span></span><span class="sig-name descname"><span class="pre">DPPYVectorize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetoptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.vectorizers.DPPYVectorize" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.np.ufunc.deviceufunc.DeviceVectorize</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.vectorizers.DPPYVectorize.build_ufunc">

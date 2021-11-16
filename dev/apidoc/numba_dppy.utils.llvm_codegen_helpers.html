@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy.utils.llvm_codegen_helpers module &mdash; numba-dppy 0.17.0+3.g90c411e documentation</title>
+  <title>numba_dppy.utils.llvm_codegen_helpers module &mdash; numba-dppy 0.17.2+4.gadf7169 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -81,47 +81,47 @@
 <span id="numba-dppy-utils-llvm-codegen-helpers-module"></span><h1>numba_dppy.utils.llvm_codegen_helpers module<a class="headerlink" href="#module-numba_dppy.utils.llvm_codegen_helpers" title="Permalink to this headline"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dppy.utils.llvm_codegen_helpers.LLVMTypes">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">numba_dppy.utils.llvm_codegen_helpers.</span></span><span class="sig-name descname"><span class="pre">LLVMTypes</span></span><a class="headerlink" href="#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.utils.llvm_codegen_helpers.</span></span><span class="sig-name descname"><span class="pre">LLVMTypes</span></span><a class="headerlink" href="#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A helper class to get LLVM Values for integer C types.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.byte_ptr_ptr_t">
-<span class="sig-name descname"><span class="pre">byte_ptr_ptr_t</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.PointerType'&gt;</span> <span class="pre">i8**&gt;</span></em><a class="headerlink" href="#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.byte_ptr_ptr_t" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">byte_ptr_ptr_t</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.PointerType'&gt;</span> <span class="pre">i8**&gt;</span></em><a class="headerlink" href="#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.byte_ptr_ptr_t" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.byte_ptr_t">
-<span class="sig-name descname"><span class="pre">byte_ptr_t</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.PointerType'&gt;</span> <span class="pre">i8*&gt;</span></em><a class="headerlink" href="#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.byte_ptr_t" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">byte_ptr_t</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.PointerType'&gt;</span> <span class="pre">i8*&gt;</span></em><a class="headerlink" href="#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.byte_ptr_t" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.byte_t">
-<span class="sig-name descname"><span class="pre">byte_t</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.IntType'&gt;</span> <span class="pre">i8&gt;</span></em><a class="headerlink" href="#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.byte_t" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">byte_t</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.IntType'&gt;</span> <span class="pre">i8&gt;</span></em><a class="headerlink" href="#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.byte_t" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.int32_ptr_t">
-<span class="sig-name descname"><span class="pre">int32_ptr_t</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.PointerType'&gt;</span> <span class="pre">i32*&gt;</span></em><a class="headerlink" href="#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.int32_ptr_t" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">int32_ptr_t</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.PointerType'&gt;</span> <span class="pre">i32*&gt;</span></em><a class="headerlink" href="#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.int32_ptr_t" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.int32_t">
-<span class="sig-name descname"><span class="pre">int32_t</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.IntType'&gt;</span> <span class="pre">i32&gt;</span></em><a class="headerlink" href="#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.int32_t" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">int32_t</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.IntType'&gt;</span> <span class="pre">i32&gt;</span></em><a class="headerlink" href="#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.int32_t" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.int64_ptr_t">
-<span class="sig-name descname"><span class="pre">int64_ptr_t</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.PointerType'&gt;</span> <span class="pre">i64*&gt;</span></em><a class="headerlink" href="#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.int64_ptr_t" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">int64_ptr_t</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.PointerType'&gt;</span> <span class="pre">i64*&gt;</span></em><a class="headerlink" href="#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.int64_ptr_t" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.int64_t">
-<span class="sig-name descname"><span class="pre">int64_t</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.IntType'&gt;</span> <span class="pre">i64&gt;</span></em><a class="headerlink" href="#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.int64_t" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">int64_t</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.IntType'&gt;</span> <span class="pre">i64&gt;</span></em><a class="headerlink" href="#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.int64_t" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.void_t">
-<span class="sig-name descname"><span class="pre">void_t</span></span><em class="property"> <span class="pre">=</span> <span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.VoidType'&gt;</span> <span class="pre">void&gt;</span></em><a class="headerlink" href="#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.void_t" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">void_t</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.VoidType'&gt;</span> <span class="pre">void&gt;</span></em><a class="headerlink" href="#numba_dppy.utils.llvm_codegen_helpers.LLVMTypes.void_t" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
