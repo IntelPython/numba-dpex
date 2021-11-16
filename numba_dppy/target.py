@@ -27,7 +27,7 @@ from numba.core.target_extension import GPU, target_registry
 from numba.core.utils import cached_property
 
 from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
-from numba_dppy.utils import address_space, calling_conv, npytypes_array_to_dppy_array
+from numba_dppy.utils import address_space, calling_conv, npytypes_array_to_dppy_array, has_usm_memory, suai_to_dppy_array_type
 
 from . import codegen
 
@@ -69,7 +69,13 @@ class DPPYTypingContext(typing.BaseContext):
             ValueError: If the type of the Python value is not supported.
 
         """
-        if type(typeof(val)) is types.npytypes.Array:
+        try:
+            _type = type(typeof(val))
+        except ValueError:
+            if has_usm_memory(val) is not None:
+                return suai_to_dppy_array_type(val)
+
+        if _type is types.npytypes.Array:
             # Convert npytypes.Array to DPPYArray
             return npytypes_array_to_dppy_array(typeof(val))
         else:

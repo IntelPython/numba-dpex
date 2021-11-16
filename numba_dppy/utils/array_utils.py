@@ -30,6 +30,23 @@ supported_numpy_dtype = [
 ]
 
 
+def get_info_from_suai(obj):
+    assert dpctl_mem.as_usm_memory(obj) is not None
+
+    shape = obj.__sycl_usm_array_interface__["shape"]
+    total_size = np.prod(obj.__sycl_usm_array_interface__["shape"])
+    ndim = len(obj.__sycl_usm_array_interface__["shape"])
+    itemsize = np.dtype(obj.__sycl_usm_array_interface__["typestr"]).itemsize
+    dtype = np.dtype(obj.__sycl_usm_array_interface__["typestr"])
+    strides = obj.__sycl_usm_array_interface__["strides"]
+    if strides is None:
+        strides = [1, ] * ndim
+        for i in reversed(range(1, ndim)):
+            strides[i - 1] = strides[i] * shape[i]
+        strides = tuple(strides)
+    return total_size, shape, ndim, itemsize, strides, dtype
+
+
 def has_usm_memory(obj):
     """
     Determine and return a SYCL device accesible object.
