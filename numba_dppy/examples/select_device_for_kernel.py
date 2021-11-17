@@ -51,6 +51,7 @@ their computation.
         3. Same queue properties
 '''
 
+
 @numba_dppy.kernel
 def sum_kernel(a, b, c):
     i = numba_dppy.get_global_id(0)
