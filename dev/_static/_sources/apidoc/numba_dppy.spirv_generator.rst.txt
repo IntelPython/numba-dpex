@@ -1,0 +1,7 @@
+numba\_dppy.spirv\_generator module
+===================================
+
+.. automodule:: numba_dppy.spirv_generator
+   :members:
+   :undoc-members:
+   :show-inheritance:

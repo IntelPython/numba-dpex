@@ -1,0 +1,235 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>numba-dppy &mdash; numba-dppy 0.12.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Debugging with GDB" href="DEBUGGING.html" />
+    <link rel="prev" title="Features" href="HowTo.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> numba-dppy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="HowTo.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HowTo.html#examples">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HowTo.html#parfor-support">ParFor Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="HowTo.html#testing">Testing</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">numba-dppy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#offload-diagnostics">Offload Diagnostics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#controllable-fallback">Controllable Fallback</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DEBUGGING.html">Debugging with GDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">For DPPY users</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dppy/index.html">Numba for DPPY GPUs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dppy-reference/index.html">DPPY Python Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">NumPy support through &#64;njit</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="numpy_support/numpy.html">Numpy support</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">numba-dppy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>numba-dppy</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/INDEX.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="numba-dppy">
+<h1>numba-dppy<a class="headerlink" href="#numba-dppy" title="Permalink to this headline">¶</a></h1>
+<p>Below is the functionality that is implemented in numba-dppy. You can follow the detailed descriptions of some of the features.</p>
+<div class="section" id="offload-diagnostics">
+<h2>Offload Diagnostics<a class="headerlink" href="#offload-diagnostics" title="Permalink to this headline">¶</a></h2>
+<p>Setting the debug environment variable <code class="docutils literal notranslate"><span class="pre">NUMBA_DPPY_OFFLOAD_DIAGNOSTICS</span> </code>
+(e.g. <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">NUMBA_DPPY_OFFLOAD_DIAGNOSTICS=1</span></code>) enables the parallel and offload diagnostics information.</p>
+<p>If set to an integer value between 1 and 4 (inclusive) diagnostic information about parallel transforms undertaken by Numba will be written to STDOUT. The higher the value set the more detailed the information produced.
+In the “Auto-offloading” section there is the information on which device (device name) this parfor or kernel was offloaded.</p>
+</div>
+<div class="section" id="controllable-fallback">
+<h2>Controllable Fallback<a class="headerlink" href="#controllable-fallback" title="Permalink to this headline">¶</a></h2>
+<p>With the default behavior of numba-dppy, if a section of code cannot be offloaded on the GPU, then it is automatically executed on the CPU and printed a warning. This behavior only applies to njit functions and auto-offloading of numpy functions, array expressions, and prange loops.</p>
+<p>Setting the debug environment variable <code class="docutils literal notranslate"><span class="pre">NUMBA_DPPY_FALLBACK_OPTION</span> </code>
+(e.g. <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">NUMBA_DPPY_FALLBACK_OPTION=0</span></code>) enables the code is not automatically offload to the CPU, and an error occurs. This is necessary in order to understand at an early stage which parts of the code do not work on the GPU, and not to wait for the program to execute on the CPU if you don’t need it.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="DEBUGGING.html" class="btn btn-neutral float-right" title="Debugging with GDB" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="HowTo.html" class="btn btn-neutral float-left" title="Features" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Intel
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

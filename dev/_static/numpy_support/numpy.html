@@ -1,0 +1,993 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Numpy support &mdash; numba-dppy 0.12.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="DPPY Python Reference" href="../dppy-reference/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> numba-dppy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../HowTo.html">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../HowTo.html#examples">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../HowTo.html#parfor-support">ParFor Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../HowTo.html#testing">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../INDEX.html">numba-dppy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../DEBUGGING.html">Debugging with GDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CONTRIBUTING.html">Contributing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">For DPPY users</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dppy/index.html">Numba for DPPY GPUs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dppy-reference/index.html">DPPY Python Reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">NumPy support through &#64;njit</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Numpy support</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">numba-dppy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Numpy support</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/numpy_support/numpy.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-numba_dppy.numpy.stubs">
+<span id="numpy-support"></span><h1>Numpy support<a class="headerlink" href="#module-numba_dppy.numpy.stubs" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="numba_dppy.numpy.stubs.numpy">
+<em class="property">class </em><code class="sig-prename descclassname">numba_dppy.numpy.stubs.</code><code class="sig-name descname">numpy</code><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.abs">
+<code class="sig-name descname">abs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.abs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.abs()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.absolute">
+<code class="sig-name descname">absolute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.absolute" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.absolute()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.add()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.all">
+<code class="sig-name descname">all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.all" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.all()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.amax">
+<code class="sig-name descname">amax</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.amax" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.amax()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.amin">
+<code class="sig-name descname">amin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.amin" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.amin()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.any">
+<code class="sig-name descname">any</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.any" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.any()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.arange">
+<code class="sig-name descname">arange</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.arange" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.arange()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.arccos">
+<code class="sig-name descname">arccos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.arccos" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.arccos()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.arccosh">
+<code class="sig-name descname">arccosh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.arccosh" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.arccosh()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.arcsin">
+<code class="sig-name descname">arcsin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.arcsin" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.arcsin()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.arcsinh">
+<code class="sig-name descname">arcsinh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.arcsinh" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.arcsinh()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.arctan">
+<code class="sig-name descname">arctan</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.arctan" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.arctan()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.arctan2">
+<code class="sig-name descname">arctan2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.arctan2" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.arctan2()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.arctanh">
+<code class="sig-name descname">arctanh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.arctanh" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.arctanh()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.argmax">
+<code class="sig-name descname">argmax</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.argmax" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.argmax()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.argmin">
+<code class="sig-name descname">argmin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.argmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.argmin()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.argsort">
+<code class="sig-name descname">argsort</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.argsort" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.argsort()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.beta">
+<code class="sig-name descname">beta</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.beta" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.beta()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.binomial">
+<code class="sig-name descname">binomial</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.binomial" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.binomial()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.bitwise_and">
+<code class="sig-name descname">bitwise_and</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.bitwise_and" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.bitwise_and()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.bitwise_not">
+<code class="sig-name descname">bitwise_not</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.bitwise_not" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.bitwise_not()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.bitwise_or">
+<code class="sig-name descname">bitwise_or</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.bitwise_or" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.bitwise_or()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.bitwise_xor">
+<code class="sig-name descname">bitwise_xor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.bitwise_xor" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.bitwise_xor()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.ceil">
+<code class="sig-name descname">ceil</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.ceil" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.ceil()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.chisquare">
+<code class="sig-name descname">chisquare</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.chisquare" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.chisquare()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.cholesky">
+<code class="sig-name descname">cholesky</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.cholesky" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.linalg.cholesky()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.cos">
+<code class="sig-name descname">cos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.cos" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.cos()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.cosh">
+<code class="sig-name descname">cosh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.cosh" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.cosh()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.cov">
+<code class="sig-name descname">cov</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.cov" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.cov()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.deg2rad">
+<code class="sig-name descname">deg2rad</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.deg2rad" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.deg2rad()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.degrees">
+<code class="sig-name descname">degrees</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.degrees" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.degrees()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.det">
+<code class="sig-name descname">det</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.det" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.linalg.det()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.divide">
+<code class="sig-name descname">divide</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.divide" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.divide()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.dot">
+<code class="sig-name descname">dot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.dot" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.dot()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.eig">
+<code class="sig-name descname">eig</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.eig" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.linalg.eig()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.eigvals">
+<code class="sig-name descname">eigvals</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.eigvals" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.linalg.eigvals()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.empty">
+<code class="sig-name descname">empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.empty()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.empty_like">
+<code class="sig-name descname">empty_like</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.empty_like" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.empty_like()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.equal">
+<code class="sig-name descname">equal</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.equal()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.exp">
+<code class="sig-name descname">exp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.exp" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.exp()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.exp2">
+<code class="sig-name descname">exp2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.exp2" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.exp2()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.expm1">
+<code class="sig-name descname">expm1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.expm1" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.expm1()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.exponential">
+<code class="sig-name descname">exponential</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.exponential" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.exponential()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.fabs">
+<code class="sig-name descname">fabs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.fabs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.fabs()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.floor">
+<code class="sig-name descname">floor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.floor" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.floor()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.fmax">
+<code class="sig-name descname">fmax</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.fmax" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.fmax()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.fmin">
+<code class="sig-name descname">fmin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.fmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.fmin()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.fmod">
+<code class="sig-name descname">fmod</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.fmod" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.fmod()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.gamma">
+<code class="sig-name descname">gamma</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.gamma" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.gamma()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.geometric">
+<code class="sig-name descname">geometric</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.geometric" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.geometric()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.greater">
+<code class="sig-name descname">greater</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.greater" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.greater()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.greater_equal">
+<code class="sig-name descname">greater_equal</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.greater_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.greater_equal()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.gumbel">
+<code class="sig-name descname">gumbel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.gumbel" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.gumbel()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.hypergeometric">
+<code class="sig-name descname">hypergeometric</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.hypergeometric" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.hypergeometric()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.hypot">
+<code class="sig-name descname">hypot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.hypot" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.hypot()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.invert">
+<code class="sig-name descname">invert</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.invert" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.invert()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.isfinite">
+<code class="sig-name descname">isfinite</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.isfinite" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.isfinite()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.isinf">
+<code class="sig-name descname">isinf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.isinf" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.isinf()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.isnan">
+<code class="sig-name descname">isnan</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.isnan" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.isnan()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.laplace">
+<code class="sig-name descname">laplace</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.laplace" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.laplace()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.left_shift">
+<code class="sig-name descname">left_shift</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.left_shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.left_shift()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.less">
+<code class="sig-name descname">less</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.less" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.less()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.less_equal">
+<code class="sig-name descname">less_equal</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.less_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.less_equal()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.log">
+<code class="sig-name descname">log</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.log" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.log()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.log10">
+<code class="sig-name descname">log10</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.log10" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.log10()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.log1p">
+<code class="sig-name descname">log1p</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.log1p" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.log1p()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.log2">
+<code class="sig-name descname">log2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.log2" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.log2()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.logical_and">
+<code class="sig-name descname">logical_and</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.logical_and" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.logical_and()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.logical_not">
+<code class="sig-name descname">logical_not</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.logical_not" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.logical_not()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.logical_or">
+<code class="sig-name descname">logical_or</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.logical_or" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.logical_or()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.logical_xor">
+<code class="sig-name descname">logical_xor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.logical_xor" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.logical_xor()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.lognormal">
+<code class="sig-name descname">lognormal</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.lognormal" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.lognormal()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.matmul">
+<code class="sig-name descname">matmul</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.matmul" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.matmul()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.matrix_power">
+<code class="sig-name descname">matrix_power</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.matrix_power" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.linalg.matrix_power()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.matrix_rank">
+<code class="sig-name descname">matrix_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.matrix_rank" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.linalg.matrix_rank()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.max">
+<code class="sig-name descname">max</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.max" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.max()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.maximum">
+<code class="sig-name descname">maximum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.maximum" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.maximum()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.mean">
+<code class="sig-name descname">mean</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.mean()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.median">
+<code class="sig-name descname">median</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.median" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.median()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.min">
+<code class="sig-name descname">min</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.min" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.min()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.minimum">
+<code class="sig-name descname">minimum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.minimum" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.minimum()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.mod">
+<code class="sig-name descname">mod</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.mod" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.mod()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.multi_dot">
+<code class="sig-name descname">multi_dot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.multi_dot" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.linalg.multi_dot()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.multinomial">
+<code class="sig-name descname">multinomial</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.multinomial" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.multinomial()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.multiply">
+<code class="sig-name descname">multiply</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.multiply" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.multiply()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.multivariate_normal">
+<code class="sig-name descname">multivariate_normal</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.multivariate_normal" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.multivariate_normal()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.nanprod">
+<code class="sig-name descname">nanprod</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.nanprod" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.nanprod()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.nansum">
+<code class="sig-name descname">nansum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.nansum" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.nansum()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.negative">
+<code class="sig-name descname">negative</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.negative" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.negative()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.negative_binomial">
+<code class="sig-name descname">negative_binomial</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.negative_binomial" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.negative_binomial()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.normal">
+<code class="sig-name descname">normal</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.normal" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.normal()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.not_equal">
+<code class="sig-name descname">not_equal</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.not_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.not_equal()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.poisson">
+<code class="sig-name descname">poisson</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.poisson" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.poisson()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.power">
+<code class="sig-name descname">power</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.power" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.power()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.prod">
+<code class="sig-name descname">prod</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.prod" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.prod()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.rad2deg">
+<code class="sig-name descname">rad2deg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.rad2deg" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.rad2deg()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.radians">
+<code class="sig-name descname">radians</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.radians" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.radians()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.rand">
+<code class="sig-name descname">rand</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.rand" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.rand()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.randint">
+<code class="sig-name descname">randint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.randint" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.randint()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.random">
+<code class="sig-name descname">random</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.random" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.random()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.random_integers">
+<code class="sig-name descname">random_integers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.random_integers" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.random_integers()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.random_sample">
+<code class="sig-name descname">random_sample</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.random_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.random_sample()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.ranf">
+<code class="sig-name descname">ranf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.ranf" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.ranf()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.rayleigh">
+<code class="sig-name descname">rayleigh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.rayleigh" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.rayleigh()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.reciprocal">
+<code class="sig-name descname">reciprocal</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.reciprocal" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.reciprocal()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.remainder">
+<code class="sig-name descname">remainder</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.remainder" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.remainder()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.right_shift">
+<code class="sig-name descname">right_shift</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.right_shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.right_shift()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.sample">
+<code class="sig-name descname">sample</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.sample()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.sdones">
+<code class="sig-name descname">sdones</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.sdones" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.sdones()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.sign">
+<code class="sig-name descname">sign</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.sign" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.sign()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.sin">
+<code class="sig-name descname">sin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.sin" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.sin()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.sinh">
+<code class="sig-name descname">sinh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.sinh" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.sinh()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.sqrt">
+<code class="sig-name descname">sqrt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.sqrt" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.sqrt()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.square">
+<code class="sig-name descname">square</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.square" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.square()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.standard_cauchy">
+<code class="sig-name descname">standard_cauchy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.standard_cauchy" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.standard_cauchy()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.standard_exponential">
+<code class="sig-name descname">standard_exponential</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.standard_exponential" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.standard_exponential()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.standard_gamma">
+<code class="sig-name descname">standard_gamma</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.standard_gamma" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.standard_gamma()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.standard_normal">
+<code class="sig-name descname">standard_normal</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.standard_normal" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.standard_normal()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.subtract">
+<code class="sig-name descname">subtract</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.subtract" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.subtract()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.sum">
+<code class="sig-name descname">sum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.sum()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.tan">
+<code class="sig-name descname">tan</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.tan" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.tan()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.tanh">
+<code class="sig-name descname">tanh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.tanh" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.tanh()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.true_divide">
+<code class="sig-name descname">true_divide</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.true_divide" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.true_divide()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.trunc">
+<code class="sig-name descname">trunc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.trunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.trunc()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.uniform">
+<code class="sig-name descname">uniform</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.uniform" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.uniform()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.vdot">
+<code class="sig-name descname">vdot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.vdot" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.vdot()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.weibull">
+<code class="sig-name descname">weibull</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.weibull" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.random.weibull()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="numba_dppy.numpy.stubs.numpy.zeros">
+<code class="sig-name descname">zeros</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy.stubs.numpy.zeros" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function provides numpy.zeros()</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../dppy-reference/index.html" class="btn btn-neutral float-left" title="DPPY Python Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, Intel
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
