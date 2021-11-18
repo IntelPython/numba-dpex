@@ -31,5 +31,5 @@ The following are how users can specify in which device they want to offload the
 
 
 Example
-~~~~~~
+~~~~~~~
 .. literalinclude:: ../../../numba_dppy/examples/select_device_for_kernel.py
