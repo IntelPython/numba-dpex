@@ -9,6 +9,7 @@ Programming SYCL Kernels Using :func:`~numba_dppy.decorators.kernel`
    synchronization
    device-functions
    atomic-operations
+   selecting_device
    reduction
    ufunc
    supported-python-features
