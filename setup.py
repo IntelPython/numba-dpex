@@ -102,7 +102,7 @@ def _get_cmdclass():
 
 def spirv_compile():
     if IS_LIN:
-        compiler = "clang"
+        compiler = "icx"
     if IS_WIN:
         compiler = "clang.exe"
 
