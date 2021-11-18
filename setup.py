@@ -104,7 +104,7 @@ def spirv_compile():
     if IS_LIN:
         compiler = "icx"
     if IS_WIN:
-        compiler = "icx.exe"
+        compiler = "clang.exe"
 
     clang_args = [
         compiler,
