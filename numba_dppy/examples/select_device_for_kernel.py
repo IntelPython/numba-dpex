@@ -20,7 +20,7 @@ import numpy as np
 
 import numba_dppy
 
-'''
+"""
 We support passing arrays of two types to a @numba_dppy.kernel decorated
 function.
 
@@ -49,7 +49,7 @@ their computation.
         1. SYCL context
         2. SYCL device
         3. Same queue properties
-'''
+"""
 
 
 @numba_dppy.kernel
