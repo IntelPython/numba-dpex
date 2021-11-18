@@ -24,8 +24,8 @@ from numba.np import numpy_support
 
 from numba_dppy import dppy_array_type
 
-from .constants import address_space
 from .array_utils import get_info_from_suai
+from .constants import address_space
 
 __all__ = ["npytypes_array_to_dppy_array", "suai_to_dppy_array_type"]
 
@@ -75,6 +75,7 @@ def npytypes_array_to_dppy_array(arrtype, addrspace=address_space.GLOBAL):
 
 def suai_to_dppy_array_type(arr, addrspace=address_space.GLOBAL):
     from numba_dppy.driver import USMNdArrayType
+
     total_size, shape, ndim, itemsize, strides, dtype = get_info_from_suai(arr)
     try:
         dtype = numpy_support.from_dtype(dtype)
@@ -91,4 +92,3 @@ def suai_to_dppy_array_type(arr, addrspace=address_space.GLOBAL):
         readonly,
         addrspace=addrspace,
     )
-

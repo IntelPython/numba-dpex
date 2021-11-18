@@ -34,8 +34,8 @@ from numba_dppy.utils import (
     assert_no_return,
     copy_from_numpy_to_usm_obj,
     copy_to_numpy_from_usm_obj,
-    has_usm_memory,
     get_info_from_suai,
+    has_usm_memory,
 )
 
 from . import spirv_generator
@@ -574,7 +574,7 @@ class DPPYKernel(DPPYKernelBase):
         if isinstance(ty, USMNdArrayType):
             usm_mem = has_usm_memory(val)
             total_size, shape, ndim, itemsize, strides, dtype = get_info_from_suai(val)
-            '''
+            """
             self._unpack_device_array_argument(
                 val.size,
                 val.dtype.itemsize,
@@ -584,7 +584,7 @@ class DPPYKernel(DPPYKernelBase):
                 val.ndim,
                 kernelargs,
             )
-            '''
+            """
             self._unpack_device_array_argument(
                 total_size,
                 itemsize,

@@ -27,7 +27,13 @@ from numba.core.target_extension import GPU, target_registry
 from numba.core.utils import cached_property
 
 from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
-from numba_dppy.utils import address_space, calling_conv, npytypes_array_to_dppy_array, has_usm_memory, suai_to_dppy_array_type
+from numba_dppy.utils import (
+    address_space,
+    calling_conv,
+    has_usm_memory,
+    npytypes_array_to_dppy_array,
+    suai_to_dppy_array_type,
+)
 
 from . import codegen
 

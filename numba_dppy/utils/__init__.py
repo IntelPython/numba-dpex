@@ -20,8 +20,8 @@ from numba_dppy.utils.array_utils import (
     as_usm_obj,
     copy_from_numpy_to_usm_obj,
     copy_to_numpy_from_usm_obj,
-    has_usm_memory,
     get_info_from_suai,
+    has_usm_memory,
 )
 from numba_dppy.utils.constants import address_space, calling_conv
 from numba_dppy.utils.llvm_codegen_helpers import (
@@ -33,7 +33,10 @@ from numba_dppy.utils.llvm_codegen_helpers import (
     get_zero,
 )
 from numba_dppy.utils.misc import assert_no_return
-from numba_dppy.utils.type_conversion_fns import npytypes_array_to_dppy_array, suai_to_dppy_array_type
+from numba_dppy.utils.type_conversion_fns import (
+    npytypes_array_to_dppy_array,
+    suai_to_dppy_array_type,
+)
 
 __all__ = [
     "LLVMTypes",
