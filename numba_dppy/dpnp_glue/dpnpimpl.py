@@ -62,7 +62,10 @@ pass around.
 def array_shapeptr(context, builder, typ, value):
     shape_ptr = builder.gep(
         value.operands[0],
-        [context.get_constant(types.int32, 0), context.get_constant(types.int32, 5)],
+        [
+            context.get_constant(types.int32, 0),
+            context.get_constant(types.int32, 5),
+        ],
     )
 
     return builder.bitcast(shape_ptr, ll_void_p)

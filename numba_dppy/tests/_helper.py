@@ -139,7 +139,9 @@ def assert_dpnp_implementaion():
     with captured_stdout() as stdout, dpnp_debug():
         yield
 
-    assert "dpnp implementation" in stdout.getvalue(), "dpnp implementation is not used"
+    assert (
+        "dpnp implementation" in stdout.getvalue()
+    ), "dpnp implementation is not used"
 
 
 @contextlib.contextmanager

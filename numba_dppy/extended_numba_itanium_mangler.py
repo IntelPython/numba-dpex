@@ -38,7 +38,9 @@ def mangle_type_or_value(typ):
     if isinstance(typ, types.CPointer):
         rc = "P"
         if typ.addrspace is not None:
-            rc += "U" + itanium_mangler.mangle_identifier("AS" + str(typ.addrspace))
+            rc += "U" + itanium_mangler.mangle_identifier(
+                "AS" + str(typ.addrspace)
+            )
         rc += itanium_mangler.mangle_type_or_value(typ.dtype)
         return rc
     else:

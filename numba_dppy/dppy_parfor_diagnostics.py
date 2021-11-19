@@ -75,7 +75,11 @@ class ExtendedParforDiagnostics(ParforDiagnostics):
             if nadj_[theroot] != []:
                 print_wrapped("Parallel region %s:" % region_id)
                 print_wrapped("%s%s %s" % (sword, theroot, "(parallel)"))
-                summary[region_id] = {"root": theroot, "fused": 0, "serialized": 0}
+                summary[region_id] = {
+                    "root": theroot,
+                    "fused": 0,
+                    "serialized": 0,
+                }
                 print_g(fadj_, nadj_, theroot, 1)
                 print("\n")
                 region_id = region_id + 1
@@ -90,7 +94,11 @@ class ExtendedParforDiagnostics(ParforDiagnostics):
                 msg += ", fused with loop(s): "
                 msg += ", ".join([str(x) for x in fused])
 
-            summary[region_id] = {"root": pf_id, "fused": len(fused), "serialized": 0}
+            summary[region_id] = {
+                "root": pf_id,
+                "fused": len(fused),
+                "serialized": 0,
+            }
             msg += ")"
             print_wrapped(msg)
             extra_info = self.extra_info.get(str(region_id))
@@ -115,7 +123,9 @@ class ExtendedParforDiagnostics(ParforDiagnostics):
         # print the summary of the fuse/serialize rewrite
         if summary:
             for k, v in sorted(summary.items()):
-                msg = "\n \nParallel region %s (loop #%s) had %s " "loop(s) fused"
+                msg = (
+                    "\n \nParallel region %s (loop #%s) had %s " "loop(s) fused"
+                )
                 root = v["root"]
                 fused = v["fused"]
                 serialized = v["serialized"]

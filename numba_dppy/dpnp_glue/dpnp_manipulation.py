@@ -67,7 +67,9 @@ def dpnp_repeat_impl(a, repeats):
         dpctl_functions.event_wait(event)
         dpctl_functions.event_delete(event)
 
-        out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
+        out_usm = dpctl_functions.malloc_shared(
+            out.size * out.itemsize, sycl_queue
+        )
 
         dpnp_func(a_usm, out_usm, repeats, a.size)
 

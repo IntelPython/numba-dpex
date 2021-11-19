@@ -22,7 +22,9 @@ import numpy as np
 
 import numba_dppy as dppy
 
-parser = argparse.ArgumentParser(description="Program to compute pairwise distance")
+parser = argparse.ArgumentParser(
+    description="Program to compute pairwise distance"
+)
 
 parser.add_argument("-n", type=int, default=10, help="Number of points")
 parser.add_argument("-d", type=int, default=3, help="Dimensions")

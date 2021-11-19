@@ -75,7 +75,8 @@ class KernelLaunchOps:
 
         """
         sycl_queue_val = cgutils.alloca_once(
-            self.builder, utils.get_llvm_type(context=self.context, type=types.voidptr)
+            self.builder,
+            utils.get_llvm_type(context=self.context, type=types.voidptr),
         )
         fn = DpctlCAPIFnBuilder.get_dpctl_queuemgr_get_current_queue(
             builder=self.builder, context=self.context
@@ -148,23 +149,35 @@ class KernelLaunchOps:
                 raise NotImplementedError(arg_type, var)
 
             storage = cgutils.alloca_once(self.builder, utils.LLVMTypes.int64_t)
-            self.builder.store(self.context.get_constant(types.int64, 0), storage)
-            ty = numba_type_to_dpctl_typenum(context=self.context, type=types.int64)
+            self.builder.store(
+                self.context.get_constant(types.int64, 0), storage
+            )
+            ty = numba_type_to_dpctl_typenum(
+                context=self.context, type=types.int64
+            )
             self._form_kernel_arg_and_arg_ty(
                 self.builder.bitcast(
                     storage,
-                    utils.get_llvm_type(context=self.context, type=types.voidptr),
+                    utils.get_llvm_type(
+                        context=self.context, type=types.voidptr
+                    ),
                 ),
                 ty,
             )
 
             storage = cgutils.alloca_once(self.builder, utils.LLVMTypes.int64_t)
-            self.builder.store(self.context.get_constant(types.int64, 0), storage)
-            ty = numba_type_to_dpctl_typenum(context=self.context, type=types.int64)
+            self.builder.store(
+                self.context.get_constant(types.int64, 0), storage
+            )
+            ty = numba_type_to_dpctl_typenum(
+                context=self.context, type=types.int64
+            )
             self._form_kernel_arg_and_arg_ty(
                 self.builder.bitcast(
                     storage,
-                    utils.get_llvm_type(context=self.context, type=types.voidptr),
+                    utils.get_llvm_type(
+                        context=self.context, type=types.voidptr
+                    ),
                 ),
                 ty,
             )
@@ -178,11 +191,15 @@ class KernelLaunchOps:
                 ],
             )
 
-            ty = numba_type_to_dpctl_typenum(context=self.context, type=types.int64)
+            ty = numba_type_to_dpctl_typenum(
+                context=self.context, type=types.int64
+            )
             self._form_kernel_arg_and_arg_ty(
                 self.builder.bitcast(
                     array_size_member,
-                    utils.get_llvm_type(context=self.context, type=types.voidptr),
+                    utils.get_llvm_type(
+                        context=self.context, type=types.voidptr
+                    ),
                 ),
                 ty,
             )
@@ -196,11 +213,15 @@ class KernelLaunchOps:
                 ],
             )
 
-            ty = numba_type_to_dpctl_typenum(context=self.context, type=types.int64)
+            ty = numba_type_to_dpctl_typenum(
+                context=self.context, type=types.int64
+            )
             self._form_kernel_arg_and_arg_ty(
                 self.builder.bitcast(
                     item_size_member,
-                    utils.get_llvm_type(context=self.context, type=types.voidptr),
+                    utils.get_llvm_type(
+                        context=self.context, type=types.voidptr
+                    ),
                 ),
                 ty,
             )
@@ -235,13 +256,17 @@ class KernelLaunchOps:
             # names are replaced using legalize names, we have to do the same
             # here for them to match.
             legal_names = legalize_names([var])
-            ty = numba_type_to_dpctl_typenum(context=self.context, type=types.voidptr)
+            ty = numba_type_to_dpctl_typenum(
+                context=self.context, type=types.voidptr
+            )
 
             if isinstance(arg_type, nus.UsmSharedArrayType):
                 self._form_kernel_arg_and_arg_ty(
                     self.builder.bitcast(
                         self.builder.load(data_member),
-                        utils.get_llvm_type(context=self.context, type=types.voidptr),
+                        utils.get_llvm_type(
+                            context=self.context, type=types.voidptr
+                        ),
                     ),
                     ty,
                 )
@@ -264,7 +289,9 @@ class KernelLaunchOps:
                 # Create void * to hold new USM buffer.
                 buffer_ptr = cgutils.alloca_once(
                     self.builder,
-                    utils.get_llvm_type(context=self.context, type=types.voidptr),
+                    utils.get_llvm_type(
+                        context=self.context, type=types.voidptr
+                    ),
                     name=buffer_name,
                 )
                 # Setup the args to the USM allocator, size and SYCL queue.
@@ -273,12 +300,18 @@ class KernelLaunchOps:
                     self.builder.load(sycl_queue_val),
                 ]
                 # Call USM shared allocator and store in buffer_ptr.
-                self.builder.store(self.builder.call(malloc_fn, args), buffer_ptr)
+                self.builder.store(
+                    self.builder.call(malloc_fn, args), buffer_ptr
+                )
 
                 if legal_names[var] in modified_arrays:
-                    self.write_buffs.append((buffer_ptr, total_size, data_member))
+                    self.write_buffs.append(
+                        (buffer_ptr, total_size, data_member)
+                    )
                 else:
-                    self.read_only_buffs.append((buffer_ptr, total_size, data_member))
+                    self.read_only_buffs.append(
+                        (buffer_ptr, total_size, data_member)
+                    )
 
                 # We really need to detect when an array needs to be copied over
                 if index < self.num_inputs:
@@ -297,7 +330,9 @@ class KernelLaunchOps:
                     self.builder.call(event_wait_fn, [event_ref])
                     self.builder.call(event_del_fn, [event_ref])
 
-                self._form_kernel_arg_and_arg_ty(self.builder.load(buffer_ptr), ty)
+                self._form_kernel_arg_and_arg_ty(
+                    self.builder.load(buffer_ptr), ty
+                )
 
             # Handle shape
             shape_member = self.builder.gep(
@@ -316,11 +351,15 @@ class KernelLaunchOps:
                         self.context.get_constant(types.int32, this_dim),
                     ],
                 )
-                ty = numba_type_to_dpctl_typenum(context=self.context, type=types.int64)
+                ty = numba_type_to_dpctl_typenum(
+                    context=self.context, type=types.int64
+                )
                 self._form_kernel_arg_and_arg_ty(
                     self.builder.bitcast(
                         shape_entry,
-                        utils.get_llvm_type(context=self.context, type=types.voidptr),
+                        utils.get_llvm_type(
+                            context=self.context, type=types.voidptr
+                        ),
                     ),
                     ty,
                 )
@@ -343,21 +382,29 @@ class KernelLaunchOps:
                     ],
                 )
 
-                ty = numba_type_to_dpctl_typenum(context=self.context, type=types.int64)
+                ty = numba_type_to_dpctl_typenum(
+                    context=self.context, type=types.int64
+                )
                 self._form_kernel_arg_and_arg_ty(
                     self.builder.bitcast(
                         stride_entry,
-                        utils.get_llvm_type(context=self.context, type=types.voidptr),
+                        utils.get_llvm_type(
+                            context=self.context, type=types.voidptr
+                        ),
                     ),
                     ty,
                 )
 
         else:
-            ty = numba_type_to_dpctl_typenum(context=self.context, type=arg_type)
+            ty = numba_type_to_dpctl_typenum(
+                context=self.context, type=arg_type
+            )
             self._form_kernel_arg_and_arg_ty(
                 self.builder.bitcast(
                     llvm_arg,
-                    utils.get_llvm_type(context=self.context, type=types.voidptr),
+                    utils.get_llvm_type(
+                        context=self.context, type=types.voidptr
+                    ),
                 ),
                 ty,
             )
@@ -438,7 +485,9 @@ class KernelLaunchOps:
             self.builder.bitcast(global_range, intp_ptr_t),
             self.context.get_constant(types.uintp, num_dim),
             self.builder.bitcast(
-                utils.create_null_ptr(builder=self.builder, context=self.context),
+                utils.create_null_ptr(
+                    builder=self.builder, context=self.context
+                ),
                 utils.get_llvm_type(context=self.context, type=types.voidptr),
             ),
             self.context.get_constant(types.uintp, 0),
@@ -463,7 +512,9 @@ class KernelLaunchOps:
                 self.builder.load(sycl_queue_val),
                 self.builder.bitcast(
                     self.builder.load(data_member),
-                    utils.get_llvm_type(context=self.context, type=types.voidptr),
+                    utils.get_llvm_type(
+                        context=self.context, type=types.voidptr
+                    ),
                 ),
                 self.builder.load(buffer_ptr),
                 self.builder.load(total_size),

@@ -119,7 +119,9 @@ def get_num_groups_impl(context, builder, sig, args):
 
 @lower(stubs.get_work_dim)
 def get_work_dim_impl(context, builder, sig, args):
-    get_work_dim = _declare_function(context, builder, "get_work_dim", sig, ["void"])
+    get_work_dim = _declare_function(
+        context, builder, "get_work_dim", sig, ["void"]
+    )
     res = builder.call(get_work_dim, [])
     return res
 
@@ -147,7 +149,9 @@ def get_local_size_impl(context, builder, sig, args):
 @lower(stubs.barrier, types.uint32)
 def barrier_one_arg_impl(context, builder, sig, args):
     [flags] = args
-    barrier = _declare_function(context, builder, "barrier", sig, ["unsigned int"])
+    barrier = _declare_function(
+        context, builder, "barrier", sig, ["unsigned int"]
+    )
     builder.call(barrier, [flags])
     return _void_value
 
@@ -156,7 +160,9 @@ def barrier_one_arg_impl(context, builder, sig, args):
 def barrier_no_arg_impl(context, builder, sig, args):
     assert not args
     sig = types.void(types.uint32)
-    barrier = _declare_function(context, builder, "barrier", sig, ["unsigned int"])
+    barrier = _declare_function(
+        context, builder, "barrier", sig, ["unsigned int"]
+    )
     flags = context.get_constant(types.uint32, stubs.CLK_GLOBAL_MEM_FENCE)
     builder.call(barrier, [flags])
     return _void_value
@@ -165,7 +171,9 @@ def barrier_no_arg_impl(context, builder, sig, args):
 @lower(stubs.mem_fence, types.uint32)
 def mem_fence_impl(context, builder, sig, args):
     [flags] = args
-    mem_fence = _declare_function(context, builder, "mem_fence", sig, ["unsigned int"])
+    mem_fence = _declare_function(
+        context, builder, "mem_fence", sig, ["unsigned int"]
+    )
     builder.call(mem_fence, [flags])
     return _void_value
 
@@ -174,7 +182,9 @@ def mem_fence_impl(context, builder, sig, args):
 def sub_group_barrier_impl(context, builder, sig, args):
     assert not args
     sig = types.void(types.uint32)
-    barrier = _declare_function(context, builder, "barrier", sig, ["unsigned int"])
+    barrier = _declare_function(
+        context, builder, "barrier", sig, ["unsigned int"]
+    )
     flags = context.get_constant(types.uint32, stubs.CLK_LOCAL_MEM_FENCE)
     builder.call(barrier, [flags])
     return _void_value
@@ -203,9 +213,13 @@ def insert_and_call_atomic_fn(
             elif fn_type == "sub":
                 name = "numba_dppy_atomic_sub_f64"
             else:
-                raise TypeError("Operation type is not supported %s" % (fn_type))
+                raise TypeError(
+                    "Operation type is not supported %s" % (fn_type)
+                )
     else:
-        raise TypeError("Atomic operation is not supported for type %s" % (dtype.name))
+        raise TypeError(
+            "Atomic operation is not supported for type %s" % (dtype.name)
+        )
 
     if addrspace == address_space.LOCAL:
         name = name + "_local"
@@ -244,7 +258,8 @@ def native_atomic_add(context, builder, sig, args):
     else:
         indices = cgutils.unpack_tuple(builder, inds, count=len(indty))
         indices = [
-            context.cast(builder, i, t, types.intp) for t, i in zip(indty, indices)
+            context.cast(builder, i, t, types.intp)
+            for t, i in zip(indty, indices)
         ]
 
     if dtype != valty:
@@ -286,7 +301,12 @@ def native_atomic_add(context, builder, sig, args):
     numba_ptr_ty = types.CPointer(dtype, addrspace=ptr_type.addrspace)
     mangled_fn_name = ext_itanium_mangler.mangle(
         name,
-        [numba_ptr_ty, "__spv.Scope.Flag", "__spv.MemorySemanticsMask.Flag", valty],
+        [
+            numba_ptr_ty,
+            "__spv.Scope.Flag",
+            "__spv.MemorySemanticsMask.Flag",
+            valty,
+        ],
     )
 
     fnty = ir.FunctionType(retty, spirv_fn_arg_types)
@@ -317,7 +337,10 @@ def atomic_add_tuple(context, builder, sig, args):
     dtype = sig.args[0].dtype
 
     if dtype == types.float32 or dtype == types.float64:
-        if device_type == dpctl.device_type.gpu and config.NATIVE_FP_ATOMICS == 1:
+        if (
+            device_type == dpctl.device_type.gpu
+            and config.NATIVE_FP_ATOMICS == 1
+        ):
             return native_atomic_add(context, builder, sig, args)
         else:
             # Currently, DPCPP only supports native floating point
@@ -342,9 +365,13 @@ def atomic_sub_wrapper(context, builder, sig, args):
     )
     val_dtype = sig.args[2]
     if val_dtype == types.float32 or val_dtype == types.float64:
-        builder.store(builder.fmul(val, context.get_constant(sig.args[2], -1)), new_val)
+        builder.store(
+            builder.fmul(val, context.get_constant(sig.args[2], -1)), new_val
+        )
     elif val_dtype == types.int32 or val_dtype == types.int64:
-        builder.store(builder.mul(val, context.get_constant(sig.args[2], -1)), new_val)
+        builder.store(
+            builder.mul(val, context.get_constant(sig.args[2], -1)), new_val
+        )
     else:
         raise TypeError("Unsupported type %s" % val_dtype)
 
@@ -361,7 +388,10 @@ def atomic_sub_tuple(context, builder, sig, args):
     dtype = sig.args[0].dtype
 
     if dtype == types.float32 or dtype == types.float64:
-        if device_type == dpctl.device_type.gpu and config.NATIVE_FP_ATOMICS == 1:
+        if (
+            device_type == dpctl.device_type.gpu
+            and config.NATIVE_FP_ATOMICS == 1
+        ):
             return atomic_sub_wrapper(context, builder, sig, args)
         else:
             # Currently, DPCPP only supports native floating point
@@ -388,7 +418,8 @@ def atomic_add(context, builder, sig, args, name):
         else:
             indices = cgutils.unpack_tuple(builder, inds, count=len(indty))
             indices = [
-                context.cast(builder, i, t, types.intp) for t, i in zip(indty, indices)
+                context.cast(builder, i, t, types.intp)
+                for t, i in zip(indty, indices)
             ]
 
         if dtype != valty:
@@ -402,7 +433,10 @@ def atomic_add(context, builder, sig, args, name):
         lary = context.make_array(aryty)(context, builder, ary)
         ptr = cgutils.get_item_pointer(context, builder, aryty, lary, indices)
 
-        if isinstance(aryty, DPPYArray) and aryty.addrspace == address_space.LOCAL:
+        if (
+            isinstance(aryty, DPPYArray)
+            and aryty.addrspace == address_space.LOCAL
+        ):
             return insert_and_call_atomic_fn(
                 context,
                 builder,
@@ -425,7 +459,9 @@ def atomic_add(context, builder, sig, args, name):
                 address_space.GLOBAL,
             )
     else:
-        raise ImportError("Atomic support is not present, can not perform atomic_add")
+        raise ImportError(
+            "Atomic support is not present, can not perform atomic_add"
+        )
 
 
 @lower(stubs.local.array, types.IntegerLiteral, types.Any)
@@ -489,7 +525,9 @@ def _generic_array(context, builder, shape, dtype, symbol_name, addrspace):
     # memories allocated in local address space to global address space. This
     # approach does not let us identify the original address space of a memory
     # down the line.
-    return _make_array(context, builder, gvmem, dtype, shape, addrspace=addrspace)
+    return _make_array(
+        context, builder, gvmem, dtype, shape, addrspace=addrspace
+    )
 
 
 def _make_array(

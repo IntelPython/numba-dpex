@@ -42,7 +42,9 @@ def kernel(signature=None, access_types=None, debug=None):
 
 def autojit(debug=None, access_types=None):
     def _kernel_autojit(pyfunc):
-        ordered_arg_access_types = get_ordered_arg_access_types(pyfunc, access_types)
+        ordered_arg_access_types = get_ordered_arg_access_types(
+            pyfunc, access_types
+        )
         return JitDPPYKernel(pyfunc, debug, ordered_arg_access_types)
 
     return _kernel_autojit
@@ -64,7 +66,9 @@ def _kernel_jit(signature, debug, access_types):
 
     def _wrapped(pyfunc):
         current_queue = dpctl.get_current_queue()
-        ordered_arg_access_types = get_ordered_arg_access_types(pyfunc, access_types)
+        ordered_arg_access_types = get_ordered_arg_access_types(
+            pyfunc, access_types
+        )
         # We create an instance of JitDPPYKernel to make sure at call time
         # we are going through the caching mechanism.
         dppy_kernel = JitDPPYKernel(pyfunc, debug, ordered_arg_access_types)

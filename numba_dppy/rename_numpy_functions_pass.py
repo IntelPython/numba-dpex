@@ -101,7 +101,9 @@ rewrite_function_name_map = {
 
 
 class RewriteNumPyOverloadedFunctions(object):
-    def __init__(self, state, rewrite_function_name_map=rewrite_function_name_map):
+    def __init__(
+        self, state, rewrite_function_name_map=rewrite_function_name_map
+    ):
         self.state = state
         self.function_name_map = rewrite_function_name_map
 
@@ -143,12 +145,17 @@ class RewriteNumPyOverloadedFunctions(object):
             saved_arr_arg = {}
             new_body = []
             for stmt in block.body:
-                if isinstance(stmt, ir.Assign) and isinstance(stmt.value, ir.Expr):
+                if isinstance(stmt, ir.Assign) and isinstance(
+                    stmt.value, ir.Expr
+                ):
                     lhs = stmt.target.name
                     rhs = stmt.value
                     # replace np.FOO with name from self.function_name_map["FOO"]
                     # e.g. np.sum will be replaced with numba_dppy.dpnp.sum
-                    if rhs.op == "getattr" and rhs.attr in self.function_name_map:
+                    if (
+                        rhs.op == "getattr"
+                        and rhs.attr in self.function_name_map
+                    ):
                         module_node = block.find_variable_assignment(
                             rhs.value.name
                         ).value
@@ -158,7 +165,8 @@ class RewriteNumPyOverloadedFunctions(object):
                             in self.function_name_map[rhs.attr][0]
                         ) or (
                             isinstance(module_node, ir.Expr)
-                            and module_node.attr in self.function_name_map[rhs.attr][0]
+                            and module_node.attr
+                            in self.function_name_map[rhs.attr][0]
                         ):
                             rhs = stmt.value
                             rhs.attr = self.function_name_map[rhs.attr][1]
@@ -180,8 +188,12 @@ class RewriteNumPyOverloadedFunctions(object):
                             g_dppy = ir.Global("numba_dppy", numba_dppy, loc)
                             g_dppy_assign = ir.Assign(g_dppy, g_dppy_var, loc)
 
-                            dpnp_var = ir.Var(scope, mk_unique_var("$4load_attr"), loc)
-                            getattr_dpnp = ir.Expr.getattr(g_dppy_var, "dpnp", loc)
+                            dpnp_var = ir.Var(
+                                scope, mk_unique_var("$4load_attr"), loc
+                            )
+                            getattr_dpnp = ir.Expr.getattr(
+                                g_dppy_var, "dpnp", loc
+                            )
                             dpnp_assign = ir.Assign(getattr_dpnp, dpnp_var, loc)
 
                             rhs.value = dpnp_var
@@ -224,7 +236,9 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
         mutated = rewrite_function_name_pass.run()
 
         if mutated:
-            remove_dead(state.func_ir.blocks, state.func_ir.arg_names, state.func_ir)
+            remove_dead(
+                state.func_ir.blocks, state.func_ir.arg_names, state.func_ir
+            )
         state.func_ir.blocks = simplify_CFG(state.func_ir.blocks)
 
         return mutated
@@ -240,7 +254,9 @@ def get_dpnp_func_typ(func):
 
 
 class RewriteNdarrayFunctions(object):
-    def __init__(self, state, rewrite_function_name_map=rewrite_function_name_map):
+    def __init__(
+        self, state, rewrite_function_name_map=rewrite_function_name_map
+    ):
         self.state = state
         self.function_name_map = rewrite_function_name_map
         self.typemap = state.type_annotation.typemap
@@ -261,7 +277,9 @@ class RewriteNdarrayFunctions(object):
             block = blocks[label]
             new_body = []
             for stmt in block.body:
-                if isinstance(stmt, ir.Assign) and isinstance(stmt.value, ir.Expr):
+                if isinstance(stmt, ir.Assign) and isinstance(
+                    stmt.value, ir.Expr
+                ):
                     lhs = stmt.target.name
                     rhs = stmt.value
                     # replace A.func with np.func, and save A in saved_arr_arg
@@ -278,13 +296,21 @@ class RewriteNdarrayFunctions(object):
                         scope = arr.scope
                         loc = arr.loc
 
-                        g_dppy_var = ir.Var(scope, mk_unique_var("$load_global"), loc)
-                        self.typemap[g_dppy_var.name] = types.misc.Module(numba_dppy)
+                        g_dppy_var = ir.Var(
+                            scope, mk_unique_var("$load_global"), loc
+                        )
+                        self.typemap[g_dppy_var.name] = types.misc.Module(
+                            numba_dppy
+                        )
                         g_dppy = ir.Global("numba_dppy", numba_dppy, loc)
                         g_dppy_assign = ir.Assign(g_dppy, g_dppy_var, loc)
 
-                        dpnp_var = ir.Var(scope, mk_unique_var("$load_attr"), loc)
-                        self.typemap[dpnp_var.name] = types.misc.Module(numba_dppy.dpnp)
+                        dpnp_var = ir.Var(
+                            scope, mk_unique_var("$load_attr"), loc
+                        )
+                        self.typemap[dpnp_var.name] = types.misc.Module(
+                            numba_dppy.dpnp
+                        )
                         getattr_dpnp = ir.Expr.getattr(g_dppy_var, "dpnp", loc)
                         dpnp_assign = ir.Assign(getattr_dpnp, dpnp_var, loc)
 
@@ -311,9 +337,15 @@ class RewriteNdarrayFunctions(object):
                         # argsort requires kws for typing so sig.args can't be used
                         # reusing sig.args since some types become Const in sig
                         argtyps = old_sig.args[: len(rhs.args)]
-                        kwtyps = {name: self.typemap[v.name] for name, v in rhs.kws}
-                        self.calltypes[rhs] = self.typemap[rhs.func.name].get_call_type(
-                            typingctx, [self.typemap[arr.name]] + list(argtyps), kwtyps
+                        kwtyps = {
+                            name: self.typemap[v.name] for name, v in rhs.kws
+                        }
+                        self.calltypes[rhs] = self.typemap[
+                            rhs.func.name
+                        ].get_call_type(
+                            typingctx,
+                            [self.typemap[arr.name]] + list(argtyps),
+                            kwtyps,
                         )
                         rhs.args = [arr] + rhs.args
 
@@ -337,7 +369,9 @@ class DPPYRewriteNdarrayFunctions(FunctionPass):
         mutated = rewrite_ndarray_function_name_pass.run()
 
         if mutated:
-            remove_dead(state.func_ir.blocks, state.func_ir.arg_names, state.func_ir)
+            remove_dead(
+                state.func_ir.blocks, state.func_ir.arg_names, state.func_ir
+            )
         state.func_ir.blocks = simplify_CFG(state.func_ir.blocks)
 
         return mutated
