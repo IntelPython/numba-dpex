@@ -518,7 +518,7 @@ Supported NumPy Functions:
 import numba.testing
 
 from numba_dppy.interop import asarray
-from numba_dppy.retarget import offload_to_sycl_device, get_context_manager
+from numba_dppy.retarget import get_context_manager, offload_to_sycl_device
 
 from . import config
 
