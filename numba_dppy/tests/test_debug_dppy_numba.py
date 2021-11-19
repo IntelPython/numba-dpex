@@ -24,6 +24,8 @@ import numba_dppy
 from numba_dppy import config
 
 pexpect = pytest.importorskip("pexpect")
+if not sys.platform == "linux":
+    pytest.skip("OS is not linux", allow_module_level=True)
 
 
 def module_loaded(module_name):
@@ -36,10 +38,6 @@ def module_loaded(module_name):
 
 
 pytestmark = [
-    pytest.mark.skipif(
-        not sys.platform == "linux",
-        reason="OS in not linux",
-    ),
     pytest.mark.skipif(
         not shutil.which("gdb-oneapi"),
         reason="Intel® Distribution for GDB* is not available",
