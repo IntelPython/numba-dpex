@@ -518,7 +518,7 @@ Supported NumPy Functions:
 import numba.testing
 
 from numba_dppy.interop import asarray
-from numba_dppy.retarget import offload_to_sycl_device
+from numba_dppy.retarget import offload_to_sycl_device, get_context_manager
 
 from . import config
 
@@ -533,4 +533,4 @@ from ._version import get_versions
 __version__ = get_versions()["version"]
 del get_versions
 
-__all__ = ["offload_to_sycl_device"]
+__all__ = ["offload_to_sycl_device", "get_context_manager"]
