@@ -32,7 +32,7 @@ The following are how users can specify in which device they want to offload the
             - All usm-types are accessible from device. Users can mix arrays with different usm-type as long as they were allocated using the equvalent SYCL queue.
 
 
-            - Using the provided context_manager to specify a queue when passing SUAI args will not have any effect and will produce an warning stating the same.
+            - Using the context_manager to specify a queue when passing SUAI args will have no effect on queue selection and Numba-dppy will print out a warning to inform the user.
 
 
 Example
