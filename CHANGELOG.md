@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.18.0] - XXXX-XX-XX
 
 ### Changes
-* Compute follows data kernel (#598)
+* Implement compute-follows-data programming model for the kernel API (#598)
 
 ## [0.17.2] - 2021-11-15
 
