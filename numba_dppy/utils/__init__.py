@@ -31,13 +31,12 @@ from numba_dppy.utils.llvm_codegen_helpers import (
     get_one,
     get_zero,
 )
-from numba_dppy.utils.misc import (
-    IndeterminateExecutionQueueError,
+from numba_dppy.utils.messages import (
     IndeterminateExecutionQueueError_msg,
-    assert_no_return,
     cfd_ctx_mgr_wrng_msg,
     mix_datatype_err_msg,
 )
+from numba_dppy.utils.misc import IndeterminateExecutionQueueError, assert_no_return
 from numba_dppy.utils.type_conversion_fns import npytypes_array_to_dppy_array
 
 __all__ = [
