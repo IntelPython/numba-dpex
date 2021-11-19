@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reduction on SYCL-supported Devices &mdash; numba-dppy 0.17.2+5.g7c89846 documentation</title>
+  <title>Reduction on SYCL-supported Devices &mdash; numba-dppy 0.17.2+6.g2b9c674 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -229,7 +229,9 @@ can be written explicitly. This section provides two approaches for writing a ke
             <span class="n">partial_sums</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="n">partial_sums</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span>
         <span class="p">)</span>
         <span class="n">partial_sums_ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span>
-            <span class="n">partial_sums</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="n">partial_sums_buf</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">partial_sums</span><span class="o">.</span><span class="n">dtype</span>
+            <span class="n">partial_sums</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+            <span class="n">buffer</span><span class="o">=</span><span class="n">partial_sums_buf</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">partial_sums</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">partial_sums_ndarray</span><span class="p">,</span> <span class="n">partial_sums</span><span class="p">)</span>
 
