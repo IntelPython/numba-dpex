@@ -55,10 +55,13 @@ def scenario(filter_str, context):
 
 
 @pytest.mark.parametrize("filter_str", filter_strings)
-@pytest.mark.parametrize("context", [
-    dppy.offload_to_sycl_device,
-    dpctl.device_context,
-])
+@pytest.mark.parametrize(
+    "context",
+    [
+        dppy.offload_to_sycl_device,
+        dpctl.device_context,
+    ],
+)
 def test_dpctl_device_context_affects_numba_pipeline(filter_str, context):
     with assert_auto_offloading():
         scenario(filter_str, context)

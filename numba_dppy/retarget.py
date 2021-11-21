@@ -57,11 +57,9 @@ def _retarget_context_manager(sycl_queue):
     return TargetConfig.switch_target(retarget)
 
 
-@contextmanager
-def offload_to_sycl_device(dpctl_device):
-    with dpctl.device_context(dpctl_device) as sycl_queue:
-        with _retarget_context_manager(sycl_queue):
-            yield sycl_queue
+def _register_context_factory():
+    dpctl.nested_context_factories.append(_retarget_context_manager)
 
 
-get_context_manager = _retarget_context_manager
+_register_context_factory()
+offload_to_sycl_device = dpctl.device_context
