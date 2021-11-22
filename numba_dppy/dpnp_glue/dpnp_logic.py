@@ -17,9 +17,9 @@ from numba import types
 from numba.core.extending import overload
 from numba.core.typing import signature
 
+import numba_dppy.dpctl_iface as dpctl_functions
 import numba_dppy.dpnp_glue as dpnp_lowering
 import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
-from numba_dppy import dpctl_functions
 
 from . import stubs
 

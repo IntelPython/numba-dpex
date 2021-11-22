@@ -58,12 +58,3 @@ def dpctl_queue_wait():
     ret_type = types.void
     sig = signature(ret_type, types.voidptr)
     return types.ExternalFunction("DPCTLQueue_Wait", sig)
-
-
-get_current_queue = dpctl_get_current_queue()
-malloc_shared = dpctl_malloc_shared()
-queue_memcpy = dpctl_queue_memcpy()
-free_with_queue = dpctl_free_with_queue()
-event_wait = dpctl_event_wait()
-event_delete = dpctl_event_delete()
-queue_wait = dpctl_queue_wait()
