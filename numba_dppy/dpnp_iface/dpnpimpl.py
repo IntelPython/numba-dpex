@@ -23,9 +23,9 @@ ll_void_p = ir.IntType(8).as_pointer()
 
 
 def get_dpnp_fptr(fn_name, type_names):
-    from . import dpnp_fptr_interface as dpnp_glue
+    from . import dpnp_fptr_interface as dpnp_iface
 
-    f_ptr = dpnp_glue.get_dpnp_fn_ptr(fn_name, type_names)
+    f_ptr = dpnp_iface.get_dpnp_fn_ptr(fn_name, type_names)
     return f_ptr
 
 

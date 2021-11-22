@@ -183,7 +183,7 @@ def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
     elif op_name == "multivariate_normal":
         pytest.skip(
             "No implementation of function Function(<class "
-            "'numba_dppy.dpnp_glue.stubs.dpnp.multivariate_normal'>) found for signature"
+            "'numba_dppy.dpnp_iface.stubs.dpnp.multivariate_normal'>) found for signature"
         )
     elif op_name == "negative_binomial":
         pytest.skip("DPNP RNG Error: dpnp_rng_negative_binomial_c() failed.")

@@ -215,18 +215,18 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
     def __init__(self):
         FunctionPass.__init__(self)
 
-        import numba_dppy.dpnp_glue.dpnp_array_creations_impl
-        import numba_dppy.dpnp_glue.dpnp_array_ops_impl
-        import numba_dppy.dpnp_glue.dpnp_indexing
-        import numba_dppy.dpnp_glue.dpnp_linalgimpl
-        import numba_dppy.dpnp_glue.dpnp_logic
-        import numba_dppy.dpnp_glue.dpnp_manipulation
-        import numba_dppy.dpnp_glue.dpnp_randomimpl
-        import numba_dppy.dpnp_glue.dpnp_sort_search_countimpl
-        import numba_dppy.dpnp_glue.dpnp_statisticsimpl
-        import numba_dppy.dpnp_glue.dpnp_transcendentalsimpl
-        import numba_dppy.dpnp_glue.dpnpdecl
-        import numba_dppy.dpnp_glue.dpnpimpl
+        import numba_dppy.dpnp_iface.dpnp_array_creations_impl
+        import numba_dppy.dpnp_iface.dpnp_array_ops_impl
+        import numba_dppy.dpnp_iface.dpnp_indexing
+        import numba_dppy.dpnp_iface.dpnp_linalgimpl
+        import numba_dppy.dpnp_iface.dpnp_logic
+        import numba_dppy.dpnp_iface.dpnp_manipulation
+        import numba_dppy.dpnp_iface.dpnp_randomimpl
+        import numba_dppy.dpnp_iface.dpnp_sort_search_countimpl
+        import numba_dppy.dpnp_iface.dpnp_statisticsimpl
+        import numba_dppy.dpnp_iface.dpnp_transcendentalsimpl
+        import numba_dppy.dpnp_iface.dpnpdecl
+        import numba_dppy.dpnp_iface.dpnpimpl
 
     def run_pass(self, state):
         rewrite_function_name_pass = RewriteNumPyOverloadedFunctions(
