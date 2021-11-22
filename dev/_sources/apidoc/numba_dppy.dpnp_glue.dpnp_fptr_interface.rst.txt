@@ -1,7 +1,0 @@
-numba\_dppy.dpnp\_glue.dpnp\_fptr\_interface module
-===================================================
-
-.. automodule:: numba_dppy.dpnp_glue.dpnp_fptr_interface
-   :members:
-   :undoc-members:
-   :show-inheritance:

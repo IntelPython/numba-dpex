@@ -1,7 +1,0 @@
-numba\_dppy.dpnp\_glue.dpnp\_transcendentalsimpl module
-=======================================================
-
-.. automodule:: numba_dppy.dpnp_glue.dpnp_transcendentalsimpl
-   :members:
-   :undoc-members:
-   :show-inheritance:
