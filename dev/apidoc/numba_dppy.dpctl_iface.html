@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy.dpctl_functions module &mdash; numba-dppy 0.17.2+7.geef9e5f documentation</title>
+  <title>numba_dppy.dpctl_iface package &mdash; numba-dppy 0.17.2+8.g0b39be7 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -67,9 +67,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>numba_dppy.dpctl_functions module</li>
+      <li>numba_dppy.dpctl_iface package</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/apidoc/numba_dppy.dpctl_functions.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/apidoc/numba_dppy.dpctl_iface.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -77,43 +77,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-numba_dppy.dpctl_functions">
-<span id="numba-dppy-dpctl-functions-module"></span><h1>numba_dppy.dpctl_functions module<a class="headerlink" href="#module-numba_dppy.dpctl_functions" title="Permalink to this headline"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.dpctl_functions.dpctl_event_delete">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.dpctl_functions.</span></span><span class="sig-name descname"><span class="pre">dpctl_event_delete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpctl_functions.dpctl_event_delete" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.dpctl_functions.dpctl_event_wait">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.dpctl_functions.</span></span><span class="sig-name descname"><span class="pre">dpctl_event_wait</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpctl_functions.dpctl_event_wait" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.dpctl_functions.dpctl_free_with_queue">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.dpctl_functions.</span></span><span class="sig-name descname"><span class="pre">dpctl_free_with_queue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpctl_functions.dpctl_free_with_queue" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.dpctl_functions.dpctl_get_current_queue">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.dpctl_functions.</span></span><span class="sig-name descname"><span class="pre">dpctl_get_current_queue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpctl_functions.dpctl_get_current_queue" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.dpctl_functions.dpctl_malloc_shared">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.dpctl_functions.</span></span><span class="sig-name descname"><span class="pre">dpctl_malloc_shared</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpctl_functions.dpctl_malloc_shared" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.dpctl_functions.dpctl_queue_memcpy">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.dpctl_functions.</span></span><span class="sig-name descname"><span class="pre">dpctl_queue_memcpy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpctl_functions.dpctl_queue_memcpy" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.dpctl_functions.dpctl_queue_wait">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.dpctl_functions.</span></span><span class="sig-name descname"><span class="pre">dpctl_queue_wait</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpctl_functions.dpctl_queue_wait" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
+  <section id="numba-dppy-dpctl-iface-package">
+<h1>numba_dppy.dpctl_iface package<a class="headerlink" href="#numba-dppy-dpctl-iface-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="numba_dppy.dpctl_iface.dpctl_capi_fn_builder.html">numba_dppy.dpctl_iface.dpctl_capi_fn_builder module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dppy.dpctl_iface.dpctl_function_types.html">numba_dppy.dpctl_iface.dpctl_function_types module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dppy.dpctl_iface.kernel_launch_ops.html">numba_dppy.dpctl_iface.kernel_launch_ops module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dppy.dpctl_iface.usm_ndarray_type.html">numba_dppy.dpctl_iface.usm_ndarray_type module</a></li>
+</ul>
+</div>
+</section>
+<section id="module-numba_dppy.dpctl_iface">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-numba_dppy.dpctl_iface" title="Permalink to this headline"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">dpctl_iface</span></code> module implements Numba’s interface to the dpctl library
+that provides Python and C bindings to DPC++’s SYCL runtime API. The module
+includes:</p>
+<ul class="simple">
+<li><p>LLVM IR builders for dpctl C API functions to be called directly from a Numba
+generated LLVM module.</p></li>
+<li><p>Functions to lauch kernels on the dpctl “current queue”.</p></li>
+</ul>
+</section>
 </section>
 
 

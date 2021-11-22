@@ -1,7 +1,0 @@
-numba\_dppy.driver.dpctl\_capi\_fn\_builder module
-==================================================
-
-.. automodule:: numba_dppy.driver.dpctl_capi_fn_builder
-   :members:
-   :undoc-members:
-   :show-inheritance:

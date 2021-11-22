@@ -7,8 +7,8 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   numba_dppy.dpctl_iface
    numba_dppy.dpnp_glue
-   numba_dppy.driver
    numba_dppy.ocl
    numba_dppy.utils
 
@@ -24,7 +24,6 @@ Submodules
    numba_dppy.decorators
    numba_dppy.descriptor
    numba_dppy.device_init
-   numba_dppy.dpctl_functions
    numba_dppy.dppy_array_type
    numba_dppy.dppy_debuginfo
    numba_dppy.dppy_lowerer

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy.driver.kernel_launch_ops module &mdash; numba-dppy 0.17.2+7.geef9e5f documentation</title>
+  <title>numba_dppy.dpctl_iface.kernel_launch_ops module &mdash; numba-dppy 0.17.2+8.g0b39be7 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -67,9 +67,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>numba_dppy.driver.kernel_launch_ops module</li>
+      <li>numba_dppy.dpctl_iface.kernel_launch_ops module</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/apidoc/numba_dppy.driver.kernel_launch_ops.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/apidoc/numba_dppy.dpctl_iface.kernel_launch_ops.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -77,17 +77,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-numba_dppy.driver.kernel_launch_ops">
-<span id="numba-dppy-driver-kernel-launch-ops-module"></span><h1>numba_dppy.driver.kernel_launch_ops module<a class="headerlink" href="#module-numba_dppy.driver.kernel_launch_ops" title="Permalink to this headline"></a></h1>
+  <section id="module-numba_dppy.dpctl_iface.kernel_launch_ops">
+<span id="numba-dppy-dpctl-iface-kernel-launch-ops-module"></span><h1>numba_dppy.dpctl_iface.kernel_launch_ops module<a class="headerlink" href="#module-numba_dppy.dpctl_iface.kernel_launch_ops" title="Permalink to this headline"></a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="numba_dppy.driver.kernel_launch_ops.KernelLaunchOps">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.driver.kernel_launch_ops.</span></span><span class="sig-name descname"><span class="pre">KernelLaunchOps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lowerer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cres</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_inputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.kernel_launch_ops.KernelLaunchOps" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dppy.dpctl_iface.kernel_launch_ops.KernelLaunchOps">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.dpctl_iface.kernel_launch_ops.</span></span><span class="sig-name descname"><span class="pre">KernelLaunchOps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lowerer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cres</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_inputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpctl_iface.kernel_launch_ops.KernelLaunchOps" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Defines a set of functions to launch a SYCL kernel on the “current queue”
 as defined in the dpctl queue manager.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="numba_dppy.driver.kernel_launch_ops.KernelLaunchOps.allocate_kernel_arg_array">
-<span class="sig-name descname"><span class="pre">allocate_kernel_arg_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_kernel_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.kernel_launch_ops.KernelLaunchOps.allocate_kernel_arg_array" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dppy.dpctl_iface.kernel_launch_ops.KernelLaunchOps.allocate_kernel_arg_array">
+<span class="sig-name descname"><span class="pre">allocate_kernel_arg_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_kernel_args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpctl_iface.kernel_launch_ops.KernelLaunchOps.allocate_kernel_arg_array" title="Permalink to this definition"></a></dt>
 <dd><p>Allocates an array to store the LLVM Value for every kernel argument.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>num_kernel_args : The number of kernel arguments for the kernel.</p>
@@ -96,8 +96,8 @@ as defined in the dpctl queue manager.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="numba_dppy.driver.kernel_launch_ops.KernelLaunchOps.enqueue_kernel_and_copy_back">
-<span class="sig-name descname"><span class="pre">enqueue_kernel_and_copy_back</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim_bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue_val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.kernel_launch_ops.KernelLaunchOps.enqueue_kernel_and_copy_back" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dppy.dpctl_iface.kernel_launch_ops.KernelLaunchOps.enqueue_kernel_and_copy_back">
+<span class="sig-name descname"><span class="pre">enqueue_kernel_and_copy_back</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim_bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue_val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpctl_iface.kernel_launch_ops.KernelLaunchOps.enqueue_kernel_and_copy_back" title="Permalink to this definition"></a></dt>
 <dd><p>Submits the kernel to the specified queue, waits and then copies
 back any results to the host.</p>
 <dl class="simple">
@@ -115,8 +115,8 @@ the bounds are the same.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="numba_dppy.driver.kernel_launch_ops.KernelLaunchOps.free_queue">
-<span class="sig-name descname"><span class="pre">free_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sycl_queue_val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.kernel_launch_ops.KernelLaunchOps.free_queue" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dppy.dpctl_iface.kernel_launch_ops.KernelLaunchOps.free_queue">
+<span class="sig-name descname"><span class="pre">free_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sycl_queue_val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpctl_iface.kernel_launch_ops.KernelLaunchOps.free_queue" title="Permalink to this definition"></a></dt>
 <dd><p>Frees the <code class="docutils literal notranslate"><span class="pre">DPCTLSyclQueueRef</span></code> pointer that was used to launch the
 kernels.</p>
 <dl class="simple">
@@ -126,8 +126,8 @@ kernels.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="numba_dppy.driver.kernel_launch_ops.KernelLaunchOps.get_current_queue">
-<span class="sig-name descname"><span class="pre">get_current_queue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.kernel_launch_ops.KernelLaunchOps.get_current_queue" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dppy.dpctl_iface.kernel_launch_ops.KernelLaunchOps.get_current_queue">
+<span class="sig-name descname"><span class="pre">get_current_queue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpctl_iface.kernel_launch_ops.KernelLaunchOps.get_current_queue" title="Permalink to this definition"></a></dt>
 <dd><p>Allocates memory on the stack to store the current queue from dpctl.</p>
 <p>A SYCL queue is needed to allocate USM memory and submit a kernel. This
 function gets the queue returned by <code class="docutils literal notranslate"><span class="pre">DPCTLQueueMgr_GetCurrentQueue</span></code>
@@ -140,8 +140,8 @@ after returning from the kernel.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="numba_dppy.driver.kernel_launch_ops.KernelLaunchOps.process_kernel_arg">
-<span class="sig-name descname"><span class="pre">process_kernel_arg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llvm_arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modified_arrays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue_val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.driver.kernel_launch_ops.KernelLaunchOps.process_kernel_arg" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dppy.dpctl_iface.kernel_launch_ops.KernelLaunchOps.process_kernel_arg">
+<span class="sig-name descname"><span class="pre">process_kernel_arg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llvm_arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modified_arrays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue_val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpctl_iface.kernel_launch_ops.KernelLaunchOps.process_kernel_arg" title="Permalink to this definition"></a></dt>
 <dd><p>process_kernel_arg(var, llvm_arg, arg_type, index, modified_arrays,
 sycl_queue_val)
 Creates an LLVM Value for each kernel argument.</p>

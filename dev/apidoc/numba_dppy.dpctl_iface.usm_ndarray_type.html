@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy.driver package &mdash; numba-dppy 0.17.2+7.geef9e5f documentation</title>
+  <title>numba_dppy.dpctl_iface.usm_ndarray_type module &mdash; numba-dppy 0.17.2+8.g0b39be7 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -67,9 +67,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>numba_dppy.driver package</li>
+      <li>numba_dppy.dpctl_iface.usm_ndarray_type module</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/apidoc/numba_dppy.driver.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/apidoc/numba_dppy.dpctl_iface.usm_ndarray_type.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -77,29 +77,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="numba-dppy-driver-package">
-<h1>numba_dppy.driver package<a class="headerlink" href="#numba-dppy-driver-package" title="Permalink to this headline"></a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="numba_dppy.driver.dpctl_capi_fn_builder.html">numba_dppy.driver.dpctl_capi_fn_builder module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="numba_dppy.driver.kernel_launch_ops.html">numba_dppy.driver.kernel_launch_ops module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="numba_dppy.driver.usm_ndarray_type.html">numba_dppy.driver.usm_ndarray_type module</a></li>
-</ul>
-</div>
-</section>
-<section id="module-numba_dppy.driver">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-numba_dppy.driver" title="Permalink to this headline"></a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">driver</span></code> module implements Numba’s interface to the dpctl library, a
-lightweight Python and C wrapper to a subset of DPC++’s runtime API. The
-<code class="docutils literal notranslate"><span class="pre">driver</span></code> module includes:</p>
-<ul class="simple">
-<li><p>LLVM IR builders for dpctl C API functions to be called directly from a Numba
-generated LLVM module.</p></li>
-<li><p>Functions to lauch kernels on the dpctl “current queue”.</p></li>
-</ul>
-</section>
+  <section id="module-numba_dppy.dpctl_iface.usm_ndarray_type">
+<span id="numba-dppy-dpctl-iface-usm-ndarray-type-module"></span><h1>numba_dppy.dpctl_iface.usm_ndarray_type module<a class="headerlink" href="#module-numba_dppy.dpctl_iface.usm_ndarray_type" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.dpctl_iface.usm_ndarray_type.USMNdArrayType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.dpctl_iface.usm_ndarray_type.</span></span><span class="sig-name descname"><span class="pre">USMNdArrayType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpctl_iface.usm_ndarray_type.USMNdArrayType" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dppy.dppy_array_type.html#numba_dppy.dppy_array_type.DPPYArray" title="numba_dppy.dppy_array_type.DPPYArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dppy.dppy_array_type.DPPYArray</span></code></a></p>
+<dl class="simple">
+<dt>USMNdArrayType(dtype, ndim, layout, usm_type,</dt><dd><p>readonly=False, name=None,
+aligned=True, addrspace=None)</p>
+</dd>
+</dl>
+<p>creates Numba type to represent <code class="docutils literal notranslate"><span class="pre">dpctl.tensor.usm_ndarray</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.dpctl_iface.usm_ndarray_type.USMNdArrayType.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpctl_iface.usm_ndarray_type.USMNdArrayType.copy" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dppy.dpctl_iface.usm_ndarray_type.typeof_usm_ndarray">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.dpctl_iface.usm_ndarray_type.</span></span><span class="sig-name descname"><span class="pre">typeof_usm_ndarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpctl_iface.usm_ndarray_type.typeof_usm_ndarray" title="Permalink to this definition"></a></dt>
+<dd><p>This function creates the Numba type (USMNdArrayType) when a usm_ndarray is passed.</p>
+</dd></dl>
+
 </section>
 
 
