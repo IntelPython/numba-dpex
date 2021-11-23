@@ -14,53 +14,52 @@
 
 import ast
 import copy
-from collections import OrderedDict
 import linecache
 import os
 import sys
-import numpy as np
-
-import numba
-from numba.core import compiler, ir, types, sigutils, lowering, funcdesc
-from numba.parfors import parfor
-from numba.parfors.parfor_lowering import _lower_parfor_parallel
-import numba_dppy, numba_dppy as dppy
-from numba.core.ir_utils import (
-    add_offset_to_labels,
-    replace_var_names,
-    remove_dels,
-    legalize_names,
-    mk_unique_var,
-    rename_labels,
-    get_name_var_table,
-    visit_vars_inner,
-    guard,
-    find_callname,
-    remove_dead,
-    get_call_table,
-    is_pure,
-    build_definitions,
-    get_np_ufunc_typ,
-    get_unused_var_name,
-    find_potential_aliases,
-    is_const_call,
-)
-
-from numba.core.typing import signature
-
 import warnings
+from collections import OrderedDict
+
+import dpctl
+import numba
+import numpy as np
+from numba.core import compiler, funcdesc, ir, lowering, sigutils, types
 from numba.core.errors import (
     NumbaParallelSafetyWarning,
     NumbaPerformanceWarning,
 )
+from numba.core.ir_utils import (
+    add_offset_to_labels,
+    build_definitions,
+    find_callname,
+    find_potential_aliases,
+    get_call_table,
+    get_name_var_table,
+    get_np_ufunc_typ,
+    get_unused_var_name,
+    guard,
+    is_const_call,
+    is_pure,
+    legalize_names,
+    mk_unique_var,
+    remove_dead,
+    remove_dels,
+    rename_labels,
+    replace_var_names,
+    visit_vars_inner,
+)
+from numba.core.typing import signature
+from numba.parfors import parfor
+from numba.parfors.parfor_lowering import _lower_parfor_parallel
+
+import numba_dppy as dppy
+from numba_dppy import config
+from numba_dppy.dpctl_iface import KernelLaunchOps
+from numba_dppy.dppy_array_type import DPPYArray
+from numba_dppy.target import DPPYTargetContext
+from numba_dppy.utils import address_space, npytypes_array_to_dppy_array
 
 from .dufunc_inliner import dufunc_inliner
-from numba_dppy.dpctl_iface import KernelLaunchOps
-import dpctl
-from numba_dppy import config
-from numba_dppy.target import DPPYTargetContext
-from numba_dppy.dppy_array_type import DPPYArray
-from numba_dppy.utils import address_space, npytypes_array_to_dppy_array
 
 
 def _print_block(block):
@@ -667,7 +666,7 @@ def _create_gufunc_for_parfor_body(
         print("after DUFunc inline".center(80, "-"))
         gufunc_ir.dump()
 
-    kernel_func = numba_dppy.compiler.compile_kernel_parfor(
+    kernel_func = dppy.compiler.compile_kernel_parfor(
         dpctl.get_current_queue(),
         gufunc_ir,
         gufunc_param_types,
@@ -1065,16 +1064,18 @@ def relatively_deep_copy(obj, memo):
     if obj_id in memo:
         return memo[obj_id]
 
-    from numba.core.dispatcher import _DispatcherBase
-    from numba.core.types.functions import Function, Dispatcher
-    from numba.core.bytecode import FunctionIdentity
-    from numba.core.typing.templates import Signature
-    from numba_dppy.compiler import DPPYFunctionTemplate
-    from numba.core.compiler import CompileResult
-    from numba.np.ufunc.dufunc import DUFunc
     from ctypes import _CFuncPtr
     from types import ModuleType
+
+    from numba.core.bytecode import FunctionIdentity
+    from numba.core.compiler import CompileResult
+    from numba.core.dispatcher import _DispatcherBase
     from numba.core.types.abstract import Type
+    from numba.core.types.functions import Dispatcher, Function
+    from numba.core.typing.templates import Signature
+    from numba.np.ufunc.dufunc import DUFunc
+
+    from numba_dppy.compiler import DPPYFunctionTemplate
 
     # objects which shouldn't or can't be copied and it's ok not to copy it.
     if isinstance(
@@ -1099,10 +1100,9 @@ def relatively_deep_copy(obj, memo):
     ):
         return obj
 
-    from numba.core.ir import Global, FreeVar
-    from numba.core.ir import FunctionIR
-    from numba.core.postproc import PostProcessor
     from numba.core.funcdesc import FunctionDescriptor
+    from numba.core.ir import FreeVar, FunctionIR, Global
+    from numba.core.postproc import PostProcessor
 
     if isinstance(obj, FunctionDescriptor):
         cpy = FunctionDescriptor(
@@ -1290,7 +1290,8 @@ class DPPYLower(Lower):
 
         # Debuginfo
         if context.enable_debuginfo:
-            from numba.core.funcdesc import qualifying_prefix, default_mangler
+            from numba.core.funcdesc import default_mangler, qualifying_prefix
+
             from numba_dppy.dppy_debuginfo import DPPYDIBuilder
 
             qualprefix = qualifying_prefix(fndesc.modname, fndesc.qualname)
@@ -1414,7 +1415,6 @@ def lower_parfor_rollback(lowerer, parfor):
             msg = "Parfor offloaded to " + device_filter_str
             print(msg, parfor.loc)
     except Exception as e:
-
         device_filter_str = (
             dpctl.get_current_queue().get_sycl_device().filter_string
         )
