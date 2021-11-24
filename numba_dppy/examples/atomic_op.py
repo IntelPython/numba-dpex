@@ -49,7 +49,7 @@ def main():
     print("Using device ...")
     device.print_device_info()
 
-    with dppy.offload_to_sycl_device(device):
+    with dpctl.device_context(device):
         atomic_add[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
 
     # Expected 100, because global_size = 100

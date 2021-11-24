@@ -58,7 +58,7 @@ def scenario(filter_str, context):
 @pytest.mark.parametrize(
     "context",
     [
-        dppy.offload_to_sycl_device,
+        dpctl.device_context,
         dpctl.device_context,
     ],
 )
@@ -85,7 +85,7 @@ class TestWithDPPYContext(unittest.TestCase):
 
         with captured_stdout() as got_gpu_message:
             device = dpctl.SyclDevice("opencl:gpu")
-            with dppy.offload_to_sycl_device(device):
+            with dpctl.device_context(device):
                 func(got_gpu)
 
         config.DEBUG = 0
@@ -111,7 +111,7 @@ class TestWithDPPYContext(unittest.TestCase):
 
         with captured_stdout() as got_cpu_message:
             device = dpctl.SyclDevice("opencl:cpu")
-            with dppy.offload_to_sycl_device(device):
+            with dpctl.device_context(device):
                 func(got_cpu)
 
         config.DEBUG = 0

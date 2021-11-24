@@ -40,7 +40,7 @@ def prange_example():
 class TestParforMessage(unittest.TestCase):
     def test_parfor_message(self):
         device = dpctl.SyclDevice("opencl:gpu")
-        with dppy.offload_to_sycl_device(device):
+        with dpctl.device_context(device):
             config.DEBUG = 1
             jitted = njit(prange_example)
 

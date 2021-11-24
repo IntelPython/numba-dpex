@@ -44,7 +44,7 @@ def no_arg_barrier_support():
     print("Using device ...")
     device.print_device_info()
 
-    with dppy.offload_to_sycl_device(device):
+    with dpctl.device_context(device):
         twice[N, dppy.DEFAULT_LOCAL_SIZE](arr)
 
     # the output should be `arr * 2, i.e. [0, 2, 4, 6, ...]`
@@ -80,7 +80,7 @@ def local_memory():
     print("Using device ...")
     device.print_device_info()
 
-    with dppy.offload_to_sycl_device(device):
+    with dpctl.device_context(device):
         reverse_array[blocksize, dppy.DEFAULT_LOCAL_SIZE](arr)
 
     # the output should be `orig[::-1] + orig, i.e. [9, 9, 9, ...]``

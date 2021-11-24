@@ -39,7 +39,7 @@ class TestOffloadDiagnostics(unittest.TestCase):
             return a
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with dppy.offload_to_sycl_device(device):
+        with dpctl.device_context(device):
             dppy_config.OFFLOAD_DIAGNOSTICS = 1
             jitted = njit(parallel=True)(prange_func)
 
@@ -64,7 +64,7 @@ class TestOffloadDiagnostics(unittest.TestCase):
         c = np.ones_like(a)
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with dppy.offload_to_sycl_device(device):
+        with dpctl.device_context(device):
             dppy_config.OFFLOAD_DIAGNOSTICS = 1
 
             with captured_stdout() as got:
