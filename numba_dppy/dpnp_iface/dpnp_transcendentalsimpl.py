@@ -18,9 +18,9 @@ from numba.core.extending import overload, register_jitable
 from numba.core.typing import signature
 
 import numba_dppy
-import numba_dppy.dpnp_glue as dpnp_lowering
-import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
-from numba_dppy import dpctl_functions
+import numba_dppy.dpctl_iface as dpctl_functions
+import numba_dppy.dpnp_iface as dpnp_lowering
+import numba_dppy.dpnp_iface.dpnpimpl as dpnp_ext
 
 from . import stubs
 
@@ -44,7 +44,9 @@ def common_impl(a, out, dpnp_func, print_debug):
     initial = 0
     where = 0
 
-    dpnp_func(out_usm, a_usm, a.shapeptr, a.ndim, axes, axes_ndim, initial, where)
+    dpnp_func(
+        out_usm, a_usm, a.shapeptr, a.ndim, axes, axes_ndim, initial, where
+    )
 
     event = dpctl_functions.queue_memcpy(
         sycl_queue, out.ctypes, out_usm, out.size * out.itemsize

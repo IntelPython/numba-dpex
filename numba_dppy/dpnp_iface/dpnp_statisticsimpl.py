@@ -17,9 +17,9 @@ from numba.core import cgutils, types
 from numba.core.extending import overload, register_jitable
 from numba.core.typing import signature
 
-import numba_dppy.dpnp_glue as dpnp_lowering
-import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
-from numba_dppy import dpctl_functions
+import numba_dppy.dpctl_iface as dpctl_functions
+import numba_dppy.dpnp_iface as dpnp_lowering
+import numba_dppy.dpnp_iface.dpnpimpl as dpnp_ext
 
 from . import stubs
 
@@ -73,7 +73,9 @@ def dpnp_amax_impl(a):
 
         axis, naxis = 0, 0
 
-        dpnp_func(a_usm, out_usm, a.size * a.itemsize, a.shapeptr, a.ndim, axis, naxis)
+        dpnp_func(
+            a_usm, out_usm, a.size * a.itemsize, a.shapeptr, a.ndim, axis, naxis
+        )
 
         out = np.empty(1, dtype=a.dtype)
         event = dpctl_functions.queue_memcpy(
@@ -142,7 +144,13 @@ def dpnp_amin_impl(a):
         out_usm = dpctl_functions.malloc_shared(a.itemsize, sycl_queue)
 
         dpnp_func(
-            a_usm, out_usm, a.size * a.itemsize, a.shapeptr, a.ndim, a.shapeptr, 0
+            a_usm,
+            out_usm,
+            a.size * a.itemsize,
+            a.shapeptr,
+            a.ndim,
+            a.shapeptr,
+            0,
         )
 
         out = np.empty(1, dtype=a.dtype)
@@ -320,7 +328,9 @@ def dpnp_cov_impl(a):
     Function declaration:
     void custom_cov_c(void* array1_in, void* result1, size_t nrows, size_t ncols)
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr, types.intp, types.intp)
+    sig = signature(
+        ret_type, types.voidptr, types.voidptr, types.intp, types.intp
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     res_dtype = np.float64
@@ -361,7 +371,9 @@ def dpnp_cov_impl(a):
             cols = a.shape[0]
             out = np.empty(rows, dtype=res_dtype)
 
-        out_usm = dpctl_functions.malloc_shared(out.size * out.itemsize, sycl_queue)
+        out_usm = dpctl_functions.malloc_shared(
+            out.size * out.itemsize, sycl_queue
+        )
 
         dpnp_func(a_usm, out_usm, rows, cols)
 

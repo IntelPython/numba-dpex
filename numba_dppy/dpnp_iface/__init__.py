@@ -16,7 +16,7 @@
 def ensure_dpnp(name):
     try:
         # import dpnp
-        from . import dpnp_fptr_interface as dpnp_glue
+        from . import dpnp_fptr_interface as dpnp_iface
     except ImportError:
         raise ImportError("dpnp is needed to call np.%s" % name)
 

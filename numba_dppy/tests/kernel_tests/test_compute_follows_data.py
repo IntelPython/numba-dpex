@@ -41,7 +41,11 @@ def sum_kernel(a, b, c):
 
 list_of_uniform_types = [
     (np.array, np.array, np.array),
-    (dpctl.tensor.usm_ndarray, dpctl.tensor.usm_ndarray, dpctl.tensor.usm_ndarray),
+    (
+        dpctl.tensor.usm_ndarray,
+        dpctl.tensor.usm_ndarray,
+        dpctl.tensor.usm_ndarray,
+    ),
 ]
 
 list_of_dtypes = [

@@ -20,7 +20,11 @@ import numpy as np
 import pytest
 
 from numba_dppy.tests._helper import skip_test
-from numba_dppy.utils import as_usm_obj, copy_to_numpy_from_usm_obj, has_usm_memory
+from numba_dppy.utils import (
+    as_usm_obj,
+    copy_to_numpy_from_usm_obj,
+    has_usm_memory,
+)
 
 from . import _helper
 

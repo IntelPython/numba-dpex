@@ -102,7 +102,9 @@ def copy_from_numpy_to_usm_obj(usm_allocated, obj):
         )
 
     if not obj.flags.c_contiguous:
-        raise ValueError("Only C-contiguous numpy.ndarray is currently supported!")
+        raise ValueError(
+            "Only C-contiguous numpy.ndarray is currently supported!"
+        )
 
     size = np.prod(obj.shape)
     if usm_mem.size != (obj.dtype.itemsize * size):
@@ -219,11 +221,17 @@ def as_usm_obj(obj, queue=None, usm_type="shared", copy=True):
 
         size = np.prod(obj.shape)
         if usm_type == "shared":
-            usm_mem = dpctl_mem.MemoryUSMShared(size * obj.dtype.itemsize, queue=queue)
+            usm_mem = dpctl_mem.MemoryUSMShared(
+                size * obj.dtype.itemsize, queue=queue
+            )
         elif usm_type == "device":
-            usm_mem = dpctl_mem.MemoryUSMDevice(size * obj.dtype.itemsize, queue=queue)
+            usm_mem = dpctl_mem.MemoryUSMDevice(
+                size * obj.dtype.itemsize, queue=queue
+            )
         elif usm_type == "host":
-            usm_mem = dpctl_mem.MemoryUSMHost(size * obj.dtype.itemsize, queue=queue)
+            usm_mem = dpctl_mem.MemoryUSMHost(
+                size * obj.dtype.itemsize, queue=queue
+            )
         else:
             raise ValueError(
                 "Supported usm_type are: 'shared', "

@@ -36,7 +36,10 @@ from numba_dppy.utils.messages import (
     cfd_ctx_mgr_wrng_msg,
     mix_datatype_err_msg,
 )
-from numba_dppy.utils.misc import IndeterminateExecutionQueueError, assert_no_return
+from numba_dppy.utils.misc import (
+    IndeterminateExecutionQueueError,
+    assert_no_return,
+)
 from numba_dppy.utils.type_conversion_fns import npytypes_array_to_dppy_array
 
 __all__ = [

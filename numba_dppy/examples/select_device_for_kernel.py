@@ -125,7 +125,9 @@ def select_device_SUAI(N):
     expected = a + b
 
     assert np.array_equal(got, expected)
-    print("Correct result when array with __sycl_usm_array_interface__ is passed!")
+    print(
+        "Correct result when array with __sycl_usm_array_interface__ is passed!"
+    )
 
 
 if __name__ == "__main__":
