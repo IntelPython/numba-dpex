@@ -74,7 +74,7 @@ def npytypes_array_to_dppy_array(arrtype, addrspace=address_space.GLOBAL):
 
 
 def suai_to_dppy_array_type(arr, addrspace=address_space.GLOBAL):
-    from numba_dppy.driver import USMNdArrayType
+    from numba_dppy.dpctl_iface import USMNdArrayType
 
     total_size, shape, ndim, itemsize, strides, dtype = get_info_from_suai(arr)
     try:
