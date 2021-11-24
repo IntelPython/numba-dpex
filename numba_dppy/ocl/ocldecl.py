@@ -157,7 +157,9 @@ class OCL_local_array(CallableTemplate):
                 if not isinstance(shape, types.IntegerLiteral):
                     return None
             elif isinstance(shape, (types.Tuple, types.UniTuple)):
-                if any([not isinstance(s, types.IntegerLiteral) for s in shape]):
+                if any(
+                    [not isinstance(s, types.IntegerLiteral) for s in shape]
+                ):
                     return None
             else:
                 return None

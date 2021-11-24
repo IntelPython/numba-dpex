@@ -35,7 +35,7 @@ from .ocl.stubs import (
 We are importing dpnp stub module to make Numba recognize the
 module when we rename Numpy functions.
 """
-from .dpnp_glue.stubs import dpnp
+from .dpnp_iface.stubs import dpnp
 
 DEFAULT_LOCAL_SIZE = []
 

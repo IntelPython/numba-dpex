@@ -32,7 +32,9 @@ from dpctl.tensor.numpy_usm_shared import class_list, functions_list, ndarray
 from llvmlite import ir
 from numba import types
 from numba.core import cgutils, config, types, typing
-from numba.core.datamodel.registry import register_default as register_model_default
+from numba.core.datamodel.registry import (
+    register_default as register_model_default,
+)
 from numba.core.imputils import builtin_registry as lower_registry
 from numba.core.overload_glue import _overload_glue
 from numba.core.pythonapi import box
@@ -75,7 +77,10 @@ from dpctl.memory import MemoryUSMShared
 import numba_dppy._usm_shared_allocator_ext
 
 # Register the helper function in dppl_rt so that we can insert calls to them via llvmlite.
-for py_name, c_address in numba_dppy._usm_shared_allocator_ext.c_helpers.items():
+for (
+    py_name,
+    c_address,
+) in numba_dppy._usm_shared_allocator_ext.c_helpers.items():
     llb.add_symbol(py_name, c_address)
 
 
@@ -124,7 +129,9 @@ class UsmSharedArrayType(DPPYArray):
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
         if method == "__call__":
             for inp in inputs:
-                if not isinstance(inp, (UsmSharedArrayType, types.Array, types.Number)):
+                if not isinstance(
+                    inp, (UsmSharedArrayType, types.Array, types.Number)
+                ):
                     return None
 
             return UsmSharedArrayType
@@ -286,7 +293,13 @@ def numba_register_lower_builtin():
 
         for typs, impl in v._BIND_TYPES.items():
             ig = (impl, func, typs)
-            dprint("Numpy lowered registry functions:", impl, func, type(func), typs)
+            dprint(
+                "Numpy lowered registry functions:",
+                impl,
+                func,
+                type(func),
+                typs,
+            )
             # If it is a Numpy function...
             if isinstance(func, ftype):
                 dprint("is ftype")
@@ -309,7 +322,9 @@ def numba_register_lower_builtin():
     # this registry contains functions, getattrs, setattrs, casts and constants...
     for ig in lower_registry.functions:
         impl, func, types = ig
-        dprint("Numpy lowered registry functions:", impl, func, type(func), types)
+        dprint(
+            "Numpy lowered registry functions:", impl, func, type(func), types
+        )
         # If it is a Numpy function...
         if isinstance(func, ftype):
             dprint("is ftype")
@@ -334,7 +349,13 @@ def numba_register_lower_builtin():
         types_with_usmarray = types_replace_array(types)
         if UsmSharedArrayType in types_with_usmarray:
             dprint(
-                "lower_getattr:", func, type(func), attr, type(attr), types, type(types)
+                "lower_getattr:",
+                func,
+                type(func),
+                attr,
+                type(attr),
+                types,
+                type(types),
             )
             todo_getattr.append((func, attr, types_with_usmarray))
 
@@ -343,12 +364,18 @@ def numba_register_lower_builtin():
 
     for impl, func, types in todo + todo_builtin:
         try:
-            usmarray_func = eval("dpctl.tensor.numpy_usm_shared." + func.__name__)
+            usmarray_func = eval(
+                "dpctl.tensor.numpy_usm_shared." + func.__name__
+            )
         except:
             dprint("failed to eval", func.__name__)
             continue
         dprint(
-            "need to re-register lowerer for usmarray", impl, func, types, usmarray_func
+            "need to re-register lowerer for usmarray",
+            impl,
+            func,
+            types,
+            usmarray_func,
         )
         new_impl = copy_func_for_usmarray(impl, nus)
         lower_registry.functions.append((new_impl, usmarray_func, types))
@@ -356,9 +383,13 @@ def numba_register_lower_builtin():
     for impl, func, types in todo_array_member_func:
         types_with_usmarray = types_replace_array(types)
         usmarray_func = "usm" + func
-        dprint("Registering lowerer for", impl, usmarray_func, types_with_usmarray)
+        dprint(
+            "Registering lowerer for", impl, usmarray_func, types_with_usmarray
+        )
         new_impl = copy_func_for_usmarray(impl, nus)
-        lower_registry.functions.append((new_impl, usmarray_func, types_with_usmarray))
+        lower_registry.functions.append(
+            (new_impl, usmarray_func, types_with_usmarray)
+        )
 
 
 def argspec_to_string(argspec):
@@ -441,7 +472,9 @@ def numba_register_typing():
             cls.original = original
 
         def generic_impl(self):
-            original_typer = self.__class__.original.generic(self.__class__.original)
+            original_typer = self.__class__.original.generic(
+                self.__class__.original
+            )
             ot_argspec = inspect.getfullargspec(original_typer)
             astr = argspec_to_string(ot_argspec)
 
@@ -678,7 +711,9 @@ class UsmArrayAttribute(AttributeTemplate):
             # vararg case
             if any(not sentry_shape_scalar(a) for a in args):
                 raise TypeError(
-                    "reshape({0}) is not supported".format(", ".join(map(str, args)))
+                    "reshape({0}) is not supported".format(
+                        ", ".join(map(str, args))
+                    )
                 )
 
             retty = ary.copy(ndim=len(args))
@@ -707,9 +742,9 @@ class UsmArrayAttribute(AttributeTemplate):
                 pass
 
             pysig = utils.pysignature(argsort_stub)
-            sig = signature(UsmSharedArrayType(types.intp, 1, "C"), kind).replace(
-                pysig=pysig
-            )
+            sig = signature(
+                UsmSharedArrayType(types.intp, 1, "C"), kind
+            ).replace(pysig=pysig)
             return sig
 
     @bound_function("usmarray.view")
@@ -769,7 +804,9 @@ class UsmArrayAttribute(AttributeTemplate):
         elif isinstance(argty, types.List):  # 1d lists only
             sig = signature(UsmSharedArrayType(ary.dtype, 1, "C"), *args)
         elif isinstance(argty, types.BaseTuple):
-            sig = signature(UsmSharedArrayType(ary.dtype, np.ndim(argty), "C"), *args)
+            sig = signature(
+                UsmSharedArrayType(ary.dtype, np.ndim(argty), "C"), *args
+            )
         else:
             raise TypeError("take(%s) not supported for %s" % argty)
         return sig
@@ -785,7 +822,9 @@ class UsmArrayAttribute(AttributeTemplate):
 class DparrayAsNdarray(CallableTemplate):
     def generic(self):
         def typer(arg):
-            return types.Array(dtype=arg.dtype, ndim=arg.ndim, layout=arg.layout)
+            return types.Array(
+                dtype=arg.dtype, ndim=arg.ndim, layout=arg.layout
+            )
 
         return typer
 
@@ -794,7 +833,9 @@ class DparrayAsNdarray(CallableTemplate):
 class DparrayFromNdarray(CallableTemplate):
     def generic(self):
         def typer(arg):
-            return UsmSharedArrayType(dtype=arg.dtype, ndim=arg.ndim, layout=arg.layout)
+            return UsmSharedArrayType(
+                dtype=arg.dtype, ndim=arg.ndim, layout=arg.layout
+            )
 
         return typer
 

@@ -30,7 +30,9 @@ def asarray(container):
     try:
         from dpnp.dpnp_array import dpnp_array
 
-        if isinstance(container, dpnp_array) and hasattr(container, "_array_obj"):
+        if isinstance(container, dpnp_array) and hasattr(
+            container, "_array_obj"
+        ):
             import warnings
 
             warnings.warn("asarray() uses internals from dpnp.")
@@ -38,4 +40,6 @@ def asarray(container):
     except:
         pass
 
-    raise NotImplementedError("dpctl asarray() does not support " + type(container))
+    raise NotImplementedError(
+        "dpctl asarray() does not support " + type(container)
+    )
