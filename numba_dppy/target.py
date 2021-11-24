@@ -102,7 +102,9 @@ class DPPYTypingContext(typing.BaseContext):
 class GenericPointerModel(datamodel.PrimitiveModel):
     def __init__(self, dmm, fe_type):
         adrsp = (
-            fe_type.addrspace if fe_type.addrspace is not None else address_space.GLOBAL
+            fe_type.addrspace
+            if fe_type.addrspace is not None
+            else address_space.GLOBAL
         )
         be_type = dmm.lookup(fe_type.dtype).get_data_type().as_pointer(adrsp)
         super(GenericPointerModel, self).__init__(dmm, fe_type, be_type)
@@ -336,8 +338,13 @@ class DPPYTargetContext(BaseContext):
 
         for name, ufunc in ufuncs:
             for sig in self.ufunc_db[ufunc].keys():
-                if sig in sig_mapper and (name, sig_mapper[sig]) in lower_ocl_impl:
-                    self.ufunc_db[ufunc][sig] = lower_ocl_impl[(name, sig_mapper[sig])]
+                if (
+                    sig in sig_mapper
+                    and (name, sig_mapper[sig]) in lower_ocl_impl
+                ):
+                    self.ufunc_db[ufunc][sig] = lower_ocl_impl[
+                        (name, sig_mapper[sig])
+                    ]
 
     def load_additional_registries(self):
         """Register OpenCL functions into numba-dppy's target context.

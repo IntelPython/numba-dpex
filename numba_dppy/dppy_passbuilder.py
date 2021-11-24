@@ -38,7 +38,7 @@ from numba.core.untyped_passes import (
     WithLifting,
 )
 
-from .dppy_passes import (
+from numba_dppy.core.passes.dppy_passes import (
     DPPYConstantSizeStaticLocalMemoryPass,
     DPPYDumpParforDiagnostics,
     DPPYNoPythonBackend,
@@ -46,7 +46,7 @@ from .dppy_passes import (
     DPPYPreParforPass,
     SpirvFriendlyLowering,
 )
-from .rename_numpy_functions_pass import (
+from numba_dppy.core.passes.rename_numpy_functions_pass import (
     DPPYRewriteNdarrayFunctions,
     DPPYRewriteOverloadedNumPyFunctions,
 )
@@ -84,7 +84,9 @@ class DPPYPassBuilder(object):
 
         # inline closures early in case they are using nonlocal's
         # see issue #6585.
-        pm.add_pass(InlineClosureLikes, "inline calls to locally defined closures")
+        pm.add_pass(
+            InlineClosureLikes, "inline calls to locally defined closures"
+        )
 
         # pre typing
         if not state.flags.no_rewrites:
@@ -94,7 +96,8 @@ class DPPYPassBuilder(object):
 
         # convert any remaining closures into functions
         pm.add_pass(
-            MakeFunctionToJitFunction, "convert make_function into JIT functions"
+            MakeFunctionToJitFunction,
+            "convert make_function into JIT functions",
         )
         # inline functions that have been determined as inlinable and rerun
         # branch pruning, this needs to be run after closures are inlined as

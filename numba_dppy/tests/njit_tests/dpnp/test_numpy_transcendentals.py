@@ -136,7 +136,9 @@ def test_unary_ops(filter_str, unary_op, input_array, get_shape, capfd):
     assert max_abs_err < 1e-4
 
 
-def test_unary_nan_ops(filter_str, unary_nan_op, input_nan_array, get_shape, capfd):
+def test_unary_nan_ops(
+    filter_str, unary_nan_op, input_nan_array, get_shape, capfd
+):
     if skip_test(filter_str):
         pytest.skip()
 

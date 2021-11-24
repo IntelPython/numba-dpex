@@ -108,7 +108,9 @@ def sum_reduce(A):
             partial_sums.size * partial_sums.dtype.itemsize
         )
         partial_sums_ndarray = np.ndarray(
-            partial_sums.shape, buffer=partial_sums_buf, dtype=partial_sums.dtype
+            partial_sums.shape,
+            buffer=partial_sums_buf,
+            dtype=partial_sums.dtype,
         )
         np.copyto(partial_sums_ndarray, partial_sums)
 

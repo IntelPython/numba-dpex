@@ -17,9 +17,9 @@ from numba import types
 from numba.core.extending import overload, register_jitable
 from numba.core.typing import signature
 
-import numba_dppy.dpnp_glue as dpnp_lowering
-import numba_dppy.dpnp_glue.dpnpimpl as dpnp_ext
-from numba_dppy import dpctl_functions
+import numba_dppy.dpctl_iface as dpctl_functions
+import numba_dppy.dpnp_iface as dpnp_lowering
+import numba_dppy.dpnp_iface.dpnpimpl as dpnp_ext
 
 from . import stubs
 
@@ -116,7 +116,9 @@ def common_impl_2_arg(arg1, arg2, res, dpnp_func, print_debug):
 
 
 @register_jitable
-def common_impl_hypergeometric(ngood, nbad, nsample, res, dpnp_func, print_debug):
+def common_impl_hypergeometric(
+    ngood, nbad, nsample, res, dpnp_func, print_debug
+):
     sycl_queue = dpctl_functions.get_current_queue()
     res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
 
@@ -141,7 +143,9 @@ def common_impl_multinomial(n, pvals, res, dpnp_func, print_debug):
     sycl_queue = dpctl_functions.get_current_queue()
     res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
 
-    pvals_usm = dpctl_functions.malloc_shared(pvals.size * pvals.itemsize, sycl_queue)
+    pvals_usm = dpctl_functions.malloc_shared(
+        pvals.size * pvals.itemsize, sycl_queue
+    )
     event = dpctl_functions.queue_memcpy(
         sycl_queue, pvals_usm, pvals.ctypes, pvals.size * pvals.itemsize
     )
@@ -172,7 +176,9 @@ def common_impl_multivariate_normal(
     sycl_queue = dpctl_functions.get_current_queue()
     res_usm = dpctl_functions.malloc_shared(res.size * res.itemsize, sycl_queue)
 
-    mean_usm = dpctl_functions.malloc_shared(mean.size * mean.itemsize, sycl_queue)
+    mean_usm = dpctl_functions.malloc_shared(
+        mean.size * mean.itemsize, sycl_queue
+    )
     event = dpctl_functions.queue_memcpy(
         sycl_queue, mean_usm, mean.ctypes, mean.size * mean.itemsize
     )
@@ -186,7 +192,9 @@ def common_impl_multivariate_normal(
     dpctl_functions.event_wait(event)
     dpctl_functions.event_delete(event)
 
-    dpnp_func(res_usm, mean.size, mean_usm, mean.size, cov_usm, cov.size, res.size)
+    dpnp_func(
+        res_usm, mean.size, mean_usm, mean.size, cov_usm, cov.size, res.size
+    )
 
     event = dpctl_functions.queue_memcpy(
         sycl_queue, res.ctypes, res_usm, res.size * res.itemsize
@@ -221,7 +229,9 @@ def dpnp_random_impl(size):
     void custom_rng_uniform_c(void* result, long low, long high, size_t size)
 
     """
-    sig = signature(ret_type, types.voidptr, types.int64, types.int64, types.intp)
+    sig = signature(
+        ret_type, types.voidptr, types.int64, types.int64, types.intp
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
 
     res_dtype = np.float64
@@ -251,7 +261,9 @@ def dpnp_random_impl(*size):
     void custom_rng_uniform_c(void* result, long low, long high, size_t size)
 
     """
-    sig = signature(ret_type, types.voidptr, types.int64, types.int64, types.intp)
+    sig = signature(
+        ret_type, types.voidptr, types.int64, types.int64, types.intp
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
 
     res_dtype = np.float64
@@ -281,7 +293,9 @@ def dpnp_random_impl(low, high=None, size=None):
     void custom_rng_uniform_c(void* result, long low, long high, size_t size)
 
     """
-    sig = signature(ret_type, types.voidptr, types.int64, types.int64, types.intp)
+    sig = signature(
+        ret_type, types.voidptr, types.int64, types.int64, types.intp
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["int32", "NONE"], sig)
 
     res_dtype = np.int32
@@ -337,7 +351,9 @@ def dpnp_random_impl(low, high=None, size=None):
     void custom_rng_uniform_c(void* result, long low, long high, size_t size)
 
     """
-    sig = signature(ret_type, types.voidptr, types.int64, types.int64, types.intp)
+    sig = signature(
+        ret_type, types.voidptr, types.int64, types.int64, types.intp
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["int32", "NONE"], sig)
 
     res_dtype = np.int32
@@ -393,7 +409,9 @@ def dpnp_random_impl(a, b, size=None):
     void custom_rng_beta_c(void* result, _DataType a, _DataType b, size_t size)
 
     """
-    sig = signature(ret_type, types.voidptr, types.float64, types.float64, types.intp)
+    sig = signature(
+        ret_type, types.voidptr, types.float64, types.float64, types.intp
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
@@ -436,7 +454,9 @@ def dpnp_random_impl(n, p, size=None):
     void custom_rng_binomial_c(void* result, int ntrial, double p, size_t size)
 
     """
-    sig = signature(ret_type, types.voidptr, types.int32, types.float64, types.intp)
+    sig = signature(
+        ret_type, types.voidptr, types.int32, types.float64, types.intp
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["int32", "NONE"], sig)
     res_dtype = np.int32
     PRINT_DEBUG = dpnp_lowering.DEBUG
@@ -557,7 +577,9 @@ def dpnp_random_impl(shape, scale=1.0, size=None):
     Function declaration:
     void custom_rng_gamma_c(void* result, _DataType shape, _DataType scale, size_t size)
     """
-    sig = signature(ret_type, types.voidptr, types.float64, types.float64, types.intp)
+    sig = signature(
+        ret_type, types.voidptr, types.float64, types.float64, types.intp
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
@@ -638,7 +660,9 @@ def dpnp_random_impl(loc=0.0, scale=1.0, size=None):
     Function declaration:
     void custom_rng_gumbel_c(void* result, double loc, double scale, size_t size)
     """
-    sig = signature(ret_type, types.voidptr, types.float64, types.float64, types.intp)
+    sig = signature(
+        ret_type, types.voidptr, types.float64, types.float64, types.intp
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
@@ -683,7 +707,12 @@ def dpnp_random_impl(ngood, nbad, nsample, size=None):
     void custom_rng_hypergeometric_c(void* result, int l, int s, int m, size_t size)
     """
     sig = signature(
-        ret_type, types.voidptr, types.int32, types.int32, types.int32, types.intp
+        ret_type,
+        types.voidptr,
+        types.int32,
+        types.int32,
+        types.int32,
+        types.intp,
     )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["int32", "NONE"], sig)
 
@@ -735,7 +764,9 @@ def dpnp_random_impl(loc=0.0, scale=1.0, size=None):
     Function declaration:
     void custom_rng_laplace_c(void* result, double loc, double scale, size_t size)
     """
-    sig = signature(ret_type, types.voidptr, types.float64, types.float64, types.intp)
+    sig = signature(
+        ret_type, types.voidptr, types.float64, types.float64, types.intp
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
@@ -779,7 +810,9 @@ def dpnp_random_impl(mean=0.0, sigma=1.0, size=None):
     Function declaration:
     void custom_rng_lognormal_c(void* result, _DataType mean, _DataType stddev, size_t size)
     """
-    sig = signature(ret_type, types.voidptr, types.float64, types.float64, types.intp)
+    sig = signature(
+        ret_type, types.voidptr, types.float64, types.float64, types.intp
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
@@ -825,7 +858,12 @@ def dpnp_random_impl(n, pvals, size=None):
                                   const size_t p_vector_size, size_t size)
     """
     sig = signature(
-        ret_type, types.voidptr, types.int32, types.voidptr, types.intp, types.intp
+        ret_type,
+        types.voidptr,
+        types.int32,
+        types.voidptr,
+        types.intp,
+        types.intp,
     )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["int32", "NONE"], sig)
 
@@ -961,7 +999,9 @@ def dpnp_random_impl(n, p, size=None):
     Function declaration:
     void custom_rng_negative_binomial_c(void* result, double a, double p, size_t size)
     """
-    sig = signature(ret_type, types.voidptr, types.int32, types.float64, types.intp)
+    sig = signature(
+        ret_type, types.voidptr, types.int32, types.float64, types.intp
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["int32", "NONE"], sig)
     res_dtype = np.int32
     PRINT_DEBUG = dpnp_lowering.DEBUG
@@ -1003,7 +1043,9 @@ def dpnp_random_impl(loc=0.0, scale=1.0, size=None):
     Function declaration:
     void custom_rng_normal_c(void* result, _DataType mean, _DataType stddev, size_t size)
     """
-    sig = signature(ret_type, types.voidptr, types.float64, types.float64, types.intp)
+    sig = signature(
+        ret_type, types.voidptr, types.float64, types.float64, types.intp
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
@@ -1238,7 +1280,9 @@ def dpnp_random_impl(size=None):
     Function declaration:
     void custom_rng_normal_c(void* result, _DataType mean, _DataType stddev, size_t size)
     """
-    sig = signature(ret_type, types.voidptr, types.float64, types.float64, types.intp)
+    sig = signature(
+        ret_type, types.voidptr, types.float64, types.float64, types.intp
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
     res_dtype = np.float64
     PRINT_DEBUG = dpnp_lowering.DEBUG
@@ -1274,7 +1318,9 @@ def dpnp_random_impl(low=0.0, high=1.0, size=None):
     Function declaration:
     void custom_rng_uniform_c(void* result, long low, long high, size_t size)
     """
-    sig = signature(ret_type, types.voidptr, types.int64, types.int64, types.intp)
+    sig = signature(
+        ret_type, types.voidptr, types.int64, types.int64, types.intp
+    )
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, ["float64", "NONE"], sig)
 
     res_dtype = np.float64

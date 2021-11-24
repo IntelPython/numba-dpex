@@ -82,7 +82,10 @@ list_of_unary_ops = [
 
 @pytest.fixture(params=list_of_unary_ops)
 def unary_op(request):
-    return wrapper_function("a", f"np.{request.param}(a)", globals()), request.param
+    return (
+        wrapper_function("a", f"np.{request.param}(a)", globals()),
+        request.param,
+    )
 
 
 @pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)

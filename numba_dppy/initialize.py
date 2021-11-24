@@ -45,11 +45,15 @@ def load_dpctl_sycl_interface():
     platform = plt.system()
     if platform == "Windows":
         paths = glob.glob(
-            os.path.join(os.path.dirname(dpctl.__file__), "*DPCTLSyclInterface.dll")
+            os.path.join(
+                os.path.dirname(dpctl.__file__), "*DPCTLSyclInterface.dll"
+            )
         )
     else:
         paths = glob.glob(
-            os.path.join(os.path.dirname(dpctl.__file__), "*DPCTLSyclInterface.so")
+            os.path.join(
+                os.path.dirname(dpctl.__file__), "*DPCTLSyclInterface.so"
+            )
         )
 
     if len(paths) == 1:

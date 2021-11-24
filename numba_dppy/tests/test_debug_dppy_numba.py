@@ -45,7 +45,9 @@ class gdb:
         env["NUMBA_OPT"] = "0"
         env["NUMBA_EXTEND_VARIABLE_LIFETIMES"] = "1"
 
-        self.child = pexpect.spawn("gdb-oneapi -q python", env=env, encoding="utf-8")
+        self.child = pexpect.spawn(
+            "gdb-oneapi -q python", env=env, encoding="utf-8"
+        )
         if config.DEBUG:
             self.child.logfile = sys.stdout
 

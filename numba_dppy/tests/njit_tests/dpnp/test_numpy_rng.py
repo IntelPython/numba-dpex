@@ -126,7 +126,9 @@ def test_two_arg_fn(filter_str, two_arg_fn, unary_size, capfd):
     op_name, first_arg, low, high = two_arg_fn
 
     if op_name == "gamma":
-        pytest.skip("AttributeError: 'NoneType' object has no attribute 'ravel'")
+        pytest.skip(
+            "AttributeError: 'NoneType' object has no attribute 'ravel'"
+        )
     op = get_two_arg_fn(op_name)
     f = njit(op)
     device = dpctl.SyclDevice(filter_str)
@@ -165,7 +167,9 @@ def three_arg_fn(request):
 
 
 def get_three_arg_fn(op_name):
-    return wrapper_function("a, b, c", f"np.random.{op_name}(a, b, c)", globals())
+    return wrapper_function(
+        "a, b, c", f"np.random.{op_name}(a, b, c)", globals()
+    )
 
 
 def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
@@ -179,7 +183,7 @@ def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
     elif op_name == "multivariate_normal":
         pytest.skip(
             "No implementation of function Function(<class "
-            "'numba_dppy.dpnp_glue.stubs.dpnp.multivariate_normal'>) found for signature"
+            "'numba_dppy.dpnp_iface.stubs.dpnp.multivariate_normal'>) found for signature"
         )
     elif op_name == "negative_binomial":
         pytest.skip("DPNP RNG Error: dpnp_rng_negative_binomial_c() failed.")

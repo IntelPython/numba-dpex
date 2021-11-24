@@ -26,9 +26,9 @@ from numba.core.compiler_lock import global_compiler_lock
 from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
 from numba_dppy import config
+from numba_dppy.dpctl_iface import USMNdArrayType
 from numba_dppy.dppy_array_type import DPPYArray
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
-from numba_dppy.driver import USMNdArrayType
 from numba_dppy.utils import (
     as_usm_obj,
     assert_no_return,
@@ -85,12 +85,16 @@ class DPPYCompiler(CompilerBase):
         # this maintains the objmode fallback behaviour
         pms = []
         self.state.parfor_diagnostics = ExtendedParforDiagnostics()
-        self.state.metadata["parfor_diagnostics"] = self.state.parfor_diagnostics
+        self.state.metadata[
+            "parfor_diagnostics"
+        ] = self.state.parfor_diagnostics
         if not self.state.flags.force_pyobject:
             # print("Numba-DPPY [INFO]: Using Numba-DPPY pipeline")
             pms.append(DPPYPassBuilder.define_nopython_pipeline(self.state))
         if self.state.status.can_fallback or self.state.flags.force_pyobject:
-            pms.append(DefaultPassBuilder.define_objectmode_pipeline(self.state))
+            pms.append(
+                DefaultPassBuilder.define_objectmode_pipeline(self.state)
+            )
         return pms
 
 
@@ -170,7 +174,9 @@ def compile_with_dppy(pyfunc, return_type, args, is_kernel, debug=None):
 def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
     # For any array we only accept numba_dppy.dppy_array_type.DPPYArray
     for arg in args:
-        if isinstance(arg, types.npytypes.Array) and not isinstance(arg, DPPYArray):
+        if isinstance(arg, types.npytypes.Array) and not isinstance(
+            arg, DPPYArray
+        ):
             raise TypeError(
                 "We only accept DPPYArray as type of array-like objects. We received %s"
                 % (type(arg))
@@ -204,10 +210,14 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
     return oclkern
 
 
-def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug=None):
+def compile_kernel_parfor(
+    sycl_queue, func_ir, args, args_with_addrspaces, debug=None
+):
     # For any array we only accept numba_dppy.dppy_array_type.DPPYArray
     for arg in args_with_addrspaces:
-        if isinstance(arg, types.npytypes.Array) and not isinstance(arg, DPPYArray):
+        if isinstance(arg, types.npytypes.Array) and not isinstance(
+            arg, DPPYArray
+        ):
             raise TypeError(
                 "We only accept DPPYArray as type of array-like objects. We received %s"
                 % (type(arg))
@@ -247,7 +257,11 @@ def compile_kernel_parfor(sycl_queue, func_ir, args, args_with_addrspaces, debug
 
 def compile_dppy_func(pyfunc, return_type, args, debug=None):
     cres = compile_with_dppy(
-        pyfunc=pyfunc, return_type=return_type, args=args, is_kernel=False, debug=debug
+        pyfunc=pyfunc,
+        return_type=return_type,
+        args=args,
+        is_kernel=False,
+        debug=debug,
     )
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
     cres.target_context.mark_ocl_device(func)
@@ -313,7 +327,9 @@ class DPPYFunctionTemplate(object):
 
             if first_definition:
                 # First definition
-                cres.target_context.insert_user_function(self, cres.fndesc, libs)
+                cres.target_context.insert_user_function(
+                    self, cres.fndesc, libs
+                )
             else:
                 cres.target_context.add_user_function(self, cres.fndesc, libs)
 
@@ -331,7 +347,9 @@ class DPPYFunction(object):
 def _ensure_valid_work_item_grid(val, sycl_queue):
 
     if not isinstance(val, (tuple, list, int)):
-        error_message = "Cannot create work item dimension from provided argument"
+        error_message = (
+            "Cannot create work item dimension from provided argument"
+        )
         raise ValueError(error_message)
 
     if isinstance(val, int):
@@ -352,7 +370,9 @@ def _ensure_valid_work_item_grid(val, sycl_queue):
 def _ensure_valid_work_group_size(val, work_item_grid):
 
     if not isinstance(val, (tuple, list, int)):
-        error_message = "Cannot create work item dimension from provided argument"
+        error_message = (
+            "Cannot create work item dimension from provided argument"
+        )
         raise ValueError(error_message)
 
     if isinstance(val, int):
@@ -497,7 +517,9 @@ class DPPYKernel(DPPYKernelBase):
             internal_device_arrs,
             self.ordered_arg_access_types,
         ):
-            self._pack_argument(ty, val, self.sycl_queue, i_dev_arr, access_type)
+            self._pack_argument(
+                ty, val, self.sycl_queue, i_dev_arr, access_type
+            )
 
     def _pack_argument(self, ty, val, sycl_queue, device_arr, access_type):
         """
@@ -573,7 +595,14 @@ class DPPYKernel(DPPYKernelBase):
 
         if isinstance(ty, USMNdArrayType):
             usm_mem = has_usm_memory(val)
-            total_size, shape, ndim, itemsize, strides, dtype = get_info_from_suai(val)
+            (
+                total_size,
+                shape,
+                ndim,
+                itemsize,
+                strides,
+                dtype,
+            ) = get_info_from_suai(val)
             """
             self._unpack_device_array_argument(
                 val.size,
@@ -599,7 +628,9 @@ class DPPYKernel(DPPYKernelBase):
             packed_val = val
             usm_mem = has_usm_memory(val)
             if usm_mem is None:
-                default_behavior = self.check_for_invalid_access_type(access_type)
+                default_behavior = self.check_for_invalid_access_type(
+                    access_type
+                )
                 usm_mem = as_usm_obj(val, queue=sycl_queue, copy=False)
 
                 orig_val = val
@@ -618,8 +649,10 @@ class DPPYKernel(DPPYKernelBase):
 
                 if (
                     default_behavior
-                    or self.valid_access_types[access_type] == _NUMBA_DPPY_READ_ONLY
-                    or self.valid_access_types[access_type] == _NUMBA_DPPY_READ_WRITE
+                    or self.valid_access_types[access_type]
+                    == _NUMBA_DPPY_READ_ONLY
+                    or self.valid_access_types[access_type]
+                    == _NUMBA_DPPY_READ_WRITE
                 ):
                     copy_from_numpy_to_usm_obj(usm_mem, packed_val)
 
@@ -708,7 +741,9 @@ class JitDPPYKernel(DPPYKernelBase):
 
         argtypes = self._get_argtypes(*args)
         kernel = self.specialize(argtypes, current_queue)
-        cfg = kernel.configure(self.sycl_queue, self.global_size, self.local_size)
+        cfg = kernel.configure(
+            self.sycl_queue, self.global_size, self.local_size
+        )
         cfg(*args)
 
     def specialize(self, argtypes, queue):
