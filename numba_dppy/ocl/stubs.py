@@ -119,6 +119,7 @@ class private(Stub):
         Allocate a private array.
         """
 
+
 # -------------------------------------------------------------------------------
 # local memory
 

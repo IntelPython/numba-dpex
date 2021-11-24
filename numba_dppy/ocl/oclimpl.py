@@ -429,7 +429,7 @@ def atomic_add(context, builder, sig, args, name):
 
 
 @lower(stubs.private.array, types.IntegerLiteral, types.Any)
-def dppy_local_array_integer(context, builder, sig, args):
+def dppy_private_array_integer(context, builder, sig, args):
     length = sig.args[0].literal_value
     dtype = parse_dtype(sig.args[1])
     return _generic_array(
@@ -444,7 +444,7 @@ def dppy_local_array_integer(context, builder, sig, args):
 
 @lower(stubs.private.array, types.Tuple, types.Any)
 @lower(stubs.private.array, types.UniTuple, types.Any)
-def dppy_local_array_tuple(context, builder, sig, args):
+def dppy_private_array_tuple(context, builder, sig, args):
     shape = [s.literal_value for s in sig.args[0]]
     dtype = parse_dtype(sig.args[1])
     return _generic_array(

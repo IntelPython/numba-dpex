@@ -185,6 +185,7 @@ class OclLocalTemplate(AttributeTemplate):
 
 # dppy.private submodule -------------------------------------------------------
 
+
 @intrinsic
 class OCL_private_array(CallableTemplate):
     key = dppy.private.array
@@ -269,6 +270,7 @@ class OclModuleTemplate(AttributeTemplate):
 
     def resolve_private(self, mod):
         return types.Module(dppy.private)
+
 
 # intrinsic
 
