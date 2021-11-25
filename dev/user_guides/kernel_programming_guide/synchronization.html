@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Synchronization Functions &mdash; numba-dppy 0.17.2+12.g61fb187 documentation</title>
+  <title>Synchronization Functions &mdash; numba-dppy 0.18.0dev0+8.ga210f11 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -127,7 +127,7 @@ image objects and then want to read the updated data. Passing no arguments to <c
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using device ...&quot;</span><span class="p">)</span>
     <span class="n">device</span><span class="o">.</span><span class="n">print_device_info</span><span class="p">()</span>
 
-    <span class="k">with</span> <span class="n">dppy</span><span class="o">.</span><span class="n">offload_to_sycl_device</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
         <span class="n">twice</span><span class="p">[</span><span class="n">N</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">arr</span><span class="p">)</span>
 
     <span class="c1"># the output should be `arr * 2, i.e. [0, 2, 4, 6, ...]`</span>
@@ -168,7 +168,7 @@ correct ordering of memory operations to local memory. For example,</p></li>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using device ...&quot;</span><span class="p">)</span>
     <span class="n">device</span><span class="o">.</span><span class="n">print_device_info</span><span class="p">()</span>
 
-    <span class="k">with</span> <span class="n">dppy</span><span class="o">.</span><span class="n">offload_to_sycl_device</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
         <span class="n">reverse_array</span><span class="p">[</span><span class="n">blocksize</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">arr</span><span class="p">)</span>
 
     <span class="c1"># the output should be `orig[::-1] + orig, i.e. [9, 9, 9, ...]``</span>
