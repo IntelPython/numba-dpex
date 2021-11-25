@@ -24,9 +24,13 @@ class DPPYDIBuilder(DIBuilder):
     def mark_subprogram(self, function, qualname, argnames, argtypes, line):
         name = qualname
         argmap = dict(zip(argnames, argtypes))
-        di_subp = self._add_subprogram(name=name, linkagename=self.linkage_name,
-                                       line=line, function=function,
-                                       argmap=argmap)
+        di_subp = self._add_subprogram(
+            name=name,
+            linkagename=self.linkage_name,
+            line=line,
+            function=function,
+            argmap=argmap,
+        )
         function.set_metadata("dbg", di_subp)
         # disable inlining for this function for easier debugging
         function.attributes.add("noinline")
