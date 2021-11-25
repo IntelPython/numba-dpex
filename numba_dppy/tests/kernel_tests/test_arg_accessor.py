@@ -79,6 +79,6 @@ def test_kernel_arg_accessor(filter_str, input_arrays, kernel):
     a, b, actual = input_arrays
     expected = a + b
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device):
+    with dpctl.device_context(device):
         call_kernel(global_size, local_size, a, b, actual, kernel)
     np.testing.assert_allclose(actual, expected, rtol=1e-5, atol=0)

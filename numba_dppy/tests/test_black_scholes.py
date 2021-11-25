@@ -16,6 +16,7 @@ import math
 import time
 import unittest
 
+import dpctl
 import numpy as np
 
 import numba_dppy as dppy
@@ -139,7 +140,7 @@ class TestDPPYBlackScholes(unittest.TestCase):
         blockdim = 512, 1
         griddim = int(math.ceil(float(OPT_N) / blockdim[0])), 1
 
-        with dppy.offload_to_sycl_device("opencl:gpu"):
+        with dpctl.device_context("opencl:gpu"):
             time1 = time.time()
             for i in range(iterations):
                 black_scholes_dppy[blockdim, griddim](

@@ -56,7 +56,7 @@ def div_kernel(dst, src, m):
     dst[i] = src[i] // m
 
 import dpctl
-with numba_dppy.offload_to_sycl_device(dpctl.SyclQueue()):
+with dpctl.device_context(dpctl.SyclQueue()):
     X = np.arange(10)
     Y = np.arange(10)
     div_kernel[10, numba_dppy.DEFAULT_LOCAL_SIZE](Y, X, 5)

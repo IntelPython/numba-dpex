@@ -45,7 +45,7 @@ class TestDPPYSumReduction(unittest.TestCase):
         R = np.array(np.random.random(math.ceil(N / 2)), dtype=np.float32)
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with dppy.offload_to_sycl_device(device):
+        with dpctl.device_context(device):
             total = N
 
             while total > 1:

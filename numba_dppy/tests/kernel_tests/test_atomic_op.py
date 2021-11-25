@@ -105,7 +105,7 @@ def test_kernel_atomic_simple(filter_str, input_arrays, kernel_result_pair):
     a, dtype = input_arrays
     kernel, expected = kernel_result_pair
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device):
+    with dpctl.device_context(device):
         kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
     assert a[0] == expected
 
@@ -133,7 +133,7 @@ def test_kernel_atomic_local(filter_str, input_arrays, return_list_of_op):
     f = get_func_local(op_type, dtype)
     kernel = dppy.kernel(f)
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device):
+    with dpctl.device_context(device):
         kernel[global_size, global_size](a)
     assert a[0] == expected
 
@@ -176,7 +176,7 @@ def test_kernel_atomic_multi_dim(
     kernel = get_kernel_multi_dim(op_type, len(dim))
     a = np.zeros(dim, return_dtype)
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device):
+    with dpctl.device_context(device):
         kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
     assert a[0] == expected
 
@@ -220,7 +220,7 @@ def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, addrspace):
     LLVM_SPIRV_ROOT_old_val = config.LLVM_SPIRV_ROOT
     config.LLVM_SPIRV_ROOT = LLVM_SPIRV_ROOT
 
-    with dppy.offload_to_sycl_device(filter_str) as sycl_queue:
+    with dpctl.device_context(filter_str) as sycl_queue:
         kern = kernel[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
             kernel._get_argtypes(a), sycl_queue
         )
@@ -233,7 +233,7 @@ def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, addrspace):
 
     # To bypass caching
     kernel = dppy.kernel(f)
-    with dppy.offload_to_sycl_device(filter_str) as sycl_queue:
+    with dpctl.device_context(filter_str) as sycl_queue:
         kern = kernel[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
             kernel._get_argtypes(a), sycl_queue
         )
