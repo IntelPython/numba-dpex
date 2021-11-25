@@ -122,7 +122,7 @@ jobs:
     strategy:
       matrix:
         python: [3.8, 3.9]
-        numba: [0.54, 0.55]
+        numba: [0.54, "0.55.0dev0=*_469"]
         integration_channels: [""]
         experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
