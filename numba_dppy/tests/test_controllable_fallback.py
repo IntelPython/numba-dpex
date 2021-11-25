@@ -19,7 +19,6 @@ import dpctl
 import numba
 import numpy as np
 
-import numba_dppy
 from numba_dppy import config
 
 from . import _helper
@@ -44,7 +43,7 @@ class TestDPPYFallback(unittest.TestCase):
         config.DEBUG = 1
         with warnings.catch_warnings(record=True) as w:
             device = dpctl.SyclDevice("opencl:gpu")
-            with numba_dppy.offload_to_sycl_device(device):
+            with dpctl.device_context(device):
                 dppy = numba.njit(parallel=True)(inner_call_fallback)
                 dppy_fallback_true = dppy()
 
@@ -74,7 +73,7 @@ class TestDPPYFallback(unittest.TestCase):
             config.FALLBACK_ON_CPU = 0
             with warnings.catch_warnings(record=True) as w:
                 device = dpctl.SyclDevice("opencl:gpu")
-                with numba_dppy.offload_to_sycl_device(device):
+                with dpctl.device_context(device):
                     dppy = numba.njit(parallel=True)(inner_call_fallback)
                     dppy_fallback_false = dppy()
 

@@ -17,7 +17,7 @@ The numba_dppy extension adds an automatic offload optimizer to
 numba. The optimizer automatically detects data-parallel code
 regions in a numba.jit function and then offloads the data-parallel
 regions to a SYCL device. The optimizer is triggered when a numba.jit
-function is invoked inside ``numba_dppy.offload_to_sycl_device`` scope.
+function is invoked inside ``dpctl.device_context`` scope.
 
 This example demonstrates the usage of numba_dppy's automatic offload
 functionality. Note that numba_dppy should be installed in your
@@ -27,8 +27,6 @@ environment for the example to work.
 import dpctl
 import numpy as np
 from numba import njit, prange
-
-import numba_dppy as dppy
 
 
 @njit
