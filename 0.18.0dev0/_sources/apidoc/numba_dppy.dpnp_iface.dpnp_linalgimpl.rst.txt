@@ -1,0 +1,7 @@
+numba\_dppy.dpnp\_iface.dpnp\_linalgimpl module
+===============================================
+
+.. automodule:: numba_dppy.dpnp_iface.dpnp_linalgimpl
+   :members:
+   :undoc-members:
+   :show-inheritance:
