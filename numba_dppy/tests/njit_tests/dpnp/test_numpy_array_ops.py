@@ -113,7 +113,7 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
 
     f = njit(op)
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device), dpnp_debug():
+    with dpctl.device_context(device), dpnp_debug():
         actual = f(a)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -149,7 +149,7 @@ def test_take(filter_str, input_arrays, indices, capfd):
 
     f = njit(fn)
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device), dpnp_debug():
+    with dpctl.device_context(device), dpnp_debug():
         actual = f(a, indices)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out

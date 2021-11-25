@@ -33,7 +33,7 @@ def filter_str(request):
 def test_print_only_str(filter_str):
     try:
         device = dpctl.SyclDevice(filter_str)
-        with dppy.offload_to_sycl_device(device):
+        with dpctl.device_context(device):
             pass
     except Exception:
         pytest.skip()
@@ -48,7 +48,7 @@ def test_print_only_str(filter_str):
     # puts function signature right now, and would fail in general due
     # to lack of support for puts() in OpenCL.
 
-    with dppy.offload_to_sycl_device(filter_str):
+    with dpctl.device_context(filter_str):
         f[3, dppy.DEFAULT_LOCAL_SIZE]()
 
 
@@ -79,7 +79,7 @@ def test_print(filter_str, input_arrays, capfd):
     global_size = 3
 
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device):
+    with dpctl.device_context(device):
         f[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
         captured = capfd.readouterr()
         assert "test" in captured.out
