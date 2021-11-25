@@ -50,7 +50,7 @@ def test_no_copy_usm_shared(capfd):
     except ValueError:
         pytest.skip("Device not found")
 
-    with dppy.offload_to_sycl_device(device):
+    with dpctl.device_context(device):
         cres = compiler.compile_extra(
             typingctx=typingctx,
             targetctx=targetctx,
