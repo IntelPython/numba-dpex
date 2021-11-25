@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 * Enable offloading for `numba.njit` in `dpctl.deveice_context` (#630)
+* Fix upload conditions for main and release branches (#610)
 
 ## [0.17.2] - 2021-11-15
 
