@@ -1,0 +1,18 @@
+numba\_dppy.ocl.atomics package
+===============================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dppy.ocl.atomics.atomic_helper
+
+Module contents
+---------------
+
+.. automodule:: numba_dppy.ocl.atomics
+   :members:
+   :undoc-members:
+   :show-inheritance:
