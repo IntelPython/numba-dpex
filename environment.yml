@@ -7,7 +7,7 @@ channels:
   - dppy/label/dev
   - nodefaults
 dependencies:
-  - python=3.8
+  - python=3.9
   - gxx_linux-64
   - dpcpp_linux-64
   - cython
