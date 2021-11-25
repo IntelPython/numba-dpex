@@ -58,7 +58,7 @@ def scenario(filter_str, context):
 @pytest.mark.parametrize(
     "context",
     [
-        dpctl.device_context,
+        dppy.offload_to_sycl_device,
         dpctl.device_context,
     ],
 )
