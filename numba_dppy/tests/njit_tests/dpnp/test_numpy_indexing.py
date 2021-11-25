@@ -84,7 +84,7 @@ def test_diagonal(array, offset, filter_str):
 
     f = njit(fn)
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device), dpnp_debug():
+    with dpctl.device_context(device), dpnp_debug():
         actual = f(a, offset)
 
     expected = fn(a, offset)

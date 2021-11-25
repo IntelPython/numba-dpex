@@ -67,7 +67,7 @@ def main():
 
     if args.api == "numba-dppy":
         device = dpctl.select_default_device()
-        with dppy.offload_to_sycl_device(device):
+        with dpctl.device_context(device):
             dppy_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
     else:
         numba_func_driver(a, b, c)

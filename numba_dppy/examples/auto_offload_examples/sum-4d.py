@@ -42,7 +42,7 @@ def main():
     print("Using device ...")
     device.print_device_info()
 
-    with dppy.offload_to_sycl_device(device):
+    with dpctl.device_context(device):
         c = f1(a, b)
 
     print("c:", c, hex(c.ctypes.data))

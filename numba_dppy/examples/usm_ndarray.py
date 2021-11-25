@@ -54,7 +54,7 @@ def main():
     print("Using device ...")
     device.print_device_info()
 
-    with dppy.offload_to_sycl_device(device):
+    with dpctl.device_context(device):
         da = dpt.usm_ndarray(a.shape, dtype=a.dtype, buffer="shared")
         da.usm_data.copy_from_host(a.reshape((-1)).view("|u1"))
 
