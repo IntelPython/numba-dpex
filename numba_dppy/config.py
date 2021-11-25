@@ -36,7 +36,7 @@ try:
 
     # Versions of dpctl lower than 0.8.0 are not compatible with current main
     # of numba_dppy.
-    if version.parse(dpctl.__version__) < version.parse("0.8.*"):
+    if version.parse(dpctl.__version__) < version.parse("0.8.0"):
         raise DpctlMinimumVersionRequiredError
 
     # For the Numba_dppy extension to work, we should have at least one
