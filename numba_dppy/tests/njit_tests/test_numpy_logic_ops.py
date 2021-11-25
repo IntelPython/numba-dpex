@@ -97,7 +97,7 @@ def test_binary_ops(filter_str, binary_op, input_arrays):
         return binop(a, b)
 
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device), assert_auto_offloading():
+    with dpctl.device_context(device), assert_auto_offloading():
         actual = f(a, b)
 
     expected = binop(a, b)
@@ -118,7 +118,7 @@ def test_unary_ops(filter_str, unary_op, input_arrays):
         return uop(a)
 
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device), assert_auto_offloading():
+    with dpctl.device_context(device), assert_auto_offloading():
         actual = f(a)
 
     expected = uop(a)

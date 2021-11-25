@@ -40,7 +40,7 @@ b = np.array(np.random.random(N), dtype=np.float32)
 c = np.ones_like(a)
 
 device = dpctl.SyclDevice("opencl:gpu")
-with dppy.offload_to_sycl_device(device):
+with dpctl.device_context(device):
     data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
 print("Done...")

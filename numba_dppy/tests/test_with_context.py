@@ -16,14 +16,55 @@ import unittest
 
 import dpctl
 import numpy as np
+import pytest
 from numba import njit
 from numba.tests.support import captured_stdout
 
-import numba_dppy
 import numba_dppy as dppy
 from numba_dppy import config
 
 from . import _helper
+from ._helper import assert_auto_offloading
+
+skip_no_gpu = pytest.mark.skipif(
+    not _helper.has_gpu_queues(), reason="No GPU platforms available"
+)
+skip_no_cpu = pytest.mark.skipif(
+    not _helper.has_cpu_queues(), reason="No CPU platforms available"
+)
+
+
+filter_strings = [
+    pytest.param("level_zero:gpu:0", marks=skip_no_gpu),
+    pytest.param("opencl:gpu:0", marks=skip_no_gpu),
+    pytest.param("opencl:cpu:0", marks=skip_no_cpu),
+]
+
+
+def scenario(filter_str, context):
+    @njit
+    def func(a, b):
+        return a + b
+
+    a = np.ones((64), dtype=np.int32)
+    b = np.ones((64), dtype=np.int32)
+
+    device = dpctl.SyclDevice(filter_str)
+    with context(device):
+        func(a, b)
+
+
+@pytest.mark.parametrize("filter_str", filter_strings)
+@pytest.mark.parametrize(
+    "context",
+    [
+        dppy.offload_to_sycl_device,
+        dpctl.device_context,
+    ],
+)
+def test_dpctl_device_context_affects_numba_pipeline(filter_str, context):
+    with assert_auto_offloading():
+        scenario(filter_str, context)
 
 
 class TestWithDPPYContext(unittest.TestCase):
@@ -44,14 +85,16 @@ class TestWithDPPYContext(unittest.TestCase):
 
         with captured_stdout() as got_gpu_message:
             device = dpctl.SyclDevice("opencl:gpu")
-            with dppy.offload_to_sycl_device(device):
+            with dpctl.device_context(device):
                 func(got_gpu)
 
         config.DEBUG = 0
         func(expected)
 
         np.testing.assert_array_equal(expected, got_gpu)
-        self.assertTrue("Parfor offloaded to opencl:gpu" in got_gpu_message.getvalue())
+        self.assertTrue(
+            "Parfor offloaded to opencl:gpu" in got_gpu_message.getvalue()
+        )
 
     @unittest.skipIf(not _helper.has_cpu_queues(), "No CPU platforms available")
     def test_with_dppy_context_cpu(self):
@@ -70,14 +113,16 @@ class TestWithDPPYContext(unittest.TestCase):
 
         with captured_stdout() as got_cpu_message:
             device = dpctl.SyclDevice("opencl:cpu")
-            with dppy.offload_to_sycl_device(device):
+            with dpctl.device_context(device):
                 func(got_cpu)
 
         config.DEBUG = 0
         func(expected)
 
         np.testing.assert_array_equal(expected, got_cpu)
-        self.assertTrue("Parfor offloaded to opencl:cpu" in got_cpu_message.getvalue())
+        self.assertTrue(
+            "Parfor offloaded to opencl:cpu" in got_cpu_message.getvalue()
+        )
 
 
 if __name__ == "__main__":

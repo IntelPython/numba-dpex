@@ -58,6 +58,8 @@ def test_mangling_arg_type(dtypes):
 def test_mangling_arg_type_2(dtypes, addrspaces):
     dtype, expected_dtype_str = dtypes
     addrspace, expected_addrspace_str = addrspaces
-    got = itanium_mangler.mangle_type(types.CPointer(dtype, addrspace=addrspace))
+    got = itanium_mangler.mangle_type(
+        types.CPointer(dtype, addrspace=addrspace)
+    )
     expected = "PU" + expected_addrspace_str + expected_dtype_str
     assert got == expected

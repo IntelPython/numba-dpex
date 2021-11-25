@@ -36,7 +36,7 @@ try:
 
     # Versions of dpctl lower than 0.8.0 are not compatible with current main
     # of numba_dppy.
-    if version.parse(dpctl.__version__) < version.parse("0.8.*"):
+    if version.parse(dpctl.__version__) < version.parse("0.8.0"):
         raise DpctlMinimumVersionRequiredError
 
     # For the Numba_dppy extension to work, we should have at least one
@@ -105,4 +105,6 @@ NATIVE_FP_ATOMICS = _readenv("NUMBA_DPPY_ACTIVATE_ATOMICS_FP_NATIVE", int, 0)
 LLVM_SPIRV_ROOT = _readenv("NUMBA_DPPY_LLVM_SPIRV_ROOT", str, "")
 # Emit debug info
 DEBUG = _readenv("NUMBA_DPPY_DEBUG", int, config.DEBUG)
-DEBUGINFO_DEFAULT = _readenv("NUMBA_DPPY_DEBUGINFO", int, config.DEBUGINFO_DEFAULT)
+DEBUGINFO_DEFAULT = _readenv(
+    "NUMBA_DPPY_DEBUGINFO", int, config.DEBUGINFO_DEFAULT
+)

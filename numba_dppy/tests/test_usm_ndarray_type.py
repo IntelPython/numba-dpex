@@ -17,7 +17,7 @@ import numpy as np
 import pytest
 from numba.misc.special import typeof
 
-from numba_dppy.driver import USMNdArrayType
+from numba_dppy.dpctl_iface import USMNdArrayType
 from numba_dppy.tests._helper import skip_test
 
 list_of_dtypes = [

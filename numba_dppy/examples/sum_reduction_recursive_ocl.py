@@ -99,7 +99,7 @@ def sum_reduce(A):
     print("Using device ...")
     device.print_device_info()
 
-    with dppy.offload_to_sycl_device(device):
+    with dpctl.device_context(device):
         inp_buf = dpctl_mem.MemoryUSMShared(A.size * A.dtype.itemsize)
         inp_ndarray = np.ndarray(A.shape, buffer=inp_buf, dtype=A.dtype)
         np.copyto(inp_ndarray, A)
@@ -108,7 +108,9 @@ def sum_reduce(A):
             partial_sums.size * partial_sums.dtype.itemsize
         )
         partial_sums_ndarray = np.ndarray(
-            partial_sums.shape, buffer=partial_sums_buf, dtype=partial_sums.dtype
+            partial_sums.shape,
+            buffer=partial_sums_buf,
+            dtype=partial_sums.dtype,
         )
         np.copyto(partial_sums_ndarray, partial_sums)
 

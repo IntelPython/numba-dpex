@@ -16,6 +16,7 @@ import math
 import time
 import unittest
 
+import dpctl
 import numpy as np
 
 import numba_dppy as dppy
@@ -44,7 +45,13 @@ def cnd(d):
 
 
 def black_scholes(
-    callResult, putResult, stockPrice, optionStrike, optionYears, Riskfree, Volatility
+    callResult,
+    putResult,
+    stockPrice,
+    optionStrike,
+    optionYears,
+    Riskfree,
+    Volatility,
 ):
     S = stockPrice
     X = optionStrike
@@ -101,7 +108,9 @@ class TestDPPYBlackScholes(unittest.TestCase):
             if i >= S.shape[0]:
                 return
             sqrtT = math.sqrt(T[i])
-            d1 = (math.log(S[i] / X[i]) + (R + 0.5 * V * V) * T[i]) / (V * sqrtT)
+            d1 = (math.log(S[i] / X[i]) + (R + 0.5 * V * V) * T[i]) / (
+                V * sqrtT
+            )
             d2 = d1 - V * sqrtT
 
             K = 1.0 / (1.0 + 0.2316419 * math.fabs(d1))
@@ -131,7 +140,7 @@ class TestDPPYBlackScholes(unittest.TestCase):
         blockdim = 512, 1
         griddim = int(math.ceil(float(OPT_N) / blockdim[0])), 1
 
-        with dppy.offload_to_sycl_device("opencl:gpu"):
+        with dpctl.device_context("opencl:gpu"):
             time1 = time.time()
             for i in range(iterations):
                 black_scholes_dppy[blockdim, griddim](

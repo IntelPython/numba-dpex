@@ -36,17 +36,30 @@ class DPPYRetarget(BasicRetarget):
         return kernel
 
 
-first_level_cache = dict()
+_first_level_cache = dict()
 
 
-@contextmanager
-def offload_to_sycl_device(dpctl_device):
-    with dpctl.device_context(dpctl_device) as sycl_queue:
-        filter_string = sycl_queue.sycl_device.filter_string
-        retarget = first_level_cache.get(filter_string, None)
+def _retarget(sycl_queue):
+    filter_string = sycl_queue.sycl_device.filter_string
 
-        if retarget is None:
-            retarget = DPPYRetarget(filter_string)
-            first_level_cache[filter_string] = retarget
-        with TargetConfigurationStack.switch_target(retarget):
-            yield sycl_queue
+    result = _first_level_cache.get(filter_string)
+
+    if not result:
+        result = DPPYRetarget(filter_string)
+        _first_level_cache[filter_string] = result
+
+    return result
+
+
+def _retarget_context_manager(sycl_queue):
+    """Return context manager for retargeting njit offloading."""
+    retarget = _retarget(sycl_queue)
+    return TargetConfigurationStack.switch_target(retarget)
+
+
+def _register_context_factory():
+    dpctl.nested_context_factories.append(_retarget_context_manager)
+
+
+_register_context_factory()
+offload_to_sycl_device = dpctl.device_context

@@ -40,7 +40,7 @@ class TestDPPYFunc(unittest.TestCase):
         b = np.ones(self.N)
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with dppy.offload_to_sycl_device(device):
+        with dpctl.device_context(device):
             f[self.N, dppy.DEFAULT_LOCAL_SIZE](a, b)
 
         self.assertTrue(np.all(b == 2))
@@ -64,7 +64,7 @@ class TestDPPYFunc(unittest.TestCase):
         b = np.ones(self.N)
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with dppy.offload_to_sycl_device(device):
+        with dpctl.device_context(device):
             f[self.N, dppy.DEFAULT_LOCAL_SIZE](a, b)
 
             self.assertTrue(np.all(b == 2))

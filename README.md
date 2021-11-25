@@ -1,5 +1,5 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-
+[![Coverage Status](https://coveralls.io/repos/github/IntelPython/numba-dppy/badge.svg?branch=main)](https://coveralls.io/github/IntelPython/numba-dppy?branch=main)
 
 <img align="left" src="https://spec.oneapi.io/oneapi-logo-white-scaled.jpg" alt="oneAPI logo" width="75"/>
 <br/>
@@ -43,6 +43,32 @@ example, you can try the `vector addition` example as follows:
 ```bash
 python numba_dppy/examples/sum.py
 ```
+
+# Known Issue
+Floor division operator `//` is not supported inside @numba_dppy.kernel.
+
+The below code snippet will result in error reported in this [Issue](https://github.com/IntelPython/numba-dppy/issues/571).
+```
+import numpy as np, numba_dppy
+@numba_dppy.kernel
+def div_kernel(dst, src, m):
+    i = dppy.get_global_id(0)
+    dst[i] = src[i] // m
+
+import dpctl
+with dpctl.device_context(dpctl.SyclQueue()):
+    X = np.arange(10)
+    Y = np.arange(10)
+    div_kernel[10, numba_dppy.DEFAULT_LOCAL_SIZE](Y, X, 5)
+    D = X//5
+    print(Y, D)
+```
+
+To bypass this issue we need latest `llvm-spirv` tool. Users can get it by explicitly installing `dpcpp` Conda package. The `llvm-spirv` tool is packaged as part of the `dpcpp` Conda package.
+
+For linux: `conda install dpcpp_linux-64`
+For Windows: `conda install dpcpp_win-64`
+
 
 # Learn more?
 

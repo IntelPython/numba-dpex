@@ -22,7 +22,7 @@ from numba.core import compiler, cpu, typing
 from numba.core.typed_passes import AnnotateTypes, NopythonTypeInference
 
 import numba_dppy
-from numba_dppy.rename_numpy_functions_pass import (
+from numba_dppy.core.passes.rename_numpy_functions_pass import (
     DPPYRewriteNdarrayFunctions,
     DPPYRewriteOverloadedNumPyFunctions,
 )

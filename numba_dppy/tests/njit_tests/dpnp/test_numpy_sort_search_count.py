@@ -77,7 +77,10 @@ list_of_unary_ops = [
 
 @pytest.fixture(params=list_of_unary_ops)
 def unary_op(request):
-    return wrapper_function("a", f"np.{request.param}(a)", globals()), request.param
+    return (
+        wrapper_function("a", f"np.{request.param}(a)", globals()),
+        request.param,
+    )
 
 
 def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
@@ -93,7 +96,7 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
 
     f = njit(op)
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device), dpnp_debug():
+    with dpctl.device_context(device), dpnp_debug():
         actual = f(a)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -111,7 +114,10 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
         [[3, 2], [1, 6]],
         [[4, 2, 3], [3, 4, 1]],
         [[[1, -3], [3, 0]], [[5, 2], [0, 1]], [[1, 0], [0, 1]]],
-        [[[[8, 2], [3, 0]], [[5, 2], [0, 1]]], [[[1, 3], [3, 1]], [[5, 2], [0, 1]]]],
+        [
+            [[[8, 2], [3, 0]], [[5, 2], [0, 1]]],
+            [[[1, 3], [3, 1]], [[5, 2], [0, 1]]],
+        ],
     ],
     ids=[
         "[3, 4, 2, 1]",
@@ -133,7 +139,7 @@ def test_partition(array, kth, filter_str):
 
     f = njit(fn)
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device), dpnp_debug():
+    with dpctl.device_context(device), dpnp_debug():
         actual = f(a, kth)
 
     expected = fn(a, kth)

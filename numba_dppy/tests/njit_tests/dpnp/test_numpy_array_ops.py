@@ -84,7 +84,10 @@ list_of_unary_ops = [
 
 @pytest.fixture(params=list_of_unary_ops)
 def unary_op(request):
-    return wrapper_function("a", f"a.{request.param}()", globals()), request.param
+    return (
+        wrapper_function("a", f"a.{request.param}()", globals()),
+        request.param,
+    )
 
 
 def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
@@ -96,11 +99,15 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
     if name != "argsort" and name != "copy":
         a = np.reshape(a, get_shape)
     if name == "cumprod" and (
-        filter_str == "opencl:cpu:0" or a.dtype == np.int32 or is_gen12(filter_str)
+        filter_str == "opencl:cpu:0"
+        or a.dtype == np.int32
+        or is_gen12(filter_str)
     ):
         pytest.skip()
     if name == "cumsum" and (
-        filter_str == "opencl:cpu:0" or a.dtype == np.int32 or is_gen12(filter_str)
+        filter_str == "opencl:cpu:0"
+        or a.dtype == np.int32
+        or is_gen12(filter_str)
     ):
         pytest.skip()
     if name == "mean" and is_gen12(filter_str):
@@ -113,7 +120,7 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
 
     f = njit(op)
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device), dpnp_debug():
+    with dpctl.device_context(device), dpnp_debug():
         actual = f(a)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -149,7 +156,7 @@ def test_take(filter_str, input_arrays, indices, capfd):
 
     f = njit(fn)
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device), dpnp_debug():
+    with dpctl.device_context(device), dpnp_debug():
         actual = f(a, indices)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out

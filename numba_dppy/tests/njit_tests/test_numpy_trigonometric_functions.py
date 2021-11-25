@@ -107,7 +107,7 @@ def test_trigonometric_fn(filter_str, trig_op, input_arrays):
             return trig_fn(a, b)
 
         device = dpctl.SyclDevice(filter_str)
-        with dppy.offload_to_sycl_device(device), assert_auto_offloading():
+        with dpctl.device_context(device), assert_auto_offloading():
             actual = f(a, b)
         expected = trig_fn(a, b)
     else:
@@ -117,7 +117,7 @@ def test_trigonometric_fn(filter_str, trig_op, input_arrays):
             return trig_fn(a)
 
         device = dpctl.SyclDevice(filter_str)
-        with dppy.offload_to_sycl_device(device), assert_auto_offloading():
+        with dpctl.device_context(device), assert_auto_offloading():
             actual = f(a)
         expected = trig_fn(a)
 

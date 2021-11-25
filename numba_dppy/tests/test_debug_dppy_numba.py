@@ -43,8 +43,11 @@ class gdb:
     def spawn(self):
         env = os.environ.copy()
         env["NUMBA_OPT"] = "0"
+        env["NUMBA_EXTEND_VARIABLE_LIFETIMES"] = "1"
 
-        self.child = pexpect.spawn("gdb-oneapi -q python", env=env, encoding="utf-8")
+        self.child = pexpect.spawn(
+            "gdb-oneapi -q python", env=env, encoding="utf-8"
+        )
         if config.DEBUG:
             self.child.logfile = sys.stdout
 
@@ -55,6 +58,7 @@ class gdb:
         self.child.sendline("set style enabled off")  # disable colors symbols
 
     def teardown_gdb(self):
+        self.child.sendintr()
         self.child.expect("(gdb)", timeout=5)
         self.child.sendline("quit")
         self.child.expect("Quit anyway?", timeout=5)
@@ -75,6 +79,9 @@ class gdb:
 
     def print(self, var):
         self._command("print " + var)
+
+    def info_args(self):
+        self._command("info args")
 
     def info_functions(self, function):
         self._command("info functions " + function)
@@ -113,7 +120,7 @@ def test_breakpoint_row_number(app, api):
     app.breakpoint("dppy_numba_basic.py:25")
     app.run("dppy_numba_basic.py --api={api}".format(api=api))
 
-    app.child.expect(r"Thread .* hit Breakpoint .* at dppy_numba_basic.py:25")
+    app.child.expect(r"Breakpoint .* at dppy_numba_basic.py:25")
     app.child.expect(r"25\s+param_c = param_a \+ 10")
 
 
@@ -144,6 +151,32 @@ def test_break_conditional(app):
     app.child.expect(r"\$1 = 1")
 
 
+@pytest.mark.skip(reason="Need a Numba 0.55")
+def test_break_conditional_with_func_arg(app):
+    app.breakpoint("simple_dppy_func.py:23 if a_in_func == 3")
+    app.run("simple_dppy_func.py")
+
+    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:23")
+    app.child.expect(r"23\s+result = a_in_func \+ b_in_func")
+
+    app.print("a_in_func")
+
+    app.child.expect(r"\$1 = 3")
+
+
+@pytest.mark.skip(reason="Need a Numba 0.55")
+def test_break_conditional_by_func_name_with_func_arg(app):
+    app.breakpoint("func_sum if a_in_func == 3")
+    app.run("simple_dppy_func.py")
+
+    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:23")
+    app.child.expect(r"23\s+result = a_in_func \+ b_in_func")
+
+    app.print("a_in_func")
+
+    app.child.expect(r"\$1 = 3")
+
+
 # commands/break_file_func
 def test_break_file_function(app):
     app.breakpoint("simple_sum.py:data_parallel_sum")
@@ -171,9 +204,34 @@ def test_break_nested_function(app):
     app.child.expect(r"23\s+result = a_in_func \+ b_in_func")
 
 
+@pytest.mark.skip(reason="Need a Numba 0.55")
+def test_info_args(app):
+    app.breakpoint("simple_dppy_func.py:29")
+    app.run("simple_dppy_func.py")
+
+    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:29")
+    app.child.expect(r"29\s+i = dppy.get_global_id\(0\)")
+
+    app.info_args()
+
+    app.child.expect(r"a_in_kernel = {meminfo = ")
+    app.child.expect(r"b_in_kernel = {meminfo = ")
+    app.child.expect(r"c_in_kernel = {meminfo = ")
+
+    app.print("a_in_kernel")
+    app.child.expect(r"\$1 = {meminfo = ")
+
+    app.ptype("a_in_kernel")
+    app.child.expect(r"type = struct array\(float32, 1d, C\).*}\)")
+
+    app.whatis("a_in_kernel")
+    app.child.expect(r"type = array\(float32, 1d, C\) \({.*}\)")
+
+
 # commands/info_func
+@pytest.mark.skip(reason="Need a Numba 0.55")
 def test_info_functions(app):
-    app.breakpoint("simple_sum.py:22")
+    app.breakpoint("simple_sum.py:23")
     app.run("simple_sum.py")
 
     app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:23")
@@ -181,10 +239,11 @@ def test_info_functions(app):
 
     app.info_functions("data_parallel_sum")
 
-    app.child.expect(r"21:\s+void __main__::data_parallel_sum\(.*\);")
+    app.child.expect(r"22:\s+.*__main__::data_parallel_sum\(.*\)")
 
 
 # commands/local_variables_0
+@pytest.mark.skip(reason="Need a Numba 0.55")
 def test_local_variables(app):
     app.breakpoint("sum_local_vars.py:26")
     app.run("sum_local_vars.py")
@@ -194,15 +253,12 @@ def test_local_variables(app):
 
     app.info_locals()
 
-    app.child.expect(r"a =")
-    app.child.expect(r"b =")
-    app.child.expect(r"c =")
     app.child.expect(r"i = 0")
     app.child.expect(r"l1 = [0-9]\.[0-9]{3}")
     app.child.expect(r"l2 = [0-9]\.[0-9]{3}")
 
     app.print("a")
-    app.child.expect(r"\$1 = '\\000' \<repeats 55 times\>")
+    app.child.expect(r"\$1 = {meminfo = ")
 
     app.print("l1")
     app.child.expect(r"\$2 = [0-9]\.[0-9]{3}")
@@ -211,16 +267,16 @@ def test_local_variables(app):
     app.child.expect(r"\$3 = [0-9]\.[0-9]{3}")
 
     app.ptype("a")
-    app.child.expect(r"type = byte \[56\]")
+    app.child.expect(r"type = struct array\(float32, 1d, C\).*}\)")
 
     app.whatis("a")
-    app.child.expect(r"type = byte \[56\]")
+    app.child.expect(r"type = array\(float32, 1d, C\) \({.*}\)")
 
     app.ptype("l1")
-    app.child.expect(r"type = double")
+    app.child.expect(r"type = float64")
 
     app.whatis("l1")
-    app.child.expect(r"type = double")
+    app.child.expect(r"type = float64")
 
 
 # commands/next
@@ -243,6 +299,7 @@ def test_next(app):
 def test_step(app):
     app.breakpoint("simple_dppy_func.py:30")
     app.run("simple_dppy_func.py")
+
     app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:30")
     app.child.expect(
         r"30\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)"
@@ -251,7 +308,7 @@ def test_step(app):
     app.step()
     app.step()
 
-    app.child.expect(r"__main__::func_sum \(\) at simple_dppy_func.py:23")
+    app.child.expect(r"__main__::func_sum \(.*\) at simple_dppy_func.py:23")
     app.child.expect(r"23\s+result = a_in_func \+ b_in_func")
 
 

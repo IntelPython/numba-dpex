@@ -21,7 +21,11 @@ import numba_dppy as dppy
 
 
 @dppy.kernel(
-    access_types={"read_only": ["a", "b"], "write_only": ["c"], "read_write": []}
+    access_types={
+        "read_only": ["a", "b"],
+        "write_only": ["c"],
+        "read_write": [],
+    }
 )
 def data_parallel_sum(a, b, c):
     i = dppy.get_global_id(0)
@@ -45,7 +49,7 @@ def main():
     print("Using device ...")
     device.print_device_info()
 
-    with dppy.offload_to_sycl_device(device):
+    with dpctl.device_context(device):
         print("before A: ", a)
         print("before B: ", b)
         data_parallel_sum[global_size, local_size](a, b, c)

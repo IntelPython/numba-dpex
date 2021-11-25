@@ -53,7 +53,7 @@ def get_ext_modules():
 
     ext_dppy = Extension(
         name="numba_dppy._usm_shared_allocator_ext",
-        sources=["numba_dppy/driver/usm_shared_allocator_ext.c"],
+        sources=["numba_dppy/dpctl_iface/usm_shared_allocator_ext.c"],
         include_dirs=[numba.core.extending.include_path(), dpctl.get_include()],
         libraries=["DPCTLSyclInterface"],
         library_dirs=[os.path.dirname(dpctl.__file__)],
@@ -64,16 +64,16 @@ def get_ext_modules():
     if dpnp_present:
         dpnp_lib_path = []
         dpnp_lib_path += [os.path.dirname(dpnp.__file__)]
-        ext_dpnp_glue = Extension(
-            name="numba_dppy.dpnp_glue.dpnp_fptr_interface",
-            sources=["numba_dppy/dpnp_glue/dpnp_fptr_interface.pyx"],
+        ext_dpnp_iface = Extension(
+            name="numba_dppy.dpnp_iface.dpnp_fptr_interface",
+            sources=["numba_dppy/dpnp_iface/dpnp_fptr_interface.pyx"],
             include_dirs=[dpnp.get_include()],
             libraries=["dpnp_backend_c"],
             library_dirs=dpnp_lib_path,
             runtime_library_dirs=dpnp_lib_path,
             language="c++",
         )
-        ext_modules += [ext_dpnp_glue]
+        ext_modules += [ext_dpnp_iface]
 
     if dpnp_present:
         return cythonize(ext_modules)
@@ -102,7 +102,7 @@ def _get_cmdclass():
 
 def spirv_compile():
     if IS_LIN:
-        compiler = "clang"
+        compiler = "icx"
     if IS_WIN:
         compiler = "clang.exe"
 

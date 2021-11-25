@@ -22,7 +22,9 @@ import numpy as np
 
 import numba_dppy as dppy
 
-parser = argparse.ArgumentParser(description="Program to compute pairwise distance")
+parser = argparse.ArgumentParser(
+    description="Program to compute pairwise distance"
+)
 
 parser.add_argument("-n", type=int, default=10, help="Number of points")
 parser.add_argument("-d", type=int, default=3, help="Dimensions")
@@ -94,7 +96,7 @@ def main():
     print("Using device ...")
     device.print_device_info()
 
-    with dppy.offload_to_sycl_device(device):
+    with dpctl.device_context(device):
         times = driver()
 
     times = np.asarray(times, dtype=np.float32)

@@ -78,7 +78,9 @@ class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
                     expr = instr.value
                     if isinstance(expr, ir.Expr):
                         if expr.op == "call":
-                            find_var = block.find_variable_assignment(expr.func.name)
+                            find_var = block.find_variable_assignment(
+                                expr.func.name
+                            )
                             if find_var is not None:
                                 call_node = find_var.value
                                 if (
@@ -109,12 +111,16 @@ class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
 
                                         error = False
                                         # arg can be one constant or a tuple of constant items
-                                        arg_type = func_ir.get_definition(arg.name)
+                                        arg_type = func_ir.get_definition(
+                                            arg.name
+                                        )
                                         if isinstance(arg_type, ir.Expr):
                                             # we have a tuple
                                             for item in arg_type.items:
                                                 if not isinstance(
-                                                    func_ir.get_definition(item.name),
+                                                    func_ir.get_definition(
+                                                        item.name
+                                                    ),
                                                     ir.Const,
                                                 ):
                                                     error = True
@@ -122,7 +128,9 @@ class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
 
                                         else:
                                             if not isinstance(
-                                                func_ir.get_definition(arg.name),
+                                                func_ir.get_definition(
+                                                    arg.name
+                                                ),
                                                 ir.Const,
                                             ):
                                                 error = True
@@ -289,19 +297,23 @@ class SpirvFriendlyLowering(LoweringPass):
         )
         with fallback_context(state, msg):
             # Lowering
-            fndesc = funcdesc.PythonFunctionDescriptor.from_specialized_function(
-                interp,
-                typemap,
-                restype,
-                calltypes,
-                mangler=targetctx.mangler,
-                inline=flags.forceinline,
-                noalias=flags.noalias,
-                abi_tags=[flags.get_mangle_string()],
+            fndesc = (
+                funcdesc.PythonFunctionDescriptor.from_specialized_function(
+                    interp,
+                    typemap,
+                    restype,
+                    calltypes,
+                    mangler=targetctx.mangler,
+                    inline=flags.forceinline,
+                    noalias=flags.noalias,
+                    abi_tags=[flags.get_mangle_string()],
+                )
             )
 
             with targetctx.push_code_library(library):
-                lower = DPPYLower(targetctx, library, fndesc, interp, metadata=metadata)
+                lower = DPPYLower(
+                    targetctx, library, fndesc, interp, metadata=metadata
+                )
                 lower.lower()
                 if not flags.no_cpython_wrapper:
                     lower.create_cpython_wrapper(flags.release_gil)
@@ -313,14 +325,18 @@ class SpirvFriendlyLowering(LoweringPass):
             from numba.core.compiler import _LowerResult  # TODO: move this
 
             if flags.no_compile:
-                state["cr"] = _LowerResult(fndesc, call_helper, cfunc=None, env=env)
+                state["cr"] = _LowerResult(
+                    fndesc, call_helper, cfunc=None, env=env
+                )
             else:
                 # Prepare for execution
                 cfunc = targetctx.get_executable(library, fndesc, env)
                 # Insert native function for use by other jitted-functions.
                 # We also register its library to allow for inlining.
                 targetctx.insert_user_function(cfunc, fndesc, [library])
-                state["cr"] = _LowerResult(fndesc, call_helper, cfunc=cfunc, env=env)
+                state["cr"] = _LowerResult(
+                    fndesc, call_helper, cfunc=cfunc, env=env
+                )
 
         return True
 

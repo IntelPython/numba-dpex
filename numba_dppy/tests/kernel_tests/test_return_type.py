@@ -45,5 +45,5 @@ def test_return(offload_device, sig):
         kernel = dppy.kernel(sig)(f)
 
         device = dpctl.SyclDevice(offload_device)
-        with dppy.offload_to_sycl_device(device):
+        with dpctl.device_context(device):
             kernel[a.size, dppy.DEFAULT_LOCAL_SIZE](a)
