@@ -1,0 +1,53 @@
+numba\_dppy package
+===================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dppy.dpnp_glue
+   numba_dppy.driver
+   numba_dppy.ocl
+   numba_dppy.utils
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dppy.codegen
+   numba_dppy.compiler
+   numba_dppy.config
+   numba_dppy.decorators
+   numba_dppy.descriptor
+   numba_dppy.device_init
+   numba_dppy.dpctl_functions
+   numba_dppy.dppy_array_type
+   numba_dppy.dppy_debuginfo
+   numba_dppy.dppy_lowerer
+   numba_dppy.dppy_offload_dispatcher
+   numba_dppy.dppy_parfor_diagnostics
+   numba_dppy.dppy_passbuilder
+   numba_dppy.dppy_passes
+   numba_dppy.dufunc_inliner
+   numba_dppy.extended_numba_itanium_mangler
+   numba_dppy.initialize
+   numba_dppy.interop
+   numba_dppy.numpy_usm_shared
+   numba_dppy.printimpl
+   numba_dppy.rename_numpy_functions_pass
+   numba_dppy.retarget
+   numba_dppy.spirv_generator
+   numba_dppy.target
+   numba_dppy.vectorizers
+
+Module contents
+---------------
+
+.. automodule:: numba_dppy
+   :members:
+   :undoc-members:
+   :show-inheritance:
