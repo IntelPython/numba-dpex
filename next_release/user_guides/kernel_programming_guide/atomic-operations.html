@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Supported Atomic Operations &mdash; numba-dppy 0.17.3dev0+4.g07c8146 documentation</title>
+  <title>Supported Atomic Operations &mdash; numba-dppy 0.17.3dev0+5.gf9f850d documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -161,7 +161,7 @@ Those that are presently implemented are as follows:</p>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using device ...&quot;</span><span class="p">)</span>
     <span class="n">device</span><span class="o">.</span><span class="n">print_device_info</span><span class="p">()</span>
 
-    <span class="k">with</span> <span class="n">dppy</span><span class="o">.</span><span class="n">offload_to_sycl_device</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
         <span class="n">atomic_add</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">)</span>
 
     <span class="c1"># Expected 100, because global_size = 100</span>

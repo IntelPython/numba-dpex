@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Random Number Generation &mdash; numba-dppy 0.17.3dev0+4.g07c8146 documentation</title>
+  <title>Random Number Generation &mdash; numba-dppy 0.17.3dev0+5.gf9f850d documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -147,14 +147,12 @@ SYCL-supported device via integration with <a class="reference external" href="h
 <span class="sd">a JIT function on a SYCL device using dpnp</span>
 <span class="sd">(https://github.com/IntelPython/dpnp). As with the rest of numba_dppy examples,</span>
 <span class="sd">this feature is also available by simply invoking a ``numba.jit`` function with</span>
-<span class="sd">the numpy.random calls from within a ``numba_dppy.offload_to_sycl_device``scope.</span>
+<span class="sd">the numpy.random calls from within a ``dpctl.device_context``scope.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">dpctl</span>
 <span class="kn">import</span> <span class="nn">numba</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
 
 
 <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span>
@@ -187,7 +185,7 @@ SYCL-supported device via integration with <a class="reference external" href="h
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using device ...&quot;</span><span class="p">)</span>
     <span class="n">device</span><span class="o">.</span><span class="n">print_device_info</span><span class="p">()</span>
 
-    <span class="k">with</span> <span class="n">dppy</span><span class="o">.</span><span class="n">offload_to_sycl_device</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">rand</span><span class="p">()</span>
         <span class="c1"># Random values in a given shape (3, 2)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
