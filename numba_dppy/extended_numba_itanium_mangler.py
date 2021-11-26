@@ -61,8 +61,14 @@ def mangle(ident, argtys, *, abi_tags=()):
     """
     Mangle identifier with Numba type objects and abi-tags.
     """
+    kwargs = {}
+
+    # for support numba 0.54 and <=0.55.0dev0=*_469
+    if abi_tags:
+        kwargs["abi_tags"] = abi_tags
+
     return (
         itanium_mangler.PREFIX
-        + itanium_mangler.mangle_identifier(ident, abi_tags=abi_tags)
+        + itanium_mangler.mangle_identifier(ident, **kwargs)
         + mangle_args(argtys)
     )

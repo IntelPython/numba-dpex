@@ -296,6 +296,12 @@ class SpirvFriendlyLowering(LoweringPass):
             state.func_id.func_name,
         )
         with fallback_context(state, msg):
+            kwargs = {}
+
+            # for support numba 0.54 and <=0.55.0dev0=*_469
+            if hasattr(flags, "get_mangle_string"):
+                kwargs["abi_tags"] = flags.get_mangle_string()
+
             # Lowering
             fndesc = (
                 funcdesc.PythonFunctionDescriptor.from_specialized_function(
@@ -306,7 +312,7 @@ class SpirvFriendlyLowering(LoweringPass):
                     mangler=targetctx.mangler,
                     inline=flags.forceinline,
                     noalias=flags.noalias,
-                    abi_tags=[flags.get_mangle_string()],
+                    **kwargs,
                 )
             )
 
