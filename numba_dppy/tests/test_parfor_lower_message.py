@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
+import pytest
 
 import dpctl
 import numpy as np
@@ -36,8 +36,8 @@ def prange_example():
     return a
 
 
-@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
-class TestParforMessage(unittest.TestCase):
+@pytest.mark.skipif(not _helper.has_gpu_queues(), reason="test only on GPU system")
+class TestParforMessage:
     def test_parfor_message(self):
         device = dpctl.SyclDevice("opencl:gpu")
         with dpctl.device_context(device):
@@ -48,8 +48,4 @@ class TestParforMessage(unittest.TestCase):
                 jitted()
 
             config.DEBUG = 0
-            self.assertTrue("Parfor offloaded " in got.getvalue())
-
-
-if __name__ == "__main__":
-    unittest.main()
+            assert "Parfor offloaded " in got.getvalue()

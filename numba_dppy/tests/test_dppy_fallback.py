@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
+import pytest
 import warnings
 
 import dpctl
@@ -22,8 +22,8 @@ import numpy as np
 from . import _helper
 
 
-@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
-class TestDPPYFallback(unittest.TestCase):
+@pytest.mark.skipif(not _helper.has_gpu_queues(), reason="test only on GPU system")
+class TestDPPYFallback:
     def test_dppy_fallback_inner_call(self):
         @numba.jit
         def fill_value(i):
@@ -48,7 +48,7 @@ class TestDPPYFallback(unittest.TestCase):
         ref_result = inner_call_fallback()
 
         np.testing.assert_array_equal(dppy_result, ref_result)
-        self.assertIn("Failed to offload parfor ", str(w[-1].message))
+        assert "Failed to offload parfor " in str(w[-1].message)
 
     def test_dppy_fallback_reductions(self):
         def reduction(a):
@@ -68,8 +68,4 @@ class TestDPPYFallback(unittest.TestCase):
         ref_result = reduction(a)
 
         np.testing.assert_array_equal(dppy_result, ref_result)
-        self.assertIn("Failed to offload parfor ", str(w[-1].message))
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert "Failed to offload parfor " in str(w[-1].message)

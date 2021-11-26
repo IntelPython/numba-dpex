@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
-
 import dpctl
 import numpy as np
 import pytest
@@ -67,8 +65,8 @@ def test_dpctl_device_context_affects_numba_pipeline(filter_str, context):
         scenario(filter_str, context)
 
 
-class TestWithDPPYContext(unittest.TestCase):
-    @unittest.skipIf(not _helper.has_gpu_queues(), "No GPU platforms available")
+class TestWithDPPYContext:
+    @pytest.mark.skipif(not _helper.has_gpu_queues(), reason="No GPU platforms available")
     def test_with_dppy_context_gpu(self):
         @njit
         def nested_func(a, b):
@@ -92,11 +90,9 @@ class TestWithDPPYContext(unittest.TestCase):
         func(expected)
 
         np.testing.assert_array_equal(expected, got_gpu)
-        self.assertTrue(
-            "Parfor offloaded to opencl:gpu" in got_gpu_message.getvalue()
-        )
+        assert ("Parfor offloaded to opencl:gpu" in got_gpu_message.getvalue())
 
-    @unittest.skipIf(not _helper.has_cpu_queues(), "No CPU platforms available")
+    @pytest.mark.skipif(not _helper.has_cpu_queues(), reason="No CPU platforms available")
     def test_with_dppy_context_cpu(self):
         @njit
         def nested_func(a, b):
@@ -120,10 +116,4 @@ class TestWithDPPYContext(unittest.TestCase):
         func(expected)
 
         np.testing.assert_array_equal(expected, got_cpu)
-        self.assertTrue(
-            "Parfor offloaded to opencl:cpu" in got_cpu_message.getvalue()
-        )
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert ("Parfor offloaded to opencl:cpu" in got_cpu_message.getvalue())

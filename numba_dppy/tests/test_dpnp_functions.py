@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
+import pytest
 
 import dpctl
 import numpy as np
@@ -28,11 +28,11 @@ from numba_dppy.tests._helper import (
 )
 
 
-@unittest.skipUnless(
-    ensure_dpnp() and has_gpu_queues(),
-    "test only when dpnp and GPU is available",
+@pytest.mark.skipif(
+    not ensure_dpnp() and not has_gpu_queues(),
+    reason="test only when dpnp and GPU is available",
 )
-class Testdpnp_functions(unittest.TestCase):
+class Testdpnp_functions:
     N = 10
 
     a = np.array(np.random.random(N), dtype=np.float32)
@@ -55,8 +55,4 @@ class Testdpnp_functions(unittest.TestCase):
         expected = f(self.a, self.b)
 
         max_abs_err = got.sum() - expected.sum()
-        self.assertTrue(max_abs_err < 1e-4)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert max_abs_err < 1e-4
