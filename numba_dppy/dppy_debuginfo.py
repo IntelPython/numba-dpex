@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import numba as nb
 from llvmlite import ir
 from numba.core.debuginfo import DIBuilder
-import numba as nb
 
 numba_version = tuple(map(int, nb.__version__.split(".")[:2]))
 
