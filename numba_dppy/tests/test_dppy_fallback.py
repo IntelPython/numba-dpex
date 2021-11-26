@@ -22,7 +22,9 @@ import numpy as np
 from . import _helper
 
 
-@pytest.mark.skipif(not _helper.has_gpu_queues(), reason="test only on GPU system")
+@pytest.mark.skipif(
+    not _helper.has_gpu_queues(), reason="test only on GPU system"
+)
 class TestDPPYFallback:
     def test_dppy_fallback_inner_call(self):
         @numba.jit

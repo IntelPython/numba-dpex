@@ -25,7 +25,9 @@ from numba_dppy import config as dppy_config
 from . import _helper
 
 
-@pytest.mark.skipif(not _helper.has_gpu_queues(), reason="test only on GPU system")
+@pytest.mark.skipif(
+    not _helper.has_gpu_queues(), reason="test only on GPU system"
+)
 class TestOffloadDiagnostics:
     def test_parfor(self):
         def prange_func():

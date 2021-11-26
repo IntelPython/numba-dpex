@@ -25,7 +25,9 @@ from numba_dppy.tests._helper import assert_auto_offloading
 from . import _helper
 
 
-@pytest.mark.skipif(not _helper.has_gpu_queues(), reason="test only on GPU system")
+@pytest.mark.skipif(
+    not _helper.has_gpu_queues(), reason="test only on GPU system"
+)
 class TestPrange:
     def test_one_prange(self):
         @njit

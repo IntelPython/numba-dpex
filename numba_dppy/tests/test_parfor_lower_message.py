@@ -36,7 +36,9 @@ def prange_example():
     return a
 
 
-@pytest.mark.skipif(not _helper.has_gpu_queues(), reason="test only on GPU system")
+@pytest.mark.skipif(
+    not _helper.has_gpu_queues(), reason="test only on GPU system"
+)
 class TestParforMessage:
     def test_parfor_message(self):
         device = dpctl.SyclDevice("opencl:gpu")

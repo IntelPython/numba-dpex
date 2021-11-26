@@ -73,7 +73,9 @@ def randfloat(rand_var, low, high):
     return (1.0 - rand_var) * low + rand_var * high
 
 
-@pytest.mark.skipif(not _helper.has_gpu_queues(), reason="test only on GPU system")
+@pytest.mark.skipif(
+    not _helper.has_gpu_queues(), reason="test only on GPU system"
+)
 class TestDPPYBlackScholes:
     def test_black_scholes(self):
         OPT_N = 400

@@ -24,7 +24,9 @@ from numba_dppy import config
 from . import _helper
 
 
-@pytest.mark.skipif(not _helper.has_gpu_queues(), reason="test only on GPU system")
+@pytest.mark.skipif(
+    not _helper.has_gpu_queues(), reason="test only on GPU system"
+)
 class TestDPPYFallback:
     def test_dppy_fallback_true(self):
         @numba.jit

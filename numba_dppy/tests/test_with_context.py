@@ -66,7 +66,9 @@ def test_dpctl_device_context_affects_numba_pipeline(filter_str, context):
 
 
 class TestWithDPPYContext:
-    @pytest.mark.skipif(not _helper.has_gpu_queues(), reason="No GPU platforms available")
+    @pytest.mark.skipif(
+        not _helper.has_gpu_queues(), reason="No GPU platforms available"
+    )
     def test_with_dppy_context_gpu(self):
         @njit
         def nested_func(a, b):
@@ -90,9 +92,11 @@ class TestWithDPPYContext:
         func(expected)
 
         np.testing.assert_array_equal(expected, got_gpu)
-        assert ("Parfor offloaded to opencl:gpu" in got_gpu_message.getvalue())
+        assert "Parfor offloaded to opencl:gpu" in got_gpu_message.getvalue()
 
-    @pytest.mark.skipif(not _helper.has_cpu_queues(), reason="No CPU platforms available")
+    @pytest.mark.skipif(
+        not _helper.has_cpu_queues(), reason="No CPU platforms available"
+    )
     def test_with_dppy_context_cpu(self):
         @njit
         def nested_func(a, b):
@@ -116,4 +120,4 @@ class TestWithDPPYContext:
         func(expected)
 
         np.testing.assert_array_equal(expected, got_cpu)
-        assert ("Parfor offloaded to opencl:cpu" in got_cpu_message.getvalue())
+        assert "Parfor offloaded to opencl:cpu" in got_cpu_message.getvalue()

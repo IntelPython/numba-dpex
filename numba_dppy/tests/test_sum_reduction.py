@@ -32,7 +32,9 @@ def reduction_kernel(A, R, stride):
     A[i] = R[i]
 
 
-@pytest.mark.skipif(not _helper.has_gpu_queues(), reason="test only on GPU system")
+@pytest.mark.skipif(
+    not _helper.has_gpu_queues(), reason="test only on GPU system"
+)
 class TestDPPYSumReduction:
     def test_sum_reduction(self):
         # This test will only work for even case

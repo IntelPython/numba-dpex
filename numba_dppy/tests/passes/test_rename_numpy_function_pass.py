@@ -93,7 +93,9 @@ class TestRenameNumpyFunctionsPass:
         assert check_equivalent(expected_ir, pipeline.state.func_ir)
 
 
-@pytest.mark.skipif(not ensure_dpnp(), reason="test only when dpnp is available")
+@pytest.mark.skipif(
+    not ensure_dpnp(), reason="test only when dpnp is available"
+)
 class TestRenameNdarrayFunctionsPass:
     def test_rename_ndarray(self):
         def expected(a):

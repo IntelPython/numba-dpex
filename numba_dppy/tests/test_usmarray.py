@@ -79,7 +79,7 @@ def numba_reshape(x):
     return x.reshape((4, 3))
 
 
-class TestUsmArray():
+class TestUsmArray:
     def ndarray(self):
         """Create NumPy array"""
         return numpy.ones(10)

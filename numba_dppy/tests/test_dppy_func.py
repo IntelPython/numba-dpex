@@ -22,7 +22,9 @@ import numba_dppy as dppy
 from . import _helper
 
 
-@pytest.mark.skipif(not _helper.has_gpu_queues(), reason="test only on GPU system")
+@pytest.mark.skipif(
+    not _helper.has_gpu_queues(), reason="test only on GPU system"
+)
 class TestDPPYFunc:
     N = 257
 
