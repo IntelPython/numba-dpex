@@ -16,7 +16,13 @@ from contextlib import contextmanager
 
 import dpctl
 from numba import njit
-from numba.core.dispatcher import TargetConfigurationStack
+
+try:
+    from numba.core.dispatcher import TargetConfigurationStack
+except ImportError:
+    # for support numba 0.54 and <=0.55.0dev0=*_469
+    from numba.core.dispatcher import TargetConfig as TargetConfigurationStack
+
 from numba.core.retarget import BasicRetarget
 
 from numba_dppy.target import DPPY_TARGET_NAME
