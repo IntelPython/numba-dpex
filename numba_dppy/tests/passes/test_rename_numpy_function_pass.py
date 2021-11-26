@@ -13,10 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytest
 
 import numba
 import numpy as np
+import pytest
 from numba import typeof
 from numba.core import compiler, cpu, typing
 from numba.core.typed_passes import AnnotateTypes, NopythonTypeInference

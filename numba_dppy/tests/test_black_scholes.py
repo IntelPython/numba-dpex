@@ -14,10 +14,10 @@
 
 import math
 import time
-import pytest
 
 import dpctl
 import numpy as np
+import pytest
 
 import numba_dppy as dppy
 
