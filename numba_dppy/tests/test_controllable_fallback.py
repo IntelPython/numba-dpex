@@ -85,4 +85,4 @@ class TestDPPYFallback:
             config.DEBUG = 0
 
             not np.testing.assert_array_equal(dppy_fallback_false, ref_result)
-            assert not "Failed to offload parfor" in str(w[-1].message)
+            assert "Failed to offload parfor" not in str(w[-1].message)
