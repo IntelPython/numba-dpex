@@ -30,10 +30,13 @@ skip_no_gpu = pytest.mark.skipif(
 skip_no_cpu = pytest.mark.skipif(
     not _helper.has_cpu_queues(), reason="No CPU platforms available"
 )
-
+skip_no_level_zero = pytest.mark.skipif(
+    not _helper.has_gpu_queues("level_zero"),
+    reason="No level-zero GPU platforms available",
+)
 
 filter_strings = [
-    pytest.param("level_zero:gpu:0", marks=skip_no_gpu),
+    pytest.param("level_zero:gpu:0", marks=skip_no_level_zero),
     pytest.param("opencl:gpu:0", marks=skip_no_gpu),
     pytest.param("opencl:cpu:0", marks=skip_no_cpu),
 ]
