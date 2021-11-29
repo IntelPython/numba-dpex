@@ -13,10 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
 
 import numba
 import numpy as np
+import pytest
 from numba import typeof
 from numba.core import compiler, cpu, typing
 from numba.core.typed_passes import AnnotateTypes, NopythonTypeInference
@@ -74,7 +74,7 @@ def check_equivalent(expected_ir, got_ir):
     return True
 
 
-class TestRenameNumpyFunctionsPass(unittest.TestCase):
+class TestRenameNumpyFunctionsPass:
     def test_rename_numpy(self):
         def expected(a):
             return numba_dppy.dpnp.sum(a)
@@ -90,11 +90,13 @@ class TestRenameNumpyFunctionsPass(unittest.TestCase):
         rewrite_numpy_functions_pass = DPPYRewriteOverloadedNumPyFunctions()
         rewrite_numpy_functions_pass.run_pass(pipeline.state)
 
-        self.assertTrue(check_equivalent(expected_ir, pipeline.state.func_ir))
+        assert check_equivalent(expected_ir, pipeline.state.func_ir)
 
 
-@unittest.skipUnless(ensure_dpnp(), "test only when dpnp is available")
-class TestRenameNdarrayFunctionsPass(unittest.TestCase):
+@pytest.mark.skipif(
+    not ensure_dpnp(), reason="test only when dpnp is available"
+)
+class TestRenameNdarrayFunctionsPass:
     def test_rename_ndarray(self):
         def expected(a):
             return numba_dppy.dpnp.sum(a)
@@ -120,8 +122,4 @@ class TestRenameNdarrayFunctionsPass(unittest.TestCase):
         rewrite_ndarray_functions_pass = DPPYRewriteNdarrayFunctions()
         rewrite_ndarray_functions_pass.run_pass(pipeline.state)
 
-        self.assertTrue(check_equivalent(expected_ir, pipeline.state.func_ir))
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert check_equivalent(expected_ir, pipeline.state.func_ir)

@@ -14,7 +14,6 @@
 # limitations under the License.
 
 import contextlib
-import unittest
 
 import dpctl
 from numba.tests.support import captured_stdout
@@ -103,15 +102,6 @@ def override_config(name, value, config=config):
 
 def _id(obj):
     return obj
-
-
-def expectedFailureIf(condition):
-    """
-    Expected failure for a test if the condition is true.
-    """
-    if condition:
-        return unittest.expectedFailure
-    return _id
 
 
 def ensure_dpnp():
