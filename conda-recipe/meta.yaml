@@ -27,8 +27,8 @@ requirements:
         - numba 0.54*|0.55*
         - dpctl 0.11*
         - spirv-tools
-        - {{ compiler('dpcpp') }}  # [not osx]
         - llvm-spirv 11.*  # [osx]
+        - {{ compiler('dpcpp') }}  # [not osx]
         - dpnp 0.8*|0.9*           # [linux]
         - packaging
 
