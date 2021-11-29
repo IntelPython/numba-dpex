@@ -85,27 +85,34 @@ class CmdLine:
         if config.DEBUG:
             llvm_spirv_flags.append("--spirv-debug-info-version=ocl-100")
 
-        if config.LLVM_SPIRV_ROOT:
-            llvm_spirv_tool = shutil.which(
-                "llvm-spirv", path=config.LLVM_SPIRV_ROOT
-            )
+        llvm_spirv_tool = self._llvm_spirv()
 
-        if not llvm_spirv_tool:
+        if config.DEBUG:
+            print(f"Use llvm-spirv: {llvm_spirv_tool}")
+
+        check_call([llvm_spirv_tool, *llvm_spirv_args, "-o", opath, ipath])
+
+    @staticmethod
+    def _llvm_spirv():
+        """Return path to llvm-spirv executable."""
+        result = None
+
+        if config.LLVM_SPIRV_ROOT:
+            result = shutil.which("llvm-spirv", path=config.LLVM_SPIRV_ROOT)
+
+        if not result:
             # use llvm-spirv from dpcpp package.
             # assume dpcpp from .../bin folder.
             # assume llvm-spirv from .../bin-llvm folder.
             bin_llvm = os.path.normpath(
                 os.path.dirname(shutil.which("dpcpp")) + "/../bin-llvm/"
             )
-            llvm_spirv_tool = shutil.which("llvm-spirv", path=bin_llvm)
+            result = shutil.which("llvm-spirv", path=bin_llvm)
 
-        if not llvm_spirv_tool:
-            llvm_spirv_tool = "llvm-spirv"
+        if not result:
+            result = "llvm-spirv"
 
-        if config.DEBUG:
-            print(f"Use llvm-spirv: {llvm_spirv_tool}")
-
-        check_call([llvm_spirv_tool, *llvm_spirv_args, "-o", opath, ipath])
+        return result
 
     def link(self, opath, binaries):
         """
