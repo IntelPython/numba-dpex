@@ -15,6 +15,7 @@
 """A wrapper to connect to the SPIR-V binaries (Tools, Translator)."""
 
 import os
+import shutil
 import tempfile
 from subprocess import CalledProcessError, check_call
 
@@ -84,18 +85,15 @@ class CmdLine:
         if config.DEBUG:
             llvm_spirv_flags.append("--spirv-debug-info-version=ocl-100")
 
-        llvm_spirv_tool = "llvm-spirv"
-        if config.NATIVE_FP_ATOMICS == 1:
-            llvm_spirv_root = config.LLVM_SPIRV_ROOT
+        # use llvm-spirv from dpcpp package.
+        # dpcpp from .../bin folder.
+        # llvm-spirf from .../bin-llvm folder.
+        llvm_spirv_tool = os.path.normpath(
+            os.path.dirname(shutil.which("dpcpp")) + "/../bin-llvm/llvm-spirv"
+        )
 
-            if llvm_spirv_root == "":
-                raise ValueError(
-                    "Native floating point atomics require dpcpp provided "
-                    "llvm-spirv, please specify the LLVM-SPIRV root directory "
-                    "using env variable NUMBA_DPPY_LLVM_SPIRV_ROOT."
-                )
-
-            llvm_spirv_tool = llvm_spirv_root + "/llvm-spirv"
+        if config.LLVM_SPIRV_ROOT:
+            llvm_spirv_tool = os.path.join(config.LLVM_SPIRV_ROOT, "llvm-spirv")
 
         check_call([llvm_spirv_tool, *llvm_spirv_args, "-o", opath, ipath])
 
