@@ -122,9 +122,9 @@ jobs:
     strategy:
       matrix:
         python: [3.8, 3.9]
-        numba: [0.54, "0.55.0dev0=*_782"]
+        numba: ["0.54"]
         integration_channels: [""]
-        experimental: [true]  # packages are not available on -c intel yet
+        experimental: [false]
         artifact_name: [""]
         dependencies: [""]
         include:
@@ -132,6 +132,18 @@ jobs:
             numba: 0.54
             integration_channels: -c dppy/label/dev
             artifact_name: -c dppy_label_dev
+            experimental: false  # current stable
+            dependencies: ""
+          - python: "3.8"
+            numba: "0.55.0dev0=*_782"
+            integration_channels:
+            artifact_name: ""
+            experimental: false  # current stable
+            dependencies: ""
+          - python: "3.9"
+            numba: "0.55.0dev0=*_778"
+            integration_channels: ""
+            artifact_name: ""
             experimental: false  # current stable
             dependencies: ""
     continue-on-error: ${{ matrix.experimental }}
