@@ -88,12 +88,13 @@ class CmdLine:
         # use llvm-spirv from dpcpp package.
         # assume dpcpp from .../bin folder.
         # assume llvm-spirv from .../bin-llvm folder.
-        llvm_spirv_tool = os.path.normpath(
-            os.path.dirname(shutil.which("dpcpp")) + "/../bin-llvm/llvm-spirv"
+        bin_llvm = os.path.normpath(
+            os.path.dirname(shutil.which("dpcpp")) + "/../bin-llvm/"
         )
+        llvm_spirv_tool = shutil.which("llvm-spirv", path=bin_llvm)
 
         if config.LLVM_SPIRV_ROOT:
-            llvm_spirv_tool = os.path.join(config.LLVM_SPIRV_ROOT, "llvm-spirv")
+            llvm_spirv_tool = shutil.which("llvm-spirv", path=config.LLVM_SPIRV_ROOT)
 
         if not os.path.exists(llvm_spirv_tool):
             llvm_spirv_tool = "llvm-spirv"
