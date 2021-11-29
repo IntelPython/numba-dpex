@@ -87,7 +87,7 @@ class CmdLine:
 
         # use llvm-spirv from dpcpp package.
         # assume dpcpp from .../bin folder.
-        # assume llvm-spirf from .../bin-llvm folder.
+        # assume llvm-spirv from .../bin-llvm folder.
         llvm_spirv_tool = os.path.normpath(
             os.path.dirname(shutil.which("dpcpp")) + "/../bin-llvm/llvm-spirv"
         )
