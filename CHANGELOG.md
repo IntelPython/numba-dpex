@@ -6,7 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.17.3] - 2021-11-xx
+## [0.17.3] - 2021-11-30
+
+### Changed
+* Use `llvm-spirv` from `dpcpp` compiler package by default [cherry picked from #649] (#651)
 
 ### Fixed
 * Enable offloading for `numba.njit` in `dpctl.deveice_context` (#630)
