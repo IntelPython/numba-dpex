@@ -94,7 +94,9 @@ class CmdLine:
         llvm_spirv_tool = shutil.which("llvm-spirv", path=bin_llvm)
 
         if config.LLVM_SPIRV_ROOT:
-            llvm_spirv_tool = shutil.which("llvm-spirv", path=config.LLVM_SPIRV_ROOT)
+            llvm_spirv_tool = shutil.which(
+                "llvm-spirv", path=config.LLVM_SPIRV_ROOT
+            )
 
         if not os.path.exists(llvm_spirv_tool):
             llvm_spirv_tool = "llvm-spirv"
