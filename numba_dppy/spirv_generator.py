@@ -85,20 +85,21 @@ class CmdLine:
         if config.DEBUG:
             llvm_spirv_flags.append("--spirv-debug-info-version=ocl-100")
 
-        # use llvm-spirv from dpcpp package.
-        # assume dpcpp from .../bin folder.
-        # assume llvm-spirv from .../bin-llvm folder.
-        bin_llvm = os.path.normpath(
-            os.path.dirname(shutil.which("dpcpp")) + "/../bin-llvm/"
-        )
-        llvm_spirv_tool = shutil.which("llvm-spirv", path=bin_llvm)
-
         if config.LLVM_SPIRV_ROOT:
             llvm_spirv_tool = shutil.which(
                 "llvm-spirv", path=config.LLVM_SPIRV_ROOT
             )
 
-        if not os.path.exists(llvm_spirv_tool):
+        if not llvm_spirv_tool:
+            # use llvm-spirv from dpcpp package.
+            # assume dpcpp from .../bin folder.
+            # assume llvm-spirv from .../bin-llvm folder.
+            bin_llvm = os.path.normpath(
+                os.path.dirname(shutil.which("dpcpp")) + "/../bin-llvm/"
+            )
+            llvm_spirv_tool = shutil.which("llvm-spirv", path=bin_llvm)
+
+        if not llvm_spirv_tool:
             llvm_spirv_tool = "llvm-spirv"
 
         if config.DEBUG:
