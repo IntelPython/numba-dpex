@@ -28,7 +28,7 @@ from numba_dppy.tests._helper import (
 
 
 @pytest.mark.skipif(
-    not ensure_dpnp() and not has_gpu_queues(),
+    not ensure_dpnp() or not has_gpu_queues(),
     reason="test only when dpnp and GPU is available",
 )
 class Testdpnp_functions:
