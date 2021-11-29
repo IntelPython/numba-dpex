@@ -86,8 +86,8 @@ class CmdLine:
             llvm_spirv_flags.append("--spirv-debug-info-version=ocl-100")
 
         # use llvm-spirv from dpcpp package.
-        # dpcpp from .../bin folder.
-        # llvm-spirf from .../bin-llvm folder.
+        # assume dpcpp from .../bin folder.
+        # assume llvm-spirf from .../bin-llvm folder.
         llvm_spirv_tool = os.path.normpath(
             os.path.dirname(shutil.which("dpcpp")) + "/../bin-llvm/llvm-spirv"
         )
