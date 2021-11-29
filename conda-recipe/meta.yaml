@@ -28,6 +28,7 @@ requirements:
         - dpctl 0.11*
         - spirv-tools
         - {{ compiler('dpcpp') }}  # [not osx]
+        - llvm-spirv 11.*  # [osx]
         - dpnp 0.8*|0.9*           # [linux]
         - packaging
 
