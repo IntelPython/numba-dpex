@@ -95,6 +95,9 @@ class CmdLine:
         if config.LLVM_SPIRV_ROOT:
             llvm_spirv_tool = os.path.join(config.LLVM_SPIRV_ROOT, "llvm-spirv")
 
+        if not os.path.exists(llvm_spirv_tool):
+            llvm_spirv_tool = "llvm-spirv"
+
         check_call([llvm_spirv_tool, *llvm_spirv_args, "-o", opath, ipath])
 
     def link(self, opath, binaries):
