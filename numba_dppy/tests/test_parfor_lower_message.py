@@ -36,7 +36,7 @@ def prange_example():
 
 
 @pytest.mark.skipif(
-    not _helper.has_gpu_queues(), reason="test only on GPU system"
+    not _helper.has_opencl_gpu(), reason="test only on GPU system"
 )
 class TestParforMessage:
     def test_parfor_message(self):

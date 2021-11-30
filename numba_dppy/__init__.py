@@ -208,10 +208,10 @@ Complete Example using @dppy.kernel:
         b = np.array(np.random.random(N), dtype=np.float32)
         c = np.ones_like(a)
 
-        if dpctl.has_gpu_queues():
+        if dpctl.has_opencl_gpu():
             with dpctl.device_context("opencl:gpu") as gpu_queue:
                 driver(device_env, a, b, c, global_size)
-        elif dpctl.has_cpu_queues():
+        elif dpctl.has_opencl_cpu():
             with dpctl.device_context("opencl:cpu") as cpu_queue:
                 driver(device_env, a, b, c, global_size)
         else:
