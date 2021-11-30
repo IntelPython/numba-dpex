@@ -25,10 +25,12 @@ from . import _helper
 from ._helper import assert_auto_offloading
 
 skip_no_gpu = pytest.mark.skipif(
-    not _helper.has_gpu_queues(), reason="No GPU platforms available"
+    not _helper.has_gpu_queues("opencl"),
+    reason="No opencl GPU platforms available",
 )
 skip_no_cpu = pytest.mark.skipif(
-    not _helper.has_cpu_queues(), reason="No CPU platforms available"
+    not _helper.has_cpu_queues("opencl"),
+    reason="No opencl CPU platforms available",
 )
 skip_no_level_zero = pytest.mark.skipif(
     not _helper.has_gpu_queues("level_zero"),
