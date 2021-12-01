@@ -19,23 +19,19 @@ import dpctl.tensor as dpt
 import numpy as np
 import pytest
 
-from numba_dppy.tests._helper import skip_test
+from numba_dppy.tests._helper import filter_strings
 from numba_dppy.utils import (
     as_usm_obj,
     copy_to_numpy_from_usm_obj,
     has_usm_memory,
 )
 
-from . import _helper
 
-
-def test_has_usm_memory(offload_device):
-    if skip_test(offload_device):
-        pytest.skip()
-
+@pytest.mark.parametrize("filter_str", filter_strings)
+def test_has_usm_memory(filter_str):
     a = np.ones(1023, dtype=np.float32)
 
-    with dpctl.device_context(offload_device):
+    with dpctl.device_context(filter_str):
         # test usm_ndarray
         da = dpt.usm_ndarray(a.shape, dtype=a.dtype, buffer="shared")
         usm_mem = has_usm_memory(da)
@@ -51,14 +47,12 @@ def test_has_usm_memory(offload_device):
         assert usm_mem is None
 
 
-def test_as_usm_obj(offload_device):
-    if skip_test(offload_device):
-        pytest.skip()
-
+@pytest.mark.parametrize("filter_str", filter_strings)
+def test_as_usm_obj(filter_str):
     a = np.ones(1023, dtype=np.float32)
     b = a * 3
 
-    with dpctl.device_context(offload_device) as queue:
+    with dpctl.device_context(filter_str) as queue:
         a_copy = np.empty_like(a)
         usm_mem = as_usm_obj(a, queue=queue)
         copy_to_numpy_from_usm_obj(usm_mem, a_copy)

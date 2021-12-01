@@ -17,11 +17,10 @@ import time
 
 import dpctl
 import numpy as np
-import pytest
 
 import numba_dppy as dppy
 
-from . import _helper
+from numba_dppy.tests._helper import skip_no_opencl_gpu
 
 RISKFREE = 0.02
 VOLATILITY = 0.30
@@ -73,9 +72,7 @@ def randfloat(rand_var, low, high):
     return (1.0 - rand_var) * low + rand_var * high
 
 
-@pytest.mark.skipif(
-    not _helper.has_opencl_gpu(), reason="test only on GPU system"
-)
+@skip_no_opencl_gpu
 class TestDPPYBlackScholes:
     def test_black_scholes(self):
         OPT_N = 400

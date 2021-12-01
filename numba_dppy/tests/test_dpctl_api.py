@@ -16,23 +16,11 @@ import dpctl
 import pytest
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import skip_test
-
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
-]
+from numba_dppy.tests._helper import filter_strings
 
 
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
-
-
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_dpctl_api(filter_str):
-    if skip_test(filter_str):
-        pytest.skip()
 
     device = dpctl.SyclDevice(filter_str)
     with dpctl.device_context(device):
