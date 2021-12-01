@@ -21,20 +21,25 @@ from numba.tests.support import captured_stdout
 from numba_dppy import config
 
 
-def has_gpu_queues(backend="opencl"):
+def has_opencl_gpu():
     """
-    Checks if dpctl is able to select a GPU device that defaults to
-    an OpenCL GPU.
+    Checks if dpctl is able to select an OpenCL GPU device.
     """
-    return bool(dpctl.get_num_devices(backend=backend, device_type="gpu"))
+    return bool(dpctl.get_num_devices(backend="opencl", device_type="gpu"))
 
 
-def has_cpu_queues(backend="opencl"):
+def has_opencl_cpu():
     """
-    Checks if dpctl is able to select a CPU device that defaults to
-    an OpenCL CPU.
+    Checks if dpctl is able to select an OpenCL CPU device.
     """
-    return bool(dpctl.get_num_devices(backend=backend, device_type="cpu"))
+    return bool(dpctl.get_num_devices(backend="opencl", device_type="cpu"))
+
+
+def has_level_zero():
+    """
+    Checks if dpctl is able to select a Level Zero GPU device.
+    """
+    return bool(dpctl.get_num_devices(backend="level_zero", device_type="gpu"))
 
 
 def has_sycl_platforms():
