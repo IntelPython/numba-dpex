@@ -24,9 +24,9 @@ from numba_dppy import config
 from . import _helper
 from ._helper import (
     assert_auto_offloading,
-    skip_no_opencl_gpu,
-    skip_no_opencl_cpu,
     skip_no_level_zero_gpu,
+    skip_no_opencl_cpu,
+    skip_no_opencl_gpu,
 )
 
 filter_strings = [
