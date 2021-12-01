@@ -37,7 +37,7 @@ d = a + b
 
 
 @pytest.mark.skipif(
-    not _helper.has_cpu_queues(), reason="test only on CPU system"
+    not _helper.has_opencl_cpu(), reason="test only on CPU system"
 )
 class TestDPPYDeviceArrayArgsGPU:
     def test_device_array_args_cpu(self):
@@ -50,7 +50,7 @@ class TestDPPYDeviceArrayArgsGPU:
 
 
 @pytest.mark.skipif(
-    not _helper.has_gpu_queues(), reason="test only on GPU system"
+    not _helper.has_opencl_gpu(), reason="test only on GPU system"
 )
 class TestDPPYDeviceArrayArgsCPU:
     def test_device_array_args_gpu(self):

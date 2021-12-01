@@ -25,7 +25,7 @@ from . import _helper
 
 
 @pytest.mark.skipif(
-    not _helper.has_gpu_queues(), reason="test only on GPU system"
+    not _helper.has_opencl_gpu(), reason="test only on GPU system"
 )
 class TestPrange:
     def test_one_prange(self):

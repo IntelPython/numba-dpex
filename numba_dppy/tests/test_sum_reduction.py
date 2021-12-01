@@ -33,7 +33,7 @@ def reduction_kernel(A, R, stride):
 
 
 @pytest.mark.skipif(
-    not _helper.has_gpu_queues(), reason="test only on GPU system"
+    not _helper.has_opencl_gpu(), reason="test only on GPU system"
 )
 class TestDPPYSumReduction:
     def test_sum_reduction(self):
