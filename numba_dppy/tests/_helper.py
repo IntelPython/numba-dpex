@@ -105,6 +105,12 @@ skip_no_level_zero_gpu = pytest.mark.skipif(
     reason="No level-zero GPU platforms available",
 )
 
+filter_strings = [
+    pytest.param("level_zero:gpu:0", marks=skip_no_level_zero_gpu),
+    pytest.param("opencl:gpu:0", marks=skip_no_opencl_gpu),
+    pytest.param("opencl:cpu:0", marks=skip_no_opencl_cpu),
+]
+
 
 @contextlib.contextmanager
 def override_config(name, value, config=config):
