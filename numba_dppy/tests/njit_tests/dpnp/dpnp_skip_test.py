@@ -12,16 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba_dppy.tests._helper import ensure_dpnp, skip_test
+import pytest
+from numba_dppy.tests._helper import ensure_dpnp
 
 
-def dpnp_skip_test(device_type):
-    skip = False
-    if skip_test(device_type):
-        skip = True
-
-    if not skip:
-        if not ensure_dpnp():
-            skip = True
-
-    return skip
+skip_no_dpnp = pytest.mark.skipif(not ensure_dpnp(), reason="No dpnp available")

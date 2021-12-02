@@ -18,7 +18,6 @@ import numpy as np
 import pytest
 from numba import njit
 
-import numba_dppy as dppy
 from numba_dppy.tests._helper import (
     assert_auto_offloading,
     dpnp_debug,

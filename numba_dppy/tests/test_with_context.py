@@ -22,7 +22,12 @@ import numba_dppy as dppy
 from numba_dppy import config
 
 from . import _helper
-from ._helper import assert_auto_offloading, filter_strings
+from ._helper import (
+    assert_auto_offloading,
+    filter_strings,
+    skip_no_opencl_cpu,
+    skip_no_opencl_gpu,
+)
 
 
 def scenario(filter_str, context):
@@ -52,9 +57,7 @@ def test_dpctl_device_context_affects_numba_pipeline(filter_str, context):
 
 
 class TestWithDPPYContext:
-    @pytest.mark.skipif(
-        not _helper.has_opencl_gpu(), reason="No GPU platforms available"
-    )
+    @skip_no_opencl_gpu
     def test_with_dppy_context_gpu(self):
         @njit
         def nested_func(a, b):
@@ -80,9 +83,7 @@ class TestWithDPPYContext:
         np.testing.assert_array_equal(expected, got_gpu)
         assert "Parfor offloaded to opencl:gpu" in got_gpu_message.getvalue()
 
-    @pytest.mark.skipif(
-        not _helper.has_opencl_cpu(), reason="No CPU platforms available"
-    )
+    @skip_no_opencl_cpu
     def test_with_dppy_context_cpu(self):
         @njit
         def nested_func(a, b):

@@ -21,26 +21,17 @@ import numpy as np
 import pytest
 from numba import njit
 
-import numba_dppy as dppy
-from numba_dppy.tests._helper import dpnp_debug
+from numba_dppy.tests._helper import dpnp_debug, filter_strings
 
 from ._helper import args_string, wrapper_function
-from .dpnp_skip_test import dpnp_skip_test as skip_test
+from .dpnp_skip_test import skip_no_dpnp
 
-filter_strings = [
-    "level_zero:gpu:0",
-    "opencl:gpu:0",
-    "opencl:cpu:0",
-]
 
-filter_strings_with_skips_for_opencl = [
-    "level_zero:gpu:0",
-    pytest.param("opencl:gpu:0", marks=pytest.mark.skip(reason="Freeze")),
-    pytest.param(
-        "opencl:cpu:0", marks=pytest.mark.skip(reason="Segmentation fault")
-    ),
-    # pytest.param("opencl:cpu:0", marks=pytest.mark.xfail(reason="Segmentation fault")),  # run with --boxed
-]
+def skip(filter_str):
+    if filter_str == "opencl:gpu:0":
+        pytest.skip("Freeze")
+    if filter_str == "opencl:cpu:0":
+        pytest.skip("Segmentation fault")
 
 
 # From https://github.com/IntelPython/dpnp/blob/0.4.0/tests/test_linalg.py#L8
@@ -89,11 +80,10 @@ def eig_input(request):
     return symm_a
 
 
-@pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)
+@skip_no_dpnp
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_eig(filter_str, eig_input, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
+    skip(filter_str)
     a = eig_input
     fn = get_fn("linalg.eig", 1)
     f = njit(fn)
@@ -154,11 +144,10 @@ def dot_name(request):
     return request.param
 
 
-@pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)
+@skip_no_dpnp
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_dot(filter_str, dot_name, dot_input, dtype, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
+    skip(filter_str)
     a, b = dot_input
 
     if dot_name == "vdot":
@@ -180,11 +169,10 @@ def test_dot(filter_str, dot_name, dot_input, dtype, capfd):
         assert np.allclose(actual, expected)
 
 
-@pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)
+@skip_no_dpnp
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_matmul(filter_str, dtype, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
+    skip(filter_str)
     a = np.array(np.random.random(10 * 2), dtype=dtype).reshape(10, 2)
     b = np.array(np.random.random(2 * 10), dtype=dtype).reshape(2, 10)
     fn = get_fn("matmul", 2)
@@ -200,11 +188,10 @@ def test_matmul(filter_str, dtype, capfd):
         assert np.allclose(actual, expected)
 
 
+@skip_no_dpnp
+@pytest.mark.parametrize("filter_str", filter_strings)
 @pytest.mark.skip(reason="dpnp does not support it yet")
 def test_cholesky(filter_str, dtype, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a = np.array([[1, -2], [2, 5]], dtype=dtype)
     fn = get_fn("linalg.cholesky", 1)
     f = njit(fn)
@@ -236,11 +223,9 @@ def det_input(request):
     return request.param
 
 
+@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_det(filter_str, det_input, dtype, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a = np.array(det_input, dtype=dtype)
     fn = get_fn("linalg.det", 1)
     f = njit(fn)
@@ -255,10 +240,10 @@ def test_det(filter_str, det_input, dtype, capfd):
         assert np.allclose(actual, expected)
 
 
-@pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)
+@skip_no_dpnp
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_multi_dot(filter_str, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
+    skip(filter_str)
 
     def fn(A, B, C, D):
         c = np.linalg.multi_dot([A, B, C, D])
@@ -300,11 +285,10 @@ def matrix_power_input(request):
     return request.param
 
 
-@pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)
+@skip_no_dpnp
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_matrix_power(filter_str, matrix_power_input, power, dtype, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
+    skip(filter_str)
     a = np.array(matrix_power_input, dtype=dtype)
     fn = get_fn("linalg.matrix_power", 2)
     f = njit(fn)
@@ -319,6 +303,7 @@ def test_matrix_power(filter_str, matrix_power_input, power, dtype, capfd):
         assert np.allclose(actual, expected)
 
 
+@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 @pytest.mark.parametrize(
     "matrix_rank_input",
@@ -336,9 +321,6 @@ def test_matrix_power(filter_str, matrix_power_input, power, dtype, capfd):
     ],
 )
 def test_matrix_rank(filter_str, matrix_rank_input, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
     fn = get_fn("linalg.matrix_rank", 1)
     f = njit(fn)
 
@@ -352,11 +334,10 @@ def test_matrix_rank(filter_str, matrix_rank_input, capfd):
         assert np.allclose(actual, expected)
 
 
-@pytest.mark.parametrize("filter_str", filter_strings_with_skips_for_opencl)
+@skip_no_dpnp
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_eigvals(filter_str, eig_input, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
+    skip(filter_str)
     a = eig_input
     fn = get_fn("linalg.eigvals", 1)
     f = njit(fn)

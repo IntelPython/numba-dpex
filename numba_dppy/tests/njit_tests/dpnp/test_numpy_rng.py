@@ -21,24 +21,16 @@ import numpy as np
 import pytest
 from numba import njit
 
-import numba_dppy as dppy
-from numba_dppy.tests._helper import dpnp_debug
+from numba_dppy.tests._helper import dpnp_debug, filter_strings
 
 from ._helper import wrapper_function
-from .dpnp_skip_test import dpnp_skip_test as skip_test
+from .dpnp_skip_test import skip_no_dpnp
 
 # dpnp throws -30 (CL_INVALID_VALUE) when invoked with multiple kinds of
 # devices at runtime, so testing for level_zero only
-list_of_filter_strs = [
-    # "opencl:gpu:0",
-    "level_zero:gpu:0",
-    # "opencl:cpu:0",
-]
-
-
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
+def skip(filter_str):
+    if (filter_str == "opencl:gpu:0") or (filter_str == "opencl:cpu:0"):
+        pytest.skip("CL_INVALID_VALUE")
 
 
 list_of_size = [
@@ -79,10 +71,10 @@ def one_arg_fn(request):
     return function, request.param
 
 
+@skip_no_dpnp
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_one_arg_fn(filter_str, one_arg_fn, unary_size, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
+    skip(filter_str)
     op, params = one_arg_fn
     name, low, high = params
     f = njit(op)
@@ -119,10 +111,10 @@ def get_two_arg_fn(op_name):
     return wrapper_function("a, b", f"np.random.{op_name}(a, b)", globals())
 
 
+@skip_no_dpnp
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_two_arg_fn(filter_str, two_arg_fn, unary_size, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
+    skip(filter_str)
     op_name, first_arg, low, high = two_arg_fn
 
     if op_name == "gamma":
@@ -172,10 +164,10 @@ def get_three_arg_fn(op_name):
     )
 
 
+@skip_no_dpnp
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
+    skip(filter_str)
     op_name, first_arg, second_arg, low, high = three_arg_fn
 
     if op_name == "multinomial":
@@ -218,9 +210,10 @@ def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
                 assert np.all(actual <= high)
 
 
+@skip_no_dpnp
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_rand(filter_str):
-    if skip_test(filter_str):
-        pytest.skip()
+    skip(filter_str)
 
     @njit
     def f():
@@ -236,9 +229,10 @@ def test_rand(filter_str):
         assert np.all(actual < 1.0)
 
 
+@skip_no_dpnp
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_hypergeometric(filter_str, three_arg_size):
-    if skip_test(filter_str):
-        pytest.skip()
+    skip(filter_str)
 
     @njit
     def f(ngood, nbad, nsamp, size):

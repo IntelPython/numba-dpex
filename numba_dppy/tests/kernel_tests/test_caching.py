@@ -17,20 +17,10 @@ import numpy as np
 import pytest
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import skip_test
-
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
-]
+from numba_dppy.tests._helper import filter_strings
 
 
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
-
-
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_caching_kernel_using_same_queue(filter_str):
     """Test kernel caching when the same queue is used to submit a kernel
     multiple times.
@@ -38,8 +28,6 @@ def test_caching_kernel_using_same_queue(filter_str):
     Args:
         filter_str: SYCL filter selector string
     """
-    if skip_test(filter_str):
-        pytest.skip()
     global_size = 10
     N = global_size
 
@@ -64,6 +52,7 @@ def test_caching_kernel_using_same_queue(filter_str):
             assert _kernel == cached_kernel
 
 
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_caching_kernel_using_same_context(filter_str):
     """Test kernel caching for the scenario where different SYCL queues that
     share a SYCL context are used to submit a kernel.
@@ -71,8 +60,6 @@ def test_caching_kernel_using_same_context(filter_str):
     Args:
         filter_str: SYCL filter selector string
     """
-    if skip_test(filter_str):
-        pytest.skip()
     global_size = 10
     N = global_size
 

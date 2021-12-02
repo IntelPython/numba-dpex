@@ -15,7 +15,6 @@
 import dpctl
 import pytest
 
-import numba_dppy as dppy
 from numba_dppy.tests._helper import filter_strings
 
 

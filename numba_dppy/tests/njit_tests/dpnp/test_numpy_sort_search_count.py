@@ -21,23 +21,10 @@ import numpy as np
 import pytest
 from numba import njit
 
-import numba_dppy as dppy
-from numba_dppy.tests._helper import dpnp_debug
+from numba_dppy.tests._helper import dpnp_debug, filter_strings
 
 from ._helper import wrapper_function
-from .dpnp_skip_test import dpnp_skip_test as skip_test
-
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
-]
-
-
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
-
+from .dpnp_skip_test import skip_no_dpnp
 
 list_of_dtypes = [
     np.int32,
@@ -83,10 +70,9 @@ def unary_op(request):
     )
 
 
+@skip_no_dpnp
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a = input_arrays[0]
     op, name = unary_op
     if name != "argsort" and name != "sort":
@@ -105,6 +91,8 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
     np.testing.assert_allclose(actual, expected, rtol=1e-3, atol=0)
 
 
+@skip_no_dpnp
+@pytest.mark.parametrize("filter_str", filter_strings)
 @pytest.mark.parametrize("kth", [0, 1], ids=["0", "1"])
 @pytest.mark.parametrize(
     "array",
@@ -129,9 +117,6 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
     ],
 )
 def test_partition(array, kth, filter_str):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a = np.array(array)
 
     def fn(a, kth):

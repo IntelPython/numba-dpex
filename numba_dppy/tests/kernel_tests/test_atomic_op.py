@@ -20,22 +20,10 @@ import pytest
 
 import numba_dppy as dppy
 from numba_dppy import config
-from numba_dppy.tests._helper import skip_test
+from numba_dppy.tests._helper import filter_strings
 
 global_size = 100
 N = global_size
-
-
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
-]
-
-
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
 
 
 list_of_i_dtypes = [
@@ -86,22 +74,15 @@ def kernel_result_pair(request):
     return dppy.kernel(f), request.param[1]
 
 
-def atomic_skip_test(device_type):
-    skip = False
-    if skip_test(device_type):
-        skip = True
-
-    if not skip:
-        if not dppy.ocl.atomic_support_present():
-            skip = True
-
-    return skip
+skip_atomic = pytest.mark.skipif(
+    not dppy.ocl.atomic_support_present(),
+    reason="No atomic support",
+)
 
 
+@skip_atomic
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_kernel_atomic_simple(filter_str, input_arrays, kernel_result_pair):
-    if atomic_skip_test(filter_str):
-        pytest.skip()
-
     a, dtype = input_arrays
     kernel, expected = kernel_result_pair
     device = dpctl.SyclDevice(filter_str)
@@ -124,10 +105,9 @@ def get_func_local(op_type, dtype):
     return f
 
 
+@skip_atomic
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_kernel_atomic_local(filter_str, input_arrays, return_list_of_op):
-    if atomic_skip_test(filter_str):
-        pytest.skip()
-
     a, dtype = input_arrays
     op_type, expected = return_list_of_op
     f = get_func_local(op_type, dtype)
@@ -165,12 +145,11 @@ def get_kernel_multi_dim(op_type, size):
     return dppy.kernel(f)
 
 
+@skip_atomic
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_kernel_atomic_multi_dim(
     filter_str, return_list_of_op, return_list_of_dim, return_dtype
 ):
-    if atomic_skip_test(filter_str):
-        pytest.skip()
-
     op_type, expected = return_list_of_op
     dim = return_list_of_dim
     kernel = get_kernel_multi_dim(op_type, len(dim))
@@ -189,15 +168,14 @@ def addrspace(request):
     return request.param
 
 
+@skip_atomic
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, addrspace):
     LLVM_SPIRV_ROOT = os.environ.get("NUMBA_DPPY_LLVM_SPIRV_ROOT")
     if LLVM_SPIRV_ROOT == "" or LLVM_SPIRV_ROOT is None:
         pytest.skip(
             "Please set envar NUMBA_DPPY_LLVM_SPIRV_ROOT to run this test"
         )
-
-    if atomic_skip_test(filter_str):
-        pytest.skip()
 
     a = np.array([0], fdtype)
 

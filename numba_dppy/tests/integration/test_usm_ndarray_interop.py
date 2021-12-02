@@ -19,7 +19,7 @@ import pytest
 from numba import njit
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import skip_test
+from numba_dppy.tests._helper import filter_strings
 
 list_of_dtype = [
     np.int32,
@@ -46,10 +46,8 @@ def usm_type(request):
     return request.param
 
 
-def test_consuming_usm_ndarray(offload_device, dtype, usm_type):
-    if skip_test(offload_device):
-        pytest.skip()
-
+@pytest.mark.parametrize("filter_str", filter_strings)
+def test_consuming_usm_ndarray(filter_str, dtype, usm_type):
     @dppy.kernel
     def data_parallel_sum(a, b, c):
         """
@@ -66,7 +64,7 @@ def test_consuming_usm_ndarray(offload_device, dtype, usm_type):
 
     got = np.ones_like(a)
 
-    with dpctl.device_context(offload_device) as gpu_queue:
+    with dpctl.device_context(filter_str) as gpu_queue:
         da = dpt.usm_ndarray(
             a.shape,
             dtype=a.dtype,

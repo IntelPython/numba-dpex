@@ -17,7 +17,7 @@ import numpy as np
 import pytest
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import skip_test
+from numba_dppy.tests._helper import filter_strings
 
 
 def call_kernel(global_size, local_size, A, B, C, func):
@@ -32,18 +32,6 @@ N = global_size * local_size
 def sum_kernel(a, b, c):
     i = dppy.get_global_id(0)
     c[i] = a[i] + b[i]
-
-
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
-]
-
-
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
 
 
 list_of_dtypes = [
@@ -72,10 +60,8 @@ def kernel(request):
     return dppy.kernel(access_types=request.param)(sum_kernel)
 
 
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_kernel_arg_accessor(filter_str, input_arrays, kernel):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a, b, actual = input_arrays
     expected = a + b
     device = dpctl.SyclDevice(filter_str)
