@@ -111,6 +111,10 @@ def test_kernel_atomic_simple(filter_str, input_arrays, kernel_result_pair):
 
 
 def get_func_global(op_type, dtype):
+    """Generate function for global address space
+
+    Used as `generator(op_type, dtype)`.
+    """
     op = getattr(dppy.atomic, op_type)
 
     def f(a):
@@ -120,6 +124,10 @@ def get_func_global(op_type, dtype):
 
 
 def get_func_local(op_type, dtype):
+    """Generate function for local address space
+
+    Used as `generator(op_type, dtype)`.
+    """
     op = getattr(dppy.atomic, op_type)
 
     def f(a):
@@ -188,14 +196,6 @@ def test_kernel_atomic_multi_dim(
     with dpctl.device_context(device):
         kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
     assert a[0] == expected
-
-
-list_of_addrspace = ["global", "local"]
-
-
-@pytest.fixture(params=list_of_addrspace)
-def addrspace(request):
-    return request.param
 
 
 @pytest.mark.skipif(not config.NATIVE_FP_ATOMICS, reason="Native FP atomics disabled")
