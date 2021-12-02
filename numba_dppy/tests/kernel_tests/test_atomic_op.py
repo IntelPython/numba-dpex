@@ -20,7 +20,7 @@ import pytest
 
 import numba_dppy as dppy
 from numba_dppy import config
-from numba_dppy.tests._helper import skip_test, override_config
+from numba_dppy.tests._helper import override_config, skip_test
 
 global_size = 100
 N = global_size
