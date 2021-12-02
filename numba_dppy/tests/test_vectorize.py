@@ -21,7 +21,6 @@ from numba import float32, float64, int32, int64, njit, vectorize
 import numba_dppy as dppy
 from numba_dppy.tests._helper import assert_auto_offloading, filter_strings
 
-
 list_of_shape = [
     (100, 100),
     (100, (10, 10)),

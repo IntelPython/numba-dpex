@@ -19,7 +19,6 @@ import dpctl
 import numpy as np
 
 import numba_dppy as dppy
-
 from numba_dppy.tests._helper import skip_no_opencl_gpu
 
 RISKFREE = 0.02
