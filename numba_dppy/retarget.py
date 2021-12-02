@@ -16,7 +16,13 @@ from contextlib import contextmanager
 
 import dpctl
 from numba import njit
-from numba.core.dispatcher import TargetConfig
+
+try:
+    from numba.core.dispatcher import TargetConfigurationStack
+except ImportError:
+    # for support numba 0.54 and <=0.55.0dev0=*_469
+    from numba.core.dispatcher import TargetConfig as TargetConfigurationStack
+
 from numba.core.retarget import BasicRetarget
 
 from numba_dppy.target import DPPY_TARGET_NAME
@@ -54,7 +60,7 @@ def _retarget(sycl_queue):
 def _retarget_context_manager(sycl_queue):
     """Return context manager for retargeting njit offloading."""
     retarget = _retarget(sycl_queue)
-    return TargetConfig.switch_target(retarget)
+    return TargetConfigurationStack.switch_target(retarget)
 
 
 def _register_context_factory():

@@ -1301,6 +1301,7 @@ class DPPYLower(Lower):
                 module=lower.module,
                 filepath=func_ir.loc.filename,
                 linkage_name=mangled_qualname,
+                cgctx=context,
             )
 
         return lower
