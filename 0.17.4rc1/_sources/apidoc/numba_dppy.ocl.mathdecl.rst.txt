@@ -1,0 +1,7 @@
+numba\_dppy.ocl.mathdecl module
+===============================
+
+.. automodule:: numba_dppy.ocl.mathdecl
+   :members:
+   :undoc-members:
+   :show-inheritance:

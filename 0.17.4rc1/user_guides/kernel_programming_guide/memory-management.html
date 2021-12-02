@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Management &mdash; numba-dppy 0.17.4rc1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Synchronization Functions" href="synchronization.html" />
+    <link rel="prev" title="Writing SYCL Kernels" href="writing_kernels.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> numba-dppy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html">Code-generation based on a device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html"> Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html"> Programming SYCL Kernels</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html">Writing SYCL Kernels</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Memory Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sycl-usm-array-interface">SYCL USM Array Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#device-only-memory-and-explicit-data-transfer">Device-only memory and explicit data transfer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#local-memory">Local memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#private-and-constant-memory">Private and Constant memory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html">Supported Python Features in a <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> Kernel</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../debugging/index.html"> Debugging with GDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">numba-dppy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Programming SYCL Kernels Using <code class="xref py py-func docutils literal notranslate"><span class="pre">kernel()</span></code></a> &raquo;</li>
+      <li>Memory Management</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/user_guides/kernel_programming_guide/memory-management.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="memory-management">
+<h1>Memory Management<a class="headerlink" href="#memory-management" title="Permalink to this headline"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> uses DPC++’s USM shared memory allocator (<code class="docutils literal notranslate"><span class="pre">memory_alloc</span></code>) to
+enable host to device and <em>vice versa</em> data transfer. By using USM shared
+memory allocator, <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> allows seamless interoperability between
+<code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> and other SYCL-based Python extensions and across multiple
+kernels written using <code class="docutils literal notranslate"><span class="pre">numba_dppy.kernel</span></code> decorator.</p>
+<p><code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> uses the USM memory manager provided by <code class="docutils literal notranslate"><span class="pre">dpctl</span></code> and supports
+the <strong>SYCL USM Array Interface</strong> protocol to enable zero-copy data
+exchange across USM memory-backed Python objects.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>USM pointers make sense within a SYCL context and can be of four allocation
+types: <code class="docutils literal notranslate"><span class="pre">host</span></code>, <code class="docutils literal notranslate"><span class="pre">device</span></code>, <code class="docutils literal notranslate"><span class="pre">shared</span></code>, or <code class="docutils literal notranslate"><span class="pre">unknown</span></code>. Host applications,
+including CPython interpreter, can work with USM pointers of type <code class="docutils literal notranslate"><span class="pre">host</span></code>
+and <code class="docutils literal notranslate"><span class="pre">shared</span></code> as if they were ordinary host pointers. Accessing <code class="docutils literal notranslate"><span class="pre">device</span></code>
+USM pointers by host applications is not allowed.</p>
+</div>
+<section id="sycl-usm-array-interface">
+<h2>SYCL USM Array Interface<a class="headerlink" href="#sycl-usm-array-interface" title="Permalink to this headline"></a></h2>
+<p>A SYCL library may allocate USM memory for the result that needs to be passed to
+Python. A native Python extension that makes use of such a library may expose
+this memory as an instance of Python class that will implement memory management
+logic (ensures that memory is freed when the instance is no longer needed).
+The need to manage memory arises whenever a library uses a custom allocator.
+For example, <a class="reference external" href="https://intelpython.github.io/daal4py/"><code class="docutils literal notranslate"><span class="pre">daal4py</span></code></a> uses Python capsule to ensure that a native
+library-allocated memory is freed using the appropriate deallocator.</p>
+<p>To enable native extensions to pass the memory allocated by a native SYCL
+library to Numba, or another SYCL-aware Python extension without making a copy,
+the class must provide <code class="docutils literal notranslate"><span class="pre">__sycl_usm_array_interface__</span></code> attribute which
+returns a Python dictionary with the following fields:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">shape</span></code>: tuple of <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">typestr</span></code>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">typedescr</span></code>: a list of tuples</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: (<code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">bool</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">strides</span></code>: tuple of <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">offset</span></code>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">version</span></code>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">syclobj</span></code>: <code class="docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code> or <code class="docutils literal notranslate"><span class="pre">dpctl.SyclContext</span></code> object</p></li>
+</ul>
+<p>The dictionary keys align with those of <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.interface.html"><code class="docutils literal notranslate"><span class="pre">numpy.ndarray.__array_interface__</span></code></a> and <a class="reference external" href="http://numba.pydata.org/numba-doc/latest/cuda/cuda_array_interface.html"><code class="docutils literal notranslate"><span class="pre">__cuda_array_interface__</span></code></a>. For host accessible
+USM pointers, the object may also implement CPython
+<a class="reference external" href="https://www.python.org/dev/peps/pep-3118/">PEP-3118</a>
+compliant buffer interface which will be used if a <code class="docutils literal notranslate"><span class="pre">data</span></code> key is not present
+in the dictionary. Use of a buffer interface extends the interoperability to
+other Python objects, such as <code class="docutils literal notranslate"><span class="pre">bytes</span></code>, <code class="docutils literal notranslate"><span class="pre">bytearray</span></code>, <code class="docutils literal notranslate"><span class="pre">array.array</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">memoryview</span></code>. The type of the USM pointer stored in the object can be queried
+using methods of the <code class="docutils literal notranslate"><span class="pre">dpctl</span></code>.</p>
+</section>
+<section id="device-only-memory-and-explicit-data-transfer">
+<h2>Device-only memory and explicit data transfer<a class="headerlink" href="#device-only-memory-and-explicit-data-transfer" title="Permalink to this headline"></a></h2>
+<p>At the moment, there is no mechanism for the explicit transfer of arrays to
+the device and back. Please use usm arrays.</p>
+</section>
+<section id="local-memory">
+<h2>Local memory<a class="headerlink" href="#local-memory" title="Permalink to this headline"></a></h2>
+<p>In SYCL’s memory model, local memory is a contiguous region of memory allocated
+per work group and is visible to all the work items in that group. Local memory
+is device-only and cannot be accessed from the host. From the perspective offers
+the device, the local memory is exposed as a contiguous array of a specific
+types. The maximum available local memory is hardware-specific. The SYCL local
+memory concept is analogous to CUDA’s shared memory concept.</p>
+<p><code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> provides a special function <code class="docutils literal notranslate"><span class="pre">dppy.local.array</span></code> to
+allocate local memory for a kernel.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">local_memory</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This example demonstrates the usage of numba-dppy&#39;s `local.array`</span>
+<span class="sd">    intrinsic function. The function is used to create a static array</span>
+<span class="sd">    allocated on the devices local address space.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">blocksize</span> <span class="o">=</span> <span class="mi">10</span>
+
+    <span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span>
+    <span class="k">def</span> <span class="nf">reverse_array</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+        <span class="n">lm</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">local</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># preload</span>
+        <span class="n">lm</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="c1"># barrier local or global will both work as we only have one work group</span>
+        <span class="n">dppy</span><span class="o">.</span><span class="n">barrier</span><span class="p">(</span><span class="n">dppy</span><span class="o">.</span><span class="n">CLK_LOCAL_MEM_FENCE</span><span class="p">)</span>  <span class="c1"># local mem fence</span>
+        <span class="c1"># write</span>
+        <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">lm</span><span class="p">[</span><span class="n">blocksize</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">i</span><span class="p">]</span>
+
+    <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">blocksize</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+
+    <span class="c1"># Use the environment variable SYCL_DEVICE_FILTER to change the default device.</span>
+    <span class="c1"># See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">select_default_device</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using device ...&quot;</span><span class="p">)</span>
+    <span class="n">device</span><span class="o">.</span><span class="n">print_device_info</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
+        <span class="n">reverse_array</span><span class="p">[</span><span class="n">blocksize</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">arr</span><span class="p">)</span>
+
+    <span class="c1"># the output should be `orig[::-1] + orig, i.e. [9, 9, 9, ...]``</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To go convert from <code class="docutils literal notranslate"><span class="pre">numba.cuda</span></code> to <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code>, replace
+<code class="docutils literal notranslate"><span class="pre">numba.cuda.shared.array</span></code> with
+<code class="docutils literal notranslate"><span class="pre">numba_dppy.local.array(shape=blocksize,</span> <span class="pre">dtype=float32)</span></code>.</p>
+</div>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>Add details about current limitations for local memory allocation in
+<code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code>.</p>
+</div>
+</section>
+<section id="private-and-constant-memory">
+<h2>Private and Constant memory<a class="headerlink" href="#private-and-constant-memory" title="Permalink to this headline"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> does not yet support SYCL private and constant memory.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="writing_kernels.html" class="btn btn-neutral float-left" title="Writing SYCL Kernels" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="synchronization.html" class="btn btn-neutral float-right" title="Synchronization Functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
