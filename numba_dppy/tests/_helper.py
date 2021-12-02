@@ -16,6 +16,7 @@
 import contextlib
 
 import dpctl
+import pytest
 from numba.tests.support import captured_stdout
 
 from numba_dppy import config
@@ -89,6 +90,26 @@ def skip_test(device_type):
             skip = True
 
     return skip
+
+
+skip_no_opencl_gpu = pytest.mark.skipif(
+    not has_opencl_gpu(),
+    reason="No opencl GPU platforms available",
+)
+skip_no_opencl_cpu = pytest.mark.skipif(
+    not has_opencl_cpu(),
+    reason="No opencl CPU platforms available",
+)
+skip_no_level_zero_gpu = pytest.mark.skipif(
+    not has_level_zero(),
+    reason="No level-zero GPU platforms available",
+)
+
+filter_strings = [
+    pytest.param("level_zero:gpu:0", marks=skip_no_level_zero_gpu),
+    pytest.param("opencl:gpu:0", marks=skip_no_opencl_gpu),
+    pytest.param("opencl:cpu:0", marks=skip_no_opencl_cpu),
+]
 
 
 @contextlib.contextmanager
