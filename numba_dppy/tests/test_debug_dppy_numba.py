@@ -115,12 +115,14 @@ def app():
     return gdb()
 
 
-@pytest.mark.parametrize("api", ["numba", "numba-dppy"])
+@pytest.mark.parametrize("api", ["numba", "numba-dppy-kernel"])
 def test_breakpoint_row_number(app, api):
-    app.breakpoint("dppy_numba_basic.py:25")
-    app.run("dppy_numba_basic.py --api={api}".format(api=api))
+    """Side-by-side test for checking numba and numba-dppy work similarly."""
 
-    app.child.expect(r"Breakpoint .* at dppy_numba_basic.py:25")
+    app.breakpoint("side-by-side.py:25")
+    app.run("side-by-side.py --api={api}".format(api=api))
+
+    app.child.expect(r"Breakpoint .* at side-by-side.py:25")
     app.child.expect(r"25\s+param_c = param_a \+ 10")
 
 
