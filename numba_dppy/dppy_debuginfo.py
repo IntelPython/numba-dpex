@@ -12,22 +12,48 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import numba as nb
 from llvmlite import ir
 from numba.core.debuginfo import DIBuilder
 
+numba_version = tuple(map(int, nb.__version__.split(".")[:2]))
+
 
 class DPPYDIBuilder(DIBuilder):
-    def __init__(self, module, filepath, linkage_name):
-        DIBuilder.__init__(self, module, filepath)
+    def __init__(self, module, filepath, linkage_name, cgctx):
+        args = []
+
+        if numba_version > (0, 54):
+            args.append(cgctx)
+
+        DIBuilder.__init__(self, module, filepath, *args)
         self.linkage_name = linkage_name
 
-    def mark_subprogram(self, function, name, line):
-        di_subp = self._add_subprogram(
-            name=name, linkagename=self.linkage_name, line=line
-        )
-        function.set_metadata("dbg", di_subp)
-        # disable inlining for this function for easier debugging
-        function.attributes.add("noinline")
+    if numba_version > (0, 54):
+
+        def mark_subprogram(self, function, qualname, argnames, argtypes, line):
+            name = qualname
+            argmap = dict(zip(argnames, argtypes))
+            di_subp = self._add_subprogram(
+                name=name,
+                linkagename=self.linkage_name,
+                line=line,
+                function=function,
+                argmap=argmap,
+            )
+            function.set_metadata("dbg", di_subp)
+            # disable inlining for this function for easier debugging
+            function.attributes.add("noinline")
+
+    else:
+
+        def mark_subprogram(self, function, name, line):
+            di_subp = self._add_subprogram(
+                name=name, linkagename=self.linkage_name, line=line
+            )
+            function.set_metadata("dbg", di_subp)
+            # disable inlining for this function for easier debugging
+            function.attributes.add("noinline")
 
     def _di_compile_unit(self):
         di = super()._di_compile_unit()
