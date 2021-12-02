@@ -16,7 +16,7 @@ import numba as nb
 from llvmlite import ir
 from numba.core.debuginfo import DIBuilder
 
-numba_version = tuple(map(int, nb.__version__.split(".")[:2]))
+from numba_dppy.numba_support import numba_version
 
 
 class DPPYDIBuilder(DIBuilder):
