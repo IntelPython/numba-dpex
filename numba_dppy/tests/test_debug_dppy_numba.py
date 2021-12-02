@@ -117,7 +117,7 @@ def app():
 
 @pytest.mark.parametrize("api", ["numba", "numba-dppy-kernel"])
 def test_breakpoint_row_number(app, api):
-    """Side-by-side test for checking numba and numba-dppy work similarly."""
+    """Test for checking numba and numba-dppy debugging side-by-side."""
 
     app.breakpoint("side-by-side.py:25")
     app.run("side-by-side.py --api={api}".format(api=api))
