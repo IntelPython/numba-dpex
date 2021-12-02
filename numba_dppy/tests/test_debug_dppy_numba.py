@@ -160,21 +160,20 @@ def test_break_conditional(app):
 
 
 @skip_no_numba055
-def test_break_conditional_with_func_arg(app):
-    app.breakpoint("simple_dppy_func.py:23 if a_in_func == 3")
-    app.run("simple_dppy_func.py")
+@pytest.mark.parametrize("breakpoint", ["simple_dppy_func.py:23", "func_sum"])
+@pytest.mark.parametrize("condition", ["a_in_func == 3"])
+def test_breakpoint_with_condition_by_function_argument(
+    app, breakpoint, condition
+):
+    """Function breakpoints and argument initializing
 
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:23")
-    app.child.expect(r"23\s+result = a_in_func \+ b_in_func")
+    Test that it is possible to set conditional breakpoint at the beginning
+    of the function and use a function argument in the condition.
 
-    app.print("a_in_func")
+    Test for https://github.com/numba/numba/issues/7415
+    """
 
-    app.child.expect(r"\$1 = 3")
-
-
-@skip_no_numba055
-def test_break_conditional_by_func_name_with_func_arg(app):
-    app.breakpoint("func_sum if a_in_func == 3")
+    app.breakpoint(f"{breakpoint} if {condition}")
     app.run("simple_dppy_func.py")
 
     app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:23")
