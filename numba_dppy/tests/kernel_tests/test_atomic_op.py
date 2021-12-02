@@ -20,7 +20,7 @@ import pytest
 
 import numba_dppy as dppy
 from numba_dppy import config
-from numba_dppy.tests._helper import skip_test
+from numba_dppy.tests._helper import skip_test, override_config
 
 global_size = 100
 N = global_size
@@ -189,13 +189,10 @@ def addrspace(request):
     return request.param
 
 
+@pytest.mark.skipif(not config.NATIVE_FP_ATOMICS, reason="Native FP atomics disabled")
 def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, addrspace):
-    LLVM_SPIRV_ROOT = os.environ.get("NUMBA_DPPY_LLVM_SPIRV_ROOT")
-    if LLVM_SPIRV_ROOT == "" or LLVM_SPIRV_ROOT is None:
-        pytest.skip("Please set envar NUMBA_DPPY_LLVM_SPIRV_ROOT to run this test")
-
     if atomic_skip_test(filter_str):
-        pytest.skip()
+        pytest.skip(f"No atomic support present for device {filter_str}")
 
     a = np.array([0], fdtype)
 
@@ -212,30 +209,20 @@ def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, addrspace):
 
     kernel = dppy.kernel(f)
 
-    NATIVE_FP_ATOMICS_old_val = config.NATIVE_FP_ATOMICS
-    config.NATIVE_FP_ATOMICS = 1
-
-    LLVM_SPIRV_ROOT_old_val = config.LLVM_SPIRV_ROOT
-    config.LLVM_SPIRV_ROOT = LLVM_SPIRV_ROOT
-
     with dpctl.device_context(filter_str) as sycl_queue:
         kern = kernel[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
             kernel._get_argtypes(a), sycl_queue
         )
-        if filter_str != "opencl:cpu:0":
-            assert "__spirv_AtomicFAddEXT" in kern.assembly
-        else:
-            assert "__spirv_AtomicFAddEXT" not in kern.assembly
+        is_cpu = filter_str == "opencl:cpu:0"
+        is_native_atomic = "__spirv_AtomicFAddEXT" in kern.assembly
+        assert (is_cpu and not is_native_atomic) or (not is_cpu and is_native_atomic)
 
-    config.NATIVE_FP_ATOMICS = 0
-
-    # To bypass caching
-    kernel = dppy.kernel(f)
-    with dpctl.device_context(filter_str) as sycl_queue:
-        kern = kernel[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
-            kernel._get_argtypes(a), sycl_queue
-        )
-        assert "__spirv_AtomicFAddEXT" not in kern.assembly
-
-    config.NATIVE_FP_ATOMICS = NATIVE_FP_ATOMICS_old_val
-    config.LLVM_SPIRV_ROOT = LLVM_SPIRV_ROOT_old_val
+    # Test for bypass caching
+    with override_config("NATIVE_FP_ATOMICS", 0):
+        kernel = dppy.kernel(f)
+        with dpctl.device_context(filter_str) as sycl_queue:
+            kern = kernel[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
+                kernel._get_argtypes(a), sycl_queue
+            )
+            is_native_atomic = "__spirv_AtomicFAddEXT" in kern.assembly
+            assert not is_native_atomic
