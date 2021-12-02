@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.4] - 2021-12-02
+
+### Changed
+* Move `dpcpp/llvm-spirv` from runtime to testing dependency by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/659
+
 ## [0.17.3] - 2021-11-30
 
 ### Changed
