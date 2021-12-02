@@ -22,12 +22,18 @@ import pytest
 
 import numba_dppy
 from numba_dppy import config
+from numba_dppy.numba_support import numba_version
 
 pexpect = pytest.importorskip("pexpect")
 
 pytestmark = pytest.mark.skipif(
     not shutil.which("gdb-oneapi"),
     reason="Intel® Distribution for GDB* is not available",
+)
+
+
+skip_no_numba055 = pytest.mark.skipif(
+    numba_version < (0, 55), reason="Need Numba 0.55 or higher"
 )
 
 
@@ -151,7 +157,7 @@ def test_break_conditional(app):
     app.child.expect(r"\$1 = 1")
 
 
-@pytest.mark.skip(reason="Need a Numba 0.55")
+@skip_no_numba055
 def test_break_conditional_with_func_arg(app):
     app.breakpoint("simple_dppy_func.py:23 if a_in_func == 3")
     app.run("simple_dppy_func.py")
@@ -164,7 +170,7 @@ def test_break_conditional_with_func_arg(app):
     app.child.expect(r"\$1 = 3")
 
 
-@pytest.mark.skip(reason="Need a Numba 0.55")
+@skip_no_numba055
 def test_break_conditional_by_func_name_with_func_arg(app):
     app.breakpoint("func_sum if a_in_func == 3")
     app.run("simple_dppy_func.py")
@@ -204,7 +210,7 @@ def test_break_nested_function(app):
     app.child.expect(r"23\s+result = a_in_func \+ b_in_func")
 
 
-@pytest.mark.skip(reason="Need a Numba 0.55")
+@skip_no_numba055
 def test_info_args(app):
     app.breakpoint("simple_dppy_func.py:29")
     app.run("simple_dppy_func.py")
@@ -229,7 +235,7 @@ def test_info_args(app):
 
 
 # commands/info_func
-@pytest.mark.skip(reason="Need a Numba 0.55")
+@skip_no_numba055
 def test_info_functions(app):
     app.breakpoint("simple_sum.py:23")
     app.run("simple_sum.py")
@@ -243,7 +249,7 @@ def test_info_functions(app):
 
 
 # commands/local_variables_0
-@pytest.mark.skip(reason="Need a Numba 0.55")
+@skip_no_numba055
 def test_local_variables(app):
     app.breakpoint("sum_local_vars.py:26")
     app.run("sum_local_vars.py")
