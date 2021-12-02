@@ -1,0 +1,7 @@
+numba\_dppy.dpnp\_glue.dpnp\_indexing module
+============================================
+
+.. automodule:: numba_dppy.dpnp_glue.dpnp_indexing
+   :members:
+   :undoc-members:
+   :show-inheritance:

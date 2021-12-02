@@ -1,0 +1,7 @@
+numba\_dppy.driver.kernel\_launch\_ops module
+=============================================
+
+.. automodule:: numba_dppy.driver.kernel_launch_ops
+   :members:
+   :undoc-members:
+   :show-inheritance:
