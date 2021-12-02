@@ -110,6 +110,15 @@ def test_kernel_atomic_simple(filter_str, input_arrays, kernel_result_pair):
     assert a[0] == expected
 
 
+def get_func_global(op_type, dtype):
+    op = getattr(dppy.atomic, op_type)
+
+    def f(a):
+        op(a, 0, 1)
+
+    return f
+
+
 def get_func_local(op_type, dtype):
     op = getattr(dppy.atomic, op_type)
 
@@ -190,39 +199,38 @@ def addrspace(request):
 
 
 @pytest.mark.skipif(not config.NATIVE_FP_ATOMICS, reason="Native FP atomics disabled")
-def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, addrspace):
+@pytest.mark.parametrize(
+    "NATIVE_FP_ATOMICS, expected_native_atomic_for_device",
+    [
+        (1, lambda device: device != "opencl:cpu:0"),
+        (0, lambda device: False),
+    ],
+)
+@pytest.mark.parametrize("function_generator", [get_func_global, get_func_local])
+@pytest.mark.parametrize("operator_name", map(lambda x: x[0], list_of_op))
+@pytest.mark.parametrize("dtype", list_of_f_dtypes)
+def test_atomic_fp_native(
+    filter_str,
+    NATIVE_FP_ATOMICS,
+    expected_native_atomic_for_device,
+    function_generator,
+    operator_name,
+    dtype,
+):
     if atomic_skip_test(filter_str):
         pytest.skip(f"No atomic support present for device {filter_str}")
 
-    a = np.array([0], fdtype)
+    function = function_generator(operator_name, dtype)
+    kernel = dppy.kernel(function)
+    argtypes = kernel._get_argtypes(np.array([0], dtype))
 
-    op_type, expected = return_list_of_op
+    with override_config("NATIVE_FP_ATOMICS", NATIVE_FP_ATOMICS):
 
-    if addrspace == "global":
-        op = getattr(dppy.atomic, op_type)
-
-        def f(a):
-            op(a, 0, 1)
-
-    elif addrspace == "local":
-        f = get_func_local(op_type, fdtype)
-
-    kernel = dppy.kernel(f)
-
-    with dpctl.device_context(filter_str) as sycl_queue:
-        kern = kernel[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
-            kernel._get_argtypes(a), sycl_queue
-        )
-        is_cpu = filter_str == "opencl:cpu:0"
-        is_native_atomic = "__spirv_AtomicFAddEXT" in kern.assembly
-        assert (is_cpu and not is_native_atomic) or (not is_cpu and is_native_atomic)
-
-    # Test for bypass caching
-    with override_config("NATIVE_FP_ATOMICS", 0):
-        kernel = dppy.kernel(f)
         with dpctl.device_context(filter_str) as sycl_queue:
-            kern = kernel[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
-                kernel._get_argtypes(a), sycl_queue
-            )
-            is_native_atomic = "__spirv_AtomicFAddEXT" in kern.assembly
-            assert not is_native_atomic
+
+            specialized_kernel = kernel[
+                global_size, dppy.DEFAULT_LOCAL_SIZE
+            ].specialize(argtypes, sycl_queue)
+
+            is_native_atomic = "__spirv_AtomicFAddEXT" in specialized_kernel.assembly
+            assert is_native_atomic == expected_native_atomic_for_device(filter_str)
