@@ -21,7 +21,7 @@ import numpy as np
 import pytest
 from numba import njit
 
-from numba_dppy.tests._helper import dpnp_debug, is_gen12, filter_strings
+from numba_dppy.tests._helper import dpnp_debug, filter_strings, is_gen12
 
 from ._helper import wrapper_function
 from .dpnp_skip_test import skip_no_dpnp

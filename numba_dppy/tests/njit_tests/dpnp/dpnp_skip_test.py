@@ -16,5 +16,4 @@ import pytest
 
 from numba_dppy.tests._helper import ensure_dpnp
 
-
 skip_no_dpnp = pytest.mark.skipif(not ensure_dpnp(), reason="No dpnp available")
