@@ -13,8 +13,7 @@ if [[ -v ONEAPI_ROOT ]]; then
     export NUMBA_DPPY_LLVM_SPIRV_ROOT="${ONEAPI_ROOT}/compiler/latest/linux/bin"
     echo "Using llvm-spirv from oneAPI"
 else
-    export PATH=${CONDA_PREFIX}/bin-llvm:$PATH
-    echo "Using llvm-spirv from dpcpp package in conda environment"
+    echo "Using llvm-spirv from dpcpp package in conda testing environment"
 fi
 
 export NUMBA_DPPY_ACTIVATE_ATOMICS_FP_NATIVE=1
