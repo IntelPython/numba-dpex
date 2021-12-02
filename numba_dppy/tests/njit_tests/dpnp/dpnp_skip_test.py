@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import pytest
+
 from numba_dppy.tests._helper import ensure_dpnp
 
 

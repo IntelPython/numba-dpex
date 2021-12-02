@@ -23,6 +23,7 @@ from numba import njit
 
 import numba_dppy as dppy
 from numba_dppy.tests._helper import dpnp_debug, filter_strings
+
 from .dpnp_skip_test import skip_no_dpnp
 
 

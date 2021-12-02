@@ -26,6 +26,7 @@ from numba_dppy.tests._helper import dpnp_debug, filter_strings
 from ._helper import wrapper_function
 from .dpnp_skip_test import skip_no_dpnp
 
+
 # dpnp throws -30 (CL_INVALID_VALUE) when invoked with multiple kinds of
 # devices at runtime, so testing for level_zero only
 def skip(filter_str):

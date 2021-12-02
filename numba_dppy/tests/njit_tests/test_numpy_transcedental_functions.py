@@ -23,8 +23,8 @@ from numba import njit
 
 from numba_dppy.tests._helper import (
     assert_auto_offloading,
-    is_gen12,
     filter_strings,
+    is_gen12,
 )
 
 list_of_binary_ops = [

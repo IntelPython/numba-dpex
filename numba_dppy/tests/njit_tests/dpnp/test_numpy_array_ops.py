@@ -20,6 +20,7 @@ import dpctl
 import numpy as np
 import pytest
 from numba import njit
+
 from numba_dppy.tests._helper import dpnp_debug, is_gen12, filter_strings
 
 from ._helper import wrapper_function
