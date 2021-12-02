@@ -21,7 +21,6 @@ from numba.tests.support import captured_stdout
 import numba_dppy as dppy
 from numba_dppy import config
 
-from . import _helper
 from ._helper import (
     assert_auto_offloading,
     filter_strings,
