@@ -162,8 +162,10 @@ def test_break_conditional(app):
 
 
 @skip_no_numba055
-@pytest.mark.parametrize("breakpoint", ["simple_dppy_func.py:23", "func_sum"])
-@pytest.mark.parametrize("condition", ["a_in_func == 3"])
+@pytest.mark.parametrize(
+    "breakpoint", ["side-by-side.py:25", "common_loop_body_242"]
+)
+@pytest.mark.parametrize("condition", ["param_a == 3"])
 def test_breakpoint_with_condition_by_function_argument(
     app, breakpoint, condition
 ):
@@ -176,12 +178,12 @@ def test_breakpoint_with_condition_by_function_argument(
     """
 
     app.breakpoint(f"{breakpoint} if {condition}")
-    app.run("simple_dppy_func.py")
+    app.run("side-by-side.py")
 
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:23")
-    app.child.expect(r"23\s+result = a_in_func \+ b_in_func")
+    app.child.expect(r"Thread .* hit Breakpoint .* at side-by-side.py:25")
+    app.child.expect(r"25\s+param_c = param_a \+ 10")
 
-    app.print("a_in_func")
+    app.print("param_a")
 
     app.child.expect(r"\$1 = 3")
 
