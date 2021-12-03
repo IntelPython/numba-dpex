@@ -24,7 +24,6 @@ from numba import njit
 from numba_dppy.tests._helper import dpnp_debug, filter_strings
 
 from ._helper import args_string, wrapper_function
-from .dpnp_skip_test import skip_no_dpnp
 
 
 def skip(filter_str):
@@ -80,7 +79,6 @@ def eig_input(request):
     return symm_a
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_eig(filter_str, eig_input, capfd):
     skip(filter_str)
@@ -144,7 +142,6 @@ def dot_name(request):
     return request.param
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_dot(filter_str, dot_name, dot_input, dtype, capfd):
     skip(filter_str)
@@ -169,7 +166,6 @@ def test_dot(filter_str, dot_name, dot_input, dtype, capfd):
         assert np.allclose(actual, expected)
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_matmul(filter_str, dtype, capfd):
     skip(filter_str)
@@ -188,7 +184,6 @@ def test_matmul(filter_str, dtype, capfd):
         assert np.allclose(actual, expected)
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 @pytest.mark.skip(reason="dpnp does not support it yet")
 def test_cholesky(filter_str, dtype, capfd):
@@ -223,7 +218,6 @@ def det_input(request):
     return request.param
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_det(filter_str, det_input, dtype, capfd):
     a = np.array(det_input, dtype=dtype)
@@ -240,7 +234,6 @@ def test_det(filter_str, det_input, dtype, capfd):
         assert np.allclose(actual, expected)
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_multi_dot(filter_str, capfd):
     skip(filter_str)
@@ -285,7 +278,6 @@ def matrix_power_input(request):
     return request.param
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_matrix_power(filter_str, matrix_power_input, power, dtype, capfd):
     skip(filter_str)
@@ -303,7 +295,6 @@ def test_matrix_power(filter_str, matrix_power_input, power, dtype, capfd):
         assert np.allclose(actual, expected)
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 @pytest.mark.parametrize(
     "matrix_rank_input",
@@ -334,7 +325,6 @@ def test_matrix_rank(filter_str, matrix_rank_input, capfd):
         assert np.allclose(actual, expected)
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_eigvals(filter_str, eig_input, capfd):
     skip(filter_str)

@@ -24,10 +24,7 @@ from numba import njit
 import numba_dppy as dppy
 from numba_dppy.tests._helper import dpnp_debug, filter_strings
 
-from .dpnp_skip_test import skip_no_dpnp
 
-
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 @pytest.mark.parametrize(
     "arr",

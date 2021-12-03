@@ -15,21 +15,16 @@
 
 import dpctl
 import numpy as np
-import pytest
 from numba import njit
 
 from numba_dppy.tests._helper import (
     assert_auto_offloading,
     dpnp_debug,
-    ensure_dpnp,
     skip_no_opencl_gpu,
 )
 
 
-@pytest.mark.skipif(
-    not ensure_dpnp() or not skip_no_opencl_gpu,
-    reason="test only when dpnp and GPU is available",
-)
+@skip_no_opencl_gpu
 class Testdpnp_functions:
     N = 10
 

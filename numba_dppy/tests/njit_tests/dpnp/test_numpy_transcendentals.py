@@ -24,7 +24,6 @@ from numba import njit
 from numba_dppy.tests._helper import dpnp_debug, filter_strings, is_gen12
 
 from ._helper import wrapper_function
-from .dpnp_skip_test import skip_no_dpnp
 
 list_of_int_dtypes = [
     np.int32,
@@ -97,7 +96,6 @@ def unary_nan_op(request):
     return fn, request.param
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_unary_ops(filter_str, unary_op, input_array, get_shape, capfd):
     a = input_array
@@ -122,7 +120,6 @@ def test_unary_ops(filter_str, unary_op, input_array, get_shape, capfd):
     assert max_abs_err < 1e-4
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_unary_nan_ops(
     filter_str, unary_nan_op, input_nan_array, get_shape, capfd

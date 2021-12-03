@@ -14,3 +14,4 @@
 
 import numba_dppy
 from numba_dppy import config
+from numba_dppy.tests.njit_tests.dpnp import *

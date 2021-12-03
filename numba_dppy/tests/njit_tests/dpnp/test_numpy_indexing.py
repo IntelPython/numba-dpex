@@ -23,10 +23,7 @@ from numba import njit
 
 from numba_dppy.tests._helper import dpnp_debug, filter_strings
 
-from .dpnp_skip_test import skip_no_dpnp
 
-
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 @pytest.mark.parametrize("offset", [0, 1], ids=["0", "1"])
 @pytest.mark.parametrize(

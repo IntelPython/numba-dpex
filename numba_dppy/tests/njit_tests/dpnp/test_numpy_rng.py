@@ -24,7 +24,6 @@ from numba import njit
 from numba_dppy.tests._helper import dpnp_debug, filter_strings
 
 from ._helper import wrapper_function
-from .dpnp_skip_test import skip_no_dpnp
 
 
 # dpnp throws -30 (CL_INVALID_VALUE) when invoked with multiple kinds of
@@ -72,7 +71,6 @@ def one_arg_fn(request):
     return function, request.param
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_one_arg_fn(filter_str, one_arg_fn, unary_size, capfd):
     skip(filter_str)
@@ -112,7 +110,6 @@ def get_two_arg_fn(op_name):
     return wrapper_function("a, b", f"np.random.{op_name}(a, b)", globals())
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_two_arg_fn(filter_str, two_arg_fn, unary_size, capfd):
     skip(filter_str)
@@ -165,7 +162,6 @@ def get_three_arg_fn(op_name):
     )
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
     skip(filter_str)
@@ -211,7 +207,6 @@ def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
                 assert np.all(actual <= high)
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_rand(filter_str):
     skip(filter_str)
@@ -230,7 +225,6 @@ def test_rand(filter_str):
         assert np.all(actual < 1.0)
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_hypergeometric(filter_str, three_arg_size):
     skip(filter_str)

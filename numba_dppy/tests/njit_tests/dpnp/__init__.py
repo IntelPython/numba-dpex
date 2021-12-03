@@ -17,3 +17,9 @@
 ################################################################################
 
 from . import *
+
+import pytest
+
+from numba_dppy.tests._helper import ensure_dpnp
+
+pytestmark = pytest.mark.xfail(not ensure_dpnp(), reason="No dpnp available")

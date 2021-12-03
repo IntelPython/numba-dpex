@@ -17,3 +17,4 @@
 ################################################################################
 
 from . import *
+from numba_dppy.tests.njit_tests.dpnp import *

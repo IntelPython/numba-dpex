@@ -18,7 +18,6 @@ import pytest
 
 import numba_dppy as dppy
 from numba_dppy.tests._helper import filter_strings
-from numba_dppy.tests.njit_tests.dpnp.dpnp_skip_test import skip_no_dpnp
 
 list_of_dtype = [
     np.int32,
@@ -45,7 +44,6 @@ def usm_type(request):
     return request.param
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_dpnp_create_array_in_context(filter_str, dtype):
     import dpnp
@@ -60,7 +58,6 @@ def test_dpnp_create_array_in_context(filter_str, dtype):
         a = dpnp.arange(1024, dtype=dtype)  # noqa
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_consuming_array_from_dpnp(filter_str, dtype):
     import dpnp

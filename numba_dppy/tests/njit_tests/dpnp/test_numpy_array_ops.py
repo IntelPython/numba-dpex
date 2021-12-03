@@ -24,7 +24,6 @@ from numba import njit
 from numba_dppy.tests._helper import dpnp_debug, filter_strings, is_gen12
 
 from ._helper import wrapper_function
-from .dpnp_skip_test import skip_no_dpnp
 
 list_of_dtypes = [
     np.int32,
@@ -77,7 +76,6 @@ def unary_op(request):
     )
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
     a = input_arrays[0]
@@ -130,7 +128,6 @@ def get_take_fn():
     return wrapper_function("a, ind", "a.take(ind)", globals())
 
 
-@skip_no_dpnp
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_take(filter_str, input_arrays, indices, capfd):
     a = input_arrays[0]
