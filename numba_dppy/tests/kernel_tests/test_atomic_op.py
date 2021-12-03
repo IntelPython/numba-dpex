@@ -201,7 +201,9 @@ def test_kernel_atomic_multi_dim(
 skip_NATIVE_FP_ATOMICS_0 = pytest.mark.skipif(
     not config.NATIVE_FP_ATOMICS, reason="Native FP atomics disabled"
 )
-skip_if_disabled = lambda *args: pytest.param(*args, marks=skip_NATIVE_FP_ATOMICS_0)
+skip_if_disabled = lambda *args: pytest.param(
+    *args, marks=skip_NATIVE_FP_ATOMICS_0
+)
 
 
 @pytest.mark.parametrize(
@@ -211,7 +213,9 @@ skip_if_disabled = lambda *args: pytest.param(*args, marks=skip_NATIVE_FP_ATOMIC
         (0, lambda device: False),
     ],
 )
-@pytest.mark.parametrize("function_generator", [get_func_global, get_func_local])
+@pytest.mark.parametrize(
+    "function_generator", [get_func_global, get_func_local]
+)
 @pytest.mark.parametrize(
     "operator_name, expected_spirv_function",
     [
@@ -244,5 +248,9 @@ def test_atomic_fp_native(
                 global_size, dppy.DEFAULT_LOCAL_SIZE
             ].specialize(argtypes, sycl_queue)
 
-            is_native_atomic = expected_spirv_function in specialized_kernel.assembly
-            assert is_native_atomic == expected_native_atomic_for_device(filter_str)
+            is_native_atomic = (
+                expected_spirv_function in specialized_kernel.assembly
+            )
+            assert is_native_atomic == expected_native_atomic_for_device(
+                filter_str
+            )
