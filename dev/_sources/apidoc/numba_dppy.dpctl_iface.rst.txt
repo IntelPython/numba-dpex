@@ -1,0 +1,21 @@
+numba\_dppy.dpctl\_iface package
+================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dppy.dpctl_iface.dpctl_capi_fn_builder
+   numba_dppy.dpctl_iface.dpctl_function_types
+   numba_dppy.dpctl_iface.kernel_launch_ops
+   numba_dppy.dpctl_iface.usm_ndarray_type
+
+Module contents
+---------------
+
+.. automodule:: numba_dppy.dpctl_iface
+   :members:
+   :undoc-members:
+   :show-inheritance:
