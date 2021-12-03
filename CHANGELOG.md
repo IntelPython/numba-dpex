@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+* Add support to allocate memory in private address space (#640)
+
 ## [0.17.4] - 2021-12-02
 
 ### Changed
