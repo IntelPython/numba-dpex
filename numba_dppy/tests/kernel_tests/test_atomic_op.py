@@ -20,7 +20,7 @@ import pytest
 
 import numba_dppy as dppy
 from numba_dppy import config
-from numba_dppy.tests._helper import skip_test
+from numba_dppy.tests._helper import override_config, skip_test
 
 global_size = 100
 N = global_size
@@ -110,7 +110,24 @@ def test_kernel_atomic_simple(filter_str, input_arrays, kernel_result_pair):
     assert a[0] == expected
 
 
+def get_func_global(op_type, dtype):
+    """Generate function for global address space
+
+    Used as `generator(op_type, dtype)`.
+    """
+    op = getattr(dppy.atomic, op_type)
+
+    def f(a):
+        op(a, 0, 1)
+
+    return f
+
+
 def get_func_local(op_type, dtype):
+    """Generate function for local address space
+
+    Used as `generator(op_type, dtype)`.
+    """
     op = getattr(dppy.atomic, op_type)
 
     def f(a):
@@ -181,63 +198,47 @@ def test_kernel_atomic_multi_dim(
     assert a[0] == expected
 
 
-list_of_addrspace = ["global", "local"]
-
-
-@pytest.fixture(params=list_of_addrspace)
-def addrspace(request):
-    return request.param
-
-
-def test_atomic_fp_native(filter_str, return_list_of_op, fdtype, addrspace):
-    LLVM_SPIRV_ROOT = os.environ.get("NUMBA_DPPY_LLVM_SPIRV_ROOT")
-    if LLVM_SPIRV_ROOT == "" or LLVM_SPIRV_ROOT is None:
-        pytest.skip(
-            "Please set envar NUMBA_DPPY_LLVM_SPIRV_ROOT to run this test"
-        )
-
+@pytest.mark.skipif(
+    not config.NATIVE_FP_ATOMICS, reason="Native FP atomics disabled"
+)
+@pytest.mark.parametrize(
+    "NATIVE_FP_ATOMICS, expected_native_atomic_for_device",
+    [
+        (1, lambda device: device != "opencl:cpu:0"),
+        (0, lambda device: False),
+    ],
+)
+@pytest.mark.parametrize(
+    "function_generator", [get_func_global, get_func_local]
+)
+@pytest.mark.parametrize("operator_name", map(lambda x: x[0], list_of_op))
+@pytest.mark.parametrize("dtype", list_of_f_dtypes)
+def test_atomic_fp_native(
+    filter_str,
+    NATIVE_FP_ATOMICS,
+    expected_native_atomic_for_device,
+    function_generator,
+    operator_name,
+    dtype,
+):
     if atomic_skip_test(filter_str):
-        pytest.skip()
+        pytest.skip(f"No atomic support present for device {filter_str}")
 
-    a = np.array([0], fdtype)
+    function = function_generator(operator_name, dtype)
+    kernel = dppy.kernel(function)
+    argtypes = kernel._get_argtypes(np.array([0], dtype))
 
-    op_type, expected = return_list_of_op
+    with override_config("NATIVE_FP_ATOMICS", NATIVE_FP_ATOMICS):
 
-    if addrspace == "global":
-        op = getattr(dppy.atomic, op_type)
+        with dpctl.device_context(filter_str) as sycl_queue:
 
-        def f(a):
-            op(a, 0, 1)
+            specialized_kernel = kernel[
+                global_size, dppy.DEFAULT_LOCAL_SIZE
+            ].specialize(argtypes, sycl_queue)
 
-    elif addrspace == "local":
-        f = get_func_local(op_type, fdtype)
-
-    kernel = dppy.kernel(f)
-
-    NATIVE_FP_ATOMICS_old_val = config.NATIVE_FP_ATOMICS
-    config.NATIVE_FP_ATOMICS = 1
-
-    LLVM_SPIRV_ROOT_old_val = config.LLVM_SPIRV_ROOT
-    config.LLVM_SPIRV_ROOT = LLVM_SPIRV_ROOT
-
-    with dpctl.device_context(filter_str) as sycl_queue:
-        kern = kernel[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
-            kernel._get_argtypes(a), sycl_queue
-        )
-        if filter_str != "opencl:cpu:0":
-            assert "__spirv_AtomicFAddEXT" in kern.assembly
-        else:
-            assert "__spirv_AtomicFAddEXT" not in kern.assembly
-
-    config.NATIVE_FP_ATOMICS = 0
-
-    # To bypass caching
-    kernel = dppy.kernel(f)
-    with dpctl.device_context(filter_str) as sycl_queue:
-        kern = kernel[global_size, dppy.DEFAULT_LOCAL_SIZE].specialize(
-            kernel._get_argtypes(a), sycl_queue
-        )
-        assert "__spirv_AtomicFAddEXT" not in kern.assembly
-
-    config.NATIVE_FP_ATOMICS = NATIVE_FP_ATOMICS_old_val
-    config.LLVM_SPIRV_ROOT = LLVM_SPIRV_ROOT_old_val
+            is_native_atomic = (
+                "__spirv_AtomicFAddEXT" in specialized_kernel.assembly
+            )
+            assert is_native_atomic == expected_native_atomic_for_device(
+                filter_str
+            )
