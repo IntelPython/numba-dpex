@@ -13,10 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
-
 import dpctl
 import numpy as np
+import pytest
 from numba import njit, prange
 
 import numba_dppy as dppy
@@ -25,8 +24,10 @@ from numba_dppy.tests._helper import assert_auto_offloading
 from . import _helper
 
 
-@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
-class TestPrange(unittest.TestCase):
+@pytest.mark.skipif(
+    not _helper.has_opencl_gpu(), reason="test only on GPU system"
+)
+class TestPrange:
     def test_one_prange(self):
         @njit
         def f(a, b):
@@ -39,11 +40,11 @@ class TestPrange(unittest.TestCase):
         b = np.ones((m, n))
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with assert_auto_offloading(), dppy.offload_to_sycl_device(device):
+        with assert_auto_offloading(), dpctl.device_context(device):
             f(a, b)
 
         for i in range(4):
-            self.assertTrue(b[i, 0] == a[i, 0] * 10)
+            assert b[i, 0] == a[i, 0] * 10
 
     def test_nested_prange(self):
         @njit
@@ -60,10 +61,10 @@ class TestPrange(unittest.TestCase):
         b = np.ones((m, n))
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with assert_auto_offloading(), dppy.offload_to_sycl_device(device):
+        with assert_auto_offloading(), dpctl.device_context(device):
             f(a, b)
 
-        self.assertTrue(np.all(b == 10))
+        assert np.all(b == 10)
 
     def test_multiple_prange(self):
         @njit
@@ -85,13 +86,13 @@ class TestPrange(unittest.TestCase):
         b = np.ones((m, n))
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with assert_auto_offloading(
-            parfor_offloaded=2
-        ), dppy.offload_to_sycl_device(device):
+        with assert_auto_offloading(parfor_offloaded=2), dpctl.device_context(
+            device
+        ):
             f(a, b)
 
-        self.assertTrue(np.all(b == 10))
-        self.assertTrue(np.all(a == 10))
+        assert np.all(b == 10)
+        assert np.all(a == 10)
 
     def test_three_prange(self):
         @njit
@@ -112,14 +113,14 @@ class TestPrange(unittest.TestCase):
         b = np.ones((m, n, o))
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with assert_auto_offloading(
-            parfor_offloaded=1
-        ), dppy.offload_to_sycl_device(device):
+        with assert_auto_offloading(parfor_offloaded=1), dpctl.device_context(
+            device
+        ):
             f(a, b)
 
-        self.assertTrue(np.all(b == 12))
+        assert np.all(b == 12)
 
-    @unittest.skip("numba-dppy issue 110")
+    @pytest.mark.skip(reason="numba-dppy issue 110")
     def test_two_consequent_prange(self):
         def prange_example():
             n = 10
@@ -134,16 +135,16 @@ class TestPrange(unittest.TestCase):
         jitted = njit(prange_example)
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with assert_auto_offloading(
-            parfor_offloaded=2
-        ), dppy.offload_to_sycl_device(device):
+        with assert_auto_offloading(parfor_offloaded=2), dpctl.device_context(
+            device
+        ):
             jitted_res = jitted()
 
         res = prange_example()
 
         np.testing.assert_equal(res, jitted_res)
 
-    @unittest.skip("NRT required but not enabled")
+    @pytest.mark.skip(reason="NRT required but not enabled")
     def test_2d_arrays(self):
         def prange_example():
             n = 10
@@ -158,15 +159,11 @@ class TestPrange(unittest.TestCase):
         jitted = njit(prange_example)
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with assert_auto_offloading(
-            parfor_offloaded=2
-        ), dppy.offload_to_sycl_device(device):
+        with assert_auto_offloading(parfor_offloaded=2), dpctl.device_context(
+            device
+        ):
             jitted_res = jitted()
 
         res = prange_example()
 
         np.testing.assert_equal(res, jitted_res)
-
-
-if __name__ == "__main__":
-    unittest.main()

@@ -54,7 +54,7 @@ def test_repeat(filter_str, arr):
         return np.repeat(a, repeats)
 
     f = njit(fn)
-    with dppy.offload_to_sycl_device(filter_str), dpnp_debug():
+    with dpctl.device_context(filter_str), dpnp_debug():
         actual = f(a, repeats)
 
     expected = fn(a, repeats)

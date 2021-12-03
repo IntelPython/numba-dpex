@@ -21,27 +21,54 @@ import numpy as np
 import numba_dppy as dppy
 
 
-def func(param_a, param_b):
+def common_loop_body(param_a, param_b):
     param_c = param_a + 10  # Set breakpoint
     param_d = param_b * 0.5
     result = param_c + param_d
     return result
 
 
-dppy_func = dppy.func(debug=True)(func)
-numba_func = numba.njit(debug=True)(func)
+def scenario(api):
+    print("Using API:", api)
+
+    global_size = 10
+    a, b, c = arguments(global_size)
+
+    if api == "numba-dppy-kernel":
+        dppy_func_driver(a, b, c)
+    else:
+        numba_func_driver(a, b, c)
+
+    print(a, b, c, sep="\n")
 
 
-@dppy.kernel(debug=True)
-def dppy_kernel(a_in_kernel, b_in_kernel, c_in_kernel):
-    i = dppy.get_global_id(0)
-    c_in_kernel[i] = dppy_func(a_in_kernel[i], b_in_kernel[i])
+def arguments(N, dtype=np.float32):
+    a = np.arange(N, dtype=dtype)
+    b = np.arange(N, dtype=dtype)
+    c = np.empty_like(a)
+    return a, b, c
 
 
 @numba.njit(debug=True)
 def numba_func_driver(a, b, c):
     for i in range(len(c)):
-        c[i] = numba_func(a[i], b[i])
+        c[i] = numba_loop_body(a[i], b[i])
+
+
+def dppy_func_driver(a, b, c):
+    device = dpctl.select_default_device()
+    with dpctl.device_context(device):
+        dppy_kernel[len(c), dppy.DEFAULT_LOCAL_SIZE](a, b, c)
+
+
+@dppy.kernel(debug=True)
+def dppy_kernel(a_in_kernel, b_in_kernel, c_in_kernel):
+    i = dppy.get_global_id(0)
+    c_in_kernel[i] = dppy_loop_body(a_in_kernel[i], b_in_kernel[i])
+
+
+numba_loop_body = numba.njit(debug=True)(common_loop_body)
+dppy_loop_body = dppy.func(debug=True)(common_loop_body)
 
 
 def main():
@@ -50,27 +77,13 @@ def main():
         "--api",
         required=False,
         default="numba",
-        choices=["numba", "numba-dppy"],
+        choices=["numba", "numba-dppy-kernel"],
         help="Start the version of functions using numba or numba-dppy API",
     )
 
     args = parser.parse_args()
 
-    print("Using API:", args.api)
-
-    global_size = 10
-    N = global_size
-
-    a = np.arange(N, dtype=np.float32)
-    b = np.arange(N, dtype=np.float32)
-    c = np.empty_like(a)
-
-    if args.api == "numba-dppy":
-        device = dpctl.select_default_device()
-        with dppy.offload_to_sycl_device(device):
-            dppy_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
-    else:
-        numba_func_driver(a, b, c)
+    scenario(args.api)
 
     print("Done...")
 

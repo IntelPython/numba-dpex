@@ -70,7 +70,7 @@ def test_binary_ops(filter_str, unary_op, input_arrays):
         b[i] = uop(a[i])
 
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device):
+    with dpctl.device_context(device):
         f[a.size, dppy.DEFAULT_LOCAL_SIZE](a, actual)
 
     expected = np_uop(a)
