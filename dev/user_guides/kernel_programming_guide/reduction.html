@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reduction on SYCL-supported Devices &mdash; numba-dppy 0+untagged.655.g2343fe5 documentation</title>
+  <title>Reduction on SYCL-supported Devices &mdash; numba-dppy 0+untagged.651.gbc93880.dirty documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Universal Functions" href="ufunc.html" />
-    <link rel="prev" title="How to select device to offload kernels" href="selecting_device.html" /> 
+    <link rel="prev" title="Supported Address Space Qualifiers" href="memory_allocation_address_space.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -51,7 +51,7 @@
 <li class="toctree-l2"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="selecting_device.html">How to select device to offload kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Reduction on SYCL-supported Devices</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#example-1">Example 1</a></li>
@@ -230,7 +230,9 @@ can be written explicitly. This section provides two approaches for writing a ke
             <span class="n">partial_sums</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="n">partial_sums</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span>
         <span class="p">)</span>
         <span class="n">partial_sums_ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span>
-            <span class="n">partial_sums</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="n">partial_sums_buf</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">partial_sums</span><span class="o">.</span><span class="n">dtype</span>
+            <span class="n">partial_sums</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+            <span class="n">buffer</span><span class="o">=</span><span class="n">partial_sums_buf</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">partial_sums</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">partial_sums_ndarray</span><span class="p">,</span> <span class="n">partial_sums</span><span class="p">)</span>
 
@@ -262,7 +264,7 @@ Such decorator will be added in future releases.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="selecting_device.html" class="btn btn-neutral float-left" title="How to select device to offload kernels" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="memory_allocation_address_space.html" class="btn btn-neutral float-left" title="Supported Address Space Qualifiers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="ufunc.html" class="btn btn-neutral float-right" title="Universal Functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
