@@ -163,15 +163,15 @@ def test_break_conditional(app):
 
 @skip_no_numba055
 @pytest.mark.parametrize(
-    "api, breakpoint",
+    "breakpoint, api",
     [
-        ("numba", "side-by-side.py:25"),
-        ("numba-dppy-kernel", "side-by-side.py:25"),
-        ("numba", "common_loop_body_242"),
-        ("numba-dppy-kernel", "common_loop_body"),
+        ("side-by-side.py:25", "numba"),
+        ("side-by-side.py:25", "numba-dppy-kernel"),
+        ("common_loop_body_242", "numba"),
+        ("common_loop_body", "numba-dppy-kernel"),
     ],
 )
-def test_breakpoint_with_condition_by_function_argument(app, api, breakpoint):
+def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
     """Function breakpoints and argument initializing
 
     Test that it is possible to set conditional breakpoint at the beginning
