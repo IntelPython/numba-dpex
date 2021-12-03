@@ -12,20 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
 import warnings
 
 import dpctl
 import numba
 import numpy as np
-
-import numba_dppy
+import pytest
 
 from . import _helper
 
 
-@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
-class TestDPPYFallback(unittest.TestCase):
+@pytest.mark.skipif(
+    not _helper.has_opencl_gpu(), reason="test only on GPU system"
+)
+class TestDPPYFallback:
     def test_dppy_fallback_inner_call(self):
         @numba.jit
         def fill_value(i):
@@ -41,16 +41,16 @@ class TestDPPYFallback(unittest.TestCase):
             return a
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with warnings.catch_warnings(
-            record=True
-        ) as w, numba_dppy.offload_to_sycl_device(device):
+        with warnings.catch_warnings(record=True) as w, dpctl.device_context(
+            device
+        ):
             dppy = numba.njit(inner_call_fallback)
             dppy_result = dppy()
 
         ref_result = inner_call_fallback()
 
         np.testing.assert_array_equal(dppy_result, ref_result)
-        self.assertIn("Failed to offload parfor ", str(w[-1].message))
+        assert "Failed to offload parfor " in str(w[-1].message)
 
     def test_dppy_fallback_reductions(self):
         def reduction(a):
@@ -61,17 +61,13 @@ class TestDPPYFallback(unittest.TestCase):
 
         a = np.ones(10)
         device = dpctl.SyclDevice("opencl:gpu")
-        with warnings.catch_warnings(
-            record=True
-        ) as w, numba_dppy.offload_to_sycl_device(device):
+        with warnings.catch_warnings(record=True) as w, dpctl.device_context(
+            device
+        ):
             dppy = numba.njit(reduction)
             dppy_result = dppy(a)
 
         ref_result = reduction(a)
 
         np.testing.assert_array_equal(dppy_result, ref_result)
-        self.assertIn("Failed to offload parfor ", str(w[-1].message))
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert "Failed to offload parfor " in str(w[-1].message)

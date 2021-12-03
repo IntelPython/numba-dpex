@@ -36,7 +36,7 @@ try:
 
     # Versions of dpctl lower than 0.8.0 are not compatible with current main
     # of numba_dppy.
-    if version.parse(dpctl.__version__) < version.parse("0.8.*"):
+    if version.parse(dpctl.__version__) < version.parse("0.8.0"):
         raise DpctlMinimumVersionRequiredError
 
     # For the Numba_dppy extension to work, we should have at least one
@@ -100,7 +100,7 @@ OFFLOAD_DIAGNOSTICS = _readenv("NUMBA_DPPY_OFFLOAD_DIAGNOSTICS", int, 0)
 FALLBACK_ON_CPU = _readenv("NUMBA_DPPY_FALLBACK_ON_CPU", int, 1)
 
 # Activate Native floating point atomcis support for supported devices.
-# Requires llvm-spirv supporting the FP atomics extensio
+# Requires llvm-spirv supporting the FP atomics extension
 NATIVE_FP_ATOMICS = _readenv("NUMBA_DPPY_ACTIVATE_ATOMICS_FP_NATIVE", int, 0)
 LLVM_SPIRV_ROOT = _readenv("NUMBA_DPPY_LLVM_SPIRV_ROOT", str, "")
 # Emit debug info

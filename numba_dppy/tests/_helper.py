@@ -14,28 +14,33 @@
 # limitations under the License.
 
 import contextlib
-import unittest
 
 import dpctl
+import pytest
 from numba.tests.support import captured_stdout
 
 from numba_dppy import config
 
 
-def has_gpu_queues(backend="opencl"):
+def has_opencl_gpu():
     """
-    Checks if dpctl is able to select a GPU device that defaults to
-    an OpenCL GPU.
+    Checks if dpctl is able to select an OpenCL GPU device.
     """
-    return bool(dpctl.get_num_devices(backend=backend, device_type="gpu"))
+    return bool(dpctl.get_num_devices(backend="opencl", device_type="gpu"))
 
 
-def has_cpu_queues(backend="opencl"):
+def has_opencl_cpu():
     """
-    Checks if dpctl is able to select a CPU device that defaults to
-    an OpenCL CPU.
+    Checks if dpctl is able to select an OpenCL CPU device.
     """
-    return bool(dpctl.get_num_devices(backend=backend, device_type="cpu"))
+    return bool(dpctl.get_num_devices(backend="opencl", device_type="cpu"))
+
+
+def has_level_zero():
+    """
+    Checks if dpctl is able to select a Level Zero GPU device.
+    """
+    return bool(dpctl.get_num_devices(backend="level_zero", device_type="gpu"))
 
 
 def has_sycl_platforms():
@@ -87,6 +92,26 @@ def skip_test(device_type):
     return skip
 
 
+skip_no_opencl_gpu = pytest.mark.skipif(
+    not has_opencl_gpu(),
+    reason="No opencl GPU platforms available",
+)
+skip_no_opencl_cpu = pytest.mark.skipif(
+    not has_opencl_cpu(),
+    reason="No opencl CPU platforms available",
+)
+skip_no_level_zero_gpu = pytest.mark.skipif(
+    not has_level_zero(),
+    reason="No level-zero GPU platforms available",
+)
+
+filter_strings = [
+    pytest.param("level_zero:gpu:0", marks=skip_no_level_zero_gpu),
+    pytest.param("opencl:gpu:0", marks=skip_no_opencl_gpu),
+    pytest.param("opencl:cpu:0", marks=skip_no_opencl_cpu),
+]
+
+
 @contextlib.contextmanager
 def override_config(name, value, config=config):
     """
@@ -103,15 +128,6 @@ def override_config(name, value, config=config):
 
 def _id(obj):
     return obj
-
-
-def expectedFailureIf(condition):
-    """
-    Expected failure for a test if the condition is true.
-    """
-    if condition:
-        return unittest.expectedFailure
-    return _id
 
 
 def ensure_dpnp():

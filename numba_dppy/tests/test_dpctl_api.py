@@ -35,7 +35,7 @@ def test_dpctl_api(filter_str):
         pytest.skip()
 
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device):
+    with dpctl.device_context(device):
         dpctl.lsplatform()
         dpctl.get_current_queue()
         dpctl.get_num_activated_queues()

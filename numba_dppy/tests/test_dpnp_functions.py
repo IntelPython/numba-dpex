@@ -13,10 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
-
 import dpctl
 import numpy as np
+import pytest
 from numba import njit
 
 import numba_dppy as dppy
@@ -24,15 +23,15 @@ from numba_dppy.tests._helper import (
     assert_auto_offloading,
     dpnp_debug,
     ensure_dpnp,
-    has_gpu_queues,
+    has_opencl_gpu,
 )
 
 
-@unittest.skipUnless(
-    ensure_dpnp() and has_gpu_queues(),
-    "test only when dpnp and GPU is available",
+@pytest.mark.skipif(
+    not ensure_dpnp() or not has_opencl_gpu(),
+    reason="test only when dpnp and GPU is available",
 )
-class Testdpnp_functions(unittest.TestCase):
+class Testdpnp_functions:
     N = 10
 
     a = np.array(np.random.random(N), dtype=np.float32)
@@ -47,7 +46,7 @@ class Testdpnp_functions(unittest.TestCase):
             return d
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with dppy.offload_to_sycl_device(
+        with dpctl.device_context(
             device
         ), assert_auto_offloading(), dpnp_debug():
             njit_f = njit(f)
@@ -55,8 +54,4 @@ class Testdpnp_functions(unittest.TestCase):
         expected = f(self.a, self.b)
 
         max_abs_err = got.sum() - expected.sum()
-        self.assertTrue(max_abs_err < 1e-4)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert max_abs_err < 1e-4

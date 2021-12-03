@@ -12,21 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
 import warnings
 
 import dpctl
 import numba
 import numpy as np
+import pytest
 
-import numba_dppy
 from numba_dppy import config
 
 from . import _helper
 
 
-@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
-class TestDPPYFallback(unittest.TestCase):
+@pytest.mark.skipif(
+    not _helper.has_opencl_gpu(), reason="test only on GPU system"
+)
+class TestDPPYFallback:
     def test_dppy_fallback_true(self):
         @numba.jit
         def fill_value(i):
@@ -44,7 +45,7 @@ class TestDPPYFallback(unittest.TestCase):
         config.DEBUG = 1
         with warnings.catch_warnings(record=True) as w:
             device = dpctl.SyclDevice("opencl:gpu")
-            with numba_dppy.offload_to_sycl_device(device):
+            with dpctl.device_context(device):
                 dppy = numba.njit(parallel=True)(inner_call_fallback)
                 dppy_fallback_true = dppy()
 
@@ -52,9 +53,9 @@ class TestDPPYFallback(unittest.TestCase):
         config.DEBUG = 0
 
         np.testing.assert_array_equal(dppy_fallback_true, ref_result)
-        self.assertIn("Failed to offload parfor", str(w[-1].message))
+        assert "Failed to offload parfor" in str(w[-1].message)
 
-    @unittest.expectedFailure
+    @pytest.mark.xfail
     def test_dppy_fallback_false(self):
         @numba.jit
         def fill_value(i):
@@ -74,7 +75,7 @@ class TestDPPYFallback(unittest.TestCase):
             config.FALLBACK_ON_CPU = 0
             with warnings.catch_warnings(record=True) as w:
                 device = dpctl.SyclDevice("opencl:gpu")
-                with numba_dppy.offload_to_sycl_device(device):
+                with dpctl.device_context(device):
                     dppy = numba.njit(parallel=True)(inner_call_fallback)
                     dppy_fallback_false = dppy()
 
@@ -84,8 +85,4 @@ class TestDPPYFallback(unittest.TestCase):
             config.DEBUG = 0
 
             not np.testing.assert_array_equal(dppy_fallback_false, ref_result)
-            self.assertNotIn("Failed to offload parfor", str(w[-1].message))
-
-
-if __name__ == "__main__":
-    unittest.main()
+            assert "Failed to offload parfor" not in str(w[-1].message)
