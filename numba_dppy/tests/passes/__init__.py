@@ -16,6 +16,6 @@
 # limitations under the License.
 ################################################################################
 
-from . import *
-
 from numba_dppy.tests.njit_tests.dpnp import *
+
+from . import *
