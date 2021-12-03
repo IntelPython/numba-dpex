@@ -161,12 +161,15 @@ def test_break_conditional(app):
 
 @skip_no_numba055
 @pytest.mark.parametrize(
-    "breakpoint", ["side-by-side.py:25", "common_loop_body_242"]
+    "api, breakpoint",
+    [
+        ("numba", "side-by-side.py:25"),
+        ("numba-dppy-kernel", "side-by-side.py:25"),
+        ("numba", "common_loop_body_242"),
+        ("numba-dppy-kernel", "common_loop_body"),
+    ],
 )
-@pytest.mark.parametrize("condition", ["param_a == 3"])
-def test_breakpoint_with_condition_by_function_argument(
-    app, breakpoint, condition
-):
+def test_breakpoint_with_condition_by_function_argument(app, api, breakpoint):
     """Function breakpoints and argument initializing
 
     Test that it is possible to set conditional breakpoint at the beginning
@@ -174,16 +177,18 @@ def test_breakpoint_with_condition_by_function_argument(
 
     Test for https://github.com/numba/numba/issues/7415
     """
+    variable_name = "param_a"
+    variable_value = "3"
+    condition = f"{variable_name} == {variable_value}"
 
     app.breakpoint(f"{breakpoint} if {condition}")
-    app.run("side-by-side.py")
+    app.run(f"side-by-side.py --api={api}")
 
     app.child.expect(r"Thread .* hit Breakpoint .* at side-by-side.py:25")
-    app.child.expect(r"25\s+param_c = param_a \+ 10")
 
-    app.print("param_a")
+    app.print(variable_name)
 
-    app.child.expect(r"\$1 = 3")
+    app.child.expect(fr"\$1 = {variable_value}")
 
 
 # commands/break_file_func
