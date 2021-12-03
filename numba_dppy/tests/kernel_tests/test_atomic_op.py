@@ -201,9 +201,10 @@ def test_kernel_atomic_multi_dim(
 skip_NATIVE_FP_ATOMICS_0 = pytest.mark.skipif(
     not config.NATIVE_FP_ATOMICS, reason="Native FP atomics disabled"
 )
-skip_if_disabled = lambda *args: pytest.param(
-    *args, marks=skip_NATIVE_FP_ATOMICS_0
-)
+
+
+def skip_if_disabled(*args):
+    return pytest.param(*args, marks=skip_NATIVE_FP_ATOMICS_0)
 
 
 @pytest.mark.parametrize(
