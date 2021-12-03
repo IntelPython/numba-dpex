@@ -27,14 +27,14 @@ requirements:
         - numba 0.54*|0.55*
         - dpctl 0.11*
         - spirv-tools
-        - llvm-spirv 11.*  # [osx]
-        - {{ compiler('dpcpp') }}  # [not osx]
+        - llvm-spirv 11.*
         - dpnp 0.8*|0.9*           # [linux]
         - packaging
 
 test:
   requires:
     - pytest
+    - {{ compiler('dpcpp') }}  # [not osx]
 
 about:
     home: https://github.com/IntelPython/numba-dppy

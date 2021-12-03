@@ -188,7 +188,7 @@ jobs:
       - name: Install numba-dppy
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}"
-          conda install $PACKAGE_NAME pytest python=${{ matrix.python }} numba=${{ matrix.numba }} ${{ matrix.dependencies }} $CHANNELS
+          conda install $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} ${{ matrix.dependencies }} $CHANNELS
           # Test installed packages
           conda list
       - name: Run tests
@@ -252,7 +252,7 @@ jobs:
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
       - name: Install numba-dppy
         run: |
-          conda install ${{ env.PACKAGE_NAME }} pytest python=${{ matrix.python }} ${{ matrix.dependencies }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
+          conda install ${{ env.PACKAGE_NAME }} pytest dpcpp_win-64 python=${{ matrix.python }} ${{ matrix.dependencies }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
           # Test installed packages
           conda list
       - name: Install opencl_rt
