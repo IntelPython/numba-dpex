@@ -74,13 +74,36 @@ def npytypes_array_to_dppy_array(arrtype, addrspace=address_space.GLOBAL):
 
 
 def suai_to_dppy_array_type(arr, addrspace=address_space.GLOBAL):
+    """Create type for Array with __sycl_usm_array_interface__ (SUAI) attribute.
+
+    This function cretes a Numba type for arrays with SUAI attribute.
+
+    Args:
+        arr: Array with SUAI attribute.
+        addrspace: Address space this array is allocated in.
+
+    Returns: The Numba type for SUAI array.
+
+    Raises:
+        NotImplementedError: If the dtype of the passed array is not supported.
+    """
     from numba_dppy.dpctl_iface import USMNdArrayType
 
-    total_size, shape, ndim, itemsize, strides, dtype = get_info_from_suai(arr)
+    (
+        usm_mem,
+        total_size,
+        shape,
+        ndim,
+        itemsize,
+        strides,
+        dtype,
+    ) = get_info_from_suai(arr)
+
     try:
         dtype = numpy_support.from_dtype(dtype)
     except NotImplementedError:
         raise ValueError("Unsupported array dtype: %s" % (dtype,))
+
     layout = "C"
     readonly = False
 

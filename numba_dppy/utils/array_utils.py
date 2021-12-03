@@ -31,7 +31,24 @@ supported_numpy_dtype = [
 
 
 def get_info_from_suai(obj):
-    assert dpctl_mem.as_usm_memory(obj) is not None
+    """
+    Convenience function to gather information from __sycl_usm_array_interface__.
+
+    Args:
+        obj: Array with SUAI attribute.
+
+    Returns:
+        usm_mem: USM memory object.
+        total_size: Total number of items in the array.
+        shape: Shape of the array.
+        ndim: Total number of dimensions.
+        itemsize: Size of each item.
+        strides: Stride of the array.
+        dtype: Dtype of the array.
+    """
+    usm_mem = dpctl_mem.as_usm_memory(obj)
+
+    assert usm_mem is not None
 
     shape = obj.__sycl_usm_array_interface__["shape"]
     total_size = np.prod(obj.__sycl_usm_array_interface__["shape"])
@@ -46,7 +63,7 @@ def get_info_from_suai(obj):
         for i in reversed(range(1, ndim)):
             strides[i - 1] = strides[i] * shape[i]
         strides = tuple(strides)
-    return total_size, shape, ndim, itemsize, strides, dtype
+    return usm_mem, total_size, shape, ndim, itemsize, strides, dtype
 
 
 def has_usm_memory(obj):

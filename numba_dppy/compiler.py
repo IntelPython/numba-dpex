@@ -594,8 +594,8 @@ class DPPYKernel(DPPYKernelBase):
         device_arrs.append(None)
 
         if isinstance(ty, USMNdArrayType):
-            usm_mem = has_usm_memory(val)
             (
+                usm_mem,
                 total_size,
                 shape,
                 ndim,
@@ -603,17 +603,7 @@ class DPPYKernel(DPPYKernelBase):
                 strides,
                 dtype,
             ) = get_info_from_suai(val)
-            """
-            self._unpack_device_array_argument(
-                val.size,
-                val.dtype.itemsize,
-                val.usm_data,
-                val.shape,
-                val.strides,
-                val.ndim,
-                kernelargs,
-            )
-            """
+
             self._unpack_device_array_argument(
                 total_size,
                 itemsize,

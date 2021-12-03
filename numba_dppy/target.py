@@ -78,6 +78,11 @@ class DPPYTypingContext(typing.BaseContext):
         try:
             _type = type(typeof(val))
         except ValueError:
+            # For arbitrary array that is not recognized by Numba,
+            # we will end up in this path. We check if the array
+            # has __sycl_usm_array_interface__ attribute. If yes,
+            # we create the necessary Numba type to represent it
+            # and send it back.
             if has_usm_memory(val) is not None:
                 return suai_to_dppy_array_type(val)
 
