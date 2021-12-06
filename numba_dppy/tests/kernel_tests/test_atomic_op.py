@@ -86,20 +86,15 @@ def kernel_result_pair(request):
     return dppy.kernel(f), request.param[1]
 
 
-def atomic_skip_test(device_type):
-    skip = False
-    if skip_test(device_type):
-        skip = True
-
-    if not skip:
-        if not dppy.ocl.atomic_support_present():
-            skip = True
-
-    return skip
+skip_no_atomic_support = pytest.mark.skipif(
+    not dppy.ocl.atomic_support_present(),
+    reason="No atomic support",
+)
 
 
+@skip_no_atomic_support
 def test_kernel_atomic_simple(filter_str, input_arrays, kernel_result_pair):
-    if atomic_skip_test(filter_str):
+    if skip_test(filter_str):
         pytest.skip()
 
     a, dtype = input_arrays
@@ -141,8 +136,9 @@ def get_func_local(op_type, dtype):
     return f
 
 
+@skip_no_atomic_support
 def test_kernel_atomic_local(filter_str, input_arrays, return_list_of_op):
-    if atomic_skip_test(filter_str):
+    if skip_test(filter_str):
         pytest.skip()
 
     a, dtype = input_arrays
@@ -182,10 +178,11 @@ def get_kernel_multi_dim(op_type, size):
     return dppy.kernel(f)
 
 
+@skip_no_atomic_support
 def test_kernel_atomic_multi_dim(
     filter_str, return_list_of_op, return_list_of_dim, return_dtype
 ):
-    if atomic_skip_test(filter_str):
+    if skip_test(filter_str):
         pytest.skip()
 
     op_type, expected = return_list_of_op
@@ -207,6 +204,7 @@ def skip_if_disabled(*args):
     return pytest.param(*args, marks=skip_NATIVE_FP_ATOMICS_0)
 
 
+@skip_no_atomic_support
 @pytest.mark.parametrize(
     "NATIVE_FP_ATOMICS, expected_native_atomic_for_device",
     [
@@ -234,7 +232,7 @@ def test_atomic_fp_native(
     expected_spirv_function,
     dtype,
 ):
-    if atomic_skip_test(filter_str):
+    if skip_test(filter_str):
         pytest.skip(f"No atomic support present for device {filter_str}")
 
     function = function_generator(operator_name, dtype)
