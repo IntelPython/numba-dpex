@@ -19,14 +19,10 @@ import pytest
 from numba import njit, prange
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import assert_auto_offloading
-
-from . import _helper
+from numba_dppy.tests._helper import assert_auto_offloading, skip_no_opencl_gpu
 
 
-@pytest.mark.skipif(
-    not _helper.has_opencl_gpu(), reason="test only on GPU system"
-)
+@skip_no_opencl_gpu
 class TestPrange:
     def test_one_prange(self):
         @njit
