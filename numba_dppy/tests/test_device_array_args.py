@@ -15,11 +15,9 @@
 
 import dpctl
 import numpy as np
-import pytest
 
 import numba_dppy as dppy
-
-from . import _helper
+from numba_dppy.tests._helper import skip_no_opencl_cpu, skip_no_opencl_gpu
 
 
 @dppy.kernel
@@ -36,9 +34,7 @@ b = np.array(np.random.random(N), dtype=np.float32)
 d = a + b
 
 
-@pytest.mark.skipif(
-    not _helper.has_opencl_cpu(), reason="test only on CPU system"
-)
+@skip_no_opencl_cpu
 class TestDPPYDeviceArrayArgsGPU:
     def test_device_array_args_cpu(self):
         c = np.ones_like(a)
@@ -49,9 +45,7 @@ class TestDPPYDeviceArrayArgsGPU:
             assert np.all(c == d)
 
 
-@pytest.mark.skipif(
-    not _helper.has_opencl_gpu(), reason="test only on GPU system"
-)
+@skip_no_opencl_gpu
 class TestDPPYDeviceArrayArgsCPU:
     def test_device_array_args_gpu(self):
         c = np.ones_like(a)
