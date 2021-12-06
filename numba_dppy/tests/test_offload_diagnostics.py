@@ -14,19 +14,15 @@
 
 import dpctl
 import numpy as np
-import pytest
 from numba import njit, prange
 from numba.tests.support import captured_stdout
 
 import numba_dppy as dppy
 from numba_dppy import config as dppy_config
+from numba_dppy.tests._helper import skip_no_opencl_gpu
 
-from . import _helper
 
-
-@pytest.mark.skipif(
-    not _helper.has_opencl_gpu(), reason="test only on GPU system"
-)
+@skip_no_opencl_gpu
 class TestOffloadDiagnostics:
     def test_parfor(self):
         def prange_func():

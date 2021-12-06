@@ -17,14 +17,11 @@ import warnings
 import dpctl
 import numba
 import numpy as np
-import pytest
 
-from . import _helper
+from numba_dppy.tests._helper import skip_no_opencl_gpu
 
 
-@pytest.mark.skipif(
-    not _helper.has_opencl_gpu(), reason="test only on GPU system"
-)
+@skip_no_opencl_gpu
 class TestDPPYFallback:
     def test_dppy_fallback_inner_call(self):
         @numba.jit
