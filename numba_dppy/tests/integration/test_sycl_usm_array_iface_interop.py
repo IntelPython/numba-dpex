@@ -26,11 +26,6 @@ def dtype(request):
     return request.param
 
 
-@pytest.fixture(params=dtypes)
-def order(request):
-    return request.param
-
-
 def test_dppy_kernel_valid_usm_obj(dtype):
     """Test if a ``numba_dppy.kernel`` function accepts a DuckUSMArray argument.
 
