@@ -94,7 +94,8 @@ class TestRenameNumpyFunctionsPass:
 
 
 @pytest.mark.skipif(
-    not ensure_dpnp(), reason="test only when dpnp is available"
+    not ensure_dpnp(),
+    reason="dpnp is not available",
 )
 class TestRenameNdarrayFunctionsPass:
     def test_rename_ndarray(self):

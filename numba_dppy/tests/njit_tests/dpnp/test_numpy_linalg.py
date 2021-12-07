@@ -22,10 +22,9 @@ import pytest
 from numba import njit
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import dpnp_debug
+from numba_dppy.tests._helper import dpnp_debug, skip_test
 
 from ._helper import args_string, wrapper_function
-from .dpnp_skip_test import dpnp_skip_test as skip_test
 
 filter_strings = [
     "level_zero:gpu:0",
