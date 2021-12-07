@@ -18,6 +18,7 @@ import pytest
 
 import numba_dppy as dppy
 from numba_dppy.tests._helper import ensure_dpnp, skip_test
+
 from . import *
 
 list_of_dtype = [

@@ -16,10 +16,11 @@
 # limitations under the License.
 ################################################################################
 
-from . import *
-
 import pytest
+
 from numba_dppy.tests._helper import ensure_dpnp
+
+from . import *
 
 pytestmark = pytest.mark.xfail(not ensure_dpnp(), reason="No dpnp available")
 if ensure_dpnp():
