@@ -111,6 +111,15 @@ filter_strings = [
     pytest.param("opencl:cpu:0", marks=skip_no_opencl_cpu),
 ]
 
+mark_freeze = pytest.mark.skip(reason="Freeze")
+mark_seg_fault = pytest.mark.skip(reason="Segmentation fault")
+
+filter_strings_with_skips_for_opencl = [
+    pytest.param("level_zero:gpu:0", marks=skip_no_level_zero_gpu),
+    pytest.param("opencl:gpu:0", marks=mark_freeze),
+    pytest.param("opencl:cpu:0", marks=mark_seg_fault),
+]
+
 
 @contextlib.contextmanager
 def override_config(name, value, config=config):
