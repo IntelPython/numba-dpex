@@ -14,14 +14,11 @@
 
 import dpctl
 import numpy as np
-import pytest
 from numba import njit, prange
 from numba.tests.support import captured_stdout
 
-import numba_dppy as dppy
 from numba_dppy import config
-
-from . import _helper
+from numba_dppy.tests._helper import skip_no_opencl_gpu
 
 
 def prange_example():
@@ -35,9 +32,7 @@ def prange_example():
     return a
 
 
-@pytest.mark.skipif(
-    not _helper.has_opencl_gpu(), reason="test only on GPU system"
-)
+@skip_no_opencl_gpu
 class TestParforMessage:
     def test_parfor_message(self):
         device = dpctl.SyclDevice("opencl:gpu")
