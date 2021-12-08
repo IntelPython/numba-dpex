@@ -111,6 +111,11 @@ filter_strings = [
     pytest.param("opencl:cpu:0", marks=skip_no_opencl_cpu),
 ]
 
+skip_no_dpnp = pytest.mark.skipif(
+    not ensure_dpnp(),
+    reason="dpnp is not available",
+)
+
 
 @contextlib.contextmanager
 def override_config(name, value, config=config):
