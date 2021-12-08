@@ -464,6 +464,35 @@ def atomic_add(context, builder, sig, args, name):
         )
 
 
+@lower(stubs.private.array, types.IntegerLiteral, types.Any)
+def dppy_private_array_integer(context, builder, sig, args):
+    length = sig.args[0].literal_value
+    dtype = parse_dtype(sig.args[1])
+    return _generic_array(
+        context,
+        builder,
+        shape=(length,),
+        dtype=dtype,
+        symbol_name="_dppy_pmem",
+        addrspace=address_space.PRIVATE,
+    )
+
+
+@lower(stubs.private.array, types.Tuple, types.Any)
+@lower(stubs.private.array, types.UniTuple, types.Any)
+def dppy_private_array_tuple(context, builder, sig, args):
+    shape = [s.literal_value for s in sig.args[0]]
+    dtype = parse_dtype(sig.args[1])
+    return _generic_array(
+        context,
+        builder,
+        shape=shape,
+        dtype=dtype,
+        symbol_name="_dppy_pmem",
+        addrspace=address_space.PRIVATE,
+    )
+
+
 @lower(stubs.local.array, types.IntegerLiteral, types.Any)
 def dppy_local_array_integer(context, builder, sig, args):
     length = sig.args[0].literal_value
@@ -516,6 +545,8 @@ def _generic_array(context, builder, shape, dtype, symbol_name, addrspace):
         if dtype not in types.number_domain:
             raise TypeError("unsupported type: %s" % dtype)
 
+    elif addrspace == address_space.PRIVATE:
+        gvmem = cgutils.alloca_once(builder, laryty, name=symbol_name)
     else:
         raise NotImplementedError("addrspace {addrspace}".format(**locals()))
 
