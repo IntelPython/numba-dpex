@@ -15,7 +15,7 @@ We also allow passing arrays and data types that do not provide SUAI. For such c
 The following are how users can specify in which device they want to offload their computation.
 
 - :code:`numpy.ndarray`
-    Using context manager, :code:`with numba_dppy.offload_to_sycl_device(SYCL_device)`. Please look at method :code:`select_device_ndarray()` in the example below.
+    Using context manager, :code:`with dpctl.device_context(SYCL_device)`. Please look at method :code:`select_device_ndarray()` in the example below.
 
 - Array with :code:`__sycl_usm_array_interface__` attribute
      Numba-dppy supports the Compute Follows Data semantics in this case. Compute Follows Data stipulates that computation must be off-loaded to device where data is resident.
