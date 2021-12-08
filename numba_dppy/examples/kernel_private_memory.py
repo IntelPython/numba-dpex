@@ -28,16 +28,16 @@ def private_memory():
 
     @numba_dppy.kernel
     def private_memory_kernel(A):
-        prvt_mem = numba_dppy.private.array(shape=1, dtype=np.float32)
+        memory = numba_dppy.private.array(shape=1, dtype=np.float32)
         i = numba_dppy.get_global_id(0)
 
         # preload
-        prvt_mem[0] = i
+        memory[0] = i
         numba_dppy.barrier(numba_dppy.CLK_LOCAL_MEM_FENCE)  # local mem fence
 
-        # prvt_mem will not hold correct deterministic result if it is not
+        # memory will not hold correct deterministic result if it is not
         # private to each thread.
-        A[i] = prvt_mem[0] * 2
+        A[i] = memory[0] * 2
 
     N = 4
     arr = np.zeros(N).astype(np.float32)
