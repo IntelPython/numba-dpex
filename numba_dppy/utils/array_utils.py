@@ -57,9 +57,7 @@ def get_info_from_suai(obj):
     dtype = np.dtype(obj.__sycl_usm_array_interface__["typestr"])
     strides = obj.__sycl_usm_array_interface__["strides"]
     if strides is None:
-        strides = [
-            1,
-        ] * ndim
+        strides = [1] * ndim
         for i in reversed(range(1, ndim)):
             strides[i - 1] = strides[i] * shape[i]
         strides = tuple(strides)
