@@ -563,6 +563,28 @@ class DPPYKernel(DPPYKernelBase):
         for ax in range(ndim):
             kernelargs.append(ctypes.c_longlong(strides[ax]))
 
+    def _unpack_USMNdArrayType(self, val, kernelargs):
+        (
+            usm_mem,
+            total_size,
+            shape,
+            ndim,
+            itemsize,
+            strides,
+            dtype,
+        ) = get_info_from_suai(val)
+
+        self._unpack_device_array_argument(
+            total_size,
+            itemsize,
+            usm_mem,
+            shape,
+            strides,
+            ndim,
+            kernelargs,
+        )
+
+
     def _unpack_argument(
         self, ty, val, sycl_queue, kernelargs, device_arrs, access_type
     ):
@@ -594,26 +616,7 @@ class DPPYKernel(DPPYKernelBase):
         device_arrs.append(None)
 
         if isinstance(ty, USMNdArrayType):
-            (
-                usm_mem,
-                total_size,
-                shape,
-                ndim,
-                itemsize,
-                strides,
-                dtype,
-            ) = get_info_from_suai(val)
-
-            self._unpack_device_array_argument(
-                total_size,
-                itemsize,
-                usm_mem,
-                shape,
-                strides,
-                ndim,
-                kernelargs,
-            )
-
+            self._unpack_USMNdArrayType(val, kernelargs)
         elif isinstance(ty, types.Array):
             packed_val = val
             usm_mem = has_usm_memory(val)
