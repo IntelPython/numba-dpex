@@ -142,6 +142,11 @@ def ensure_dpnp():
             pytest.fail("DPNP is not installed")
 
 
+skip_no_dpnp = pytest.mark.skipif(
+    not ensure_dpnp(), reason="DPNP is not installed"
+)
+
+
 @contextlib.contextmanager
 def dpnp_debug():
     import numba_dppy.dpnp_iface as dpnp_lowering
