@@ -18,6 +18,6 @@ Numba-dppy supports three disjoint named address spaces:
       :lines: 54-87
 
 3. Private Address Space
-    Private Address Space refers to memory objects that are local to each work-item and is not shared with any other work-item. In the example below `@numba_dppy.private.array(shape, dtype)` is the API used to allocate a static array in the private address space:
+    Private Address Space refers to memory objects that are local to each work-item and is not shared with any other work-item. In the example below `numba_dppy.private.array(shape, dtype)` is the API used to allocate a static array in the private address space:
 
     .. literalinclude:: ../../../numba_dppy/examples/kernel_private_memory.py
