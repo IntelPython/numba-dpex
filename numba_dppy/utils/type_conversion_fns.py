@@ -20,12 +20,14 @@ Currently the module supports the following converter functions:
 
 """
 from numba.core import types
+from numba.np import numpy_support
 
 from numba_dppy import dppy_array_type
 
+from .array_utils import get_info_from_suai
 from .constants import address_space
 
-__all__ = ["npytypes_array_to_dppy_array"]
+__all__ = ["npytypes_array_to_dppy_array", "suai_to_dppy_array_type"]
 
 
 def npytypes_array_to_dppy_array(arrtype, addrspace=address_space.GLOBAL):
@@ -69,3 +71,47 @@ def npytypes_array_to_dppy_array(arrtype, addrspace=address_space.GLOBAL):
         )
     else:
         raise NotImplementedError
+
+
+def suai_to_dppy_array_type(arr, addrspace=address_space.GLOBAL):
+    """Create type for Array with __sycl_usm_array_interface__ (SUAI) attribute.
+
+    This function cretes a Numba type for arrays with SUAI attribute.
+
+    Args:
+        arr: Array with SUAI attribute.
+        addrspace: Address space this array is allocated in.
+
+    Returns: The Numba type for SUAI array.
+
+    Raises:
+        NotImplementedError: If the dtype of the passed array is not supported.
+    """
+    from numba_dppy.dpctl_iface import USMNdArrayType
+
+    (
+        usm_mem,
+        total_size,
+        shape,
+        ndim,
+        itemsize,
+        strides,
+        dtype,
+    ) = get_info_from_suai(arr)
+
+    try:
+        dtype = numpy_support.from_dtype(dtype)
+    except NotImplementedError:
+        raise ValueError("Unsupported array dtype: %s" % (dtype,))
+
+    layout = "C"
+    readonly = False
+
+    return USMNdArrayType(
+        dtype,
+        ndim,
+        layout,
+        None,
+        readonly,
+        addrspace=addrspace,
+    )
