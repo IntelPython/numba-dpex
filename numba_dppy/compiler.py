@@ -584,6 +584,48 @@ class DPPYKernel(DPPYKernelBase):
             kernelargs,
         )
 
+    def _unpack_Array(
+        self, val, sycl_queue, kernelargs, device_arrs, access_type
+    ):
+        packed_val = val
+        usm_mem = has_usm_memory(val)
+        if usm_mem is None:
+            default_behavior = self.check_for_invalid_access_type(access_type)
+            usm_mem = as_usm_obj(val, queue=sycl_queue, copy=False)
+
+            orig_val = val
+            packed = False
+            if not val.flags.c_contiguous:
+                # If the numpy.ndarray is not C-contiguous
+                # we pack the strided array into a packed array.
+                # This allows us to treat the data from here on as C-contiguous.
+                # While packing we treat the data as C-contiguous.
+                # We store the reference of both (strided and packed)
+                # array and during unpacking we use numpy.copyto() to copy
+                # the data back from the packed temporary array to the
+                # original strided array.
+                packed_val = val.flatten(order="C")
+                packed = True
+
+            if (
+                default_behavior
+                or self.valid_access_types[access_type] == _NUMBA_DPPY_READ_ONLY
+                or self.valid_access_types[access_type]
+                == _NUMBA_DPPY_READ_WRITE
+            ):
+                copy_from_numpy_to_usm_obj(usm_mem, packed_val)
+
+            device_arrs[-1] = (usm_mem, orig_val, packed_val, packed)
+
+        self._unpack_device_array_argument(
+            packed_val.size,
+            packed_val.dtype.itemsize,
+            usm_mem,
+            packed_val.shape,
+            packed_val.strides,
+            packed_val.ndim,
+            kernelargs,
+        )
 
     def _unpack_argument(
         self, ty, val, sycl_queue, kernelargs, device_arrs, access_type
@@ -618,47 +660,8 @@ class DPPYKernel(DPPYKernelBase):
         if isinstance(ty, USMNdArrayType):
             self._unpack_USMNdArrayType(val, kernelargs)
         elif isinstance(ty, types.Array):
-            packed_val = val
-            usm_mem = has_usm_memory(val)
-            if usm_mem is None:
-                default_behavior = self.check_for_invalid_access_type(
-                    access_type
-                )
-                usm_mem = as_usm_obj(val, queue=sycl_queue, copy=False)
-
-                orig_val = val
-                packed = False
-                if not val.flags.c_contiguous:
-                    # If the numpy.ndarray is not C-contiguous
-                    # we pack the strided array into a packed array.
-                    # This allows us to treat the data from here on as C-contiguous.
-                    # While packing we treat the data as C-contiguous.
-                    # We store the reference of both (strided and packed)
-                    # array and during unpacking we use numpy.copyto() to copy
-                    # the data back from the packed temporary array to the
-                    # original strided array.
-                    packed_val = val.flatten(order="C")
-                    packed = True
-
-                if (
-                    default_behavior
-                    or self.valid_access_types[access_type]
-                    == _NUMBA_DPPY_READ_ONLY
-                    or self.valid_access_types[access_type]
-                    == _NUMBA_DPPY_READ_WRITE
-                ):
-                    copy_from_numpy_to_usm_obj(usm_mem, packed_val)
-
-                device_arrs[-1] = (usm_mem, orig_val, packed_val, packed)
-
-            self._unpack_device_array_argument(
-                packed_val.size,
-                packed_val.dtype.itemsize,
-                usm_mem,
-                packed_val.shape,
-                packed_val.strides,
-                packed_val.ndim,
-                kernelargs,
+            self._unpack_Array(
+                val, sycl_queue, kernelargs, device_arrs, access_type
             )
         elif ty == types.int64:
             cval = ctypes.c_longlong(val)
