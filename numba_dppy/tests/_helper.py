@@ -22,6 +22,15 @@ from numba.tests.support import captured_stdout
 from numba_dppy import config
 
 
+def ensure_dpnp():
+    try:
+        from numba_dppy.dpnp_iface import dpnp_fptr_interface as dpnp_iface
+
+        return True
+    except:
+        return False
+
+
 def has_opencl_gpu():
     """
     Checks if dpctl is able to select an OpenCL GPU device.
@@ -133,15 +142,6 @@ def override_config(name, value, config=config):
 
 def _id(obj):
     return obj
-
-
-def ensure_dpnp():
-    try:
-        from numba_dppy.dpnp_iface import dpnp_fptr_interface as dpnp_iface
-
-        return True
-    except:
-        return False
 
 
 @contextlib.contextmanager
