@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
+### Added
 * Make Numba recognize any array with __sycl_usm_array_interface__ attribute (#629)
 
 ## [0.17.4] - 2021-12-02
