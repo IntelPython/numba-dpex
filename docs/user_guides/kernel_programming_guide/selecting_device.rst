@@ -10,7 +10,7 @@ We also allow passing arrays and data types that do not provide SUAI. For such c
 
 
 
-**Users are not allowed to pass mixed type of arrays to a @numba_dppy.kernel.** For example, if the first array argument to a @numba_dppy.kernel is of type :code:`numpy.ndarray`, the rest of the array argument will also have to of type :code:`numpy.ndarray`.
+**Users are not allowed to pass mixed type of arrays to a @numba_dppy.kernel.** For example, if the first array argument to a @numba_dppy.kernel is of type :code:`numpy.ndarray`, the rest of the array argument will also have to be of type :code:`numpy.ndarray`.
 
 The following are how users can specify in which device they want to offload their computation.
 
