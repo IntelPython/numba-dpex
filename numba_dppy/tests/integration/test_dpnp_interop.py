@@ -19,6 +19,10 @@ import pytest
 import numba_dppy as dppy
 from numba_dppy.tests._helper import ensure_dpnp, skip_test
 
+
+dpnp = pytest.importorskip("dpnp", reason="DPNP is not installed")
+
+
 list_of_dtype = [
     np.int32,
     np.int64,
@@ -45,11 +49,6 @@ def usm_type(request):
 
 
 def test_dpnp_create_array_in_context(offload_device, dtype):
-    if not ensure_dpnp():
-        pytest.skip("No DPNP")
-
-    import dpnp
-
     if skip_test(offload_device):
         pytest.skip("No device for " + offload_device)
 
@@ -64,11 +63,6 @@ def test_dpnp_create_array_in_context(offload_device, dtype):
 
 
 def test_consuming_array_from_dpnp(offload_device, dtype):
-    if not ensure_dpnp():
-        pytest.skip("No DPNP")
-
-    import dpnp
-
     if skip_test(offload_device):
         pytest.skip("No device for " + offload_device)
 
