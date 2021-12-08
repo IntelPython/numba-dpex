@@ -786,7 +786,8 @@ class JitDPPYKernel(DPPYKernelBase):
             queues = []
             for i, argtype in enumerate(argtypes):
                 if type(argtype) == USMNdArrayType:
-                    queues.append(args[i].sycl_queue)
+                    queue = dpctl.memory.as_usm_memory(args[i]).sycl_queue
+                    queues.append(queue)
 
             # dpctl.utils.get_exeuction_queue() checks if the queues passed are equivalent and returns a
             # SYCL queue if they are equivalent and None if they are not.
