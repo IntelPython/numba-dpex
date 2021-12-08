@@ -22,10 +22,9 @@ import pytest
 from numba import njit
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import dpnp_debug, skip_no_dpnp
+from numba_dppy.tests._helper import dpnp_debug, skip_no_dpnp, skip_test
 
 from ._helper import args_string, wrapper_function
-from .dpnp_skip_test import dpnp_skip_test as skip_test
 
 pytestmark = skip_no_dpnp
 
@@ -95,6 +94,9 @@ def get_op_fn(name, nargs):
 
 
 def test_unary_ops(filter_str, unary_op, input_array, capfd):
+    if skip_test(filter_str):
+        pytest.skip()
+
     a = input_array
     if unary_op == "trace":
         a = input_array.reshape((2, 5))

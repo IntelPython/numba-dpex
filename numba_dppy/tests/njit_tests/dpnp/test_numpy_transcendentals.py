@@ -22,10 +22,16 @@ import pytest
 from numba import njit
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import dpnp_debug, is_gen12
+from numba_dppy.tests._helper import (
+    dpnp_debug,
+    is_gen12,
+    skip_no_dpnp,
+    skip_test,
+)
 
 from ._helper import wrapper_function
-from .dpnp_skip_test import dpnp_skip_test as skip_test
+
+pytestmark = skip_no_dpnp
 
 list_of_filter_strs = [
     "opencl:gpu:0",

@@ -22,11 +22,12 @@ import pytest
 from numba import njit
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import dpnp_debug
+from numba_dppy.tests._helper import dpnp_debug, skip_no_dpnp, skip_test
 
 from ._helper import wrapper_function
-from .dpnp_skip_test import dpnp_skip_test as skip_test
 from .test_numpy_linalg import filter_strings_with_skips_for_opencl
+
+pytestmark = skip_no_dpnp
 
 list_of_filter_strs = [
     "opencl:gpu:0",
