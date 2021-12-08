@@ -122,9 +122,9 @@ jobs:
     strategy:
       matrix:
         python: [3.8, 3.9]
-        numba: [0.54, 0.55]
+        numba: ["0.54"]
         integration_channels: [""]
-        experimental: [true]  # packages are not available on -c intel yet
+        experimental: [false]
         artifact_name: [""]
         dependencies: [""]
         include:
@@ -132,6 +132,18 @@ jobs:
             numba: 0.54
             integration_channels: -c dppy/label/dev
             artifact_name: -c dppy_label_dev
+            experimental: false  # current stable
+            dependencies: ""
+          - python: "3.8"
+            numba: "0.55.0dev0=*_782"
+            integration_channels:
+            artifact_name: ""
+            experimental: false  # current stable
+            dependencies: ""
+          - python: "3.9"
+            numba: "0.55.0dev0=*_778"
+            integration_channels: ""
+            artifact_name: ""
             experimental: false  # current stable
             dependencies: ""
     continue-on-error: ${{ matrix.experimental }}
@@ -176,7 +188,7 @@ jobs:
       - name: Install numba-dppy
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}"
-          conda install $PACKAGE_NAME pytest python=${{ matrix.python }} numba=${{ matrix.numba }} ${{ matrix.dependencies }} $CHANNELS
+          conda install $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} ${{ matrix.dependencies }} $CHANNELS
           # Test installed packages
           conda list
       - name: Run tests
@@ -240,7 +252,7 @@ jobs:
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
       - name: Install numba-dppy
         run: |
-          conda install ${{ env.PACKAGE_NAME }} pytest python=${{ matrix.python }} ${{ matrix.dependencies }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
+          conda install ${{ env.PACKAGE_NAME }} pytest dpcpp_win-64 python=${{ matrix.python }} ${{ matrix.dependencies }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
           # Test installed packages
           conda list
       - name: Install opencl_rt
@@ -253,7 +265,7 @@ jobs:
 
   upload_linux:
     needs: test_linux
-    if: ${{ github.ref }} == 'refs/heads/main' || ${{ github.ref }} == 'refs/heads/release*'
+    if: ${{github.ref == 'refs/heads/main' || (startsWith(github.ref, 'refs/heads/release') == true)}}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -278,7 +290,7 @@ jobs:
 
   upload_windows:
     needs: test_windows
-    if: ${{ github.ref }} == 'refs/heads/main' || ${{ github.ref }} == 'refs/heads/release*'
+    if: ${{github.ref == 'refs/heads/main' || (startsWith(github.ref, 'refs/heads/release') == true)}}
     runs-on: windows-latest
     strategy:
       matrix:

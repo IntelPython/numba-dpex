@@ -22,6 +22,7 @@ from numba.core.registry import cpu_target
 
 import numba_dppy as dppy
 from numba_dppy.compiler import DPPYCompiler
+from numba_dppy.tests._helper import skip_no_opencl_gpu
 
 
 def fn(a):
@@ -30,6 +31,7 @@ def fn(a):
     return a
 
 
+@skip_no_opencl_gpu
 def test_no_copy_usm_shared(capfd):
     a = usmarray.ones(10, dtype=np.int64)
     b = np.ones(10, dtype=np.int64)
@@ -45,12 +47,9 @@ def test_no_copy_usm_shared(capfd):
     targetctx = cpu_target.target_context
     args = typingctx.resolve_argument_type(a)
 
-    try:
-        device = dpctl.SyclDevice("opencl:gpu:0")
-    except ValueError:
-        pytest.skip("Device not found")
+    device = dpctl.SyclDevice("opencl:gpu:0")
 
-    with dppy.offload_to_sycl_device(device):
+    with dpctl.device_context(device):
         cres = compiler.compile_extra(
             typingctx=typingctx,
             targetctx=targetctx,

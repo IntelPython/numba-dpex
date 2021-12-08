@@ -13,14 +13,12 @@
 # limitations under the License.
 
 import math
-import unittest
 
 import dpctl
 import numpy as np
 
 import numba_dppy as dppy
-
-from . import _helper
+from numba_dppy.tests._helper import skip_no_opencl_gpu
 
 
 @dppy.kernel
@@ -32,12 +30,12 @@ def reduction_kernel(A, R, stride):
     A[i] = R[i]
 
 
-@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
-class TestDPPYSumReduction(unittest.TestCase):
+@skip_no_opencl_gpu
+class TestDPPYSumReduction:
     def test_sum_reduction(self):
         # This test will only work for even case
         N = 1024
-        self.assertTrue(N % 2 == 0)
+        assert N % 2 == 0
 
         A = np.array(np.random.random(N), dtype=np.float32)
         A_copy = A.copy()
@@ -45,7 +43,7 @@ class TestDPPYSumReduction(unittest.TestCase):
         R = np.array(np.random.random(math.ceil(N / 2)), dtype=np.float32)
 
         device = dpctl.SyclDevice("opencl:gpu")
-        with dppy.offload_to_sycl_device(device):
+        with dpctl.device_context(device):
             total = N
 
             while total > 1:
@@ -58,8 +56,4 @@ class TestDPPYSumReduction(unittest.TestCase):
 
             result = A_copy.sum()
             max_abs_err = result - R[0]
-            self.assertTrue(max_abs_err < 1e-4)
-
-
-if __name__ == "__main__":
-    unittest.main()
+            assert max_abs_err < 1e-4

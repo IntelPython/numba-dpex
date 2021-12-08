@@ -87,7 +87,7 @@ def test_one_arg_fn(filter_str, one_arg_fn, unary_size, capfd):
     name, low, high = params
     f = njit(op)
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device), dpnp_debug():
+    with dpctl.device_context(device), dpnp_debug():
         actual = f(unary_size)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -132,7 +132,7 @@ def test_two_arg_fn(filter_str, two_arg_fn, unary_size, capfd):
     op = get_two_arg_fn(op_name)
     f = njit(op)
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device), dpnp_debug():
+    with dpctl.device_context(device), dpnp_debug():
         actual = f(first_arg, unary_size)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -193,7 +193,7 @@ def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
     op = get_three_arg_fn(op_name)
     f = njit(op)
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device), dpnp_debug():
+    with dpctl.device_context(device), dpnp_debug():
         actual = f(first_arg, second_arg, three_arg_size)
         captured = capfd.readouterr()
         assert "dpnp implementation" in captured.out
@@ -228,7 +228,7 @@ def test_rand(filter_str):
         return c
 
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device), dpnp_debug():
+    with dpctl.device_context(device), dpnp_debug():
         actual = f()
 
         actual = actual.ravel()
@@ -247,7 +247,7 @@ def test_hypergeometric(filter_str, three_arg_size):
 
     ngood, nbad, nsamp = 100, 2, 10
     device = dpctl.SyclDevice(filter_str)
-    with dppy.offload_to_sycl_device(device), dpnp_debug():
+    with dpctl.device_context(device), dpnp_debug():
         actual = f(ngood, nbad, nsamp, three_arg_size)
 
         if np.isscalar(actual):

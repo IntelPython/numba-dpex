@@ -13,14 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
-
 import dpctl
 import numpy as np
 
 import numba_dppy as dppy
-
-from . import _helper
+from numba_dppy.tests._helper import skip_no_opencl_cpu, skip_no_opencl_gpu
 
 
 @dppy.kernel
@@ -37,27 +34,23 @@ b = np.array(np.random.random(N), dtype=np.float32)
 d = a + b
 
 
-@unittest.skipUnless(_helper.has_cpu_queues(), "test only on CPU system")
-class TestDPPYDeviceArrayArgsGPU(unittest.TestCase):
+@skip_no_opencl_cpu
+class TestDPPYDeviceArrayArgsGPU:
     def test_device_array_args_cpu(self):
         c = np.ones_like(a)
 
-        with dppy.offload_to_sycl_device("opencl:cpu"):
+        with dpctl.device_context("opencl:cpu"):
             data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
-            self.assertTrue(np.all(c == d))
+            assert np.all(c == d)
 
 
-@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
-class TestDPPYDeviceArrayArgsCPU(unittest.TestCase):
+@skip_no_opencl_gpu
+class TestDPPYDeviceArrayArgsCPU:
     def test_device_array_args_gpu(self):
         c = np.ones_like(a)
 
-        with dppy.offload_to_sycl_device("opencl:gpu"):
+        with dpctl.device_context("opencl:gpu"):
             data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
-        self.assertTrue(np.all(c == d))
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert np.all(c == d)

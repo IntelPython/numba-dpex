@@ -7,16 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+* Support arrays with `__sycl_usm_array_interface__` attribute (#629)
 * Implement compute-follows-data programming model [kernel API] (#598)
+
+## [0.17.4] - 2021-12-02
+
+### Changed
+* Move `dpcpp/llvm-spirv` from runtime to testing dependency by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/659
+
+## [0.17.3] - 2021-11-30
+
+### Changed
+* Use `llvm-spirv` from `dpcpp` compiler package by default [cherry picked from #649] (#651)
+
+### Fixed
+* Enable offloading for `numba.njit` in `dpctl.deveice_context` (#630)
+* Fix upload conditions for main and release branches (#610)
+* Fix DeprecationWarning when use `version.parse()` [cherry picked from #639] (#642)
 
 ## [0.17.2] - 2021-11-15
 
-### Changes
+### Changed
 * Use llvm-spirv from bin-llvm during build for Linux and Windows (#626, #627)
 
 ## [0.17.1] - 2021-11-10
 
-### Changes
+### Changed
 * Update clang to icx (#622)
 
 ## [0.17.0] - 2021-11-03

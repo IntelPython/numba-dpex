@@ -14,13 +14,12 @@
 
 import math
 import time
-import unittest
 
+import dpctl
 import numpy as np
 
 import numba_dppy as dppy
-
-from . import _helper
+from numba_dppy.tests._helper import skip_no_opencl_gpu
 
 RISKFREE = 0.02
 VOLATILITY = 0.30
@@ -72,8 +71,8 @@ def randfloat(rand_var, low, high):
     return (1.0 - rand_var) * low + rand_var * high
 
 
-@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
-class TestDPPYBlackScholes(unittest.TestCase):
+@skip_no_opencl_gpu
+class TestDPPYBlackScholes:
     def test_black_scholes(self):
         OPT_N = 400
         iterations = 2
@@ -139,7 +138,7 @@ class TestDPPYBlackScholes(unittest.TestCase):
         blockdim = 512, 1
         griddim = int(math.ceil(float(OPT_N) / blockdim[0])), 1
 
-        with dppy.offload_to_sycl_device("opencl:gpu"):
+        with dpctl.device_context("opencl:gpu"):
             time1 = time.time()
             for i in range(iterations):
                 black_scholes_dppy[blockdim, griddim](
@@ -158,9 +157,5 @@ class TestDPPYBlackScholes(unittest.TestCase):
         L1norm = delta.sum() / np.abs(callResultNumpy).sum()
 
         max_abs_err = delta.max()
-        self.assertTrue(L1norm < 1e-13)
-        self.assertTrue(max_abs_err < 1e-13)
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert L1norm < 1e-13
+        assert max_abs_err < 1e-13
