@@ -136,7 +136,10 @@ def ensure_dpnp():
 
         return True
     except:
-        return False
+        if config.TESTING_SKIP_NO_DPNP:
+            return False
+        else:
+            pytest.fail("DPNP is not installed")
 
 
 @contextlib.contextmanager
