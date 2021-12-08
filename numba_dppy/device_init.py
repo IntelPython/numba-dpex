@@ -27,6 +27,7 @@ from .ocl.stubs import (
     get_work_dim,
     local,
     mem_fence,
+    private,
     sub_group_barrier,
 )
 
