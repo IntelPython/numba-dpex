@@ -121,11 +121,11 @@ filter_strings_with_skips_for_opencl = [
 ]
 
 filter_strings_opencl_gpu = [
-    "opencl:gpu:0",
+    pytest.param("opencl:gpu:0", marks=skip_no_opencl_gpu),
 ]
 
 filter_strings_level_zero_gpu = [
-    "level_zero:gpu:0",
+    pytest.param("level_zero:gpu:0", marks=skip_no_level_zero_gpu),
 ]
 
 

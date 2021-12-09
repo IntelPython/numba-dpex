@@ -20,6 +20,7 @@ import numba_dppy as dppy
 from numba_dppy.tests._helper import filter_strings_opencl_gpu
 
 
+@pytest.mark.parametrize("filter_str", filter_strings_opencl_gpu)
 @pytest.mark.xfail
 def test_print_only_str(filter_str):
     try:
