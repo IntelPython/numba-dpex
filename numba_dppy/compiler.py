@@ -29,6 +29,7 @@ from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
 from numba_dppy import config
 from numba_dppy.dpctl_iface import USMNdArrayType
+from numba_dppy.dpctl_support import dpctl_version
 from numba_dppy.dppy_array_type import DPPYArray
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dppy.utils import (
@@ -786,7 +787,11 @@ class JitDPPYKernel(DPPYKernelBase):
             queues = []
             for i, argtype in enumerate(argtypes):
                 if type(argtype) == USMNdArrayType:
-                    queue = dpctl.memory.as_usm_memory(args[i]).sycl_queue
+                    memory = dpctl.memory.as_usm_memory(args[i])
+                    if dpctl_version < (0, 12):
+                        queue = memory._queue
+                    else:
+                        queue = memory.sycl_queue
                     queues.append(queue)
 
             # dpctl.utils.get_exeuction_queue() checks if the queues passed are equivalent and returns a
