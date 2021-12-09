@@ -18,7 +18,7 @@ import pytest
 from numba.misc.special import typeof
 
 from numba_dppy.dpctl_iface import USMNdArrayType
-from numba_dppy.tests._helper import skip_test
+from numba_dppy.tests._helper import filter_strings
 
 list_of_dtypes = [
     np.int32,
@@ -45,10 +45,8 @@ def usm_type(request):
     return request.param
 
 
-def test_usm_ndarray_type(offload_device, dtype, usm_type):
-    if skip_test(offload_device):
-        pytest.skip()
-
+@pytest.mark.parametrize("filter_str", filter_strings)
+def test_usm_ndarray_type(filter_str, dtype, usm_type):
     a = np.array(np.random.random(10), dtype)
     da = dpt.usm_ndarray(a.shape, dtype=a.dtype, buffer=usm_type)
 

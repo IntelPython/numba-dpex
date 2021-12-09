@@ -120,6 +120,14 @@ filter_strings_with_skips_for_opencl = [
     pytest.param("opencl:cpu:0", marks=mark_seg_fault),
 ]
 
+filter_strings_opencl_gpu = [
+    "opencl:gpu:0",
+]
+
+filter_strings_level_zero_gpu = [
+    "level_zero:gpu:0",
+]
+
 
 @contextlib.contextmanager
 def override_config(name, value, config=config):
