@@ -27,9 +27,9 @@
 #include "assert.h"
 #include <stdio.h>
 #include <stdbool.h>
-#include <syclinterface/dpctl_sycl_queue_interface.h>
-#include <syclinterface/dpctl_sycl_queue_manager.h>
-#include <syclinterface/dpctl_sycl_usm_interface.h>
+#include <dpctl_sycl_queue_interface.h>
+#include <dpctl_sycl_queue_manager.h>
+#include <dpctl_sycl_usm_interface.h>
 
 NRT_ExternalAllocator usmarray_allocator;
 NRT_external_malloc_func internal_allocator = NULL;
