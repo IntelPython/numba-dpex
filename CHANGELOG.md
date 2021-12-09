@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 * Support arrays with `__sycl_usm_array_interface__` attribute (#629)
+* Support memory allocation in private address space (#640)
 
 ## [0.17.4] - 2021-12-02
 

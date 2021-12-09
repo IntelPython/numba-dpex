@@ -22,10 +22,14 @@ import pytest
 from numba import njit
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import dpnp_debug, skip_no_dpnp, skip_test
+from numba_dppy.tests._helper import (
+    dpnp_debug,
+    filter_strings_with_skips_for_opencl,
+    skip_no_dpnp,
+    skip_test,
+)
 
 from ._helper import wrapper_function
-from .test_numpy_linalg import filter_strings_with_skips_for_opencl
 
 pytestmark = skip_no_dpnp
 
