@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy package &mdash; numba-dppy 0.18.0dev0+31.g5592654 documentation</title>
+  <title>numba_dppy package &mdash; numba-dppy 0.18.0dev0+32.gad95dd5 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -978,7 +978,8 @@ break</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dppy.offload_to_sycl_device">
 <span class="sig-prename descclassname"><span class="pre">numba_dppy.</span></span><span class="sig-name descname"><span class="pre">offload_to_sycl_device</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.offload_to_sycl_device" title="Permalink to this definition"></a></dt>
-<dd><p>Yields a SYCL queue corresponding to the input filter string.</p>
+<dd><p>Yields a SYCL queue corresponding to the input queue object, device object,
+or device filter selector string.</p>
 <p>This context manager “activates”, <em>i.e.</em>, sets as the currently usable
 queue, the SYCL queue defined by the argument <cite>arg</cite>.
 The activated queue is yielded by the context manager and can also be
@@ -987,24 +988,27 @@ the context manager’s scope. The yielded queue is removed as the currently
 usable queue on exiting the context manager.</p>
 <p>You can register context factory in the list of factories.
 This context manager uses context factories to create and activate nested contexts.</p>
-<p>Args:</p>
-<blockquote>
-<div><p>queue_str (str) : A string corresponding to the DPC++ filter selector.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>Yields:</dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SyclQueue</span></code>: A SYCL queue corresponding to the specified
-filter string.</p>
+<dl>
+<dt>Args:</dt><dd><dl>
+<dt>arg<span class="classifier">A <code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code> object, or a <code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclDevice</span></code></span></dt><dd><p>object, or a filter selector string.</p>
+</dd>
+</dl>
+</dd>
+<dt>Yields:</dt><dd><dl class="simple">
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code>: A SYCL queue corresponding to the specified</dt><dd><p>input device, queue, or filter string.</p>
+</dd>
+</dl>
 </dd>
 <dt>Raises:</dt><dd><p>SyclQueueCreationError: If the SYCL queue creation failed.</p>
 </dd>
 </dl>
 <dl class="field-list">
 <dt class="field-odd">Example</dt>
-<dd class="field-odd"><p>To create a scope within which the Level Zero GPU number 0 is active,
-a programmer needs to do the following.</p>
+<dd class="field-odd"><p>The following example sets current queue targeting specific device
+indicated with filter selector string in the scope of <cite>with</cite> block:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpctl</span>
 <span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="s2">&quot;level0:gpu:0&quot;</span><span class="p">):</span>
-    <span class="k">pass</span>
+    <span class="n">do_something_on_gpu0</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>The following example registers nested context factory:</p>
