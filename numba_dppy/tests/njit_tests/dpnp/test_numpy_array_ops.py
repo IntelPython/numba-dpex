@@ -27,7 +27,6 @@ from numba_dppy.tests._helper import dpnp_debug, filter_strings, is_gen12
 from ._helper import wrapper_function
 from .dpnp_skip_test import dpnp_skip_test as skip_test
 
-
 list_of_dtypes = [
     np.int32,
     np.int64,

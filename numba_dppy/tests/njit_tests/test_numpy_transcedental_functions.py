@@ -29,7 +29,6 @@ from numba_dppy.tests._helper import (
     skip_test,
 )
 
-
 list_of_binary_ops = [
     "add",
     "subtract",

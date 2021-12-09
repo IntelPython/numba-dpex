@@ -23,7 +23,6 @@ from numba_dppy.tests._helper import assert_auto_offloading, filter_strings
 
 from . import _helper
 
-
 list_of_shape = [
     (100, 100),
     (100, (10, 10)),
