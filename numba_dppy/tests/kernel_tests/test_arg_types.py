@@ -17,7 +17,7 @@ import numpy as np
 import pytest
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import skip_test
+from numba_dppy.tests._helper import filter_strings
 
 global_size = 1054
 local_size = 1
@@ -27,18 +27,6 @@ N = global_size * local_size
 def mul_kernel(a, b, c):
     i = dppy.get_global_id(0)
     b[i] = a[i] * c
-
-
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
-]
-
-
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
 
 
 list_of_dtypes = [
@@ -57,10 +45,8 @@ def input_arrays(request):
     return a, b, c[0]
 
 
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_kernel_arg_types(filter_str, input_arrays):
-    if skip_test(filter_str):
-        pytest.skip()
-
     kernel = dppy.kernel(mul_kernel)
     a, actual, c = input_arrays
     expected = a * c
@@ -77,10 +63,8 @@ def check_bool_kernel(A, test):
         A[0] = 222
 
 
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_bool_type(filter_str):
-    if skip_test(filter_str):
-        pytest.skip()
-
     kernel = dppy.kernel(check_bool_kernel)
     a = np.array([2], np.int64)
 
