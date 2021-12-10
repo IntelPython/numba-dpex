@@ -195,11 +195,12 @@ jobs:
           conda install $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl=${{ matrix.dpctl }} ${{ matrix.dependencies }} $CHANNELS
           # Test installed packages
           conda list
+      - name: Check DPNP
+        run: python -c "import dpnp"
       - name: Run tests
         run: |
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
           export OCL_ICD_FILENAMES=libintelocl.so
-          python -c "import dpnp"
           python -m pytest --pyargs $MODULE_NAME
 
   test_windows:
