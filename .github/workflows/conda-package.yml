@@ -196,7 +196,9 @@ jobs:
           # Test installed packages
           conda list
       - name: Check DPNP
-        run: python -c "import dpnp"
+        run: |
+          export OCL_ICD_FILENAMES=libintelocl.so
+          python -c "import dpnp"
       - name: Run tests
         run: |
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
