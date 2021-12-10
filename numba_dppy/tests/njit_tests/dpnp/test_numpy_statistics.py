@@ -33,18 +33,6 @@ from ._helper import wrapper_function
 
 pytestmark = skip_no_dpnp
 
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
-]
-
-
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
-
-
 list_of_dtypes = [
     np.int32,
     np.int64,

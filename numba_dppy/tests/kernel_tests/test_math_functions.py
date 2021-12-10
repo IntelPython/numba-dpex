@@ -19,19 +19,7 @@ import numpy as np
 import pytest
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import skip_test
-
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
-]
-
-
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
-
+from numba_dppy.tests._helper import filter_strings
 
 list_of_unary_ops = ["fabs", "exp", "log", "sqrt", "sin", "cos", "tan"]
 
@@ -56,10 +44,8 @@ def input_arrays(request):
     return a, b
 
 
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_binary_ops(filter_str, unary_op, input_arrays):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a, actual = input_arrays
     uop = getattr(math, unary_op)
     np_uop = getattr(np, unary_op)

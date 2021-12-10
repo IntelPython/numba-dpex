@@ -22,23 +22,16 @@ import pytest
 from numba import njit
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import dpnp_debug, skip_no_dpnp, skip_test
+from numba_dppy.tests._helper import (
+    dpnp_debug,
+    filter_strings,
+    skip_no_dpnp,
+    skip_test,
+)
 
 from ._helper import wrapper_function
 
 pytestmark = skip_no_dpnp
-
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
-]
-
-
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
-
 
 list_of_dtypes = [
     np.int32,
@@ -84,6 +77,7 @@ def unary_op(request):
     )
 
 
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
     if skip_test(filter_str):
         pytest.skip()
@@ -106,6 +100,7 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
     np.testing.assert_allclose(actual, expected, rtol=1e-3, atol=0)
 
 
+@pytest.mark.parametrize("filter_str", filter_strings)
 @pytest.mark.parametrize("kth", [0, 1], ids=["0", "1"])
 @pytest.mark.parametrize(
     "array",

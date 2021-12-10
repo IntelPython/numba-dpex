@@ -22,7 +22,12 @@ import pytest
 from numba import njit
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import dpnp_debug, skip_no_dpnp, skip_test
+from numba_dppy.tests._helper import (
+    dpnp_debug,
+    filter_strings_level_zero_gpu,
+    skip_no_dpnp,
+    skip_test,
+)
 
 from ._helper import wrapper_function
 
@@ -30,16 +35,6 @@ pytestmark = skip_no_dpnp
 
 # dpnp throws -30 (CL_INVALID_VALUE) when invoked with multiple kinds of
 # devices at runtime, so testing for level_zero only
-list_of_filter_strs = [
-    # "opencl:gpu:0",
-    "level_zero:gpu:0",
-    # "opencl:cpu:0",
-]
-
-
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
 
 
 list_of_size = [
@@ -80,6 +75,7 @@ def one_arg_fn(request):
     return function, request.param
 
 
+@pytest.mark.parametrize("filter_str", filter_strings_level_zero_gpu)
 def test_one_arg_fn(filter_str, one_arg_fn, unary_size, capfd):
     if skip_test(filter_str):
         pytest.skip()
@@ -120,6 +116,7 @@ def get_two_arg_fn(op_name):
     return wrapper_function("a, b", f"np.random.{op_name}(a, b)", globals())
 
 
+@pytest.mark.parametrize("filter_str", filter_strings_level_zero_gpu)
 def test_two_arg_fn(filter_str, two_arg_fn, unary_size, capfd):
     if skip_test(filter_str):
         pytest.skip()
@@ -173,6 +170,7 @@ def get_three_arg_fn(op_name):
     )
 
 
+@pytest.mark.parametrize("filter_str", filter_strings_level_zero_gpu)
 def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
     if skip_test(filter_str):
         pytest.skip()
@@ -219,6 +217,7 @@ def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
                 assert np.all(actual <= high)
 
 
+@pytest.mark.parametrize("filter_str", filter_strings_level_zero_gpu)
 def test_rand(filter_str):
     if skip_test(filter_str):
         pytest.skip()
@@ -237,6 +236,7 @@ def test_rand(filter_str):
         assert np.all(actual < 1.0)
 
 
+@pytest.mark.parametrize("filter_str", filter_strings_level_zero_gpu)
 def test_hypergeometric(filter_str, three_arg_size):
     if skip_test(filter_str):
         pytest.skip()

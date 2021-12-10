@@ -19,24 +19,11 @@ import numpy as np
 import pytest
 
 import numba_dppy
-from numba_dppy.tests._helper import skip_test
-
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
-]
+from numba_dppy.tests._helper import filter_strings
 
 
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
-
-
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_private_memory(filter_str):
-    if skip_test(filter_str):
-        pytest.skip()
-
     @numba_dppy.kernel
     def private_memory_kernel(A):
         i = numba_dppy.get_global_id(0)

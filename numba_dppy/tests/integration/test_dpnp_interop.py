@@ -17,7 +17,7 @@ import numpy as np
 import pytest
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import ensure_dpnp, skip_test
+from numba_dppy.tests._helper import ensure_dpnp, filter_strings
 
 dpnp = pytest.importorskip("dpnp", reason="DPNP is not installed")
 
@@ -47,27 +47,23 @@ def usm_type(request):
     return request.param
 
 
-def test_dpnp_create_array_in_context(offload_device, dtype):
-    if skip_test(offload_device):
-        pytest.skip("No device for " + offload_device)
-
+@pytest.mark.parametrize("filter_str", filter_strings)
+def test_dpnp_create_array_in_context(filter_str, dtype):
     if (
         "opencl" not in dpctl.get_current_queue().sycl_device.filter_string
-        and "opencl" in offload_device
+        and "opencl" in filter_str
     ):
         pytest.skip("Bug in DPNP. See: IntelPython/dpnp#723")
 
-    with dpctl.device_context(offload_device):
+    with dpctl.device_context(filter_str):
         a = dpnp.arange(1024, dtype=dtype)  # noqa
 
 
-def test_consuming_array_from_dpnp(offload_device, dtype):
-    if skip_test(offload_device):
-        pytest.skip("No device for " + offload_device)
-
+@pytest.mark.parametrize("filter_str", filter_strings)
+def test_consuming_array_from_dpnp(filter_str, dtype):
     if (
         "opencl" not in dpctl.get_current_queue().sycl_device.filter_string
-        and "opencl" in offload_device
+        and "opencl" in filter_str
     ):
         pytest.skip("Bug in DPNP. See: IntelPython/dpnp#723")
 
@@ -81,7 +77,7 @@ def test_consuming_array_from_dpnp(offload_device, dtype):
 
     global_size = 1021
 
-    with dpctl.device_context(offload_device):
+    with dpctl.device_context(filter_str):
         a = dppy.asarray(dpnp.arange(global_size, dtype=dtype))
         b = dppy.asarray(dpnp.arange(global_size, dtype=dtype))
         c = dppy.asarray(dpnp.ones_like(a))

@@ -21,22 +21,17 @@ import numpy as np
 import pytest
 from numba import njit
 
-from numba_dppy.tests._helper import dpnp_debug, skip_no_dpnp, skip_test
+from numba_dppy.tests._helper import (
+    dpnp_debug,
+    filter_strings,
+    skip_no_dpnp,
+    skip_test,
+)
 
 pytestmark = skip_no_dpnp
 
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
-]
 
-
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
-
-
+@pytest.mark.parametrize("filter_str", filter_strings)
 @pytest.mark.parametrize(
     "dtype", [np.bool_, np.int32, np.int64, np.float32, np.float64]
 )

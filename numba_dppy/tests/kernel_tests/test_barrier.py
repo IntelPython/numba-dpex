@@ -19,28 +19,15 @@ import numpy as np
 import pytest
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import skip_test
-
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
-]
-
-
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
+from numba_dppy.tests._helper import filter_strings
 
 
 def skip_if_win():
     return platform.system == "Windows"
 
 
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_proper_lowering(filter_str):
-    if skip_test(filter_str):
-        pytest.skip()
-
     # We perform eager compilation at the site of
     # @dppy.kernel. This takes the default dpctl
     # queue which is level_zero backed. Level_zero
@@ -70,10 +57,8 @@ def test_proper_lowering(filter_str):
     np.testing.assert_allclose(orig * 2, arr)
 
 
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_no_arg_barrier_support(filter_str):
-    if skip_test(filter_str):
-        pytest.skip()
-
     if skip_if_win():
         pytest.skip()
 
@@ -96,9 +81,8 @@ def test_no_arg_barrier_support(filter_str):
     np.testing.assert_allclose(orig * 2, arr)
 
 
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_local_memory(filter_str):
-    if skip_test(filter_str):
-        pytest.skip()
     blocksize = 10
 
     if skip_if_win():
