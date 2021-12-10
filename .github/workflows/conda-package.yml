@@ -126,14 +126,14 @@ jobs:
         integration_channels: [""]
         experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
-        dependencies: [""]
+        dependencies: ["mkl=2021.3.0"]  # dpnp dependency
         include:
           - python: "3.8"
             numba: 0.54
             integration_channels: -c dppy/label/dev
             artifact_name: -c dppy_label_dev
             experimental: false  # current stable
-            dependencies: ""
+            dependencies: "mkl=2021.3.0"  # dpnp dependency
     continue-on-error: ${{ matrix.experimental }}
     env:
       # conda-forge: llvm-spirv 11 not on intel channel yet
