@@ -14,11 +14,13 @@
 
 import copy
 import ctypes
+import warnings
 from inspect import signature
 from types import FunctionType
 
 import dpctl
 import dpctl.program as dpctl_prog
+import dpctl.utils
 import numpy as np
 from numba.core import compiler, ir, types
 from numba.core.compiler import CompilerBase, DefaultPassBuilder
@@ -27,14 +29,19 @@ from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
 from numba_dppy import config
 from numba_dppy.dpctl_iface import USMNdArrayType
+from numba_dppy.dpctl_support import dpctl_version
 from numba_dppy.dppy_array_type import DPPYArray
 from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dppy.utils import (
+    IndeterminateExecutionQueueError,
     as_usm_obj,
     assert_no_return,
+    cfd_ctx_mgr_wrng_msg,
     copy_from_numpy_to_usm_obj,
     copy_to_numpy_from_usm_obj,
+    get_info_from_suai,
     has_usm_memory,
+    mix_datatype_err_msg,
 )
 
 from . import spirv_generator
@@ -43,6 +50,11 @@ from .dppy_passbuilder import DPPYPassBuilder
 _NUMBA_DPPY_READ_ONLY = "read_only"
 _NUMBA_DPPY_WRITE_ONLY = "write_only"
 _NUMBA_DPPY_READ_WRITE = "read_write"
+
+
+def _raise_datatype_mixed_error(argtypes):
+    error_message = mix_datatype_err_msg + ("%s" % str(argtypes))
+    raise TypeError(error_message)
 
 
 def _raise_no_device_found_error():
@@ -562,6 +574,70 @@ class DPPYKernel(DPPYKernelBase):
         for ax in range(ndim):
             kernelargs.append(ctypes.c_longlong(strides[ax]))
 
+    def _unpack_USMNdArrayType(self, val, kernelargs):
+        (
+            usm_mem,
+            total_size,
+            shape,
+            ndim,
+            itemsize,
+            strides,
+            dtype,
+        ) = get_info_from_suai(val)
+
+        self._unpack_device_array_argument(
+            total_size,
+            itemsize,
+            usm_mem,
+            shape,
+            strides,
+            ndim,
+            kernelargs,
+        )
+
+    def _unpack_Array(
+        self, val, sycl_queue, kernelargs, device_arrs, access_type
+    ):
+        packed_val = val
+        usm_mem = has_usm_memory(val)
+        if usm_mem is None:
+            default_behavior = self.check_for_invalid_access_type(access_type)
+            usm_mem = as_usm_obj(val, queue=sycl_queue, copy=False)
+
+            orig_val = val
+            packed = False
+            if not val.flags.c_contiguous:
+                # If the numpy.ndarray is not C-contiguous
+                # we pack the strided array into a packed array.
+                # This allows us to treat the data from here on as C-contiguous.
+                # While packing we treat the data as C-contiguous.
+                # We store the reference of both (strided and packed)
+                # array and during unpacking we use numpy.copyto() to copy
+                # the data back from the packed temporary array to the
+                # original strided array.
+                packed_val = val.flatten(order="C")
+                packed = True
+
+            if (
+                default_behavior
+                or self.valid_access_types[access_type] == _NUMBA_DPPY_READ_ONLY
+                or self.valid_access_types[access_type]
+                == _NUMBA_DPPY_READ_WRITE
+            ):
+                copy_from_numpy_to_usm_obj(usm_mem, packed_val)
+
+            device_arrs[-1] = (usm_mem, orig_val, packed_val, packed)
+
+        self._unpack_device_array_argument(
+            packed_val.size,
+            packed_val.dtype.itemsize,
+            usm_mem,
+            packed_val.shape,
+            packed_val.strides,
+            packed_val.ndim,
+            kernelargs,
+        )
+
     def _unpack_argument(
         self, ty, val, sycl_queue, kernelargs, device_arrs, access_type
     ):
@@ -593,57 +669,10 @@ class DPPYKernel(DPPYKernelBase):
         device_arrs.append(None)
 
         if isinstance(ty, USMNdArrayType):
-            self._unpack_device_array_argument(
-                val.size,
-                val.dtype.itemsize,
-                val.usm_data,
-                val.shape,
-                val.strides,
-                val.ndim,
-                kernelargs,
-            )
+            self._unpack_USMNdArrayType(val, kernelargs)
         elif isinstance(ty, types.Array):
-            packed_val = val
-            usm_mem = has_usm_memory(val)
-            if usm_mem is None:
-                default_behavior = self.check_for_invalid_access_type(
-                    access_type
-                )
-                usm_mem = as_usm_obj(val, queue=sycl_queue, copy=False)
-
-                orig_val = val
-                packed = False
-                if not val.flags.c_contiguous:
-                    # If the numpy.ndarray is not C-contiguous
-                    # we pack the strided array into a packed array.
-                    # This allows us to treat the data from here on as C-contiguous.
-                    # While packing we treat the data as C-contiguous.
-                    # We store the reference of both (strided and packed)
-                    # array and during unpacking we use numpy.copyto() to copy
-                    # the data back from the packed temporary array to the
-                    # original strided array.
-                    packed_val = val.flatten(order="C")
-                    packed = True
-
-                if (
-                    default_behavior
-                    or self.valid_access_types[access_type]
-                    == _NUMBA_DPPY_READ_ONLY
-                    or self.valid_access_types[access_type]
-                    == _NUMBA_DPPY_READ_WRITE
-                ):
-                    copy_from_numpy_to_usm_obj(usm_mem, packed_val)
-
-                device_arrs[-1] = (usm_mem, orig_val, packed_val, packed)
-
-            self._unpack_device_array_argument(
-                packed_val.size,
-                packed_val.dtype.itemsize,
-                usm_mem,
-                packed_val.shape,
-                packed_val.strides,
-                packed_val.ndim,
-                kernelargs,
+            self._unpack_Array(
+                val, sycl_queue, kernelargs, device_arrs, access_type
             )
         elif ty == types.int64:
             cval = ctypes.c_longlong(val)
@@ -710,17 +739,79 @@ class JitDPPYKernel(DPPYKernelBase):
         """
         return tuple([self.typingctx.resolve_argument_type(a) for a in args])
 
+    def _datatype_is_same(self, argtypes):
+        """
+        This function will determine if there is any argument of type array and
+        in case there are multiple array types if they are all of the same type.
+
+        Args:
+            argtypes: Numba type for each argument passed to a JitDPPYKernel.
+
+        Returns:
+            array_type: None if there are no argument of type array, or the
+                        Numba type in case there is array type argument.
+            bool: True if no array type arguments or if all array type arguments
+                  are of same Numba type, False otherwise.
+
+        """
+        array_type = None
+        for i, argtype in enumerate(argtypes):
+            arg_is_array_type = isinstance(
+                argtype, USMNdArrayType
+            ) or isinstance(argtype, types.Array)
+            if array_type is None and arg_is_array_type:
+                array_type = argtype
+            elif (
+                array_type is not None
+                and arg_is_array_type
+                and type(argtype) is not type(array_type)
+            ):
+                return None, False
+        return array_type, True
+
     def __call__(self, *args, **kwargs):
         assert not kwargs, "Keyword Arguments are not supported"
-        try:
-            current_queue = dpctl.get_current_queue()
-        except:
-            _raise_no_device_found_error()
 
         argtypes = self._get_argtypes(*args)
-        kernel = self.specialize(argtypes, current_queue)
+        compute_queue = None
+
+        # Get the array type and whether all array are of same type or not
+        array_type, uniform = self._datatype_is_same(argtypes)
+        if not uniform:
+            _raise_datatype_mixed_error(argtypes)
+
+        if type(array_type) == USMNdArrayType:
+            if dpctl.is_in_device_context():
+                warnings.warn(cfd_ctx_mgr_wrng_msg)
+
+            queues = []
+            for i, argtype in enumerate(argtypes):
+                if type(argtype) == USMNdArrayType:
+                    memory = dpctl.memory.as_usm_memory(args[i])
+                    if dpctl_version < (0, 12):
+                        queue = memory._queue
+                    else:
+                        queue = memory.sycl_queue
+                    queues.append(queue)
+
+            # dpctl.utils.get_exeuction_queue() checks if the queues passed are equivalent and returns a
+            # SYCL queue if they are equivalent and None if they are not.
+            compute_queue = dpctl.utils.get_execution_queue(queues)
+            if compute_queue is None:
+                raise IndeterminateExecutionQueueError(
+                    "Data passed as argument are not equivalent. Please "
+                    "create dpctl.tensor.usm_ndarray with equivalent SYCL queue."
+                )
+
+        if compute_queue is None:
+            try:
+                compute_queue = dpctl.get_current_queue()
+            except:
+                _raise_no_device_found_error()
+
+        kernel = self.specialize(argtypes, compute_queue)
         cfg = kernel.configure(
-            self.sycl_queue, self.global_size, self.local_size
+            kernel.sycl_queue, self.global_size, self.local_size
         )
         cfg(*args)
 

@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
-
 import dpctl
 import numpy as np
 import pytest
@@ -23,22 +21,12 @@ from numba.tests.support import captured_stdout
 import numba_dppy as dppy
 from numba_dppy import config
 
-from . import _helper
-from ._helper import assert_auto_offloading
-
-skip_no_gpu = pytest.mark.skipif(
-    not _helper.has_gpu_queues(), reason="No GPU platforms available"
+from ._helper import (
+    assert_auto_offloading,
+    filter_strings,
+    skip_no_opencl_cpu,
+    skip_no_opencl_gpu,
 )
-skip_no_cpu = pytest.mark.skipif(
-    not _helper.has_cpu_queues(), reason="No CPU platforms available"
-)
-
-
-filter_strings = [
-    pytest.param("level_zero:gpu:0", marks=skip_no_gpu),
-    pytest.param("opencl:gpu:0", marks=skip_no_gpu),
-    pytest.param("opencl:cpu:0", marks=skip_no_cpu),
-]
 
 
 def scenario(filter_str, context):
@@ -67,8 +55,8 @@ def test_dpctl_device_context_affects_numba_pipeline(filter_str, context):
         scenario(filter_str, context)
 
 
-class TestWithDPPYContext(unittest.TestCase):
-    @unittest.skipIf(not _helper.has_gpu_queues(), "No GPU platforms available")
+class TestWithDPPYContext:
+    @skip_no_opencl_gpu
     def test_with_dppy_context_gpu(self):
         @njit
         def nested_func(a, b):
@@ -92,11 +80,9 @@ class TestWithDPPYContext(unittest.TestCase):
         func(expected)
 
         np.testing.assert_array_equal(expected, got_gpu)
-        self.assertTrue(
-            "Parfor offloaded to opencl:gpu" in got_gpu_message.getvalue()
-        )
+        assert "Parfor offloaded to opencl:gpu" in got_gpu_message.getvalue()
 
-    @unittest.skipIf(not _helper.has_cpu_queues(), "No CPU platforms available")
+    @skip_no_opencl_cpu
     def test_with_dppy_context_cpu(self):
         @njit
         def nested_func(a, b):
@@ -120,10 +106,4 @@ class TestWithDPPYContext(unittest.TestCase):
         func(expected)
 
         np.testing.assert_array_equal(expected, got_cpu)
-        self.assertTrue(
-            "Parfor offloaded to opencl:cpu" in got_cpu_message.getvalue()
-        )
-
-
-if __name__ == "__main__":
-    unittest.main()
+        assert "Parfor offloaded to opencl:cpu" in got_cpu_message.getvalue()

@@ -12,18 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
-
 import dpctl
 import numpy as np
 
 import numba_dppy as dppy
+from numba_dppy.tests._helper import skip_no_opencl_gpu
 
-from . import _helper
 
-
-@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
-class TestDPPYFunc(unittest.TestCase):
+@skip_no_opencl_gpu
+class TestDPPYFunc:
     N = 257
 
     def test_dppy_func_device_array(self):
@@ -43,7 +40,7 @@ class TestDPPYFunc(unittest.TestCase):
         with dpctl.device_context(device):
             f[self.N, dppy.DEFAULT_LOCAL_SIZE](a, b)
 
-        self.assertTrue(np.all(b == 2))
+        assert np.all(b == 2)
 
     def test_dppy_func_ndarray(self):
         @dppy.func
@@ -67,12 +64,8 @@ class TestDPPYFunc(unittest.TestCase):
         with dpctl.device_context(device):
             f[self.N, dppy.DEFAULT_LOCAL_SIZE](a, b)
 
-            self.assertTrue(np.all(b == 2))
+            assert np.all(b == 2)
 
             h[self.N, dppy.DEFAULT_LOCAL_SIZE](a, b)
 
-            self.assertTrue(np.all(b == 3))
-
-
-if __name__ == "__main__":
-    unittest.main()
+            assert np.all(b == 3)

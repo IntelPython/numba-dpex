@@ -22,25 +22,14 @@ import pytest
 from numba import njit
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import dpnp_debug
+from numba_dppy.tests._helper import (
+    dpnp_debug,
+    filter_strings,
+    filter_strings_with_skips_for_opencl,
+)
 
 from ._helper import args_string, wrapper_function
 from .dpnp_skip_test import dpnp_skip_test as skip_test
-
-filter_strings = [
-    "level_zero:gpu:0",
-    "opencl:gpu:0",
-    "opencl:cpu:0",
-]
-
-filter_strings_with_skips_for_opencl = [
-    "level_zero:gpu:0",
-    pytest.param("opencl:gpu:0", marks=pytest.mark.skip(reason="Freeze")),
-    pytest.param(
-        "opencl:cpu:0", marks=pytest.mark.skip(reason="Segmentation fault")
-    ),
-    # pytest.param("opencl:cpu:0", marks=pytest.mark.xfail(reason="Segmentation fault")),  # run with --boxed
-]
 
 
 # From https://github.com/IntelPython/dpnp/blob/0.4.0/tests/test_linalg.py#L8
@@ -200,6 +189,7 @@ def test_matmul(filter_str, dtype, capfd):
         assert np.allclose(actual, expected)
 
 
+@pytest.mark.parametrize("filter_str", filter_strings)
 @pytest.mark.skip(reason="dpnp does not support it yet")
 def test_cholesky(filter_str, dtype, capfd):
     if skip_test(filter_str):

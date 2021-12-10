@@ -6,7 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.17.3] - 2021-11-xx
+### Added
+* Support arrays with `__sycl_usm_array_interface__` attribute (#629)
+* Support memory allocation in private address space (#640)
+* Implement compute-follows-data programming model [kernel API] (#598)
+
+## [0.17.4] - 2021-12-02
+
+### Changed
+* Move `dpcpp/llvm-spirv` from runtime to testing dependency by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/659
+
+## [0.17.3] - 2021-11-30
+
+### Changed
+* Use `llvm-spirv` from `dpcpp` compiler package by default [cherry picked from #649] (#651)
 
 ### Fixed
 * Enable offloading for `numba.njit` in `dpctl.deveice_context` (#630)

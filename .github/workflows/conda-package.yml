@@ -122,16 +122,32 @@ jobs:
     strategy:
       matrix:
         python: [3.8, 3.9]
-        numba: [0.54, "0.55.0dev0=*_469"]
+        numba: ["0.54"]
+        dpctl: ["0.11", "0.12"]
         integration_channels: [""]
-        experimental: [true]  # packages are not available on -c intel yet
+        experimental: [false]
         artifact_name: [""]
         dependencies: ["mkl=2021.3.0"]  # dpnp dependency
         include:
           - python: "3.8"
             numba: 0.54
+            dpctl: "0.12"
             integration_channels: -c dppy/label/dev
             artifact_name: -c dppy_label_dev
+            experimental: false  # current stable
+            dependencies: "mkl=2021.3.0"  # dpnp dependency
+          - python: "3.8"
+            numba: "0.55.0dev0=*_782"
+            dpctl: "0.12"
+            integration_channels:
+            artifact_name: ""
+            experimental: false  # current stable
+            dependencies: "mkl=2021.3.0"  # dpnp dependency
+          - python: "3.9"
+            numba: "0.55.0dev0=*_778"
+            dpctl: "0.12"
+            integration_channels: ""
+            artifact_name: ""
             experimental: false  # current stable
             dependencies: "mkl=2021.3.0"  # dpnp dependency
     continue-on-error: ${{ matrix.experimental }}
@@ -176,7 +192,7 @@ jobs:
       - name: Install numba-dppy
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}"
-          conda install $PACKAGE_NAME pytest python=${{ matrix.python }} numba=${{ matrix.numba }} ${{ matrix.dependencies }} $CHANNELS
+          conda install $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl=${{ matrix.dpctl }} ${{ matrix.dependencies }} $CHANNELS
           # Test installed packages
           conda list
       - name: Run tests
@@ -241,7 +257,7 @@ jobs:
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
       - name: Install numba-dppy
         run: |
-          conda install ${{ env.PACKAGE_NAME }} pytest python=${{ matrix.python }} ${{ matrix.dependencies }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
+          conda install ${{ env.PACKAGE_NAME }} pytest dpcpp_win-64 python=${{ matrix.python }} ${{ matrix.dependencies }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
           # Test installed packages
           conda list
       - name: Install opencl_rt

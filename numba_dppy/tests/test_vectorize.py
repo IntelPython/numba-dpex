@@ -19,21 +19,9 @@ import pytest
 from numba import float32, float64, int32, int64, njit, vectorize
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import assert_auto_offloading
+from numba_dppy.tests._helper import assert_auto_offloading, filter_strings
 
 from . import _helper
-
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
-]
-
-
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
-
 
 list_of_shape = [
     (100, 100),
@@ -47,13 +35,8 @@ def shape(request):
     return request.param
 
 
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_njit(filter_str):
-    if _helper.platform_not_supported(filter_str):
-        pytest.skip()
-
-    if _helper.skip_test(filter_str):
-        pytest.skip()
-
     @vectorize(nopython=True)
     def axy(a, x, y):
         return a * x + y
@@ -95,13 +78,8 @@ def input_type(request):
     return request.param
 
 
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_vectorize(filter_str, shape, dtypes, input_type):
-    if _helper.platform_not_supported(filter_str):
-        pytest.skip()
-
-    if _helper.skip_test(filter_str):
-        pytest.skip()
-
     def vector_add(a, b):
         return a + b
 

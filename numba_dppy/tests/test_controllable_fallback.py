@@ -12,20 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
 import warnings
 
 import dpctl
 import numba
 import numpy as np
+import pytest
 
 from numba_dppy import config
+from numba_dppy.tests._helper import skip_no_opencl_gpu
 
-from . import _helper
 
-
-@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
-class TestDPPYFallback(unittest.TestCase):
+@skip_no_opencl_gpu
+class TestDPPYFallback:
     def test_dppy_fallback_true(self):
         @numba.jit
         def fill_value(i):
@@ -51,9 +50,9 @@ class TestDPPYFallback(unittest.TestCase):
         config.DEBUG = 0
 
         np.testing.assert_array_equal(dppy_fallback_true, ref_result)
-        self.assertIn("Failed to offload parfor", str(w[-1].message))
+        assert "Failed to offload parfor" in str(w[-1].message)
 
-    @unittest.expectedFailure
+    @pytest.mark.xfail
     def test_dppy_fallback_false(self):
         @numba.jit
         def fill_value(i):
@@ -83,8 +82,4 @@ class TestDPPYFallback(unittest.TestCase):
             config.DEBUG = 0
 
             not np.testing.assert_array_equal(dppy_fallback_false, ref_result)
-            self.assertNotIn("Failed to offload parfor", str(w[-1].message))
-
-
-if __name__ == "__main__":
-    unittest.main()
+            assert "Failed to offload parfor" not in str(w[-1].message)

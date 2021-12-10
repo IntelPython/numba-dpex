@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
-
 import dpctl
 import numpy as np
 from numba import njit, prange
@@ -21,12 +19,11 @@ from numba.tests.support import captured_stdout
 
 import numba_dppy as dppy
 from numba_dppy import config as dppy_config
+from numba_dppy.tests._helper import skip_no_opencl_gpu
 
-from . import _helper
 
-
-@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
-class TestOffloadDiagnostics(unittest.TestCase):
+@skip_no_opencl_gpu
+class TestOffloadDiagnostics:
     def test_parfor(self):
         def prange_func():
             n = 10
@@ -47,8 +44,8 @@ class TestOffloadDiagnostics(unittest.TestCase):
                 jitted()
 
             dppy_config.OFFLOAD_DIAGNOSTICS = 0
-            self.assertTrue("Auto-offloading" in got.getvalue())
-            self.assertTrue("Device -" in got.getvalue())
+            assert "Auto-offloading" in got.getvalue()
+            assert "Device -" in got.getvalue()
 
     def test_kernel(self):
         @dppy.kernel
@@ -71,9 +68,5 @@ class TestOffloadDiagnostics(unittest.TestCase):
                 parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
 
             dppy_config.OFFLOAD_DIAGNOSTICS = 0
-            self.assertTrue("Auto-offloading" in got.getvalue())
-            self.assertTrue("Device -" in got.getvalue())
-
-
-if __name__ == "__main__":
-    unittest.main()
+            assert "Auto-offloading" in got.getvalue()
+            assert "Device -" in got.getvalue()
