@@ -156,11 +156,11 @@ def ensure_dpnp():
         if config.TESTING_SKIP_NO_DPNP:
             return False
         else:
-            pytest.fail("DPNP is not installed")
+            pytest.fail("DPNP is not available")
 
 
 skip_no_dpnp = pytest.mark.skipif(
-    not ensure_dpnp(), reason="DPNP is not installed"
+    not ensure_dpnp(), reason="DPNP is not available"
 )
 
 
