@@ -26,7 +26,6 @@ from numba_dppy.tests._helper import (
     dpnp_debug,
     filter_strings,
     skip_no_dpnp,
-    skip_test,
 )
 
 from ._helper import wrapper_function
@@ -79,9 +78,6 @@ def unary_op(request):
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a = input_arrays[0]
     op, name = unary_op
     if name != "argsort" and name != "sort":
@@ -125,9 +121,6 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
     ],
 )
 def test_partition(array, kth, filter_str):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a = np.array(array)
 
     def fn(a, kth):

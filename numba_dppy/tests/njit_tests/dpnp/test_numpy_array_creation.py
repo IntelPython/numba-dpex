@@ -26,7 +26,6 @@ from numba_dppy.tests._helper import (
     dpnp_debug,
     filter_strings,
     skip_no_dpnp,
-    skip_test,
 )
 
 from ._helper import args_string, wrapper_function
@@ -88,9 +87,6 @@ def get_op_fn(name, nargs):
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_unary_ops(filter_str, unary_op, input_array, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a = input_array
     if unary_op == "trace":
         a = input_array.reshape((2, 5))
@@ -116,9 +112,6 @@ def dtype(request):
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_binary_op(filter_str, binary_op, input_array, dtype, get_shape, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a = np.reshape(input_array, get_shape)
     fn = get_op_fn(binary_op, 2)
     actual = np.empty(shape=a.shape, dtype=a.dtype)
@@ -147,9 +140,6 @@ def full_name(request):
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_full(filter_str, full_name, input_array, get_shape, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a = np.reshape(input_array, get_shape)
     fn = get_op_fn(full_name, 2)
     actual = np.empty(shape=a.shape, dtype=a.dtype)

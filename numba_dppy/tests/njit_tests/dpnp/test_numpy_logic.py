@@ -25,7 +25,6 @@ from numba_dppy.tests._helper import (
     dpnp_debug,
     filter_strings,
     skip_no_dpnp,
-    skip_test,
 )
 
 pytestmark = skip_no_dpnp
@@ -41,9 +40,6 @@ pytestmark = skip_no_dpnp
     ids=["(0,)", "(4,)", "(2, 3)"],
 )
 def test_all(dtype, shape, filter_str):
-    if skip_test(filter_str):
-        pytest.skip()
-
     size = 1
     for i in range(len(shape)):
         size *= shape[i]

@@ -27,7 +27,6 @@ from numba_dppy.tests._helper import (
     filter_strings,
     is_gen12,
     skip_no_dpnp,
-    skip_test,
 )
 
 from ._helper import wrapper_function
@@ -87,9 +86,6 @@ def unary_op(request):
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a = input_arrays[0]
     op, name = unary_op
     if name != "argsort" and name != "copy":
@@ -142,9 +138,6 @@ def get_take_fn():
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_take(filter_str, input_arrays, indices, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a = input_arrays[0]
     fn = get_take_fn()
 

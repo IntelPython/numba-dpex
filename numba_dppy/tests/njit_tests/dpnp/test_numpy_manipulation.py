@@ -26,7 +26,6 @@ from numba_dppy.tests._helper import (
     dpnp_debug,
     filter_strings,
     skip_no_dpnp,
-    skip_test,
 )
 
 pytestmark = skip_no_dpnp
@@ -39,9 +38,6 @@ pytestmark = skip_no_dpnp
     ids=["[1, 2, 3, 4]", "[1, 2, 3, 4, 5, 6, 7, 8, 9]"],
 )
 def test_repeat(filter_str, arr):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a = np.array(arr)
     repeats = 2
 
