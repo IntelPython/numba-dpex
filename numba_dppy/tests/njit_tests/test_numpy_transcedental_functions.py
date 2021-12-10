@@ -26,6 +26,7 @@ from numba_dppy.tests._helper import (
     assert_auto_offloading,
     filter_strings,
     is_gen12,
+    skip_test,
 )
 
 list_of_binary_ops = [
@@ -97,6 +98,9 @@ def input_arrays(request):
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_binary_ops(filter_str, binary_op, input_arrays):
+    if skip_test(filter_str):
+        pytest.skip()
+
     a, b = input_arrays
     binop = getattr(np, binary_op)
     actual = np.empty(shape=a.shape, dtype=a.dtype)
@@ -116,6 +120,9 @@ def test_binary_ops(filter_str, binary_op, input_arrays):
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_unary_ops(filter_str, unary_op, input_arrays):
+    if skip_test(filter_str):
+        pytest.skip()
+
     # FIXME: Why does sign fail on Gen12 discrete graphics card?
     skip_ops = ["sign", "log", "log2", "log10", "expm1"]
     if unary_op in skip_ops and is_gen12(filter_str):
