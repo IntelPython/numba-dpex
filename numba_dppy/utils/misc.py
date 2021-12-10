@@ -32,3 +32,7 @@ def assert_no_return(rettype):
     if rettype is not None and rettype != types.void:
         msg = "DPPY kernel must have void return type but got {rettype}"
         raise TypeError(msg.format(rettype=rettype))
+
+
+class IndeterminateExecutionQueueError(Exception):
+    pass
