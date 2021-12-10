@@ -25,6 +25,7 @@ Submodules
    numba_dppy.decorators
    numba_dppy.descriptor
    numba_dppy.device_init
+   numba_dppy.dpctl_support
    numba_dppy.dppy_array_type
    numba_dppy.dppy_debuginfo
    numba_dppy.dppy_offload_dispatcher
