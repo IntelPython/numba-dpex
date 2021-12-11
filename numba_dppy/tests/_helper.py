@@ -152,7 +152,7 @@ def ensure_dpnp():
         from numba_dppy.dpnp_iface import dpnp_fptr_interface as dpnp_iface
 
         return True
-    except:
+    except ImportError:
         if config.TESTING_SKIP_NO_DPNP:
             return False
         else:
