@@ -22,23 +22,13 @@ import pytest
 from numba import njit
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import dpnp_debug
+from numba_dppy.tests._helper import (
+    dpnp_debug,
+    filter_strings_with_skips_for_opencl,
+)
 
 from ._helper import wrapper_function
 from .dpnp_skip_test import dpnp_skip_test as skip_test
-from .test_numpy_linalg import filter_strings_with_skips_for_opencl
-
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
-]
-
-
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
-
 
 list_of_dtypes = [
     np.int32,

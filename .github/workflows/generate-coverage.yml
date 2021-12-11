@@ -35,6 +35,7 @@ jobs:
 
       - name: Build numba-dppy
         run: |
+          export OCL_ICD_FILENAMES=libintelocl.so
           python setup.py develop
 
       - name: Test installation

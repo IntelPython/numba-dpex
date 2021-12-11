@@ -12,18 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import dpctl
-import pytest
+import numba as nb
 
-import numba_dppy as dppy
-from numba_dppy.tests._helper import filter_strings
-
-
-@pytest.mark.parametrize("filter_str", filter_strings)
-def test_dpctl_api(filter_str):
-    device = dpctl.SyclDevice(filter_str)
-    with dpctl.device_context(device):
-        dpctl.lsplatform()
-        dpctl.get_current_queue()
-        dpctl.get_num_activated_queues()
-        dpctl.is_in_device_context()
+numba_version = tuple(map(int, nb.__version__.split(".")[:2]))

@@ -12,17 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
-
 import dpctl
 import numpy as np
 from numba import njit, prange
 from numba.tests.support import captured_stdout
 
-import numba_dppy as dppy
 from numba_dppy import config
-
-from . import _helper
+from numba_dppy.tests._helper import skip_no_opencl_gpu
 
 
 def prange_example():
@@ -36,8 +32,8 @@ def prange_example():
     return a
 
 
-@unittest.skipUnless(_helper.has_gpu_queues(), "test only on GPU system")
-class TestParforMessage(unittest.TestCase):
+@skip_no_opencl_gpu
+class TestParforMessage:
     def test_parfor_message(self):
         device = dpctl.SyclDevice("opencl:gpu")
         with dpctl.device_context(device):
@@ -48,8 +44,4 @@ class TestParforMessage(unittest.TestCase):
                 jitted()
 
             config.DEBUG = 0
-            self.assertTrue("Parfor offloaded " in got.getvalue())
-
-
-if __name__ == "__main__":
-    unittest.main()
+            assert "Parfor offloaded " in got.getvalue()
