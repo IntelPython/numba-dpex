@@ -17,7 +17,7 @@ import numpy as np
 import pytest
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import skip_test
+from numba_dppy.tests._helper import filter_strings
 
 
 def f(a):
@@ -35,15 +35,13 @@ def sig(request):
     return request.param
 
 
-def test_return(offload_device, sig):
-    if skip_test(offload_device):
-        pytest.skip()
-
+@pytest.mark.parametrize("filter_str", filter_strings)
+def test_return(filter_str, sig):
     a = np.array(np.random.random(122), np.int32)
 
     with pytest.raises(TypeError):
         kernel = dppy.kernel(sig)(f)
 
-        device = dpctl.SyclDevice(offload_device)
+        device = dpctl.SyclDevice(filter_str)
         with dpctl.device_context(device):
             kernel[a.size, dppy.DEFAULT_LOCAL_SIZE](a)

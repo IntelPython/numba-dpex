@@ -30,18 +30,6 @@ from numba_dppy.tests._helper import (
 from ._helper import wrapper_function
 from .dpnp_skip_test import dpnp_skip_test as skip_test
 
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
-]
-
-
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
-
-
 list_of_dtypes = [
     np.int32,
     np.int64,
