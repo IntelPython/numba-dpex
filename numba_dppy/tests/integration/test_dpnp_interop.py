@@ -17,7 +17,7 @@ import numpy as np
 import pytest
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import ensure_dpnp, filter_strings
+from numba_dppy.tests._helper import filter_strings
 
 dpnp = pytest.importorskip("dpnp", reason="DPNP is not installed")
 
