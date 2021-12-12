@@ -77,21 +77,6 @@ def platform_not_supported(device_type):
     return False
 
 
-def skip_test(device_type):
-    skip = False
-    try:
-        with dpctl.device_context(device_type):
-            pass
-    except Exception:
-        skip = True
-
-    if not skip:
-        if platform_not_supported(device_type):
-            skip = True
-
-    return skip
-
-
 skip_no_opencl_gpu = pytest.mark.skipif(
     not has_opencl_gpu(),
     reason="No opencl GPU platforms available",

@@ -20,7 +20,11 @@ import numpy as np
 import pytest
 
 import numba_dppy
-from numba_dppy.tests._helper import skip_test, filter_strings
+from numba_dppy.tests._helper import (
+    filter_strings,
+    skip_no_opencl_gpu,
+    skip_no_level_zero_gpu,
+)
 from numba_dppy.utils import (
     IndeterminateExecutionQueueError,
     IndeterminateExecutionQueueError_msg,
@@ -196,10 +200,9 @@ def test_context_manager_with_usm_ndarray(offload_device, input_arrays):
     assert np.array_equal(got, expected)
 
 
+@skip_no_level_zero_gpu
+@skip_no_opencl_gpu
 def test_equivalent_usm_ndarray(input_arrays):
-    if skip_test("level_zero:gpu") or skip_test("opencl:gpu"):
-        pytest.skip()
-
     usm_type = "device"
 
     a, b, expected = input_arrays
