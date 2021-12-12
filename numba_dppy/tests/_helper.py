@@ -153,7 +153,15 @@ def ensure_dpnp():
 
         return True
     except:
-        return False
+        if config.TESTING_SKIP_NO_DPNP:
+            return False
+        else:
+            pytest.fail("DPNP is not available")
+
+
+skip_no_dpnp = pytest.mark.skipif(
+    not ensure_dpnp(), reason="DPNP is not available"
+)
 
 
 @contextlib.contextmanager

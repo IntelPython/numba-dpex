@@ -22,10 +22,11 @@ import pytest
 from numba import njit
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import dpnp_debug, filter_strings
+from numba_dppy.tests._helper import dpnp_debug, filter_strings, skip_no_dpnp
 
 from ._helper import wrapper_function
-from .dpnp_skip_test import dpnp_skip_test as skip_test
+
+pytestmark = skip_no_dpnp
 
 list_of_dtypes = [
     np.int32,
@@ -73,9 +74,6 @@ def unary_op(request):
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a = input_arrays[0]
     op, name = unary_op
     if name != "argsort" and name != "sort":
@@ -119,9 +117,6 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
     ],
 )
 def test_partition(array, kth, filter_str):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a = np.array(array)
 
     def fn(a, kth):

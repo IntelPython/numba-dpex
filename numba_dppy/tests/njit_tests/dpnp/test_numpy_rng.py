@@ -22,10 +22,15 @@ import pytest
 from numba import njit
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import dpnp_debug, filter_strings_level_zero_gpu
+from numba_dppy.tests._helper import (
+    dpnp_debug,
+    filter_strings_level_zero_gpu,
+    skip_no_dpnp,
+)
 
 from ._helper import wrapper_function
-from .dpnp_skip_test import dpnp_skip_test as skip_test
+
+pytestmark = skip_no_dpnp
 
 # dpnp throws -30 (CL_INVALID_VALUE) when invoked with multiple kinds of
 # devices at runtime, so testing for level_zero only
@@ -71,9 +76,6 @@ def one_arg_fn(request):
 
 @pytest.mark.parametrize("filter_str", filter_strings_level_zero_gpu)
 def test_one_arg_fn(filter_str, one_arg_fn, unary_size, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
     op, params = one_arg_fn
     name, low, high = params
     f = njit(op)
@@ -112,9 +114,6 @@ def get_two_arg_fn(op_name):
 
 @pytest.mark.parametrize("filter_str", filter_strings_level_zero_gpu)
 def test_two_arg_fn(filter_str, two_arg_fn, unary_size, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
     op_name, first_arg, low, high = two_arg_fn
 
     if op_name == "gamma":
@@ -166,9 +165,6 @@ def get_three_arg_fn(op_name):
 
 @pytest.mark.parametrize("filter_str", filter_strings_level_zero_gpu)
 def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
     op_name, first_arg, second_arg, low, high = three_arg_fn
 
     if op_name == "multinomial":
@@ -213,9 +209,6 @@ def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
 
 @pytest.mark.parametrize("filter_str", filter_strings_level_zero_gpu)
 def test_rand(filter_str):
-    if skip_test(filter_str):
-        pytest.skip()
-
     @njit
     def f():
         c = np.random.rand(3, 2)
@@ -232,9 +225,6 @@ def test_rand(filter_str):
 
 @pytest.mark.parametrize("filter_str", filter_strings_level_zero_gpu)
 def test_hypergeometric(filter_str, three_arg_size):
-    if skip_test(filter_str):
-        pytest.skip()
-
     @njit
     def f(ngood, nbad, nsamp, size):
         res = np.random.hypergeometric(ngood, nbad, nsamp, size)
