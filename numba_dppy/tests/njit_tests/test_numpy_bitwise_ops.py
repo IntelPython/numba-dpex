@@ -22,11 +22,7 @@ import pytest
 from numba import njit
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import (
-    assert_auto_offloading,
-    filter_strings,
-    skip_test,
-)
+from numba_dppy.tests._helper import assert_auto_offloading, filter_strings
 
 list_of_binary_ops = [
     "bitwise_and",
@@ -70,9 +66,6 @@ def input_arrays(request):
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_binary_ops(filter_str, binary_op, input_arrays):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a, b = input_arrays
     binop = getattr(np, binary_op)
     actual = np.empty(shape=a.shape, dtype=a.dtype)
@@ -92,9 +85,6 @@ def test_binary_ops(filter_str, binary_op, input_arrays):
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_unary_ops(filter_str, unary_op, input_arrays):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a = input_arrays[0]
     uop = getattr(np, unary_op)
     actual = np.empty(shape=a.shape, dtype=a.dtype)

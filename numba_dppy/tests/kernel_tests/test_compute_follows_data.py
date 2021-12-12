@@ -20,7 +20,11 @@ import numpy as np
 import pytest
 
 import numba_dppy
-from numba_dppy.tests._helper import skip_test
+from numba_dppy.tests._helper import (
+    filter_strings,
+    skip_no_level_zero_gpu,
+    skip_no_opencl_gpu,
+)
 from numba_dppy.utils import (
     IndeterminateExecutionQueueError,
     IndeterminateExecutionQueueError_msg,
@@ -62,10 +66,8 @@ def input_arrays(request):
     return a, b, c
 
 
+@pytest.mark.parametrize("offload_device", filter_strings)
 def test_usm_ndarray_argtype(offload_device, input_arrays):
-    if skip_test(offload_device):
-        pytest.skip()
-
     usm_type = "device"
 
     a, b, expected = input_arrays
@@ -106,10 +108,8 @@ def test_usm_ndarray_argtype(offload_device, input_arrays):
     assert np.array_equal(got, expected)
 
 
+@pytest.mark.parametrize("offload_device", filter_strings)
 def test_ndarray_argtype(offload_device, input_arrays):
-    if skip_test(offload_device):
-        pytest.skip()
-
     a, b, expected = input_arrays
     got = np.ones_like(a)
 
@@ -121,10 +121,8 @@ def test_ndarray_argtype(offload_device, input_arrays):
     assert np.array_equal(got, expected)
 
 
+@pytest.mark.parametrize("offload_device", filter_strings)
 def test_mix_argtype(offload_device, input_arrays):
-    if skip_test(offload_device):
-        pytest.skip()
-
     usm_type = "device"
 
     a, b, expected = input_arrays
@@ -154,10 +152,8 @@ def test_mix_argtype(offload_device, input_arrays):
         assert mix_datatype_err_msg in error_msg
 
 
+@pytest.mark.parametrize("offload_device", filter_strings)
 def test_context_manager_with_usm_ndarray(offload_device, input_arrays):
-    if skip_test(offload_device):
-        pytest.skip()
-
     usm_type = "device"
 
     a, b, expected = input_arrays
@@ -204,10 +200,9 @@ def test_context_manager_with_usm_ndarray(offload_device, input_arrays):
     assert np.array_equal(got, expected)
 
 
+@skip_no_level_zero_gpu
+@skip_no_opencl_gpu
 def test_equivalent_usm_ndarray(input_arrays):
-    if skip_test("level_zero:gpu") or skip_test("opencl:gpu"):
-        pytest.skip()
-
     usm_type = "device"
 
     a, b, expected = input_arrays
