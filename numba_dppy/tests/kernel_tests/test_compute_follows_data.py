@@ -22,8 +22,8 @@ import pytest
 import numba_dppy
 from numba_dppy.tests._helper import (
     filter_strings,
-    skip_no_opencl_gpu,
     skip_no_level_zero_gpu,
+    skip_no_opencl_gpu,
 )
 from numba_dppy.utils import (
     IndeterminateExecutionQueueError,
