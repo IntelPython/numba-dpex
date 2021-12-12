@@ -127,7 +127,7 @@ jobs:
         integration_channels: [""]
         experimental: [false]
         artifact_name: [""]
-        dependencies: ["mkl=2021.3.0"]  # dpnp dependency
+        dependencies: [""]
         include:
           - python: "3.8"
             numba: 0.54
@@ -135,21 +135,21 @@ jobs:
             integration_channels: -c dppy/label/dev
             artifact_name: -c dppy_label_dev
             experimental: false  # current stable
-            dependencies: "mkl=2021.3.0"  # dpnp dependency
+            dependencies: ""
           - python: "3.8"
             numba: "0.55.0dev0=*_782"
             dpctl: "0.12"
             integration_channels:
             artifact_name: ""
             experimental: false  # current stable
-            dependencies: "mkl=2021.3.0"  # dpnp dependency
+            dependencies: ""
           - python: "3.9"
             numba: "0.55.0dev0=*_778"
             dpctl: "0.12"
             integration_channels: ""
             artifact_name: ""
             experimental: false  # current stable
-            dependencies: "mkl=2021.3.0"  # dpnp dependency
+            dependencies: ""
     continue-on-error: ${{ matrix.experimental }}
     env:
       # conda-forge: llvm-spirv 11 not on intel channel yet
