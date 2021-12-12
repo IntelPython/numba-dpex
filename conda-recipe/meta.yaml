@@ -21,6 +21,7 @@ requirements:
         - numba 0.54*|0.55*
         - dpctl {{ dpctl }}
         - dpnp 0.8*|0.9*           # [linux]
+        - mkl {{ mkl }}            # [linux]
         - wheel
     run:
         - python
@@ -29,6 +30,7 @@ requirements:
         - spirv-tools
         - llvm-spirv 11.*
         - dpnp 0.8*|0.9*           # [linux]
+        - mkl                      # [linux]
         - packaging
 
 test:
