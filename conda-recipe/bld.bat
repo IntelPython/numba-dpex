@@ -3,6 +3,9 @@
 @REM used BUILD_PREFIX as compiler installed in build section of meta.yml
 set "PATH=%BUILD_PREFIX%\Library\bin-llvm;%PATH%"
 
+@REM DPNP is not available on Windows, it allows building w/o DPNP
+set NUMBA_DPPY_BUILD_SKIP_NO_DPNP=1
+
 %PYTHON% setup.py install --single-version-externally-managed --record=record.txt
 
 rem Build wheel package
