@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DPNP integration &mdash; numba-dppy 0.18.0dev0+38.gb1924db documentation</title>
+  <title>DPNP integration &mdash; numba-dppy 0.18.0dev0+39.gb2955b6 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -325,10 +325,8 @@ any mismatch in the size of the container to hold different types of pointer.</p
 Each item in the list is used as a parameter for tests.
 You should find tests for the category of functions similar to your function and
 update a list with function names like <code class="xref py py-obj docutils literal notranslate"><span class="pre">list_of_unary_ops</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">list_of_nan_ops</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_unary_ops</span><span class="p">(</span><span class="n">filter_str</span><span class="p">,</span> <span class="n">unary_op</span><span class="p">,</span> <span class="n">input_array</span><span class="p">,</span> <span class="n">get_shape</span><span class="p">,</span> <span class="n">capfd</span><span class="p">):</span>
-  <span class="k">if</span> <span class="n">skip_test</span><span class="p">(</span><span class="n">filter_str</span><span class="p">):</span>
-      <span class="n">pytest</span><span class="o">.</span><span class="n">skip</span><span class="p">()</span>
-
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s2">&quot;filter_str&quot;</span><span class="p">,</span> <span class="n">filter_strings</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_unary_ops</span><span class="p">(</span><span class="n">filter_str</span><span class="p">,</span> <span class="n">unary_op</span><span class="p">,</span> <span class="n">input_array</span><span class="p">,</span> <span class="n">get_shape</span><span class="p">,</span> <span class="n">capfd</span><span class="p">):</span>
   <span class="n">a</span> <span class="o">=</span> <span class="n">input_array</span>  <span class="c1"># 1</span>
   <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">get_shape</span><span class="p">)</span>
   <span class="n">op</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">unary_op</span>  <span class="c1"># 2</span>
