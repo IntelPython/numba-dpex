@@ -147,7 +147,7 @@ def _id(obj):
     return obj
 
 
-def ensure_dpnp():
+def _ensure_dpnp():
     try:
         from numba_dppy.dpnp_iface import dpnp_fptr_interface as dpnp_iface
 
@@ -160,7 +160,7 @@ def ensure_dpnp():
 
 
 skip_no_dpnp = pytest.mark.skipif(
-    not ensure_dpnp(), reason="DPNP is not available"
+    not _ensure_dpnp(), reason="DPNP is not available"
 )
 
 
