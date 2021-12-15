@@ -14,7 +14,7 @@ dependencies:
   - numba 0.55*
   - dpctl 0.12*
   - dpnp 0.9*
-  - mkl 2021.3.0  # for dpnp
+  - mkl 2021.4.0  # for dpnp
   - spirv-tools
   # - llvm-spirv 11.*
   - packaging
