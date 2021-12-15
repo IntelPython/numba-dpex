@@ -17,7 +17,10 @@ import numpy as np
 import pytest
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import ensure_dpnp, filter_strings
+from numba_dppy.tests._helper import filter_strings
+
+dpnp = pytest.importorskip("dpnp", reason="DPNP is not installed")
+
 
 list_of_dtype = [
     np.int32,
@@ -46,11 +49,6 @@ def usm_type(request):
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_dpnp_create_array_in_context(filter_str, dtype):
-    if not ensure_dpnp():
-        pytest.skip("No DPNP")
-
-    import dpnp
-
     if (
         "opencl" not in dpctl.get_current_queue().sycl_device.filter_string
         and "opencl" in filter_str
@@ -63,11 +61,6 @@ def test_dpnp_create_array_in_context(filter_str, dtype):
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_consuming_array_from_dpnp(filter_str, dtype):
-    if not ensure_dpnp():
-        pytest.skip("No DPNP")
-
-    import dpnp
-
     if (
         "opencl" not in dpctl.get_current_queue().sycl_device.filter_string
         and "opencl" in filter_str

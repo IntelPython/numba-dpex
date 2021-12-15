@@ -35,13 +35,15 @@ elif sys.platform in ["win32", "cygwin"]:
 def get_ext_modules():
     ext_modules = []
 
-    dpnp_present = False
     try:
         import dpnp
-    except:
-        pass
-    else:
+
         dpnp_present = True
+    except ImportError:
+        if int(os.environ.get("NUMBA_DPPY_BUILD_SKIP_NO_DPNP", 0)):
+            dpnp_present = False
+        else:
+            raise ImportError("DPNP is not available")
 
     import dpctl
     import numba

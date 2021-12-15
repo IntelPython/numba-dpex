@@ -21,16 +21,13 @@ from numba import njit
 from numba_dppy.tests._helper import (
     assert_auto_offloading,
     dpnp_debug,
-    ensure_dpnp,
+    skip_no_dpnp,
     skip_no_opencl_gpu,
 )
 
 
 @skip_no_opencl_gpu
-@pytest.mark.skipif(
-    not ensure_dpnp(),
-    reason="dpnp is not available",
-)
+@skip_no_dpnp
 class Testdpnp_functions:
     N = 10
 

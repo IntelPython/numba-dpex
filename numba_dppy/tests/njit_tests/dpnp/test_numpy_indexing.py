@@ -22,9 +22,9 @@ import pytest
 from numba import njit
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import dpnp_debug, filter_strings
+from numba_dppy.tests._helper import dpnp_debug, filter_strings, skip_no_dpnp
 
-from .dpnp_skip_test import dpnp_skip_test as skip_test
+pytestmark = skip_no_dpnp
 
 
 @pytest.mark.parametrize("filter_str", filter_strings)
@@ -64,9 +64,6 @@ from .dpnp_skip_test import dpnp_skip_test as skip_test
     ],
 )
 def test_diagonal(array, offset, filter_str):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a = np.array(array)
 
     def fn(a, offset):

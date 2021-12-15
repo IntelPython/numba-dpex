@@ -281,10 +281,8 @@ update a list with function names like :obj:`list_of_unary_ops`, :obj:`list_of_n
 
 .. code-block:: python
 
+    @pytest.mark.parametrize("filter_str", filter_strings)
     def test_unary_ops(filter_str, unary_op, input_array, get_shape, capfd):
-      if skip_test(filter_str):
-          pytest.skip()
-
       a = input_array  # 1
       a = np.reshape(a, get_shape)
       op, name = unary_op  # 2

@@ -26,7 +26,7 @@ from numba_dppy.core.passes.rename_numpy_functions_pass import (
     DPPYRewriteNdarrayFunctions,
     DPPYRewriteOverloadedNumPyFunctions,
 )
-from numba_dppy.tests._helper import ensure_dpnp
+from numba_dppy.tests._helper import skip_no_dpnp
 
 
 class MyPipeline(object):
@@ -93,9 +93,7 @@ class TestRenameNumpyFunctionsPass:
         assert check_equivalent(expected_ir, pipeline.state.func_ir)
 
 
-@pytest.mark.skipif(
-    not ensure_dpnp(), reason="test only when dpnp is available"
-)
+@skip_no_dpnp
 class TestRenameNdarrayFunctionsPass:
     def test_rename_ndarray(self):
         def expected(a):
