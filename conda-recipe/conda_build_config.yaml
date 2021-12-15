@@ -15,4 +15,5 @@ mkl:
   - 2021.3.0
 
 pin_run_as_build:
+  dpnp: x.x.x
   mkl: x.x
