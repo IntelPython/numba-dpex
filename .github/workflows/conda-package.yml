@@ -17,13 +17,13 @@ jobs:
       matrix:
         python: ["3.8", "3.9"]
         integration_channels: [""]
-        experimental: [true]  # packages are not available on -c intel yet
+        experimental: [false]
         artifact_name: [""]
         include:
           - python: "3.8"
             integration_channels: -c dppy/label/dev
             artifact_name: -c dppy_label_dev
-            experimental: true
+            experimental: false
     continue-on-error: ${{ matrix.experimental }}
     env:
       CHANNELS: ${{ matrix.integration_channels }} -c defaults -c numba -c intel -c numba/label/dev -c dppy/label/dev --override-channels
@@ -73,13 +73,13 @@ jobs:
       matrix:
         python: ["3.8", "3.9"]
         integration_channels: [""]
-        experimental: [true]  # packages are not available on -c intel yet
+        experimental: [false]
         artifact_name: [""]
         include:
           - python: "3.8"
             integration_channels: -c dppy/label/dev
             artifact_name: -c dppy_label_dev
-            experimental: true
+            experimental: false
     continue-on-error: ${{ matrix.experimental }}
     env:
       CHANNELS: ${{ matrix.integration_channels }} -c defaults -c numba -c intel -c numba/label/dev -c dppy/label/dev --override-channels
