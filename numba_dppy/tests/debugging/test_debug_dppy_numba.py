@@ -20,8 +20,6 @@ import pytest
 from numba_dppy import config
 from numba_dppy.numba_support import numba_version
 
-from .gdb import gdb
-
 pytestmark = pytest.mark.skipif(
     config.TESTING_SKIP_NO_DEBUGGING and not shutil.which("gdb-oneapi"),
     reason="Intel® Distribution for GDB* is not available",
@@ -30,11 +28,6 @@ pytestmark = pytest.mark.skipif(
 skip_no_numba055 = pytest.mark.skipif(
     numba_version < (0, 55), reason="Need Numba 0.55 or higher"
 )
-
-
-@pytest.fixture
-def app():
-    return gdb()
 
 
 @pytest.mark.parametrize("api", ["numba", "numba-dppy-kernel"])
