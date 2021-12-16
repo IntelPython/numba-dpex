@@ -13,109 +13,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import pathlib
 import shutil
-import sys
 
 import pytest
 
-import numba_dppy
 from numba_dppy import config
 from numba_dppy.numba_support import numba_version
 
-if config.TESTING_SKIP_NO_DEBUGGING:
-    pexpect = pytest.importorskip("pexpect")
+from .gdb import gdb
 
-    pytestmark = pytest.mark.skipif(
-        not shutil.which("gdb-oneapi"),
-        reason="Intel® Distribution for GDB* is not available",
-    )
-else:
-    import pexpect
+pytestmark = pytest.mark.skipif(
+    config.TESTING_SKIP_NO_DEBUGGING and not shutil.which("gdb-oneapi"),
+    reason="Intel® Distribution for GDB* is not available",
+)
 
 skip_no_numba055 = pytest.mark.skipif(
     numba_version < (0, 55), reason="Need Numba 0.55 or higher"
 )
-
-
-# TODO: go to helper
-class gdb:
-    def __init__(self):
-        self.spawn()
-        self.setup_gdb()
-
-    def __del__(self):
-        self.teardown_gdb()
-
-    def spawn(self):
-        env = os.environ.copy()
-        env["NUMBA_OPT"] = "0"
-        env["NUMBA_EXTEND_VARIABLE_LIFETIMES"] = "1"
-
-        self.child = pexpect.spawn(
-            "gdb-oneapi -q python", env=env, encoding="utf-8"
-        )
-        if config.DEBUG:
-            self.child.logfile = sys.stdout
-
-    def setup_gdb(self):
-        self.child.expect("(gdb)", timeout=5)
-        self.child.sendline("set breakpoint pending on")
-        self.child.expect("(gdb)", timeout=5)
-        self.child.sendline("set style enabled off")  # disable colors symbols
-
-    def teardown_gdb(self):
-        self.child.sendintr()
-        self.child.expect("(gdb)", timeout=5)
-        self.child.sendline("quit")
-        self.child.expect("Quit anyway?", timeout=5)
-        self.child.sendline("y")
-
-    def _command(self, command):
-        self.child.expect("(gdb)", timeout=5)
-        self.child.sendline(command)
-
-    def breakpoint(self, breakpoint):
-        self._command("break " + breakpoint)
-
-    def run(self, script):
-        self._command("run " + self.script_path(script))
-
-    def backtrace(self):
-        self._command("backtrace")
-
-    def print(self, var):
-        self._command("print " + var)
-
-    def info_args(self):
-        self._command("info args")
-
-    def info_functions(self, function):
-        self._command("info functions " + function)
-
-    def info_locals(self):
-        self._command("info locals")
-
-    def next(self):
-        self._command("next")
-
-    def ptype(self, var):
-        self._command("ptype " + var)
-
-    def whatis(self, var):
-        self._command("whatis " + var)
-
-    def step(self):
-        self._command("step")
-
-    def stepi(self):
-        self._command("stepi")
-
-    @staticmethod
-    def script_path(script):
-        package_path = pathlib.Path(numba_dppy.__file__).parent
-        return str(package_path / "examples/debug" / script)
 
 
 @pytest.fixture
