@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 # Copyright 2021 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba_dppy.tests._helper import ensure_dpnp, skip_test
+
+import pytest
+
+dpnp = pytest.importorskip("dpnp")
 
 
-def dpnp_skip_test(device_type):
-    skip = False
-    if skip_test(device_type):
-        skip = True
+def test_import_dpnp():
+    """Test that import dpnp works"""
+    import dpnp
 
-    if not skip:
-        if not ensure_dpnp():
-            skip = True
 
-    return skip
+def test_import_dpnp_fptr_interface():
+    """Test that we can import dpnp_fptr_interface if dpnp is installed"""
+    from numba_dppy.dpnp_iface import dpnp_fptr_interface

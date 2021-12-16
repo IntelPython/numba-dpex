@@ -17,18 +17,10 @@ import numpy as np
 import pytest
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import skip_test
-
-list_of_filter_strs = [
-    "opencl:gpu:0",
-]
+from numba_dppy.tests._helper import filter_strings_opencl_gpu
 
 
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
-
-
+@pytest.mark.parametrize("filter_str", filter_strings_opencl_gpu)
 @pytest.mark.xfail
 def test_print_only_str(filter_str):
     try:
@@ -67,10 +59,8 @@ def input_arrays(request):
     return a
 
 
+@pytest.mark.parametrize("filter_str", filter_strings_opencl_gpu)
 def test_print(filter_str, input_arrays, capfd):
-    if skip_test(filter_str):
-        pytest.skip()
-
     @dppy.kernel
     def f(a):
         print("test", a[0])

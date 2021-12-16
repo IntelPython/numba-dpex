@@ -185,6 +185,50 @@ class OclLocalTemplate(AttributeTemplate):
         return types.Function(OCL_local_array)
 
 
+# dppy.private submodule -------------------------------------------------------
+
+
+@intrinsic
+class OCL_private_array(CallableTemplate):
+    key = dppy.private.array
+
+    def generic(self):
+        def typer(shape, dtype):
+
+            # Only integer literals and tuples of integer literals are valid
+            # shapes
+            if isinstance(shape, types.Integer):
+                if not isinstance(shape, types.IntegerLiteral):
+                    return None
+            elif isinstance(shape, (types.Tuple, types.UniTuple)):
+                if any(
+                    [not isinstance(s, types.IntegerLiteral) for s in shape]
+                ):
+                    return None
+            else:
+                return None
+
+            ndim = parse_shape(shape)
+            nb_dtype = parse_dtype(dtype)
+            if nb_dtype is not None and ndim is not None:
+                return DPPYArray(
+                    dtype=nb_dtype,
+                    ndim=ndim,
+                    layout="C",
+                    addrspace=address_space.PRIVATE,
+                )
+
+        return typer
+
+
+@intrinsic_attr
+class OclPrivateTemplate(AttributeTemplate):
+    key = types.Module(dppy.private)
+
+    def resolve_array(self, mod):
+        return types.Function(OCL_private_array)
+
+
 # OpenCL module --------------------------------------------------------------
 
 
@@ -228,7 +272,10 @@ class OclModuleTemplate(AttributeTemplate):
     def resolve_local(self, mod):
         return types.Module(dppy.local)
 
+    def resolve_private(self, mod):
+        return types.Module(dppy.private)
+
 
 # intrinsic
 
-# intrinsic_global(dppy, types.Module(dppy))
+intrinsic_global(dppy, types.Module(dppy))

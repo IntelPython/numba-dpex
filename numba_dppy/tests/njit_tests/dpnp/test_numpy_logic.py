@@ -21,22 +21,12 @@ import numpy as np
 import pytest
 from numba import njit
 
-from numba_dppy.tests._helper import dpnp_debug
+from numba_dppy.tests._helper import dpnp_debug, filter_strings, skip_no_dpnp
 
-from .dpnp_skip_test import dpnp_skip_test as skip_test
-
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
-]
+pytestmark = skip_no_dpnp
 
 
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
-
-
+@pytest.mark.parametrize("filter_str", filter_strings)
 @pytest.mark.parametrize(
     "dtype", [np.bool_, np.int32, np.int64, np.float32, np.float64]
 )
@@ -46,9 +36,6 @@ def filter_str(request):
     ids=["(0,)", "(4,)", "(2, 3)"],
 )
 def test_all(dtype, shape, filter_str):
-    if skip_test(filter_str):
-        pytest.skip()
-
     size = 1
     for i in range(len(shape)):
         size *= shape[i]

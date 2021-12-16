@@ -12,36 +12,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import platform
+
 import dpctl
 import numpy as np
 import pytest
 
-import numba_dppy as dppy
+import numba_dppy
 from numba_dppy.tests._helper import filter_strings
 
 
-def f(a):
-    return a
-
-
-list_of_sig = [
-    None,
-    ("int32[::1](int32[::1])"),
-]
-
-
-@pytest.fixture(params=list_of_sig)
-def sig(request):
-    return request.param
-
-
 @pytest.mark.parametrize("filter_str", filter_strings)
-def test_return(filter_str, sig):
-    a = np.array(np.random.random(122), np.int32)
+def test_private_memory(filter_str):
+    @numba_dppy.kernel
+    def private_memory_kernel(A):
+        i = numba_dppy.get_global_id(0)
+        prvt_mem = numba_dppy.private.array(shape=1, dtype=np.float32)
+        prvt_mem[0] = i
+        numba_dppy.barrier(numba_dppy.CLK_LOCAL_MEM_FENCE)  # local mem fence
+        A[i] = prvt_mem[0] * 2
 
-    with pytest.raises(TypeError):
-        kernel = dppy.kernel(sig)(f)
+    N = 64
+    arr = np.zeros(N).astype(np.float32)
+    orig = np.arange(N).astype(np.float32)
 
-        device = dpctl.SyclDevice(filter_str)
-        with dpctl.device_context(device):
-            kernel[a.size, dppy.DEFAULT_LOCAL_SIZE](a)
+    with numba_dppy.offload_to_sycl_device(filter_str):
+        private_memory_kernel[N, N](arr)
+
+    # The computation is correct?
+    np.testing.assert_allclose(orig * 2, arr)

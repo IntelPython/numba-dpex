@@ -22,7 +22,11 @@ import pytest
 from numba import njit
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import assert_auto_offloading, is_gen12, skip_test
+from numba_dppy.tests._helper import (
+    assert_auto_offloading,
+    filter_strings,
+    is_gen12,
+)
 
 list_of_filter_strs = [
     "opencl:gpu:0",
@@ -87,10 +91,8 @@ def input_arrays(request):
     return a, b
 
 
+@pytest.mark.parametrize("filter_str", filter_strings)
 def test_trigonometric_fn(filter_str, trig_op, input_arrays):
-    if skip_test(filter_str):
-        pytest.skip()
-
     # FIXME: Why does archcosh fail on Gen12 discrete graphics card?
     if trig_op == "arccosh" and is_gen12(filter_str):
         pytest.skip()

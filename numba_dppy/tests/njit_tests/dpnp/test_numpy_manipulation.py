@@ -22,31 +22,18 @@ import pytest
 from numba import njit
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import dpnp_debug
+from numba_dppy.tests._helper import dpnp_debug, filter_strings, skip_no_dpnp
 
-from .dpnp_skip_test import dpnp_skip_test as skip_test
-
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
-]
+pytestmark = skip_no_dpnp
 
 
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
-
-
+@pytest.mark.parametrize("filter_str", filter_strings)
 @pytest.mark.parametrize(
     "arr",
     [[1, 2, 3, 4], [1, 2, 3, 4, 5, 6, 7, 8, 9]],
     ids=["[1, 2, 3, 4]", "[1, 2, 3, 4, 5, 6, 7, 8, 9]"],
 )
 def test_repeat(filter_str, arr):
-    if skip_test(filter_str):
-        pytest.skip()
-
     a = np.array(arr)
     repeats = 2
 
