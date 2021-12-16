@@ -13,17 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import shutil
-
 import pytest
 
-from numba_dppy import config
-from numba_dppy.tests._helper import skip_no_numba055
+from numba_dppy.tests._helper import skip_no_gdb, skip_no_numba055
 
-pytestmark = pytest.mark.skipif(
-    config.TESTING_SKIP_NO_DEBUGGING and not shutil.which("gdb-oneapi"),
-    reason="Intel® Distribution for GDB* is not available",
-)
+pytestmark = skip_no_gdb
 
 
 @pytest.mark.parametrize("api", ["numba", "numba-dppy-kernel"])
