@@ -178,6 +178,7 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
     of the function and use a function argument in the condition.
 
     Test for https://github.com/numba/numba/issues/7415
+    SAT-4449
     """
     variable_name = "param_a"
     variable_value = "3"
