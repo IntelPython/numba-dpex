@@ -17,7 +17,7 @@ import numpy as np
 import pytest
 
 import numba_dppy
-from numba_dppy.tests._helper import skip_test
+from numba_dppy.tests._helper import filter_strings
 
 
 @numba_dppy.kernel
@@ -26,10 +26,8 @@ def sum(a, b, c):
     c[i] = a[i] + b[i]
 
 
-def test_strided_array_kernel(offload_device):
-    if skip_test(offload_device):
-        pytest.skip()
-
+@pytest.mark.parametrize("filter_str", filter_strings)
+def test_strided_array_kernel(filter_str):
     global_size = 606
     a = np.arange(global_size * 2, dtype="i4")[::2]
     b = np.arange(global_size, dtype="i4")[::-1]
@@ -37,7 +35,7 @@ def test_strided_array_kernel(offload_device):
 
     expected = a + b
 
-    with dpctl.device_context(offload_device):
+    with dpctl.device_context(filter_str):
         sum[global_size, numba_dppy.DEFAULT_LOCAL_SIZE](a, b, got)
 
     assert np.array_equal(expected, got)

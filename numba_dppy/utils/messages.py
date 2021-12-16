@@ -12,18 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import dpctl
-import pytest
+"""This module provides content of warning and error messages."""
 
-import numba_dppy as dppy
-from numba_dppy.tests._helper import filter_strings
+cfd_ctx_mgr_wrng_msg = (
+    "Compute will follow data! Please do not use context manager "
+    "to specify a SYCL queue to submit the kernel. The queue will be selected "
+    "from the data."
+)
 
+IndeterminateExecutionQueueError_msg = (
+    "Data passed as argument are not equivalent. Please "
+    "create dpctl.tensor.usm_ndarray with equivalent SYCL queue."
+)
 
-@pytest.mark.parametrize("filter_str", filter_strings)
-def test_dpctl_api(filter_str):
-    device = dpctl.SyclDevice(filter_str)
-    with dpctl.device_context(device):
-        dpctl.lsplatform()
-        dpctl.get_current_queue()
-        dpctl.get_num_activated_queues()
-        dpctl.is_in_device_context()
+mix_datatype_err_msg = (
+    "Datatypes of array passed to @numba_dppy.kernel "
+    "has to be the same. Passed datatypes: "
+)

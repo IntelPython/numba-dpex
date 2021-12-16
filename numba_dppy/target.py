@@ -30,7 +30,9 @@ from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
 from numba_dppy.utils import (
     address_space,
     calling_conv,
+    has_usm_memory,
     npytypes_array_to_dppy_array,
+    suai_to_dppy_array_type,
 )
 
 from . import codegen
@@ -73,7 +75,18 @@ class DPPYTypingContext(typing.BaseContext):
             ValueError: If the type of the Python value is not supported.
 
         """
-        if type(typeof(val)) is types.npytypes.Array:
+        try:
+            _type = type(typeof(val))
+        except ValueError:
+            # For arbitrary array that is not recognized by Numba,
+            # we will end up in this path. We check if the array
+            # has __sycl_usm_array_interface__ attribute. If yes,
+            # we create the necessary Numba type to represent it
+            # and send it back.
+            if has_usm_memory(val) is not None:
+                return suai_to_dppy_array_type(val)
+
+        if _type is types.npytypes.Array:
             # Convert npytypes.Array to DPPYArray
             return npytypes_array_to_dppy_array(typeof(val))
         else:

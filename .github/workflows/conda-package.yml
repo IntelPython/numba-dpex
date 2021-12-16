@@ -15,15 +15,15 @@ jobs:
 
     strategy:
       matrix:
-        python: [3.8, 3.9]
+        python: ["3.8", "3.9"]
         integration_channels: [""]
-        experimental: [true]  # packages are not available on -c intel yet
+        experimental: [false]
         artifact_name: [""]
         include:
           - python: "3.8"
             integration_channels: -c dppy/label/dev
             artifact_name: -c dppy_label_dev
-            experimental: true
+            experimental: false
     continue-on-error: ${{ matrix.experimental }}
     env:
       CHANNELS: ${{ matrix.integration_channels }} -c defaults -c numba -c intel -c numba/label/dev -c dppy/label/dev --override-channels
@@ -71,15 +71,15 @@ jobs:
 
     strategy:
       matrix:
-        python: [3.8, 3.9]
+        python: ["3.8", "3.9"]
         integration_channels: [""]
-        experimental: [true]  # packages are not available on -c intel yet
+        experimental: [false]
         artifact_name: [""]
         include:
           - python: "3.8"
             integration_channels: -c dppy/label/dev
             artifact_name: -c dppy_label_dev
-            experimental: true
+            experimental: false
     continue-on-error: ${{ matrix.experimental }}
     env:
       CHANNELS: ${{ matrix.integration_channels }} -c defaults -c numba -c intel -c numba/label/dev -c dppy/label/dev --override-channels
@@ -121,27 +121,35 @@ jobs:
 
     strategy:
       matrix:
-        python: [3.8, 3.9]
+        python: ["3.8", "3.9"]
         numba: ["0.54"]
+        dpctl: ["0.11", "0.12"]
+        dpnp: ["0.9.0dev0"]
         integration_channels: [""]
         experimental: [false]
         artifact_name: [""]
         dependencies: [""]
         include:
           - python: "3.8"
-            numba: 0.54
+            numba: "0.54"
+            dpctl: "0.12"
+            dpnp: "0.9.0dev0"
             integration_channels: -c dppy/label/dev
             artifact_name: -c dppy_label_dev
             experimental: false  # current stable
             dependencies: ""
           - python: "3.8"
             numba: "0.55.0dev0=*_782"
+            dpctl: "0.12"
+            dpnp: "0.9.0dev0"
             integration_channels:
             artifact_name: ""
             experimental: false  # current stable
             dependencies: ""
           - python: "3.9"
             numba: "0.55.0dev0=*_778"
+            dpctl: "0.12"
+            dpnp: "0.9.0dev0"
             integration_channels: ""
             artifact_name: ""
             experimental: false  # current stable
@@ -188,9 +196,13 @@ jobs:
       - name: Install numba-dppy
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}"
-          conda install $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} ${{ matrix.dependencies }} $CHANNELS
+          conda install $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl=${{ matrix.dpctl }} dpnp=${{ matrix.dpnp }} ${{ matrix.dependencies }} $CHANNELS
           # Test installed packages
           conda list
+      - name: Check DPNP
+        run: |
+          export OCL_ICD_FILENAMES=libintelocl.so
+          python -c "import dpnp"
       - name: Run tests
         run: |
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
@@ -203,7 +215,7 @@ jobs:
 
     strategy:
       matrix:
-        python: [3.8, 3.9]
+        python: ["3.8", "3.9"]
         integration_channels: [""]
         experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
@@ -259,6 +271,8 @@ jobs:
         run: conda install opencl_rt -c intel --override-channels
       - name: Add library
         run: echo "OCL_ICD_FILENAMES=C:\Miniconda\Library\lib\intelocl64.dll" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Add dpnp skip variable
+        run: echo "NUMBA_DPPY_TESTING_SKIP_NO_DPNP=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
       - name: Run tests
         run: |
           python -m pytest --pyargs ${{ env.MODULE_NAME }}
@@ -269,7 +283,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [3.8, 3.9]
+        python: ["3.8", "3.9"]
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v2
@@ -294,7 +308,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python: [3.8, 3.9]
+        python: ["3.8", "3.9"]
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v2

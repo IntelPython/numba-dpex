@@ -77,21 +77,6 @@ def platform_not_supported(device_type):
     return False
 
 
-def skip_test(device_type):
-    skip = False
-    try:
-        with dpctl.device_context(device_type):
-            pass
-    except Exception:
-        skip = True
-
-    if not skip:
-        if platform_not_supported(device_type):
-            skip = True
-
-    return skip
-
-
 skip_no_opencl_gpu = pytest.mark.skipif(
     not has_opencl_gpu(),
     reason="No opencl GPU platforms available",
@@ -109,6 +94,23 @@ filter_strings = [
     pytest.param("level_zero:gpu:0", marks=skip_no_level_zero_gpu),
     pytest.param("opencl:gpu:0", marks=skip_no_opencl_gpu),
     pytest.param("opencl:cpu:0", marks=skip_no_opencl_cpu),
+]
+
+mark_freeze = pytest.mark.skip(reason="Freeze")
+mark_seg_fault = pytest.mark.skip(reason="Segmentation fault")
+
+filter_strings_with_skips_for_opencl = [
+    pytest.param("level_zero:gpu:0", marks=skip_no_level_zero_gpu),
+    pytest.param("opencl:gpu:0", marks=mark_freeze),
+    pytest.param("opencl:cpu:0", marks=mark_seg_fault),
+]
+
+filter_strings_opencl_gpu = [
+    pytest.param("opencl:gpu:0", marks=skip_no_opencl_gpu),
+]
+
+filter_strings_level_zero_gpu = [
+    pytest.param("level_zero:gpu:0", marks=skip_no_level_zero_gpu),
 ]
 
 
@@ -130,13 +132,21 @@ def _id(obj):
     return obj
 
 
-def ensure_dpnp():
+def _ensure_dpnp():
     try:
         from numba_dppy.dpnp_iface import dpnp_fptr_interface as dpnp_iface
 
         return True
-    except:
-        return False
+    except ImportError:
+        if config.TESTING_SKIP_NO_DPNP:
+            return False
+        else:
+            pytest.fail("DPNP is not available")
+
+
+skip_no_dpnp = pytest.mark.skipif(
+    not _ensure_dpnp(), reason="DPNP is not available"
+)
 
 
 @contextlib.contextmanager
