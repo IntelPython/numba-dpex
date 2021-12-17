@@ -31,6 +31,13 @@ side_by_side_breakpoint = breakpoint_by_mark(
     "side-by-side.py", "Set breakpoint here"
 )
 
+simple_sum_function_breakpoint = breakpoint_by_mark(
+    "simple_sum.py", "Function breakpoint location"
+)
+simple_sum_condition_breakpoint = breakpoint_by_mark(
+    "simple_sum.py", "Condition breakpoint location"
+)
+
 common_loop_body_native_function_name = {
     "numba": "common_loop_body_242",
     "numba-dppy-kernel": "common_loop_body",
@@ -82,7 +89,7 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
         (
             "simple_sum.py:data_parallel_sum",
             "simple_sum.py",
-            "simple_sum.py:23",
+            simple_sum_function_breakpoint,
             r"23\s+i = dppy.get_global_id\(0\)",
         ),
         # location specified by function name
@@ -90,7 +97,7 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
         (
             "data_parallel_sum",
             "simple_sum.py",
-            "simple_sum.py:23",
+            simple_sum_function_breakpoint,
             r"23\s+i = dppy.get_global_id\(0\)",
         ),
         # location specified by file name and nested function name
@@ -120,9 +127,9 @@ def test_breakpoint_common(
     [
         # commands/break_conditional
         (
-            "simple_sum.py:24 if i == 1",
+            f"{simple_sum_condition_breakpoint} if i == 1",
             "simple_sum.py",
-            "simple_sum.py:24",
+            simple_sum_condition_breakpoint,
             r"24\s+c\[i\] = a\[i\] \+ b\[i\]",
             "i",
             "1",
