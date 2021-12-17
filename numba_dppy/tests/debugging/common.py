@@ -34,9 +34,14 @@ def line_number(file_path, text):
     raise RuntimeError(f"Can not find {text} in {file_path}")
 
 
-def breakpoint_by_mark(script, mark):
+def breakpoint_by_mark(script, mark, offset=0):
     """Return breakpoint for the mark in the script
 
     Example: breakpoint_by_mark("script.py", "Set here") -> "script.py:25"
     """
-    return f"{script}:{line_number(script_path(script), mark)}"
+    return f"{script}:{line_number(script_path(script), mark) + offset}"
+
+
+def breakpoint_by_function(script, function):
+    """Return breakpoint for the function in the script"""
+    return breakpoint_by_mark(script, f"def {function}", 1)

@@ -16,7 +16,7 @@
 
 import pytest
 
-from .common import breakpoint_by_mark
+from .common import breakpoint_by_function, breakpoint_by_mark
 
 
 @pytest.mark.parametrize(
@@ -25,3 +25,11 @@ from .common import breakpoint_by_mark
 )
 def test_breakpoint_by_mark(file_name, mark, expected):
     assert expected == breakpoint_by_mark(file_name, mark)
+
+
+@pytest.mark.parametrize(
+    "file_name, function, expected",
+    [("side-by-side.py", "common_loop_body", "side-by-side.py:25")],
+)
+def test_breakpoint_by_function(file_name, function, expected):
+    assert expected == breakpoint_by_function(file_name, function)

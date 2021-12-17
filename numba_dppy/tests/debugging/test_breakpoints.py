@@ -22,18 +22,15 @@ import pytest
 
 from numba_dppy.tests._helper import skip_no_gdb, skip_no_numba055
 
-from .common import breakpoint_by_mark
+from .common import breakpoint_by_function, breakpoint_by_mark
 
 pytestmark = skip_no_gdb
 
 
-side_by_side_breakpoint = breakpoint_by_mark(
-    "side-by-side.py", "Set breakpoint here"
+side_by_side_breakpoint = breakpoint_by_function(
+    "side-by-side.py", "common_loop_body"
 )
 
-simple_sum_function_breakpoint = breakpoint_by_mark(
-    "simple_sum.py", "Function breakpoint location"
-)
 simple_sum_condition_breakpoint = breakpoint_by_mark(
     "simple_sum.py", "Condition breakpoint location"
 )
@@ -89,7 +86,7 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
         (
             "simple_sum.py:data_parallel_sum",
             "simple_sum.py",
-            simple_sum_function_breakpoint,
+            breakpoint_by_function("simple_sum.py", "data_parallel_sum"),
             r"23\s+i = dppy.get_global_id\(0\)",
         ),
         # location specified by function name
@@ -97,7 +94,7 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
         (
             "data_parallel_sum",
             "simple_sum.py",
-            simple_sum_function_breakpoint,
+            breakpoint_by_function("simple_sum.py", "data_parallel_sum"),
             r"23\s+i = dppy.get_global_id\(0\)",
         ),
         # location specified by file name and nested function name
@@ -105,7 +102,7 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
         (
             "simple_dppy_func.py:func_sum",
             "simple_dppy_func.py",
-            "simple_dppy_func.py:23",
+            breakpoint_by_function("simple_dppy_func.py", "func_sum"),
             r"23\s+result = a_in_func \+ b_in_func",
         ),
     ],
