@@ -12,14 +12,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""Tests for Backtraces
+
+https://www.sourceware.org/gdb/onlinedocs/gdb/Backtrace.html
+"""
 
 from numba_dppy.tests._helper import skip_no_gdb
 
 pytestmark = skip_no_gdb
 
 
-# commands/backtrace
 def test_backtrace(app):
+    """Simple test for backtrace.
+
+    commands/backtrace
+    """
+
     app.breakpoint("simple_dppy_func.py:23")
     app.run("simple_dppy_func.py")
 
