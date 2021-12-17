@@ -20,17 +20,6 @@ from numba_dppy.tests._helper import skip_no_gdb, skip_no_numba055
 pytestmark = skip_no_gdb
 
 
-@pytest.mark.parametrize("api", ["numba", "numba-dppy-kernel"])
-def test_breakpoint_row_number(app, api):
-    """Test for checking numba and numba-dppy debugging side-by-side."""
-
-    app.breakpoint("side-by-side.py:25")
-    app.run("side-by-side.py --api={api}".format(api=api))
-
-    app.child.expect(r"Breakpoint .* at side-by-side.py:25")
-    app.child.expect(r"25\s+param_c = param_a \+ 10")
-
-
 # commands/backtrace
 def test_backtrace(app):
     app.breakpoint("simple_dppy_func.py:23")
