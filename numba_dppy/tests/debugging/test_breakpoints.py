@@ -20,7 +20,7 @@ https://www.sourceware.org/gdb/onlinedocs/gdb/Set-Breaks.html
 
 import pytest
 
-from numba_dppy.tests._helper import skip_no_numba055, skip_no_gdb
+from numba_dppy.tests._helper import skip_no_gdb, skip_no_numba055
 
 pytestmark = skip_no_gdb
 
@@ -38,7 +38,10 @@ common_loop_body_native_function_name = {
         ("side-by-side.py:25", "numba"),
         ("side-by-side.py:25", "numba-dppy-kernel"),
         (common_loop_body_native_function_name["numba"], "numba"),
-        (common_loop_body_native_function_name["numba-dppy-kernel"], "numba-dppy-kernel"),
+        (
+            common_loop_body_native_function_name["numba-dppy-kernel"],
+            "numba-dppy-kernel",
+        ),
     ],
 )
 def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
@@ -62,7 +65,6 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
     app.print(variable_name)
 
     app.child.expect(fr"\$1 = {variable_value}")
-
 
 
 def test_break_file_function(app):
