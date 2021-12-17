@@ -19,17 +19,17 @@ https://www.sourceware.org/gdb/onlinedocs/gdb/Continuing-and-Stepping.html
 
 from numba_dppy.tests._helper import skip_no_gdb
 
+from .common import setup_breakpoint
+
 pytestmark = skip_no_gdb
 
 
 # commands/next
 def test_next(app):
-    app.breakpoint("simple_dppy_func.py:30")
-    app.run("simple_dppy_func.py")
-
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:30")
-    app.child.expect(
-        r"30\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)"
+    setup_breakpoint(
+        app,
+        "simple_dppy_func.py:30",
+        expected_line=r"30\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
     )
 
     app.next()
@@ -40,12 +40,10 @@ def test_next(app):
 
 # commands/step_dppy_func
 def test_step(app):
-    app.breakpoint("simple_dppy_func.py:30")
-    app.run("simple_dppy_func.py")
-
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:30")
-    app.child.expect(
-        r"30\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)"
+    setup_breakpoint(
+        app,
+        "simple_dppy_func.py:30",
+        expected_line=r"30\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
     )
 
     app.step()
@@ -57,12 +55,10 @@ def test_step(app):
 
 # commands/stepi
 def test_stepi(app):
-    app.breakpoint("simple_dppy_func.py:30")
-    app.run("simple_dppy_func.py")
-
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:30")
-    app.child.expect(
-        r"30\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)"
+    setup_breakpoint(
+        app,
+        "simple_dppy_func.py:30",
+        expected_line=r"30\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
     )
 
     app.stepi()

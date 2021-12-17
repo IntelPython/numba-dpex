@@ -19,16 +19,18 @@ https://www.sourceware.org/gdb/onlinedocs/gdb/Frame-Info.html
 
 from numba_dppy.tests._helper import skip_no_gdb, skip_no_numba055
 
+from .common import setup_breakpoint
+
 pytestmark = skip_no_gdb
 
 
 @skip_no_numba055
 def test_info_args(app):
-    app.breakpoint("simple_dppy_func.py:29")
-    app.run("simple_dppy_func.py")
-
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:29")
-    app.child.expect(r"29\s+i = dppy.get_global_id\(0\)")
+    setup_breakpoint(
+        app,
+        "simple_dppy_func.py:29",
+        expected_line=r"29\s+i = dppy.get_global_id\(0\)",
+    )
 
     app.info_args()
 
@@ -49,11 +51,11 @@ def test_info_args(app):
 # commands/info_func
 @skip_no_numba055
 def test_info_functions(app):
-    app.breakpoint("simple_sum.py:23")
-    app.run("simple_sum.py")
-
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:23")
-    app.child.expect(r"23\s+i = dppy.get_global_id\(0\)")
+    setup_breakpoint(
+        app,
+        "simple_sum.py:23",
+        expected_line=r"23\s+i = dppy.get_global_id\(0\)",
+    )
 
     app.info_functions("data_parallel_sum")
 
@@ -63,11 +65,9 @@ def test_info_functions(app):
 # commands/local_variables_0
 @skip_no_numba055
 def test_local_variables(app):
-    app.breakpoint("sum_local_vars.py:26")
-    app.run("sum_local_vars.py")
-
-    app.child.expect(r"Thread .* hit Breakpoint .* at sum_local_vars.py:26")
-    app.child.expect(r"26\s+c\[i\] = l1 \+ l2")
+    setup_breakpoint(
+        app, "sum_local_vars.py:26", expected_line=r"26\s+c\[i\] = l1 \+ l2"
+    )
 
     app.info_locals()
 
