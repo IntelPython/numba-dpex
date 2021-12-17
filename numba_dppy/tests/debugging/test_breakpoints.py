@@ -42,6 +42,14 @@ common_loop_body_native_function_name = {
             common_loop_body_native_function_name["numba-dppy-kernel"],
             "numba-dppy-kernel",
         ),
+        (
+            f'side-by-side.py:{common_loop_body_native_function_name["numba"]}',
+            "numba",
+        ),
+        (
+            f'side-by-side.py:{common_loop_body_native_function_name["numba-dppy-kernel"]}',
+            "numba-dppy-kernel",
+        ),
     ],
 )
 def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
