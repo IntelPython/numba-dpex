@@ -76,7 +76,15 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
             "simple_sum.py",
             "simple_sum.py:23",
             r"23\s+i = dppy.get_global_id\(0\)",
-        )
+        ),
+        # location specified by function name
+        # commands/break_func
+        (
+            "data_parallel_sum",
+            "simple_sum.py",
+            "simple_sum.py:23",
+            r"23\s+i = dppy.get_global_id\(0\)",
+        ),
     ],
 )
 def test_breakpoint_common(
@@ -89,18 +97,6 @@ def test_breakpoint_common(
 
     app.child.expect(fr"Thread .* hit Breakpoint .* at {expected_location}")
     app.child.expect(expected_line)
-
-
-def test_break_function(app):
-    """Set a breakpoint at the given location specified by function name.
-
-    commands/break_func
-    """
-    app.breakpoint("data_parallel_sum")
-    app.run("simple_sum.py")
-
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:23")
-    app.child.expect(r"23\s+i = dppy.get_global_id\(0\)")
 
 
 def test_break_nested_function(app):
