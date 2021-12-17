@@ -15,13 +15,13 @@
 
 
 import os
-import pathlib
 import sys
 
 import pytest
 
-import numba_dppy
 from numba_dppy import config
+
+from .common import script_path
 
 if config.TESTING_SKIP_NO_DEBUGGING:
     pexpect = pytest.importorskip("pexpect")
@@ -103,5 +103,4 @@ class gdb:
 
     @staticmethod
     def script_path(script):
-        package_path = pathlib.Path(numba_dppy.__file__).parent
-        return str(package_path / "examples/debug" / script)
+        return script_path(script)
