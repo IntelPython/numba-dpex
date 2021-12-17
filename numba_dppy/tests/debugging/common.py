@@ -45,3 +45,29 @@ def breakpoint_by_mark(script, mark, offset=0):
 def breakpoint_by_function(script, function):
     """Return breakpoint for the function in the script"""
     return breakpoint_by_mark(script, f"def {function}", 1)
+
+
+def setup_breakpoint(
+    app,
+    breakpoint: str,
+    script=None,
+    expected_location=None,
+    expected_line=None,
+):
+    if not script:
+        script = breakpoint.split(" ")[0].split(":")[0]
+
+    if not expected_location:
+        expected_location = breakpoint.split(" ")[0]
+        if not expected_location.split(":")[-1].isnumeric():
+            expected_location = breakpoint_by_function(
+                script, expected_location.split(":")[-1]
+            )
+
+    app.breakpoint(breakpoint)
+    app.run(script)
+
+    app.child.expect(fr"Thread .* hit Breakpoint .* at {expected_location}")
+
+    if expected_line:
+        app.child.expect(expected_line)
