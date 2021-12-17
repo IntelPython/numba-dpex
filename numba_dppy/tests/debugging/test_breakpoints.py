@@ -22,8 +22,14 @@ import pytest
 
 from numba_dppy.tests._helper import skip_no_gdb, skip_no_numba055
 
+from .common import breakpoint_by_mark
+
 pytestmark = skip_no_gdb
 
+
+side_by_side_breakpoint = breakpoint_by_mark(
+    "side-by-side.py", "Set breakpoint here"
+)
 
 common_loop_body_native_function_name = {
     "numba": "common_loop_body_242",
@@ -31,8 +37,8 @@ common_loop_body_native_function_name = {
 }
 
 breakpoint_api_cases = [
-    ("side-by-side.py:25", "numba"),
-    ("side-by-side.py:25", "numba-dppy-kernel"),
+    (side_by_side_breakpoint, "numba"),
+    (side_by_side_breakpoint, "numba-dppy-kernel"),
     *((fn, api) for api, fn in common_loop_body_native_function_name.items()),
     *(
         (f"side-by-side.py:{fn}", api)
@@ -59,7 +65,9 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
     app.breakpoint(f"{breakpoint} if {condition}")
     app.run(f"side-by-side.py --api={api}")
 
-    app.child.expect(r"Thread .* hit Breakpoint .* at side-by-side.py:25")
+    app.child.expect(
+        fr"Thread .* hit Breakpoint .* at {side_by_side_breakpoint}"
+    )
 
     app.print(variable_name)
 
