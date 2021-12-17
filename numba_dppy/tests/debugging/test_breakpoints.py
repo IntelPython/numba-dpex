@@ -25,14 +25,20 @@ from numba_dppy.tests._helper import skip_no_numba055, skip_no_gdb
 pytestmark = skip_no_gdb
 
 
+common_loop_body_native_function_name = {
+    "numba": "common_loop_body_242",
+    "numba-dppy-kernel": "common_loop_body",
+}
+
+
 @skip_no_numba055
 @pytest.mark.parametrize(
     "breakpoint, api",
     [
         ("side-by-side.py:25", "numba"),
         ("side-by-side.py:25", "numba-dppy-kernel"),
-        ("common_loop_body_242", "numba"),
-        ("common_loop_body", "numba-dppy-kernel"),
+        (common_loop_body_native_function_name["numba"], "numba"),
+        (common_loop_body_native_function_name["numba-dppy-kernel"], "numba-dppy-kernel"),
     ],
 )
 def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
