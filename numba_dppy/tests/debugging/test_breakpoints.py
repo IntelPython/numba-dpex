@@ -107,18 +107,37 @@ def test_breakpoint_common(
     app.child.expect(expected_line)
 
 
-def test_break_conditional(app):
-    """Set a breakpoint with condition.
+@pytest.mark.parametrize(
+    "breakpoint, script, expected_location, expected_line, variable_name, variable_value",
+    [
+        # commands/break_conditional
+        (
+            "simple_sum.py:24 if i == 1",
+            "simple_sum.py",
+            "simple_sum.py:24",
+            r"24\s+c\[i\] = a\[i\] \+ b\[i\]",
+            "i",
+            "1",
+        )
+    ],
+)
+def test_breakpoint_with_condition_common(
+    app,
+    breakpoint,
+    script,
+    expected_location,
+    expected_line,
+    variable_name,
+    variable_value,
+):
+    """Set a breakpoint with condition and check value of variable."""
 
-    commands/break_conditional
-    """
+    app.breakpoint(breakpoint)
+    app.run(script)
 
-    app.breakpoint("simple_sum.py:24 if i == 1")
-    app.run("simple_sum.py")
+    app.child.expect(fr"Thread .* hit Breakpoint .* at {expected_location}")
+    app.child.expect(expected_line)
 
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:24")
-    app.child.expect(r"24\s+c\[i\] = a\[i\] \+ b\[i\]")
+    app.print(variable_name)
 
-    app.print("i")
-
-    app.child.expect(r"\$1 = 1")
+    app.child.expect(fr"\$1 = {variable_value}")
