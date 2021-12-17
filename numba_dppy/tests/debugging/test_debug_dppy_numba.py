@@ -45,33 +45,6 @@ def test_backtrace(app):
     app.child.expect(r"#1.*__main__::kernel_sum .* at simple_dppy_func.py:30")
 
 
-# commands/break_file_func
-def test_break_file_function(app):
-    app.breakpoint("simple_sum.py:data_parallel_sum")
-    app.run("simple_sum.py")
-
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:23")
-    app.child.expect(r"23\s+i = dppy.get_global_id\(0\)")
-
-
-# commands/break_func
-def test_break_function(app):
-    app.breakpoint("data_parallel_sum")
-    app.run("simple_sum.py")
-
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:23")
-    app.child.expect(r"23\s+i = dppy.get_global_id\(0\)")
-
-
-# commands/break_nested_func
-def test_break_nested_function(app):
-    app.breakpoint("simple_dppy_func.py:func_sum")
-    app.run("simple_dppy_func.py")
-
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:23")
-    app.child.expect(r"23\s+result = a_in_func \+ b_in_func")
-
-
 @skip_no_numba055
 def test_info_args(app):
     app.breakpoint("simple_dppy_func.py:29")

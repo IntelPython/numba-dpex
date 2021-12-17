@@ -53,7 +53,43 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
     app.child.expect(fr"\$1 = {variable_value}")
 
 
-# commands/break_conditional
+
+def test_break_file_function(app):
+    """Set a breakpoint at the given location specified by file name and function name.
+
+    commands/break_file_func
+    """
+    app.breakpoint("simple_sum.py:data_parallel_sum")
+    app.run("simple_sum.py")
+
+    app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:23")
+    app.child.expect(r"23\s+i = dppy.get_global_id\(0\)")
+
+
+def test_break_function(app):
+    """Set a breakpoint at the given location specified by function name.
+
+    commands/break_func
+    """
+    app.breakpoint("data_parallel_sum")
+    app.run("simple_sum.py")
+
+    app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:23")
+    app.child.expect(r"23\s+i = dppy.get_global_id\(0\)")
+
+
+def test_break_nested_function(app):
+    """Set a breakpoint at the given location specified by file name and nested function name.
+
+    commands/break_nested_func
+    """
+    app.breakpoint("simple_dppy_func.py:func_sum")
+    app.run("simple_dppy_func.py")
+
+    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:23")
+    app.child.expect(r"23\s+result = a_in_func \+ b_in_func")
+
+
 def test_break_conditional(app):
     """
 
