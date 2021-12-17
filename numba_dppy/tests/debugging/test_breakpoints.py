@@ -30,28 +30,19 @@ common_loop_body_native_function_name = {
     "numba-dppy-kernel": "common_loop_body",
 }
 
+breakpoint_api_cases = [
+    ("side-by-side.py:25", "numba"),
+    ("side-by-side.py:25", "numba-dppy-kernel"),
+    *((fn, api) for api, fn in common_loop_body_native_function_name.items()),
+    *(
+        (f"side-by-side.py:{fn}", api)
+        for api, fn in common_loop_body_native_function_name.items()
+    ),
+]
+
 
 @skip_no_numba055
-@pytest.mark.parametrize(
-    "breakpoint, api",
-    [
-        ("side-by-side.py:25", "numba"),
-        ("side-by-side.py:25", "numba-dppy-kernel"),
-        (common_loop_body_native_function_name["numba"], "numba"),
-        (
-            common_loop_body_native_function_name["numba-dppy-kernel"],
-            "numba-dppy-kernel",
-        ),
-        (
-            f'side-by-side.py:{common_loop_body_native_function_name["numba"]}',
-            "numba",
-        ),
-        (
-            f'side-by-side.py:{common_loop_body_native_function_name["numba-dppy-kernel"]}',
-            "numba-dppy-kernel",
-        ),
-    ],
-)
+@pytest.mark.parametrize("breakpoint, api", breakpoint_api_cases)
 def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
     """Function breakpoints and argument initializing
 
