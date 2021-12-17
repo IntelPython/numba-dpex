@@ -96,8 +96,9 @@ def test_break_nested_function(app):
 
 
 def test_break_conditional(app):
-    """
+    """Set a breakpoint with condition.
 
+    commands/break_conditional
     """
 
     app.breakpoint("simple_sum.py:24 if i == 1")
