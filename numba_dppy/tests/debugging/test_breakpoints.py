@@ -66,16 +66,29 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
     app.child.expect(fr"\$1 = {variable_value}")
 
 
-def test_break_file_function(app):
-    """Set a breakpoint at the given location specified by file name and function name.
+@pytest.mark.parametrize(
+    "breakpoint, script, expected_location, expected_line",
+    [
+        # location specified by file name and function name
+        # commands/break_file_func
+        (
+            "simple_sum.py:data_parallel_sum",
+            "simple_sum.py",
+            "simple_sum.py:23",
+            r"23\s+i = dppy.get_global_id\(0\)",
+        )
+    ],
+)
+def test_breakpoint_common(
+    app, breakpoint, script, expected_location, expected_line
+):
+    """Set a breakpoint in the given script."""
 
-    commands/break_file_func
-    """
-    app.breakpoint("simple_sum.py:data_parallel_sum")
-    app.run("simple_sum.py")
+    app.breakpoint(breakpoint)
+    app.run(script)
 
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:23")
-    app.child.expect(r"23\s+i = dppy.get_global_id\(0\)")
+    app.child.expect(fr"Thread .* hit Breakpoint .* at {expected_location}")
+    app.child.expect(expected_line)
 
 
 def test_break_function(app):
