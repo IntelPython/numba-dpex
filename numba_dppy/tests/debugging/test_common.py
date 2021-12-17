@@ -16,7 +16,7 @@
 
 import pytest
 
-from .common import breakpoint_by_function, breakpoint_by_mark
+from .common import breakpoint_by_function, breakpoint_by_mark, setup_breakpoint
 
 
 @pytest.mark.parametrize(
@@ -33,3 +33,25 @@ def test_breakpoint_by_mark(file_name, mark, expected):
 )
 def test_breakpoint_by_function(file_name, function, expected):
     assert expected == breakpoint_by_function(file_name, function)
+
+
+@pytest.mark.parametrize(
+    "breakpoint, script, expected_location, expected_line",
+    [
+        (
+            "simple_sum.py:24",
+            "simple_sum.py",
+            "simple_sum.py:24",
+            r"24\s+c\[i\] = a\[i\] \+ b\[i\]",
+        ),
+        ("simple_sum.py:24", "simple_sum.py", "simple_sum.py:24", None),
+        ("simple_sum.py:24", "simple_sum.py", None, None),
+        ("simple_sum.py:24", None, None, None),
+        ("simple_sum.py:data_parallel_sum", None, None, None),
+        ("data_parallel_sum", "simple_sum.py", None, None),
+    ],
+)
+def test_setup_breakpoint(
+    app, breakpoint, script, expected_location, expected_line
+):
+    setup_breakpoint(app, breakpoint, script, expected_location, expected_line)
