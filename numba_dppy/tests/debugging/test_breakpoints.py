@@ -79,60 +79,40 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
 
 
 @pytest.mark.parametrize(
-    "breakpoint, script, expected_line",
+    "breakpoint, script",
     [
         # location specified by file name and function name
         # commands/break_file_func
-        (
-            "simple_sum.py:data_parallel_sum",
-            None,
-            r"23\s+i = dppy.get_global_id\(0\)",
-        ),
+        ("simple_sum.py:data_parallel_sum", None),
         # location specified by function name
         # commands/break_func
-        (
-            "data_parallel_sum",
-            "simple_sum.py",
-            r"23\s+i = dppy.get_global_id\(0\)",
-        ),
+        ("data_parallel_sum", "simple_sum.py"),
         # location specified by file name and nested function name
         # commands/break_nested_func
-        (
-            "simple_dppy_func.py:func_sum",
-            None,
-            r"23\s+result = a_in_func \+ b_in_func",
-        ),
+        ("simple_dppy_func.py:func_sum", None),
     ],
 )
-def test_breakpoint_common(
-    app, breakpoint, script, expected_line
-):
+def test_breakpoint_common(app, breakpoint, script):
     """Set a breakpoint in the given script."""
-    setup_breakpoint(app, breakpoint, script=script, expected_line=expected_line)
+    setup_breakpoint(app, breakpoint, script=script)
 
 
 @pytest.mark.parametrize(
-    "breakpoint, expected_line, variable_name, variable_value",
+    "breakpoint, variable_name, variable_value",
     [
         # commands/break_conditional
-        (
-            f"{simple_sum_condition_breakpoint} if i == 1",
-            r"24\s+c\[i\] = a\[i\] \+ b\[i\]",
-            "i",
-            "1",
-        )
+        (f"{simple_sum_condition_breakpoint} if i == 1", "i", "1"),
     ],
 )
 def test_breakpoint_with_condition_common(
     app,
     breakpoint,
-    expected_line,
     variable_name,
     variable_value,
 ):
     """Set a breakpoint with condition and check value of variable."""
 
-    setup_breakpoint(app, breakpoint, expected_line=expected_line)
+    setup_breakpoint(app, breakpoint)
 
     app.print(variable_name)
 
