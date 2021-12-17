@@ -19,6 +19,8 @@ https://www.sourceware.org/gdb/onlinedocs/gdb/Backtrace.html
 
 from numba_dppy.tests._helper import skip_no_gdb
 
+from .common import setup_breakpoint
+
 pytestmark = skip_no_gdb
 
 
@@ -27,12 +29,11 @@ def test_backtrace(app):
 
     commands/backtrace
     """
-
-    app.breakpoint("simple_dppy_func.py:23")
-    app.run("simple_dppy_func.py")
-
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dppy_func.py:23")
-    app.child.expect(r"23\s+result = a_in_func \+ b_in_func")
+    setup_breakpoint(
+        app,
+        "simple_dppy_func.py:23",
+        expected_line=r"23\s+result = a_in_func \+ b_in_func",
+    )
 
     app.backtrace()
 
