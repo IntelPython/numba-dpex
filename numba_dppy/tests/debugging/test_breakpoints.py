@@ -22,7 +22,7 @@ import pytest
 
 from numba_dppy.tests._helper import skip_no_gdb, skip_no_numba055
 
-from .common import breakpoint_by_function, breakpoint_by_mark
+from .common import breakpoint_by_function, breakpoint_by_mark, setup_breakpoint
 
 pytestmark = skip_no_gdb
 
@@ -79,14 +79,13 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
 
 
 @pytest.mark.parametrize(
-    "breakpoint, script, expected_location, expected_line",
+    "breakpoint, script, expected_line",
     [
         # location specified by file name and function name
         # commands/break_file_func
         (
             "simple_sum.py:data_parallel_sum",
-            "simple_sum.py",
-            breakpoint_by_function("simple_sum.py", "data_parallel_sum"),
+            None,
             r"23\s+i = dppy.get_global_id\(0\)",
         ),
         # location specified by function name
@@ -94,39 +93,30 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
         (
             "data_parallel_sum",
             "simple_sum.py",
-            breakpoint_by_function("simple_sum.py", "data_parallel_sum"),
             r"23\s+i = dppy.get_global_id\(0\)",
         ),
         # location specified by file name and nested function name
         # commands/break_nested_func
         (
             "simple_dppy_func.py:func_sum",
-            "simple_dppy_func.py",
-            breakpoint_by_function("simple_dppy_func.py", "func_sum"),
+            None,
             r"23\s+result = a_in_func \+ b_in_func",
         ),
     ],
 )
 def test_breakpoint_common(
-    app, breakpoint, script, expected_location, expected_line
+    app, breakpoint, script, expected_line
 ):
     """Set a breakpoint in the given script."""
-
-    app.breakpoint(breakpoint)
-    app.run(script)
-
-    app.child.expect(fr"Thread .* hit Breakpoint .* at {expected_location}")
-    app.child.expect(expected_line)
+    setup_breakpoint(app, breakpoint, script=script, expected_line=expected_line)
 
 
 @pytest.mark.parametrize(
-    "breakpoint, script, expected_location, expected_line, variable_name, variable_value",
+    "breakpoint, expected_line, variable_name, variable_value",
     [
         # commands/break_conditional
         (
             f"{simple_sum_condition_breakpoint} if i == 1",
-            "simple_sum.py",
-            simple_sum_condition_breakpoint,
             r"24\s+c\[i\] = a\[i\] \+ b\[i\]",
             "i",
             "1",
@@ -136,19 +126,13 @@ def test_breakpoint_common(
 def test_breakpoint_with_condition_common(
     app,
     breakpoint,
-    script,
-    expected_location,
     expected_line,
     variable_name,
     variable_value,
 ):
     """Set a breakpoint with condition and check value of variable."""
 
-    app.breakpoint(breakpoint)
-    app.run(script)
-
-    app.child.expect(fr"Thread .* hit Breakpoint .* at {expected_location}")
-    app.child.expect(expected_line)
+    setup_breakpoint(app, breakpoint, expected_line=expected_line)
 
     app.print(variable_name)
 
