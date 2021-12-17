@@ -45,19 +45,6 @@ def test_backtrace(app):
     app.child.expect(r"#1.*__main__::kernel_sum .* at simple_dppy_func.py:30")
 
 
-# commands/break_conditional
-def test_break_conditional(app):
-    app.breakpoint("simple_sum.py:24 if i == 1")
-    app.run("simple_sum.py")
-
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:24")
-    app.child.expect(r"24\s+c\[i\] = a\[i\] \+ b\[i\]")
-
-    app.print("i")
-
-    app.child.expect(r"\$1 = 1")
-
-
 # commands/break_file_func
 def test_break_file_function(app):
     app.breakpoint("simple_sum.py:data_parallel_sum")

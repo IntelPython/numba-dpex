@@ -51,3 +51,20 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
     app.print(variable_name)
 
     app.child.expect(fr"\$1 = {variable_value}")
+
+
+# commands/break_conditional
+def test_break_conditional(app):
+    """
+
+    """
+
+    app.breakpoint("simple_sum.py:24 if i == 1")
+    app.run("simple_sum.py")
+
+    app.child.expect(r"Thread .* hit Breakpoint .* at simple_sum.py:24")
+    app.child.expect(r"24\s+c\[i\] = a\[i\] \+ b\[i\]")
+
+    app.print("i")
+
+    app.child.expect(r"\$1 = 1")
