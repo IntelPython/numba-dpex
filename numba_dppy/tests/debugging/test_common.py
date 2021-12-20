@@ -16,7 +16,11 @@
 
 import pytest
 
+from numba_dppy.tests._helper import skip_no_gdb
+
 from .common import breakpoint_by_function, breakpoint_by_mark, setup_breakpoint
+
+pytestmark = skip_no_gdb
 
 
 @pytest.mark.parametrize(
