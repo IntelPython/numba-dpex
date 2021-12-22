@@ -13,6 +13,7 @@ Test :file:`numba_dppy/tests/debugging/test_info.py:test_info_args`.
 .. note::
 
    Requires Numba 0.55 or higher.
+   In previous versions ``info args`` always returns ``No arguments.``.
 
 .. _info-locals:
 
