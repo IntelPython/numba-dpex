@@ -16,4 +16,4 @@ Numba-dppy supports the following Intel® Distribution for GDB* commands:
     stepping
     local_variables
     backtrace
-    info
+    symbols
