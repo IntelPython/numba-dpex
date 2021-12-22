@@ -24,13 +24,15 @@ import numba_dppy
 from numba_dppy import config
 from numba_dppy.numba_support import numba_version
 
-pexpect = pytest.importorskip("pexpect")
+if config.TESTING_SKIP_NO_DEBUGGING:
+    pexpect = pytest.importorskip("pexpect")
 
-pytestmark = pytest.mark.skipif(
-    not shutil.which("gdb-oneapi"),
-    reason="Intel® Distribution for GDB* is not available",
-)
-
+    pytestmark = pytest.mark.skipif(
+        not shutil.which("gdb-oneapi"),
+        reason="Intel® Distribution for GDB* is not available",
+    )
+else:
+    import pexpect
 
 skip_no_numba055 = pytest.mark.skipif(
     numba_version < (0, 55), reason="Need Numba 0.55 or higher"

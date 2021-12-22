@@ -37,6 +37,7 @@ test:
   requires:
     - pytest
     - {{ compiler('dpcpp') }}  # [not osx]
+    - pexpect
 
 about:
     home: https://github.com/IntelPython/numba-dppy
