@@ -1,5 +1,5 @@
-Local variables
-===============
+Local Variables and Optimization Level
+======================================
 
 .. note::
 
