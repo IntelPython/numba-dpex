@@ -24,3 +24,4 @@ Other topics:
     :maxdepth: 2
 
     local_variables
+    numba-0.55
