@@ -26,6 +26,11 @@ pytestmark = skip_no_gdb
 
 @skip_no_numba055
 def test_info_args(app):
+    """Test for info args command.
+
+    SAT-4462
+    """
+
     expected_line = r"29\s+i = dppy.get_global_id\(0\)"
     setup_breakpoint(app, "simple_dppy_func.py:29", expected_line=expected_line)
 
