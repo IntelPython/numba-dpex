@@ -15,9 +15,9 @@
 
 import pytest
 
-from .gdb import gdb
-
 
 @pytest.fixture
 def app():
+    from .gdb import gdb
+
     return gdb()
