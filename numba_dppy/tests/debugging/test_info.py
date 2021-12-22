@@ -26,11 +26,8 @@ pytestmark = skip_no_gdb
 
 @skip_no_numba055
 def test_info_args(app):
-    setup_breakpoint(
-        app,
-        "simple_dppy_func.py:29",
-        expected_line=r"29\s+i = dppy.get_global_id\(0\)",
-    )
+    expected_line = r"29\s+i = dppy.get_global_id\(0\)"
+    setup_breakpoint(app, "simple_dppy_func.py:29", expected_line=expected_line)
 
     app.info_args()
 
@@ -51,11 +48,8 @@ def test_info_args(app):
 # commands/info_func
 @skip_no_numba055
 def test_info_functions(app):
-    setup_breakpoint(
-        app,
-        "simple_sum.py:23",
-        expected_line=r"23\s+i = dppy.get_global_id\(0\)",
-    )
+    expected_line = r"23\s+i = dppy.get_global_id\(0\)"
+    setup_breakpoint(app, "simple_sum.py:23", expected_line=expected_line)
 
     app.info_functions("data_parallel_sum")
 
@@ -65,9 +59,8 @@ def test_info_functions(app):
 # commands/local_variables_0
 @skip_no_numba055
 def test_local_variables(app):
-    setup_breakpoint(
-        app, "sum_local_vars.py:26", expected_line=r"26\s+c\[i\] = l1 \+ l2"
-    )
+    expected_line = r"26\s+c\[i\] = l1 \+ l2"
+    setup_breakpoint(app, "sum_local_vars.py:26", expected_line=expected_line)
 
     app.info_locals()
 
