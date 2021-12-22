@@ -14,12 +14,14 @@
 # limitations under the License.
 
 import contextlib
+import shutil
 
 import dpctl
 import pytest
 from numba.tests.support import captured_stdout
 
 from numba_dppy import config
+from numba_dppy.numba_support import numba_version
 
 
 def has_opencl_gpu():
@@ -112,6 +114,15 @@ filter_strings_opencl_gpu = [
 filter_strings_level_zero_gpu = [
     pytest.param("level_zero:gpu:0", marks=skip_no_level_zero_gpu),
 ]
+
+skip_no_numba055 = pytest.mark.skipif(
+    numba_version < (0, 55), reason="Need Numba 0.55 or higher"
+)
+
+skip_no_gdb = pytest.mark.skipif(
+    config.TESTING_SKIP_NO_DEBUGGING and not shutil.which("gdb-oneapi"),
+    reason="Intel® Distribution for GDB* is not available",
+)
 
 
 @contextlib.contextmanager

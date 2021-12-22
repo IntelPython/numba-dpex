@@ -21,7 +21,7 @@ import numba_dppy as dppy
 @dppy.kernel(debug=True)
 def data_parallel_sum(a, b, c):
     i = dppy.get_global_id(0)
-    c[i] = a[i] + b[i]
+    c[i] = a[i] + b[i]  # Condition breakpoint location
 
 
 global_size = 10
