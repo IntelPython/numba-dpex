@@ -110,6 +110,7 @@ def test_info_functions(app):
 
 def side_by_side_info_locals_case(api):
     return (
+        {"NUMBA_OPT": 0},
         "side-by-side.py:27 if param_a == 5",
         f"side-by-side.py --api={api}",
         None,
@@ -124,9 +125,10 @@ def side_by_side_info_locals_case(api):
 
 @skip_no_numba055
 @pytest.mark.parametrize(
-    "breakpoint, script, expected_line, expected_info_locals, expected_info",
+    "env, breakpoint, script, expected_line, expected_info_locals, expected_info",
     [
         (
+            {"NUMBA_OPT": 0},
             "sum_local_vars.py:26",
             "sum_local_vars.py",
             r"26\s+c\[i\] = l1 \+ l2",
@@ -156,21 +158,56 @@ def side_by_side_info_locals_case(api):
                 ),
             ),
         ),
+        (
+            {"NUMBA_OPT": 1},
+            "sum_local_vars.py:26",
+            "sum_local_vars.py",
+            r"26\s+c\[i\] = l1 \+ l2",
+            ("No locals.",),
+            (),
+        ),
+        (
+            {"NUMBA_EXTEND_VARIABLE_LIFETIMES": 1},
+            "side-by-side.py:28",
+            "side-by-side.py --api=numba-dppy-kernel",
+            None,
+            (r"param_c = 10", r"param_d = 0", r"result = 10"),
+            (),
+        ),
+        (
+            {"NUMBA_EXTEND_VARIABLE_LIFETIMES": 0},
+            "side-by-side.py:28",
+            "side-by-side.py --api=numba-dppy-kernel",
+            None,
+            (r"param_c = 0", r"param_d = 0", r"result = 10"),
+            (),
+        ),
         side_by_side_info_locals_case("numba"),
         side_by_side_info_locals_case("numba-dppy-kernel"),
     ],
 )
-def test_info_locals_NUMBA_OPT_0(
-    app, breakpoint, script, expected_line, expected_info_locals, expected_info
+def test_info_locals(
+    app,
+    env,
+    breakpoint,
+    script,
+    expected_line,
+    expected_info_locals,
+    expected_info,
 ):
-    """Test info locals with NUMBA_OPT=0.
+    """Test info locals with different environment variables.
 
     commands/local_variables_0
+    commands/local_variables_1
 
+    SAT-4454
     Provide information about variables (arrays).
     Issue: https://github.com/numba/numba/issues/7414
     Fix: https://github.com/numba/numba/pull/7177
     """
+
+    for varname, value in env.items():
+        app.set_environment(varname, value)
 
     setup_breakpoint(app, breakpoint, script, expected_line=expected_line)
 
