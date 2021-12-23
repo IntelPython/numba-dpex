@@ -108,35 +108,85 @@ def test_info_functions(app):
     app.child.expect(r"22:\s+.*__main__::data_parallel_sum\(.*\)")
 
 
-# commands/local_variables_0
+def side_by_side_info_locals_case(api):
+    return (
+        "side-by-side.py:27 if param_a == 5",
+        f"side-by-side.py --api={api}",
+        None,
+        (
+            r"param_c = 15",
+            r"param_d = 2.5",
+            r"result = 0",
+        ),
+        (),
+    )
+
+
 @skip_no_numba055
-def test_local_variables(app):
-    expected_line = r"26\s+c\[i\] = l1 \+ l2"
-    setup_breakpoint(app, "sum_local_vars.py:26", expected_line=expected_line)
+@pytest.mark.parametrize(
+    "breakpoint, script, expected_line, expected_info_locals, expected_info",
+    [
+        (
+            "sum_local_vars.py:26",
+            "sum_local_vars.py",
+            r"26\s+c\[i\] = l1 \+ l2",
+            (
+                r"i = 0",
+                r"l1 = [0-9]\.[0-9]{3}",
+                r"l2 = [0-9]\.[0-9]{3}",
+            ),
+            (
+                (
+                    "a",
+                    r"\$1 = {meminfo = ",
+                    r"type = struct array\(float32, 1d, C\).*}\)",
+                    r"type = array\(float32, 1d, C\) \({.*}\)",
+                ),
+                (
+                    "l1",
+                    r"\$2 = [0-9]\.[0-9]{3}",
+                    r"type = float64",
+                    r"type = float64",
+                ),
+                (
+                    "l2",
+                    r"\$3 = [0-9]\.[0-9]{3}",
+                    r"type = float64",
+                    r"type = float64",
+                ),
+            ),
+        ),
+        side_by_side_info_locals_case("numba"),
+        side_by_side_info_locals_case("numba-dppy-kernel"),
+    ],
+)
+def test_info_locals_NUMBA_OPT_0(
+    app, breakpoint, script, expected_line, expected_info_locals, expected_info
+):
+    """Test info locals with NUMBA_OPT=0.
+
+    commands/local_variables_0
+
+    Provide information about variables (arrays).
+    Issue: https://github.com/numba/numba/issues/7414
+    Fix: https://github.com/numba/numba/pull/7177
+    """
+
+    setup_breakpoint(app, breakpoint, script, expected_line=expected_line)
 
     app.info_locals()
 
-    app.child.expect(r"i = 0")
-    app.child.expect(r"l1 = [0-9]\.[0-9]{3}")
-    app.child.expect(r"l2 = [0-9]\.[0-9]{3}")
+    for variable in expected_info_locals:
+        app.child.expect(variable)
 
-    app.print("a")
-    app.child.expect(r"\$1 = {meminfo = ")
+    for info in expected_info:
+        variable, expected_print, expected_ptype, expected_whatis = info
 
-    app.print("l1")
-    app.child.expect(r"\$2 = [0-9]\.[0-9]{3}")
+        app.print(variable)
+        app.child.expect(expected_print)
 
-    app.print("l2")
-    app.child.expect(r"\$3 = [0-9]\.[0-9]{3}")
+        app.ptype(variable)
+        app.child.expect(expected_ptype)
 
-    app.ptype("a")
-    app.child.expect(r"type = struct array\(float32, 1d, C\).*}\)")
-
-    app.whatis("a")
-    app.child.expect(r"type = array\(float32, 1d, C\) \({.*}\)")
-
-    app.ptype("l1")
-    app.child.expect(r"type = float64")
-
-    app.whatis("l1")
-    app.child.expect(r"type = float64")
+        app.whatis(variable)
+        app.child.expect(expected_whatis)
