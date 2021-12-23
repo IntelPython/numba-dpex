@@ -45,7 +45,7 @@ class gdb:
         self.child = pexpect.spawn(
             "gdb-oneapi -q python", env=env, encoding="utf-8"
         )
-        if config.DEBUG:
+        if config.TESTING_LOG_DEBUGGING:
             self.child.logfile = sys.stdout
 
     def setup_gdb(self):
