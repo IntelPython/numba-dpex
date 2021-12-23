@@ -48,7 +48,7 @@ Debug session:
 ``info locals``
 ---------------
 
-Test :file:`numba_dppy/tests/debugging/test_info.py:test_local_variables`.
+Test :file:`numba_dppy/tests/debugging/test_info.py:test_info_locals`.
 
 .. note::
 
