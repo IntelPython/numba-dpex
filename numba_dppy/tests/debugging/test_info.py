@@ -29,6 +29,8 @@ def test_info_args(app):
     """Test for info args command.
 
     SAT-4462
+    Issue: https://github.com/numba/numba/issues/7414
+    Fix: https://github.com/numba/numba/pull/7177
     """
 
     expected_line = r"29\s+i = dppy.get_global_id\(0\)"
