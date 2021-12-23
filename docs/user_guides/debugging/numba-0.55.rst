@@ -7,6 +7,7 @@ Added ``info args``
 -------------------
 
 See :ref:`info-args`.
+In previous versions ``info args`` always returns ``No arguments.``.
 
 Extended ``info locals``
 ------------------------
