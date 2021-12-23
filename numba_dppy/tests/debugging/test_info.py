@@ -36,15 +36,18 @@ def side_by_side_case(api):
             r"param_a = 0",
             r"param_b = 0",
         ),
-        ("param_a", r"\$1 = 0"),
-        ("param_a", r"type = float32"),
-        ("param_a", r"type = float32"),
+        (
+            "param_a",
+            r"\$1 = 0",
+            r"type = float32",
+            r"type = float32",
+        ),
     )
 
 
 @skip_no_numba055
 @pytest.mark.parametrize(
-    "breakpoint, script, expected_line, expected_args, expected_print, expected_ptype, expected_whatis",
+    "breakpoint, script, expected_line, expected_args, expected_info",
     [
         (
             "simple_dppy_func.py:29",
@@ -55,23 +58,19 @@ def side_by_side_case(api):
                 r"b_in_kernel = {meminfo = ",
                 r"c_in_kernel = {meminfo = ",
             ),
-            ("a_in_kernel", r"\$1 = {meminfo = "),
-            ("a_in_kernel", r"type = struct array\(float32, 1d, C\).*}\)"),
-            ("a_in_kernel", r"type = array\(float32, 1d, C\) \({.*}\)"),
+            (
+                "a_in_kernel",
+                r"\$1 = {meminfo = ",
+                r"type = struct array\(float32, 1d, C\).*}\)",
+                r"type = array\(float32, 1d, C\) \({.*}\)",
+            ),
         ),
         side_by_side_case("numba"),
         side_by_side_case("numba-dppy-kernel"),
     ],
 )
 def test_info_args(
-    app,
-    breakpoint,
-    script,
-    expected_line,
-    expected_args,
-    expected_print,
-    expected_ptype,
-    expected_whatis,
+    app, breakpoint, script, expected_line, expected_args, expected_info
 ):
     """Test for info args command.
 
@@ -87,17 +86,18 @@ def test_info_args(
     for arg in expected_args:
         app.child.expect(arg)
 
-    app.print(expected_print[0])
-    app.child.expect(expected_print[1])
+    variable, expected_print, expected_ptype, expected_whatis = expected_info
 
-    app.ptype(expected_ptype[0])
-    app.child.expect(expected_ptype[1])
+    app.print(variable)
+    app.child.expect(expected_print)
 
-    app.whatis(expected_whatis[0])
-    app.child.expect(expected_whatis[1])
+    app.ptype(variable)
+    app.child.expect(expected_ptype)
+
+    app.whatis(variable)
+    app.child.expect(expected_whatis)
 
 
-# commands/info_func
 @skip_no_numba055
 def test_info_functions(app):
     expected_line = r"23\s+i = dppy.get_global_id\(0\)"
