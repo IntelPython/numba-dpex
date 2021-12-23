@@ -59,6 +59,9 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
     Test that it is possible to set conditional breakpoint at the beginning
     of the function and use a function argument in the condition.
 
+    It is important that breakpoint by function name hits at the firts line in
+    the function body and not at the function definition line.
+
     Test for https://github.com/numba/numba/issues/7415
     SAT-4449
     """
