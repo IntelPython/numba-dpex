@@ -26,7 +26,6 @@ Souece code :file:`numba_dppy/examples/debug/side-by-side.py`:
    :lineno-match:
    :emphasize-lines: 2
 
-
 Debug session:
 
 .. code-block:: shell-session
