@@ -103,24 +103,83 @@ See also:
 
 .. _local-variables-lifetime:
 
-Lifetime of local variables
----------------------------
+Local Variables Lifetime in Numba IR
+------------------------------------
 
-Numba uses live variable analysis.
-Lifetime of Python variables are different from lifetime of variables in
-compiled code.
+Lifetime of Python variables are different from lifetime of variables in compiled code.
+Numba analyses variables lifetime and try to optimize it.
+The debugger can show the variable values, but they may be zeros
+after the variable is explicitly deleted when the scope of variable is ended.
 
-.. note::
-    For more information, refer to `Numba variable policy <https://numba.pydata.org/numba-doc/latest/developer/live_variable_analysis.html?highlight=delete#live-variable-analysis>`_.
+See `Numba variable policy <https://numba.pydata.org/numba-doc/latest/developer/live_variable_analysis.html?highlight=delete#live-variable-analysis>`_.
 
+Numba provides environment variable :ref:`NUMBA_EXTEND_VARIABLE_LIFETIMES`
+for extending the lifetime of variables to the end of the block in which their lifetime ends.
 
+See `Numba documentation <https://numba.readthedocs.io/en/latest/reference/envvars.html#envvar-NUMBA_EXTEND_VARIABLE_LIFETIMES>`_.
 
-It affects debugging experience in following way.
+Default is zero.
 
-Consider Numba-dppy kernel code from :file:`sum_local_vars.py`:
+It is recommended to debug with :samp:`NUMBA_EXTEND_VARIABLE_LIFETIMES=1`.
+
+Example 1 - Using ``NUMBA_EXTEND_VARIABLE_LIFETIMES``
+`````````````````````````````````````````````````````
+
+Source code :file:`numba_dppy/tests/debugging/test_info.py`:
+
+.. literalinclude:: ../../../numba_dppy/examples/debug/side-by-side.py
+   :pyobject: common_loop_body
+   :linenos:
+   :lineno-match:
+   :emphasize-lines: 5
+
+Debug session with :samp:`NUMBA_EXTEND_VARIABLE_LIFETIMES=1`:
+
+.. code-block:: shell-session
+    :emphasize-lines: 3, 10-12
+
+    $ gdb-oneapi -q python
+    ...
+    (gdb) set environment NUMBA_EXTEND_VARIABLE_LIFETIMES 1
+    (gdb) break side-by-side.py:28
+    ...
+    (gdb) run numba_dppy/examples/debug/side-by-side.py --api=numba-dppy-kernel
+    ...
+    Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::common_loop_body (param_a=0, param_b=0) at side-by-side.py:28
+    28          return result
+    (gdb) info locals
+    param_c = 10
+    param_d = 0
+    result = 10
+
+It prints values of ``param_c`` and ``param_d``.
+
+Debug session with :samp:`NUMBA_EXTEND_VARIABLE_LIFETIMES=0`:
+
+.. code-block:: shell-session
+    :emphasize-lines: 3, 10-12
+
+    $ gdb-oneapi -q python
+    ...
+    (gdb) set environment NUMBA_EXTEND_VARIABLE_LIFETIMES 0
+    (gdb) break side-by-side.py:28
+    ...
+    (gdb) run numba_dppy/examples/debug/side-by-side.py --api=numba-dppy-kernel
+    ...
+    Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::common_loop_body (param_a=0, param_b=0) at side-by-side.py:28
+    28          return result
+    (gdb) info locals
+    param_c = 0
+    param_d = 0
+    result = 10
+
+Example 2 - Using ``NUMBA_DUMP_ANNOTATION``
+```````````````````````````````````````````
+
+Source code :file:`numba_dppy/examples/debug/sum_local_vars.py`:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/sum_local_vars.py
-    :lines: 20-25
+    :pyobject: data_parallel_sum
     :linenos:
     :lineno-match:
 
@@ -275,3 +334,35 @@ not insert `del a` until the end of the function.
         #   return $58return_value.23
 
         revive(a)  # pass variable to dummy function
+
+Example 3 - Using ``info locals``
+`````````````````````````````````
+
+Source code :file:`sum_local_vars.py`:
+
+.. literalinclude:: ../../../numba_dppy/examples/debug/sum_local_vars.py
+    :lines: 15-
+    :linenos:
+    :lineno-match:
+
+Run the debugger with ``NUMBA_OPT=0``:
+
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+    :language: shell-session
+    :lines: 1-6
+
+Run the ``info locals`` command. The sample output on "no optimization" level ``NUMBA_OPT=0`` is as follows:
+
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+    :language: shell-session
+    :lines: 8-48
+    :emphasize-lines: 1-16, 24-39
+
+Since the debugger does not hit a line with the target variable ``l1``, the value equals 0. The true value of the variable ``l1`` is shown after stepping to line 22.
+
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+    :language: shell-session
+    :lines: 49-66
+    :emphasize-lines: 1-16
+
+When the debugger hits the last line of the kernel, ``info locals`` command returns all the local variables with their values.
