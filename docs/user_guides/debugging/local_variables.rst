@@ -1,59 +1,77 @@
-Local Variables and Optimization Level
-======================================
+Debugging Local Variables
+=========================
 
-.. note::
+Several conditions could influence debugging of local variables:
 
-    - :samp:`NUMBA_OPT=0` "no optimization" level - all local variables of the kernel function are available.
-    - :samp:`NUMBA_OPT=1` or higher - some variables may be optimized out.
+1. :ref:`numba-opt`
+2. :ref:`local-variables-lifetime`
 
-Consider Numba-dppy kernel code :file:`sum_local_vars.py`
+.. _numba-opt:
+
+Optimization Level for LLVM
+---------------------------
+
+Numba provides environment variable :ref:`NUMBA_OPT` for configuring optimization level for LLVM.
+
+See `Numba documentation <https://numba.readthedocs.io/en/stable/reference/envvars.html?#envvar-NUMBA_OPT>`_.
+
+* :samp:`NUMBA_OPT=0` means "no optimization" level - all local variables are available.
+* :samp:`NUMBA_OPT=1` or higher levels - some variables may be optimized out.
+
+Default value is 3.
+
+It is recommended to debug with :samp:`NUMBA_OPT=0`.
+
+Example
+```````
+
+Source code :file:`numba_dppy/examples/debug/sum_local_vars.py`:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/sum_local_vars.py
-    :lines: 15-
+    :pyobject: data_parallel_sum
     :linenos:
     :lineno-match:
+    :emphasize-lines: 6
 
-``info locals``
----------------
+Debug session with :samp:`NUMBA_OPT=0`:
 
-Run the debugger:
+.. code-block:: shell-session
+    :emphasize-lines: 3, 10-13
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
-    :language: shell-session
-    :lines: 1-6
+    $ gdb-oneapi -q python
+    ...
+    (gdb) set environment NUMBA_OPT 0
+    (gdb) break sum_local_vars.py:26
+    ...
+    (gdb) run numba_dppy/examples/debug/sum_local_vars.py
+    ...
+    Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum (a=..., b=..., c=...) at sum_local_vars.py:26
+    26          c[i] = l1 + l2
+    (gdb) info locals
+    i = 0
+    l1 = 2.9795852899551392
+    l2 = 0.22986688613891601
 
-Run the ``info locals`` command. The sample output on "no optimization" level ``NUMBA_OPT=0`` is as follows:
+It printed all local variables with their values.
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
-    :language: shell-session
-    :lines: 8-48
-    :emphasize-lines: 1-16, 24-39
+Debug session with :samp:`NUMBA_OPT=1`:
 
-Since the debugger does not hit a line with the target variable ``l1``, the value equals 0. The true value of the variable ``l1`` is shown after stepping to line 22.
+.. code-block:: shell-session
+    :emphasize-lines: 3, 10-11
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
-    :language: shell-session
-    :lines: 49-66
-    :emphasize-lines: 1-16
+    $ gdb-oneapi -q python
+    ...
+    (gdb) set environment NUMBA_OPT 1
+    (gdb) break sum_local_vars.py:26
+    ...
+    (gdb) run numba_dppy/examples/debug/sum_local_vars.py
+    ...
+    Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], ?? () at sum_local_vars.py:26 from /tmp/kernel_11059955544143858990_e6df1e.dbgelf
+    26          c[i] = l1 + l2
+    (gdb) info locals
+    No locals.
 
-When the debugger hits the last line of the kernel, ``info locals`` command returns all the local variables with their values.
-
-.. note::
-
-    The debugger can show the variable values, but these values may be equal to
-    0 after the variable is explicitly deleted or the function scope is ended.
-    For more info see :ref:`local-variables-lifetime`.
-
-When you use "O1 optimization" level ``NUMBA_OPT=1`` and run the ``info locals`` command, the output is as follows:
-
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_1
-    :language: shell-session
-    :lines: 8-23
-    :emphasize-lines: 1-14
-
-.. note::
-
-    The debugger does not show the local variables ``a``, ``b`` and ``c``, they are optimized out on "O1 optimization" level.
+It optimized out local variables ``i``, ``l1`` and ``l2`` with this optimization level.
 
 ``print <variable>``
 ------------------
