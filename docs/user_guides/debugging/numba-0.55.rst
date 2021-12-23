@@ -49,3 +49,8 @@ Set breakpoint with condition by function argument:
     25          param_c = param_a + 10  # Set breakpoint here
     (gdb) print param_a
     $1 = 3
+
+Added ``NUMBA_EXTEND_VARIABLE_LIFETIMES``
+-----------------------------------------
+
+See :ref:`local-variables-lifetime`.
