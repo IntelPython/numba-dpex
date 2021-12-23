@@ -204,6 +204,7 @@ def test_info_locals(
     Provide information about variables (arrays).
     Issue: https://github.com/numba/numba/issues/7414
     Fix: https://github.com/numba/numba/pull/7177
+         https://github.com/numba/numba/pull/7421
     """
 
     for varname, value in env.items():
