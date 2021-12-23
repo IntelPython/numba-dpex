@@ -17,15 +17,62 @@
 https://www.sourceware.org/gdb/onlinedocs/gdb/Frame-Info.html
 """
 
+import pytest
+
 from numba_dppy.tests._helper import skip_no_gdb, skip_no_numba055
 
 from .common import setup_breakpoint
+from .test_breakpoints import side_by_side_breakpoint
 
 pytestmark = skip_no_gdb
 
 
+def side_by_side_case(api):
+    return (
+        side_by_side_breakpoint,
+        f"side-by-side.py --api={api}",
+        None,
+        (
+            r"param_a = 0",
+            r"param_b = 0",
+        ),
+        ("param_a", r"\$1 = 0"),
+        ("param_a", r"type = float32"),
+        ("param_a", r"type = float32"),
+    )
+
+
 @skip_no_numba055
-def test_info_args(app):
+@pytest.mark.parametrize(
+    "breakpoint, script, expected_line, expected_args, expected_print, expected_ptype, expected_whatis",
+    [
+        (
+            "simple_dppy_func.py:29",
+            "simple_dppy_func.py",
+            r"29\s+i = dppy.get_global_id\(0\)",
+            (
+                r"a_in_kernel = {meminfo = ",
+                r"b_in_kernel = {meminfo = ",
+                r"c_in_kernel = {meminfo = ",
+            ),
+            ("a_in_kernel", r"\$1 = {meminfo = "),
+            ("a_in_kernel", r"type = struct array\(float32, 1d, C\).*}\)"),
+            ("a_in_kernel", r"type = array\(float32, 1d, C\) \({.*}\)"),
+        ),
+        side_by_side_case("numba"),
+        side_by_side_case("numba-dppy-kernel"),
+    ],
+)
+def test_info_args(
+    app,
+    breakpoint,
+    script,
+    expected_line,
+    expected_args,
+    expected_print,
+    expected_ptype,
+    expected_whatis,
+):
     """Test for info args command.
 
     SAT-4462
@@ -33,23 +80,21 @@ def test_info_args(app):
     Fix: https://github.com/numba/numba/pull/7177
     """
 
-    expected_line = r"29\s+i = dppy.get_global_id\(0\)"
-    setup_breakpoint(app, "simple_dppy_func.py:29", expected_line=expected_line)
+    setup_breakpoint(app, breakpoint, script, expected_line=expected_line)
 
     app.info_args()
 
-    app.child.expect(r"a_in_kernel = {meminfo = ")
-    app.child.expect(r"b_in_kernel = {meminfo = ")
-    app.child.expect(r"c_in_kernel = {meminfo = ")
+    for arg in expected_args:
+        app.child.expect(arg)
 
-    app.print("a_in_kernel")
-    app.child.expect(r"\$1 = {meminfo = ")
+    app.print(expected_print[0])
+    app.child.expect(expected_print[1])
 
-    app.ptype("a_in_kernel")
-    app.child.expect(r"type = struct array\(float32, 1d, C\).*}\)")
+    app.ptype(expected_ptype[0])
+    app.child.expect(expected_ptype[1])
 
-    app.whatis("a_in_kernel")
-    app.child.expect(r"type = array\(float32, 1d, C\) \({.*}\)")
+    app.whatis(expected_whatis[0])
+    app.child.expect(expected_whatis[1])
 
 
 # commands/info_func
