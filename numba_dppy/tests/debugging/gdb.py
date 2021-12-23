@@ -65,6 +65,9 @@ class gdb:
         self.child.expect("(gdb)", timeout=5)
         self.child.sendline(command)
 
+    def set_environment(self, varname, value):
+        self._command(f"set environment {varname} {value}")
+
     def breakpoint(self, breakpoint):
         self._command("break " + breakpoint)
 
