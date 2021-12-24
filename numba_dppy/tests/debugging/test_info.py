@@ -123,6 +123,30 @@ def side_by_side_info_locals_case(api):
     )
 
 
+def side_by_side_2_info_locals_case(api):
+    return (
+        {"NUMBA_OPT": 0},
+        "side-by-side-2.py:29 if param_a == 5",
+        f"side-by-side-2.py --api={api}",
+        None,
+        (
+            r"param_a = 5",
+            r"param_b = 5",
+            r"param_c = 15",
+            r"param_d = 2.5",
+            r"result = 0",
+        ),
+        (
+            (
+                r"a",
+                r"\$1 = {meminfo = ",
+                r"type = struct array\(float32, 1d, C\)",
+                r"type = array\(float32, 1d, C\)",
+            ),
+        ),
+    )
+
+
 @skip_no_numba055
 @pytest.mark.parametrize(
     "env, breakpoint, script, expected_line, expected_info_locals, expected_info",
@@ -184,6 +208,8 @@ def side_by_side_info_locals_case(api):
         ),
         side_by_side_info_locals_case("numba"),
         side_by_side_info_locals_case("numba-dppy-kernel"),
+        side_by_side_2_info_locals_case("numba"),
+        side_by_side_2_info_locals_case("numba-dppy-kernel"),
     ],
 )
 def test_info_locals(
