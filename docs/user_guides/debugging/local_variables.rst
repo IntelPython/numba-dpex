@@ -73,24 +73,6 @@ Debug session with :samp:`NUMBA_OPT=1`:
 
 It optimized out local variables ``i``, ``l1`` and ``l2`` with this optimization level.
 
-``print <variable>``
-------------------
-
-To print the value of a variable, run the ``print <variable>`` command.
-
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
-    :language: shell-session
-    :lines: 67-72
-    :emphasize-lines: 1-6
-
-.. note::
-
-    Kernel variables are shown in intermidiate representation view (with "$" sign). The actual values of the arrays are currently not available.
-
-See also:
-
-    - `Local variables in GDB* <https://sourceware.org/gdb/current/onlinedocs/gdb/Frame-Info.html#Frame-Info>`_
-
 .. _local-variables-lifetime:
 
 Local Variables Lifetime in Numba IR

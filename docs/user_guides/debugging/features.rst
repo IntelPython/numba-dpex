@@ -11,6 +11,7 @@ following debugging features:
     stepping
     frame_info
     backtrace
+    data
     symbols
 
 Other topics:
