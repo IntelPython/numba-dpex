@@ -54,3 +54,12 @@ Added ``NUMBA_EXTEND_VARIABLE_LIFETIMES``
 -----------------------------------------
 
 See :ref:`local-variables-lifetime`.
+
+Displaying Complex Data Types
+-----------------------------
+
+Numba 0.55 improves displaying of complex data types like arrays.
+It makes it possible to access ``data`` in arrays.
+It is possible to get array values by commands like ``x/10f array.data``.
+
+See :ref:`print` and :ref:`whatis`
