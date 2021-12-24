@@ -33,3 +33,13 @@ Output of the debug session:
 .. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/info_func
     :language: shell-session
     :emphasize-lines: 5-9
+
+``whatis [arg]`` and ``ptype [arg]``
+----------------------------------------------
+
+To print the type of a variable, run the ``ptype <variable>`` or ``whatis <variable>`` commands:
+
+.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+    :language: shell-session
+    :lines: 73-81
+    :emphasize-lines: 1-6

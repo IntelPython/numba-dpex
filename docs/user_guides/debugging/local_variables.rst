@@ -87,16 +87,6 @@ To print the value of a variable, run the ``print <variable>`` command.
 
     Kernel variables are shown in intermidiate representation view (with "$" sign). The actual values of the arrays are currently not available.
 
-``ptype <variable>``
-------------------
-
-To print the type of a variable, run the ``ptype <variable>`` or ``whatis <variable>`` commands:
-
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
-    :language: shell-session
-    :lines: 73-81
-    :emphasize-lines: 1-6
-
 See also:
 
     - `Local variables in GDB* <https://sourceware.org/gdb/current/onlinedocs/gdb/Frame-Info.html#Frame-Info>`_
