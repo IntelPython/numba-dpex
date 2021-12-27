@@ -49,7 +49,7 @@ To print the type of a variable, run the ``ptype <variable>`` or ``whatis <varia
 Example - Complex Data Types
 ````````````````````````````
 
-Souece code :file:`numba_dppy/examples/debug/side-by-side-2.py`:
+Source code :file:`numba_dppy/examples/debug/side-by-side-2.py`:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/side-by-side-2.py
    :pyobject: common_loop_body
