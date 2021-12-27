@@ -281,3 +281,32 @@ def test_print_array_element(app, breakpoint, script, expected_info):
 
         app.print(variable)
         app.child.expect(expected_print)
+
+
+def side_by_side_2_assignment_to_variable_case(api):
+    return (
+        "side-by-side-2.py:29 if param_a == 5",
+        f"side-by-side-2.py --api={api}",
+        [
+            (r"param_c", r"\$1 = 15"),
+            (r"param_c=200", r"\$2 = 200"),
+            (r"param_c", r"\$3 = 200"),
+        ],
+    )
+
+
+@pytest.mark.parametrize(
+    "breakpoint, script, expected_info",
+    [
+        side_by_side_2_assignment_to_variable_case("numba"),
+        side_by_side_2_assignment_to_variable_case("numba-dppy-kernel"),
+    ],
+)
+def test_assignment_to_variable(app, breakpoint, script, expected_info):
+    setup_breakpoint(app, breakpoint, script)
+
+    for info in expected_info:
+        variable, expected_print = info
+
+        app.print(variable)
+        app.child.expect(expected_print)
