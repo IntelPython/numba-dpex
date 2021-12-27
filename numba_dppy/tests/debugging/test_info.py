@@ -254,3 +254,30 @@ def test_info_locals(
 
         app.whatis(variable)
         app.child.expect(expected_whatis)
+
+
+def side_by_side_2_print_array_element_case(api):
+    return (
+        "side-by-side-2.py:29 if param_a == 5",
+        f"side-by-side-2.py --api={api}",
+        [(r"a.data[5]", r"\$1 = 5")],
+    )
+
+
+@pytest.mark.parametrize(
+    "breakpoint, script, expected_info",
+    [
+        side_by_side_2_print_array_element_case("numba"),
+        side_by_side_2_print_array_element_case("numba-dppy-kernel"),
+    ],
+)
+def test_print_array_element(app, breakpoint, script, expected_info):
+    """Test access to array elements"""
+
+    setup_breakpoint(app, breakpoint, script)
+
+    for info in expected_info:
+        variable, expected_print = info
+
+        app.print(variable)
+        app.child.expect(expected_print)
