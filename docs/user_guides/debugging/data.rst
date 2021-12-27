@@ -52,3 +52,7 @@ Debug session:
    0x555558461000: 0       1       2       3
    0x555558461010: 4       5       6       7
    0x555558461020: 8       9
+   (gdb) print a.data[5]
+   $2 = 5
+
+This example prints array and its element.
