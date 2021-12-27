@@ -3,10 +3,19 @@ Altering Execution
 
 See `GDB* documentation <https://sourceware.org/gdb/onlinedocs/gdb/Altering.html>`_.
 
+.. _assignment-to-variables:
+
 Assignment to Variables
 -----------------------
 
 To alter the value of a variable, evaluate an assignment expression.
+This also works for function arguments.
+
+.. note::
+
+   Altering arguments has limitation. For it to work correctly
+   arguments should not be modified in code.
+   See `Numba issue <https://github.com/numba/numba/pull/7196>`_.
 
 Example
 ```````
