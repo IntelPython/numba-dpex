@@ -65,6 +65,7 @@ Displaying Complex Data Types
 
 Numba 0.55 improves displaying of complex data types like arrays.
 It makes it possible to access ``data`` in arrays.
-It is possible to get array values by commands like ``x/10f array.data``.
+It is possible to get array values by commands like :samp:``x/10f array.data`` and
+:samp:``print array.data[5]``.
 
 See :ref:`print` and :ref:`whatis`
