@@ -145,6 +145,8 @@ Debug session with :samp:`NUMBA_EXTEND_VARIABLE_LIFETIMES=0`:
     param_d = 0
     result = 10
 
+.. _example-NUMBA_DUMP_ANNOTATION:
+
 Example 2 - Using ``NUMBA_DUMP_ANNOTATION``
 ```````````````````````````````````````````
 
@@ -306,6 +308,44 @@ not insert `del a` until the end of the function.
         #   return $58return_value.23
 
         revive(a)  # pass variable to dummy function
+
+Run with environment variables :samp:`NUMBA_DUMP_ANNOTATION=1` and
+:samp:`NUMBA_EXTEND_VARIABLE_LIFETIMES=1`.
+It will show that numba inserts `del` for variables at the end of the block:
+
+.. code-block::
+    :linenos:
+    :emphasize-lines: 11-25
+
+    -----------------------------------ANNOTATION-----------------------------------
+    # File: numba_dppy/examples/debug/sum_local_vars.py
+    ...
+    def data_parallel_sum(a, b, c):
+        ...
+        # --- LINE 26 ---
+        #   $40binary_add.16 = l1 + l2  :: float64
+        #   c[i] = $40binary_add.16  :: (array(float32, 1d, C), int64, float64) -> none
+        #   $const48.19 = const(NoneType, None)  :: none
+        #   $50return_value.20 = cast(value=$const48.19)  :: none
+        #   del $2load_global.0
+        #   del $const6.2
+        #   del $4load_method.1
+        #   del a
+        #   del $const18.7
+        #   del $16binary_subscr.6
+        #   del b
+        #   del $const30.12
+        #   del $28binary_subscr.11
+        #   del l2
+        #   del l1
+        #   del i
+        #   del c
+        #   del $40binary_add.16
+        #   del $const48.19
+        #   return $50return_value.20
+
+        c[i] = l1 + l2
+
 
 Example 3 - Using ``info locals``
 `````````````````````````````````
