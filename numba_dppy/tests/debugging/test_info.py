@@ -289,8 +289,11 @@ def side_by_side_2_assignment_to_variable_case(api):
         f"side-by-side-2.py --api={api}",
         [
             (r"param_c", r"\$1 = 15"),
-            (r"param_c=200", r"\$2 = 200"),
-            (r"param_c", r"\$3 = 200"),
+            (r"param_c=150", r"\$2 = 150"),
+            (r"param_c", r"\$3 = 150"),
+            (r"i", r"\$4 = 5"),
+            (r"i=50", r"\$5 = 50"),
+            (r"i", r"\$6 = 50"),
         ],
     )
 
