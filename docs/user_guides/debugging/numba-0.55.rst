@@ -55,6 +55,11 @@ Added ``NUMBA_EXTEND_VARIABLE_LIFETIMES``
 
 See :ref:`local-variables-lifetime`.
 
+:samp:``NUMBA_EXTEND_VARIABLE_LIFETIMES=1`` works together with
+:samp:``NUMBA_DUMP_ANNOTATION=1``.
+
+See :ref:`example-NUMBA_DUMP_ANNOTATION`.
+
 Displaying Complex Data Types
 -----------------------------
 
