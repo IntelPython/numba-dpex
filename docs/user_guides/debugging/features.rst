@@ -13,6 +13,7 @@ following debugging features:
     backtrace
     data
     symbols
+    altering
 
 Other topics:
 
