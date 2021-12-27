@@ -45,7 +45,7 @@ class gdb:
         self.child = pexpect.spawn(
             "gdb-oneapi -q python", env=env, encoding="utf-8"
         )
-        if config.DEBUG:
+        if config.TESTING_LOG_DEBUGGING:
             self.child.logfile = sys.stdout
 
     def setup_gdb(self):
@@ -64,6 +64,9 @@ class gdb:
     def _command(self, command):
         self.child.expect("(gdb)", timeout=5)
         self.child.sendline(command)
+
+    def set_environment(self, varname, value):
+        self._command(f"set environment {varname} {value}")
 
     def breakpoint(self, breakpoint):
         self._command("break " + breakpoint)
