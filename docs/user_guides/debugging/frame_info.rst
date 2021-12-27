@@ -18,7 +18,7 @@ Test :file:`numba_dppy/tests/debugging/test_info.py:test_info_args`.
 Example
 ```````
 
-Souece code :file:`numba_dppy/examples/debug/side-by-side.py`:
+Source code :file:`numba_dppy/examples/debug/side-by-side.py`:
 
 .. literalinclude:: ../../../numba_dppy/examples/debug/side-by-side.py
    :pyobject: common_loop_body
