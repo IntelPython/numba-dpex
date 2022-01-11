@@ -80,15 +80,15 @@ def platform_not_supported(device_type):
 
 
 skip_no_opencl_gpu = pytest.mark.skipif(
-    not has_opencl_gpu(),
+    not has_opencl_gpu() and config.TESTING_SKIP_NO_OPENCL_GPU,
     reason="No opencl GPU platforms available",
 )
 skip_no_opencl_cpu = pytest.mark.skipif(
-    not has_opencl_cpu(),
+    not has_opencl_cpu() and config.TESTING_SKIP_NO_OPENCL_CPU,
     reason="No opencl CPU platforms available",
 )
 skip_no_level_zero_gpu = pytest.mark.skipif(
-    not has_level_zero(),
+    not has_level_zero() and config.TESTING_SKIP_NO_LEVEL_ZERO_GPU,
     reason="No level-zero GPU platforms available",
 )
 
