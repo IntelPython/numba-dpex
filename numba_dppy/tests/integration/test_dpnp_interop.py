@@ -17,7 +17,7 @@ import numpy as np
 import pytest
 
 import numba_dppy as dppy
-from numba_dppy.tests._helper import filter_strings
+from numba_dppy.tests._helper import filter_strings_not_default_device
 
 dpnp = pytest.importorskip("dpnp", reason="DPNP is not installed")
 
@@ -47,26 +47,14 @@ def usm_type(request):
     return request.param
 
 
-@pytest.mark.parametrize("filter_str", filter_strings)
+@pytest.mark.parametrize("filter_str", filter_strings_not_default_device)
 def test_dpnp_create_array_in_context(filter_str, dtype):
-    if (
-        "opencl" not in dpctl.get_current_queue().sycl_device.filter_string
-        and "opencl" in filter_str
-    ):
-        pytest.skip("Bug in DPNP. See: IntelPython/dpnp#723")
-
     with dpctl.device_context(filter_str):
         a = dpnp.arange(1024, dtype=dtype)  # noqa
 
 
-@pytest.mark.parametrize("filter_str", filter_strings)
+@pytest.mark.parametrize("filter_str", filter_strings_not_default_device)
 def test_consuming_array_from_dpnp(filter_str, dtype):
-    if (
-        "opencl" not in dpctl.get_current_queue().sycl_device.filter_string
-        and "opencl" in filter_str
-    ):
-        pytest.skip("Bug in DPNP. See: IntelPython/dpnp#723")
-
     @dppy.kernel
     def data_parallel_sum(a, b, c):
         """

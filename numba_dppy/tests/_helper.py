@@ -115,6 +115,34 @@ filter_strings_level_zero_gpu = [
     pytest.param("level_zero:gpu:0", marks=skip_no_level_zero_gpu),
 ]
 
+skip_opencl_gpu_not_default_device = pytest.mark.skipif(
+    "opencl:gpu" not in dpctl.get_current_queue().sycl_device.filter_string,
+    reason="Works only with default device",
+)
+skip_opencl_cpu_not_default_device = pytest.mark.skipif(
+    "opencl:cpu" not in dpctl.get_current_queue().sycl_device.filter_string,
+    reason="Works only with default device",
+)
+skip_level_zero_gpu_not_default_device = pytest.mark.skipif(
+    "level_zero:gpu" not in dpctl.get_current_queue().sycl_device.filter_string,
+    reason="Works only with default device",
+)
+
+filter_strings_not_default_device = [
+    pytest.param(
+        "level_zero:gpu:0",
+        marks=skip_level_zero_gpu_not_default_device or skip_no_level_zero_gpu,
+    ),
+    pytest.param(
+        "opencl:gpu:0",
+        marks=skip_opencl_gpu_not_default_device or skip_no_opencl_gpu,
+    ),
+    pytest.param(
+        "opencl:cpu:0",
+        marks=skip_opencl_cpu_not_default_device or skip_no_opencl_cpu,
+    ),
+]
+
 skip_no_numba055 = pytest.mark.skipif(
     numba_version < (0, 55), reason="Need Numba 0.55 or higher"
 )
