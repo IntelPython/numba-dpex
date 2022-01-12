@@ -49,6 +49,8 @@ jobs:
         run: |
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
           export OCL_ICD_FILENAMES=libintelocl.so
+          export NUMBA_DPPY_TESTING_SKIP_NO_OPENCL_GPU=1
+          export NUMBA_DPPY_TESTING_SKIP_NO_LEVEL_ZERO_GPU=1
           pytest -q -ra --disable-warnings --cov --cov-report term-missing --pyargs numba_dppy -vv
 
       - name: Install coveralls
