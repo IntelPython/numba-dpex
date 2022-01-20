@@ -30,7 +30,7 @@ from numba_dppy.types import dpnp_ndarray_Type
     [
         (dpctl_ndarray, [1], UsmSharedArrayType(types.float64, 1, "C")),
         (dpctl_ndarray, [1, 1], UsmSharedArrayType(types.float64, 2, "C")),
-        (dpnp_ndarray, [1], dpnp_ndarray_Type()),
+        (dpnp_ndarray, [1], dpnp_ndarray_Type(types.float64, 1, "C")),
     ],
 )
 def test_typeof(array_type, shape, numba_type):
@@ -39,7 +39,7 @@ def test_typeof(array_type, shape, numba_type):
 
 
 dpnp_mark = pytest.mark.xfail(
-    raises=AttributeError, reason="No ndim in numba type"
+    raises=TypeError, reason="No unboxing"
 )
 
 

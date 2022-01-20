@@ -13,10 +13,31 @@
 # limitations under the License.
 
 from dpnp import ndarray
-from numba.core.types import Type
+
+from numba_dppy.dppy_array_type import DPPYArray
 
 
-class dpnp_ndarray_Type(Type):
-    def __init__(self):
-        name = "dpnp.ndarray"
-        super().__init__(name=name)
+class dpnp_ndarray_Type(DPPYArray):
+    """Numba type for dpnp.ndarray."""
+
+    def __init__(
+        self,
+        dtype,
+        ndim,
+        layout,
+        readonly=False,
+        name=None,
+        aligned=True,
+        addrspace=None,
+    ):
+        name = "dpnp.ndarray(%s, %sd, %s)" % (dtype, ndim, layout)
+
+        super().__init__(
+            dtype,
+            ndim,
+            layout,
+            # py_type=ndarray,
+            readonly=readonly,
+            name=name,
+            addrspace=addrspace,
+        )
