@@ -47,6 +47,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
+      - name: Install cpu driver
+        run: sudo apt-get install intel-opencl-icd
+      - name: Activate cpu driver
+        run: echo "libintelocl.so" | sudo tee /etc/OpenCL/vendors/intel-cpu.icd
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
       - name: Install conda-build
