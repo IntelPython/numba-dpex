@@ -26,7 +26,7 @@ jobs:
             experimental: false
     continue-on-error: ${{ matrix.experimental }}
     env:
-      CHANNELS: ${{ matrix.integration_channels }} -c defaults -c numba -c intel -c numba/label/dev -c dppy/label/dev --override-channels
+      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
 
     steps:
       - uses: actions/checkout@v2
@@ -47,6 +47,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
+      - name: Install cpu driver
+        run: sudo apt-get install intel-opencl-icd
+      - name: Activate cpu driver
+        run: echo "libintelocl.so" | sudo tee /etc/OpenCL/vendors/intel-cpu.icd
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
       - name: Install conda-build
@@ -82,7 +86,7 @@ jobs:
             experimental: false
     continue-on-error: ${{ matrix.experimental }}
     env:
-      CHANNELS: ${{ matrix.integration_channels }} -c defaults -c numba -c intel -c numba/label/dev -c dppy/label/dev --override-channels
+      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
       conda-bld: C:\Miniconda\conda-bld\win-64\
 
     steps:
@@ -157,7 +161,7 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
     env:
       # conda-forge: llvm-spirv 11 not on intel channel yet
-      CHANNELS: ${{ matrix.integration_channels }} -c defaults -c numba -c intel -c numba/label/dev -c dppy/label/dev -c conda-forge --override-channels
+      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev -c conda-forge --override-channels
 
     steps:
       - name: Download artifact
@@ -216,6 +220,7 @@ jobs:
     strategy:
       matrix:
         python: ["3.8", "3.9"]
+        dpctl: ["0.11.4", "0.12"]
         integration_channels: [""]
         experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
@@ -229,7 +234,7 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
     env:
       # conda-forge: llvm-spirv 11 not on intel channel yet
-      CHANNELS: ${{ matrix.integration_channels }} -c defaults -c numba -c intel -c numba/label/dev -c dppy/label/dev -c conda-forge --override-channels
+      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev -c conda-forge --override-channels
 
     steps:
       - name: Download artifact
@@ -264,13 +269,42 @@ jobs:
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
       - name: Install numba-dppy
         run: |
-          conda install ${{ env.PACKAGE_NAME }} pytest dpcpp_win-64 python=${{ matrix.python }} ${{ matrix.dependencies }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
+          conda install ${{ env.PACKAGE_NAME }} pytest dpcpp_win-64 python=${{ matrix.python }} dpctl=${{ matrix.dpctl }} ${{ matrix.dependencies }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
           # Test installed packages
           conda list
       - name: Install opencl_rt
         run: conda install opencl_rt -c intel --override-channels
       - name: Add library
-        run: echo "OCL_ICD_FILENAMES=C:\Miniconda\Library\lib\intelocl64.dll" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        run: |
+          echo "OCL_ICD_FILENAMES=C:\Miniconda\Library\lib\intelocl64.dll" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          try {$list = Get-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors | Select-Object -ExpandProperty Property } catch {$list=@()}
+          if ($list.count -eq 0) {
+              if (-not (Test-Path -Path HKLM:\SOFTWARE\Khronos)) {
+                 New-Item -Path HKLM:\SOFTWARE\Khronos
+              }
+              if (-not (Test-Path -Path HKLM:\SOFTWARE\Khronos\OpenCL)) {
+                 New-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL
+              }
+              if (-not (Test-Path -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors)) {
+                 New-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors
+              }
+              New-ItemProperty -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors -Name C:\Miniconda\Library\lib\intelocl64.dll -Value 0
+              try {$list = Get-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors | Select-Object -ExpandProperty Property } catch {$list=@()}
+              Write-Output $(Get-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors)
+              # Now copy OpenCL.dll into system folder
+              $system_ocl_icd_loader="C:\Windows\System32\OpenCL.dll"
+              $python_ocl_icd_loader="C:\Miniconda\Library\bin\OpenCL.dll"
+              Copy-Item -Path $python_ocl_icd_loader -Destination $system_ocl_icd_loader
+              if (Test-Path -Path $system_ocl_icd_loader) {
+                 Write-Output "$system_ocl_icd_loader has been copied"
+                 $acl = Get-Acl $system_ocl_icd_loader
+                 Write-Output $acl
+              } else {
+                 Write-Output "OCL-ICD-Loader was not copied"
+              }
+              # Variable assisting OpenCL CPU driver to find TBB DLLs which are not located where it expects them by default
+              echo "TBB_DLL_PATH=C:\Miniconda\Library\bin" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          }
       - name: Add dpnp skip variable
         run: echo "NUMBA_DPPY_TESTING_SKIP_NO_DPNP=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
       - name: Run tests
