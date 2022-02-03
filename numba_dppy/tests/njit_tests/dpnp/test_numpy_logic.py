@@ -40,7 +40,7 @@ def test_all(dtype, shape, filter_str):
     for i in range(len(shape)):
         size *= shape[i]
 
-    for i in range(2 ** size):
+    for i in range(2**size):
         t = i
 
         a = np.empty(size, dtype=dtype)
