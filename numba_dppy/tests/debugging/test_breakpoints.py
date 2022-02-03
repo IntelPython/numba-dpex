@@ -73,12 +73,12 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
     app.run(f"side-by-side.py --api={api}")
 
     app.child.expect(
-        fr"Thread .* hit Breakpoint .* at {side_by_side_breakpoint}"
+        rf"Thread .* hit Breakpoint .* at {side_by_side_breakpoint}"
     )
 
     app.print(variable_name)
 
-    app.child.expect(fr"\$1 = {variable_value}")
+    app.child.expect(rf"\$1 = {variable_value}")
 
 
 @pytest.mark.parametrize(
@@ -119,4 +119,4 @@ def test_breakpoint_with_condition_common(
 
     app.print(variable_name)
 
-    app.child.expect(fr"\$1 = {variable_value}")
+    app.child.expect(rf"\$1 = {variable_value}")
