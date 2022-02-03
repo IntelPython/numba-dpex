@@ -11,7 +11,7 @@ jobs:
   generate-docs:
     runs-on: ubuntu-latest
     env:
-      CHANNELS: -c defaults -c numba -c intel -c numba/label/dev -c dppy/label/dev -c conda-forge --override-channels
+      CHANNELS: -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev -c conda-forge --override-channels
 
     steps:
       - uses: actions/checkout@v2
@@ -32,6 +32,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-3.8-
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
+      - name: Install cpu driver
+        run: sudo apt-get install intel-opencl-icd
+      - name: Activate cpu driver
+        run: echo "libintelocl.so" | sudo tee /etc/OpenCL/vendors/intel-cpu.icd
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
       - name: Install conda-build
