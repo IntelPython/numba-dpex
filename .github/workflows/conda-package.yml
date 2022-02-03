@@ -1,9 +1,6 @@
 name: Conda package
 
-on:
-  push:
-    branches:
-    tags:
+on: [push, pull_request]
 
 env:
   PACKAGE_NAME: numba-dppy
