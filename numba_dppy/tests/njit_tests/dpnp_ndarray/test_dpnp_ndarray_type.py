@@ -15,6 +15,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ################################################################################
+"""Tests for dpnp.ndarray interoperability with Numba
+
+See numba/tests/test_ndarray_subclasses.py
+"""
+
 
 import pytest
 from dpctl.tensor.numpy_usm_shared import ndarray as dpctl_ndarray
@@ -26,16 +31,23 @@ from numba_dppy.types import dpnp_ndarray_Type
 
 
 @pytest.mark.parametrize(
-    "array_type, shape, numba_type",
+    "array_type, expected_numba_type",
     [
-        (dpctl_ndarray, [1], UsmSharedArrayType(types.float64, 1, "C")),
-        (dpctl_ndarray, [1, 1], UsmSharedArrayType(types.float64, 2, "C")),
-        (dpnp_ndarray, [1], dpnp_ndarray_Type(types.float64, 1, "C")),
+        (dpctl_ndarray, UsmSharedArrayType),
+        (dpnp_ndarray, dpnp_ndarray_Type),
     ],
 )
-def test_typeof(array_type, shape, numba_type):
+@pytest.mark.parametrize(
+    "shape, expected_ndim",
+    [
+        ([1], 1),
+        ([1, 1], 2),
+    ],
+)
+def test_typeof(array_type, shape, expected_numba_type, expected_ndim):
     array = array_type(shape)
-    assert typeof(array) == numba_type
+    expected_type = expected_numba_type(types.float64, expected_ndim, "C")
+    assert typeof(array) == expected_type
 
 
 @pytest.mark.parametrize(
