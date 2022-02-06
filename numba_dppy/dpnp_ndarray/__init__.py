@@ -14,3 +14,4 @@
 
 from . import models, typeof
 from .types import *
+from . import dpnp_boxing

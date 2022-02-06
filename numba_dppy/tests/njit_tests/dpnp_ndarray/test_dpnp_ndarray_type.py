@@ -50,14 +50,11 @@ def test_typeof(array_type, shape, expected_numba_type, expected_ndim):
     assert typeof(array) == expected_type
 
 
-dpnp_mark = pytest.mark.xfail(raises=TypeError, reason="No unboxing")
-
-
 @pytest.mark.parametrize(
     "array",
     [
         dpctl_ndarray([1]),
-        pytest.param(dpnp_ndarray([1]), marks=dpnp_mark),
+        dpnp_ndarray([1]),
     ],
 )
 def test_njit(array):
