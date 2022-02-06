@@ -77,6 +77,18 @@ def get_ext_modules():
         )
         ext_modules += [ext_dpnp_iface]
 
+    import numpy
+
+    ext_rt_python = Extension(
+        name="numba_dppy.runtime._rt_python",
+        sources=[
+            "numba_dppy/runtime/_rt_python.c",
+        ],
+        include_dirs=[numba.extending.include_path(), numpy.get_include()],
+    )
+
+    ext_modules += [ext_rt_python]
+
     if dpnp_present:
         return cythonize(ext_modules)
     else:
