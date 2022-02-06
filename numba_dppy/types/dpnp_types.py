@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from dpnp import ndarray
+from numba.core import types
 
 from numba_dppy.dppy_array_type import DPPYArray
 
@@ -41,3 +42,11 @@ class dpnp_ndarray_Type(DPPYArray):
             name=name,
             addrspace=addrspace,
         )
+
+    @property
+    def as_array(self):
+        return self
+
+    @property
+    def box_type(self):
+        return ndarray
