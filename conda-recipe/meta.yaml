@@ -19,7 +19,7 @@ requirements:
         - setuptools
         - cython
         - numba 0.54*|0.55*
-        - dpctl {{ dpctl }}
+        - dpctl 0.12.0dev3
         - dpnp {{ dpnp }}          # [linux]
         - mkl {{ mkl }}            # [linux]
         - wheel
