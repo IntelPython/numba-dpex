@@ -4,16 +4,3 @@ c_compiler_version:         # [linux]
 
 cxx_compiler_version:       # [linux]
   - 7                       # [linux and x86_64]
-
-dpctl:
-  - 0.11.0
-
-dpnp:
-  - 0.9.0dev0
-
-mkl:
-  - 2021.3.0
-
-pin_run_as_build:
-  dpnp: x.x
-  mkl: x.x

@@ -19,9 +19,8 @@ requirements:
         - setuptools
         - cython
         - numba 0.54*|0.55*
-        - dpctl {{ dpctl }}
-        - dpnp {{ dpnp }}          # [linux]
-        - mkl {{ mkl }}            # [linux]
+        - dpctl 0.12.0dev3
+        - dpnp 0.9.0=*_0          # [linux]
         - wheel
     run:
         - python
@@ -30,7 +29,6 @@ requirements:
         - spirv-tools
         - llvm-spirv 11.*
         - dpnp                     # [linux]
-        - mkl                      # [linux]
         - packaging
 
 test:
