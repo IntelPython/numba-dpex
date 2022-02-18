@@ -69,7 +69,7 @@ def get_ext_modules():
         ext_dpnp_iface = Extension(
             name="numba_dppy.dpnp_iface.dpnp_fptr_interface",
             sources=["numba_dppy/dpnp_iface/dpnp_fptr_interface.pyx"],
-            include_dirs=[dpnp.get_include()],
+            include_dirs=[dpnp.get_include(), dpctl.get_include()],
             libraries=["dpnp_backend_c"],
             library_dirs=dpnp_lib_path,
             runtime_library_dirs=dpnp_lib_path,
