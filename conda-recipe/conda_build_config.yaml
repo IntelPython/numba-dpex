@@ -4,3 +4,6 @@ c_compiler_version:         # [linux]
 
 cxx_compiler_version:       # [linux]
   - 7                       # [linux and x86_64]
+
+pin_run_as_build:
+  dpnp: x.x
