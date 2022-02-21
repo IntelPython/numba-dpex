@@ -92,6 +92,7 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
     np.testing.assert_allclose(actual, expected, rtol=1e-3, atol=0)
 
 
+@pytest.mark.skip(reason="Flaky tests")
 @pytest.mark.parametrize("filter_str", filter_strings)
 @pytest.mark.parametrize("kth", [0, 1], ids=["0", "1"])
 @pytest.mark.parametrize(

@@ -121,11 +121,35 @@ def dpnp_copy_impl(a):
     ret_type = types.void
     """
     dpnp source:
-    https://github.com/IntelPython/dpnp/blob/0.5.1/dpnp/backend/kernels/dpnp_krnl_elemwise.cpp#L213
+    https://github.com/IntelPython/dpnp/blob/0.10.0dev0/dpnp/backend/kernels/dpnp_krnl_elemwise.cpp#L320-L330
     Function declaration:
-    void dpnp_copy_c(void* array1_in, void* result1, size_t size)
+    void __name__(void* result_out,                                                                                     \
+                  const size_t result_size,                                                                             \
+                  const size_t result_ndim,                                                                             \
+                  const shape_elem_type* result_shape,                                                                  \
+                  const shape_elem_type* result_strides,                                                                \
+                  const void* input1_in,                                                                                \
+                  const size_t input1_size,                                                                             \
+                  const size_t input1_ndim,                                                                             \
+                  const shape_elem_type* input1_shape,                                                                  \
+                  const shape_elem_type* input1_strides,                                                                \
+                  const size_t* where);
     """
-    sig = signature(ret_type, types.voidptr, types.voidptr, types.intp)
+    sig = signature(
+        ret_type,
+        types.voidptr,  # void* result_out
+        types.intp,  # const size_t result_size,
+        types.intp,  # const size_t result_ndim,
+        types.voidptr,  # const shape_elem_type* result_shape,
+        types.voidptr,  # const shape_elem_type* result_strides,
+        types.voidptr,  # const void* input1_in,
+        types.intp,  # const size_t input1_size,
+        types.intp,  # const size_t input1_ndim,
+        types.voidptr,  # const shape_elem_type* input1_shape,
+        types.voidptr,  # const shape_elem_type* input1_strides,
+        types.voidptr,  # const size_t* where);
+    )
+
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
     res_dtype = a.dtype
@@ -149,7 +173,35 @@ def dpnp_copy_impl(a):
             out.size * out.itemsize, sycl_queue
         )
 
-        dpnp_func(a_usm, out_usm, a.size)
+        strides = np.array(1)
+
+        result_out = out_usm
+        result_size = out.size
+        result_ndim = out.ndim
+        result_shape = out.shapeptr
+        result_strides = strides.ctypes
+
+        input1_in = a_usm
+        input1_size = a.size
+        input1_ndim = a.ndim
+        input1_shape = a.shapeptr
+        input1_strides = strides.ctypes
+
+        where = 0
+
+        dpnp_func(
+            result_out,
+            result_size,
+            result_ndim,
+            result_shape,
+            result_strides,
+            input1_in,
+            input1_size,
+            input1_ndim,
+            input1_shape,
+            input1_strides,
+            where,
+        )
 
         event = dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize

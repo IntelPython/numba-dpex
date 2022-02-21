@@ -52,7 +52,7 @@ def load_dpctl_sycl_interface():
     else:
         paths = glob.glob(
             os.path.join(
-                os.path.dirname(dpctl.__file__), "*DPCTLSyclInterface.so"
+                os.path.dirname(dpctl.__file__), "*DPCTLSyclInterface.so.0"
             )
         )
 
