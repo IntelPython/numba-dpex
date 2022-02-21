@@ -1,0 +1,18 @@
+numba\_dppy.core package
+========================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dppy.core.passes
+
+Module contents
+---------------
+
+.. automodule:: numba_dppy.core
+   :members:
+   :undoc-members:
+   :show-inheritance:
