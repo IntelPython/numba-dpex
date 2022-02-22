@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Debugging with Intel® Distribution for GDB* &mdash; numba-dppy 0.18.0dev0+40.g90c8580 documentation</title>
+  <title>Debugging with Intel® Distribution for GDB* &mdash; numba-dppy 0.18.0a0+11.gdc75cdac documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -135,7 +135,7 @@ See <a class="reference internal" href="#debugging-features-and-limitations"><sp
 <span class="linenos">21</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="linenos">22</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
 <span class="linenos">23</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="linenos">24</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="linenos">24</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>  <span class="c1"># Condition breakpoint location</span>
 <span class="linenos">25</span>
 <span class="linenos">26</span>
 <span class="linenos">27</span><span class="n">global_size</span> <span class="o">=</span> <span class="mi">10</span>
@@ -178,12 +178,20 @@ See <a class="reference internal" href="#debugging-features-and-limitations"><sp
 <li class="toctree-l1"><a class="reference internal" href="features.html">Supported Features</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="breakpoints.html">Breakpoints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stepping.html">Stepping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="local_variables.html">Local variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frame_info.html">Information About a Frame</a></li>
 <li class="toctree-l2"><a class="reference internal" href="backtrace.html">Backtrace</a></li>
-<li class="toctree-l2"><a class="reference internal" href="info.html">Info commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">Examining Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="symbols.html">Examining the Symbol Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="altering.html">Altering Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="local_variables.html">Debugging Local Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba-0.55.html">Debugging Features in Numba 0.55</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="limitations.html">Limitations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="limitations.html">Limitations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="limitations.html#altering-arguments-modified-in-code">Altering arguments modified in code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="limitations.html#using-numbas-direct-gdb-bindings-in-nopython-mode">Using Numba’s direct <code class="docutils literal notranslate"><span class="pre">gdb</span></code> bindings in <code class="docutils literal notranslate"><span class="pre">nopython</span></code> mode</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="common_issues.html">Common issues and tips</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="common_issues.html#breakpoints-are-not-hit">Breakpoints are not hit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="common_issues.html#debugging-is-not-stable">Debugging is not stable</a></li>

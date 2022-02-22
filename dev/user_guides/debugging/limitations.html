@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Limitations &mdash; numba-dppy 0.18.0dev0+40.g90c8580 documentation</title>
+  <title>Limitations &mdash; numba-dppy 0.18.0a0+11.gdc75cdac documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Common issues and tips" href="common_issues.html" />
-    <link rel="prev" title="Info commands" href="info.html" /> 
+    <link rel="prev" title="Debugging Features in Numba 0.55" href="numba-0.55.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -51,7 +51,11 @@
 <li class="toctree-l2"><a class="reference internal" href="index.html#example-of-intel-distribution-for-gdb-usage">Example of Intel® Distribution for GDB* usage</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#features-and-limitations">Features and Limitations</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="features.html">Supported Features</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Limitations</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Limitations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#altering-arguments-modified-in-code">Altering arguments modified in code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-numbas-direct-gdb-bindings-in-nopython-mode">Using Numba’s direct <code class="docutils literal notranslate"><span class="pre">gdb</span></code> bindings in <code class="docutils literal notranslate"><span class="pre">nopython</span></code> mode</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="common_issues.html">Common issues and tips</a></li>
 </ul>
 </li>
@@ -92,24 +96,27 @@
              
   <section id="limitations">
 <h1>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline"></a></h1>
-<p>Currently Numba-dppy provides only initial support of debugging SYCL* kernels.
-The following functionality is <strong>limited</strong> or <strong>not supported</strong>:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Information about variable values may not match the actual values while debugging.</p></li>
-<li><p>Information about variable types is limited.</p></li>
-<li><p>Printing kernel arguments is not supported.</p></li>
-<li><p>Overwriting the value of a variable is not supported.</p></li>
-<li><p>Accessing elements of a complex variable type is not supported.</p></li>
-</ul>
-</div></blockquote>
+<p>The following functionality is <strong>limited</strong> or <strong>not supported</strong>.</p>
+<section id="altering-arguments-modified-in-code">
+<h2>Altering arguments modified in code<a class="headerlink" href="#altering-arguments-modified-in-code" title="Permalink to this headline"></a></h2>
+<p>Altering arguments has limitation. For it to work correctly
+arguments should not be modified in code.
+See <a class="reference external" href="https://github.com/numba/numba/pull/7196">Numba issue</a>.</p>
+<p>See <a class="reference internal" href="altering.html#assignment-to-variables"><span class="std std-ref">Assignment to Variables</span></a>.</p>
+</section>
+<section id="using-numbas-direct-gdb-bindings-in-nopython-mode">
+<h2>Using Numba’s direct <code class="docutils literal notranslate"><span class="pre">gdb</span></code> bindings in <code class="docutils literal notranslate"><span class="pre">nopython</span></code> mode<a class="headerlink" href="#using-numbas-direct-gdb-bindings-in-nopython-mode" title="Permalink to this headline"></a></h2>
+<p>Using Numba’s direct <code class="docutils literal notranslate"><span class="pre">gdb</span></code> bindings in <code class="docutils literal notranslate"><span class="pre">nopython</span></code> mode is not supported in
+Numba DPPY.</p>
+<p>See <a class="reference external" href="https://numba.pydata.org/numba-doc/latest/user/troubleshoot.html#using-numba-s-direct-gdb-bindings-in-nopython-mode">Numba documentation</a>.</p>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="info.html" class="btn btn-neutral float-left" title="Info commands" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="numba-0.55.html" class="btn btn-neutral float-left" title="Debugging Features in Numba 0.55" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="common_issues.html" class="btn btn-neutral float-right" title="Common issues and tips" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

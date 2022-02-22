@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Breakpoints &mdash; numba-dppy 0.18.0dev0+40.g90c8580 documentation</title>
+  <title>Breakpoints &mdash; numba-dppy 0.18.0a0+11.gdc75cdac documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -53,9 +53,13 @@
 <li class="toctree-l3 current"><a class="reference internal" href="features.html">Supported Features</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Breakpoints</a></li>
 <li class="toctree-l4"><a class="reference internal" href="stepping.html">Stepping</a></li>
-<li class="toctree-l4"><a class="reference internal" href="local_variables.html">Local variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frame_info.html">Information About a Frame</a></li>
 <li class="toctree-l4"><a class="reference internal" href="backtrace.html">Backtrace</a></li>
-<li class="toctree-l4"><a class="reference internal" href="info.html">Info commands</a></li>
+<li class="toctree-l4"><a class="reference internal" href="data.html">Examining Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="symbols.html">Examining the Symbol Table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="altering.html">Altering Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="local_variables.html">Debugging Local Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba-0.55.html">Debugging Features in Numba 0.55</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="limitations.html">Limitations</a></li>
@@ -125,7 +129,7 @@
 <span class="linenos">21</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="linenos">22</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
 <span class="linenos">23</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="linenos">24</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="linenos">24</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>  <span class="c1"># Condition breakpoint location</span>
 <span class="linenos">25</span>
 <span class="linenos">26</span>
 <span class="linenos">27</span><span class="n">global_size</span> <span class="o">=</span> <span class="mi">10</span>

@@ -10,6 +10,7 @@ Submodules
    numba_dppy.dpnp_iface.dpnp_array_creations_impl
    numba_dppy.dpnp_iface.dpnp_array_ops_impl
    numba_dppy.dpnp_iface.dpnp_fptr_interface
+   numba_dppy.dpnp_iface.dpnp_fptr_interface
    numba_dppy.dpnp_iface.dpnp_indexing
    numba_dppy.dpnp_iface.dpnp_linalgimpl
    numba_dppy.dpnp_iface.dpnp_logic
