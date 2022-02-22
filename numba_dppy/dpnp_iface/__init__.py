@@ -15,10 +15,22 @@
 
 def ensure_dpnp(name):
     try:
-        # import dpnp
         from . import dpnp_fptr_interface as dpnp_iface
     except ImportError:
         raise ImportError("dpnp is needed to call np.%s" % name)
 
+
+def _init_dpnp():
+    try:
+        import dpnp
+        import os
+
+        if hasattr(os, "add_dll_directory"):
+            os.add_dll_directory(os.path.dirname(dpnp.__file__))
+    except ImportError:
+        pass
+
+
+_init_dpnp()
 
 DEBUG = None

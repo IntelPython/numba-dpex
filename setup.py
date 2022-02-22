@@ -72,7 +72,7 @@ def get_ext_modules():
             include_dirs=[dpnp.get_include(), dpctl.get_include()],
             libraries=["dpnp_backend_c"],
             library_dirs=dpnp_lib_path,
-            runtime_library_dirs=dpnp_lib_path,
+            runtime_library_dirs=(dpnp_lib_path if IS_LIN else []),
             language="c++",
         )
         ext_modules += [ext_dpnp_iface]
