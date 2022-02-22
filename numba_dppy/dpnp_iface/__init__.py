@@ -25,7 +25,8 @@ def _init_dpnp():
         import dpnp
         import os
 
-        os.add_dll_directory(os.path.dirname(dpnp.__file__))
+        if hasattr(os, "add_dll_directory"):
+            os.add_dll_directory(os.path.dirname(dpnp.__file__))
     except ImportError:
         pass
 
