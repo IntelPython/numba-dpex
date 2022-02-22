@@ -6,10 +6,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.18.0] - 2022-02-22
+
 ### Added
+* Run coverage in GitHub Actions and upload results to coveralls.io (#621)
+* Change black to only allow 80 char lines. Reformat sources. (#631)
+* Ignore formatting changes from git-blame. (#632)
+* Add `numba_support.py` with `numba_version` (#656)
+* Add skip_no_numba055 decorator (#662)
+* Parameterize test for atomics (#661)
+* Reuse decorator `skip_no_opencl_Xpu` to skip tests (#663)
+* Add decorator to skip unsupported atomics (#664)
 * Support arrays with `__sycl_usm_array_interface__` attribute (#629)
 * Support memory allocation in private address space (#640)
+* Move skips for opencl to helper (#665)
+* Support dpctl 0.12 (#669)
 * Implement compute-follows-data programming model [kernel API] (#598)
+* Use filter_str to skip tests on missing devices (#672)
+* Add check for DPNP and pin MKL version in workflow and dev environment (#648)
+* Add CODEOWNERS for distributing review process (#670)
+* Add `skip_no_dpnp` and apply it to all tests (#668)
+* Test skipping improvements (#675)
+* Use Python 3.9 in dev environment and pin DPNP (#644)
+* Add examples into package (#680)
+* Make possible to force debugging tests (#681)
+* Refactoring for debugging tests (#682)
+* Adopt Numba 0.55 debugging features (#654)
+* Run public CI on pull request (#695)
+* Support for coverage in internal CI (#708)
+* Update to dpnp 0.10 (#709)
+* Update recipe with dpctl and dpnp version for build (#710)
+
+### Changed
+* Move `dpcpp/llvm-spirv` from runtime to testing dependency (#659)
+
+### Fixed
+* Fix building with DPNP (#674)
+* Fix public CI: opencl driver, channel priority, dpctl version (#691)
+* Fix codestyle black (#696)
+* Fix documentation generation (#697)
+* Load dpctl lib on Linux using `libDPCTLSyclInterface.so.0` (#707)
+* Fix search llvm-spirv if dpcpp compiler package is not installed (#703)
+* Pin dpnp version in runtime to allow dev versions of dpnp (#712)
 
 ## [0.17.4] - 2021-12-02
 
