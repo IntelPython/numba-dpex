@@ -1,7 +1,0 @@
-numba\_dppy.initialize module
-=============================
-
-.. automodule:: numba_dppy.initialize
-   :members:
-   :undoc-members:
-   :show-inheritance:

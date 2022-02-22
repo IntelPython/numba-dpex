@@ -1,7 +1,0 @@
-numba\_dppy.dppy\_offload\_dispatcher module
-============================================
-
-.. automodule:: numba_dppy.dppy_offload_dispatcher
-   :members:
-   :undoc-members:
-   :show-inheritance:
