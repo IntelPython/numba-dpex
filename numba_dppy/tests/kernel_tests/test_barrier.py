@@ -23,7 +23,7 @@ from numba_dppy.tests._helper import filter_strings
 
 
 def skip_if_win():
-    return platform.system == "Windows"
+    return platform.system() == "Windows"
 
 
 @pytest.mark.parametrize("filter_str", filter_strings)
