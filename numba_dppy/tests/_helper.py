@@ -79,6 +79,14 @@ def platform_not_supported(device_type):
     return False
 
 
+def is_windows():
+    import platform
+
+    return platform.system() == "Windows"
+
+
+skip_windows = pytest.mark.skipif(is_windows(), reason="Skip on Windows")
+
 skip_no_opencl_gpu = pytest.mark.skipif(
     not has_opencl_gpu(),
     reason="No opencl GPU platforms available",
