@@ -35,6 +35,7 @@ test:
   requires:
     - pytest
     - pytest-cov
+    - pytest-xdist
     - {{ compiler('dpcpp') }}  # [not osx]
     - pexpect
 
