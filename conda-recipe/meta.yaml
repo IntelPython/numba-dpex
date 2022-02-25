@@ -37,6 +37,8 @@ test:
     - pytest-cov
     - {{ compiler('dpcpp') }}  # [not osx]
     - pexpect
+    - scipy
+    - ipython
 
 about:
     home: https://github.com/IntelPython/numba-dppy
