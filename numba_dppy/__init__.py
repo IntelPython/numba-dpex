@@ -524,7 +524,7 @@ from . import config
 if config.HAS_NON_HOST_DEVICE:
     from .device_init import *
 else:
-    raise ImportError("Importing numba_dppy failed")
+    raise ImportError("numba-dppy needs non-host SYCL device")
 
 
 from ._version import get_versions
