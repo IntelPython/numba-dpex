@@ -514,13 +514,13 @@ Supported NumPy Functions:
 
 
 """
+from . import config
 
 import numba.testing
 
 from numba_dppy.interop import asarray
 from numba_dppy.retarget import offload_to_sycl_device
 
-from . import config
 
 if config.dppy_present:
     from .device_init import *
