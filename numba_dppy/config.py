@@ -51,7 +51,7 @@ _ensure_dpctl()
 
 # Set this config flag based on if dpctl is found or not. The config flags is
 # used elsewhere inside Numba.
-dppy_present = _dpctl_has_non_host_device()
+HAS_NON_HOST_DEVICE = _dpctl_has_non_host_device()
 
 
 def _readenv(name, ctor, default):

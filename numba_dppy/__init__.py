@@ -521,7 +521,7 @@ from numba_dppy.retarget import offload_to_sycl_device
 
 from . import config
 
-if config.dppy_present:
+if config.HAS_NON_HOST_DEVICE:
     from .device_init import *
 else:
     raise ImportError("Importing numba_dppy failed")
