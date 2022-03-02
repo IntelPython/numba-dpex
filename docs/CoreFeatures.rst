@@ -52,7 +52,7 @@ By default, if a section of code cannot be offloaded to the GPU, it is automatic
 executed on the CPU and warning is printed. This behavior is only applicable to ``jit``
 functions, auto-offloading of NumPy calls, array expressions and ``prange`` loops.
 To disable this functionality and force code running on GPU set the environment variable
-``FALLBACK_ON_CPU `` to false (e.g. ``export FALLBACK_ON_CPU=0``). In this
+``NUMBA_DPPY_FALLBACK_ON_CPU`` to false (e.g. ``export NUMBA_DPPY_FALLBACK_ON_CPU=0``). In this
 case the code is not automatically offloaded to the CPU and errors occur if any.
 
 Offload Diagnostics
