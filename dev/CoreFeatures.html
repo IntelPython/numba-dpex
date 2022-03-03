@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Code-generation based on a device &mdash; numba-dppy 0.18.0a0+11.gdc75cdac documentation</title>
+  <title>Code-generation based on a device &mdash; numba-dppy 0+untagged.705.gc9269a3 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -132,7 +132,7 @@ Numba <code class="docutils literal notranslate"><span class="pre">jit</span></c
 executed on the CPU and warning is printed. This behavior is only applicable to <code class="docutils literal notranslate"><span class="pre">jit</span></code>
 functions, auto-offloading of NumPy calls, array expressions and <code class="docutils literal notranslate"><span class="pre">prange</span></code> loops.
 To disable this functionality and force code running on GPU set the environment variable
-<code class="docutils literal notranslate"><span class="pre">NUMBA_DPPY_FALLBACK_OPTION</span></code> to false (e.g. <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">NUMBA_DPPY_FALLBACK_OPTION=0</span></code>). In this
+<code class="docutils literal notranslate"><span class="pre">NUMBA_DPPY_FALLBACK_ON_CPU</span></code> to false (e.g. <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">NUMBA_DPPY_FALLBACK_ON_CPU=0</span></code>). In this
 case the code is not automatically offloaded to the CPU and errors occur if any.</p>
 </section>
 <section id="offload-diagnostics">
