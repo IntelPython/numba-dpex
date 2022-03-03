@@ -514,7 +514,6 @@ Supported NumPy Functions:
 
 
 """
-
 import numba.testing
 
 from numba_dppy.interop import asarray
@@ -522,10 +521,10 @@ from numba_dppy.retarget import offload_to_sycl_device
 
 from . import config
 
-if config.dppy_present:
+if config.HAS_NON_HOST_DEVICE:
     from .device_init import *
 else:
-    raise ImportError("Importing numba_dppy failed")
+    raise ImportError("numba-dppy needs non-host SYCL device")
 
 
 from ._version import get_versions

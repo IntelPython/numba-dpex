@@ -31,7 +31,7 @@ class DppyOffloadDispatcher(dispatcher.Dispatcher):
         impl_kind="direct",
         pipeline_class=compiler.Compiler,
     ):
-        if dppy_config.dppy_present:
+        if dppy_config.HAS_NON_HOST_DEVICE:
             from numba_dppy.compiler import DPPYCompiler
 
             targetoptions["parallel"] = True

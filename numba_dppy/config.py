@@ -12,53 +12,46 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import imp
 import os
 import warnings
 
 from numba.core import config
-from packaging import version
 
 
-class DpctlMinimumVersionRequiredError(Exception):
+def _ensure_dpctl():
     """
-    A ``DpctlMinimumVersionRequiredError`` indicates that the version of dpctl
-    does not satisfy the minimum version requirement.
-
+    Make sure dpctl has supported versions.
     """
+    from numba_dppy.dpctl_support import dpctl_version
 
-    pass
+    if dpctl_version < (0, 8):
+        raise ImportError("numba-dppy needs dpctl 0.8 or greater")
 
 
-# Check for dpctl 0.8.0 or higher in the system.
-_dpctl_found = False
-try:
+def _dpctl_has_non_host_device():
+    """
+    Make sure dpctl has non-host SYCL devices on the system.
+    """
     import dpctl
-
-    # Versions of dpctl lower than 0.8.0 are not compatible with current main
-    # of numba_dppy.
-    if version.parse(dpctl.__version__) < version.parse("0.8.0"):
-        raise DpctlMinimumVersionRequiredError
 
     # For the Numba_dppy extension to work, we should have at least one
     # non-host SYCL device installed.
     # FIXME: In future, we should support just the host device.
     if not dpctl.select_default_device().is_host:
-        _dpctl_found = True
+        return True
     else:
         msg = "dpctl could not find any non-host SYCL device on the system. "
         msg += "A non-host SYCL device is required to use numba_dppy."
         warnings.warn(msg, UserWarning)
-except DpctlMinimumVersionRequiredError:
-    msg = "numba_dppy is not compatible with " + dpctl.__version__ + "."
-    msg += " Install dpctl 0.8.* or higher."
-    warnings.warn(msg, UserWarning)
-except:
-    msg = "Please install dpctl 0.8.* or higher."
-    warnings.warn(msg, UserWarning)
+        return False
+
+
+_ensure_dpctl()
 
 # Set this config flag based on if dpctl is found or not. The config flags is
 # used elsewhere inside Numba.
-dppy_present = _dpctl_found
+HAS_NON_HOST_DEVICE = _dpctl_has_non_host_device()
 
 
 def _readenv(name, ctor, default):
