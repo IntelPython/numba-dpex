@@ -31,9 +31,8 @@ jobs:
         run: echo "OCL_ICD_FILENAMES=libintelocl.so" >> $GITHUB_ENV
 
       - name: Make documentation
-        run: |
-          cd docs
-          make html
+        working-directory: docs
+        run: make html
 
       - name: GitHub Pages [main]
         uses: peaceiris/actions-gh-pages@v3
