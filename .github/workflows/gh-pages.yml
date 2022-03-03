@@ -19,13 +19,19 @@ jobs:
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
 
-      - name: Meke documentation
-        run: |
-          conda env update -n base -f environment/docs.yml --prune
+      - name: Setup conda environment
+        run: conda env update -n base -f environment/docs.yml --prune
 
+      - name: Build numba-dppy
+        run: |
           export PATH=$CONDA/bin-llvm:$PATH
           python setup.py develop
 
+      - name: Setup OpenCL CPU device
+        run: echo "OCL_ICD_FILENAMES=libintelocl.so" >> $GITHUB_ENV
+
+      - name: Make documentation
+        run: |
           cd docs
           make html
 
