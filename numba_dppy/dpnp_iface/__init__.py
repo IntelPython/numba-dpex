@@ -22,8 +22,9 @@ def ensure_dpnp(name):
 
 def _init_dpnp():
     try:
-        import dpnp
         import os
+
+        import dpnp
 
         if hasattr(os, "add_dll_directory"):
             os.add_dll_directory(os.path.dirname(dpnp.__file__))
