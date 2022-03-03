@@ -2,7 +2,6 @@ name: Generate documentation
 on:
   push:
     branches:
-      - main
       - release*
     tags:
       - '[0-9]+.[0-9]+*'
@@ -83,15 +82,6 @@ jobs:
           make html
         working-directory: ./docs
 
-      - name: Deploy docs (Main)
-        if: github.ref == 'refs/heads/main'
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          destination_dir : dev
-          publish_dir: docs/_build/html/
-          allow_empty_commit : true
-          commit_message: ${{ github.event.head_commit.message }}
       - name: Deploy docs (Next release)
         if: startsWith(github.ref, 'refs/heads/release')
         uses: peaceiris/actions-gh-pages@v3
