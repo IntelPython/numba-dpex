@@ -1,0 +1,7 @@
+numba\_dppy.core.passes.dppy\_passes module
+===========================================
+
+.. automodule:: numba_dppy.core.passes.dppy_passes
+   :members:
+   :undoc-members:
+   :show-inheritance:

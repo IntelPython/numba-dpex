@@ -1,0 +1,7 @@
+numba\_dppy.numba\_support module
+=================================
+
+.. automodule:: numba_dppy.numba_support
+   :members:
+   :undoc-members:
+   :show-inheritance:
