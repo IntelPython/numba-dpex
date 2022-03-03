@@ -1,7 +1,0 @@
-numba\_dppy.dpctl\_iface.usm\_ndarray\_type module
-==================================================
-
-.. automodule:: numba_dppy.dpctl_iface.usm_ndarray_type
-   :members:
-   :undoc-members:
-   :show-inheritance:

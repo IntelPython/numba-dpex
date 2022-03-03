@@ -1,7 +1,0 @@
-numba\_dppy.device\_init module
-===============================
-
-.. automodule:: numba_dppy.device_init
-   :members:
-   :undoc-members:
-   :show-inheritance:
