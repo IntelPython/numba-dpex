@@ -1,0 +1,106 @@
+name: GitHub Pages
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+jobs:
+  main:
+    if: ${{ !(github.event.pull_request && github.event.action == 'closed') }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup conda
+        run: echo $CONDA/bin >> $GITHUB_PATH
+
+      - name: Setup conda environment
+        run: conda env update -n base -f environment/docs.yml --prune
+
+      - name: Build numba-dppy
+        run: |
+          export PATH=$CONDA/bin-llvm:$PATH
+          python setup.py develop
+
+      - name: Setup OpenCL CPU device
+        run: echo "OCL_ICD_FILENAMES=libintelocl.so" >> $GITHUB_ENV
+
+      - name: Make documentation
+        working-directory: docs
+        run: make html
+
+      - name: GitHub Pages [main]
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/main' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/_build/html/
+          destination_dir: ./dev
+          allow_empty_commit : true
+          commit_message: ${{ github.event.head_commit.message }}
+          publish_branch: gh-pages
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+
+      - name: GitHub Pages [PR]
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.event.pull_request && github.event.action != 'closed' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/_build/html/
+          destination_dir: ./pull/${{ github.event.number }}
+          allow_empty_commit : true
+          commit_message: ${{ github.event.head_commit.message }}
+          publish_branch: gh-pages
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Comment PR [docs created]
+        if: ${{ github.event.pull_request && github.event.action != 'closed' }}
+        env:
+          PR_NUM: ${{ github.event.number }}
+        uses: mshick/add-pr-comment@v1
+        with:
+          message: |
+            Documentation preview: [show](https://intelpython.github.io/numba-dppy/pull/${{ env.PR_NUM }}).
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]'
+          allow-repeats: true
+
+  clean:
+    if: ${{ github.event.pull_request && github.event.action == 'closed' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: GitHub Pages [PR closed]
+        env:
+          PR_NUM: ${{ github.event.number }}
+        shell: bash -l {0}
+        run: |
+          git remote add tokened_docs https://IntelPython:${{ secrets.GITHUB_TOKEN }}@github.com/IntelPython/numba-dppy.git
+          git fetch tokened_docs
+          git checkout --track tokened_docs/gh-pages
+          echo `pwd`
+          [ -d pull/${PR_NUM} ] && git rm -rf pull/${PR_NUM}
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git commit -m "Removing docs for closed pull request ${PR_NUM}"
+          git push tokened_docs gh-pages
+
+      - name: Comment PR [docs removed]
+        uses: mshick/add-pr-comment@v1
+        with:
+          message: |
+            Documentation preview removed.
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]'
+          allow-repeats: true
