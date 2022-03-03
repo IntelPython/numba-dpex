@@ -32,11 +32,11 @@ requirements:
         - packaging
 
 test:
-  requires:
-    - pytest
-    - pytest-cov
-    - {{ compiler('dpcpp') }}  # [not osx]
-    - pexpect
+    requires:
+        - pytest
+        - pytest-cov
+        - {{ compiler('dpcpp') }}  # [not osx]
+        - pexpect
 
 about:
     home: https://github.com/IntelPython/numba-dppy
