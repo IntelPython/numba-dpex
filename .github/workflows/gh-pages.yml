@@ -77,7 +77,7 @@ jobs:
           PR_NUM: ${{ github.event.number }}
         shell: bash -l {0}
         run: |
-          git remote add tokened_docs https://IntelPython:${{ secrets.GITHUB_TOKEN }}@github.com/IntelPython/numba-dppy.git
+          git remote add tokened_docs https://IntelPython:${{ secrets.GITHUB_TOKEN }}@github.com/IntelPython/numba-dpex.git
           git fetch tokened_docs
           git checkout --track tokened_docs/gh-pages
           echo `pwd`

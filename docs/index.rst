@@ -6,7 +6,7 @@
 Welcome to Numba-dppy's documentation!
 ======================================
 
-`Numba-dppy <https://github.com/IntelPython/numba-dppy>`_ is an Intel
+`Numba-dppy <https://github.com/IntelPython/numba-dpex>`_ is an Intel
 |reg|-developed extension to the `Numba <https://numba.pydata.org/>`_ JIT
 compiler that adds "XPU" programming capabilities to it. The
 `XPU vision <https://www.intel.com/content/www/us/en/newsroom/news/xpu-vision-oneapi-server-gpu.html#gs.ervs8m>`_
@@ -104,14 +104,14 @@ Python <https://software.intel.com/content/www/us/en/develop/tools/oneapi/compon
 Contributing
 ============
 
-Refer the `contributing guide <https://github.com/IntelPython/numba-dppy/blob/main/CONTRIBUTING>`_
+Refer the `contributing guide <https://github.com/IntelPython/numba-dpex/blob/main/CONTRIBUTING>`_
 for information on coding style and standards used in Numba-dppy.
 
 License
 =======
 
 Numba-dppy is Licensed under Apache License 2.0 that can be found in
-`LICENSE <https://github.com/IntelPython/numba-dppy/blob/main/LICENSE>`_.
+`LICENSE <https://github.com/IntelPython/numba-dpex/blob/main/LICENSE>`_.
 All usage and contributions to the project are subject to the terms and
 conditions of this license.
 

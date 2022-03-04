@@ -24,7 +24,7 @@ run_checks() {
   check numba_dppy/examples/sum_reduction_ocl.py
   check numba_dppy/examples/sum_reduction.py
   check numba_dppy/examples/sum_reduction_recursive_ocl.py
-  # check numba_dppy/examples/usm_ndarray.py  # See https://github.com/IntelPython/numba-dppy/issues/436
+  # check numba_dppy/examples/usm_ndarray.py  # See https://github.com/IntelPython/numba-dpex/issues/436
   check numba_dppy/examples/vectorize.py
 
   check numba_dppy/examples/auto_offload_examples/sum-1d.py

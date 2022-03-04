@@ -1422,7 +1422,7 @@ def lower_parfor_rollback(lowerer, parfor):
         msg = (
             "Failed to offload parfor to " + device_filter_str + ". Falling "
             "back to default CPU parallelization. Please file a bug report "
-            "at https://github.com/IntelPython/numba-dppy. To help us debug "
+            "at https://github.com/IntelPython/numba-dpex. To help us debug "
             "the issue, please add the traceback to the bug report."
         )
         if not config.DEBUG:

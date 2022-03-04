@@ -47,7 +47,7 @@ python numba_dppy/examples/sum.py
 # Known Issue
 Floor division operator `//` is not supported inside @numba_dppy.kernel.
 
-The below code snippet will result in error reported in this [Issue](https://github.com/IntelPython/numba-dppy/issues/571).
+The below code snippet will result in error reported in this [Issue](https://github.com/IntelPython/numba-dpex/issues/571).
 ```
 import numpy as np, numba_dppy
 @numba_dppy.kernel
@@ -78,7 +78,7 @@ Detailed documentation including user guides are hosted on our
 # Found a bug?
 
 Please report issues and bugs directly on
-[github](https://github.com/IntelPython/numba-dppy/issues).
+[github](https://github.com/IntelPython/numba-dpex/issues).
 
 ## Test Matrix:
 
