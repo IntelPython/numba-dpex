@@ -1,11 +1,11 @@
-name: Generate coverage data
+name: Coverage
 on:
   pull_request:
   push:
     branches: [main]
 
 jobs:
-  generate-coverage:
+  main:
     name: Generate coverage and push to Coveralls.io
     runs-on: ubuntu-20.04
 
