@@ -58,7 +58,7 @@ jobs:
         uses: mshick/add-pr-comment@v1
         with:
           message: |
-            Documentation preview: [show](https://intelpython.github.io/numba-dppy/pull/${{ env.PR_NUM }}).
+            Documentation preview: [show](https://intelpython.github.io/numba-dpex/pull/${{ env.PR_NUM }}).
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
           allow-repeats: true

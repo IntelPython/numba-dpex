@@ -15,14 +15,14 @@ compiler that provides a way to write data-parallel kernels directly in Python
 and offload them on various types of Intel&reg; architectures including CPUs,
 integrated GPUs and discrete GPUs. The compiler also supports offloading NumPy
 function calls and Numba `prange` loops. Refer the
-[user guide](https://intelpython.github.io/numba-dppy/) for more details.
+[user guide](https://intelpython.github.io/numba-dpex/) for more details.
 
 # Installing
 
 Numba-dppy is part of the Intel&reg; Distribution of Python (IDP) and Intel&reg;
 oneAPI BaseKit, and can be installed along with oneAPI. Additionally, we support
 installing it from Anaconda cloud and PyPi. Please refer the instructions
-on our [documentation page](https://intelpython.github.io/numba-dppy/latest/user_guides/getting_started.html)
+on our [documentation page](https://intelpython.github.io/numba-dpex/latest/user_guides/getting_started.html)
 for more details.
 
 # Give it a try?
@@ -73,7 +73,7 @@ For Windows: `conda install dpcpp_win-64`
 # Learn more?
 
 Detailed documentation including user guides are hosted on our
-[documentation site](https://intelpython.github.io/numba-dppy).
+[documentation site](https://intelpython.github.io/numba-dpex).
 
 # Found a bug?
 
