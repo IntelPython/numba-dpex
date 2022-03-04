@@ -15,40 +15,23 @@ jobs:
         with:
           access_token: ${{ github.token }}
 
-      - name: Add conda to system path
-        shell: bash
-        run: echo $CONDA/bin >> $GITHUB_PATH
-
       - name: Checkout repo
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
-      - name: Configure environment
-        run: |
-          conda env update -n base -f environment.yml --prune
-
-      - name: Reinstall numba0.54
-        run: |
-          conda remove -n base numba
-          conda install numba=0.54.1
-
-      - name: Build numba-dppy
-        run: |
-          export OCL_ICD_FILENAMES=libintelocl.so
-          python setup.py develop
+      - name: Setup numba-dppy
+        uses: ./.github/actions/setup-numba-dppy
+        with:
+          environment: environment/coverage.yml
 
       - name: Test installation
         run: |
           conda list
-          # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
-          export OCL_ICD_FILENAMES=libintelocl.so
           python -c "import numba_dppy; print(numba_dppy.__file__)"
 
       - name: Run tests with coverage
         run: |
-          # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
-          export OCL_ICD_FILENAMES=libintelocl.so
           pytest -q -ra --disable-warnings --cov --cov-report term-missing --pyargs numba_dppy -vv
 
       - name: Install coveralls
