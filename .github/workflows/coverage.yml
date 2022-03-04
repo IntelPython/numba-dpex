@@ -48,7 +48,7 @@ jobs:
 
   coveralls:
     name: Indicate completion to coveralls.io
-    needs: generate-coverage
+    needs: main
     runs-on: ubuntu-latest
     container: python:3-slim
     steps:
