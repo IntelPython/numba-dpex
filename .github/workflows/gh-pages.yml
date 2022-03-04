@@ -18,6 +18,8 @@ jobs:
 
       - name: Setup numba-dppy
         uses: ./.github/actions/setup-numba-dppy
+        with:
+          environment: environment/docs.yml
 
       - name: Make documentation
         working-directory: docs

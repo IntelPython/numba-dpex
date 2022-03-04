@@ -1,5 +1,10 @@
 name: Setup numba-dppy
 description: 'Setup conda environment, build numba-dppy and setup devices'
+inputs:
+  environment:
+    description: Environment file
+    required: true
+    default: environment/dev.yml
 runs:
   using: "composite"
   steps:
@@ -8,7 +13,7 @@ runs:
       shell: bash
 
     - name: Setup conda environment
-      run: conda env update -n base -f environment/docs.yml --prune
+      run: conda env update -n base -f ${{ inputs.environment }} --prune
       shell: bash
 
     - name: Build numba-dppy
