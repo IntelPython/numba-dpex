@@ -1,7 +1,0 @@
-numba\_dppy.utils.array\_utils module
-=====================================
-
-.. automodule:: numba_dppy.utils.array_utils
-   :members:
-   :undoc-members:
-   :show-inheritance:

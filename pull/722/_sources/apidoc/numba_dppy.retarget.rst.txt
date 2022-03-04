@@ -1,7 +1,0 @@
-numba\_dppy.retarget module
-===========================
-
-.. automodule:: numba_dppy.retarget
-   :members:
-   :undoc-members:
-   :show-inheritance:
