@@ -1,7 +1,0 @@
-numba\_dppy.core.passes.dppy\_lowerer module
-============================================
-
-.. automodule:: numba_dppy.core.passes.dppy_lowerer
-   :members:
-   :undoc-members:
-   :show-inheritance:
