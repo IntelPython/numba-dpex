@@ -100,7 +100,7 @@ class DPPYCompiler(CompilerBase):
             "parfor_diagnostics"
         ] = self.state.parfor_diagnostics
         if not self.state.flags.force_pyobject:
-            # print("Numba-DPPY [INFO]: Using Numba-DPPY pipeline")
+            # print("numba-dpex [INFO]: Using numba-dpex pipeline")
             pms.append(DPPYPassBuilder.define_nopython_pipeline(self.state))
         if self.state.status.can_fallback or self.state.flags.force_pyobject:
             pms.append(
