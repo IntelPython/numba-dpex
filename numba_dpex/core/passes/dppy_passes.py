@@ -41,7 +41,7 @@ from numba.parfors.parfor import swap_functions_map
 
 from numba_dpex import config
 
-from .dppy_lowerer import DPPYLower
+from .lowerer import DPPYLower
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
