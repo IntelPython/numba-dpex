@@ -116,7 +116,7 @@ class TestPrange:
 
         assert np.all(b == 12)
 
-    @pytest.mark.skip(reason="numba-dppy issue 110")
+    @pytest.mark.skip(reason="numba-dpex issue 110")
     def test_two_consequent_prange(self):
         def prange_example():
             n = 10

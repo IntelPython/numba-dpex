@@ -26,7 +26,7 @@ def _ensure_dpctl():
     from numba_dppy.dpctl_support import dpctl_version
 
     if dpctl_version < (0, 8):
-        raise ImportError("numba-dppy needs dpctl 0.8 or greater")
+        raise ImportError("numba-dpex needs dpctl 0.8 or greater")
 
 
 def _dpctl_has_non_host_device():
