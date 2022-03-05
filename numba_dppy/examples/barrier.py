@@ -53,7 +53,7 @@ def no_arg_barrier_support():
 
 def local_memory():
     """
-    This example demonstrates the usage of numba-dppy's `local.array`
+    This example demonstrates the usage of numba-dpex's `local.array`
     intrinsic function. The function is used to create a static array
     allocated on the devices local address space.
     """

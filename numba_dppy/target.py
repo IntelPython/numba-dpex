@@ -51,7 +51,7 @@ class DPPYTypingContext(typing.BaseContext):
     Numba's ``typing.BaseContext`` class. We add two specific functionalities
     to the basic Numba typing context features: An overridden
     :func:`resolve_argument_type` that changes all ``npytypes.Array`` to
-    numba-dppy's :class:`dppy_array_type.DppyArray`. An overridden
+    numba-dpex's :class:`dppy_array_type.DppyArray`. An overridden
     :func:`load_additional_registries` that registers OpenCL math and other
     functions to the typing context.
 
@@ -352,7 +352,7 @@ class DPPYTargetContext(BaseContext):
                     ]
 
     def load_additional_registries(self):
-        """Register OpenCL functions into numba-dppy's target context.
+        """Register OpenCL functions into numba-dpex's target context.
 
         To make sure we are calling supported OpenCL math functions, we
         replace some of NUMBA's NumPy ufunc with OpenCL versions of those
@@ -475,7 +475,7 @@ class DPPYTargetContext(BaseContext):
 
 
 class DPPYCallConv(MinimalCallConv):
-    """Custom calling convention class used by numba-dppy.
+    """Custom calling convention class used by numba-dpex.
 
     Numba-dppy's calling convention derives from
     :class:`numba.core.callconv import MinimalCallConv`. The

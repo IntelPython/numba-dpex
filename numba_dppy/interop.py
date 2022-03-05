@@ -18,7 +18,7 @@ import dpctl.tensor as dpt
 
 
 def asarray(container):
-    """Convert container supported by interoperability to numba-dppy container.
+    """Convert container supported by interoperability to numba-dpex container.
     Currently used dpctl.tensor.asarray().
     """
     try:

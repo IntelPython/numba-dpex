@@ -49,7 +49,7 @@ def is_available():
     """Returns a boolean indicating if dpctl could find a default device.
 
     A valueError is thrown by dpctl if no default device is found and it
-    implies that numba-dppy cannot create a SYCL queue to compile kernels.
+    implies that numba-dpex cannot create a SYCL queue to compile kernels.
 
     Returns:
         bool: True if a default SYCL device is found, otherwise False.

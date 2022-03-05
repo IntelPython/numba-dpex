@@ -21,7 +21,7 @@ import numba_dppy
 
 def private_memory():
     """
-    This example demonstrates the usage of numba-dppy's `private.array`
+    This example demonstrates the usage of numba-dpex's `private.array`
     intrinsic function. The function is used to create a static array
     allocated on the devices private address space.
     """

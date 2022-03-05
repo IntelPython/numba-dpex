@@ -1310,7 +1310,7 @@ class DPPYLower(Lower):
         """Numba-dppy's custom lowering function.
 
         The lowerer has a builtin fallback mechanism for parfor functions.
-        We first try to lower a parfor onto a SYCL device using numba-dppy's
+        We first try to lower a parfor onto a SYCL device using numba-dpex's
         pipeline, if the lowering fails then we fallback to the default Numba
         lowering to CPU. The lowering follow the following steps:
 
