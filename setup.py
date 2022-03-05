@@ -143,7 +143,7 @@ install_requires = [
 ]
 
 metadata = dict(
-    name="numba-dppy",
+    name="numba-dpex",
     version=versioneer.get_version(),
     cmdclass=_get_cmdclass(),
     description="Numba extension for Intel CPU and GPU backend",

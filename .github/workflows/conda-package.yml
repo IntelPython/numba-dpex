@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 env:
   PACKAGE_NAME: numba-dppy
-  MODULE_NAME: numba_dppy
+  MODULE_NAME: numba_dpex
 
 jobs:
   build_linux:
