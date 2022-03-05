@@ -15,10 +15,9 @@
 
 import dpctl
 import dpctl.tensor as dpt
+import numba_dpex as dppy
 import numpy as np
 import numpy.testing as testing
-
-import numba_dppy as dppy
 
 
 @dppy.kernel

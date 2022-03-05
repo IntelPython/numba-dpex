@@ -16,11 +16,11 @@
 
 import pathlib
 
-import numba_dppy
+import numba_dpex
 
 
 def script_path(script):
-    package_path = pathlib.Path(numba_dppy.__file__).parent
+    package_path = pathlib.Path(numba_dpex.__file__).parent
     return str(package_path / "examples/debug" / script)
 
 

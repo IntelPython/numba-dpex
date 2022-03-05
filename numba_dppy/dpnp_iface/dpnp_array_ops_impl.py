@@ -12,15 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import numba_dpex
+import numba_dpex.dpctl_iface as dpctl_functions
+import numba_dpex.dpnp_iface as dpnp_lowering
+import numba_dpex.dpnp_iface.dpnpimpl as dpnp_ext
 import numpy as np
 from numba import types
 from numba.core.extending import overload, register_jitable
 from numba.core.typing import signature
-
-import numba_dppy
-import numba_dppy.dpctl_iface as dpctl_functions
-import numba_dppy.dpnp_iface as dpnp_lowering
-import numba_dppy.dpnp_iface.dpnpimpl as dpnp_ext
 
 from . import stubs
 

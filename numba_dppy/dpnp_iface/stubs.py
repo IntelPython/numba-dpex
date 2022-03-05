@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from numba_dppy.ocl.stubs import Stub
+from numba_dpex.ocl.stubs import Stub
 
 
 class dpnp(Stub):

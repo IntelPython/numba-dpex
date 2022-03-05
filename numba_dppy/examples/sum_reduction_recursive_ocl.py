@@ -13,17 +13,16 @@
 # limitations under the License.
 
 """
-There are multiple ways of implementing reduction using numba_dppy. Here we
+There are multiple ways of implementing reduction using numba_dpex. Here we
 demonstrate another way of implementing reduction using recursion to compute
 partial reductions in separate kernels.
 """
 
 import dpctl
 import dpctl.memory as dpctl_mem
+import numba_dpex as dppy
 import numpy as np
 from numba import int32
-
-import numba_dppy as dppy
 
 
 @dppy.kernel

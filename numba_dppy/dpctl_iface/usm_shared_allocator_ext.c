@@ -140,7 +140,7 @@ error:
 MOD_INIT(_usm_shared_allocator_ext)
 {
     PyObject *m;
-    MOD_DEF(m, "numba_dppy._usm_shared_allocator_ext", "No docs", ext_methods)
+    MOD_DEF(m, "numba_dpex._usm_shared_allocator_ext", "No docs", ext_methods)
     if (m == NULL)
         return MOD_ERROR_VAL;
     usmarray_memsys_init();

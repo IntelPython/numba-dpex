@@ -16,9 +16,8 @@ import dpctl
 import numpy as np
 from numba import njit, prange
 from numba.tests.support import captured_stdout
-
-from numba_dppy import config
-from numba_dppy.tests._helper import skip_no_opencl_gpu
+from numba_dpex import config
+from numba_dpex.tests._helper import skip_no_opencl_gpu
 
 
 def prange_example():

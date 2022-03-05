@@ -19,9 +19,8 @@ import shutil
 import dpctl
 import pytest
 from numba.tests.support import captured_stdout
-
-from numba_dppy import config
-from numba_dppy.numba_support import numba_version
+from numba_dpex import config
+from numba_dpex.numba_support import numba_version
 
 
 def has_opencl_gpu():
@@ -137,7 +136,7 @@ skip_no_gdb = pytest.mark.skipif(
 def override_config(name, value, config=config):
     """
     Extends `numba/tests/support.py:override_config()` with argument `config`
-    which is `numba_dppy.config` by default.
+    which is `numba_dpex.config` by default.
     """
     old_value = getattr(config, name)
     setattr(config, name, value)
@@ -153,7 +152,7 @@ def _id(obj):
 
 def _ensure_dpnp():
     try:
-        from numba_dppy.dpnp_iface import dpnp_fptr_interface as dpnp_iface
+        from numba_dpex.dpnp_iface import dpnp_fptr_interface as dpnp_iface
 
         return True
     except ImportError:
@@ -170,7 +169,7 @@ skip_no_dpnp = pytest.mark.skipif(
 
 @contextlib.contextmanager
 def dpnp_debug():
-    import numba_dppy.dpnp_iface as dpnp_lowering
+    import numba_dpex.dpnp_iface as dpnp_lowering
 
     old, dpnp_lowering.DEBUG = dpnp_lowering.DEBUG, 1
     yield

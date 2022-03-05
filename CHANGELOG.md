@@ -157,8 +157,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fix emission of debug information (#424)
-- Fix examples demonstrating GDB usage on a numba_dppy.kernel function. (#455)
-- Remove address space cast from global to generic inside numba_dppy.kernel (#432)
+- Fix examples demonstrating GDB usage on a numba_dpex.kernel function. (#455)
+- Remove address space cast from global to generic inside numba_dpex.kernel (#432)
 - Fix debugging of local variables (#432)
 - Assert offload to SYCL devices in tests (#466)
 - Removed calling opt to convert LLVM IR to LLVM Bitcode (#481)
@@ -173,9 +173,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (#479, #474, #475, #480, #475, #477, #468,#450)
 - Add automatic generation of commands for debugging (#463)
 - Add tests on debugging local variables (#421)
-- Enable eager compilation of numba_dppy.kernel (#291)
+- Enable eager compilation of numba_dpex.kernel (#291)
 - Increase test coverage for native atomic ops (#435)
-- Check and deter users from returning values from numba_dppy.kernel (#476)
+- Check and deter users from returning values from numba_dpex.kernel (#476)
 
 ## [0.14.3] - 2021-05-27
 
@@ -273,7 +273,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Controllable fallback.
 - Add flags to generate debug symbols.
 - Implementation of `np.linalg.eig`, `np.ndarray.sum`, `np.ndarray.max`, `np.ndarray.min`, `np.ndarray.mean`.
-- Two new re-write passes to convert NumPy calls into a pseudo `numba_dppy` call site to allow target-specific
+- Two new re-write passes to convert NumPy calls into a pseudo `numba_dpex` call site to allow target-specific
   overload of NumPy functions. The rewrite passes is a temporary fix till Numba gains support for target-specific overlaods.
 - Updated to dpCtl 0.5.* and dpNP 0.4.*
 

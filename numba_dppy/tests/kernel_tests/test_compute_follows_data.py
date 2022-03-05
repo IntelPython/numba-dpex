@@ -16,16 +16,15 @@ import warnings
 
 import dpctl
 import dpctl.tensor as dpt
+import numba_dpex
 import numpy as np
 import pytest
-
-import numba_dppy
-from numba_dppy.tests._helper import (
+from numba_dpex.tests._helper import (
     filter_strings,
     skip_no_level_zero_gpu,
     skip_no_opencl_gpu,
 )
-from numba_dppy.utils import (
+from numba_dpex.utils import (
     IndeterminateExecutionQueueError,
     IndeterminateExecutionQueueError_msg,
     cfd_ctx_mgr_wrng_msg,
@@ -37,9 +36,9 @@ local_size = 1
 N = global_size * local_size
 
 
-@numba_dppy.kernel
+@numba_dpex.kernel
 def sum_kernel(a, b, c):
-    i = numba_dppy.get_global_id(0)
+    i = numba_dpex.get_global_id(0)
     c[i] = a[i] + b[i]
 
 
@@ -113,7 +112,7 @@ def test_ndarray_argtype(offload_device, input_arrays):
     a, b, expected = input_arrays
     got = np.ones_like(a)
 
-    with numba_dppy.offload_to_sycl_device(offload_device):
+    with numba_dpex.offload_to_sycl_device(offload_device):
         sum_kernel[global_size, local_size](a, b, got)
 
     expected = a + b
@@ -186,7 +185,7 @@ def test_context_manager_with_usm_ndarray(offload_device, input_arrays):
     )
 
     with pytest.warns(Warning) as warning:
-        with numba_dppy.offload_to_sycl_device(offload_device):
+        with numba_dpex.offload_to_sycl_device(offload_device):
             sum_kernel[global_size, local_size](da, db, dc)
         if not warning:
             pytest.fail("Warning expected!")

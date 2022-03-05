@@ -12,17 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-""" Provides helper functions to convert from numba types to numba_dppy types.
+""" Provides helper functions to convert from numba types to numba_dpex types.
 
 Currently the module supports the following converter functions:
     - npytypes_array_to_dppy_array: types.npytypes.Array to
-                                    numba_dppy.dppy_array_type.DPPYArray.
+                                    numba_dpex.dppy_array_type.DPPYArray.
 
 """
 from numba.core import types
 from numba.np import numpy_support
-
-from numba_dppy import dppy_array_type
+from numba_dpex import dppy_array_type
 
 from .array_utils import get_info_from_suai
 from .constants import address_space
@@ -31,10 +30,10 @@ __all__ = ["npytypes_array_to_dppy_array", "suai_to_dppy_array_type"]
 
 
 def npytypes_array_to_dppy_array(arrtype, addrspace=address_space.GLOBAL):
-    """Convert   Numba's Array type to numba_dppy's DPPYArray type.
+    """Convert   Numba's Array type to numba_dpex's DPPYArray type.
 
     Numba's ``Array`` type does not have a notion of address space for the data
-    pointer. numba_dppy defines its own array type, DPPYArray, that is similar
+    pointer. numba_dpex defines its own array type, DPPYArray, that is similar
     to Numba's Array, but the data pointer has an associated address space.
     In addition, the ``meminfo`` and the ``parent`` attributes of ``Array``
     are stored as ``CPointer`` types instead of ``PyObject``. The converter
@@ -44,11 +43,11 @@ def npytypes_array_to_dppy_array(arrtype, addrspace=address_space.GLOBAL):
     Args:
         arrtype (numba.types): A numba data type that should be
             ``numba.types.Array``.
-        specified: Defaults to ``numba_dppy.utils.address_space.GLOBAL``.
+        specified: Defaults to ``numba_dpex.utils.address_space.GLOBAL``.
             The SPIR-V address space to which the data pointer of the array
             belongs.
 
-    Returns: The numba_dppy data type corresponding to the input numba type.
+    Returns: The numba_dpex data type corresponding to the input numba type.
 
     Raises:
         NotImplementedError: If the input numba type is not
@@ -87,7 +86,7 @@ def suai_to_dppy_array_type(arr, addrspace=address_space.GLOBAL):
     Raises:
         NotImplementedError: If the dtype of the passed array is not supported.
     """
-    from numba_dppy.dpctl_iface import USMNdArrayType
+    from numba_dpex.dpctl_iface import USMNdArrayType
 
     (
         usm_mem,

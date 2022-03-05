@@ -57,8 +57,7 @@ from numba.extending import (
 )
 from numba.np import numpy_support
 from numba.np.arrayobj import _array_copy
-
-from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
+from numba_dpex.dppy_array_type import DPPYArray, DPPYArrayModel
 
 from . import target as dppy_target
 
@@ -72,15 +71,14 @@ def dprint(*args):
 
 
 import dpctl
+import numba_dpex._usm_shared_allocator_ext
 from dpctl.memory import MemoryUSMShared
-
-import numba_dppy._usm_shared_allocator_ext
 
 # Register the helper function in dppl_rt so that we can insert calls to them via llvmlite.
 for (
     py_name,
     c_address,
-) in numba_dppy._usm_shared_allocator_ext.c_helpers.items():
+) in numba_dpex._usm_shared_allocator_ext.c_helpers.items():
     llb.add_symbol(py_name, c_address)
 
 
@@ -241,7 +239,7 @@ def is_usm_callback(obj):
         while isinstance(mobj, numba.core.runtime._nrt_python._MemInfo):
             ea = mobj.external_allocator
             dppl_rt_allocator = (
-                numba_dppy._usm_shared_allocator_ext.get_external_allocator()
+                numba_dpex._usm_shared_allocator_ext.get_external_allocator()
             )
             dprint("Checking MemInfo:", ea)
             if ea == dppl_rt_allocator:

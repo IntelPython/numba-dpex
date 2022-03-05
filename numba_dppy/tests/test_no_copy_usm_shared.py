@@ -14,15 +14,14 @@
 
 import dpctl
 import dpctl.tensor.numpy_usm_shared as usmarray
+import numba_dpex as dppy
 import numpy as np
 import pytest
 from numba import prange
 from numba.core import compiler, cpu
 from numba.core.registry import cpu_target
-
-import numba_dppy as dppy
-from numba_dppy.compiler import DPPYCompiler
-from numba_dppy.tests._helper import skip_no_opencl_gpu
+from numba_dpex.compiler import DPPYCompiler
+from numba_dpex.tests._helper import skip_no_opencl_gpu
 
 
 def fn(a):

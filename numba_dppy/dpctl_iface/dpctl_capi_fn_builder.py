@@ -18,9 +18,8 @@ declarations into an LLVM module.
 """
 
 import llvmlite.llvmpy.core as lc
+import numba_dpex.utils as utils
 from numba.core import cgutils, types
-
-import numba_dppy.utils as utils
 
 
 class DpctlCAPIFnBuilder:

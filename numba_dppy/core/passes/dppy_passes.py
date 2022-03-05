@@ -38,8 +38,7 @@ from numba.parfors.parfor import Parfor
 from numba.parfors.parfor import ParforPass as _parfor_ParforPass
 from numba.parfors.parfor import PreParforPass as _parfor_PreParforPass
 from numba.parfors.parfor import swap_functions_map
-
-from numba_dppy import config
+from numba_dpex import config
 
 from .dppy_lowerer import DPPYLower
 
@@ -88,7 +87,7 @@ class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
                                     and call_node.op == "getattr"
                                     and call_node.attr == "array"
                                 ):
-                                    # let's check if it is from numba_dppy.local
+                                    # let's check if it is from numba_dpex.local
                                     attr_node = block.find_variable_assignment(
                                         call_node.value.name
                                     ).value

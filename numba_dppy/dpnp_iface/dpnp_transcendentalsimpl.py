@@ -12,15 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import numba_dpex
+import numba_dpex.dpctl_iface as dpctl_functions
+import numba_dpex.dpnp_iface as dpnp_lowering
+import numba_dpex.dpnp_iface.dpnpimpl as dpnp_ext
 import numpy as np
 from numba import types
 from numba.core.extending import overload, register_jitable
 from numba.core.typing import signature
-
-import numba_dppy
-import numba_dppy.dpctl_iface as dpctl_functions
-import numba_dppy.dpnp_iface as dpnp_lowering
-import numba_dppy.dpnp_iface.dpnpimpl as dpnp_ext
 
 from . import stubs
 
@@ -167,7 +166,7 @@ def dpnp_nansum_impl(a):
             if np.isnan(a_ravel_copy[i]):
                 a_ravel_copy[i] = 0
 
-        result = numba_dppy.dpnp.sum(a_ravel_copy)
+        result = numba_dpex.dpnp.sum(a_ravel_copy)
         dpnp_ext._dummy_liveness_func([a.size, a_ravel_copy.size])
 
         if PRINT_DEBUG:
@@ -193,7 +192,7 @@ def dpnp_nanprod_impl(a):
             if np.isnan(a_ravel_copy[i]):
                 a_ravel_copy[i] = 1
 
-        result = numba_dppy.dpnp.prod(a_ravel_copy)
+        result = numba_dpex.dpnp.prod(a_ravel_copy)
         dpnp_ext._dummy_liveness_func([a.size, a_ravel_copy.size])
 
         if PRINT_DEBUG:

@@ -16,9 +16,8 @@ import dpctl.tensor as dpt
 import numpy as np
 import pytest
 from numba.misc.special import typeof
-
-from numba_dppy.dpctl_iface import USMNdArrayType
-from numba_dppy.tests._helper import filter_strings
+from numba_dpex.dpctl_iface import USMNdArrayType
+from numba_dpex.tests._helper import filter_strings
 
 list_of_dtypes = [
     np.int32,

@@ -30,29 +30,29 @@ for more details.
 # Give it a try?
 
 A good starting point is to run the test suite that includes the unit tests
-inside the `numba_dppy/tests` module. To run the tests, invoke:
+inside the `numba_dpex/tests` module. To run the tests, invoke:
 
 ```bash
-python -m pytest --pyargs numba_dppy.tests
+python -m pytest --pyargs numba_dpex.tests
 ```
 or
 ```bash
 pytest
 ```
 Once you run the tests and make sure your installation is up and
-running, try out the examples inside the `numba_dppy/examples` folder. For
+running, try out the examples inside the `numba_dpex/examples` folder. For
 example, you can try the `vector addition` example as follows:
 ```bash
-python numba_dppy/examples/sum.py
+python numba_dpex/examples/sum.py
 ```
 
 # Known Issue
-Floor division operator `//` is not supported inside @numba_dppy.kernel.
+Floor division operator `//` is not supported inside @numba_dpex.kernel.
 
 The below code snippet will result in error reported in this [Issue](https://github.com/IntelPython/numba-dpex/issues/571).
 ```
-import numpy as np, numba_dppy
-@numba_dppy.kernel
+import numpy as np, numba_dpex
+@numba_dpex.kernel
 def div_kernel(dst, src, m):
     i = dppy.get_global_id(0)
     dst[i] = src[i] // m
@@ -61,7 +61,7 @@ import dpctl
 with dpctl.device_context(dpctl.SyclQueue()):
     X = np.arange(10)
     Y = np.arange(10)
-    div_kernel[10, numba_dppy.DEFAULT_LOCAL_SIZE](Y, X, 5)
+    div_kernel[10, numba_dpex.DEFAULT_LOCAL_SIZE](Y, X, 5)
     D = X//5
     print(Y, D)
 ```
@@ -92,4 +92,4 @@ Please report issues and bugs directly on
 |   4   | Windows |      10      | 3.7, 3.8 | Gen9 Integrated |    CI     | 2021.3, 2021.4 |      (1)       |    Numba, NumPy    |     OCL     |
 |   5   | Windows |      10      | 3.7, 3.8 |    i7-10710     |    CI     | 2021.3, 2021.4 |      (1)       |    Numba, NumPy    |     OCL     |
 
-(1): `python setup.py install; pytest -q -ra --disable-warnings --pyargs numba_dppy -vv`
+(1): `python setup.py install; pytest -q -ra --disable-warnings --pyargs numba_dpex -vv`

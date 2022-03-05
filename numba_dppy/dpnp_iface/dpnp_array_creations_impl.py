@@ -12,15 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import numba_dpex
+import numba_dpex.dpctl_iface as dpctl_functions
+import numba_dpex.dpnp_iface as dpnp_lowering
+import numba_dpex.dpnp_iface.dpnpimpl as dpnp_ext
 import numpy as np
 from numba import types
 from numba.core.extending import overload, register_jitable
 from numba.core.typing import signature
-
-import numba_dppy
-import numba_dppy.dpctl_iface as dpctl_functions
-import numba_dppy.dpnp_iface as dpnp_lowering
-import numba_dppy.dpnp_iface.dpnpimpl as dpnp_ext
 
 from . import stubs
 
@@ -270,7 +269,7 @@ def dpnp_trace_impl(a):
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
     def dpnp_impl(a):
-        diag_arr = numba_dppy.dpnp.diagonal(a, 0)
+        diag_arr = numba_dpex.dpnp.diagonal(a, 0)
         out = np.zeros(diag_arr.shape[:-1], dtype=a.dtype)
         common_shape_impl(diag_arr, out, dpnp_func, PRINT_DEBUG)
         return out

@@ -17,8 +17,7 @@ import dpctl
 import numpy as np
 import pytest
 from numba import njit
-
-from numba_dppy.tests._helper import (
+from numba_dpex.tests._helper import (
     assert_auto_offloading,
     dpnp_debug,
     skip_no_dpnp,

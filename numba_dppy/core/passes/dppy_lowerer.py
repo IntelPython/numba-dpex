@@ -52,12 +52,12 @@ from numba.core.typing import signature
 from numba.parfors import parfor
 from numba.parfors.parfor_lowering import _lower_parfor_parallel
 
-import numba_dppy as dppy
-from numba_dppy import config
-from numba_dppy.dpctl_iface import KernelLaunchOps
-from numba_dppy.dppy_array_type import DPPYArray
-from numba_dppy.target import DPPYTargetContext
-from numba_dppy.utils import address_space, npytypes_array_to_dppy_array
+import numba_dpex as dppy
+from numba_dpex import config
+from numba_dpex.dpctl_iface import KernelLaunchOps
+from numba_dpex.dppy_array_type import DPPYArray
+from numba_dpex.target import DPPYTargetContext
+from numba_dpex.utils import address_space, npytypes_array_to_dppy_array
 
 from .dufunc_inliner import dufunc_inliner
 
@@ -1075,7 +1075,7 @@ def relatively_deep_copy(obj, memo):
     from numba.core.typing.templates import Signature
     from numba.np.ufunc.dufunc import DUFunc
 
-    from numba_dppy.compiler import DPPYFunctionTemplate
+    from numba_dpex.compiler import DPPYFunctionTemplate
 
     # objects which shouldn't or can't be copied and it's ok not to copy it.
     if isinstance(
@@ -1260,7 +1260,7 @@ def relatively_deep_copy(obj, memo):
 class WrapperDefaultLower(Lower):
     @property
     def _disable_sroa_like_opt(self):
-        """For numba_dppy's case we always return True."""
+        """For numba_dpex's case we always return True."""
         return True
 
 
@@ -1292,7 +1292,7 @@ class DPPYLower(Lower):
         if context.enable_debuginfo:
             from numba.core.funcdesc import default_mangler, qualifying_prefix
 
-            from numba_dppy.dppy_debuginfo import DPPYDIBuilder
+            from numba_dpex.dppy_debuginfo import DPPYDIBuilder
 
             qualprefix = qualifying_prefix(fndesc.modname, fndesc.qualname)
             mangled_qualname = default_mangler(qualprefix, fndesc.argtypes)

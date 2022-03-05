@@ -18,8 +18,7 @@ https://www.sourceware.org/gdb/onlinedocs/gdb/Frame-Info.html
 """
 
 import pytest
-
-from numba_dppy.tests._helper import skip_no_gdb, skip_no_numba055
+from numba_dpex.tests._helper import skip_no_gdb, skip_no_numba055
 
 from .common import setup_breakpoint
 from .test_breakpoints import side_by_side_breakpoint

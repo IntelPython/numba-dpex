@@ -15,9 +15,8 @@
 import math
 
 import dpctl
+import numba_dpex as dppy
 import numpy as np
-
-import numba_dppy as dppy
 
 RISKFREE = 0.02
 VOLATILITY = 0.30

@@ -23,7 +23,7 @@ def _ensure_dpctl():
     """
     Make sure dpctl has supported versions.
     """
-    from numba_dppy.dpctl_support import dpctl_version
+    from numba_dpex.dpctl_support import dpctl_version
 
     if dpctl_version < (0, 8):
         raise ImportError("numba-dpex needs dpctl 0.8 or greater")
@@ -42,7 +42,7 @@ def _dpctl_has_non_host_device():
         return True
     else:
         msg = "dpctl could not find any non-host SYCL device on the system. "
-        msg += "A non-host SYCL device is required to use numba_dppy."
+        msg += "A non-host SYCL device is required to use numba_dpex."
         warnings.warn(msg, UserWarning)
         return False
 

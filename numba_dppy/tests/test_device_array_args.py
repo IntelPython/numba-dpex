@@ -14,10 +14,9 @@
 # limitations under the License.
 
 import dpctl
+import numba_dpex as dppy
 import numpy as np
-
-import numba_dppy as dppy
-from numba_dppy.tests._helper import skip_no_opencl_cpu, skip_no_opencl_gpu
+from numba_dpex.tests._helper import skip_no_opencl_cpu, skip_no_opencl_gpu
 
 
 @dppy.kernel

@@ -16,19 +16,18 @@ import warnings
 
 import dpctl
 import dpctl.tensor as dpt
+import numba_dpex
 import numpy as np
 
-import numba_dppy
-
 """
-We support passing arrays of two types to a @numba_dppy.kernel decorated
+We support passing arrays of two types to a @numba_dpex.kernel decorated
 function.
 
 1. numpy.ndarray
 2. Any array with __sycl_usm_array_interface__ (SUAI) attribute.
 
 Users are not allowed to mix the type of arrays passed as arguments. As in, all
-the arguments passed to a @numba_dppy.kernel has to have the same type. For
+the arguments passed to a @numba_dpex.kernel has to have the same type. For
 example, if the first array argument is of type numpy.ndarray the rest of the
 array arguments will also have to be of type numpy.ndarray.
 
@@ -52,9 +51,9 @@ their computation.
 """
 
 
-@numba_dppy.kernel
+@numba_dpex.kernel
 def sum_kernel(a, b, c):
-    i = numba_dppy.get_global_id(0)
+    i = numba_dpex.get_global_id(0)
     c[i] = a[i] + b[i]
 
 
@@ -93,7 +92,7 @@ def select_device_ndarray(N):
     got = np.ones_like(a)
 
     # This context manager is specifying to use the Opencl GPU.
-    with numba_dppy.offload_to_sycl_device("opencl:gpu"):
+    with numba_dpex.offload_to_sycl_device("opencl:gpu"):
         sum_kernel[N, 1](a, b, got)
 
     expected = a + b

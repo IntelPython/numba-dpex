@@ -24,8 +24,7 @@ except ImportError:
     from numba.core.dispatcher import TargetConfig as TargetConfigurationStack
 
 from numba.core.retarget import BasicRetarget
-
-from numba_dppy.target import DPPY_TARGET_NAME
+from numba_dpex.target import DPPY_TARGET_NAME
 
 
 class DPPYRetarget(BasicRetarget):

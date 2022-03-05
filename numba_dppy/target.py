@@ -25,9 +25,8 @@ from numba.core.callconv import MinimalCallConv
 from numba.core.registry import cpu_target
 from numba.core.target_extension import GPU, target_registry
 from numba.core.utils import cached_property
-
-from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
-from numba_dppy.utils import (
+from numba_dpex.dppy_array_type import DPPYArray, DPPYArrayModel
+from numba_dpex.utils import (
     address_space,
     calling_conv,
     has_usm_memory,
@@ -45,7 +44,7 @@ LLVM_SPIRV_ARGS = 112
 
 
 class DPPYTypingContext(typing.BaseContext):
-    """A numba_dppy-specific typing context inheriting Numba's ``BaseContext``.
+    """A numba_dpex-specific typing context inheriting Numba's ``BaseContext``.
 
     :class:`DPPYTypingContext` is a customized typing context that inherits from
     Numba's ``typing.BaseContext`` class. We add two specific functionalities
@@ -135,18 +134,18 @@ DPPY_TARGET_NAME = "SyclDevice"
 
 target_registry[DPPY_TARGET_NAME] = SyclDevice
 
-import numba_dppy.dppy_offload_dispatcher
+import numba_dpex.dppy_offload_dispatcher
 
 
 class DPPYTargetContext(BaseContext):
-    """A numba_dppy-specific target context inheriting Numba's ``BaseContext``.
+    """A numba_dpex-specific target context inheriting Numba's ``BaseContext``.
 
     :class:`DPPYTargetContext` is a customized target context that inherits
     from Numba's ``numba.core.base.BaseContext`` class. The class defines
     helper functions to mark LLVM functions as SPIR-V kernels. The class also
     registers OpenCL math and API functions, helper functions for inserting
     LLVM address space cast instructions, and other functionalities used by
-    numba_dppy's compiler passes.
+    numba_dpex's compiler passes.
 
     """
 
@@ -284,7 +283,7 @@ class DPPYTargetContext(BaseContext):
         super().__init__(typingctx, target)
 
     def init(self):
-        self._internal_codegen = codegen.JITSPIRVCodegen("numba_dppy.jit")
+        self._internal_codegen = codegen.JITSPIRVCodegen("numba_dpex.jit")
         self._target_data = ll.create_target_data(
             codegen.SPIR_DATA_LAYOUT[utils.MACHINE_BITS]
         )
@@ -309,7 +308,7 @@ class DPPYTargetContext(BaseContext):
         return self._internal_codegen._create_empty_module(name)
 
     def replace_numpy_ufunc_with_opencl_supported_functions(self):
-        from numba_dppy.ocl.mathimpl import lower_ocl_impl, sig_mapper
+        from numba_dpex.ocl.mathimpl import lower_ocl_impl, sig_mapper
 
         ufuncs = [
             ("fabs", np.fabs),
@@ -406,7 +405,7 @@ class DPPYTargetContext(BaseContext):
         return func
 
     def declare_function(self, module, fndesc):
-        """Create the LLVM function from a ``numba_dppy.kernel`` decorated
+        """Create the LLVM function from a ``numba_dpex.kernel`` decorated
         function.
 
         Args:

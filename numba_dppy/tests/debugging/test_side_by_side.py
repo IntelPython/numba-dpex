@@ -16,8 +16,7 @@
 
 
 import pytest
-
-from numba_dppy.tests._helper import skip_no_gdb
+from numba_dpex.tests._helper import skip_no_gdb
 
 pytestmark = skip_no_gdb
 

@@ -35,14 +35,14 @@ Example of Intel® Distribution for GDB* usage
 
 You can use a sample kernel code, :file:`simple_sum.py`, for basic debugging:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
+.. literalinclude:: ../../../numba_dpex/examples/debug/simple_sum.py
     :lines: 15-
     :linenos:
     :lineno-match:
 
 Use the following commands to create a breakpoint inside the kernel and run the debugger:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/simple_sum
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/simple_sum
     :language: shell-session
 
 .. _debugging-features-and-limitations:

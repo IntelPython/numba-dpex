@@ -14,11 +14,10 @@
 
 from numba.core import cgutils, types
 from numba.core.ir_utils import legalize_names
-
-from numba_dppy import numpy_usm_shared as nus
-from numba_dppy import utils
-from numba_dppy.dpctl_iface import DpctlCAPIFnBuilder
-from numba_dppy.dpctl_iface._helpers import numba_type_to_dpctl_typenum
+from numba_dpex import numpy_usm_shared as nus
+from numba_dpex import utils
+from numba_dpex.dpctl_iface import DpctlCAPIFnBuilder
+from numba_dpex.dpctl_iface._helpers import numba_type_to_dpctl_typenum
 
 
 class KernelLaunchOps:

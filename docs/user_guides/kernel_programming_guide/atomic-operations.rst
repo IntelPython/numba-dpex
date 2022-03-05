@@ -4,7 +4,7 @@ Supported Atomic Operations
 Several atomic operations supported in DPC++ are also supported in the extension.
 Those that are presently implemented are as follows:
 
-.. automodule:: numba_dppy.ocl.stubs
+.. automodule:: numba_dpex.ocl.stubs
    :members: atomic
    :noindex:
 
@@ -13,12 +13,12 @@ Example
 
 Here's an example of how to use atomics add in DPPY:
 
-.. literalinclude:: ../../../numba_dppy/examples/atomic_op.py
+.. literalinclude:: ../../../numba_dpex/examples/atomic_op.py
    :pyobject: main
 
 .. note::
 
-    The ``numba_dppy.atomic.add`` function is analogous to The
+    The ``numba_dpex.atomic.add`` function is analogous to The
     ``numba.cuda.atomic.add`` provided by the ``numba.cuda`` backend.
 
 Generating Native FP Atomics
@@ -41,4 +41,4 @@ Example command:
 Full examples
 -------------
 
-- ``numba_dppy/examples/atomic_op.py``
+- ``numba_dpex/examples/atomic_op.py``

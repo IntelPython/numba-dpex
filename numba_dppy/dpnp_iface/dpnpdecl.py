@@ -12,18 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import numba_dpex
 from numba import types
 from numba.core.typing.templates import AttributeTemplate, infer_getattr
-
-import numba_dppy
 
 
 @infer_getattr
 class DppyDpnpTemplate(AttributeTemplate):
-    key = types.Module(numba_dppy)
+    key = types.Module(numba_dpex)
 
     def resolve_dpnp(self, mod):
-        return types.Module(numba_dppy.dpnp)
+        return types.Module(numba_dpex.dpnp)
 
 
 """

@@ -1,8 +1,7 @@
 import dpctl
+import numba_dpex as dppy
 import numpy as np
 import pytest
-
-import numba_dppy as dppy
 
 from .DuckUSMArray import DuckUSMArray, PseudoDuckUSMArray
 
@@ -27,11 +26,11 @@ def dtype(request):
 
 
 def test_dppy_kernel_valid_usm_obj(dtype):
-    """Test if a ``numba_dppy.kernel`` function accepts a DuckUSMArray argument.
+    """Test if a ``numba_dpex.kernel`` function accepts a DuckUSMArray argument.
 
     The ``DuckUSMArray`` uses ``dpctl.memory`` to allocate a Python object that
     defines a __sycl_usm_array__interface__ attribute. We test if
-    ``numba_dppy`` recognizes the ``DuckUSMArray`` as a valid USM-backed Python
+    ``numba_dpex`` recognizes the ``DuckUSMArray`` as a valid USM-backed Python
     object and accepts it as a kernel argument.
 
     """
@@ -57,12 +56,12 @@ def test_dppy_kernel_valid_usm_obj(dtype):
 
 
 def test_dppy_kernel_invalid_usm_obj(dtype):
-    """Test if a ``numba_dppy.kernel`` function rejects a PseudoDuckUSMArray
+    """Test if a ``numba_dpex.kernel`` function rejects a PseudoDuckUSMArray
     argument.
 
     The ``PseudoDuckUSMArray`` defines a fake attribute called
     __sycl_usm_array__interface__. We test if
-    ``numba_dppy`` correctly recognizes and rejects the ``PseudoDuckUSMArray``.
+    ``numba_dpex`` correctly recognizes and rejects the ``PseudoDuckUSMArray``.
 
     """
     N = 1024

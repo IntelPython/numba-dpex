@@ -56,7 +56,7 @@ def get_config():
     cfg.style = "pep440"
     cfg.tag_prefix = "None"
     cfg.parentdir_prefix = "None"
-    cfg.versionfile_source = "numba_dppy/_version.py"
+    cfg.versionfile_source = "numba_dpex/_version.py"
     cfg.verbose = False
     return cfg
 

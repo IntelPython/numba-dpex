@@ -12,15 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import numba_dpex
+import numba_dpex.dpctl_iface as dpctl_functions
+import numba_dpex.dpnp_iface as dpnp_lowering
+import numba_dpex.dpnp_iface.dpnpimpl as dpnp_ext
 import numpy as np
 from numba import types
 from numba.core.extending import overload, register_jitable
 from numba.core.typing import signature
-
-import numba_dppy
-import numba_dppy.dpctl_iface as dpctl_functions
-import numba_dppy.dpnp_iface as dpnp_lowering
-import numba_dppy.dpnp_iface.dpnpimpl as dpnp_ext
 
 from . import stubs
 
@@ -477,7 +476,7 @@ def dpnp_multi_dot_impl(arrays):
         result = arrays[0]
 
         for idx in range(1, n):
-            result = numba_dppy.dpnp.dot(result, arrays[idx])
+            result = numba_dpex.dpnp.dot(result, arrays[idx])
 
         if print_debug:
             print("dpnp implementation")
@@ -500,7 +499,7 @@ def dpnp_vdot_impl(a, b):
     """
 
     def dpnp_impl(a, b):
-        return numba_dppy.dpnp.dot(np.ravel(a), np.ravel(b))
+        return numba_dpex.dpnp.dot(np.ravel(a), np.ravel(b))
 
     return dpnp_impl
 
@@ -533,7 +532,7 @@ def dpnp_matrix_power_impl(a, n):
 
         result = a
         for idx in range(0, n - 1):
-            result = numba_dppy.dpnp.matmul(result, a)
+            result = numba_dpex.dpnp.matmul(result, a)
         return result
 
     return dpnp_impl
@@ -739,7 +738,7 @@ def dpnp_eigvals_impl(a):
     dpnp_lowering.ensure_dpnp("eigvals")
 
     def dpnp_impl(a):
-        eigval, eigvec = numba_dppy.dpnp.eig(a)
+        eigval, eigvec = numba_dpex.dpnp.eig(a)
         return eigval
 
     return dpnp_impl

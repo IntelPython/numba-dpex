@@ -13,16 +13,15 @@
 # limitations under the License.
 
 import dpctl
+import numba_dpex
 import numpy as np
 import pytest
-
-import numba_dppy
-from numba_dppy.tests._helper import filter_strings
+from numba_dpex.tests._helper import filter_strings
 
 
-@numba_dppy.kernel
+@numba_dpex.kernel
 def sum(a, b, c):
-    i = numba_dppy.get_global_id(0)
+    i = numba_dpex.get_global_id(0)
     c[i] = a[i] + b[i]
 
 
@@ -36,6 +35,6 @@ def test_strided_array_kernel(filter_str):
     expected = a + b
 
     with dpctl.device_context(filter_str):
-        sum[global_size, numba_dppy.DEFAULT_LOCAL_SIZE](a, b, got)
+        sum[global_size, numba_dpex.DEFAULT_LOCAL_SIZE](a, b, got)
 
     assert np.array_equal(expected, got)

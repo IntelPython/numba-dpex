@@ -14,12 +14,11 @@
 # limitations under the License.
 
 import dpctl
+import numba_dpex as dppy
 import numpy as np
 import pytest
 from numba import float32, float64, int32, int64, njit, vectorize
-
-import numba_dppy as dppy
-from numba_dppy.tests._helper import assert_auto_offloading, filter_strings
+from numba_dpex.tests._helper import assert_auto_offloading, filter_strings
 
 from . import _helper
 

@@ -12,13 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import numba_dpex as dppy
+import numba_dpex.extended_numba_itanium_mangler as itanium_mangler
 import pytest
 from numba import float32, float64, int32, int64, uint32, uint64
 from numba.core import types
-
-import numba_dppy as dppy
-import numba_dppy.extended_numba_itanium_mangler as itanium_mangler
-from numba_dppy.utils import address_space
+from numba_dpex.utils import address_space
 
 list_of_dtypes = [
     (int32, "i"),

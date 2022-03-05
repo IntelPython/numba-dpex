@@ -16,8 +16,7 @@ from llvmlite import binding as ll
 from llvmlite.llvmpy import core as lc
 from numba.core import utils
 from numba.core.codegen import CPUCodegen, CPUCodeLibrary
-
-from numba_dppy import config
+from numba_dpex import config
 
 SPIR_TRIPLE = {32: " spir-unknown-unknown", 64: "spir64-unknown-unknown"}
 
@@ -61,7 +60,7 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
 
     def get_asm_str(self):
         # Return nothing: we can only dump assembler code when it is later
-        # generated (in numba_dppy.compiler).
+        # generated (in numba_dpex.compiler).
         return None
 
 

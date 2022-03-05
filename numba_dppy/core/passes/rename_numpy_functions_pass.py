@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import numba_dpex
 from numba.core import ir, types
 from numba.core.compiler_machinery import FunctionPass, register_pass
 from numba.core.ir_utils import (
@@ -20,8 +21,6 @@ from numba.core.ir_utils import (
     remove_dead,
     simplify_CFG,
 )
-
-import numba_dppy
 
 rewrite_function_name_map = {
     # numpy
@@ -112,7 +111,7 @@ class RewriteNumPyOverloadedFunctions(object):
         This function rewrites the name of NumPy functions that exist in self.function_name_map
         e.g np.sum(a) would produce the following:
 
-        np.sum() --> numba_dppy.dpnp.sum()
+        np.sum() --> numba_dpex.dpnp.sum()
 
         ---------------------------------------------------------------------------------------
         Numba IR Before Rewrite:
@@ -127,7 +126,7 @@ class RewriteNumPyOverloadedFunctions(object):
         Numba IR After Rewrite:
         ---------------------------------------------------------------------------------------
 
-            $dppy_replaced_var.0 = global(numba_dppy: <module 'numba_dppy' from 'numba_dppy/__init__.py'>) ['$dppy_replaced_var.0']
+            $dppy_replaced_var.0 = global(numba_dpex: <module 'numba_dpex' from 'numba_dpex/__init__.py'>) ['$dppy_replaced_var.0']
             $dpnp_var.1 = getattr(value=$dppy_replaced_var.0, attr=dpnp) ['$dpnp_var.1', '$dppy_replaced_var.0']
             $4load_method.1 = getattr(value=$dpnp_var.1, attr=sum) ['$4load_method.1', '$dpnp_var.1']
             $8call_method.3 = call $4load_method.1(a, func=$4load_method.1, args=[Var(a, test_rewrite.py:7)],
@@ -151,7 +150,7 @@ class RewriteNumPyOverloadedFunctions(object):
                     lhs = stmt.target.name
                     rhs = stmt.value
                     # replace np.FOO with name from self.function_name_map["FOO"]
-                    # e.g. np.sum will be replaced with numba_dppy.dpnp.sum
+                    # e.g. np.sum will be replaced with numba_dpex.dpnp.sum
                     if (
                         rhs.op == "getattr"
                         and rhs.attr in self.function_name_map
@@ -181,11 +180,11 @@ class RewriteNumPyOverloadedFunctions(object):
                                 scope, mk_unique_var("$2load_global"), loc
                             )
                             # We are trying to rename np.function_name/np.linalg.function_name with
-                            # numba_dppy.dpnp.function_name.
-                            # Hence, we need to have a global variable representing module numba_dppy.
-                            # Next, we add attribute dpnp to global module numba_dppy to
-                            # represent numba_dppy.dpnp.
-                            g_dppy = ir.Global("numba_dppy", numba_dppy, loc)
+                            # numba_dpex.dpnp.function_name.
+                            # Hence, we need to have a global variable representing module numba_dpex.
+                            # Next, we add attribute dpnp to global module numba_dpex to
+                            # represent numba_dpex.dpnp.
+                            g_dppy = ir.Global("numba_dpex", numba_dpex, loc)
                             g_dppy_assign = ir.Assign(g_dppy, g_dppy_var, loc)
 
                             dpnp_var = ir.Var(
@@ -215,18 +214,18 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
     def __init__(self):
         FunctionPass.__init__(self)
 
-        import numba_dppy.dpnp_iface.dpnp_array_creations_impl
-        import numba_dppy.dpnp_iface.dpnp_array_ops_impl
-        import numba_dppy.dpnp_iface.dpnp_indexing
-        import numba_dppy.dpnp_iface.dpnp_linalgimpl
-        import numba_dppy.dpnp_iface.dpnp_logic
-        import numba_dppy.dpnp_iface.dpnp_manipulation
-        import numba_dppy.dpnp_iface.dpnp_randomimpl
-        import numba_dppy.dpnp_iface.dpnp_sort_search_countimpl
-        import numba_dppy.dpnp_iface.dpnp_statisticsimpl
-        import numba_dppy.dpnp_iface.dpnp_transcendentalsimpl
-        import numba_dppy.dpnp_iface.dpnpdecl
-        import numba_dppy.dpnp_iface.dpnpimpl
+        import numba_dpex.dpnp_iface.dpnp_array_creations_impl
+        import numba_dpex.dpnp_iface.dpnp_array_ops_impl
+        import numba_dpex.dpnp_iface.dpnp_indexing
+        import numba_dpex.dpnp_iface.dpnp_linalgimpl
+        import numba_dpex.dpnp_iface.dpnp_logic
+        import numba_dpex.dpnp_iface.dpnp_manipulation
+        import numba_dpex.dpnp_iface.dpnp_randomimpl
+        import numba_dpex.dpnp_iface.dpnp_sort_search_countimpl
+        import numba_dpex.dpnp_iface.dpnp_statisticsimpl
+        import numba_dpex.dpnp_iface.dpnp_transcendentalsimpl
+        import numba_dpex.dpnp_iface.dpnpdecl
+        import numba_dpex.dpnp_iface.dpnpimpl
 
     def run_pass(self, state):
         rewrite_function_name_pass = RewriteNumPyOverloadedFunctions(
@@ -300,16 +299,16 @@ class RewriteNdarrayFunctions(object):
                             scope, mk_unique_var("$load_global"), loc
                         )
                         self.typemap[g_dppy_var.name] = types.misc.Module(
-                            numba_dppy
+                            numba_dpex
                         )
-                        g_dppy = ir.Global("numba_dppy", numba_dppy, loc)
+                        g_dppy = ir.Global("numba_dpex", numba_dpex, loc)
                         g_dppy_assign = ir.Assign(g_dppy, g_dppy_var, loc)
 
                         dpnp_var = ir.Var(
                             scope, mk_unique_var("$load_attr"), loc
                         )
                         self.typemap[dpnp_var.name] = types.misc.Module(
-                            numba_dppy.dpnp
+                            numba_dpex.dpnp
                         )
                         getattr_dpnp = ir.Expr.getattr(g_dppy_var, "dpnp", loc)
                         dpnp_assign = ir.Assign(getattr_dpnp, dpnp_var, loc)
@@ -322,7 +321,7 @@ class RewriteNdarrayFunctions(object):
                         func_ir._definitions[dpnp_var.name] = [getattr_dpnp]
 
                         # update func var type
-                        func = getattr(numba_dppy.dpnp, rhs.attr)
+                        func = getattr(numba_dpex.dpnp, rhs.attr)
                         func_typ = get_dpnp_func_typ(func)
 
                         self.typemap.pop(lhs)

@@ -17,7 +17,7 @@
 https://www.sourceware.org/gdb/onlinedocs/gdb/Backtrace.html
 """
 
-from numba_dppy.tests._helper import skip_no_gdb
+from numba_dpex.tests._helper import skip_no_gdb
 
 from .common import setup_breakpoint
 

@@ -16,7 +16,7 @@ DPC++'s runtime.
     .. code-block:: python
 
         import numpy as np
-        import numba_dppy, numba_dppy as dppy
+        import numba_dpex, numba_dpex as dppy
         import dpctl
 
         @dppy.kernel

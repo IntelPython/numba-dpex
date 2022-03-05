@@ -18,9 +18,8 @@ import dpctl
 import numba
 import numpy as np
 import pytest
-
-from numba_dppy import config
-from numba_dppy.tests._helper import skip_no_opencl_gpu
+from numba_dpex import config
+from numba_dpex.tests._helper import skip_no_opencl_gpu
 
 
 @skip_no_opencl_gpu

@@ -28,11 +28,11 @@ jobs:
       - name: Test installation
         run: |
           conda list
-          python -c "import numba_dppy; print(numba_dppy.__file__)"
+          python -c "import numba_dpex; print(numba_dpex.__file__)"
 
       - name: Run tests with coverage
         run: |
-          pytest -q -ra --disable-warnings --cov --cov-report term-missing --pyargs numba_dppy -vv
+          pytest -q -ra --disable-warnings --cov --cov-report term-missing --pyargs numba_dpex -vv
 
       - name: Install coveralls
         shell: bash -l {0}

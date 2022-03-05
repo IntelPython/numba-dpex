@@ -15,28 +15,27 @@
 import platform
 
 import dpctl
+import numba_dpex
 import numpy as np
 import pytest
-
-import numba_dppy
-from numba_dppy.tests._helper import filter_strings
+from numba_dpex.tests._helper import filter_strings
 
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_private_memory(filter_str):
-    @numba_dppy.kernel
+    @numba_dpex.kernel
     def private_memory_kernel(A):
-        i = numba_dppy.get_global_id(0)
-        prvt_mem = numba_dppy.private.array(shape=1, dtype=np.float32)
+        i = numba_dpex.get_global_id(0)
+        prvt_mem = numba_dpex.private.array(shape=1, dtype=np.float32)
         prvt_mem[0] = i
-        numba_dppy.barrier(numba_dppy.CLK_LOCAL_MEM_FENCE)  # local mem fence
+        numba_dpex.barrier(numba_dpex.CLK_LOCAL_MEM_FENCE)  # local mem fence
         A[i] = prvt_mem[0] * 2
 
     N = 64
     arr = np.zeros(N).astype(np.float32)
     orig = np.arange(N).astype(np.float32)
 
-    with numba_dppy.offload_to_sycl_device(filter_str):
+    with numba_dpex.offload_to_sycl_device(filter_str):
         private_memory_kernel[N, N](arr)
 
     # The computation is correct?

@@ -1,9 +1,9 @@
 Backtrace
 ==========
 
-The ``backtrace`` command displays a summary of how your program got where it is. Consider the following example ``numba_dppy/examples/debug/simple_dppy_func.py``:
+The ``backtrace`` command displays a summary of how your program got where it is. Consider the following example ``numba_dpex/examples/debug/simple_dppy_func.py``:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/simple_dppy_func.py
+.. literalinclude:: ../../../numba_dpex/examples/debug/simple_dppy_func.py
     :lines: 15-
     :linenos:
     :lineno-match:
@@ -11,17 +11,17 @@ The ``backtrace`` command displays a summary of how your program got where it is
 
 The section presents two examples of using Intel Distribution for GDB* to generate backtrace from a numa_dppy.kernel function.
 The first example presents the case where the kernel function does not invoke any other function.
-The second example presents the case where the kernel function invokes a numba_dppy.func.
+The second example presents the case where the kernel function invokes a numba_dpex.func.
 
 Example 1:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/backtrace_kernel
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/backtrace_kernel
     :language: shell-session
     :emphasize-lines: 8,9
 
 Example 2:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/backtrace
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/backtrace
     :language: shell-session
     :emphasize-lines: 8-10
 

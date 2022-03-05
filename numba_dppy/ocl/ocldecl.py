@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import numba_dpex as dppy
 from numba import types
 from numba.core.typing.npydecl import parse_dtype, parse_shape
 from numba.core.typing.templates import (
@@ -22,10 +23,8 @@ from numba.core.typing.templates import (
     Registry,
     signature,
 )
-
-import numba_dppy as dppy
-from numba_dppy.dppy_array_type import DPPYArray
-from numba_dppy.utils import address_space
+from numba_dpex.dppy_array_type import DPPYArray
+from numba_dpex.utils import address_space
 
 registry = Registry()
 intrinsic = registry.register

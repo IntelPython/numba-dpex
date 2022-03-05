@@ -15,12 +15,11 @@
 import os
 
 import dpctl
+import numba_dpex as dppy
 import numpy as np
 import pytest
-
-import numba_dppy as dppy
-from numba_dppy import config
-from numba_dppy.tests._helper import filter_strings, override_config
+from numba_dpex import config
+from numba_dpex.tests._helper import filter_strings, override_config
 
 global_size = 100
 N = global_size

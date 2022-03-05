@@ -15,11 +15,10 @@
 import math
 
 import dpctl
+import numba_dpex as dppy
 import numpy as np
 import pytest
-
-import numba_dppy as dppy
-from numba_dppy.tests._helper import filter_strings
+from numba_dpex.tests._helper import filter_strings
 
 list_of_unary_ops = ["fabs", "exp", "log", "sqrt", "sin", "cos", "tan"]
 

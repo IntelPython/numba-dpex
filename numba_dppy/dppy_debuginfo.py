@@ -15,8 +15,7 @@
 import numba as nb
 from llvmlite import ir
 from numba.core.debuginfo import DIBuilder
-
-from numba_dppy.numba_support import numba_version
+from numba_dpex.numba_support import numba_version
 
 
 class DPPYDIBuilder(DIBuilder):

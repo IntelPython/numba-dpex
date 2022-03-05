@@ -18,8 +18,7 @@ import os
 import sys
 
 import pytest
-
-from numba_dppy import config
+from numba_dpex import config
 
 from .common import script_path
 

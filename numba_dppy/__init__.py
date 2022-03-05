@@ -178,7 +178,7 @@ Complete Example using @dppy.kernel:
 
     ---------------------------------------------------------------------------
     import numpy as np
-    import numba_dppy, numba_dppy as dppy
+    import numba_dpex, numba_dpex as dppy
     import dpctl
 
     @dppy.kernel
@@ -515,9 +515,8 @@ Supported NumPy Functions:
 
 """
 import numba.testing
-
-from numba_dppy.interop import asarray
-from numba_dppy.retarget import offload_to_sycl_device
+from numba_dpex.interop import asarray
+from numba_dpex.retarget import offload_to_sycl_device
 
 from . import config
 

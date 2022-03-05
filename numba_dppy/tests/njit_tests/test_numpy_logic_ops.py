@@ -15,12 +15,11 @@
 ################################################################################
 
 import dpctl
+import numba_dpex as dppy
 import numpy as np
 import pytest
 from numba import njit
-
-import numba_dppy as dppy
-from numba_dppy.tests._helper import assert_auto_offloading, filter_strings
+from numba_dpex.tests._helper import assert_auto_offloading, filter_strings
 
 list_of_binary_ops = [
     "greater",

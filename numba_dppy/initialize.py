@@ -16,12 +16,11 @@ import os
 
 import llvmlite.binding as ll
 from numba.np.ufunc.decorators import Vectorize
-
-from numba_dppy.vectorizers import DPPYVectorize
+from numba_dpex.vectorizers import DPPYVectorize
 
 
 def init_jit():
-    from numba_dppy.dispatcher import DPPYDispatcher
+    from numba_dpex.dispatcher import DPPYDispatcher
 
     return DPPYDispatcher
 

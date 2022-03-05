@@ -18,9 +18,8 @@ import dpctl.memory as dpctl_mem
 import dpctl.tensor as dpt
 import numpy as np
 import pytest
-
-from numba_dppy.tests._helper import filter_strings
-from numba_dppy.utils import (
+from numba_dpex.tests._helper import filter_strings
+from numba_dpex.utils import (
     as_usm_obj,
     copy_to_numpy_from_usm_obj,
     has_usm_memory,

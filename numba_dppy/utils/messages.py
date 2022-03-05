@@ -26,6 +26,6 @@ IndeterminateExecutionQueueError_msg = (
 )
 
 mix_datatype_err_msg = (
-    "Datatypes of array passed to @numba_dppy.kernel "
+    "Datatypes of array passed to @numba_dpex.kernel "
     "has to be the same. Passed datatypes: "
 )

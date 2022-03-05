@@ -33,7 +33,7 @@ go get -u github.com/google/addlicense
 Run before each commit:
 ```bash
 export PATH=${PATH}:`go env GOPATH`/bin
-addlicense -l apache -c "Intel Corporation" numba_dppy/**/*.py numba_dppy/*.py setup.py
+addlicense -l apache -c "Intel Corporation" numba_dpex/**/*.py numba_dpex/*.py setup.py
 ```
 
 ## Security
@@ -46,7 +46,7 @@ Install: `pip install bandit`
 
 - Revision: `1.7.0`
 
-Run before each commit: `bandit -r numba_dppy -lll`
+Run before each commit: `bandit -r numba_dpex -lll`
 
 ## Documentation
 
@@ -165,7 +165,7 @@ conda install pytest-cov
 
 Run pytest-cov:
 ```bash
-pytest --cov=numba_dppy
+pytest --cov=numba_dpex
 ```
 
 The complete list of command line options is:

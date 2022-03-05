@@ -15,4 +15,4 @@ For ``numba.cuda`` Programmers
 
 .. Examples:
 
-.. - ``numba_dppy/examples/dppy_func.py``
+.. - ``numba_dpex/examples/dppy_func.py``

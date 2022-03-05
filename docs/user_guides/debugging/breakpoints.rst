@@ -16,9 +16,9 @@ See also:
 
 .. _Breakpoints in GDB*: https://sourceware.org/gdb/current/onlinedocs/gdb/Set-Breaks.html#Set-Breaks
 
-Consider the followign kernel code. See the source file ``numba_dppy/examples/debug/simple_sum.py``:
+Consider the followign kernel code. See the source file ``numba_dpex/examples/debug/simple_sum.py``:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
+.. literalinclude:: ../../../numba_dpex/examples/debug/simple_sum.py
     :lines: 15-
     :linenos:
     :lineno-match:
@@ -28,7 +28,7 @@ Consider the followign kernel code. See the source file ``numba_dppy/examples/de
 
 The debugger output:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_func
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/break_func
     :language: shell-session
     :emphasize-lines: 3
 
@@ -37,7 +37,7 @@ The debugger output:
 
 The debugger output:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_line_number
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/break_line_number
     :language: shell-session
     :emphasize-lines: 3
 
@@ -46,7 +46,7 @@ The debugger output:
 
 The debugger output:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_file_func
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/break_file_func
     :language: shell-session
     :emphasize-lines: 3
 
@@ -55,22 +55,22 @@ The debugger output:
 
 The debugger output:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_conditional
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/break_conditional
     :language: shell-session
     :emphasize-lines: 3
 
 Breakpoints with nested functions
 ---------------------------------
 
-Consider the followign kernel code. See the source file ``numba_dppy/examples/debug/simple_dppy_func.py``:
+Consider the followign kernel code. See the source file ``numba_dpex/examples/debug/simple_dppy_func.py``:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/simple_dppy_func.py
+.. literalinclude:: ../../../numba_dpex/examples/debug/simple_dppy_func.py
     :lines: 15-
     :linenos:
     :lineno-match:
 
 The debugger output:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/break_nested_func
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/break_nested_func
     :language: shell-session
     :emphasize-lines: 3

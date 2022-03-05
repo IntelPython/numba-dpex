@@ -26,7 +26,7 @@ Configure debugging environment
 
     You can check the correctness of the work with the following example:
 
-    .. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
+    .. literalinclude:: ../../../numba_dpex/examples/debug/simple_sum.py
         :lines: 15-
         :linenos:
         :lineno-match:

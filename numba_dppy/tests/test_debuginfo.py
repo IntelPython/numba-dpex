@@ -16,13 +16,12 @@
 import re
 
 import dpctl
+import numba_dpex as dppy
 import pytest
 from numba.core import types
-
-import numba_dppy as dppy
-from numba_dppy import compiler
-from numba_dppy.tests._helper import override_config
-from numba_dppy.utils import npytypes_array_to_dppy_array
+from numba_dpex import compiler
+from numba_dpex.tests._helper import override_config
+from numba_dpex.utils import npytypes_array_to_dppy_array
 
 debug_options = [True, False]
 

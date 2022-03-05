@@ -13,9 +13,8 @@
 # limitations under the License.import numpy as np
 
 import dpctl
+import numba_dpex as dppy
 import numpy as np
-
-import numba_dppy as dppy
 
 
 @dppy.func

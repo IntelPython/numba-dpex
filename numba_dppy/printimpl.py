@@ -17,8 +17,7 @@ from functools import singledispatch
 import llvmlite.llvmpy.core as lc
 from numba.core import cgutils, types, typing
 from numba.core.imputils import Registry
-
-from numba_dppy.utils import address_space
+from numba_dpex.utils import address_space
 
 registry = Registry()
 lower = registry.lower

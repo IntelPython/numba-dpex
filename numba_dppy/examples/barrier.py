@@ -13,15 +13,14 @@
 # limitations under the License.
 
 import dpctl
+import numba_dpex as dppy
 import numpy as np
 from numba import float32
-
-import numba_dppy as dppy
 
 
 def no_arg_barrier_support():
     """
-    This example demonstrates the usage of numba_dppy's ``barrier``
+    This example demonstrates the usage of numba_dpex's ``barrier``
     intrinsic function. The ``barrier`` function is usable only inside
     a ``kernel`` and is equivalent to OpenCL's ``barrier`` function.
     """

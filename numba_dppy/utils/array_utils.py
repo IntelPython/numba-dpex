@@ -17,8 +17,7 @@
 import dpctl
 import dpctl.memory as dpctl_mem
 import numpy as np
-
-from numba_dppy import config
+from numba_dpex import config
 
 supported_numpy_dtype = [
     np.int32,

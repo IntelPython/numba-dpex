@@ -13,10 +13,9 @@
 # limitations under the License.
 
 import dpctl
+import numba_dpex as dppy
 import pytest
-
-import numba_dppy as dppy
-from numba_dppy.tests._helper import filter_strings
+from numba_dpex.tests._helper import filter_strings
 
 
 @pytest.mark.parametrize("filter_str", filter_strings)

@@ -13,14 +13,13 @@
 # limitations under the License.
 
 import dpctl
+import numba_dpex as dppy
 import numpy as np
-
-import numba_dppy as dppy
 
 
 def main():
     """
-    The example demonstrates the use of numba_dppy's ``atomic_add`` intrinsic
+    The example demonstrates the use of numba_dpex's ``atomic_add`` intrinsic
     function on a SYCL GPU device. The ``dpctl.select_gpu_device`` is
     equivalent to ``sycl::gpu_selector`` and returns a sycl::device of type GPU.
 

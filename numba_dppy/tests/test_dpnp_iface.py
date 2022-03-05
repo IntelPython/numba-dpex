@@ -26,4 +26,4 @@ def test_import_dpnp():
 
 def test_import_dpnp_fptr_interface():
     """Test that we can import dpnp_fptr_interface if dpnp is installed"""
-    from numba_dppy.dpnp_iface import dpnp_fptr_interface
+    from numba_dpex.dpnp_iface import dpnp_fptr_interface

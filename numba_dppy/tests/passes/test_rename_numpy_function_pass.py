@@ -15,18 +15,17 @@
 
 
 import numba
+import numba_dpex
 import numpy as np
 import pytest
 from numba import typeof
 from numba.core import compiler, cpu, typing
 from numba.core.typed_passes import AnnotateTypes, NopythonTypeInference
-
-import numba_dppy
-from numba_dppy.core.passes.rename_numpy_functions_pass import (
+from numba_dpex.core.passes.rename_numpy_functions_pass import (
     DPPYRewriteNdarrayFunctions,
     DPPYRewriteOverloadedNumPyFunctions,
 )
-from numba_dppy.tests._helper import skip_no_dpnp
+from numba_dpex.tests._helper import skip_no_dpnp
 
 
 class MyPipeline(object):
@@ -63,7 +62,7 @@ def check_equivalent(expected_ir, got_ir):
                 if isinstance(expected_stmt.value, numba.core.ir.Global):
                     if (
                         expected_stmt.value.name != got_stmt.value.name
-                        and expected_stmt.value.name != "numba_dppy"
+                        and expected_stmt.value.name != "numba_dpex"
                     ):
                         return False
                 elif isinstance(expected_stmt.value, numba.core.ir.Expr):
@@ -77,7 +76,7 @@ def check_equivalent(expected_ir, got_ir):
 class TestRenameNumpyFunctionsPass:
     def test_rename_numpy(self):
         def expected(a):
-            return numba_dppy.dpnp.sum(a)
+            return numba_dpex.dpnp.sum(a)
 
         def got(a):
             return np.sum(a)
@@ -97,7 +96,7 @@ class TestRenameNumpyFunctionsPass:
 class TestRenameNdarrayFunctionsPass:
     def test_rename_ndarray(self):
         def expected(a):
-            return numba_dppy.dpnp.sum(a)
+            return numba_dpex.dpnp.sum(a)
 
         def got(a):
             return a.sum()

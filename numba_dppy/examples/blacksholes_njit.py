@@ -18,9 +18,8 @@ import time
 
 import dpctl
 import numba
+import numba_dpex as dppy
 import numpy as np
-
-import numba_dppy as dppy
 
 
 @numba.vectorize(nopython=True)
@@ -33,7 +32,7 @@ def cndf2(inp):
 def blackscholes(sptprice, strike, rate, volatility, timev):
     """
     A simple implementation of the Black-Scholes formula using the automatic
-    offload feature of numba_dppy. In this example, each NumPy array
+    offload feature of numba_dpex. In this example, each NumPy array
     expression is identified as a data-parallel kernel and fused together to
     generate a single SYCL kernel. The kernel is automatically offloaded to
     the device specified where the function is invoked.

@@ -24,12 +24,11 @@ from numba.core import cgutils, types
 from numba.core.imputils import Registry
 from numba.core.itanium_mangler import mangle, mangle_c, mangle_type
 from numba.core.typing.npydecl import parse_dtype
-
-from numba_dppy import config, target
-from numba_dppy.codegen import SPIR_DATA_LAYOUT
-from numba_dppy.dppy_array_type import DPPYArray
-from numba_dppy.ocl.atomics import atomic_helper
-from numba_dppy.utils import address_space
+from numba_dpex import config, target
+from numba_dpex.codegen import SPIR_DATA_LAYOUT
+from numba_dpex.dppy_array_type import DPPYArray
+from numba_dpex.ocl.atomics import atomic_helper
+from numba_dpex.utils import address_space
 
 from . import stubs
 
@@ -296,7 +295,7 @@ def native_atomic_add(context, builder, sig, args):
         context.get_value_type(sig.args[2]),
     ]
 
-    from numba_dppy import extended_numba_itanium_mangler as ext_itanium_mangler
+    from numba_dpex import extended_numba_itanium_mangler as ext_itanium_mangler
 
     numba_ptr_ty = types.CPointer(dtype, addrspace=ptr_type.addrspace)
     mangled_fn_name = ext_itanium_mangler.mangle(

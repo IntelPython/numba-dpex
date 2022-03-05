@@ -18,9 +18,8 @@ from time import time
 
 import dpctl
 import dpctl.memory as dpctl_mem
+import numba_dpex as dppy
 import numpy as np
-
-import numba_dppy as dppy
 
 parser = argparse.ArgumentParser(
     description="Program to compute pairwise distance"

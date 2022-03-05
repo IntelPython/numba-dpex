@@ -13,13 +13,12 @@
 # limitations under the License.
 
 import dpctl
+import numba_dpex as dppy
 import numpy as np
 from numba import njit, prange
 from numba.tests.support import captured_stdout
-
-import numba_dppy as dppy
-from numba_dppy import config as dppy_config
-from numba_dppy.tests._helper import skip_no_opencl_gpu
+from numba_dpex import config as dppy_config
+from numba_dpex.tests._helper import skip_no_opencl_gpu
 
 
 @skip_no_opencl_gpu

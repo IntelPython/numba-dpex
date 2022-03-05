@@ -14,8 +14,7 @@
 
 import dpctl
 from numba.core import sigutils, types
-
-from numba_dppy.utils import assert_no_return, npytypes_array_to_dppy_array
+from numba_dpex.utils import assert_no_return, npytypes_array_to_dppy_array
 
 from .compiler import (
     JitDPPYKernel,

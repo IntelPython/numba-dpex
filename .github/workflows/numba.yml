@@ -66,11 +66,11 @@ jobs:
           export OCL_ICD_FILENAMES=libintelocl.so
 
           python -c "import numba; print(numba.__file__)"
-          python -c "import numba_dppy; print(numba_dppy.__file__)"
+          python -c "import numba_dpex; print(numba_dpex.__file__)"
 
       - name: Test
         run: |
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
           export OCL_ICD_FILENAMES=libintelocl.so
 
-          pytest -q -ra --disable-warnings --pyargs numba_dppy -vv
+          pytest -q -ra --disable-warnings --pyargs numba_dpex -vv

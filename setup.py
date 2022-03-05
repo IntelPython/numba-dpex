@@ -54,8 +54,8 @@ def get_ext_modules():
         dpctl_runtime_library_dirs.append(os.path.dirname(dpctl.__file__))
 
     ext_dppy = Extension(
-        name="numba_dppy._usm_shared_allocator_ext",
-        sources=["numba_dppy/dpctl_iface/usm_shared_allocator_ext.c"],
+        name="numba_dpex._usm_shared_allocator_ext",
+        sources=["numba_dpex/dpctl_iface/usm_shared_allocator_ext.c"],
         include_dirs=[numba.core.extending.include_path(), dpctl.get_include()],
         libraries=["DPCTLSyclInterface"],
         library_dirs=[os.path.dirname(dpctl.__file__)],
@@ -67,8 +67,8 @@ def get_ext_modules():
         dpnp_lib_path = []
         dpnp_lib_path += [os.path.dirname(dpnp.__file__)]
         ext_dpnp_iface = Extension(
-            name="numba_dppy.dpnp_iface.dpnp_fptr_interface",
-            sources=["numba_dppy/dpnp_iface/dpnp_fptr_interface.pyx"],
+            name="numba_dpex.dpnp_iface.dpnp_fptr_interface",
+            sources=["numba_dpex/dpnp_iface/dpnp_fptr_interface.pyx"],
             include_dirs=[dpnp.get_include(), dpctl.get_include()],
             libraries=["dpnp_backend_c"],
             library_dirs=dpnp_lib_path,
@@ -120,21 +120,21 @@ def spirv_compile():
         "-cl-std=CL2.0",
         "-Xclang",
         "-finclude-default-header",
-        "numba_dppy/ocl/atomics/atomic_ops.cl",
+        "numba_dpex/ocl/atomics/atomic_ops.cl",
         "-o",
-        "numba_dppy/ocl/atomics/atomic_ops.bc",
+        "numba_dpex/ocl/atomics/atomic_ops.bc",
     ]
     spirv_args = [
         "llvm-spirv",
         "-o",
-        "numba_dppy/ocl/atomics/atomic_ops.spir",
-        "numba_dppy/ocl/atomics/atomic_ops.bc",
+        "numba_dpex/ocl/atomics/atomic_ops.spir",
+        "numba_dpex/ocl/atomics/atomic_ops.bc",
     ]
     subprocess.check_call(clang_args, stderr=subprocess.STDOUT, shell=False)
     subprocess.check_call(spirv_args, stderr=subprocess.STDOUT, shell=False)
 
 
-packages = find_packages(include=["numba_dppy", "numba_dppy.*"])
+packages = find_packages(include=["numba_dpex", "numba_dpex.*"])
 build_requires = ["cython"]
 install_requires = [
     "numba >={},<{}".format("0.54.0", "0.56"),
@@ -169,7 +169,7 @@ metadata = dict(
     ],
     entry_points={
         "numba_extensions": [
-            "init = numba_dppy.numpy_usm_shared:numba_register",
+            "init = numba_dpex.numpy_usm_shared:numba_register",
         ]
     },
 )

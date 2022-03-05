@@ -12,12 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import numba_dpex.config as dppy_config
 from numba.core import compiler, dispatcher
 from numba.core.registry import cpu_target
 from numba.core.target_extension import dispatcher_registry, target_registry
-
-import numba_dppy.config as dppy_config
-from numba_dppy.target import DPPY_TARGET_NAME
+from numba_dpex.target import DPPY_TARGET_NAME
 
 
 class DppyOffloadDispatcher(dispatcher.Dispatcher):
@@ -32,7 +31,7 @@ class DppyOffloadDispatcher(dispatcher.Dispatcher):
         pipeline_class=compiler.Compiler,
     ):
         if dppy_config.HAS_NON_HOST_DEVICE:
-            from numba_dppy.compiler import DPPYCompiler
+            from numba_dpex.compiler import DPPYCompiler
 
             targetoptions["parallel"] = True
             dispatcher.Dispatcher.__init__(

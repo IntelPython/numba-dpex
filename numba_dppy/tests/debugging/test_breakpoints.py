@@ -19,8 +19,7 @@ https://www.sourceware.org/gdb/onlinedocs/gdb/Set-Breaks.html
 
 
 import pytest
-
-from numba_dppy.tests._helper import skip_no_gdb, skip_no_numba055
+from numba_dpex.tests._helper import skip_no_gdb, skip_no_numba055
 
 from .common import breakpoint_by_function, breakpoint_by_mark, setup_breakpoint
 

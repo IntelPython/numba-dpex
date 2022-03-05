@@ -18,8 +18,7 @@ import dpctl
 import numpy as np
 import pytest
 from numba import njit
-
-from numba_dppy.tests._helper import dpnp_debug, filter_strings, skip_no_dpnp
+from numba_dpex.tests._helper import dpnp_debug, filter_strings, skip_no_dpnp
 
 pytestmark = skip_no_dpnp
 

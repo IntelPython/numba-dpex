@@ -16,9 +16,8 @@ import argparse
 
 import dpctl
 import numba
+import numba_dpex as dppy
 import numpy as np
-
-import numba_dppy as dppy
 
 
 def common_loop_body(i, a, b):

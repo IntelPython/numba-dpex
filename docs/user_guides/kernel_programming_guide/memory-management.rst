@@ -5,7 +5,7 @@ DPC++'s USM shared memory allocator (``memory_alloc``) is used to
 enable host to device and *vice versa* data transfer. By using USM shared
 memory allocator, it allows seamless interoperability between
 ``numba-dpex`` and other SYCL-based Python extensions and across multiple
-kernels written using ``numba_dppy.kernel`` decorator.
+kernels written using ``numba_dpex.kernel`` decorator.
 
 USM memory manager provided by ``dpctl`` and support for
 the **SYCL USM Array Interface** protocol enable zero-copy data
@@ -83,14 +83,14 @@ memory concept is analogous to CUDA's shared memory concept.
 A special function ``dppy.local.array`` is provided to
 allocate local memory for a kernel.
 
-.. literalinclude:: ../../../numba_dppy/examples/barrier.py
+.. literalinclude:: ../../../numba_dpex/examples/barrier.py
    :pyobject: local_memory
 
 .. note::
 
   To go convert from ``numba.cuda`` to ``numba-dpex``, replace
   ``numba.cuda.shared.array`` with
-  ``numba_dppy.local.array(shape=blocksize, dtype=float32)``.
+  ``numba_dpex.local.array(shape=blocksize, dtype=float32)``.
 
 .. todo::
 

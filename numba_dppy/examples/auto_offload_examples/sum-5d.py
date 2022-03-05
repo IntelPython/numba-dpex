@@ -13,10 +13,9 @@
 # limitations under the License.
 
 import dpctl
+import numba_dpex as dppy
 import numpy as np
 from numba import gdb, njit
-
-import numba_dppy as dppy
 
 
 @njit

@@ -12,5 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numba_dppy
-from numba_dppy import config
+import numba_dpex
+from numba_dpex import config

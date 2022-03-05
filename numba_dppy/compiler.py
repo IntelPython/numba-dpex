@@ -26,13 +26,12 @@ from numba.core import compiler, ir, types
 from numba.core.compiler import CompilerBase, DefaultPassBuilder
 from numba.core.compiler_lock import global_compiler_lock
 from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
-
-from numba_dppy import config
-from numba_dppy.dpctl_iface import USMNdArrayType
-from numba_dppy.dpctl_support import dpctl_version
-from numba_dppy.dppy_array_type import DPPYArray
-from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
-from numba_dppy.utils import (
+from numba_dpex import config
+from numba_dpex.dpctl_iface import USMNdArrayType
+from numba_dpex.dpctl_support import dpctl_version
+from numba_dpex.dppy_array_type import DPPYArray
+from numba_dpex.dppy_parfor_diagnostics import ExtendedParforDiagnostics
+from numba_dpex.utils import (
     IndeterminateExecutionQueueError,
     as_usm_obj,
     assert_no_return,
@@ -183,7 +182,7 @@ def compile_with_dppy(pyfunc, return_type, args, is_kernel, debug=None):
 
 
 def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
-    # For any array we only accept numba_dppy.dppy_array_type.DPPYArray
+    # For any array we only accept numba_dpex.dppy_array_type.DPPYArray
     for arg in args:
         if isinstance(arg, types.npytypes.Array) and not isinstance(
             arg, DPPYArray
@@ -224,7 +223,7 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
 def compile_kernel_parfor(
     sycl_queue, func_ir, args, args_with_addrspaces, debug=None
 ):
-    # For any array we only accept numba_dppy.dppy_array_type.DPPYArray
+    # For any array we only accept numba_dpex.dppy_array_type.DPPYArray
     for arg in args_with_addrspaces:
         if isinstance(arg, types.npytypes.Array) and not isinstance(
             arg, DPPYArray

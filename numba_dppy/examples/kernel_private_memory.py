@@ -13,10 +13,9 @@
 # limitations under the License.
 
 import dpctl
+import numba_dpex
 import numpy as np
 from numba import float32
-
-import numba_dppy
 
 
 def private_memory():
@@ -26,14 +25,14 @@ def private_memory():
     allocated on the devices private address space.
     """
 
-    @numba_dppy.kernel
+    @numba_dpex.kernel
     def private_memory_kernel(A):
-        memory = numba_dppy.private.array(shape=1, dtype=np.float32)
-        i = numba_dppy.get_global_id(0)
+        memory = numba_dpex.private.array(shape=1, dtype=np.float32)
+        i = numba_dpex.get_global_id(0)
 
         # preload
         memory[0] = i
-        numba_dppy.barrier(numba_dppy.CLK_LOCAL_MEM_FENCE)  # local mem fence
+        numba_dpex.barrier(numba_dpex.CLK_LOCAL_MEM_FENCE)  # local mem fence
 
         # memory will not hold correct deterministic result if it is not
         # private to each thread.
@@ -49,7 +48,7 @@ def private_memory():
     print("Using device ...")
     device.print_device_info()
 
-    with numba_dppy.offload_to_sycl_device(device):
+    with numba_dpex.offload_to_sycl_device(device):
         private_memory_kernel[N, N](arr)
 
     np.testing.assert_allclose(orig * 2, arr)

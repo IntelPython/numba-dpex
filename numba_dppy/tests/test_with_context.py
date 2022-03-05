@@ -13,13 +13,12 @@
 # limitations under the License.
 
 import dpctl
+import numba_dpex as dppy
 import numpy as np
 import pytest
 from numba import njit
 from numba.tests.support import captured_stdout
-
-import numba_dppy as dppy
-from numba_dppy import config
+from numba_dpex import config
 
 from ._helper import (
     assert_auto_offloading,
