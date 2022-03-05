@@ -7,9 +7,9 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   numba_dpex.core.passes.dppy_lowerer
    numba_dpex.core.passes.dppy_passes
    numba_dpex.core.passes.dufunc_inliner
+   numba_dpex.core.passes.lowerer
    numba_dpex.core.passes.rename_numpy_functions_pass
 
 Module contents
