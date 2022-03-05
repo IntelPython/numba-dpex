@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: Checkout numba-dpex
         uses: actions/checkout@v2
-        with: {path: numba-dppy}
+        with: {path: numba-dpex}
 
       - name: Checkout numba
         uses: actions/checkout@v2
@@ -39,7 +39,7 @@ jobs:
 
       - name: Configure environment
         run: |
-          cd numba-dppy
+          cd numba-dpex
           conda env update -n base -f environment.yml --prune
           conda remove -n base numba --force
 
@@ -54,7 +54,7 @@ jobs:
 
       - name: Install numba-dpex
         run: |
-          cd numba-dppy
+          cd numba-dpex
           git log -1
           python setup.py develop
 
