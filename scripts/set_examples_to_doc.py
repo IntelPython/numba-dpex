@@ -4,7 +4,7 @@ import os
 
 
 def convert_commands_to_docs():
-    commands_dir = os.getcwd() + "/numba_dppy/examples/debug/commands"
+    commands_dir = os.getcwd() + "/numba_dpex/examples/debug/commands"
     examples = os.listdir(commands_dir)
     os.chdir(commands_dir + "/docs")
     for file in examples:

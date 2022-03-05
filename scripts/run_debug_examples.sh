@@ -4,7 +4,7 @@ set -e
 
 check() {
   echo "Run $1 ..."
-  (cd numba_dppy/examples/debug && NUMBA_OPT=0 gdb-oneapi -q -command "$1" python) | grep Done
+  (cd numba_dpex/examples/debug && NUMBA_OPT=0 gdb-oneapi -q -command "$1" python) | grep Done
 }
 
 run_checks() {

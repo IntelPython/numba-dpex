@@ -9,32 +9,32 @@ check() {
 }
 
 run_checks() {
-  check numba_dppy/examples/atomic_op.py
-  check numba_dppy/examples/barrier.py
-  check numba_dppy/examples/blacksholes_kernel.py
-  check numba_dppy/examples/blacksholes_njit.py
-  check numba_dppy/examples/dppy_func.py
-  check numba_dppy/examples/dppy_with_context.py
-  check numba_dppy/examples/matmul.py
-  check numba_dppy/examples/pairwise_distance.py
-  check numba_dppy/examples/rand.py
-  check numba_dppy/examples/sum2D.py
-  check numba_dppy/examples/sum_ndarray.py
-  check numba_dppy/examples/sum.py
-  check numba_dppy/examples/sum_reduction_ocl.py
-  check numba_dppy/examples/sum_reduction.py
-  check numba_dppy/examples/sum_reduction_recursive_ocl.py
-  # check numba_dppy/examples/usm_ndarray.py  # See https://github.com/IntelPython/numba-dpex/issues/436
-  check numba_dppy/examples/vectorize.py
+  check numba_dpex/examples/atomic_op.py
+  check numba_dpex/examples/barrier.py
+  check numba_dpex/examples/blacksholes_kernel.py
+  check numba_dpex/examples/blacksholes_njit.py
+  check numba_dpex/examples/dppy_func.py
+  check numba_dpex/examples/dppy_with_context.py
+  check numba_dpex/examples/matmul.py
+  check numba_dpex/examples/pairwise_distance.py
+  check numba_dpex/examples/rand.py
+  check numba_dpex/examples/sum2D.py
+  check numba_dpex/examples/sum_ndarray.py
+  check numba_dpex/examples/sum.py
+  check numba_dpex/examples/sum_reduction_ocl.py
+  check numba_dpex/examples/sum_reduction.py
+  check numba_dpex/examples/sum_reduction_recursive_ocl.py
+  # check numba_dpex/examples/usm_ndarray.py  # See https://github.com/IntelPython/numba-dpex/issues/436
+  check numba_dpex/examples/vectorize.py
 
-  check numba_dppy/examples/auto_offload_examples/sum-1d.py
-  check numba_dppy/examples/auto_offload_examples/sum-2d.py
-  check numba_dppy/examples/auto_offload_examples/sum-3d.py
-  check numba_dppy/examples/auto_offload_examples/sum-4d.py
-  check numba_dppy/examples/auto_offload_examples/sum-5d.py
+  check numba_dpex/examples/auto_offload_examples/sum-1d.py
+  check numba_dpex/examples/auto_offload_examples/sum-2d.py
+  check numba_dpex/examples/auto_offload_examples/sum-3d.py
+  check numba_dpex/examples/auto_offload_examples/sum-4d.py
+  check numba_dpex/examples/auto_offload_examples/sum-5d.py
 
-  check numba_dppy/examples/debug/dppy_func.py
-  check numba_dppy/examples/debug/sum.py
+  check numba_dpex/examples/debug/dppy_func.py
+  check numba_dpex/examples/debug/sum.py
 }
 
 run_with_device() {
