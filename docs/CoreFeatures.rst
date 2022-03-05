@@ -3,13 +3,13 @@
 Code-generation based on a device
 =================================
 
-In ``numba-dppy``, kernels are written in a device-agnostic fashion making it
+Kernels are written in a device-agnostic fashion making it
 easy to write portable code. A kernel is compiled for the device on which the
 kernel is enqueued to be executed. The device is specified using a
 ``dpctl.device_context`` context manager. In the following example, two versions
 of the ``sum`` kernel are compiled, one for a GPU and another for a CPU based on
-which context the function was invoked. Currently, ``numba-dppy`` supports
-OpenCL CPU and GPU devices and Level Zero GPU devices. In future, compilation
+which context the function was invoked. Currently, OpenCL CPU and GPU devices
+and Level Zero GPU devices are supported. In future, compilation
 support may be extended to other type of SYCL devices that are supported by
 DPC++'s runtime.
 
