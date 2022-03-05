@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy.target module &mdash; numba-dpex 0+untagged.733.gddde32e documentation</title>
+  <title>numba_dppy.target module &mdash; numba-dpex 0+untagged.740.gf5ebde3 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -83,8 +83,8 @@
 <dt class="sig sig-object py" id="numba_dppy.target.DPPYCallConv">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.target.</span></span><span class="sig-name descname"><span class="pre">DPPYCallConv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYCallConv" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.callconv.MinimalCallConv</span></code></p>
-<p>Custom calling convention class used by numba-dppy.</p>
-<p>Numba-dppy’s calling convention derives from
+<p>Custom calling convention class used by numba-dpex.</p>
+<p>numba-dpex’s calling convention derives from
 <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.callconv</span> <span class="pre">import</span> <span class="pre">MinimalCallConv</span></code>. The
 <a class="reference internal" href="#numba_dppy.target.DPPYCallConv" title="numba_dppy.target.DPPYCallConv"><code class="xref py py-class docutils literal notranslate"><span class="pre">DPPYCallConv</span></code></a> overriddes <a class="reference internal" href="#numba_dppy.target.DPPYCallConv.call_function" title="numba_dppy.target.DPPYCallConv.call_function"><code class="xref py py-func docutils literal notranslate"><span class="pre">call_function()</span></code></a>.</p>
 <dl class="py method">
@@ -199,7 +199,7 @@ string: A Python string that will be converted to a global constant</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.target.DPPYTargetContext.load_additional_registries">
 <span class="sig-name descname"><span class="pre">load_additional_registries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.target.DPPYTargetContext.load_additional_registries" title="Permalink to this definition"></a></dt>
-<dd><p>Register OpenCL functions into numba-dppy’s target context.</p>
+<dd><p>Register OpenCL functions into numba-dpex’s target context.</p>
 <p>To make sure we are calling supported OpenCL math functions, we
 replace some of NUMBA’s NumPy ufunc with OpenCL versions of those
 functions. The replacement is done after the OpenCL functions have
@@ -243,7 +243,7 @@ been registered into the target context.</p>
 Numba’s <code class="docutils literal notranslate"><span class="pre">typing.BaseContext</span></code> class. We add two specific functionalities
 to the basic Numba typing context features: An overridden
 <a class="reference internal" href="#numba_dppy.target.DPPYTypingContext.resolve_argument_type" title="numba_dppy.target.DPPYTypingContext.resolve_argument_type"><code class="xref py py-func docutils literal notranslate"><span class="pre">resolve_argument_type()</span></code></a> that changes all <code class="docutils literal notranslate"><span class="pre">npytypes.Array</span></code> to
-numba-dppy’s <code class="xref py py-class docutils literal notranslate"><span class="pre">dppy_array_type.DppyArray</span></code>. An overridden
+numba-dpex’s <code class="xref py py-class docutils literal notranslate"><span class="pre">dppy_array_type.DppyArray</span></code>. An overridden
 <a class="reference internal" href="#numba_dppy.target.DPPYTypingContext.load_additional_registries" title="numba_dppy.target.DPPYTypingContext.load_additional_registries"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_additional_registries()</span></code></a> that registers OpenCL math and other
 functions to the typing context.</p>
 <dl class="py method">

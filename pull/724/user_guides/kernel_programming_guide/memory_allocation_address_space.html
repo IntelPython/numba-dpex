@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Supported Address Space Qualifiers &mdash; numba-dpex 0+untagged.733.gddde32e documentation</title>
+  <title>Supported Address Space Qualifiers &mdash; numba-dpex 0+untagged.740.gf5ebde3 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -171,7 +171,7 @@
 <dt>Local Address Space</dt><dd><p>Local Address Space refers to memory objects that need to be allocated in local memory pool and are shared by all work-items of a work-group. It is not supported to pass arguments that are allocated in the local address space to <cite>&#64;numba_dppy.kernel</cite>. Users are allowed to allocate static arrays in the local address space inside the <cite>&#64;numba_dppy.kernel</cite>. In the example below <cite>numba_dppy.local.array(shape, dtype)</cite> is the API used to allocate a static array in the local address space:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">local_memory</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This example demonstrates the usage of numba-dppy&#39;s `local.array`</span>
+<span class="sd">    This example demonstrates the usage of numba-dpex&#39;s `local.array`</span>
 <span class="sd">    intrinsic function. The function is used to create a static array</span>
 <span class="sd">    allocated on the devices local address space.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -233,7 +233,7 @@
 
 <span class="k">def</span> <span class="nf">private_memory</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This example demonstrates the usage of numba-dppy&#39;s `private.array`</span>
+<span class="sd">    This example demonstrates the usage of numba-dpex&#39;s `private.array`</span>
 <span class="sd">    intrinsic function. The function is used to create a static array</span>
 <span class="sd">    allocated on the devices private address space.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
