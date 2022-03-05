@@ -20,7 +20,7 @@ import numba_dppy
 
 # -- Project information -----------------------------------------------------
 
-project = "numba-dppy"
+project = "numba-dpex"
 copyright = "2021, Intel"
 author = "Intel"
 
