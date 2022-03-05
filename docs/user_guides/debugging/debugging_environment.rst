@@ -15,7 +15,7 @@ Configure debugging environment
 
     .. code-block:: bash
 
-        conda create -n debug-env numba-dppy
+        conda create -n debug-env numba-dpex
         conda activate debug-env
 
 3) Activate NEO drivers (optional).
