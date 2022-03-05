@@ -179,7 +179,7 @@ will show where numba inserts `del` for variables.
         #   a = arg(0, name=a)  :: array(float32, 1d, C)
         #   b = arg(1, name=b)  :: array(float32, 1d, C)
         #   c = arg(2, name=c)  :: array(float32, 1d, C)
-        #   $2load_global.0 = global(dppy: <module 'numba_dppy' from '.../numba-dppy/numba_dppy/__init__.py'>)  :: Module(<module 'numba_dppy' from '.../numba-dppy/numba_dppy/__init__.py'>)
+        #   $2load_global.0 = global(dppy: <module 'numba_dppy' from '.../numba-dpex/numba_dppy/__init__.py'>)  :: Module(<module 'numba_dppy' from '.../numba-dpex/numba_dppy/__init__.py'>)
         #   $4load_method.1 = getattr(value=$2load_global.0, attr=get_global_id)  :: Function(<function get_global_id at 0x7f82b8bae430>)
         #   del $2load_global.0
         #   $const6.2 = const(int, 0)  :: Literal[int](0)
@@ -256,7 +256,7 @@ not insert `del a` until the end of the function.
         #   a = arg(0, name=a)  :: array(float32, 1d, C)
         #   b = arg(1, name=b)  :: array(float32, 1d, C)
         #   c = arg(2, name=c)  :: array(float32, 1d, C)
-        #   $2load_global.0 = global(dppy: <module 'numba_dppy' from '.../numba-dppy/numba_dppy/__init__.py'>)  :: Module(<module 'numba_dppy' from '.../numba-dppy/numba_dppy/__init__.py'>)
+        #   $2load_global.0 = global(dppy: <module 'numba_dppy' from '.../numba-dpex/numba_dppy/__init__.py'>)  :: Module(<module 'numba_dppy' from '.../numba-dpex/numba_dppy/__init__.py'>)
         #   $4load_method.1 = getattr(value=$2load_global.0, attr=get_global_id)  :: Function(<function get_global_id at 0x7fcdf7e8c4c0>)
         #   del $2load_global.0
         #   $const6.2 = const(int, 0)  :: Literal[int](0)
