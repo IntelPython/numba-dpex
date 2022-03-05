@@ -4,7 +4,7 @@ Writing SYCL Kernels
 Introduction
 -------------
 
-``numba-dppy`` offers a way of programming SYCL supporting devices using Python.
+``numba-dpex`` offers a way of programming SYCL supporting devices using Python.
 Similar to SYCL's C++ programming model for heterogeneous computing,
 the extension offers Python abstractions for expressing data-parallelism using
 a hierarchical syntax. Note that not all SYCL concepts are currently supported
@@ -14,7 +14,7 @@ The explicit kernel programming mode bears lots of
 similarities with Numba's other GPU backends:``numba.cuda`` and ``numba.roc``.
 Readers who are familiar with either of the existing backends of Numba, or in
 general with OpenCL, CUDA, or SYCL programming should find writing kernels in
-``numba-dppy`` extremely intuitive. Irrespective of the reader's level of
+``numba-dpex`` extremely intuitive. Irrespective of the reader's level of
 familiarity with GPU programming frameworks, this documentation should serves
 as a guide for using the current features available in the extension.
 

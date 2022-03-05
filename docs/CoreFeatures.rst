@@ -37,7 +37,7 @@ DPC++'s runtime.
 Automatic offload of NumPy expressions
 ======================================
 
-A key distinction between ``numba-dppy`` and other the GPU backends in Numba is
+A key distinction between ``numba-dpex`` and other the GPU backends in Numba is
 the ability to automatically offload specific data-parallel sections of a
 Numba ``jit`` function.
 

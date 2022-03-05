@@ -33,7 +33,8 @@ Full example can be found at ``numba_dppy/examples/blacksholes_njit.py``.
 .. note::
 
     ``numba.cuda`` requires ``target='cuda'`` parameter for ``numba.vectorize``
-    and ``numba.guvectorize`` functions. ``numba-dppy`` eschews the ``target`` parameter for ``@vectorize`` and infers the target from the
+    and ``numba.guvectorize`` functions.
+    ``numba-dpex`` eschews the ``target`` parameter for ``@vectorize`` and infers the target from the
     ``dpctl.device_context`` in which the ``numba.vectorize`` function is
     called.
 

@@ -4,6 +4,7 @@ Memory Management
 DPC++'s USM shared memory allocator (``memory_alloc``) is used to
 enable host to device and *vice versa* data transfer. By using USM shared
 memory allocator, it allows seamless interoperability between
+``numba-dpex`` and other SYCL-based Python extensions and across multiple
 kernels written using ``numba_dppy.kernel`` decorator.
 
 USM memory manager provided by ``dpctl`` and support for
@@ -87,7 +88,7 @@ allocate local memory for a kernel.
 
 .. note::
 
-  To go convert from ``numba.cuda`` to ``numba-dppy``, replace
+  To go convert from ``numba.cuda`` to ``numba-dpex``, replace
   ``numba.cuda.shared.array`` with
   ``numba_dppy.local.array(shape=blocksize, dtype=float32)``.
 
