@@ -41,7 +41,7 @@ Debug session:
    (gdb) set environment NUMBA_EXTEND_VARIABLE_LIFETIMES 1
    (gdb) break side-by-side-2.py:29 if param_a == 5
    ...
-   (gdb) run numba_dppy/examples/debug/side-by-side-2.py --api=numba-dppy-kernel
+   (gdb) run numba_dppy/examples/debug/side-by-side-2.py --api=numba-dpex-kernel
    ...
    Thread 2.1 hit Breakpoint 1, with SIMD lane 5, __main__::common_loop_body (i=5, a=..., b=...) at side-by-side-2.py:29
    29          result = param_c + param_d

@@ -115,7 +115,7 @@ Debug session with :samp:`NUMBA_EXTEND_VARIABLE_LIFETIMES=1`:
     (gdb) set environment NUMBA_EXTEND_VARIABLE_LIFETIMES 1
     (gdb) break side-by-side.py:28
     ...
-    (gdb) run numba_dppy/examples/debug/side-by-side.py --api=numba-dppy-kernel
+    (gdb) run numba_dppy/examples/debug/side-by-side.py --api=numba-dpex-kernel
     ...
     Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::common_loop_body (param_a=0, param_b=0) at side-by-side.py:28
     28          return result
@@ -136,7 +136,7 @@ Debug session with :samp:`NUMBA_EXTEND_VARIABLE_LIFETIMES=0`:
     (gdb) set environment NUMBA_EXTEND_VARIABLE_LIFETIMES 0
     (gdb) break side-by-side.py:28
     ...
-    (gdb) run numba_dppy/examples/debug/side-by-side.py --api=numba-dppy-kernel
+    (gdb) run numba_dppy/examples/debug/side-by-side.py --api=numba-dpex-kernel
     ...
     Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::common_loop_body (param_a=0, param_b=0) at side-by-side.py:28
     28          return result
