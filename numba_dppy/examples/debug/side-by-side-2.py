@@ -80,7 +80,7 @@ def main():
         required=False,
         default="numba",
         choices=["numba", "numba-dpex-kernel"],
-        help="Start the version of functions using numba or numba-dppy API",
+        help="Start the version of functions using numba or numba-dpex API",
     )
 
     args = parser.parse_args()
