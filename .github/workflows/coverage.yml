@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup numba-dppy
-        uses: ./.github/actions/setup-numba-dppy
+        uses: ./.github/actions/setup-develop
         with:
           environment: environment/coverage.yml
 
