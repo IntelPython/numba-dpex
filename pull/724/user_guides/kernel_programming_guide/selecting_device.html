@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Defining the execution queue for a kernel function &mdash; numba-dppy 0+untagged.712.g2c7fe79 documentation</title>
+  <title>Defining the execution queue for a kernel function &mdash; numba-dpex 0+untagged.718.g88ad8aa documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -27,7 +27,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> numba-dppy
+            <a href="../../index.html" class="icon icon-home"> numba-dpex
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -58,11 +58,11 @@
 <li class="toctree-l2"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html">Supported Python Features in a <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> Kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html">Supported Python Features in Kernel</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../debugging/index.html"> Debugging with GDB</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> For ``numba.cuda`` Programmers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
@@ -76,7 +76,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">numba-dppy</a>
+          <a href="../../index.html">numba-dpex</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -98,7 +98,7 @@
   <section id="defining-the-execution-queue-for-a-kernel-function">
 <h1>Defining the execution queue for a kernel function<a class="headerlink" href="#defining-the-execution-queue-for-a-kernel-function" title="Permalink to this headline"></a></h1>
 <p>There are two ways to specify the queue where a kernel is executed. The first way follows the notion of “compute follows data” (CFD). The second way is for a programmer to specify the execution queue using a dpctl.device_context context manager.</p>
-<p>In the CFD style of programming kernels, the execution queue is determined based on the input arguments passed to a kernel function. Currently, numba-dppy’s kernel API only supports array arguments that provide the <code class="code docutils literal notranslate"><span class="pre">__sycl_usm_array_interface__</span></code> (SUAI) attribute for CFD style programming. The SUAI attribute encodes the queue where the array was defined.</p>
+<p>In the CFD style of programming kernels, the execution queue is determined based on the input arguments passed to a kernel function. Currently, the kernel API only supports array arguments that provide the <code class="code docutils literal notranslate"><span class="pre">__sycl_usm_array_interface__</span></code> (SUAI) attribute for CFD style programming. The SUAI attribute encodes the queue where the array was defined.</p>
 <p>We also allow passing arrays and data types that do not provide SUAI. For such cases, programmers need to specify the queue using the <code class="code docutils literal notranslate"><span class="pre">dpctl.device_context</span></code> context manager. Do note that the use of <code class="code docutils literal notranslate"><span class="pre">dpctl.device_context</span></code> is deprecated and slotted for removal in some future release.</p>
 <p><strong>Users are not allowed to pass mixed type of arrays to a &#64;numba_dppy.kernel.</strong> For example, if the first array argument to a &#64;numba_dppy.kernel is of type <code class="code docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, the rest of the array argument will also have to be of type <code class="code docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>.</p>
 <p>The following are how users can specify in which device they want to offload their computation.</p>
@@ -109,7 +109,7 @@
 </dl>
 </li>
 <li><dl>
-<dt>Array with <code class="code docutils literal notranslate"><span class="pre">__sycl_usm_array_interface__</span></code> attribute</dt><dd><p>Numba-dppy supports the Compute Follows Data semantics in this case. Compute Follows Data stipulates that computation must be off-loaded to device where data is resident.</p>
+<dt>Array with <code class="code docutils literal notranslate"><span class="pre">__sycl_usm_array_interface__</span></code> attribute</dt><dd><p>In this case the Compute Follows Data semantics is supported. Compute Follows Data stipulates that computation must be off-loaded to device where data is resident.</p>
 <dl>
 <dt>Expected behavior in different cases:</dt><dd><ul>
 <li><p>Users are allowed to mix arrays created using equivalent SYCL queues. Where equivalent queues are defined as:</p>
@@ -125,7 +125,7 @@
 </div></blockquote>
 </li>
 <li><p>All usm-types are accessible from device. Users can mix arrays with different usm-type as long as they were allocated using the equvalent SYCL queue.</p></li>
-<li><p>Using the context_manager to specify a queue when passing SUAI args will have no effect on queue selection and Numba-dppy will print out a warning to inform the user.</p></li>
+<li><p>Using the context_manager to specify a queue when passing SUAI args will have no effect on queue selection and a warning will be printed out to inform the user.</p></li>
 </ul>
 </dd>
 </dl>

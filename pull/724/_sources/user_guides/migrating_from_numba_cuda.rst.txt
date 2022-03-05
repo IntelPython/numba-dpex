@@ -1,5 +1,5 @@
-``numba-dppy`` For ``numba.cuda`` Developers
-============================================
+For ``numba.cuda`` Programmers
+==============================
 
 .. todo::
 

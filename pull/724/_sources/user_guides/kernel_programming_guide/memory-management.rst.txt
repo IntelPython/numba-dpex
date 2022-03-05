@@ -1,14 +1,14 @@
 Memory Management
 =================
 
-``numba-dppy`` uses DPC++'s USM shared memory allocator (``memory_alloc``) to
+DPC++'s USM shared memory allocator (``memory_alloc``) is used to
 enable host to device and *vice versa* data transfer. By using USM shared
-memory allocator, ``numba-dppy`` allows seamless interoperability between
-``numba-dppy`` and other SYCL-based Python extensions and across multiple
+memory allocator, it allows seamless interoperability between
+``numba-dpex`` and other SYCL-based Python extensions and across multiple
 kernels written using ``numba_dppy.kernel`` decorator.
 
-``numba-dppy`` uses the USM memory manager provided by ``dpctl`` and supports
-the **SYCL USM Array Interface** protocol to enable zero-copy data
+USM memory manager provided by ``dpctl`` and support for
+the **SYCL USM Array Interface** protocol enable zero-copy data
 exchange across USM memory-backed Python objects.
 
 .. note::
@@ -80,7 +80,7 @@ the device, the local memory is exposed as a contiguous array of a specific
 types. The maximum available local memory is hardware-specific. The SYCL local
 memory concept is analogous to CUDA's shared memory concept.
 
-``numba-dppy`` provides a special function ``dppy.local.array`` to
+A special function ``dppy.local.array`` is provided to
 allocate local memory for a kernel.
 
 .. literalinclude:: ../../../numba_dppy/examples/barrier.py
@@ -88,16 +88,15 @@ allocate local memory for a kernel.
 
 .. note::
 
-  To go convert from ``numba.cuda`` to ``numba-dppy``, replace
+  To go convert from ``numba.cuda`` to ``numba-dpex``, replace
   ``numba.cuda.shared.array`` with
   ``numba_dppy.local.array(shape=blocksize, dtype=float32)``.
 
 .. todo::
 
-  Add details about current limitations for local memory allocation in
-  ``numba-dppy``.
+  Add details about current limitations for local memory allocation.
 
 Private and Constant memory
 ---------------------------
 
-``numba-dppy`` does not yet support SYCL private and constant memory.
+SYCL private and constant memory are not supported yet.

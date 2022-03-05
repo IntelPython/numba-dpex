@@ -4,7 +4,7 @@ Getting Started
 Installation
 ------------
 
-Numba-dppy depends on following components:
+``numba-dpex`` depends on following components:
 
 * numba 0.54.* or 0.55.* (`Numba`_)
 * dpctl 0.9.* (`Intel Python dpctl`_)

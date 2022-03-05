@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Writing SYCL Kernels &mdash; numba-dppy 0+untagged.712.g2c7fe79 documentation</title>
+  <title>Writing SYCL Kernels &mdash; numba-dpex 0+untagged.718.g88ad8aa documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -27,7 +27,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> numba-dppy
+            <a href="../../index.html" class="icon icon-home"> numba-dpex
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -64,11 +64,11 @@
 <li class="toctree-l2"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html">Supported Python Features in a <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> Kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html">Supported Python Features in Kernel</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../debugging/index.html"> Debugging with GDB</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> For ``numba.cuda`` Programmers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
@@ -82,7 +82,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">numba-dppy</a>
+          <a href="../../index.html">numba-dpex</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -105,24 +105,24 @@
 <h1>Writing SYCL Kernels<a class="headerlink" href="#writing-sycl-kernels" title="Permalink to this headline"></a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> offers a way of programming SYCL supporting devices using Python.
+<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> offers a way of programming SYCL supporting devices using Python.
 Similar to SYCL’s C++ programming model for heterogeneous computing,
-<code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> offers Python abstractions for expressing data-parallelism using
+the extension offers Python abstractions for expressing data-parallelism using
 a hierarchical syntax. Note that not all SYCL concepts are currently supported
-in <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code>, and some of the concepts may not be a good fit for Python.</p>
-<p>The explicit kernel programming mode of <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> bears lots of
+in the extension, and some of the concepts may not be a good fit for Python.</p>
+<p>The explicit kernel programming mode bears lots of
 similarities with Numba’s other GPU backends:<code class="docutils literal notranslate"><span class="pre">numba.cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">numba.roc</span></code>.
 Readers who are familiar with either of the existing backends of Numba, or in
 general with OpenCL, CUDA, or SYCL programming should find writing kernels in
-<code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> extremely intuitive. Irrespective of the reader’s level of
+<code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> extremely intuitive. Irrespective of the reader’s level of
 familiarity with GPU programming frameworks, this documentation should serves
-as a guide for using the current features available in <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code>.</p>
+as a guide for using the current features available in the extension.</p>
 </section>
 <section id="kernel-declaration">
 <h2>Kernel declaration<a class="headerlink" href="#kernel-declaration" title="Permalink to this headline"></a></h2>
 <p>A kernel function is a device function that is meant to be called from host
 code, where a device can be any SYCL supported device such as a GPU, CPU, or an
-FPGA. The present focus of development of <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> is mainly on Intel’s
+FPGA. The present focus of development is mainly on Intel’s
 GPU hardware. The main characteristics of a kernel function are:</p>
 <ul class="simple">
 <li><p>kernels cannot explicitly return a value; all result data must be written to
@@ -217,7 +217,7 @@ or grid sizes).</p></li>
 </section>
 <section id="indexing-functions">
 <h2>Indexing functions<a class="headerlink" href="#indexing-functions" title="Permalink to this headline"></a></h2>
-<p>Currently, <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> supports the following indexing functions that have
+<p>Currently, the following indexing functions are supported. They have
 the same semantics as OpenCL.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">numba_dppy.get_local_id</span></code></p></li>

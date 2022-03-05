@@ -1,7 +1,7 @@
 Synchronization Functions
 =========================
 
-Currently, ``numba-dppy`` only supports some of the SYCL synchronization operations. For synchronization of all threads in the same thread block, ``numba-dppy`` provides a helper function called ``numba_dppy.barrier()``. This function implements the same pattern as barriers in traditional
+Currently, only several of the SYCL synchronization operations are supported. For synchronization of all threads in the same thread block, a helper function called ``numba_dppy.barrier()`` is provided. This function implements the same pattern as barriers in traditional
 multi-threaded programming: invoking the function forces a thread to wait until
 all threads in the block reach the barrier, at which point it returns control
 to all its callers.

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Universal Functions &mdash; numba-dppy 0+untagged.712.g2c7fe79 documentation</title>
+  <title>Universal Functions &mdash; numba-dpex 0+untagged.718.g88ad8aa documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,7 +18,7 @@
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Supported Python Features in a numba-dppy Kernel" href="supported-python-features.html" />
+    <link rel="next" title="Supported Python Features in Kernel" href="supported-python-features.html" />
     <link rel="prev" title="Reduction on SYCL-supported Devices" href="reduction.html" /> 
 </head>
 
@@ -27,7 +27,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> numba-dppy
+            <a href="../../index.html" class="icon icon-home"> numba-dpex
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -60,11 +60,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#full-examples">Full Examples</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html">Supported Python Features in a <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> Kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html">Supported Python Features in Kernel</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../debugging/index.html"> Debugging with GDB</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> For ``numba.cuda`` Programmers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
@@ -78,7 +78,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">numba-dppy</a>
+          <a href="../../index.html">numba-dpex</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -102,8 +102,9 @@
 <p>Numba provides a <a class="reference external" href="https://numba.pydata.org/numba-doc/latest/user/vectorize.html">set of decorators</a> to create <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/ufuncs.html">NumPy universal functions</a>-like
 routines that are JIT compiled. Although, a close analog to NumPy universal functions Numba’s <code class="docutils literal notranslate"><span class="pre">&#64;vectorize</span></code> are not fully compatible with a regular NumPy
 ufunc.. Refer <a class="reference external" href="https://numba.pydata.org/numba-doc/latest/user/vectorize.html">Creating NumPy universal functions</a> for details.</p>
-<p><code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> only supports <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> decorator and not yet the
-<code class="docutils literal notranslate"><span class="pre">numba.guvectorize</span></code> decorator. Another present limitation is that <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> ufunc kernels cannot invoke <code class="docutils literal notranslate"><span class="pre">numba_dppy.kernel</span></code> functions.
+<p><code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> decorator is supported.
+<code class="docutils literal notranslate"><span class="pre">numba.guvectorize</span></code> decorator is not supported yet.
+Another present limitation is that ufunc kernels cannot invoke <code class="docutils literal notranslate"><span class="pre">numba_dppy.kernel</span></code> functions.
 Ongoing work is in progress to address these limitations.</p>
 <section id="example-1-basic-example">
 <h2>Example 1: Basic Example<a class="headerlink" href="#example-1-basic-example" title="Permalink to this headline"></a></h2>
@@ -126,7 +127,8 @@ Ongoing work is in progress to address these limitations.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><code class="docutils literal notranslate"><span class="pre">numba.cuda</span></code> requires <code class="docutils literal notranslate"><span class="pre">target='cuda'</span></code> parameter for <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code>
-and <code class="docutils literal notranslate"><span class="pre">numba.guvectorize</span></code> functions. <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> eschews the <code class="docutils literal notranslate"><span class="pre">target</span></code> parameter for <code class="docutils literal notranslate"><span class="pre">&#64;vectorize</span></code> and infers the target from the
+and <code class="docutils literal notranslate"><span class="pre">numba.guvectorize</span></code> functions.
+<code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> eschews the <code class="docutils literal notranslate"><span class="pre">target</span></code> parameter for <code class="docutils literal notranslate"><span class="pre">&#64;vectorize</span></code> and infers the target from the
 <code class="docutils literal notranslate"><span class="pre">dpctl.device_context</span></code> in which the <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> function is
 called.</p>
 </div>
@@ -145,7 +147,7 @@ called.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="reduction.html" class="btn btn-neutral float-left" title="Reduction on SYCL-supported Devices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="supported-python-features.html" class="btn btn-neutral float-right" title="Supported Python Features in a numba-dppy Kernel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="supported-python-features.html" class="btn btn-neutral float-right" title="Supported Python Features in Kernel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

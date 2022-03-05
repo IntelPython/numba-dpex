@@ -1,7 +1,7 @@
 Reduction on SYCL-supported Devices
 ===================================
 
-``numba-dppy`` does not yet provide any specific decorator to implement reduction kernels. However, a kernel reduction
+The is no a specific decorator to implement reduction kernels yet. However, a kernel reduction
 can be written explicitly. This section provides two approaches for writing a kernel reduction using
 ``numba_dppy.kernel``.
 
@@ -40,7 +40,7 @@ Full example can be found at
 
 .. note::
 
-    ``numba-dppy`` does not yet provide any analogue to the ``numba.cuda.reduce`` decorator for writing reductions kernel.
+    There is no an analogue to the ``numba.cuda.reduce`` decorator for writing reductions kernel yet.
     Such decorator will be added in future releases.
 
 Full examples

@@ -1,7 +1,7 @@
 Supported Atomic Operations
 ===========================
 
-Numba-dppy supports some of the atomic operations supported in DPC++.
+Several atomic operations supported in DPC++ are also supported in the extension.
 Those that are presently implemented are as follows:
 
 .. automodule:: numba_dppy.ocl.stubs
@@ -23,7 +23,7 @@ Here's an example of how to use atomics add in DPPY:
 
 Generating Native FP Atomics
 ----------------------------
-Numba-dppy supports generating native floating-point atomics.
+Generating native floating-point atomics is supported.
 This feature is experimental. Users will need to provide
 the following environment variables to activate it.
 

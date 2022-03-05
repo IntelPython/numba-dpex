@@ -3,7 +3,7 @@ Supported Address Space Qualifiers
 
 The address space qualifier may be used to specify the region of memory that is used to allocate the object.
 
-Numba-dppy supports three disjoint named address spaces:
+Three disjoint named address spaces are supported:
 
 1. Global Address Space
     Global Address Space refers to memory objects allocated from the global memory pool and will be shared among all work-items. Arguments passed to any kernel are allocated in the global address space. In the below example, arguments `a`, `b` and `c` will be allocated in the global address space:
@@ -12,7 +12,7 @@ Numba-dppy supports three disjoint named address spaces:
 
 
 2. Local Address Space
-    Local Address Space refers to memory objects that need to be allocated in local memory pool and are shared by all work-items of a work-group. Numba-dppy does not support passing arguments that are allocated in the local address space to `@numba_dppy.kernel`. Users are allowed to allocate static arrays in the local address space inside the `@numba_dppy.kernel`. In the example below `numba_dppy.local.array(shape, dtype)` is the API used to allocate a static array in the local address space:
+    Local Address Space refers to memory objects that need to be allocated in local memory pool and are shared by all work-items of a work-group. It is not supported to pass arguments that are allocated in the local address space to `@numba_dppy.kernel`. Users are allowed to allocate static arrays in the local address space inside the `@numba_dppy.kernel`. In the example below `numba_dppy.local.array(shape, dtype)` is the API used to allocate a static array in the local address space:
 
     .. literalinclude:: ../../../numba_dppy/examples/barrier.py
       :lines: 54-87

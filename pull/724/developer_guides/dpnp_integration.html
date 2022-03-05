@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DPNP integration &mdash; numba-dppy 0+untagged.712.g2c7fe79 documentation</title>
+  <title>DPNP integration &mdash; numba-dpex 0+untagged.718.g88ad8aa documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Debugging the compilation pipeline" href="tools.html" />
-    <link rel="prev" title="numba-dppy For numba.cuda Developers" href="../user_guides/migrating_from_numba_cuda.html" /> 
+    <link rel="prev" title="For numba.cuda Programmers" href="../user_guides/migrating_from_numba_cuda.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -27,7 +27,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> numba-dppy
+            <a href="../index.html" class="icon icon-home"> numba-dpex
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -47,7 +47,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/getting_started.html"> Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/debugging/index.html"> Debugging with GDB</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guides/migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/migrating_from_numba_cuda.html"> For ``numba.cuda`` Programmers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul class="current">
@@ -75,7 +75,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">numba-dppy</a>
+          <a href="../index.html">numba-dpex</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -95,10 +95,10 @@
              
   <section id="dpnp-integration">
 <span id="id1"></span><h1>DPNP integration<a class="headerlink" href="#dpnp-integration" title="Permalink to this headline"></a></h1>
-<p>Currently <cite>numba-dppy</cite> uses <a class="reference external" href="https://github.com/IntelPython/dpnp/tree/master/dpnp/backend">DPNP backend library</a>.</p>
+<p>Currently <a class="reference external" href="https://github.com/IntelPython/dpnp/tree/master/dpnp/backend">DPNP backend library</a> is used.</p>
 <section id="integration-with-dpnp-backend-library">
 <span id="integration-dpnp-backend"></span><h2>Integration with <a class="reference external" href="https://github.com/IntelPython/dpnp/tree/master/dpnp/backend">DPNP backend library</a><a class="headerlink" href="#integration-with-dpnp-backend-library" title="Permalink to this headline"></a></h2>
-<p><cite>numba-dppy</cite> replaces <cite>NumPy</cite> function calls with <cite>DPNP</cite> function calls.</p>
+<p><cite>NumPy</cite> function calls are replaced with <cite>DPNP</cite> function calls.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">njit</span>
 <span class="kn">import</span> <span class="nn">dpctl</span>
@@ -126,7 +126,7 @@
 </section>
 <section id="architecture">
 <span id="dpnp-integration-architecture"></span><h3>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline"></a></h3>
-<p><cite>numba-dppy</cite> modifies default <cite>Numba</cite> compiler pipeline and extends it with
+<p>Default <cite>Numba</cite> compiler pipeline is modified and extended with
 <code class="xref py py-class docutils literal notranslate"><span class="pre">DPPYRewriteOverloadedNumPyFunctions</span></code> pass.</p>
 <p>The main work is performed in <code class="xref py py-class docutils literal notranslate"><span class="pre">RewriteNumPyOverloadedFunctions</span></code> used by the pass.
 It rewrites call for <cite>NumPy</cite> function in following way:</p>
@@ -368,7 +368,7 @@ and receive <code class="xref py py-obj docutils literal notranslate"><span clas
 <section id="troubleshooting">
 <span id="dpnp-troubleshooting"></span><h3>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline"></a></h3>
 <ol class="arabic simple">
-<li><p>Do not forget build <cite>numba-dppy</cite> with current installed version of <cite>DPNP</cite>.
+<li><p>Do not forget to rebuild Python extensions with current installed version of <cite>DPNP</cite>.
 There is headers dependency in <cite>Cython</cite> files (i.e. <code class="file docutils literal notranslate"><span class="pre">numba_dppy/dpnp_iface/dpnp_fptr_interface.pyx</span></code>).</p></li>
 <li><p>Do not forget add array to <code class="samp docutils literal notranslate"><span class="pre">dpnp_ext._dummy_liveness_func([</span><em><span class="pre">YOUR_ARRAY</span></em><span class="pre">.size])</span></code>.
 Dead code elimination could delete temporary variables before they are used for <cite>DPNP</cite> function call.
@@ -382,7 +382,7 @@ As a result wrong data could be passed to <cite>DPNP</cite> function.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../user_guides/migrating_from_numba_cuda.html" class="btn btn-neutral float-left" title="numba-dppy For numba.cuda Developers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../user_guides/migrating_from_numba_cuda.html" class="btn btn-neutral float-left" title="For numba.cuda Programmers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="tools.html" class="btn btn-neutral float-right" title="Debugging the compilation pipeline" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

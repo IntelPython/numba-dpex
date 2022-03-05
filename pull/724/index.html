@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to Numba-dppy’s documentation! &mdash; numba-dppy 0+untagged.712.g2c7fe79 documentation</title>
+  <title>Welcome to numba-dpex’s documentation! &mdash; numba-dpex 0+untagged.718.g88ad8aa documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -26,7 +26,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="#" class="icon icon-home"> numba-dppy
+            <a href="#" class="icon icon-home"> numba-dpex
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -46,7 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="user_guides/getting_started.html"> Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/debugging/index.html"> Debugging with GDB</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guides/migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/migrating_from_numba_cuda.html"> For ``numba.cuda`` Programmers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
@@ -60,7 +60,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">numba-dppy</a>
+          <a href="#">numba-dpex</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -68,7 +68,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home"></a> &raquo;</li>
-      <li>Welcome to Numba-dppy’s documentation!</li>
+      <li>Welcome to <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code>’s documentation!</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -78,33 +78,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="welcome-to-numba-dppy-s-documentation">
-<h1>Welcome to Numba-dppy’s documentation!<a class="headerlink" href="#welcome-to-numba-dppy-s-documentation" title="Permalink to this headline"></a></h1>
-<p><a class="reference external" href="https://github.com/IntelPython/numba-dpex">Numba-dppy</a> is an Intel
+  <section id="welcome-to-numba-dpex-s-documentation">
+<h1>Welcome to <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code>’s documentation!<a class="headerlink" href="#welcome-to-numba-dpex-s-documentation" title="Permalink to this headline"></a></h1>
+<p><a class="reference external" href="https://github.com/IntelPython/numba-dpex">numba-dpex</a> is an Intel
 ®-developed extension to the <a class="reference external" href="https://numba.pydata.org/">Numba</a> JIT
 compiler that adds “XPU” programming capabilities to it. The
 <a class="reference external" href="https://www.intel.com/content/www/us/en/newsroom/news/xpu-vision-oneapi-server-gpu.html#gs.ervs8m">XPU vision</a>
 is to make it extremely easy for programmers to write efficient and portable
 code for a mix of architectures across CPUs, GPUs, FPGAs and other
-accelerators. To provide XPU programming capabilities, Numba-dppy relies on
+accelerators. To provide XPU programming capabilities, the extension relies on
 <a class="reference external" href="https://www.khronos.org/sycl/">SYCL</a> that is an industry standard for writing
-cross-platform code using standard C++. Using a SYCL runtime library Numba-dppy
+cross-platform code using standard C++. Using a SYCL runtime library the extension
 can launch data-parallel kernels generated directly from Python bytecode on
 supported data-parallel architectures. Currently, support for
 SYCL is restricted to Intel’s
 <a class="reference external" href="https://github.com/intel/llvm/blob/sycl/sycl/doc/GetStartedGuide.md">DPC++</a>
 via the <a class="reference external" href="https://github.com/IntelPython/dpctl">dpctl</a> package.
 Support for other SYCL runtime libraries may be added in the future.</p>
-<p>The main feature of Numba-dppy is to let programmers write data-parallel kernels
+<p>The main feature of the extension is to let programmers write data-parallel kernels
 directly in Python. Such kernels can be written in two different ways: an
 explicit API superficially similar to OpenCL, and an implicit API that generates
 kernels from NumPy library calls, Numba’s <code class="docutils literal notranslate"><span class="pre">prange</span></code> statement, and <a class="reference external" href="https://numba.pydata.org/numba-doc/latest/user/parallel.html">other
 “data-parallel by construction” expressions</a>
 that Numba is able to parallelize. Following are two examples to demonstrate
-the two ways in which kernels may be written in a Numba-dppy program.</p>
+the two ways in which kernels may be written using the extension.</p>
 <blockquote>
 <div><ul>
-<li><p>Defining a data-parallel kernel explicitly in Numba-dppy.</p>
+<li><p>Defining a data-parallel kernel explicitly.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
 <span class="kn">import</span> <span class="nn">dpctl</span>
@@ -159,7 +159,7 @@ the two ways in which kernels may be written in a Numba-dppy program.</p>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/getting_started.html"> Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/debugging/index.html"> Debugging with GDB</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guides/migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/migrating_from_numba_cuda.html"> For ``numba.cuda`` Programmers</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -172,17 +172,17 @@ the two ways in which kernels may be written in a Numba-dppy program.</p>
 </section>
 <section id="about">
 <h1>About<a class="headerlink" href="#about" title="Permalink to this headline"></a></h1>
-<p>Numba-dppy is developed by Intel and is part of the <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-python.html">Intel Distribution for
+<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> is developed by Intel and is part of the <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-python.html">Intel Distribution for
 Python</a>.</p>
 </section>
 <section id="contributing">
 <h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline"></a></h1>
 <p>Refer the <a class="reference external" href="https://github.com/IntelPython/numba-dpex/blob/main/CONTRIBUTING">contributing guide</a>
-for information on coding style and standards used in Numba-dppy.</p>
+for information on coding style and standards used in the project.</p>
 </section>
 <section id="license">
 <h1>License<a class="headerlink" href="#license" title="Permalink to this headline"></a></h1>
-<p>Numba-dppy is Licensed under Apache License 2.0 that can be found in
+<p>The code is Licensed under Apache License 2.0 that can be found in
 <a class="reference external" href="https://github.com/IntelPython/numba-dpex/blob/main/LICENSE">LICENSE</a>.
 All usage and contributions to the project are subject to the terms and
 conditions of this license.</p>

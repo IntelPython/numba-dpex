@@ -3,7 +3,7 @@
 DPNP integration
 ================
 
-Currently `numba-dppy` uses `DPNP backend library`_.
+Currently `DPNP backend library`_ is used.
 
 .. _`DPNP backend library`: https://github.com/IntelPython/dpnp/tree/master/dpnp/backend
 
@@ -12,7 +12,7 @@ Currently `numba-dppy` uses `DPNP backend library`_.
 Integration with `DPNP backend library`_
 ----------------------------------------
 
-`numba-dppy` replaces `NumPy` function calls with `DPNP` function calls.
+`NumPy` function calls are replaced with `DPNP` function calls.
 
 .. code-block:: python
 
@@ -49,7 +49,7 @@ Repository map
 Architecture
 ````````````
 
-`numba-dppy` modifies default `Numba` compiler pipeline and extends it with
+Default `Numba` compiler pipeline is modified and extended with
 :class:`DPPYRewriteOverloadedNumPyFunctions` pass.
 
 The main work is performed in :class:`RewriteNumPyOverloadedFunctions` used by the pass.
@@ -326,7 +326,7 @@ Key parts of any test are:
 Troubleshooting
 ```````````````
 
-1. Do not forget build `numba-dppy` with current installed version of `DPNP`.
+1. Do not forget to rebuild Python extensions with current installed version of `DPNP`.
    There is headers dependency in `Cython` files (i.e. :file:`numba_dppy/dpnp_iface/dpnp_fptr_interface.pyx`).
 2. Do not forget add array to :samp:`dpnp_ext._dummy_liveness_func([{YOUR_ARRAY}.size])`.
    Dead code elimination could delete temporary variables before they are used for `DPNP` function call.

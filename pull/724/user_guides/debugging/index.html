@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Debugging with Intel® Distribution for GDB* &mdash; numba-dppy 0+untagged.712.g2c7fe79 documentation</title>
+  <title>Debugging with Intel® Distribution for GDB* &mdash; numba-dpex 0+untagged.718.g88ad8aa documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Set up the machine for debugging" href="set_up_machine.html" />
-    <link rel="prev" title="Supported Python Features in a numba-dppy Kernel" href="../kernel_programming_guide/supported-python-features.html" /> 
+    <link rel="prev" title="Supported Python Features in Kernel" href="../kernel_programming_guide/supported-python-features.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -27,7 +27,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> numba-dppy
+            <a href="../../index.html" class="icon icon-home"> numba-dpex
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -61,7 +61,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> For ``numba.cuda`` Programmers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
@@ -75,7 +75,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">numba-dppy</a>
+          <a href="../../index.html">numba-dpex</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -95,7 +95,7 @@
              
   <section id="debugging-with-intel-distribution-for-gdb">
 <h1>Debugging with Intel® Distribution for GDB*<a class="headerlink" href="#debugging-with-intel-distribution-for-gdb" title="Permalink to this headline"></a></h1>
-<p>Numba-dppy allows you to debug SYCL* kernels with Intel® Distribution for GDB*.
+<p>You can debug SYCL* kernels with Intel® Distribution for GDB*.
 To enable the emission of debug information, set the debug environment variable <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">NUMBA_DPPY_DEBUGINFO</span></code>, for example:
 <code class="samp docutils literal notranslate"><span class="pre">export</span> <span class="pre">NUMBA_DPPY_DEBUGINFO=1</span></code>
 To disable debugging, unset the variable:
@@ -105,11 +105,11 @@ To disable debugging, unset the variable:
 <p>Enabling debug information significantly increases the memory consumption for each compiled kernel.
 For a large application, this may cause out-of-memory error.</p>
 </div>
-<p>Not all debugging features supported by Numba on CPUs are yet supported by Numba-dppy.
+<p>Not all debugging features supported by Numba on CPUs are yet supported by the extension.
 See <a class="reference internal" href="#debugging-features-and-limitations"><span class="std std-ref">Features and Limitations</span></a>.</p>
 <section id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline"></a></h2>
-<p><cite>Intel® Distribution for GDB*</cite> is required for Numba-dppy debugging features to work.
+<p><cite>Intel® Distribution for GDB*</cite> is required for debugging features to work.
 <cite>Intel® Distribution for GDB*</cite> is part of <cite>Intel oneAPI</cite>. For relevant documentation, refer to the <a href="#id1"><span class="problematic" id="id2">`Intel® Distribution for GDB* product page`_</span></a>.</p>
 <div class="toctree-wrapper compound">
 <ul>
@@ -125,7 +125,7 @@ See <a class="reference internal" href="#debugging-features-and-limitations"><sp
 </section>
 <section id="example-of-intel-distribution-for-gdb-usage">
 <h2>Example of Intel® Distribution for GDB* usage<a class="headerlink" href="#example-of-intel-distribution-for-gdb-usage" title="Permalink to this headline"></a></h2>
-<p>You can use a sample Numba-dppy kernel code, <code class="file docutils literal notranslate"><span class="pre">simple_sum.py</span></code>, for basic debugging:</p>
+<p>You can use a sample kernel code, <code class="file docutils literal notranslate"><span class="pre">simple_sum.py</span></code>, for basic debugging:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span><span class="kn">import</span> <span class="nn">dpctl</span>
 <span class="linenos">16</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="linenos">17</span>
@@ -207,7 +207,7 @@ See <a class="reference internal" href="#debugging-features-and-limitations"><sp
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../kernel_programming_guide/supported-python-features.html" class="btn btn-neutral float-left" title="Supported Python Features in a numba-dppy Kernel" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../kernel_programming_guide/supported-python-features.html" class="btn btn-neutral float-left" title="Supported Python Features in Kernel" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="set_up_machine.html" class="btn btn-neutral float-right" title="Set up the machine for debugging" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reduction on SYCL-supported Devices &mdash; numba-dppy 0+untagged.712.g2c7fe79 documentation</title>
+  <title>Reduction on SYCL-supported Devices &mdash; numba-dpex 0+untagged.718.g88ad8aa documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -27,7 +27,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> numba-dppy
+            <a href="../../index.html" class="icon icon-home"> numba-dpex
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -63,11 +63,11 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html">Supported Python Features in a <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> Kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html">Supported Python Features in Kernel</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../debugging/index.html"> Debugging with GDB</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> For ``numba.cuda`` Programmers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
@@ -81,7 +81,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">numba-dppy</a>
+          <a href="../../index.html">numba-dpex</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -102,7 +102,7 @@
              
   <section id="reduction-on-sycl-supported-devices">
 <h1>Reduction on SYCL-supported Devices<a class="headerlink" href="#reduction-on-sycl-supported-devices" title="Permalink to this headline"></a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> does not yet provide any specific decorator to implement reduction kernels. However, a kernel reduction
+<p>The is no a specific decorator to implement reduction kernels yet. However, a kernel reduction
 can be written explicitly. This section provides two approaches for writing a kernel reduction using
 <code class="docutils literal notranslate"><span class="pre">numba_dppy.kernel</span></code>.</p>
 <section id="examples">
@@ -246,7 +246,7 @@ can be written explicitly. This section provides two approaches for writing a ke
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> does not yet provide any analogue to the <code class="docutils literal notranslate"><span class="pre">numba.cuda.reduce</span></code> decorator for writing reductions kernel.
+<p>There is no an analogue to the <code class="docutils literal notranslate"><span class="pre">numba.cuda.reduce</span></code> decorator for writing reductions kernel yet.
 Such decorator will be added in future releases.</p>
 </div>
 </section>

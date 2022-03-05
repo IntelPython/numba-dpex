@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Code-generation based on a device &mdash; numba-dppy 0+untagged.712.g2c7fe79 documentation</title>
+  <title>Code-generation based on a device &mdash; numba-dpex 0+untagged.718.g88ad8aa documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Getting Started" href="user_guides/getting_started.html" />
-    <link rel="prev" title="Welcome to Numba-dppy’s documentation!" href="index.html" /> 
+    <link rel="prev" title="Welcome to numba-dpex’s documentation!" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -27,7 +27,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> numba-dppy
+            <a href="index.html" class="icon icon-home"> numba-dpex
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -51,7 +51,7 @@
 <li class="toctree-l1"><a class="reference internal" href="user_guides/getting_started.html"> Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guides/debugging/index.html"> Debugging with GDB</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guides/migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guides/migrating_from_numba_cuda.html"> For ``numba.cuda`` Programmers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
@@ -65,7 +65,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">numba-dppy</a>
+          <a href="index.html">numba-dpex</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -85,13 +85,13 @@
              
   <section id="code-generation-based-on-a-device">
 <span id="core-features"></span><h1>Code-generation based on a device<a class="headerlink" href="#code-generation-based-on-a-device" title="Permalink to this headline"></a></h1>
-<p>In <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code>, kernels are written in a device-agnostic fashion making it
+<p>Kernels are written in a device-agnostic fashion making it
 easy to write portable code. A kernel is compiled for the device on which the
 kernel is enqueued to be executed. The device is specified using a
 <code class="docutils literal notranslate"><span class="pre">dpctl.device_context</span></code> context manager. In the following example, two versions
 of the <code class="docutils literal notranslate"><span class="pre">sum</span></code> kernel are compiled, one for a GPU and another for a CPU based on
-which context the function was invoked. Currently, <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> supports
-OpenCL CPU and GPU devices and Level Zero GPU devices. In future, compilation
+which context the function was invoked. Currently, OpenCL CPU and GPU devices
+and Level Zero GPU devices are supported. In future, compilation
 support may be extended to other type of SYCL devices that are supported by
 DPC++’s runtime.</p>
 <blockquote>
@@ -119,7 +119,7 @@ DPC++’s runtime.</p>
 </section>
 <section id="automatic-offload-of-numpy-expressions">
 <h1>Automatic offload of NumPy expressions<a class="headerlink" href="#automatic-offload-of-numpy-expressions" title="Permalink to this headline"></a></h1>
-<p>A key distinction between <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> and other the GPU backends in Numba is
+<p>A key distinction between <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> and other the GPU backends in Numba is
 the ability to automatically offload specific data-parallel sections of a
 Numba <code class="docutils literal notranslate"><span class="pre">jit</span></code> function.</p>
 <div class="admonition-todo admonition" id="id1">
@@ -151,7 +151,7 @@ this parfor or kernel was offloaded.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Numba-dppy’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to numba-dpex’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="user_guides/getting_started.html" class="btn btn-neutral float-right" title="Getting Started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
