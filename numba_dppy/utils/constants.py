@@ -21,7 +21,7 @@ __all__ = ["address_space", "calling_conv"]
 
 
 class address_space:
-    """The address space values supported by numba-dppy.
+    """Supported address space values.
 
     ==================   ============
     Address space        Value
