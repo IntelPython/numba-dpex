@@ -11,12 +11,12 @@ Configure debugging environment
         source $ONEAPI_ROOT/debugger/latest/env/vars.sh
         source $ONEAPI_ROOT/compiler/latest/env/vars.sh
 
-2) Create and activate the conda environment:
+2) Create and activate conda environment:
 
     .. code-block:: bash
 
-        conda create numba-dppy-dev numba-dppy
-        conda activate numba-dppy-dev
+        conda create -n debug-env numba-dpex
+        conda activate debug-env
 
 3) Activate NEO drivers (optional).
 

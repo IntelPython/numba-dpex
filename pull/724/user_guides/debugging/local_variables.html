@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Debugging Local Variables &mdash; numba-dpex 0+untagged.718.g88ad8aa documentation</title>
+  <title>Debugging Local Variables &mdash; numba-dpex 0+untagged.730.gd7e63e7 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -68,7 +68,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> For ``numba.cuda`` Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> For numba.cuda Programmers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
@@ -192,7 +192,7 @@ for extending the lifetime of variables to the end of the block in which their l
 <span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set environment NUMBA_EXTEND_VARIABLE_LIFETIMES 1</span>
 </span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break side-by-side.py:28</span>
 <span class="go">...</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run numba_dppy/examples/debug/side-by-side.py --api=numba-dppy-kernel</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run numba_dppy/examples/debug/side-by-side.py --api=numba-dpex-kernel</span>
 <span class="go">...</span>
 <span class="go">Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::common_loop_body (param_a=0, param_b=0) at side-by-side.py:28</span>
 <span class="go">28          return result</span>
@@ -209,7 +209,7 @@ for extending the lifetime of variables to the end of the block in which their l
 <span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set environment NUMBA_EXTEND_VARIABLE_LIFETIMES 0</span>
 </span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break side-by-side.py:28</span>
 <span class="go">...</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run numba_dppy/examples/debug/side-by-side.py --api=numba-dppy-kernel</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run numba_dppy/examples/debug/side-by-side.py --api=numba-dpex-kernel</span>
 <span class="go">...</span>
 <span class="go">Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::common_loop_body (param_a=0, param_b=0) at side-by-side.py:28</span>
 <span class="go">28          return result</span>
@@ -248,7 +248,7 @@ will show where numba inserts <cite>del</cite> for variables.</p>
 <span class="linenos">13</span>    <span class="c1">#   a = arg(0, name=a)  :: array(float32, 1d, C)</span>
 <span class="linenos">14</span>    <span class="c1">#   b = arg(1, name=b)  :: array(float32, 1d, C)</span>
 <span class="linenos">15</span>    <span class="c1">#   c = arg(2, name=c)  :: array(float32, 1d, C)</span>
-<span class="linenos">16</span>    <span class="c1">#   $2load_global.0 = global(dppy: &lt;module &#39;numba_dppy&#39; from &#39;.../numba-dppy/numba_dppy/__init__.py&#39;&gt;)  :: Module(&lt;module &#39;numba_dppy&#39; from &#39;.../numba-dppy/numba_dppy/__init__.py&#39;&gt;)</span>
+<span class="linenos">16</span>    <span class="c1">#   $2load_global.0 = global(dppy: &lt;module &#39;numba_dppy&#39; from &#39;.../numba-dpex/numba_dppy/__init__.py&#39;&gt;)  :: Module(&lt;module &#39;numba_dppy&#39; from &#39;.../numba-dpex/numba_dppy/__init__.py&#39;&gt;)</span>
 <span class="linenos">17</span>    <span class="c1">#   $4load_method.1 = getattr(value=$2load_global.0, attr=get_global_id)  :: Function(&lt;function get_global_id at 0x7f82b8bae430&gt;)</span>
 <span class="linenos">18</span>    <span class="c1">#   del $2load_global.0</span>
 <span class="linenos">19</span>    <span class="c1">#   $const6.2 = const(int, 0)  :: Literal[int](0)</span>
@@ -329,7 +329,7 @@ not insert <cite>del a</cite> until the end of the function.</p>
 <span class="linenos">13</span>    <span class="c1">#   a = arg(0, name=a)  :: array(float32, 1d, C)</span>
 <span class="linenos">14</span>    <span class="c1">#   b = arg(1, name=b)  :: array(float32, 1d, C)</span>
 <span class="linenos">15</span>    <span class="c1">#   c = arg(2, name=c)  :: array(float32, 1d, C)</span>
-<span class="linenos">16</span>    <span class="c1">#   $2load_global.0 = global(dppy: &lt;module &#39;numba_dppy&#39; from &#39;.../numba-dppy/numba_dppy/__init__.py&#39;&gt;)  :: Module(&lt;module &#39;numba_dppy&#39; from &#39;.../numba-dppy/numba_dppy/__init__.py&#39;&gt;)</span>
+<span class="linenos">16</span>    <span class="c1">#   $2load_global.0 = global(dppy: &lt;module &#39;numba_dppy&#39; from &#39;.../numba-dpex/numba_dppy/__init__.py&#39;&gt;)  :: Module(&lt;module &#39;numba_dppy&#39; from &#39;.../numba-dpex/numba_dppy/__init__.py&#39;&gt;)</span>
 <span class="linenos">17</span>    <span class="c1">#   $4load_method.1 = getattr(value=$2load_global.0, attr=get_global_id)  :: Function(&lt;function get_global_id at 0x7fcdf7e8c4c0&gt;)</span>
 <span class="linenos">18</span>    <span class="c1">#   del $2load_global.0</span>
 <span class="linenos">19</span>    <span class="c1">#   $const6.2 = const(int, 0)  :: Literal[int](0)</span>

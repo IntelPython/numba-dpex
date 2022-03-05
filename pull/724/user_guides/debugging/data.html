@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Examining Data &mdash; numba-dpex 0+untagged.718.g88ad8aa documentation</title>
+  <title>Examining Data &mdash; numba-dpex 0+untagged.730.gd7e63e7 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -68,7 +68,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> For ``numba.cuda`` Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> For numba.cuda Programmers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
@@ -139,7 +139,7 @@
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set environment NUMBA_EXTEND_VARIABLE_LIFETIMES 1</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break side-by-side-2.py:29 if param_a == 5</span>
 <span class="go">...</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run numba_dppy/examples/debug/side-by-side-2.py --api=numba-dppy-kernel</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run numba_dppy/examples/debug/side-by-side-2.py --api=numba-dpex-kernel</span>
 <span class="go">...</span>
 <span class="hll"><span class="go">Thread 2.1 hit Breakpoint 1, with SIMD lane 5, __main__::common_loop_body (i=5, a=..., b=...) at side-by-side-2.py:29</span>
 </span><span class="hll"><span class="go">29          result = param_c + param_d</span>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Getting Started &mdash; numba-dpex 0+untagged.718.g88ad8aa documentation</title>
+  <title>Getting Started &mdash; numba-dpex 0+untagged.730.gd7e63e7 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -54,7 +54,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
 <li class="toctree-l1"><a class="reference internal" href="debugging/index.html"> Debugging with GDB</a></li>
-<li class="toctree-l1"><a class="reference internal" href="migrating_from_numba_cuda.html"> For ``numba.cuda`` Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migrating_from_numba_cuda.html"> For numba.cuda Programmers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
@@ -108,7 +108,7 @@ channel or <a class="reference external" href="https://anaconda.org/intel">anaco
 <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-python.html">Intel Distribution for Python</a> is available from <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/tools/oneapi.html">Intel oneAPI</a>.</p>
 <p>Create conda environment:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">ONEAPI_ROOT</span><span class="o">=</span>/opt/intel/oneapi
-conda create -n numba-dppy-env numba-dppy dpnp -c <span class="si">${</span><span class="nv">ONEAPI_ROOT</span><span class="si">}</span>/conda_channel
+conda create -n test-env numba-dpex dpnp -c <span class="si">${</span><span class="nv">ONEAPI_ROOT</span><span class="si">}</span>/conda_channel
 </pre></div>
 </div>
 </section>
@@ -125,7 +125,7 @@ conda build conda-recipe -c <span class="si">${</span><span class="nv">ONEAPI_RO
 </pre></div>
 </div>
 <p>Install conda package:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install numba-dppy
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install numba-dpex
 </pre></div>
 </div>
 </section>
@@ -134,8 +134,8 @@ conda build conda-recipe -c <span class="si">${</span><span class="nv">ONEAPI_RO
 <p><code class="docutils literal notranslate"><span class="pre">setup.py</span></code> requires environment variable <code class="docutils literal notranslate"><span class="pre">ONEAPI_ROOT</span></code> and following packages
 installed in conda environment:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">ONEAPI_ROOT</span><span class="o">=</span>/opt/intel/oneapi
-conda create -n numba-dppy-env -c <span class="si">${</span><span class="nv">ONEAPI_ROOT</span><span class="si">}</span>/conda_channel <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7 dpctl dpnp numba spirv-tools llvm-spirv llvmdev cython pytest
-conda activate numba-dppy-env
+conda create -n test-env -c <span class="si">${</span><span class="nv">ONEAPI_ROOT</span><span class="si">}</span>/conda_channel <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7 dpctl dpnp numba spirv-tools llvm-spirv llvmdev cython pytest
+conda activate test-env
 </pre></div>
 </div>
 <p>Activate DPC++ compiler:</p>
