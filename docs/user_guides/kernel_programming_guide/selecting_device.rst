@@ -18,7 +18,7 @@ The following are how users can specify in which device they want to offload the
     Using context manager, :code:`with dpctl.device_context(SYCL_device)`. Please look at method :code:`select_device_ndarray()` in the example below.
 
 - Array with :code:`__sycl_usm_array_interface__` attribute
-     Numba-dppy supports the Compute Follows Data semantics in this case. Compute Follows Data stipulates that computation must be off-loaded to device where data is resident.
+     In this case the Compute Follows Data semantics is supported. Compute Follows Data stipulates that computation must be off-loaded to device where data is resident.
 
      Expected behavior in different cases:
             - Users are allowed to mix arrays created using equivalent SYCL queues. Where equivalent queues are defined as:
@@ -32,7 +32,7 @@ The following are how users can specify in which device they want to offload the
             - All usm-types are accessible from device. Users can mix arrays with different usm-type as long as they were allocated using the equvalent SYCL queue.
 
 
-            - Using the context_manager to specify a queue when passing SUAI args will have no effect on queue selection and Numba-dppy will print out a warning to inform the user.
+            - Using the context_manager to specify a queue when passing SUAI args will have no effect on queue selection and a warning will be printed out to inform the user.
 
 
 Example

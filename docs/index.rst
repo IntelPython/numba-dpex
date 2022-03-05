@@ -12,9 +12,9 @@ compiler that adds "XPU" programming capabilities to it. The
 `XPU vision <https://www.intel.com/content/www/us/en/newsroom/news/xpu-vision-oneapi-server-gpu.html#gs.ervs8m>`_
 is to make it extremely easy for programmers to write efficient and portable
 code for a mix of architectures across CPUs, GPUs, FPGAs and other
-accelerators. To provide XPU programming capabilities, Numba-dppy relies on
+accelerators. To provide XPU programming capabilities, the extension relies on
 `SYCL <https://www.khronos.org/sycl/>`_ that is an industry standard for writing
-cross-platform code using standard C++. Using a SYCL runtime library Numba-dppy
+cross-platform code using standard C++. Using a SYCL runtime library the extension
 can launch data-parallel kernels generated directly from Python bytecode on
 supported data-parallel architectures. Currently, support for
 SYCL is restricted to Intel's
@@ -22,15 +22,15 @@ SYCL is restricted to Intel's
 via the `dpctl <https://github.com/IntelPython/dpctl>`_ package.
 Support for other SYCL runtime libraries may be added in the future.
 
-The main feature of Numba-dppy is to let programmers write data-parallel kernels
+The main feature of the extension is to let programmers write data-parallel kernels
 directly in Python. Such kernels can be written in two different ways: an
 explicit API superficially similar to OpenCL, and an implicit API that generates
 kernels from NumPy library calls, Numba's ``prange`` statement, and `other
 "data-parallel by construction" expressions <https://numba.pydata.org/numba-doc/latest/user/parallel.html>`_
 that Numba is able to parallelize. Following are two examples to demonstrate
-the two ways in which kernels may be written in a Numba-dppy program.
+the two ways in which kernels may be written using the extension.
 
-  - Defining a data-parallel kernel explicitly in Numba-dppy.
+  - Defining a data-parallel kernel explicitly.
 
     .. code-block:: python
 
@@ -105,12 +105,12 @@ Contributing
 ============
 
 Refer the `contributing guide <https://github.com/IntelPython/numba-dpex/blob/main/CONTRIBUTING>`_
-for information on coding style and standards used in Numba-dppy.
+for information on coding style and standards used in the project.
 
 License
 =======
 
-Numba-dppy is Licensed under Apache License 2.0 that can be found in
+The code is Licensed under Apache License 2.0 that can be found in
 `LICENSE <https://github.com/IntelPython/numba-dpex/blob/main/LICENSE>`_.
 All usage and contributions to the project are subject to the terms and
 conditions of this license.
