@@ -80,7 +80,7 @@ the two ways in which kernels may be written using the extension.
     Getting Started <user_guides/getting_started>
     Programming SYCL Kernels <user_guides/kernel_programming_guide/index>
     Debugging with GDB <user_guides/debugging/index>
-    For ``numba.cuda`` Programmers <user_guides/migrating_from_numba_cuda>
+    For numba.cuda Programmers <user_guides/migrating_from_numba_cuda>
 
 .. toctree::
     :maxdepth: 1
