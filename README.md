@@ -10,7 +10,7 @@
 
 # What?
 
-Intel Data-parallel Extension for Numba (f.k.a. Numba-dppy)
+Intel Data-parallel Extension for Numba (a.k.a numba-dpex, f.k.a. Numba-dppy)
 is an extension to the [Numba](http://numba.pydata.org) Python JIT
 compiler that provides a way to write data-parallel kernels directly in Python
 and offload them on various types of Intel&reg; architectures including CPUs,
@@ -20,7 +20,7 @@ function calls and Numba `prange` loops. Refer the
 
 # Installing
 
-Intel Data-parallel Extension for Numba (f.k.a. Numba-dppy)
+Intel Data-parallel Extension for Numba (a.k.a. numba-dpex)
 is part of the Intel&reg; Distribution of Python (IDP) and Intel&reg;
 oneAPI BaseKit, and can be installed along with oneAPI. Additionally, we support
 installing it from Anaconda cloud and PyPi. Please refer the instructions
