@@ -59,6 +59,6 @@ class DPPYDIBuilder(DIBuilder):
         di = super()._di_compile_unit()
         operands = dict(di.operands)
         operands["language"] = ir.DIToken("DW_LANG_C_plus_plus")
-        operands["producer"] = "numba-dppy"
+        operands["producer"] = "numba-dpex"
         di.operands = tuple(operands.items())
         return di

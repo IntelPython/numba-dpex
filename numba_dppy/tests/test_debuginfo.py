@@ -227,7 +227,7 @@ def test_debuginfo_DICompileUnit_language_and_producer():
 
     ir_tags = [
         r"\!DICompileUnit\(language: DW_LANG_C_plus_plus,",
-        r'\!DICompileUnit\(.*producer: "numba-dppy"',
+        r'\!DICompileUnit\(.*producer: "numba-dpex"',
     ]
 
     sycl_queue = dpctl.get_current_queue()
