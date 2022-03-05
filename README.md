@@ -10,7 +10,8 @@
 
 # What?
 
-Numba-dppy is an extension to the [Numba](http://numba.pydata.org) Python JIT
+Intel Data-parallel Extension for Numba (f.k.a. Numba-dppy)
+is an extension to the [Numba](http://numba.pydata.org) Python JIT
 compiler that provides a way to write data-parallel kernels directly in Python
 and offload them on various types of Intel&reg; architectures including CPUs,
 integrated GPUs and discrete GPUs. The compiler also supports offloading NumPy
@@ -19,7 +20,8 @@ function calls and Numba `prange` loops. Refer the
 
 # Installing
 
-Numba-dppy is part of the Intel&reg; Distribution of Python (IDP) and Intel&reg;
+Intel Data-parallel Extension for Numba (f.k.a. Numba-dppy)
+is part of the Intel&reg; Distribution of Python (IDP) and Intel&reg;
 oneAPI BaseKit, and can be installed along with oneAPI. Additionally, we support
 installing it from Anaconda cloud and PyPi. Please refer the instructions
 on our [documentation page](https://intelpython.github.io/numba-dpex/latest/user_guides/getting_started.html)
@@ -37,7 +39,7 @@ or
 ```bash
 pytest
 ```
-Once you run the tests and make sure your Numba-dppy installation is up and
+Once you run the tests and make sure your installation is up and
 running, try out the examples inside the `numba_dppy/examples` folder. For
 example, you can try the `vector addition` example as follows:
 ```bash
