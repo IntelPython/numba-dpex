@@ -26,7 +26,7 @@ Create conda environment:
 .. code-block:: bash
 
     export ONEAPI_ROOT=/opt/intel/oneapi
-    conda create -n numba-dppy-env numba-dppy dpnp -c ${ONEAPI_ROOT}/conda_channel
+    conda create -n test-env numba-dppy dpnp -c ${ONEAPI_ROOT}/conda_channel
 
 Build and Install Conda Package
 -------------------------------
@@ -60,8 +60,8 @@ installed in conda environment:
 .. code-block:: bash
 
     export ONEAPI_ROOT=/opt/intel/oneapi
-    conda create -n numba-dppy-env -c ${ONEAPI_ROOT}/conda_channel python=3.7 dpctl dpnp numba spirv-tools llvm-spirv llvmdev cython pytest
-    conda activate numba-dppy-env
+    conda create -n test-env -c ${ONEAPI_ROOT}/conda_channel python=3.7 dpctl dpnp numba spirv-tools llvm-spirv llvmdev cython pytest
+    conda activate test-env
 
 Activate DPC++ compiler:
 
