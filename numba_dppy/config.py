@@ -35,7 +35,7 @@ def _dpctl_has_non_host_device():
     """
     import dpctl
 
-    # For the Numba_dppy extension to work, we should have at least one
+    # For the numba-dpex extension to work, we should have at least one
     # non-host SYCL device installed.
     # FIXME: In future, we should support just the host device.
     if not dpctl.select_default_device().is_host:
