@@ -281,7 +281,7 @@ jobs:
       - name: Activate cpu driver
         run: ${{ github.workspace }}/dppy-repo/scripts/config_cpu_device.ps1
       - name: Add dpnp skip variable
-        run: echo "NUMBA_DPPY_TESTING_SKIP_NO_DPNP=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        run: echo "NUMBA_DPEX_TESTING_SKIP_NO_DPNP=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
       - name: Run tests
         run: |
           python -m pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }} -vv

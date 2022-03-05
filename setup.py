@@ -40,7 +40,7 @@ def get_ext_modules():
 
         dpnp_present = True
     except ImportError:
-        if int(os.environ.get("NUMBA_DPPY_BUILD_SKIP_NO_DPNP", 0)):
+        if int(os.environ.get("NUMBA_DPEX_BUILD_SKIP_NO_DPNP", 0)):
             dpnp_present = False
         else:
             raise ImportError("DPNP is not available")

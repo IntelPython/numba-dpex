@@ -25,11 +25,11 @@ def main():
 
     If we want to generate native floating point atomics for spported
     SYCL devices we need to set two environment variables:
-    NUMBA_DPPY_ACTIVATE_ATOMICS_FP_NATIVE=1
-    NUMBA_DPPY_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv
+    NUMBA_DPEX_ACTIVATE_ATOMICS_FP_NATIVE=1
+    NUMBA_DPEX_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv
 
     To run this example:
-    NUMBA_DPPY_ACTIVATE_ATOMICS_FP_NATIVE=1 NUMBA_DPPY_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv python atomic_op.py
+    NUMBA_DPEX_ACTIVATE_ATOMICS_FP_NATIVE=1 NUMBA_DPEX_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv python atomic_op.py
 
     Without these two environment variables Numba_dppy will use other
     implementation for floating point atomics.

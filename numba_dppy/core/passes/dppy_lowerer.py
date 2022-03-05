@@ -1426,7 +1426,7 @@ def lower_parfor_rollback(lowerer, parfor):
             "the issue, please add the traceback to the bug report."
         )
         if not config.DEBUG:
-            msg += " Set the environment variable NUMBA_DPPY_DEBUG to 1 to "
+            msg += " Set the environment variable NUMBA_DPEX_DEBUG to 1 to "
             msg += "generate a traceback."
 
         warnings.warn(NumbaPerformanceWarning(msg, parfor.loc))

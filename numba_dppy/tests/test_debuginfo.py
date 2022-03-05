@@ -164,7 +164,7 @@ def test_debug_flag_generates_ir_with_debuginfo_for_func(debug_option):
 
 def test_env_var_generates_ir_with_debuginfo_for_func(debug_option):
     """
-    Check debug info is emitting to IR if NUMBA_DPPY_DEBUGINFO is set to 1
+    Check debug info is emitting to IR if NUMBA_DPEX_DEBUGINFO is set to 1
     """
 
     @dppy.func

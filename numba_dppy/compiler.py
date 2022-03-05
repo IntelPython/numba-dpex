@@ -46,9 +46,9 @@ from numba_dpex.utils import (
 from . import spirv_generator
 from .dppy_passbuilder import DPPYPassBuilder
 
-_NUMBA_DPPY_READ_ONLY = "read_only"
-_NUMBA_DPPY_WRITE_ONLY = "write_only"
-_NUMBA_DPPY_READ_WRITE = "read_write"
+_NUMBA_DPEX_READ_ONLY = "read_only"
+_NUMBA_DPEX_WRITE_ONLY = "write_only"
+_NUMBA_DPEX_READ_WRITE = "read_write"
 
 
 def _raise_datatype_mixed_error(argtypes):
@@ -410,9 +410,9 @@ class DPPYKernelBase(object):
 
         # list of supported access types, stored in dict for fast lookup
         self.valid_access_types = {
-            _NUMBA_DPPY_READ_ONLY: _NUMBA_DPPY_READ_ONLY,
-            _NUMBA_DPPY_WRITE_ONLY: _NUMBA_DPPY_WRITE_ONLY,
-            _NUMBA_DPPY_READ_WRITE: _NUMBA_DPPY_READ_WRITE,
+            _NUMBA_DPEX_READ_ONLY: _NUMBA_DPEX_READ_ONLY,
+            _NUMBA_DPEX_WRITE_ONLY: _NUMBA_DPEX_WRITE_ONLY,
+            _NUMBA_DPEX_READ_WRITE: _NUMBA_DPEX_READ_WRITE,
         }
 
     def copy(self):
@@ -538,7 +538,7 @@ class DPPYKernel(DPPYKernelBase):
         if device_arr and (
             access_type not in self.valid_access_types
             or access_type in self.valid_access_types
-            and self.valid_access_types[access_type] != _NUMBA_DPPY_READ_ONLY
+            and self.valid_access_types[access_type] != _NUMBA_DPEX_READ_ONLY
         ):
             # We copy the data back from usm allocated data
             # container to original data container.
@@ -619,9 +619,9 @@ class DPPYKernel(DPPYKernelBase):
 
             if (
                 default_behavior
-                or self.valid_access_types[access_type] == _NUMBA_DPPY_READ_ONLY
+                or self.valid_access_types[access_type] == _NUMBA_DPEX_READ_ONLY
                 or self.valid_access_types[access_type]
-                == _NUMBA_DPPY_READ_WRITE
+                == _NUMBA_DPEX_READ_WRITE
             ):
                 copy_from_numpy_to_usm_obj(usm_mem, packed_val)
 

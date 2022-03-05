@@ -2,10 +2,10 @@ Debugging with Intel® Distribution for GDB*
 ===========================================
 
 You can debug SYCL* kernels with Intel® Distribution for GDB*.
-To enable the emission of debug information, set the debug environment variable :envvar:`NUMBA_DPPY_DEBUGINFO`, for example:
-:samp:`export NUMBA_DPPY_DEBUGINFO=1`
+To enable the emission of debug information, set the debug environment variable :envvar:`NUMBA_DPEX_DEBUGINFO`, for example:
+:samp:`export NUMBA_DPEX_DEBUGINFO=1`
 To disable debugging, unset the variable:
-:samp:`unset NUMBA_DPPY_DEBUGINFO`
+:samp:`unset NUMBA_DPEX_DEBUGINFO`
 
 .. note::
 
