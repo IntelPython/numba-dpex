@@ -22,7 +22,7 @@ from numba_dppy.tests._helper import skip_no_gdb
 pytestmark = skip_no_gdb
 
 
-@pytest.mark.parametrize("api", ["numba", "numba-dppy-kernel"])
+@pytest.mark.parametrize("api", ["numba", "numba-dpex-kernel"])
 def test_breakpoint_row_number(app, api):
     """Test for checking numba and numba-dppy debugging side-by-side."""
 

@@ -36,7 +36,7 @@ def scenario(api):
     global_size = 10
     a, b, c = arguments(global_size)
 
-    if api == "numba-dppy-kernel":
+    if api == "numba-dpex-kernel":
         dppy_func_driver(a, b, c)
     else:
         numba_func_driver(a, b, c)
@@ -79,7 +79,7 @@ def main():
         "--api",
         required=False,
         default="numba",
-        choices=["numba", "numba-dppy-kernel"],
+        choices=["numba", "numba-dpex-kernel"],
         help="Start the version of functions using numba or numba-dppy API",
     )
 

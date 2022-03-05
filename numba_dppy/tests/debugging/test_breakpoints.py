@@ -37,12 +37,12 @@ simple_sum_condition_breakpoint = breakpoint_by_mark(
 
 common_loop_body_native_function_name = {
     "numba": "common_loop_body_242",
-    "numba-dppy-kernel": "common_loop_body",
+    "numba-dpex-kernel": "common_loop_body",
 }
 
 breakpoint_api_cases = [
     (side_by_side_breakpoint, "numba"),
-    (side_by_side_breakpoint, "numba-dppy-kernel"),
+    (side_by_side_breakpoint, "numba-dpex-kernel"),
     *((fn, api) for api, fn in common_loop_body_native_function_name.items()),
     *(
         (f"side-by-side.py:{fn}", api)

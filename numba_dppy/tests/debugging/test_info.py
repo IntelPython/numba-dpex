@@ -66,7 +66,7 @@ def side_by_side_case(api):
             ),
         ),
         side_by_side_case("numba"),
-        side_by_side_case("numba-dppy-kernel"),
+        side_by_side_case("numba-dpex-kernel"),
     ],
 )
 def test_info_args(
@@ -193,7 +193,7 @@ def side_by_side_2_info_locals_case(api):
         (
             {"NUMBA_EXTEND_VARIABLE_LIFETIMES": 1},
             "side-by-side.py:28",
-            "side-by-side.py --api=numba-dppy-kernel",
+            "side-by-side.py --api=numba-dpex-kernel",
             None,
             (r"param_c = 10", r"param_d = 0", r"result = 10"),
             (),
@@ -201,15 +201,15 @@ def side_by_side_2_info_locals_case(api):
         (
             {"NUMBA_EXTEND_VARIABLE_LIFETIMES": 0},
             "side-by-side.py:28",
-            "side-by-side.py --api=numba-dppy-kernel",
+            "side-by-side.py --api=numba-dpex-kernel",
             None,
             (r"param_c = 0", r"param_d = 0", r"result = 10"),
             (),
         ),
         side_by_side_info_locals_case("numba"),
-        side_by_side_info_locals_case("numba-dppy-kernel"),
+        side_by_side_info_locals_case("numba-dpex-kernel"),
         side_by_side_2_info_locals_case("numba"),
-        side_by_side_2_info_locals_case("numba-dppy-kernel"),
+        side_by_side_2_info_locals_case("numba-dpex-kernel"),
     ],
 )
 def test_info_locals(
@@ -268,7 +268,7 @@ def side_by_side_2_print_array_element_case(api):
     "breakpoint, script, expected_info",
     [
         side_by_side_2_print_array_element_case("numba"),
-        side_by_side_2_print_array_element_case("numba-dppy-kernel"),
+        side_by_side_2_print_array_element_case("numba-dpex-kernel"),
     ],
 )
 def test_print_array_element(app, breakpoint, script, expected_info):
@@ -302,7 +302,7 @@ def side_by_side_2_assignment_to_variable_case(api):
     "breakpoint, script, expected_info",
     [
         side_by_side_2_assignment_to_variable_case("numba"),
-        side_by_side_2_assignment_to_variable_case("numba-dppy-kernel"),
+        side_by_side_2_assignment_to_variable_case("numba-dpex-kernel"),
     ],
 )
 def test_assignment_to_variable(app, breakpoint, script, expected_info):
