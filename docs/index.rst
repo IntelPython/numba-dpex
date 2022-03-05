@@ -3,10 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Numba-dppy's documentation!
+Welcome to ``numba-dpex``'s documentation!
 ======================================
 
-`Numba-dppy <https://github.com/IntelPython/numba-dpex>`_ is an Intel
+`numba-dpex <https://github.com/IntelPython/numba-dpex>`_ is an Intel
 |reg|-developed extension to the `Numba <https://numba.pydata.org/>`_ JIT
 compiler that adds "XPU" programming capabilities to it. The
 `XPU vision <https://www.intel.com/content/www/us/en/newsroom/news/xpu-vision-oneapi-server-gpu.html#gs.ervs8m>`_
@@ -98,7 +98,7 @@ the two ways in which kernels may be written using the extension.
 About
 =====
 
-Numba-dppy is developed by Intel and is part of the `Intel Distribution for
+``numba-dpex`` is developed by Intel and is part of the `Intel Distribution for
 Python <https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-python.html>`_.
 
 Contributing

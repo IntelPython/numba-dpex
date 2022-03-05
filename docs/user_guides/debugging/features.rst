@@ -1,7 +1,7 @@
 Supported Features
 ==================
 
-Numba-dppy and Intel® Distribution for GDB* provide at least
+``numba-dpex`` and Intel® Distribution for GDB* provide at least
 following debugging features:
 
 .. toctree::
