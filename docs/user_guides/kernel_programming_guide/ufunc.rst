@@ -6,8 +6,9 @@ routines that are JIT compiled. Although, a close analog to NumPy universal func
 ufunc.. Refer `Creating NumPy universal functions`_ for details.
 
 
-``numba-dppy`` only supports ``numba.vectorize`` decorator and not yet the
-``numba.guvectorize`` decorator. Another present limitation is that ``numba-dppy`` ufunc kernels cannot invoke ``numba_dppy.kernel`` functions.
+``numba.vectorize`` decorator is supported.
+``numba.guvectorize`` decorator is not supported yet.
+Another present limitation is that ufunc kernels cannot invoke ``numba_dppy.kernel`` functions.
 Ongoing work is in progress to address these limitations.
 
 Example 1: Basic Example

@@ -5,7 +5,7 @@ Writing Device Functions
 
 OpenCL and SYCL do not directly have a notion for device-only functions, *i.e.*
 functions that can be only invoked from a kernel and not from a host function.
-However, ``numba-dppy`` provides a special decorator ``numba_dppy.func``
+However, the special decorator ``numba_dppy.func`` is provided
 specifically to implement device functions.
 
 .. literalinclude:: ../../../numba_dppy/examples/dppy_func.py

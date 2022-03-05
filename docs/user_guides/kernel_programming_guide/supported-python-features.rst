@@ -1,5 +1,5 @@
-Supported Python Features in a ``numba-dppy`` Kernel
-====================================================
+Supported Python Features in Kernel
+===================================
 
 This page lists the Python features supported inside a ``numba_dppy.kernel``
 function.

@@ -1,11 +1,11 @@
 Random Number Generation
 ========================
 
-``numba-dppy`` does not provide a random number generation algorithm that can be
+There is no support for a random number generation algorithm that can be
 executed on the SYCL-supported Device.
 
-``numba-dppy`` provides access to NumPy random algorithms that can be executed on the
-SYCL-supported device via integration with `dpnp Random`_.
+Access to NumPy random algorithms that can be executed on the
+SYCL-supported device is provided via integration with `dpnp Random`_.
 
 .. _`dpnp Random`: https://intelpython.github.io/dpnp/reference/comparison.html#random-sampling
 

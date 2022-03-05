@@ -3,7 +3,7 @@ Defining the execution queue for a kernel function
 There are two ways to specify the queue where a kernel is executed. The first way follows the notion of "compute follows data" (CFD). The second way is for a programmer to specify the execution queue using a dpctl.device_context context manager.
 
 
-In the CFD style of programming kernels, the execution queue is determined based on the input arguments passed to a kernel function. Currently, numba-dppy's kernel API only supports array arguments that provide the :code:`__sycl_usm_array_interface__` (SUAI) attribute for CFD style programming. The SUAI attribute encodes the queue where the array was defined.
+In the CFD style of programming kernels, the execution queue is determined based on the input arguments passed to a kernel function. Currently, the kernel API only supports array arguments that provide the :code:`__sycl_usm_array_interface__` (SUAI) attribute for CFD style programming. The SUAI attribute encodes the queue where the array was defined.
 
 
 We also allow passing arrays and data types that do not provide SUAI. For such cases, programmers need to specify the queue using the :code:`dpctl.device_context` context manager. Do note that the use of :code:`dpctl.device_context` is deprecated and slotted for removal in some future release.

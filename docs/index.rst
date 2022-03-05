@@ -1,8 +1,3 @@
-.. numba-dppy documentation master file, created by
-   sphinx-quickstart on Tue Jan 19 06:51:06 2021.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to ``numba-dpex``'s documentation!
 ======================================
 
@@ -85,7 +80,7 @@ the two ways in which kernels may be written using the extension.
     Getting Started <user_guides/getting_started>
     Programming SYCL Kernels <user_guides/kernel_programming_guide/index>
     Debugging with GDB <user_guides/debugging/index>
-    numba-dppy for numba.cuda Programmers <user_guides/migrating_from_numba_cuda>
+    For ``numba.cuda`` Programmers <user_guides/migrating_from_numba_cuda>
 
 .. toctree::
     :maxdepth: 1
