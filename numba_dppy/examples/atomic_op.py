@@ -31,7 +31,7 @@ def main():
     To run this example:
     NUMBA_DPEX_ACTIVATE_ATOMICS_FP_NATIVE=1 NUMBA_DPEX_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv python atomic_op.py
 
-    Without these two environment variables Numba_dppy will use other
+    Without these two environment variables numba-dpex will use other
     implementation for floating point atomics.
     """
 

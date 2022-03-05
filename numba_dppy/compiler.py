@@ -111,7 +111,7 @@ class DPPYCompiler(CompilerBase):
 @global_compiler_lock
 def compile_with_dppy(pyfunc, return_type, args, is_kernel, debug=None):
     """
-    Compiles with Numba_dppy's pipeline and returns the compiled result.
+    Compiles with numba-dpex's pipeline and returns the compiled result.
 
     Args:
         pyfunc: The Python function to be compiled.

@@ -35,7 +35,7 @@ The following are how users can specify in which device they want to offload
 their computation.
 
 1. numpy.ndarray
-    Using context manager provided by Numba_dppy. Please look at method:
+    Using context manager provided by numba-dpex. Please look at method:
         select_device_ndarray()
 
 2. Array with __sycl_usm_array_interface__ attribute
