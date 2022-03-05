@@ -85,13 +85,13 @@ Intrinsic Functions:
     The following table has the list of intrinsic functions that can be directly
     used inside a DK function. All the functions are equivalent to the similarly
     named OpenCL function. Wherever there is an implementation difference
-    between the Numba-DPPY version and the OpenCL version, the difference is
+    between the numba-dpex version and the OpenCL version, the difference is
     explained in table. Note that these functions cannot be used anywhere else
     outside of a DK function in a Numba application. Readers are referred to the
     OpenCL API specs to review the functionality of each function.
 
     +----------------------+----------------------------+----------------------+
-    | Numba-DPPY intrinsic | Equivalent OpenCL function |         Notes        |
+    | numba-dpex intrinsic | Equivalent OpenCL function |         Notes        |
     +----------------------+----------------------------+----------------------+
     | get_global_id        | get_global_id              |                      |
     +----------------------+----------------------------+----------------------+
@@ -135,7 +135,7 @@ Other Intrinsic Functions
     |print             |print(varargs)                 |The print function is a  |
     |                  |                               |subset of the OpenCL     |
     |                  |                               |printf function. The     |
-    |                  |                               |Numba-DPPY version of    |
+    |                  |                               |numba-dpex version of    |
     |                  |                               |print supports only int, |
     |                  |                               |string, and float        |
     |                  |                               |arguments.               |

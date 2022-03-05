@@ -477,7 +477,7 @@ class DPPYTargetContext(BaseContext):
 class DPPYCallConv(MinimalCallConv):
     """Custom calling convention class used by numba-dpex.
 
-    Numba-dppy's calling convention derives from
+    numba-dpex's calling convention derives from
     :class:`numba.core.callconv import MinimalCallConv`. The
     :class:`DPPYCallConv` overriddes :func:`call_function`.
 
