@@ -1307,7 +1307,7 @@ class DPPYLower(Lower):
         return lower
 
     def lower(self):
-        """Numba-dppy's custom lowering function.
+        """Lowering function with fallback.
 
         The lowerer has a builtin fallback mechanism for parfor functions.
         We first try to lower a parfor onto a SYCL device using numba-dpex's
