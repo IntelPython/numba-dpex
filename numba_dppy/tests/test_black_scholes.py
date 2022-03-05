@@ -99,7 +99,7 @@ class TestDPPYBlackScholes:
                 VOLATILITY,
             )
 
-        # numba-dppy
+        # numba-dpex
         @dppy.kernel
         def black_scholes_dppy(callResult, putResult, S, X, T, R, V):
             i = dppy.get_global_id(0)
