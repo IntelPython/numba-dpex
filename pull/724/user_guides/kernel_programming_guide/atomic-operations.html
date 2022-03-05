@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Supported Atomic Operations &mdash; numba-dpex 0+untagged.741.gdc9e974 documentation</title>
+  <title>Supported Atomic Operations &mdash; numba-dpex 0+untagged.749.g02a8b8b documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -103,7 +103,7 @@
 Those that are presently implemented are as follows:</p>
 <dl class="py class">
 <dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.ocl.stubs.</span></span><span class="sig-name descname"><span class="pre">atomic</span></span></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.stubs.</span></span><span class="sig-name descname"><span class="pre">atomic</span></span></dt>
 <dd><p>atomic namespace</p>
 <dl class="py method">
 <dt class="sig sig-object py">
@@ -134,19 +134,19 @@ Those that are presently implemented are as follows:</p>
 <p>Here’s an example of how to use atomics add in DPPY:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The example demonstrates the use of numba_dppy&#39;s ``atomic_add`` intrinsic</span>
+<span class="sd">    The example demonstrates the use of numba_dpex&#39;s ``atomic_add`` intrinsic</span>
 <span class="sd">    function on a SYCL GPU device. The ``dpctl.select_gpu_device`` is</span>
 <span class="sd">    equivalent to ``sycl::gpu_selector`` and returns a sycl::device of type GPU.</span>
 
 <span class="sd">    If we want to generate native floating point atomics for spported</span>
 <span class="sd">    SYCL devices we need to set two environment variables:</span>
-<span class="sd">    NUMBA_DPPY_ACTIVATE_ATOMICS_FP_NATIVE=1</span>
-<span class="sd">    NUMBA_DPPY_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv</span>
+<span class="sd">    NUMBA_DPEX_ACTIVATE_ATOMICS_FP_NATIVE=1</span>
+<span class="sd">    NUMBA_DPEX_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv</span>
 
 <span class="sd">    To run this example:</span>
-<span class="sd">    NUMBA_DPPY_ACTIVATE_ATOMICS_FP_NATIVE=1 NUMBA_DPPY_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv python atomic_op.py</span>
+<span class="sd">    NUMBA_DPEX_ACTIVATE_ATOMICS_FP_NATIVE=1 NUMBA_DPEX_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv python atomic_op.py</span>
 
-<span class="sd">    Without these two environment variables Numba_dppy will use other</span>
+<span class="sd">    Without these two environment variables numba-dpex will use other</span>
 <span class="sd">    implementation for floating point atomics.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -174,7 +174,7 @@ Those that are presently implemented are as follows:</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">numba_dppy.atomic.add</span></code> function is analogous to The
+<p>The <code class="docutils literal notranslate"><span class="pre">numba_dpex.atomic.add</span></code> function is analogous to The
 <code class="docutils literal notranslate"><span class="pre">numba.cuda.atomic.add</span></code> provided by the <code class="docutils literal notranslate"><span class="pre">numba.cuda</span></code> backend.</p>
 </div>
 </section>
@@ -184,12 +184,12 @@ Those that are presently implemented are as follows:</p>
 This feature is experimental. Users will need to provide
 the following environment variables to activate it.</p>
 <blockquote>
-<div><p>NUMBA_DPPY_ACTIVATE_ATOMICS_FP_NATIVE=1
-NUMBA_DPPY_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv</p>
+<div><p>NUMBA_DPEX_ACTIVATE_ATOMICS_FP_NATIVE=1
+NUMBA_DPEX_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv</p>
 </div></blockquote>
 <p>Example command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NUMBA_DPPY_ACTIVATE_ATOMICS_FP_NATIVE</span><span class="o">=</span><span class="m">1</span> <span class="se">\</span>
-<span class="nv">NUMBA_DPPY_LLVM_SPIRV_ROOT</span><span class="o">=</span>/path/to/dpcpp/provided/llvm_spirv <span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NUMBA_DPEX_ACTIVATE_ATOMICS_FP_NATIVE</span><span class="o">=</span><span class="m">1</span> <span class="se">\</span>
+<span class="nv">NUMBA_DPEX_LLVM_SPIRV_ROOT</span><span class="o">=</span>/path/to/dpcpp/provided/llvm_spirv <span class="se">\</span>
 python program.py
 </pre></div>
 </div>
@@ -197,7 +197,7 @@ python program.py
 <section id="full-examples">
 <h2>Full examples<a class="headerlink" href="#full-examples" title="Permalink to this headline"></a></h2>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/atomic_op.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/atomic_op.py</span></code></p></li>
 </ul>
 </section>
 </section>

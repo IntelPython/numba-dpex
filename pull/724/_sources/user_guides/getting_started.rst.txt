@@ -84,24 +84,24 @@ For development:
 Testing
 -------
 
-See folder ``numba_dppy/tests``.
+See folder ``numba_dpex/tests``.
 
 To run the tests:
 
 .. code-block:: bash
 
-    python -m pytest --pyargs numba_dppy.tests
+    python -m pytest --pyargs numba_dpex.tests
 
 Examples
 --------
 
-See folder ``numba_dppy/examples``.
+See folder ``numba_dpex/examples``.
 
 To run the examples:
 
 .. code-block:: bash
 
-    python numba_dppy/examples/sum.py
+    python numba_dpex/examples/sum.py
 
 
 .. _`Numba`: https://github.com/numba/numba

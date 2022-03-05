@@ -1,7 +1,0 @@
-numba\_dppy.ocl.stubs module
-============================
-
-.. automodule:: numba_dppy.ocl.stubs
-   :members:
-   :undoc-members:
-   :show-inheritance:

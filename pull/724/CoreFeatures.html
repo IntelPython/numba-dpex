@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Code-generation based on a device &mdash; numba-dpex 0+untagged.741.gdc9e974 documentation</title>
+  <title>Code-generation based on a device &mdash; numba-dpex 0+untagged.749.g02a8b8b documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -96,7 +96,7 @@ support may be extended to other type of SYCL devices that are supported by
 DPC++’s runtime.</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">numba_dppy</span><span class="o">,</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
+<span class="kn">import</span> <span class="nn">numba_dpex</span><span class="o">,</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">dppy</span>
 <span class="kn">import</span> <span class="nn">dpctl</span>
 
 <span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span>
@@ -132,13 +132,13 @@ Numba <code class="docutils literal notranslate"><span class="pre">jit</span></c
 executed on the CPU and warning is printed. This behavior is only applicable to <code class="docutils literal notranslate"><span class="pre">jit</span></code>
 functions, auto-offloading of NumPy calls, array expressions and <code class="docutils literal notranslate"><span class="pre">prange</span></code> loops.
 To disable this functionality and force code running on GPU set the environment variable
-<code class="docutils literal notranslate"><span class="pre">NUMBA_DPPY_FALLBACK_ON_CPU</span></code> to false (e.g. <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">NUMBA_DPPY_FALLBACK_ON_CPU=0</span></code>). In this
+<code class="docutils literal notranslate"><span class="pre">NUMBA_DPEX_FALLBACK_ON_CPU</span></code> to false (e.g. <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">NUMBA_DPEX_FALLBACK_ON_CPU=0</span></code>). In this
 case the code is not automatically offloaded to the CPU and errors occur if any.</p>
 </section>
 <section id="offload-diagnostics">
 <h2>Offload Diagnostics<a class="headerlink" href="#offload-diagnostics" title="Permalink to this headline"></a></h2>
-<p>Setting the debug environment variable <code class="docutils literal notranslate"><span class="pre">NUMBA_DPPY_OFFLOAD_DIAGNOSTICS</span></code>
-(e.g. <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">NUMBA_DPPY_OFFLOAD_DIAGNOSTICS=1</span></code>) provides emission of the parallel and
+<p>Setting the debug environment variable <code class="docutils literal notranslate"><span class="pre">NUMBA_DPEX_OFFLOAD_DIAGNOSTICS</span></code>
+(e.g. <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">NUMBA_DPEX_OFFLOAD_DIAGNOSTICS=1</span></code>) provides emission of the parallel and
 offload diagnostics information based on produced parallel transforms. The level of detail
 depends on the integer value between 1 and 4 that is set to the environment variable
 (higher is more detailed).

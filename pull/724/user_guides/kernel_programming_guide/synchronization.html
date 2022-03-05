@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Synchronization Functions &mdash; numba-dpex 0+untagged.741.gdc9e974 documentation</title>
+  <title>Synchronization Functions &mdash; numba-dpex 0+untagged.749.g02a8b8b documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -94,19 +94,19 @@
              
   <section id="synchronization-functions">
 <h1>Synchronization Functions<a class="headerlink" href="#synchronization-functions" title="Permalink to this headline"></a></h1>
-<p>Currently, only several of the SYCL synchronization operations are supported. For synchronization of all threads in the same thread block, a helper function called <code class="docutils literal notranslate"><span class="pre">numba_dppy.barrier()</span></code> is provided. This function implements the same pattern as barriers in traditional
+<p>Currently, only several of the SYCL synchronization operations are supported. For synchronization of all threads in the same thread block, a helper function called <code class="docutils literal notranslate"><span class="pre">numba_dpex.barrier()</span></code> is provided. This function implements the same pattern as barriers in traditional
 multi-threaded programming: invoking the function forces a thread to wait until
 all threads in the block reach the barrier, at which point it returns control
 to all its callers.</p>
-<p><code class="docutils literal notranslate"><span class="pre">numba_dppy.barrier()</span></code> supports two memory fence options:</p>
+<p><code class="docutils literal notranslate"><span class="pre">numba_dpex.barrier()</span></code> supports two memory fence options:</p>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dppy.CLK_GLOBAL_MEM_FENCE</span></code>: The barrier function will queue a memory
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex.CLK_GLOBAL_MEM_FENCE</span></code>: The barrier function will queue a memory
 fence to ensure correct ordering of memory operations to global memory. Using
 the option can be useful when work-items, for example, write to buffer or
-image objects and then want to read the updated data. Passing no arguments to <code class="docutils literal notranslate"><span class="pre">numba_dppy.barrier()</span></code> is equivalent to setting the global memory fence option. For example,</p>
+image objects and then want to read the updated data. Passing no arguments to <code class="docutils literal notranslate"><span class="pre">numba_dpex.barrier()</span></code> is equivalent to setting the global memory fence option. For example,</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">no_arg_barrier_support</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This example demonstrates the usage of numba_dppy&#39;s ``barrier``</span>
+<span class="sd">    This example demonstrates the usage of numba_dpex&#39;s ``barrier``</span>
 <span class="sd">    intrinsic function. The ``barrier`` function is usable only inside</span>
 <span class="sd">    a ``kernel`` and is equivalent to OpenCL&#39;s ``barrier`` function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -137,7 +137,7 @@ image objects and then want to read the updated data. Passing no arguments to <c
 </pre></div>
 </div>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dppy.CLK_LOCAL_MEM_FENCE</span></code>: The barrier function will either flush
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex.CLK_LOCAL_MEM_FENCE</span></code>: The barrier function will either flush
 any variables stored in local memory or queue a memory fence to ensure
 correct ordering of memory operations to local memory. For example,</p></li>
 </ul>
@@ -179,7 +179,7 @@ correct ordering of memory operations to local memory. For example,</p></li>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">numba_dppy.barrier()</span></code> function is semantically equivalent to
+<p>The <code class="docutils literal notranslate"><span class="pre">numba_dpex.barrier()</span></code> function is semantically equivalent to
 <code class="docutils literal notranslate"><span class="pre">numba.cuda.syncthreads</span></code>.</p>
 </div>
 </section>

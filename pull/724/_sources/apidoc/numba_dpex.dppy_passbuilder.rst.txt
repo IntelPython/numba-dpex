@@ -1,0 +1,7 @@
+numba\_dpex.dppy\_passbuilder module
+====================================
+
+.. automodule:: numba_dpex.dppy_passbuilder
+   :members:
+   :undoc-members:
+   :show-inheritance:

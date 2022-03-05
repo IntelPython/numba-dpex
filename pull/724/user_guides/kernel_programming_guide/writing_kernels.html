@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Writing SYCL Kernels &mdash; numba-dpex 0+untagged.741.gdc9e974 documentation</title>
+  <title>Writing SYCL Kernels &mdash; numba-dpex 0+untagged.749.g02a8b8b documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -154,7 +154,7 @@ or grid sizes).</p></li>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">numpy.testing</span> <span class="k">as</span> <span class="nn">testing</span>
 
-<span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
+<span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">dppy</span>
 
 
 <span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span>
@@ -220,10 +220,10 @@ or grid sizes).</p></li>
 <p>Currently, the following indexing functions are supported. They have
 the same semantics as OpenCL.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dppy.get_local_id</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dppy.get_local_size</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dppy.get_group_id</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dppy.get_num_groups</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex.get_local_id</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex.get_local_size</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex.get_group_id</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex.get_num_groups</span></code></p></li>
 </ul>
 </section>
 </section>

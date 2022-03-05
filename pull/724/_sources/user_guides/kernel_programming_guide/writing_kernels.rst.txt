@@ -36,14 +36,14 @@ GPU hardware. The main characteristics of a kernel function are:
 Example
 ~~~~~~~~~
 
-.. literalinclude:: ../../../numba_dppy/examples/sum.py
+.. literalinclude:: ../../../numba_dpex/examples/sum.py
 
 Kernel invocation
 ------------------
 
 A kernel is typically launched in the following way:
 
-.. literalinclude:: ../../../numba_dppy/examples/sum.py
+.. literalinclude:: ../../../numba_dpex/examples/sum.py
    :pyobject: driver
 
 Indexing functions
@@ -52,7 +52,7 @@ Indexing functions
 Currently, the following indexing functions are supported. They have
 the same semantics as OpenCL.
 
-- ``numba_dppy.get_local_id``
-- ``numba_dppy.get_local_size``
-- ``numba_dppy.get_group_id``
-- ``numba_dppy.get_num_groups``
+- ``numba_dpex.get_local_id``
+- ``numba_dpex.get_local_size``
+- ``numba_dpex.get_group_id``
+- ``numba_dpex.get_num_groups``

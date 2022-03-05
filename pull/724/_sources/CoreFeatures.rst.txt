@@ -16,7 +16,7 @@ DPC++'s runtime.
     .. code-block:: python
 
         import numpy as np
-        import numba_dppy, numba_dppy as dppy
+        import numba_dpex, numba_dpex as dppy
         import dpctl
 
         @dppy.kernel
@@ -52,14 +52,14 @@ By default, if a section of code cannot be offloaded to the GPU, it is automatic
 executed on the CPU and warning is printed. This behavior is only applicable to ``jit``
 functions, auto-offloading of NumPy calls, array expressions and ``prange`` loops.
 To disable this functionality and force code running on GPU set the environment variable
-``NUMBA_DPPY_FALLBACK_ON_CPU`` to false (e.g. ``export NUMBA_DPPY_FALLBACK_ON_CPU=0``). In this
+``NUMBA_DPEX_FALLBACK_ON_CPU`` to false (e.g. ``export NUMBA_DPEX_FALLBACK_ON_CPU=0``). In this
 case the code is not automatically offloaded to the CPU and errors occur if any.
 
 Offload Diagnostics
 -------------------
 
-Setting the debug environment variable ``NUMBA_DPPY_OFFLOAD_DIAGNOSTICS``
-(e.g. ``export NUMBA_DPPY_OFFLOAD_DIAGNOSTICS=1``) provides emission of the parallel and
+Setting the debug environment variable ``NUMBA_DPEX_OFFLOAD_DIAGNOSTICS``
+(e.g. ``export NUMBA_DPEX_OFFLOAD_DIAGNOSTICS=1``) provides emission of the parallel and
 offload diagnostics information based on produced parallel transforms. The level of detail
 depends on the integer value between 1 and 4 that is set to the environment variable
 (higher is more detailed).

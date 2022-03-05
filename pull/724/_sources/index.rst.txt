@@ -30,7 +30,7 @@ the two ways in which kernels may be written using the extension.
     .. code-block:: python
 
         import numpy as np
-        import numba_dppy as dppy
+        import numba_dpex as dppy
         import dpctl
 
         @dppy.kernel

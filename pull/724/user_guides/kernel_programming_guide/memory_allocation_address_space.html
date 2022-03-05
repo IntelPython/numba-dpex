@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Supported Address Space Qualifiers &mdash; numba-dpex 0+untagged.741.gdc9e974 documentation</title>
+  <title>Supported Address Space Qualifiers &mdash; numba-dpex 0+untagged.749.g02a8b8b documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -118,7 +118,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">numpy.testing</span> <span class="k">as</span> <span class="nn">testing</span>
 
-<span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
+<span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">dppy</span>
 
 
 <span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span>
@@ -168,7 +168,7 @@
 </dl>
 </li>
 <li><dl>
-<dt>Local Address Space</dt><dd><p>Local Address Space refers to memory objects that need to be allocated in local memory pool and are shared by all work-items of a work-group. It is not supported to pass arguments that are allocated in the local address space to <cite>&#64;numba_dppy.kernel</cite>. Users are allowed to allocate static arrays in the local address space inside the <cite>&#64;numba_dppy.kernel</cite>. In the example below <cite>numba_dppy.local.array(shape, dtype)</cite> is the API used to allocate a static array in the local address space:</p>
+<dt>Local Address Space</dt><dd><p>Local Address Space refers to memory objects that need to be allocated in local memory pool and are shared by all work-items of a work-group. It is not supported to pass arguments that are allocated in the local address space to <cite>&#64;numba_dpex.kernel</cite>. Users are allowed to allocate static arrays in the local address space inside the <cite>&#64;numba_dpex.kernel</cite>. In the example below <cite>numba_dpex.local.array(shape, dtype)</cite> is the API used to allocate a static array in the local address space:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">local_memory</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This example demonstrates the usage of numba-dpex&#39;s `local.array`</span>
@@ -209,7 +209,7 @@
 </dl>
 </li>
 <li><dl>
-<dt>Private Address Space</dt><dd><p>Private Address Space refers to memory objects that are local to each work-item and is not shared with any other work-item. In the example below <cite>numba_dppy.private.array(shape, dtype)</cite> is the API used to allocate a static array in the private address space:</p>
+<dt>Private Address Space</dt><dd><p>Private Address Space refers to memory objects that are local to each work-item and is not shared with any other work-item. In the example below <cite>numba_dpex.private.array(shape, dtype)</cite> is the API used to allocate a static array in the private address space:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Copyright 2020, 2021 Intel Corporation</span>
 <span class="c1">#</span>
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
@@ -228,7 +228,7 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">float32</span>
 
-<span class="kn">import</span> <span class="nn">numba_dppy</span>
+<span class="kn">import</span> <span class="nn">numba_dpex</span>
 
 
 <span class="k">def</span> <span class="nf">private_memory</span><span class="p">():</span>
@@ -238,14 +238,14 @@
 <span class="sd">    allocated on the devices private address space.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="nd">@numba_dppy</span><span class="o">.</span><span class="n">kernel</span>
+    <span class="nd">@numba_dpex</span><span class="o">.</span><span class="n">kernel</span>
     <span class="k">def</span> <span class="nf">private_memory_kernel</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
-        <span class="n">memory</span> <span class="o">=</span> <span class="n">numba_dppy</span><span class="o">.</span><span class="n">private</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="n">numba_dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">memory</span> <span class="o">=</span> <span class="n">numba_dpex</span><span class="o">.</span><span class="n">private</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">numba_dpex</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="c1"># preload</span>
         <span class="n">memory</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
-        <span class="n">numba_dppy</span><span class="o">.</span><span class="n">barrier</span><span class="p">(</span><span class="n">numba_dppy</span><span class="o">.</span><span class="n">CLK_LOCAL_MEM_FENCE</span><span class="p">)</span>  <span class="c1"># local mem fence</span>
+        <span class="n">numba_dpex</span><span class="o">.</span><span class="n">barrier</span><span class="p">(</span><span class="n">numba_dpex</span><span class="o">.</span><span class="n">CLK_LOCAL_MEM_FENCE</span><span class="p">)</span>  <span class="c1"># local mem fence</span>
 
         <span class="c1"># memory will not hold correct deterministic result if it is not</span>
         <span class="c1"># private to each thread.</span>
@@ -261,7 +261,7 @@
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using device ...&quot;</span><span class="p">)</span>
     <span class="n">device</span><span class="o">.</span><span class="n">print_device_info</span><span class="p">()</span>
 
-    <span class="k">with</span> <span class="n">numba_dppy</span><span class="o">.</span><span class="n">offload_to_sycl_device</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">numba_dpex</span><span class="o">.</span><span class="n">offload_to_sycl_device</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
         <span class="n">private_memory_kernel</span><span class="p">[</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">](</span><span class="n">arr</span><span class="p">)</span>
 
     <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">orig</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">arr</span><span class="p">)</span>

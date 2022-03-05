@@ -1,0 +1,7 @@
+numba\_dpex.core.passes.dufunc\_inliner module
+==============================================
+
+.. automodule:: numba_dpex.core.passes.dufunc_inliner
+   :members:
+   :undoc-members:
+   :show-inheritance:

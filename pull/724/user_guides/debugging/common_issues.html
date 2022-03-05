@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Common issues and tips &mdash; numba-dpex 0+untagged.741.gdc9e974 documentation</title>
+  <title>Common issues and tips &mdash; numba-dpex 0+untagged.749.g02a8b8b documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -114,9 +114,9 @@ env variable <span class="nv">INTELGT_AUTO_ATTACH_DISABLE</span><span class="o">
 At full optimization (equivalent to O3), most of the variables are optimized out.
 It is recommended to debug at “no optimization” level via <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">NUMBA_OPT</span></code> (e.g. <code class="samp docutils literal notranslate"><span class="pre">export</span> <span class="pre">NUMBA_OPT=0</span></code>).
 For more information, refer to the Numba documentation <a class="reference external" href="http://numba.pydata.org/numba-doc/latest/user/troubleshoot.html#debugging-jit-compiled-code-with-gdb">Debugging JIT compiled code with GDB*</a>.</p>
-<p>It is possible to enable debug mode for the full application by setting the environment variable <code class="docutils literal notranslate"><span class="pre">NUMBA_DPPY_DEBUGINFO=1</span></code>
+<p>It is possible to enable debug mode for the full application by setting the environment variable <code class="docutils literal notranslate"><span class="pre">NUMBA_DPEX_DEBUGINFO=1</span></code>
 instead of <code class="docutils literal notranslate"><span class="pre">debug</span></code> option inside the <code class="docutils literal notranslate"><span class="pre">dppy.kernel</span></code> decorator. This sets the default value of the debug option in
-<code class="docutils literal notranslate"><span class="pre">dppy.kernel</span></code>. If <code class="docutils literal notranslate"><span class="pre">NUMBA_DPPY_DEBUGINFO</span></code> is set to a non-zero value, the debug data is emitted for the full application.
+<code class="docutils literal notranslate"><span class="pre">dppy.kernel</span></code>. If <code class="docutils literal notranslate"><span class="pre">NUMBA_DPEX_DEBUGINFO</span></code> is set to a non-zero value, the debug data is emitted for the full application.
 Debug mode can be turned off on individual functions by setting <code class="docutils literal notranslate"><span class="pre">debug=False</span></code> in <code class="docutils literal notranslate"><span class="pre">dppy.kernel</span></code>.</p>
 <p>See also:</p>
 <blockquote>

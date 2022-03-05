@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reduction on SYCL-supported Devices &mdash; numba-dpex 0+untagged.741.gdc9e974 documentation</title>
+  <title>Reduction on SYCL-supported Devices &mdash; numba-dpex 0+untagged.749.g02a8b8b documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -104,13 +104,13 @@
 <h1>Reduction on SYCL-supported Devices<a class="headerlink" href="#reduction-on-sycl-supported-devices" title="Permalink to this headline"></a></h1>
 <p>The is no a specific decorator to implement reduction kernels yet. However, a kernel reduction
 can be written explicitly. This section provides two approaches for writing a kernel reduction using
-<code class="docutils literal notranslate"><span class="pre">numba_dppy.kernel</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code>.</p>
 <section id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline"></a></h2>
 <section id="example-1">
 <h3>Example 1<a class="headerlink" href="#example-1" title="Permalink to this headline"></a></h3>
 <p>This example demonstrates a summation reduction on a one-dimensional array.</p>
-<p>Full example can be found at <code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/sum_reduction.py</span></code>.</p>
+<p>Full example can be found at <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction.py</span></code>.</p>
 <p>In this example, to reduce the array we invoke the kernel multiple times.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span>
 <span class="k">def</span> <span class="nf">sum_reduction_kernel</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">stride</span><span class="p">):</span>
@@ -148,7 +148,7 @@ can be written explicitly. This section provides two approaches for writing a ke
 <section id="example-2">
 <h3>Example 2<a class="headerlink" href="#example-2" title="Permalink to this headline"></a></h3>
 <p>Full example can be found at
-<code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/sum_reduction_recursive_ocl.py</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction_recursive_ocl.py</span></code>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span>
 <span class="k">def</span> <span class="nf">sum_reduction_kernel</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">partial_sums</span><span class="p">):</span>
     <span class="n">local_id</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_local_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -254,9 +254,9 @@ Such decorator will be added in future releases.</p>
 <section id="full-examples">
 <h2>Full examples<a class="headerlink" href="#full-examples" title="Permalink to this headline"></a></h2>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/sum_reduction_recursive_ocl.py</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/sum_reduction_ocl.py</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/sum_reduction.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction_recursive_ocl.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction_ocl.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction.py</span></code></p></li>
 </ul>
 </section>
 </section>

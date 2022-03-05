@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>numba_dpex package &mdash; numba-dpex 0+untagged.749.g02a8b8b documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> numba-dpex
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html">Code-generation based on a device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/getting_started.html"> Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/debugging/index.html"> Debugging with GDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/migrating_from_numba_cuda.html"> For numba.cuda Programmers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">numba-dpex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>numba_dpex package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/apidoc/numba_dpex.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="numba-dpex-package">
+<h1>numba_dpex package<a class="headerlink" href="#numba-dpex-package" title="Permalink to this headline"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.html">numba_dpex.core package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.passes.html">numba_dpex.core.passes package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.html#module-numba_dpex.core.passes">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.html#module-numba_dpex.core">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpctl_iface.html">numba_dpex.dpctl_iface package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpctl_iface.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_capi_fn_builder.html">numba_dpex.dpctl_iface.dpctl_capi_fn_builder module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_function_types.html">numba_dpex.dpctl_iface.dpctl_function_types module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpctl_iface.kernel_launch_ops.html">numba_dpex.dpctl_iface.kernel_launch_ops module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpctl_iface.usm_ndarray_type.html">numba_dpex.dpctl_iface.usm_ndarray_type module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpctl_iface.html#module-numba_dpex.dpctl_iface">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpnp_iface.html">numba_dpex.dpnp_iface package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_array_creations_impl.html">numba_dpex.dpnp_iface.dpnp_array_creations_impl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_array_ops_impl.html">numba_dpex.dpnp_iface.dpnp_array_ops_impl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_fptr_interface.html">numba_dpex.dpnp_iface.dpnp_fptr_interface module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_fptr_interface.html">numba_dpex.dpnp_iface.dpnp_fptr_interface module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_indexing.html">numba_dpex.dpnp_iface.dpnp_indexing module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_linalgimpl.html">numba_dpex.dpnp_iface.dpnp_linalgimpl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_logic.html">numba_dpex.dpnp_iface.dpnp_logic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_manipulation.html">numba_dpex.dpnp_iface.dpnp_manipulation module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_randomimpl.html">numba_dpex.dpnp_iface.dpnp_randomimpl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_sort_search_countimpl.html">numba_dpex.dpnp_iface.dpnp_sort_search_countimpl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_statisticsimpl.html">numba_dpex.dpnp_iface.dpnp_statisticsimpl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.html">numba_dpex.dpnp_iface.dpnp_transcendentalsimpl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpdecl.html">numba_dpex.dpnp_iface.dpnpdecl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpimpl.html">numba_dpex.dpnp_iface.dpnpimpl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html">numba_dpex.dpnp_iface.stubs module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.html#module-numba_dpex.dpnp_iface">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.ocl.html">numba_dpex.ocl package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.ocl.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.ocl.atomics.html">numba_dpex.ocl.atomics package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.ocl.atomics.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.ocl.atomics.html#module-numba_dpex.ocl.atomics">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.ocl.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.ocl.mathdecl.html">numba_dpex.ocl.mathdecl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.ocl.mathimpl.html">numba_dpex.ocl.mathimpl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.ocl.ocldecl.html">numba_dpex.ocl.ocldecl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.ocl.oclimpl.html">numba_dpex.ocl.oclimpl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.ocl.stubs.html">numba_dpex.ocl.stubs module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.ocl.html#module-numba_dpex.ocl">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.utils.html">numba_dpex.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.array_utils.html">numba_dpex.utils.array_utils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.constants.html">numba_dpex.utils.constants module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.llvm_codegen_helpers.html">numba_dpex.utils.llvm_codegen_helpers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.messages.html">numba_dpex.utils.messages module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.misc.html">numba_dpex.utils.misc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.type_conversion_fns.html">numba_dpex.utils.type_conversion_fns module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.html#module-numba_dpex.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.codegen.html">numba_dpex.codegen module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.compiler.html">numba_dpex.compiler module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.config.html">numba_dpex.config module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.decorators.html">numba_dpex.decorators module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.descriptor.html">numba_dpex.descriptor module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.device_init.html">numba_dpex.device_init module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpctl_support.html">numba_dpex.dpctl_support module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dppy_array_type.html">numba_dpex.dppy_array_type module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dppy_debuginfo.html">numba_dpex.dppy_debuginfo module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dppy_offload_dispatcher.html">numba_dpex.dppy_offload_dispatcher module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dppy_parfor_diagnostics.html">numba_dpex.dppy_parfor_diagnostics module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dppy_passbuilder.html">numba_dpex.dppy_passbuilder module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.extended_numba_itanium_mangler.html">numba_dpex.extended_numba_itanium_mangler module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.initialize.html">numba_dpex.initialize module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.interop.html">numba_dpex.interop module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.numba_support.html">numba_dpex.numba_support module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.numpy_usm_shared.html">numba_dpex.numpy_usm_shared module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.printimpl.html">numba_dpex.printimpl module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.retarget.html">numba_dpex.retarget module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.spirv_generator.html">numba_dpex.spirv_generator module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.target.html">numba_dpex.target module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.vectorizers.html">numba_dpex.vectorizers module</a></li>
+</ul>
+</div>
+</section>
+<section id="module-numba_dpex">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-numba_dpex" title="Permalink to this headline"></a></h2>
+<p>Module to interact with Intel based devices</p>
+<dl class="simple">
+<dt>Extensions to Numba for Intel GPUs introduce two new features into Numba:</dt><dd><ol class="loweralpha simple">
+<li><p>A new backend that has a new decorator called &#64;dppy.kernel that
+exposes an explicit kernel programming interface similar to the
+existing Numba GPU code-generation backends. The &#64;dppy.kernel
+decorator currently implements a subset of OpenCL’s API through
+Numba’s intrinsic functions.</p></li>
+<li><p>A new auto-offload optimizer that does automatic detection and
+offloading of data-parallel code sections on to a GPU or other
+OpenCL/SYCL devices. The auto-offload optimizer is enabled using
+Numba’s default &#64;jit decorator.</p></li>
+</ol>
+</dd>
+</dl>
+<p>Explicit Kernel Prgoramming with new Docorators:</p>
+<p>&#64;dppy.kernel</p>
+<blockquote>
+<div><p>The &#64;dppy.kernel decorator can be used with or without extra arguments.
+Optionally, users can pass the signature of the arguments to the
+decorator. When a signature is provided to the DK decorator the version
+of the OpenCL kernel generated gets specialized for that type signature.</p>
+<p>&#64;dppy.kernel
+def data_parallel_sum(a, b, c):</p>
+<blockquote>
+<div><p>i = dppy.get_global_id(0)
+c[i] = a[i] + b[i]</p>
+</div></blockquote>
+<p>To invoke the above function users will need to provide a
+global size (OpenCL) which is the size of a (same as b and c) and a
+local size (dppy.DEFAULT_LOCAL_SIZE if user don’t want to specify).
+Example shown below:</p>
+</div></blockquote>
+<p>&#64;dppy.func</p>
+<blockquote>
+<div><p>The &#64;dppy.func decorator is the other decorator provided in the explicit
+kernel programming model. This decorator allows users to write “device”
+functions that can be invoked from inside DK functions but cannot be invoked
+from the host. The decorator also supports type specialization as with the
+DK decorator. Functions decorated with &#64;dppy.func will also be JIT compiled
+and inlined into the OpenCL Program containing the &#64;dppy.kernel function
+calling it. A &#64;dppy.func will not be launched as an OpenCL kernel.</p>
+<p>&#64;dppy.func
+def bar(a):</p>
+<blockquote>
+<div><p>return a*a</p>
+</div></blockquote>
+<p>&#64;dppy.kernel
+def foo(in, out):</p>
+<blockquote>
+<div><p>i = dppy.get_global_id(0)
+out[i] = bar(in[i])</p>
+</div></blockquote>
+</div></blockquote>
+<p>Intrinsic Functions:</p>
+<blockquote>
+<div><p>The following table has the list of intrinsic functions that can be directly
+used inside a DK function. All the functions are equivalent to the similarly
+named OpenCL function. Wherever there is an implementation difference
+between the numba-dpex version and the OpenCL version, the difference is
+explained in table. Note that these functions cannot be used anywhere else
+outside of a DK function in a Numba application. Readers are referred to the
+OpenCL API specs to review the functionality of each function.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 31%" />
+<col style="width: 39%" />
+<col style="width: 31%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>numba-dpex intrinsic</p></td>
+<td><p>Equivalent OpenCL function</p></td>
+<td><p>Notes</p></td>
+</tr>
+<tr class="row-even"><td><p>get_global_id</p></td>
+<td><p>get_global_id</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>get_local_id</p></td>
+<td><p>get_local_id</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>get_global_size</p></td>
+<td><p>get_global_size</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>get_local_size</p></td>
+<td><p>get_local_size</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>get_group_id</p></td>
+<td><p>get_group_id</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>get_num_groups</p></td>
+<td><p>get_num_groups</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>get_work_dim</p></td>
+<td><p>get_work_dim</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>barrier</p></td>
+<td><p>barrier</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>mem_fence</p></td>
+<td><p>mem_fence</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>sub_group_barrier</p></td>
+<td><p>sub_group_barrier</p></td>
+<td><p>Does not take any
+argument and is
+equivalent to calling
+barrier with the
+CLK_LOCAL_MEM_FENCE
+argument.</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Other Intrinsic Functions</p>
+<blockquote>
+<div><p>The explicit kernel programming feature provides some additional
+helper/intrinsic functions that do not have a one-to-one mapping with OpenCL
+API functions. The following table has the list of all such currently
+supported functions. As with the other intrinsic functions, these functions
+can only be used inside a DK decorated function.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 0%" />
+<col style="width: 42%" />
+<col style="width: 0%" />
+<col style="width: 35%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td colspan="2"><p>Intrinsic</p></td>
+<td colspan="2"><p>Signature</p></td>
+<td><p>Notes</p></td>
+</tr>
+<tr class="row-even"><td colspan="2"><p>print</p></td>
+<td colspan="2"><p>print(varargs)</p></td>
+<td><p>The print function is a
+subset of the OpenCL
+printf function. The
+numba-dpex version of
+print supports only int,
+string, and float
+arguments.</p></td>
+</tr>
+<tr class="row-odd"><td colspan="2"><p>local.array</p></td>
+<td colspan="2"><p>local.array(shape,dtype)</p></td>
+<td><p>This function allow users
+to create local memory
+that’s only accessible to
+work items in a workgroup</p>
+<p>Required Arguments:
+shape: An integer or a</p>
+<blockquote>
+<div><p>tuple of integers</p>
+</div></blockquote>
+<dl class="simple">
+<dt>dtype: Integer, float or</dt><dd><p>Numba supported
+NumPy dtypes</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="row-even"><td colspan="2"><p>atomic.add</p></td>
+<td colspan="2"><p>atomic.add(addr, value)</p></td>
+<td><p>The atomic.add function
+performs an atomicrmw
+(read-modify-write
+operation) on the
+operand “addr” using the
+operand “value”.</p>
+<p>Note that the atomic.add
+operation only supports
+integer data types.</p>
+</td>
+</tr>
+<tr class="row-odd"><td colspan="5"><dl>
+<dt>atomic.sub        <a href="#id1"><span class="problematic" id="id2">|</span></a>atomic.sub(addr, value)        <a href="#id3"><span class="problematic" id="id4">|</span></a>Same as atomic.add but</dt><dd><div class="line-block">
+<div class="line"><a href="#id5"><span class="problematic" id="id6">|</span></a>does subtraction instead</div>
+<div class="line"><a href="#id7"><span class="problematic" id="id8">|</span></a>of addition.</div>
+<div class="line"><a href="#id9"><span class="problematic" id="id10">|</span></a></div>
+<div class="line"><a href="#id11"><span class="problematic" id="id12">|</span></a>Note that the atomic.add</div>
+<div class="line"><a href="#id13"><span class="problematic" id="id14">|</span></a>operation only supports</div>
+<div class="line"><a href="#id15"><span class="problematic" id="id16">|</span></a>integer data types.</div>
+</div>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>Complete Example using &#64;dppy.kernel:</p>
+<blockquote>
+<div><p>import numpy as np
+import numba_dpex, numba_dpex as dppy
+import dpctl</p>
+<p>&#64;dppy.kernel
+def data_parallel_sum(a, b, c):</p>
+<blockquote>
+<div><p>i = dppy.get_global_id(0)
+c[i] = a[i] + b[i]</p>
+</div></blockquote>
+<dl>
+<dt>def driver(device_env, a, b, c, global_size):</dt><dd><p># Copy the data to the device
+dA = device_env.copy_array_to_device(a)
+dB = device_env.copy_array_to_device(b)
+dC = device_env.create_device_array(c)</p>
+<p>print(“before : “, dA._ndarray)
+print(“before : “, dB._ndarray)
+print(“before : “, dC._ndarray)
+data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](dA, dB, dC)
+device_env.copy_array_from_device(dC)
+print(“after : “, dC._ndarray)</p>
+</dd>
+<dt>def main():</dt><dd><p>global_size = 10
+N = global_size
+print(“N”, N)</p>
+<p>a = np.array(np.random.random(N), dtype=np.float32)
+b = np.array(np.random.random(N), dtype=np.float32)
+c = np.ones_like(a)</p>
+<dl class="simple">
+<dt>if dpctl.has_gpu_queues():</dt><dd><dl class="simple">
+<dt>with dpctl.device_context(“opencl:gpu”) as gpu_queue:</dt><dd><p>driver(device_env, a, b, c, global_size)</p>
+</dd>
+</dl>
+</dd>
+<dt>elif dpctl.has_cpu_queues():</dt><dd><dl class="simple">
+<dt>with dpctl.device_context(“opencl:cpu”) as cpu_queue:</dt><dd><p>driver(device_env, a, b, c, global_size)</p>
+</dd>
+</dl>
+</dd>
+<dt>else:</dt><dd><p>print(“No device found”)
+exit()</p>
+</dd>
+</dl>
+<p>print(“Done…”)</p>
+</dd>
+<dt>if __name__ == ‘__main__’:</dt><dd><p>main()</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>Automatic Offloading of Data-Parallel Regions:</p>
+<blockquote>
+<div><p>We propose adding to NUMBA a new backend providing an automatic offload
+optimizer for &#64;jit decorated functions. Our current proposal only considers
+SYCL devices. Other types of devices, e.g. CUDA, may be considered at a
+later point.</p>
+</div></blockquote>
+<p>Complete Example with automatic offloading:</p>
+<blockquote>
+<div><p>from numba import njit
+import numpy as np</p>
+<p>&#64;njit(parallel={‘offload’:True})
+def f1(a, b):</p>
+<blockquote>
+<div><p>c = a + b
+return c</p>
+</div></blockquote>
+<dl>
+<dt>def main():</dt><dd><p>global_size = 64
+local_size = 32
+N = global_size * local_size
+print(“N”, N)</p>
+<p>a = np.ones(N, dtype=np.float32)
+b = np.ones(N, dtype=np.float32)</p>
+<p>c = f1(a,b)
+for i in range(N):</p>
+<blockquote>
+<div><dl class="simple">
+<dt>if c[i] != 2.0:</dt><dd><p>print(“First index not equal to 2.0 was”, i)
+break</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd>
+<dt>if __name__ == ‘__main__’:</dt><dd><p>main()</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>Supported NumPy Functions:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 43%" />
+<col style="width: 24%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Function Name</p></td>
+<td><p>Function Type</p></td>
+<td><p>Supported</p></td>
+</tr>
+<tr class="row-even"><td><p>sin</p></td>
+<td><p>Trigonometric</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>cos</p></td>
+<td><p>Trigonometric</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>tan</p></td>
+<td><p>Trigonometric</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>arcsin</p></td>
+<td><p>Trigonometric</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>arccos</p></td>
+<td><p>Trigonometric</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>arctan</p></td>
+<td><p>Trigonometric</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>arctan2</p></td>
+<td><p>Trigonometric</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>hypot</p></td>
+<td><p>Trigonometric</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>sinh</p></td>
+<td><p>Trigonometric</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>cosh</p></td>
+<td><p>Trigonometric</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>tanh</p></td>
+<td><p>Trigonometric</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>arcsinh</p></td>
+<td><p>Trigonometric</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>arccosh</p></td>
+<td><p>Trigonometric</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>arctanh</p></td>
+<td><p>Trigonometric</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>deg2rad</p></td>
+<td><p>Trigonometric</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>rad2deg</p></td>
+<td><p>Trigonometric</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>degrees</p></td>
+<td><p>Trigonometric</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>radians</p></td>
+<td><p>Trigonometric</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>isfinite</p></td>
+<td><p>Floating Point Ops</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>isinf</p></td>
+<td><p>Floating Point Ops</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>isnan</p></td>
+<td><p>Floating Point Ops</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>signbit</p></td>
+<td><p>Floating Point Ops</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>copysign</p></td>
+<td><p>Floating Point Ops</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>nextafter</p></td>
+<td><p>Floating Point Ops</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>ldexp</p></td>
+<td><p>Floating Point Ops</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>floor</p></td>
+<td><p>Floating Point Ops</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>ceil</p></td>
+<td><p>Floating Point Ops</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>trunc</p></td>
+<td><p>Floating Point Ops</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>spacing</p></td>
+<td><p>Floating Point Ops</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>add</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>subtract</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>multiply</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>divide</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>logaddexp</p></td>
+<td><p>Math</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>logaddexp2</p></td>
+<td><p>Math</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>true_divide</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>floor_divide</p></td>
+<td><p>Math</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>negative</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>power</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>remainder</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>mod</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>fmod</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>abs</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>absolute</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>fabs</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>rint</p></td>
+<td><p>Math</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>sign</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>conj</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>exp</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>exp2</p></td>
+<td><p>Math</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>log</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>log2</p></td>
+<td><p>Math</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>log10</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>expm1</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>log1p</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>sqrt</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>square</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>reciprocal</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>conjugate</p></td>
+<td><p>Math</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>gcd</p></td>
+<td><p>Math</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>lcm</p></td>
+<td><p>Math</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>greater</p></td>
+<td><p>Comparison</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>greater_equal</p></td>
+<td><p>Comparison</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>less</p></td>
+<td><p>Comparison</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>less_equal</p></td>
+<td><p>Comparison</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>not_equal</p></td>
+<td><p>Comparison</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>equal</p></td>
+<td><p>Comparison</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>logical_and</p></td>
+<td><p>Comparison</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>logical_or</p></td>
+<td><p>Comparison</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>logical_xor</p></td>
+<td><p>Comparison</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>logical_not</p></td>
+<td><p>Comparison</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>maximum</p></td>
+<td><p>Comparison</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>minimum</p></td>
+<td><p>Comparison</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>fmax</p></td>
+<td><p>Comparison</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>fmin</p></td>
+<td><p>Comparison</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>bitwise_and</p></td>
+<td><p>Bitwise Op</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>bitwise_or</p></td>
+<td><p>Bitwise Op</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>bitwise_xor</p></td>
+<td><p>Bitwise Op</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>bitwise_not</p></td>
+<td><p>Bitwise Op</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>invert</p></td>
+<td><p>Bitwise Op</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>left_shift</p></td>
+<td><p>Bitwise Op</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p>right_shift</p></td>
+<td><p>Bitwise Op</p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p>dot</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>kron</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>outer</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>trace</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>vdot</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>cholesky</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>cond</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>det</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>eig</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>eigh</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>eigvals</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>eigvalsh</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>inv</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>lstsq</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>matrix_power</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>matrix_rank</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>norm</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>pinv</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>qr</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>slogdet</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>solve</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>svd</p></td>
+<td><p>Linear Algebra</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>diff</p></td>
+<td><p>Reduction</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>median</p></td>
+<td><p>Reduction</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>nancumprod</p></td>
+<td><p>Reduction</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>nancumsum</p></td>
+<td><p>Reduction</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>nanmax</p></td>
+<td><p>Reduction</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>nanmean</p></td>
+<td><p>Reduction</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>nanmedian</p></td>
+<td><p>Reduction</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>nanmin</p></td>
+<td><p>Reduction</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>nanpercentile</p></td>
+<td><p>Reduction</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>nanquantile</p></td>
+<td><p>Reduction</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>nanprod</p></td>
+<td><p>Reduction</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>nanstd</p></td>
+<td><p>Reduction</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>nansum</p></td>
+<td><p>Reduction</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>nanvar</p></td>
+<td><p>Reduction</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>percentile</p></td>
+<td><p>Reduction</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>quantile</p></td>
+<td><p>Reduction</p></td>
+<td><p>No</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.offload_to_sycl_device">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.</span></span><span class="sig-name descname"><span class="pre">offload_to_sycl_device</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.offload_to_sycl_device" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

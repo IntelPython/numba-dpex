@@ -8,26 +8,26 @@ ufunc.. Refer `Creating NumPy universal functions`_ for details.
 
 ``numba.vectorize`` decorator is supported.
 ``numba.guvectorize`` decorator is not supported yet.
-Another present limitation is that ufunc kernels cannot invoke ``numba_dppy.kernel`` functions.
+Another present limitation is that ufunc kernels cannot invoke ``numba_dpex.kernel`` functions.
 Ongoing work is in progress to address these limitations.
 
 Example 1: Basic Example
 ------------------------
 
-Full example can be found at ``numba_dppy/examples/vectorize.py``.
+Full example can be found at ``numba_dpex/examples/vectorize.py``.
 
-.. literalinclude:: ../../../numba_dppy/examples/vectorize.py
+.. literalinclude:: ../../../numba_dpex/examples/vectorize.py
    :pyobject: ufunc_kernel
 
-.. literalinclude:: ../../../numba_dppy/examples/vectorize.py
+.. literalinclude:: ../../../numba_dpex/examples/vectorize.py
    :pyobject: test_ufunc
 
-Example 2: Calling ``numba.vectorize`` inside a ``numba_dppy.kernel``
+Example 2: Calling ``numba.vectorize`` inside a ``numba_dpex.kernel``
 ---------------------------------------------------------------------
 
-Full example can be found at ``numba_dppy/examples/blacksholes_njit.py``.
+Full example can be found at ``numba_dpex/examples/blacksholes_njit.py``.
 
-.. literalinclude:: ../../../numba_dppy/examples/blacksholes_njit.py
+.. literalinclude:: ../../../numba_dpex/examples/blacksholes_njit.py
    :pyobject: cndf2
 
 .. note::
@@ -41,8 +41,8 @@ Full example can be found at ``numba_dppy/examples/blacksholes_njit.py``.
 Full Examples
 -------------
 
-- ``numba_dppy/examples/vectorize.py``
-- ``numba_dppy/examples/blacksholes_njit.py``
+- ``numba_dpex/examples/vectorize.py``
+- ``numba_dpex/examples/blacksholes_njit.py``
 
 .. _`Universal functions (ufunc)`: http://docs.scipy.org/doc/numpy/reference/ufuncs.html
 .. _`Creating NumPy universal functions`: https://numba.pydata.org/numba-doc/latest/user/vectorize.html

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Writing Device Functions &mdash; numba-dpex 0+untagged.741.gdc9e974 documentation</title>
+  <title>Writing Device Functions &mdash; numba-dpex 0+untagged.749.g02a8b8b documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -96,7 +96,7 @@
 <span id="device-functions"></span><h1>Writing Device Functions<a class="headerlink" href="#writing-device-functions" title="Permalink to this headline"></a></h1>
 <p>OpenCL and SYCL do not directly have a notion for device-only functions, <em>i.e.</em>
 functions that can be only invoked from a kernel and not from a host function.
-However, the special decorator <code class="docutils literal notranslate"><span class="pre">numba_dppy.func</span></code> is provided
+However, the special decorator <code class="docutils literal notranslate"><span class="pre">numba_dpex.func</span></code> is provided
 specifically to implement device functions.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@dppy</span><span class="o">.</span><span class="n">func</span>
 <span class="k">def</span> <span class="nf">a_device_function</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
@@ -113,7 +113,7 @@ specifically to implement device functions.</p>
     <span class="k">return</span> <span class="n">a_device_function</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>To use a device function from a kernel function <code class="docutils literal notranslate"><span class="pre">numba_dppy.kernel</span></code>:</p>
+<p>To use a device function from a kernel function <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span>
 <span class="k">def</span> <span class="nf">a_kernel_function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>

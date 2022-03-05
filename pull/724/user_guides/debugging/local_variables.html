@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Debugging Local Variables &mdash; numba-dpex 0+untagged.741.gdc9e974 documentation</title>
+  <title>Debugging Local Variables &mdash; numba-dpex 0+untagged.749.g02a8b8b documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -121,7 +121,7 @@
 <p>It is recommended to debug with <code class="samp docutils literal notranslate"><span class="pre">NUMBA_OPT=0</span></code>.</p>
 <section id="example">
 <h3>Example<a class="headerlink" href="#example" title="Permalink to this headline"></a></h3>
-<p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dppy/examples/debug/sum_local_vars.py</span></code>:</p>
+<p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/sum_local_vars.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">21</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="linenos">22</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
 <span class="linenos">23</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -136,7 +136,7 @@
 <span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set environment NUMBA_OPT 0</span>
 </span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break sum_local_vars.py:26</span>
 <span class="go">...</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run numba_dppy/examples/debug/sum_local_vars.py</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run numba_dpex/examples/debug/sum_local_vars.py</span>
 <span class="go">...</span>
 <span class="go">Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum (a=..., b=..., c=...) at sum_local_vars.py:26</span>
 <span class="go">26          c[i] = l1 + l2</span>
@@ -153,7 +153,7 @@
 <span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set environment NUMBA_OPT 1</span>
 </span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break sum_local_vars.py:26</span>
 <span class="go">...</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run numba_dppy/examples/debug/sum_local_vars.py</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run numba_dpex/examples/debug/sum_local_vars.py</span>
 <span class="go">...</span>
 <span class="go">Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], ?? () at sum_local_vars.py:26 from /tmp/kernel_11059955544143858990_e6df1e.dbgelf</span>
 <span class="go">26          c[i] = l1 + l2</span>
@@ -178,7 +178,7 @@ for extending the lifetime of variables to the end of the block in which their l
 <p>It is recommended to debug with <code class="samp docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES=1</span></code>.</p>
 <section id="example-1-using-numba-extend-variable-lifetimes">
 <h3>Example 1 - Using <code class="docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES</span></code><a class="headerlink" href="#example-1-using-numba-extend-variable-lifetimes" title="Permalink to this headline"></a></h3>
-<p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dppy/tests/debugging/test_info.py</span></code>:</p>
+<p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dpex/tests/debugging/test_info.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">24</span><span class="k">def</span> <span class="nf">common_loop_body</span><span class="p">(</span><span class="n">param_a</span><span class="p">,</span> <span class="n">param_b</span><span class="p">):</span>
 <span class="linenos">25</span>    <span class="n">param_c</span> <span class="o">=</span> <span class="n">param_a</span> <span class="o">+</span> <span class="mi">10</span>  <span class="c1"># Set breakpoint here</span>
 <span class="linenos">26</span>    <span class="n">param_d</span> <span class="o">=</span> <span class="n">param_b</span> <span class="o">*</span> <span class="mf">0.5</span>
@@ -192,7 +192,7 @@ for extending the lifetime of variables to the end of the block in which their l
 <span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set environment NUMBA_EXTEND_VARIABLE_LIFETIMES 1</span>
 </span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break side-by-side.py:28</span>
 <span class="go">...</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run numba_dppy/examples/debug/side-by-side.py --api=numba-dpex-kernel</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run numba_dpex/examples/debug/side-by-side.py --api=numba-dpex-kernel</span>
 <span class="go">...</span>
 <span class="go">Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::common_loop_body (param_a=0, param_b=0) at side-by-side.py:28</span>
 <span class="go">28          return result</span>
@@ -209,7 +209,7 @@ for extending the lifetime of variables to the end of the block in which their l
 <span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set environment NUMBA_EXTEND_VARIABLE_LIFETIMES 0</span>
 </span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break side-by-side.py:28</span>
 <span class="go">...</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run numba_dppy/examples/debug/side-by-side.py --api=numba-dpex-kernel</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run numba_dpex/examples/debug/side-by-side.py --api=numba-dpex-kernel</span>
 <span class="go">...</span>
 <span class="go">Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::common_loop_body (param_a=0, param_b=0) at side-by-side.py:28</span>
 <span class="go">28          return result</span>
@@ -222,7 +222,7 @@ for extending the lifetime of variables to the end of the block in which their l
 </section>
 <section id="example-2-using-numba-dump-annotation">
 <span id="example-numba-dump-annotation"></span><h3>Example 2 - Using <code class="docutils literal notranslate"><span class="pre">NUMBA_DUMP_ANNOTATION</span></code><a class="headerlink" href="#example-2-using-numba-dump-annotation" title="Permalink to this headline"></a></h3>
-<p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dppy/examples/debug/sum_local_vars.py</span></code>:</p>
+<p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/sum_local_vars.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">21</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="linenos">22</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
 <span class="linenos">23</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
@@ -234,7 +234,7 @@ for extending the lifetime of variables to the end of the block in which their l
 <p>Run this code with environment variable <code class="samp docutils literal notranslate"><span class="pre">NUMBA_DUMP_ANNOTATION=1</span></code> and it
 will show where numba inserts <cite>del</cite> for variables.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">-----------------------------------</span><span class="n">ANNOTATION</span><span class="o">-----------------------------------</span>
-<span class="linenos"> 2</span><span class="c1"># File: numba_dppy/examples/debug/sum_local_vars.py</span>
+<span class="linenos"> 2</span><span class="c1"># File: numba_dpex/examples/debug/sum_local_vars.py</span>
 <span class="linenos"> 3</span><span class="c1"># --- LINE 20 ---</span>
 <span class="linenos"> 4</span>
 <span class="linenos"> 5</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -248,7 +248,7 @@ will show where numba inserts <cite>del</cite> for variables.</p>
 <span class="linenos">13</span>    <span class="c1">#   a = arg(0, name=a)  :: array(float32, 1d, C)</span>
 <span class="linenos">14</span>    <span class="c1">#   b = arg(1, name=b)  :: array(float32, 1d, C)</span>
 <span class="linenos">15</span>    <span class="c1">#   c = arg(2, name=c)  :: array(float32, 1d, C)</span>
-<span class="linenos">16</span>    <span class="c1">#   $2load_global.0 = global(dppy: &lt;module &#39;numba_dppy&#39; from &#39;.../numba-dpex/numba_dppy/__init__.py&#39;&gt;)  :: Module(&lt;module &#39;numba_dppy&#39; from &#39;.../numba-dpex/numba_dppy/__init__.py&#39;&gt;)</span>
+<span class="linenos">16</span>    <span class="c1">#   $2load_global.0 = global(dppy: &lt;module &#39;numba_dpex&#39; from &#39;.../numba-dpex/numba_dpex/__init__.py&#39;&gt;)  :: Module(&lt;module &#39;numba_dpex&#39; from &#39;.../numba-dpex/numba_dpex/__init__.py&#39;&gt;)</span>
 <span class="linenos">17</span>    <span class="c1">#   $4load_method.1 = getattr(value=$2load_global.0, attr=get_global_id)  :: Function(&lt;function get_global_id at 0x7f82b8bae430&gt;)</span>
 <span class="linenos">18</span>    <span class="c1">#   del $2load_global.0</span>
 <span class="linenos">19</span>    <span class="c1">#   $const6.2 = const(int, 0)  :: Literal[int](0)</span>
@@ -315,7 +315,7 @@ not insert <cite>del a</cite> until the end of the function.</p>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">-----------------------------------</span><span class="n">ANNOTATION</span><span class="o">-----------------------------------</span>
-<span class="linenos"> 2</span><span class="c1"># File: numba_dppy/examples/debug/sum_local_vars_revive.py</span>
+<span class="linenos"> 2</span><span class="c1"># File: numba_dpex/examples/debug/sum_local_vars_revive.py</span>
 <span class="linenos"> 3</span><span class="c1"># --- LINE 24 ---</span>
 <span class="linenos"> 4</span>
 <span class="linenos"> 5</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -329,7 +329,7 @@ not insert <cite>del a</cite> until the end of the function.</p>
 <span class="linenos">13</span>    <span class="c1">#   a = arg(0, name=a)  :: array(float32, 1d, C)</span>
 <span class="linenos">14</span>    <span class="c1">#   b = arg(1, name=b)  :: array(float32, 1d, C)</span>
 <span class="linenos">15</span>    <span class="c1">#   c = arg(2, name=c)  :: array(float32, 1d, C)</span>
-<span class="linenos">16</span>    <span class="c1">#   $2load_global.0 = global(dppy: &lt;module &#39;numba_dppy&#39; from &#39;.../numba-dpex/numba_dppy/__init__.py&#39;&gt;)  :: Module(&lt;module &#39;numba_dppy&#39; from &#39;.../numba-dpex/numba_dppy/__init__.py&#39;&gt;)</span>
+<span class="linenos">16</span>    <span class="c1">#   $2load_global.0 = global(dppy: &lt;module &#39;numba_dpex&#39; from &#39;.../numba-dpex/numba_dpex/__init__.py&#39;&gt;)  :: Module(&lt;module &#39;numba_dpex&#39; from &#39;.../numba-dpex/numba_dpex/__init__.py&#39;&gt;)</span>
 <span class="linenos">17</span>    <span class="c1">#   $4load_method.1 = getattr(value=$2load_global.0, attr=get_global_id)  :: Function(&lt;function get_global_id at 0x7fcdf7e8c4c0&gt;)</span>
 <span class="linenos">18</span>    <span class="c1">#   del $2load_global.0</span>
 <span class="linenos">19</span>    <span class="c1">#   $const6.2 = const(int, 0)  :: Literal[int](0)</span>
@@ -370,7 +370,7 @@ not insert <cite>del a</cite> until the end of the function.</p>
 <span class="linenos">54</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l1</span> <span class="o">+</span> <span class="n">l2</span>
 <span class="linenos">55</span>
 <span class="linenos">56</span>    <span class="c1"># --- LINE 30 ---</span>
-<span class="linenos">57</span>    <span class="c1">#   $48load_global.19 = global(revive: &lt;numba_dppy.compiler.DPPYFunctionTemplate object at 0x7fce12e5cc40&gt;)  :: Function(&lt;numba_dppy.compiler.DPPYFunctionTemplate object at 0x7fce12e5cc40&gt;)</span>
+<span class="linenos">57</span>    <span class="c1">#   $48load_global.19 = global(revive: &lt;numba_dpex.compiler.DPPYFunctionTemplate object at 0x7fce12e5cc40&gt;)  :: Function(&lt;numba_dpex.compiler.DPPYFunctionTemplate object at 0x7fce12e5cc40&gt;)</span>
 <span class="linenos">58</span>    <span class="c1">#   $52call_function.21 = call $48load_global.19(a, func=$48load_global.19, args=[Var(a, sum_local_vars_revive.py:26)], kws=(), vararg=None, target=None)  :: (array(float32, 1d, C),) -&gt; array(float32, 1d, C)</span>
 <span class="hll"><span class="linenos">59</span>    <span class="c1">#   del a</span>
 </span><span class="linenos">60</span>    <span class="c1">#   del $52call_function.21</span>
@@ -387,7 +387,7 @@ not insert <cite>del a</cite> until the end of the function.</p>
 <code class="samp docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES=1</span></code>.
 It will show that numba inserts <cite>del</cite> for variables at the end of the block:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="o">-----------------------------------</span><span class="n">ANNOTATION</span><span class="o">-----------------------------------</span>
-<span class="linenos"> 2</span><span class="c1"># File: numba_dppy/examples/debug/sum_local_vars.py</span>
+<span class="linenos"> 2</span><span class="c1"># File: numba_dpex/examples/debug/sum_local_vars.py</span>
 <span class="linenos"> 3</span><span class="o">...</span>
 <span class="linenos"> 4</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
 <span class="linenos"> 5</span>    <span class="o">...</span>
@@ -423,7 +423,7 @@ It will show that numba inserts <cite>del</cite> for variables at the end of the
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span><span class="kn">import</span> <span class="nn">dpctl</span>
 <span class="linenos">16</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="linenos">17</span>
-<span class="linenos">18</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
+<span class="linenos">18</span><span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">dppy</span>
 <span class="linenos">19</span>
 <span class="linenos">20</span>
 <span class="linenos">21</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

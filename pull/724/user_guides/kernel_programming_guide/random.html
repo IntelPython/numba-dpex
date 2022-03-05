@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Random Number Generation &mdash; numba-dpex 0+untagged.741.gdc9e974 documentation</title>
+  <title>Random Number Generation &mdash; numba-dpex 0+untagged.749.g02a8b8b documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -126,7 +126,7 @@ SYCL-supported device is provided via integration with <a class="reference exter
 <p>Example:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>To ensure the code is executed on GPU set <cite>DEBUG=1</cite> (or <cite>NUMBA_DPPY_DEBUG=1</cite>) and look to stdout</p>
+<p>To ensure the code is executed on GPU set <cite>DEBUG=1</cite> (or <cite>NUMBA_DPEX_DEBUG=1</cite>) and look to stdout</p>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Copyright 2020, 2021 Intel Corporation</span>
 <span class="c1">#</span>
@@ -143,9 +143,9 @@ SYCL-supported device is provided via integration with <a class="reference exter
 <span class="c1"># limitations under the License.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">numba_dppy can run several of the numpy.random RNG functions called inside</span>
+<span class="sd">numba_dpex can run several of the numpy.random RNG functions called inside</span>
 <span class="sd">a JIT function on a SYCL device using dpnp</span>
-<span class="sd">(https://github.com/IntelPython/dpnp). As with the rest of numba_dppy examples,</span>
+<span class="sd">(https://github.com/IntelPython/dpnp). As with the rest of numba_dpex examples,</span>
 <span class="sd">this feature is also available by simply invoking a ``numba.jit`` function with</span>
 <span class="sd">the numpy.random calls from within a ``dpctl.device_context``scope.</span>
 <span class="sd">&quot;&quot;&quot;</span>

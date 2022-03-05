@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Memory Management &mdash; numba-dpex 0+untagged.741.gdc9e974 documentation</title>
+  <title>Memory Management &mdash; numba-dpex 0+untagged.749.g02a8b8b documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -104,7 +104,7 @@
 enable host to device and <em>vice versa</em> data transfer. By using USM shared
 memory allocator, it allows seamless interoperability between
 <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> and other SYCL-based Python extensions and across multiple
-kernels written using <code class="docutils literal notranslate"><span class="pre">numba_dppy.kernel</span></code> decorator.</p>
+kernels written using <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code> decorator.</p>
 <p>USM memory manager provided by <code class="docutils literal notranslate"><span class="pre">dpctl</span></code> and support for
 the <strong>SYCL USM Array Interface</strong> protocol enable zero-copy data
 exchange across USM memory-backed Python objects.</p>
@@ -203,7 +203,7 @@ allocate local memory for a kernel.</p>
 <p class="admonition-title">Note</p>
 <p>To go convert from <code class="docutils literal notranslate"><span class="pre">numba.cuda</span></code> to <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code>, replace
 <code class="docutils literal notranslate"><span class="pre">numba.cuda.shared.array</span></code> with
-<code class="docutils literal notranslate"><span class="pre">numba_dppy.local.array(shape=blocksize,</span> <span class="pre">dtype=float32)</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">numba_dpex.local.array(shape=blocksize,</span> <span class="pre">dtype=float32)</span></code>.</p>
 </div>
 <div class="admonition-todo admonition" id="id1">
 <p class="admonition-title">Todo</p>

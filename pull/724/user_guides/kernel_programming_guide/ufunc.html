@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Universal Functions &mdash; numba-dpex 0+untagged.741.gdc9e974 documentation</title>
+  <title>Universal Functions &mdash; numba-dpex 0+untagged.749.g02a8b8b documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -56,7 +56,7 @@
 <li class="toctree-l2"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Universal Functions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#example-1-basic-example">Example 1: Basic Example</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#example-2-calling-numba-vectorize-inside-a-numba-dppy-kernel">Example 2: Calling <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> inside a <code class="docutils literal notranslate"><span class="pre">numba_dppy.kernel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-2-calling-numba-vectorize-inside-a-numba-dpex-kernel">Example 2: Calling <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> inside a <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#full-examples">Full Examples</a></li>
 </ul>
 </li>
@@ -104,20 +104,20 @@ routines that are JIT compiled. Although, a close analog to NumPy universal func
 ufunc.. Refer <a class="reference external" href="https://numba.pydata.org/numba-doc/latest/user/vectorize.html">Creating NumPy universal functions</a> for details.</p>
 <p><code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> decorator is supported.
 <code class="docutils literal notranslate"><span class="pre">numba.guvectorize</span></code> decorator is not supported yet.
-Another present limitation is that ufunc kernels cannot invoke <code class="docutils literal notranslate"><span class="pre">numba_dppy.kernel</span></code> functions.
+Another present limitation is that ufunc kernels cannot invoke <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code> functions.
 Ongoing work is in progress to address these limitations.</p>
 <section id="example-1-basic-example">
 <h2>Example 1: Basic Example<a class="headerlink" href="#example-1-basic-example" title="Permalink to this headline"></a></h2>
-<p>Full example can be found at <code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/vectorize.py</span></code>.</p>
+<p>Full example can be found at <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/vectorize.py</span></code>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@vectorize</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">ufunc_kernel</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
 </pre></div>
 </div>
 </section>
-<section id="example-2-calling-numba-vectorize-inside-a-numba-dppy-kernel">
-<h2>Example 2: Calling <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> inside a <code class="docutils literal notranslate"><span class="pre">numba_dppy.kernel</span></code><a class="headerlink" href="#example-2-calling-numba-vectorize-inside-a-numba-dppy-kernel" title="Permalink to this headline"></a></h2>
-<p>Full example can be found at <code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/blacksholes_njit.py</span></code>.</p>
+<section id="example-2-calling-numba-vectorize-inside-a-numba-dpex-kernel">
+<h2>Example 2: Calling <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> inside a <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code><a class="headerlink" href="#example-2-calling-numba-vectorize-inside-a-numba-dpex-kernel" title="Permalink to this headline"></a></h2>
+<p>Full example can be found at <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/blacksholes_njit.py</span></code>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@numba</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">cndf2</span><span class="p">(</span><span class="n">inp</span><span class="p">):</span>
     <span class="n">out</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">erf</span><span class="p">((</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">inp</span><span class="p">)</span>
@@ -136,8 +136,8 @@ called.</p>
 <section id="full-examples">
 <h2>Full Examples<a class="headerlink" href="#full-examples" title="Permalink to this headline"></a></h2>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/vectorize.py</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/blacksholes_njit.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/vectorize.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/blacksholes_njit.py</span></code></p></li>
 </ul>
 </section>
 </section>
