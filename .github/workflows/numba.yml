@@ -16,7 +16,7 @@ jobs:
       ID: ${{ github.event.inputs.numba_pr }}
 
     steps:
-      - name: Checkout numba-dppy
+      - name: Checkout numba-dpex
         uses: actions/checkout@v2
         with: {path: numba-dppy}
 
@@ -52,7 +52,7 @@ jobs:
           git log -1
           python setup.py develop
 
-      - name: Install numba-dppy
+      - name: Install numba-dpex
         run: |
           cd numba-dppy
           git log -1

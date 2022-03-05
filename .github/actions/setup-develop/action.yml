@@ -1,5 +1,5 @@
-name: Setup numba-dppy
-description: 'Setup conda environment, build numba-dppy and setup devices'
+name: Setup numba-dpex
+description: 'Setup conda environment, build numba-dpex and setup devices'
 inputs:
   environment:
     description: Environment file
@@ -16,7 +16,7 @@ runs:
       run: conda env update -n base -f ${{ inputs.environment }} --prune
       shell: bash
 
-    - name: Build numba-dppy
+    - name: Build numba-dpex
       run: |
         export PATH=$CONDA/bin-llvm:$PATH
         python setup.py develop
