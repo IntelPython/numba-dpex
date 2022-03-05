@@ -198,9 +198,9 @@ def insert_and_call_atomic_fn(
         ll_val = ir.FloatType()
         ll_p = ll_val.as_pointer()
         if fn_type == "add":
-            name = "numba_dppy_atomic_add_f32"
+            name = "numba_dpex_atomic_add_f32"
         elif fn_type == "sub":
-            name = "numba_dppy_atomic_sub_f32"
+            name = "numba_dpex_atomic_sub_f32"
         else:
             raise TypeError("Operation type is not supported %s" % (fn_type))
     elif dtype.name == "float64":
@@ -208,9 +208,9 @@ def insert_and_call_atomic_fn(
             ll_val = ir.DoubleType()
             ll_p = ll_val.as_pointer()
             if fn_type == "add":
-                name = "numba_dppy_atomic_add_f64"
+                name = "numba_dpex_atomic_add_f64"
             elif fn_type == "sub":
-                name = "numba_dppy_atomic_sub_f64"
+                name = "numba_dpex_atomic_sub_f64"
             else:
                 raise TypeError(
                     "Operation type is not supported %s" % (fn_type)
