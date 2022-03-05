@@ -3,7 +3,7 @@ name: Conda package
 on: [push, pull_request]
 
 env:
-  PACKAGE_NAME: numba-dppy
+  PACKAGE_NAME: numba-dpex
   MODULE_NAME: numba_dpex
 
 jobs:
