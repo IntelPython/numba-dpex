@@ -6,6 +6,7 @@ on:
   pull_request:
     paths:
       - 'numba_dppy/**'
+      - environment/coverage.yml
 
 jobs:
   main:
