@@ -24,7 +24,7 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -63,7 +63,7 @@ jobs:
       conda-bld: C:\Miniconda\conda-bld\win-64\
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - uses: conda-incubator/setup-miniconda@v2
@@ -213,7 +213,7 @@ jobs:
       - name: Create dir for numba-dppy repo
         run: |
           mkdir -p ${{ github.workspace }}/dppy-repo
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           path: dppy-repo
           fetch-depth: 0
