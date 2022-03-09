@@ -13,15 +13,6 @@ jobs:
     strategy:
       matrix:
         python: ["3.8", "3.9"]
-        integration_channels: [""]
-        experimental: [false]
-        artifact_name: [""]
-        include:
-          - python: "3.8"
-            integration_channels: -c dppy/label/dev
-            artifact_name: -c dppy_label_dev
-            experimental: false
-    continue-on-error: ${{ matrix.experimental }}
 
     steps:
       - uses: actions/checkout@v3
@@ -33,13 +24,13 @@ jobs:
 
       - name: Build conda package
         env:
-          CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
+          CHANNELS: -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
         run: ./scripts/build_conda_package.sh ${{ matrix.python }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }} ${{ matrix.artifact_name }}
+          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
           path: /usr/share/miniconda/conda-bld/linux-64/${{ env.PACKAGE_NAME }}-*.tar.bz2
 
   build_windows:
@@ -98,52 +89,24 @@ jobs:
     strategy:
       matrix:
         python: ["3.8", "3.9"]
-        numba: ["0.54"]
-        dpctl: ["0.11.4", "0.12"]
-        dpnp: ["0.9.0dev0"]
-        integration_channels: [""]
-        experimental: [false]
-        artifact_name: [""]
-        dependencies: [""]
+        numba: ["0.55"]
+        dpctl: ["0.12"]
+        dpnp: ["0.10"]
         include:
           - python: "3.8"
             numba: "0.54"
-            dpctl: "0.12"
-            dpnp: "0.9.0dev0"
-            integration_channels: -c dppy/label/dev
-            artifact_name: -c dppy_label_dev
-            experimental: false  # current stable
-            dependencies: ""
-          - python: "3.8"
-            numba: "0.55.0dev0=*_782"
-            dpctl: "0.12"
-            dpnp: "0.9.0dev0"
-            integration_channels:
-            artifact_name: ""
-            experimental: false  # current stable
-            dependencies: ""
-          - python: "3.9"
-            numba: "0.55.0dev0=*_778"
-            dpctl: "0.12"
-            dpnp: "0.9.0dev0"
-            integration_channels: ""
-            artifact_name: ""
-            experimental: false  # current stable
-            dependencies: ""
-    continue-on-error: ${{ matrix.experimental }}
-    env:
-      # conda-forge: llvm-spirv 11 not on intel channel yet
-      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev -c conda-forge --override-channels
+            dpctl: "0.11"
+            dpnp: "0.9"
 
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }} ${{ matrix.artifact_name }}
-      - name: Add conda to system path
-        run: echo $CONDA/bin >> $GITHUB_PATH
-      - name: Install conda-build
-        run: conda install conda-build
+          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
+
+      - name: Setup conda-build
+        uses: ./.github/actions/setup-conda-build
+
       - name: Create conda channel
         run: |
           mkdir -p $GITHUB_WORKSPACE/channel/linux-64
@@ -151,28 +114,13 @@ jobs:
           conda index $GITHUB_WORKSPACE/channel
           # Test channel
           conda search $PACKAGE_NAME -c $GITHUB_WORKSPACE/channel --override-channels
-      - name: Collect dependencies
-        run: |
-          CHANNELS="-c $GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}"
-          conda install $PACKAGE_NAME python=${{ matrix.python }} $CHANNELS --only-deps --dry-run > lockfile
-      - name: Set pkgs_dirs
-        run: |
-          echo "pkgs_dirs: [~/.conda/pkgs]" >> ~/.condarc
-      - name: Cache conda packages
-        uses: actions/cache@v2
-        env:
-          CACHE_NUMBER: 0  # Increase to reset cache
-        with:
-          path: ~/.conda/pkgs
-          key:
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-${{hashFiles('lockfile') }}
-          restore-keys: |
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
+
       - name: Install numba-dppy
+        env:
+          CHANNELS: -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
         run: |
-          CHANNELS="-c $GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}"
-          conda install $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl=${{ matrix.dpctl }} dpnp=${{ matrix.dpnp }} ${{ matrix.dependencies }} $CHANNELS
+          CHANNELS="-c $GITHUB_WORKSPACE/channel $CHANNELS"
+          conda install $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl=${{ matrix.dpctl }} dpnp=${{ matrix.dpnp }} $CHANNELS
           # Test installed packages
           conda list
       - name: Check DPNP
