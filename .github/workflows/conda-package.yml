@@ -1,6 +1,14 @@
 name: Conda package
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+      - release*
+  pull_request:
+    branches:
+      - main
+      - release*
 
 env:
   PACKAGE_NAME: numba-dppy
