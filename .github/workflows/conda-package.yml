@@ -104,6 +104,8 @@ jobs:
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 
+      - uses: actions/checkout@v3
+
       - name: Setup conda-build
         uses: ./.github/actions/setup-conda-build
 
