@@ -1,0 +1,7 @@
+numba\_dppy.decorators module
+=============================
+
+.. automodule:: numba_dppy.decorators
+   :members:
+   :undoc-members:
+   :show-inheritance:
