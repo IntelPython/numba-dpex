@@ -32,7 +32,6 @@ jobs:
         uses: ./.github/actions/setup-conda-build
 
       - name: Build conda package
-        working-directory: numba-dppy
         env:
           CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
         run: ./scripts/build_conda_package.sh ${{ matrix.python }}
