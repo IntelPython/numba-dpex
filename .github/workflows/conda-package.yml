@@ -274,10 +274,8 @@ jobs:
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 
-      - name: Install anaconda-client
-        run: conda install anaconda-client
-      - name: Add conda to system path
-        run: echo $CONDA/bin >> $GITHUB_PATH
+      - name: Setup anaconda-client
+        uses: ./.github/actions/setup-anaconda-client
 
       - name: Upload
         env:
