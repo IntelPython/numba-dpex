@@ -22,45 +22,21 @@ jobs:
             artifact_name: -c dppy_label_dev
             experimental: false
     continue-on-error: ${{ matrix.experimental }}
-    env:
-      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
 
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
-      - name: Set pkgs_dirs
-        run: |
-          echo "pkgs_dirs: [~/.conda/pkgs]" >> ~/.condarc
-      - name: Cache conda packages
-        uses: actions/cache@v2
-        env:
-          CACHE_NUMBER: 0  # Increase to reset cache
-        with:
-          path: ~/.conda/pkgs
-          key:
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-${{hashFiles('**/meta.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
-      - name: Install cpu driver
-        run: sudo apt-get install intel-opencl-icd
-      - name: Activate cpu driver
-        run: echo "libintelocl.so" | sudo tee /etc/OpenCL/vendors/intel-cpu.icd
-      - name: Add conda to system path
-        run: echo $CONDA/bin >> $GITHUB_PATH
-      - name: Install conda-build
-        run: conda install conda-build
+      - name: Setup conda-build
+        uses: ./.github/actions/setup-conda-build
+
       - name: Build conda package
-        run: |
-          VERSIONS="--python ${{ matrix.python }}"
-          TEST="--no-test"
-          conda build \
-            $TEST \
-            $VERSIONS \
-            $CHANNELS \
-            conda-recipe
+        working-directory: numba-dppy
+        env:
+          CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
+        run: ./scripts/build_conda_package.sh ${{ matrix.python }}
+
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
