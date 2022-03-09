@@ -99,15 +99,17 @@ jobs:
             dpnp: "0.9"
 
     steps:
-      - uses: actions/checkout@v3
-
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 
+      - uses: actions/checkout@v3
+        with:
+          path: numba-dppy
+
       - name: Setup conda-build
-        uses: ./.github/actions/setup-conda-build
+        uses: ./numba-dppy/.github/actions/setup-conda-build
 
       - name: Create conda channel
         run: |
