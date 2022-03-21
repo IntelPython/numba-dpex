@@ -1,0 +1,7 @@
+numba\_dppy.types.dpctl\_typeof module
+======================================
+
+.. automodule:: numba_dppy.types.dpctl_typeof
+   :members:
+   :undoc-members:
+   :show-inheritance:

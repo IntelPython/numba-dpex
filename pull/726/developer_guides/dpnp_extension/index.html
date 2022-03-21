@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DPNP extension for Numba &mdash; numba-dppy 0+untagged.731.gfbd8ec4 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> numba-dppy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html">Code-generation based on a device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/getting_started.html"> Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/debugging/index.html"> Debugging with GDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/interoperability/sycl_usm_array_interface.html"> SYCL USM Array Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Debugging the compilation pipeline</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">numba-dppy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>DPNP extension for Numba</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer_guides/dpnp_extension/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="dpnp-extension-for-numba">
+<span id="dpnp-extension"></span><h1>DPNP extension for Numba<a class="headerlink" href="#dpnp-extension-for-numba" title="Permalink to this headline"></a></h1>
+<p>Support DPNP types and functions in Numba functions.</p>
+<section id="dpnp-array">
+<h2>DPNP array<a class="headerlink" href="#dpnp-array" title="Permalink to this headline"></a></h2>
+<p>You should distinct 3 arrays. 2 arrys from dpctl and one from DPNP.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="arrays.html">Arrays</a></li>
+</ul>
+</div>
+</section>
+<section id="extending-numba">
+<h2>Extending Numba<a class="headerlink" href="#extending-numba" title="Permalink to this headline"></a></h2>
+<p><a class="reference external" href="https://numba.readthedocs.io/en/stable/extending/index.html">Extending Numba</a>
+describes how to extend Numba to make it recognize and support additional
+operations, functions or types.</p>
+<p>Numba provides two categories of APIs:</p>
+<ul class="simple">
+<li><p>The high-level APIs</p></li>
+<li><p>The low-level APIs</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span>
+<span class="linenos">2</span><span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="linenos">3</span>  <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+<span class="linenos">4</span>
+<span class="linenos">5</span><span class="n">a</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">([</span><span class="mi">10</span><span class="p">])</span>
+<span class="linenos">6</span><span class="n">b</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">([</span><span class="mi">10</span><span class="p">])</span>
+<span class="linenos">7</span><span class="n">c</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="numba_type.html">Define Numba type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="typeof.html">Infer Numba type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model.html">Define data model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="boxing.html">Boxing and unboxing</a></li>
+</ul>
+</div>
+</section>
+<section id="common">
+<h2>Common<a class="headerlink" href="#common" title="Permalink to this headline"></a></h2>
+<section id="main-classes">
+<h3>Main classes<a class="headerlink" href="#main-classes" title="Permalink to this headline"></a></h3>
+<p><cite>PythonAPI</cite> contains useful functions for generating calls to Python API.
+See <cite>numba/core/pythonapi.py</cite>.</p>
+<p>It uses <cite>IRBuilder</cite> for generating code.
+See llvmlite.</p>
+<p>It also uses <cite>BaseContext</cite> for receiving context specific information.
+See <cite>numba/core/base.py</cite>.</p>
+</section>
+</section>
+<section id="topics-to-know">
+<h2>Topics to know<a class="headerlink" href="#topics-to-know" title="Permalink to this headline"></a></h2>
+<p>Python API:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://numpy.org/doc/stable/reference/c-api/index.html">NumPy C-API</a></p></li>
+</ul>
+<p>__array_inteface__</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

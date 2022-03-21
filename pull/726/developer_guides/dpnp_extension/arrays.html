@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arrays &mdash; numba-dppy 0+untagged.731.gfbd8ec4 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> numba-dppy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html">Code-generation based on a device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/getting_started.html"> Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/debugging/index.html"> Debugging with GDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/interoperability/sycl_usm_array_interface.html"> SYCL USM Array Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Debugging the compilation pipeline</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">numba-dppy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Arrays</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer_guides/dpnp_extension/arrays.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="arrays">
+<h1>Arrays<a class="headerlink" href="#arrays" title="Permalink to this headline"></a></h1>
+<section id="dpnp-ndarray-type">
+<h2><code class="docutils literal notranslate"><span class="pre">dpnp.ndarray</span></code> type<a class="headerlink" href="#dpnp-ndarray-type" title="Permalink to this headline"></a></h2>
+<p>DPNP provides array type <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>.</p>
+<p>It is a container for <code class="docutils literal notranslate"><span class="pre">dpctl.tensor.usm_ndarray</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># dpnp/dpnp_array.py</span>
+<span class="k">class</span> <span class="nc">dpnp_array</span><span class="p">:</span>
+  <span class="o">...</span>
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_array_obj</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">usm_ndarray</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+  <span class="o">...</span>
+  <span class="nd">@property</span>
+  <span class="k">def</span> <span class="nf">__sycl_usm_array_interface__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_array_obj</span><span class="o">.</span><span class="n">__sycl_usm_array_interface__</span>
+  <span class="o">...</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code class="docutils literal notranslate"><span class="pre">dpctl.tensor.usm_ndarray</span></code> and <code class="docutils literal notranslate"><span class="pre">dpnp.ndarray</span></code> are not subclasses of
+<code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>.</p>
+</div>
+</section>
+<section id="dpctl-tensor-usm-ndarray-type">
+<h2><code class="docutils literal notranslate"><span class="pre">dpctl.tensor.usm_ndarray</span></code> type<a class="headerlink" href="#dpctl-tensor-usm-ndarray-type" title="Permalink to this headline"></a></h2>
+<p>dpctl provides <code class="docutils literal notranslate"><span class="pre">usm_ndarray</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># dpctl/tensor/__init__.py</span>
+<span class="kn">from</span> <span class="nn">dpctl.tensor._usmarray</span> <span class="kn">import</span> <span class="n">usm_ndarray</span>
+
+<span class="c1"># dpctl/tensor/_usmarray.pyx</span>
+<span class="kn">import</span> <span class="nn">dpctl.memory</span> <span class="k">as</span> <span class="nn">dpmem</span>
+<span class="o">...</span>
+<span class="n">cdef</span> <span class="k">class</span> <span class="nc">usm_ndarray</span><span class="p">:</span>
+  <span class="o">...</span>
+  <span class="nd">@property</span>
+  <span class="k">def</span> <span class="nf">__sycl_usm_array_interface__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_</span><span class="p">,</span> <span class="n">dpmem</span><span class="o">.</span><span class="n">_memory</span><span class="o">.</span><span class="n">_Memory</span><span class="p">)</span>
+    <span class="n">ary_iface</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_</span><span class="o">.</span><span class="n">__sycl_usm_array_interface__</span>
+    <span class="o">...</span>
+    <span class="n">ary_iface</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span> <span class="n">mem_ptr</span><span class="p">,</span> <span class="n">ro_flag</span><span class="p">)</span>
+    <span class="n">ary_iface</span><span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span>
+    <span class="o">...</span>
+    <span class="n">ary_iface</span><span class="p">[</span><span class="s1">&#39;strides&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">...</span>
+    <span class="o">...</span>
+    <span class="n">ary_iface</span><span class="p">[</span><span class="s1">&#39;typestr&#39;</span><span class="p">]</span> <span class="o">=</span>
+    <span class="o">...</span>
+    <span class="n">ary_iface</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">]</span> <span class="o">=</span>
+    <span class="o">...</span>
+  <span class="k">def</span> <span class="nf">__cinit__</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="s1">&#39;device&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">dpmem</span><span class="o">.</span><span class="n">_memory</span><span class="o">.</span><span class="n">_Memory</span><span class="p">):</span>
+      <span class="n">_buffer</span> <span class="o">=</span> <span class="n">buffer</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)):</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">buffer</span> <span class="o">==</span> <span class="s2">&quot;shared&quot;</span><span class="p">):</span>
+        <span class="n">_buffer</span> <span class="o">=</span> <span class="n">dpmem</span><span class="o">.</span><span class="n">MemoryUSMShared</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+      <span class="k">elif</span> <span class="p">(</span><span class="n">buffer</span> <span class="o">==</span> <span class="s2">&quot;device&quot;</span><span class="p">):</span>
+        <span class="n">_buffer</span> <span class="o">=</span> <span class="n">dpmem</span><span class="o">.</span><span class="n">MemoryUSMDevice</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+      <span class="k">elif</span> <span class="p">(</span><span class="n">buffer</span> <span class="o">==</span> <span class="s2">&quot;host&quot;</span><span class="p">):</span>
+        <span class="n">_buffer</span> <span class="o">=</span> <span class="n">dpmem</span><span class="o">.</span><span class="n">MemoryUSMHost</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+      <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">usm_ndarray</span><span class="p">):</span>
+        <span class="n">_buffer</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">usm_data</span>
+    <span class="o">...</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">base_</span> <span class="o">=</span> <span class="n">_buffer</span>
+    <span class="o">...</span>
+
+<span class="c1"># dpctl/memory/_memory.pyx</span>
+<span class="n">cdef</span> <span class="k">class</span> <span class="nc">_Memory</span><span class="p">:</span>
+  <span class="o">...</span>
+  <span class="nb">property</span> <span class="n">__sycl_usm_array_interface__</span><span class="p">:</span>
+  <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">cdef</span> <span class="nb">dict</span> <span class="n">iface</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&lt;</span><span class="n">void</span> <span class="o">*&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">memory_ptr</span><span class="p">),</span> <span class="kc">True</span><span class="p">),</span> <span class="c1"># bool(self.writeable)),</span>
+      <span class="s2">&quot;shape&quot;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nbytes</span><span class="p">,),</span>
+      <span class="s2">&quot;strides&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+      <span class="s2">&quot;typestr&quot;</span><span class="p">:</span> <span class="s2">&quot;|u1&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="s2">&quot;syclobj&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span>
+    <span class="p">}</span>
+    <span class="c1"># no typedescr and offset</span>
+    <span class="k">return</span> <span class="n">iface</span>
+</pre></div>
+</div>
+</section>
+<section id="dpctl-tensor-numpy-usm-shared-ndarray-type">
+<h2><code class="docutils literal notranslate"><span class="pre">dpctl.tensor.numpy_usm_shared.ndarray</span></code> type<a class="headerlink" href="#dpctl-tensor-numpy-usm-shared-ndarray-type" title="Permalink to this headline"></a></h2>
+<p>Existing implementation of array support is placed in
+<code class="file docutils literal notranslate"><span class="pre">numba_dppy/numpy_usm_shared.py</span></code> and is based on
+<code class="docutils literal notranslate"><span class="pre">dpctl.tensor.numpy_usm_shared.ndarray</span></code> from
+<code class="file docutils literal notranslate"><span class="pre">dpctl/tensor/numpy_usm_shared.py</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># numba_dppy/numpy_usm_shared.py</span>
+<span class="kn">from</span> <span class="nn">dpctl.tensor.numpy_usm_shared</span> <span class="kn">import</span> <span class="n">ndarray</span>
+
+<span class="c1"># dpctl/tensor/numpy_usm_shared.py</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">class</span> <span class="nc">ndarray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+  <span class="o">...</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code class="docutils literal notranslate"><span class="pre">dpctl.tensor.numpy_usm_shared.ndarray</span></code> is not related to
+<code class="docutils literal notranslate"><span class="pre">dpnp.ndarray</span></code>.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

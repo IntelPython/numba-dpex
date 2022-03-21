@@ -1,0 +1,7 @@
+numba\_dppy.runtime.functions module
+====================================
+
+.. automodule:: numba_dppy.runtime.functions
+   :members:
+   :undoc-members:
+   :show-inheritance:
