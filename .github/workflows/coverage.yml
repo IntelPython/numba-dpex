@@ -1,8 +1,12 @@
 name: Coverage
 on:
-  pull_request:
   push:
-    branches: [main]
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'numba_dppy/**'
+      - environment/coverage.yml
 
 jobs:
   main:

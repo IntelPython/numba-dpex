@@ -5,6 +5,9 @@ on:
       - main
   pull_request:
     types: [opened, synchronize, reopened, closed]
+    paths:
+      - 'docs/**'
+      - environment/docs.yml
 
 jobs:
   main:
