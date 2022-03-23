@@ -85,6 +85,7 @@ the two ways in which kernels may be written in a Numba-dppy program.
     Getting Started <user_guides/getting_started>
     Programming SYCL Kernels <user_guides/kernel_programming_guide/index>
     Debugging with GDB <user_guides/debugging/index>
+    SYCL USM Array Interface <user_guides/interoperability/sycl_usm_array_interface>
     numba-dppy for numba.cuda Programmers <user_guides/migrating_from_numba_cuda>
 
 .. toctree::
@@ -93,7 +94,7 @@ the two ways in which kernels may be written in a Numba-dppy program.
 
     developer_guides/dpnp_integration
     developer_guides/tools
-
+    developer_guides/dpnp_extension/index
 
 About
 =====
