@@ -11,8 +11,6 @@ Subpackages
    numba_dppy.dpctl_iface
    numba_dppy.dpnp_iface
    numba_dppy.ocl
-   numba_dppy.runtime
-   numba_dppy.types
    numba_dppy.utils
 
 Submodules

@@ -1,7 +1,0 @@
-numba\_dppy.types.dpnp\_boxing module
-=====================================
-
-.. automodule:: numba_dppy.types.dpnp_boxing
-   :members:
-   :undoc-members:
-   :show-inheritance:

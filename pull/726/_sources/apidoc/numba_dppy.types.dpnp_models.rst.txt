@@ -1,7 +1,0 @@
-numba\_dppy.types.dpnp\_models module
-=====================================
-
-.. automodule:: numba_dppy.types.dpnp_models
-   :members:
-   :undoc-members:
-   :show-inheritance:

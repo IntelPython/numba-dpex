@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy.ocl.ocldecl module &mdash; numba-dppy 0+untagged.733.gf743627 documentation</title>
+  <title>numba_dppy.ocl.ocldecl module &mdash; numba-dppy 0+untagged.710.g36a9efe documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -292,10 +292,175 @@
 
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.register">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.ocl.ocldecl.</span></span><span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.register" title="Permalink to this definition"></a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_barrier">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.ocl.ocldecl.</span></span><span class="sig-name descname"><span class="pre">Ocl_barrier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_barrier" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.typing.templates.ConcreteTemplate</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_barrier.cases">
+<span class="sig-name descname"><span class="pre">cases</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[(uint32,)</span> <span class="pre">-&gt;</span> <span class="pre">none,</span> <span class="pre">()</span> <span class="pre">-&gt;</span> <span class="pre">none]</span></em><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_barrier.cases" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_barrier.key">
+<span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_barrier.key" title="Permalink to this definition"></a></dt>
+<dd><p>OpenCL barrier()</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_global_id">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.ocl.ocldecl.</span></span><span class="sig-name descname"><span class="pre">Ocl_get_global_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_global_id" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.typing.templates.ConcreteTemplate</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_global_id.cases">
+<span class="sig-name descname"><span class="pre">cases</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[(uint32,)</span> <span class="pre">-&gt;</span> <span class="pre">int64]</span></em><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_global_id.cases" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_global_id.key">
+<span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_global_id.key" title="Permalink to this definition"></a></dt>
+<dd><p>OpenCL get_global_id()</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_global_size">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.ocl.ocldecl.</span></span><span class="sig-name descname"><span class="pre">Ocl_get_global_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_global_size" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.typing.templates.ConcreteTemplate</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_global_size.cases">
+<span class="sig-name descname"><span class="pre">cases</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[(uint32,)</span> <span class="pre">-&gt;</span> <span class="pre">int64]</span></em><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_global_size.cases" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_global_size.key">
+<span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_global_size.key" title="Permalink to this definition"></a></dt>
+<dd><p>OpenCL get_global_size()</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_group_id">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.ocl.ocldecl.</span></span><span class="sig-name descname"><span class="pre">Ocl_get_group_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_group_id" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.typing.templates.ConcreteTemplate</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_group_id.cases">
+<span class="sig-name descname"><span class="pre">cases</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[(uint32,)</span> <span class="pre">-&gt;</span> <span class="pre">int64]</span></em><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_group_id.cases" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_group_id.key">
+<span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_group_id.key" title="Permalink to this definition"></a></dt>
+<dd><p>OpenCL get_group_id()</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_local_id">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.ocl.ocldecl.</span></span><span class="sig-name descname"><span class="pre">Ocl_get_local_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_local_id" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.typing.templates.ConcreteTemplate</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_local_id.cases">
+<span class="sig-name descname"><span class="pre">cases</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[(uint32,)</span> <span class="pre">-&gt;</span> <span class="pre">int64]</span></em><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_local_id.cases" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_local_id.key">
+<span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_local_id.key" title="Permalink to this definition"></a></dt>
+<dd><p>OpenCL get_local_id()</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_local_size">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.ocl.ocldecl.</span></span><span class="sig-name descname"><span class="pre">Ocl_get_local_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_local_size" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.typing.templates.ConcreteTemplate</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_local_size.cases">
+<span class="sig-name descname"><span class="pre">cases</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[(uint32,)</span> <span class="pre">-&gt;</span> <span class="pre">int64]</span></em><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_local_size.cases" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_local_size.key">
+<span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_local_size.key" title="Permalink to this definition"></a></dt>
+<dd><p>OpenCL get_local_size()</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_num_groups">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.ocl.ocldecl.</span></span><span class="sig-name descname"><span class="pre">Ocl_get_num_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_num_groups" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.typing.templates.ConcreteTemplate</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_num_groups.cases">
+<span class="sig-name descname"><span class="pre">cases</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[(uint32,)</span> <span class="pre">-&gt;</span> <span class="pre">int64]</span></em><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_num_groups.cases" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_num_groups.key">
+<span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_num_groups.key" title="Permalink to this definition"></a></dt>
+<dd><p>OpenCL get_num_groups()</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_work_dim">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.ocl.ocldecl.</span></span><span class="sig-name descname"><span class="pre">Ocl_get_work_dim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_work_dim" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.typing.templates.ConcreteTemplate</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_work_dim.cases">
+<span class="sig-name descname"><span class="pre">cases</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[()</span> <span class="pre">-&gt;</span> <span class="pre">uint32]</span></em><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_work_dim.cases" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_get_work_dim.key">
+<span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_get_work_dim.key" title="Permalink to this definition"></a></dt>
+<dd><p>OpenCL get_work_dim()</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_mem_fence">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.ocl.ocldecl.</span></span><span class="sig-name descname"><span class="pre">Ocl_mem_fence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_mem_fence" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.typing.templates.ConcreteTemplate</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_mem_fence.cases">
+<span class="sig-name descname"><span class="pre">cases</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[(uint32,)</span> <span class="pre">-&gt;</span> <span class="pre">none]</span></em><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_mem_fence.cases" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_mem_fence.key">
+<span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_mem_fence.key" title="Permalink to this definition"></a></dt>
+<dd><p>OpenCL mem_fence()</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_sub_group_barrier">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.ocl.ocldecl.</span></span><span class="sig-name descname"><span class="pre">Ocl_sub_group_barrier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_sub_group_barrier" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.typing.templates.ConcreteTemplate</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_sub_group_barrier.cases">
+<span class="sig-name descname"><span class="pre">cases</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[()</span> <span class="pre">-&gt;</span> <span class="pre">none]</span></em><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_sub_group_barrier.cases" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.ocl.ocldecl.Ocl_sub_group_barrier.key">
+<span class="sig-name descname"><span class="pre">key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.ocl.ocldecl.Ocl_sub_group_barrier.key" title="Permalink to this definition"></a></dt>
+<dd><p>OpenCL 2.0 sub_group_barrier</p>
+</dd></dl>
+
+</dd></dl>
 
 </section>
 

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy.numpy_usm_shared module &mdash; numba-dppy 0+untagged.733.gf743627 documentation</title>
+  <title>numba_dppy.numpy_usm_shared module &mdash; numba-dppy 0+untagged.710.g36a9efe documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -120,7 +120,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dppy.numpy_usm_shared.UsmArrayAttribute.key">
 <span class="sig-name descname"><span class="pre">key</span></span><a class="headerlink" href="#numba_dppy.numpy_usm_shared.UsmArrayAttribute.key" title="Permalink to this definition"></a></dt>
-<dd><p>alias of <a class="reference internal" href="numba_dppy.types.dpctl_types.html#numba_dppy.types.dpctl_types.UsmSharedArrayType" title="numba_dppy.types.dpctl_types.UsmSharedArrayType"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dppy.types.dpctl_types.UsmSharedArrayType</span></code></a></p>
+<dd><p>alias of <a class="reference internal" href="#numba_dppy.numpy_usm_shared.UsmSharedArrayType" title="numba_dppy.numpy_usm_shared.UsmSharedArrayType"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dppy.numpy_usm_shared.UsmSharedArrayType</span></code></a></p>
 </dd></dl>
 
 <dl class="py method">
@@ -250,9 +250,39 @@
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.numpy_usm_shared.UsmSharedArrayType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.numpy_usm_shared.</span></span><span class="sig-name descname"><span class="pre">UsmSharedArrayType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy_usm_shared.UsmSharedArrayType" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dppy.dppy_array_type.html#numba_dppy.dppy_array_type.DPPYArray" title="numba_dppy.dppy_array_type.DPPYArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dppy.dppy_array_type.DPPYArray</span></code></a></p>
+<p>Creates a Numba type for Numpy arrays that are stored in USM shared
+memory.  We inherit from Numba’s existing Numpy array type but overload
+how this type is printed during dumping of typing information and we
+implement the special __array_ufunc__ function to determine who this
+type gets combined with scalars and regular Numpy types.
+We re-use Numpy functions as well but those are going to return Numpy
+arrays allocated in USM and we use the overloaded copy function to
+convert such USM-backed Numpy arrays into typed USM arrays.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dppy.numpy_usm_shared.UsmSharedArrayType.box_type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">box_type</span></span><a class="headerlink" href="#numba_dppy.numpy_usm_shared.UsmSharedArrayType.box_type" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the Python type to box to.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.numpy_usm_shared.UsmSharedArrayType.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy_usm_shared.UsmSharedArrayType.copy" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dppy.numpy_usm_shared.argspec_to_string">
 <span class="sig-prename descclassname"><span class="pre">numba_dppy.numpy_usm_shared.</span></span><span class="sig-name descname"><span class="pre">argspec_to_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argspec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy_usm_shared.argspec_to_string" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dppy.numpy_usm_shared.box_array">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.numpy_usm_shared.</span></span><span class="sig-name descname"><span class="pre">box_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy_usm_shared.box_array" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -283,6 +313,11 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dppy.numpy_usm_shared.numba_register_typing">
 <span class="sig-prename descclassname"><span class="pre">numba_dppy.numpy_usm_shared.</span></span><span class="sig-name descname"><span class="pre">numba_register_typing</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy_usm_shared.numba_register_typing" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dppy.numpy_usm_shared.typeof_ta_ndarray">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.numpy_usm_shared.</span></span><span class="sig-name descname"><span class="pre">typeof_ta_ndarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.numpy_usm_shared.typeof_ta_ndarray" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
