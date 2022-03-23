@@ -94,7 +94,7 @@ the two ways in which kernels may be written in a Numba-dppy program.
 
     developer_guides/dpnp_integration
     developer_guides/tools
-    developer_guides/dpnp_extensions/index
+    developer_guides/dpnp_extension/index
 
 About
 =====
