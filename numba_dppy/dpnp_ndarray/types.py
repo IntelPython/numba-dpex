@@ -30,9 +30,11 @@ class dpnp_ndarray_Type(Array):
         name=None,
         aligned=True,
         addrspace=None,
+        usm_type="device",
     ):
         name = "dpnp.ndarray(%s, %sd, %s)" % (dtype, ndim, layout)
 
+        self.usm_type = usm_type
         super().__init__(
             dtype,
             ndim,
