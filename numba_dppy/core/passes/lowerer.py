@@ -1264,7 +1264,7 @@ class WrapperDefaultLower(Lower):
         return True
 
 
-class DPPYLower(Lower):
+class DPEXLowerer(Lower):
     def __init__(self, context, library, fndesc, func_ir, metadata=None):
         Lower.__init__(self, context, library, fndesc, func_ir, metadata)
         memo = {}
