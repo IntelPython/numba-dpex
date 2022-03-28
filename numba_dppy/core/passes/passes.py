@@ -41,13 +41,13 @@ from numba.parfors.parfor import swap_functions_map
 
 from numba_dppy import config
 
-from .dppy_lowerer import DPPYLower
+from .lowerer import DPEXLowerer
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
-class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
+class ConstantSizeStaticLocalMemoryPass(FunctionPass):
 
-    _name = "dppy_constant_size_static_local_memory_pass"
+    _name = "dpex_constant_size_static_local_memory_pass"
 
     def __init__(self):
         FunctionPass.__init__(self)
@@ -64,9 +64,8 @@ class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
 
         if _DEBUG:
             print(
-                "Checks if size of OpenCL local address space alloca is a compile-time constant.".center(
-                    80, "-"
-                )
+                "Checks if size of OpenCL local address space alloca is a "
+                + "compile-time constant.".center(80, "-")
             )
             print(func_ir.dump())
 
@@ -99,7 +98,8 @@ class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
                                     ):
 
                                         arg = None
-                                        # at first look in keyword arguments to get the shape, which has to be
+                                        # at first look in keyword arguments to
+                                        # get the shape, which has to be
                                         # constant
                                         if expr.kws:
                                             for _arg in expr.kws:
@@ -110,7 +110,8 @@ class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
                                             arg = expr.args[0]
 
                                         error = False
-                                        # arg can be one constant or a tuple of constant items
+                                        # arg can be one constant or a tuple of
+                                        # constant items
                                         arg_type = func_ir.get_definition(
                                             arg.name
                                         )
@@ -138,7 +139,8 @@ class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
 
                                         if error:
                                             warnings.warn_explicit(
-                                                "The size of the Local memory has to be constant",
+                                                "The size of the Local memory "
+                                                + "has to be constant",
                                                 errors.NumbaError,
                                                 state.func_id.filename,
                                                 state.func_id.firstlineno,
@@ -154,9 +156,9 @@ class DPPYConstantSizeStaticLocalMemoryPass(FunctionPass):
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
-class DPPYPreParforPass(FunctionPass):
+class PreParforPass(FunctionPass):
 
-    _name = "dppy_pre_parfor_pass"
+    _name = "dpex_pre_parfor_pass"
 
     def __init__(self):
         FunctionPass.__init__(self)
@@ -200,9 +202,9 @@ class DPPYPreParforPass(FunctionPass):
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
-class DPPYParforPass(FunctionPass):
+class ParforPass(FunctionPass):
 
-    _name = "dppy_parfor_pass"
+    _name = "dpex_parfor_pass"
 
     def __init__(self):
         FunctionPass.__init__(self)
@@ -267,9 +269,9 @@ def fallback_context(state, msg):
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
-class SpirvFriendlyLowering(LoweringPass):
+class DPEXLowering(LoweringPass):
 
-    _name = "spirv_friendly_lowering"
+    _name = "dpex_lowering"
 
     def __init__(self):
         LoweringPass.__init__(self)
@@ -317,7 +319,7 @@ class SpirvFriendlyLowering(LoweringPass):
             )
 
             with targetctx.push_code_library(library):
-                lower = DPPYLower(
+                lower = DPEXLowerer(
                     targetctx, library, fndesc, interp, metadata=metadata
                 )
                 lower.lower()
@@ -348,9 +350,9 @@ class SpirvFriendlyLowering(LoweringPass):
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
-class DPPYNoPythonBackend(FunctionPass):
+class NoPythonBackend(FunctionPass):
 
-    _name = "nopython_backend"
+    _name = "dpex_nopython_backend"
 
     def __init__(self):
         FunctionPass.__init__(self)
@@ -388,15 +390,15 @@ class DPPYNoPythonBackend(FunctionPass):
 
 
 @register_pass(mutates_CFG=False, analysis_only=True)
-class DPPYDumpParforDiagnostics(AnalysisPass):
+class DumpParforDiagnostics(AnalysisPass):
 
-    _name = "dump_parfor_diagnostics"
+    _name = "dpex_dump_parfor_diagnostics"
 
     def __init__(self):
         AnalysisPass.__init__(self)
 
     def run_pass(self, state):
-        # if state.flags.auto_parallel.enabled: //add in condition flag for kernels
+        # if state.flags.auto_parallel.enabled, add a condition flag for kernels
         if config.OFFLOAD_DIAGNOSTICS:
             if state.parfor_diagnostics is not None:
                 state.parfor_diagnostics.dump(config.PARALLEL_DIAGNOSTICS)

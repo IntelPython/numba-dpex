@@ -45,7 +45,7 @@ from numba_dppy.utils import (
 )
 
 from . import spirv_generator
-from .dppy_passbuilder import DPPYPassBuilder
+from .dppy_passbuilder import PassBuilder
 
 _NUMBA_DPPY_READ_ONLY = "read_only"
 _NUMBA_DPPY_WRITE_ONLY = "write_only"
@@ -101,7 +101,7 @@ class DPPYCompiler(CompilerBase):
         ] = self.state.parfor_diagnostics
         if not self.state.flags.force_pyobject:
             # print("Numba-DPPY [INFO]: Using Numba-DPPY pipeline")
-            pms.append(DPPYPassBuilder.define_nopython_pipeline(self.state))
+            pms.append(PassBuilder.define_nopython_pipeline(self.state))
         if self.state.status.can_fallback or self.state.flags.force_pyobject:
             pms.append(
                 DefaultPassBuilder.define_objectmode_pipeline(self.state)

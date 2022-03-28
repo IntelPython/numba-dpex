@@ -38,13 +38,13 @@ from numba.core.untyped_passes import (
     WithLifting,
 )
 
-from numba_dppy.core.passes.dppy_passes import (
-    DPPYConstantSizeStaticLocalMemoryPass,
-    DPPYDumpParforDiagnostics,
-    DPPYNoPythonBackend,
-    DPPYParforPass,
-    DPPYPreParforPass,
-    SpirvFriendlyLowering,
+from numba_dppy.core.passes.passes import (
+    ConstantSizeStaticLocalMemoryPass,
+    DPEXLowering,
+    DumpParforDiagnostics,
+    NoPythonBackend,
+    ParforPass,
+    PreParforPass,
 )
 from numba_dppy.core.passes.rename_numpy_functions_pass import (
     DPPYRewriteNdarrayFunctions,
@@ -52,9 +52,9 @@ from numba_dppy.core.passes.rename_numpy_functions_pass import (
 )
 
 
-class DPPYPassBuilder(object):
+class PassBuilder(object):
     """
-    This is the DPPY pass builder to run Intel GPU/CPU specific
+    This is a pass builder to run Intel GPU/CPU specific
     code-generation and optimization passes. This pass builder does
     not offer objectmode and interpreted passes.
     """
@@ -78,7 +78,7 @@ class DPPYPassBuilder(object):
         # constant memory the size is a constant and can not
         # come from a closure variable
         pm.add_pass(
-            DPPYConstantSizeStaticLocalMemoryPass,
+            ConstantSizeStaticLocalMemoryPass,
             "dppy constant size for static local memory",
         )
 
@@ -132,13 +132,13 @@ class DPPYPassBuilder(object):
     def define_nopython_pipeline(state, name="dppy_nopython"):
         """Returns an nopython mode pipeline based PassManager"""
         pm = PassManager(name)
-        DPPYPassBuilder.default_numba_nopython_pipeline(state, pm)
+        PassBuilder.default_numba_nopython_pipeline(state, pm)
 
         # Intel GPU/CPU specific optimizations
-        pm.add_pass(DPPYPreParforPass, "Preprocessing for parfors")
+        pm.add_pass(PreParforPass, "Preprocessing for parfors")
         if not state.flags.no_rewrites:
             pm.add_pass(NopythonRewrites, "nopython rewrites")
-        pm.add_pass(DPPYParforPass, "convert to parfors")
+        pm.add_pass(ParforPass, "convert to parfors")
 
         # legalise
         pm.add_pass(
@@ -148,8 +148,8 @@ class DPPYPassBuilder(object):
         pm.add_pass(IRLegalization, "ensure IR is legal prior to lowering")
 
         # lower
-        pm.add_pass(SpirvFriendlyLowering, "SPIRV-friendly lowering pass")
-        pm.add_pass(DPPYNoPythonBackend, "nopython mode backend")
-        pm.add_pass(DPPYDumpParforDiagnostics, "dump parfor diagnostics")
+        pm.add_pass(DPEXLowering, "Custom Lowerer with auto-offload support")
+        pm.add_pass(NoPythonBackend, "nopython mode backend")
+        pm.add_pass(DumpParforDiagnostics, "dump parfor diagnostics")
         pm.finalize()
         return pm
