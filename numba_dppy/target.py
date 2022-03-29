@@ -135,7 +135,7 @@ DPPY_TARGET_NAME = "SyclDevice"
 
 target_registry[DPPY_TARGET_NAME] = SyclDevice
 
-import numba_dppy.dppy_offload_dispatcher
+import numba_dppy.offload_dispatcher
 
 
 class DPPYTargetContext(BaseContext):
