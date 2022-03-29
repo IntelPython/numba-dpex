@@ -31,7 +31,7 @@ from numba_dppy import config
 from numba_dppy.dpctl_iface import USMNdArrayType
 from numba_dppy.dpctl_support import dpctl_version
 from numba_dppy.dppy_array_type import DPPYArray
-from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
+from numba_dppy.parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dppy.utils import (
     IndeterminateExecutionQueueError,
     as_usm_obj,
@@ -45,7 +45,7 @@ from numba_dppy.utils import (
 )
 
 from . import spirv_generator
-from .dppy_passbuilder import PassBuilder
+from .passbuilder import PassBuilder
 
 _NUMBA_DPPY_READ_ONLY = "read_only"
 _NUMBA_DPPY_WRITE_ONLY = "write_only"
@@ -89,8 +89,8 @@ def get_ordered_arg_access_types(pyfunc, access_types):
     return ordered_arg_access_types
 
 
-class DPPYCompiler(CompilerBase):
-    """DPPY Compiler"""
+class Compiler(CompilerBase):
+    """The DPEX compiler pipeline."""
 
     def define_pipelines(self):
         # this maintains the objmode fallback behaviour
@@ -156,7 +156,7 @@ def compile_with_dppy(pyfunc, return_type, args, is_kernel, debug=None):
             return_type=return_type,
             flags=flags,
             locals={},
-            pipeline_class=DPPYCompiler,
+            pipeline_class=Compiler,
         )
     elif isinstance(pyfunc, ir.FunctionIR):
         cres = compiler.compile_ir(
@@ -167,7 +167,7 @@ def compile_with_dppy(pyfunc, return_type, args, is_kernel, debug=None):
             return_type=return_type,
             flags=flags,
             locals={},
-            pipeline_class=DPPYCompiler,
+            pipeline_class=Compiler,
         )
     else:
         assert 0

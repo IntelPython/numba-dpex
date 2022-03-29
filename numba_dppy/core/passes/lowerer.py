@@ -1292,12 +1292,12 @@ class DPEXLowerer(Lower):
         if context.enable_debuginfo:
             from numba.core.funcdesc import default_mangler, qualifying_prefix
 
-            from numba_dppy.dppy_debuginfo import DPPYDIBuilder
+            from numba_dppy.debuginfo import DpexDIBuilder
 
             qualprefix = qualifying_prefix(fndesc.modname, fndesc.qualname)
             mangled_qualname = default_mangler(qualprefix, fndesc.argtypes)
 
-            lower.debuginfo = DPPYDIBuilder(
+            lower.debuginfo = DpexDIBuilder(
                 module=lower.module,
                 filepath=func_ir.loc.filename,
                 linkage_name=mangled_qualname,
