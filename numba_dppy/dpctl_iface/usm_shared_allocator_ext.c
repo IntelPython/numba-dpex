@@ -24,6 +24,7 @@
 
 #include "numba/_pymodule.h"
 #include "numba/core/runtime/nrt_external.h"
+#include "numba/core/runtime/nrt.h"
 #include "assert.h"
 #include <stdio.h>
 #include <stdbool.h>
@@ -95,6 +96,129 @@ get_external_allocator(PyObject *self, PyObject *args)
     return PyLong_FromVoidPtr(usmarray_get_ext_allocator());
 }
 
+typedef struct {
+    int usm_type;
+    void *queue;
+} AllocatorImpl;
+
+static void *
+allocate(size_t size, void *opaque_data)
+{
+    AllocatorImpl *impl = (AllocatorImpl*)opaque_data;
+    void *data = 0;
+
+    if (impl->usm_type == 0) {
+        data = (void *)DPCTLmalloc_shared(size, impl->queue);
+    } else
+    if (impl->usm_type == 1) {
+        data = (void *)DPCTLmalloc_host(size, impl->queue);
+    } else
+    if (impl->usm_type == 2) {
+        data = (void *)DPCTLmalloc_device(size, impl->queue);
+    }
+
+    return data;
+}
+
+static void
+deallocate(void *data, void *opaque_data)
+{
+    AllocatorImpl *impl = (AllocatorImpl*)opaque_data;
+
+    DPCTLfree_with_queue(data, impl->queue);
+}
+
+static NRT_ExternalAllocator *
+create_allocator(int usm_type)
+{
+    AllocatorImpl *impl = malloc(sizeof(AllocatorImpl));
+    impl->usm_type = usm_type;
+    impl->queue = (void *)DPCTLQueueMgr_GetCurrentQueue();
+
+    NRT_ExternalAllocator *allocator = malloc(sizeof(NRT_ExternalAllocator));
+    allocator->malloc = allocate;
+    allocator->realloc = NULL;
+    allocator->free = deallocate;
+    allocator->opaque_data = impl;
+
+    return allocator;
+}
+
+static void
+release_allocator(NRT_ExternalAllocator *allocator)
+{
+    AllocatorImpl *impl = (AllocatorImpl *)allocator->opaque_data;
+    DPCTLQueue_Delete(impl->queue);
+
+    free(impl);
+    free(allocator);
+}
+
+
+/*
+ * The MemInfo structure.
+ */
+
+// /* NOTE: copy from numba/core/runtime/nrt.c */
+struct MemInfo {
+    size_t            refct;
+    NRT_dtor_function dtor;
+    void              *dtor_info;
+    void              *data;
+    size_t            size;    /* only used for NRT allocated memory */
+    NRT_ExternalAllocator *external_allocator;
+};
+
+void NRT_MemInfo_init(NRT_MemInfo *mi,void *data, size_t size,
+                      NRT_dtor_function dtor, void *dtor_info,
+                      NRT_ExternalAllocator *external_allocator)
+{
+    mi->refct = 1;  /* starts with 1 refct */
+    mi->dtor = dtor;
+    mi->dtor_info = dtor_info;
+    mi->data = data;
+    mi->size = size;
+    mi->external_allocator = external_allocator;
+    NRT_Debug(nrt_debug_print("NRT_MemInfo_init mi=%p external_allocator=%p\n", mi, external_allocator));
+}
+
+NRT_MemInfo *NRT_MemInfo_new(void *data, size_t size,
+                             NRT_dtor_function dtor, void *dtor_info)
+{
+    NRT_MemInfo *mi = malloc(sizeof(NRT_MemInfo));
+    NRT_Debug(nrt_debug_print("NRT_MemInfo_new mi=%p\n", mi));
+    NRT_MemInfo_init(mi, data, size, dtor, dtor_info, NULL);
+    return mi;
+}
+
+static void
+dtor(void *ptr, size_t size, void *info)
+{
+    AllocatorImpl *impl = (AllocatorImpl*)info;
+
+    DPCTLfree_with_queue(ptr, impl->queue);
+    DPCTLQueue_Delete(impl->queue);
+    free(impl);
+}
+
+static NRT_MemInfo *
+DPRT_MemInfo_new(size_t size, int usm_type, void *queue)
+{
+    AllocatorImpl *impl = malloc(sizeof(AllocatorImpl));
+    impl->usm_type = usm_type;
+    impl->queue = queue;
+
+    void *data = allocate(size, impl);
+
+    return NRT_MemInfo_new(data, size, dtor, impl);
+}
+
+void *
+create_queue()
+{
+    return (void *)DPCTLQueueMgr_GetCurrentQueue();
+}
+
 static PyMethodDef ext_methods[] = {
 // clang-format off
 #define declmethod_noargs(func)                     \
@@ -129,6 +253,10 @@ build_c_helpers_dict(void)
     } while (0)
 
     _declpointer("usmarray_get_ext_allocator", &usmarray_get_ext_allocator);
+    _declpointer("create_allocator", &create_allocator);
+    _declpointer("release_allocator", &release_allocator);
+    _declpointer("DPRT_MemInfo_new", &DPRT_MemInfo_new);
+    _declpointer("create_queue", &create_queue);
 
 #undef _declpointer
     return dct;
