@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy.compiler module &mdash; numba-dppy 0+untagged.710.g8324e05 documentation</title>
+  <title>numba_dppy.compiler module &mdash; numba-dppy 0+untagged.711.g08973f1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -80,13 +80,13 @@
   <section id="module-numba_dppy.compiler">
 <span id="numba-dppy-compiler-module"></span><h1>numba_dppy.compiler module<a class="headerlink" href="#module-numba_dppy.compiler" title="Permalink to this headline"></a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="numba_dppy.compiler.DPPYCompiler">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">DPPYCompiler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typingctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locals</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.DPPYCompiler" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dppy.compiler.Compiler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">Compiler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typingctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locals</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.Compiler" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.compiler.CompilerBase</span></code></p>
-<p>DPPY Compiler</p>
+<p>The DPEX compiler pipeline.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="numba_dppy.compiler.DPPYCompiler.define_pipelines">
-<span class="sig-name descname"><span class="pre">define_pipelines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.DPPYCompiler.define_pipelines" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dppy.compiler.Compiler.define_pipelines">
+<span class="sig-name descname"><span class="pre">define_pipelines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.Compiler.define_pipelines" title="Permalink to this definition"></a></dt>
 <dd><p>Child classes override this to customize the pipelines in use.</p>
 </dd></dl>
 

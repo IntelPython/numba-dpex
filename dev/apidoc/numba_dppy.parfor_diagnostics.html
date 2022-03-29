@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy.dppy_passbuilder module &mdash; numba-dppy 0+untagged.710.g8324e05 documentation</title>
+  <title>numba_dppy.parfor_diagnostics module &mdash; numba-dppy 0+untagged.711.g08973f1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -67,9 +67,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>numba_dppy.dppy_passbuilder module</li>
+      <li>numba_dppy.parfor_diagnostics module</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/apidoc/numba_dppy.dppy_passbuilder.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/apidoc/numba_dppy.parfor_diagnostics.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -77,26 +77,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-numba_dppy.dppy_passbuilder">
-<span id="numba-dppy-dppy-passbuilder-module"></span><h1>numba_dppy.dppy_passbuilder module<a class="headerlink" href="#module-numba_dppy.dppy_passbuilder" title="Permalink to this headline"></a></h1>
+  <section id="module-numba_dppy.parfor_diagnostics">
+<span id="numba-dppy-parfor-diagnostics-module"></span><h1>numba_dppy.parfor_diagnostics module<a class="headerlink" href="#module-numba_dppy.parfor_diagnostics" title="Permalink to this headline"></a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="numba_dppy.dppy_passbuilder.PassBuilder">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.dppy_passbuilder.</span></span><span class="sig-name descname"><span class="pre">PassBuilder</span></span><a class="headerlink" href="#numba_dppy.dppy_passbuilder.PassBuilder" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This is a pass builder to run Intel GPU/CPU specific
-code-generation and optimization passes. This pass builder does
-not offer objectmode and interpreted passes.</p>
+<dt class="sig sig-object py" id="numba_dppy.parfor_diagnostics.ExtendedParforDiagnostics">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.parfor_diagnostics.</span></span><span class="sig-name descname"><span class="pre">ExtendedParforDiagnostics</span></span><a class="headerlink" href="#numba_dppy.parfor_diagnostics.ExtendedParforDiagnostics" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.parfors.parfor.ParforDiagnostics</span></code></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="numba_dppy.dppy_passbuilder.PassBuilder.default_numba_nopython_pipeline">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_numba_nopython_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dppy_passbuilder.PassBuilder.default_numba_nopython_pipeline" title="Permalink to this definition"></a></dt>
-<dd><p>Adds the default set of NUMBA passes to the pass manager</p>
-</dd></dl>
+<dt class="sig sig-object py" id="numba_dppy.parfor_diagnostics.ExtendedParforDiagnostics.dump">
+<span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.parfor_diagnostics.ExtendedParforDiagnostics.dump" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="numba_dppy.dppy_passbuilder.PassBuilder.define_nopython_pipeline">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">define_nopython_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dppy_nopython'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dppy_passbuilder.PassBuilder.define_nopython_pipeline" title="Permalink to this definition"></a></dt>
-<dd><p>Returns an nopython mode pipeline based PassManager</p>
-</dd></dl>
+<dt class="sig sig-object py" id="numba_dppy.parfor_diagnostics.ExtendedParforDiagnostics.print_auto_offloading">
+<span class="sig-name descname"><span class="pre">print_auto_offloading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.parfor_diagnostics.ExtendedParforDiagnostics.print_auto_offloading" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
