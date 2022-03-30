@@ -39,15 +39,15 @@ def _ol_dpnp_empty(n, usm_type, sycl_queue):
 
 
 @overload_classmethod(dpnp_ndarray_Type, "_allocate")
-def _ol_dpnp_array_allocate(cls, allocsize, usm_type, sycl_queue):
-    def impl(cls, allocsize, usm_type, sycl_queue):
-        return intrin_alloc(allocsize, usm_type, sycl_queue)
+def _ol_dpnp_array_allocate(cls, size, usm_type, sycl_queue):
+    def impl(cls, size, usm_type, sycl_queue):
+        return intrin_alloc(size, usm_type, sycl_queue)
 
     return impl
 
 
 @intrinsic
-def intrin_alloc(typingctx, allocsize, usm_type, sycl_queue):
+def intrin_alloc(typingctx, size, usm_type, sycl_queue):
     """Intrinsic to call into the allocator for Array"""
     from numba.core.base import BaseContext
     from numba.core.runtime.context import NRTContext
@@ -71,5 +71,5 @@ def intrin_alloc(typingctx, allocsize, usm_type, sycl_queue):
     from numba.core.typing import signature
 
     mip = types.MemInfoPointer(types.voidptr)  # return untyped pointer
-    sig = signature(mip, allocsize, usm_type, sycl_queue)
+    sig = signature(mip, size, usm_type, sycl_queue)
     return sig, codegen
