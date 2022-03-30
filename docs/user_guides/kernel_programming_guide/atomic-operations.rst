@@ -11,7 +11,7 @@ Those that are presently implemented are as follows:
 Example
 -------
 
-Here's an example of how to use atomics add in DPPY:
+Example usage of atomic operations
 
 .. literalinclude:: ../../../numba_dppy/examples/atomic_op.py
    :pyobject: main
