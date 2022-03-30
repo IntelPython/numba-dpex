@@ -101,15 +101,3 @@ def test_meminfo():
         assert not mi.external_allocator
 
         MemInfo_release(mip)
-
-
-def test_nrt_python():
-    from numba.core.runtime._nrt_python import c_helpers
-
-    functions = [
-        "MemInfo_release",
-    ]
-
-    for fn_name in functions:
-        assert fn_name in c_helpers
-        assert isinstance(c_helpers[fn_name], int)
