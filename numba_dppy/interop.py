@@ -18,8 +18,9 @@ import dpctl.tensor as dpt
 
 
 def asarray(container):
-    """Convert container supported by interoperability to numba-dppy container.
-    Currently used dpctl.tensor.asarray().
+    """A wrapper over dpctl.tensor asarray function to convert any array
+    that supports the ``__sycl_usm_array_interface__`` protocol to a
+    ``dpctl.tensor.usm_ndarray``.
     """
     try:
         return dpt.asarray(container)

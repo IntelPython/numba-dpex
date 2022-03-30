@@ -23,8 +23,8 @@ from numba.core.typed_passes import AnnotateTypes, NopythonTypeInference
 
 import numba_dppy
 from numba_dppy.core.passes.rename_numpy_functions_pass import (
-    DPPYRewriteNdarrayFunctions,
-    DPPYRewriteOverloadedNumPyFunctions,
+    RewriteNdarrayFunctionsPass,
+    RewriteOverloadedNumPyFunctionsPass,
 )
 from numba_dppy.tests._helper import skip_no_dpnp
 
@@ -87,7 +87,7 @@ class TestRenameNumpyFunctionsPass:
 
         pipeline = MyPipeline(got_ir, None)
 
-        rewrite_numpy_functions_pass = DPPYRewriteOverloadedNumPyFunctions()
+        rewrite_numpy_functions_pass = RewriteOverloadedNumPyFunctionsPass()
         rewrite_numpy_functions_pass.run_pass(pipeline.state)
 
         assert check_equivalent(expected_ir, pipeline.state.func_ir)
@@ -117,7 +117,7 @@ class TestRenameNdarrayFunctionsPass:
         annotate_ty_pass = AnnotateTypes()
         annotate_ty_pass.run_pass(pipeline.state)
 
-        rewrite_ndarray_functions_pass = DPPYRewriteNdarrayFunctions()
+        rewrite_ndarray_functions_pass = RewriteNdarrayFunctionsPass()
         rewrite_ndarray_functions_pass.run_pass(pipeline.state)
 
         assert check_equivalent(expected_ir, pipeline.state.func_ir)

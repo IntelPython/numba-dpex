@@ -17,7 +17,7 @@ from numba.core.registry import cpu_target
 from numba.core.target_extension import dispatcher_registry, target_registry
 
 import numba_dppy.config as dppy_config
-from numba_dppy.target import DPPY_TARGET_NAME
+from numba_dppy.target import DPEX_TARGET_NAME
 
 
 class OffloadDispatcher(dispatcher.Dispatcher):
@@ -63,4 +63,4 @@ class OffloadDispatcher(dispatcher.Dispatcher):
             )
 
 
-dispatcher_registry[target_registry[DPPY_TARGET_NAME]] = OffloadDispatcher
+dispatcher_registry[target_registry[DPEX_TARGET_NAME]] = OffloadDispatcher

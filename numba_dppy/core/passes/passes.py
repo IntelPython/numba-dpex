@@ -269,7 +269,7 @@ def fallback_context(state, msg):
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
-class DPEXLowering(LoweringPass):
+class DpexLowering(LoweringPass):
 
     _name = "dpex_lowering"
 
