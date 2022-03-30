@@ -40,15 +40,15 @@ from numba.core.untyped_passes import (
 
 from numba_dppy.core.passes.passes import (
     ConstantSizeStaticLocalMemoryPass,
-    DPEXLowering,
+    DpexLowering,
     DumpParforDiagnostics,
     NoPythonBackend,
     ParforPass,
     PreParforPass,
 )
 from numba_dppy.core.passes.rename_numpy_functions_pass import (
-    DPPYRewriteNdarrayFunctions,
-    DPPYRewriteOverloadedNumPyFunctions,
+    RewriteNdarrayFunctionsPass,
+    RewriteOverloadedNumPyFunctionsPass,
 )
 
 
@@ -70,7 +70,7 @@ class PassBuilder(object):
 
         # this pass rewrites name of NumPy functions we intend to overload
         pm.add_pass(
-            DPPYRewriteOverloadedNumPyFunctions,
+            RewriteOverloadedNumPyFunctionsPass,
             "Rewrite name of Numpy functions to overload already overloaded function",
         )
 
@@ -79,7 +79,7 @@ class PassBuilder(object):
         # come from a closure variable
         pm.add_pass(
             ConstantSizeStaticLocalMemoryPass,
-            "dppy constant size for static local memory",
+            "dpex constant size for static local memory",
         )
 
         # inline closures early in case they are using nonlocal's
@@ -118,8 +118,8 @@ class PassBuilder(object):
         pm.add_pass(AnnotateTypes, "annotate types")
 
         pm.add_pass(
-            DPPYRewriteNdarrayFunctions,
-            "Rewrite ndarray functions to dppy supported functions",
+            RewriteNdarrayFunctionsPass,
+            "Rewrite numpy.ndarray functions to dpnp.ndarray functions",
         )
 
         # strip phis
@@ -148,7 +148,7 @@ class PassBuilder(object):
         pm.add_pass(IRLegalization, "ensure IR is legal prior to lowering")
 
         # lower
-        pm.add_pass(DPEXLowering, "Custom Lowerer with auto-offload support")
+        pm.add_pass(DpexLowering, "Custom Lowerer with auto-offload support")
         pm.add_pass(NoPythonBackend, "nopython mode backend")
         pm.add_pass(DumpParforDiagnostics, "dump parfor diagnostics")
         pm.finalize()

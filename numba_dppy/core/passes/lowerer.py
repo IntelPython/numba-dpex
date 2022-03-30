@@ -56,7 +56,7 @@ import numba_dppy as dppy
 from numba_dppy import config
 from numba_dppy.dpctl_iface import KernelLaunchOps
 from numba_dppy.dppy_array_type import DPPYArray
-from numba_dppy.target import DPPYTargetContext
+from numba_dppy.target import DpexTargetContext
 from numba_dppy.utils import address_space, npytypes_array_to_dppy_array
 
 from .dufunc_inliner import dufunc_inliner
@@ -1075,7 +1075,7 @@ def relatively_deep_copy(obj, memo):
     from numba.core.typing.templates import Signature
     from numba.np.ufunc.dufunc import DUFunc
 
-    from numba_dppy.compiler import DPPYFunctionTemplate
+    from numba_dppy.compiler import DpexFunctionTemplate
 
     # objects which shouldn't or can't be copied and it's ok not to copy it.
     if isinstance(
@@ -1088,7 +1088,7 @@ def relatively_deep_copy(obj, memo):
             Dispatcher,
             ModuleType,
             Signature,
-            DPPYFunctionTemplate,
+            DpexFunctionTemplate,
             CompileResult,
             DUFunc,
             _CFuncPtr,
@@ -1274,7 +1274,7 @@ class DPEXLowerer(Lower):
 
         cpu_context = (
             context.cpu_context
-            if isinstance(context, DPPYTargetContext)
+            if isinstance(context, DpexTargetContext)
             else context
         )
         self.gpu_lower = self._lower(
