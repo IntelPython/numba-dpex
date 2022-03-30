@@ -33,21 +33,21 @@ def _ol_dpnp_empty(n, usm_type, sycl_queue):
     }[usm_type.literal_value]
 
     def impl(n, usm_type, sycl_queue):
-        return dpnp_ndarray_Type._allocate(n, 7, usm_type_num, sycl_queue)
+        return dpnp_ndarray_Type._allocate(n, usm_type_num, sycl_queue)
 
     return impl
 
 
 @overload_classmethod(dpnp_ndarray_Type, "_allocate")
-def _ol_dpnp_array_allocate(cls, allocsize, align, usm_type, sycl_queue):
-    def impl(cls, allocsize, align, usm_type, sycl_queue):
-        return intrin_alloc(allocsize, align, usm_type, sycl_queue)
+def _ol_dpnp_array_allocate(cls, allocsize, usm_type, sycl_queue):
+    def impl(cls, allocsize, usm_type, sycl_queue):
+        return intrin_alloc(allocsize, usm_type, sycl_queue)
 
     return impl
 
 
 @intrinsic
-def intrin_alloc(typingctx, allocsize, align, usm_type, sycl_queue):
+def intrin_alloc(typingctx, allocsize, usm_type, sycl_queue):
     """Intrinsic to call into the allocator for Array"""
     from numba.core.base import BaseContext
     from numba.core.runtime.context import NRTContext
@@ -64,13 +64,12 @@ def intrin_alloc(typingctx, allocsize, align, usm_type, sycl_queue):
         return builder.call(fn, [size, usm_type, queue])
 
     def codegen(context: BaseContext, builder, signature: Signature, args):
-        [allocsize, align, usm_type, sycl_queue] = args
-        meminfo = MemInfo_new(context.nrt, builder, allocsize, usm_type, sycl_queue)
-        meminfo.name = "allocate_UsmArray"
+        meminfo = MemInfo_new(context.nrt, builder, *args)
+        meminfo.name = "meminfo"
         return meminfo
 
     from numba.core.typing import signature
 
     mip = types.MemInfoPointer(types.voidptr)  # return untyped pointer
-    sig = signature(mip, allocsize, align, usm_type, sycl_queue)
+    sig = signature(mip, allocsize, usm_type, sycl_queue)
     return sig, codegen
