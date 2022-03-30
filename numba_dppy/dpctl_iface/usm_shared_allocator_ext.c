@@ -201,9 +201,19 @@ dtor(void *ptr, size_t size, void *info)
     free(impl);
 }
 
+void nrt_debug_print(char *fmt, ...) {
+   va_list args;
+
+   va_start(args, fmt);
+   vfprintf(stderr, fmt, args);
+   va_end(args);
+}
+
 static NRT_MemInfo *
 DPRT_MemInfo_new(size_t size, int usm_type, void *queue)
 {
+    NRT_Debug(nrt_debug_print("DPRT_MemInfo_new size=%d usm_type=%d queue=%p\n", size, usm_type, queue));
+
     AllocatorImpl *impl = malloc(sizeof(AllocatorImpl));
     impl->usm_type = usm_type;
     impl->queue = queue;
@@ -216,7 +226,11 @@ DPRT_MemInfo_new(size_t size, int usm_type, void *queue)
 void *
 create_queue()
 {
-    return (void *)DPCTLQueueMgr_GetCurrentQueue();
+    DPCTLSyclQueueRef queue = DPCTLQueueMgr_GetCurrentQueue();
+
+    NRT_Debug(nrt_debug_print("create_queue queue=%p\n", queue));
+
+    return queue;
 }
 
 static PyMethodDef ext_methods[] = {
