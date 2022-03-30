@@ -10,6 +10,7 @@ Subpackages
    numba_dppy.core
    numba_dppy.dpctl_iface
    numba_dppy.dpnp_iface
+   numba_dppy.dpnp_ndarray
    numba_dppy.ocl
    numba_dppy.utils
 
