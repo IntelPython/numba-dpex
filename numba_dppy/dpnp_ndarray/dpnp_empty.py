@@ -25,87 +25,53 @@ from .types import dpnp_ndarray_Type
 
 
 @overload(dpnp.empty)
-def _ol_dpnp_empty(n):
-    def impl(n):
-        return dpnp_ndarray_Type._allocate(n, 7)
+def _ol_dpnp_empty(n, usm_type):
+    usm_type_num = {
+        "shared": 0,
+        "device": 1,
+        "host": 2,
+    }[usm_type.literal_value]
+
+    def impl(n, usm_type):
+        return dpnp_ndarray_Type._allocate(n, 7, usm_type_num)
 
     return impl
 
 
 @overload_classmethod(dpnp_ndarray_Type, "_allocate")
-def _ol_dpnp_array_allocate(cls, allocsize, align):
-    def impl(cls, allocsize, align):
-        return intrin_alloc(allocsize, align)
+def _ol_dpnp_array_allocate(cls, allocsize, align, usm_type):
+    def impl(cls, allocsize, align, usm_type):
+        return intrin_alloc(allocsize, align, usm_type)
 
     return impl
 
 
 @intrinsic
-def intrin_alloc(typingctx, allocsize, align):
+def intrin_alloc(typingctx, allocsize, align, usm_type):
     """Intrinsic to call into the allocator for Array"""
     from numba.core.base import BaseContext
     from numba.core.runtime.context import NRTContext
     from numba.core.typing.templates import Signature
 
-    def get_external_allocator(builder):
-        """Get the Numba external allocator for USM memory."""
-        fnty = ir.FunctionType(cgutils.voidptr_t, [])
-        fn = cgutils.get_or_insert_function(
-            builder.module, fnty, name="usmarray_get_ext_allocator"
-        )
-        return builder.call(fn, [])
-
-    def meminfo_alloc_aligned_external(
-        context: NRTContext, builder, size, align, ext_allocator
-    ):
+    def MemInfo_new(context: NRTContext, builder, size, usm_type, queue):
         context._require_nrt()
 
         mod = builder.module
-        u32 = ir.IntType(32)
-        fnty = ir.FunctionType(
-            cgutils.voidptr_t, [cgutils.intp_t, u32, cgutils.voidptr_t]
-        )
-        fn = cgutils.get_or_insert_function(
-            mod, fnty, "NRT_MemInfo_alloc_safe_aligned_external"
-        )
+        fnargs = [cgutils.intp_t, cgutils.intp_t, cgutils.voidptr_t]
+        fnty = ir.FunctionType(cgutils.voidptr_t, fnargs)
+        fn = cgutils.get_or_insert_function(mod, fnty, "DPRT_MemInfo_new")
         fn.return_value.add_attribute("noalias")
-        if isinstance(align, int):
-            align = context._context.get_constant(types.uint32, align)
-        else:
-            assert align.type == u32, "align must be a uint32"
-        return builder.call(fn, [size, align, ext_allocator])
+        return builder.call(fn, [size, usm_type, queue])
 
     def codegen(context: BaseContext, builder, signature: Signature, args):
-        ext_allocator = get_external_allocator(builder)
-
-        [allocsize, align] = args
-        align = cast_integer(
-            context, builder, align, signature.args[1], types.uint32
-        )
-        meminfo = meminfo_alloc_aligned_external(
-            context.nrt, builder, allocsize, align, ext_allocator
-        )
+        [allocsize, align, usm_type] = args
+        queue = context.get_constant(types.voidptr, 0)
+        meminfo = MemInfo_new(context.nrt, builder, allocsize, usm_type, queue)
         meminfo.name = "allocate_UsmArray"
         return meminfo
 
     from numba.core.typing import signature
 
     mip = types.MemInfoPointer(types.voidptr)  # return untyped pointer
-    sig = signature(mip, allocsize, align)
+    sig = signature(mip, allocsize, align, usm_type)
     return sig, codegen
-
-
-def cast_integer(context, builder, val, fromty, toty):
-    # XXX Shouldn't require this.
-    if toty.bitwidth == fromty.bitwidth:
-        # Just a change of signedness
-        return val
-    elif toty.bitwidth < fromty.bitwidth:
-        # Downcast
-        return builder.trunc(val, context.get_value_type(toty))
-    elif fromty.signed:
-        # Signed upcast
-        return builder.sext(val, context.get_value_type(toty))
-    else:
-        # Unsigned upcast
-        return builder.zext(val, context.get_value_type(toty))
