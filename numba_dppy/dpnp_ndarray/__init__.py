@@ -12,5 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from . import dpnp_models, dpnp_typeof
-from .dpnp_types import *
+from . import models, typeof
+from .types import *

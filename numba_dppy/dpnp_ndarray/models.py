@@ -19,7 +19,7 @@ from numba.extending import register_model
 
 from numba_dppy.target import spirv_data_model_manager
 
-from .dpnp_types import dpnp_ndarray_Type
+from .types import dpnp_ndarray_Type
 
 # we reuse models.ArrayModel
 # it should contain all properties from __sycl_usm_array_interface__

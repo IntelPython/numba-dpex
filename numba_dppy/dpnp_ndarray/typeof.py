@@ -15,7 +15,7 @@
 from numba.extending import typeof_impl
 from numba.np import numpy_support
 
-from .dpnp_types import dpnp_ndarray_Type, ndarray
+from .types import dpnp_ndarray_Type, ndarray
 
 
 # This tells Numba how to create a UsmSharedArrayType when a usmarray is passed
