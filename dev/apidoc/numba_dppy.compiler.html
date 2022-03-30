@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy.compiler module &mdash; numba-dppy 0+untagged.712.g5a6a866 documentation</title>
+  <title>numba_dppy.compiler module &mdash; numba-dppy 0+untagged.713.gf445273 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -93,19 +93,19 @@
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="numba_dppy.compiler.DPPYFunction">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">DPPYFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.DPPYFunction" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dppy.compiler.DpexFunction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">DpexFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cres</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.DpexFunction" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="numba_dppy.compiler.DPPYFunctionTemplate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">DPPYFunctionTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.DPPYFunctionTemplate" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dppy.compiler.DpexFunctionTemplate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">DpexFunctionTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.DpexFunctionTemplate" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Unmaterialized dppy function</p>
+<p>Unmaterialized dpex function</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="numba_dppy.compiler.DPPYFunctionTemplate.compile">
-<span class="sig-name descname"><span class="pre">compile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.DPPYFunctionTemplate.compile" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dppy.compiler.DpexFunctionTemplate.compile">
+<span class="sig-name descname"><span class="pre">compile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.DpexFunctionTemplate.compile" title="Permalink to this definition"></a></dt>
 <dd><p>Compile the function for the given argument types.</p>
 <p>Each signature is compiled once by caching the compiled function inside
 this object.</p>
@@ -114,55 +114,55 @@ this object.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="numba_dppy.compiler.DPPYKernel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">DPPYKernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llvm_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ordered_arg_access_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.DPPYKernel" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#numba_dppy.compiler.DPPYKernelBase" title="numba_dppy.compiler.DPPYKernelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dppy.compiler.DPPYKernelBase</span></code></a></p>
-<p>A OCL kernel object</p>
+<dt class="sig sig-object py" id="numba_dppy.compiler.JitKernel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">JitKernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_types</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.JitKernel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#numba_dppy.compiler.KernelBase" title="numba_dppy.compiler.KernelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dppy.compiler.KernelBase</span></code></a></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="numba_dppy.compiler.DPPYKernel.check_for_invalid_access_type">
-<span class="sig-name descname"><span class="pre">check_for_invalid_access_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.DPPYKernel.check_for_invalid_access_type" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dppy.compiler.JitKernel.specialize">
+<span class="sig-name descname"><span class="pre">specialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.JitKernel.specialize" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="numba_dppy.compiler.DPPYKernelBase">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">DPPYKernelBase</span></span><a class="headerlink" href="#numba_dppy.compiler.DPPYKernelBase" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dppy.compiler.Kernel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">Kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llvm_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ordered_arg_access_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.Kernel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#numba_dppy.compiler.KernelBase" title="numba_dppy.compiler.KernelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dppy.compiler.KernelBase</span></code></a></p>
+<p>A OCL kernel object</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dppy.compiler.Kernel.check_for_invalid_access_type">
+<span class="sig-name descname"><span class="pre">check_for_invalid_access_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.Kernel.check_for_invalid_access_type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dppy.compiler.KernelBase">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">KernelBase</span></span><a class="headerlink" href="#numba_dppy.compiler.KernelBase" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Define interface for configurable kernels</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="numba_dppy.compiler.DPPYKernelBase.configure">
-<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.DPPYKernelBase.configure" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dppy.compiler.KernelBase.configure">
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.KernelBase.configure" title="Permalink to this definition"></a></dt>
 <dd><p>Configure the OpenCL kernel. The local_size can be None</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="numba_dppy.compiler.DPPYKernelBase.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.DPPYKernelBase.copy" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dppy.compiler.JitDPPYKernel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">JitDPPYKernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_types</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.JitDPPYKernel" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#numba_dppy.compiler.DPPYKernelBase" title="numba_dppy.compiler.DPPYKernelBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dppy.compiler.DPPYKernelBase</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dppy.compiler.JitDPPYKernel.specialize">
-<span class="sig-name descname"><span class="pre">specialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.JitDPPYKernel.specialize" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dppy.compiler.KernelBase.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.KernelBase.copy" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.compiler.compile_dppy_func">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">compile_dppy_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.compile_dppy_func" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dppy.compiler.compile_func">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">compile_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.compile_func" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.compiler.compile_dppy_func_template">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">compile_dppy_func_template</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.compile_dppy_func_template" title="Permalink to this definition"></a></dt>
-<dd><p>Compile a DPPYFunctionTemplate</p>
+<dt class="sig sig-object py" id="numba_dppy.compiler.compile_func_template">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">compile_func_template</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.compile_func_template" title="Permalink to this definition"></a></dt>
+<dd><p>Compile a DpexFunctionTemplate</p>
 </dd></dl>
 
 <dl class="py function">
@@ -176,23 +176,24 @@ this object.</p>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.compiler.compile_with_dppy">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">compile_with_dppy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.compile_with_dppy" title="Permalink to this definition"></a></dt>
-<dd><p>Compiles with Numba_dppy’s pipeline and returns the compiled result.</p>
+<dt class="sig sig-object py" id="numba_dppy.compiler.compile_with_depx">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.compiler.</span></span><span class="sig-name descname"><span class="pre">compile_with_depx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.compiler.compile_with_depx" title="Permalink to this definition"></a></dt>
+<dd><p>Compiles the function using the dpex compiler pipeline and returns the
+compiled result.</p>
 <dl>
 <dt>Args:</dt><dd><p>pyfunc: The Python function to be compiled.
 return_type: The Numba type of the return value.
 args: The list of arguments sent to the Python function.
 is_kernel (bool): Indicates whether the function is decorated</p>
 <blockquote>
-<div><p>with &#64;dppy.kernel or not.</p>
+<div><p>with &#64;numba_depx.kernel or not.</p>
 </div></blockquote>
 <p>debug (bool): Flag to turn debug mode ON/OFF.</p>
 </dd>
 <dt>Returns:</dt><dd><p>cres: Compiled result.</p>
 </dd>
 <dt>Raises:</dt><dd><dl class="simple">
-<dt>TypeError: &#64;dppy.kernel does not allow users to return any</dt><dd><p>value. TypeError is raised when users do.</p>
+<dt>TypeError: &#64;numba_depx.kernel does not allow users to return any</dt><dd><p>value. TypeError is raised when users do.</p>
 </dd>
 </dl>
 </dd>
