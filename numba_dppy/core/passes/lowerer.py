@@ -55,9 +55,9 @@ from numba.parfors.parfor_lowering import _lower_parfor_parallel
 import numba_dppy as dppy
 from numba_dppy import config
 from numba_dppy.dpctl_iface import KernelLaunchOps
-from numba_dppy.dppy_array_type import DPPYArray
+from numba_dppy.core.types import Array
 from numba_dppy.target import DpexTargetContext
-from numba_dppy.utils import address_space, npytypes_array_to_dppy_array
+from numba_dppy.utils import address_space, npytypes_array_to_dpex_array
 
 from .dufunc_inliner import dufunc_inliner
 
@@ -416,7 +416,7 @@ def _create_gufunc_for_parfor_body(
             # Convert Numba's npytype.Array to DPPYArray data type. DPPYArray
             # allows us to specify an address space for the data and other
             # pointer arguments for the array.
-            param_types_addrspaces[i] = npytypes_array_to_dppy_array(
+            param_types_addrspaces[i] = npytypes_array_to_dpex_array(
                 param_types_addrspaces[i], addrspaces[i]
             )
 

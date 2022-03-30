@@ -15,10 +15,10 @@
 from dpnp import ndarray
 from numba.core import types
 
-from numba_dppy.dppy_array_type import DPPYArray
+from numba_dppy.core.types import Array
 
 
-class dpnp_ndarray_Type(DPPYArray):
+class dpnp_ndarray_Type(Array):
     """Numba type for dpnp.ndarray."""
 
     def __init__(

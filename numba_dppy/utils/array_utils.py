@@ -66,7 +66,7 @@ def get_info_from_suai(obj):
 
 def has_usm_memory(obj):
     """
-    Determine and return a SYCL device accesible object.
+    Determine and return a SYCL device accessible object.
 
     as_usm_memory() converts Python object with `__sycl_usm_array_interface__`
     property to one of :class:`.MemoryUSMShared`, :class:`.MemoryUSMDevice`, or
@@ -180,7 +180,7 @@ def copy_to_numpy_from_usm_obj(usm_allocated, obj):
 
     if obj.dtype not in [np.dtype(typ) for typ in supported_numpy_dtype]:
         raise ValueError(
-            "dtype is not supprted. Supported dtypes "
+            "dtype is not supported. Supported dtypes "
             "are: %s" % (supported_numpy_dtype)
         )
 
