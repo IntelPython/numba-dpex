@@ -19,7 +19,7 @@ import numba_dppy
 
 
 @infer_getattr
-class DppyDpnpTemplate(AttributeTemplate):
+class DpnpTemplate(AttributeTemplate):
     key = types.Module(numba_dppy)
 
     def resolve_dpnp(self, mod):

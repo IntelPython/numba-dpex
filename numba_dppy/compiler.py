@@ -187,8 +187,8 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
     for arg in args:
         if isinstance(arg, types.npytypes.Array) and not isinstance(arg, Array):
             raise TypeError(
-                "We only accept DPPYArray as type of array-like objects. We received %s"
-                % (type(arg))
+                "Only numba_dpex.core.types.Array objects are supported as "
+                + "kernel arguments. Received %s" % (type(arg))
             )
 
     if config.DEBUG:

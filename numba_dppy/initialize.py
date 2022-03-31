@@ -17,13 +17,7 @@ import os
 import llvmlite.binding as ll
 from numba.np.ufunc.decorators import Vectorize
 
-from numba_dppy.vectorizers import DPPYVectorize
-
-
-def init_jit():
-    from numba_dppy.dispatcher import DPPYDispatcher
-
-    return DPPYDispatcher
+from numba_dppy.vectorizers import Vectorize as DpexVectorize
 
 
 def load_dpctl_sycl_interface():
@@ -61,7 +55,7 @@ def load_dpctl_sycl_interface():
     else:
         raise ImportError
 
-    def init_dppy_vectorize():
-        return DPPYVectorize
+    def init_dpex_vectorize():
+        return DpexVectorize
 
-    Vectorize.target_registry.ondemand["dppy"] = init_dppy_vectorize
+    Vectorize.target_registry.ondemand["dpex"] = init_dpex_vectorize

@@ -52,7 +52,7 @@ from numba.core.typing import signature
 from numba.parfors import parfor
 from numba.parfors.parfor_lowering import _lower_parfor_parallel
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 from numba_dppy import config
 from numba_dppy.dpctl_iface import KernelLaunchOps
 from numba_dppy.core.types import Array
@@ -413,9 +413,9 @@ def _create_gufunc_for_parfor_body(
     assert len(param_types_addrspaces) == len(addrspaces)
     for i in range(len(param_types_addrspaces)):
         if addrspaces[i] is not None:
-            # Convert Numba's npytype.Array to DPPYArray data type. DPPYArray
-            # allows us to specify an address space for the data and other
-            # pointer arguments for the array.
+            # Convert numba.types.Array to numba_dpex.core.types.Array data
+            # type. Our Array type allows us to specify an address space for the
+            # data and other pointer arguments for the array.
             param_types_addrspaces[i] = npytypes_array_to_dpex_array(
                 param_types_addrspaces[i], addrspaces[i]
             )
@@ -487,7 +487,7 @@ def _create_gufunc_for_parfor_body(
         print("gufunc_txt = ", type(gufunc_txt), "\n", gufunc_txt)
         sys.stdout.flush()
     # Force gufunc outline into existence.
-    globls = {"np": np, "numba": numba, "dppy": dppy}
+    globls = {"np": np, "numba": numba, "dppy": dpex}
     locls = {}
     exec(gufunc_txt, globls, locls)
     gufunc_func = locls[gufunc_name]
@@ -666,7 +666,7 @@ def _create_gufunc_for_parfor_body(
         print("after DUFunc inline".center(80, "-"))
         gufunc_ir.dump()
 
-    kernel_func = dppy.compiler.compile_kernel_parfor(
+    kernel_func = dpex.compiler.compile_kernel_parfor(
         dpctl.get_current_queue(),
         gufunc_ir,
         gufunc_param_types,
@@ -897,7 +897,7 @@ def _create_shape_signature(
     return (gu_sin, gu_sout)
 
 
-# Keep all the dppy kernels and programs created alive indefinitely.
+# Keep all the kernels and programs created alive indefinitely.
 keep_alive_kernels = []
 
 
@@ -1260,7 +1260,7 @@ def relatively_deep_copy(obj, memo):
 class WrapperDefaultLower(Lower):
     @property
     def _disable_sroa_like_opt(self):
-        """For numba_dppy's case we always return True."""
+        """We always return True."""
         return True
 
 
@@ -1307,12 +1307,12 @@ class DPEXLowerer(Lower):
         return lower
 
     def lower(self):
-        """Numba-dppy's custom lowering function.
+        """Custom lowering function to support offloading of kernels.
 
-        The lowerer has a builtin fallback mechanism for parfor functions.
-        We first try to lower a parfor onto a SYCL device using numba-dppy's
-        pipeline, if the lowering fails then we fallback to the default Numba
-        lowering to CPU. The lowering follow the following steps:
+        The lowerer has a builtin fallback mechanism for parfor functions. We
+        first try to lower a parfor onto a SYCL device, if the lowering fails
+        then we fallback to the default Numba lowering to CPU. The lowering
+        follow the following steps:
 
         1. Start lowering of parent function
         2. Try to lower parfor onto the specified SYCL device
@@ -1320,12 +1320,12 @@ class DPEXLowerer(Lower):
                  lower onto to the specified SYCL device and inserts the
                  ``get_global_id`` intrinsic function.
                 2.a.a. Start lowering the parfor body and execute
-                       ``DPPYLower.lower()`` again.
+                       ``DpexLowerer.lower()`` again.
                 2.a.b. If the lowering fails, throw an exception.
             2.b. The ``lower_parfor_rollback`` catches the exception and
                  restores the parfor body to its initial state.
             2.c. Then throw an exception inside ``lower_parfor_rollback``
-                 that will be caught inside ``DPPYLower.lower()``.
+                 that will be caught inside ``DpexLowerer.lower()``.
         3. Catch exception and start parfor lowering with the default Numba CPU
            context.
 
@@ -1431,7 +1431,3 @@ def lower_parfor_rollback(lowerer, parfor):
 
         warnings.warn(NumbaPerformanceWarning(msg, parfor.loc))
         raise e
-
-
-def dppy_lower_array_expr(lowerer, expr):
-    raise NotImplementedError(expr)
