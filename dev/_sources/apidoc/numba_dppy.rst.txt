@@ -28,7 +28,6 @@ Submodules
    numba_dppy.descriptor
    numba_dppy.device_init
    numba_dppy.dpctl_support
-   numba_dppy.dppy_array_type
    numba_dppy.extended_numba_itanium_mangler
    numba_dppy.initialize
    numba_dppy.interop

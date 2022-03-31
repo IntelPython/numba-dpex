@@ -1,0 +1,18 @@
+numba\_dppy.core.types package
+==============================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dppy.core.types.array_type
+
+Module contents
+---------------
+
+.. automodule:: numba_dppy.core.types
+   :members:
+   :undoc-members:
+   :show-inheritance:

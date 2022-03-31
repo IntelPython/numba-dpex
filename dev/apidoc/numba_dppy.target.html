@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy.target module &mdash; numba-dppy 0+untagged.713.gf445273 documentation</title>
+  <title>numba_dppy.target module &mdash; numba-dppy 0+untagged.714.g15641d8 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -245,7 +245,7 @@ dpex-specific data types.</p>
 Numba’s <code class="docutils literal notranslate"><span class="pre">typing.BaseContext</span></code> class. We add two specific functionalities to
 the basic Numba typing context features: An overridden
 <a class="reference internal" href="#numba_dppy.target.DpexTypingContext.resolve_argument_type" title="numba_dppy.target.DpexTypingContext.resolve_argument_type"><code class="xref py py-func docutils literal notranslate"><span class="pre">resolve_argument_type()</span></code></a> that changes all <code class="docutils literal notranslate"><span class="pre">npytypes.Array</span></code> to
-<code class="xref py py-class docutils literal notranslate"><span class="pre">dppy_array_type.DppyArray</span></code>. An overridden
+<code class="xref py py-class docutils literal notranslate"><span class="pre">numba_depx.core.types.Array</span></code>. An overridden
 <a class="reference internal" href="#numba_dppy.target.DpexTypingContext.load_additional_registries" title="numba_dppy.target.DpexTypingContext.load_additional_registries"><code class="xref py py-func docutils literal notranslate"><span class="pre">load_additional_registries()</span></code></a> that registers OpenCL math and other
 functions to the typing context.</p>
 <dl class="py method">
