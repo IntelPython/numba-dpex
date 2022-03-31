@@ -95,7 +95,7 @@ def test_vectorize(filter_str, shape, dtypes, input_type):
         B = dtype(2.3)
 
     with dpctl.device_context(filter_str):
-        f = vectorize(sig, target="dppy")(vector_add)
+        f = vectorize(sig, target="dpex")(vector_add)
         expected = f(A, B)
         actual = vector_add(A, B)
 

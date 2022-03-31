@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Provide @vectorize(target="dppy") support."""
+"""Provide a Dpex target for Numba's ``vectorize`` decorator."""
 
 import warnings
 
@@ -20,7 +20,7 @@ import dpctl
 import numpy as np
 from numba.np.ufunc import deviceufunc
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 from numba_dppy.utils import (
     as_usm_obj,
     copy_to_numpy_from_usm_obj,
@@ -29,36 +29,36 @@ from numba_dppy.utils import (
 
 vectorizer_stager_source = """
 def __vectorized_{name}({args}, __out__):
-    __tid__ = __dppy__.get_global_id(0)
+    __tid__ = __dpex__.get_global_id(0)
     if __tid__ < __out__.shape[0]:
         __out__[__tid__] = __core__({argitems})
 """
 
 
-class DPPYVectorize(deviceufunc.DeviceVectorize):
+class Vectorize(deviceufunc.DeviceVectorize):
     def _compile_core(self, sig):
-        devfn = dppy.func(sig)(self.pyfunc)
+        devfn = dpex.func(sig)(self.pyfunc)
         return devfn, devfn.cres.signature.return_type
 
     def _get_globals(self, corefn):
         glbl = self.pyfunc.__globals__.copy()
-        glbl.update({"__dppy__": dppy, "__core__": corefn})
+        glbl.update({"__dpex__": dpex, "__core__": corefn})
         return glbl
 
     def _compile_kernel(self, fnobj, sig):
-        return dppy.kernel(sig)(fnobj)
+        return dpex.kernel(sig)(fnobj)
 
     def build_ufunc(self):
-        return DPPYUFuncDispatcher(self.kernelmap)
+        return UFuncDispatcher(self.kernelmap)
 
     @property
     def _kernel_template(self):
         return vectorizer_stager_source
 
 
-class DPPYUFuncDispatcher(object):
+class UFuncDispatcher(object):
     """
-    Invoke the dppy ufunc specialization for the given inputs.
+    Invoke the Dpex ufunc specialization for the given inputs.
     """
 
     def __init__(self, types_to_retty_kernels):
@@ -66,20 +66,20 @@ class DPPYUFuncDispatcher(object):
 
     def __call__(self, *args, **kws):
         """
-        Call the DPPY kernel launching mechanism
+        Call the kernel launching mechanism
         Args:
             *args (np.ndarray): NumPy arrays
             **kws (optional):
                 queue (dpctl._sycl_queue.SyclQueue): SYCL queue.
                 out (np.ndarray): Output array.
         """
-        return DPPYUFuncMechanism.call(self.functions, args, kws)
+        return UFuncMechanism.call(self.functions, args, kws)
 
     def reduce(self, arg, queue=0):
         raise NotImplementedError
 
 
-class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
+class UFuncMechanism(deviceufunc.UFuncMechanism):
     """
     Mechanism to process Input to a SYCL kernel and launch that kernel
     """
@@ -203,7 +203,7 @@ class DPPYUFuncMechanism(deviceufunc.UFuncMechanism):
         copy_to_numpy_from_usm_obj(devary_memview, hostary)
 
     def launch(self, func, count, queue, args):
-        func[count, dppy.DEFAULT_LOCAL_SIZE](*args)
+        func[count, dpex.DEFAULT_LOCAL_SIZE](*args)
 
     def device_array(self, shape, dtype, queue):
         size = np.prod(shape)

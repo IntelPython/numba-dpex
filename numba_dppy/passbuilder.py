@@ -129,7 +129,7 @@ class PassBuilder(object):
         pm.add_pass(InlineOverloads, "inline overloaded functions")
 
     @staticmethod
-    def define_nopython_pipeline(state, name="dppy_nopython"):
+    def define_nopython_pipeline(state, name="dpex_nopython"):
         """Returns an nopython mode pipeline based PassManager"""
         pm = PassManager(name)
         PassBuilder.default_numba_nopython_pipeline(state, pm)

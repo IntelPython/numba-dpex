@@ -16,7 +16,7 @@ from numba.core import compiler, dispatcher
 from numba.core.registry import cpu_target
 from numba.core.target_extension import dispatcher_registry, target_registry
 
-import numba_dppy.config as dppy_config
+import numba_dppy.config as dpex_config
 from numba_dppy.target import DPEX_TARGET_NAME
 
 
@@ -31,7 +31,7 @@ class OffloadDispatcher(dispatcher.Dispatcher):
         impl_kind="direct",
         pipeline_class=compiler.Compiler,
     ):
-        if dppy_config.HAS_NON_HOST_DEVICE:
+        if dpex_config.HAS_NON_HOST_DEVICE:
             from numba_dppy.compiler import Compiler
 
             targetoptions["parallel"] = True

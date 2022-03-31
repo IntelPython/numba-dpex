@@ -23,7 +23,7 @@ from numba.core.typing.templates import (
     signature,
 )
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 from numba_dppy.core.types import Array
 from numba_dppy.utils import address_space
 
@@ -37,71 +37,71 @@ intrinsic_global = registry.register_global
 
 @intrinsic
 class Ocl_get_global_id(ConcreteTemplate):
-    key = dppy.get_global_id
+    key = dpex.get_global_id
     cases = [signature(types.intp, types.uint32)]
 
 
 @intrinsic
 class Ocl_get_local_id(ConcreteTemplate):
-    key = dppy.get_local_id
+    key = dpex.get_local_id
     cases = [signature(types.intp, types.uint32)]
 
 
 @intrinsic
 class Ocl_get_group_id(ConcreteTemplate):
-    key = dppy.get_group_id
+    key = dpex.get_group_id
     cases = [signature(types.intp, types.uint32)]
 
 
 @intrinsic
 class Ocl_get_num_groups(ConcreteTemplate):
-    key = dppy.get_num_groups
+    key = dpex.get_num_groups
     cases = [signature(types.intp, types.uint32)]
 
 
 @intrinsic
 class Ocl_get_work_dim(ConcreteTemplate):
-    key = dppy.get_work_dim
+    key = dpex.get_work_dim
     cases = [signature(types.uint32)]
 
 
 @intrinsic
 class Ocl_get_global_size(ConcreteTemplate):
-    key = dppy.get_global_size
+    key = dpex.get_global_size
     cases = [signature(types.intp, types.uint32)]
 
 
 @intrinsic
 class Ocl_get_local_size(ConcreteTemplate):
-    key = dppy.get_local_size
+    key = dpex.get_local_size
     cases = [signature(types.intp, types.uint32)]
 
 
 @intrinsic
 class Ocl_barrier(ConcreteTemplate):
-    key = dppy.barrier
+    key = dpex.barrier
     cases = [signature(types.void, types.uint32), signature(types.void)]
 
 
 @intrinsic
 class Ocl_mem_fence(ConcreteTemplate):
-    key = dppy.mem_fence
+    key = dpex.mem_fence
     cases = [signature(types.void, types.uint32)]
 
 
 @intrinsic
 class Ocl_sub_group_barrier(ConcreteTemplate):
-    key = dppy.sub_group_barrier
+    key = dpex.sub_group_barrier
 
     cases = [signature(types.void)]
 
 
-# dppy.atomic submodule -------------------------------------------------------
+# dpex.atomic submodule -------------------------------------------------------
 
 
 @intrinsic
 class Ocl_atomic_add(AbstractTemplate):
-    key = dppy.atomic.add
+    key = dpex.atomic.add
 
     def generic(self, args, kws):
         assert not kws
@@ -115,7 +115,7 @@ class Ocl_atomic_add(AbstractTemplate):
 
 @intrinsic
 class Ocl_atomic_sub(AbstractTemplate):
-    key = dppy.atomic.sub
+    key = dpex.atomic.sub
 
     def generic(self, args, kws):
         assert not kws
@@ -129,7 +129,7 @@ class Ocl_atomic_sub(AbstractTemplate):
 
 @intrinsic_attr
 class OclAtomicTemplate(AttributeTemplate):
-    key = types.Module(dppy.atomic)
+    key = types.Module(dpex.atomic)
 
     def resolve_add(self, mod):
         return types.Function(Ocl_atomic_add)
@@ -138,15 +138,15 @@ class OclAtomicTemplate(AttributeTemplate):
         return types.Function(Ocl_atomic_sub)
 
 
-intrinsic_global(dppy.atomic.add, types.Function(Ocl_atomic_add))
-intrinsic_global(dppy.atomic.sub, types.Function(Ocl_atomic_sub))
+intrinsic_global(dpex.atomic.add, types.Function(Ocl_atomic_add))
+intrinsic_global(dpex.atomic.sub, types.Function(Ocl_atomic_sub))
 
-# dppy.local submodule -------------------------------------------------------
+# dpex.local submodule -------------------------------------------------------
 
 
 @intrinsic
 class OCL_local_array(CallableTemplate):
-    key = dppy.local.array
+    key = dpex.local.array
 
     def generic(self):
         def typer(shape, dtype):
@@ -179,18 +179,18 @@ class OCL_local_array(CallableTemplate):
 
 @intrinsic_attr
 class OclLocalTemplate(AttributeTemplate):
-    key = types.Module(dppy.local)
+    key = types.Module(dpex.local)
 
     def resolve_array(self, mod):
         return types.Function(OCL_local_array)
 
 
-# dppy.private submodule -------------------------------------------------------
+# dpex.private submodule -------------------------------------------------------
 
 
 @intrinsic
 class OCL_private_array(CallableTemplate):
-    key = dppy.private.array
+    key = dpex.private.array
 
     def generic(self):
         def typer(shape, dtype):
@@ -223,7 +223,7 @@ class OCL_private_array(CallableTemplate):
 
 @intrinsic_attr
 class OclPrivateTemplate(AttributeTemplate):
-    key = types.Module(dppy.private)
+    key = types.Module(dpex.private)
 
     def resolve_array(self, mod):
         return types.Function(OCL_private_array)
@@ -234,7 +234,7 @@ class OclPrivateTemplate(AttributeTemplate):
 
 @intrinsic_attr
 class OclModuleTemplate(AttributeTemplate):
-    key = types.Module(dppy)
+    key = types.Module(dpex)
 
     def resolve_get_global_id(self, mod):
         return types.Function(Ocl_get_global_id)
@@ -267,15 +267,15 @@ class OclModuleTemplate(AttributeTemplate):
         return types.Function(Ocl_sub_group_barrier)
 
     def resolve_atomic(self, mod):
-        return types.Module(dppy.atomic)
+        return types.Module(dpex.atomic)
 
     def resolve_local(self, mod):
-        return types.Module(dppy.local)
+        return types.Module(dpex.local)
 
     def resolve_private(self, mod):
-        return types.Module(dppy.private)
+        return types.Module(dpex.private)
 
 
 # intrinsic
 
-intrinsic_global(dppy, types.Module(dppy))
+intrinsic_global(dpex, types.Module(dpex))

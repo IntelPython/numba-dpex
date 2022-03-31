@@ -64,7 +64,7 @@ class DpexTypingContext(typing.BaseContext):
         Overrides the implementation of ``numba.core.typing.BaseContext`` to
         handle the special case of ``numba.core.types.npytypes.Array``. Whenever
         a NumPy ndarray argument is encountered as an argument to a ``kernel``
-        function, it is converted to a ``DPPYArray`` type.
+        function, it is converted to a ``numba_dpex.core.types.Array`` type.
 
         Args:
             val : A Python value that is passed as an argument to a ``kernel``
@@ -88,7 +88,7 @@ class DpexTypingContext(typing.BaseContext):
                 return suai_to_dpex_array(val)
 
         if _type is types.npytypes.Array:
-            # Convert npytypes.Array to DPPYArray
+            # Convert npytypes.Array to numba_dpex.core.types.Array
             return npytypes_array_to_dpex_array(typeof(val))
         else:
             return super().resolve_argument_type(val)
