@@ -73,8 +73,8 @@ def test_debug_flag_generates_ir_with_debuginfo(debug_option):
 
 def test_debug_info_locals_vars_on_no_opt():
     """
-    Check llvm debug tag DILocalVariable is emitting to IR for all variables if debug parameter is set to True
-    and optimization is O0
+    Check llvm debug tag DILocalVariable is emitting to IR for all variables
+    if debug parameter is set to True and optimization is O0
     """
 
     @dppy.kernel
@@ -105,7 +105,8 @@ def test_debug_info_locals_vars_on_no_opt():
 
 def test_debug_kernel_local_vars_in_ir():
     """
-    Check llvm debug tag DILocalVariable is emitting to IR for variables created in kernel
+    Check llvm debug tag DILocalVariable is emitting to IR for variables
+    created in kernel
     """
 
     @dppy.kernel
@@ -204,7 +205,7 @@ def test_debuginfo_DISubprogram_linkageName():
         b[i] = a[i]
 
     ir_tags = [
-        r'\!DISubprogram\(.*linkageName: ".*e4func.*"',  # e4func is func(), e8func$241 is func$1()
+        r'\!DISubprogram\(.*linkageName: ".*e4func.*"',
     ]
 
     sycl_queue = dpctl.get_current_queue()
@@ -227,7 +228,7 @@ def test_debuginfo_DICompileUnit_language_and_producer():
 
     ir_tags = [
         r"\!DICompileUnit\(language: DW_LANG_C_plus_plus,",
-        r'\!DICompileUnit\(.*producer: "numba-dppy"',
+        r'\!DICompileUnit\(.*producer: "numba-dpex"',
     ]
 
     sycl_queue = dpctl.get_current_queue()
