@@ -18,7 +18,7 @@ import dpctl
 import numba
 import numpy as np
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 
 
 def common_loop_body(param_a, param_b):
@@ -58,17 +58,17 @@ def numba_func_driver(a, b, c):
 def dppy_func_driver(a, b, c):
     device = dpctl.select_default_device()
     with dpctl.device_context(device):
-        dppy_kernel[len(c), dppy.DEFAULT_LOCAL_SIZE](a, b, c)
+        kernel[len(c), dpex.DEFAULT_LOCAL_SIZE](a, b, c)
 
 
-@dppy.kernel(debug=True)
-def dppy_kernel(a_in_kernel, b_in_kernel, c_in_kernel):
-    i = dppy.get_global_id(0)
+@dpex.kernel(debug=True)
+def kernel(a_in_kernel, b_in_kernel, c_in_kernel):
+    i = dpex.get_global_id(0)
     c_in_kernel[i] = dppy_loop_body(a_in_kernel[i], b_in_kernel[i])
 
 
 numba_loop_body = numba.njit(debug=True)(common_loop_body)
-dppy_loop_body = dppy.func(debug=True)(common_loop_body)
+dppy_loop_body = dpex.func(debug=True)(common_loop_body)
 
 
 def main():

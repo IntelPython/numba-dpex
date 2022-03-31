@@ -15,7 +15,7 @@
 import dpctl
 import numpy as np
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 
 
 def main():
@@ -36,9 +36,9 @@ def main():
     implementation for floating point atomics.
     """
 
-    @dppy.kernel
+    @dpex.kernel
     def atomic_add(a):
-        dppy.atomic.add(a, 0, 1)
+        dpex.atomic.add(a, 0, 1)
 
     global_size = 100
     a = np.array([0], dtype=np.float32)
@@ -50,7 +50,7 @@ def main():
     device.print_device_info()
 
     with dpctl.device_context(device):
-        atomic_add[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
+        atomic_add[global_size, dpex.DEFAULT_LOCAL_SIZE](a)
 
     # Expected 100, because global_size = 100
     print(a)
