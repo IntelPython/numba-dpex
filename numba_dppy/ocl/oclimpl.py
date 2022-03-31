@@ -27,7 +27,7 @@ from numba.core.typing.npydecl import parse_dtype
 
 from numba_dppy import config, target
 from numba_dppy.codegen import SPIR_DATA_LAYOUT
-from numba_dppy.dppy_array_type import DPPYArray
+from numba_dppy.core.types import Array
 from numba_dppy.ocl.atomics import atomic_helper
 from numba_dppy.utils import address_space
 
@@ -433,10 +433,7 @@ def atomic_add(context, builder, sig, args, name):
         lary = context.make_array(aryty)(context, builder, ary)
         ptr = cgutils.get_item_pointer(context, builder, aryty, lary, indices)
 
-        if (
-            isinstance(aryty, DPPYArray)
-            and aryty.addrspace == address_space.LOCAL
-        ):
+        if isinstance(aryty, Array) and aryty.addrspace == address_space.LOCAL:
             return insert_and_call_atomic_fn(
                 context,
                 builder,
@@ -572,7 +569,7 @@ def _make_array(
 ):
     ndim = len(shape)
     # Create array object
-    aryty = DPPYArray(dtype=dtype, ndim=ndim, layout="C", addrspace=addrspace)
+    aryty = Array(dtype=dtype, ndim=ndim, layout="C", addrspace=addrspace)
     ary = context.make_array(aryty)(context, builder)
 
     targetdata = _get_target_data(context)

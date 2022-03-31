@@ -24,7 +24,7 @@ from numba.core.typing.templates import (
 )
 
 import numba_dppy as dppy
-from numba_dppy.dppy_array_type import DPPYArray
+from numba_dppy.core.types import Array
 from numba_dppy.utils import address_space
 
 registry = Registry()
@@ -167,7 +167,7 @@ class OCL_local_array(CallableTemplate):
             ndim = parse_shape(shape)
             nb_dtype = parse_dtype(dtype)
             if nb_dtype is not None and ndim is not None:
-                return DPPYArray(
+                return Array(
                     dtype=nb_dtype,
                     ndim=ndim,
                     layout="C",
@@ -211,7 +211,7 @@ class OCL_private_array(CallableTemplate):
             ndim = parse_shape(shape)
             nb_dtype = parse_dtype(dtype)
             if nb_dtype is not None and ndim is not None:
-                return DPPYArray(
+                return Array(
                     dtype=nb_dtype,
                     ndim=ndim,
                     layout="C",
