@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy.core.passes.lowerer module &mdash; numba-dppy 0+untagged.714.g15641d8 documentation</title>
+  <title>numba_dppy.core.passes.lowerer module &mdash; numba-dppy 0+untagged.715.gb98e4b8 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -98,11 +98,11 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dppy.core.passes.lowerer.DPEXLowerer.lower">
 <span class="sig-name descname"><span class="pre">lower</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.core.passes.lowerer.DPEXLowerer.lower" title="Permalink to this definition"></a></dt>
-<dd><p>Numba-dppy’s custom lowering function.</p>
-<p>The lowerer has a builtin fallback mechanism for parfor functions.
-We first try to lower a parfor onto a SYCL device using numba-dppy’s
-pipeline, if the lowering fails then we fallback to the default Numba
-lowering to CPU. The lowering follow the following steps:</p>
+<dd><p>Custom lowering function to support offloading of kernels.</p>
+<p>The lowerer has a builtin fallback mechanism for parfor functions. We
+first try to lower a parfor onto a SYCL device, if the lowering fails
+then we fallback to the default Numba lowering to CPU. The lowering
+follow the following steps:</p>
 <ol class="arabic">
 <li><p>Start lowering of parent function</p></li>
 <li><dl>
@@ -112,14 +112,14 @@ lowering to CPU. The lowering follow the following steps:</p>
 <code class="docutils literal notranslate"><span class="pre">get_global_id</span></code> intrinsic function.</p>
 </div></blockquote>
 <dl class="simple">
-<dt>2.a.a. Start lowering the parfor body and execute</dt><dd><p><code class="docutils literal notranslate"><span class="pre">DPPYLower.lower()</span></code> again.</p>
+<dt>2.a.a. Start lowering the parfor body and execute</dt><dd><p><code class="docutils literal notranslate"><span class="pre">DpexLowerer.lower()</span></code> again.</p>
 </dd>
 </dl>
 <p>2.a.b. If the lowering fails, throw an exception.</p>
 </dd>
 <dt>2.b. The <code class="docutils literal notranslate"><span class="pre">lower_parfor_rollback</span></code> catches the exception and</dt><dd><p>restores the parfor body to its initial state.</p>
 </dd>
-<dt>2.c. Then throw an exception inside <code class="docutils literal notranslate"><span class="pre">lower_parfor_rollback</span></code></dt><dd><p>that will be caught inside <code class="docutils literal notranslate"><span class="pre">DPPYLower.lower()</span></code>.</p>
+<dt>2.c. Then throw an exception inside <code class="docutils literal notranslate"><span class="pre">lower_parfor_rollback</span></code></dt><dd><p>that will be caught inside <code class="docutils literal notranslate"><span class="pre">DpexLowerer.lower()</span></code>.</p>
 </dd>
 </dl>
 </dd>
@@ -149,11 +149,6 @@ should be used.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dppy.core.passes.lowerer.copy_block">
 <span class="sig-prename descclassname"><span class="pre">numba_dppy.core.passes.lowerer.</span></span><span class="sig-name descname"><span class="pre">copy_block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.core.passes.lowerer.copy_block" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dppy.core.passes.lowerer.dppy_lower_array_expr">
-<span class="sig-prename descclassname"><span class="pre">numba_dppy.core.passes.lowerer.</span></span><span class="sig-name descname"><span class="pre">dppy_lower_array_expr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lowerer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.core.passes.lowerer.dppy_lower_array_expr" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">

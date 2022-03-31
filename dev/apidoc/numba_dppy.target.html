@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy.target module &mdash; numba-dppy 0+untagged.714.g15641d8 documentation</title>
+  <title>numba_dppy.target module &mdash; numba-dppy 0+untagged.715.gb98e4b8 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -261,7 +261,7 @@ functions to the typing context.</p>
 <p>Overrides the implementation of <code class="docutils literal notranslate"><span class="pre">numba.core.typing.BaseContext</span></code> to
 handle the special case of <code class="docutils literal notranslate"><span class="pre">numba.core.types.npytypes.Array</span></code>. Whenever
 a NumPy ndarray argument is encountered as an argument to a <code class="docutils literal notranslate"><span class="pre">kernel</span></code>
-function, it is converted to a <code class="docutils literal notranslate"><span class="pre">DPPYArray</span></code> type.</p>
+function, it is converted to a <code class="docutils literal notranslate"><span class="pre">numba_dpex.core.types.Array</span></code> type.</p>
 <dl>
 <dt>Args:</dt><dd><dl>
 <dt>val<span class="classifier">A Python value that is passed as an argument to a <code class="docutils literal notranslate"><span class="pre">kernel</span></code></span></dt><dd><p>function.</p>
