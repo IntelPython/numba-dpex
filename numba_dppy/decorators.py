@@ -18,18 +18,18 @@ from numba.core import sigutils, types
 from numba_dppy.utils import assert_no_return, npytypes_array_to_dppy_array
 
 from .compiler import (
-    JitDPPYKernel,
-    compile_dppy_func,
-    compile_dppy_func_template,
+    JitKernel,
+    compile_func,
+    compile_func_template,
     get_ordered_arg_access_types,
 )
 
 
 def kernel(signature=None, access_types=None, debug=None):
-    """JIT compile a python function conforming using the DPPY backend.
+    """JIT compile a python function conforming using the Dpex backend.
 
-    A kernel is equvalent to an OpenCL kernel function, and has the
-    same restrictions as definined by SPIR_KERNEL calling convention.
+    A kernel is equivalent to an OpenCL kernel function, and has the
+    same restrictions as defined by SPIR_KERNEL calling convention.
     """
     if signature is None:
         return autojit(debug=debug, access_types=access_types)
@@ -45,7 +45,7 @@ def autojit(debug=None, access_types=None):
         ordered_arg_access_types = get_ordered_arg_access_types(
             pyfunc, access_types
         )
-        return JitDPPYKernel(pyfunc, debug, ordered_arg_access_types)
+        return JitKernel(pyfunc, debug, ordered_arg_access_types)
 
     return _kernel_autojit
 
@@ -61,7 +61,7 @@ def _kernel_jit(signature, debug, access_types):
         ]
     )
 
-    # Raises TypeError when users return anything inside @dppy.kernel.
+    # Raises TypeError when users return anything inside @numba_dpex.kernel.
     assert_no_return(rettype)
 
     def _wrapped(pyfunc):
@@ -69,12 +69,12 @@ def _kernel_jit(signature, debug, access_types):
         ordered_arg_access_types = get_ordered_arg_access_types(
             pyfunc, access_types
         )
-        # We create an instance of JitDPPYKernel to make sure at call time
+        # We create an instance of JitKernel to make sure at call time
         # we are going through the caching mechanism.
-        dppy_kernel = JitDPPYKernel(pyfunc, debug, ordered_arg_access_types)
+        kernel = JitKernel(pyfunc, debug, ordered_arg_access_types)
         # This will make sure we are compiling eagerly.
-        dppy_kernel.specialize(argtypes, current_queue)
-        return dppy_kernel
+        kernel.specialize(argtypes, current_queue)
+        return kernel
 
     return _wrapped
 
@@ -101,17 +101,17 @@ def _func_jit(signature, debug=None):
     )
 
     def _wrapped(pyfunc):
-        return compile_dppy_func(pyfunc, restype, argtypes, debug=debug)
+        return compile_func(pyfunc, restype, argtypes, debug=debug)
 
     return _wrapped
 
 
 def _func_autojit_wrapper(debug=None):
     def _func_autojit(pyfunc, debug=debug):
-        return compile_dppy_func_template(pyfunc, debug=debug)
+        return compile_func_template(pyfunc, debug=debug)
 
     return _func_autojit
 
 
 def _func_autojit(pyfunc, debug=None):
-    return compile_dppy_func_template(pyfunc, debug=debug)
+    return compile_func_template(pyfunc, debug=debug)

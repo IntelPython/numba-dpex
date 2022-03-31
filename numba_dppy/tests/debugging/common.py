@@ -67,7 +67,7 @@ def setup_breakpoint(
     app.breakpoint(breakpoint)
     app.run(script)
 
-    app.child.expect(fr"Thread .* hit Breakpoint .* at {expected_location}")
+    app.child.expect(rf"Thread .* hit Breakpoint .* at {expected_location}")
 
     if expected_line:
         app.child.expect(expected_line)

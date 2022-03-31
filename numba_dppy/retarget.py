@@ -25,20 +25,20 @@ except ImportError:
 
 from numba.core.retarget import BasicRetarget
 
-from numba_dppy.target import DPPY_TARGET_NAME
+from numba_dppy.target import DPEX_TARGET_NAME
 
 
-class DPPYRetarget(BasicRetarget):
+class DpexRetarget(BasicRetarget):
     def __init__(self, filter_str):
         self.filter_str = filter_str
-        super(DPPYRetarget, self).__init__()
+        super(DpexRetarget, self).__init__()
 
     @property
     def output_target(self):
-        return DPPY_TARGET_NAME
+        return DPEX_TARGET_NAME
 
     def compile_retarget(self, cpu_disp):
-        kernel = njit(_target=DPPY_TARGET_NAME)(cpu_disp.py_func)
+        kernel = njit(_target=DPEX_TARGET_NAME)(cpu_disp.py_func)
         return kernel
 
 
@@ -51,7 +51,7 @@ def _retarget(sycl_queue):
     result = _first_level_cache.get(filter_string)
 
     if not result:
-        result = DPPYRetarget(filter_string)
+        result = DpexRetarget(filter_string)
         _first_level_cache[filter_string] = result
 
     return result

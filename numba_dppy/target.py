@@ -44,14 +44,15 @@ LINK_ATOMIC = 111
 LLVM_SPIRV_ARGS = 112
 
 
-class DPPYTypingContext(typing.BaseContext):
-    """A numba_dppy-specific typing context inheriting Numba's ``BaseContext``.
+class DpexTypingContext(typing.BaseContext):
+    """A typing context inheriting Numba's ``BaseContext`` to support
+    dpex-specific data types.
 
-    :class:`DPPYTypingContext` is a customized typing context that inherits from
-    Numba's ``typing.BaseContext`` class. We add two specific functionalities
-    to the basic Numba typing context features: An overridden
+    :class:`DpexTypingContext` is a customized typing context that inherits from
+    Numba's ``typing.BaseContext`` class. We add two specific functionalities to
+    the basic Numba typing context features: An overridden
     :func:`resolve_argument_type` that changes all ``npytypes.Array`` to
-    numba-dppy's :class:`dppy_array_type.DppyArray`. An overridden
+    :class:`dppy_array_type.DppyArray`. An overridden
     :func:`load_additional_registries` that registers OpenCL math and other
     functions to the typing context.
 
@@ -131,22 +132,23 @@ class SyclDevice(GPU):
     pass
 
 
-DPPY_TARGET_NAME = "SyclDevice"
+DPEX_TARGET_NAME = "SyclDevice"
 
-target_registry[DPPY_TARGET_NAME] = SyclDevice
+target_registry[DPEX_TARGET_NAME] = SyclDevice
 
-import numba_dppy.dppy_offload_dispatcher
+import numba_dppy.offload_dispatcher
 
 
-class DPPYTargetContext(BaseContext):
-    """A numba_dppy-specific target context inheriting Numba's ``BaseContext``.
+class DpexTargetContext(BaseContext):
+    """A target context inheriting Numba's ``BaseContext`` that is customized
+    for generating SYCL kernels.
 
-    :class:`DPPYTargetContext` is a customized target context that inherits
-    from Numba's ``numba.core.base.BaseContext`` class. The class defines
-    helper functions to mark LLVM functions as SPIR-V kernels. The class also
-    registers OpenCL math and API functions, helper functions for inserting
-    LLVM address space cast instructions, and other functionalities used by
-    numba_dppy's compiler passes.
+    :class:`DpexTargetContext` is a customized target context that inherits from
+    Numba's ``numba.core.base.BaseContext`` class. The class defines helper
+    functions to mark LLVM functions as SPIR-V kernels. The class also registers
+    OpenCL math and API functions, helper functions for inserting LLVM address
+    space cast instructions, and other functionalities used by dpex compiler
+    passes.
 
     """
 
@@ -250,8 +252,8 @@ class DPPYTargetContext(BaseContext):
         module = func.module
         arginfo = self.get_arg_packer(argtypes)
         wrapperfnty = lc.Type.function(lc.Type.void(), arginfo.argument_types)
-        wrapper_module = self.create_module("dppy.kernel.wrapper")
-        wrappername = "dppyPy_{name}".format(name=func.name)
+        wrapper_module = self.create_module("dpex.kernel.wrapper")
+        wrappername = "dpexPy_{name}".format(name=func.name)
         argtys = list(arginfo.argument_types)
         fnty = lc.Type.function(
             lc.Type.int(),
@@ -280,11 +282,11 @@ class DPPYTargetContext(BaseContext):
         module.get_function(func.name).linkage = "internal"
         return wrapper
 
-    def __init__(self, typingctx, target=DPPY_TARGET_NAME):
+    def __init__(self, typingctx, target=DPEX_TARGET_NAME):
         super().__init__(typingctx, target)
 
     def init(self):
-        self._internal_codegen = codegen.JITSPIRVCodegen("numba_dppy.jit")
+        self._internal_codegen = codegen.JITSPIRVCodegen("numba_dpex.jit")
         self._target_data = ll.create_target_data(
             codegen.SPIR_DATA_LAYOUT[utils.MACHINE_BITS]
         )
@@ -352,7 +354,7 @@ class DPPYTargetContext(BaseContext):
                     ]
 
     def load_additional_registries(self):
-        """Register OpenCL functions into numba-dppy's target context.
+        """Register OpenCL functions into numba_depx's target context.
 
         To make sure we are calling supported OpenCL math functions, we
         replace some of NUMBA's NumPy ufunc with OpenCL versions of those
@@ -374,7 +376,7 @@ class DPPYTargetContext(BaseContext):
 
     @cached_property
     def call_conv(self):
-        return DPPYCallConv(self)
+        return DpexCallConv(self)
 
     def codegen(self):
         return self._internal_codegen
@@ -390,7 +392,7 @@ class DPPYTargetContext(BaseContext):
 
         qualified = name + "." + ".".join(str(a) for a in argtypes)
         mangled = VALID_CHARS.sub(repl, qualified)
-        return "dppy_py_devfn_" + mangled
+        return "dpex_py_devfn_" + mangled
 
     def prepare_ocl_kernel(self, func, argtypes):
         module = func.module
@@ -406,7 +408,7 @@ class DPPYTargetContext(BaseContext):
         return func
 
     def declare_function(self, module, fndesc):
-        """Create the LLVM function from a ``numba_dppy.kernel`` decorated
+        """Create the LLVM function from a ``numba_dpex.kernel`` decorated
         function.
 
         Args:
@@ -424,7 +426,7 @@ class DPPYTargetContext(BaseContext):
         fn = module.get_or_insert_function(fnty, name=fndesc.mangled_name)
         if not self.enable_debuginfo:
             fn.attributes.add("alwaysinline")
-        ret = super(DPPYTargetContext, self).declare_function(module, fndesc)
+        ret = super(DpexTargetContext, self).declare_function(module, fndesc)
         ret.calling_convention = calling_conv.CC_SPIR_FUNC
         return ret
 
@@ -474,12 +476,12 @@ class DPPYTargetContext(BaseContext):
         return self.ufunc_db[ufunc_key]
 
 
-class DPPYCallConv(MinimalCallConv):
-    """Custom calling convention class used by numba-dppy.
+class DpexCallConv(MinimalCallConv):
+    """Custom calling convention class used by numba-dpex.
 
-    Numba-dppy's calling convention derives from
+    numba_dpex's calling convention derives from
     :class:`numba.core.callconv import MinimalCallConv`. The
-    :class:`DPPYCallConv` overriddes :func:`call_function`.
+    :class:`DpexCallConv` overriddes :func:`call_function`.
 
     """
 

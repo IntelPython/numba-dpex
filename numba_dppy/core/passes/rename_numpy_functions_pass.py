@@ -100,7 +100,7 @@ rewrite_function_name_map = {
 }
 
 
-class RewriteNumPyOverloadedFunctions(object):
+class _RewriteNumPyOverloadedFunctionsImpl(object):
     def __init__(
         self, state, rewrite_function_name_map=rewrite_function_name_map
     ):
@@ -209,8 +209,8 @@ class RewriteNumPyOverloadedFunctions(object):
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
-class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
-    _name = "dppy_rewrite_overloaded_functions_pass"
+class RewriteOverloadedNumPyFunctionsPass(FunctionPass):
+    _name = "dpex_rewrite_overloaded_functions_pass"
 
     def __init__(self):
         FunctionPass.__init__(self)
@@ -229,7 +229,7 @@ class DPPYRewriteOverloadedNumPyFunctions(FunctionPass):
         import numba_dppy.dpnp_iface.dpnpimpl
 
     def run_pass(self, state):
-        rewrite_function_name_pass = RewriteNumPyOverloadedFunctions(
+        rewrite_function_name_pass = _RewriteNumPyOverloadedFunctionsImpl(
             state, rewrite_function_name_map
         )
 
@@ -253,7 +253,7 @@ def get_dpnp_func_typ(func):
     raise RuntimeError("type for func ", func, " not found")
 
 
-class RewriteNdarrayFunctions(object):
+class _RewriteNdarrayFunctionsImpl(object):
     def __init__(
         self, state, rewrite_function_name_map=rewrite_function_name_map
     ):
@@ -355,14 +355,14 @@ class RewriteNdarrayFunctions(object):
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
-class DPPYRewriteNdarrayFunctions(FunctionPass):
-    _name = "dppy_rewrite_ndarray_functions_pass"
+class RewriteNdarrayFunctionsPass(FunctionPass):
+    _name = "dpex_rewrite_ndarray_functions_pass"
 
     def __init__(self):
         FunctionPass.__init__(self)
 
     def run_pass(self, state):
-        rewrite_ndarray_function_name_pass = RewriteNdarrayFunctions(
+        rewrite_ndarray_function_name_pass = _RewriteNdarrayFunctionsImpl(
             state, rewrite_function_name_map
         )
 

@@ -27,6 +27,7 @@ from numba_dppy.tests._helper import (
     filter_strings,
     is_gen12,
     skip_no_dpnp,
+    skip_windows,
 )
 
 from ._helper import wrapper_function
@@ -136,6 +137,7 @@ def get_take_fn():
     return wrapper_function("a, ind", "a.take(ind)", globals())
 
 
+@skip_windows
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_take(filter_str, input_arrays, indices, capfd):
     a = input_arrays[0]

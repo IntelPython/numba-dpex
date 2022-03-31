@@ -1,11 +1,15 @@
-name: Generate coverage data
+name: Coverage
 on:
-  pull_request:
   push:
-    branches: [main]
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'numba_dppy/**'
+      - environment/coverage.yml
 
 jobs:
-  generate-coverage:
+  main:
     name: Generate coverage and push to Coveralls.io
     runs-on: ubuntu-20.04
 
@@ -15,34 +19,19 @@ jobs:
         with:
           access_token: ${{ github.token }}
 
-      - name: Add conda to system path
-        shell: bash
-        run: echo $CONDA/bin >> $GITHUB_PATH
-
       - name: Checkout repo
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
-      - name: Configure environment
-        run: |
-          conda env update -n base -f environment.yml --prune
-
-      - name: Reinstall numba0.54
-        run: |
-          conda remove -n base numba
-          conda install numba=0.54.1
-
-      - name: Build numba-dppy
-        run: |
-          export OCL_ICD_FILENAMES=libintelocl.so
-          python setup.py develop
+      - name: Setup numba-dppy
+        uses: ./.github/actions/setup-numba-dppy
+        with:
+          environment: environment/coverage.yml
 
       - name: Test installation
         run: |
           conda list
-          # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
-          export OCL_ICD_FILENAMES=libintelocl.so
           python -c "import numba_dppy; print(numba_dppy.__file__)"
 
       - name: Run tests with coverage
@@ -67,7 +56,7 @@ jobs:
 
   coveralls:
     name: Indicate completion to coveralls.io
-    needs: generate-coverage
+    needs: main
     runs-on: ubuntu-latest
     container: python:3-slim
     steps:

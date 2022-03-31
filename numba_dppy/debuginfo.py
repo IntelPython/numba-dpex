@@ -19,7 +19,7 @@ from numba.core.debuginfo import DIBuilder
 from numba_dppy.numba_support import numba_version
 
 
-class DPPYDIBuilder(DIBuilder):
+class DpexDIBuilder(DIBuilder):
     def __init__(self, module, filepath, linkage_name, cgctx):
         args = []
 

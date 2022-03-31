@@ -18,4 +18,4 @@ exclude =
     __pycache__,
     _version.py,
     numpy_usm_shared.py,
-    dppy_lowerer.py,
+    lowerer.py,

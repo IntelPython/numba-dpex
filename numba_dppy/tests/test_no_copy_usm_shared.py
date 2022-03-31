@@ -21,7 +21,7 @@ from numba.core import compiler, cpu
 from numba.core.registry import cpu_target
 
 import numba_dppy as dppy
-from numba_dppy.compiler import DPPYCompiler
+from numba_dppy.compiler import Compiler
 from numba_dppy.tests._helper import skip_no_opencl_gpu
 
 
@@ -58,7 +58,7 @@ def test_no_copy_usm_shared(capfd):
             return_type=args,
             flags=flags,
             locals={},
-            pipeline_class=DPPYCompiler,
+            pipeline_class=Compiler,
         )
 
         assert "DPCTLQueue_Memcpy" not in cres.library.get_llvm_str()
@@ -72,7 +72,7 @@ def test_no_copy_usm_shared(capfd):
             return_type=args,
             flags=flags,
             locals={},
-            pipeline_class=DPPYCompiler,
+            pipeline_class=Compiler,
         )
 
         assert "DPCTLQueue_Memcpy" in cres.library.get_llvm_str()

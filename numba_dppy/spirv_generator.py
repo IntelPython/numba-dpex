@@ -100,16 +100,17 @@ class CmdLine:
         if config.LLVM_SPIRV_ROOT:
             result = shutil.which("llvm-spirv", path=config.LLVM_SPIRV_ROOT)
 
-        if not result:
+        if result is None:
             # use llvm-spirv from dpcpp package.
             # assume dpcpp from .../bin folder.
             # assume llvm-spirv from .../bin-llvm folder.
-            bin_llvm = os.path.normpath(
-                os.path.dirname(shutil.which("dpcpp")) + "/../bin-llvm/"
-            )
-            result = shutil.which("llvm-spirv", path=bin_llvm)
+            dpcpp_path = shutil.which("dpcpp")
+            if dpcpp_path is not None:
+                bin_llvm = os.path.dirname(dpcpp_path) + "/../bin-llvm/"
+                bin_llvm = os.path.normpath(bin_llvm)
+                result = shutil.which("llvm-spirv", path=bin_llvm)
 
-        if not result:
+        if result is None:
             result = "llvm-spirv"
 
         return result

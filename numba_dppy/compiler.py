@@ -31,7 +31,7 @@ from numba_dppy import config
 from numba_dppy.dpctl_iface import USMNdArrayType
 from numba_dppy.dpctl_support import dpctl_version
 from numba_dppy.dppy_array_type import DPPYArray
-from numba_dppy.dppy_parfor_diagnostics import ExtendedParforDiagnostics
+from numba_dppy.parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dppy.utils import (
     IndeterminateExecutionQueueError,
     as_usm_obj,
@@ -45,11 +45,11 @@ from numba_dppy.utils import (
 )
 
 from . import spirv_generator
-from .dppy_passbuilder import DPPYPassBuilder
+from .passbuilder import PassBuilder
 
-_NUMBA_DPPY_READ_ONLY = "read_only"
-_NUMBA_DPPY_WRITE_ONLY = "write_only"
-_NUMBA_DPPY_READ_WRITE = "read_write"
+_RO_KERNEL_ARG = "read_only"
+_WO_KERNEL_ARG = "write_only"
+_RW_KERNEL_ARG = "read_write"
 
 
 def _raise_datatype_mixed_error(argtypes):
@@ -67,7 +67,7 @@ def _raise_no_device_found_error():
 
 def _raise_invalid_kernel_enqueue_args():
     error_message = (
-        "Incorrect number of arguments for enquing dppy.kernel. "
+        "Incorrect number of arguments for enqueuing numba_dpex.kernel. "
         "Usage: device_env, global size, local size. "
         "The local size argument is optional."
     )
@@ -89,8 +89,8 @@ def get_ordered_arg_access_types(pyfunc, access_types):
     return ordered_arg_access_types
 
 
-class DPPYCompiler(CompilerBase):
-    """DPPY Compiler"""
+class Compiler(CompilerBase):
+    """The DPEX compiler pipeline."""
 
     def define_pipelines(self):
         # this maintains the objmode fallback behaviour
@@ -100,8 +100,7 @@ class DPPYCompiler(CompilerBase):
             "parfor_diagnostics"
         ] = self.state.parfor_diagnostics
         if not self.state.flags.force_pyobject:
-            # print("Numba-DPPY [INFO]: Using Numba-DPPY pipeline")
-            pms.append(DPPYPassBuilder.define_nopython_pipeline(self.state))
+            pms.append(PassBuilder.define_nopython_pipeline(self.state))
         if self.state.status.can_fallback or self.state.flags.force_pyobject:
             pms.append(
                 DefaultPassBuilder.define_objectmode_pipeline(self.state)
@@ -110,31 +109,32 @@ class DPPYCompiler(CompilerBase):
 
 
 @global_compiler_lock
-def compile_with_dppy(pyfunc, return_type, args, is_kernel, debug=None):
+def compile_with_depx(pyfunc, return_type, args, is_kernel, debug=None):
     """
-    Compiles with Numba_dppy's pipeline and returns the compiled result.
+    Compiles the function using the dpex compiler pipeline and returns the
+    compiled result.
 
     Args:
         pyfunc: The Python function to be compiled.
         return_type: The Numba type of the return value.
         args: The list of arguments sent to the Python function.
         is_kernel (bool): Indicates whether the function is decorated
-            with @dppy.kernel or not.
+            with @numba_depx.kernel or not.
         debug (bool): Flag to turn debug mode ON/OFF.
 
     Returns:
         cres: Compiled result.
 
     Raises:
-        TypeError: @dppy.kernel does not allow users to return any
+        TypeError: @numba_depx.kernel does not allow users to return any
             value. TypeError is raised when users do.
 
     """
-    # First compilation will trigger the initialization of the OpenCL backend.
-    from .descriptor import dppy_target
+    # First compilation will trigger the initialization of the backend.
+    from .descriptor import dpex_target
 
-    typingctx = dppy_target.typing_context
-    targetctx = dppy_target.target_context
+    typingctx = dpex_target.typing_context
+    targetctx = dpex_target.target_context
 
     flags = compiler.Flags()
     # Do not compile (generate native code), just lower (to LLVM)
@@ -156,7 +156,7 @@ def compile_with_dppy(pyfunc, return_type, args, is_kernel, debug=None):
             return_type=return_type,
             flags=flags,
             locals={},
-            pipeline_class=DPPYCompiler,
+            pipeline_class=Compiler,
         )
     elif isinstance(pyfunc, ir.FunctionIR):
         cres = compiler.compile_ir(
@@ -167,7 +167,7 @@ def compile_with_dppy(pyfunc, return_type, args, is_kernel, debug=None):
             return_type=return_type,
             flags=flags,
             locals={},
-            pipeline_class=DPPYCompiler,
+            pipeline_class=Compiler,
         )
     else:
         assert 0
@@ -183,7 +183,7 @@ def compile_with_dppy(pyfunc, return_type, args, is_kernel, debug=None):
 
 
 def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
-    # For any array we only accept numba_dppy.dppy_array_type.DPPYArray
+    # For any array we only accept numba_dpex.dppy_array_type.DPPYArray
     for arg in args:
         if isinstance(arg, types.npytypes.Array) and not isinstance(
             arg, DPPYArray
@@ -200,17 +200,17 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
         # We expect the sycl_queue to be provided when this function is called
         raise ValueError("SYCL queue is required for compiling a kernel")
 
-    cres = compile_with_dppy(
+    cres = compile_with_depx(
         pyfunc=pyfunc, return_type=None, args=args, is_kernel=True, debug=debug
     )
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
     kernel = cres.target_context.prepare_ocl_kernel(func, cres.signature.args)
 
-    # A reference to the target context is stored in the DPPYKernel to
+    # A reference to the target context is stored in the Kernel to
     # reference the context later in code generation. For example, we link
     # the kernel object with a spir_func defining atomic operations only
     # when atomic operations are used in the kernel.
-    oclkern = DPPYKernel(
+    oclkern = Kernel(
         context=cres.target_context,
         sycl_queue=sycl_queue,
         llvm_module=kernel.module,
@@ -224,7 +224,7 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
 def compile_kernel_parfor(
     sycl_queue, func_ir, args, args_with_addrspaces, debug=None
 ):
-    # For any array we only accept numba_dppy.dppy_array_type.DPPYArray
+    # For any array we only accept numba_dpex.dppy_array_type.DPPYArray
     for arg in args_with_addrspaces:
         if isinstance(arg, types.npytypes.Array) and not isinstance(
             arg, DPPYArray
@@ -240,7 +240,7 @@ def compile_kernel_parfor(
             if isinstance(a, types.npytypes.Array):
                 print("addrspace:", a.addrspace)
 
-    cres = compile_with_dppy(
+    cres = compile_with_depx(
         pyfunc=func_ir,
         return_type=None,
         args=args_with_addrspaces,
@@ -255,7 +255,7 @@ def compile_kernel_parfor(
             print(a, type(a))
 
     kernel = cres.target_context.prepare_ocl_kernel(func, cres.signature.args)
-    oclkern = DPPYKernel(
+    oclkern = Kernel(
         context=cres.target_context,
         sycl_queue=sycl_queue,
         llvm_module=kernel.module,
@@ -266,8 +266,8 @@ def compile_kernel_parfor(
     return oclkern
 
 
-def compile_dppy_func(pyfunc, return_type, args, debug=None):
-    cres = compile_with_dppy(
+def compile_func(pyfunc, return_type, args, debug=None):
+    cres = compile_with_depx(
         pyfunc=pyfunc,
         return_type=return_type,
         args=args,
@@ -276,39 +276,38 @@ def compile_dppy_func(pyfunc, return_type, args, debug=None):
     )
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
     cres.target_context.mark_ocl_device(func)
-    devfn = DPPYFunction(cres)
+    devfn = DpexFunction(cres)
 
-    class dppy_function_template(ConcreteTemplate):
+    class _function_template(ConcreteTemplate):
         key = devfn
         cases = [cres.signature]
 
-    cres.typing_context.insert_user_function(devfn, dppy_function_template)
+    cres.typing_context.insert_user_function(devfn, _function_template)
     libs = [cres.library]
     cres.target_context.insert_user_function(devfn, cres.fndesc, libs)
     return devfn
 
 
-# Compile dppy function template
-def compile_dppy_func_template(pyfunc, debug=None):
-    """Compile a DPPYFunctionTemplate"""
-    from .descriptor import dppy_target
+def compile_func_template(pyfunc, debug=None):
+    """Compile a DpexFunctionTemplate"""
+    from .descriptor import dpex_target
 
-    dft = DPPYFunctionTemplate(pyfunc, debug=debug)
+    dft = DpexFunctionTemplate(pyfunc, debug=debug)
 
-    class dppy_function_template(AbstractTemplate):
+    class _function_template(AbstractTemplate):
         key = dft
 
         def generic(self, args, kws):
             assert not kws
             return dft.compile(args)
 
-    typingctx = dppy_target.typing_context
-    typingctx.insert_user_function(dft, dppy_function_template)
+    typingctx = dpex_target.typing_context
+    typingctx.insert_user_function(dft, _function_template)
     return dft
 
 
-class DPPYFunctionTemplate(object):
-    """Unmaterialized dppy function"""
+class DpexFunctionTemplate(object):
+    """Unmaterialized dpex function"""
 
     def __init__(self, pyfunc, debug=None):
         self.py_func = pyfunc
@@ -323,7 +322,7 @@ class DPPYFunctionTemplate(object):
         this object.
         """
         if args not in self._compileinfos:
-            cres = compile_with_dppy(
+            cres = compile_with_depx(
                 pyfunc=self.py_func,
                 return_type=None,
                 args=args,
@@ -350,7 +349,7 @@ class DPPYFunctionTemplate(object):
         return cres.signature
 
 
-class DPPYFunction(object):
+class DpexFunction(object):
     def __init__(self, cres):
         self.cres = cres
 
@@ -401,7 +400,7 @@ def _ensure_valid_work_group_size(val, work_item_grid):
     )  # reversing due to sycl and opencl interop kernel range mismatch semantic
 
 
-class DPPYKernelBase(object):
+class KernelBase(object):
     """Define interface for configurable kernels"""
 
     def __init__(self):
@@ -411,9 +410,9 @@ class DPPYKernelBase(object):
 
         # list of supported access types, stored in dict for fast lookup
         self.valid_access_types = {
-            _NUMBA_DPPY_READ_ONLY: _NUMBA_DPPY_READ_ONLY,
-            _NUMBA_DPPY_WRITE_ONLY: _NUMBA_DPPY_WRITE_ONLY,
-            _NUMBA_DPPY_READ_WRITE: _NUMBA_DPPY_READ_WRITE,
+            _RO_KERNEL_ARG: _RO_KERNEL_ARG,
+            _WO_KERNEL_ARG: _WO_KERNEL_ARG,
+            _RW_KERNEL_ARG: _RW_KERNEL_ARG,
         }
 
     def copy(self):
@@ -449,7 +448,7 @@ class DPPYKernelBase(object):
         return self.configure(sycl_queue, gs, ls)
 
 
-class DPPYKernel(DPPYKernelBase):
+class Kernel(KernelBase):
     """
     A OCL kernel object
     """
@@ -463,7 +462,7 @@ class DPPYKernel(DPPYKernelBase):
         argtypes,
         ordered_arg_access_types=None,
     ):
-        super(DPPYKernel, self).__init__()
+        super(Kernel, self).__init__()
         self._llvm_module = llvm_module
         self.assembly = self.binary = llvm_module.__str__()
         self.entry_name = name
@@ -539,7 +538,7 @@ class DPPYKernel(DPPYKernelBase):
         if device_arr and (
             access_type not in self.valid_access_types
             or access_type in self.valid_access_types
-            and self.valid_access_types[access_type] != _NUMBA_DPPY_READ_ONLY
+            and self.valid_access_types[access_type] != _RO_KERNEL_ARG
         ):
             # We copy the data back from usm allocated data
             # container to original data container.
@@ -620,9 +619,8 @@ class DPPYKernel(DPPYKernelBase):
 
             if (
                 default_behavior
-                or self.valid_access_types[access_type] == _NUMBA_DPPY_READ_ONLY
-                or self.valid_access_types[access_type]
-                == _NUMBA_DPPY_READ_WRITE
+                or self.valid_access_types[access_type] == _RO_KERNEL_ARG
+                or self.valid_access_types[access_type] == _RW_KERNEL_ARG
             ):
                 copy_from_numpy_to_usm_obj(usm_mem, packed_val)
 
@@ -719,19 +717,19 @@ class DPPYKernel(DPPYKernelBase):
             return False
 
 
-class JitDPPYKernel(DPPYKernelBase):
+class JitKernel(KernelBase):
     def __init__(self, func, debug, access_types):
 
-        super(JitDPPYKernel, self).__init__()
+        super(JitKernel, self).__init__()
 
         self.py_func = func
         self.definitions = {}
         self.debug = debug
         self.access_types = access_types
 
-        from .descriptor import dppy_target
+        from .descriptor import dpex_target
 
-        self.typingctx = dppy_target.typing_context
+        self.typingctx = dpex_target.typing_context
 
     def _get_argtypes(self, *args):
         """
@@ -745,7 +743,7 @@ class JitDPPYKernel(DPPYKernelBase):
         in case there are multiple array types if they are all of the same type.
 
         Args:
-            argtypes: Numba type for each argument passed to a JitDPPYKernel.
+            argtypes: Numba type for each argument passed to a JitKernel.
 
         Returns:
             array_type: None if there are no argument of type array, or the
