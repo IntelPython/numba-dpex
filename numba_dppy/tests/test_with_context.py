@@ -18,7 +18,7 @@ import pytest
 from numba import njit
 from numba.tests.support import captured_stdout
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 from numba_dppy import config
 
 from ._helper import (
@@ -46,7 +46,7 @@ def scenario(filter_str, context):
 @pytest.mark.parametrize(
     "context",
     [
-        dppy.offload_to_sycl_device,
+        dpex.offload_to_sycl_device,
         dpctl.device_context,
     ],
 )

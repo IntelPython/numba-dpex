@@ -18,7 +18,7 @@ import numpy as np
 import pytest
 from numba import njit
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 from numba_dppy.tests._helper import filter_strings
 
 list_of_dtype = [
@@ -48,13 +48,13 @@ def usm_type(request):
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_consuming_usm_ndarray(filter_str, dtype, usm_type):
-    @dppy.kernel
+    @dpex.kernel
     def data_parallel_sum(a, b, c):
         """
         Vector addition using the ``kernel`` decorator.
         """
-        i = dppy.get_global_id(0)
-        j = dppy.get_global_id(1)
+        i = dpex.get_global_id(0)
+        j = dpex.get_global_id(1)
         c[i, j] = a[i, j] + b[i, j]
 
     N = 1021
@@ -89,7 +89,7 @@ def test_consuming_usm_ndarray(filter_str, dtype, usm_type):
             buffer_ctor_kwargs={"queue": gpu_queue},
         )
 
-        data_parallel_sum[(N, N), dppy.DEFAULT_LOCAL_SIZE](da, db, dc)
+        data_parallel_sum[(N, N), dpex.DEFAULT_LOCAL_SIZE](da, db, dc)
 
         dc.usm_data.copy_to_host(got.reshape((-1)).view("|u1"))
 

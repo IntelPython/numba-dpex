@@ -18,7 +18,7 @@ import dpctl
 import numpy as np
 import pytest
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 from numba_dppy import config
 from numba_dppy.tests._helper import filter_strings, override_config
 
@@ -66,16 +66,16 @@ def return_list_of_op(request):
 
 @pytest.fixture(params=list_of_op)
 def kernel_result_pair(request):
-    op = getattr(dppy.atomic, request.param[0])
+    op = getattr(dpex.atomic, request.param[0])
 
     def f(a):
         op(a, 0, 1)
 
-    return dppy.kernel(f), request.param[1]
+    return dpex.kernel(f), request.param[1]
 
 
 skip_no_atomic_support = pytest.mark.skipif(
-    not dppy.ocl.atomic_support_present(),
+    not dpex.ocl.atomic_support_present(),
     reason="No atomic support",
 )
 
@@ -87,7 +87,7 @@ def test_kernel_atomic_simple(filter_str, input_arrays, kernel_result_pair):
     kernel, expected = kernel_result_pair
     device = dpctl.SyclDevice(filter_str)
     with dpctl.device_context(device):
-        kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
+        kernel[global_size, dpex.DEFAULT_LOCAL_SIZE](a)
     assert a[0] == expected
 
 
@@ -96,7 +96,7 @@ def get_func_global(op_type, dtype):
 
     Used as `generator(op_type, dtype)`.
     """
-    op = getattr(dppy.atomic, op_type)
+    op = getattr(dpex.atomic, op_type)
 
     def f(a):
         op(a, 0, 1)
@@ -109,14 +109,14 @@ def get_func_local(op_type, dtype):
 
     Used as `generator(op_type, dtype)`.
     """
-    op = getattr(dppy.atomic, op_type)
+    op = getattr(dpex.atomic, op_type)
 
     def f(a):
-        lm = dppy.local.array(1, dtype)
+        lm = dpex.local.array(1, dtype)
         lm[0] = a[0]
-        dppy.barrier(dppy.CLK_GLOBAL_MEM_FENCE)
+        dpex.barrier(dpex.CLK_GLOBAL_MEM_FENCE)
         op(lm, 0, 1)
-        dppy.barrier(dppy.CLK_GLOBAL_MEM_FENCE)
+        dpex.barrier(dpex.CLK_GLOBAL_MEM_FENCE)
         a[0] = lm[0]
 
     return f
@@ -128,7 +128,7 @@ def test_kernel_atomic_local(filter_str, input_arrays, return_list_of_op):
     a, dtype = input_arrays
     op_type, expected = return_list_of_op
     f = get_func_local(op_type, dtype)
-    kernel = dppy.kernel(f)
+    kernel = dpex.kernel(f)
     device = dpctl.SyclDevice(filter_str)
     with dpctl.device_context(device):
         kernel[global_size, global_size](a)
@@ -148,7 +148,7 @@ def return_list_of_dim(request):
 
 
 def get_kernel_multi_dim(op_type, size):
-    op = getattr(dppy.atomic, op_type)
+    op = getattr(dpex.atomic, op_type)
     if size == 1:
         idx = 0
     else:
@@ -159,7 +159,7 @@ def get_kernel_multi_dim(op_type, size):
     def f(a):
         op(a, idx, 1)
 
-    return dppy.kernel(f)
+    return dpex.kernel(f)
 
 
 @pytest.mark.parametrize("filter_str", filter_strings)
@@ -173,7 +173,7 @@ def test_kernel_atomic_multi_dim(
     a = np.zeros(dim, return_dtype)
     device = dpctl.SyclDevice(filter_str)
     with dpctl.device_context(device):
-        kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
+        kernel[global_size, dpex.DEFAULT_LOCAL_SIZE](a)
     assert a[0] == expected
 
 
@@ -216,7 +216,7 @@ def test_atomic_fp_native(
     dtype,
 ):
     function = function_generator(operator_name, dtype)
-    kernel = dppy.kernel(function)
+    kernel = dpex.kernel(function)
     argtypes = kernel._get_argtypes(np.array([0], dtype))
 
     with override_config("NATIVE_FP_ATOMICS", NATIVE_FP_ATOMICS):
@@ -224,7 +224,7 @@ def test_atomic_fp_native(
         with dpctl.device_context(filter_str) as sycl_queue:
 
             specialized_kernel = kernel[
-                global_size, dppy.DEFAULT_LOCAL_SIZE
+                global_size, dpex.DEFAULT_LOCAL_SIZE
             ].specialize(argtypes, sycl_queue)
 
             is_native_atomic = (

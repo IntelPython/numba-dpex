@@ -18,7 +18,7 @@ import time
 import dpctl
 import numpy as np
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 from numba_dppy.tests._helper import skip_no_opencl_gpu
 
 RISKFREE = 0.02
@@ -99,10 +99,10 @@ class TestDPPYBlackScholes:
                 VOLATILITY,
             )
 
-        # numba-dppy
-        @dppy.kernel
-        def black_scholes_dppy(callResult, putResult, S, X, T, R, V):
-            i = dppy.get_global_id(0)
+        # numba_dpex
+        @dpex.kernel
+        def black_scholes_dpex(callResult, putResult, S, X, T, R, V):
+            i = dpex.get_global_id(0)
             if i >= S.shape[0]:
                 return
             sqrtT = math.sqrt(T[i])
@@ -141,7 +141,7 @@ class TestDPPYBlackScholes:
         with dpctl.device_context("opencl:gpu"):
             time1 = time.time()
             for i in range(iterations):
-                black_scholes_dppy[blockdim, griddim](
+                black_scholes_dpex[blockdim, griddim](
                     callResultNumbapro,
                     putResultNumbapro,
                     stockPrice,

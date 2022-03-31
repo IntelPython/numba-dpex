@@ -20,7 +20,6 @@ from numba import prange
 from numba.core import compiler, cpu
 from numba.core.registry import cpu_target
 
-import numba_dppy as dppy
 from numba_dppy.compiler import Compiler
 from numba_dppy.tests._helper import skip_no_opencl_gpu
 
