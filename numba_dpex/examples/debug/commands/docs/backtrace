@@ -1,0 +1,18 @@
+$ NUMBA_OPT=0 gdb-oneapi -q python
+(gdb) set breakpoint pending on
+(gdb) break simple_dpex_func.py:22
+(gdb) run simple_dpex_func.py
+...
+Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::func_sum () at simple_dpex_func.py:22
+22          result = a_in_func + b_in_func
+(gdb) backtrace
+#0  __main__::func_sum () at simple_dpex_func.py:22
+#1  __main__::kernel_sum () at simple_dpex_func.py:29
+(gdb) continue
+...
+[Switching to Thread 1.1073742080 lane 0]
+Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::func_sum () at simple_dpex_func.py:22
+22          result = a_in_func + b_in_func
+(gdb) continue
+...
+Done...

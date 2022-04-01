@@ -19,8 +19,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup numba-dppy
-        uses: ./.github/actions/setup-numba-dppy
+      - name: Setup numba-dpex
+        uses: ./.github/actions/setup-numba-dpex
         with:
           environment: environment/docs.yml
 
