@@ -30,8 +30,8 @@ def test_model_for_dpnp_ndarray_Type():
     model = default_manager.lookup(dpnp_ndarray_Type(types.float64, 1, "C"))
     assert isinstance(model, dpnp_ndarray_Model)
 
-    assert "syclobj" in model._fields
-    assert model.get_member_fe_type("syclobj") == types.pyobject
+    assert "syclobj" not in model._fields
+    # assert model.get_member_fe_type("syclobj") == types.pyobject
 
 
 def test_dpnp_ndarray_Model():
