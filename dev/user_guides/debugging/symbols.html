@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Examining the Symbol Table &mdash; numba-dppy 0+untagged.716.gcc59100 documentation</title>
+  <title>Examining the Symbol Table &mdash; numba-dppy 0+untagged.717.g4564bff documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -155,12 +155,12 @@ as the list of all functions in all loaded shared libraries is typically very lo
 </span><span class="hll"><span class="go">...</span>
 </span><span class="hll"><span class="go">All functions matching regular expression &quot;data_parallel_sum&quot;:</span>
 </span><span class="hll"><span class="go">File simple_sum.py:</span>
-</span><span class="hll"><span class="go">20:         void __main__::data_parallel_sum(DPPYArray&lt;float, 1, C, mutable, aligned&gt;, DPPYArray&lt;float, 1, C, mutable, aligned&gt;, DPPYArray&lt;float, 1, C, mutable, aligned&gt;);</span>
+</span><span class="hll"><span class="go">20:         void __main__::data_parallel_sum(Array&lt;float, 1, C, mutable, aligned&gt;, Array&lt;float, 1, C, mutable, aligned&gt;, Array&lt;float, 1, C, mutable, aligned&gt;);</span>
 </span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">info functions __main__</span>
 <span class="go">...</span>
 <span class="go">All functions matching regular expression &quot;__main__&quot;:</span>
-<span class="go">20:         void __main__::data_parallel_sum(DPPYArray&lt;float, 1, C, mutable, aligned&gt;, DPPYArray&lt;float, 1, C, mutable, aligned&gt;, DPPYArray&lt;float, 1, C, mutable, aligned&gt;);</span>
+<span class="go">20:         void __main__::data_parallel_sum(Array&lt;float, 1, C, mutable, aligned&gt;, Array&lt;float, 1, C, mutable, aligned&gt;, Array&lt;float, 1, C, mutable, aligned&gt;);</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
 <span class="go">...</span>
 <span class="go">Done...</span>
