@@ -67,14 +67,7 @@ class Array(Array):
 
     @property
     def key(self):
-        return (
-            self.dtype,
-            self.ndim,
-            self.layout,
-            self.mutable,
-            self.aligned,
-            self.addrspace,
-        )
+        return (*super().key, self.addrspace)
 
     @property
     def box_type(self):
