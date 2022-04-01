@@ -19,25 +19,11 @@ from numba.core import cgutils
 from numba.extending import (
     intrinsic,
     lower_builtin,
-    overload,
     overload_classmethod,
     type_callable,
 )
 
 from .types import dpnp_ndarray_Type
-
-# @overload(dpnp.empty)
-# def _ol_dpnp_empty(n, usm_type, sycl_queue):
-#     usm_type_num = {
-#         "shared": 0,
-#         "device": 1,
-#         "host": 2,
-#     }[usm_type.literal_value]
-
-#     def impl(n, usm_type, sycl_queue):
-#         return dpnp_ndarray_Type._allocate(n, usm_type_num, sycl_queue)
-
-#     return impl
 
 
 @type_callable(dpnp.empty)
