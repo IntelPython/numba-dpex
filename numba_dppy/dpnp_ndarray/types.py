@@ -34,9 +34,9 @@ class dpnp_ndarray_Type(Array):
     ):
         if name is None:
             type_name = "dpnp.ndarray"
-            if not self.mutable:
+            if readonly:
                 type_name = "readonly " + type_name
-            if not self.aligned:
+            if not aligned:
                 type_name = "unaligned " + type_name
             name_parts = (type_name, dtype, ndim, layout, usm_type)
             name = "%s(%s, %sd, %s, %s)" % name_parts
