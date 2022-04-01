@@ -38,13 +38,8 @@ class dpnp_ndarray_Type(Array):
                 type_name = "readonly " + type_name
             if not self.aligned:
                 type_name = "unaligned " + type_name
-            name = "%s(%s, %sd, %s, %s)" % (
-                type_name,
-                dtype,
-                ndim,
-                layout,
-                usm_type,
-            )
+            name_parts = (type_name, dtype, ndim, layout, usm_type)
+            name = "%s(%s, %sd, %s, %s)" % name_parts
 
         self.usm_type = usm_type
         super().__init__(
