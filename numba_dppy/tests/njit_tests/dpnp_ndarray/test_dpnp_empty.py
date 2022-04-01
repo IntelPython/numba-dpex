@@ -1,15 +1,18 @@
 """Tests for DPNP ndarray constructors."""
 
 import dpnp
+import pytest
 from numba import njit
 
 
-def test_dpnp_empty():
+@pytest.mark.parametrize("shape", [10, (2, 5)])
+@pytest.mark.parametrize("usm_type", ["device", "shared", "host"])
+def test_dpnp_empty(shape, usm_type):
     from numba_dppy.dpctl_iface import get_current_queue
 
     @njit
-    def func():
+    def func(shape):
         queue = get_current_queue()
-        dpnp.empty(10, usm_type="device", sycl_queue=queue)
+        dpnp.empty(shape, usm_type=usm_type, sycl_queue=queue)
 
-    func()
+    func(shape)
