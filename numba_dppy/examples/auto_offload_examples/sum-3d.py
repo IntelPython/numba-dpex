@@ -16,8 +16,6 @@ import dpctl
 import numpy as np
 from numba import njit
 
-import numba_dppy as dppy
-
 
 @njit
 def f1(a, b):

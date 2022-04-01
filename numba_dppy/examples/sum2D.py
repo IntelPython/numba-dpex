@@ -16,23 +16,23 @@
 import dpctl
 import numpy as np
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 
 
-@dppy.kernel
+@dpex.kernel
 def data_parallel_sum(a, b, c):
     """
     A two-dimensional vector addition example using the ``kernel`` decorator.
     """
-    i = dppy.get_global_id(0)
-    j = dppy.get_global_id(1)
+    i = dpex.get_global_id(0)
+    j = dpex.get_global_id(1)
     c[i, j] = a[i, j] + b[i, j]
 
 
 def driver(a, b, c, global_size):
     print("before A: ", a)
     print("before B: ", b)
-    data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
+    data_parallel_sum[global_size, dpex.DEFAULT_LOCAL_SIZE](a, b, c)
     print("after  C : ", c)
 
 

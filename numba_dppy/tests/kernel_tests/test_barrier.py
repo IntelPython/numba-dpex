@@ -18,18 +18,18 @@ import dpctl
 import numpy as np
 import pytest
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 from numba_dppy.tests._helper import filter_strings
 
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_proper_lowering(filter_str):
     # This will trigger eager compilation
-    @dppy.kernel("void(float32[::1])")
+    @dpex.kernel("void(float32[::1])")
     def twice(A):
-        i = dppy.get_global_id(0)
+        i = dpex.get_global_id(0)
         d = A[i]
-        dppy.barrier(dppy.CLK_LOCAL_MEM_FENCE)  # local mem fence
+        dpex.barrier(dpex.CLK_LOCAL_MEM_FENCE)  # local mem fence
         A[i] = d * 2
 
     N = 256
@@ -45,12 +45,12 @@ def test_proper_lowering(filter_str):
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_no_arg_barrier_support(filter_str):
-    @dppy.kernel("void(float32[::1])")
+    @dpex.kernel("void(float32[::1])")
     def twice(A):
-        i = dppy.get_global_id(0)
+        i = dpex.get_global_id(0)
         d = A[i]
         # no argument defaults to global mem fence
-        dppy.barrier()
+        dpex.barrier()
         A[i] = d * 2
 
     N = 256
@@ -58,7 +58,7 @@ def test_no_arg_barrier_support(filter_str):
     orig = arr.copy()
 
     with dpctl.device_context(filter_str):
-        twice[N, dppy.DEFAULT_LOCAL_SIZE](arr)
+        twice[N, dpex.DEFAULT_LOCAL_SIZE](arr)
 
     # The computation is correct?
     np.testing.assert_allclose(orig * 2, arr)
@@ -68,15 +68,15 @@ def test_no_arg_barrier_support(filter_str):
 def test_local_memory(filter_str):
     blocksize = 10
 
-    @dppy.kernel("void(float32[::1])")
+    @dpex.kernel("void(float32[::1])")
     def reverse_array(A):
-        lm = dppy.local.array(shape=10, dtype=np.float32)
-        i = dppy.get_global_id(0)
+        lm = dpex.local.array(shape=10, dtype=np.float32)
+        i = dpex.get_global_id(0)
 
         # preload
         lm[i] = A[i]
         # barrier local or global will both work as we only have one work group
-        dppy.barrier(dppy.CLK_LOCAL_MEM_FENCE)  # local mem fence
+        dpex.barrier(dpex.CLK_LOCAL_MEM_FENCE)  # local mem fence
         # write
         A[i] += lm[blocksize - 1 - i]
 

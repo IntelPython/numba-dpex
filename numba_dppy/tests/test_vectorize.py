@@ -18,10 +18,7 @@ import numpy as np
 import pytest
 from numba import float32, float64, int32, int64, njit, vectorize
 
-import numba_dppy as dppy
 from numba_dppy.tests._helper import assert_auto_offloading, filter_strings
-
-from . import _helper
 
 list_of_shape = [
     (100, 100),
@@ -95,7 +92,7 @@ def test_vectorize(filter_str, shape, dtypes, input_type):
         B = dtype(2.3)
 
     with dpctl.device_context(filter_str):
-        f = vectorize(sig, target="dppy")(vector_add)
+        f = vectorize(sig, target="dpex")(vector_add)
         expected = f(A, B)
         actual = vector_add(A, B)
 

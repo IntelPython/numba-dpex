@@ -18,9 +18,9 @@ from numba.core.datamodel.models import StructModel
 from numba.core.types.npytypes import Array
 
 
-class DPPYArray(Array):
+class Array(Array):
     """
-    Type class for DPPY arrays.
+    An array type for use inside our compiler pipeline.
     """
 
     def __init__(
@@ -34,7 +34,7 @@ class DPPYArray(Array):
         addrspace=None,
     ):
         self.addrspace = addrspace
-        super(DPPYArray, self).__init__(
+        super(Array, self).__init__(
             dtype,
             ndim,
             layout,
@@ -56,7 +56,7 @@ class DPPYArray(Array):
             readonly = not self.mutable
         if addrspace is None:
             addrspace = self.addrspace
-        return DPPYArray(
+        return Array(
             dtype=dtype,
             ndim=ndim,
             layout=layout,
@@ -84,7 +84,7 @@ class DPPYArray(Array):
         return self.dtype.is_precise()
 
 
-class DPPYArrayModel(StructModel):
+class ArrayModel(StructModel):
     def __init__(self, dmm, fe_type):
         ndim = fe_type.ndim
         members = [
@@ -105,4 +105,4 @@ class DPPYArrayModel(StructModel):
             ("shape", types.UniTuple(types.intp, ndim)),
             ("strides", types.UniTuple(types.intp, ndim)),
         ]
-        super(DPPYArrayModel, self).__init__(dmm, fe_type, members)
+        super(ArrayModel, self).__init__(dmm, fe_type, members)

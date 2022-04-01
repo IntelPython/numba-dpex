@@ -26,13 +26,13 @@ from numba.core.registry import cpu_target
 from numba.core.target_extension import GPU, target_registry
 from numba.core.utils import cached_property
 
-from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
+from numba_dppy.core.types import Array, ArrayModel
 from numba_dppy.utils import (
     address_space,
     calling_conv,
     has_usm_memory,
-    npytypes_array_to_dppy_array,
-    suai_to_dppy_array_type,
+    npytypes_array_to_dpex_array,
+    suai_to_dpex_array,
 )
 
 from . import codegen
@@ -52,7 +52,7 @@ class DpexTypingContext(typing.BaseContext):
     Numba's ``typing.BaseContext`` class. We add two specific functionalities to
     the basic Numba typing context features: An overridden
     :func:`resolve_argument_type` that changes all ``npytypes.Array`` to
-    :class:`dppy_array_type.DppyArray`. An overridden
+    :class:`numba_depx.core.types.Array`. An overridden
     :func:`load_additional_registries` that registers OpenCL math and other
     functions to the typing context.
 
@@ -64,7 +64,7 @@ class DpexTypingContext(typing.BaseContext):
         Overrides the implementation of ``numba.core.typing.BaseContext`` to
         handle the special case of ``numba.core.types.npytypes.Array``. Whenever
         a NumPy ndarray argument is encountered as an argument to a ``kernel``
-        function, it is converted to a ``DPPYArray`` type.
+        function, it is converted to a ``numba_dpex.core.types.Array`` type.
 
         Args:
             val : A Python value that is passed as an argument to a ``kernel``
@@ -85,11 +85,11 @@ class DpexTypingContext(typing.BaseContext):
             # we create the necessary Numba type to represent it
             # and send it back.
             if has_usm_memory(val) is not None:
-                return suai_to_dppy_array_type(val)
+                return suai_to_dpex_array(val)
 
         if _type is types.npytypes.Array:
-            # Convert npytypes.Array to DPPYArray
-            return npytypes_array_to_dppy_array(typeof(val))
+            # Convert npytypes.Array to numba_dpex.core.types.Array
+            return npytypes_array_to_dpex_array(typeof(val))
         else:
             return super().resolve_argument_type(val)
 
@@ -119,7 +119,7 @@ class GenericPointerModel(datamodel.PrimitiveModel):
 def _init_data_model_manager():
     dmm = datamodel.default_manager.copy()
     dmm.register(types.CPointer, GenericPointerModel)
-    dmm.register(DPPYArray, DPPYArrayModel)
+    dmm.register(Array, ArrayModel)
     return dmm
 
 

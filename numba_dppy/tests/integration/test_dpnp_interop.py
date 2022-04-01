@@ -16,7 +16,7 @@ import dpctl
 import numpy as np
 import pytest
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 from numba_dppy.tests._helper import filter_strings_not_default_device
 
 dpnp = pytest.importorskip("dpnp", reason="DPNP is not installed")
@@ -55,19 +55,19 @@ def test_dpnp_create_array_in_context(filter_str, dtype):
 
 @pytest.mark.parametrize("filter_str", filter_strings_not_default_device)
 def test_consuming_array_from_dpnp(filter_str, dtype):
-    @dppy.kernel
+    @dpex.kernel
     def data_parallel_sum(a, b, c):
         """
         Vector addition using the ``kernel`` decorator.
         """
-        i = dppy.get_global_id(0)
+        i = dpex.get_global_id(0)
         c[i] = a[i] + b[i]
 
     global_size = 1021
 
     with dpctl.device_context(filter_str):
-        a = dppy.asarray(dpnp.arange(global_size, dtype=dtype))
-        b = dppy.asarray(dpnp.arange(global_size, dtype=dtype))
-        c = dppy.asarray(dpnp.ones_like(a))
+        a = dpex.asarray(dpnp.arange(global_size, dtype=dtype))
+        b = dpex.asarray(dpnp.arange(global_size, dtype=dtype))
+        c = dpex.asarray(dpnp.ones_like(a))
 
-        data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
+        data_parallel_sum[global_size, dpex.DEFAULT_LOCAL_SIZE](a, b, c)

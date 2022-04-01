@@ -16,7 +16,6 @@ import pytest
 from numba import float32, float64, int32, int64, uint32, uint64
 from numba.core import types
 
-import numba_dppy as dppy
 import numba_dppy.extended_numba_itanium_mangler as itanium_mangler
 from numba_dppy.utils import address_space
 

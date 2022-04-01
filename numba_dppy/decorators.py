@@ -15,7 +15,7 @@
 import dpctl
 from numba.core import sigutils, types
 
-from numba_dppy.utils import assert_no_return, npytypes_array_to_dppy_array
+from numba_dppy.utils import assert_no_return, npytypes_array_to_dpex_array
 
 from .compiler import (
     JitKernel,
@@ -54,7 +54,7 @@ def _kernel_jit(signature, debug, access_types):
     argtypes, rettype = sigutils.normalize_signature(signature)
     argtypes = tuple(
         [
-            npytypes_array_to_dppy_array(ty)
+            npytypes_array_to_dpex_array(ty)
             if isinstance(ty, types.npytypes.Array)
             else ty
             for ty in argtypes
@@ -93,7 +93,7 @@ def _func_jit(signature, debug=None):
     argtypes, restype = sigutils.normalize_signature(signature)
     argtypes = tuple(
         [
-            npytypes_array_to_dppy_array(ty)
+            npytypes_array_to_dpex_array(ty)
             if isinstance(ty, types.npytypes.Array)
             else ty
             for ty in argtypes

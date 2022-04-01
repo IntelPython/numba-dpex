@@ -16,12 +16,12 @@ from dpctl.tensor import usm_ndarray
 from numba.extending import register_model, typeof_impl
 from numba.np import numpy_support
 
-import numba_dppy.target as dppy_target
-from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
+import numba_dppy.target as dpex_target
+from numba_dppy.core.types import Array, ArrayModel
 from numba_dppy.utils import address_space
 
 
-class USMNdArrayType(DPPYArray):
+class USMNdArrayType(Array):
     """
     USMNdArrayType(dtype, ndim, layout, usm_type,
                     readonly=False, name=None,
@@ -57,8 +57,8 @@ class USMNdArrayType(DPPYArray):
 
 
 # This tells Numba to use the DPPYArray data layout for object of type USMNdArrayType.
-register_model(USMNdArrayType)(DPPYArrayModel)
-dppy_target.spirv_data_model_manager.register(USMNdArrayType, DPPYArrayModel)
+register_model(USMNdArrayType)(ArrayModel)
+dpex_target.spirv_data_model_manager.register(USMNdArrayType, ArrayModel)
 
 
 @typeof_impl.register(usm_ndarray)

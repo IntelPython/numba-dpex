@@ -19,10 +19,10 @@ import dpctl
 import pytest
 from numba.core import types
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 from numba_dppy import compiler
 from numba_dppy.tests._helper import override_config
-from numba_dppy.utils import npytypes_array_to_dppy_array
+from numba_dppy.utils import npytypes_array_to_dpex_array
 
 debug_options = [True, False]
 
@@ -54,7 +54,7 @@ def test_debug_flag_generates_ir_with_debuginfo(debug_option):
     Check debug info is emitting to IR if debug parameter is set to True
     """
 
-    @dppy.kernel
+    @dpex.kernel
     def foo(x):
         x = 1  # noqa
 
@@ -73,13 +73,13 @@ def test_debug_flag_generates_ir_with_debuginfo(debug_option):
 
 def test_debug_info_locals_vars_on_no_opt():
     """
-    Check llvm debug tag DILocalVariable is emitting to IR for all variables if debug parameter is set to True
-    and optimization is O0
+    Check llvm debug tag DILocalVariable is emitting to IR for all variables
+    if debug parameter is set to True and optimization is O0
     """
 
-    @dppy.kernel
+    @dpex.kernel
     def foo(var_a, var_b, var_c):
-        i = dppy.get_global_id(0)
+        i = dpex.get_global_id(0)
         var_c[i] = var_a[i] + var_b[i]
 
     ir_tags = [
@@ -91,9 +91,9 @@ def test_debug_info_locals_vars_on_no_opt():
 
     sycl_queue = dpctl.get_current_queue()
     sig = (
-        npytypes_array_to_dppy_array(types.float32[:]),
-        npytypes_array_to_dppy_array(types.float32[:]),
-        npytypes_array_to_dppy_array(types.float32[:]),
+        npytypes_array_to_dpex_array(types.float32[:]),
+        npytypes_array_to_dpex_array(types.float32[:]),
+        npytypes_array_to_dpex_array(types.float32[:]),
     )
 
     with override_config("OPT", 0):
@@ -105,12 +105,13 @@ def test_debug_info_locals_vars_on_no_opt():
 
 def test_debug_kernel_local_vars_in_ir():
     """
-    Check llvm debug tag DILocalVariable is emitting to IR for variables created in kernel
+    Check llvm debug tag DILocalVariable is emitting to IR for variables
+    created in kernel
     """
 
-    @dppy.kernel
+    @dpex.kernel
     def foo(arr):
-        index = dppy.get_global_id(0)
+        index = dpex.get_global_id(0)
         local_d = 9 * 99 + 5
         arr[index] = local_d + 100
 
@@ -120,7 +121,7 @@ def test_debug_kernel_local_vars_in_ir():
     ]
 
     sycl_queue = dpctl.get_current_queue()
-    sig = (npytypes_array_to_dppy_array(types.float32[:]),)
+    sig = (npytypes_array_to_dpex_array(types.float32[:]),)
 
     kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
 
@@ -133,14 +134,14 @@ def test_debug_flag_generates_ir_with_debuginfo_for_func(debug_option):
     Check debug info is emitting to IR if debug parameter is set to True
     """
 
-    @dppy.func(debug=debug_option)
+    @dpex.func(debug=debug_option)
     def func_sum(a, b):
         result = a + b
         return result
 
-    @dppy.kernel(debug=debug_option)
+    @dpex.kernel(debug=debug_option)
     def data_parallel_sum(a, b, c):
-        i = dppy.get_global_id(0)
+        i = dpex.get_global_id(0)
         c[i] = func_sum(a[i], b[i])
 
     ir_tags = [
@@ -150,9 +151,9 @@ def test_debug_flag_generates_ir_with_debuginfo_for_func(debug_option):
 
     sycl_queue = dpctl.get_current_queue()
     sig = (
-        npytypes_array_to_dppy_array(types.float32[:]),
-        npytypes_array_to_dppy_array(types.float32[:]),
-        npytypes_array_to_dppy_array(types.float32[:]),
+        npytypes_array_to_dpex_array(types.float32[:]),
+        npytypes_array_to_dpex_array(types.float32[:]),
+        npytypes_array_to_dpex_array(types.float32[:]),
     )
 
     kernel_ir = get_kernel_ir(
@@ -168,14 +169,14 @@ def test_env_var_generates_ir_with_debuginfo_for_func(debug_option):
     Check debug info is emitting to IR if NUMBA_DPPY_DEBUGINFO is set to 1
     """
 
-    @dppy.func
+    @dpex.func
     def func_sum(a, b):
         result = a + b
         return result
 
-    @dppy.kernel
+    @dpex.kernel
     def data_parallel_sum(a, b, c):
-        i = dppy.get_global_id(0)
+        i = dpex.get_global_id(0)
         c[i] = func_sum(a[i], b[i])
 
     ir_tags = [
@@ -185,9 +186,9 @@ def test_env_var_generates_ir_with_debuginfo_for_func(debug_option):
 
     sycl_queue = dpctl.get_current_queue()
     sig = (
-        npytypes_array_to_dppy_array(types.float32[:]),
-        npytypes_array_to_dppy_array(types.float32[:]),
-        npytypes_array_to_dppy_array(types.float32[:]),
+        npytypes_array_to_dpex_array(types.float32[:]),
+        npytypes_array_to_dpex_array(types.float32[:]),
+        npytypes_array_to_dpex_array(types.float32[:]),
     )
 
     with override_config("DEBUGINFO_DEFAULT", int(debug_option)):
@@ -198,19 +199,19 @@ def test_env_var_generates_ir_with_debuginfo_for_func(debug_option):
 
 
 def test_debuginfo_DISubprogram_linkageName():
-    @dppy.kernel
+    @dpex.kernel
     def func(a, b):
-        i = dppy.get_global_id(0)
+        i = dpex.get_global_id(0)
         b[i] = a[i]
 
     ir_tags = [
-        r'\!DISubprogram\(.*linkageName: ".*e4func.*"',  # e4func is func(), e8func$241 is func$1()
+        r'\!DISubprogram\(.*linkageName: ".*e4func.*"',
     ]
 
     sycl_queue = dpctl.get_current_queue()
     sig = (
-        npytypes_array_to_dppy_array(types.float32[:]),
-        npytypes_array_to_dppy_array(types.float32[:]),
+        npytypes_array_to_dpex_array(types.float32[:]),
+        npytypes_array_to_dpex_array(types.float32[:]),
     )
 
     kernel_ir = get_kernel_ir(sycl_queue, func, sig, debug=True)
@@ -220,20 +221,20 @@ def test_debuginfo_DISubprogram_linkageName():
 
 
 def test_debuginfo_DICompileUnit_language_and_producer():
-    @dppy.kernel
+    @dpex.kernel
     def func(a, b):
-        i = dppy.get_global_id(0)
+        i = dpex.get_global_id(0)
         b[i] = a[i]
 
     ir_tags = [
         r"\!DICompileUnit\(language: DW_LANG_C_plus_plus,",
-        r'\!DICompileUnit\(.*producer: "numba-dppy"',
+        r'\!DICompileUnit\(.*producer: "numba-dpex"',
     ]
 
     sycl_queue = dpctl.get_current_queue()
     sig = (
-        npytypes_array_to_dppy_array(types.float32[:]),
-        npytypes_array_to_dppy_array(types.float32[:]),
+        npytypes_array_to_dpex_array(types.float32[:]),
+        npytypes_array_to_dpex_array(types.float32[:]),
     )
 
     kernel_ir = get_kernel_ir(sycl_queue, func, sig, debug=True)

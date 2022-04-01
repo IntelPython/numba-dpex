@@ -42,8 +42,8 @@ from numba_dppy.utils.misc import (
     assert_no_return,
 )
 from numba_dppy.utils.type_conversion_fns import (
-    npytypes_array_to_dppy_array,
-    suai_to_dppy_array_type,
+    npytypes_array_to_dpex_array,
+    suai_to_dpex_array,
 )
 
 __all__ = [
@@ -53,9 +53,9 @@ __all__ = [
     "create_null_ptr",
     "get_zero",
     "get_one",
-    "npytypes_array_to_dppy_array",
-    "npytypes_array_to_dppy_array",
-    "suai_to_dppy_array_type",
+    "npytypes_array_to_dpex_array",
+    "npytypes_array_to_dpex_array",
+    "suai_to_dpex_array",
     "address_space",
     "calling_conv",
     "has_usm_memory",

@@ -16,7 +16,7 @@ import dpctl
 import numpy as np
 import pytest
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 from numba_dppy.tests._helper import filter_strings
 
 
@@ -30,7 +30,7 @@ N = global_size * local_size
 
 
 def sum_kernel(a, b, c):
-    i = dppy.get_global_id(0)
+    i = dpex.get_global_id(0)
     c[i] = a[i] + b[i]
 
 
@@ -57,7 +57,7 @@ list_of_kernel_opt = [
 
 @pytest.fixture(params=list_of_kernel_opt)
 def kernel(request):
-    return dppy.kernel(access_types=request.param)(sum_kernel)
+    return dpex.kernel(access_types=request.param)(sum_kernel)
 
 
 @pytest.mark.parametrize("filter_str", filter_strings)

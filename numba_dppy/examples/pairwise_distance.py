@@ -20,7 +20,7 @@ import dpctl
 import dpctl.memory as dpctl_mem
 import numpy as np
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 
 parser = argparse.ArgumentParser(
     description="Program to compute pairwise distance"
@@ -42,13 +42,13 @@ X = np.random.random((args.n, args.d))
 D = np.empty((args.n, args.n))
 
 
-@dppy.kernel
+@dpex.kernel
 def pairwise_distance(X, D, xshape0, xshape1):
     """
     An Euclidean pairwise distance computation implemented as
     a ``kernel`` function.
     """
-    idx = dppy.get_global_id(0)
+    idx = dpex.get_global_id(0)
 
     # for i in range(xshape0):
     for j in range(X.shape[0]):

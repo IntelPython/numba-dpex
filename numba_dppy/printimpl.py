@@ -99,8 +99,8 @@ def print_varargs(context, builder, sig, args):
     va_arg.extend(values)
     va_arg = tuple(va_arg)
 
-    dppy_print = declare_print(builder.module)
+    print_fn = declare_print(builder.module)
 
-    builder.call(dppy_print, va_arg)
+    builder.call(print_fn, va_arg)
 
     return context.get_dummy_value()

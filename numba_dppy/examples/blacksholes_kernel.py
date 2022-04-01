@@ -17,7 +17,7 @@ import math
 import dpctl
 import numpy as np
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 
 RISKFREE = 0.02
 VOLATILITY = 0.30
@@ -44,13 +44,13 @@ callResult = np.zeros(OPT_N)
 putResult = -np.ones(OPT_N)
 
 
-@dppy.kernel
+@dpex.kernel
 def black_scholes_dppy(callResult, putResult, S, X, T, R, V):
     """
     A simple implementation of the Black-Scholes formula using explicit
     OpenCL-syle kernel programming model.
     """
-    i = dppy.get_global_id(0)
+    i = dpex.get_global_id(0)
     if i >= S.shape[0]:
         return
     sqrtT = math.sqrt(T[i])

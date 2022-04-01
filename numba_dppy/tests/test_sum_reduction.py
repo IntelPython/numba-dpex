@@ -17,13 +17,13 @@ import math
 import dpctl
 import numpy as np
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 from numba_dppy.tests._helper import skip_no_opencl_gpu
 
 
-@dppy.kernel
+@dpex.kernel
 def reduction_kernel(A, R, stride):
-    i = dppy.get_global_id(0)
+    i = dpex.get_global_id(0)
     # sum two element
     R[i] = A[i] + A[i + stride]
     # store the sum to be used in nex iteration
@@ -49,7 +49,7 @@ class TestDPPYSumReduction:
             while total > 1:
                 # call kernel
                 global_size = total // 2
-                reduction_kernel[global_size, dppy.DEFAULT_LOCAL_SIZE](
+                reduction_kernel[global_size, dpex.DEFAULT_LOCAL_SIZE](
                     A, R, global_size
                 )
                 total = total // 2

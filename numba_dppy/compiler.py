@@ -28,9 +28,9 @@ from numba.core.compiler_lock import global_compiler_lock
 from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
 from numba_dppy import config
+from numba_dppy.core.types import Array
 from numba_dppy.dpctl_iface import USMNdArrayType
 from numba_dppy.dpctl_support import dpctl_version
-from numba_dppy.dppy_array_type import DPPYArray
 from numba_dppy.parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dppy.utils import (
     IndeterminateExecutionQueueError,
@@ -183,14 +183,12 @@ def compile_with_depx(pyfunc, return_type, args, is_kernel, debug=None):
 
 
 def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
-    # For any array we only accept numba_dpex.dppy_array_type.DPPYArray
+    # For any array we only accept numba_dpex.types.Array
     for arg in args:
-        if isinstance(arg, types.npytypes.Array) and not isinstance(
-            arg, DPPYArray
-        ):
+        if isinstance(arg, types.npytypes.Array) and not isinstance(arg, Array):
             raise TypeError(
-                "We only accept DPPYArray as type of array-like objects. We received %s"
-                % (type(arg))
+                "Only numba_dpex.core.types.Array objects are supported as "
+                + "kernel arguments. Received %s" % (type(arg))
             )
 
     if config.DEBUG:
@@ -224,14 +222,12 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
 def compile_kernel_parfor(
     sycl_queue, func_ir, args, args_with_addrspaces, debug=None
 ):
-    # For any array we only accept numba_dpex.dppy_array_type.DPPYArray
+    # We only accept numba_dpex.core.types.Array type
     for arg in args_with_addrspaces:
-        if isinstance(arg, types.npytypes.Array) and not isinstance(
-            arg, DPPYArray
-        ):
+        if isinstance(arg, types.npytypes.Array) and not isinstance(arg, Array):
             raise TypeError(
-                "We only accept DPPYArray as type of array-like objects. We received %s"
-                % (type(arg))
+                "Only numba_dpex.core.types.Array objects are supported as "
+                + "kernel arguments. Received %s" % (type(arg))
             )
     if config.DEBUG:
         print("compile_kernel_parfor", args)
@@ -792,8 +788,9 @@ class JitKernel(KernelBase):
                         queue = memory.sycl_queue
                     queues.append(queue)
 
-            # dpctl.utils.get_exeuction_queue() checks if the queues passed are equivalent and returns a
-            # SYCL queue if they are equivalent and None if they are not.
+            # dpctl.utils.get_exeuction_queue() checks if the queues passed are
+            # equivalent and returns a SYCL queue if they are equivalent and
+            # None if they are not.
             compute_queue = dpctl.utils.get_execution_queue(queues)
             if compute_queue is None:
                 raise IndeterminateExecutionQueueError(

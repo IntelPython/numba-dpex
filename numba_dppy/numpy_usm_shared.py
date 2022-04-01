@@ -58,9 +58,9 @@ from numba.extending import (
 from numba.np import numpy_support
 from numba.np.arrayobj import _array_copy
 
-from numba_dppy.dppy_array_type import DPPYArray, DPPYArrayModel
+from numba_dppy.core.types import Array, ArrayModel
 
-from . import target as dppy_target
+from . import target as dpex_target
 
 debug = config.DEBUG
 
@@ -84,7 +84,7 @@ for (
     llb.add_symbol(py_name, c_address)
 
 
-class UsmSharedArrayType(DPPYArray):
+class UsmSharedArrayType(Array):
     """Creates a Numba type for Numpy arrays that are stored in USM shared
     memory.  We inherit from Numba's existing Numpy array type but overload
     how this type is printed during dumping of typing information and we
@@ -158,10 +158,8 @@ def typeof_ta_ndarray(val, c):
 
 # This tells Numba to use the default Numpy ndarray data layout for
 # object of type UsmArray.
-# register_model(UsmSharedArrayType)(DPPYArrayModel)
 register_model(UsmSharedArrayType)(numba.core.datamodel.models.ArrayModel)
-# dppy_target.spirv_data_model_manager.register(UsmSharedArrayType, DPPYArrayModel)
-dppy_target.spirv_data_model_manager.register(
+dpex_target.spirv_data_model_manager.register(
     UsmSharedArrayType, numba.core.datamodel.models.ArrayModel
 )
 

@@ -23,17 +23,17 @@ import dpctl.memory as dpctl_mem
 import numpy as np
 from numba import int32
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 
 
-@dppy.kernel
+@dpex.kernel
 def sum_reduction_kernel(A, input_size, partial_sums):
-    local_id = dppy.get_local_id(0)
-    global_id = dppy.get_global_id(0)
-    group_size = dppy.get_local_size(0)
-    group_id = dppy.get_group_id(0)
+    local_id = dpex.get_local_id(0)
+    global_id = dpex.get_global_id(0)
+    group_size = dpex.get_local_size(0)
+    group_id = dpex.get_group_id(0)
 
-    local_sums = dppy.local.array(64, int32)
+    local_sums = dpex.local.array(64, int32)
 
     local_sums[local_id] = 0
 
@@ -44,7 +44,7 @@ def sum_reduction_kernel(A, input_size, partial_sums):
     stride = group_size // 2
     while stride > 0:
         # Waiting for each 2x2 addition into given workgroup
-        dppy.barrier(dppy.CLK_LOCAL_MEM_FENCE)
+        dpex.barrier(dpex.CLK_LOCAL_MEM_FENCE)
 
         # Add elements 2 by 2 between local_id and local_id + stride
         if local_id < stride:
