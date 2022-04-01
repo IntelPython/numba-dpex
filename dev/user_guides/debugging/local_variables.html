@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Debugging Local Variables &mdash; numba-dppy 0+untagged.715.gb98e4b8 documentation</title>
+  <title>Debugging Local Variables &mdash; numba-dppy 0+untagged.716.gcc59100 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -122,9 +122,9 @@
 <section id="example">
 <h3>Example<a class="headerlink" href="#example" title="Permalink to this headline"></a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dppy/examples/debug/sum_local_vars.py</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">21</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">21</span><span class="nd">@dpex</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="linenos">22</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-<span class="linenos">23</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">23</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dpex</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="linenos">24</span>    <span class="n">l1</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.5</span>
 <span class="linenos">25</span>    <span class="n">l2</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.3</span>
 <span class="hll"><span class="linenos">26</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l1</span> <span class="o">+</span> <span class="n">l2</span>
@@ -223,9 +223,9 @@ for extending the lifetime of variables to the end of the block in which their l
 <section id="example-2-using-numba-dump-annotation">
 <span id="example-numba-dump-annotation"></span><h3>Example 2 - Using <code class="docutils literal notranslate"><span class="pre">NUMBA_DUMP_ANNOTATION</span></code><a class="headerlink" href="#example-2-using-numba-dump-annotation" title="Permalink to this headline"></a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dppy/examples/debug/sum_local_vars.py</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">21</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">21</span><span class="nd">@dpex</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="linenos">22</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-<span class="linenos">23</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">23</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dpex</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="linenos">24</span>    <span class="n">l1</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.5</span>
 <span class="linenos">25</span>    <span class="n">l2</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.3</span>
 <span class="linenos">26</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l1</span> <span class="o">+</span> <span class="n">l2</span>
@@ -301,14 +301,14 @@ variable <cite>a</cite> when you set breakpoint at <cite>LINE 24</cite>.</p>
 passing to dummy function <cite>revive()</cite>) at the end of the function. So numba will
 not insert <cite>del a</cite> until the end of the function.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">20</span>
-<span class="linenos">21</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">func</span>
+<span class="linenos">21</span><span class="nd">@dpex</span><span class="o">.</span><span class="n">func</span>
 <span class="linenos">22</span><span class="k">def</span> <span class="nf">revive</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 <span class="linenos">23</span>    <span class="k">return</span> <span class="n">x</span>
 <span class="linenos">24</span>
 <span class="linenos">25</span>
-<span class="linenos">26</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">26</span><span class="nd">@dpex</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="linenos">27</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-<span class="linenos">28</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">28</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dpex</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="linenos">29</span>    <span class="n">l1</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.5</span>
 <span class="linenos">30</span>    <span class="n">l2</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.3</span>
 <span class="linenos">31</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l1</span> <span class="o">+</span> <span class="n">l2</span>
@@ -423,12 +423,12 @@ It will show that numba inserts <cite>del</cite> for variables at the end of the
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span><span class="kn">import</span> <span class="nn">dpctl</span>
 <span class="linenos">16</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="linenos">17</span>
-<span class="linenos">18</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dppy</span>
+<span class="linenos">18</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dpex</span>
 <span class="linenos">19</span>
 <span class="linenos">20</span>
-<span class="linenos">21</span><span class="nd">@dppy</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">21</span><span class="nd">@dpex</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="linenos">22</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-<span class="linenos">23</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dppy</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">23</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dpex</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="linenos">24</span>    <span class="n">l1</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">2.5</span>
 <span class="linenos">25</span>    <span class="n">l2</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.3</span>
 <span class="linenos">26</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l1</span> <span class="o">+</span> <span class="n">l2</span>
@@ -443,7 +443,7 @@ It will show that numba inserts <cite>del</cite> for variables at the end of the
 <span class="linenos">35</span>
 <span class="linenos">36</span><span class="n">device</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">SyclDevice</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">)</span>
 <span class="linenos">37</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
-<span class="linenos">38</span>    <span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dppy</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+<span class="linenos">38</span>    <span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dpex</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
 <span class="linenos">39</span>
 <span class="linenos">40</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
 </pre></div>
