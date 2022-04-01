@@ -20,8 +20,6 @@ import dpctl
 import numba
 import numpy as np
 
-import numba_dppy as dppy
-
 
 @numba.vectorize(nopython=True)
 def cndf2(inp):

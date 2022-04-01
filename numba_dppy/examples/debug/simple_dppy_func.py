@@ -15,18 +15,18 @@
 import dpctl
 import numpy as np
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 
 
-@dppy.func(debug=True)
+@dpex.func(debug=True)
 def func_sum(a_in_func, b_in_func):
     result = a_in_func + b_in_func
     return result
 
 
-@dppy.kernel(debug=True)
+@dpex.kernel(debug=True)
 def kernel_sum(a_in_kernel, b_in_kernel, c_in_kernel):
-    i = dppy.get_global_id(0)
+    i = dpex.get_global_id(0)
     c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
 
 
@@ -37,6 +37,6 @@ c = np.empty_like(a)
 
 device = dpctl.SyclDevice("opencl:gpu")
 with dpctl.device_context(device):
-    kernel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
+    kernel_sum[global_size, dpex.DEFAULT_LOCAL_SIZE](a, b, c)
 
 print("Done...")

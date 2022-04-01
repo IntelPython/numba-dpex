@@ -18,7 +18,7 @@ import dpctl
 import numpy as np
 import pytest
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 from numba_dppy.tests._helper import filter_strings
 
 list_of_unary_ops = ["fabs", "exp", "log", "sqrt", "sin", "cos", "tan"]
@@ -50,14 +50,14 @@ def test_binary_ops(filter_str, unary_op, input_arrays):
     uop = getattr(math, unary_op)
     np_uop = getattr(np, unary_op)
 
-    @dppy.kernel
+    @dpex.kernel
     def f(a, b):
-        i = dppy.get_global_id(0)
+        i = dpex.get_global_id(0)
         b[i] = uop(a[i])
 
     device = dpctl.SyclDevice(filter_str)
     with dpctl.device_context(device):
-        f[a.size, dppy.DEFAULT_LOCAL_SIZE](a, actual)
+        f[a.size, dpex.DEFAULT_LOCAL_SIZE](a, actual)
 
     expected = np_uop(a)
 

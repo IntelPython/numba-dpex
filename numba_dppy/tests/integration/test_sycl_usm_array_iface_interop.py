@@ -2,14 +2,14 @@ import dpctl
 import numpy as np
 import pytest
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 
 from .DuckUSMArray import DuckUSMArray, PseudoDuckUSMArray
 
 
-@dppy.kernel
+@dpex.kernel
 def vecadd(a, b, c):
-    i = dppy.get_global_id(0)
+    i = dpex.get_global_id(0)
     c[i] = a[i] + b[i]
 
 
@@ -48,7 +48,7 @@ def test_dppy_kernel_valid_usm_obj(dtype):
 
     try:
         with dpctl.device_context(dpctl.select_default_device()):
-            vecadd[N, dppy.DEFAULT_LOCAL_SIZE](A, B, C)
+            vecadd[N, dpex.DEFAULT_LOCAL_SIZE](A, B, C)
     except Exception:
         pytest.fail(
             "Could not pass Python object with sycl_usm_array_interface"
@@ -75,4 +75,4 @@ def test_dppy_kernel_invalid_usm_obj(dtype):
 
     with pytest.raises(Exception):
         with dpctl.device_context(dpctl.select_default_device()):
-            vecadd[N, dppy.DEFAULT_LOCAL_SIZE](A, B, C)
+            vecadd[N, dpex.DEFAULT_LOCAL_SIZE](A, B, C)

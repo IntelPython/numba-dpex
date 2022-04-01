@@ -15,12 +15,12 @@
 import dpctl
 import numpy as np
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 
 
-@dppy.kernel(debug=True)
+@dpex.kernel(debug=True)
 def data_parallel_sum(a, b, c):
-    i = dppy.get_global_id(0)
+    i = dpex.get_global_id(0)
     c[i] = a[i] + b[i]  # Condition breakpoint location
 
 
@@ -33,6 +33,6 @@ c = np.ones_like(a)
 
 device = dpctl.SyclDevice("opencl:gpu")
 with dpctl.device_context(device):
-    data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
+    data_parallel_sum[global_size, dpex.DEFAULT_LOCAL_SIZE](a, b, c)
 
 print("Done...")

@@ -16,7 +16,7 @@ import dpctl
 import numpy as np
 import pytest
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 from numba_dppy.tests._helper import filter_strings_opencl_gpu
 
 
@@ -30,7 +30,7 @@ def test_print_only_str(filter_str):
     except Exception:
         pytest.skip()
 
-    @dppy.kernel
+    @dpex.kernel
     def f():
         print("test", "test2")
 
@@ -41,7 +41,7 @@ def test_print_only_str(filter_str):
     # to lack of support for puts() in OpenCL.
 
     with dpctl.device_context(filter_str):
-        f[3, dppy.DEFAULT_LOCAL_SIZE]()
+        f[3, dpex.DEFAULT_LOCAL_SIZE]()
 
 
 list_of_dtypes = [
@@ -61,7 +61,7 @@ def input_arrays(request):
 
 @pytest.mark.parametrize("filter_str", filter_strings_opencl_gpu)
 def test_print(filter_str, input_arrays, capfd):
-    @dppy.kernel
+    @dpex.kernel
     def f(a):
         print("test", a[0])
 
@@ -70,6 +70,6 @@ def test_print(filter_str, input_arrays, capfd):
 
     device = dpctl.SyclDevice(filter_str)
     with dpctl.device_context(device):
-        f[global_size, dppy.DEFAULT_LOCAL_SIZE](a)
+        f[global_size, dpex.DEFAULT_LOCAL_SIZE](a)
         captured = capfd.readouterr()
         assert "test" in captured.out

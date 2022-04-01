@@ -16,13 +16,13 @@
 import dpctl
 import numpy as np
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 from numba_dppy.tests._helper import skip_no_opencl_cpu, skip_no_opencl_gpu
 
 
-@dppy.kernel
+@dpex.kernel
 def data_parallel_sum(a, b, c):
-    i = dppy.get_global_id(0)
+    i = dpex.get_global_id(0)
     c[i] = a[i] + b[i]
 
 
@@ -40,7 +40,7 @@ class TestDPPYDeviceArrayArgsGPU:
         c = np.ones_like(a)
 
         with dpctl.device_context("opencl:cpu"):
-            data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
+            data_parallel_sum[global_size, dpex.DEFAULT_LOCAL_SIZE](a, b, c)
 
             assert np.all(c == d)
 
@@ -51,6 +51,6 @@ class TestDPPYDeviceArrayArgsCPU:
         c = np.ones_like(a)
 
         with dpctl.device_context("opencl:gpu"):
-            data_parallel_sum[global_size, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
+            data_parallel_sum[global_size, dpex.DEFAULT_LOCAL_SIZE](a, b, c)
 
         assert np.all(c == d)

@@ -16,7 +16,7 @@ import dpctl
 import numpy as np
 import pytest
 
-import numba_dppy as dppy
+import numba_dppy as dpex
 from numba_dppy.tests._helper import filter_strings
 
 global_size = 1054
@@ -25,7 +25,7 @@ N = global_size * local_size
 
 
 def mul_kernel(a, b, c):
-    i = dppy.get_global_id(0)
+    i = dpex.get_global_id(0)
     b[i] = a[i] * c
 
 
@@ -47,7 +47,7 @@ def input_arrays(request):
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_kernel_arg_types(filter_str, input_arrays):
-    kernel = dppy.kernel(mul_kernel)
+    kernel = dpex.kernel(mul_kernel)
     a, actual, c = input_arrays
     expected = a * c
     device = dpctl.SyclDevice(filter_str)
@@ -65,12 +65,12 @@ def check_bool_kernel(A, test):
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_bool_type(filter_str):
-    kernel = dppy.kernel(check_bool_kernel)
+    kernel = dpex.kernel(check_bool_kernel)
     a = np.array([2], np.int64)
 
     device = dpctl.SyclDevice(filter_str)
     with dpctl.device_context(device):
-        kernel[a.size, dppy.DEFAULT_LOCAL_SIZE](a, True)
+        kernel[a.size, dpex.DEFAULT_LOCAL_SIZE](a, True)
         assert a[0] == 111
-        kernel[a.size, dppy.DEFAULT_LOCAL_SIZE](a, False)
+        kernel[a.size, dpex.DEFAULT_LOCAL_SIZE](a, False)
         assert a[0] == 222

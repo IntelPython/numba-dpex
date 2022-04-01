@@ -16,8 +16,6 @@ import dpctl
 import numpy as np
 from numba import float64, vectorize
 
-import numba_dppy as dppy
-
 
 @vectorize(nopython=True)
 def ufunc_kernel(x, y):
@@ -57,7 +55,7 @@ def test_njit():
     print("Done...")
 
 
-@vectorize([float64(float64, float64)], target="dppy")
+@vectorize([float64(float64, float64)], target="dpex")
 def vector_add(a, b):
     return a + b
 

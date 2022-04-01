@@ -21,7 +21,6 @@ import numpy as np
 import pytest
 from numba import njit
 
-import numba_dppy as dppy
 from numba_dppy.tests._helper import (
     dpnp_debug,
     filter_strings_level_zero_gpu,
@@ -172,7 +171,7 @@ def test_three_arg_fn(filter_str, three_arg_fn, three_arg_size, capfd):
     elif op_name == "multivariate_normal":
         pytest.skip(
             "No implementation of function Function(<class "
-            "'numba_dppy.dpnp_iface.stubs.dpnp.multivariate_normal'>) found for signature"
+            "'numba_dpex.dpnp_iface.stubs.dpnp.multivariate_normal'>) found for signature"
         )
     elif op_name == "negative_binomial":
         pytest.skip("DPNP RNG Error: dpnp_rng_negative_binomial_c() failed.")
