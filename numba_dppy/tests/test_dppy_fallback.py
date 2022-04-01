@@ -22,8 +22,8 @@ from numba_dppy.tests._helper import skip_no_opencl_gpu
 
 
 @skip_no_opencl_gpu
-class TestDPPYFallback:
-    def test_dppy_fallback_inner_call(self):
+class TestFallback:
+    def test_fallback_inner_call(self):
         @numba.jit
         def fill_value(i):
             return i
@@ -41,15 +41,15 @@ class TestDPPYFallback:
         with warnings.catch_warnings(record=True) as w, dpctl.device_context(
             device
         ):
-            dppy = numba.njit(inner_call_fallback)
-            dppy_result = dppy()
+            fn = numba.njit(inner_call_fallback)
+            result = fn()
 
         ref_result = inner_call_fallback()
 
-        np.testing.assert_array_equal(dppy_result, ref_result)
+        np.testing.assert_array_equal(result, ref_result)
         assert "Failed to offload parfor " in str(w[-1].message)
 
-    def test_dppy_fallback_reductions(self):
+    def test_fallback_reductions(self):
         def reduction(a):
             b = 1
             for i in numba.prange(len(a)):
@@ -61,10 +61,10 @@ class TestDPPYFallback:
         with warnings.catch_warnings(record=True) as w, dpctl.device_context(
             device
         ):
-            dppy = numba.njit(reduction)
-            dppy_result = dppy(a)
+            fn = numba.njit(reduction)
+            result = fn(a)
 
         ref_result = reduction(a)
 
-        np.testing.assert_array_equal(dppy_result, ref_result)
+        np.testing.assert_array_equal(result, ref_result)
         assert "Failed to offload parfor " in str(w[-1].message)

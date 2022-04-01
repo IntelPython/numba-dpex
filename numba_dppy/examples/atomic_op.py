@@ -20,19 +20,19 @@ import numba_dppy as dpex
 
 def main():
     """
-    The example demonstrates the use of numba_dppy's ``atomic_add`` intrinsic
+    The example demonstrates the use of numba_dpex's ``atomic_add`` intrinsic
     function on a SYCL GPU device. The ``dpctl.select_gpu_device`` is
     equivalent to ``sycl::gpu_selector`` and returns a sycl::device of type GPU.
 
-    If we want to generate native floating point atomics for spported
+    If we want to generate native floating point atomics for supported
     SYCL devices we need to set two environment variables:
-    NUMBA_DPPY_ACTIVATE_ATOMICS_FP_NATIVE=1
-    NUMBA_DPPY_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv
+    NUMBA_DPEX_ACTIVATE_ATOMICS_FP_NATIVE=1
+    NUMBA_DPEX_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv
 
     To run this example:
-    NUMBA_DPPY_ACTIVATE_ATOMICS_FP_NATIVE=1 NUMBA_DPPY_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv python atomic_op.py
+    NUMBA_DPEX_ACTIVATE_ATOMICS_FP_NATIVE=1 NUMBA_DPEX_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv python atomic_op.py
 
-    Without these two environment variables Numba_dppy will use other
+    Without these two environment variables numba_dpex will use other
     implementation for floating point atomics.
     """
 

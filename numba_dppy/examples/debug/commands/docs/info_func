@@ -6,12 +6,12 @@ $ NUMBA_OPT=0 gdb-oneapi -q python
 ...
 All functions matching regular expression "data_parallel_sum":
 File simple_sum.py:
-20:         void __main__::data_parallel_sum(DPPYArray<float, 1, C, mutable, aligned>, DPPYArray<float, 1, C, mutable, aligned>, DPPYArray<float, 1, C, mutable, aligned>);
+20:         void __main__::data_parallel_sum(Array<float, 1, C, mutable, aligned>, Array<float, 1, C, mutable, aligned>, Array<float, 1, C, mutable, aligned>);
 (gdb) continue
 (gdb) info functions __main__
 ...
 All functions matching regular expression "__main__":
-20:         void __main__::data_parallel_sum(DPPYArray<float, 1, C, mutable, aligned>, DPPYArray<float, 1, C, mutable, aligned>, DPPYArray<float, 1, C, mutable, aligned>);
+20:         void __main__::data_parallel_sum(Array<float, 1, C, mutable, aligned>, Array<float, 1, C, mutable, aligned>, Array<float, 1, C, mutable, aligned>);
 (gdb) continue
 ...
 Done...

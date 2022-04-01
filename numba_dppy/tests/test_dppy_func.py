@@ -20,10 +20,10 @@ from numba_dppy.tests._helper import skip_no_opencl_gpu
 
 
 @skip_no_opencl_gpu
-class TestDPPYFunc:
+class TestFunc:
     N = 257
 
-    def test_dppy_func_device_array(self):
+    def test_func_device_array(self):
         @dpex.func
         def g(a):
             return a + 1
@@ -42,7 +42,7 @@ class TestDPPYFunc:
 
         assert np.all(b == 2)
 
-    def test_dppy_func_ndarray(self):
+    def test_func_ndarray(self):
         @dpex.func
         def g(a):
             return a + 1

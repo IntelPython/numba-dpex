@@ -90,11 +90,11 @@ def sub_group_barrier():
 
 
 class Stub(object):
-    """A stub object to represent special objects which is meaningless
-    outside the context of DPPY compilation context.
+    """A stub object to represent special objects that are meaningless
+    outside the context of kernel compilation.
     """
 
-    _description_ = "<dppy special value>"
+    _description_ = "<dpex special value>"
     __slots__ = ()  # don't allocate __dict__
 
     def __new__(cls):
