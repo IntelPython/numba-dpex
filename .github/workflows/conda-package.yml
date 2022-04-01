@@ -143,8 +143,8 @@ jobs:
         run: |
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
           export OCL_ICD_FILENAMES=libintelocl.so
-          export NUMBA_DPPY_TESTING_SKIP_NO_OPENCL_GPU=1
-          export NUMBA_DPPY_TESTING_SKIP_NO_LEVEL_ZERO_GPU=1
+          export NUMBA_DPEX_TESTING_SKIP_NO_OPENCL_GPU=1
+          export NUMBA_DPEX_TESTING_SKIP_NO_LEVEL_ZERO_GPU=1
           python -m pytest -q -ra --disable-warnings --pyargs $MODULE_NAME -vv
 
   test_windows:
@@ -220,9 +220,9 @@ jobs:
       - name: Add dpnp skip variable
         run: echo "NUMBA_DPPY_TESTING_SKIP_NO_DPNP=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
       - name: Add opencl gpu skip variable
-        run: echo "NUMBA_DPPY_TESTING_SKIP_NO_OPENCL_GPU=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        run: echo "NUMBA_DPEX_TESTING_SKIP_NO_OPENCL_GPU=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
       - name: Add level-zero gpu skip variable
-        run: echo "NUMBA_DPPY_TESTING_SKIP_NO_LEVEL_ZERO_GPU=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        run: echo "NUMBA_DPEX_TESTING_SKIP_NO_LEVEL_ZERO_GPU=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
       - name: Run tests
         run: |
           python -m pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }} -vv
