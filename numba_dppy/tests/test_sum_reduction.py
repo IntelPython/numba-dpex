@@ -31,7 +31,7 @@ def reduction_kernel(A, R, stride):
 
 
 @skip_no_opencl_gpu
-class TestDPPYSumReduction:
+class TestSumReduction:
     def test_sum_reduction(self):
         # This test will only work for even case
         N = 1024
