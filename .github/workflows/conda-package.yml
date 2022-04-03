@@ -11,7 +11,7 @@ on:
       - release*
 
 env:
-  PACKAGE_NAME: numba-dpex
+  PACKAGE_NAME: numba-dppy
   MODULE_NAME: numba_dpex
 
 jobs:
