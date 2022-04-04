@@ -94,7 +94,7 @@ def _schedule_loop(parfor_dim, legal_loop_indices, loop_ranges, param_dict):
             "    "
             + legal_loop_indices[eachdim]
             + " = "
-            + "dppy.get_global_id("
+            + "dpex.get_global_id("
             + str(eachdim)
             + ")\n"
         )
@@ -487,7 +487,7 @@ def _create_gufunc_for_parfor_body(
         print("gufunc_txt = ", type(gufunc_txt), "\n", gufunc_txt)
         sys.stdout.flush()
     # Force gufunc outline into existence.
-    globls = {"np": np, "numba": numba, "dppy": dpex}
+    globls = {"np": np, "numba": numba, "dpex": dpex}
     locls = {}
     exec(gufunc_txt, globls, locls)
     gufunc_func = locls[gufunc_name]
@@ -939,7 +939,7 @@ def generate_kernel_launch_ops(
         print("cres", cres, type(cres))
         print("modified_arrays", modified_arrays)
 
-    # get dppy_cpu_portion_lowerer object
+    # get dpex_cpu_portion_lowerer object
     kernel_launcher = KernelLaunchOps(lowerer, cres.kernel, num_inputs)
 
     # Get a pointer to the current queue
@@ -1426,7 +1426,7 @@ def lower_parfor_rollback(lowerer, parfor):
             "the issue, please add the traceback to the bug report."
         )
         if not config.DEBUG:
-            msg += " Set the environment variable NUMBA_DPPY_DEBUG to 1 to "
+            msg += " Set the environment variable NUMBA_DPEX_DEBUG to 1 to "
             msg += "generate a traceback."
 
         warnings.warn(NumbaPerformanceWarning(msg, parfor.loc))

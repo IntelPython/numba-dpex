@@ -72,7 +72,7 @@ def randfloat(rand_var, low, high):
 
 
 @skip_no_opencl_gpu
-class TestDPPYBlackScholes:
+class TestBlackScholesKernel:
     def test_black_scholes(self):
         OPT_N = 400
         iterations = 2

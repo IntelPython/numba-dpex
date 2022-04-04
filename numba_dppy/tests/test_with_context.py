@@ -55,9 +55,9 @@ def test_dpctl_device_context_affects_numba_pipeline(filter_str, context):
         scenario(filter_str, context)
 
 
-class TestWithDPPYContext:
+class TestWithDeviceContext:
     @skip_no_opencl_gpu
-    def test_with_dppy_context_gpu(self):
+    def test_with_device_context_gpu(self):
         @njit
         def nested_func(a, b):
             np.sin(a, b)
@@ -83,7 +83,7 @@ class TestWithDPPYContext:
         assert "Parfor offloaded to opencl:gpu" in got_gpu_message.getvalue()
 
     @skip_no_opencl_cpu
-    def test_with_dppy_context_cpu(self):
+    def test_with_device_context_cpu(self):
         @njit
         def nested_func(a, b):
             np.sin(a, b)
