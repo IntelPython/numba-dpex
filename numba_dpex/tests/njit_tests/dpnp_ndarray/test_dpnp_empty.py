@@ -1,4 +1,4 @@
-"""Tests for DPNP ndarray constructors."""
+"""Tests for dpnp ndarray constructors."""
 
 import dpnp
 import pytest
@@ -13,7 +13,7 @@ usm_types = ["device", "shared", "host"]
 @pytest.mark.parametrize("dtype", dtypes)
 @pytest.mark.parametrize("usm_type", usm_types)
 def test_dpnp_empty(shape, dtype, usm_type):
-    from numba_dppy.dpctl_iface import get_current_queue
+    from numba_dpex.dpctl_iface import get_current_queue
 
     @njit
     def func(shape):
