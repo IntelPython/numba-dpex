@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dppy.codegen module &mdash; numba-dppy 0+untagged.719.g5f391ec documentation</title>
+  <title>numba_dppy.dpnp_ndarray.dpnp_empty module &mdash; numba-dppy 0+untagged.719.g5f391ec documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -67,9 +67,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>numba_dppy.codegen module</li>
+      <li>numba_dppy.dpnp_ndarray.dpnp_empty module</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/apidoc/numba_dppy.codegen.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/apidoc/numba_dppy.dpnp_ndarray.dpnp_empty.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -77,26 +77,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-numba_dppy.codegen">
-<span id="numba-dppy-codegen-module"></span><h1>numba_dppy.codegen module<a class="headerlink" href="#module-numba_dppy.codegen" title="Permalink to this headline"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dppy.codegen.JITSPIRVCodegen">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.codegen.</span></span><span class="sig-name descname"><span class="pre">JITSPIRVCodegen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.codegen.JITSPIRVCodegen" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.codegen.CPUCodegen</span></code></p>
-<p>This codegen implementation generates optimized SPIR 2.0</p>
+  <section id="module-numba_dppy.dpnp_ndarray.dpnp_empty">
+<span id="numba-dppy-dpnp-ndarray-dpnp-empty-module"></span><h1>numba_dppy.dpnp_ndarray.dpnp_empty module<a class="headerlink" href="#module-numba_dppy.dpnp_ndarray.dpnp_empty" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dppy.dpnp_ndarray.dpnp_empty.impl_dpnp_empty">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.dpnp_ndarray.dpnp_empty.</span></span><span class="sig-name descname"><span class="pre">impl_dpnp_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpnp_ndarray.dpnp_empty.impl_dpnp_empty" title="Permalink to this definition"></a></dt>
+<dd><p>Inputs: shape, dtype, usm_type, queue</p>
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dppy.codegen.SPIRVCodeLibrary">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dppy.codegen.</span></span><span class="sig-name descname"><span class="pre">SPIRVCodeLibrary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">codegen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.codegen.SPIRVCodeLibrary" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.codegen.CPUCodeLibrary</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dppy.codegen.SPIRVCodeLibrary.get_asm_str">
-<span class="sig-name descname"><span class="pre">get_asm_str</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.codegen.SPIRVCodeLibrary.get_asm_str" title="Permalink to this definition"></a></dt>
-<dd><p>Get the human-readable assembly.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dppy.dpnp_ndarray.dpnp_empty.parse_usm_type">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.dpnp_ndarray.dpnp_empty.</span></span><span class="sig-name descname"><span class="pre">parse_usm_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">usm_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpnp_ndarray.dpnp_empty.parse_usm_type" title="Permalink to this definition"></a></dt>
+<dd><p>Return the usm_type, if it is a string literal.</p>
 </dd></dl>
 
-</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dppy.dpnp_ndarray.dpnp_empty.type_dpnp_empty">
+<span class="sig-prename descclassname"><span class="pre">numba_dppy.dpnp_ndarray.dpnp_empty.</span></span><span class="sig-name descname"><span class="pre">type_dpnp_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dppy.dpnp_ndarray.dpnp_empty.type_dpnp_empty" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </section>
 
