@@ -54,8 +54,8 @@ from numba.parfors.parfor_lowering import _lower_parfor_parallel
 
 import numba_dpex as dpex
 from numba_dpex import config
-from numba_dpex.dpctl_iface import KernelLaunchOps
 from numba_dpex.core.types import Array
+from numba_dpex.dpctl_iface import KernelLaunchOps
 from numba_dpex.target import DpexTargetContext
 from numba_dpex.utils import address_space, npytypes_array_to_dpex_array
 

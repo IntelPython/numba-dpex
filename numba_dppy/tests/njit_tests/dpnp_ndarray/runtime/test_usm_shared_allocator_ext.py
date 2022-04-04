@@ -67,7 +67,6 @@ def test_meminfo():
     from ctypes import POINTER, PYFUNCTYPE, Structure, c_int, c_size_t, c_void_p
 
     from numba.core.runtime import _nrt_python
-
     from numba_dppy._usm_shared_allocator_ext import c_helpers
 
     class MemInfo(Structure):
