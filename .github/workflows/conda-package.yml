@@ -32,7 +32,7 @@ jobs:
 
       - name: Build conda package
         env:
-          CHANNELS: -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
+          CHANNELS: -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev --override-channels
         run: ./scripts/build_conda_package.sh ${{ matrix.python }}
 
       - name: Upload artifact
@@ -125,13 +125,14 @@ jobs:
           mv ${PACKAGE_NAME}-*.tar.bz2 $GITHUB_WORKSPACE/channel/linux-64
           conda index $GITHUB_WORKSPACE/channel
           # Test channel
-          conda search $PACKAGE_NAME -c $GITHUB_WORKSPACE/channel --override-channels
+          conda search $PACKAGE_NAME -c $GITHUB_WORKSPACE/channel --override-channels --info
 
       - name: Install numba-dpex
         env:
-          CHANNELS: -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
+          CHANNELS: -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev  --override-channels
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel $CHANNELS"
+          conda list
           conda install $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl=${{ matrix.dpctl }} dpnp=${{ matrix.dpnp }} $CHANNELS
           # Test installed packages
           conda list
