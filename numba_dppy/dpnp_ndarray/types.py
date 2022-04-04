@@ -30,18 +30,33 @@ class dpnp_ndarray_Type(Array):
         name=None,
         aligned=True,
         addrspace=None,
+        usm_type=None,
     ):
-        name = "dpnp.ndarray(%s, %sd, %s)" % (dtype, ndim, layout)
+        if name is None:
+            type_name = "dpnp.ndarray"
+            if readonly:
+                type_name = "readonly " + type_name
+            if not aligned:
+                type_name = "unaligned " + type_name
+            name_parts = (type_name, dtype, ndim, layout, usm_type)
+            name = "%s(%s, %sd, %s, %s)" % name_parts
 
+        if usm_type is None:
+            usm_type = "device"
+
+        self.usm_type = usm_type
         super().__init__(
             dtype,
             ndim,
             layout,
-            # py_type=ndarray,
             readonly=readonly,
             name=name,
             addrspace=addrspace,
         )
+
+    @property
+    def key(self):
+        return (*super().key, self.usm_type)
 
     @property
     def as_array(self):
