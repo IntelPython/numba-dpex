@@ -11,7 +11,7 @@ on:
       - release*
 
 env:
-  PACKAGE_NAME: numba-dppy
+  PACKAGE_NAME: numba-dpex
   MODULE_NAME: numba_dpex
 
 jobs:
@@ -72,7 +72,7 @@ jobs:
       - name: Cache conda packages
         uses: actions/cache@v2
         env:
-          CACHE_NUMBER: 1  # Increase to reset cache
+          CACHE_NUMBER: 0  # Increase to reset cache
         with:
           path: /home/runner/conda_pkgs_dir
           key:
