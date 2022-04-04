@@ -30,7 +30,7 @@ class dpnp_ndarray_Type(Array):
         name=None,
         aligned=True,
         addrspace=None,
-        usm_type="device",
+        usm_type=None,
     ):
         if name is None:
             type_name = "dpnp.ndarray"
@@ -40,6 +40,9 @@ class dpnp_ndarray_Type(Array):
                 type_name = "unaligned " + type_name
             name_parts = (type_name, dtype, ndim, layout, usm_type)
             name = "%s(%s, %sd, %s, %s)" % name_parts
+
+        if usm_type is None:
+            usm_type = "device"
 
         self.usm_type = usm_type
         super().__init__(

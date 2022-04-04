@@ -28,23 +28,48 @@ from .types import dpnp_ndarray_Type
 
 @type_callable(dpnp.empty)
 def type_dpnp_empty(context):
-    def typer(shape, usm_type, sycl_queue):
-        if not isinstance(usm_type, types.Literal):
-            return None
-        usm_type = usm_type.literal_value
+    def typer(shape, dtype=None, usm_type=None, sycl_queue=None):
+        from numba.core.typing.npydecl import parse_dtype, parse_shape
 
-        if isinstance(shape, types.Integer):
-            ndim = 1
+        if dtype is None:
+            nb_dtype = types.double
         else:
-            ndim = len(shape)
+            nb_dtype = parse_dtype(dtype)
 
-        return dpnp_ndarray_Type(types.float64, ndim, "C", usm_type=usm_type)
+        ndim = parse_shape(shape)
+
+        if usm_type is None:
+            usm_type = "device"
+        else:
+            usm_type = parse_usm_type(usm_type)
+
+        if nb_dtype is not None and ndim is not None and usm_type is not None:
+            return dpnp_ndarray_Type(
+                dtype=nb_dtype, ndim=ndim, layout="C", usm_type=usm_type
+            )
 
     return typer
 
 
-@lower_builtin(dpnp.empty, types.Any, types.Any, types.Any)
+def parse_usm_type(usm_type):
+    """
+    Return the usm_type, if it is a string literal.
+    """
+    from numba.core.errors import TypingError
+
+    if isinstance(usm_type, types.StringLiteral):
+        usm_type_str = usm_type.literal_value
+        if usm_type_str not in ["shared", "device", "host"]:
+            msg = f"Invalid usm_type specified: '{usm_type_str}'"
+            raise TypingError(msg)
+        return usm_type_str
+
+
+@lower_builtin(dpnp.empty, types.Any, types.Any, types.Any, types.Any)
 def impl_dpnp_empty(context, builder, sig, args):
+    """
+    Inputs: shape, dtype, usm_type, queue
+    """
     from numba.core.imputils import impl_ret_new_ref
 
     empty_args = _parse_empty_args(context, builder, sig, args)
@@ -54,7 +79,7 @@ def impl_dpnp_empty(context, builder, sig, args):
 
 def _parse_empty_args(context, builder, sig, args):
     """
-    Parse the arguments of a np.empty(), np.zeros() or np.ones() call.
+    Parse the arguments of a dpnp.empty(), .zeros() or .ones() call.
     """
     from numba.np.arrayobj import _parse_shape
 
@@ -64,18 +89,13 @@ def _parse_empty_args(context, builder, sig, args):
     arrshape = args[0]
     shape = _parse_shape(context, builder, arrshapetype, arrshape)
 
-    usm_type_num = {"shared": 0, "device": 1, "host": 2}[arrtype.usm_type]
-    usm_type = context.get_constant(types.int64, usm_type_num)
-
-    queue = args[2]
-    return (arrtype, shape, usm_type, queue)
+    queue = args[-1]
+    return (arrtype, shape, queue)
 
 
-def _empty_nd_impl(context, builder, arrtype, shapes, usm_type, queue):
-    """Utility function used for allocating a new array during LLVM code
-    generation (lowering).  Given a target context, builder, array
-    type, and a tuple or list of lowered dimension sizes, returns a
-    LLVM value pointing at a Numba runtime allocated array.
+def _empty_nd_impl(context, builder, arrtype, shapes, queue):
+    """See numba.np.arrayobj._empty_nd_impl().
+    This implementation uses different MemInfo allocator.
     """
     from numba.np.arrayobj import (
         get_itemsize,
@@ -133,6 +153,9 @@ def _empty_nd_impl(context, builder, arrtype, shapes, usm_type, queue):
                 " the maximum possible size.",
             ),
         )
+
+    usm_type_num = {"shared": 0, "device": 1, "host": 2}[arrtype.usm_type]
+    usm_type = context.get_constant(types.int64, usm_type_num)
 
     args = (context.get_dummy_value(), allocsize, usm_type, queue)
 
