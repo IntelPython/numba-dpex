@@ -96,11 +96,22 @@ get_external_allocator(PyObject *self, PyObject *args)
     return PyLong_FromVoidPtr(usmarray_get_ext_allocator());
 }
 
+
+/*
+ * Internal structure used for allocation and deallocation.
+ * USM types:
+ *   0 - shared
+ *   1 - device
+ *   2 - host
+ */
 typedef struct {
     int usm_type;
     void *queue;
 } AllocatorImpl;
 
+/*
+ * Allocate USM memory.
+ */
 static void *
 allocate(size_t size, void *opaque_data)
 {
@@ -120,6 +131,9 @@ allocate(size_t size, void *opaque_data)
     return data;
 }
 
+/*
+ * Deallocate USM memory.
+ */
 static void
 deallocate(void *data, void *opaque_data)
 {
@@ -128,6 +142,10 @@ deallocate(void *data, void *opaque_data)
     DPCTLfree_with_queue(data, impl->queue);
 }
 
+/*
+ * Create external allocator.
+ * NOTE: experimentatal. Could be deleted.
+ */
 static NRT_ExternalAllocator *
 create_allocator(int usm_type)
 {
@@ -144,6 +162,10 @@ create_allocator(int usm_type)
     return allocator;
 }
 
+/*
+ * Release external allocator.
+ * NOTE: experimentatal. Could be deleted.
+ */
 static void
 release_allocator(NRT_ExternalAllocator *allocator)
 {
@@ -157,9 +179,8 @@ release_allocator(NRT_ExternalAllocator *allocator)
 
 /*
  * The MemInfo structure.
+ * NOTE: copy from numba/core/runtime/nrt.c
  */
-
-// /* NOTE: copy from numba/core/runtime/nrt.c */
 struct MemInfo {
     size_t            refct;
     NRT_dtor_function dtor;
@@ -169,6 +190,10 @@ struct MemInfo {
     NRT_ExternalAllocator *external_allocator;
 };
 
+/*
+ * Initialize MemInfo with data.
+ * NOTE: copy from numba/core/runtime/nrt.c
+ */
 void NRT_MemInfo_init(NRT_MemInfo *mi,void *data, size_t size,
                       NRT_dtor_function dtor, void *dtor_info,
                       NRT_ExternalAllocator *external_allocator)
@@ -182,6 +207,10 @@ void NRT_MemInfo_init(NRT_MemInfo *mi,void *data, size_t size,
     NRT_Debug(nrt_debug_print("NRT_MemInfo_init mi=%p external_allocator=%p\n", mi, external_allocator));
 }
 
+/*
+ * Allocate MemInfo and initialize.
+ * NOTE: copy from numba/core/runtime/nrt.c
+ */
 NRT_MemInfo *NRT_MemInfo_new(void *data, size_t size,
                              NRT_dtor_function dtor, void *dtor_info)
 {
@@ -191,6 +220,9 @@ NRT_MemInfo *NRT_MemInfo_new(void *data, size_t size,
     return mi;
 }
 
+/*
+ * Destructor for allocated USM memory.
+ */
 static void
 dtor(void *ptr, size_t size, void *info)
 {
@@ -201,6 +233,10 @@ dtor(void *ptr, size_t size, void *info)
     free(impl);
 }
 
+/*
+ * Debugging printf function used internally
+ * NOTE: copy from numba/core/runtime/nrt.c
+ */
 void nrt_debug_print(char *fmt, ...) {
    va_list args;
 
@@ -209,6 +245,13 @@ void nrt_debug_print(char *fmt, ...) {
    va_end(args);
 }
 
+/*
+ * Create MemInfo with allocated USM memory with given USM type and queue.
+ * USM types:
+ *   0 - shared
+ *   1 - device
+ *   2 - host
+ */
 static NRT_MemInfo *
 DPRT_MemInfo_new(size_t size, int usm_type, void *queue)
 {
@@ -223,6 +266,9 @@ DPRT_MemInfo_new(size_t size, int usm_type, void *queue)
     return NRT_MemInfo_new(data, size, dtor, impl);
 }
 
+/*
+ * Helper function for creating default queue
+ */
 void *
 create_queue()
 {
