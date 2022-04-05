@@ -41,4 +41,4 @@ def test_dpnp_ndarray_Model():
     """
 
     assert issubclass(dpnp_ndarray_Model, models.StructModel)
-    assert not issubclass(dpnp_ndarray_Model, models.ArrayModel)
+    assert issubclass(dpnp_ndarray_Model, models.ArrayModel)
