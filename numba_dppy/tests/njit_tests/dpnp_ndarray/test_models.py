@@ -23,21 +23,17 @@ def test_model_for_dpnp_ndarray_Type():
     """Test that model is registered for dpnp_ndarray_Type instances.
 
     The model for dpnp_ndarray_Type is dpnp_ndarray_Model.
-    It contains property "syclobj".
-    This property is PyObject.
+
     """
 
     model = default_manager.lookup(dpnp_ndarray_Type(types.float64, 1, "C"))
     assert isinstance(model, dpnp_ndarray_Model)
 
-    assert "syclobj" not in model._fields
-    # assert model.get_member_fe_type("syclobj") == types.pyobject
-
 
 def test_dpnp_ndarray_Model():
     """Test for dpnp_ndarray_Model.
 
-    It is sumclass of models.StructModel and not a subclass of models.ArrayModel.
+    It is a subclass of models.StructModel and models.ArrayModel.
     """
 
     assert issubclass(dpnp_ndarray_Model, models.StructModel)
