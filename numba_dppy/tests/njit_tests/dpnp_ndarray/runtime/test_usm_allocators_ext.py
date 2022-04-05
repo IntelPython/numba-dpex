@@ -1,18 +1,18 @@
-"""Tests for numba_dppy._usm_shared_allocator_ext
+"""Tests for numba_dppy._usm_allocators_ext
 """
 
 
 def test_members():
-    from numba_dppy import _usm_shared_allocator_ext
+    from numba_dppy import _usm_allocators_ext
 
     members = ["c_helpers", "get_external_allocator"]
 
     for member in members:
-        assert hasattr(_usm_shared_allocator_ext, member)
+        assert hasattr(_usm_allocators_ext, member)
 
 
 def test_c_helpers():
-    from numba_dppy._usm_shared_allocator_ext import c_helpers
+    from numba_dppy._usm_allocators_ext import c_helpers
 
     functions = [
         "usmarray_get_ext_allocator",
@@ -32,7 +32,7 @@ def test_c_helpers():
 def test_allocator():
     from ctypes import POINTER, PYFUNCTYPE, Structure, c_int, c_size_t, c_void_p
 
-    from numba_dppy._usm_shared_allocator_ext import c_helpers
+    from numba_dppy._usm_allocators_ext import c_helpers
 
     class NRT_ExternalAllocator(Structure):
         _fields_ = [
@@ -68,7 +68,7 @@ def test_meminfo():
 
     from numba.core.runtime import _nrt_python
 
-    from numba_dppy._usm_shared_allocator_ext import c_helpers
+    from numba_dppy._usm_allocators_ext import c_helpers
 
     class MemInfo(Structure):
         _fields_ = [
