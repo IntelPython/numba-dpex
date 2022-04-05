@@ -13,5 +13,6 @@
 # limitations under the License.
 
 from . import dpnp_empty  # noqa: isort
+from . import dpnp_zeros_ones  # noqa: isort
 from . import models, typeof
 from .types import *
