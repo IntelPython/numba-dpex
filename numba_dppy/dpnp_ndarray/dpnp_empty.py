@@ -27,6 +27,8 @@ from .types import dpnp_ndarray_Type
 
 
 @type_callable(dpnp.empty)
+@type_callable(dpnp.zeros)
+@type_callable(dpnp.ones)
 def type_dpnp_empty(context):
     def typer(shape, dtype=None, usm_type=None, sycl_queue=None):
         from numba.core.typing.npydecl import parse_dtype, parse_shape
