@@ -54,7 +54,7 @@ def _memset(context, builder, ptr, size, value, queue):
     if isinstance(value, int):
         value = int8_t(value)
 
-    event_ref = builder.call(memset_fn, queue, ptr, size, value)
+    event_ref = builder.call(memset_fn, [queue, ptr, size, value])
     builder.call(event_wait_fn, [event_ref])
 
 
