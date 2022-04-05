@@ -57,3 +57,12 @@ def dpctl_queue_wait():
     ret_type = types.void
     sig = signature(ret_type, types.voidptr)
     return types.ExternalFunction("DPCTLQueue_Wait", sig)
+
+
+def dpctl_queue_memset():
+    ret_type = types.voidptr
+    args = types.voidptr, types.voidptr, types.int64, types.int64
+    sig = signature(
+        ret_type, *args
+    )
+    return types.ExternalFunction("DPCTLQueue_Memset", sig)

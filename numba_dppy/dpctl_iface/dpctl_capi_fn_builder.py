@@ -295,3 +295,38 @@ class DpctlCAPIFnBuilder:
             arg_list=[void_ptr_t],
             func_name="DPCTLEvent_Delete",
         )
+
+    @staticmethod
+    def get_dpctl_queue_memset(builder, context):
+        """
+        get_dpctl_queue_memset(builder, context)
+        Inserts an LLVM Function for the ``DPCTLQueue_Memset``.
+
+        The ``DPCTLQueue_Memset`` function is a wrapper over ``sycl::queue``
+        class' ``event memset(void* Ptr, int Value, size_t Count)``
+        function. Currently, the DPCTLQueue_Memset does not return an event
+        reference, but in future will return an opaque pointer to a
+        ``sycl::event``. All the opaque pointers arguments to the
+        ``DPCTLQueue_Memset`` are passed as void pointers.
+
+        Args:
+            builder: The LLVM IR builder to be used for code generation.
+            context: The LLVM IR builder context.
+
+        Return: A Python object wrapping an LLVM Function for
+                ``DPCTLQueue_Memset``.
+        """
+        void_ptr_t = utils.get_llvm_type(context=context, type=types.voidptr)
+        return DpctlCAPIFnBuilder._build_dpctl_function(
+            builder,
+            return_ty=void_ptr_t,
+            # return_ty=utils.LLVMTypes.void_t,
+            arg_list=[
+                void_ptr_t,
+                void_ptr_t,
+                utils.LLVMTypes.int64_t,
+                utils.LLVMTypes.int64_t,
+                utils.get_llvm_type(context=context, type=types.intp),
+            ],
+            func_name="DPCTLQueue_Memset",
+        )
