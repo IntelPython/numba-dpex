@@ -22,26 +22,28 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#include "numba/_pymodule.h"
-#include "numba/core/runtime/nrt_external.h"
-#include "numba/core/runtime/nrt.h"
 #include "assert.h"
-#include <stdio.h>
+#include "numba/_pymodule.h"
+#include "numba/core/runtime/nrt.h"
+#include "numba/core/runtime/nrt_external.h"
 #include <stdbool.h>
+#include <stdio.h>
 
+// clang-format off
 #if defined __has_include
-#  if __has_include(<dpctl_sycl_interface.h>)
-#    include <dpctl_sycl_interface.h>
-#  else
-#    include <dpctl_sycl_queue_interface.h>
-#    include <dpctl_sycl_queue_manager.h>
-#    include <dpctl_sycl_usm_interface.h>
-#  endif
+    #if __has_include(<dpctl_sycl_interface.h>)
+        #include <dpctl_sycl_interface.h>
+    #else
+        #include <dpctl_sycl_queue_interface.h>
+        #include <dpctl_sycl_queue_manager.h>
+        #include <dpctl_sycl_usm_interface.h>
+    #endif
 #else
-#  include <dpctl_sycl_queue_interface.h>
-#  include <dpctl_sycl_queue_manager.h>
-#  include <dpctl_sycl_usm_interface.h>
+    #include <dpctl_sycl_queue_interface.h>
+    #include <dpctl_sycl_queue_manager.h>
+    #include <dpctl_sycl_usm_interface.h>
 #endif
+// clang-format on
 
 NRT_ExternalAllocator usmarray_allocator;
 NRT_external_malloc_func internal_allocator = NULL;
@@ -90,12 +92,10 @@ void *usmarray_get_ext_allocator(void)
     return (void *)&usmarray_allocator;
 }
 
-static PyObject *
-get_external_allocator(PyObject *self, PyObject *args)
+static PyObject *get_external_allocator(PyObject *self, PyObject *args)
 {
     return PyLong_FromVoidPtr(usmarray_get_ext_allocator());
 }
-
 
 /*
  * Internal structure used for allocation and deallocation.
@@ -104,7 +104,8 @@ get_external_allocator(PyObject *self, PyObject *args)
  *   1 - device
  *   2 - host
  */
-typedef struct {
+typedef struct
+{
     int usm_type;
     void *queue;
 } AllocatorImpl;
@@ -112,19 +113,18 @@ typedef struct {
 /*
  * Allocate USM memory.
  */
-static void *
-allocate(size_t size, void *opaque_data)
+static void *allocate(size_t size, void *opaque_data)
 {
-    AllocatorImpl *impl = (AllocatorImpl*)opaque_data;
+    AllocatorImpl *impl = (AllocatorImpl *)opaque_data;
     void *data = 0;
 
     if (impl->usm_type == 0) {
         data = (void *)DPCTLmalloc_shared(size, impl->queue);
-    } else
-    if (impl->usm_type == 1) {
+    }
+    else if (impl->usm_type == 1) {
         data = (void *)DPCTLmalloc_host(size, impl->queue);
-    } else
-    if (impl->usm_type == 2) {
+    }
+    else if (impl->usm_type == 2) {
         data = (void *)DPCTLmalloc_device(size, impl->queue);
     }
 
@@ -134,20 +134,18 @@ allocate(size_t size, void *opaque_data)
 /*
  * Deallocate USM memory.
  */
-static void
-deallocate(void *data, void *opaque_data)
+static void deallocate(void *data, void *opaque_data)
 {
-    AllocatorImpl *impl = (AllocatorImpl*)opaque_data;
+    AllocatorImpl *impl = (AllocatorImpl *)opaque_data;
 
     DPCTLfree_with_queue(data, impl->queue);
 }
 
 /*
  * Create external allocator.
- * NOTE: experimentatal. Could be deleted.
+ * NOTE: experimental. Could be deleted.
  */
-static NRT_ExternalAllocator *
-create_allocator(int usm_type)
+static NRT_ExternalAllocator *create_allocator(int usm_type)
 {
     AllocatorImpl *impl = malloc(sizeof(AllocatorImpl));
     impl->usm_type = usm_type;
@@ -164,10 +162,9 @@ create_allocator(int usm_type)
 
 /*
  * Release external allocator.
- * NOTE: experimentatal. Could be deleted.
+ * NOTE: experimental. Could be deleted.
  */
-static void
-release_allocator(NRT_ExternalAllocator *allocator)
+static void release_allocator(NRT_ExternalAllocator *allocator)
 {
     AllocatorImpl *impl = (AllocatorImpl *)allocator->opaque_data;
     DPCTLQueue_Delete(impl->queue);
@@ -176,17 +173,17 @@ release_allocator(NRT_ExternalAllocator *allocator)
     free(allocator);
 }
 
-
 /*
  * The MemInfo structure.
  * NOTE: copy from numba/core/runtime/nrt.c
  */
-struct MemInfo {
-    size_t            refct;
+struct MemInfo
+{
+    size_t refct;
     NRT_dtor_function dtor;
-    void              *dtor_info;
-    void              *data;
-    size_t            size;    /* only used for NRT allocated memory */
+    void *dtor_info;
+    void *data;
+    size_t size; /* only used for NRT allocated memory */
     NRT_ExternalAllocator *external_allocator;
 };
 
@@ -194,25 +191,31 @@ struct MemInfo {
  * Initialize MemInfo with data.
  * NOTE: copy from numba/core/runtime/nrt.c
  */
-void NRT_MemInfo_init(NRT_MemInfo *mi,void *data, size_t size,
-                      NRT_dtor_function dtor, void *dtor_info,
+void NRT_MemInfo_init(NRT_MemInfo *mi,
+                      void *data,
+                      size_t size,
+                      NRT_dtor_function dtor,
+                      void *dtor_info,
                       NRT_ExternalAllocator *external_allocator)
 {
-    mi->refct = 1;  /* starts with 1 refct */
+    mi->refct = 1; /* starts with 1 refct */
     mi->dtor = dtor;
     mi->dtor_info = dtor_info;
     mi->data = data;
     mi->size = size;
     mi->external_allocator = external_allocator;
-    NRT_Debug(nrt_debug_print("NRT_MemInfo_init mi=%p external_allocator=%p\n", mi, external_allocator));
+    NRT_Debug(nrt_debug_print("NRT_MemInfo_init mi=%p external_allocator=%p\n",
+                              mi, external_allocator));
 }
 
 /*
  * Allocate MemInfo and initialize.
  * NOTE: copy from numba/core/runtime/nrt.c
  */
-NRT_MemInfo *NRT_MemInfo_new(void *data, size_t size,
-                             NRT_dtor_function dtor, void *dtor_info)
+NRT_MemInfo *NRT_MemInfo_new(void *data,
+                             size_t size,
+                             NRT_dtor_function dtor,
+                             void *dtor_info)
 {
     NRT_MemInfo *mi = malloc(sizeof(NRT_MemInfo));
     NRT_Debug(nrt_debug_print("NRT_MemInfo_new mi=%p\n", mi));
@@ -223,10 +226,9 @@ NRT_MemInfo *NRT_MemInfo_new(void *data, size_t size,
 /*
  * Destructor for allocated USM memory.
  */
-static void
-dtor(void *ptr, size_t size, void *info)
+static void dtor(void *ptr, size_t size, void *info)
 {
-    AllocatorImpl *impl = (AllocatorImpl*)info;
+    AllocatorImpl *impl = (AllocatorImpl *)info;
 
     DPCTLfree_with_queue(ptr, impl->queue);
     DPCTLQueue_Delete(impl->queue);
@@ -237,12 +239,13 @@ dtor(void *ptr, size_t size, void *info)
  * Debugging printf function used internally
  * NOTE: copy from numba/core/runtime/nrt.c
  */
-void nrt_debug_print(char *fmt, ...) {
-   va_list args;
+void nrt_debug_print(char *fmt, ...)
+{
+    va_list args;
 
-   va_start(args, fmt);
-   vfprintf(stderr, fmt, args);
-   va_end(args);
+    va_start(args, fmt);
+    vfprintf(stderr, fmt, args);
+    va_end(args);
 }
 
 /*
@@ -252,10 +255,10 @@ void nrt_debug_print(char *fmt, ...) {
  *   1 - device
  *   2 - host
  */
-static NRT_MemInfo *
-DPRT_MemInfo_new(size_t size, int usm_type, void *queue)
+static NRT_MemInfo *DPRT_MemInfo_new(size_t size, int usm_type, void *queue)
 {
-    NRT_Debug(nrt_debug_print("DPRT_MemInfo_new size=%d usm_type=%d queue=%p\n", size, usm_type, queue));
+    NRT_Debug(nrt_debug_print("DPRT_MemInfo_new size=%d usm_type=%d queue=%p\n",
+                              size, usm_type, queue));
 
     AllocatorImpl *impl = malloc(sizeof(AllocatorImpl));
     impl->usm_type = usm_type;
@@ -269,8 +272,7 @@ DPRT_MemInfo_new(size_t size, int usm_type, void *queue)
 /*
  * Helper function for creating default queue
  */
-void *
-create_queue()
+void *create_queue()
 {
     DPCTLSyclQueueRef queue = DPCTLQueueMgr_GetCurrentQueue();
 
@@ -291,25 +293,22 @@ static PyMethodDef ext_methods[] = {
 };
 // clang-format on
 
-static PyObject *
-build_c_helpers_dict(void)
+static PyObject *build_c_helpers_dict(void)
 {
     PyObject *dct = PyDict_New();
     if (dct == NULL)
         goto error;
 
-#define _declpointer(name, value)                \
-    do                                           \
-    {                                            \
-        PyObject *o = PyLong_FromVoidPtr(value); \
-        if (o == NULL)                           \
-            goto error;                          \
-        if (PyDict_SetItemString(dct, name, o))  \
-        {                                        \
-            Py_DECREF(o);                        \
-            goto error;                          \
-        }                                        \
-        Py_DECREF(o);                            \
+#define _declpointer(name, value)                                              \
+    do {                                                                       \
+        PyObject *o = PyLong_FromVoidPtr(value);                               \
+        if (o == NULL)                                                         \
+            goto error;                                                        \
+        if (PyDict_SetItemString(dct, name, o)) {                              \
+            Py_DECREF(o);                                                      \
+            goto error;                                                        \
+        }                                                                      \
+        Py_DECREF(o);                                                          \
     } while (0)
 
     _declpointer("usmarray_get_ext_allocator", &usmarray_get_ext_allocator);
