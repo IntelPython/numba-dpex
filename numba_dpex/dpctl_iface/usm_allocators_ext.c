@@ -327,11 +327,7 @@ error:
 MOD_INIT(_usm_allocators_ext)
 {
     PyObject *m;
-<<<<<<< HEAD:numba_dpex/dpctl_iface/usm_shared_allocator_ext.c
-    MOD_DEF(m, "numba_dpex._usm_shared_allocator_ext", "No docs", ext_methods)
-=======
-    MOD_DEF(m, "numba_dppy._usm_allocators_ext", "No docs", ext_methods)
->>>>>>> main:numba_dpex/dpctl_iface/usm_allocators_ext.c
+    MOD_DEF(m, "numba_dpex._usm_allocators_ext", "No docs", ext_methods)
     if (m == NULL)
         return MOD_ERROR_VAL;
     usmarray_memsys_init();
