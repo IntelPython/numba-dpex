@@ -1,18 +1,32 @@
-"""Tests for numba_dpex._usm_shared_allocator_ext
+# Copyright 2021 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""Tests for numba_dpex._usm_allocators_ext
 """
 
 
 def test_members():
-    from numba_dpex import _usm_shared_allocator_ext
+    from numba_dpex import _usm_allocators_ext
 
     members = ["c_helpers", "get_external_allocator"]
 
     for member in members:
-        assert hasattr(_usm_shared_allocator_ext, member)
+        assert hasattr(_usm_allocators_ext, member)
 
 
 def test_c_helpers():
-    from numba_dpex._usm_shared_allocator_ext import c_helpers
+    from numba_dpex._usm_allocators_ext import c_helpers
 
     functions = [
         "usmarray_get_ext_allocator",
@@ -32,7 +46,7 @@ def test_c_helpers():
 def test_allocator():
     from ctypes import POINTER, PYFUNCTYPE, Structure, c_int, c_size_t, c_void_p
 
-    from numba_dpex._usm_shared_allocator_ext import c_helpers
+    from numba_dpex._usm_allocators_ext import c_helpers
 
     class NRT_ExternalAllocator(Structure):
         _fields_ = [
@@ -68,7 +82,7 @@ def test_meminfo():
 
     from numba.core.runtime import _nrt_python
 
-    from numba_dpex._usm_shared_allocator_ext import c_helpers
+    from numba_dpex._usm_allocators_ext import c_helpers
 
     class MemInfo(Structure):
         _fields_ = [

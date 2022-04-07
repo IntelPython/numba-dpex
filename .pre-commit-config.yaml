@@ -29,3 +29,8 @@ repos:
     rev: v0.8.0
     hooks:
     -   id: shellcheck
+-   repo: https://github.com/pocc/pre-commit-hooks
+    rev: v1.1.1
+    hooks:
+    -   id: clang-format
+        args: ["-i"]

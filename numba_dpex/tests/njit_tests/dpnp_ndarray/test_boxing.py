@@ -12,26 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tests for dpnp ndarray constructors."""
+"""
+Tests for boxing for dpnp.ndarray
+"""
 
-import dpnp
 import pytest
+from dpctl.tensor.numpy_usm_shared import ndarray as dpctl_ndarray
+from dpnp import ndarray as dpnp_ndarray
 from numba import njit
 
-shapes = [10, (2, 5)]
-dtypes = ["f8", dpnp.float32]
-usm_types = ["device", "shared", "host"]
+dpnp_mark = pytest.mark.xfail(raises=TypeError, reason="No unboxing")
 
 
-@pytest.mark.parametrize("shape", shapes)
-@pytest.mark.parametrize("dtype", dtypes)
-@pytest.mark.parametrize("usm_type", usm_types)
-def test_dpnp_empty(shape, dtype, usm_type):
-    from numba_dpex.dpctl_iface import get_current_queue
-
+@pytest.mark.parametrize(
+    "array",
+    [
+        dpctl_ndarray([1]),
+        pytest.param(dpnp_ndarray([1]), marks=dpnp_mark),
+    ],
+)
+def test_njit(array):
     @njit
-    def func(shape):
-        queue = get_current_queue()
-        dpnp.empty(shape, dtype, usm_type, queue)
+    def func(a):
+        return a
 
-    func(shape)
+    func(array)

@@ -54,8 +54,8 @@ def get_ext_modules():
         dpctl_runtime_library_dirs.append(os.path.dirname(dpctl.__file__))
 
     ext_usm_alloc = Extension(
-        name="numba_dpex._usm_shared_allocator_ext",
-        sources=["numba_dpex/dpctl_iface/usm_shared_allocator_ext.c"],
+        name="numba_dpex._usm_allocators_ext",
+        sources=["numba_dpex/dpctl_iface/usm_allocators_ext.c"],
         include_dirs=[numba.core.extending.include_path(), dpctl.get_include()],
         libraries=["DPCTLSyclInterface"],
         library_dirs=[os.path.dirname(dpctl.__file__)],
