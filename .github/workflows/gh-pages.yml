@@ -64,7 +64,7 @@ jobs:
             Documentation preview: [show](https://intelpython.github.io/numba-dppy/pull/${{ env.PR_NUM }}).
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
-          allow-repeats: true
+          allow-repeats: false
 
   clean:
     if: ${{ github.event.pull_request && github.event.action == 'closed' }}
