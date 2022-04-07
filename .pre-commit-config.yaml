@@ -34,3 +34,4 @@ repos:
     hooks:
     -   id: clang-format
         args: ["-i"]
+        exclude: "numba_dpex/dpnp_iface"
