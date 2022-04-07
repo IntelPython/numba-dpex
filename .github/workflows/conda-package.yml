@@ -100,11 +100,6 @@ jobs:
         numba: ["0.55"]
         dpctl: ["0.12"]
         dpnp: ["0.10"]
-        # include:
-        #   - python: "3.8"
-        #     numba: "0.54"
-        #     dpctl: "0.11"
-        #     dpnp: "0.9"
 
     steps:
       - name: Download artifact
