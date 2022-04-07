@@ -1,0 +1,87 @@
+# Run: NUMBA_OPT=0 gdb-oneapi -q -command commands/local_variables_0 python
+set trace-commands on
+set pagination off
+set breakpoint pending on
+break sum_local_vars.py:22
+run sum_local_vars.py
+# Expected:
+# ...
+# Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at sum_local_vars.py:22
+# 22          i = dpex.get_global_id(0)
+info locals
+# a = '\000' <repeats 55 times>
+# b = '\000' <repeats 55 times>
+# c = '\000' <repeats 55 times>
+# i = 0
+# l1 = 0
+# l2 = 0
+# __ocl_dbg_gid0 = 0
+# __ocl_dbg_gid1 = 0
+# __ocl_dbg_gid2 = 0
+# __ocl_dbg_lid0 = 0
+# __ocl_dbg_lid1 = 0
+# __ocl_dbg_lid2 = 0
+# __ocl_dbg_grid0 = 0
+# __ocl_dbg_grid1 = 0
+# __ocl_dbg_grid2 = 0
+next
+# Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at sum_local_vars.py:22
+# 22          i = dpex.get_global_id(0)
+next
+# 23          l1 = a[i] + 2.5
+next
+# 24          l2 = b[i] * 0.3
+info locals
+# a = '\000' <repeats 55 times>
+# b = '\000' <repeats 16 times>, "\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000\000\000\240\016XUU\000\000\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000"
+# c = '\000' <repeats 16 times>, "\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000\000\000@\256WUU\000\000\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000"
+# i = 8
+# l1 = 2.5931931659579277
+# l2 = 0
+# __ocl_dbg_gid0 = 0
+# __ocl_dbg_gid1 = 0
+# __ocl_dbg_gid2 = 0
+# __ocl_dbg_lid0 = 42949672970
+# __ocl_dbg_lid1 = 0
+# __ocl_dbg_lid2 = 93825037590528
+# __ocl_dbg_grid0 = 4612811918334230528
+# __ocl_dbg_grid1 = 0
+# __ocl_dbg_grid2 = 0
+next
+# 25          c[i] = l1 + l2
+info locals
+# a = '\000' <repeats 55 times>
+# b = '\000' <repeats 55 times>
+# c = '\000' <repeats 16 times>, "\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000\000\000@\256WUU\000\000\n\000\000\000\000\000\000\000\004\000\000\000\000\000\000"
+# i = 8
+# l1 = 2.5931931659579277
+# l2 = 0.22954882979393004
+# __ocl_dbg_gid0 = 0
+# __ocl_dbg_gid1 = 8
+# __ocl_dbg_gid2 = 8
+# __ocl_dbg_lid0 = 93825034429928
+# __ocl_dbg_lid1 = 0
+# __ocl_dbg_lid2 = 93825034429936
+# __ocl_dbg_grid0 = 4599075939470750515
+# __ocl_dbg_grid1 = 0
+# __ocl_dbg_grid2 = 0
+print a
+# $1 = '\000' <repeats 55 times>
+print l1
+# $3 = 2.5931931659579277
+print l2
+# $4 = 0.22954882979393004
+ptype a
+# type = byte [56]
+whatis a
+# type = byte [56]
+ptype l1
+# type = double
+whatis l1
+# type = double
+continue
+# Expected:
+# ...
+# Done...
+echo Done\n
+quit

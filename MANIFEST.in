@@ -1,10 +1,10 @@
 include MANIFEST.in
 include README.md setup.py LICENSE
 
-recursive-include numba_dppy *.cl
-recursive-include numba_dppy *.spir
+recursive-include numba_dpex *.cl
+recursive-include numba_dpex *.spir
 
 include versioneer.py
-include numba_dppy/_version.py
+include numba_dpex/_version.py
 
-recursive-include numba_dppy/examples *
+recursive-include numba_dpex/examples *

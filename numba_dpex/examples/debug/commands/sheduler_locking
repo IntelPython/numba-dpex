@@ -1,0 +1,30 @@
+# Run: NUMBA_OPT=0 gdb-oneapi -q -command commands/sheduler_locking python
+set trace-commands on
+set pagination off
+set breakpoint pending on
+break simple_dpex_func.py:29
+run simple_dpex_func.py
+# Expected:
+# ...
+# Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dpex_func.py:29
+# 29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
+set scheduler-locking step
+step
+# Expected:
+# __main__::func_sum () at dpex_func.py:22
+# 22          result = a_in_func + b_in_func
+step
+# Expected:
+# 23          return result
+continue
+# Expected:
+# ...
+# [Switching to Thread 1.1073742080 lane 0]
+# Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dpex_func.py:29
+# 29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
+continue
+# Expected:
+# ...
+# Done...
+echo Done\n
+quit

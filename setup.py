@@ -53,22 +53,22 @@ def get_ext_modules():
     if IS_LIN:
         dpctl_runtime_library_dirs.append(os.path.dirname(dpctl.__file__))
 
-    ext_dppy = Extension(
-        name="numba_dppy._usm_allocators_ext",
-        sources=["numba_dppy/dpctl_iface/usm_allocators_ext.c"],
+    ext_usm_alloc = Extension(
+        name="numba_dpex._usm_allocators_ext",
+        sources=["numba_dpex/dpctl_iface/usm_allocators_ext.c"],
         include_dirs=[numba.core.extending.include_path(), dpctl.get_include()],
         libraries=["DPCTLSyclInterface"],
         library_dirs=[os.path.dirname(dpctl.__file__)],
         runtime_library_dirs=dpctl_runtime_library_dirs,
     )
-    ext_modules += [ext_dppy]
+    ext_modules += [ext_usm_alloc]
 
     if dpnp_present:
         dpnp_lib_path = []
         dpnp_lib_path += [os.path.dirname(dpnp.__file__)]
         ext_dpnp_iface = Extension(
-            name="numba_dppy.dpnp_iface.dpnp_fptr_interface",
-            sources=["numba_dppy/dpnp_iface/dpnp_fptr_interface.pyx"],
+            name="numba_dpex.dpnp_iface.dpnp_fptr_interface",
+            sources=["numba_dpex/dpnp_iface/dpnp_fptr_interface.pyx"],
             include_dirs=[dpnp.get_include(), dpctl.get_include()],
             libraries=["dpnp_backend_c"],
             library_dirs=dpnp_lib_path,
@@ -120,15 +120,15 @@ def spirv_compile():
         "-cl-std=CL2.0",
         "-Xclang",
         "-finclude-default-header",
-        "numba_dppy/ocl/atomics/atomic_ops.cl",
+        "numba_dpex/ocl/atomics/atomic_ops.cl",
         "-o",
-        "numba_dppy/ocl/atomics/atomic_ops.bc",
+        "numba_dpex/ocl/atomics/atomic_ops.bc",
     ]
     spirv_args = [
         _llvm_spirv(),
         "-o",
-        "numba_dppy/ocl/atomics/atomic_ops.spir",
-        "numba_dppy/ocl/atomics/atomic_ops.bc",
+        "numba_dpex/ocl/atomics/atomic_ops.spir",
+        "numba_dpex/ocl/atomics/atomic_ops.bc",
     ]
     subprocess.check_call(clang_args, stderr=subprocess.STDOUT, shell=False)
     subprocess.check_call(spirv_args, stderr=subprocess.STDOUT, shell=False)
@@ -156,7 +156,7 @@ def _llvm_spirv():
     return result
 
 
-packages = find_packages(include=["numba_dppy", "numba_dppy.*"])
+packages = find_packages(include=["numba_dpex", "numba_dpex.*"])
 build_requires = ["cython"]
 install_requires = [
     "numba >={},<{}".format("0.54.0", "0.56"),
@@ -165,10 +165,10 @@ install_requires = [
 ]
 
 metadata = dict(
-    name="numba-dppy",
+    name="numba-dpex",
     version=versioneer.get_version(),
     cmdclass=_get_cmdclass(),
-    description="Numba extension for Intel CPU and GPU backend",
+    description="An extension for Numba to add data-parallel offload capability",
     url="https://github.com/IntelPython/numba-dppy",
     packages=packages,
     setup_requires=build_requires,
@@ -191,7 +191,7 @@ metadata = dict(
     ],
     entry_points={
         "numba_extensions": [
-            "init = numba_dppy.numpy_usm_shared:numba_register",
+            "init = numba_dpex.numpy_usm_shared:numba_register",
         ]
     },
 )
