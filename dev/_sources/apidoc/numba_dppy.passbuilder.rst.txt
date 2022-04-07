@@ -1,7 +1,0 @@
-numba\_dppy.passbuilder module
-==============================
-
-.. automodule:: numba_dppy.passbuilder
-   :members:
-   :undoc-members:
-   :show-inheritance:

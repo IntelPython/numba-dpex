@@ -1,7 +1,0 @@
-numba\_dppy.ocl.ocldecl module
-==============================
-
-.. automodule:: numba_dppy.ocl.ocldecl
-   :members:
-   :undoc-members:
-   :show-inheritance:

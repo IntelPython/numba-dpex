@@ -1,7 +1,0 @@
-numba\_dppy.core.types.array\_type module
-=========================================
-
-.. automodule:: numba_dppy.core.types.array_type
-   :members:
-   :undoc-members:
-   :show-inheritance:

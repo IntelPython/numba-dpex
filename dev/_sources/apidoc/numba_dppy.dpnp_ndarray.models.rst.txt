@@ -1,7 +1,0 @@
-numba\_dppy.dpnp\_ndarray.models module
-=======================================
-
-.. automodule:: numba_dppy.dpnp_ndarray.models
-   :members:
-   :undoc-members:
-   :show-inheritance:

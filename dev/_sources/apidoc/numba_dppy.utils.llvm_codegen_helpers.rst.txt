@@ -1,7 +1,0 @@
-numba\_dppy.utils.llvm\_codegen\_helpers module
-===============================================
-
-.. automodule:: numba_dppy.utils.llvm_codegen_helpers
-   :members:
-   :undoc-members:
-   :show-inheritance:

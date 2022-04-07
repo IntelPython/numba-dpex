@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Debugging the compilation pipeline &mdash; numba-dppy 0+untagged.723.g8ec0eb9 documentation</title>
+  <title>Debugging the compilation pipeline &mdash; numba-dppy 0+untagged.724.g12cbcf8 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -85,53 +85,7 @@
   <section id="debugging-the-compilation-pipeline">
 <h1>Debugging the compilation pipeline<a class="headerlink" href="#debugging-the-compilation-pipeline" title="Permalink to this headline"></a></h1>
 <p>Consider the following two examples. <code class="docutils literal notranslate"><span class="pre">numba_dppy/examples/debug/simple_sum.py</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span><span class="kn">import</span> <span class="nn">dpctl</span>
-<span class="linenos">16</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="linenos">17</span>
-<span class="linenos">18</span><span class="kn">import</span> <span class="nn">numba_dppy</span> <span class="k">as</span> <span class="nn">dpex</span>
-<span class="linenos">19</span>
-<span class="linenos">20</span>
-<span class="linenos">21</span><span class="nd">@dpex</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="linenos">22</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-<span class="linenos">23</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">dpex</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="linenos">24</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>  <span class="c1"># Condition breakpoint location</span>
-<span class="linenos">25</span>
-<span class="linenos">26</span>
-<span class="linenos">27</span><span class="n">global_size</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="linenos">28</span><span class="n">N</span> <span class="o">=</span> <span class="n">global_size</span>
-<span class="linenos">29</span>
-<span class="linenos">30</span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-<span class="linenos">31</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-<span class="linenos">32</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="linenos">33</span>
-<span class="linenos">34</span><span class="n">device</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">SyclDevice</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">)</span>
-<span class="linenos">35</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
-<span class="linenos">36</span>    <span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dpex</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
-<span class="linenos">37</span>
-<span class="linenos">38</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
 <p>Example of default Numba execution on a CPU:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span><span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">njit</span>
-<span class="linenos">16</span>
-<span class="linenos">17</span>
-<span class="linenos">18</span><span class="nd">@njit</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="linenos">19</span><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-<span class="linenos">20</span>    <span class="n">l1</span> <span class="o">=</span> <span class="n">arg</span> <span class="o">+</span> <span class="mi">6</span>
-<span class="linenos">21</span>    <span class="n">l2</span> <span class="o">=</span> <span class="n">arg</span> <span class="o">*</span> <span class="mf">5.43</span>
-<span class="linenos">22</span>    <span class="n">l3</span> <span class="o">=</span> <span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">)</span>
-<span class="linenos">23</span>    <span class="nb">print</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">l1</span><span class="p">,</span> <span class="n">l2</span><span class="p">,</span> <span class="n">l3</span><span class="p">)</span>
-<span class="linenos">24</span>
-<span class="linenos">25</span>
-<span class="linenos">26</span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-<span class="linenos">27</span>    <span class="n">result</span> <span class="o">=</span> <span class="n">foo</span><span class="p">(</span><span class="mi">987</span><span class="p">)</span>
-<span class="linenos">28</span>    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-<span class="linenos">29</span>
-<span class="linenos">30</span>
-<span class="linenos">31</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-<span class="linenos">32</span>    <span class="n">main</span><span class="p">()</span>
-</pre></div>
-</div>
 <section id="getting-the-dwarf-from-binary-file">
 <h2>Getting the DWARF from binary file<a class="headerlink" href="#getting-the-dwarf-from-binary-file" title="Permalink to this headline"></a></h2>
 <p>In order to get the DWARF information from a specific kernel, just enable <code class="docutils literal notranslate"><span class="pre">IGC_ShaderDumpEnable</span></code> variable.

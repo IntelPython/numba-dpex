@@ -1,7 +1,0 @@
-numba\_dppy.parfor\_diagnostics module
-======================================
-
-.. automodule:: numba_dppy.parfor_diagnostics
-   :members:
-   :undoc-members:
-   :show-inheritance:

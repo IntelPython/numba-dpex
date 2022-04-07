@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Altering Execution &mdash; numba-dppy 0+untagged.723.g8ec0eb9 documentation</title>
+  <title>Altering Execution &mdash; numba-dppy 0+untagged.724.g12cbcf8 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -118,15 +118,6 @@ See <a class="reference external" href="https://github.com/numba/numba/pull/7196
 <section id="example">
 <h3>Example<a class="headerlink" href="#example" title="Permalink to this headline"></a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dppy/examples/debug/side-by-side-2.py</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">24</span><span class="k">def</span> <span class="nf">common_loop_body</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-<span class="linenos">25</span>    <span class="n">param_a</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-<span class="linenos">26</span>    <span class="n">param_b</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-<span class="linenos">27</span>    <span class="n">param_c</span> <span class="o">=</span> <span class="n">param_a</span> <span class="o">+</span> <span class="mi">10</span>  <span class="c1"># Set breakpoint here</span>
-<span class="linenos">28</span>    <span class="n">param_d</span> <span class="o">=</span> <span class="n">param_b</span> <span class="o">*</span> <span class="mf">0.5</span>
-<span class="hll"><span class="linenos">29</span>    <span class="n">result</span> <span class="o">=</span> <span class="n">param_c</span> <span class="o">+</span> <span class="n">param_d</span>
-</span><span class="linenos">30</span>    <span class="k">return</span> <span class="n">result</span>
-</pre></div>
-</div>
 <p>Debug session:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>gdb-oneapi -q python
 <span class="go">...</span>

@@ -1,7 +1,0 @@
-numba\_dppy.debuginfo module
-============================
-
-.. automodule:: numba_dppy.debuginfo
-   :members:
-   :undoc-members:
-   :show-inheritance:
