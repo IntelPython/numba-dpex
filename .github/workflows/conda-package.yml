@@ -243,9 +243,14 @@ jobs:
       - name: Upload
         env:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-activate-base: true
+          activate-environment: ""
         run: |
           conda install anaconda-client
           conda list
+          conda info --envs
           anaconda --token $ANACONDA_TOKEN upload --user dppy --label dev ${PACKAGE_NAME}-*.tar.bz2
 
   upload_windows:
