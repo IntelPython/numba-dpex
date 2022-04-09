@@ -230,15 +230,8 @@ jobs:
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 
-      # - name: Setup anaconda-client
-      #   uses: ./.github/actions/setup-anaconda-client
-
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          auto-activate-base: true
-          activate-environment: ""
-      - name: Install anaconda-client
-        run: conda install anaconda-client
+      - name: Setup anaconda-client
+        uses: ./.github/actions/setup-anaconda-client
 
       - name: Upload
         env:
