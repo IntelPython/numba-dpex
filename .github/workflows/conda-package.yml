@@ -247,6 +247,7 @@ jobs:
           conda install anaconda-client
           conda list
           conda info --envs
+          conda init bash
           conda activate base
           anaconda --token $ANACONDA_TOKEN upload --user dppy --label dev ${PACKAGE_NAME}-*.tar.bz2
 
