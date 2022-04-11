@@ -269,5 +269,4 @@ jobs:
         env:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
-          # conda install anaconda-client
           anaconda --token ${{ env.ANACONDA_TOKEN }} upload --user dppy --label dev ${{ env.PACKAGE_NAME }}-*.tar.bz2
