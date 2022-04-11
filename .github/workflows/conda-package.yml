@@ -218,20 +218,17 @@ jobs:
           python -m pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }} -vv
 
   upload_linux:
-    needs: build_linux
-    #if: ${{github.ref == 'refs/heads/main' || (startsWith(github.ref, 'refs/heads/release') == true)}}
+    needs: test_linux
+    if: ${{github.ref == 'refs/heads/main' || (startsWith(github.ref, 'refs/heads/release') == true)}}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ["3.9"]
+        python: ["3.8", "3.9"]
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
-
-      # - name: Setup anaconda-client
-      #   uses: ./.github/actions/setup-anaconda-client
 
       - uses: conda-incubator/setup-miniconda@v2
         with:
@@ -244,17 +241,13 @@ jobs:
         env:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
-          #source /usr/share/miniconda/etc/profile.d/conda.sh
-          conda init bash
+          source /usr/share/miniconda/etc/profile.d/conda.sh
           conda activate
-          # conda install anaconda-client
-          conda list
-          #conda info --envs
           anaconda --token $ANACONDA_TOKEN upload --user dppy --label dev ${PACKAGE_NAME}-*.tar.bz2
 
   upload_windows:
     needs: test_windows
-    #if: ${{github.ref == 'refs/heads/main' || (startsWith(github.ref, 'refs/heads/release') == true)}}
+    if: ${{github.ref == 'refs/heads/main' || (startsWith(github.ref, 'refs/heads/release') == true)}}
     runs-on: windows-latest
     strategy:
       matrix:
