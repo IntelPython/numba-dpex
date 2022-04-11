@@ -230,25 +230,25 @@ jobs:
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 
-      #- name: Setup anaconda-client
-      #  uses: ./.github/actions/setup-anaconda-client
+      # - name: Setup anaconda-client
+      #   uses: ./.github/actions/setup-anaconda-client
 
-      #- uses: conda-incubator/setup-miniconda@v2
-      #  with:
-      #    auto-activate-base: true
-      #    activate-environment: ""
-      #- name: Install anaconda-client
-      #  run: conda install anaconda-client
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-activate-base: true
+          activate-environment: ""
+      - name: Install anaconda-client
+        run: conda install anaconda-client
 
       - name: Upload
         env:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
-          conda install anaconda-client
-          conda list
-          conda info --envs
-          conda init bash
-          conda activate base
+          # conda install anaconda-client
+          # conda list
+          # conda info --envs
+          # conda init bash
+          # conda activate base
           anaconda --token $ANACONDA_TOKEN upload --user dppy --label dev ${PACKAGE_NAME}-*.tar.bz2
 
   upload_windows:
@@ -275,5 +275,5 @@ jobs:
         env:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
-          conda install anaconda-client
+          # conda install anaconda-client
           anaconda --token ${{ env.ANACONDA_TOKEN }} upload --user dppy --label dev ${{ env.PACKAGE_NAME }}-*.tar.bz2
