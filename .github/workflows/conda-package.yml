@@ -244,7 +244,7 @@ jobs:
         env:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
-          source /usr/share/miniconda/etc/profile.d/conda.sh
+          #source /usr/share/miniconda/etc/profile.d/conda.sh
           conda activate
           # conda install anaconda-client
           conda list
