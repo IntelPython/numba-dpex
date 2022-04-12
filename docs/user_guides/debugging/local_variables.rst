@@ -11,17 +11,14 @@ Several conditions could influence debugging of local variables:
 Optimization Level for LLVM
 ---------------------------
 
-Numba provides environment variable :ref:`NUMBA_OPT` for configuring
-optimization level for LLVM.
-
-See `Numba documentation`_.
+Numba provides environment variable ``NUMBA_OPT`` for configuring
+optimization level for LLVM. The default optimization level is three.
+Refer `Numba documentation`_ for details. It is recommended to debug with
+:samp:`NUMBA_OPT=0`. The possible effect of various optimization levels may be
+as follows:
 
 * :samp:`NUMBA_OPT=0` means "no optimization" level - all local variables are available.
 * :samp:`NUMBA_OPT=1` or higher levels - some variables may be optimized out.
-
-Default value is 3.
-
-It is recommended to debug with :samp:`NUMBA_OPT=0`.
 
 Example
 ```````
@@ -86,7 +83,7 @@ after the variable is explicitly deleted when the scope of variable is ended.
 
 See `Numba variable policy <https://numba.pydata.org/numba-doc/latest/developer/live_variable_analysis.html?highlight=delete#live-variable-analysis>`_.
 
-Numba provides environment variable :ref:`NUMBA_EXTEND_VARIABLE_LIFETIMES`
+Numba provides environment variable ``NUMBA_EXTEND_VARIABLE_LIFETIMES``
 for extending the lifetime of variables to the end of the block in which their lifetime ends.
 
 See `Numba documentation`_.
