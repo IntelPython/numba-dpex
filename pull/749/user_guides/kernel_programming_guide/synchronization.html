@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Synchronization Functions &mdash; numba-dppy 0+untagged.731.g3a82154 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> numba-dppy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html">Code-generation based on a device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> </a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">numba-dppy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Synchronization Functions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/user_guides/kernel_programming_guide/synchronization.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="synchronization-functions">
+<h1>Synchronization Functions<a class="headerlink" href="#synchronization-functions" title="Permalink to this headline"></a></h1>
+<p>Currently, <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> only supports some of the SYCL synchronization operations. For synchronization of all threads in the same thread block, <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> provides a helper function called <code class="docutils literal notranslate"><span class="pre">numba_dppy.barrier()</span></code>. This function implements the same pattern as barriers in traditional
+multi-threaded programming: invoking the function forces a thread to wait until
+all threads in the block reach the barrier, at which point it returns control
+to all its callers.</p>
+<p><code class="docutils literal notranslate"><span class="pre">numba_dppy.barrier()</span></code> supports two memory fence options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dppy.CLK_GLOBAL_MEM_FENCE</span></code>: The barrier function will queue a memory
+fence to ensure correct ordering of memory operations to global memory. Using
+the option can be useful when work-items, for example, write to buffer or
+image objects and then want to read the updated data. Passing no arguments to <code class="docutils literal notranslate"><span class="pre">numba_dppy.barrier()</span></code> is equivalent to setting the global memory fence option. For example,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dppy.CLK_LOCAL_MEM_FENCE</span></code>: The barrier function will either flush
+any variables stored in local memory or queue a memory fence to ensure
+correct ordering of memory operations to local memory. For example,</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">numba_dppy.barrier()</span></code> function is semantically equivalent to
+<code class="docutils literal notranslate"><span class="pre">numba.cuda.syncthreads</span></code>.</p>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supported Address Space Qualifiers &mdash; numba-dppy 0+untagged.731.g3a82154 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> numba-dppy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html">Code-generation based on a device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> </a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">numba-dppy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Supported Address Space Qualifiers</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/user_guides/kernel_programming_guide/memory_allocation_address_space.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="supported-address-space-qualifiers">
+<h1>Supported Address Space Qualifiers<a class="headerlink" href="#supported-address-space-qualifiers" title="Permalink to this headline"></a></h1>
+<p>The address space qualifier may be used to specify the region of memory that is used to allocate the object.</p>
+<p>Numba-dppy supports three disjoint named address spaces:</p>
+<ol class="arabic simple">
+<li><dl class="simple">
+<dt>Global Address Space</dt><dd><p>Global Address Space refers to memory objects allocated from the global memory pool and will be shared among all work-items. Arguments passed to any kernel are allocated in the global address space. In the below example, arguments <cite>a</cite>, <cite>b</cite> and <cite>c</cite> will be allocated in the global address space:</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Local Address Space</dt><dd><p>Local Address Space refers to memory objects that need to be allocated in local memory pool and are shared by all work-items of a work-group. Numba-dppy does not support passing arguments that are allocated in the local address space to <cite>&#64;numba_dppy.kernel</cite>. Users are allowed to allocate static arrays in the local address space inside the <cite>&#64;numba_dppy.kernel</cite>. In the example below <cite>numba_dppy.local.array(shape, dtype)</cite> is the API used to allocate a static array in the local address space:</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Private Address Space</dt><dd><p>Private Address Space refers to memory objects that are local to each work-item and is not shared with any other work-item. In the example below <cite>numba_dppy.private.array(shape, dtype)</cite> is the API used to allocate a static array in the private address space:</p>
+</dd>
+</dl>
+</li>
+</ol>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
