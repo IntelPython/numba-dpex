@@ -71,10 +71,10 @@ which kernels may be written using numba-dpex.
    :maxdepth: 1
    :caption: User Guides
 
-    Getting Started <user_guides/getting_started> Direct kernel programming
-    <user_guides/kernel_programming_guide/index> Debugging with GDB
-    <user_guides/debugging/index> numba-dpex for numba.cuda Programmers
-    <user_guides/migrating_from_numba_cuda>
+    Getting Started <user_guides/getting_started>
+    Direct kernel programming <user_guides/kernel_programming_guide/index>
+    Debugging with GDB <user_guides/debugging/index>
+    numba-dpex for numba.cuda Programmers <user_guides/migrating_from_numba_cuda>
 
 .. toctree::
     :maxdepth: 1
