@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>dpnp integration &mdash; numba-dppy 0+untagged.736.ge3bc179 documentation</title>
+  <title>dpnp integration &mdash; numba-dpex 0+untagged.738.g32261e4 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -27,7 +27,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> numba-dppy
+            <a href="../index.html" class="icon icon-home"> numba-dpex
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -72,7 +72,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">numba-dppy</a>
+          <a href="../index.html">numba-dpex</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -96,7 +96,7 @@
 library is developed using SYCL and oneMKL. Numba-dpex relies on dpnp to
 support offloading NumPy library functions to SYCL devices. For NumPy functions
 that are offloaded using dpnp, numba-dpex generates library calls directly to
-dpnp’s <cite>low-level API`_</cite> inside the generated LLVM IR.</p>
+dpnp’s <a class="reference external" href="https://github.com/IntelPython/dpnp/tree/master/dpnp/backend">low-level API</a> inside the generated LLVM IR.</p>
 <p id="integration-dpnp-backend">During compiling a Python function decorated with the <cite>numba.njit</cite> decorator,
 numba-dpex substitutes <cite>NumPy</cite> function calls with corresponding <cite>dpnp</cite>
 low-level API function calls. The substitution happens transparent to an
@@ -137,7 +137,7 @@ IR substituting NumPy function calls to dpnp function calls.</p>
 <blockquote>
 <div><p><code class="samp docutils literal notranslate"><span class="pre">np.sum(a)</span></code> -&gt; <code class="samp docutils literal notranslate"><span class="pre">numba_dpex.dpnp.sum(a)</span></code></p>
 </div></blockquote>
-<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.dpnp_iface.stubs</span></code> contains the stub functions as follows:</p>
+<p><a class="reference internal" href="../apidoc/numba_dpex.dpnp_iface.stubs.html#module-numba_dpex.dpnp_iface.stubs" title="numba_dpex.dpnp_iface.stubs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.dpnp_iface.stubs</span></code></a> contains the stub functions as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># numba_dpex/dpnp_iface/stubs.py - imported in numba_dpex.__init__.py</span>
 
 <span class="k">class</span> <span class="nc">dpnp</span><span class="p">(</span><span class="n">Stub</span><span class="p">):</span>
@@ -394,7 +394,7 @@ As a result wrong data could be passed to <cite>DPNP</cite> function.</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Intel.</p>
+    <p>&#169; Copyright 2021,2022 Intel.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

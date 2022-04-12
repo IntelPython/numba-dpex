@@ -7,9 +7,9 @@ Data-Parallel Numeric Python (dpnp) is a drop-in NumPy replacement library. The
 library is developed using SYCL and oneMKL. Numba-dpex relies on dpnp to
 support offloading NumPy library functions to SYCL devices. For NumPy functions
 that are offloaded using dpnp, numba-dpex generates library calls directly to
-dpnp's `low-level API`_` inside the generated LLVM IR.
+dpnp's `low-level API`_ inside the generated LLVM IR.
 
-.. _`low-level API`: https://github.com/IntelPython/dpnp/tree/master/dpnp/backend
+.. _low-level API: https://github.com/IntelPython/dpnp/tree/master/dpnp/backend
 
 .. _integration-dpnp-backend:
 
