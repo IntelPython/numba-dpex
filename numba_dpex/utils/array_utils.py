@@ -103,21 +103,23 @@ def copy_from_numpy_to_usm_obj(usm_allocated, obj):
 
     This function copies the data of a supported Python type (only
     numpy.ndarray is supported at this point) into object that
-    defines a __sycl_usm_array_interface__ attribute. For more information
-    please refer to the specification of __sycl_usm_array_interface__:
+    defines a ``__sycl_usm_array_interface__`` attribute. For more information
+    please refer to the specification of ``__sycl_usm_array_interface__``:
     https://github.com/IntelPython/dpctl/wiki/Zero-copy-data-exchange-using-SYCL-USM#sycl-usm-array-interface
 
     Args:
         usm_allocated: An object that should define a
-            __sycl_usm_array_interface__ dictionary. A TypeError is thrown
-            if the object does not have such an attribute.
+        ``__sycl_usm_array_interface__`` dictionary. A TypeError is thrown
+        if the object does not have such an attribute.
         obj (numpy.ndarray): Numpy ndarray, the data will be copied into.
 
     Raises:
-        TypeError: If any argument is not of permitted type.
+        TypeError:
+            If any argument is not of permitted type.
         ValueError:
             1. If size of data does not match.
             2. If obj is not C-contiguous.
+
     """
     usm_mem = has_usm_memory(usm_allocated)
     if usm_mem is None:
@@ -159,14 +161,16 @@ def copy_to_numpy_from_usm_obj(usm_allocated, obj):
 
     Args:
         usm_allocated: An object that should define a
-            __sycl_usm_array_interface__ dictionary. A TypeError is thrown
-            if the object does not have such an attribute.
+        __sycl_usm_array_interface__ dictionary. A TypeError is thrown
+        if the object does not have such an attribute.
         obj (numpy.ndarray): Numpy ndarray, the data will be copied into.
 
-
     Raises:
-        TypeError: If any argument is not of permitted type.
-        ValueError: If size of data does not match.
+        TypeError:
+            If any argument is not of permitted type.
+        ValueError:
+            If size of data does not match.
+
     """
     usm_mem = has_usm_memory(usm_allocated)
     if usm_mem is None:
@@ -199,19 +203,19 @@ def copy_to_numpy_from_usm_obj(usm_allocated, obj):
 
 def as_usm_obj(obj, queue=None, usm_type="shared", copy=True):
     """
-    Determine and return a SYCL device accesible object.
+    Determine and return a SYCL device accessible object.
 
     We try to determine if the provided object defines a valid
     __sycl_usm_array_interface__ dictionary.
-    If not, we create a USM memory of `usm_type` and try to copy the data
-    `obj` holds. Only numpy.ndarray is supported currently as `obj` if
+    If not, we create a USM memory of ``usm_type`` and try to copy the data
+    ``obj`` holds. Only numpy.ndarray is supported currently as `obj` if
     the object is not already allocated using USM.
 
     Args:
         obj: Object to be tested and data copied from.
         usm_type: USM type used in case obj is not already allocated using USM.
         queue (dpctl.SyclQueue): SYCL queue to be used to allocate USM
-            memory in case obj is not already USM allocated.
+        memory in case obj is not already USM allocated.
         copy (bool): Flag to determine if we copy data from obj.
 
     Returns:
@@ -224,10 +228,11 @@ def as_usm_obj(obj, queue=None, usm_type="shared", copy=True):
             2. If queue is not of type dpctl.SyclQueue.
         ValueError:
             1. In case obj is not USM allocated, users need to pass
-               the SYCL queue to be used for creating new memory. ValuieError
+               the SYCL queue to be used for creating new memory. ValueError
                is raised if queue argument is not provided.
             2. If usm_type is not valid.
             3. If dtype of the passed ndarray(obj) is not supported.
+
     """
     usm_mem = has_usm_memory(obj)
 

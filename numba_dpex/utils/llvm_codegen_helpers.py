@@ -37,11 +37,12 @@ def get_llvm_type(context, type):
 
     Args:
         context: The LLVM context or the execution state of the current IR
-                 generator.
+        generator.
         type: A Numba type object.
 
     Returns: An Python object wrapping an LLVM Value corresponding to the
              specified Numba type.
+
     """
     return context.get_value_type(type)
 
@@ -53,6 +54,7 @@ def get_llvm_ptr_type(type):
         type: An LLVM type for which we need the corresponding pointer type.
 
     Returns: An LLVM pointer type object corresponding to the input LLVM type.
+
     """
     return lc.Type.pointer(type)
 
@@ -67,6 +69,7 @@ def create_null_ptr(builder, context):
         context: The LLVM IR builder context.
 
     Returns: An LLVM value storing a null pointer
+
     """
     null_ptr = cgutils.alloca_once(
         builder=builder,
@@ -90,6 +93,7 @@ def get_zero(context):
         context: The LLVM IR builder context.
 
     Returns: An LLVM Contant Value storing zero.
+
     """
     return context.get_constant(types.uintp, 0)
 
@@ -101,5 +105,6 @@ def get_one(context):
         context: The LLVM IR builder context.
 
     Returns: An LLVM Contant Value storing one.
+
     """
     return context.get_constant(types.uintp, 1)

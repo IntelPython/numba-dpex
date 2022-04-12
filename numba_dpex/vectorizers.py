@@ -88,10 +88,12 @@ class UFuncMechanism(deviceufunc.UFuncMechanism):
     def call(cls, typemap, args, kws):
         """
         Perform the entire ufunc call mechanism.
+
         Args:
             typemap (dict): Signature mapped to kernel.
             args: Arguments to the @vectorize function.
             kws (optional): Optional keywords. Not supported.
+
         """
         # Handle keywords
         queue = dpctl.get_current_queue()

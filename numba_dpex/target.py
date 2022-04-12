@@ -437,10 +437,10 @@ class DpexTargetContext(BaseContext):
         Args:
             mod: LLVM module where the global string value is to be inserted.
             string: A Python string that will be converted to a global constant
-                    string and inserted into the module.
+            string and inserted into the module.
 
         Returns: A LLVM Constant pointing to the global string value inserted
-                 into the module.
+        into the module.
 
         """
         text = cgutils.make_bytearray(string.encode("utf-8") + b"\x00")
