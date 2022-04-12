@@ -1,7 +1,7 @@
 Welcome to numba-dpex's documentation!
 ======================================
 
-Numba data-parallel extension (`numba-dppy
+Numba data-parallel extension (`numba-dpex
 <https://github.com/IntelPython/numba-dppy>`_) is an Intel |reg|-developed
 extension to the `Numba <https://numba.pydata.org/>`_ JIT compiler. The
 extension adds kernel programming and automatic offload capabilities to the
@@ -34,16 +34,16 @@ which kernels may be written using numba-dpex.
 
     .. code-block:: python
 
-        import numpy as np import numba_dppy as dppy import dpctl
+        import numpy as np import numba_dpex as dpex import dpctl
 
-        @dppy.kernel def sum(a, b, c):
-            i = dppy.get_global_id(0) c[i] = a[i] + b[i]
+        @dpex.kernel def sum(a, b, c):
+            i = dpex.get_global_id(0) c[i] = a[i] + b[i]
 
         a = np.array(np.random.random(20), dtype=np.float32) b =
         np.array(np.random.random(20), dtype=np.float32) c = np.ones_like(a)
 
         with dpctl.device_context("opencl:gpu"):
-            sum[20, dppy.DEFAULT_LOCAL_SIZE](a, b, c)
+            sum[20, dpex.DEFAULT_LOCAL_SIZE](a, b, c)
 
   - Writing implicitly data-parallel expressions in the fashion of `Numba
     parallel loops
@@ -80,7 +80,8 @@ which kernels may be written using numba-dpex.
     :maxdepth: 1
     :caption: Developer Guides
 
-    developer_guides/dpnp_integration developer_guides/tools
+    developer_guides/dpnp_integration
+    developer_guides/tools
 
 
 Contributing

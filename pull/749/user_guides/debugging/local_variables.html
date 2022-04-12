@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Debugging Local Variables &mdash; numba-dppy 0+untagged.735.g12bb05a documentation</title>
+  <title>Debugging Local Variables &mdash; numba-dppy 0+untagged.736.ge3bc179 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -69,6 +69,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dpex for numba.cuda Programmers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">dpnp integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
         </div>
@@ -169,7 +174,7 @@ after the variable is explicitly deleted when the scope of variable is ended.</p
 <p>See <a class="reference external" href="https://numba.pydata.org/numba-doc/latest/developer/live_variable_analysis.html?highlight=delete#live-variable-analysis">Numba variable policy</a>.</p>
 <p>Numba provides environment variable <span class="xref std std-ref">NUMBA_EXTEND_VARIABLE_LIFETIMES</span>
 for extending the lifetime of variables to the end of the block in which their lifetime ends.</p>
-<p>See <a class="reference external" href="https://numba.readthedocs.io/en/latest/reference/envvars.html#envvar-NUMBA_EXTEND_VARIABLE_LIFETIMES">Numba documentation</a>.</p>
+<p>See <a class="reference external" href="https://numba.readthedocs.io/en/stable/reference/envvars.html?#envvar-NUMBA_OPT">Numba documentation</a>.</p>
 <p>Default is zero.</p>
 <p>It is recommended to debug with <code class="samp docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES=1</span></code>.</p>
 <section id="example-1-using-numba-extend-variable-lifetimes">

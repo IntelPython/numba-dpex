@@ -25,7 +25,7 @@ work.
 `Intel® Distribution for GDB*` is part of `Intel oneAPI`. For relevant
 documentation, refer to the `Intel® Distribution for GDB* product page`_.
 
-.. _`Intel® Distribution for GDB* documentation`: https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-gdb.html
+.. _`Intel® Distribution for GDB* product page`: https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-gdb.html
 
 .. toctree::
     :maxdepth: 2
@@ -35,7 +35,7 @@ documentation, refer to the `Intel® Distribution for GDB* product page`_.
 
 
 Example of Intel® Distribution for GDB* usage
---------------------------------------------
+---------------------------------------------
 
 You can use a sample kernel code, :file:`simple_sum.py`, for basic debugging:
 
