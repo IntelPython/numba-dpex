@@ -34,13 +34,18 @@ which kernels may be written using numba-dpex.
 
     .. code-block:: python
 
-        import numpy as np import numba_dpex as dpex import dpctl
+        import numpy as np
+        import numba_dpex as dpex
+        import dpctl
 
-        @dpex.kernel def sum(a, b, c):
-            i = dpex.get_global_id(0) c[i] = a[i] + b[i]
+        @dpex.kernel
+        def sum(a, b, c):
+            i = dpex.get_global_id(0)
+            c[i] = a[i] + b[i]
 
-        a = np.array(np.random.random(20), dtype=np.float32) b =
-        np.array(np.random.random(20), dtype=np.float32) c = np.ones_like(a)
+        a = np.array(np.random.random(20), dtype=np.float32)
+        b = np.array(np.random.random(20), dtype=np.float32)
+        c = np.ones_like(a)
 
         with dpctl.device_context("opencl:gpu"):
             sum[20, dpex.DEFAULT_LOCAL_SIZE](a, b, c)
@@ -51,14 +56,21 @@ which kernels may be written using numba-dpex.
 
     .. code-block:: python
 
-        from numba import njit import numpy as np import dpctl
+        from numba import njit
+        import numpy as np
+        import dpctl
 
-        @njit def f1(a, b):
-            c = a + b return c
+        @njit
+        def f1(a, b):
+            c = a + b
+            return c
 
-        global_size = 64 local_size = 32 N = global_size * local_size a =
-        np.ones(N, dtype=np.float32) b = np.ones(N, dtype=np.float32) with
-        dpctl.device_context("opencl:gpu:0"):
+        global_size = 64
+        local_size = 32
+        N = global_size * local_size
+        a = np.ones(N, dtype=np.float32)
+        b = np.ones(N, dtype=np.float32)
+        with dpctl.device_context("opencl:gpu:0"):
             c = f1(a, b)
 
 .. toctree::
