@@ -16,5 +16,5 @@ else
 fi
 if [[ -v WHEELS_OUTPUT_FOLDER ]]; then
     $PYTHON setup.py bdist_wheel "${WHEELS_BUILD_ARGS[@]}"
-    cp dist/numba_dppy*.whl "${WHEELS_OUTPUT_FOLDER[@]}"
+    cp dist/numba_dpex*.whl "${WHEELS_OUTPUT_FOLDER[@]}"
 fi

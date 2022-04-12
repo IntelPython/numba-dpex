@@ -1,5 +1,5 @@
 package:
-    name: numba-dppy
+    name: numba-dpex
     version: {{ GIT_DESCRIBE_TAG }}
 
 source:

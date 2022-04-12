@@ -16,9 +16,9 @@ jobs:
       ID: ${{ github.event.inputs.numba_pr }}
 
     steps:
-      - name: Checkout numba-dppy
+      - name: Checkout numba-dpex
         uses: actions/checkout@v2
-        with: {path: numba-dppy}
+        with: {path: numba-dpex}
 
       - name: Checkout numba
         uses: actions/checkout@v2
@@ -39,7 +39,7 @@ jobs:
 
       - name: Configure environment
         run: |
-          cd numba-dppy
+          cd numba-dpex
           conda env update -n base -f environment.yml --prune
           conda remove -n base numba --force
 
@@ -52,9 +52,9 @@ jobs:
           git log -1
           python setup.py develop
 
-      - name: Install numba-dppy
+      - name: Install numba-dpex
         run: |
-          cd numba-dppy
+          cd numba-dpex
           git log -1
           python setup.py develop
 
@@ -66,11 +66,11 @@ jobs:
           export OCL_ICD_FILENAMES=libintelocl.so
 
           python -c "import numba; print(numba.__file__)"
-          python -c "import numba_dppy; print(numba_dppy.__file__)"
+          python -c "import numba_dpex; print(numba_dpex.__file__)"
 
       - name: Test
         run: |
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
           export OCL_ICD_FILENAMES=libintelocl.so
 
-          pytest -q -ra --disable-warnings --pyargs numba_dppy -vv
+          pytest -q -ra --disable-warnings --pyargs numba_dpex -vv

@@ -6,7 +6,7 @@ repos:
     hooks:
     -   id: bandit
         pass_filenames: false
-        args: ["-r", "numba_dppy", "-lll"]
+        args: ["-r", "numba_dpex", "-lll"]
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.3.0
     hooks:
@@ -26,6 +26,12 @@ repos:
     hooks:
     -   id: flake8
 -   repo: https://github.com/koalaman/shellcheck-precommit
-    rev: v0.7.2
+    rev: v0.8.0
     hooks:
     -   id: shellcheck
+-   repo: https://github.com/pocc/pre-commit-hooks
+    rev: v1.1.1
+    hooks:
+    -   id: clang-format
+        args: ["-i"]
+        exclude: "numba_dpex/dpnp_iface"
