@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Getting Started &mdash; numba-dpex 0+untagged.741.g26022ab documentation</title>
+  <title>Getting Started &mdash; numba-dpex 0+untagged.742.g8baf98d documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -90,7 +90,7 @@
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline"></a></h1>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h2>
-<p>Numba-dppy depends on following components:</p>
+<p>Numba-dpex depends on following components:</p>
 <ul class="simple">
 <li><p>numba 0.54.* or 0.55.* (<a class="reference external" href="https://github.com/numba/numba">Numba</a>)</p></li>
 <li><p>dpctl 0.9.* (<a class="reference external" href="https://github.com/IntelPython/dpctl">Intel Python dpctl</a>)</p></li>
@@ -108,7 +108,7 @@ channel or <a class="reference external" href="https://anaconda.org/intel">anaco
 <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-python.html">Intel Distribution for Python</a> is available from <a class="reference external" href="https://software.intel.com/content/www/us/en/develop/tools/oneapi.html">Intel oneAPI</a>.</p>
 <p>Create conda environment:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">ONEAPI_ROOT</span><span class="o">=</span>/opt/intel/oneapi
-conda create -n numba-dppy-env numba-dppy dpnp -c <span class="si">${</span><span class="nv">ONEAPI_ROOT</span><span class="si">}</span>/conda_channel
+conda create -n numba-dpex-env numba-dpex dpnp -c <span class="si">${</span><span class="nv">ONEAPI_ROOT</span><span class="si">}</span>/conda_channel
 </pre></div>
 </div>
 </section>
@@ -125,7 +125,7 @@ conda build conda-recipe -c <span class="si">${</span><span class="nv">ONEAPI_RO
 </pre></div>
 </div>
 <p>Install conda package:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install numba-dppy
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install numba-dpex
 </pre></div>
 </div>
 </section>
@@ -134,8 +134,8 @@ conda build conda-recipe -c <span class="si">${</span><span class="nv">ONEAPI_RO
 <p><code class="docutils literal notranslate"><span class="pre">setup.py</span></code> requires environment variable <code class="docutils literal notranslate"><span class="pre">ONEAPI_ROOT</span></code> and following packages
 installed in conda environment:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">ONEAPI_ROOT</span><span class="o">=</span>/opt/intel/oneapi
-conda create -n numba-dppy-env -c <span class="si">${</span><span class="nv">ONEAPI_ROOT</span><span class="si">}</span>/conda_channel <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7 dpctl dpnp numba spirv-tools llvm-spirv llvmdev cython pytest
-conda activate numba-dppy-env
+conda create -n numba-dpex-env -c <span class="si">${</span><span class="nv">ONEAPI_ROOT</span><span class="si">}</span>/conda_channel <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7 dpctl dpnp numba spirv-tools llvm-spirv llvmdev cython pytest
+conda activate numba-dpex-env
 </pre></div>
 </div>
 <p>Activate DPC++ compiler:</p>
@@ -153,17 +153,17 @@ conda activate numba-dppy-env
 </section>
 <section id="testing">
 <h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline"></a></h2>
-<p>See folder <code class="docutils literal notranslate"><span class="pre">numba_dppy/tests</span></code>.</p>
+<p>See folder <code class="docutils literal notranslate"><span class="pre">numba_dpex/tests</span></code>.</p>
 <p>To run the tests:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pytest --pyargs numba_dppy.tests
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pytest --pyargs numba_dpex.tests
 </pre></div>
 </div>
 </section>
 <section id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline"></a></h2>
-<p>See folder <code class="docutils literal notranslate"><span class="pre">numba_dppy/examples</span></code>.</p>
+<p>See folder <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples</span></code>.</p>
 <p>To run the examples:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python numba_dppy/examples/sum.py
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python numba_dpex/examples/sum.py
 </pre></div>
 </div>
 </section>
