@@ -1,7 +1,7 @@
-Supported Python Features in a ``numba-dppy`` Kernel
-====================================================
+Supported Python Features inside ``numba_dpex.kernel``
+======================================================
 
-This page lists the Python features supported inside a ``numba_dppy.kernel``
+This page lists the Python features supported inside a ``numba_dpex.kernel``
 function.
 
 Built-in types
@@ -107,4 +107,4 @@ NumPy support
 -------------
 
 NumPy functions are whole array operations and are not supported within a
-``numba_dppy.kernel``.
+``numba_dpex.kernel``.

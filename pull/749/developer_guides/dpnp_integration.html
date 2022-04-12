@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>dpnp integration &mdash; numba-dpex 0+untagged.739.gcc0d7a1 documentation</title>
+  <title>dpnp integration &mdash; numba-dpex 0+untagged.740.g936c184 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -98,7 +98,7 @@ support offloading NumPy library functions to SYCL devices. For NumPy functions
 that are offloaded using dpnp, numba-dpex generates library calls directly to
 dpnp’s <a class="reference external" href="https://github.com/IntelPython/dpnp/tree/master/dpnp/backend">low-level API</a> inside the generated LLVM IR.</p>
 <p id="integration-dpnp-backend">During compiling a Python function decorated with the <cite>numba.njit</cite> decorator,
-numba-dpex substitutes <cite>NumPy</cite> function calls with corresponding <cite>dpnp</cite>
+numba-dpex substitutes NumPy function calls with corresponding dpnp
 low-level API function calls. The substitution happens transparent to an
 end-user and is implemented as a renaming pass in numba-dpex’s pass pipeline.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>

@@ -14,7 +14,7 @@ dpnp's `low-level API`_ inside the generated LLVM IR.
 .. _integration-dpnp-backend:
 
 During compiling a Python function decorated with the `numba.njit` decorator,
-numba-dpex substitutes `NumPy` function calls with corresponding `dpnp`
+numba-dpex substitutes NumPy function calls with corresponding dpnp
 low-level API function calls. The substitution happens transparent to an
 end-user and is implemented as a renaming pass in numba-dpex's pass pipeline.
 

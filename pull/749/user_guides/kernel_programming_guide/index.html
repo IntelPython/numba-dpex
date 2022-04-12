@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Programming SYCL Kernels Using kernel() &mdash; numba-dpex 0+untagged.739.gcc0d7a1 documentation</title>
+  <title>Programming SYCL Kernels Using kernel() &mdash; numba-dpex 0+untagged.740.g936c184 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -55,7 +55,7 @@
 <li class="toctree-l2"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html">Supported Python Features in a <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> Kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../debugging/index.html"> Debugging with GDB</a></li>
@@ -92,7 +92,7 @@
            <div itemprop="articleBody">
              
   <section id="programming-sycl-kernels-using-kernel">
-<h1>Programming SYCL Kernels Using <code class="xref py py-func docutils literal notranslate"><span class="pre">kernel()</span></code><a class="headerlink" href="#programming-sycl-kernels-using-kernel" title="Permalink to this headline"></a></h1>
+<h1>Programming SYCL Kernels Using <a class="reference internal" href="../../apidoc/numba_dpex.decorators.html#numba_dpex.decorators.kernel" title="numba_dpex.decorators.kernel"><code class="xref py py-func docutils literal notranslate"><span class="pre">kernel()</span></code></a><a class="headerlink" href="#programming-sycl-kernels-using-kernel" title="Permalink to this headline"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="writing_kernels.html">Writing SYCL Kernels</a><ul>
@@ -123,17 +123,18 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="reduction.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reduction.html#example-1">Example 1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reduction.html#example-2">Example 2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reduction.html#full-examples">Full examples</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ufunc.html">Universal Functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ufunc.html#example-1-basic-example">Example 1: Basic Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufunc.html#example-2-calling-numba-vectorize-inside-a-numba-dppy-kernel">Example 2: Calling <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> inside a <code class="docutils literal notranslate"><span class="pre">numba_dppy.kernel</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ufunc.html#example-1-basic-usage">Example 1: Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ufunc.html#example-2-calling-numba-vectorize-inside-a-numba-dpex-kernel">Example 2: Calling <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> inside a <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="ufunc.html#full-examples">Full Examples</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="supported-python-features.html">Supported Python Features in a <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> Kernel</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#built-in-types">Built-in types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#built-in-functions">Built-in functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#standard-library-modules">Standard library modules</a></li>

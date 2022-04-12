@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Debugging Local Variables &mdash; numba-dpex 0+untagged.739.gcc0d7a1 documentation</title>
+  <title>Debugging Local Variables &mdash; numba-dpex 0+untagged.740.g936c184 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -111,15 +111,15 @@
 </ol>
 <section id="optimization-level-for-llvm">
 <span id="numba-opt"></span><h2>Optimization Level for LLVM<a class="headerlink" href="#optimization-level-for-llvm" title="Permalink to this headline"></a></h2>
-<p>Numba provides environment variable <span class="xref std std-ref">NUMBA_OPT</span> for configuring
-optimization level for LLVM.</p>
-<p>See <a class="reference external" href="https://numba.readthedocs.io/en/stable/reference/envvars.html?#envvar-NUMBA_OPT">Numba documentation</a>.</p>
+<p>Numba provides environment variable <code class="docutils literal notranslate"><span class="pre">NUMBA_OPT</span></code> for configuring
+optimization level for LLVM. The default optimization level is three.
+Refer <a class="reference external" href="https://numba.readthedocs.io/en/stable/reference/envvars.html?#envvar-NUMBA_OPT">Numba documentation</a> for details. It is recommended to debug with
+<code class="samp docutils literal notranslate"><span class="pre">NUMBA_OPT=0</span></code>. The possible effect of various optimization levels may be
+as follows:</p>
 <ul class="simple">
 <li><p><code class="samp docutils literal notranslate"><span class="pre">NUMBA_OPT=0</span></code> means “no optimization” level - all local variables are available.</p></li>
 <li><p><code class="samp docutils literal notranslate"><span class="pre">NUMBA_OPT=1</span></code> or higher levels - some variables may be optimized out.</p></li>
 </ul>
-<p>Default value is 3.</p>
-<p>It is recommended to debug with <code class="samp docutils literal notranslate"><span class="pre">NUMBA_OPT=0</span></code>.</p>
 <section id="example">
 <h3>Example<a class="headerlink" href="#example" title="Permalink to this headline"></a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/sum_local_vars.py</span></code>:</p>
@@ -172,7 +172,7 @@ Numba analyses variables lifetime and try to optimize it.
 The debugger can show the variable values, but they may be zeros
 after the variable is explicitly deleted when the scope of variable is ended.</p>
 <p>See <a class="reference external" href="https://numba.pydata.org/numba-doc/latest/developer/live_variable_analysis.html?highlight=delete#live-variable-analysis">Numba variable policy</a>.</p>
-<p>Numba provides environment variable <span class="xref std std-ref">NUMBA_EXTEND_VARIABLE_LIFETIMES</span>
+<p>Numba provides environment variable <code class="docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES</span></code>
 for extending the lifetime of variables to the end of the block in which their lifetime ends.</p>
 <p>See <a class="reference external" href="https://numba.readthedocs.io/en/stable/reference/envvars.html?#envvar-NUMBA_OPT">Numba documentation</a>.</p>
 <p>Default is zero.</p>
