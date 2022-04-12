@@ -8,7 +8,7 @@ See `GDB* documentation <https://www.sourceware.org/gdb/onlinedocs/gdb/Frame-Inf
 ``info args``
 -------------
 
-Test :file:`numba_dppy/tests/debugging/test_info.py:test_info_args`.
+Test :file:`numba_dpex/tests/debugging/test_info.py:test_info_args`.
 
 .. note::
 
@@ -18,9 +18,9 @@ Test :file:`numba_dppy/tests/debugging/test_info.py:test_info_args`.
 Example
 ```````
 
-Source code :file:`numba_dppy/examples/debug/side-by-side.py`:
+Source code :file:`numba_dpex/examples/debug/side-by-side.py`:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/side-by-side.py
+.. literalinclude:: ../../../numba_dpex/examples/debug/side-by-side.py
    :pyobject: common_loop_body
    :linenos:
    :lineno-match:
@@ -35,7 +35,7 @@ Debug session:
    ...
    (gdb) break side-by-side.py:25
    ...
-   (gdb) run numba_dppy/examples/debug/side-by-side.py --api=numba-dppy-kernel
+   (gdb) run numba_dpex/examples/debug/side-by-side.py --api=numba-dpex-kernel
    ...
    Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::common_loop_body (param_a=0, param_b=0) at side-by-side.py:25
    25          param_c = param_a + 10  # Set breakpoint here
@@ -48,7 +48,7 @@ Debug session:
 ``info locals``
 ---------------
 
-Test :file:`numba_dppy/tests/debugging/test_info.py:test_info_locals`.
+Test :file:`numba_dpex/tests/debugging/test_info.py:test_info_locals`.
 
 .. note::
 
@@ -59,21 +59,21 @@ Example
 
 Source code :file:`sum_local_vars.py`:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/sum_local_vars.py
+.. literalinclude:: ../../../numba_dpex/examples/debug/sum_local_vars.py
     :lines: 15-
     :linenos:
     :lineno-match:
 
 Run the debugger with ``NUMBA_OPT=0``:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/local_variables_0
     :language: shell-session
     :lines: 1-6
 
 Use ``info locals``.
 Note that uninitialized variables are zeros:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/local_variables_0
     :language: shell-session
     :lines: 8-48
     :emphasize-lines: 1-16, 24-39
