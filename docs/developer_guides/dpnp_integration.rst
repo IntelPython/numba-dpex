@@ -1,18 +1,22 @@
 .. _dpnp-integration:
 
-DPNP integration
+dpnp integration
 ================
 
-Currently `numba-dppy` uses `DPNP backend library`_.
+Data-Parallel Numeric Python (dpnp) is a drop-in NumPy replacement library. The
+library is developed using SYCL and oneMKL. Numba-dpex relies on dpnp to
+support offloading NumPy library functions to SYCL devices. For NumPy functions
+that are offloaded using dpnp, numba-dpex generates library calls directly to
+dpnp's `low-level API`_` inside the generated LLVM IR.
 
-.. _`DPNP backend library`: https://github.com/IntelPython/dpnp/tree/master/dpnp/backend
+.. _`low-level API`: https://github.com/IntelPython/dpnp/tree/master/dpnp/backend
 
 .. _integration-dpnp-backend:
 
-Integration with `DPNP backend library`_
-----------------------------------------
-
-`numba-dppy` replaces `NumPy` function calls with `DPNP` function calls.
+During compiling a Python function decorated with the `numba.njit` decorator,
+numba-dpex substitutes `NumPy` function calls with corresponding `dpnp`
+low-level API function calls. The substitution happens transparent to an
+end-user and is implemented as a renaming pass in numba-dpex's pass pipeline.
 
 .. code-block:: python
 
@@ -22,7 +26,7 @@ Integration with `DPNP backend library`_
 
     @njit
     def foo(a):
-      return np.sum(a)  # this call will be replaced with DPNP function
+      return np.sum(a)  # this call will be replaced with the dpnp.sum function
 
     a = np.arange(42)
 
@@ -35,41 +39,44 @@ Integration with `DPNP backend library`_
 
 .. _`dpnp_sum_c<int, int>(...)`: https://github.com/IntelPython/dpnp/blob/ef404c0f284b0c508ed1e556e140f02f76ae5551/dpnp/backend/kernels/dpnp_krnl_reduction.cpp#L58
 
+The following sections go over as aspects of the dpnp integration inside
+numba-dpex.
+
 .. _dpnp-integration-repository-map:
 
 Repository map
 ``````````````
 
-- Code for integration is mostly resides in :file:`numba_dppy/dpnp_iface`.
-- Tests resides in :file:`numba_dppy/tests/njit_tests/dpnp`.
-- Helper pass resides in :file:`numba_dppy/rename_numpy_functions_pass.py`.
+- The code for numba-dpex's dpnp integration resides in the
+  :file:`numba_dpex/dpnp_iface` sub-module.
+- Tests resides in :file:`numba_dpex/tests/njit_tests/dpnp`.
+- Helper pass resides in :file:`numba_dpex/rename_numpy_functions_pass.py`.
 
 .. _dpnp-integration-architecture:
 
 Architecture
 ````````````
 
-`numba-dppy` modifies default `Numba` compiler pipeline and extends it with
-:class:`DPPYRewriteOverloadedNumPyFunctions` pass.
+`numba-dpex` modifies the default `Numba` compiler pipeline and extends it with
+:class:`RewriteOverloadedNumPyFunctionsPass` pass. The pass rewrites the Numba
+IR substituting NumPy function calls to dpnp function calls.
 
-The main work is performed in :class:`RewriteNumPyOverloadedFunctions` used by the pass.
-It rewrites call for `NumPy` function in following way:
+    :samp:`np.sum(a)` -> :samp:`numba_dpex.dpnp.sum(a)`
 
-    :samp:`np.sum(a)` -> :samp:`numba_dppy.dpnp.sum(a)`
-
-:mod:`numba_dppy.dpnp` contains stub functions (defined as classes) like following:
+:mod:`numba_dpex.dpnp_iface.stubs` contains the stub functions as follows:
 
 .. code-block:: python
 
-    # numba_dppy/dpnp_iface/stubs.py - imported in numba_dppy.__init__.py
+    # numba_dpex/dpnp_iface/stubs.py - imported in numba_dpex.__init__.py
 
     class dpnp(Stub):
 
       class sum(Stub):  # stub function
         pass
 
-For the stub function call to be lowered with `Numba` compiler pipeline there
-is overload in :file:`numba_dppy/dpnp_iface/dpnp_transcendentalsimpl.py`:
+For the stub function call to be lowered with numba-dpex's compiler pipeline
+there is an overloaded function defined in
+:file:`numba_dpex/dpnp_iface/dpnp_transcendentalsimpl.py`.
 
 .. code-block:: python
 
@@ -77,15 +84,15 @@ is overload in :file:`numba_dppy/dpnp_iface/dpnp_transcendentalsimpl.py`:
     def dpnp_sum_impl(a):
       ...
 
-Overload implementation knows about `DPNP` functions.
-It receives `DPNP` function pointer from `DPNP` and uses known signature from `DPNP` headers.
-The implementation calls `DPNP` function via creating `Numba` :class:`ExternalFunctionPointer`.
-
-For more details about overloads implementation see :ref:`overload-for-stub`.
-
-For more details about testing the integration see :ref:`dpnp-integration-tests`.
+The overload function controls what code should be generated for the
+corresponding dpnp function. In most cases, the implementation of the overload
+inserts a call to a dpnp low-level API function using Numba's
+:class:`ExternalFunctionPointer` feature. More details about the overload
+function implementation can be found in the :ref:`overload-for-stub` section.
 
 .. _dpnp-integration-places:
+
+For more details about testing the integration see :ref:`dpnp-integration-tests`.
 
 Places to update
 ````````````````
