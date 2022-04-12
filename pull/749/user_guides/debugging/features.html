@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Supported Features &mdash; numba-dppy 0+untagged.732.g1f82355 documentation</title>
+  <title>Supported Features &mdash; numba-dppy 0+untagged.735.g12bb05a documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -17,7 +17,9 @@
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Breakpoints" href="breakpoints.html" />
+    <link rel="prev" title="Configure debugging environment" href="debugging_environment.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,8 +43,32 @@
 <li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> </a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html"> Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kernel_programming_guide/index.html"> Direct kernel programming</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html"> Debugging with GDB</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#example-of-intel-distribution-for-gdb-usage">Example of Intel® Distribution for GDB* usage</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#features-and-limitations">Features and Limitations</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Supported Features</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="breakpoints.html">Breakpoints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stepping.html">Stepping</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frame_info.html">Information About a Frame</a></li>
+<li class="toctree-l4"><a class="reference internal" href="backtrace.html">Backtrace</a></li>
+<li class="toctree-l4"><a class="reference internal" href="data.html">Examining Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="symbols.html">Examining the Symbol Table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="altering.html">Altering Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="local_variables.html">Debugging Local Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba-0.55.html">Debugging Features in Numba 0.55</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="limitations.html">Limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="common_issues.html">Common issues and tips</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dpex for numba.cuda Programmers</a></li>
 </ul>
 
         </div>
@@ -59,6 +85,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Debugging with Intel® Distribution for GDB*</a> &raquo;</li>
       <li>Supported Features</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/user_guides/debugging/features.rst.txt" rel="nofollow"> View page source</a>
@@ -71,7 +98,7 @@
              
   <section id="supported-features">
 <h1>Supported Features<a class="headerlink" href="#supported-features" title="Permalink to this headline"></a></h1>
-<p>Numba-dppy and Intel® Distribution for GDB* provide at least
+<p>Numba-dpex and Intel® Distribution for GDB* provide at least
 following debugging features:</p>
 <div class="toctree-wrapper compound">
 <ul>
@@ -134,7 +161,10 @@ following debugging features:</p>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="debugging_environment.html" class="btn btn-neutral float-left" title="Configure debugging environment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="breakpoints.html" class="btn btn-neutral float-right" title="Breakpoints" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

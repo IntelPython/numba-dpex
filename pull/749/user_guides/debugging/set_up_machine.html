@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Set up the machine for debugging &mdash; numba-dppy 0+untagged.732.g1f82355 documentation</title>
+  <title>Set up the machine for debugging &mdash; numba-dppy 0+untagged.735.g12bb05a documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -17,7 +17,9 @@
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Configure debugging environment" href="debugging_environment.html" />
+    <link rel="prev" title="Debugging with Intel® Distribution for GDB*" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,8 +43,25 @@
 <li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> </a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html"> Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kernel_programming_guide/index.html"> Direct kernel programming</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html"> Debugging with GDB</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#requirements">Requirements</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Set up the machine for debugging</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#graphics-driver">Graphics driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#neo-driver">NEO driver</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#debug-companion-driver-dcd">Debug companion driver (DCD)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="debugging_environment.html">Configure debugging environment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#example-of-intel-distribution-for-gdb-usage">Example of Intel® Distribution for GDB* usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#features-and-limitations">Features and Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dpex for numba.cuda Programmers</a></li>
 </ul>
 
         </div>
@@ -59,6 +78,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Debugging with Intel® Distribution for GDB*</a> &raquo;</li>
       <li>Set up the machine for debugging</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/user_guides/debugging/set_up_machine.rst.txt" rel="nofollow"> View page source</a>
@@ -178,7 +198,10 @@ To overwrite the default behavior, use <code class="samp docutils literal notran
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Debugging with Intel® Distribution for GDB*" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="debugging_environment.html" class="btn btn-neutral float-right" title="Configure debugging environment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

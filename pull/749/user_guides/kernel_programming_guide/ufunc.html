@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Universal Functions &mdash; numba-dppy 0+untagged.732.g1f82355 documentation</title>
+  <title>Universal Functions &mdash; numba-dppy 0+untagged.735.g12bb05a documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -17,7 +17,9 @@
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Supported Python Features in a numba-dppy Kernel" href="supported-python-features.html" />
+    <link rel="prev" title="Reduction on SYCL-supported Devices" href="reduction.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,8 +43,28 @@
 <li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> </a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html"> Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html"> Direct kernel programming</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html">Writing SYCL Kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory-management.html">Memory Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="selecting_device.html">Defining the execution queue for a kernel function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Universal Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-1-basic-example">Example 1: Basic Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-2-calling-numba-vectorize-inside-a-numba-dppy-kernel">Example 2: Calling <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> inside a <code class="docutils literal notranslate"><span class="pre">numba_dppy.kernel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#full-examples">Full Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html">Supported Python Features in a <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> Kernel</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../debugging/index.html"> Debugging with GDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dpex for numba.cuda Programmers</a></li>
 </ul>
 
         </div>
@@ -59,6 +81,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">Programming SYCL Kernels Using <code class="xref py py-func docutils literal notranslate"><span class="pre">kernel()</span></code></a> &raquo;</li>
       <li>Universal Functions</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/user_guides/kernel_programming_guide/ufunc.rst.txt" rel="nofollow"> View page source</a>
@@ -104,7 +127,10 @@ called.</p>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="reduction.html" class="btn btn-neutral float-left" title="Reduction on SYCL-supported Devices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="supported-python-features.html" class="btn btn-neutral float-right" title="Supported Python Features in a numba-dppy Kernel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

@@ -11,7 +11,8 @@ Several conditions could influence debugging of local variables:
 Optimization Level for LLVM
 ---------------------------
 
-Numba provides environment variable :ref:`NUMBA_OPT` for configuring optimization level for LLVM.
+Numba provides environment variable :ref:`NUMBA_OPT` for configuring
+optimization level for LLVM.
 
 See `Numba documentation <https://numba.readthedocs.io/en/stable/reference/envvars.html?#envvar-NUMBA_OPT>`_.
 
@@ -25,9 +26,9 @@ It is recommended to debug with :samp:`NUMBA_OPT=0`.
 Example
 ```````
 
-Source code :file:`numba_dppy/examples/debug/sum_local_vars.py`:
+Source code :file:`numba_dpex/examples/debug/sum_local_vars.py`:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/sum_local_vars.py
+.. literalinclude:: ../../../numba_dpex/examples/debug/sum_local_vars.py
     :pyobject: data_parallel_sum
     :linenos:
     :lineno-match:
@@ -43,7 +44,7 @@ Debug session with :samp:`NUMBA_OPT=0`:
     (gdb) set environment NUMBA_OPT 0
     (gdb) break sum_local_vars.py:26
     ...
-    (gdb) run numba_dppy/examples/debug/sum_local_vars.py
+    (gdb) run numba_dpex/examples/debug/sum_local_vars.py
     ...
     Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum (a=..., b=..., c=...) at sum_local_vars.py:26
     26          c[i] = l1 + l2
@@ -64,7 +65,7 @@ Debug session with :samp:`NUMBA_OPT=1`:
     (gdb) set environment NUMBA_OPT 1
     (gdb) break sum_local_vars.py:26
     ...
-    (gdb) run numba_dppy/examples/debug/sum_local_vars.py
+    (gdb) run numba_dpex/examples/debug/sum_local_vars.py
     ...
     Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], ?? () at sum_local_vars.py:26 from /tmp/kernel_11059955544143858990_e6df1e.dbgelf
     26          c[i] = l1 + l2
@@ -97,9 +98,9 @@ It is recommended to debug with :samp:`NUMBA_EXTEND_VARIABLE_LIFETIMES=1`.
 Example 1 - Using ``NUMBA_EXTEND_VARIABLE_LIFETIMES``
 `````````````````````````````````````````````````````
 
-Source code :file:`numba_dppy/tests/debugging/test_info.py`:
+Source code :file:`numba_dpex/tests/debugging/test_info.py`:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/side-by-side.py
+.. literalinclude:: ../../../numba_dpex/examples/debug/side-by-side.py
    :pyobject: common_loop_body
    :linenos:
    :lineno-match:
@@ -115,7 +116,7 @@ Debug session with :samp:`NUMBA_EXTEND_VARIABLE_LIFETIMES=1`:
     (gdb) set environment NUMBA_EXTEND_VARIABLE_LIFETIMES 1
     (gdb) break side-by-side.py:28
     ...
-    (gdb) run numba_dppy/examples/debug/side-by-side.py --api=numba-dppy-kernel
+    (gdb) run numba_dpex/examples/debug/side-by-side.py --api=numba-dpex-kernel
     ...
     Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::common_loop_body (param_a=0, param_b=0) at side-by-side.py:28
     28          return result
@@ -136,7 +137,7 @@ Debug session with :samp:`NUMBA_EXTEND_VARIABLE_LIFETIMES=0`:
     (gdb) set environment NUMBA_EXTEND_VARIABLE_LIFETIMES 0
     (gdb) break side-by-side.py:28
     ...
-    (gdb) run numba_dppy/examples/debug/side-by-side.py --api=numba-dppy-kernel
+    (gdb) run numba_dpex/examples/debug/side-by-side.py --api=numba-dpex-kernel
     ...
     Thread 2.1 hit Breakpoint 1, with SIMD lanes [0-7], __main__::common_loop_body (param_a=0, param_b=0) at side-by-side.py:28
     28          return result
@@ -150,9 +151,9 @@ Debug session with :samp:`NUMBA_EXTEND_VARIABLE_LIFETIMES=0`:
 Example 2 - Using ``NUMBA_DUMP_ANNOTATION``
 ```````````````````````````````````````````
 
-Source code :file:`numba_dppy/examples/debug/sum_local_vars.py`:
+Source code :file:`numba_dpex/examples/debug/sum_local_vars.py`:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/sum_local_vars.py
+.. literalinclude:: ../../../numba_dpex/examples/debug/sum_local_vars.py
     :pyobject: data_parallel_sum
     :linenos:
     :lineno-match:
@@ -165,10 +166,10 @@ will show where numba inserts `del` for variables.
     :emphasize-lines: 28
 
     -----------------------------------ANNOTATION-----------------------------------
-    # File: numba_dppy/examples/debug/sum_local_vars.py
+    # File: numba_dpex/examples/debug/sum_local_vars.py
     # --- LINE 20 ---
 
-    @dppy.kernel(debug=True)
+    @numba_dpex.kernel(debug=True)
 
     # --- LINE 21 ---
 
@@ -179,7 +180,7 @@ will show where numba inserts `del` for variables.
         #   a = arg(0, name=a)  :: array(float32, 1d, C)
         #   b = arg(1, name=b)  :: array(float32, 1d, C)
         #   c = arg(2, name=c)  :: array(float32, 1d, C)
-        #   $2load_global.0 = global(dppy: <module 'numba_dppy' from '.../numba-dppy/numba_dppy/__init__.py'>)  :: Module(<module 'numba_dppy' from '.../numba-dppy/numba_dppy/__init__.py'>)
+        #   $2load_global.0 = global(dpex: <module 'numba_dpex' from '.../numba-dpex/numba_dpex/__init__.py'>)  :: Module(<module 'numba_dpex' from '.../numba-dpex/numba_dpex/__init__.py'>)
         #   $4load_method.1 = getattr(value=$2load_global.0, attr=get_global_id)  :: Function(<function get_global_id at 0x7f82b8bae430>)
         #   del $2load_global.0
         #   $const6.2 = const(int, 0)  :: Literal[int](0)
@@ -187,7 +188,7 @@ will show where numba inserts `del` for variables.
         #   del $const6.2
         #   del $4load_method.1
 
-        i = dppy.get_global_id(0)
+        i = dpex.get_global_id(0)
 
         # --- LINE 23 ---
         #   $16binary_subscr.6 = getitem(value=a, index=i, fn=<built-in function getitem>)  :: float32
@@ -232,7 +233,7 @@ As a workaround you can expand lifetime of the variable by using it (i.e.
 passing to dummy function `revive()`) at the end of the function. So numba will
 not insert `del a` until the end of the function.
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/sum_local_vars_revive.py
+.. literalinclude:: ../../../numba_dpex/examples/debug/sum_local_vars_revive.py
     :lines: 20-31
     :linenos:
     :lineno-match:
@@ -242,10 +243,10 @@ not insert `del a` until the end of the function.
     :emphasize-lines: 59
 
     -----------------------------------ANNOTATION-----------------------------------
-    # File: numba_dppy/examples/debug/sum_local_vars_revive.py
+    # File: numba_dpex/examples/debug/sum_local_vars_revive.py
     # --- LINE 24 ---
 
-    @dppy.kernel(debug=True)
+    @numba_dpex.kernel(debug=True)
 
     # --- LINE 25 ---
 
@@ -256,7 +257,7 @@ not insert `del a` until the end of the function.
         #   a = arg(0, name=a)  :: array(float32, 1d, C)
         #   b = arg(1, name=b)  :: array(float32, 1d, C)
         #   c = arg(2, name=c)  :: array(float32, 1d, C)
-        #   $2load_global.0 = global(dppy: <module 'numba_dppy' from '.../numba-dppy/numba_dppy/__init__.py'>)  :: Module(<module 'numba_dppy' from '.../numba-dppy/numba_dppy/__init__.py'>)
+        #   $2load_global.0 = global(dpex: <module 'numba_dpex' from '.../numba-dpex/numba_dpex/__init__.py'>)  :: Module(<module 'numba_dpex' from '.../numba-dpex/numba_dpex/__init__.py'>)
         #   $4load_method.1 = getattr(value=$2load_global.0, attr=get_global_id)  :: Function(<function get_global_id at 0x7fcdf7e8c4c0>)
         #   del $2load_global.0
         #   $const6.2 = const(int, 0)  :: Literal[int](0)
@@ -264,7 +265,7 @@ not insert `del a` until the end of the function.
         #   del $const6.2
         #   del $4load_method.1
 
-        i = dppy.get_global_id(0)
+        i = dpex.get_global_id(0)
 
         # --- LINE 27 ---
         #   $16binary_subscr.6 = getitem(value=a, index=i, fn=<built-in function getitem>)  :: float32
@@ -297,7 +298,7 @@ not insert `del a` until the end of the function.
         c[i] = l1 + l2
 
         # --- LINE 30 ---
-        #   $48load_global.19 = global(revive: <numba_dppy.compiler.DPPYFunctionTemplate object at 0x7fce12e5cc40>)  :: Function(<numba_dppy.compiler.DPPYFunctionTemplate object at 0x7fce12e5cc40>)
+        #   $48load_global.19 = global(revive: <numba_dpex.compiler.DpexFunctionTemplate object at 0x7fce12e5cc40>)  :: Function(<numba_dpex.compiler.DpexFunctionTemplate object at 0x7fce12e5cc40>)
         #   $52call_function.21 = call $48load_global.19(a, func=$48load_global.19, args=[Var(a, sum_local_vars_revive.py:26)], kws=(), vararg=None, target=None)  :: (array(float32, 1d, C),) -> array(float32, 1d, C)
         #   del a
         #   del $52call_function.21
@@ -318,7 +319,7 @@ It will show that numba inserts `del` for variables at the end of the block:
     :emphasize-lines: 11-25
 
     -----------------------------------ANNOTATION-----------------------------------
-    # File: numba_dppy/examples/debug/sum_local_vars.py
+    # File: numba_dpex/examples/debug/sum_local_vars.py
     ...
     def data_parallel_sum(a, b, c):
         ...
@@ -352,27 +353,27 @@ Example 3 - Using ``info locals``
 
 Source code :file:`sum_local_vars.py`:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/sum_local_vars.py
+.. literalinclude:: ../../../numba_dpex/examples/debug/sum_local_vars.py
     :lines: 15-
     :linenos:
     :lineno-match:
 
 Run the debugger with ``NUMBA_OPT=0``:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/local_variables_0
     :language: shell-session
     :lines: 1-6
 
 Run the ``info locals`` command. The sample output on "no optimization" level ``NUMBA_OPT=0`` is as follows:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/local_variables_0
     :language: shell-session
     :lines: 8-48
     :emphasize-lines: 1-16, 24-39
 
 Since the debugger does not hit a line with the target variable ``l1``, the value equals 0. The true value of the variable ``l1`` is shown after stepping to line 22.
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/local_variables_0
     :language: shell-session
     :lines: 49-66
     :emphasize-lines: 1-16
