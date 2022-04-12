@@ -13,8 +13,8 @@ dpnp's `low-level API`_ inside the generated LLVM IR.
 
 .. _integration-dpnp-backend:
 
-During compiling a Python function decorated with the `numba.njit` decorator,
-numba-dpex substitutes NumPy function calls with corresponding dpnp
+During compiling a Python function decorated with the ```numba.njit```
+decorator, numba-dpex substitutes NumPy function calls with corresponding dpnp
 low-level API function calls. The substitution happens transparent to an
 end-user and is implemented as a renaming pass in numba-dpex's pass pipeline.
 
@@ -54,16 +54,14 @@ Repository map
 
 .. _dpnp-integration-architecture:
 
-Architecture
-````````````
+Design
+```````
 
-`numba-dpex` modifies the default `Numba` compiler pipeline and extends it with
-:class:`RewriteOverloadedNumPyFunctionsPass` pass. The pass rewrites the Numba
-IR substituting NumPy function calls to dpnp function calls.
-
-    :samp:`np.sum(a)` -> :samp:`numba_dpex.dpnp.sum(a)`
-
-:mod:`numba_dpex.dpnp_iface.stubs` contains the stub functions as follows:
+The rewrite logic to substitute NumPy functions with dpnp function calls in the
+Numba IR is implemented by the :class:`RewriteOverloadedNumPyFunctionsPass`
+pass. The :mod:`numba_dpex.dpnp_iface.stubs` module defines a set of `stub`
+classes for each of the NumPy functions calls that are currently substituted
+out. The outline of a stub class is as follows:
 
 .. code-block:: python
 
@@ -74,9 +72,8 @@ IR substituting NumPy function calls to dpnp function calls.
       class sum(Stub):  # stub function
         pass
 
-For the stub function call to be lowered with numba-dpex's compiler pipeline
-there is an overloaded function defined in
-:file:`numba_dpex/dpnp_iface/dpnp_transcendentalsimpl.py`.
+Each stub is provided with a concrete implementation to generates the actual
+code using Numba's ``overload`` function API. E.g.,
 
 .. code-block:: python
 
@@ -84,40 +81,48 @@ there is an overloaded function defined in
     def dpnp_sum_impl(a):
       ...
 
+The complete implementation is in
+:file:`numba_dpex/dpnp_iface/dpnp_transcendentalsimpl.py`.
+
 The overload function controls what code should be generated for the
-corresponding dpnp function. In most cases, the implementation of the overload
+corresponding dpnp function. The implementation of the overload
 inserts a call to a dpnp low-level API function using Numba's
 :class:`ExternalFunctionPointer` feature. More details about the overload
 function implementation can be found in the :ref:`overload-for-stub` section.
 
-.. _dpnp-integration-places:
+Steps to support a new NumPy function using dpnp
+````````````````````````````````````````````````
 
-For more details about testing the integration see :ref:`dpnp-integration-tests`.
-
-Places to update
-````````````````
-
-1. :file:`numba_dppy/dpnp_iface/stubs.py`: Add new class to :class:`stubs.dpnp` class.
-2. :file:`numba_dppy/dpnp_iface/dpnp_fptr_interface.pyx`: Update items in :class:`DPNPFuncName` enum.
-3. :file:`numba_dppy/dpnp_iface/dpnp_fptr_interface.pyx`: Update if statements in :func:`get_DPNPFuncName_from_str` function.
-4. Add :samp:`@overload(stubs.dpnp.{YOUR_FUNCTION})` in one of the :file:`numba_dppy/dpnp_iface/{*}.py` modules or create new.
-5. :file:`numba_dppy/rename_numpy_functions_pass.py`: Update items in :obj:`rewrite_function_name_map` dict.
-6. :file:`numba_dppy/rename_numpy_functions_pass.py`: Update imported modules in :meth:`DPPYRewriteOverloadedNumPyFunctions.__init__`.
-7. Add test in one of the :file:`numba_dppy/tests/njit_tests/dpnp` test modules or create new.
+1. Add new stub class in :file:`numba_dpex/dpnp_iface/stubs.py`.
+2. Update the new function in the :class:`DPNPFuncName` enum inside
+   :file:`numba_dpex/dpnp_iface/dpnp_fptr_interface.pyx`.
+3. Update the conditional logic in the :func:`get_DPNPFuncName_from_str`
+   function defined in :file:`numba_dpex/dpnp_iface/dpnp_fptr_interface.pyx`.
+4. Add a new overload function :samp:`@overload(stubs.dpnp.{YOUR_FUNCTION})`
+   inside a new module named as :file:`numba_dpex/dpnp_iface/{*}.py`.
+5. Update items in :obj:`rewrite_function_name_map` dictionary defined in
+   :file:`numba_dpex/rename_numpy_functions_pass.py`, so that the rewrite pass
+   knows to substitute the function.
+6. Import the new overload module into
+   :file:`numba_dpex/rename_numpy_functions_pass.py` by updating
+   :meth:`RewriteOverloadedNumPyFunctionsPass.__init__`.
+7. Finally, add a unit test (refer existing test cases in
+   :file:`numba_dpex/tests/njit_tests/dpnp`).
 
 .. _overload-for-stub:
 
 Writing overload for stub function
 ``````````````````````````````````
 
-Overloads for stub functions resides in :file:`numba_dppy/dpnp_iface/{*}.py` modules.
-If you need create new module try to name it corresponding to `DPNP` naming.
-I.e. :file:`dpnp/backend/kernels/dpnp_krnl_indexing.cpp` -> :file:`numba_dppy/dpnp_iface/dpnp_indexing.py`.
+Overloads for stub functions resides in :file:`numba_dpex/dpnp_iface/{*}.py`
+modules. If you need create a new module, try to name it corresponding to dpnp
+naming convention. I.e. :file:`dpnp/backend/kernels/dpnp_krnl_indexing.cpp` ->
+:file:`numba_dpex/dpnp_iface/dpnp_indexing.py`.
 
 .. code-block:: python
 
     from numba.core.extending import overload
-    import numba_dppy.dpnp_iface as dpnp_lowering
+    import numba_dpex.dpnp_iface as dpnp_lowering
     ...
 
     @overload(stubs.dpnp.sum)
@@ -167,7 +172,7 @@ For mapping between `C` types and `Numba` types see :ref:`dpnp-integration-types
 
 .. code-block:: python
 
-    import numba_dppy.dpnp_iface.dpnpimpl as dpnp_ext
+    import numba_dpex.dpnp_iface.dpnpimpl as dpnp_ext
     ...
     # continue of dpnp_sum_impl()
       dpnp_func = dpnp_ext.dpnp_func("dpnp_sum", [a.dtype.name, "NONE"], sig)
@@ -184,7 +189,7 @@ It receives:
 
 .. code-block:: python
 
-    import numba_dppy.dpnp_iface.dpnpimpl as dpnp_ext
+    import numba_dpex.dpnp_iface.dpnpimpl as dpnp_ext
     ...
     # continue of dpnp_sum_impl()
       PRINT_DEBUG = dpnp_lowering.DEBUG
@@ -204,10 +209,10 @@ Tests rely on debug information to check that DPNP implementation was used.
 See :ref:`dpnp-integration-tests`.
 
 :func:`dpnp_impl` creates output array with size and data type corresponding
-to `DPNP` function output array.
+to dpnp function output array.
 
-:func:`dpnp_impl` could call `NumPy` functions supported by `Numba` and
-other stab functions (i.e. :func:`numba_dppy.dpnp.dot`).
+:func:`dpnp_impl` could call NumPy functions supported by Numba and
+other stab functions (i.e. :func:`numba_dpex.dpnp.dot`).
 
 The implementation function usually reuse a common function like :func:`common_impl`.
 This approach eliminates code duplication.
@@ -217,8 +222,8 @@ creating the new one.
 .. code-block:: python
 
     from numba.core.extending import register_jitable
-    from numba_dppy import dpctl_functions
-    import numba_dppy.dpnp_iface.dpnpimpl as dpnp_ext
+    from numba_dpex import dpctl_functions
+    import numba_dpex.dpnp_iface.dpnpimpl as dpnp_ext
     ...
 
     @register_jitable
@@ -279,7 +284,7 @@ any mismatch in the size of the container to hold different types of pointer.
 Writing `DPNP` integration tests
 ````````````````````````````````
 
-See all `DPNP` integration tests in :file:`numba_dppy/tests/njit_tests/dpnp`.
+See all `DPNP` integration tests in :file:`numba_dpex/tests/njit_tests/dpnp`.
 
 Usually adding new test is as easy as adding function name to the corresponding list of function names.
 Each item in the list is used as a parameter for tests.
@@ -333,8 +338,8 @@ Key parts of any test are:
 Troubleshooting
 ```````````````
 
-1. Do not forget build `numba-dppy` with current installed version of `DPNP`.
-   There is headers dependency in `Cython` files (i.e. :file:`numba_dppy/dpnp_iface/dpnp_fptr_interface.pyx`).
+1. Do not forget build numba-dpex with current installed version of dpnp.
+   There is headers dependency in `Cython` files (i.e. :file:`numba_dpex/dpnp_iface/dpnp_fptr_interface.pyx`).
 2. Do not forget add array to :samp:`dpnp_ext._dummy_liveness_func([{YOUR_ARRAY}.size])`.
    Dead code elimination could delete temporary variables before they are used for `DPNP` function call.
    As a result wrong data could be passed to `DPNP` function.
