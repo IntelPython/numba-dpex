@@ -14,7 +14,7 @@ Optimization Level for LLVM
 Numba provides environment variable :ref:`NUMBA_OPT` for configuring
 optimization level for LLVM.
 
-See `Numba documentation <https://numba.readthedocs.io/en/stable/reference/envvars.html?#envvar-NUMBA_OPT>`_.
+See `Numba documentation`_.
 
 * :samp:`NUMBA_OPT=0` means "no optimization" level - all local variables are available.
 * :samp:`NUMBA_OPT=1` or higher levels - some variables may be optimized out.
@@ -89,7 +89,7 @@ See `Numba variable policy <https://numba.pydata.org/numba-doc/latest/developer/
 Numba provides environment variable :ref:`NUMBA_EXTEND_VARIABLE_LIFETIMES`
 for extending the lifetime of variables to the end of the block in which their lifetime ends.
 
-See `Numba documentation <https://numba.readthedocs.io/en/latest/reference/envvars.html#envvar-NUMBA_EXTEND_VARIABLE_LIFETIMES>`_.
+See `Numba documentation`_.
 
 Default is zero.
 
@@ -379,3 +379,5 @@ Since the debugger does not hit a line with the target variable ``l1``, the valu
     :emphasize-lines: 1-16
 
 When the debugger hits the last line of the kernel, ``info locals`` command returns all the local variables with their values.
+
+.. _`Numba documentation`: https://numba.readthedocs.io/en/stable/reference/envvars.html?#envvar-NUMBA_OPT
