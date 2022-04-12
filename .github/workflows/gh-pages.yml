@@ -5,9 +5,6 @@ on:
       - main
   pull_request:
     types: [opened, synchronize, reopened, closed]
-    # paths:
-    #   - 'docs/**'
-    #   - environment/docs.yml
 
 jobs:
   main:
@@ -26,7 +23,10 @@ jobs:
 
       - name: Make documentation
         working-directory: docs
-        run: make html
+        run: |
+          make html
+          mv ./_build/html ~/docs
+
 
       - name: GitHub Pages [main]
         if: ${{ github.ref == 'refs/heads/main' && github.repository == 'IntelPython/numba-dppy' }}
@@ -38,7 +38,8 @@ jobs:
           echo `pwd`
           cd main
           git rm -rf *
-          mv ./docs/_build/html/ . || exit 1
+          ls -l
+          mv ~/docs/_build/html/ . || exit 1
           git add .
           git config --global user.name 'github-actions[doc-deploy-bot]'
           git config --global user.email 'github-actions[doc-deploy-bot]@users.noreply.github.com'
