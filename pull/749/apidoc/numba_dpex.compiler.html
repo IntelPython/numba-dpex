@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.compiler module &mdash; numba-dpex 0+untagged.740.g936c184 documentation</title>
+  <title>numba_dpex.compiler module &mdash; numba-dpex 0+untagged.741.g26022ab documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -180,15 +180,13 @@ this object.</p>
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.compiler.</span></span><span class="sig-name descname"><span class="pre">compile_with_depx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.compiler.compile_with_depx" title="Permalink to this definition"></a></dt>
 <dd><p>Compiles the function using the dpex compiler pipeline and returns the
 compiled result.</p>
-<dl>
+<dl class="simple">
 <dt>Args:</dt><dd><p>pyfunc: The Python function to be compiled.
 return_type: The Numba type of the return value.
 args: The list of arguments sent to the Python function.
-is_kernel (bool): Indicates whether the function is decorated</p>
-<blockquote>
-<div><p>with &#64;numba_depx.kernel or not.</p>
-</div></blockquote>
-<p>debug (bool): Flag to turn debug mode ON/OFF.</p>
+is_kernel (bool): Indicates whether the function is decorated
+with &#64;numba_depx.kernel or not.
+debug (bool): Flag to turn debug mode ON/OFF.</p>
 </dd>
 <dt>Returns:</dt><dd><p>cres: Compiled result.</p>
 </dd>

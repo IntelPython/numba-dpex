@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.passes.lowerer module &mdash; numba-dpex 0+untagged.740.g936c184 documentation</title>
+  <title>numba_dpex.core.passes.lowerer module &mdash; numba-dpex 0+untagged.741.g26022ab documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -107,15 +107,11 @@ follow the following steps:</p>
 <li><p>Start lowering of parent function</p></li>
 <li><dl>
 <dt>Try to lower parfor onto the specified SYCL device</dt><dd><dl>
-<dt>2.a. The <code class="docutils literal notranslate"><span class="pre">lower_parfor_rollback</span></code> function prepares function to</dt><dd><blockquote>
-<div><p>lower onto to the specified SYCL device and inserts the
+<dt>2.a. The <code class="docutils literal notranslate"><span class="pre">lower_parfor_rollback</span></code> function prepares function to</dt><dd><p>lower onto to the specified SYCL device and inserts the
 <code class="docutils literal notranslate"><span class="pre">get_global_id</span></code> intrinsic function.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>2.a.a. Start lowering the parfor body and execute</dt><dd><p><code class="docutils literal notranslate"><span class="pre">DpexLowerer.lower()</span></code> again.</p>
-</dd>
-</dl>
-<p>2.a.b. If the lowering fails, throw an exception.</p>
+<p>2.a.a. Start lowering the parfor body and execute
+<code class="docutils literal notranslate"><span class="pre">DpexLowerer.lower()</span></code> again.
+2.a.b. If the lowering fails, throw an exception.</p>
 </dd>
 <dt>2.b. The <code class="docutils literal notranslate"><span class="pre">lower_parfor_rollback</span></code> catches the exception and</dt><dd><p>restores the parfor body to its initial state.</p>
 </dd>

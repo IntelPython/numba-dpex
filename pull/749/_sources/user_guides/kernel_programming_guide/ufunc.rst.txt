@@ -24,7 +24,7 @@ Full example can be found at ``numba_dpex/examples/vectorize.py``.
    :pyobject: ufunc_kernel
 
 .. literalinclude:: ../../../numba_dpex/examples/vectorize.py
-   :pyobject: test_ufunc
+   :pyobject: test_njit
 
 Example 2: Calling ``numba.vectorize`` inside a ``numba_dpex.kernel``
 ---------------------------------------------------------------------

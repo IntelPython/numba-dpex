@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.utils.array_utils module &mdash; numba-dpex 0+untagged.740.g936c184 documentation</title>
+  <title>numba_dpex.utils.array_utils module &mdash; numba-dpex 0+untagged.741.g26022ab documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -83,20 +83,18 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.utils.array_utils.as_usm_obj">
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.array_utils.</span></span><span class="sig-name descname"><span class="pre">as_usm_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'shared'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.array_utils.as_usm_obj" title="Permalink to this definition"></a></dt>
-<dd><p>Determine and return a SYCL device accesible object.</p>
+<dd><p>Determine and return a SYCL device accessible object.</p>
 <p>We try to determine if the provided object defines a valid
 __sycl_usm_array_interface__ dictionary.
-If not, we create a USM memory of <cite>usm_type</cite> and try to copy the data
-<cite>obj</cite> holds. Only numpy.ndarray is supported currently as <cite>obj</cite> if
+If not, we create a USM memory of <code class="docutils literal notranslate"><span class="pre">usm_type</span></code> and try to copy the data
+<code class="docutils literal notranslate"><span class="pre">obj</span></code> holds. Only numpy.ndarray is supported currently as <cite>obj</cite> if
 the object is not already allocated using USM.</p>
-<dl>
+<dl class="simple">
 <dt>Args:</dt><dd><p>obj: Object to be tested and data copied from.
 usm_type: USM type used in case obj is not already allocated using USM.
-queue (dpctl.SyclQueue): SYCL queue to be used to allocate USM</p>
-<blockquote>
-<div><p>memory in case obj is not already USM allocated.</p>
-</div></blockquote>
-<p>copy (bool): Flag to determine if we copy data from obj.</p>
+queue (dpctl.SyclQueue): SYCL queue to be used to allocate USM
+memory in case obj is not already USM allocated.
+copy (bool): Flag to determine if we copy data from obj.</p>
 </dd>
 <dt>Returns:</dt><dd><p>A Python object allocated using USM memory.</p>
 </dd>
@@ -109,7 +107,7 @@ numpy.ndarray, TypeError is raised.</p></li>
 </dd>
 <dt>ValueError:</dt><dd><ol class="arabic simple">
 <li><p>In case obj is not USM allocated, users need to pass
-the SYCL queue to be used for creating new memory. ValuieError
+the SYCL queue to be used for creating new memory. ValueError
 is raised if queue argument is not provided.</p></li>
 <li><p>If usm_type is not valid.</p></li>
 <li><p>If dtype of the passed ndarray(obj) is not supported.</p></li>
@@ -126,25 +124,24 @@ is raised if queue argument is not provided.</p></li>
 <dd><p>Copy from supported objects to USM allocated data.</p>
 <p>This function copies the data of a supported Python type (only
 numpy.ndarray is supported at this point) into object that
-defines a __sycl_usm_array_interface__ attribute. For more information
-please refer to the specification of __sycl_usm_array_interface__:
+defines a <code class="docutils literal notranslate"><span class="pre">__sycl_usm_array_interface__</span></code> attribute. For more information
+please refer to the specification of <code class="docutils literal notranslate"><span class="pre">__sycl_usm_array_interface__</span></code>:
 <a class="reference external" href="https://github.com/IntelPython/dpctl/wiki/Zero-copy-data-exchange-using-SYCL-USM#sycl-usm-array-interface">https://github.com/IntelPython/dpctl/wiki/Zero-copy-data-exchange-using-SYCL-USM#sycl-usm-array-interface</a></p>
-<dl>
-<dt>Args:</dt><dd><dl class="simple">
-<dt>usm_allocated: An object that should define a</dt><dd><p>__sycl_usm_array_interface__ dictionary. A TypeError is thrown
-if the object does not have such an attribute.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>usm_allocated: An object that should define a
+<code class="docutils literal notranslate"><span class="pre">__sycl_usm_array_interface__</span></code> dictionary. A TypeError is thrown
+if the object does not have such an attribute.
+obj (numpy.ndarray): Numpy ndarray, the data will be copied into.</p>
 </dd>
-</dl>
-<p>obj (numpy.ndarray): Numpy ndarray, the data will be copied into.</p>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>TypeError:</dt><dd><p>If any argument is not of permitted type.</p>
 </dd>
-<dt>Raises:</dt><dd><p>TypeError: If any argument is not of permitted type.
-ValueError:</p>
-<blockquote>
-<div><ol class="arabic simple">
+<dt>ValueError:</dt><dd><ol class="arabic simple">
 <li><p>If size of data does not match.</p></li>
 <li><p>If obj is not C-contiguous.</p></li>
 </ol>
-</div></blockquote>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
@@ -153,16 +150,18 @@ ValueError:</p>
 <dt class="sig sig-object py" id="numba_dpex.utils.array_utils.copy_to_numpy_from_usm_obj">
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.array_utils.</span></span><span class="sig-name descname"><span class="pre">copy_to_numpy_from_usm_obj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">usm_allocated</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.array_utils.copy_to_numpy_from_usm_obj" title="Permalink to this definition"></a></dt>
 <dd><p>Copy from USM allocated data to supported objects.</p>
-<dl>
-<dt>Args:</dt><dd><dl class="simple">
-<dt>usm_allocated: An object that should define a</dt><dd><p>__sycl_usm_array_interface__ dictionary. A TypeError is thrown
-if the object does not have such an attribute.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>usm_allocated: An object that should define a
+__sycl_usm_array_interface__ dictionary. A TypeError is thrown
+if the object does not have such an attribute.
+obj (numpy.ndarray): Numpy ndarray, the data will be copied into.</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>TypeError:</dt><dd><p>If any argument is not of permitted type.</p>
+</dd>
+<dt>ValueError:</dt><dd><p>If size of data does not match.</p>
 </dd>
 </dl>
-<p>obj (numpy.ndarray): Numpy ndarray, the data will be copied into.</p>
-</dd>
-<dt>Raises:</dt><dd><p>TypeError: If any argument is not of permitted type.
-ValueError: If size of data does not match.</p>
 </dd>
 </dl>
 </dd></dl>

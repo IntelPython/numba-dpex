@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.dpctl_iface.kernel_launch_ops module &mdash; numba-dpex 0+untagged.740.g936c184 documentation</title>
+  <title>numba_dpex.dpctl_iface.kernel_launch_ops module &mdash; numba-dpex 0+untagged.741.g26022ab documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -145,24 +145,18 @@ after returning from the kernel.</p>
 <dd><p>process_kernel_arg(var, llvm_arg, arg_type, index, modified_arrays,
 sycl_queue_val)
 Creates an LLVM Value for each kernel argument.</p>
-<dl>
+<dl class="simple">
 <dt>Args:</dt><dd><p>var : A kernel argument represented as a Numba type.
-llvm_arg : Only used for array arguments and points to the LLVM</p>
-<blockquote>
-<div><p>value previously allocated to store the array arg.</p>
-</div></blockquote>
-<p>arg_type : The Numba type for the argument.
+llvm_arg : Only used for array arguments and points to the LLVM
+value previously allocated to store the array arg.
+arg_type : The Numba type for the argument.
 index : The poisition of the argument in the list of arguments.
-modified_arrays : The list of array arguments that are written to</p>
-<blockquote>
-<div><p>inside the kernel. The list is used to check if
-the argument is read-only or not.</p>
-</div></blockquote>
+modified_arrays : The list of array arguments that are written to
+inside the kernel. The list is used to check if the argument is
+read-only or not.</p>
 </dd>
-<dt>Raises:</dt><dd><dl class="simple">
-<dt>NotImplementedError: If an unsupported type of kernel argument is</dt><dd><p>encountered.</p>
-</dd>
-</dl>
+<dt>Raises:</dt><dd><p>NotImplementedError: If an unsupported type of kernel argument is
+encountered.</p>
 </dd>
 </dl>
 </dd></dl>

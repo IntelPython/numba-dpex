@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.target module &mdash; numba-dpex 0+untagged.740.g936c184 documentation</title>
+  <title>numba_dpex.target module &mdash; numba-dpex 0+untagged.741.g26022ab documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -185,16 +185,14 @@ implementation.</p>
 <span class="sig-name descname"><span class="pre">insert_const_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mod</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.target.DpexTargetContext.insert_const_string" title="Permalink to this definition"></a></dt>
 <dd><p>Create a global string from the passed in string argument and return
 a void* in the GENERIC address space pointing to that string.</p>
-<dl>
+<dl class="simple">
 <dt>Args:</dt><dd><p>mod: LLVM module where the global string value is to be inserted.
-string: A Python string that will be converted to a global constant</p>
-<blockquote>
-<div><p>string and inserted into the module.</p>
-</div></blockquote>
-</dd>
-<dt>Returns: A LLVM Constant pointing to the global string value inserted</dt><dd><p>into the module.</p>
+string: A Python string that will be converted to a global constant
+string and inserted into the module.</p>
 </dd>
 </dl>
+<p>Returns: A LLVM Constant pointing to the global string value inserted
+into the module.</p>
 </dd></dl>
 
 <dl class="py method">
