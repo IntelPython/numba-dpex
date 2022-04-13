@@ -97,7 +97,7 @@ Generated documentation will be in `docs/_build/html`.
 ### Uploading to GitHub Pages
 
 Documentation for GitHub Pages is placed in following branch
-[`gh-pages`](https://github.com/IntelPython/numba-dppy/tree/gh-pages).
+[`gh-pages`](https://github.com/IntelPython/numba-dpex/tree/gh-pages).
 
 Folders:
 - `dev` folder contains current documentation for default branch.

@@ -39,7 +39,7 @@ test:
         - pexpect
 
 about:
-    home: https://github.com/IntelPython/numba-dppy
+    home: https://github.com/IntelPython/numba-dpex
     summary: "Numba extension for Intel CPU and GPU backend"
     license: Apache-2.0
     license_file: LICENSE
