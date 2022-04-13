@@ -1,7 +1,0 @@
-numba\_dpex.dpctl\_iface.kernel\_launch\_ops module
-===================================================
-
-.. automodule:: numba_dpex.dpctl_iface.kernel_launch_ops
-   :members:
-   :undoc-members:
-   :show-inheritance:
