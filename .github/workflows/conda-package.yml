@@ -219,7 +219,7 @@ jobs:
 
   upload_linux:
     needs: test_linux
-    if: ${{github.ref == 'refs/heads/main' || (startsWith(github.ref, 'refs/heads/release') == true)}}
+    #if: ${{github.ref == 'refs/heads/main' || (startsWith(github.ref, 'refs/heads/release') == true)}}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -243,6 +243,11 @@ jobs:
         run: |
           source /usr/share/miniconda/etc/profile.d/conda.sh
           conda activate
+          touch file
+          echo "token = /"TOKEN/"" > file
+          cat file
+          sed -i "s/TOKEN/${ANACONDA_TOKEN}/g" "file"
+          cat file
           anaconda --token $ANACONDA_TOKEN upload --user dppy --label dev ${PACKAGE_NAME}-*.tar.bz2
 
   upload_windows:
