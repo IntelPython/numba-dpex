@@ -1,5 +1,5 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Coverage Status](https://coveralls.io/repos/github/IntelPython/numba-dppy/badge.svg?branch=main)](https://coveralls.io/github/IntelPython/numba-dppy?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/IntelPython/numba-dpex/badge.svg?branch=main)](https://coveralls.io/github/IntelPython/numba-dpex?branch=main)
 
 <img align="left" src="https://spec.oneapi.io/oneapi-logo-white-scaled.jpg" alt="oneAPI logo" width="75"/>
 <br/>
@@ -14,14 +14,14 @@ The data-parallel extension to Numba (Numba-dpex) adds data-parallel kernel
 programming and auto-offload capabilities to [Numba](http://numba.pydata.org).
 The extension uses the Intel&reg; DPC++ runtime and supports various OpenCL and
 Level Zero devices. Refer the [user
-guide](https://intelpython.github.io/numba-dppy/) for more details.
+guide](https://intelpython.github.io/numba-dpex/) for more details.
 
 # Installing
 
 Numba-dpex is part of the Intel&reg; Distribution of Python (IDP) and Intel&reg;
 oneAPI BaseKit, and can be installed along with oneAPI. Additionally, we support
 installing it from Anaconda cloud and PyPi. Please refer the instructions
-on our [documentation page](https://intelpython.github.io/numba-dppy/latest/user_guides/getting_started.html)
+on our [documentation page](https://intelpython.github.io/numba-dpex/latest/user_guides/getting_started.html)
 for more details.
 
 # Getting started
@@ -46,7 +46,7 @@ python numba_dpex/examples/sum.py
 # Known Issue
 Floor division operator `//` is not supported inside the `numba_dpex.kernel`
 kernel programming API. The below code snippet will result in error reported in
-this [Issue](https://github.com/IntelPython/numba-dppy/issues/571).
+this [Issue](https://github.com/IntelPython/numba-dpex/issues/571).
 
 ```
 import numpy as np, numba_dpex
@@ -73,12 +73,12 @@ For Windows: `conda install dpcpp_win-64`
 # Learn more?
 
 Detailed documentation including user guides are hosted on our
-[documentation site](https://intelpython.github.io/numba-dppy).
+[documentation site](https://intelpython.github.io/numba-dpex).
 
 # Found a bug?
 
 Please report issues and bugs directly on
-[github](https://github.com/IntelPython/numba-dppy/issues).
+[github](https://github.com/IntelPython/numba-dpex/issues).
 
 ## Test Matrix:
 

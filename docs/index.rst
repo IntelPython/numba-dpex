@@ -2,7 +2,7 @@ Welcome to numba-dpex's documentation!
 ======================================
 
 Numba data-parallel extension (`numba-dpex
-<https://github.com/IntelPython/numba-dppy>`_) is an Intel |reg|-developed
+<https://github.com/IntelPython/numba-dpex>`_) is an Intel |reg|-developed
 extension to the `Numba <https://numba.pydata.org/>`_ JIT compiler. The
 extension adds kernel programming and automatic offload capabilities to the
 Numba compiler. Numba-dpex is part of `Intel oneAPI Base Toolkit
@@ -100,14 +100,14 @@ Contributing
 ============
 
 Refer the `contributing guide
-<https://github.com/IntelPython/numba-dppy/blob/main/CONTRIBUTING>`_ for
+<https://github.com/IntelPython/numba-dpex/blob/main/CONTRIBUTING>`_ for
 information on coding style and standards used in numba-dpex.
 
 License
 =======
 
 Numba-dpex is Licensed under Apache License 2.0 that can be found in `LICENSE
-<https://github.com/IntelPython/numba-dppy/blob/main/LICENSE>`_. All usage and
+<https://github.com/IntelPython/numba-dpex/blob/main/LICENSE>`_. All usage and
 contributions to the project are subject to the terms and conditions of this
 license.
 
