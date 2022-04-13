@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Supported Python Features in a numba-dppy Kernel &mdash; numba-dppy 0+untagged.727.g4640504 documentation</title>
+  <title>Supported Python Features inside numba_dpex.kernel &mdash; numba-dpex 0+untagged.728.ga127d4a documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -27,7 +27,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> numba-dppy
+            <a href="../../index.html" class="icon icon-home"> numba-dpex
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -45,7 +45,7 @@
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html"> Getting Started</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html"> Programming SYCL Kernels</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html"> Direct kernel programming</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="writing_kernels.html">Writing SYCL Kernels</a></li>
 <li class="toctree-l2"><a class="reference internal" href="memory-management.html">Memory Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
@@ -55,7 +55,7 @@
 <li class="toctree-l2"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Supported Python Features in a <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> Kernel</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#built-in-types">Built-in types</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#built-in-functions">Built-in functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#standard-library-modules">Standard library modules</a></li>
@@ -66,11 +66,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../debugging/index.html"> Debugging with GDB</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dpex for numba.cuda Programmers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">dpnp integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
@@ -80,7 +80,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">numba-dppy</a>
+          <a href="../../index.html">numba-dpex</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -89,7 +89,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="index.html">Programming SYCL Kernels Using <code class="xref py py-func docutils literal notranslate"><span class="pre">kernel()</span></code></a> &raquo;</li>
-      <li>Supported Python Features in a <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> Kernel</li>
+      <li>Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/user_guides/kernel_programming_guide/supported-python-features.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -99,9 +99,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="supported-python-features-in-a-numba-dppy-kernel">
-<h1>Supported Python Features in a <code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> Kernel<a class="headerlink" href="#supported-python-features-in-a-numba-dppy-kernel" title="Permalink to this headline"></a></h1>
-<p>This page lists the Python features supported inside a <code class="docutils literal notranslate"><span class="pre">numba_dppy.kernel</span></code>
+  <section id="supported-python-features-inside-numba-dpex-kernel">
+<h1>Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code><a class="headerlink" href="#supported-python-features-inside-numba-dpex-kernel" title="Permalink to this headline"></a></h1>
+<p>This page lists the Python features supported inside a <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code>
 function.</p>
 <section id="built-in-types">
 <h2>Built-in types<a class="headerlink" href="#built-in-types" title="Permalink to this headline"></a></h2>
@@ -204,7 +204,7 @@ function.</p>
 <section id="numpy-support">
 <h2>NumPy support<a class="headerlink" href="#numpy-support" title="Permalink to this headline"></a></h2>
 <p>NumPy functions are whole array operations and are not supported within a
-<code class="docutils literal notranslate"><span class="pre">numba_dppy.kernel</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code>.</p>
 </section>
 </section>
 
@@ -219,7 +219,7 @@ function.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Intel.</p>
+    <p>&#169; Copyright 2021,2022 Intel.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

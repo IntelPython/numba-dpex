@@ -11,22 +11,23 @@ Configure debugging environment
         source $ONEAPI_ROOT/debugger/latest/env/vars.sh
         source $ONEAPI_ROOT/compiler/latest/env/vars.sh
 
-2) Create and activate conda environment with the installed Numba-dppy:
+2) Create and activate conda environment with the installed numba-dpex:
 
     .. code-block:: bash
 
-        conda create numba-dppy-dev numba-dppy
-        conda activate numba-dppy-dev
+        conda create numba-dpex-dev numba-dpex
+        conda activate numba-dpex-dev
 
 3) Activate NEO drivers (optional).
 
-    If you want to use the local NEO driver, activate the variables for it. See the :ref:`NEO-driver`.
+    If you want to use the local NEO driver, activate the variables for it. See
+    the :ref:`NEO-driver`.
 
 4) Check debugging environment.
 
     You can check the correctness of the work with the following example:
 
-    .. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
+    .. literalinclude:: ../../../numba_dpex/examples/debug/simple_sum.py
         :lines: 15-
         :linenos:
         :lineno-match:
@@ -47,7 +48,7 @@ Configure debugging environment
     .. code-block:: shell-session
 
         Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:22
-        22           i = dppy.get_global_id(0)
+        22           i = dpex.get_global_id(0)
         (gdb) continue
         Done...
         ...

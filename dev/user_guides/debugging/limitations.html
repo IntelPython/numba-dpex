@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Limitations &mdash; numba-dppy 0+untagged.727.g4640504 documentation</title>
+  <title>Limitations &mdash; numba-dpex 0+untagged.728.ga127d4a documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -27,7 +27,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> numba-dppy
+            <a href="../../index.html" class="icon icon-home"> numba-dpex
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -45,7 +45,7 @@
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html"> Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kernel_programming_guide/index.html"> Direct kernel programming</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html"> Debugging with GDB</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="index.html#requirements">Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#example-of-intel-distribution-for-gdb-usage">Example of Intel® Distribution for GDB* usage</a></li>
@@ -53,7 +53,7 @@
 <li class="toctree-l3"><a class="reference internal" href="features.html">Supported Features</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Limitations</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#altering-arguments-modified-in-code">Altering arguments modified in code</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#using-numbas-direct-gdb-bindings-in-nopython-mode">Using Numba’s direct <code class="docutils literal notranslate"><span class="pre">gdb</span></code> bindings in <code class="docutils literal notranslate"><span class="pre">nopython</span></code> mode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-numba-s-direct-gdb-bindings-in-nopython-mode">Using Numba’s direct <code class="docutils literal notranslate"><span class="pre">gdb</span></code> bindings in <code class="docutils literal notranslate"><span class="pre">nopython</span></code> mode</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="common_issues.html">Common issues and tips</a></li>
@@ -61,11 +61,11 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dpex for numba.cuda Programmers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">dpnp integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
@@ -75,7 +75,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">numba-dppy</a>
+          <a href="../../index.html">numba-dpex</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -104,10 +104,10 @@ arguments should not be modified in code.
 See <a class="reference external" href="https://github.com/numba/numba/pull/7196">Numba issue</a>.</p>
 <p>See <a class="reference internal" href="altering.html#assignment-to-variables"><span class="std std-ref">Assignment to Variables</span></a>.</p>
 </section>
-<section id="using-numbas-direct-gdb-bindings-in-nopython-mode">
-<h2>Using Numba’s direct <code class="docutils literal notranslate"><span class="pre">gdb</span></code> bindings in <code class="docutils literal notranslate"><span class="pre">nopython</span></code> mode<a class="headerlink" href="#using-numbas-direct-gdb-bindings-in-nopython-mode" title="Permalink to this headline"></a></h2>
+<section id="using-numba-s-direct-gdb-bindings-in-nopython-mode">
+<h2>Using Numba’s direct <code class="docutils literal notranslate"><span class="pre">gdb</span></code> bindings in <code class="docutils literal notranslate"><span class="pre">nopython</span></code> mode<a class="headerlink" href="#using-numba-s-direct-gdb-bindings-in-nopython-mode" title="Permalink to this headline"></a></h2>
 <p>Using Numba’s direct <code class="docutils literal notranslate"><span class="pre">gdb</span></code> bindings in <code class="docutils literal notranslate"><span class="pre">nopython</span></code> mode is not supported in
-Numba DPPY.</p>
+numba-dpex.</p>
 <p>See <a class="reference external" href="https://numba.pydata.org/numba-doc/latest/user/troubleshoot.html#using-numba-s-direct-gdb-bindings-in-nopython-mode">Numba documentation</a>.</p>
 </section>
 </section>
@@ -123,7 +123,7 @@ Numba DPPY.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Intel.</p>
+    <p>&#169; Copyright 2021,2022 Intel.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

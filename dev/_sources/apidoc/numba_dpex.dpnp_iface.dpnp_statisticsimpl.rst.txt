@@ -1,0 +1,7 @@
+numba\_dpex.dpnp\_iface.dpnp\_statisticsimpl module
+===================================================
+
+.. automodule:: numba_dpex.dpnp_iface.dpnp_statisticsimpl
+   :members:
+   :undoc-members:
+   :show-inheritance:

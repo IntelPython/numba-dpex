@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Altering Execution &mdash; numba-dppy 0+untagged.727.g4640504 documentation</title>
+  <title>Altering Execution &mdash; numba-dpex 0+untagged.728.ga127d4a documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -27,7 +27,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> numba-dppy
+            <a href="../../index.html" class="icon icon-home"> numba-dpex
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -45,7 +45,7 @@
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html"> Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kernel_programming_guide/index.html"> Direct kernel programming</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html"> Debugging with GDB</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="index.html#requirements">Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#example-of-intel-distribution-for-gdb-usage">Example of Intel® Distribution for GDB* usage</a></li>
@@ -68,11 +68,11 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dpex for numba.cuda Programmers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">dpnp integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
@@ -82,7 +82,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">numba-dppy</a>
+          <a href="../../index.html">numba-dpex</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -117,7 +117,16 @@ See <a class="reference external" href="https://github.com/numba/numba/pull/7196
 </div>
 <section id="example">
 <h3>Example<a class="headerlink" href="#example" title="Permalink to this headline"></a></h3>
-<p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dppy/examples/debug/side-by-side-2.py</span></code>:</p>
+<p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/side-by-side-2.py</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">24</span><span class="k">def</span> <span class="nf">common_loop_body</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="linenos">25</span>    <span class="n">param_a</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="linenos">26</span>    <span class="n">param_b</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="linenos">27</span>    <span class="n">param_c</span> <span class="o">=</span> <span class="n">param_a</span> <span class="o">+</span> <span class="mi">10</span>  <span class="c1"># Set breakpoint here</span>
+<span class="linenos">28</span>    <span class="n">param_d</span> <span class="o">=</span> <span class="n">param_b</span> <span class="o">*</span> <span class="mf">0.5</span>
+<span class="hll"><span class="linenos">29</span>    <span class="n">result</span> <span class="o">=</span> <span class="n">param_c</span> <span class="o">+</span> <span class="n">param_d</span>
+</span><span class="linenos">30</span>    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+</div>
 <p>Debug session:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>gdb-oneapi -q python
 <span class="go">...</span>
@@ -125,7 +134,7 @@ See <a class="reference external" href="https://github.com/numba/numba/pull/7196
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set environment NUMBA_EXTEND_VARIABLE_LIFETIMES 1</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break side-by-side-2.py:29 if param_a == 5</span>
 <span class="go">...</span>
-<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run numba_dppy/examples/debug/side-by-side-2.py --api=numba-dppy-kernel</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run numba_dpex/examples/debug/side-by-side-2.py --api=numba-dpex-kernel</span>
 <span class="go">...</span>
 <span class="go">Thread 2.1 hit Breakpoint 1, with SIMD lane 5, __main__::common_loop_body (i=5, a=..., b=...) at side-by-side-2.py:29</span>
 <span class="go">29          result = param_c + param_d</span>
@@ -152,7 +161,7 @@ See <a class="reference external" href="https://github.com/numba/numba/pull/7196
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Intel.</p>
+    <p>&#169; Copyright 2021,2022 Intel.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

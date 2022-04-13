@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DPNP integration &mdash; numba-dppy 0+untagged.727.g4640504 documentation</title>
+  <title>dpnp integration &mdash; numba-dpex 0+untagged.728.ga127d4a documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Debugging the compilation pipeline" href="tools.html" />
-    <link rel="prev" title="numba-dppy For numba.cuda Developers" href="../user_guides/migrating_from_numba_cuda.html" /> 
+    <link rel="prev" title="numba-dpex for numba.cuda Developers" href="../user_guides/migrating_from_numba_cuda.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -27,7 +27,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> numba-dppy
+            <a href="../index.html" class="icon icon-home"> numba-dpex
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -45,25 +45,22 @@
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/getting_started.html"> Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guides/kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/kernel_programming_guide/index.html"> Direct kernel programming</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guides/debugging/index.html"> Debugging with GDB</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guides/migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/migrating_from_numba_cuda.html"> numba-dpex for numba.cuda Programmers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">DPNP integration</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#integration-with-dpnp-backend-library">Integration with DPNP backend library</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#repository-map">Repository map</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#architecture">Architecture</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#places-to-update">Places to update</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#writing-overload-for-stub-function">Writing overload for stub function</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#types-matching-for-numba-and-dpnp">Types matching for Numba and DPNP</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">dpnp integration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#repository-map">Repository map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#design">Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#steps-to-support-a-new-numpy-function-using-dpnp">Steps to support a new NumPy function using dpnp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#writing-overload-for-stub-function">Writing overload for stub function</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#types-matching-for-numba-and-dpnp">Types matching for Numba and DPNP</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#writing-dpnp-integration-tests">Writing <cite>DPNP</cite> integration tests</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#writing-dpnp-integration-tests">Writing <cite>DPNP</cite> integration tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tools.html">Debugging the compilation pipeline</a></li>
@@ -75,7 +72,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">numba-dppy</a>
+          <a href="../index.html">numba-dpex</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -83,7 +80,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>DPNP integration</li>
+      <li>dpnp integration</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/developer_guides/dpnp_integration.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -94,18 +91,23 @@
            <div itemprop="articleBody">
              
   <section id="dpnp-integration">
-<span id="id1"></span><h1>DPNP integration<a class="headerlink" href="#dpnp-integration" title="Permalink to this headline"></a></h1>
-<p>Currently <cite>numba-dppy</cite> uses <a class="reference external" href="https://github.com/IntelPython/dpnp/tree/master/dpnp/backend">DPNP backend library</a>.</p>
-<section id="integration-with-dpnp-backend-library">
-<span id="integration-dpnp-backend"></span><h2>Integration with <a class="reference external" href="https://github.com/IntelPython/dpnp/tree/master/dpnp/backend">DPNP backend library</a><a class="headerlink" href="#integration-with-dpnp-backend-library" title="Permalink to this headline"></a></h2>
-<p><cite>numba-dppy</cite> replaces <cite>NumPy</cite> function calls with <cite>DPNP</cite> function calls.</p>
+<span id="id1"></span><h1>dpnp integration<a class="headerlink" href="#dpnp-integration" title="Permalink to this headline"></a></h1>
+<p>Data-Parallel Numeric Python (dpnp) is a drop-in NumPy replacement library. The
+library is developed using SYCL and oneMKL. Numba-dpex relies on dpnp to
+support offloading NumPy library functions to SYCL devices. For NumPy functions
+that are offloaded using dpnp, numba-dpex generates library calls directly to
+dpnp’s <a class="reference external" href="https://github.com/IntelPython/dpnp/tree/master/dpnp/backend">low-level API</a> inside the generated LLVM IR.</p>
+<p id="integration-dpnp-backend">During compiling a Python function decorated with the <code class="docutils literal notranslate"><span class="pre">`numba.njit`</span></code>
+decorator, numba-dpex substitutes NumPy function calls with corresponding dpnp
+low-level API function calls. The substitution happens transparent to an
+end-user and is implemented as a renaming pass in numba-dpex’s pass pipeline.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">njit</span>
 <span class="kn">import</span> <span class="nn">dpctl</span>
 
 <span class="nd">@njit</span>
 <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
-  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>  <span class="c1"># this call will be replaced with DPNP function</span>
+  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>  <span class="c1"># this call will be replaced with the dpnp.sum function</span>
 
 <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 
@@ -116,25 +118,25 @@
 </pre></div>
 </div>
 <p><code class="samp docutils literal notranslate"><span class="pre">np.sum(a)</span></code> will be replaced with <a class="reference external" href="https://github.com/IntelPython/dpnp/blob/ef404c0f284b0c508ed1e556e140f02f76ae5551/dpnp/backend/kernels/dpnp_krnl_reduction.cpp#L58">dpnp_sum_c&lt;int, int&gt;(…)</a>.</p>
+<p>The following sections go over as aspects of the dpnp integration inside
+numba-dpex.</p>
 <section id="repository-map">
-<span id="dpnp-integration-repository-map"></span><h3>Repository map<a class="headerlink" href="#repository-map" title="Permalink to this headline"></a></h3>
+<span id="dpnp-integration-repository-map"></span><h2>Repository map<a class="headerlink" href="#repository-map" title="Permalink to this headline"></a></h2>
 <ul class="simple">
-<li><p>Code for integration is mostly resides in <code class="file docutils literal notranslate"><span class="pre">numba_dppy/dpnp_iface</span></code>.</p></li>
-<li><p>Tests resides in <code class="file docutils literal notranslate"><span class="pre">numba_dppy/tests/njit_tests/dpnp</span></code>.</p></li>
-<li><p>Helper pass resides in <code class="file docutils literal notranslate"><span class="pre">numba_dppy/rename_numpy_functions_pass.py</span></code>.</p></li>
+<li><p>The code for numba-dpex’s dpnp integration resides in the
+<code class="file docutils literal notranslate"><span class="pre">numba_dpex/dpnp_iface</span></code> sub-module.</p></li>
+<li><p>Tests resides in <code class="file docutils literal notranslate"><span class="pre">numba_dpex/tests/njit_tests/dpnp</span></code>.</p></li>
+<li><p>Helper pass resides in <code class="file docutils literal notranslate"><span class="pre">numba_dpex/rename_numpy_functions_pass.py</span></code>.</p></li>
 </ul>
 </section>
-<section id="architecture">
-<span id="dpnp-integration-architecture"></span><h3>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline"></a></h3>
-<p><cite>numba-dppy</cite> modifies default <cite>Numba</cite> compiler pipeline and extends it with
-<code class="xref py py-class docutils literal notranslate"><span class="pre">DPPYRewriteOverloadedNumPyFunctions</span></code> pass.</p>
-<p>The main work is performed in <code class="xref py py-class docutils literal notranslate"><span class="pre">RewriteNumPyOverloadedFunctions</span></code> used by the pass.
-It rewrites call for <cite>NumPy</cite> function in following way:</p>
-<blockquote>
-<div><p><code class="samp docutils literal notranslate"><span class="pre">np.sum(a)</span></code> -&gt; <code class="samp docutils literal notranslate"><span class="pre">numba_dppy.dpnp.sum(a)</span></code></p>
-</div></blockquote>
-<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dppy.dpnp</span></code> contains stub functions (defined as classes) like following:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># numba_dppy/dpnp_iface/stubs.py - imported in numba_dppy.__init__.py</span>
+<section id="design">
+<span id="dpnp-integration-architecture"></span><h2>Design<a class="headerlink" href="#design" title="Permalink to this headline"></a></h2>
+<p>The rewrite logic to substitute NumPy functions with dpnp function calls in the
+Numba IR is implemented by the <code class="xref py py-class docutils literal notranslate"><span class="pre">RewriteOverloadedNumPyFunctionsPass</span></code>
+pass. The <a class="reference internal" href="../apidoc/numba_dpex.dpnp_iface.stubs.html#module-numba_dpex.dpnp_iface.stubs" title="numba_dpex.dpnp_iface.stubs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.dpnp_iface.stubs</span></code></a> module defines a set of <cite>stub</cite>
+classes for each of the NumPy functions calls that are currently substituted
+out. The outline of a stub class is as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># numba_dpex/dpnp_iface/stubs.py - imported in numba_dpex.__init__.py</span>
 
 <span class="k">class</span> <span class="nc">dpnp</span><span class="p">(</span><span class="n">Stub</span><span class="p">):</span>
 
@@ -142,38 +144,49 @@ It rewrites call for <cite>NumPy</cite> function in following way:</p>
     <span class="k">pass</span>
 </pre></div>
 </div>
-<p>For the stub function call to be lowered with <cite>Numba</cite> compiler pipeline there
-is overload in <code class="file docutils literal notranslate"><span class="pre">numba_dppy/dpnp_iface/dpnp_transcendentalsimpl.py</span></code>:</p>
+<p>Each stub is provided with a concrete implementation to generates the actual
+code using Numba’s <code class="docutils literal notranslate"><span class="pre">overload</span></code> function API. E.g.,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@overload</span><span class="p">(</span><span class="n">stubs</span><span class="o">.</span><span class="n">dpnp</span><span class="o">.</span><span class="n">sum</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">dpnp_sum_impl</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
   <span class="o">...</span>
 </pre></div>
 </div>
-<p>Overload implementation knows about <cite>DPNP</cite> functions.
-It receives <cite>DPNP</cite> function pointer from <cite>DPNP</cite> and uses known signature from <cite>DPNP</cite> headers.
-The implementation calls <cite>DPNP</cite> function via creating <cite>Numba</cite> <code class="xref py py-class docutils literal notranslate"><span class="pre">ExternalFunctionPointer</span></code>.</p>
-<p>For more details about overloads implementation see <a class="reference internal" href="#overload-for-stub"><span class="std std-ref">Writing overload for stub function</span></a>.</p>
-<p>For more details about testing the integration see <a class="reference internal" href="#dpnp-integration-tests"><span class="std std-ref">Writing DPNP integration tests</span></a>.</p>
+<p>The complete implementation is in
+<code class="file docutils literal notranslate"><span class="pre">numba_dpex/dpnp_iface/dpnp_transcendentalsimpl.py</span></code>.</p>
+<p>The overload function controls what code should be generated for the
+corresponding dpnp function. The implementation of the overload
+inserts a call to a dpnp low-level API function using Numba’s
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ExternalFunctionPointer</span></code> feature. More details about the overload
+function implementation can be found in the <a class="reference internal" href="#overload-for-stub"><span class="std std-ref">Writing overload for stub function</span></a> section.</p>
 </section>
-<section id="places-to-update">
-<span id="dpnp-integration-places"></span><h3>Places to update<a class="headerlink" href="#places-to-update" title="Permalink to this headline"></a></h3>
+<section id="steps-to-support-a-new-numpy-function-using-dpnp">
+<h2>Steps to support a new NumPy function using dpnp<a class="headerlink" href="#steps-to-support-a-new-numpy-function-using-dpnp" title="Permalink to this headline"></a></h2>
 <ol class="arabic simple">
-<li><p><code class="file docutils literal notranslate"><span class="pre">numba_dppy/dpnp_iface/stubs.py</span></code>: Add new class to <code class="xref py py-class docutils literal notranslate"><span class="pre">stubs.dpnp</span></code> class.</p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">numba_dppy/dpnp_iface/dpnp_fptr_interface.pyx</span></code>: Update items in <code class="xref py py-class docutils literal notranslate"><span class="pre">DPNPFuncName</span></code> enum.</p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">numba_dppy/dpnp_iface/dpnp_fptr_interface.pyx</span></code>: Update if statements in <code class="xref py py-func docutils literal notranslate"><span class="pre">get_DPNPFuncName_from_str()</span></code> function.</p></li>
-<li><p>Add <code class="samp docutils literal notranslate"><span class="pre">&#64;overload(stubs.dpnp.</span><em><span class="pre">YOUR_FUNCTION</span></em><span class="pre">)</span></code> in one of the <code class="file docutils literal notranslate"><span class="pre">numba_dppy/dpnp_iface/</span><em><span class="pre">*</span></em><span class="pre">.py</span></code> modules or create new.</p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">numba_dppy/rename_numpy_functions_pass.py</span></code>: Update items in <code class="xref py py-obj docutils literal notranslate"><span class="pre">rewrite_function_name_map</span></code> dict.</p></li>
-<li><p><code class="file docutils literal notranslate"><span class="pre">numba_dppy/rename_numpy_functions_pass.py</span></code>: Update imported modules in <code class="xref py py-meth docutils literal notranslate"><span class="pre">DPPYRewriteOverloadedNumPyFunctions.__init__()</span></code>.</p></li>
-<li><p>Add test in one of the <code class="file docutils literal notranslate"><span class="pre">numba_dppy/tests/njit_tests/dpnp</span></code> test modules or create new.</p></li>
+<li><p>Add new stub class in <code class="file docutils literal notranslate"><span class="pre">numba_dpex/dpnp_iface/stubs.py</span></code>.</p></li>
+<li><p>Update the new function in the <code class="xref py py-class docutils literal notranslate"><span class="pre">DPNPFuncName</span></code> enum inside
+<code class="file docutils literal notranslate"><span class="pre">numba_dpex/dpnp_iface/dpnp_fptr_interface.pyx</span></code>.</p></li>
+<li><p>Update the conditional logic in the <code class="xref py py-func docutils literal notranslate"><span class="pre">get_DPNPFuncName_from_str()</span></code>
+function defined in <code class="file docutils literal notranslate"><span class="pre">numba_dpex/dpnp_iface/dpnp_fptr_interface.pyx</span></code>.</p></li>
+<li><p>Add a new overload function <code class="samp docutils literal notranslate"><span class="pre">&#64;overload(stubs.dpnp.</span><em><span class="pre">YOUR_FUNCTION</span></em><span class="pre">)</span></code>
+inside a new module named as <code class="file docutils literal notranslate"><span class="pre">numba_dpex/dpnp_iface/</span><em><span class="pre">*</span></em><span class="pre">.py</span></code>.</p></li>
+<li><p>Update items in <code class="xref py py-obj docutils literal notranslate"><span class="pre">rewrite_function_name_map</span></code> dictionary defined in
+<code class="file docutils literal notranslate"><span class="pre">numba_dpex/rename_numpy_functions_pass.py</span></code>, so that the rewrite pass
+knows to substitute the function.</p></li>
+<li><p>Import the new overload module into
+<code class="file docutils literal notranslate"><span class="pre">numba_dpex/rename_numpy_functions_pass.py</span></code> by updating
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">RewriteOverloadedNumPyFunctionsPass.__init__()</span></code>.</p></li>
+<li><p>Finally, add a unit test (refer existing test cases in
+<code class="file docutils literal notranslate"><span class="pre">numba_dpex/tests/njit_tests/dpnp</span></code>).</p></li>
 </ol>
 </section>
 <section id="writing-overload-for-stub-function">
-<span id="overload-for-stub"></span><h3>Writing overload for stub function<a class="headerlink" href="#writing-overload-for-stub-function" title="Permalink to this headline"></a></h3>
-<p>Overloads for stub functions resides in <code class="file docutils literal notranslate"><span class="pre">numba_dppy/dpnp_iface/</span><em><span class="pre">*</span></em><span class="pre">.py</span></code> modules.
-If you need create new module try to name it corresponding to <cite>DPNP</cite> naming.
-I.e. <code class="file docutils literal notranslate"><span class="pre">dpnp/backend/kernels/dpnp_krnl_indexing.cpp</span></code> -&gt; <code class="file docutils literal notranslate"><span class="pre">numba_dppy/dpnp_iface/dpnp_indexing.py</span></code>.</p>
+<span id="overload-for-stub"></span><h2>Writing overload for stub function<a class="headerlink" href="#writing-overload-for-stub-function" title="Permalink to this headline"></a></h2>
+<p>Overloads for stub functions resides in <code class="file docutils literal notranslate"><span class="pre">numba_dpex/dpnp_iface/</span><em><span class="pre">*</span></em><span class="pre">.py</span></code>
+modules. If you need create a new module, try to name it corresponding to dpnp
+naming convention. I.e. <code class="file docutils literal notranslate"><span class="pre">dpnp/backend/kernels/dpnp_krnl_indexing.cpp</span></code> -&gt;
+<code class="file docutils literal notranslate"><span class="pre">numba_dpex/dpnp_iface/dpnp_indexing.py</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numba.core.extending</span> <span class="kn">import</span> <span class="n">overload</span>
-<span class="kn">import</span> <span class="nn">numba_dppy.dpnp_iface</span> <span class="k">as</span> <span class="nn">dpnp_lowering</span>
+<span class="kn">import</span> <span class="nn">numba_dpex.dpnp_iface</span> <span class="k">as</span> <span class="nn">dpnp_lowering</span>
 <span class="o">...</span>
 
 <span class="nd">@overload</span><span class="p">(</span><span class="n">stubs</span><span class="o">.</span><span class="n">dpnp</span><span class="o">.</span><span class="n">sum</span><span class="p">)</span>
@@ -218,7 +231,7 @@ I.e. <code class="file docutils literal notranslate"><span class="pre">dpnp/back
 It is recommended to provide link to signature in <cite>DPNP</cite> sources and copy it in comment
 as shown above.</p>
 <p>For mapping between <cite>C</cite> types and <cite>Numba</cite> types see <a class="reference internal" href="#dpnp-integration-types-matching"><span class="std std-ref">Types matching for Numba and DPNP</span></a>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numba_dppy.dpnp_iface.dpnpimpl</span> <span class="k">as</span> <span class="nn">dpnp_ext</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numba_dpex.dpnp_iface.dpnpimpl</span> <span class="k">as</span> <span class="nn">dpnp_ext</span>
 <span class="o">...</span>
 <span class="c1"># continue of dpnp_sum_impl()</span>
   <span class="n">dpnp_func</span> <span class="o">=</span> <span class="n">dpnp_ext</span><span class="o">.</span><span class="n">dpnp_func</span><span class="p">(</span><span class="s2">&quot;dpnp_sum&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;NONE&quot;</span><span class="p">],</span> <span class="n">sig</span><span class="p">)</span>
@@ -234,7 +247,7 @@ It receives:</p>
 which is converted to <code class="xref py py-class docutils literal notranslate"><span class="pre">DPNPFuncType</span></code> enum in <code class="xref py py-func docutils literal notranslate"><span class="pre">get_DPNPFuncType_from_str()</span></code>.</p></li>
 <li><p>Signature which is used for creating <cite>Numba</cite> <code class="xref py py-class docutils literal notranslate"><span class="pre">ExternalFunctionPointer</span></code>.</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numba_dppy.dpnp_iface.dpnpimpl</span> <span class="k">as</span> <span class="nn">dpnp_ext</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numba_dpex.dpnp_iface.dpnpimpl</span> <span class="k">as</span> <span class="nn">dpnp_ext</span>
 <span class="o">...</span>
 <span class="c1"># continue of dpnp_sum_impl()</span>
   <span class="n">PRINT_DEBUG</span> <span class="o">=</span> <span class="n">dpnp_lowering</span><span class="o">.</span><span class="n">DEBUG</span>
@@ -253,16 +266,16 @@ which is converted to <code class="xref py py-class docutils literal notranslate
 Tests rely on debug information to check that DPNP implementation was used.
 See <a class="reference internal" href="#dpnp-integration-tests"><span class="std std-ref">Writing DPNP integration tests</span></a>.</p>
 <p><code class="xref py py-func docutils literal notranslate"><span class="pre">dpnp_impl()</span></code> creates output array with size and data type corresponding
-to <cite>DPNP</cite> function output array.</p>
-<p><code class="xref py py-func docutils literal notranslate"><span class="pre">dpnp_impl()</span></code> could call <cite>NumPy</cite> functions supported by <cite>Numba</cite> and
-other stab functions (i.e. <code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dppy.dpnp.dot()</span></code>).</p>
+to dpnp function output array.</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">dpnp_impl()</span></code> could call NumPy functions supported by Numba and
+other stab functions (i.e. <code class="xref py py-func docutils literal notranslate"><span class="pre">numba_dpex.dpnp.dot()</span></code>).</p>
 <p>The implementation function usually reuse a common function like <code class="xref py py-func docutils literal notranslate"><span class="pre">common_impl()</span></code>.
 This approach eliminates code duplication.
 You should consider all available common functions at the top of the file before
 creating the new one.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numba.core.extending</span> <span class="kn">import</span> <span class="n">register_jitable</span>
-<span class="kn">from</span> <span class="nn">numba_dppy</span> <span class="kn">import</span> <span class="n">dpctl_functions</span>
-<span class="kn">import</span> <span class="nn">numba_dppy.dpnp_iface.dpnpimpl</span> <span class="k">as</span> <span class="nn">dpnp_ext</span>
+<span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">dpctl_functions</span>
+<span class="kn">import</span> <span class="nn">numba_dpex.dpnp_iface.dpnpimpl</span> <span class="k">as</span> <span class="nn">dpnp_ext</span>
 <span class="o">...</span>
 
 <span class="nd">@register_jitable</span>
@@ -306,7 +319,7 @@ creating the new one.</p>
 <li><p>Print debug information used for testing</p></li>
 </ol>
 <section id="types-matching-for-numba-and-dpnp">
-<span id="dpnp-integration-types-matching"></span><h4>Types matching for Numba and DPNP<a class="headerlink" href="#types-matching-for-numba-and-dpnp" title="Permalink to this headline"></a></h4>
+<span id="dpnp-integration-types-matching"></span><h3>Types matching for Numba and DPNP<a class="headerlink" href="#types-matching-for-numba-and-dpnp" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p><code class="samp docutils literal notranslate"><span class="pre">[const]</span> <em><span class="pre">T</span></em><span class="pre">*</span></code> -&gt; <code class="xref py py-obj docutils literal notranslate"><span class="pre">types.voidptr</span></code></p></li>
 <li><p><cite>size_t</cite> -&gt; <code class="xref py py-obj docutils literal notranslate"><span class="pre">types.intp</span></code></p></li>
@@ -319,8 +332,8 @@ any mismatch in the size of the container to hold different types of pointer.</p
 </section>
 </section>
 <section id="writing-dpnp-integration-tests">
-<span id="dpnp-integration-tests"></span><h3>Writing <cite>DPNP</cite> integration tests<a class="headerlink" href="#writing-dpnp-integration-tests" title="Permalink to this headline"></a></h3>
-<p>See all <cite>DPNP</cite> integration tests in <code class="file docutils literal notranslate"><span class="pre">numba_dppy/tests/njit_tests/dpnp</span></code>.</p>
+<span id="dpnp-integration-tests"></span><h2>Writing <cite>DPNP</cite> integration tests<a class="headerlink" href="#writing-dpnp-integration-tests" title="Permalink to this headline"></a></h2>
+<p>See all <cite>DPNP</cite> integration tests in <code class="file docutils literal notranslate"><span class="pre">numba_dpex/tests/njit_tests/dpnp</span></code>.</p>
 <p>Usually adding new test is as easy as adding function name to the corresponding list of function names.
 Each item in the list is used as a parameter for tests.
 You should find tests for the category of functions similar to your function and
@@ -366,15 +379,14 @@ and receive <code class="xref py py-obj docutils literal notranslate"><span clas
 </ol>
 </section>
 <section id="troubleshooting">
-<span id="dpnp-troubleshooting"></span><h3>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline"></a></h3>
+<span id="dpnp-troubleshooting"></span><h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline"></a></h2>
 <ol class="arabic simple">
-<li><p>Do not forget build <cite>numba-dppy</cite> with current installed version of <cite>DPNP</cite>.
-There is headers dependency in <cite>Cython</cite> files (i.e. <code class="file docutils literal notranslate"><span class="pre">numba_dppy/dpnp_iface/dpnp_fptr_interface.pyx</span></code>).</p></li>
+<li><p>Do not forget build numba-dpex with current installed version of dpnp.
+There is headers dependency in <cite>Cython</cite> files (i.e. <code class="file docutils literal notranslate"><span class="pre">numba_dpex/dpnp_iface/dpnp_fptr_interface.pyx</span></code>).</p></li>
 <li><p>Do not forget add array to <code class="samp docutils literal notranslate"><span class="pre">dpnp_ext._dummy_liveness_func([</span><em><span class="pre">YOUR_ARRAY</span></em><span class="pre">.size])</span></code>.
 Dead code elimination could delete temporary variables before they are used for <cite>DPNP</cite> function call.
 As a result wrong data could be passed to <cite>DPNP</cite> function.</p></li>
 </ol>
-</section>
 </section>
 </section>
 
@@ -382,14 +394,14 @@ As a result wrong data could be passed to <cite>DPNP</cite> function.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../user_guides/migrating_from_numba_cuda.html" class="btn btn-neutral float-left" title="numba-dppy For numba.cuda Developers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../user_guides/migrating_from_numba_cuda.html" class="btn btn-neutral float-left" title="numba-dpex for numba.cuda Developers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="tools.html" class="btn btn-neutral float-right" title="Debugging the compilation pipeline" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Intel.</p>
+    <p>&#169; Copyright 2021,2022 Intel.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

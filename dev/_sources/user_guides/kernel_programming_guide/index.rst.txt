@@ -1,4 +1,4 @@
-Programming SYCL Kernels Using :func:`~numba_dppy.decorators.kernel`
+Programming SYCL Kernels Using :func:`~numba_dpex.decorators.kernel`
 ====================================================================
 
 .. toctree::
