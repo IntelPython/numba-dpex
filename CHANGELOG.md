@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+* numba-dppy package is now renamed to numba-dpex.
+
 ## [0.18.0] - 2022-02-22
 
 ### Added
