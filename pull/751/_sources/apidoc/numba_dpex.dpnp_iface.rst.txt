@@ -1,0 +1,32 @@
+numba\_dpex.dpnp\_iface package
+===============================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.dpnp_iface.dpnp_array_creations_impl
+   numba_dpex.dpnp_iface.dpnp_array_ops_impl
+   numba_dpex.dpnp_iface.dpnp_fptr_interface
+   numba_dpex.dpnp_iface.dpnp_fptr_interface
+   numba_dpex.dpnp_iface.dpnp_indexing
+   numba_dpex.dpnp_iface.dpnp_linalgimpl
+   numba_dpex.dpnp_iface.dpnp_logic
+   numba_dpex.dpnp_iface.dpnp_manipulation
+   numba_dpex.dpnp_iface.dpnp_randomimpl
+   numba_dpex.dpnp_iface.dpnp_sort_search_countimpl
+   numba_dpex.dpnp_iface.dpnp_statisticsimpl
+   numba_dpex.dpnp_iface.dpnp_transcendentalsimpl
+   numba_dpex.dpnp_iface.dpnpdecl
+   numba_dpex.dpnp_iface.dpnpimpl
+   numba_dpex.dpnp_iface.stubs
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex.dpnp_iface
+   :members:
+   :undoc-members:
+   :show-inheritance:
