@@ -133,16 +133,17 @@ class KernelLaunchOps:
         Args:
             var : A kernel argument represented as a Numba type.
             llvm_arg : Only used for array arguments and points to the LLVM
-                       value previously allocated to store the array arg.
+            value previously allocated to store the array arg.
             arg_type : The Numba type for the argument.
             index : The poisition of the argument in the list of arguments.
             modified_arrays : The list of array arguments that are written to
-                              inside the kernel. The list is used to check if
-                              the argument is read-only or not.
+            inside the kernel. The list is used to check if the argument is
+            read-only or not.
 
         Raises:
             NotImplementedError: If an unsupported type of kernel argument is
-                                 encountered.
+            encountered.
+
         """
         if isinstance(arg_type, types.npytypes.Array):
             if llvm_arg is None:

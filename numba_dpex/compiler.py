@@ -119,7 +119,7 @@ def compile_with_depx(pyfunc, return_type, args, is_kernel, debug=None):
         return_type: The Numba type of the return value.
         args: The list of arguments sent to the Python function.
         is_kernel (bool): Indicates whether the function is decorated
-            with @numba_depx.kernel or not.
+        with @numba_depx.kernel or not.
         debug (bool): Flag to turn debug mode ON/OFF.
 
     Returns:

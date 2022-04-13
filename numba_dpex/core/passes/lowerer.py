@@ -1317,10 +1317,11 @@ class DPEXLowerer(Lower):
         1. Start lowering of parent function
         2. Try to lower parfor onto the specified SYCL device
             2.a. The ``lower_parfor_rollback`` function prepares function to
-                 lower onto to the specified SYCL device and inserts the
-                 ``get_global_id`` intrinsic function.
+                lower onto to the specified SYCL device and inserts the
+                ``get_global_id`` intrinsic function.
+
                 2.a.a. Start lowering the parfor body and execute
-                       ``DpexLowerer.lower()`` again.
+                ``DpexLowerer.lower()`` again.
                 2.a.b. If the lowering fails, throw an exception.
             2.b. The ``lower_parfor_rollback`` catches the exception and
                  restores the parfor body to its initial state.
@@ -1336,6 +1337,7 @@ class DPEXLowerer(Lower):
 
         Raises:
             Exception: If a parfor node could not be lowered to a SYCL device.
+
         """
         try:
             context = self.gpu_lower.context

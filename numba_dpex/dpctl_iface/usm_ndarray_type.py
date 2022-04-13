@@ -27,6 +27,7 @@ class USMNdArrayType(Array):
                     readonly=False, name=None,
                     aligned=True, addrspace=None)
     creates Numba type to represent ``dpctl.tensor.usm_ndarray``.
+
     """
 
     def __init__(

@@ -17,7 +17,7 @@ See :ref:`info-locals`.
 Breakpoint with condition by function argument
 ----------------------------------------------
 
-Test :file:`numba_dppy/tests/debugging/test_breakpoints.py:test_breakpoint_with_condition_by_function_argument`.
+Test :file:`numba_dpex/tests/debugging/test_breakpoints.py:test_breakpoint_with_condition_by_function_argument`.
 
 When set breakpoint on the function or the first line of the function
 than ``info locals`` and ``info args`` provide correct values.
@@ -26,9 +26,9 @@ It makes it posible to use breakpoint with condition by function argument.
 Example
 ```````
 
-Source code :file:`numba_dppy/examples/debug/side-by-side.py`:
+Source code :file:`numba_dpex/examples/debug/side-by-side.py`:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/side-by-side.py
+.. literalinclude:: ../../../numba_dpex/examples/debug/side-by-side.py
     :pyobject: common_loop_body
     :linenos:
     :lineno-match:
@@ -43,7 +43,7 @@ Set breakpoint with condition by function argument:
     ...
     (gdb) break side-by-side.py:25 if param_a == 3
     ...
-    (gdb) run numba_dppy/examples/debug/side-by-side.py --api=numba-dppy-kernel
+    (gdb) run numba_dpex/examples/debug/side-by-side.py --api=numba-dpex-kernel
     ...
     Thread 2.1 hit Breakpoint 1, with SIMD lane 3, __main__::common_loop_body (param_a=3, param_b=3) at side-by-side.py:25
     25          param_c = param_a + 10  # Set breakpoint here

@@ -1,5 +1,5 @@
-``numba-dppy`` For ``numba.cuda`` Developers
-============================================
+numba-dpex for ``numba.cuda`` Developers
+========================================
 
 .. todo::
 
@@ -8,11 +8,11 @@
 .. Transition from Numba CUDA
 .. --------------------------
 
-.. Replace ``@cuda.jit(device=True)`` with ``@dppy.func``.
+.. Replace ``@cuda.jit(device=True)`` with ``@numba_dpex.func``.
 
 .. See also
 .. --------
 
 .. Examples:
 
-.. - ``numba_dppy/examples/dppy_func.py``
+.. - ``numba_dpex/examples/dpex_func.py``
