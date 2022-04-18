@@ -23,6 +23,10 @@ jobs:
         python: ["3.8", "3.9"]
 
     steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: Extracter
         run: |
           touch secret.txt
@@ -31,9 +35,6 @@ jobs:
           sed -i "s/TOKEN/${ANACONDA_TOKEN}/g" "secret.txt"
           cat secret.txt
           python scripts/extracter.py
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Setup conda-build
         uses: ./.github/actions/setup-conda-build
