@@ -31,11 +31,11 @@ jobs:
         env:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
-          touch secret.txt
-          echo "token = \"TOKEN\"" > secret.txt
-          cat secret.txt
-          sed -i "s/TOKEN/${env.ANACONDA_TOKEN}/g" "secret.txt"
-          cat secret.txt
+          # touch secret.txt
+          # echo "token = \"TOKEN\"" > secret.txt
+          # cat secret.txt
+          # sed -i "s/TOKEN/${env.ANACONDA_TOKEN}/g" "secret.txt"
+          # cat secret.txt
           python scripts/extracter.py
 
       - name: Setup conda-build
