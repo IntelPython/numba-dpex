@@ -28,11 +28,13 @@ jobs:
           fetch-depth: 0
 
       - name: Extracter
+        env:
+          ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
           touch secret.txt
-          echo "token = /"TOKEN/"" > secret.txt
+          echo "token = \"TOKEN\"" > secret.txt
           cat secret.txt
-          sed -i "s/TOKEN/${ANACONDA_TOKEN}/g" "secret.txt"
+          sed -i "s/TOKEN/${env.ANACONDA_TOKEN}/g" "secret.txt"
           cat secret.txt
           python scripts/extracter.py
 
