@@ -1,0 +1,19 @@
+numba\_dpex.core package
+========================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.core.passes
+   numba_dpex.core.types
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex.core
+   :members:
+   :undoc-members:
+   :show-inheritance:

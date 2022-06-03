@@ -1,0 +1,7 @@
+numba\_dpex.core.passes.rename\_numpy\_functions\_pass module
+=============================================================
+
+.. automodule:: numba_dpex.core.passes.rename_numpy_functions_pass
+   :members:
+   :undoc-members:
+   :show-inheritance:

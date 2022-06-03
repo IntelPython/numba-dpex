@@ -1,0 +1,7 @@
+numba\_dpex.retarget module
+===========================
+
+.. automodule:: numba_dpex.retarget
+   :members:
+   :undoc-members:
+   :show-inheritance:
