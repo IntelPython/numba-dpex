@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Memory Management &mdash; numba-dpex 0+untagged.731.gee51cc9 documentation</title>
+  <title>Memory Management &mdash; numba-dpex 0+untagged.732.g0731c97 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -99,7 +100,7 @@
            <div itemprop="articleBody">
              
   <section id="memory-management">
-<h1>Memory Management<a class="headerlink" href="#memory-management" title="Permalink to this headline"></a></h1>
+<h1>Memory Management<a class="headerlink" href="#memory-management" title="Permalink to this heading"></a></h1>
 <p>Numba-dpex uses DPC++’s USM shared memory allocator (<code class="docutils literal notranslate"><span class="pre">memory_alloc</span></code>) to
 enable host to device and <em>vice versa</em> data transfer. By using USM shared
 memory allocator, numba-dpex allows seamless interoperability between
@@ -117,7 +118,7 @@ and <code class="docutils literal notranslate"><span class="pre">shared</span></
 USM pointers by host applications is not allowed.</p>
 </div>
 <section id="sycl-usm-array-interface">
-<h2>SYCL USM Array Interface<a class="headerlink" href="#sycl-usm-array-interface" title="Permalink to this headline"></a></h2>
+<h2>SYCL USM Array Interface<a class="headerlink" href="#sycl-usm-array-interface" title="Permalink to this heading"></a></h2>
 <p>A SYCL library may allocate USM memory for the result that needs to be passed to
 Python. A native Python extension that makes use of such a library may expose
 this memory as an instance of Python class that will implement memory management
@@ -149,12 +150,12 @@ other Python objects, such as <code class="docutils literal notranslate"><span c
 using methods of the dpctl.</p>
 </section>
 <section id="device-only-memory-and-explicit-data-transfer">
-<h2>Device-only memory and explicit data transfer<a class="headerlink" href="#device-only-memory-and-explicit-data-transfer" title="Permalink to this headline"></a></h2>
+<h2>Device-only memory and explicit data transfer<a class="headerlink" href="#device-only-memory-and-explicit-data-transfer" title="Permalink to this heading"></a></h2>
 <p>At the moment, there is no mechanism for the explicit transfer of arrays to
 the device and back. Please use usm arrays.</p>
 </section>
 <section id="local-memory">
-<h2>Local memory<a class="headerlink" href="#local-memory" title="Permalink to this headline"></a></h2>
+<h2>Local memory<a class="headerlink" href="#local-memory" title="Permalink to this heading"></a></h2>
 <p>In SYCL’s memory model, local memory is a contiguous region of memory allocated
 per work group and is visible to all the work items in that group. Local memory
 is device-only and cannot be accessed from the host. From the perspective offers
@@ -212,7 +213,7 @@ allocate local memory for a kernel.</p>
 </div>
 </section>
 <section id="private-and-constant-memory">
-<h2>Private and Constant memory<a class="headerlink" href="#private-and-constant-memory" title="Permalink to this headline"></a></h2>
+<h2>Private and Constant memory<a class="headerlink" href="#private-and-constant-memory" title="Permalink to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> does not yet support SYCL private and constant memory.</p>
 </section>
 </section>

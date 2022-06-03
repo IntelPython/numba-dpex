@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Altering Execution &mdash; numba-dpex 0+untagged.731.gee51cc9 documentation</title>
+  <title>Altering Execution &mdash; numba-dpex 0+untagged.732.g0731c97 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -103,10 +104,10 @@
            <div itemprop="articleBody">
              
   <section id="altering-execution">
-<h1>Altering Execution<a class="headerlink" href="#altering-execution" title="Permalink to this headline"></a></h1>
+<h1>Altering Execution<a class="headerlink" href="#altering-execution" title="Permalink to this heading"></a></h1>
 <p>See <a class="reference external" href="https://sourceware.org/gdb/onlinedocs/gdb/Altering.html">GDB* documentation</a>.</p>
 <section id="assignment-to-variables">
-<span id="id1"></span><h2>Assignment to Variables<a class="headerlink" href="#assignment-to-variables" title="Permalink to this headline"></a></h2>
+<span id="id1"></span><h2>Assignment to Variables<a class="headerlink" href="#assignment-to-variables" title="Permalink to this heading"></a></h2>
 <p>To alter the value of a variable, evaluate an assignment expression.
 This also works for function arguments.</p>
 <div class="admonition note">
@@ -116,7 +117,7 @@ arguments should not be modified in code.
 See <a class="reference external" href="https://github.com/numba/numba/pull/7196">Numba issue</a>.</p>
 </div>
 <section id="example">
-<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline"></a></h3>
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this heading"></a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/side-by-side-2.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">24</span><span class="k">def</span> <span class="nf">common_loop_body</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
 <span class="linenos">25</span>    <span class="n">param_a</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>

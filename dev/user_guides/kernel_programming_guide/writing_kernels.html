@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Writing SYCL Kernels &mdash; numba-dpex 0+untagged.731.gee51cc9 documentation</title>
+  <title>Writing SYCL Kernels &mdash; numba-dpex 0+untagged.732.g0731c97 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -102,9 +103,9 @@
            <div itemprop="articleBody">
              
   <section id="writing-sycl-kernels">
-<h1>Writing SYCL Kernels<a class="headerlink" href="#writing-sycl-kernels" title="Permalink to this headline"></a></h1>
+<h1>Writing SYCL Kernels<a class="headerlink" href="#writing-sycl-kernels" title="Permalink to this heading"></a></h1>
 <section id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline"></a></h2>
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h2>
 <p>Numba-dpex offers a way to write data-parallel kernels directly using Python.
 The compiler extension to Numba has a programming model similar to the SYCL C++
 domain-specific language. By providing similar abstractions as SYCL, Python
@@ -117,7 +118,7 @@ should serves as a guide for using the current kernel programming features
 available in numba-dpex.</p>
 </section>
 <section id="kernel-declaration">
-<h2>Kernel declaration<a class="headerlink" href="#kernel-declaration" title="Permalink to this headline"></a></h2>
+<h2>Kernel declaration<a class="headerlink" href="#kernel-declaration" title="Permalink to this heading"></a></h2>
 <p>A kernel function is a device function that is meant to be called from host
 code, where a device can be any SYCL supported device such as a GPU, CPU, or an
 FPGA. The present focus of development of numba-dpex is mainly on Intel’s
@@ -132,7 +133,7 @@ is compiled once, it can be called multiple times with different block sizes
 or grid sizes).</p></li>
 </ul>
 <section id="example">
-<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline"></a></h3>
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this heading"></a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ch">#! /usr/bin/env python</span>
 <span class="c1"># Copyright 2020, 2021 Intel Corporation</span>
 <span class="c1">#</span>
@@ -201,7 +202,7 @@ or grid sizes).</p></li>
 </section>
 </section>
 <section id="kernel-invocation">
-<h2>Kernel invocation<a class="headerlink" href="#kernel-invocation" title="Permalink to this headline"></a></h2>
+<h2>Kernel invocation<a class="headerlink" href="#kernel-invocation" title="Permalink to this heading"></a></h2>
 <p>A kernel is typically launched in the following way:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">driver</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">global_size</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A : &quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
@@ -214,7 +215,7 @@ or grid sizes).</p></li>
 </div>
 </section>
 <section id="indexing-functions">
-<h2>Indexing functions<a class="headerlink" href="#indexing-functions" title="Permalink to this headline"></a></h2>
+<h2>Indexing functions<a class="headerlink" href="#indexing-functions" title="Permalink to this heading"></a></h2>
 <p>Numba-dpex provides the following indexing functions that have OpenCL-like
 semantics:</p>
 <ul class="simple">

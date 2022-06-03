@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Debugging the compilation pipeline &mdash; numba-dpex 0+untagged.731.gee51cc9 documentation</title>
+  <title>Debugging the compilation pipeline &mdash; numba-dpex 0+untagged.732.g0731c97 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -83,7 +84,7 @@
            <div itemprop="articleBody">
              
   <section id="debugging-the-compilation-pipeline">
-<h1>Debugging the compilation pipeline<a class="headerlink" href="#debugging-the-compilation-pipeline" title="Permalink to this headline"></a></h1>
+<h1>Debugging the compilation pipeline<a class="headerlink" href="#debugging-the-compilation-pipeline" title="Permalink to this heading"></a></h1>
 <p>Consider the following two examples.
 <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/simple_sum.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span><span class="kn">import</span> <span class="nn">dpctl</span>
@@ -134,7 +135,7 @@
 </pre></div>
 </div>
 <section id="getting-the-dwarf-from-binary-file">
-<h2>Getting the DWARF from binary file<a class="headerlink" href="#getting-the-dwarf-from-binary-file" title="Permalink to this headline"></a></h2>
+<h2>Getting the DWARF from binary file<a class="headerlink" href="#getting-the-dwarf-from-binary-file" title="Permalink to this heading"></a></h2>
 <p>In order to get the DWARF information from a specific kernel, just enable
 <code class="docutils literal notranslate"><span class="pre">IGC_ShaderDumpEnable</span></code> variable. IGC will write number of dumps into
 <code class="docutils literal notranslate"><span class="pre">/tmp/IntelIGC</span></code>.</p>
@@ -158,7 +159,7 @@ a file, and saved it at <code class="docutils literal notranslate"><span class="
 </div>
 </section>
 <section id="getting-the-dwarf-from-numba-assembly-for-njit">
-<h2>Getting the DWARF from Numba assembly (for njit)<a class="headerlink" href="#getting-the-dwarf-from-numba-assembly-for-njit" title="Permalink to this headline"></a></h2>
+<h2>Getting the DWARF from Numba assembly (for njit)<a class="headerlink" href="#getting-the-dwarf-from-numba-assembly-for-njit" title="Permalink to this heading"></a></h2>
 <p>Setting Numba environment variable <code class="docutils literal notranslate"><span class="pre">NUMBA_DUMP_ASSEMBLY</span></code> dumps the native
 assembly code of compiled functions.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NUMBA_DUMP_ASSEMBLY</span><span class="o">=</span><span class="m">1</span> python njit-basic.py &gt; njit-basic-asm.txt

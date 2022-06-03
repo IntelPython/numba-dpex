@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Examining the Symbol Table &mdash; numba-dpex 0+untagged.731.gee51cc9 documentation</title>
+  <title>Examining the Symbol Table &mdash; numba-dpex 0+untagged.732.g0731c97 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -103,10 +104,10 @@
            <div itemprop="articleBody">
              
   <section id="examining-the-symbol-table">
-<h1>Examining the Symbol Table<a class="headerlink" href="#examining-the-symbol-table" title="Permalink to this headline"></a></h1>
+<h1>Examining the Symbol Table<a class="headerlink" href="#examining-the-symbol-table" title="Permalink to this heading"></a></h1>
 <p>See <a class="reference external" href="https://sourceware.org/gdb/onlinedocs/gdb/Symbols.html">GDB* documentation</a>.</p>
 <section id="info-functions">
-<h2><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">functions</span></code><a class="headerlink" href="#info-functions" title="Permalink to this headline"></a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">functions</span></code><a class="headerlink" href="#info-functions" title="Permalink to this heading"></a></h2>
 <p>At least following syntax is supported:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>info functions
 info functions <span class="o">[</span>regexp<span class="o">]</span>
@@ -118,7 +119,7 @@ info functions <span class="o">[</span>regexp<span class="o">]</span>
 as the list of all functions in all loaded shared libraries is typically very long.</p>
 </div>
 <section id="example">
-<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline"></a></h3>
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this heading"></a></h3>
 <p>Source file <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/simple_sum.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span><span class="kn">import</span> <span class="nn">dpctl</span>
 <span class="linenos">16</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -169,7 +170,7 @@ as the list of all functions in all loaded shared libraries is typically very lo
 </section>
 </section>
 <section id="whatis-arg-and-ptype-arg">
-<span id="whatis"></span><h2><code class="docutils literal notranslate"><span class="pre">whatis</span> <span class="pre">[arg]</span></code> and <code class="docutils literal notranslate"><span class="pre">ptype</span> <span class="pre">[arg]</span></code><a class="headerlink" href="#whatis-arg-and-ptype-arg" title="Permalink to this headline"></a></h2>
+<span id="whatis"></span><h2><code class="docutils literal notranslate"><span class="pre">whatis</span> <span class="pre">[arg]</span></code> and <code class="docutils literal notranslate"><span class="pre">ptype</span> <span class="pre">[arg]</span></code><a class="headerlink" href="#whatis-arg-and-ptype-arg" title="Permalink to this heading"></a></h2>
 <p>To print the type of a variable, run the <code class="docutils literal notranslate"><span class="pre">ptype</span> <span class="pre">&lt;variable&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">whatis</span> <span class="pre">&lt;variable&gt;</span></code> commands:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">whatis a</span>
 </span><span class="hll"><span class="go">type = byte [56]</span>
@@ -183,7 +184,7 @@ as the list of all functions in all loaded shared libraries is typically very lo
 </pre></div>
 </div>
 <section id="example-complex-data-types">
-<h3>Example - Complex Data Types<a class="headerlink" href="#example-complex-data-types" title="Permalink to this headline"></a></h3>
+<h3>Example - Complex Data Types<a class="headerlink" href="#example-complex-data-types" title="Permalink to this heading"></a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/side-by-side-2.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">24</span><span class="k">def</span> <span class="nf">common_loop_body</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
 <span class="linenos">25</span>    <span class="n">param_a</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>

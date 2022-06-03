@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Debugging with Intel® Distribution for GDB* &mdash; numba-dpex 0+untagged.731.gee51cc9 documentation</title>
+  <title>Debugging with Intel® Distribution for GDB* &mdash; numba-dpex 0+untagged.732.g0731c97 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -94,7 +95,7 @@
            <div itemprop="articleBody">
              
   <section id="debugging-with-intel-distribution-for-gdb">
-<h1>Debugging with Intel® Distribution for GDB*<a class="headerlink" href="#debugging-with-intel-distribution-for-gdb" title="Permalink to this headline"></a></h1>
+<h1>Debugging with Intel® Distribution for GDB*<a class="headerlink" href="#debugging-with-intel-distribution-for-gdb" title="Permalink to this heading"></a></h1>
 <p>Numba-dpex allows you to debug SYCL* kernels with Intel® Distribution for GDB*.
 To enable the emission of debug information, set the debug environment variable
 <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">NUMBA_DPEX_DEBUGINFO</span></code>, for example:
@@ -110,7 +111,7 @@ out-of-memory error.</p>
 <p>Not all debugging features supported by Numba on CPUs are yet supported by
 numba-dpex. See <a class="reference internal" href="#debugging-features-and-limitations"><span class="std std-ref">Features and Limitations</span></a>.</p>
 <section id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline"></a></h2>
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this heading"></a></h2>
 <p><cite>Intel® Distribution for GDB*</cite> is required for numba-dpex debugging features to
 work.
 <cite>Intel® Distribution for GDB*</cite> is part of <cite>Intel oneAPI</cite>. For relevant
@@ -128,7 +129,7 @@ documentation, refer to the <a class="reference external" href="https://software
 </div>
 </section>
 <section id="example-of-intel-distribution-for-gdb-usage">
-<h2>Example of Intel® Distribution for GDB* usage<a class="headerlink" href="#example-of-intel-distribution-for-gdb-usage" title="Permalink to this headline"></a></h2>
+<h2>Example of Intel® Distribution for GDB* usage<a class="headerlink" href="#example-of-intel-distribution-for-gdb-usage" title="Permalink to this heading"></a></h2>
 <p>You can use a sample kernel code, <code class="file docutils literal notranslate"><span class="pre">simple_sum.py</span></code>, for basic debugging:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span><span class="kn">import</span> <span class="nn">dpctl</span>
 <span class="linenos">16</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -177,7 +178,7 @@ debugger:</p>
 </div>
 </section>
 <section id="features-and-limitations">
-<span id="debugging-features-and-limitations"></span><h2>Features and Limitations<a class="headerlink" href="#features-and-limitations" title="Permalink to this headline"></a></h2>
+<span id="debugging-features-and-limitations"></span><h2>Features and Limitations<a class="headerlink" href="#features-and-limitations" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="features.html">Supported Features</a><ul>

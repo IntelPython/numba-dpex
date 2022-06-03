@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reduction on SYCL-supported Devices &mdash; numba-dpex 0+untagged.731.gee51cc9 documentation</title>
+  <title>Reduction on SYCL-supported Devices &mdash; numba-dpex 0+untagged.732.g0731c97 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -98,13 +99,13 @@
            <div itemprop="articleBody">
              
   <section id="reduction-on-sycl-supported-devices">
-<h1>Reduction on SYCL-supported Devices<a class="headerlink" href="#reduction-on-sycl-supported-devices" title="Permalink to this headline"></a></h1>
+<h1>Reduction on SYCL-supported Devices<a class="headerlink" href="#reduction-on-sycl-supported-devices" title="Permalink to this heading"></a></h1>
 <p>Numba-dpex does not yet provide any specific decorator to implement
 reduction kernels. However, a kernel reduction can be written explicitly. This
 section provides two approaches for writing a reduction kernel as a
 <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code> function.</p>
 <section id="example-1">
-<h2>Example 1<a class="headerlink" href="#example-1" title="Permalink to this headline"></a></h2>
+<h2>Example 1<a class="headerlink" href="#example-1" title="Permalink to this heading"></a></h2>
 <p>This example demonstrates a summation reduction on a one-dimensional array.</p>
 <p>Full example can be found at <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction.py</span></code>.</p>
 <p>In this example, to reduce the array we invoke the kernel multiple times.</p>
@@ -142,7 +143,7 @@ section provides two approaches for writing a reduction kernel as a
 </div>
 </section>
 <section id="example-2">
-<h2>Example 2<a class="headerlink" href="#example-2" title="Permalink to this headline"></a></h2>
+<h2>Example 2<a class="headerlink" href="#example-2" title="Permalink to this heading"></a></h2>
 <p>Full example can be found at
 <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction_recursive_ocl.py</span></code>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@dpex</span><span class="o">.</span><span class="n">kernel</span>
@@ -248,7 +249,7 @@ future releases.</p>
 </div>
 </section>
 <section id="full-examples">
-<h2>Full examples<a class="headerlink" href="#full-examples" title="Permalink to this headline"></a></h2>
+<h2>Full examples<a class="headerlink" href="#full-examples" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction_recursive_ocl.py</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction_ocl.py</span></code></p></li>

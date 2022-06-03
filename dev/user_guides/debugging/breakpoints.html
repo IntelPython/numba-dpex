@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Breakpoints &mdash; numba-dpex 0+untagged.731.gee51cc9 documentation</title>
+  <title>Breakpoints &mdash; numba-dpex 0+untagged.732.g0731c97 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -103,7 +104,7 @@
            <div itemprop="articleBody">
              
   <section id="breakpoints">
-<h1>Breakpoints<a class="headerlink" href="#breakpoints" title="Permalink to this headline"></a></h1>
+<h1>Breakpoints<a class="headerlink" href="#breakpoints" title="Permalink to this heading"></a></h1>
 <p>A <cite>breakpoint</cite> makes your program stop whenever a certain point in the program
 is reached.</p>
 <p>You can set breakpoints with the <code class="docutils literal notranslate"><span class="pre">break</span></code> command to specify the place where
@@ -151,7 +152,7 @@ function names.</p>
 </pre></div>
 </div>
 <section id="break-function">
-<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">function</span></code><a class="headerlink" href="#break-function" title="Permalink to this headline"></a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">function</span></code><a class="headerlink" href="#break-function" title="Permalink to this heading"></a></h2>
 <p>The debugger output:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
@@ -170,7 +171,7 @@ function names.</p>
 </div>
 </section>
 <section id="break-filename-linenumber">
-<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">filename:linenumber</span></code><a class="headerlink" href="#break-filename-linenumber" title="Permalink to this headline"></a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">filename:linenumber</span></code><a class="headerlink" href="#break-filename-linenumber" title="Permalink to this heading"></a></h2>
 <p>The debugger output:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
@@ -189,7 +190,7 @@ function names.</p>
 </div>
 </section>
 <section id="break-filename-function">
-<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">filename:function</span></code><a class="headerlink" href="#break-filename-function" title="Permalink to this headline"></a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">filename:function</span></code><a class="headerlink" href="#break-filename-function" title="Permalink to this heading"></a></h2>
 <p>The debugger output:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
@@ -208,7 +209,7 @@ function names.</p>
 </div>
 </section>
 <section id="break-if-cond">
-<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">…</span> <span class="pre">if</span> <span class="pre">cond</span></code><a class="headerlink" href="#break-if-cond" title="Permalink to this headline"></a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">…</span> <span class="pre">if</span> <span class="pre">cond</span></code><a class="headerlink" href="#break-if-cond" title="Permalink to this heading"></a></h2>
 <p>The debugger output:</p>
 <div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
@@ -226,7 +227,7 @@ function names.</p>
 </div>
 </section>
 <section id="breakpoints-with-nested-functions">
-<h2>Breakpoints with nested functions<a class="headerlink" href="#breakpoints-with-nested-functions" title="Permalink to this headline"></a></h2>
+<h2>Breakpoints with nested functions<a class="headerlink" href="#breakpoints-with-nested-functions" title="Permalink to this heading"></a></h2>
 <p>Consider numba-dpex kernel code. See the source file
 <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/simple_dpex_func.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span><span class="kn">import</span> <span class="nn">dpctl</span>

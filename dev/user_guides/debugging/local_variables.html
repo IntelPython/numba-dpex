@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Debugging Local Variables &mdash; numba-dpex 0+untagged.731.gee51cc9 documentation</title>
+  <title>Debugging Local Variables &mdash; numba-dpex 0+untagged.732.g0731c97 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -103,14 +104,14 @@
            <div itemprop="articleBody">
              
   <section id="debugging-local-variables">
-<h1>Debugging Local Variables<a class="headerlink" href="#debugging-local-variables" title="Permalink to this headline"></a></h1>
+<h1>Debugging Local Variables<a class="headerlink" href="#debugging-local-variables" title="Permalink to this heading"></a></h1>
 <p>Several conditions could influence debugging of local variables:</p>
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="#numba-opt"><span class="std std-ref">Optimization Level for LLVM</span></a></p></li>
 <li><p><a class="reference internal" href="#local-variables-lifetime"><span class="std std-ref">Local Variables Lifetime in Numba IR</span></a></p></li>
 </ol>
 <section id="optimization-level-for-llvm">
-<span id="numba-opt"></span><h2>Optimization Level for LLVM<a class="headerlink" href="#optimization-level-for-llvm" title="Permalink to this headline"></a></h2>
+<span id="numba-opt"></span><h2>Optimization Level for LLVM<a class="headerlink" href="#optimization-level-for-llvm" title="Permalink to this heading"></a></h2>
 <p>Numba provides environment variable <code class="docutils literal notranslate"><span class="pre">NUMBA_OPT</span></code> for configuring
 optimization level for LLVM. The default optimization level is three.
 Refer <a class="reference external" href="https://numba.readthedocs.io/en/stable/reference/envvars.html?#envvar-NUMBA_OPT">Numba documentation</a> for details. It is recommended to debug with
@@ -121,7 +122,7 @@ as follows:</p>
 <li><p><code class="samp docutils literal notranslate"><span class="pre">NUMBA_OPT=1</span></code> or higher levels - some variables may be optimized out.</p></li>
 </ul>
 <section id="example">
-<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline"></a></h3>
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this heading"></a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/sum_local_vars.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">21</span><span class="nd">@dpex</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="linenos">22</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
@@ -166,7 +167,7 @@ as follows:</p>
 </section>
 </section>
 <section id="local-variables-lifetime-in-numba-ir">
-<span id="local-variables-lifetime"></span><h2>Local Variables Lifetime in Numba IR<a class="headerlink" href="#local-variables-lifetime-in-numba-ir" title="Permalink to this headline"></a></h2>
+<span id="local-variables-lifetime"></span><h2>Local Variables Lifetime in Numba IR<a class="headerlink" href="#local-variables-lifetime-in-numba-ir" title="Permalink to this heading"></a></h2>
 <p>Lifetime of Python variables are different from lifetime of variables in compiled code.
 Numba analyses variables lifetime and try to optimize it.
 The debugger can show the variable values, but they may be zeros
@@ -178,7 +179,7 @@ for extending the lifetime of variables to the end of the block in which their l
 <p>Default is zero.</p>
 <p>It is recommended to debug with <code class="samp docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES=1</span></code>.</p>
 <section id="example-1-using-numba-extend-variable-lifetimes">
-<h3>Example 1 - Using <code class="docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES</span></code><a class="headerlink" href="#example-1-using-numba-extend-variable-lifetimes" title="Permalink to this headline"></a></h3>
+<h3>Example 1 - Using <code class="docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES</span></code><a class="headerlink" href="#example-1-using-numba-extend-variable-lifetimes" title="Permalink to this heading"></a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dpex/tests/debugging/test_info.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">24</span><span class="k">def</span> <span class="nf">common_loop_body</span><span class="p">(</span><span class="n">param_a</span><span class="p">,</span> <span class="n">param_b</span><span class="p">):</span>
 <span class="linenos">25</span>    <span class="n">param_c</span> <span class="o">=</span> <span class="n">param_a</span> <span class="o">+</span> <span class="mi">10</span>  <span class="c1"># Set breakpoint here</span>
@@ -222,7 +223,7 @@ for extending the lifetime of variables to the end of the block in which their l
 </div>
 </section>
 <section id="example-2-using-numba-dump-annotation">
-<span id="example-numba-dump-annotation"></span><h3>Example 2 - Using <code class="docutils literal notranslate"><span class="pre">NUMBA_DUMP_ANNOTATION</span></code><a class="headerlink" href="#example-2-using-numba-dump-annotation" title="Permalink to this headline"></a></h3>
+<span id="example-numba-dump-annotation"></span><h3>Example 2 - Using <code class="docutils literal notranslate"><span class="pre">NUMBA_DUMP_ANNOTATION</span></code><a class="headerlink" href="#example-2-using-numba-dump-annotation" title="Permalink to this heading"></a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/sum_local_vars.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">21</span><span class="nd">@dpex</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="linenos">22</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
@@ -419,7 +420,7 @@ It will show that numba inserts <cite>del</cite> for variables at the end of the
 </div>
 </section>
 <section id="example-3-using-info-locals">
-<h3>Example 3 - Using <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code><a class="headerlink" href="#example-3-using-info-locals" title="Permalink to this headline"></a></h3>
+<h3>Example 3 - Using <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code><a class="headerlink" href="#example-3-using-info-locals" title="Permalink to this heading"></a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">sum_local_vars.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span><span class="kn">import</span> <span class="nn">dpctl</span>
 <span class="linenos">16</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>

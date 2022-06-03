@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.target module &mdash; numba-dpex 0+untagged.731.gee51cc9 documentation</title>
+  <title>numba_dpex.target module &mdash; numba-dpex 0+untagged.732.g0731c97 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -78,11 +79,11 @@
            <div itemprop="articleBody">
              
   <section id="module-numba_dpex.target">
-<span id="numba-dpex-target-module"></span><h1>numba_dpex.target module<a class="headerlink" href="#module-numba_dpex.target" title="Permalink to this headline"></a></h1>
+<span id="numba-dpex-target-module"></span><h1>numba_dpex.target module<a class="headerlink" href="#module-numba_dpex.target" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.target.DpexCallConv">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.target.</span></span><span class="sig-name descname"><span class="pre">DpexCallConv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.target.DpexCallConv" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.callconv.MinimalCallConv</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MinimalCallConv</span></code></p>
 <p>Custom calling convention class used by numba-dpex.</p>
 <p>numba_dpex’s calling convention derives from
 <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.callconv</span> <span class="pre">import</span> <span class="pre">MinimalCallConv</span></code>. The
@@ -98,7 +99,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.target.DpexTargetContext">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.target.</span></span><span class="sig-name descname"><span class="pre">DpexTargetContext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typingctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SyclDevice'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.target.DpexTargetContext" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.base.BaseContext</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseContext</span></code></p>
 <p>A target context inheriting Numba’s <code class="docutils literal notranslate"><span class="pre">BaseContext</span></code> that is customized
 for generating SYCL kernels.</p>
 <p><a class="reference internal" href="#numba_dpex.target.DpexTargetContext" title="numba_dpex.target.DpexTargetContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">DpexTargetContext</span></code></a> is a customized target context that inherits from
@@ -236,7 +237,7 @@ been registered into the target context.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.target.DpexTypingContext">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.target.</span></span><span class="sig-name descname"><span class="pre">DpexTypingContext</span></span><a class="headerlink" href="#numba_dpex.target.DpexTypingContext" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.typing.context.BaseContext</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseContext</span></code></p>
 <p>A typing context inheriting Numba’s <code class="docutils literal notranslate"><span class="pre">BaseContext</span></code> to support
 dpex-specific data types.</p>
 <p><a class="reference internal" href="#numba_dpex.target.DpexTypingContext" title="numba_dpex.target.DpexTypingContext"><code class="xref py py-class docutils literal notranslate"><span class="pre">DpexTypingContext</span></code></a> is a customized typing context that inherits from
@@ -279,13 +280,13 @@ function, it is converted to a <code class="docutils literal notranslate"><span 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.target.GenericPointerModel">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.target.</span></span><span class="sig-name descname"><span class="pre">GenericPointerModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dmm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fe_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.target.GenericPointerModel" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.datamodel.models.PrimitiveModel</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PrimitiveModel</span></code></p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.target.SyclDevice">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.target.</span></span><span class="sig-name descname"><span class="pre">SyclDevice</span></span><a class="headerlink" href="#numba_dpex.target.SyclDevice" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">numba.core.target_extension.GPU</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">GPU</span></code></p>
 <p>Mark the hardware target as SYCL Device.</p>
 </dd></dl>
 
