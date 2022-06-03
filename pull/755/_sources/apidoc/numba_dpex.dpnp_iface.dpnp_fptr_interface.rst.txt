@@ -1,7 +1,0 @@
-numba\_dpex.dpnp\_iface.dpnp\_fptr\_interface module
-====================================================
-
-.. automodule:: numba_dpex.dpnp_iface.dpnp_fptr_interface
-   :members:
-   :undoc-members:
-   :show-inheritance:

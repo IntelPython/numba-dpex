@@ -1,7 +1,0 @@
-numba\_dpex.dpnp\_iface.dpnp\_logic module
-==========================================
-
-.. automodule:: numba_dpex.dpnp_iface.dpnp_logic
-   :members:
-   :undoc-members:
-   :show-inheritance:
