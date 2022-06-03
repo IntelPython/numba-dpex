@@ -38,6 +38,7 @@ extensions = [
     "sphinx_rtd_theme",
     "sphinx.ext.autodoc",
     "sphinx.ext.todo",
+    "sphinx.ext.intersphinx",
     "sphinxcontrib.apidoc",
 ]
 
