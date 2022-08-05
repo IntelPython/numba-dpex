@@ -4,7 +4,7 @@ Getting Started
 Installation
 ------------
 
-Numba-dppy depends on following components:
+Numba-dpex depends on following components:
 
 * numba 0.54.* or 0.55.* (`Numba`_)
 * dpctl 0.9.* (`Intel Python dpctl`_)
@@ -26,7 +26,7 @@ Create conda environment:
 .. code-block:: bash
 
     export ONEAPI_ROOT=/opt/intel/oneapi
-    conda create -n numba-dppy-env numba-dppy dpnp -c ${ONEAPI_ROOT}/conda_channel
+    conda create -n numba-dpex-env numba-dpex dpnp -c ${ONEAPI_ROOT}/conda_channel
 
 Build and Install Conda Package
 -------------------------------
@@ -49,7 +49,7 @@ Install conda package:
 
 .. code-block:: bash
 
-    conda install numba-dppy
+    conda install numba-dpex
 
 Build and Install with setuptools
 ---------------------------------
@@ -60,8 +60,8 @@ installed in conda environment:
 .. code-block:: bash
 
     export ONEAPI_ROOT=/opt/intel/oneapi
-    conda create -n numba-dppy-env -c ${ONEAPI_ROOT}/conda_channel python=3.7 dpctl dpnp numba spirv-tools llvm-spirv llvmdev cython pytest
-    conda activate numba-dppy-env
+    conda create -n numba-dpex-env -c ${ONEAPI_ROOT}/conda_channel python=3.7 dpctl dpnp numba spirv-tools llvm-spirv llvmdev cython pytest
+    conda activate numba-dpex-env
 
 Activate DPC++ compiler:
 
@@ -84,24 +84,24 @@ For development:
 Testing
 -------
 
-See folder ``numba_dppy/tests``.
+See folder ``numba_dpex/tests``.
 
 To run the tests:
 
 .. code-block:: bash
 
-    python -m pytest --pyargs numba_dppy.tests
+    python -m pytest --pyargs numba_dpex.tests
 
 Examples
 --------
 
-See folder ``numba_dppy/examples``.
+See folder ``numba_dpex/examples``.
 
 To run the examples:
 
 .. code-block:: bash
 
-    python numba_dppy/examples/sum.py
+    python numba_dpex/examples/sum.py
 
 
 .. _`Numba`: https://github.com/numba/numba
