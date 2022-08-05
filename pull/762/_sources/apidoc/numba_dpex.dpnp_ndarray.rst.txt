@@ -1,0 +1,21 @@
+numba\_dpex.dpnp\_ndarray package
+=================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.dpnp_ndarray.dpnp_empty
+   numba_dpex.dpnp_ndarray.models
+   numba_dpex.dpnp_ndarray.typeof
+   numba_dpex.dpnp_ndarray.types
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex.dpnp_ndarray
+   :members:
+   :undoc-members:
+   :show-inheritance:
