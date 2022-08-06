@@ -33,14 +33,14 @@ from . import _helper
 def test_has_usm_memory(filter_str):
     a = np.ones(1023, dtype=np.float32)
 
-    with dpctl.device_context(filter_str):
+    with dpctl.device_context(filter_str) as q:
         # test usm_ndarray
         da = dpt.usm_ndarray(a.shape, dtype=a.dtype, buffer="shared")
         usm_mem = has_usm_memory(da)
         assert da.usm_data._pointer == usm_mem._pointer
 
         # test usm allocated numpy.ndarray
-        buf = dpctl_mem.MemoryUSMShared(a.size * a.dtype.itemsize)
+        buf = dpctl_mem.MemoryUSMShared(a.size * a.dtype.itemsize, queue=q)
         ary_buf = np.ndarray(a.shape, buffer=buf, dtype=a.dtype)
         usm_mem = has_usm_memory(ary_buf)
         assert buf._pointer == usm_mem._pointer

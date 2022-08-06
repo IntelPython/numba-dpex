@@ -47,8 +47,7 @@ def test_kernel_valid_usm_obj(dtype):
     C = DuckUSMArray(shape=buffC.shape, dtype=dtype, host_buffer=buffC)
 
     try:
-        with dpctl.device_context(dpctl.select_default_device()):
-            vecadd[N, dpex.DEFAULT_LOCAL_SIZE](A, B, C)
+        vecadd[N, dpex.DEFAULT_LOCAL_SIZE](A, B, C)
     except Exception:
         pytest.fail(
             "Could not pass Python object with sycl_usm_array_interface"
