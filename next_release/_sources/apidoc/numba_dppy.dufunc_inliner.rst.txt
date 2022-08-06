@@ -1,7 +1,0 @@
-numba\_dppy.dufunc\_inliner module
-==================================
-
-.. automodule:: numba_dppy.dufunc_inliner
-   :members:
-   :undoc-members:
-   :show-inheritance:

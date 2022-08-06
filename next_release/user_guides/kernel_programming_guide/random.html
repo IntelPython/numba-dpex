@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Random Number Generation &mdash; numba-dppy 0.17.4 documentation</title>
+  <title>Random Number Generation &mdash; numba-dpex 0+untagged.735.gd768cc6 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -25,7 +26,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> numba-dppy
+            <a href="../../index.html" class="icon icon-home"> numba-dpex
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -43,13 +44,13 @@
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html"> Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="index.html"> Programming SYCL Kernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html"> Direct kernel programming</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../debugging/index.html"> Debugging with GDB</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dpex for numba.cuda Programmers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">dpnp integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
@@ -59,7 +60,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">numba-dppy</a>
+          <a href="../../index.html">numba-dpex</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -78,15 +79,15 @@
            <div itemprop="articleBody">
              
   <section id="random-number-generation">
-<h1>Random Number Generation<a class="headerlink" href="#random-number-generation" title="Permalink to this headline"></a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> does not provide a random number generation algorithm that can be
+<h1>Random Number Generation<a class="headerlink" href="#random-number-generation" title="Permalink to this heading"></a></h1>
+<p>Numba-dpex does not provide a random number generation algorithm that can be
 executed on the SYCL-supported Device.</p>
-<p><code class="docutils literal notranslate"><span class="pre">numba-dppy</span></code> provides access to NumPy random algorithms that can be executed on the
+<p>Numba-dpex provides access to NumPy random algorithms that can be executed on the
 SYCL-supported device via integration with <a class="reference external" href="https://intelpython.github.io/dpnp/reference/comparison.html#random-sampling">dpnp Random</a>.</p>
-<section id="dppy-supported-functions">
-<h2>DPPY supported functions<a class="headerlink" href="#dppy-supported-functions" title="Permalink to this headline"></a></h2>
+<section id="supported-functions">
+<h2>Supported functions<a class="headerlink" href="#supported-functions" title="Permalink to this heading"></a></h2>
 <section id="simple-random">
-<h3>Simple random<a class="headerlink" href="#simple-random" title="Permalink to this headline"></a></h3>
+<h3>Simple random<a class="headerlink" href="#simple-random" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.random.html#numpy.random.random">random</a></p></li>
 <li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.sample.html#numpy.random.sample">sample</a></p></li>
@@ -98,7 +99,7 @@ SYCL-supported device via integration with <a class="reference external" href="h
 </ul>
 </section>
 <section id="distribution">
-<h3>Distribution<a class="headerlink" href="#distribution" title="Permalink to this headline"></a></h3>
+<h3>Distribution<a class="headerlink" href="#distribution" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.beta.html#numpy.random.beta">beta</a></p></li>
 <li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.binomial.html#numpy.random.binomial">binomial</a></p></li>
@@ -126,7 +127,7 @@ SYCL-supported device via integration with <a class="reference external" href="h
 <p>Example:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>To ensure the code is executed on GPU set <cite>DEBUG=1</cite> (or <cite>NUMBA_DPPY_DEBUG=1</cite>) and look to stdout</p>
+<p>To ensure the code is executed on GPU set <cite>DEBUG=1</cite> (or <cite>NUMBA_DPEX_DEBUG=1</cite>) and look to stdout</p>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Copyright 2020, 2021 Intel Corporation</span>
 <span class="c1">#</span>
@@ -143,9 +144,9 @@ SYCL-supported device via integration with <a class="reference external" href="h
 <span class="c1"># limitations under the License.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">numba_dppy can run several of the numpy.random RNG functions called inside</span>
+<span class="sd">numba_dpex can run several of the numpy.random RNG functions called inside</span>
 <span class="sd">a JIT function on a SYCL device using dpnp</span>
-<span class="sd">(https://github.com/IntelPython/dpnp). As with the rest of numba_dppy examples,</span>
+<span class="sd">(https://github.com/IntelPython/dpnp). As with the rest of numba_dpex examples,</span>
 <span class="sd">this feature is also available by simply invoking a ``numba.jit`` function with</span>
 <span class="sd">the numpy.random calls from within a ``dpctl.device_context``scope.</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -222,7 +223,7 @@ SYCL-supported device via integration with <a class="reference external" href="h
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Intel.</p>
+    <p>&#169; Copyright 2021,2022 Intel.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

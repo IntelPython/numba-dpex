@@ -1,7 +1,0 @@
-numba\_dppy.driver.usm\_ndarray\_type module
-============================================
-
-.. automodule:: numba_dppy.driver.usm_ndarray_type
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -1,7 +1,7 @@
-numba_dppy
+numba_dpex
 ==========
 
 .. toctree::
    :maxdepth: 4
 
-   numba_dppy
+   numba_dpex

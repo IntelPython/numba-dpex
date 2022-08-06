@@ -1,7 +1,0 @@
-numba\_dppy.dpnp\_glue.dpnpdecl module
-======================================
-
-.. automodule:: numba_dppy.dpnp_glue.dpnpdecl
-   :members:
-   :undoc-members:
-   :show-inheritance:

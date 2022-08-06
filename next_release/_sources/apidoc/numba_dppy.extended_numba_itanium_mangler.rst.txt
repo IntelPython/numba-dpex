@@ -1,7 +1,0 @@
-numba\_dppy.extended\_numba\_itanium\_mangler module
-====================================================
-
-.. automodule:: numba_dppy.extended_numba_itanium_mangler
-   :members:
-   :undoc-members:
-   :show-inheritance:

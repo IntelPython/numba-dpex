@@ -1,13 +1,13 @@
 Memory Management
 =================
 
-``numba-dppy`` uses DPC++'s USM shared memory allocator (``memory_alloc``) to
+Numba-dpex uses DPC++'s USM shared memory allocator (``memory_alloc``) to
 enable host to device and *vice versa* data transfer. By using USM shared
-memory allocator, ``numba-dppy`` allows seamless interoperability between
-``numba-dppy`` and other SYCL-based Python extensions and across multiple
-kernels written using ``numba_dppy.kernel`` decorator.
+memory allocator, numba-dpex allows seamless interoperability between
+numba-dpex and other SYCL-based Python extensions and across multiple
+kernels written using ``numba_dpex.kernel`` decorator.
 
-``numba-dppy`` uses the USM memory manager provided by ``dpctl`` and supports
+Numba-dpex uses the USM memory manager provided by dpctl and supports
 the **SYCL USM Array Interface** protocol to enable zero-copy data
 exchange across USM memory-backed Python objects.
 
@@ -51,7 +51,7 @@ compliant buffer interface which will be used if a ``data`` key is not present
 in the dictionary. Use of a buffer interface extends the interoperability to
 other Python objects, such as ``bytes``, ``bytearray``, ``array.array``, or
 ``memoryview``. The type of the USM pointer stored in the object can be queried
-using methods of the ``dpctl``.
+using methods of the dpctl.
 
 .. |npai| replace:: ``numpy.ndarray.__array_interface__``
 .. _npai: https://numpy.org/doc/stable/reference/arrays.interface.html
@@ -80,24 +80,24 @@ the device, the local memory is exposed as a contiguous array of a specific
 types. The maximum available local memory is hardware-specific. The SYCL local
 memory concept is analogous to CUDA's shared memory concept.
 
-``numba-dppy`` provides a special function ``dppy.local.array`` to
+Numba-dpex provides a special function ``numba_dpex.local.array`` to
 allocate local memory for a kernel.
 
-.. literalinclude:: ../../../numba_dppy/examples/barrier.py
+.. literalinclude:: ../../../numba_dpex/examples/barrier.py
    :pyobject: local_memory
 
 .. note::
 
-  To go convert from ``numba.cuda`` to ``numba-dppy``, replace
+  To go convert from ``numba.cuda`` to ``numba-dpex``, replace
   ``numba.cuda.shared.array`` with
-  ``numba_dppy.local.array(shape=blocksize, dtype=float32)``.
+  ``numba_dpex.local.array(shape=blocksize, dtype=float32)``.
 
 .. todo::
 
   Add details about current limitations for local memory allocation in
-  ``numba-dppy``.
+  ``numba-dpex``.
 
 Private and Constant memory
 ---------------------------
 
-``numba-dppy`` does not yet support SYCL private and constant memory.
+``numba-dpex`` does not yet support SYCL private and constant memory.

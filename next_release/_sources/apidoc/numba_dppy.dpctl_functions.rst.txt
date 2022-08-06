@@ -1,7 +1,0 @@
-numba\_dppy.dpctl\_functions module
-===================================
-
-.. automodule:: numba_dppy.dpctl_functions
-   :members:
-   :undoc-members:
-   :show-inheritance:

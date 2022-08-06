@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Set up the machine for debugging &mdash; numba-dppy 0.17.4 documentation</title>
+  <title>Set up the machine for debugging &mdash; numba-dpex 0+untagged.735.gd768cc6 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -27,7 +28,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> numba-dppy
+            <a href="../../index.html" class="icon icon-home"> numba-dpex
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -45,7 +46,7 @@
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html"> Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kernel_programming_guide/index.html"> Direct kernel programming</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html"> Debugging with GDB</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index.html#requirements">Requirements</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Set up the machine for debugging</a><ul>
@@ -61,11 +62,11 @@
 <li class="toctree-l2"><a class="reference internal" href="index.html#features-and-limitations">Features and Limitations</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dpex for numba.cuda Programmers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">dpnp integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
@@ -75,7 +76,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">numba-dppy</a>
+          <a href="../../index.html">numba-dpex</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -95,26 +96,26 @@
            <div itemprop="articleBody">
              
   <section id="set-up-the-machine-for-debugging">
-<h1>Set up the machine for debugging<a class="headerlink" href="#set-up-the-machine-for-debugging" title="Permalink to this headline"></a></h1>
+<h1>Set up the machine for debugging<a class="headerlink" href="#set-up-the-machine-for-debugging" title="Permalink to this heading"></a></h1>
 <section id="graphics-driver">
-<h2>Graphics driver<a class="headerlink" href="#graphics-driver" title="Permalink to this headline"></a></h2>
+<h2>Graphics driver<a class="headerlink" href="#graphics-driver" title="Permalink to this heading"></a></h2>
 <p>Install drivers using the following guides:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><a class="reference external" href="https://dgpu-docs.intel.com/installation-guides/index.html">GPGPU Documents / Installation guides</a></p></li>
-<li><p><a href="#id2"><span class="problematic" id="id3">`Intel® oneAPI Toolkits Installation Guide for Linux* OS / Install Intel GPU Drivers`_</span></a></p></li>
+<li><p><a class="reference external" href="https://dgpu-docs.intel.com/installation-guides/index.html">Intel® GPGPU driver installation guide</a></p></li>
+<li><p><a class="reference external" href="https://software.intel.com/content/www/us/en/develop/documentation/installation-guide-for-intel-oneapi-toolkits-linux/top/prerequisites/install-intel-gpu-drivers.html">Intel® oneAPI GPU driver installation guide</a></p></li>
 </ul>
 </div></blockquote>
-<p>The user should be in the “video” group (on Ubuntu* 18, Fedora* 30, and SLES* 15 SP1)
-or “render” group (on Ubuntu* 19 and higher, CentOS* 8, and Fedora* 31).
-An administrator with sudo or root privileges can change the group owner of <cite>/dev/dri/renderD*</cite> and <cite>/dev/dri/card*</cite>
-to a group ID used by your user base:</p>
+<p>The user should be in the “video” group (on Ubuntu* 18, Fedora* 30, and SLES* 15
+SP1) or “render” group (on Ubuntu* 19 and higher, CentOS* 8, and Fedora* 31). An
+administrator with sudo or root privileges can change the group owner of
+<cite>/dev/dri/renderD*</cite> and <cite>/dev/dri/card*</cite> to a group ID used by your user base:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo usermod -a -G video &lt;username&gt;
 </pre></div>
 </div>
 </section>
 <section id="neo-driver">
-<span id="id1"></span><h2>NEO driver<a class="headerlink" href="#neo-driver" title="Permalink to this headline"></a></h2>
+<span id="id1"></span><h2>NEO driver<a class="headerlink" href="#neo-driver" title="Permalink to this heading"></a></h2>
 <p>NEO driver <cite>21.15.19533</cite> or higher is required to make the debugger work correctly.</p>
 <ol class="arabic">
 <li><p>Download the driver from <a class="reference external" href="https://github.com/intel/compute-runtime/releases/tag/21.15.19533">GitHub</a>.</p></li>
@@ -168,7 +169,7 @@ To overwrite the default behavior, use <code class="samp docutils literal notran
 </div></blockquote>
 </section>
 <section id="debug-companion-driver-dcd">
-<span id="debugging-machine-dcd-driver"></span><h2>Debug companion driver (DCD)<a class="headerlink" href="#debug-companion-driver-dcd" title="Permalink to this headline"></a></h2>
+<span id="debugging-machine-dcd-driver"></span><h2>Debug companion driver (DCD)<a class="headerlink" href="#debug-companion-driver-dcd" title="Permalink to this heading"></a></h2>
 <ol class="arabic">
 <li><p>To install the DCD from oneAPI into the system, use the following command:</p>
 <blockquote>
@@ -211,7 +212,7 @@ To overwrite the default behavior, use <code class="samp docutils literal notran
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Intel.</p>
+    <p>&#169; Copyright 2021,2022 Intel.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

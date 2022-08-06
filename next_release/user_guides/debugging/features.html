@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Supported Features &mdash; numba-dppy 0.17.4 documentation</title>
+  <title>Supported Features &mdash; numba-dpex 0+untagged.735.gd768cc6 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -27,7 +28,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> numba-dppy
+            <a href="../../index.html" class="icon icon-home"> numba-dpex
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -45,7 +46,7 @@
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html"> Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../kernel_programming_guide/index.html"> Programming SYCL Kernels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kernel_programming_guide/index.html"> Direct kernel programming</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html"> Debugging with GDB</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="index.html#requirements">Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="index.html#example-of-intel-distribution-for-gdb-usage">Example of Intel® Distribution for GDB* usage</a></li>
@@ -53,9 +54,13 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Supported Features</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="breakpoints.html">Breakpoints</a></li>
 <li class="toctree-l4"><a class="reference internal" href="stepping.html">Stepping</a></li>
-<li class="toctree-l4"><a class="reference internal" href="local_variables.html">Local variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frame_info.html">Information About a Frame</a></li>
 <li class="toctree-l4"><a class="reference internal" href="backtrace.html">Backtrace</a></li>
-<li class="toctree-l4"><a class="reference internal" href="info.html">Info commands</a></li>
+<li class="toctree-l4"><a class="reference internal" href="data.html">Examining Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="symbols.html">Examining the Symbol Table</a></li>
+<li class="toctree-l4"><a class="reference internal" href="altering.html">Altering Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="local_variables.html">Debugging Local Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba-0.55.html">Debugging Features in Numba 0.55</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="limitations.html">Limitations</a></li>
@@ -64,11 +69,11 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dppy for numba.cuda Programmers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migrating_from_numba_cuda.html"> numba-dpex for numba.cuda Programmers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">DPNP integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guides/dpnp_integration.html">dpnp integration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
@@ -78,7 +83,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">numba-dppy</a>
+          <a href="../../index.html">numba-dpex</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -98,14 +103,9 @@
            <div itemprop="articleBody">
              
   <section id="supported-features">
-<h1>Supported Features<a class="headerlink" href="#supported-features" title="Permalink to this headline"></a></h1>
-<p>The following debugging features are available:</p>
-<ul class="simple">
-<li><p>Source location (filename and line number).</p></li>
-<li><p>Setting breakpoints by the line number.</p></li>
-<li><p>Stepping over breakpoints.</p></li>
-</ul>
-<p>Numba-dppy supports the following Intel® Distribution for GDB* commands:</p>
+<h1>Supported Features<a class="headerlink" href="#supported-features" title="Permalink to this heading"></a></h1>
+<p>Numba-dpex and Intel® Distribution for GDB* provide at least
+following debugging features:</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="breakpoints.html">Breakpoints</a><ul>
@@ -123,17 +123,41 @@
 <li class="toctree-l2"><a class="reference internal" href="stepping.html#set-scheduler-locking-step"><code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">scheduler-locking</span> <span class="pre">step</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="local_variables.html">Local variables</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="local_variables.html#info-locals"><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="local_variables.html#print-variable"><code class="docutils literal notranslate"><span class="pre">print</span> <span class="pre">&lt;variable&gt;</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="local_variables.html#ptype-variable"><code class="docutils literal notranslate"><span class="pre">ptype</span> <span class="pre">&lt;variable&gt;</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="local_variables.html#lifetime-of-local-variables">Lifetime of local variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="frame_info.html">Information About a Frame</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="frame_info.html#info-args"><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">args</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="frame_info.html#info-locals"><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="backtrace.html">Backtrace</a></li>
-<li class="toctree-l1"><a class="reference internal" href="info.html">Info commands</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="info.html#syntax"><strong>Syntax</strong></a></li>
-<li class="toctree-l2"><a class="reference internal" href="info.html#parameters">Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Examining Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="data.html#print-expr"><code class="docutils literal notranslate"><span class="pre">print</span> <span class="pre">expr</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="symbols.html">Examining the Symbol Table</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="symbols.html#info-functions"><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">functions</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="symbols.html#whatis-arg-and-ptype-arg"><code class="docutils literal notranslate"><span class="pre">whatis</span> <span class="pre">[arg]</span></code> and <code class="docutils literal notranslate"><span class="pre">ptype</span> <span class="pre">[arg]</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="altering.html">Altering Execution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="altering.html#assignment-to-variables">Assignment to Variables</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Other topics:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="local_variables.html">Debugging Local Variables</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="local_variables.html#optimization-level-for-llvm">Optimization Level for LLVM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="local_variables.html#local-variables-lifetime-in-numba-ir">Local Variables Lifetime in Numba IR</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba-0.55.html">Debugging Features in Numba 0.55</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba-0.55.html#added-info-args">Added <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">args</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba-0.55.html#extended-info-locals">Extended <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba-0.55.html#breakpoint-with-condition-by-function-argument">Breakpoint with condition by function argument</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba-0.55.html#added-numba-extend-variable-lifetimes">Added <code class="docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba-0.55.html#displaying-complex-data-types">Displaying Complex Data Types</a></li>
 </ul>
 </li>
 </ul>
@@ -151,7 +175,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Intel.</p>
+    <p>&#169; Copyright 2021,2022 Intel.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
