@@ -99,13 +99,13 @@ def sum_reduce(A):
     print("Using device ...")
     device.print_device_info()
 
-    with dpctl.device_context(device):
-        inp_buf = dpctl_mem.MemoryUSMShared(A.size * A.dtype.itemsize)
+    with dpctl.device_context(device) as q:
+        inp_buf = dpctl_mem.MemoryUSMShared(A.size * A.dtype.itemsize, queue=q)
         inp_ndarray = np.ndarray(A.shape, buffer=inp_buf, dtype=A.dtype)
         np.copyto(inp_ndarray, A)
 
         partial_sums_buf = dpctl_mem.MemoryUSMShared(
-            partial_sums.size * partial_sums.dtype.itemsize
+            partial_sums.size * partial_sums.dtype.itemsize, queue=q
         )
         partial_sums_ndarray = np.ndarray(
             partial_sums.shape,
