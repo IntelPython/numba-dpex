@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reduction on SYCL-supported Devices &mdash; numba-dpex 0+untagged.732.g0731c97 documentation</title>
+  <title>Reduction on SYCL-supported Devices &mdash; numba-dpex 0+untagged.735.gd768cc6 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -219,13 +219,13 @@ section provides two approaches for writing a reduction kernel as a
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using device ...&quot;</span><span class="p">)</span>
     <span class="n">device</span><span class="o">.</span><span class="n">print_device_info</span><span class="p">()</span>
 
-    <span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
-        <span class="n">inp_buf</span> <span class="o">=</span> <span class="n">dpctl_mem</span><span class="o">.</span><span class="n">MemoryUSMShared</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="k">as</span> <span class="n">q</span><span class="p">:</span>
+        <span class="n">inp_buf</span> <span class="o">=</span> <span class="n">dpctl_mem</span><span class="o">.</span><span class="n">MemoryUSMShared</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span><span class="p">,</span> <span class="n">queue</span><span class="o">=</span><span class="n">q</span><span class="p">)</span>
         <span class="n">inp_ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="n">inp_buf</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">inp_ndarray</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
 
         <span class="n">partial_sums_buf</span> <span class="o">=</span> <span class="n">dpctl_mem</span><span class="o">.</span><span class="n">MemoryUSMShared</span><span class="p">(</span>
-            <span class="n">partial_sums</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="n">partial_sums</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span>
+            <span class="n">partial_sums</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="n">partial_sums</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span><span class="p">,</span> <span class="n">queue</span><span class="o">=</span><span class="n">q</span>
         <span class="p">)</span>
         <span class="n">partial_sums_ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span>
             <span class="n">partial_sums</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
