@@ -1,4 +1,5 @@
 import dpctl.memory as dpmem
+import dpctl.tensor as dpt
 import numpy as np
 
 
@@ -6,9 +7,8 @@ class DuckUSMArray:
     """A Python class that defines a __sycl_usm_array_interface__ attribute."""
 
     def __init__(self, shape, dtype="d", host_buffer=None):
-        nelems = np.prod(shape)
-        bytes = nelems * np.dtype(dtype).itemsize
-        shmem = dpmem.MemoryUSMShared(bytes)
+        _tensor = dpt.empty(shape, dtype=dtype, usm_type="shared")
+        shmem = _tensor.usm_data
         if isinstance(host_buffer, np.ndarray):
             shmem.copy_from_host(host_buffer.view(dtype="|u1"))
         self.arr = np.ndarray(shape, dtype=dtype, buffer=shmem)
