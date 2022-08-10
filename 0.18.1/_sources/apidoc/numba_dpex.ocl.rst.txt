@@ -1,0 +1,30 @@
+numba\_dpex.ocl package
+=======================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.ocl.atomics
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.ocl.mathdecl
+   numba_dpex.ocl.mathimpl
+   numba_dpex.ocl.ocldecl
+   numba_dpex.ocl.oclimpl
+   numba_dpex.ocl.stubs
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex.ocl
+   :members:
+   :undoc-members:
+   :show-inheritance:

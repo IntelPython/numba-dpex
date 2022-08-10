@@ -1,0 +1,7 @@
+numba\_dpex.interop module
+==========================
+
+.. automodule:: numba_dpex.interop
+   :members:
+   :undoc-members:
+   :show-inheritance:
