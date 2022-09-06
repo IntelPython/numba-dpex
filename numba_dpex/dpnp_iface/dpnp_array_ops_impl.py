@@ -299,7 +299,7 @@ def dpnp_take_impl(a, ind):
         types.voidptr,
         types.intp,
     )
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, ind.dtype.name], sig)
 
     res_dtype = a.dtype
     PRINT_DEBUG = dpnp_lowering.DEBUG
