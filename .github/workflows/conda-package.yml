@@ -99,7 +99,7 @@ jobs:
         python: ["3.8", "3.9"]
         numba: ["0.55"]
         dpctl: ["0.12"]
-        dpnp: ["0.10"]
+        dpnp: ["0.10.1"]
 
     steps:
       - name: Download artifact
