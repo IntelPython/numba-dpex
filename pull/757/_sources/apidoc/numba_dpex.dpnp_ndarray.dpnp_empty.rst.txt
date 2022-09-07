@@ -1,0 +1,7 @@
+numba\_dpex.dpnp\_ndarray.dpnp\_empty module
+============================================
+
+.. automodule:: numba_dpex.dpnp_ndarray.dpnp_empty
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+numba\_dpex.core.passes.lowerer module
+======================================
+
+.. automodule:: numba_dpex.core.passes.lowerer
+   :members:
+   :undoc-members:
+   :show-inheritance:
