@@ -98,7 +98,7 @@ jobs:
       matrix:
         python: ["3.8", "3.9"]
         numba: ["0.55"]
-        dpctl: ["0.12"]
+        dpctl: ["0.13"]
         dpnp: ["0.10.1"]
 
     steps:
@@ -148,7 +148,7 @@ jobs:
     strategy:
       matrix:
         python: ["3.8", "3.9"]
-        dpctl: ["0.12"]
+        dpctl: ["0.13"]
         integration_channels: [""]
         experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]

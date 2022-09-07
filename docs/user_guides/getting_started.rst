@@ -7,7 +7,7 @@ Installation
 Numba-dpex depends on following components:
 
 * numba 0.54.* or 0.55.* (`Numba`_)
-* dpctl 0.12.* (`Intel Python dpctl`_)
+* dpctl 0.13.* (`Intel Python dpctl`_)
 * dpnp 0.10.1 (`Intel Python DPNP`_)
 * `llvm-spirv`_ (SPIRV generation from LLVM IR)
 * `llvmdev`_ (LLVM IR generation)
