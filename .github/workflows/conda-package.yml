@@ -128,15 +128,19 @@ jobs:
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel $CHANNELS"
           conda list
-          conda install $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl=${{ matrix.dpctl }} dpnp=${{ matrix.dpnp }} $CHANNELS
+          conda create -n numba_dpex_env $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl=${{ matrix.dpctl }} dpnp=${{ matrix.dpnp }} $CHANNELS
           # Test installed packages
           conda list
       - name: Check DPNP
         run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate numba_dpex_env
           export OCL_ICD_FILENAMES=libintelocl.so
           python -c "import dpnp"
       - name: Run tests
         run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate numba_dpex_env
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
           export OCL_ICD_FILENAMES=libintelocl.so
           python -m pytest -q -ra --disable-warnings --pyargs $MODULE_NAME -vv
@@ -157,7 +161,7 @@ jobs:
           - python: "3.8"
             integration_channels: -c dppy/label/dev
             artifact_name: -c dppy_label_dev
-            experimental: false  # current stable
+            experimental: true  # current stable
             dependencies: ""
     continue-on-error: ${{ matrix.experimental }}
     env:
