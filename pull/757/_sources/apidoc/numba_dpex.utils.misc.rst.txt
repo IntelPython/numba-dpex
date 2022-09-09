@@ -1,7 +1,0 @@
-numba\_dpex.utils.misc module
-=============================
-
-.. automodule:: numba_dpex.utils.misc
-   :members:
-   :undoc-members:
-   :show-inheritance:
