@@ -20,15 +20,15 @@ requirements:
         - cython
         - numba 0.54*|0.55*
         - dpctl >=0.13.0
-        - dpnp >=0.10.*
+        - dpnp >=0.10.1
         - wheel
     run:
         - python
-        - numba 0.54*|0.55*
+        - numba >=0.54
         - dpctl >=0.13.0
         - spirv-tools
         - llvm-spirv 11.*
-        - dpnp >=0.10.*
+        - dpnp >=0.10.1
         - packaging
 
 test:
@@ -55,4 +55,5 @@ about:
 
 extra:
     recipe-maintainers:
-        - PokhodenkoSA
+        - diptorupd
+        - oleksandr-pavlyk
