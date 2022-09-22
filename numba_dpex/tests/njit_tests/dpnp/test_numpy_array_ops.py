@@ -1,4 +1,4 @@
-# Copyright 2020-2021 Intel Corporation
+# Copyright 2020-2022 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -119,8 +119,8 @@ def test_unary_ops(filter_str, unary_op, input_arrays, get_shape, capfd):
 
 
 list_of_indices = [
-    np.array([0, 2, 5]),
-    np.array([0, 5]),
+    np.array([0, 2, 5], dtype=np.int64),
+    np.array([0, 5], dtype=np.int32),
 ]
 
 

@@ -19,16 +19,16 @@ requirements:
         - setuptools
         - cython
         - numba 0.54*|0.55*
-        - dpctl >=0.12.0dev3
-        - dpnp >=0.10.0dev0
+        - dpctl >=0.13.0
+        - dpnp >=0.10.1
         - wheel
     run:
         - python
-        - numba 0.54*|0.55*
-        - dpctl 0.11*|0.12*
+        - numba >=0.54
+        - dpctl >=0.13.0
         - spirv-tools
         - llvm-spirv 11.*
-        - dpnp 0.10*
+        - dpnp >=0.10.1
         - packaging
 
 test:
@@ -55,4 +55,5 @@ about:
 
 extra:
     recipe-maintainers:
-        - PokhodenkoSA
+        - diptorupd
+        - oleksandr-pavlyk

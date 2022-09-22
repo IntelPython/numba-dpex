@@ -2,4 +2,4 @@
 
 *.yml   @mingjie-intel @diptorupd
 
-conda-recipe/*  @mingjie-intel @1e-to @diptorupd
+conda-recipe/*  @mingjie-intel @diptorupd
