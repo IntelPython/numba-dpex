@@ -39,7 +39,7 @@ def sig(request):
 def test_return(filter_str, sig):
     a = np.array(np.random.random(122), np.int32)
 
-    with pytest.raises(TypeError):
+    with pytest.raises(dpex.core.dpex_exceptions.KernelHasReturnValueError):
         kernel = dpex.kernel(sig)(f)
 
         device = dpctl.SyclDevice(filter_str)

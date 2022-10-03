@@ -28,6 +28,7 @@ from numba.core.compiler_lock import global_compiler_lock
 from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
 from numba_dpex import config
+from numba_dpex.core.dpex_exceptions import KernelHasReturnValueError
 from numba_dpex.core.types import Array
 from numba_dpex.dpctl_iface import USMNdArrayType
 from numba_dpex.dpctl_support import dpctl_version
@@ -35,7 +36,6 @@ from numba_dpex.parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dpex.utils import (
     IndeterminateExecutionQueueError,
     as_usm_obj,
-    assert_no_return,
     cfd_ctx_mgr_wrng_msg,
     copy_from_numpy_to_usm_obj,
     copy_to_numpy_from_usm_obj,
@@ -172,8 +172,14 @@ def compile_with_depx(pyfunc, return_type, args, is_kernel, debug=None):
     else:
         assert 0
 
-    if is_kernel:
-        assert_no_return(cres.signature.return_type)
+    if (
+        is_kernel
+        and cres.signature.return_type is not None
+        and cres.signature.return_type != types.void
+    ):
+        raise KernelHasReturnValueError(
+            kernel_name=pyfunc.__name__, return_type=cres.signature.return_type
+        )
 
     # Linking depending libraries
     library = cres.library

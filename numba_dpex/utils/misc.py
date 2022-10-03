@@ -15,24 +15,5 @@
 from numba.core import types
 
 
-def assert_no_return(rettype):
-    """
-    Make sure the type of return is void/None.
-
-    @numba_dpex.kernel does not allow users to return any value and this
-    function raises TypeError when users do return something.
-
-    Args:
-        rettype: Numba type representing the return value.
-
-    Raises:
-        TypeError: Only None and types.void is allowed. In case
-            of any other type TypeError is raised.
-    """
-    if rettype is not None and rettype != types.void:
-        msg = "Kernel must have void return type but got {rettype}"
-        raise TypeError(msg.format(rettype=rettype))
-
-
 class IndeterminateExecutionQueueError(Exception):
     pass
