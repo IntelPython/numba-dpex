@@ -35,7 +35,7 @@ from numba_dpex.utils import (
     suai_to_dpex_array,
 )
 
-from . import codegen
+from .core import codegen
 
 CC_SPIR_KERNEL = "spir_kernel"
 CC_SPIR_FUNC = "spir_func"

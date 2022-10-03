@@ -26,7 +26,7 @@ from numba.core.itanium_mangler import mangle, mangle_c, mangle_type
 from numba.core.typing.npydecl import parse_dtype
 
 from numba_dpex import config, target
-from numba_dpex.codegen import SPIR_DATA_LAYOUT
+from numba_dpex.core.codegen import SPIR_DATA_LAYOUT
 from numba_dpex.core.types import Array
 from numba_dpex.ocl.atomics import atomic_helper
 from numba_dpex.utils import address_space
