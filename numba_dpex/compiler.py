@@ -177,7 +177,9 @@ def compile_with_depx(pyfunc, return_type, args, is_kernel, debug=None):
         and cres.signature.return_type is not None
         and cres.signature.return_type != types.void
     ):
-        raise KernelHasReturnValueError(return_type=cres.signature.return_type)
+        raise KernelHasReturnValueError(
+            kernel_name=pyfunc.__name__, return_type=cres.signature.return_type
+        )
 
     # Linking depending libraries
     library = cres.library

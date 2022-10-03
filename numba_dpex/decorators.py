@@ -70,7 +70,9 @@ def _kernel_jit(signature, debug, access_types):
     # Raises an exception if the kernel function has a non-void return
     # type.
     if rettype and rettype != types.void:
-        raise KernelHasReturnValueError(return_type=rettype)
+        raise KernelHasReturnValueError(
+            kernel_name=signature.__name__, return_type=rettype
+        )
 
     def _wrapped(pyfunc):
         current_queue = dpctl.get_current_queue()

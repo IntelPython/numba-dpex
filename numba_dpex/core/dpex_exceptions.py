@@ -22,11 +22,13 @@ class KernelHasReturnValueError(Exception):
 
     """
 
-    def __init__(self, return_type) -> None:
+    def __init__(self, kernel_name, return_type) -> None:
         self.return_type = return_type
+        self.kernel_name = kernel_name
         self.message = (
-            f"Encountered a return value of type {self.return_type}. "
-            f"A numba-dpex kernel must have a void return value."
+            f"Kernel {self.kernel_name} has a return value "
+            f"of type {self.return_type}. "
+            f"A numba-dpex kernel must have a void return type."
         )
 
         super().__init__(self.message)
