@@ -32,7 +32,7 @@ jobs:
 
       - name: Build conda package
         env:
-          CHANNELS: -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
+          CHANNELS: -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev --override-channels
         run: ./scripts/build_conda_package.sh ${{ matrix.python }}
 
       - name: Upload artifact
@@ -98,8 +98,6 @@ jobs:
       matrix:
         python: ["3.8", "3.9"]
         numba: ["0.55"]
-        dpctl: ["0.13"]
-        dpnp: ["0.10.1"]
 
     steps:
       - name: Download artifact
@@ -124,11 +122,11 @@ jobs:
 
       - name: Install numba-dpex
         env:
-          CHANNELS: -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
+          CHANNELS: -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev --override-channels
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel $CHANNELS"
           conda list
-          conda create -n numba_dpex_env $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl=${{ matrix.dpctl }} dpnp=${{ matrix.dpnp }} $CHANNELS
+          conda create -n numba_dpex_env $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl dpnp $CHANNELS
           # Test installed packages
           conda list
       - name: Check DPNP
@@ -152,7 +150,6 @@ jobs:
     strategy:
       matrix:
         python: ["3.8", "3.9"]
-        dpctl: ["0.13"]
         integration_channels: [""]
         experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
@@ -166,7 +163,7 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
     env:
       # conda-forge: llvm-spirv 11 not on intel channel yet
-      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev -c conda-forge --override-channels
+      CHANNELS: ${{ matrix.integration_channels }} -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev -c conda-forge --override-channels
 
     steps:
       - name: Create dir for numba-dpex repo
@@ -208,7 +205,7 @@ jobs:
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
       - name: Install numba-dpex
         run: |
-          conda install ${{ env.PACKAGE_NAME }} pytest dpcpp_win-64 python=${{ matrix.python }} dpctl=${{ matrix.dpctl }} ${{ matrix.dependencies }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
+          conda install ${{ env.PACKAGE_NAME }} pytest dpcpp_win-64 python=${{ matrix.python }} dpctl ${{ matrix.dependencies }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
           # Test installed packages
           conda list
       - name: Install opencl_rt
