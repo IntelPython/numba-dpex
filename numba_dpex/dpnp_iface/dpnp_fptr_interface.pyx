@@ -1,10 +1,14 @@
+# SPDX-FileCopyrightText: 2020-2022 Intel Corp.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 # distutils: language = c++
 # cython: language_level=3
 
 import ctypes
 
 
-cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncName":  # need this namespace for Enum import
+cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncName":
     cdef enum DPNPFuncName "DPNPFuncName":
         DPNP_FN_ABSOLUTE
         DPNP_FN_ADD
@@ -117,7 +121,7 @@ cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncName":  # need this na
         DPNP_FN_VAR
 
 
-cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncType":  # need this namespace for Enum import
+cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncType":
     cdef enum DPNPFuncType "DPNPFuncType":
         DPNP_FT_NONE
         DPNP_FT_INT
@@ -131,7 +135,11 @@ cdef extern from "dpnp_iface_fptr.hpp":
         DPNPFuncType return_type
         void * ptr
 
-    DPNPFuncData get_dpnp_function_ptr(DPNPFuncName name, DPNPFuncType first_type, DPNPFuncType second_type) except +
+    DPNPFuncData get_dpnp_function_ptr(
+        DPNPFuncName name,
+        DPNPFuncType first_type,
+        DPNPFuncType second_type
+    ) except +
 
 
 
@@ -269,7 +277,11 @@ cpdef get_dpnp_fn_ptr(name, types):
     cdef DPNPFuncType first_type = get_DPNPFuncType_from_str(types[0])
     cdef DPNPFuncType second_type = get_DPNPFuncType_from_str(types[1])
 
-    cdef DPNPFuncData kernel_data = get_dpnp_function_ptr(func_name, first_type, second_type)
+    cdef DPNPFuncData kernel_data = get_dpnp_function_ptr(
+        func_name,
+        first_type,
+        second_type
+    )
     cdef uintptr_t fn_ptr = <uintptr_t>kernel_data.ptr
 
     return <object>fn_ptr
