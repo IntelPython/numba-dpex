@@ -15,7 +15,8 @@
 import dpctl
 from numba.core import sigutils, types
 
-from numba_dpex.utils import assert_no_return, npytypes_array_to_dpex_array
+from numba_dpex.core.dpex_exceptions import KernelHasReturnValueError
+from numba_dpex.utils import npytypes_array_to_dpex_array
 
 from .compiler import (
     JitKernel,
@@ -26,10 +27,15 @@ from .compiler import (
 
 
 def kernel(signature=None, access_types=None, debug=None):
-    """JIT compile a python function conforming using the Dpex backend.
+    """The decorator to write a numba_dpex kernel function.
 
-    A kernel is equivalent to an OpenCL kernel function, and has the
-    same restrictions as defined by SPIR_KERNEL calling convention.
+    A kernel function is conceptually equivalent to a SYCL kernel function, and
+    gets compiled into either an OpenCL or a LevelZero SPIR-V binary kernel.
+    A dpex kernel imposes the following restrictions:
+
+        * A numba_dpex.kernel function can not return any value.
+        * All array arguments passed to a kernel should be of the same type
+          and have the same dtype.
     """
     if signature is None:
         return autojit(debug=debug, access_types=access_types)
@@ -60,9 +66,6 @@ def _kernel_jit(signature, debug, access_types):
             for ty in argtypes
         ]
     )
-
-    # Raises TypeError when users return anything inside @numba_dpex.kernel.
-    assert_no_return(rettype)
 
     def _wrapped(pyfunc):
         current_queue = dpctl.get_current_queue()

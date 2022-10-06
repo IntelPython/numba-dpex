@@ -1,10 +1,9 @@
 import dpctl
+import DuckUSMArray as duckArrs
 import numpy as np
 import pytest
 
 import numba_dpex as dpex
-
-from .DuckUSMArray import DuckUSMArray, PseudoDuckUSMArray
 
 
 @dpex.kernel
@@ -38,13 +37,13 @@ def test_kernel_valid_usm_obj(dtype):
     N = 1024
 
     buffA = np.arange(0, N, dtype=dtype)
-    A = DuckUSMArray(shape=buffA.shape, dtype=dtype, host_buffer=buffA)
+    A = duckArrs.DuckUSMArray(shape=buffA.shape, dtype=dtype, host_buffer=buffA)
 
     buffB = np.arange(0, N, dtype=dtype)
-    B = DuckUSMArray(shape=buffB.shape, dtype=dtype, host_buffer=buffB)
+    B = duckArrs.DuckUSMArray(shape=buffB.shape, dtype=dtype, host_buffer=buffB)
 
     buffC = np.zeros(N, dtype=dtype)
-    C = DuckUSMArray(shape=buffC.shape, dtype=dtype, host_buffer=buffC)
+    C = duckArrs.DuckUSMArray(shape=buffC.shape, dtype=dtype, host_buffer=buffC)
 
     try:
         vecadd[N, dpex.DEFAULT_LOCAL_SIZE](A, B, C)
@@ -66,11 +65,11 @@ def test_kernel_invalid_usm_obj(dtype):
     """
     N = 1024
 
-    A = PseudoDuckUSMArray()
+    A = duckArrs.PseudoDuckUSMArray()
 
-    B = PseudoDuckUSMArray()
+    B = duckArrs.PseudoDuckUSMArray()
 
-    C = PseudoDuckUSMArray()
+    C = duckArrs.PseudoDuckUSMArray()
 
     with pytest.raises(Exception):
         with dpctl.device_context(dpctl.select_default_device()):
