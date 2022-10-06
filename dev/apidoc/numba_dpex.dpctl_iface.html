@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.dpctl_iface package &mdash; numba-dpex 0+untagged.751.g56a050c documentation</title>
+  <title>numba_dpex.dpctl_iface package &mdash; numba-dpex 0+untagged.755.g374b63b documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -16,6 +16,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -84,10 +85,50 @@
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_capi_fn_builder.html">numba_dpex.dpctl_iface.dpctl_capi_fn_builder module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_function_types.html">numba_dpex.dpctl_iface.dpctl_function_types module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpctl_iface.kernel_launch_ops.html">numba_dpex.dpctl_iface.kernel_launch_ops module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpctl_iface.usm_ndarray_type.html">numba_dpex.dpctl_iface.usm_ndarray_type module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_capi_fn_builder.html">numba_dpex.dpctl_iface.dpctl_capi_fn_builder module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_capi_fn_builder.html#numba_dpex.dpctl_iface.dpctl_capi_fn_builder.DpctlCAPIFnBuilder"><code class="docutils literal notranslate"><span class="pre">DpctlCAPIFnBuilder</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_capi_fn_builder.html#numba_dpex.dpctl_iface.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_event_delete"><code class="docutils literal notranslate"><span class="pre">DpctlCAPIFnBuilder.get_dpctl_event_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_capi_fn_builder.html#numba_dpex.dpctl_iface.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_event_wait"><code class="docutils literal notranslate"><span class="pre">DpctlCAPIFnBuilder.get_dpctl_event_wait()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_capi_fn_builder.html#numba_dpex.dpctl_iface.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_free_with_queue"><code class="docutils literal notranslate"><span class="pre">DpctlCAPIFnBuilder.get_dpctl_free_with_queue()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_capi_fn_builder.html#numba_dpex.dpctl_iface.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_malloc_shared"><code class="docutils literal notranslate"><span class="pre">DpctlCAPIFnBuilder.get_dpctl_malloc_shared()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_capi_fn_builder.html#numba_dpex.dpctl_iface.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queue_delete"><code class="docutils literal notranslate"><span class="pre">DpctlCAPIFnBuilder.get_dpctl_queue_delete()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_capi_fn_builder.html#numba_dpex.dpctl_iface.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queue_memcpy"><code class="docutils literal notranslate"><span class="pre">DpctlCAPIFnBuilder.get_dpctl_queue_memcpy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_capi_fn_builder.html#numba_dpex.dpctl_iface.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queue_submit_range"><code class="docutils literal notranslate"><span class="pre">DpctlCAPIFnBuilder.get_dpctl_queue_submit_range()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_capi_fn_builder.html#numba_dpex.dpctl_iface.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queue_wait"><code class="docutils literal notranslate"><span class="pre">DpctlCAPIFnBuilder.get_dpctl_queue_wait()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_capi_fn_builder.html#numba_dpex.dpctl_iface.dpctl_capi_fn_builder.DpctlCAPIFnBuilder.get_dpctl_queuemgr_get_current_queue"><code class="docutils literal notranslate"><span class="pre">DpctlCAPIFnBuilder.get_dpctl_queuemgr_get_current_queue()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_function_types.html">numba_dpex.dpctl_iface.dpctl_function_types module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_function_types.html#numba_dpex.dpctl_iface.dpctl_function_types.dpctl_event_delete"><code class="docutils literal notranslate"><span class="pre">dpctl_event_delete()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_function_types.html#numba_dpex.dpctl_iface.dpctl_function_types.dpctl_event_wait"><code class="docutils literal notranslate"><span class="pre">dpctl_event_wait()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_function_types.html#numba_dpex.dpctl_iface.dpctl_function_types.dpctl_free_with_queue"><code class="docutils literal notranslate"><span class="pre">dpctl_free_with_queue()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_function_types.html#numba_dpex.dpctl_iface.dpctl_function_types.dpctl_get_current_queue"><code class="docutils literal notranslate"><span class="pre">dpctl_get_current_queue()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_function_types.html#numba_dpex.dpctl_iface.dpctl_function_types.dpctl_malloc_shared"><code class="docutils literal notranslate"><span class="pre">dpctl_malloc_shared()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_function_types.html#numba_dpex.dpctl_iface.dpctl_function_types.dpctl_queue_memcpy"><code class="docutils literal notranslate"><span class="pre">dpctl_queue_memcpy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpctl_iface.dpctl_function_types.html#numba_dpex.dpctl_iface.dpctl_function_types.dpctl_queue_wait"><code class="docutils literal notranslate"><span class="pre">dpctl_queue_wait()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpctl_iface.kernel_launch_ops.html">numba_dpex.dpctl_iface.kernel_launch_ops module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpctl_iface.kernel_launch_ops.html#numba_dpex.dpctl_iface.kernel_launch_ops.KernelLaunchOps"><code class="docutils literal notranslate"><span class="pre">KernelLaunchOps</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpctl_iface.kernel_launch_ops.html#numba_dpex.dpctl_iface.kernel_launch_ops.KernelLaunchOps.allocate_kernel_arg_array"><code class="docutils literal notranslate"><span class="pre">KernelLaunchOps.allocate_kernel_arg_array()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpctl_iface.kernel_launch_ops.html#numba_dpex.dpctl_iface.kernel_launch_ops.KernelLaunchOps.enqueue_kernel_and_copy_back"><code class="docutils literal notranslate"><span class="pre">KernelLaunchOps.enqueue_kernel_and_copy_back()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpctl_iface.kernel_launch_ops.html#numba_dpex.dpctl_iface.kernel_launch_ops.KernelLaunchOps.free_queue"><code class="docutils literal notranslate"><span class="pre">KernelLaunchOps.free_queue()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpctl_iface.kernel_launch_ops.html#numba_dpex.dpctl_iface.kernel_launch_ops.KernelLaunchOps.get_current_queue"><code class="docutils literal notranslate"><span class="pre">KernelLaunchOps.get_current_queue()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpctl_iface.kernel_launch_ops.html#numba_dpex.dpctl_iface.kernel_launch_ops.KernelLaunchOps.process_kernel_arg"><code class="docutils literal notranslate"><span class="pre">KernelLaunchOps.process_kernel_arg()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpctl_iface.usm_ndarray_type.html">numba_dpex.dpctl_iface.usm_ndarray_type module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpctl_iface.usm_ndarray_type.html#numba_dpex.dpctl_iface.usm_ndarray_type.USMNdArrayType"><code class="docutils literal notranslate"><span class="pre">USMNdArrayType</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpctl_iface.usm_ndarray_type.html#numba_dpex.dpctl_iface.usm_ndarray_type.USMNdArrayType.copy"><code class="docutils literal notranslate"><span class="pre">USMNdArrayType.copy()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpctl_iface.usm_ndarray_type.html#numba_dpex.dpctl_iface.usm_ndarray_type.typeof_usm_ndarray"><code class="docutils literal notranslate"><span class="pre">typeof_usm_ndarray()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>

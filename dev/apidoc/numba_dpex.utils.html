@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.utils package &mdash; numba-dpex 0+untagged.751.g56a050c documentation</title>
+  <title>numba_dpex.utils package &mdash; numba-dpex 0+untagged.755.g374b63b documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -16,6 +16,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -84,12 +85,60 @@
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="numba_dpex.utils.array_utils.html">numba_dpex.utils.array_utils module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="numba_dpex.utils.constants.html">numba_dpex.utils.constants module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="numba_dpex.utils.llvm_codegen_helpers.html">numba_dpex.utils.llvm_codegen_helpers module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.utils.array_utils.html">numba_dpex.utils.array_utils module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.array_utils.html#numba_dpex.utils.array_utils.as_usm_obj"><code class="docutils literal notranslate"><span class="pre">as_usm_obj()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.array_utils.html#numba_dpex.utils.array_utils.copy_from_numpy_to_usm_obj"><code class="docutils literal notranslate"><span class="pre">copy_from_numpy_to_usm_obj()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.array_utils.html#numba_dpex.utils.array_utils.copy_to_numpy_from_usm_obj"><code class="docutils literal notranslate"><span class="pre">copy_to_numpy_from_usm_obj()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.array_utils.html#numba_dpex.utils.array_utils.get_info_from_suai"><code class="docutils literal notranslate"><span class="pre">get_info_from_suai()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.array_utils.html#numba_dpex.utils.array_utils.has_usm_memory"><code class="docutils literal notranslate"><span class="pre">has_usm_memory()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.utils.constants.html">numba_dpex.utils.constants module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.constants.html#numba_dpex.utils.constants.address_space"><code class="docutils literal notranslate"><span class="pre">address_space</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.constants.html#numba_dpex.utils.constants.address_space.CONSTANT"><code class="docutils literal notranslate"><span class="pre">address_space.CONSTANT</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.constants.html#numba_dpex.utils.constants.address_space.GENERIC"><code class="docutils literal notranslate"><span class="pre">address_space.GENERIC</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.constants.html#numba_dpex.utils.constants.address_space.GLOBAL"><code class="docutils literal notranslate"><span class="pre">address_space.GLOBAL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.constants.html#numba_dpex.utils.constants.address_space.LOCAL"><code class="docutils literal notranslate"><span class="pre">address_space.LOCAL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.constants.html#numba_dpex.utils.constants.address_space.PRIVATE"><code class="docutils literal notranslate"><span class="pre">address_space.PRIVATE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.constants.html#numba_dpex.utils.constants.calling_conv"><code class="docutils literal notranslate"><span class="pre">calling_conv</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.constants.html#numba_dpex.utils.constants.calling_conv.CC_SPIR_FUNC"><code class="docutils literal notranslate"><span class="pre">calling_conv.CC_SPIR_FUNC</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.constants.html#numba_dpex.utils.constants.calling_conv.CC_SPIR_KERNEL"><code class="docutils literal notranslate"><span class="pre">calling_conv.CC_SPIR_KERNEL</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.utils.llvm_codegen_helpers.html">numba_dpex.utils.llvm_codegen_helpers module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes"><code class="docutils literal notranslate"><span class="pre">LLVMTypes</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.byte_ptr_ptr_t"><code class="docutils literal notranslate"><span class="pre">LLVMTypes.byte_ptr_ptr_t</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.byte_ptr_t"><code class="docutils literal notranslate"><span class="pre">LLVMTypes.byte_ptr_t</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.byte_t"><code class="docutils literal notranslate"><span class="pre">LLVMTypes.byte_t</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.int32_ptr_t"><code class="docutils literal notranslate"><span class="pre">LLVMTypes.int32_ptr_t</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.int32_t"><code class="docutils literal notranslate"><span class="pre">LLVMTypes.int32_t</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.int64_ptr_t"><code class="docutils literal notranslate"><span class="pre">LLVMTypes.int64_ptr_t</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.int64_t"><code class="docutils literal notranslate"><span class="pre">LLVMTypes.int64_t</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.void_t"><code class="docutils literal notranslate"><span class="pre">LLVMTypes.void_t</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.create_null_ptr"><code class="docutils literal notranslate"><span class="pre">create_null_ptr()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.get_llvm_ptr_type"><code class="docutils literal notranslate"><span class="pre">get_llvm_ptr_type()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.get_llvm_type"><code class="docutils literal notranslate"><span class="pre">get_llvm_type()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.get_one"><code class="docutils literal notranslate"><span class="pre">get_one()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.get_zero"><code class="docutils literal notranslate"><span class="pre">get_zero()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="numba_dpex.utils.messages.html">numba_dpex.utils.messages module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="numba_dpex.utils.misc.html">numba_dpex.utils.misc module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="numba_dpex.utils.type_conversion_fns.html">numba_dpex.utils.type_conversion_fns module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.utils.misc.html">numba_dpex.utils.misc module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.misc.html#numba_dpex.utils.misc.IndeterminateExecutionQueueError"><code class="docutils literal notranslate"><span class="pre">IndeterminateExecutionQueueError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.misc.html#numba_dpex.utils.misc.assert_no_return"><code class="docutils literal notranslate"><span class="pre">assert_no_return()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.utils.type_conversion_fns.html">numba_dpex.utils.type_conversion_fns module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.type_conversion_fns.html#numba_dpex.utils.type_conversion_fns.npytypes_array_to_dpex_array"><code class="docutils literal notranslate"><span class="pre">npytypes_array_to_dpex_array()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.type_conversion_fns.html#numba_dpex.utils.type_conversion_fns.suai_to_dpex_array"><code class="docutils literal notranslate"><span class="pre">suai_to_dpex_array()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core package &mdash; numba-dpex 0+untagged.751.g56a050c documentation</title>
+  <title>numba_dpex.core package &mdash; numba-dpex 0+untagged.755.g374b63b documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -16,6 +16,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -86,10 +87,45 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.passes.html">numba_dpex.core.passes package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.passes.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.passes.dufunc_inliner.html">numba_dpex.core.passes.dufunc_inliner module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.passes.lowerer.html">numba_dpex.core.passes.lowerer module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.passes.passes.html">numba_dpex.core.passes.passes module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.passes.rename_numpy_functions_pass.html">numba_dpex.core.passes.rename_numpy_functions_pass module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.passes.dufunc_inliner.html">numba_dpex.core.passes.dufunc_inliner module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.dufunc_inliner.html#numba_dpex.core.passes.dufunc_inliner.dufunc_inliner"><code class="docutils literal notranslate"><span class="pre">dufunc_inliner()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.passes.lowerer.html">numba_dpex.core.passes.lowerer module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.CopyIRException"><code class="docutils literal notranslate"><span class="pre">CopyIRException</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.DPEXLowerer"><code class="docutils literal notranslate"><span class="pre">DPEXLowerer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.WrapperDefaultLower"><code class="docutils literal notranslate"><span class="pre">WrapperDefaultLower</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.copy_block"><code class="docutils literal notranslate"><span class="pre">copy_block()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.find_setitems_block"><code class="docutils literal notranslate"><span class="pre">find_setitems_block()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.find_setitems_body"><code class="docutils literal notranslate"><span class="pre">find_setitems_body()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.generate_kernel_launch_ops"><code class="docutils literal notranslate"><span class="pre">generate_kernel_launch_ops()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.legalize_names_with_typemap"><code class="docutils literal notranslate"><span class="pre">legalize_names_with_typemap()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.lower_parfor_rollback"><code class="docutils literal notranslate"><span class="pre">lower_parfor_rollback()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.relatively_deep_copy"><code class="docutils literal notranslate"><span class="pre">relatively_deep_copy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.replace_var_with_array"><code class="docutils literal notranslate"><span class="pre">replace_var_with_array()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.replace_var_with_array_in_block"><code class="docutils literal notranslate"><span class="pre">replace_var_with_array_in_block()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.replace_var_with_array_internal"><code class="docutils literal notranslate"><span class="pre">replace_var_with_array_internal()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.to_scalar_from_0d"><code class="docutils literal notranslate"><span class="pre">to_scalar_from_0d()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.unwrap_loop_body"><code class="docutils literal notranslate"><span class="pre">unwrap_loop_body()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.wrap_loop_body"><code class="docutils literal notranslate"><span class="pre">wrap_loop_body()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.passes.passes.html">numba_dpex.core.passes.passes module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass"><code class="docutils literal notranslate"><span class="pre">ConstantSizeStaticLocalMemoryPass</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.DpexLowering"><code class="docutils literal notranslate"><span class="pre">DpexLowering</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.DumpParforDiagnostics"><code class="docutils literal notranslate"><span class="pre">DumpParforDiagnostics</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.NoPythonBackend"><code class="docutils literal notranslate"><span class="pre">NoPythonBackend</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.ParforPass"><code class="docutils literal notranslate"><span class="pre">ParforPass</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.PreParforPass"><code class="docutils literal notranslate"><span class="pre">PreParforPass</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.fallback_context"><code class="docutils literal notranslate"><span class="pre">fallback_context()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.passes.rename_numpy_functions_pass.html">numba_dpex.core.passes.rename_numpy_functions_pass module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.rename_numpy_functions_pass.html#numba_dpex.core.passes.rename_numpy_functions_pass.RewriteNdarrayFunctionsPass"><code class="docutils literal notranslate"><span class="pre">RewriteNdarrayFunctionsPass</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.rename_numpy_functions_pass.html#numba_dpex.core.passes.rename_numpy_functions_pass.RewriteOverloadedNumPyFunctionsPass"><code class="docutils literal notranslate"><span class="pre">RewriteOverloadedNumPyFunctionsPass</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.passes.rename_numpy_functions_pass.html#numba_dpex.core.passes.rename_numpy_functions_pass.get_dpnp_func_typ"><code class="docutils literal notranslate"><span class="pre">get_dpnp_func_typ()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.passes.html#module-numba_dpex.core.passes">Module contents</a></li>
@@ -97,7 +133,11 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.types.html">numba_dpex.core.types package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.types.array_type.html">numba_dpex.core.types.array_type module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.types.array_type.html">numba_dpex.core.types.array_type module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.types.array_type.html#numba_dpex.core.types.array_type.Array"><code class="docutils literal notranslate"><span class="pre">Array</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.types.array_type.html#numba_dpex.core.types.array_type.ArrayModel"><code class="docutils literal notranslate"><span class="pre">ArrayModel</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.html#module-numba_dpex.core.types">Module contents</a></li>
