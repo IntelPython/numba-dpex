@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.utils.misc module &mdash; numba-dpex 0+untagged.757.g08d07d0 documentation</title>
+  <title>numba_dpex.utils.misc module &mdash; numba-dpex 0+untagged.760.g4c793d7 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -85,23 +85,6 @@
 <dt class="sig sig-object py" id="numba_dpex.utils.misc.IndeterminateExecutionQueueError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.misc.</span></span><span class="sig-name descname"><span class="pre">IndeterminateExecutionQueueError</span></span><a class="headerlink" href="#numba_dpex.utils.misc.IndeterminateExecutionQueueError" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.utils.misc.assert_no_return">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.misc.</span></span><span class="sig-name descname"><span class="pre">assert_no_return</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rettype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.misc.assert_no_return" title="Permalink to this definition"></a></dt>
-<dd><p>Make sure the type of return is void/None.</p>
-<p>&#64;numba_dpex.kernel does not allow users to return any value and this
-function raises TypeError when users do return something.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>rettype: Numba type representing the return value.</p>
-</dd>
-<dt>Raises:</dt><dd><dl class="simple">
-<dt>TypeError: Only None and types.void is allowed. In case</dt><dd><p>of any other type TypeError is raised.</p>
-</dd>
-</dl>
-</dd>
-</dl>
 </dd></dl>
 
 </section>
