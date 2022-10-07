@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2022 Intel Corp.
+# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 

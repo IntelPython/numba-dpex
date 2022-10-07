@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+//
+// SPDX-License-Identifier: Apache-2.0
+
 /* OpenCL extension specification states extensions should define the extension
    and to use it we need to enable is the following way using the pragma.
    Link to specification: https://www.khronos.org/registry/OpenCL/specs/2.2/html/OpenCL_Ext.html
