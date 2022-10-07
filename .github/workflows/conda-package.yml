@@ -32,7 +32,7 @@ jobs:
 
       - name: Build conda package
         env:
-          CHANNELS: -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
+          CHANNELS: -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev --override-channels
         run: ./scripts/build_conda_package.sh ${{ matrix.python }}
 
       - name: Upload artifact
@@ -98,8 +98,6 @@ jobs:
       matrix:
         python: ["3.8", "3.9"]
         numba: ["0.55"]
-        dpctl: ["0.13"]
-        dpnp: ["0.10.1"]
 
     steps:
       - name: Download artifact
@@ -124,11 +122,11 @@ jobs:
 
       - name: Install numba-dpex
         env:
-          CHANNELS: -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
+          CHANNELS: -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev --override-channels
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel $CHANNELS"
           conda list
-          conda create -n numba_dpex_env $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl=${{ matrix.dpctl }} dpnp=${{ matrix.dpnp }} $CHANNELS
+          conda create -n numba_dpex_env $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl dpnp $CHANNELS
           # Test installed packages
           conda list
       - name: Check DPNP
@@ -152,7 +150,6 @@ jobs:
     strategy:
       matrix:
         python: ["3.8", "3.9"]
-        dpctl: ["0.13"]
         integration_channels: [""]
         experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
@@ -166,7 +163,7 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
     env:
       # conda-forge: llvm-spirv 11 not on intel channel yet
-      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev -c conda-forge --override-channels
+      CHANNELS: ${{ matrix.integration_channels }} -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev -c conda-forge --override-channels
 
     steps:
       - name: Create dir for numba-dpex repo
@@ -208,13 +205,47 @@ jobs:
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
       - name: Install numba-dpex
         run: |
-          conda install ${{ env.PACKAGE_NAME }} pytest dpcpp_win-64 python=${{ matrix.python }} dpctl=${{ matrix.dpctl }} ${{ matrix.dependencies }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
+          conda install ${{ env.PACKAGE_NAME }} pytest dpcpp_win-64 python=${{ matrix.python }} dpctl ${{ matrix.dependencies }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
           # Test installed packages
           conda list
       - name: Install opencl_rt
         run: conda install opencl_rt -c intel --override-channels
-      - name: Activate cpu driver
-        run: ${{ github.workspace }}/dpex-repo/scripts/config_cpu_device.ps1
+
+      - name: Add library
+        shell: pwsh
+        run: |
+          $conda_env_library = "$env:CONDA_PREFIX\Library"
+          echo "OCL_ICD_FILENAMES=$conda_env_library\lib\intelocl64.dll" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          try {$list = Get-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors | Select-Object -ExpandProperty Property } catch {$list=@()}
+          if ($list.count -eq 0) {
+              if (-not (Test-Path -Path HKLM:\SOFTWARE\Khronos)) {
+                 New-Item -Path HKLM:\SOFTWARE\Khronos
+              }
+              if (-not (Test-Path -Path HKLM:\SOFTWARE\Khronos\OpenCL)) {
+                 New-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL
+              }
+              if (-not (Test-Path -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors)) {
+                 New-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors
+              }
+              New-ItemProperty -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors -Name $conda_env_library\lib\intelocl64.dll -Value 0
+              try {$list = Get-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors | Select-Object -ExpandProperty Property } catch {$list=@()}
+              Write-Output $(Get-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors)
+              # Now copy OpenCL.dll into system folder
+              $system_ocl_icd_loader="C:\Windows\System32\OpenCL.dll"
+              $python_ocl_icd_loader="$conda_env_library\bin\OpenCL.dll"
+              Copy-Item -Path $python_ocl_icd_loader -Destination $system_ocl_icd_loader
+              if (Test-Path -Path $system_ocl_icd_loader) {
+                 Write-Output "$system_ocl_icd_loader has been copied"
+                 $acl = Get-Acl $system_ocl_icd_loader
+                 Write-Output $acl
+              } else {
+                 Write-Output "OCL-ICD-Loader was not copied"
+              }
+              # Variable assisting OpenCL CPU driver to find TBB DLLs which are not located where it expects them by default
+              $cl_cfg="$conda_env_library\lib\cl.cfg"
+              (Get-Content $cl_cfg) -replace '^CL_CONFIG_TBB_DLL_PATH =', "CL_CONFIG_TBB_DLL_PATH = $conda_env_library\bin" | Set-Content $cl_cfg
+          }
+
       - name: Add dpnp skip variable
         run: echo "NUMBA_DPEX_TESTING_SKIP_NO_DPNP=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
       - name: Run tests

@@ -1,21 +1,12 @@
-# Copyright 2021 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# SPDX-License-Identifier: Apache-2.0
 
 import dpctl
 from numba.core import sigutils, types
 
-from numba_dpex.utils import assert_no_return, npytypes_array_to_dpex_array
+from numba_dpex.core.dpex_exceptions import KernelHasReturnValueError
+from numba_dpex.utils import npytypes_array_to_dpex_array
 
 from .compiler import (
     JitKernel,
@@ -26,10 +17,15 @@ from .compiler import (
 
 
 def kernel(signature=None, access_types=None, debug=None):
-    """JIT compile a python function conforming using the Dpex backend.
+    """The decorator to write a numba_dpex kernel function.
 
-    A kernel is equivalent to an OpenCL kernel function, and has the
-    same restrictions as defined by SPIR_KERNEL calling convention.
+    A kernel function is conceptually equivalent to a SYCL kernel function, and
+    gets compiled into either an OpenCL or a LevelZero SPIR-V binary kernel.
+    A dpex kernel imposes the following restrictions:
+
+        * A numba_dpex.kernel function can not return any value.
+        * All array arguments passed to a kernel should be of the same type
+          and have the same dtype.
     """
     if signature is None:
         return autojit(debug=debug, access_types=access_types)
@@ -60,9 +56,6 @@ def _kernel_jit(signature, debug, access_types):
             for ty in argtypes
         ]
     )
-
-    # Raises TypeError when users return anything inside @numba_dpex.kernel.
-    assert_no_return(rettype)
 
     def _wrapped(pyfunc):
         current_queue = dpctl.get_current_queue()
