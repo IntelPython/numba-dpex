@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Supported Address Space Qualifiers &mdash; numba-dpex 0+untagged.760.g4c793d7 documentation</title>
+  <title>Supported Address Space Qualifiers &mdash; numba-dpex 0+untagged.763.g192ef38 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -106,19 +106,10 @@ memory pool and will be shared among all work-items. Arguments passed to any
 kernel are allocated in the global address space. In the below example,
 arguments <cite>a</cite>, <cite>b</cite> and <cite>c</cite> will be allocated in the global address space:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ch">#! /usr/bin/env python</span>
-<span class="c1"># Copyright 2020, 2021 Intel Corporation</span>
+
+<span class="c1"># SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation</span>
 <span class="c1">#</span>
-<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
-<span class="c1"># you may not use this file except in compliance with the License.</span>
-<span class="c1"># You may obtain a copy of the License at</span>
-<span class="c1">#</span>
-<span class="c1">#      http://www.apache.org/licenses/LICENSE-2.0</span>
-<span class="c1">#</span>
-<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
-<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
-<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
-<span class="c1"># See the License for the specific language governing permissions and</span>
-<span class="c1"># limitations under the License.</span>
+<span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
 
 <span class="kn">import</span> <span class="nn">dpctl</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -181,17 +172,7 @@ local address space to <cite>&#64;numba_dpex.kernel</cite>. Users are allowed to
 static arrays in the local address space inside the <cite>&#64;numba_dpex.kernel</cite>. In
 the example below <cite>numba_dpex.local.array(shape, dtype)</cite> is the API used to
 allocate a static array in the local address space:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">local_memory</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This example demonstrates the usage of numba-dpex&#39;s `local.array`</span>
-<span class="sd">    intrinsic function. The function is used to create a static array</span>
-<span class="sd">    allocated on the devices local address space.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">blocksize</span> <span class="o">=</span> <span class="mi">10</span>
-
-    <span class="nd">@dpex</span><span class="o">.</span><span class="n">kernel</span>
-    <span class="k">def</span> <span class="nf">reverse_array</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
-        <span class="n">lm</span> <span class="o">=</span> <span class="n">dpex</span><span class="o">.</span><span class="n">local</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>        <span class="n">lm</span> <span class="o">=</span> <span class="n">dpex</span><span class="o">.</span><span class="n">local</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">float32</span><span class="p">)</span>
         <span class="n">i</span> <span class="o">=</span> <span class="n">dpex</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="c1"># preload</span>
@@ -215,6 +196,16 @@ allocate a static array in the local address space:</p>
 
     <span class="c1"># the output should be `orig[::-1] + orig, i.e. [9, 9, 9, ...]``</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">no_arg_barrier_support</span><span class="p">()</span>
+    <span class="n">local_memory</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 </pre></div>
 </div>
 </dd>
@@ -225,19 +216,9 @@ allocate a static array in the local address space:</p>
 work-item and is not shared with any other work-item. In the example below
 <cite>numba_dpex.private.array(shape, dtype)</cite> is the API used to allocate a
 static array in the private address space:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Copyright 2020, 2021 Intel Corporation</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation</span>
 <span class="c1">#</span>
-<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
-<span class="c1"># you may not use this file except in compliance with the License.</span>
-<span class="c1"># You may obtain a copy of the License at</span>
-<span class="c1">#</span>
-<span class="c1">#      http://www.apache.org/licenses/LICENSE-2.0</span>
-<span class="c1">#</span>
-<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
-<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
-<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
-<span class="c1"># See the License for the specific language governing permissions and</span>
-<span class="c1"># limitations under the License.</span>
+<span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
 
 <span class="kn">import</span> <span class="nn">dpctl</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
