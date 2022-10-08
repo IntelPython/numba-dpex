@@ -25,7 +25,7 @@ from numba_dpex.utils import (
     suai_to_dpex_array,
 )
 
-from . import codegen
+from .. import codegen
 
 CC_SPIR_KERNEL = "spir_kernel"
 CC_SPIR_FUNC = "spir_func"
@@ -87,7 +87,7 @@ class DpexTypingContext(typing.BaseContext):
         """Register the OpenCL API and math and other functions."""
         from numba.core.typing import cmathdecl, npydecl
 
-        from .ocl import mathdecl, ocldecl
+        from ..ocl import mathdecl, ocldecl
 
         self.install_registry(ocldecl.registry)
         self.install_registry(mathdecl.registry)
@@ -354,8 +354,8 @@ class DpexTargetContext(BaseContext):
         """
         from numba.np import npyimpl
 
-        from . import printimpl
-        from .ocl import mathimpl, oclimpl
+        from .. import printimpl
+        from ..ocl import mathimpl, oclimpl
 
         self.insert_func_defn(oclimpl.registry.functions)
         self.insert_func_defn(mathimpl.registry.functions)

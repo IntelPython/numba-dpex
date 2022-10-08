@@ -7,7 +7,7 @@ from numba.core.registry import cpu_target
 from numba.core.target_extension import dispatcher_registry, target_registry
 
 import numba_dpex.config as dpex_config
-from numba_dpex.target import DPEX_TARGET_NAME
+from numba_dpex.core.target import DPEX_TARGET_NAME
 
 
 class OffloadDispatcher(dispatcher.Dispatcher):

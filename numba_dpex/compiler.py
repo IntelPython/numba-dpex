@@ -121,7 +121,7 @@ def compile_with_depx(pyfunc, return_type, args, is_kernel, debug=None):
 
     """
     # First compilation will trigger the initialization of the backend.
-    from .descriptor import dpex_target
+    from .core.descriptor import dpex_target
 
     typingctx = dpex_target.typing_context
     targetctx = dpex_target.target_context
@@ -282,7 +282,7 @@ def compile_func(pyfunc, return_type, args, debug=None):
 
 def compile_func_template(pyfunc, debug=None):
     """Compile a DpexFunctionTemplate"""
-    from .descriptor import dpex_target
+    from .core.descriptor import dpex_target
 
     dft = DpexFunctionTemplate(pyfunc, debug=debug)
 
@@ -719,7 +719,7 @@ class JitKernel(KernelBase):
         self.debug = debug
         self.access_types = access_types
 
-        from .descriptor import dpex_target
+        from .core.descriptor import dpex_target
 
         self.typingctx = dpex_target.typing_context
 
