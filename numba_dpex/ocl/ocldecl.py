@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from numba import types
+from numba.core import types
 from numba.core.typing.npydecl import parse_dtype, parse_shape
 from numba.core.typing.templates import (
     AbstractTemplate,
@@ -45,11 +45,11 @@ register(dpex.get_global_id, (types.intp, types.uint32))
 register(dpex.get_local_id, (types.intp, types.uint32))
 register(dpex.get_group_id, (types.intp, types.uint32))
 register(dpex.get_num_groups, (types.intp, types.uint32))
-register(dpex.get_work_dim, (types.intp, types.uint32))
+register(dpex.get_work_dim, (types.uint32,))
 register(dpex.get_global_size, (types.intp, types.uint32))
 register(dpex.get_local_size, (types.intp, types.uint32))
-register(dpex.barrier, [(types.intp, types.uint32), (types.void,)])
-register(dpex.mem_fence, (types.intp, types.uint32))
+register(dpex.barrier, [(types.void, types.uint32), (types.void,)])
+register(dpex.mem_fence, (types.void, types.uint32))
 register(dpex.sub_group_barrier, (types.void,))
 
 # dpex.atomic submodule -------------------------------------------------------
@@ -60,7 +60,8 @@ class Ocl_atomic_add(AbstractTemplate):
     key = dpex.atomic.add
 
     def generic(self, args, kws):
-        assert not kws
+        if kws:
+            raise AssertionError("Keyword arguments not supported here.")
         ary, idx, val = args
 
         if ary.ndim == 1:
@@ -74,7 +75,8 @@ class Ocl_atomic_sub(AbstractTemplate):
     key = dpex.atomic.sub
 
     def generic(self, args, kws):
-        assert not kws
+        if kws:
+            raise AssertionError("Keyword arguments not supported here.")
         ary, idx, val = args
 
         if ary.ndim == 1:
