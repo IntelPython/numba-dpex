@@ -80,7 +80,8 @@ SPIRV_VAL = _readenv("NUMBA_DPEX_SPIRV_VAL", int, 0)
 # Dump offload diagnostics
 OFFLOAD_DIAGNOSTICS = _readenv("NUMBA_DPEX_OFFLOAD_DIAGNOSTICS", int, 0)
 
-FALLBACK_ON_CPU = _readenv("NUMBA_DPEX_FALLBACK_ON_CPU", int, 1)
+# By default, we are setting it to 0
+FALLBACK_ON_CPU = _readenv("NUMBA_DPEX_FALLBACK_ON_CPU", int, 0)
 
 # Activate Native floating point atomcis support for supported devices.
 # Requires llvm-spirv supporting the FP atomics extension
