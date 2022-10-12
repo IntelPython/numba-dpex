@@ -30,6 +30,7 @@ class TestParforFallback:
             return a
 
         config.DEBUG = 1
+        config.FALLBACK_ON_CPU = 1
         with warnings.catch_warnings(record=True) as w:
             device = dpctl.SyclDevice("opencl:gpu")
             with dpctl.device_context(device):
@@ -41,6 +42,7 @@ class TestParforFallback:
 
         np.testing.assert_array_equal(fallback_true, ref_result)
         assert "Failed to offload parfor" in str(w[-1].message)
+
 
     @pytest.mark.xfail
     def test_parfor_fallback_false(self):
@@ -59,7 +61,6 @@ class TestParforFallback:
 
         try:
             config.DEBUG = 1
-            config.FALLBACK_ON_CPU = 0
             with warnings.catch_warnings(record=True) as w:
                 device = dpctl.SyclDevice("opencl:gpu")
                 with dpctl.device_context(device):
