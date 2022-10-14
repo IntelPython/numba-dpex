@@ -86,22 +86,12 @@ class CmdLine:
     def _llvm_spirv():
         """Return path to llvm-spirv executable."""
         result = None
+        try:
+            import llvm_spirv
+        except ImportError:
+            raise ImportError("Cannot import llvm-spirv")
 
-        if config.LLVM_SPIRV_ROOT:
-            result = shutil.which("llvm-spirv", path=config.LLVM_SPIRV_ROOT)
-
-        if result is None:
-            # use llvm-spirv from dpcpp package.
-            # assume dpcpp from .../bin folder.
-            # assume llvm-spirv from .../bin-llvm folder.
-            dpcpp_path = shutil.which("dpcpp")
-            if dpcpp_path is not None:
-                bin_llvm = os.path.dirname(dpcpp_path) + "/../bin-llvm/"
-                bin_llvm = os.path.normpath(bin_llvm)
-                result = shutil.which("llvm-spirv", path=bin_llvm)
-
-        if result is None:
-            result = "llvm-spirv"
+        result = llvm_spirv.llvm_spirv_path()
 
         return result
 
