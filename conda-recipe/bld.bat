@@ -1,7 +1,18 @@
 @REM new llvm-spirv location
 @REM starting from dpcpp_impl_win-64=2022.0.0=intel_3638 location is env\Library\bin-llvm
 @REM used BUILD_PREFIX as compiler installed in build section of meta.yml
-set "PATH=%BUILD_PREFIX%\Library\bin-llvm;%PATH%"
+
+pushd %SRC_DIR%\llvm_spirv
+%PYTHON% setup.py install --old-and-unmanageable
+popd
+
+pushd %SRC_DIR%\compiler
+%PYTHON% -c "import llvm_spirv; print(llvm_spirv.llvm_spirv_path())" > Output
+set /p DIRSTR= < Output
+copy bin-llvm\llvm-spirv %DIRSTR%
+del Output
+popd
+
 
 %PYTHON% setup.py install --single-version-externally-managed --record=record.txt
 

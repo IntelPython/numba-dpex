@@ -120,8 +120,18 @@ def spirv_compile():
         "numba_dpex/ocl/atomics/atomic_ops.spir",
         "numba_dpex/ocl/atomics/atomic_ops.bc",
     ]
-    subprocess.check_call(clang_args, stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL, shell=False)
-    subprocess.check_call(spirv_args, stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL, shell=False)
+    subprocess.check_call(
+        clang_args,
+        stderr=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
+        shell=False,
+    )
+    subprocess.check_call(
+        spirv_args,
+        stderr=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
+        shell=False,
+    )
 
 
 def _llvm_spirv():
