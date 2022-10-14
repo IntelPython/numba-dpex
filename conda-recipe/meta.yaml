@@ -1,9 +1,9 @@
 {% set version = "2022.2.0" %}          # [linux]
-{% set version = "2022.2.0" %}          # [osx or win]
+{% set version = "2022.2.0" %}          # [win]
 {% set intel_build_number = "8734" %}   # [linux]
-{% set intel_build_number = "8682" %}   # [osx]
 {% set intel_build_number = "9553" %}   # [win]
-{% set target_platform = "linux-64" %}   # [linux]
+{% set target_platform = "linux-64" %}  # [linux]
+{% set target_platform = "win-64" %}    # [win]
 
 package:
     name: numba-dpex
@@ -13,7 +13,7 @@ source:
     - path: ..
     - url: https://anaconda.org/intel/dpcpp_impl_{{ target_platform }}/{{ version }}/download/{{ target_platform }}/dpcpp_impl_{{ target_platform }}-{{ version }}-intel_{{ intel_build_number }}.tar.bz2  # [linux64 or win64]
       folder: compiler
-    - path: ../llvm_spirv
+    - path: ./pkg_llvm_spirv
       folder: llvm_spirv
 
 build:
@@ -27,7 +27,7 @@ requirements:
         - {{ compiler('dpcpp') }}  # [not osx]
     host:
         - python
-        - setuptools
+        - setuptools  >=63.*
         - cython
         - numba 0.54*|0.55*
         - dpctl >=0.13.0

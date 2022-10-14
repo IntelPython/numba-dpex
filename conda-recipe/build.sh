@@ -2,20 +2,24 @@
 
 set -euxo pipefail
 
-echo "starting repack"
 src="${SRC_DIR}"
 
-pushd "${src}/llvm_spirv"
-${PYTHON} setup.py install --old-and-unmanageable
-popd
+if [[ "$(uname -s)-suffix" == "Linux-suffix" ]]; then
+    echo "starting repack"
 
-pushd "${src}/compiler"
-cp bin-llvm/llvm-spirv "$(${PYTHON} -c "import llvm_spirv; print(llvm_spirv.llvm_spirv_path())")"
-popd
-echo "done with repack"
+    pushd "${src}/llvm_spirv"
+    ${PYTHON} setup.py install --single-version-externally-managed --record=llvm_spirv_record.txt
+    cat llvm_spirv_record.txt
+    popd
+
+    pushd "${src}/compiler"
+    cp bin-llvm/llvm-spirv "$(${PYTHON} -c "import llvm_spirv; print(llvm_spirv.llvm_spirv_path())")"
+    popd
+
+    echo "done with repack"
+fi
 
 
-# starting from dpcpp_impl_linux-64=2022.0.0=intel_3610
 pushd ./
 ${PYTHON} setup.py install --single-version-externally-managed --record=record.txt
 popd

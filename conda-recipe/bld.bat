@@ -3,7 +3,8 @@
 @REM used BUILD_PREFIX as compiler installed in build section of meta.yml
 
 pushd %SRC_DIR%\llvm_spirv
-%PYTHON% setup.py install --old-and-unmanageable
+%PYTHON% setup.py install --single-version-externally-managed --record=llvm_spirv_record.txt
+type llvm_spirv_record.txt
 popd
 
 pushd %SRC_DIR%\compiler
