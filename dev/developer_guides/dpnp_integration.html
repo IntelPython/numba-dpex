@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>dpnp integration &mdash; numba-dpex 0+untagged.765.gf50c2db documentation</title>
+  <title>dpnp integration &mdash; numba-dpex 0+untagged.768.g5817475 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -107,14 +107,16 @@ end-user and is implemented as a renaming pass in numba-dpex’s pass pipeline.<
 <span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">njit</span>
 <span class="kn">import</span> <span class="nn">dpctl</span>
 
+
 <span class="nd">@njit</span>
 <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
-  <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>  <span class="c1"># this call will be replaced with the dpnp.sum function</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>  <span class="c1"># this call will be replaced with the dpnp.sum function</span>
+
 
 <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 
 <span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">():</span>
-  <span class="n">result</span> <span class="o">=</span> <span class="n">foo</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">foo</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 </pre></div>
@@ -140,17 +142,17 @@ classes for each of the NumPy functions calls that are currently substituted
 out. The outline of a stub class is as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># numba_dpex/dpnp_iface/stubs.py - imported in numba_dpex.__init__.py</span>
 
-<span class="k">class</span> <span class="nc">dpnp</span><span class="p">(</span><span class="n">Stub</span><span class="p">):</span>
 
-  <span class="k">class</span> <span class="nc">sum</span><span class="p">(</span><span class="n">Stub</span><span class="p">):</span>  <span class="c1"># stub function</span>
-    <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">dpnp</span><span class="p">(</span><span class="n">Stub</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">sum</span><span class="p">(</span><span class="n">Stub</span><span class="p">):</span>  <span class="c1"># stub function</span>
+        <span class="k">pass</span>
 </pre></div>
 </div>
 <p>Each stub is provided with a concrete implementation to generates the actual
 code using Numba’s <code class="docutils literal notranslate"><span class="pre">overload</span></code> function API. E.g.,</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@overload</span><span class="p">(</span><span class="n">stubs</span><span class="o">.</span><span class="n">dpnp</span><span class="o">.</span><span class="n">sum</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">dpnp_sum_impl</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
-  <span class="o">...</span>
+    <span class="o">...</span>
 </pre></div>
 </div>
 <p>The complete implementation is in
@@ -189,44 +191,47 @@ naming convention. I.e. <code class="file docutils literal notranslate"><span cl
 <code class="file docutils literal notranslate"><span class="pre">numba_dpex/dpnp_iface/dpnp_indexing.py</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numba.core.extending</span> <span class="kn">import</span> <span class="n">overload</span>
 <span class="kn">import</span> <span class="nn">numba_dpex.dpnp_iface</span> <span class="k">as</span> <span class="nn">dpnp_lowering</span>
+
 <span class="o">...</span>
+
 
 <span class="nd">@overload</span><span class="p">(</span><span class="n">stubs</span><span class="o">.</span><span class="n">dpnp</span><span class="o">.</span><span class="n">sum</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">dpnp_sum_impl</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
-  <span class="n">dpnp_lowering</span><span class="o">.</span><span class="n">ensure_dpnp</span><span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">)</span>
+    <span class="n">dpnp_lowering</span><span class="o">.</span><span class="n">ensure_dpnp</span><span class="p">(</span><span class="s2">&quot;sum&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><code class="xref py py-func docutils literal notranslate"><span class="pre">ensure_dpnp()</span></code> checks that <cite>DPNP</cite> package is available and contains the function.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">types</span>
 <span class="kn">from</span> <span class="nn">numba.core.typing</span> <span class="kn">import</span> <span class="n">signature</span>
+
 <span class="o">...</span>
 <span class="c1"># continue of dpnp_sum_impl()</span>
-  <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">  dpnp source:</span>
-<span class="sd">  https://github.com/IntelPython/dpnp/blob/0.6.1dev/dpnp/backend/kernels/dpnp_krnl_reduction.cpp#L59</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">dpnp source:</span>
+<span class="sd">https://github.com/IntelPython/dpnp/blob/0.6.1dev/dpnp/backend/kernels/dpnp_krnl_reduction.cpp#L59</span>
 
-<span class="sd">  Function declaration:</span>
-<span class="sd">  void dpnp_sum_c(void* result_out,</span>
-<span class="sd">                  const void* input_in,</span>
-<span class="sd">                  const size_t* input_shape,</span>
-<span class="sd">                  const size_t input_shape_ndim,</span>
-<span class="sd">                  const long* axes,</span>
-<span class="sd">                  const size_t axes_ndim,</span>
-<span class="sd">                  const void* initial,</span>
-<span class="sd">                  const long* where)</span>
+<span class="sd">Function declaration:</span>
+<span class="sd">void dpnp_sum_c(void* result_out,</span>
+<span class="sd">                const void* input_in,</span>
+<span class="sd">                const size_t* input_shape,</span>
+<span class="sd">                const size_t input_shape_ndim,</span>
+<span class="sd">                const long* axes,</span>
+<span class="sd">                const size_t axes_ndim,</span>
+<span class="sd">                const void* initial,</span>
+<span class="sd">                const long* where)</span>
 
-<span class="sd">  &quot;&quot;&quot;</span>
-  <span class="n">sig</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span>
-      <span class="n">types</span><span class="o">.</span><span class="n">void</span><span class="p">,</span>  <span class="c1"># return type</span>
-      <span class="n">types</span><span class="o">.</span><span class="n">voidptr</span><span class="p">,</span>  <span class="c1"># void* result_out,</span>
-      <span class="n">types</span><span class="o">.</span><span class="n">voidptr</span><span class="p">,</span>  <span class="c1"># const void* input_in,</span>
-      <span class="n">types</span><span class="o">.</span><span class="n">voidptr</span><span class="p">,</span>  <span class="c1"># const size_t* input_shape,</span>
-      <span class="n">types</span><span class="o">.</span><span class="n">intp</span><span class="p">,</span>  <span class="c1"># const size_t input_shape_ndim,</span>
-      <span class="n">types</span><span class="o">.</span><span class="n">voidptr</span><span class="p">,</span>  <span class="c1"># const long* axes,</span>
-      <span class="n">types</span><span class="o">.</span><span class="n">intp</span><span class="p">,</span>  <span class="c1"># const size_t axes_ndim,</span>
-      <span class="n">types</span><span class="o">.</span><span class="n">voidptr</span><span class="p">,</span>  <span class="c1"># const void* initial,</span>
-      <span class="n">types</span><span class="o">.</span><span class="n">voidptr</span><span class="p">,</span>  <span class="c1"># const long* where)</span>
-  <span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">sig</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">void</span><span class="p">,</span>  <span class="c1"># return type</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">voidptr</span><span class="p">,</span>  <span class="c1"># void* result_out,</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">voidptr</span><span class="p">,</span>  <span class="c1"># const void* input_in,</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">voidptr</span><span class="p">,</span>  <span class="c1"># const size_t* input_shape,</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">intp</span><span class="p">,</span>  <span class="c1"># const size_t input_shape_ndim,</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">voidptr</span><span class="p">,</span>  <span class="c1"># const long* axes,</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">intp</span><span class="p">,</span>  <span class="c1"># const size_t axes_ndim,</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">voidptr</span><span class="p">,</span>  <span class="c1"># const void* initial,</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">voidptr</span><span class="p">,</span>  <span class="c1"># const long* where)</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <p>Signature <code class="xref py py-obj docutils literal notranslate"><span class="pre">sig</span></code> is based on the <cite>DPNP</cite> function signature defined in header file.
@@ -234,9 +239,10 @@ It is recommended to provide link to signature in <cite>DPNP</cite> sources and 
 as shown above.</p>
 <p>For mapping between <cite>C</cite> types and <cite>Numba</cite> types see <a class="reference internal" href="#dpnp-integration-types-matching"><span class="std std-ref">Types matching for Numba and DPNP</span></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numba_dpex.dpnp_iface.dpnpimpl</span> <span class="k">as</span> <span class="nn">dpnp_ext</span>
+
 <span class="o">...</span>
 <span class="c1"># continue of dpnp_sum_impl()</span>
-  <span class="n">dpnp_func</span> <span class="o">=</span> <span class="n">dpnp_ext</span><span class="o">.</span><span class="n">dpnp_func</span><span class="p">(</span><span class="s2">&quot;dpnp_sum&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;NONE&quot;</span><span class="p">],</span> <span class="n">sig</span><span class="p">)</span>
+<span class="n">dpnp_func</span> <span class="o">=</span> <span class="n">dpnp_ext</span><span class="o">.</span><span class="n">dpnp_func</span><span class="p">(</span><span class="s2">&quot;dpnp_sum&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;NONE&quot;</span><span class="p">],</span> <span class="n">sig</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><code class="xref py py-func docutils literal notranslate"><span class="pre">dpnp_ext.dpnp_func()</span></code> returns function pointer from <cite>DPNP</cite>.
@@ -250,17 +256,20 @@ which is converted to <code class="xref py py-class docutils literal notranslate
 <li><p>Signature which is used for creating <cite>Numba</cite> <code class="xref py py-class docutils literal notranslate"><span class="pre">ExternalFunctionPointer</span></code>.</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numba_dpex.dpnp_iface.dpnpimpl</span> <span class="k">as</span> <span class="nn">dpnp_ext</span>
+
 <span class="o">...</span>
 <span class="c1"># continue of dpnp_sum_impl()</span>
-  <span class="n">PRINT_DEBUG</span> <span class="o">=</span> <span class="n">dpnp_lowering</span><span class="o">.</span><span class="n">DEBUG</span>
+<span class="n">PRINT_DEBUG</span> <span class="o">=</span> <span class="n">dpnp_lowering</span><span class="o">.</span><span class="n">DEBUG</span>
 
-  <span class="k">def</span> <span class="nf">dpnp_impl</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
-      <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-      <span class="n">common_impl</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">dpnp_func</span><span class="p">,</span> <span class="n">PRINT_DEBUG</span><span class="p">)</span>
 
-      <span class="k">return</span> <span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">def</span> <span class="nf">dpnp_impl</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">common_impl</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">dpnp_func</span><span class="p">,</span> <span class="n">PRINT_DEBUG</span><span class="p">)</span>
 
-  <span class="k">return</span> <span class="n">dpnp_impl</span>
+    <span class="k">return</span> <span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<span class="k">return</span> <span class="n">dpnp_impl</span>
 </pre></div>
 </div>
 <p>This code created implementation function and returns it from the overload function.</p>
@@ -278,7 +287,9 @@ creating the new one.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numba.core.extending</span> <span class="kn">import</span> <span class="n">register_jitable</span>
 <span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">dpctl_functions</span>
 <span class="kn">import</span> <span class="nn">numba_dpex.dpnp_iface.dpnpimpl</span> <span class="k">as</span> <span class="nn">dpnp_ext</span>
+
 <span class="o">...</span>
+
 
 <span class="nd">@register_jitable</span>
 <span class="k">def</span> <span class="nf">common_impl</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">dpnp_func</span><span class="p">,</span> <span class="n">print_debug</span><span class="p">):</span>
@@ -342,25 +353,25 @@ You should find tests for the category of functions similar to your function and
 update a list with function names like <code class="xref py py-obj docutils literal notranslate"><span class="pre">list_of_unary_ops</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">list_of_nan_ops</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span><span class="s2">&quot;filter_str&quot;</span><span class="p">,</span> <span class="n">filter_strings</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_unary_ops</span><span class="p">(</span><span class="n">filter_str</span><span class="p">,</span> <span class="n">unary_op</span><span class="p">,</span> <span class="n">input_array</span><span class="p">,</span> <span class="n">get_shape</span><span class="p">,</span> <span class="n">capfd</span><span class="p">):</span>
-  <span class="n">a</span> <span class="o">=</span> <span class="n">input_array</span>  <span class="c1"># 1</span>
-  <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">get_shape</span><span class="p">)</span>
-  <span class="n">op</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">unary_op</span>  <span class="c1"># 2</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;cumprod&quot;</span> <span class="ow">or</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;cumsum&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
-      <span class="n">filter_str</span> <span class="o">==</span> <span class="s2">&quot;opencl:cpu:0&quot;</span> <span class="ow">or</span> <span class="n">is_gen12</span><span class="p">(</span><span class="n">filter_str</span><span class="p">)</span>
-  <span class="p">):</span>
-      <span class="n">pytest</span><span class="o">.</span><span class="n">skip</span><span class="p">()</span>
-  <span class="n">actual</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-  <span class="n">expected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">input_array</span>  <span class="c1"># 1</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">get_shape</span><span class="p">)</span>
+    <span class="n">op</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">unary_op</span>  <span class="c1"># 2</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;cumprod&quot;</span> <span class="ow">or</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;cumsum&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+        <span class="n">filter_str</span> <span class="o">==</span> <span class="s2">&quot;opencl:cpu:0&quot;</span> <span class="ow">or</span> <span class="n">is_gen12</span><span class="p">(</span><span class="n">filter_str</span><span class="p">)</span>
+    <span class="p">):</span>
+        <span class="n">pytest</span><span class="o">.</span><span class="n">skip</span><span class="p">()</span>
+    <span class="n">actual</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">expected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
-  <span class="n">f</span> <span class="o">=</span> <span class="n">njit</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>  <span class="c1"># 3</span>
-  <span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="n">filter_str</span><span class="p">),</span> <span class="n">dpnp_debug</span><span class="p">():</span>  <span class="c1"># 7</span>
-      <span class="n">actual</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>  <span class="c1"># 4</span>
-      <span class="n">captured</span> <span class="o">=</span> <span class="n">capfd</span><span class="o">.</span><span class="n">readouterr</span><span class="p">()</span>
-      <span class="k">assert</span> <span class="s2">&quot;dpnp implementation&quot;</span> <span class="ow">in</span> <span class="n">captured</span><span class="o">.</span><span class="n">out</span>  <span class="c1"># 8</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">njit</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>  <span class="c1"># 3</span>
+    <span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="n">filter_str</span><span class="p">),</span> <span class="n">dpnp_debug</span><span class="p">():</span>  <span class="c1"># 7</span>
+        <span class="n">actual</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>  <span class="c1"># 4</span>
+        <span class="n">captured</span> <span class="o">=</span> <span class="n">capfd</span><span class="o">.</span><span class="n">readouterr</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="s2">&quot;dpnp implementation&quot;</span> <span class="ow">in</span> <span class="n">captured</span><span class="o">.</span><span class="n">out</span>  <span class="c1"># 8</span>
 
-  <span class="n">expected</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>  <span class="c1"># 5</span>
-  <span class="n">max_abs_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">actual</span> <span class="o">-</span> <span class="n">expected</span><span class="p">)</span>
-  <span class="k">assert</span> <span class="n">max_abs_err</span> <span class="o">&lt;</span> <span class="mf">1e-4</span>  <span class="c1"># 6</span>
+    <span class="n">expected</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>  <span class="c1"># 5</span>
+    <span class="n">max_abs_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">actual</span> <span class="o">-</span> <span class="n">expected</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">max_abs_err</span> <span class="o">&lt;</span> <span class="mf">1e-4</span>  <span class="c1"># 6</span>
 </pre></div>
 </div>
 <p>Test functions starts from <code class="samp docutils literal notranslate"><span class="pre">test_</span></code> (see <cite>pytest</cite> docs) and
