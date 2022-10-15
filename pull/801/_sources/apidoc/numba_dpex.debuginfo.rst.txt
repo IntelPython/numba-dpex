@@ -1,0 +1,7 @@
+numba\_dpex.debuginfo module
+============================
+
+.. automodule:: numba_dpex.debuginfo
+   :members:
+   :undoc-members:
+   :show-inheritance:

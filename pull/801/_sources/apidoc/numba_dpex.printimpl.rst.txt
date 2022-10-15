@@ -1,0 +1,7 @@
+numba\_dpex.printimpl module
+============================
+
+.. automodule:: numba_dpex.printimpl
+   :members:
+   :undoc-members:
+   :show-inheritance:
