@@ -24,14 +24,16 @@ end-user and is implemented as a renaming pass in numba-dpex's pass pipeline.
     from numba import njit
     import dpctl
 
+
     @njit
     def foo(a):
-      return np.sum(a)  # this call will be replaced with the dpnp.sum function
+        return np.sum(a)  # this call will be replaced with the dpnp.sum function
+
 
     a = np.arange(42)
 
     with dpctl.device_context():
-      result = foo(a)
+        result = foo(a)
 
     print(result)
 
@@ -67,10 +69,10 @@ out. The outline of a stub class is as follows:
 
     # numba_dpex/dpnp_iface/stubs.py - imported in numba_dpex.__init__.py
 
-    class dpnp(Stub):
 
-      class sum(Stub):  # stub function
-        pass
+    class dpnp(Stub):
+        class sum(Stub):  # stub function
+            pass
 
 Each stub is provided with a concrete implementation to generates the actual
 code using Numba's ``overload`` function API. E.g.,
@@ -79,7 +81,7 @@ code using Numba's ``overload`` function API. E.g.,
 
     @overload(stubs.dpnp.sum)
     def dpnp_sum_impl(a):
-      ...
+        ...
 
 The complete implementation is in
 :file:`numba_dpex/dpnp_iface/dpnp_transcendentalsimpl.py`.
@@ -123,11 +125,13 @@ naming convention. I.e. :file:`dpnp/backend/kernels/dpnp_krnl_indexing.cpp` ->
 
     from numba.core.extending import overload
     import numba_dpex.dpnp_iface as dpnp_lowering
+
     ...
+
 
     @overload(stubs.dpnp.sum)
     def dpnp_sum_impl(a):
-      dpnp_lowering.ensure_dpnp("sum")
+        dpnp_lowering.ensure_dpnp("sum")
 
 :func:`ensure_dpnp` checks that `DPNP` package is available and contains the function.
 
@@ -135,34 +139,35 @@ naming convention. I.e. :file:`dpnp/backend/kernels/dpnp_krnl_indexing.cpp` ->
 
     from numba import types
     from numba.core.typing import signature
+
     ...
     # continue of dpnp_sum_impl()
-      """
-      dpnp source:
-      https://github.com/IntelPython/dpnp/blob/0.6.1dev/dpnp/backend/kernels/dpnp_krnl_reduction.cpp#L59
+    """
+    dpnp source:
+    https://github.com/IntelPython/dpnp/blob/0.6.1dev/dpnp/backend/kernels/dpnp_krnl_reduction.cpp#L59
 
-      Function declaration:
-      void dpnp_sum_c(void* result_out,
-                      const void* input_in,
-                      const size_t* input_shape,
-                      const size_t input_shape_ndim,
-                      const long* axes,
-                      const size_t axes_ndim,
-                      const void* initial,
-                      const long* where)
+    Function declaration:
+    void dpnp_sum_c(void* result_out,
+                    const void* input_in,
+                    const size_t* input_shape,
+                    const size_t input_shape_ndim,
+                    const long* axes,
+                    const size_t axes_ndim,
+                    const void* initial,
+                    const long* where)
 
-      """
-      sig = signature(
-          types.void,  # return type
-          types.voidptr,  # void* result_out,
-          types.voidptr,  # const void* input_in,
-          types.voidptr,  # const size_t* input_shape,
-          types.intp,  # const size_t input_shape_ndim,
-          types.voidptr,  # const long* axes,
-          types.intp,  # const size_t axes_ndim,
-          types.voidptr,  # const void* initial,
-          types.voidptr,  # const long* where)
-      )
+    """
+    sig = signature(
+        types.void,  # return type
+        types.voidptr,  # void* result_out,
+        types.voidptr,  # const void* input_in,
+        types.voidptr,  # const size_t* input_shape,
+        types.intp,  # const size_t input_shape_ndim,
+        types.voidptr,  # const long* axes,
+        types.intp,  # const size_t axes_ndim,
+        types.voidptr,  # const void* initial,
+        types.voidptr,  # const long* where)
+    )
 
 Signature :obj:`sig` is based on the `DPNP` function signature defined in header file.
 It is recommended to provide link to signature in `DPNP` sources and copy it in comment
@@ -173,9 +178,10 @@ For mapping between `C` types and `Numba` types see :ref:`dpnp-integration-types
 .. code-block:: python
 
     import numba_dpex.dpnp_iface.dpnpimpl as dpnp_ext
+
     ...
     # continue of dpnp_sum_impl()
-      dpnp_func = dpnp_ext.dpnp_func("dpnp_sum", [a.dtype.name, "NONE"], sig)
+    dpnp_func = dpnp_ext.dpnp_func("dpnp_sum", [a.dtype.name, "NONE"], sig)
 
 :func:`dpnp_ext.dpnp_func` returns function pointer from `DPNP`.
 It receives:
@@ -190,17 +196,20 @@ It receives:
 .. code-block:: python
 
     import numba_dpex.dpnp_iface.dpnpimpl as dpnp_ext
+
     ...
     # continue of dpnp_sum_impl()
-      PRINT_DEBUG = dpnp_lowering.DEBUG
+    PRINT_DEBUG = dpnp_lowering.DEBUG
 
-      def dpnp_impl(a):
-          out = np.empty(1, dtype=a.dtype)
-          common_impl(a, out, dpnp_func, PRINT_DEBUG)
 
-          return out[0]
+    def dpnp_impl(a):
+        out = np.empty(1, dtype=a.dtype)
+        common_impl(a, out, dpnp_func, PRINT_DEBUG)
 
-      return dpnp_impl
+        return out[0]
+
+
+    return dpnp_impl
 
 This code created implementation function and returns it from the overload function.
 
@@ -224,7 +233,9 @@ creating the new one.
     from numba.core.extending import register_jitable
     from numba_dpex import dpctl_functions
     import numba_dpex.dpnp_iface.dpnpimpl as dpnp_ext
+
     ...
+
 
     @register_jitable
     def common_impl(a, out, dpnp_func, print_debug):
@@ -295,25 +306,25 @@ update a list with function names like :obj:`list_of_unary_ops`, :obj:`list_of_n
 
     @pytest.mark.parametrize("filter_str", filter_strings)
     def test_unary_ops(filter_str, unary_op, input_array, get_shape, capfd):
-      a = input_array  # 1
-      a = np.reshape(a, get_shape)
-      op, name = unary_op  # 2
-      if (name == "cumprod" or name == "cumsum") and (
-          filter_str == "opencl:cpu:0" or is_gen12(filter_str)
-      ):
-          pytest.skip()
-      actual = np.empty(shape=a.shape, dtype=a.dtype)
-      expected = np.empty(shape=a.shape, dtype=a.dtype)
+        a = input_array  # 1
+        a = np.reshape(a, get_shape)
+        op, name = unary_op  # 2
+        if (name == "cumprod" or name == "cumsum") and (
+            filter_str == "opencl:cpu:0" or is_gen12(filter_str)
+        ):
+            pytest.skip()
+        actual = np.empty(shape=a.shape, dtype=a.dtype)
+        expected = np.empty(shape=a.shape, dtype=a.dtype)
 
-      f = njit(op)  # 3
-      with dpctl.device_context(filter_str), dpnp_debug():  # 7
-          actual = f(a)  # 4
-          captured = capfd.readouterr()
-          assert "dpnp implementation" in captured.out  # 8
+        f = njit(op)  # 3
+        with dpctl.device_context(filter_str), dpnp_debug():  # 7
+            actual = f(a)  # 4
+            captured = capfd.readouterr()
+            assert "dpnp implementation" in captured.out  # 8
 
-      expected = op(a)  # 5
-      max_abs_err = np.sum(actual - expected)
-      assert max_abs_err < 1e-4  # 6
+        expected = op(a)  # 5
+        max_abs_err = np.sum(actual - expected)
+        assert max_abs_err < 1e-4  # 6
 
 Test functions starts from :samp:`test_` (see `pytest` docs) and
 all input parameters are provided by fixtures.
