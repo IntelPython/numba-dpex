@@ -1,7 +1,0 @@
-numba\_dpex.dpnp\_iface.dpnp\_indexing module
-=============================================
-
-.. automodule:: numba_dpex.dpnp_iface.dpnp_indexing
-   :members:
-   :undoc-members:
-   :show-inheritance:
