@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+
 import dpctl.memory as dpmem
 import dpctl.tensor as dpt
 import numpy as np
