@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.target module &mdash; numba-dpex 0+untagged.768.g5817475 documentation</title>
+  <title>numba_dpex.target module &mdash; numba-dpex 0+untagged.769.gb4d4e91 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -163,12 +163,18 @@ function.</p>
 <p>The default implementation in BaseContext always raises a
 <code class="docutils literal notranslate"><span class="pre">NotImplementedError</span></code> exception. Subclasses may raise <code class="docutils literal notranslate"><span class="pre">KeyError</span></code>
 to signal that the given <code class="docutils literal notranslate"><span class="pre">ufunc_key</span></code> is not available.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading"></a></h2>
 <p>ufunc_key : NumPy ufunc</p>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Permalink to this heading"></a></h2>
 <dl class="simple">
 <dt>res<span class="classifier">dict[str, callable]</span></dt><dd><p>A mapping of a NumPy ufunc type signature to a lower-level
 implementation.</p>
 </dd>
 </dl>
+</section>
 </dd></dl>
 
 <dl class="py attribute">
