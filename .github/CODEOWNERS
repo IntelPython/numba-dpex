@@ -1,5 +1,5 @@
-*       @diptorupd
+*       @mingjie-intel @diptorupd
 
-*.yml   @diptorupd
+*.yml   @mingjie-intel @diptorupd
 
-conda-recipe/*  @diptorupd
+conda-recipe/*  @mingjie-intel @diptorupd
