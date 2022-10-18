@@ -5,7 +5,7 @@
 import dpctl
 from numba.core import sigutils, types
 
-from numba_dpex.core.dpex_exceptions import KernelHasReturnValueError
+from numba_dpex.core.exceptions import KernelHasReturnValueError
 from numba_dpex.utils import npytypes_array_to_dpex_array
 
 from .compiler import (
