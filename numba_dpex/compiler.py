@@ -18,7 +18,7 @@ from numba.core.compiler_lock import global_compiler_lock
 from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
 from numba_dpex import config
-from numba_dpex.core.dpex_exceptions import KernelHasReturnValueError
+from numba_dpex.core.exceptions import KernelHasReturnValueError
 from numba_dpex.core.types import Array
 from numba_dpex.dpctl_iface import USMNdArrayType
 from numba_dpex.dpctl_support import dpctl_version
