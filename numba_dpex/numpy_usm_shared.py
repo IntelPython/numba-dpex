@@ -50,7 +50,7 @@ from numba.np.arrayobj import _array_copy
 
 from numba_dpex.core.types import Array, ArrayModel
 
-from . import target as dpex_target
+from .core import target as dpex_target
 
 debug = config.DEBUG
 

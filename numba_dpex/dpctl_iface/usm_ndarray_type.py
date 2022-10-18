@@ -6,7 +6,7 @@ from dpctl.tensor import usm_ndarray
 from numba.extending import register_model, typeof_impl
 from numba.np import numpy_support
 
-import numba_dpex.target as dpex_target
+import numba_dpex.core.target as dpex_target
 from numba_dpex.core.types import Array, ArrayModel
 from numba_dpex.utils import address_space
 

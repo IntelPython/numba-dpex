@@ -15,7 +15,7 @@ except ImportError:
 
 from numba.core.retarget import BasicRetarget
 
-from numba_dpex.target import DPEX_TARGET_NAME
+from numba_dpex.core.target import DPEX_TARGET_NAME
 
 
 class DpexRetarget(BasicRetarget):
