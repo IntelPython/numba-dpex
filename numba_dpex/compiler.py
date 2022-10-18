@@ -18,7 +18,7 @@ from numba.core.compiler_lock import global_compiler_lock
 from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
 from numba_dpex import config
-from numba_dpex.core.dpex_exceptions import KernelHasReturnValueError
+from numba_dpex.core.exceptions import KernelHasReturnValueError
 from numba_dpex.core.types import Array
 from numba_dpex.dpctl_iface import USMNdArrayType
 from numba_dpex.dpctl_support import dpctl_version
@@ -121,7 +121,7 @@ def compile_with_depx(pyfunc, return_type, args, is_kernel, debug=None):
 
     """
     # First compilation will trigger the initialization of the backend.
-    from .descriptor import dpex_target
+    from .core.descriptor import dpex_target
 
     typingctx = dpex_target.typing_context
     targetctx = dpex_target.target_context
@@ -282,7 +282,7 @@ def compile_func(pyfunc, return_type, args, debug=None):
 
 def compile_func_template(pyfunc, debug=None):
     """Compile a DpexFunctionTemplate"""
-    from .descriptor import dpex_target
+    from .core.descriptor import dpex_target
 
     dft = DpexFunctionTemplate(pyfunc, debug=debug)
 
@@ -719,7 +719,7 @@ class JitKernel(KernelBase):
         self.debug = debug
         self.access_types = access_types
 
-        from .descriptor import dpex_target
+        from .core.descriptor import dpex_target
 
         self.typingctx = dpex_target.typing_context
 

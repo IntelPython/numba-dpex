@@ -31,7 +31,8 @@ DEFAULT_LOCAL_SIZE = []
 
 import dpctl
 
-from . import initialize, target
+from . import initialize
+from .core import target
 from .decorators import autojit, func, kernel
 
 

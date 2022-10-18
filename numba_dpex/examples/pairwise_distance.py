@@ -28,8 +28,8 @@ global_size = args.n
 # Local Work size is optional
 local_size = args.l
 
-X = np.random.random((args.n, args.d))
-D = np.empty((args.n, args.n))
+X = np.random.random((args.n, args.d)).astype(np.single)
+D = np.empty((args.n, args.n), dtype=np.single)
 
 
 @dpex.kernel
@@ -40,9 +40,10 @@ def pairwise_distance(X, D, xshape0, xshape1):
     """
     idx = dpex.get_global_id(0)
 
+    d0 = X[idx, 0] - X[idx, 0]
     # for i in range(xshape0):
     for j in range(X.shape[0]):
-        d = 0.0
+        d = d0
         for k in range(X.shape[1]):
             tmp = X[idx, k] - X[j, k]
             d += tmp * tmp

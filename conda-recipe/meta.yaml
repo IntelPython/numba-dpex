@@ -71,5 +71,4 @@ about:
 
 extra:
     recipe-maintainers:
-        - diptorupd
-        - oleksandr-pavlyk
+        - Intel Python

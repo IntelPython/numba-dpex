@@ -5,7 +5,7 @@
 from numba.core.datamodel.models import ArrayModel as dpnp_ndarray_Model
 from numba.extending import register_model
 
-from numba_dpex.target import spirv_data_model_manager
+from numba_dpex.core.target import spirv_data_model_manager
 
 from .types import dpnp_ndarray_Type
 
