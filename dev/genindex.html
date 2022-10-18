@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; numba-dpex 0+untagged.769.gb4d4e91 documentation</title>
+  <title>Index &mdash; numba-dpex 0+untagged.772.g6a8ac1b documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -333,6 +333,8 @@
       <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.compile_with_depx">compile_with_depx() (in module numba_dpex.compiler)</a>
 </li>
       <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.Compiler">Compiler (class in numba_dpex.compiler)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.ComputeFollowsDataInferenceError">ComputeFollowsDataInferenceError</a>
 </li>
       <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.KernelBase.configure">configure() (numba_dpex.compiler.KernelBase method)</a>
 </li>
@@ -701,6 +703,8 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.ExecutionQueueInferenceError">ExecutionQueueInferenceError</a>
+</li>
       <li><a href="apidoc/numba_dpex.parfor_diagnostics.html#numba_dpex.parfor_diagnostics.ExtendedParforDiagnostics">ExtendedParforDiagnostics (class in numba_dpex.parfor_diagnostics)</a>
 </li>
   </ul></td>
@@ -923,6 +927,8 @@
       </ul></li>
       <li><a href="apidoc/numba_dpex.printimpl.html#numba_dpex.printimpl.int_print_impl">int_print_impl() (in module numba_dpex.printimpl)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.InvalidKernelLaunchArgsError">InvalidKernelLaunchArgsError</a>
+</li>
       <li><a href="apidoc/numba_dpex.device_init.html#numba_dpex.device_init.is_available">is_available() (in module numba_dpex.device_init)</a>
 </li>
       <li><a href="apidoc/numba_dpex.vectorizers.html#numba_dpex.vectorizers.UFuncMechanism.is_device_array">is_device_array() (numba_dpex.vectorizers.UFuncMechanism method)</a>
@@ -957,7 +963,7 @@
 </li>
       <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.KernelBase">KernelBase (class in numba_dpex.compiler)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.core.dpex_exceptions.html#numba_dpex.core.dpex_exceptions.KernelHasReturnValueError">KernelHasReturnValueError</a>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.KernelHasReturnValueError">KernelHasReturnValueError</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpctl_iface.kernel_launch_ops.html#numba_dpex.dpctl_iface.kernel_launch_ops.KernelLaunchOps">KernelLaunchOps (class in numba_dpex.dpctl_iface.kernel_launch_ops)</a>
 </li>
@@ -1247,7 +1253,7 @@
 </li>
         <li><a href="apidoc/numba_dpex.core.html#module-numba_dpex.core">numba_dpex.core</a>
 </li>
-        <li><a href="apidoc/numba_dpex.core.dpex_exceptions.html#module-numba_dpex.core.dpex_exceptions">numba_dpex.core.dpex_exceptions</a>
+        <li><a href="apidoc/numba_dpex.core.exceptions.html#module-numba_dpex.core.exceptions">numba_dpex.core.exceptions</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.passes.html#module-numba_dpex.core.passes">numba_dpex.core.passes</a>
 </li>
@@ -1436,10 +1442,10 @@
 </li>
       </ul></li>
       <li>
-    numba_dpex.core.dpex_exceptions
+    numba_dpex.core.exceptions
 
       <ul>
-        <li><a href="apidoc/numba_dpex.core.dpex_exceptions.html#module-numba_dpex.core.dpex_exceptions">module</a>
+        <li><a href="apidoc/numba_dpex.core.exceptions.html#module-numba_dpex.core.exceptions">module</a>
 </li>
       </ul></li>
       <li>
@@ -2321,12 +2327,20 @@
 </li>
       <li><a href="apidoc/numba_dpex.vectorizers.html#numba_dpex.vectorizers.UFuncMechanism">UFuncMechanism (class in numba_dpex.vectorizers)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.UncompiledKernelError">UncompiledKernelError</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.UnknownGlobalRangeError">UnknownGlobalRangeError</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.UnreachableError">UnreachableError</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.UnsupportedBackendError">UnsupportedBackendError</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.unwrap_loop_body">unwrap_loop_body() (in module numba_dpex.core.passes.lowerer)</a>
 </li>
       <li><a href="apidoc/numba_dpex.numpy_usm_shared.html#numba_dpex.numpy_usm_shared.usmarray_conversion_as">usmarray_conversion_as() (in module numba_dpex.numpy_usm_shared)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.numpy_usm_shared.html#numba_dpex.numpy_usm_shared.usmarray_conversion_from">usmarray_conversion_from() (in module numba_dpex.numpy_usm_shared)</a>
 </li>
       <li><a href="apidoc/numba_dpex.numpy_usm_shared.html#numba_dpex.numpy_usm_shared.UsmArrayAttribute">UsmArrayAttribute (class in numba_dpex.numpy_usm_shared)</a>

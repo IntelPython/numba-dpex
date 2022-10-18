@@ -16,7 +16,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   numba_dpex.core.dpex_exceptions
+   numba_dpex.core.exceptions
 
 Module contents
 ---------------
