@@ -25,7 +25,6 @@ Submodules
    numba_dpex.config
    numba_dpex.debuginfo
    numba_dpex.decorators
-   numba_dpex.descriptor
    numba_dpex.device_init
    numba_dpex.dpctl_support
    numba_dpex.extended_numba_itanium_mangler
@@ -39,7 +38,6 @@ Submodules
    numba_dpex.printimpl
    numba_dpex.retarget
    numba_dpex.spirv_generator
-   numba_dpex.target
    numba_dpex.vectorizers
 
 Module contents
