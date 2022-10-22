@@ -19,6 +19,7 @@ from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
 from numba_dpex import config
 from numba_dpex.core.exceptions import KernelHasReturnValueError
+from numba_dpex.core.passbuilder import PassBuilder
 from numba_dpex.core.types import Array
 from numba_dpex.dpctl_iface import USMNdArrayType
 from numba_dpex.dpctl_support import dpctl_version
@@ -35,7 +36,6 @@ from numba_dpex.utils import (
 )
 
 from . import spirv_generator
-from .passbuilder import PassBuilder
 
 _RO_KERNEL_ARG = "read_only"
 _WO_KERNEL_ARG = "write_only"
