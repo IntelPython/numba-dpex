@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-"""The module defines the custom exception classes used in numba_dpex.
+"""The module defines the custom error classes used in numba_dpex.
 """
 
 from warnings import warn
@@ -218,3 +218,18 @@ class UnreachableError(Exception):
         else:
             self.message = "Unreachable code executed."
         super().__init__(self.message)
+
+
+class UnsupportedKernelArgumentError(Exception):
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
+
+
+class SUAIProtocolError(Exception):
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
+
+
+class UnsupportedAccessQualifierError(Exception):
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
