@@ -34,7 +34,6 @@ from numba_dpex.utils import (
 )
 
 from . import spirv_generator
-from .passbuilder import PassBuilder
 
 _RO_KERNEL_ARG = "read_only"
 _WO_KERNEL_ARG = "write_only"
