@@ -43,6 +43,7 @@ class Dispatcher(object):
         self.debug_flags = debug_flags
         self.compile_flags = compile_flags
         self.kernel_name = pyfunc.__name__
+        # To be removed
         self._global_range = None
         self._local_range = None
 
@@ -355,6 +356,7 @@ class Dispatcher(object):
             local_range (_type_): _description_.
         """
         argtypes = [self.typingctx.resolve_argument_type(arg) for arg in args]
+        breakpoint()
 
         # FIXME: Remove along with __getitem__
         global_range, local_range = self._get_ranges(global_range, local_range)
