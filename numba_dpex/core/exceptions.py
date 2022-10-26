@@ -112,8 +112,8 @@ class ComputeFollowsDataInferenceError(Exception):
         self, kernel_name, ndarray_argnum_list=None, *, usmarray_argnum_list
     ) -> None:
         if ndarray_argnum_list and usmarray_argnum_list:
-            ndarray_args = ",".join(ndarray_argnum_list)
-            usmarray_args = ",".join(usmarray_argnum_list)
+            ndarray_args = ",".join([str(i) for i in ndarray_argnum_list])
+            usmarray_args = ",".join([str(i) for i in usmarray_argnum_list])
             self.message = (
                 f'Kernel "{kernel_name}" has arguments of both usm_ndarray and '
                 "non-usm_ndarray types. Mixing of arguments of different "
@@ -122,7 +122,7 @@ class ComputeFollowsDataInferenceError(Exception):
                 f"and arguments {usmarray_args} are usm arrays."
             )
         elif usmarray_argnum_list:
-            usmarray_args = ",".join(usmarray_argnum_list)
+            usmarray_args = ",".join([str(i) for i in usmarray_argnum_list])
             self.message = (
                 f'Execution queue for kernel "{kernel_name}" could '
                 "be deduced using compute follows data programming model. The "
