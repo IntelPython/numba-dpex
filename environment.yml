@@ -13,7 +13,7 @@ dependencies:
   - cython
   - numba 0.55*
   - dpctl >=0.13.0
-  - dpnp >=0.10.1
+  - dpnp >=0.10.2
   - mkl >=2021.3.0  # for dpnp
   - spirv-tools
   # - llvm-spirv 11.*
