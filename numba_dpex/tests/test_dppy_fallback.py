@@ -8,6 +8,7 @@ import dpctl
 import numba
 import numpy as np
 
+from numba_dpex import config
 from numba_dpex.tests._helper import skip_no_opencl_gpu
 
 
@@ -26,6 +27,9 @@ class TestFallback:
                 a[i] = fill_value(i)
 
             return a
+
+        if config.FALLBACK_ON_CPU == 0:
+            config.FALLBACK_ON_CPU = 1
 
         device = dpctl.SyclDevice("opencl:gpu")
         with warnings.catch_warnings(record=True) as w, dpctl.device_context(
@@ -46,6 +50,9 @@ class TestFallback:
                 b += a[i]
             return b
 
+        if config.FALLBACK_ON_CPU == 0:
+            config.FALLBACK_ON_CPU = 1
+
         a = np.ones(10)
         device = dpctl.SyclDevice("opencl:gpu")
         with warnings.catch_warnings(record=True) as w, dpctl.device_context(
@@ -58,3 +65,8 @@ class TestFallback:
 
         np.testing.assert_array_equal(result, ref_result)
         assert "Failed to offload parfor " in str(w[-1].message)
+
+
+if __name__ == "__main__":
+    t = TestFallback()
+    t.test_fallback_inner_call()

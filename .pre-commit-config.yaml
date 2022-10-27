@@ -35,6 +35,8 @@ repos:
     rev: 3.9.2
     hooks:
     -   id: flake8
+        additional_dependencies:
+            - importlib-metadata<5.0
 -   repo: https://github.com/koalaman/shellcheck-precommit
     rev: v0.8.0
     hooks:
