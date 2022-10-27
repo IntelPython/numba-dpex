@@ -29,20 +29,27 @@ class TestParforFallback:
 
             return a
 
-        config.DEBUG = 1
-        config.FALLBACK_ON_CPU = 1
-        with warnings.catch_warnings(record=True) as w:
-            device = dpctl.SyclDevice("opencl:gpu")
-            with dpctl.device_context(device):
-                fn = numba.njit(parallel=True)(inner_call_fallback)
-                fallback_true = fn()
+        try:
+            config.DEBUG = 1
+            if config.FALLBACK_ON_CPU == 0:
+                config.FALLBACK_ON_CPU = 1
+            with warnings.catch_warnings(record=True) as w:
+                device = dpctl.SyclDevice("opencl:gpu")
+                with dpctl.device_context(device):
+                    fn = numba.njit(parallel=True)(inner_call_fallback)
+                    fallback_true = fn()
+        finally:
+            ref_result = inner_call_fallback()
+            if config.FALLBACK_ON_CPU == 1:
+                config.FALLBACK_ON_CPU = 0
+            config.DEBUG = 0
 
-        ref_result = inner_call_fallback()
-        config.DEBUG = 0
+            np.testing.assert_array_equal(fallback_true, ref_result)
 
-        np.testing.assert_array_equal(fallback_true, ref_result)
-        assert "Failed to offload parfor" in str(w[-1].message)
-
+            if config.FALLBACK_ON_CPU == 0:
+                assert "Failed to offload parfor" in str(w[-1].message)
+            else:
+                assert "Failed to offload parfor" not in str(w[-1].message)
 
     @pytest.mark.xfail
     def test_parfor_fallback_false(self):
@@ -61,16 +68,27 @@ class TestParforFallback:
 
         try:
             config.DEBUG = 1
+            if config.FALLBACK_ON_CPU == 1:
+                config.FALLBACK_ON_CPU = 0
             with warnings.catch_warnings(record=True) as w:
                 device = dpctl.SyclDevice("opencl:gpu")
                 with dpctl.device_context(device):
                     fn = numba.njit(parallel=True)(inner_call_fallback)
                     fallback_false = fn()
-
         finally:
+            if config.FALLBACK_ON_CPU == 1:
+                config.FALLBACK_ON_CPU = 0
             ref_result = inner_call_fallback()
-            config.FALLBACK_ON_CPU = 1
             config.DEBUG = 0
 
-            not np.testing.assert_array_equal(fallback_false, ref_result)
+        not np.testing.assert_array_equal(fallback_false, ref_result)
+
+        if config.FALLBACK_ON_CPU == 0:
             assert "Failed to offload parfor" not in str(w[-1].message)
+        else:
+            assert "Failed to offload parfor" in str(w[-1].message)
+
+
+if __name__ == "__main__":
+    t = TestParforFallback()
+    t.test_parfor_fallback_true()
