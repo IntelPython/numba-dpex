@@ -24,22 +24,14 @@ class Packer:
     # TODO: Remove after NumPy support is removed
     _access_types = ("read_only", "write_only", "read_write")
 
-    def _check_for_invalid_access_type(self, access_type):
+    def _check_for_invalid_access_type(self, array_val, access_type):
         if access_type not in Packer._access_types:
-            raise UnsupportedAccessQualifierError()
-        #     msg = (
-        #         "[!] %s is not a valid access type. "
-        #         "Supported access types are [" % (access_type)
-        #     )
-        #     for key in self.valid_access_types:
-        #         msg += " %s |" % (key)
-
-        #     msg = msg[:-1] + "]"
-        #     if access_type is not None:
-        #         print(msg)
-        #     return True
-        # else:
-        #     return False
+            raise UnsupportedAccessQualifierError(
+                self._pyfunc_name,
+                array_val,
+                access_type,
+                ",".join(Packer._access_types),
+            )
 
     def _get_info_from_suai(self, obj):
         """
@@ -69,8 +61,7 @@ class Packer:
             logging.exception(
                 "array-like object does not implement the SUAI protocol."
             )
-            # TODO
-            raise SUAIProtocolError()
+            raise SUAIProtocolError(self._pyfunc_name, obj)
 
         shape = obj.__sycl_usm_array_interface__["shape"]
         total_size = np.prod(obj.__sycl_usm_array_interface__["shape"])
@@ -152,7 +143,7 @@ class Packer:
         # object. Add an entry to the repack_map so that on exit from kernel
         # the USM object can be copied back into the NumPy array.
         if usm_mem is None:
-            self._check_for_invalid_access_type(access_type)
+            self._check_for_invalid_access_type(val, access_type)
             usm_mem = utils.as_usm_obj(val, queue=self._queue, copy=False)
 
             orig_val = val
@@ -226,11 +217,11 @@ class Packer:
         elif ty == types.boolean:
             return ctypes.c_uint8(int(val))
         elif ty == types.complex64:
-            raise UnsupportedKernelArgumentError(ty, val)
+            raise UnsupportedKernelArgumentError(ty, val, self._pyfunc_name)
         elif ty == types.complex128:
-            raise UnsupportedKernelArgumentError(ty, val)
+            raise UnsupportedKernelArgumentError(ty, val, self._pyfunc_name)
         else:
-            raise UnsupportedKernelArgumentError(ty, val)
+            raise UnsupportedKernelArgumentError(ty, val, self._pyfunc_name)
 
     def _pack_array(self):
         """
@@ -243,7 +234,7 @@ class Packer:
             if packed:
                 np.copyto(obj, packed_ndarr)
 
-    def __init__(self, arg_list, argty_list, queue) -> None:
+    def __init__(self, kernel_name, arg_list, argty_list, queue) -> None:
         """_summary_
 
         Args:
@@ -251,6 +242,7 @@ class Packer:
             argty_list (_type_): _description_
             queue: _description_
         """
+        self._pyfunc_name = kernel_name
         self._arg_list = arg_list
         self._argty_list = argty_list
         self._queue = queue
