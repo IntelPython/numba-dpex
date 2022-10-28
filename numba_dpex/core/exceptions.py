@@ -221,15 +221,56 @@ class UnreachableError(Exception):
 
 
 class UnsupportedKernelArgumentError(Exception):
-    def __init__(self, *args: object) -> None:
-        super().__init__(*args)
+    """Exception raised when the type of a kernel argument is not supported by
+    the compiler.
+
+    Args:
+        kernel_name (str): Name of kernel where the error was raised.
+    """
+
+    def __init__(self, type, value, kernel_name) -> None:
+        self.message = (
+            f'Argument {value} passed to kernel "{kernel_name}" is of an '
+            f"unsupported type ({type})."
+        )
+        super().__init__(self.message)
 
 
 class SUAIProtocolError(Exception):
-    def __init__(self, *args: object) -> None:
-        super().__init__(*args)
+    """Exception raised when an array-like object passed to a kernel is
+    neither a NumPy array nor does it implement the __sycl_usm_array_interface__
+    attribute.
+
+    Args:
+        kernel_name (str): Name of kernel where the error was raised.
+        arg: Array-like object
+    """
+
+    def __init__(self, kernel_name, arg) -> None:
+        self.message = (
+            f'Array-like argument {arg} passed to kernel "{kernel_name}" '
+            "is neither a NumPy array nor implement the "
+            "__sycl_usm_array_interface__."
+        )
+        super().__init__(self.message)
 
 
 class UnsupportedAccessQualifierError(Exception):
-    def __init__(self, *args: object) -> None:
-        super().__init__(*args)
+    """Exception raised when an illegal access specifier value is specified for an
+    NumPy array argument passed to a kernel.
+
+    Args:
+        kernel_name (str): Name of kernel where the error was raised.
+        array_val: name of the array argument with the illegal access specifier.
+        illegal_access_type (str): The illegal access specifier string.
+        legal_access_list (str): Joined string for the legal access specifiers.
+    """
+
+    def __init__(
+        self, kernel_name, array_val, illegal_access_type, legal_access_list
+    ) -> None:
+        self.message = f"Invalid access type {illegal_access_type} applied to "
+        f'array {array_val} argument passed to kernel "{kernel_name}". '
+        f"Legal access specifiers are {legal_access_list}."
+
+        super().__init__(self.message)
