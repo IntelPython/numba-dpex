@@ -1370,10 +1370,13 @@ class DPEXLowerer(Lower):
                     + device_filter_str
                     + ". Due to:\n",
                     e,
+                    "\nNote: If you want this parfor node to be offloaded onto CPU,"
+                    + " please set config.FALLBACK_ON_CPU=1.",
                 )
                 print(traceback.format_exc())
 
             if config.FALLBACK_ON_CPU == 1:
+                print("config.FALLBACK_ON_CPU==1, offloading parfor onto CPU.")
                 self.cpu_lower.context.lower_extensions[
                     parfor.Parfor
                 ] = _lower_parfor_parallel

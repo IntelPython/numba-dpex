@@ -87,8 +87,3 @@ class TestParforFallback:
             assert "Failed to offload parfor" not in str(w[-1].message)
         else:
             assert "Failed to offload parfor" in str(w[-1].message)
-
-
-if __name__ == "__main__":
-    t = TestParforFallback()
-    t.test_parfor_fallback_true()
