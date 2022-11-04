@@ -62,21 +62,6 @@ def _raise_invalid_kernel_enqueue_args():
     raise ValueError(error_message)
 
 
-def get_ordered_arg_access_types(pyfunc, access_types):
-    # Construct a list of access type of each arg according to their position
-    ordered_arg_access_types = []
-    sig = signature(pyfunc, follow_wrapped=False)
-    for idx, arg_name in enumerate(sig.parameters):
-        if access_types:
-            for key in access_types:
-                if arg_name in access_types[key]:
-                    ordered_arg_access_types.append(key)
-        if len(ordered_arg_access_types) <= idx:
-            ordered_arg_access_types.append(None)
-
-    return ordered_arg_access_types
-
-
 class Compiler(CompilerBase):
     """The DPEX compiler pipeline."""
 
