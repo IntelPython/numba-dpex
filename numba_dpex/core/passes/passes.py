@@ -293,7 +293,7 @@ class DpexLowering(LoweringPass):
             # for support numba 0.54 and <=0.55.0dev0=*_469
             if hasattr(flags, "get_mangle_string"):
                 kwargs["abi_tags"] = flags.get_mangle_string()
-
+            breakpoint()
             # Lowering
             fndesc = (
                 funcdesc.PythonFunctionDescriptor.from_specialized_function(

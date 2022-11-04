@@ -8,7 +8,7 @@ import warnings
 import numpy
 from numba.core import types
 from numba.core.imputils import Registry
-from numba.core.itanium_mangler import mangle
+from numba_dpex.core.itanium_mangler import mangle
 
 from .oclimpl import _declare_function
 
