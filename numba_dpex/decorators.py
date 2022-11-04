@@ -6,14 +6,13 @@ import dpctl
 from numba.core import sigutils, types
 
 from numba_dpex.core.exceptions import KernelHasReturnValueError
-from numba_dpex.utils import npytypes_array_to_dpex_array
-
-from .compiler import (
-    JitKernel,
-    compile_func,
-    compile_func_template,
+from numba_dpex.core.kernel_interface.dispatcher import (
+    Dispatcher,
     get_ordered_arg_access_types,
 )
+from numba_dpex.utils import npytypes_array_to_dpex_array
+
+from .compiler import JitKernel, compile_func, compile_func_template
 
 
 def kernel(signature=None, access_types=None, debug=None):
@@ -37,13 +36,17 @@ def kernel(signature=None, access_types=None, debug=None):
 
 
 def autojit(debug=None, access_types=None):
-    def _kernel_autojit(pyfunc):
+    def _kernel_dispatcher(pyfunc):
         ordered_arg_access_types = get_ordered_arg_access_types(
             pyfunc, access_types
         )
-        return JitKernel(pyfunc, debug, ordered_arg_access_types)
+        return Dispatcher(
+            pyfunc=pyfunc,
+            debug_flags=debug,
+            array_access_specifiers=ordered_arg_access_types,
+        )
 
-    return _kernel_autojit
+    return _kernel_dispatcher
 
 
 def _kernel_jit(signature, debug, access_types):
