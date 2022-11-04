@@ -9,7 +9,7 @@ import numba_dpex as dpex
 from numba_dpex.core.kernel_interface.dispatcher import Dispatcher
 
 
-# @dpex.kernel
+@dpex.kernel
 def data_parallel_sum(a, b, c):
     """
     Vector addition using the ``kernel`` decorator.
@@ -23,9 +23,9 @@ def main():
     b = dpt.arange(0, 100, device="level_zero:gpu:0")
     c = dpt.zeros_like(a, device="level_zero:gpu:0")
 
-    d = Dispatcher(pyfunc=data_parallel_sum)
-    d(a, b, c, global_range=[100])
-    # data_parallel_sum[(10,), (1)](a, b, c)
+    # d = Dispatcher(pyfunc=data_parallel_sum)
+    # d(a, b, c, global_range=[100])
+    data_parallel_sum[(100,)](a, b, c)
     print(dpt.asnumpy(a))
     print(dpt.asnumpy(b))
     print(dpt.asnumpy(c))
