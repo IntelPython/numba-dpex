@@ -28,7 +28,7 @@ def mangle_type_or_value(typ):
     if isinstance(typ, types.CPointer):
         rc = "P"
         if typ.addrspace is not None:
-            rc += "U" + itanium_mangler.mangle_identifier(
+            rc += "U" + mangle_identifier(
                 "AS" + str(typ.addrspace)
             )
         rc += mangle_type_or_value_numba(typ.dtype)
@@ -41,7 +41,7 @@ def mangle_ext(ident, argtys, *, abi_tags=()):
     Mangle identifier with Numba type objects and abi-tags.
     """
     kwargs = {}
-    
+
     # for support numba 0.54 and <=0.55.0dev0=*_469
     if abi_tags:
         kwargs["abi_tags"] = abi_tags
@@ -311,6 +311,3 @@ def _split_mangled_ident(mangled):
     ctlen = len(str(ct))
     at = ctlen + ct
     return mangled[:at], mangled[at:]
-
-#def default_mangler(name, argtypes, *, abi_tags=(), uid=None):
-#    return mangle(name, argtypes, abi_tags=abi_tags, uid=uid)
