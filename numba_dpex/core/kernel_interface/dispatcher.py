@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
+from inspect import signature
 from warnings import warn
 
 import dpctl
@@ -14,13 +15,31 @@ from numba_dpex.core.descriptor import dpex_target
 from numba_dpex.core.exceptions import (
     ComputeFollowsDataInferenceError,
     ExecutionQueueInferenceError,
+    IllegalRangeValueError,
     InvalidKernelLaunchArgsError,
     UnknownGlobalRangeError,
     UnsupportedBackendError,
+    UnsupportedNumberOfRangeDimsError,
+    UnsupportedWorkItemSizeError,
 )
 from numba_dpex.core.kernel_interface.arg_pack_unpacker import Packer
 from numba_dpex.core.kernel_interface.spirv_kernel import SpirvKernel
 from numba_dpex.dpctl_iface import USMNdArrayType
+
+
+def get_ordered_arg_access_types(pyfunc, access_types):
+    # Construct a list of access type of each arg according to their position
+    ordered_arg_access_types = []
+    sig = signature(pyfunc, follow_wrapped=False)
+    for idx, arg_name in enumerate(sig.parameters):
+        if access_types:
+            for key in access_types:
+                if arg_name in access_types[key]:
+                    ordered_arg_access_types.append(key)
+        if len(ordered_arg_access_types) <= idx:
+            ordered_arg_access_types.append(None)
+
+    return ordered_arg_access_types
 
 
 class Dispatcher(object):
@@ -43,7 +62,7 @@ class Dispatcher(object):
         self.debug_flags = debug_flags
         self.compile_flags = compile_flags
         self.kernel_name = pyfunc.__name__
-        # To be removed
+        # TODO: To be removed once the__getitem__ is removed
         self._global_range = None
         self._local_range = None
 
@@ -56,7 +75,7 @@ class Dispatcher(object):
                 DeprecationWarning,
                 stacklevel=2,
             )
-            self.array_access_specifiers = array_access_specifiers
+        self.array_access_specifiers = array_access_specifiers
 
         if debug_flags or config.OPT == 0:
             # if debug is ON we need to pass additional
@@ -65,27 +84,30 @@ class Dispatcher(object):
         else:
             self._create_sycl_kernel_bundle_flags = []
 
-    # def _ensure_valid_work_item_grid(self, val, sycl_queue):
+    def _check_range(self, range, device):
 
-    #     if not isinstance(val, (tuple, list, int)):
-    #         error_message = (
-    #             "Cannot create work item dimension from provided argument"
-    #         )
-    #         raise ValueError(error_message)
+        if not isinstance(range, (tuple, list)):
+            raise IllegalRangeValueError(self.kernel_name)
 
-    #     if isinstance(val, int):
-    #         val = [val]
+        max_work_item_dims = device.max_work_item_dims
 
-    #     # TODO: we need some way to check the max dimensions
-    #     """
-    #     if len(val) > device_env.get_max_work_item_dims():
-    #         error_message = ("Unsupported number of work item dimensions ")
-    #         raise ValueError(error_message)
-    #     """
+        if len(range) > max_work_item_dims:
+            raise UnsupportedNumberOfRangeDimsError(
+                kernel_name=self.kernel_name,
+                ndims=len(range),
+                max_work_item_dims=max_work_item_dims,
+            )
 
-    #     return list(
-    #         val[::-1]
-    #     )  # reversing due to sycl and opencl interop kernel range mismatch semantic
+    def _check_ndrange(self, global_range, local_range, device):
+        # for dim, size in enumerate(val):
+        #     if val[dim] > work_item_sizes[dim]:
+        #         raise UnsupportedWorkItemSizeError(
+        #             kernel_name=self.kernel_name,
+        #             dim=dim,
+        #             requested_work_items=val[dim],
+        #             supported_work_items=work_item_sizes[dim],
+        #         )
+        pass
 
     def _determine_compute_follows_data_queue(self, usm_array_list):
         """Determine the execution queue for the list of usm array args using
@@ -273,7 +295,6 @@ class Dispatcher(object):
         )
 
         nargs = len(args)
-
         # Check if the kernel launch arguments are sane.
         if nargs < 1:
             raise UnknownGlobalRangeError(kernel_name=self.kernel_name)
@@ -281,16 +302,15 @@ class Dispatcher(object):
             raise InvalidKernelLaunchArgsError(
                 kernel_name=self.kernel_name, args=args
             )
-
-        self.global_range = args[0]
+        self._global_range = args[0]
         if nargs == 2 and args[1] != []:
-            self.local_range = args[1]
+            self._local_range = args[1]
         else:
-            self.local_range = None
+            self._local_range = None
 
         return copy.copy(self)
 
-    def _get_ranges(self, global_range, local_range):
+    def _get_ranges(self, global_range, local_range, device):
         """_summary_
 
         Args:
@@ -314,7 +334,6 @@ class Dispatcher(object):
                     + "__call__ method to set the attribute."
                 )
                 global_range = self._global_range
-
             else:
                 raise UnknownGlobalRangeError(self.kernel_name)
 
@@ -344,11 +363,31 @@ class Dispatcher(object):
                     + "in the future."
                 )
 
-        # TODO: Test global and local ranges to be valid for the device
+        if isinstance(global_range, int):
+            global_range = [global_range]
+
+        # If only global range value is provided, then the kernel is invoked
+        # over an N-dimensional index space defined by a SYCL range<N>, where
+        # N is one, two or three.
+        # If both local and global range values are specified the kernel is
+        # invoked using a SYCL nd_range
+        if global_range and not local_range:
+            self._check_range(global_range, device)
+            global_range = list(global_range)
+        else:
+            if isinstance(local_range, int):
+                local_range = [local_range]
+            self._check_ndrange(
+                global_range=global_range,
+                local_range=local_range,
+                device=device,
+            )
+            global_range = list(global_range)
+            local_range = list(local_range)
 
         return (global_range, local_range)
 
-    def __call__(self, *args, global_range, local_range=None):
+    def __call__(self, *args, global_range=None, local_range=None):
         """_summary_
 
         Args:
@@ -356,10 +395,6 @@ class Dispatcher(object):
             local_range (_type_): _description_.
         """
         argtypes = [self.typingctx.resolve_argument_type(arg) for arg in args]
-        breakpoint()
-
-        # FIXME: Remove along with __getitem__
-        global_range, local_range = self._get_ranges(global_range, local_range)
 
         exec_queue = self._determine_kernel_launch_queue(args, argtypes)
         backend = exec_queue.backend
@@ -371,6 +406,11 @@ class Dispatcher(object):
             raise UnsupportedBackendError(
                 self.kernel_name, backend, Dispatcher._supported_backends
             )
+
+        # TODO: Refactor after __getitem__ is removed
+        global_range, local_range = self._get_ranges(
+            global_range, local_range, exec_queue.sycl_device
+        )
 
         # TODO: Enable caching of kernels, but do it using Numba's caching
         # machinery
@@ -391,7 +431,13 @@ class Dispatcher(object):
         #  get the sycl::kernel
         kernel = kernel_bundle.get_sycl_kernel(kernel.module_name)
 
-        packer = Packer(arg_list=args, argty_list=argtypes, queue=exec_queue)
+        packer = Packer(
+            kernel_name=self.kernel_name,
+            arg_list=args,
+            argty_list=argtypes,
+            queue=exec_queue,
+            access_specifiers_list=self.array_access_specifiers,
+        )
 
         exec_queue.submit(
             kernel,
