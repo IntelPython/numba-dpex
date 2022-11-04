@@ -36,17 +36,20 @@ def kernel(signature=None, access_types=None, debug=None):
         return _kernel_jit(signature, debug, access_types)
 
 
-def autojit(debug=None, access_types=None):
+def autojit(debug=None, access_types=None, enable_cache=True):
     def _kernel_autojit(pyfunc):
         ordered_arg_access_types = get_ordered_arg_access_types(
             pyfunc, access_types
         )
-        return JitKernel(pyfunc, debug, ordered_arg_access_types)
+        kernel = JitKernel(pyfunc, debug, ordered_arg_access_types)
+        if enable_cache:
+            kernel.enable_cache()
+        return kernel
 
     return _kernel_autojit
 
 
-def _kernel_jit(signature, debug, access_types):
+def _kernel_jit(signature, debug, access_types, enable_cache=True):
     argtypes, rettype = sigutils.normalize_signature(signature)
     argtypes = tuple(
         [
@@ -65,6 +68,8 @@ def _kernel_jit(signature, debug, access_types):
         # We create an instance of JitKernel to make sure at call time
         # we are going through the caching mechanism.
         kernel = JitKernel(pyfunc, debug, ordered_arg_access_types)
+        if enable_cache:
+            kernel.enable_cache()
         # This will make sure we are compiling eagerly.
         kernel.specialize(argtypes, current_queue)
         return kernel

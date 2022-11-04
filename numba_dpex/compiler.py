@@ -13,6 +13,7 @@ import dpctl.program as dpctl_prog
 import dpctl.utils
 import numpy as np
 from numba.core import compiler, ir, types
+from numba.core.caching import FunctionCache, NullCache
 from numba.core.compiler import CompilerBase, DefaultPassBuilder
 from numba.core.compiler_lock import global_compiler_lock
 from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
@@ -719,9 +720,14 @@ class JitKernel(KernelBase):
         self.debug = debug
         self.access_types = access_types
 
+        self._cache = NullCache()
+
         from .core.descriptor import dpex_target
 
         self.typingctx = dpex_target.typing_context
+
+    def enable_cache(self):
+        self._cache = FunctionCache(self.py_func)
 
     def _get_argtypes(self, *args):
         """
@@ -816,16 +822,29 @@ class JitKernel(KernelBase):
         # we were previously using the _env_ptr of the device_env, the sycl_queue
         # should be sufficient to cache the compiled kernel for now, but we should
         # use the device type to cache such kernels.
+        print("-----> self.definitions:", self.definitions)
         key_definitions = argtypes
+        print("-----> key_definitions:", str(key_definitions))
         result = self.definitions.get(key_definitions)
+        print("-----> result:", str(result))
         if result:
             sycl_ctx, kernel = result
 
+        print("-----> sycl_ctx:", str(sycl_ctx))
+        print("-----> kernel:", str(kernel))
+
+        # if sycl_ctx and sycl_ctx == queue.sycl_context:
+        #    kernel = self._cache.load_overload(self._sig, sycl_ctx)
+
         if sycl_ctx and sycl_ctx == queue.sycl_context:
+            print("-----> here 1")
             return kernel
         else:
             kernel = compile_kernel(
                 queue, self.py_func, argtypes, self.access_types, self.debug
             )
             self.definitions[key_definitions] = (queue.sycl_context, kernel)
+            print("-----> here 2")
+            print("-----> kernel:", str(kernel))
+            print("-----> self.definitions:", str(self.definitions))
         return kernel
