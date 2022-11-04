@@ -375,7 +375,7 @@ class DpexTargetContext(BaseContext):
     def target_data(self):
         return self._target_data
 
-    def mangler(self, name, argtypes, abi_tags=()):
+    def mangler(self, name, argtypes, abi_tags=(), uid=None):
         def repl(m):
             ch = m.group(0)
             return "_%X_" % ord(ch)
