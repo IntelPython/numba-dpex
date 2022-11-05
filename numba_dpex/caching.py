@@ -1,0 +1,102 @@
+from numba.core.caching import CacheImpl, IndexDataCacheFile, _Cache
+
+from numba_dpex.core import compiler
+
+
+class DpexCacheImpl(CacheImpl):
+    def reduce(self, cres):
+        """
+        Returns a serialized CompileResult
+        """
+        return cres._reduce()
+
+    def rebuild(self, target_context, payload):
+        """
+        Returns the unserialized CompileResult
+        """
+        return compiler.CompileResult._rebuild(target_context, *payload)
+
+    def check_cachable(self, cres):
+        # For the time being, assuming all numba-dpex Kernels are always cachable.
+        return True
+
+
+class DpexCache(_Cache):
+    """
+    Implements a cache that saves and loads CUDA kernels and compile results.
+    """
+
+    _impl_class = DpexCacheImpl
+
+    def __init__(self, py_func):
+        self._name = repr(py_func)
+        self._py_func = py_func
+        self._impl = self._impl_class(py_func)
+        self._cache_path = self._impl.locator.get_cache_path()
+        # This may be a bit strict but avoids us maintaining a magic number
+        source_stamp = self._impl.locator.get_source_stamp()
+        filename_base = self._impl.filename_base
+        self._cache_file = IndexDataCacheFile(
+            cache_path=self._cache_path,
+            filename_base=filename_base,
+            source_stamp=source_stamp,
+        )
+        self.enable()
+
+    @property
+    def cache_path(self):
+        return self._cache_path
+
+    def enable(self):
+        self._enabled = True
+
+    def disable(self):
+        self._enabled = False
+
+    def flush(self):
+        self._cache_file.flush()
+
+    def load_overload(self, sig, target_context):
+        if not self._enabled:
+            return
+        key = self._index_key(sig, target_context.codegen())
+        data = self._cache_file.load(key)
+        if data is not None:
+            data = self._impl.rebuild(target_context, data)
+        return data
+
+    def save_overload(self, sig, data):
+        if not self._enabled:
+            return
+        if not self._impl.check_cachable(data):
+            return
+        self._impl.locator.ensure_cache_path()
+        key = self._index_key(sig, data.codegen)
+        data = self._impl.reduce(data)
+        self._cache_file.save(key, data)
+
+    # def _index_key(self, sig, codegen):
+    #     """
+    #     Compute index key for the given signature and codegen.
+    #     It includes a description of the OS, target architecture and hashes of
+    #     the bytecode for the function and, if the function has a __closure__,
+    #     a hash of the cell_contents.
+    #     """
+    #     codebytes = self._py_func.__code__.co_code
+    #     if self._py_func.__closure__ is not None:
+    #         cvars = tuple([x.cell_contents for x in self._py_func.__closure__])
+    #         # Note: cloudpickle serializes a function differently depending
+    #         #       on how the process is launched; e.g. multiprocessing.Process
+    #         cvarbytes = dumps(cvars)
+    #     else:
+    #         cvarbytes = b""
+
+    #     hasher = lambda x: hashlib.sha256(x).hexdigest()
+    #     return (
+    #         sig,
+    #         codegen.magic_tuple(),
+    #         (
+    #             hasher(codebytes),
+    #             hasher(cvarbytes),
+    #         ),
+    #     )

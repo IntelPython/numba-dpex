@@ -210,6 +210,7 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
         sycl_queue=sycl_queue,
         llvm_module=kernel.module,
         name=kernel.name,
+        signature=cres.signature,
         argtypes=cres.signature.args,
         ordered_arg_access_types=access_types,
     )
@@ -452,6 +453,7 @@ class Kernel(KernelBase):
         sycl_queue,
         llvm_module,
         name,
+        signature,
         argtypes,
         ordered_arg_access_types=None,
     ):
@@ -464,6 +466,7 @@ class Kernel(KernelBase):
         self._argloc = []
         self.sycl_queue = sycl_queue
         self.context = context
+        self.signature = signature
 
         dpctl_create_program_from_spirv_flags = []
         # First-time compilation using SPIRV-Tools
@@ -812,6 +815,9 @@ class JitKernel(KernelBase):
         )
         cfg(*args)
 
+    def specialize_cached(self, argtypes, queue):
+        pass
+
     def specialize(self, argtypes, queue):
         # We specialize for argtypes and queue. These two are used as key for
         # caching as well.
@@ -843,6 +849,11 @@ class JitKernel(KernelBase):
             kernel = compile_kernel(
                 queue, self.py_func, argtypes, self.access_types, self.debug
             )
+
+            # use these two as keys
+            # kernel.signature
+            # queue.sycl_context
+
             self.definitions[key_definitions] = (queue.sycl_context, kernel)
             print("-----> here 2")
             print("-----> kernel:", str(kernel))

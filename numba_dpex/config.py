@@ -91,6 +91,8 @@ DEBUG = _readenv("NUMBA_DPEX_DEBUG", int, config.DEBUG)
 DEBUGINFO_DEFAULT = _readenv(
     "NUMBA_DPEX_DEBUGINFO", int, config.DEBUGINFO_DEFAULT
 )
+# debug info for the cache
+config.DEBUG_CACHE = _readenv("NUMBA_DPEX_DEBUG_CACHE", int, 1)
 
 TESTING_SKIP_NO_DPNP = _readenv("NUMBA_DPEX_TESTING_SKIP_NO_DPNP", int, 0)
 TESTING_SKIP_NO_DEBUGGING = _readenv(

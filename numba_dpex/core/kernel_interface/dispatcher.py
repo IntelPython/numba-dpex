@@ -375,6 +375,8 @@ class Dispatcher(object):
         # TODO: Enable caching of kernels, but do it using Numba's caching
         # machinery
 
+        # Use signature ()
+
         print("-----> do caching here.")
 
         kernel = SpirvKernel(self.pyfunc, self.kernel_name)
