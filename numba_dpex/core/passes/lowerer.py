@@ -1242,6 +1242,7 @@ def relatively_deep_copy(obj, memo):
     for key in keys:
         attr = getattr(obj, key)
         attr_cpy = relatively_deep_copy(attr, memo)
+        breakpoint()
         setattr(cpy, key, attr_cpy)
 
     return cpy
@@ -1285,9 +1286,7 @@ class DPEXLowerer(Lower):
             from numba_dpex.debuginfo import DpexDIBuilder
 
             qualprefix = qualifying_prefix(fndesc.modname, fndesc.qualname)
-            mangled_qualname = default_mangler(
-                qualprefix, fndesc.argtypes, None
-            )
+            mangled_qualname = default_mangler(qualprefix, fndesc.argtypes)
 
             lower.debuginfo = DpexDIBuilder(
                 module=lower.module,
