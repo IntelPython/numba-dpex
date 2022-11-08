@@ -373,7 +373,9 @@ class Dispatcher(object):
         # invoked using a SYCL nd_range
         if global_range and not local_range:
             self._check_range(global_range, device)
-            global_range = list(global_range)
+            # FIXME:[::-1] is done as OpenCL and SYCl have different orders when it
+            # comes to specifying dimensions.
+            global_range = list(global_range)[::-1]
         else:
             if isinstance(local_range, int):
                 local_range = [local_range]
@@ -382,8 +384,8 @@ class Dispatcher(object):
                 local_range=local_range,
                 device=device,
             )
-            global_range = list(global_range)
-            local_range = list(local_range)
+            global_range = list(global_range)[::-1]
+            local_range = list(local_range)[::-1]
 
         return (global_range, local_range)
 
