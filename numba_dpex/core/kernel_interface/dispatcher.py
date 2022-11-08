@@ -17,6 +17,7 @@ from numba_dpex.core.exceptions import (
     ExecutionQueueInferenceError,
     IllegalRangeValueError,
     InvalidKernelLaunchArgsError,
+    SUAIProtocolError,
     UnknownGlobalRangeError,
     UnsupportedBackendError,
     UnsupportedNumberOfRangeDimsError,
@@ -111,7 +112,7 @@ class Dispatcher(object):
 
     def _determine_compute_follows_data_queue(self, usm_array_list):
         """Determine the execution queue for the list of usm array args using
-        compute follows data rules.
+        compute follows data programming model.
 
         Uses ``dpctl.utils.get_execution_queue()`` to check if the list of
         queues belonging to the usm_ndarrays are equivalent. If the queues are
@@ -125,8 +126,13 @@ class Dispatcher(object):
             A queue the common queue used to allocate the arrays. If no such
             queue exists, then returns None.
         """
-
-        queues = [usm_array.sycl_queue for usm_array in usm_array_list]
+        queues = []
+        for usm_array in usm_array_list:
+            try:
+                q = usm_array.__sycl_usm_array_interface__["syclobj"]
+                queues.append(q)
+            except:
+                raise SUAIProtocolError(self.kernel_name, usm_array)
         return dpctl.utils.get_execution_queue(queues)
 
     def _determine_kernel_launch_queue(self, args, argtypes):
