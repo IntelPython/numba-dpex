@@ -225,7 +225,7 @@ class Dispatcher(object):
                 )
                 return dpctl.get_current_queue()
             else:
-                raise ExecutionQueueInferenceError(self.kernel.name)
+                raise ExecutionQueueInferenceError(self.kernel_name)
         elif usmarray_argnums and not array_argnums:
             if dpctl.is_in_device_context():
                 warn(
@@ -238,7 +238,7 @@ class Dispatcher(object):
             queue = self._determine_compute_follows_data_queue(usm_array_args)
             if not queue:
                 raise ComputeFollowsDataInferenceError(
-                    self.kernel.name, usmarray_argnums
+                    self.kernel_name, usmarray_argnum_list=usmarray_argnums
                 )
             else:
                 return queue
@@ -254,7 +254,7 @@ class Dispatcher(object):
                 )
                 return dpctl.get_current_queue()
             else:
-                raise ExecutionQueueInferenceError(self.kernel.name)
+                raise ExecutionQueueInferenceError(self.kernel_name)
 
     def __getitem__(self, args):
         """Mimic's ``numba.cuda`` square-bracket notation for configuring the
