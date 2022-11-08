@@ -82,6 +82,45 @@ class UnknownGlobalRangeError(Exception):
         super().__init__(self.message)
 
 
+class IllegalRangeValueError(Exception):
+    def __init__(self, kernel_name) -> None:
+        self.message = (
+            f"Kernel {kernel_name} cannot be dispatched with the "
+            "specified range. The range should be specified as a list, tuple, "
+            "or an int."
+        )
+        super().__init__(self.message)
+
+
+class UnsupportedNumberOfRangeDimsError(Exception):
+    def __init__(self, kernel_name, ndims, max_work_item_dims) -> None:
+        self.message = (
+            f"Specified range for kernel {kernel_name} has {ndims} dimensions, "
+            f"the device supports only {max_work_item_dims} dimensional "
+            "ranges."
+        )
+        super().__init__(self.message)
+
+
+class UnsupportedWorkItemSizeError(Exception):
+    """
+
+    Args:
+        Exception (_type_): _description_
+    """
+
+    def __init__(
+        self, kernel_name, dim, requested_work_items, supported_work_items
+    ) -> None:
+        self.message = (
+            f"Attempting to launch kernel {kernel_name} with "
+            f"{requested_work_items} work items in dimension {dim} is not "
+            f"supported. The device supports only {supported_work_items} "
+            f"work items for dimension {dim}."
+        )
+        super().__init__(self.message)
+
+
 class ComputeFollowsDataInferenceError(Exception):
     """Exception raised when an execution queue for a given array expression or
     a kernel function could not be deduced using the compute-follows-data

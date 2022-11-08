@@ -4,7 +4,6 @@
 
 import ctypes
 import logging
-from multiprocessing.dummy import Array
 
 import dpctl.memory as dpctl_mem
 import numpy as np
@@ -25,7 +24,7 @@ class Packer:
     _access_types = ("read_only", "write_only", "read_write")
 
     def _check_for_invalid_access_type(self, array_val, access_type):
-        if access_type not in Packer._access_types:
+        if access_type and access_type not in Packer._access_types:
             raise UnsupportedAccessQualifierError(
                 self._pyfunc_name,
                 array_val,
@@ -141,7 +140,7 @@ class Packer:
 
         # If the NumPy array is not USM backed, then copy to a USM memory
         # object. Add an entry to the repack_map so that on exit from kernel
-        # the USM object can be copied back into the NumPy array.
+        # the data from the USM object can be copied back into the NumPy array.
         if usm_mem is None:
             self._check_for_invalid_access_type(val, access_type)
             usm_mem = utils.as_usm_obj(val, queue=self._queue, copy=False)
@@ -182,7 +181,7 @@ class Packer:
             packed_val.ndim,
         )
 
-    def _unpack_argument(self, ty, val):
+    def _unpack_argument(self, ty, val, access_specifier):
         """
         Unpack a Python object into a ctype value using Numba's
         type-inference machinery.
@@ -200,8 +199,8 @@ class Packer:
 
         if isinstance(ty, USMNdArrayType):
             return self._unpack_usm_array(val)
-        elif isinstance(ty, Array):
-            return self._unpack_array(val)
+        elif isinstance(ty, types.Array):
+            return self._unpack_array(val, access_specifier)
         elif ty == types.int64:
             return ctypes.c_longlong(val)
         elif ty == types.uint64:
@@ -234,7 +233,9 @@ class Packer:
             if packed:
                 np.copyto(obj, packed_ndarr)
 
-    def __init__(self, kernel_name, arg_list, argty_list, queue) -> None:
+    def __init__(
+        self, kernel_name, arg_list, argty_list, access_specifiers_list, queue
+    ) -> None:
         """_summary_
 
         Args:
@@ -250,7 +251,11 @@ class Packer:
         # loop over the arg_list and generate the kernelargs list
         self._unpacked_args = []
         for i, val in enumerate(arg_list):
-            arg = self._unpack_argument(ty=argty_list[i], val=val)
+            arg = self._unpack_argument(
+                ty=argty_list[i],
+                val=val,
+                access_specifier=access_specifiers_list[i],
+            )
             if type(arg) == list:
                 self._unpacked_args.extend(arg)
             else:
