@@ -206,20 +206,23 @@ def test_atomic_fp_native(
     dtype,
 ):
     function = function_generator(operator_name, dtype)
-    kernel = dpex.kernel(function)
-    argtypes = kernel._get_argtypes(np.array([0], dtype))
+    kernel = dpex.core.kernel_interface.spirv_kernel.SpirvKernel(
+        function, function.__name__
+    )
+    args = [np.array([0], dtype)]
+    argtypes = [
+        dpex.core.descriptor.dpex_target.typing_context.resolve_argument_type(
+            arg
+        )
+        for arg in args
+    ]
 
     with override_config("NATIVE_FP_ATOMICS", NATIVE_FP_ATOMICS):
+        kernel.compile(
+            arg_types=argtypes,
+            debug=None,
+            extra_compile_flags=None,
+        )
 
-        with dpctl.device_context(filter_str) as sycl_queue:
-
-            specialized_kernel = kernel[
-                global_size, dpex.DEFAULT_LOCAL_SIZE
-            ].specialize(argtypes, sycl_queue)
-
-            is_native_atomic = (
-                expected_spirv_function in specialized_kernel.assembly
-            )
-            assert is_native_atomic == expected_native_atomic_for_device(
-                filter_str
-            )
+        is_native_atomic = expected_spirv_function in kernel._llvm_module
+        assert is_native_atomic == expected_native_atomic_for_device(filter_str)
