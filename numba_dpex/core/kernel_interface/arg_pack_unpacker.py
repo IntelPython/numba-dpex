@@ -18,6 +18,14 @@ from numba_dpex.core.exceptions import (
 from numba_dpex.dpctl_iface import USMNdArrayType
 
 
+class _NumPyArrayPackerPayload:
+    def __init__(self, usm_mem, orig_val, packed_val, packed) -> None:
+        self._usm_mem = usm_mem
+        self._orig_val = orig_val
+        self._packed_val = packed_val
+        self._packed = packed
+
+
 class Packer:
 
     # TODO: Remove after NumPy support is removed
@@ -164,12 +172,23 @@ class Packer:
             elif access_type == "read_write":
                 utils.copy_from_numpy_to_usm_obj(usm_mem, packed_val)
                 # Store to the repack map
-                self._repack_map.update(
-                    {orig_val: (usm_mem, packed_val, packed)}
+                self._repack_list.append(
+                    _NumPyArrayPackerPayload(
+                        usm_mem, orig_val, packed_val, packed
+                    )
                 )
             elif access_type == "write_only":
-                self._repack_map.update(
-                    {orig_val: (usm_mem, packed_val, packed)}
+                self._repack_list.append(
+                    _NumPyArrayPackerPayload(
+                        usm_mem, orig_val, packed_val, packed
+                    )
+                )
+            else:
+                utils.copy_from_numpy_to_usm_obj(usm_mem, packed_val)
+                self._repack_list.append(
+                    _NumPyArrayPackerPayload(
+                        usm_mem, orig_val, packed_val, packed
+                    )
                 )
 
         return self._unpack_array_helper(
@@ -226,12 +245,10 @@ class Packer:
         """
         Copy device data back to host
         """
-        for obj in self._repack_map.keys():
-
-            (usm_mem, packed_ndarr, packed) = self._repack_map[obj]
-            utils.copy_to_numpy_from_usm_obj(usm_mem, packed_ndarr)
-            if packed:
-                np.copyto(obj, packed_ndarr)
+        for obj in self._repack_list:
+            utils.copy_to_numpy_from_usm_obj(obj._usm_mem, obj._packed_val)
+            if obj._packed:
+                np.copyto(obj._orig_val, obj._packed_val)
 
     def __init__(
         self, kernel_name, arg_list, argty_list, access_specifiers_list, queue
@@ -247,6 +264,9 @@ class Packer:
         self._arg_list = arg_list
         self._argty_list = argty_list
         self._queue = queue
+        # Create a list to store the numpy arrays that need to be
+        # repacked beoe returning from a kernel.
+        self._repack_list = []
 
         # loop over the arg_list and generate the kernelargs list
         self._unpacked_args = []
@@ -261,10 +281,6 @@ class Packer:
             else:
                 self._unpacked_args.append(arg)
 
-        # Create a map for numpy arrays storing the unpacked information, as
-        # these arrays will need to be repacked.
-        self._repack_map = {}
-
     @property
     def unpacked_args(self):
         return self._unpacked_args
@@ -272,4 +288,4 @@ class Packer:
     @property
     def repacked_args(self):
         self._pack_array()
-        return self._repack_map.keys()
+        return self._repack_list

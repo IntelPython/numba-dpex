@@ -17,6 +17,7 @@ from numba_dpex.core.exceptions import (
     ExecutionQueueInferenceError,
     IllegalRangeValueError,
     InvalidKernelLaunchArgsError,
+    SUAIProtocolError,
     UnknownGlobalRangeError,
     UnsupportedBackendError,
     UnsupportedNumberOfRangeDimsError,
@@ -114,7 +115,7 @@ class Dispatcher(object):
 
     def _determine_compute_follows_data_queue(self, usm_array_list):
         """Determine the execution queue for the list of usm array args using
-        compute follows data rules.
+        compute follows data programming model.
 
         Uses ``dpctl.utils.get_execution_queue()`` to check if the list of
         queues belonging to the usm_ndarrays are equivalent. If the queues are
@@ -128,8 +129,13 @@ class Dispatcher(object):
             A queue the common queue used to allocate the arrays. If no such
             queue exists, then returns None.
         """
-
-        queues = [usm_array.sycl_queue for usm_array in usm_array_list]
+        queues = []
+        for usm_array in usm_array_list:
+            try:
+                q = usm_array.__sycl_usm_array_interface__["syclobj"]
+                queues.append(q)
+            except:
+                raise SUAIProtocolError(self.kernel_name, usm_array)
         return dpctl.utils.get_execution_queue(queues)
 
     def _determine_kernel_launch_queue(self, args, argtypes):
@@ -228,7 +234,7 @@ class Dispatcher(object):
                 )
                 return dpctl.get_current_queue()
             else:
-                raise ExecutionQueueInferenceError(self.kernel.name)
+                raise ExecutionQueueInferenceError(self.kernel_name)
         elif usmarray_argnums and not array_argnums:
             if dpctl.is_in_device_context():
                 warn(
@@ -241,7 +247,7 @@ class Dispatcher(object):
             queue = self._determine_compute_follows_data_queue(usm_array_args)
             if not queue:
                 raise ComputeFollowsDataInferenceError(
-                    self.kernel.name, usmarray_argnums
+                    self.kernel_name, usmarray_argnum_list=usmarray_argnums
                 )
             else:
                 return queue
@@ -257,7 +263,7 @@ class Dispatcher(object):
                 )
                 return dpctl.get_current_queue()
             else:
-                raise ExecutionQueueInferenceError(self.kernel.name)
+                raise ExecutionQueueInferenceError(self.kernel_name)
 
     def __getitem__(self, args):
         """Mimic's ``numba.cuda`` square-bracket notation for configuring the
@@ -376,7 +382,9 @@ class Dispatcher(object):
         # invoked using a SYCL nd_range
         if global_range and not local_range:
             self._check_range(global_range, device)
-            global_range = list(global_range)
+            # FIXME:[::-1] is done as OpenCL and SYCl have different orders when it
+            # comes to specifying dimensions.
+            global_range = list(global_range)[::-1]
         else:
             if isinstance(local_range, int):
                 local_range = [local_range]
@@ -385,8 +393,8 @@ class Dispatcher(object):
                 local_range=local_range,
                 device=device,
             )
-            global_range = list(global_range)
-            local_range = list(local_range)
+            global_range = list(global_range)[::-1]
+            local_range = list(local_range)[::-1]
 
         return (global_range, local_range)
 
