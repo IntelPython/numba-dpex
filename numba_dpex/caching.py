@@ -92,7 +92,7 @@ class DpexCache(_Cache):
         self._impl.locator.ensure_cache_path()
         # key = self._index_key(sig, data.codegen)
         key = self._index_key(sig)
-        # data = self._impl.reduce(data)
+        data = self._impl.reduce(data)
         self._cache_file.save(key, data)
         print("-----> caching.save_overload()")
 
@@ -116,14 +116,14 @@ class DpexCache(_Cache):
 
         # hasher = lambda x: hashlib.sha256(x).hexdigest()
         # def hasher(x):
-        #     return hashlib.sha256(x).hashdigest()
+        #      return hashlib.sha256(x).hexdigest()
         return (
             sig,
             # codegen.magic_tuple(),
             (
                 # hasher(codebytes),
-                hashlib.hash(codebytes).hashdigest(),
+                hashlib.sha256(codebytes).hexdigest(),
                 # hasher(cvarbytes),
-                hashlib.hash(cvarbytes).hashdigest(),
+                hashlib.sha256(cvarbytes).hexdigest(),
             ),
         )
