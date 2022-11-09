@@ -1,9 +1,26 @@
-from numba.core.caching import CacheImpl, IndexDataCacheFile, _Cache
+# Copyright 2022 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import hashlib
+
+from numba.core.caching import IndexDataCacheFile, _Cache, _CacheImpl
+from numba.core.serialize import dumps
 
 from numba_dpex.core import compiler
 
 
-class DpexCacheImpl(CacheImpl):
+class DpexCacheImpl(_CacheImpl):
     def reduce(self, cres):
         """
         Returns a serialized CompileResult
@@ -59,10 +76,12 @@ class DpexCache(_Cache):
     def load_overload(self, sig, target_context):
         if not self._enabled:
             return
-        key = self._index_key(sig, target_context.codegen())
+        # key = self._index_key(sig, target_context.codegen())
+        key = self._index_key(sig)
         data = self._cache_file.load(key)
         if data is not None:
             data = self._impl.rebuild(target_context, data)
+        print("-----> caching.load_overload()")
         return data
 
     def save_overload(self, sig, data):
@@ -71,32 +90,40 @@ class DpexCache(_Cache):
         if not self._impl.check_cachable(data):
             return
         self._impl.locator.ensure_cache_path()
-        key = self._index_key(sig, data.codegen)
-        data = self._impl.reduce(data)
+        # key = self._index_key(sig, data.codegen)
+        key = self._index_key(sig)
+        # data = self._impl.reduce(data)
         self._cache_file.save(key, data)
+        print("-----> caching.save_overload()")
 
     # def _index_key(self, sig, codegen):
-    #     """
-    #     Compute index key for the given signature and codegen.
-    #     It includes a description of the OS, target architecture and hashes of
-    #     the bytecode for the function and, if the function has a __closure__,
-    #     a hash of the cell_contents.
-    #     """
-    #     codebytes = self._py_func.__code__.co_code
-    #     if self._py_func.__closure__ is not None:
-    #         cvars = tuple([x.cell_contents for x in self._py_func.__closure__])
-    #         # Note: cloudpickle serializes a function differently depending
-    #         #       on how the process is launched; e.g. multiprocessing.Process
-    #         cvarbytes = dumps(cvars)
-    #     else:
-    #         cvarbytes = b""
+    def _index_key(self, sig):
+        """
+        Compute index key for the given signature and codegen.
+        It includes a description of the OS, target architecture and hashes of
+        the bytecode for the function and, if the function has a __closure__,
+        a hash of the cell_contents.
+        """
+        # print("-----> caching._index_key.codegen:", codegen)
+        codebytes = self._py_func.__code__.co_code
+        if self._py_func.__closure__ is not None:
+            cvars = tuple([x.cell_contents for x in self._py_func.__closure__])
+            # Note: cloudpickle serializes a function differently depending
+            #       on how the process is launched; e.g. multiprocessing.Process
+            cvarbytes = dumps(cvars)
+        else:
+            cvarbytes = b""
 
-    #     hasher = lambda x: hashlib.sha256(x).hexdigest()
-    #     return (
-    #         sig,
-    #         codegen.magic_tuple(),
-    #         (
-    #             hasher(codebytes),
-    #             hasher(cvarbytes),
-    #         ),
-    #     )
+        # hasher = lambda x: hashlib.sha256(x).hexdigest()
+        # def hasher(x):
+        #     return hashlib.sha256(x).hashdigest()
+        return (
+            sig,
+            # codegen.magic_tuple(),
+            (
+                # hasher(codebytes),
+                hashlib.hash(codebytes).hashdigest(),
+                # hasher(cvarbytes),
+                hashlib.hash(cvarbytes).hashdigest(),
+            ),
+        )

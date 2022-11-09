@@ -7,10 +7,13 @@ from types import FunctionType
 
 from numba.core import compiler, ir
 from numba.core import types as numba_types
+from numba.core import utils
+from numba.core.caching import NullCache
 from numba.core.compiler_lock import global_compiler_lock
 
 from numba_dpex import compiler as dpex_compiler
 from numba_dpex import config, spirv_generator
+from numba_dpex.caching import DpexCache
 from numba_dpex.core.descriptor import dpex_target
 from numba_dpex.core.exceptions import (
     KernelHasReturnValueError,
@@ -22,18 +25,22 @@ from .kernel_base import KernelInterface
 
 
 class SpirvKernel(KernelInterface):
-    def __init__(self, func, pyfunc_name) -> None:
+    def __init__(self, pyfunc, pyfunc_name) -> None:
         self._llvm_module = None
         self._device_driver_ir_module = None
         self._module_name = None
         self._pyfunc_name = pyfunc_name
-        self._func = func
-        if isinstance(func, FunctionType):
+        self._pyfunc = pyfunc
+        if isinstance(pyfunc, FunctionType):
             self._func_ty = FunctionType
-        elif isinstance(func, ir.FunctionIR):
+        elif isinstance(pyfunc, ir.FunctionIR):
             self._func_ty = ir.FunctionIR
         else:
             raise UnreachableError()
+        self._cache = NullCache()
+
+    def enable_cache(self):
+        self._cache = DpexCache(self._pyfunc)
 
     @global_compiler_lock
     def _compile(self, pyfunc, args, debug=None, extra_compile_flags=None):
@@ -55,6 +62,7 @@ class SpirvKernel(KernelInterface):
             KernelHasReturnValueError: If the compiled function returns a
             non-void value.
         """
+
         # First compilation will trigger the initialization of the backend.
         typingctx = dpex_target.typing_context
         targetctx = dpex_target.target_context
@@ -69,41 +77,48 @@ class SpirvKernel(KernelInterface):
         if debug is not None:
             flags.debuginfo = debug
 
-        # Run compilation pipeline
-        if isinstance(pyfunc, FunctionType):
-            cres = compiler.compile_extra(
-                typingctx=typingctx,
-                targetctx=targetctx,
-                func=pyfunc,
-                args=args,
-                return_type=None,
-                flags=flags,
-                locals={},
-                pipeline_class=dpex_compiler.Compiler,
-            )
-        elif isinstance(pyfunc, ir.FunctionIR):
-            cres = compiler.compile_ir(
-                typingctx=typingctx,
-                targetctx=targetctx,
-                func_ir=pyfunc,
-                args=args,
-                return_type=None,
-                flags=flags,
-                locals={},
-                pipeline_class=dpex_compiler.Compiler,
-            )
-        else:
-            raise UnreachableError()
+        print("-----> spriv_kernel._compile()")
+        sig = utils.pysignature(self._pyfunc)
+        cres = self._cache.load_overload(sig, targetctx)
+        if cres is None:
+            print("-----> spirv_kernel._compile().cres == None")
+            # Run compilation pipeline
+            if isinstance(pyfunc, FunctionType):
+                cres = compiler.compile_extra(
+                    typingctx=typingctx,
+                    targetctx=targetctx,
+                    func=pyfunc,
+                    args=args,
+                    return_type=None,
+                    flags=flags,
+                    locals={},
+                    pipeline_class=dpex_compiler.Compiler,
+                )
+            elif isinstance(pyfunc, ir.FunctionIR):
+                cres = compiler.compile_ir(
+                    typingctx=typingctx,
+                    targetctx=targetctx,
+                    func_ir=pyfunc,
+                    args=args,
+                    return_type=None,
+                    flags=flags,
+                    locals={},
+                    pipeline_class=dpex_compiler.Compiler,
+                )
+            else:
+                raise UnreachableError()
 
-        if (
-            cres.signature.return_type is not None
-            and cres.signature.return_type != numba_types.void
-        ):
-            raise KernelHasReturnValueError(
-                kernel_name=pyfunc.__name__,
-                return_type=cres.signature.return_type,
-            )
-        # Linking depending libraries
+            if (
+                cres.signature.return_type is not None
+                and cres.signature.return_type != numba_types.void
+            ):
+                raise KernelHasReturnValueError(
+                    kernel_name=pyfunc.__name__,
+                    return_type=cres.signature.return_type,
+                )
+            # Linking depending libraries
+            self._cache.save_overload(cres.signature, cres)
+
         library = cres.library
         library.finalize()
 
@@ -150,7 +165,7 @@ class SpirvKernel(KernelInterface):
         logging.debug("compiling SpirvKernel with arg types", arg_types)
 
         cres = self._compile(
-            pyfunc=self._func,
+            pyfunc=self._pyfunc,
             args=arg_types,
             debug=debug,
             extra_compile_flags=extra_compile_flags,

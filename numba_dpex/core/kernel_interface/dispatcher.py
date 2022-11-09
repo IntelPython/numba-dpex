@@ -56,6 +56,7 @@ class Dispatcher(object):
         debug_flags=None,
         compile_flags=None,
         array_access_specifiers=None,
+        enable_cache=True,
     ):
         self.typingctx = dpex_target.typing_context
         self.pyfunc = pyfunc
@@ -65,6 +66,8 @@ class Dispatcher(object):
         # TODO: To be removed once the__getitem__ is removed
         self._global_range = None
         self._local_range = None
+        self._enable_cache = enable_cache
+        print("-----> Dispatcher.__init__()")
 
         if array_access_specifiers:
             warn(
@@ -415,7 +418,12 @@ class Dispatcher(object):
         # TODO: Enable caching of kernels, but do it using Numba's caching
         # machinery
 
+        print("-----> dispatcher.kernel_name:", self.kernel_name)
         kernel = SpirvKernel(self.pyfunc, self.kernel_name)
+
+        if self._enable_cache:
+            kernel.enable_cache()
+
         kernel.compile(
             arg_types=argtypes,
             debug=self.debug_flags,

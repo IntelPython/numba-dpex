@@ -85,7 +85,7 @@ class Compiler(CompilerBase):
 
 
 @global_compiler_lock
-def compile_with_depx(pyfunc, return_type, args, is_kernel, debug=None):
+def compile_with_dpex(pyfunc, return_type, args, is_kernel, debug=None):
     """
     Compiles the function using the dpex compiler pipeline and returns the
     compiled result.
@@ -180,7 +180,7 @@ def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
         # We expect the sycl_queue to be provided when this function is called
         raise ValueError("SYCL queue is required for compiling a kernel")
 
-    cres = compile_with_depx(
+    cres = compile_with_dpex(
         pyfunc=pyfunc, return_type=None, args=args, is_kernel=True, debug=debug
     )
     func = cres.library.get_function(cres.fndesc.llvm_func_name)
@@ -219,7 +219,7 @@ def compile_kernel_parfor(
             if isinstance(a, types.npytypes.Array):
                 print("addrspace:", a.addrspace)
 
-    cres = compile_with_depx(
+    cres = compile_with_dpex(
         pyfunc=func_ir,
         return_type=None,
         args=args_with_addrspaces,
@@ -246,7 +246,7 @@ def compile_kernel_parfor(
 
 
 def compile_func(pyfunc, return_type, args, debug=None):
-    cres = compile_with_depx(
+    cres = compile_with_dpex(
         pyfunc=pyfunc,
         return_type=return_type,
         args=args,
@@ -301,7 +301,7 @@ class DpexFunctionTemplate(object):
         this object.
         """
         if args not in self._compileinfos:
-            cres = compile_with_depx(
+            cres = compile_with_dpex(
                 pyfunc=self.py_func,
                 return_type=None,
                 args=args,
@@ -799,9 +799,6 @@ class JitKernel(KernelBase):
             kernel.sycl_queue, self.global_size, self.local_size
         )
         cfg(*args)
-
-    def specialize_cached(self, argtypes, queue):
-        pass
 
     def specialize(self, argtypes, queue):
         # We specialize for argtypes and queue. These two are used as key for
