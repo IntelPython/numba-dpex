@@ -248,7 +248,7 @@ class Packer:
         for obj in self._repack_list:
             utils.copy_to_numpy_from_usm_obj(obj._usm_mem, obj._packed_val)
             if obj._packed:
-                np.copyto(obj.orig_val, obj._packed_val)
+                np.copyto(obj._orig_val, obj._packed_val)
 
     def __init__(
         self, kernel_name, arg_list, argty_list, access_specifiers_list, queue
