@@ -23,11 +23,16 @@ def debug_option(request):
     return request.param
 
 
-def get_kernel_ir(sycl_queue, fn, sig, debug=None):
-    kernel = compiler.compile_kernel(
-        sycl_queue, fn.py_func, sig, None, debug=debug
+def get_kernel_ir(fn, sig, debug=None):
+    kernel = dpex.core.kernel_interface.spirv_kernel.SpirvKernel(
+        fn, fn.__name__
     )
-    return kernel.assembly
+    kernel.compile(
+        arg_types=sig,
+        debug=debug,
+        extra_compile_flags=None,
+    )
+    return kernel.llvm_module
 
 
 def make_check(ir, val_to_search):
@@ -45,15 +50,11 @@ def test_debug_flag_generates_ir_with_debuginfo(debug_option):
     Check debug info is emitting to IR if debug parameter is set to True
     """
 
-    @dpex.kernel
     def foo(x):
         x = 1  # noqa
 
-    sycl_queue = dpctl.get_current_queue()
     sig = (types.int32,)
-
-    kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=debug_option)
-
+    kernel_ir = get_kernel_ir(foo, sig, debug=debug_option)
     tag = "!dbg"
 
     if debug_option:
@@ -68,7 +69,6 @@ def test_debug_info_locals_vars_on_no_opt():
     if debug parameter is set to True and optimization is O0
     """
 
-    @dpex.kernel
     def foo(var_a, var_b, var_c):
         i = dpex.get_global_id(0)
         var_c[i] = var_a[i] + var_b[i]
@@ -79,8 +79,6 @@ def test_debug_info_locals_vars_on_no_opt():
         '!DILocalVariable(name: "var_c"',
         '!DILocalVariable(name: "i"',
     ]
-
-    sycl_queue = dpctl.get_current_queue()
     sig = (
         npytypes_array_to_dpex_array(types.float32[:]),
         npytypes_array_to_dpex_array(types.float32[:]),
@@ -88,7 +86,7 @@ def test_debug_info_locals_vars_on_no_opt():
     )
 
     with override_config("OPT", 0):
-        kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
+        kernel_ir = get_kernel_ir(foo, sig, debug=True)
 
     for tag in ir_tags:
         assert tag in kernel_ir
@@ -100,7 +98,6 @@ def test_debug_kernel_local_vars_in_ir():
     created in kernel
     """
 
-    @dpex.kernel
     def foo(arr):
         index = dpex.get_global_id(0)
         local_d = 9 * 99 + 5
@@ -110,11 +107,8 @@ def test_debug_kernel_local_vars_in_ir():
         '!DILocalVariable(name: "index"',
         '!DILocalVariable(name: "local_d"',
     ]
-
-    sycl_queue = dpctl.get_current_queue()
     sig = (npytypes_array_to_dpex_array(types.float32[:]),)
-
-    kernel_ir = get_kernel_ir(sycl_queue, foo, sig, debug=True)
+    kernel_ir = get_kernel_ir(foo, sig, debug=True)
 
     for tag in ir_tags:
         assert tag in kernel_ir
@@ -130,7 +124,6 @@ def test_debug_flag_generates_ir_with_debuginfo_for_func(debug_option):
         result = a + b
         return result
 
-    @dpex.kernel(debug=debug_option)
     def data_parallel_sum(a, b, c):
         i = dpex.get_global_id(0)
         c[i] = func_sum(a[i], b[i])
@@ -140,16 +133,13 @@ def test_debug_flag_generates_ir_with_debuginfo_for_func(debug_option):
         r'\!DISubprogram\(name: ".*data_parallel_sum"',
     ]
 
-    sycl_queue = dpctl.get_current_queue()
     sig = (
         npytypes_array_to_dpex_array(types.float32[:]),
         npytypes_array_to_dpex_array(types.float32[:]),
         npytypes_array_to_dpex_array(types.float32[:]),
     )
 
-    kernel_ir = get_kernel_ir(
-        sycl_queue, data_parallel_sum, sig, debug=debug_option
-    )
+    kernel_ir = get_kernel_ir(data_parallel_sum, sig, debug=debug_option)
 
     for tag in ir_tags:
         assert debug_option == make_check(kernel_ir, tag)
@@ -165,7 +155,6 @@ def test_env_var_generates_ir_with_debuginfo_for_func(debug_option):
         result = a + b
         return result
 
-    @dpex.kernel
     def data_parallel_sum(a, b, c):
         i = dpex.get_global_id(0)
         c[i] = func_sum(a[i], b[i])
@@ -175,7 +164,6 @@ def test_env_var_generates_ir_with_debuginfo_for_func(debug_option):
         r'\!DISubprogram\(name: ".*data_parallel_sum"',
     ]
 
-    sycl_queue = dpctl.get_current_queue()
     sig = (
         npytypes_array_to_dpex_array(types.float32[:]),
         npytypes_array_to_dpex_array(types.float32[:]),
@@ -183,14 +171,13 @@ def test_env_var_generates_ir_with_debuginfo_for_func(debug_option):
     )
 
     with override_config("DEBUGINFO_DEFAULT", int(debug_option)):
-        kernel_ir = get_kernel_ir(sycl_queue, data_parallel_sum, sig)
+        kernel_ir = get_kernel_ir(data_parallel_sum, sig)
 
     for tag in ir_tags:
         assert debug_option == make_check(kernel_ir, tag)
 
 
 def test_debuginfo_DISubprogram_linkageName():
-    @dpex.kernel
     def func(a, b):
         i = dpex.get_global_id(0)
         b[i] = a[i]
@@ -199,20 +186,18 @@ def test_debuginfo_DISubprogram_linkageName():
         r'\!DISubprogram\(.*linkageName: ".*e4func.*"',
     ]
 
-    sycl_queue = dpctl.get_current_queue()
     sig = (
         npytypes_array_to_dpex_array(types.float32[:]),
         npytypes_array_to_dpex_array(types.float32[:]),
     )
 
-    kernel_ir = get_kernel_ir(sycl_queue, func, sig, debug=True)
+    kernel_ir = get_kernel_ir(func, sig, debug=True)
 
     for tag in ir_tags:
         assert make_check(kernel_ir, tag)
 
 
 def test_debuginfo_DICompileUnit_language_and_producer():
-    @dpex.kernel
     def func(a, b):
         i = dpex.get_global_id(0)
         b[i] = a[i]
@@ -222,13 +207,12 @@ def test_debuginfo_DICompileUnit_language_and_producer():
         r'\!DICompileUnit\(.*producer: "numba-dpex"',
     ]
 
-    sycl_queue = dpctl.get_current_queue()
     sig = (
         npytypes_array_to_dpex_array(types.float32[:]),
         npytypes_array_to_dpex_array(types.float32[:]),
     )
 
-    kernel_ir = get_kernel_ir(sycl_queue, func, sig, debug=True)
+    kernel_ir = get_kernel_ir(func, sig, debug=True)
 
     for tag in ir_tags:
         assert make_check(kernel_ir, tag)
