@@ -23,10 +23,11 @@ __all__ = [
     USMNdArrayType,
 ]
 
+create_event_vector = dpctl_fn_ty.dpctl_event_vector_create()
+event_wait = dpctl_fn_ty.dpctl_event_wait()
+event_delete = dpctl_fn_ty.dpctl_event_delete()
+free_with_queue = dpctl_fn_ty.dpctl_free_with_queue()
 get_current_queue = dpctl_fn_ty.dpctl_get_current_queue()
 malloc_shared = dpctl_fn_ty.dpctl_malloc_shared()
 queue_memcpy = dpctl_fn_ty.dpctl_queue_memcpy()
-free_with_queue = dpctl_fn_ty.dpctl_free_with_queue()
-event_wait = dpctl_fn_ty.dpctl_event_wait()
-event_delete = dpctl_fn_ty.dpctl_event_delete()
 queue_wait = dpctl_fn_ty.dpctl_queue_wait()
