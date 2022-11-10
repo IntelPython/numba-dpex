@@ -107,7 +107,9 @@ def dpnp_copy_impl(a):
     name = "copy"
     dpnp_lowering.ensure_dpnp(name)
 
-    ret_type = types.void
+    # The dpnp.copy function returns a DPCTLSyclEventRef opaque point that we
+    # store as a void*.
+    ret_type = types.voidptr
     """
     Refer: https://github.com/IntelPython/dpnp/blob/0.11.0rc1/dpnp/backend/kernels/dpnp_krnl_elemwise.cpp#L549
     #define MACRO_1ARG_1TYPE_OP(__name__, __operation1__, __operation2__)      \
@@ -158,7 +160,11 @@ def dpnp_copy_impl(a):
         if a.size == 0:
             raise ValueError("Passed Empty array")
 
+        # TODO: Change once compute follows data in implemented.
         sycl_queue = dpctl_functions.get_current_queue()
+
+        # Allocate an empty event vector
+        empty_event_list = dpctl_functions.create_event_vector()
 
         a_usm = dpctl_functions.malloc_shared(a.size * a.itemsize, sycl_queue)
         event = dpctl_functions.queue_memcpy(
@@ -188,7 +194,7 @@ def dpnp_copy_impl(a):
 
         where = 0
 
-        dpnp_func(
+        ret_event = dpnp_func(
             sycl_queue,
             result_out,
             result_size,
@@ -201,17 +207,20 @@ def dpnp_copy_impl(a):
             input1_shape,
             input1_strides,
             where,
+            empty_event_list,
         )
-
+        dpctl_functions.event_wait(ret_event)
         event = dpctl_functions.queue_memcpy(
             sycl_queue, out.ctypes, out_usm, out.size * out.itemsize
         )
         dpctl_functions.event_wait(event)
         dpctl_functions.event_delete(event)
+        dpctl_functions.event_delete(ret_event)
+        # TODO: delete the event vector
 
         dpctl_functions.free_with_queue(a_usm, sycl_queue)
         dpctl_functions.free_with_queue(out_usm, sycl_queue)
-
+        # TODO: delete the sycl_queue
         dpnp_ext._dummy_liveness_func([a.size, out.size])
 
         if PRINT_DEBUG:
