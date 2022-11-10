@@ -1285,9 +1285,7 @@ class DPEXLowerer(Lower):
             from numba_dpex.debuginfo import DpexDIBuilder
 
             qualprefix = qualifying_prefix(fndesc.modname, fndesc.qualname)
-            mangled_qualname = default_mangler(
-                qualprefix, fndesc.argtypes, None
-            )
+            mangled_qualname = default_mangler(qualprefix, fndesc.argtypes)
 
             lower.debuginfo = DpexDIBuilder(
                 module=lower.module,
