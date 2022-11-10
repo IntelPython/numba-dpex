@@ -218,3 +218,11 @@ class UnreachableError(Exception):
         else:
             self.message = "Unreachable code executed."
         super().__init__(self.message)
+
+
+class UnsupportedParforError(Exception):
+    """Exception raised when a parfor node could not be compiled."""
+
+    def __init__(self) -> None:
+        self.message = "Expression cannot be offloaded"
+        super().__init__(self.message)
