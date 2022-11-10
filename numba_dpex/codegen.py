@@ -66,6 +66,9 @@ class JITSPIRVCodegen(CPUCodegen):
         assert list(llvm_module.global_variables) == [], "Module isn't empty"
         self._data_layout = SPIR_DATA_LAYOUT[utils.MACHINE_BITS]
         self._target_data = ll.create_target_data(self._data_layout)
+        self._tm_features = (
+            ""  # We need this for chaching, not sure about this value for now
+        )
 
     def _create_empty_module(self, name):
         ir_module = lc.Module(name)

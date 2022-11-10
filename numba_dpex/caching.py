@@ -74,44 +74,58 @@ class DpexCache(_Cache):
         self._cache_file.flush()
 
     def load_overload(self, sig, target_context):
+        print("-----> caching.load_overload().here-1")
         if not self._enabled:
+            print("-----> caching.load_overload().here-2")
             return
-        # key = self._index_key(sig, target_context.codegen())
-        key = self._index_key(sig)
+        key = self._index_key(sig, target_context.codegen())
+        print("-----> caching.load_overload().here-3")
+        # key = self._index_key(sig)
         data = self._cache_file.load(key)
+        print("-----> caching.load_overload().here-4")
         if data is not None:
+            print("-----> caching.load_overload().here-5")
             data = self._impl.rebuild(target_context, data)
-        print("-----> caching.load_overload()")
+        print("-----> caching.load_overload().here-6")
         return data
 
     def save_overload(self, sig, data):
+        print("-----> caching.save_overload().here-1")
         if not self._enabled:
+            print("-----> caching.save_overload().here-2")
             return
         if not self._impl.check_cachable(data):
+            print("-----> caching.save_overload().here-3")
             return
         self._impl.locator.ensure_cache_path()
-        # key = self._index_key(sig, data.codegen)
-        key = self._index_key(sig)
+        print("-----> caching.save_overload().here-4")
+        print(data.dump())
+        key = self._index_key(sig, data.codegen)
+        print("-----> caching.save_overload().here-5")
+        # key = self._index_key(sig)
         data = self._impl.reduce(data)
+        print("-----> caching.save_overload().here-6")
         self._cache_file.save(key, data)
-        print("-----> caching.save_overload()")
+        print("-----> caching.save_overload().here-7")
 
-    # def _index_key(self, sig, codegen):
-    def _index_key(self, sig):
+    def _index_key(self, sig, codegen):
+        # def _index_key(self, sig):
         """
         Compute index key for the given signature and codegen.
         It includes a description of the OS, target architecture and hashes of
         the bytecode for the function and, if the function has a __closure__,
         a hash of the cell_contents.
         """
-        # print("-----> caching._index_key.codegen:", codegen)
+        print("-----> caching._index_key.codegen:", codegen)
         codebytes = self._py_func.__code__.co_code
         if self._py_func.__closure__ is not None:
+            print("-----> caching._index_key.here-1")
             cvars = tuple([x.cell_contents for x in self._py_func.__closure__])
             # Note: cloudpickle serializes a function differently depending
             #       on how the process is launched; e.g. multiprocessing.Process
             cvarbytes = dumps(cvars)
         else:
+            print("-----> caching._index_key.here-2")
             cvarbytes = b""
 
         # hasher = lambda x: hashlib.sha256(x).hexdigest()
@@ -119,7 +133,7 @@ class DpexCache(_Cache):
         #      return hashlib.sha256(x).hexdigest()
         return (
             sig,
-            # codegen.magic_tuple(),
+            codegen.magic_tuple(),
             (
                 # hasher(codebytes),
                 hashlib.sha256(codebytes).hexdigest(),

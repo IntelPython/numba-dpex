@@ -84,6 +84,7 @@ class SpirvKernel(KernelInterface):
             print("-----> spirv_kernel._compile().cres == None")
             # Run compilation pipeline
             if isinstance(pyfunc, FunctionType):
+                print("-----> spirv_kernel._compile().here-1")
                 cres = compiler.compile_extra(
                     typingctx=typingctx,
                     targetctx=targetctx,
@@ -95,6 +96,7 @@ class SpirvKernel(KernelInterface):
                     pipeline_class=dpex_compiler.Compiler,
                 )
             elif isinstance(pyfunc, ir.FunctionIR):
+                print("-----> spirv_kernel._compile().here-2")
                 cres = compiler.compile_ir(
                     typingctx=typingctx,
                     targetctx=targetctx,
@@ -116,9 +118,12 @@ class SpirvKernel(KernelInterface):
                     kernel_name=pyfunc.__name__,
                     return_type=cres.signature.return_type,
                 )
-            # Linking depending libraries
+
+            print("-----> spirv_kernel._compile.cres.type:", type(cres))
+            print("-----> spirv_kernel._compile.cres:", str(cres))
             self._cache.save_overload(cres.signature, cres)
 
+        # Linking depending libraries
         library = cres.library
         library.finalize()
 
