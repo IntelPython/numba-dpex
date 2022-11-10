@@ -44,6 +44,7 @@ from numba.parfors.parfor_lowering import _lower_parfor_parallel
 
 import numba_dpex as dpex
 from numba_dpex import config
+from numba_dpex.core.exceptions import UnsupportedParforError
 from numba_dpex.core.target import DpexTargetContext
 from numba_dpex.core.types import Array
 from numba_dpex.dpctl_iface import KernelLaunchOps
@@ -1373,14 +1374,15 @@ class DPEXLowerer(Lower):
                 )
                 print(traceback.format_exc())
 
-            if config.FALLBACK_ON_CPU == 1:
-                self.cpu_lower.context.lower_extensions[
-                    parfor.Parfor
-                ] = _lower_parfor_parallel
-                self.cpu_lower.lower()
-                self.base_lower = self.cpu_lower
-            else:
-                raise e
+            # if config.FALLBACK_ON_CPU == 1:
+            #     self.cpu_lower.context.lower_extensions[
+            #         parfor.Parfor
+            #     ] = _lower_parfor_parallel
+            #     self.cpu_lower.lower()
+            #     self.base_lower = self.cpu_lower
+            # else:
+            #     raise e
+            raise UnsupportedParforError()
 
         self.env = self.base_lower.env
         self.call_helper = self.base_lower.call_helper
