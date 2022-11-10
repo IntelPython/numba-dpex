@@ -7,7 +7,6 @@ from numba import types
 from numba.core.extending import overload, register_jitable
 from numba.core.typing import signature
 
-import numba_dpex
 import numba_dpex.dpctl_iface as dpctl_functions
 import numba_dpex.dpnp_iface as dpnp_lowering
 import numba_dpex.dpnp_iface.dpnpimpl as dpnp_ext
@@ -110,23 +109,32 @@ def dpnp_copy_impl(a):
 
     ret_type = types.void
     """
-    dpnp source:
-    https://github.com/IntelPython/dpnp/blob/0.10.0dev0/dpnp/backend/kernels/dpnp_krnl_elemwise.cpp#L320-L330
-    Function declaration:
-    void __name__(void* result_out,                                                                                     \
-                  const size_t result_size,                                                                             \
-                  const size_t result_ndim,                                                                             \
-                  const shape_elem_type* result_shape,                                                                  \
-                  const shape_elem_type* result_strides,                                                                \
-                  const void* input1_in,                                                                                \
-                  const size_t input1_size,                                                                             \
-                  const size_t input1_ndim,                                                                             \
-                  const shape_elem_type* input1_shape,                                                                  \
-                  const shape_elem_type* input1_strides,                                                                \
-                  const size_t* where);
+    Refer: https://github.com/IntelPython/dpnp/blob/0.11.0rc1/dpnp/backend/kernels/dpnp_krnl_elemwise.cpp#L549
+    #define MACRO_1ARG_1TYPE_OP(__name__, __operation1__, __operation2__)      \
+    template <typename _KernelNameSpecialization>                              \
+    class __name__##_kernel;                                                   \
+                                                                               \
+    template <typename _KernelNameSpecialization>                              \
+    class __name__##_strides_kernel;                                           \
+                                                                               \
+    template <typename _DataType>                                              \
+    DPCTLSyclEventRef __name__(DPCTLSyclQueueRef q_ref,                        \
+                               void* result_out,                               \
+                               const size_t result_size,                       \
+                               const size_t result_ndim,                       \
+                               const shape_elem_type* result_shape,            \
+                               const shape_elem_type* result_strides,          \
+                               const void* input1_in,                          \
+                               const size_t input1_size,                       \
+                               const size_t input1_ndim,                       \
+                               const shape_elem_type* input1_shape,            \
+                               const shape_elem_type* input1_strides,          \
+                               const size_t* where,                            \
+                               const DPCTLEventVectorRef dep_event_vec_ref)    \
     """
     sig = signature(
         ret_type,
+        types.voidptr,  # DPCTLSyclQueueRef q_ref
         types.voidptr,  # void* result_out
         types.intp,  # const size_t result_size,
         types.intp,  # const size_t result_ndim,
@@ -137,7 +145,8 @@ def dpnp_copy_impl(a):
         types.intp,  # const size_t input1_ndim,
         types.voidptr,  # const shape_elem_type* input1_shape,
         types.voidptr,  # const shape_elem_type* input1_strides,
-        types.voidptr,  # const size_t* where);
+        types.voidptr,  # const size_t* where
+        types.voidptr,  # const DPCTLEventVectorRef dep_event_vec_ref
     )
 
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
@@ -180,6 +189,7 @@ def dpnp_copy_impl(a):
         where = 0
 
         dpnp_func(
+            sycl_queue,
             result_out,
             result_size,
             result_ndim,
