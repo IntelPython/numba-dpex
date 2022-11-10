@@ -38,6 +38,7 @@ from numba.core.ir_utils import (
     replace_var_names,
     visit_vars_inner,
 )
+from numba.core.lowering import Lower
 from numba.core.typing import signature
 from numba.parfors import parfor
 from numba.parfors.parfor_lowering import _lower_parfor_parallel
@@ -1037,217 +1038,6 @@ def generate_kernel_launch_ops(
     kernel_launcher.free_queue(sycl_queue_val=curr_queue)
 
 
-from numba.core.lowering import Lower
-
-
-class CopyIRException(RuntimeError):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-
-def relatively_deep_copy(obj, memo):
-    # WARNING: there are some issues with genarators which were not investigated
-    # and root cause is not found. Though copied IR seems to work fine there are
-    # some extra references kept on generator objects which may result in a
-    # memory leak.
-
-    obj_id = id(obj)
-    if obj_id in memo:
-        return memo[obj_id]
-
-    from ctypes import _CFuncPtr
-    from types import ModuleType
-
-    from numba.core.bytecode import FunctionIdentity
-    from numba.core.compiler import CompileResult
-    from numba.core.dispatcher import _DispatcherBase
-    from numba.core.types.abstract import Type
-    from numba.core.types.functions import Dispatcher, Function
-    from numba.core.typing.templates import Signature
-    from numba.np.ufunc.dufunc import DUFunc
-
-    from numba_dpex.compiler import DpexFunctionTemplate
-
-    # objects which shouldn't or can't be copied and it's ok not to copy it.
-    if isinstance(
-        obj,
-        (
-            FunctionIdentity,
-            _DispatcherBase,
-            Function,
-            Type,
-            Dispatcher,
-            ModuleType,
-            Signature,
-            DpexFunctionTemplate,
-            CompileResult,
-            DUFunc,
-            _CFuncPtr,
-            type,
-            str,
-            bool,
-            type(None),
-        ),
-    ):
-        return obj
-
-    from numba.core.funcdesc import FunctionDescriptor
-    from numba.core.ir import FreeVar, FunctionIR, Global
-    from numba.core.postproc import PostProcessor
-
-    if isinstance(obj, FunctionDescriptor):
-        cpy = FunctionDescriptor(
-            native=obj.native,
-            modname=obj.modname,
-            qualname=obj.qualname,
-            unique_name=obj.unique_name,
-            doc=obj.doc,
-            typemap=relatively_deep_copy(obj.typemap, memo),
-            restype=obj.restype,
-            calltypes=relatively_deep_copy(obj.calltypes, memo),
-            args=obj.args,
-            kws=obj.kws,
-            mangler=None,
-            argtypes=relatively_deep_copy(obj.argtypes, memo),
-            inline=obj.inline,
-            noalias=obj.noalias,
-            env_name=obj.env_name,
-            global_dict=obj.global_dict,
-        )
-        # mangler parameter is not saved in FunctionDescriptor, but used to generated name.
-        # So pass None as mangler parameter and then copy mangled_name by hands
-        cpy.mangled_name = obj.mangled_name
-
-        memo[obj_id] = cpy
-
-        return cpy
-
-    if isinstance(obj, FunctionIR):
-        # PostProcessor do the following:
-        # 1. canonicolize cfg, modifying IR
-        # 2. fills internal generators status
-        # 3. creates and fills VariableLifetime object
-        # We can't copy this objects. So in order to have copy of it we need run PostProcessor on copied IR.
-        # This means, that in case PostProcess wasn't run for original object copied object would defer.
-        # In order to avoid this we are running PostProcess on original object firstly.
-        # This means that copy of IR actually has a side effect on it.
-        pp = PostProcessor(obj)
-        pp.run()
-        cpy = FunctionIR(
-            blocks=relatively_deep_copy(obj.blocks, memo),
-            is_generator=relatively_deep_copy(obj.is_generator, memo),
-            func_id=relatively_deep_copy(obj.func_id, memo),
-            loc=obj.loc,
-            definitions=relatively_deep_copy(obj._definitions, memo),
-            arg_count=obj.arg_count,
-            arg_names=relatively_deep_copy(obj.arg_names, memo),
-        )
-        pp = PostProcessor(cpy)
-        pp.run()
-
-        memo[obj_id] = cpy
-
-        return cpy
-
-    if isinstance(obj, Global):
-        cpy = Global(name=obj.name, value=obj.value, loc=obj.loc)
-        memo[obj_id] = cpy
-
-        return cpy
-
-    if isinstance(obj, FreeVar):
-        cpy = FreeVar(
-            index=obj.index, name=obj.name, value=obj.value, loc=obj.loc
-        )
-        memo[obj_id] = cpy
-
-        return cpy
-
-    # for containers we need to copy container itself first. And then fill it with copied items.
-    if isinstance(obj, list):
-        cpy = copy.copy(obj)
-        cpy.clear()
-        for item in obj:
-            cpy.append(relatively_deep_copy(item, memo))
-        memo[obj_id] = cpy
-        return cpy
-    elif isinstance(obj, dict):
-        cpy = copy.copy(obj)
-        cpy.clear()
-        for key, item in obj.items():
-            cpy[relatively_deep_copy(key, memo)] = relatively_deep_copy(
-                item, memo
-            )
-        memo[obj_id] = cpy
-        return cpy
-    elif isinstance(obj, tuple):
-        # subclass constructors could have different parameters than superclass.
-        # e.g. tuple and namedtuple constructors accepts quite different parameters.
-        # it is better to have separate section for namedtuple
-        tpl = tuple([relatively_deep_copy(item, memo) for item in obj])
-        if type(obj) == tuple:
-            cpy = tpl
-        else:
-            cpy = type(obj)(*tpl)
-        memo[obj_id] = cpy
-        return cpy
-    elif isinstance(obj, set):
-        cpy = copy.copy(obj)
-        cpy.clear()
-        for item in obj:
-            cpy.add(relatively_deep_copy(item, memo))
-        memo[obj_id] = cpy
-        return cpy
-
-    # some python objects are not copyable. In such case exception would be raised
-    # it is just a convinient point to find such objects
-    try:
-        cpy = copy.copy(obj)
-    except Exception as e:
-        raise e
-
-    # __slots__ for subclass specify only members declared in subclass. So to get all members we need to go through
-    # all supeclasses
-    def get_slots_members(obj):
-        keys = []
-        typ = obj
-        if not isinstance(typ, type):
-            typ = type(obj)
-
-        try:
-            if len(typ.__slots__):
-                keys.extend(typ.__slots__)
-            if len(typ.__bases__):
-                for base in typ.__bases__:
-                    keys.extend(get_slots_members(base))
-        except:
-            pass
-
-        return keys
-
-    memo[obj_id] = cpy
-    keys = []
-
-    # Objects have either __dict__ or __slots__ or neither.
-    # If object has none of it and it is copyable we already made a copy, just return it
-    # If object is not copyable we shouldn't reach this point.
-    try:
-        keys = obj.__dict__.keys()
-    except:
-        try:
-            obj.__slots__
-            keys = get_slots_members(obj)
-        except:
-            return cpy
-
-    for key in keys:
-        attr = getattr(obj, key)
-        attr_cpy = relatively_deep_copy(attr, memo)
-        setattr(cpy, key, attr_cpy)
-
-    return cpy
-
-
 class WrapperDefaultLower(Lower):
     @property
     def _disable_sroa_like_opt(self):
@@ -1258,21 +1048,9 @@ class WrapperDefaultLower(Lower):
 class DPEXLowerer(Lower):
     def __init__(self, context, library, fndesc, func_ir, metadata=None):
         Lower.__init__(self, context, library, fndesc, func_ir, metadata)
-        memo = {}
 
-        fndesc_cpu = relatively_deep_copy(fndesc, memo)
-        func_ir_cpu = relatively_deep_copy(func_ir, memo)
-
-        cpu_context = (
-            context.cpu_context
-            if isinstance(context, DpexTargetContext)
-            else context
-        )
         self.gpu_lower = self._lower(
             context, library, fndesc, func_ir, metadata
-        )
-        self.cpu_lower = self._lower(
-            cpu_context, library, fndesc_cpu, func_ir_cpu, metadata
         )
 
     def _lower(self, context, library, fndesc, func_ir, metadata):
@@ -1300,34 +1078,12 @@ class DPEXLowerer(Lower):
     def lower(self):
         """Custom lowering function to support offloading of kernels.
 
-        The lowerer has a builtin fallback mechanism for parfor functions. We
-        first try to lower a parfor onto a SYCL device, if the lowering fails
-        then we fallback to the default Numba lowering to CPU. The lowering
-        follow the following steps:
-
-        1. Start lowering of parent function
-        2. Try to lower parfor onto the specified SYCL device
-            2.a. The ``lower_parfor_rollback`` function prepares function to
-                lower onto to the specified SYCL device and inserts the
-                ``get_global_id`` intrinsic function.
-
-                2.a.a. Start lowering the parfor body and execute
-                ``DpexLowerer.lower()`` again.
-                2.a.b. If the lowering fails, throw an exception.
-            2.b. The ``lower_parfor_rollback`` catches the exception and
-                 restores the parfor body to its initial state.
-            2.c. Then throw an exception inside ``lower_parfor_rollback``
-                 that will be caught inside ``DpexLowerer.lower()``.
-        3. Catch exception and start parfor lowering with the default Numba CPU
-           context.
-
-        TODO/FIXME The rollback approach only works in case no device specific
-        modifications were added to function containing the parfor node. If the
-        function has any device specific modifications, a different solution
-        should be used.
+        Lowering fails when some parfor node is not yet offloadable and an
+        UnsupportedParforError is raised.
 
         Raises:
-            Exception: If a parfor node could not be lowered to a SYCL device.
+            UnsupportedParforError: If a parfor node could not be lowered to the
+            specified SYCL device.
 
         """
         try:
@@ -1335,7 +1091,7 @@ class DPEXLowerer(Lower):
             try:
                 # Only Numba's CPUContext has the `lower_extension` attribute
                 lower_extension_parfor = context.lower_extensions[parfor.Parfor]
-                context.lower_extensions[parfor.Parfor] = lower_parfor_rollback
+                context.lower_extensions[parfor.Parfor] = lower_parfor
             except Exception as e:
                 if config.DEBUG:
                     print(e)
@@ -1374,14 +1130,6 @@ class DPEXLowerer(Lower):
                 )
                 print(traceback.format_exc())
 
-            # if config.FALLBACK_ON_CPU == 1:
-            #     self.cpu_lower.context.lower_extensions[
-            #         parfor.Parfor
-            #     ] = _lower_parfor_parallel
-            #     self.cpu_lower.lower()
-            #     self.base_lower = self.cpu_lower
-            # else:
-            #     raise e
             raise UnsupportedParforError()
 
         self.env = self.base_lower.env
@@ -1391,14 +1139,7 @@ class DPEXLowerer(Lower):
         return self.base_lower.create_cpython_wrapper(release_gil)
 
 
-def copy_block(block):
-    memo = {}
-    new_block = ir.Block(block.scope, block.loc)
-    new_block.body = [relatively_deep_copy(stmt, memo) for stmt in block.body]
-    return new_block
-
-
-def lower_parfor_rollback(lowerer, parfor):
+def lower_parfor(lowerer, parfor):
     try:
         _lower_parfor_gufunc(lowerer, parfor)
         if config.DEBUG:
