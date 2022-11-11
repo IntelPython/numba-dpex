@@ -18,6 +18,7 @@ Submodules
 
    numba_dpex.core.descriptor
    numba_dpex.core.exceptions
+   numba_dpex.core.itanium_mangler
    numba_dpex.core.target
 
 Module contents

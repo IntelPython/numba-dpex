@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Debugging Local Variables &mdash; numba-dpex 0+untagged.785.g219ec1c documentation</title>
+  <title>Debugging Local Variables &mdash; numba-dpex 0+untagged.797.g9358bef documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -91,10 +91,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="index.html">Debugging with Intel® Distribution for GDB*</a> &raquo;</li>
-          <li><a href="features.html">Supported Features</a> &raquo;</li>
-      <li>Debugging Local Variables</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Debugging with Intel® Distribution for GDB*</a></li>
+          <li class="breadcrumb-item"><a href="features.html">Supported Features</a></li>
+      <li class="breadcrumb-item active">Debugging Local Variables</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/user_guides/debugging/local_variables.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -182,11 +182,11 @@ for extending the lifetime of variables to the end of the block in which their l
 <section id="example-1-using-numba-extend-variable-lifetimes">
 <h3>Example 1 - Using <code class="docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES</span></code><a class="headerlink" href="#example-1-using-numba-extend-variable-lifetimes" title="Permalink to this heading"></a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dpex/tests/debugging/test_info.py</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">14</span><span class="k">def</span> <span class="nf">common_loop_body</span><span class="p">(</span><span class="n">param_a</span><span class="p">,</span> <span class="n">param_b</span><span class="p">):</span>
-<span class="linenos">15</span>    <span class="n">param_c</span> <span class="o">=</span> <span class="n">param_a</span> <span class="o">+</span> <span class="mi">10</span>  <span class="c1"># Set breakpoint here</span>
-<span class="linenos">16</span>    <span class="n">param_d</span> <span class="o">=</span> <span class="n">param_b</span> <span class="o">*</span> <span class="mf">0.5</span>
-<span class="linenos">17</span>    <span class="n">result</span> <span class="o">=</span> <span class="n">param_c</span> <span class="o">+</span> <span class="n">param_d</span>
-<span class="hll"><span class="linenos">18</span>    <span class="k">return</span> <span class="n">result</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">25</span><span class="k">def</span> <span class="nf">common_loop_body</span><span class="p">(</span><span class="n">param_a</span><span class="p">,</span> <span class="n">param_b</span><span class="p">):</span>
+<span class="linenos">26</span>    <span class="n">param_c</span> <span class="o">=</span> <span class="n">param_a</span> <span class="o">+</span> <span class="mi">10</span>  <span class="c1"># Set breakpoint here</span>
+<span class="linenos">27</span>    <span class="n">param_d</span> <span class="o">=</span> <span class="n">param_b</span> <span class="o">*</span> <span class="mf">0.5</span>
+<span class="linenos">28</span>    <span class="n">result</span> <span class="o">=</span> <span class="n">param_c</span> <span class="o">+</span> <span class="n">param_d</span>
+<span class="hll"><span class="linenos">29</span>    <span class="k">return</span> <span class="n">result</span>
 </span></pre></div>
 </div>
 <p>Debug session with <code class="samp docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES=1</span></code>:</p>

@@ -27,7 +27,6 @@ Submodules
    numba_dpex.decorators
    numba_dpex.device_init
    numba_dpex.dpctl_support
-   numba_dpex.extended_numba_itanium_mangler
    numba_dpex.initialize
    numba_dpex.interop
    numba_dpex.numba_support
