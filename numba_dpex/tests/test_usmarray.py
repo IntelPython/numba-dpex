@@ -161,6 +161,7 @@ class TestUsmArray:
         assert isinstance(h, usmarray.ndarray), type(h)
         assert usmarray.has_array_interface(h)
 
+    @pytest.mark.skip
     def test_numba_usmarray_functions(self):
         """Testing Numba usmarray functions"""
         f = numba_usmarray_ones()
@@ -179,18 +180,21 @@ class TestUsmArray:
         assert isinstance(dp2, usmarray.ndarray), type(dp2)
         assert usmarray.has_array_interface(dp2)
 
+    @pytest.mark.skip
     def test_numba_usmarray_empty(self):
         """Testing Numba usmarray.empty"""
         dp3 = numba_usmarray_empty()
         assert isinstance(dp3, usmarray.ndarray), type(dp3)
         assert usmarray.has_array_interface(dp3)
 
+    @pytest.mark.skip
     def test_numba_usmarray_shape(self):
         """Testing Numba usmarray.shape"""
         s1 = numba_shape(numba_usmarray_empty())
         assert isinstance(s1, tuple), type(s1)
         assert s1 == (10, 10)
 
+    @pytest.mark.skip
     def test_numba_usmarray_T(self):
         """Testing Numba usmarray.T"""
         dp4 = numba_T(numba_usmarray_empty())
