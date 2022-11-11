@@ -1,16 +1,6 @@
-# Copyright 2021 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# SPDX-License-Identifier: Apache-2.0
 
 import re
 
@@ -35,7 +25,7 @@ from numba_dpex.utils import (
     suai_to_dpex_array,
 )
 
-from . import codegen
+from .. import codegen
 
 CC_SPIR_KERNEL = "spir_kernel"
 CC_SPIR_FUNC = "spir_func"
@@ -97,7 +87,7 @@ class DpexTypingContext(typing.BaseContext):
         """Register the OpenCL API and math and other functions."""
         from numba.core.typing import cmathdecl, npydecl
 
-        from .ocl import mathdecl, ocldecl
+        from ..ocl import mathdecl, ocldecl
 
         self.install_registry(ocldecl.registry)
         self.install_registry(mathdecl.registry)
@@ -364,8 +354,8 @@ class DpexTargetContext(BaseContext):
         """
         from numba.np import npyimpl
 
-        from . import printimpl
-        from .ocl import mathimpl, oclimpl
+        from .. import printimpl
+        from ..ocl import mathimpl, oclimpl
 
         self.insert_func_defn(oclimpl.registry.functions)
         self.insert_func_defn(mathimpl.registry.functions)
@@ -385,7 +375,7 @@ class DpexTargetContext(BaseContext):
     def target_data(self):
         return self._target_data
 
-    def mangler(self, name, argtypes, abi_tags=()):
+    def mangler(self, name, argtypes, abi_tags=(), uid=None):
         def repl(m):
             ch = m.group(0)
             return "_%X_" % ord(ch)

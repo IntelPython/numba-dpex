@@ -1,16 +1,6 @@
-# Copyright 2021 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# SPDX-License-Identifier: Apache-2.0
 
 import operator
 from functools import reduce
@@ -22,11 +12,11 @@ from llvmlite import ir
 from llvmlite.llvmpy.core import Type
 from numba.core import cgutils, types
 from numba.core.imputils import Registry
-from numba.core.itanium_mangler import mangle, mangle_c, mangle_type
 from numba.core.typing.npydecl import parse_dtype
 
 from numba_dpex import config, target
 from numba_dpex.codegen import SPIR_DATA_LAYOUT
+from numba_dpex.core.itanium_mangler import mangle, mangle_c, mangle_type
 from numba_dpex.core.types import Array
 from numba_dpex.ocl.atomics import atomic_helper
 from numba_dpex.utils import address_space
@@ -296,10 +286,10 @@ def native_atomic_add(context, builder, sig, args):
         context.get_value_type(sig.args[2]),
     ]
 
-    from numba_dpex import extended_numba_itanium_mangler as ext_itanium_mangler
+    from numba_dpex.core import itanium_mangler as ext_itanium_mangler
 
     numba_ptr_ty = types.CPointer(dtype, addrspace=ptr_type.addrspace)
-    mangled_fn_name = ext_itanium_mangler.mangle(
+    mangled_fn_name = ext_itanium_mangler.mangle_ext(
         name,
         [
             numba_ptr_ty,

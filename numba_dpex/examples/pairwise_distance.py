@@ -1,16 +1,6 @@
-# Copyright 2020, 2021 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# SPDX-License-Identifier: Apache-2.0
 
 import argparse
 from math import sqrt
@@ -38,8 +28,8 @@ global_size = args.n
 # Local Work size is optional
 local_size = args.l
 
-X = np.random.random((args.n, args.d))
-D = np.empty((args.n, args.n))
+X = np.random.random((args.n, args.d)).astype(np.single)
+D = np.empty((args.n, args.n), dtype=np.single)
 
 
 @dpex.kernel
@@ -50,9 +40,10 @@ def pairwise_distance(X, D, xshape0, xshape1):
     """
     idx = dpex.get_global_id(0)
 
+    d0 = X[idx, 0] - X[idx, 0]
     # for i in range(xshape0):
     for j in range(X.shape[0]):
-        d = 0.0
+        d = d0
         for k in range(X.shape[1]):
             tmp = X[idx, k] - X[j, k]
             d += tmp * tmp

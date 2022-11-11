@@ -1,17 +1,9 @@
 #! /usr/bin/env python
-# Copyright 2021 Intel Corporation
+
+# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# SPDX-License-Identifier: Apache-2.0
+
 """Tests for Information About a Frame
 
 https://www.sourceware.org/gdb/onlinedocs/gdb/Frame-Info.html
@@ -19,7 +11,7 @@ https://www.sourceware.org/gdb/onlinedocs/gdb/Frame-Info.html
 
 import pytest
 
-from numba_dpex.tests._helper import skip_no_gdb, skip_no_numba055
+from numba_dpex.tests._helper import skip_no_gdb, skip_no_numba056
 
 from .common import setup_breakpoint
 from .test_breakpoints import side_by_side_breakpoint
@@ -45,7 +37,7 @@ def side_by_side_case(api):
     )
 
 
-@skip_no_numba055
+@skip_no_numba056
 @pytest.mark.parametrize(
     "breakpoint, script, expected_line, expected_args, expected_info",
     [
@@ -98,7 +90,7 @@ def test_info_args(
     app.child.expect(expected_whatis)
 
 
-@skip_no_numba055
+@skip_no_numba056
 def test_info_functions(app):
     expected_line = r"23\s+i = dpex.get_global_id\(0\)"
     setup_breakpoint(app, "simple_sum.py:23", expected_line=expected_line)
@@ -147,7 +139,7 @@ def side_by_side_2_info_locals_case(api):
     )
 
 
-@skip_no_numba055
+@skip_no_numba056
 @pytest.mark.parametrize(
     "env, breakpoint, script, expected_line, expected_info_locals, expected_info",
     [

@@ -1,22 +1,12 @@
-# Copyright 2021 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# SPDX-License-Identifier: Apache-2.0
 
 from dpctl.tensor import usm_ndarray
 from numba.extending import register_model, typeof_impl
 from numba.np import numpy_support
 
-import numba_dpex.target as dpex_target
+import numba_dpex.core.target as dpex_target
 from numba_dpex.core.types import Array, ArrayModel
 from numba_dpex.utils import address_space
 

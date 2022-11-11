@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+
 # distutils: language = c++
 # cython: language_level=3
 

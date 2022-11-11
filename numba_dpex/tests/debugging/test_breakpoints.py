@@ -1,17 +1,9 @@
 #! /usr/bin/env python
-# Copyright 2021 Intel Corporation
+
+# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# SPDX-License-Identifier: Apache-2.0
+
 """Tests for Setting Breakpoints
 
 https://www.sourceware.org/gdb/onlinedocs/gdb/Set-Breaks.html
@@ -20,7 +12,7 @@ https://www.sourceware.org/gdb/onlinedocs/gdb/Set-Breaks.html
 
 import pytest
 
-from numba_dpex.tests._helper import skip_no_gdb, skip_no_numba055
+from numba_dpex.tests._helper import skip_no_gdb, skip_no_numba056
 
 from .common import breakpoint_by_function, breakpoint_by_mark, setup_breakpoint
 
@@ -51,7 +43,7 @@ breakpoint_api_cases = [
 ]
 
 
-@skip_no_numba055
+@skip_no_numba056
 @pytest.mark.parametrize("breakpoint, api", breakpoint_api_cases)
 def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
     """Function breakpoints and argument initializing
