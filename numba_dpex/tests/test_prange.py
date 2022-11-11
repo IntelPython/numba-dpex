@@ -52,6 +52,7 @@ class TestPrange:
 
         assert np.all(b == 10)
 
+    @pytest.mark.skip
     def test_multiple_prange(self):
         @njit
         def f(a, b):
