@@ -1,0 +1,7 @@
+numba\_dpex.codegen module
+==========================
+
+.. automodule:: numba_dpex.codegen
+   :members:
+   :undoc-members:
+   :show-inheritance:
