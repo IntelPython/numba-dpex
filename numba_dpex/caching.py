@@ -13,14 +13,16 @@
 # limitations under the License.
 
 import hashlib
+import warnings
 
 from numba.core.caching import IndexDataCacheFile, _Cache, _CacheImpl
+from numba.core.errors import NumbaWarning
 from numba.core.serialize import dumps
 
 from numba_dpex.core import compiler
 
 
-class DpexCacheImpl(_CacheImpl):
+class SpirvKernelCacheImpl(_CacheImpl):
     def reduce(self, cres):
         """
         Returns a serialized CompileResult
@@ -35,15 +37,32 @@ class DpexCacheImpl(_CacheImpl):
 
     def check_cachable(self, cres):
         # For the time being, assuming all numba-dpex Kernels are always cachable.
+        cannot_cache = None
+        if any(not x.can_cache for x in cres.lifted):
+            cannot_cache = "as it uses lifted code"
+        elif cres.library.has_dynamic_globals:
+            cannot_cache = (
+                "as it uses dynamic globals "
+                "(such as ctypes pointers and large global arrays)"
+            )
+        if cannot_cache:
+            msg = 'Cannot cache compiled function "%s" %s' % (
+                cres.fndesc.qualname.split(".")[-1],
+                cannot_cache,
+            )
+            warnings.warn_explicit(
+                msg, NumbaWarning, self._locator._py_file, self._lineno
+            )
+            return False
         return True
 
 
-class DpexCache(_Cache):
+class SpirvKernelCache(_Cache):
     """
     Implements a cache that saves and loads CUDA kernels and compile results.
     """
 
-    _impl_class = DpexCacheImpl
+    _impl_class = SpirvKernelCacheImpl
 
     def __init__(self, py_func):
         self._name = repr(py_func)
@@ -74,39 +93,59 @@ class DpexCache(_Cache):
         self._cache_file.flush()
 
     def load_overload(self, sig, target_context):
-        print("-----> caching.load_overload().here-1")
+        print("-----> numba_dpex.caching.SpirvKernelCache.load_overload().1")
         if not self._enabled:
-            print("-----> caching.load_overload().here-2")
+            print(
+                "-----> numba_dpex.caching.SpirvKernelCache.load_overload().2"
+            )
             return
         key = self._index_key(sig, target_context.codegen())
-        print("-----> caching.load_overload().here-3")
+        print("-----> numba_dpex.caching.SpirvKernelCache.load_overload().3")
         # key = self._index_key(sig)
         data = self._cache_file.load(key)
-        print("-----> caching.load_overload().here-4")
+        print(
+            "-----> numba_dpex.caching.SpirvKernelCache.load_overload().4",
+            "data =",
+            data,
+        )
         if data is not None:
-            print("-----> caching.load_overload().here-5")
+            print(
+                "-----> numba_dpex.caching.SpirvKernelCache.load_overload().5"
+            )
             data = self._impl.rebuild(target_context, data)
-        print("-----> caching.load_overload().here-6")
+        print("-----> numba_dpex.caching.SpirvKernelCache.load_overload().6")
         return data
 
     def save_overload(self, sig, data):
-        print("-----> caching.save_overload().here-1")
+        print("-----> numba_dpex.caching.SpirvKernelCache.save_overload().1")
         if not self._enabled:
-            print("-----> caching.save_overload().here-2")
+            print(
+                "-----> numba_dpex.caching.SpirvKernelCache.save_overload().2"
+            )
             return
         if not self._impl.check_cachable(data):
-            print("-----> caching.save_overload().here-3")
+            print(
+                "-----> numba_dpex.caching.SpirvKernelCache.save_overload().3"
+            )
             return
         self._impl.locator.ensure_cache_path()
-        print("-----> caching.save_overload().here-4")
-        print(data.dump())
+        print(
+            "-----> numba_dpex.caching.SpirvKernelCache.save_overload().4",
+            "data == None?",
+            (data is None),
+        )
+        if data is not None:
+            print(
+                "-----> numba_dpex.caching.SpirvKernelCache.save_overload().data.dump()"
+            )
+            data.dump()
         key = self._index_key(sig, data.codegen)
-        print("-----> caching.save_overload().here-5")
+        print("-----> numba_dpex.caching.SpirvKernelCache.save_overload().5")
         # key = self._index_key(sig)
         data = self._impl.reduce(data)
-        print("-----> caching.save_overload().here-6")
+        print("-----> numba_dpex.caching.SpirvKernelCache.save_overload().6")
         self._cache_file.save(key, data)
-        print("-----> caching.save_overload().here-7")
+        print("-----> numba_dpex.caching.SpirvKernelCache.save_overload().7")
 
     def _index_key(self, sig, codegen):
         # def _index_key(self, sig):
@@ -116,16 +155,20 @@ class DpexCache(_Cache):
         the bytecode for the function and, if the function has a __closure__,
         a hash of the cell_contents.
         """
-        print("-----> caching._index_key.codegen:", codegen)
+        print(
+            "-----> numba_dpex.caching.SpirvKernelCache._index_key().1",
+            "codegen =",
+            codegen,
+        )
         codebytes = self._py_func.__code__.co_code
         if self._py_func.__closure__ is not None:
-            print("-----> caching._index_key.here-1")
+            print("-----> numba_dpex.caching.SpirvKernelCache._index_key().2")
             cvars = tuple([x.cell_contents for x in self._py_func.__closure__])
             # Note: cloudpickle serializes a function differently depending
             #       on how the process is launched; e.g. multiprocessing.Process
             cvarbytes = dumps(cvars)
         else:
-            print("-----> caching._index_key.here-2")
+            print("-----> numba_dpex.caching.SpirvKernelCache._index_key().3")
             cvarbytes = b""
 
         # hasher = lambda x: hashlib.sha256(x).hexdigest()

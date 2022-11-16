@@ -27,18 +27,18 @@ def kernel(signature=None, access_types=None, debug=None, enable_cache=True):
           and have the same dtype.
     """
     if signature is None:
-        print("kernel: 1")
+        print("-----> numba_dpex.decorators.kernel().1")
         return autojit(
             debug=debug, access_types=access_types, enable_cache=enable_cache
         )
     elif not sigutils.is_signature(signature):
-        print("kernel: 2")
+        print("-----> numba_dpex.decorators.kernel().2")
         func = signature
         return autojit(
             debug=debug, access_types=access_types, enable_cache=enable_cache
         )(func)
     else:
-        print("kernel: 3")
+        print("-----> numba_dpex.decorators.kernel().3")
         return _kernel_jit(
             signature, debug, access_types, enable_cache=enable_cache
         )
@@ -49,12 +49,15 @@ def autojit(debug=None, access_types=None, enable_cache=True):
         ordered_arg_access_types = get_ordered_arg_access_types(
             pyfunc, access_types
         )
-        return Dispatcher(
+        disp = Dispatcher(
             pyfunc=pyfunc,
             debug_flags=debug,
             array_access_specifiers=ordered_arg_access_types,
-            enable_cache=enable_cache,
         )
+
+        if enable_cache:
+            disp.enable_caching()
+        return disp
 
     return _kernel_dispatcher
 
