@@ -27,18 +27,15 @@ def kernel(signature=None, access_types=None, debug=None, enable_cache=True):
           and have the same dtype.
     """
     if signature is None:
-        print("-----> numba_dpex.decorators.kernel().1")
         return autojit(
             debug=debug, access_types=access_types, enable_cache=enable_cache
         )
     elif not sigutils.is_signature(signature):
-        print("-----> numba_dpex.decorators.kernel().2")
         func = signature
         return autojit(
             debug=debug, access_types=access_types, enable_cache=enable_cache
         )(func)
     else:
-        print("-----> numba_dpex.decorators.kernel().3")
         return _kernel_jit(
             signature, debug, access_types, enable_cache=enable_cache
         )

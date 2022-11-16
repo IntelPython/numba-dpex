@@ -72,9 +72,6 @@ class SpirvKernel(KernelInterface):
 
         # Run compilation pipeline
         if isinstance(pyfunc, FunctionType):
-            print(
-                "-----> numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel._compile().1"
-            )
             cres = compiler.compile_extra(
                 typingctx=typingctx,
                 targetctx=targetctx,
@@ -86,9 +83,6 @@ class SpirvKernel(KernelInterface):
                 pipeline_class=dpex_compiler.Compiler,
             )
         elif isinstance(pyfunc, ir.FunctionIR):
-            print(
-                "-----> numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel._compile().2"
-            )
             cres = compiler.compile_ir(
                 typingctx=typingctx,
                 targetctx=targetctx,
@@ -156,11 +150,6 @@ class SpirvKernel(KernelInterface):
         """
 
         logging.debug("compiling SpirvKernel with arg types", arg_types)
-        print(
-            "-----> numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel.compile().1",
-            "arg_types =",
-            arg_types,
-        )
 
         cres = self._compile(
             pyfunc=self._pyfunc,
@@ -186,5 +175,3 @@ class SpirvKernel(KernelInterface):
         self._device_driver_ir_module = spirv_generator.llvm_to_spirv(
             self._target_context, self._llvm_module, kernel.module.as_bitcode()
         )
-
-        return cres

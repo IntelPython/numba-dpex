@@ -20,40 +20,36 @@ from numba.core.errors import NumbaWarning
 from numba.core.serialize import dumps
 
 from numba_dpex.core import compiler
+from numba_dpex.core.kernel_interface.spirv_kernel import SpirvKernel
 
 
 class SpirvKernelCacheImpl(_CacheImpl):
-    def reduce(self, cres):
-        """
-        Returns a serialized CompileResult
-        """
-        return cres._reduce()
+    def reduce(self, kernel):
+        # return kernel._reduce_states()
+        pass
 
     def rebuild(self, target_context, payload):
-        """
-        Returns the unserialized CompileResult
-        """
-        return compiler.CompileResult._rebuild(target_context, *payload)
+        return SpirvKernel._rebuild(**payload)
 
     def check_cachable(self, cres):
         # For the time being, assuming all numba-dpex Kernels are always cachable.
-        cannot_cache = None
-        if any(not x.can_cache for x in cres.lifted):
-            cannot_cache = "as it uses lifted code"
-        elif cres.library.has_dynamic_globals:
-            cannot_cache = (
-                "as it uses dynamic globals "
-                "(such as ctypes pointers and large global arrays)"
-            )
-        if cannot_cache:
-            msg = 'Cannot cache compiled function "%s" %s' % (
-                cres.fndesc.qualname.split(".")[-1],
-                cannot_cache,
-            )
-            warnings.warn_explicit(
-                msg, NumbaWarning, self._locator._py_file, self._lineno
-            )
-            return False
+        # cannot_cache = None
+        # if any(not x.can_cache for x in cres.lifted):
+        #     cannot_cache = "as it uses lifted code"
+        # elif cres.library.has_dynamic_globals:
+        #     cannot_cache = (
+        #         "as it uses dynamic globals "
+        #         "(such as ctypes pointers and large global arrays)"
+        #     )
+        # if cannot_cache:
+        #     msg = 'Cannot cache compiled function "%s" %s' % (
+        #         cres.fndesc.qualname.split(".")[-1],
+        #         cannot_cache,
+        #     )
+        #     warnings.warn_explicit(
+        #         msg, NumbaWarning, self._locator._py_file, self._lineno
+        #     )
+        #     return False
         return True
 
 
@@ -93,94 +89,43 @@ class SpirvKernelCache(_Cache):
         self._cache_file.flush()
 
     def load_overload(self, sig, target_context):
-        print("-----> numba_dpex.caching.SpirvKernelCache.load_overload().1")
         if not self._enabled:
-            print(
-                "-----> numba_dpex.caching.SpirvKernelCache.load_overload().2"
-            )
             return
         key = self._index_key(sig, target_context.codegen())
-        print("-----> numba_dpex.caching.SpirvKernelCache.load_overload().3")
-        # key = self._index_key(sig)
         data = self._cache_file.load(key)
-        print(
-            "-----> numba_dpex.caching.SpirvKernelCache.load_overload().4",
-            "data =",
-            data,
-        )
-        if data is not None:
-            print(
-                "-----> numba_dpex.caching.SpirvKernelCache.load_overload().5"
-            )
-            data = self._impl.rebuild(target_context, data)
-        print("-----> numba_dpex.caching.SpirvKernelCache.load_overload().6")
         return data
 
-    def save_overload(self, sig, data):
-        print("-----> numba_dpex.caching.SpirvKernelCache.save_overload().1")
+    def save_overload(self, sig, data, target_context):
         if not self._enabled:
-            print(
-                "-----> numba_dpex.caching.SpirvKernelCache.save_overload().2"
-            )
             return
         if not self._impl.check_cachable(data):
-            print(
-                "-----> numba_dpex.caching.SpirvKernelCache.save_overload().3"
-            )
             return
         self._impl.locator.ensure_cache_path()
-        print(
-            "-----> numba_dpex.caching.SpirvKernelCache.save_overload().4",
-            "data == None?",
-            (data is None),
-        )
-        if data is not None:
-            print(
-                "-----> numba_dpex.caching.SpirvKernelCache.save_overload().data.dump()"
-            )
-            data.dump()
-        key = self._index_key(sig, data.codegen)
-        print("-----> numba_dpex.caching.SpirvKernelCache.save_overload().5")
-        # key = self._index_key(sig)
+        key = self._index_key(sig, target_context.codegen())
         data = self._impl.reduce(data)
-        print("-----> numba_dpex.caching.SpirvKernelCache.save_overload().6")
         self._cache_file.save(key, data)
-        print("-----> numba_dpex.caching.SpirvKernelCache.save_overload().7")
 
     def _index_key(self, sig, codegen):
-        # def _index_key(self, sig):
         """
         Compute index key for the given signature and codegen.
         It includes a description of the OS, target architecture and hashes of
         the bytecode for the function and, if the function has a __closure__,
         a hash of the cell_contents.
         """
-        print(
-            "-----> numba_dpex.caching.SpirvKernelCache._index_key().1",
-            "codegen =",
-            codegen,
-        )
         codebytes = self._py_func.__code__.co_code
         if self._py_func.__closure__ is not None:
-            print("-----> numba_dpex.caching.SpirvKernelCache._index_key().2")
             cvars = tuple([x.cell_contents for x in self._py_func.__closure__])
             # Note: cloudpickle serializes a function differently depending
             #       on how the process is launched; e.g. multiprocessing.Process
             cvarbytes = dumps(cvars)
         else:
-            print("-----> numba_dpex.caching.SpirvKernelCache._index_key().3")
             cvarbytes = b""
 
-        # hasher = lambda x: hashlib.sha256(x).hexdigest()
-        # def hasher(x):
-        #      return hashlib.sha256(x).hexdigest()
         return (
             sig,
             codegen.magic_tuple(),
             (
-                # hasher(codebytes),
                 hashlib.sha256(codebytes).hexdigest(),
-                # hasher(cvarbytes),
                 hashlib.sha256(cvarbytes).hexdigest(),
             ),
         )

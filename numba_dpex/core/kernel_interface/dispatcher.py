@@ -9,7 +9,7 @@ from warnings import warn
 import dpctl
 import dpctl.program as dpctl_prog
 from numba.core import utils
-from numba.core.caching import NullCache
+from numba.core.caching import Cache, _CacheImpl
 from numba.core.types import Array as ArrayType
 
 from numba_dpex import config
@@ -69,7 +69,6 @@ class Dispatcher(object):
         # TODO: To be removed once the__getitem__ is removed
         self._global_range = None
         self._local_range = None
-        print("-----> numba_dpex.core.kernel_interface.Dispatcher.__init__()")
 
         if array_access_specifiers:
             warn(
@@ -89,9 +88,8 @@ class Dispatcher(object):
         else:
             self._create_sycl_kernel_bundle_flags = []
 
-        self._cache = NullCache
-
     def enable_caching(self):
+        # self._cache = SprivCache(self.pyfunc)
         self._cache = SpirvKernelCache(self.pyfunc)
 
     def _check_range(self, range, device):
@@ -432,17 +430,12 @@ class Dispatcher(object):
         # TODO: Enable caching of kernels, but do it using Numba's caching
         # machinery
 
-        print(
-            "-----> numba_dpex.core.kernal_interface.Dispatcher.__call__()",
-            "kernel_name =",
-            self.kernel_name,
-        )
         sig = utils.pysignature(self.pyfunc)
         kernel = self._cache.load_overload(sig, dpex_target.target_context)
         if kernel is None:
             kernel = SpirvKernel(self.pyfunc, self.kernel_name)
 
-            cres = kernel.compile(
+            kernel.compile(
                 arg_types=argtypes,
                 debug=self.debug_flags,
                 extra_compile_flags=self.compile_flags,
@@ -457,7 +450,7 @@ class Dispatcher(object):
             #  get the sycl::kernel
             kernel = kernel_bundle.get_sycl_kernel(kernel.module_name)
 
-            self._cache.save_overload(sig, cres)
+            self._cache.save_overload(sig, kernel, dpex_target.target_context)
 
         packer = Packer(
             kernel_name=self.kernel_name,
