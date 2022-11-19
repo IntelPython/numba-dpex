@@ -12,7 +12,7 @@ Numba-dpex supports three disjoint named address spaces:
     kernel are allocated in the global address space. In the below example,
     arguments `a`, `b` and `c` will be allocated in the global address space:
 
-    .. literalinclude:: ./../../../../numba_dpex/examples/sum.py
+    .. literalinclude:: ./../../../../numba_dpex/examples/kernel/vector_sum.py
 
 
 2. Local Address Space
