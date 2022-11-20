@@ -22,11 +22,22 @@ from .kernel_base import KernelInterface
 
 
 class SpirvKernel(KernelInterface):
-    def __init__(self, func, pyfunc_name) -> None:
+    def __init__(self, func, func_name) -> None:
+        """Represents a SPIR-V module compiled for a Python function.
+
+        Args:
+            func: The function to be compiled. Can be a Python function or a
+            Numba IR object representing a function.
+            func_name (str): Name of the function being compiled
+
+        Raises:
+            UnreachableError: An internal error indicating an unexpected code
+            path was executed.
+        """
         self._llvm_module = None
         self._device_driver_ir_module = None
         self._module_name = None
-        self._pyfunc_name = pyfunc_name
+        self._pyfunc_name = func_name
         self._func = func
         if isinstance(func, FunctionType):
             self._func_ty = FunctionType
@@ -36,14 +47,12 @@ class SpirvKernel(KernelInterface):
             raise UnreachableError()
 
     @global_compiler_lock
-    def _compile(self, pyfunc, args, debug=None, extra_compile_flags=None):
+    def _compile(self, args, debug=None, extra_compile_flags=None):
         """
         Compiles the function using the dpex compiler pipeline and returns the
         compiled result.
 
         Args:
-            pyfunc: The function to be compiled. Can be a Python function or a
-            Numba IR object representing a function.
             args: The list of arguments passed to the kernel.
             debug (bool): Optional flag to turn on debug mode compilation.
             extra_compile_flags: Extra flags passed to the compiler.
@@ -70,22 +79,22 @@ class SpirvKernel(KernelInterface):
             flags.debuginfo = debug
 
         # Run compilation pipeline
-        if isinstance(pyfunc, FunctionType):
+        if isinstance(self._func, FunctionType):
             cres = compiler.compile_extra(
                 typingctx=typingctx,
                 targetctx=targetctx,
-                func=pyfunc,
+                func=self._func,
                 args=args,
                 return_type=None,
                 flags=flags,
                 locals={},
                 pipeline_class=dpex_compiler.Compiler,
             )
-        elif isinstance(pyfunc, ir.FunctionIR):
+        elif isinstance(self._func, ir.FunctionIR):
             cres = compiler.compile_ir(
                 typingctx=typingctx,
                 targetctx=targetctx,
-                func_ir=pyfunc,
+                func_ir=self._func,
                 args=args,
                 return_type=None,
                 flags=flags,
@@ -100,7 +109,7 @@ class SpirvKernel(KernelInterface):
             and cres.signature.return_type != numba_types.void
         ):
             raise KernelHasReturnValueError(
-                kernel_name=pyfunc.__name__,
+                kernel_name=self._pyfunc_name,
                 return_type=cres.signature.return_type,
             )
         # Linking depending libraries
@@ -150,7 +159,6 @@ class SpirvKernel(KernelInterface):
         logging.debug("compiling SpirvKernel with arg types", arg_types)
 
         cres = self._compile(
-            pyfunc=self._func,
             args=arg_types,
             debug=debug,
             extra_compile_flags=extra_compile_flags,
