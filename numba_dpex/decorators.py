@@ -5,17 +5,19 @@
 import dpctl
 from numba.core import sigutils, types
 
-from numba_dpex.core.exceptions import KernelHasReturnValueError
+from numba_dpex.compiler import JitKernel
 from numba_dpex.core.kernel_interface.dispatcher import (
     Dispatcher,
     get_ordered_arg_access_types,
 )
+from numba_dpex.core.kernel_interface.func import (
+    compile_func,
+    compile_func_template,
+)
 from numba_dpex.utils import npytypes_array_to_dpex_array
 
-from .compiler import JitKernel, compile_func, compile_func_template
 
-
-def kernel(signature=None, access_types=None, debug=None):
+def kernel(func_or_sig=None, access_types=None, debug=None):
     """The decorator to write a numba_dpex kernel function.
 
     A kernel function is conceptually equivalent to a SYCL kernel function, and
@@ -26,13 +28,13 @@ def kernel(signature=None, access_types=None, debug=None):
         * All array arguments passed to a kernel should be of the same type
           and have the same dtype.
     """
-    if signature is None:
+    if func_or_sig is None:
         return autojit(debug=debug, access_types=access_types)
-    elif not sigutils.is_signature(signature):
-        func = signature
+    elif not sigutils.is_signature(func_or_sig):
+        func = func_or_sig
         return autojit(debug=debug, access_types=access_types)(func)
     else:
-        return _kernel_jit(signature, debug, access_types)
+        return _kernel_jit(func_or_sig, debug, access_types)
 
 
 def autojit(debug=None, access_types=None):
