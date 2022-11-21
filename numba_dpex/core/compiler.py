@@ -131,7 +131,8 @@ class PassBuilder(object):
         pm = PassManager(name)
         # typing
         pm.add_pass(NopythonTypeInference, "nopython frontend")
-
+        # Annotate only once legalized
+        pm.add_pass(AnnotateTypes, "annotate types")
         pm.add_pass(
             RewriteNdarrayFunctionsPass,
             "Rewrite numpy.ndarray functions to dpnp.ndarray functions",
@@ -161,9 +162,6 @@ class PassBuilder(object):
             "ensure features that are in use are in a valid form",
         )
         pm.add_pass(IRLegalization, "ensure IR is legal prior to lowering")
-
-        # Annotate only once legalized
-        pm.add_pass(AnnotateTypes, "annotate types")
 
         # lower
         pm.add_pass(DpexLowering, "Custom Lowerer with auto-offload support")
@@ -196,23 +194,14 @@ class Compiler(CompilerBase):
     """Dpex's compiler pipeline."""
 
     def define_pipelines(self):
-        dpb = PassBuilder
-        pm = PassManager("dpex")
-
+        # this maintains the objmode fallback behaviour
+        pms = []
         self.state.parfor_diagnostics = ExtendedParforDiagnostics()
         self.state.metadata[
             "parfor_diagnostics"
         ] = self.state.parfor_diagnostics
-
-        passes = dpb.define_nopython_pipeline(self.state)
-        pm.passes.extend(passes.passes)
-
         if not self.state.flags.force_pyobject:
-            pm.extend(PassBuilder.define_nopython_pipeline(self.state))
-
+            pms.append(PassBuilder.define_nopython_pipeline(self.state))
         if self.state.status.can_fallback or self.state.flags.force_pyobject:
             raise UnsupportedCompilationModeError()
-
-        pm.finalize()
-
-        return [pm]
+        return pms
