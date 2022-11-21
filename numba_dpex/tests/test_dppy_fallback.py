@@ -7,6 +7,7 @@ import warnings
 import dpctl
 import numba
 import numpy as np
+import pytest
 
 from numba_dpex.tests._helper import skip_no_opencl_gpu
 
@@ -39,6 +40,7 @@ class TestFallback:
         np.testing.assert_array_equal(result, ref_result)
         assert "Failed to offload parfor " in str(w[-1].message)
 
+    @pytest.mark.skip
     def test_fallback_reductions(self):
         def reduction(a):
             b = 1

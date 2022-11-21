@@ -98,6 +98,7 @@ jobs:
       matrix:
         python: ["3.8", "3.9"]
         numba: ["0.56"]
+        dpnp: ["0.11"]
 
     steps:
       - name: Download artifact
@@ -126,7 +127,7 @@ jobs:
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel $CHANNELS"
           conda list
-          conda create -n numba_dpex_env $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl dpnp $CHANNELS
+          conda create -n numba_dpex_env $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl dpnp=${{ matrix.dpnp }} $CHANNELS
           # Test installed packages
           conda list
       - name: Check DPNP
