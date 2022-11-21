@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>numba_dpex.dpnp_iface.stubs module &mdash; numba-dpex 0+untagged.801.g53b3093 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> numba-dpex
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html">Code-generation based on a device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/getting_started.html"> Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/kernel_programming_guide/index.html"> Direct kernel programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/debugging/index.html"> Debugging with GDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/migrating_from_numba_cuda.html"> numba-dpex for numba.cuda Programmers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guides/dpnp_integration.html">dpnp integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">numba-dpex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">numba_dpex.dpnp_iface.stubs module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/apidoc/numba_dpex.dpnp_iface.stubs.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-numba_dpex.dpnp_iface.stubs">
+<span id="numba-dpex-dpnp-iface-stubs-module"></span><h1>numba_dpex.dpnp_iface.stubs module<a class="headerlink" href="#module-numba_dpex.dpnp_iface.stubs" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.stubs.</span></span><span class="sig-name descname"><span class="pre">dpnp</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+<p>dpnp namespace</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.all">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">all</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.all" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.amax">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">amax</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.amax" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.amin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">amin</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.amin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.argmax">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">argmax</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.argmax" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.argmin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">argmin</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.argmin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.argsort">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">argsort</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.argsort" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.beta">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">beta</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.beta" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.binomial">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">binomial</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.binomial" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.chisquare">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">chisquare</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.chisquare" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.cholesky">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cholesky</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.cholesky" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.copy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">copy</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.copy" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.cov">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cov</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.cov" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.cumprod">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cumprod</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.cumprod" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.cumsum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cumsum</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.cumsum" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.det">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">det</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.det" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.diagonal">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">diagonal</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.diagonal" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.dot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dot</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.dot" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.eig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">eig</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.eig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.eigvals">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">eigvals</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.eigvals" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.exponential">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">exponential</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.exponential" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.full">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.full" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.full_like">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_like</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.full_like" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.gamma">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gamma</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.gamma" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.geometric">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">geometric</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.geometric" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.gumbel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gumbel</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.gumbel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.hypergeometric">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hypergeometric</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.hypergeometric" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.laplace">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">laplace</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.laplace" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.lognormal">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lognormal</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.lognormal" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.matmul">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">matmul</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.matmul" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.matrix_power">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">matrix_power</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.matrix_power" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.matrix_rank">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">matrix_rank</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.matrix_rank" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.max">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.max" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.mean">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mean</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.mean" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.median">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">median</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.median" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.min">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">min</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.min" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.multi_dot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">multi_dot</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.multi_dot" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.multinomial">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">multinomial</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.multinomial" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.multivariate_normal">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">multivariate_normal</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.multivariate_normal" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.nanprod">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nanprod</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.nanprod" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.nansum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nansum</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.nansum" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.negative_binomial">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">negative_binomial</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.negative_binomial" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.normal">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">normal</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.normal" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.ones_like">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ones_like</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.ones_like" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.partition">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">partition</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.partition" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.poisson">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">poisson</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.poisson" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.prod">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prod</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.prod" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.rand">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rand</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.rand" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.randint">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">randint</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.randint" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.random">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">random</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.random" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.random_integers">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">random_integers</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.random_integers" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.random_sample">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">random_sample</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.random_sample" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.ranf">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ranf</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.ranf" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.rayleigh">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rayleigh</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.rayleigh" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.repeat">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">repeat</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.repeat" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.sample">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sample</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.sample" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.sort">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sort</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.sort" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.standard_cauchy">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">standard_cauchy</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.standard_cauchy" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.standard_exponential">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">standard_exponential</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.standard_exponential" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.standard_gamma">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">standard_gamma</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.standard_gamma" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.standard_normal">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">standard_normal</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.standard_normal" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.sum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sum</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.sum" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.take">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">take</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.take" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.trace">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">trace</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.trace" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.uniform">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">uniform</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.uniform" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.vdot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vdot</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.vdot" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.weibull">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weibull</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.weibull" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.stubs.dpnp.zeros_like">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">zeros_like</span></span><a class="headerlink" href="#numba_dpex.dpnp_iface.stubs.dpnp.zeros_like" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub" title="numba_dpex.ocl.stubs.Stub"><code class="xref py py-class docutils literal notranslate"><span class="pre">Stub</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021,2022 Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
