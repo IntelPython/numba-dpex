@@ -42,9 +42,9 @@ def side_by_side_case(api):
     "breakpoint, script, expected_line, expected_args, expected_info",
     [
         (
-            "simple_dpex_func.py:29",
+            "simple_dpex_func.py:19",
             "simple_dpex_func.py",
-            r"29\s+i = dpex.get_global_id\(0\)",
+            r"19\s+i = dpex.get_global_id\(0\)",
             (
                 r"a_in_kernel = {meminfo = ",
                 r"b_in_kernel = {meminfo = ",
@@ -92,18 +92,19 @@ def test_info_args(
 
 @skip_no_numba056
 def test_info_functions(app):
-    expected_line = r"23\s+i = dpex.get_global_id\(0\)"
-    setup_breakpoint(app, "simple_sum.py:23", expected_line=expected_line)
+    expected_line = r"13\s+i = dpex.get_global_id\(0\)"
+    setup_breakpoint(app, "simple_sum.py:13", expected_line=expected_line)
 
     app.info_functions("data_parallel_sum")
 
-    app.child.expect(r"22:\s+.*__main__::data_parallel_sum\(.*\)")
+    app.child.expect(r"12:\s+.*__main__::data_parallel_sum\(.*\)")
 
 
+# mwang: gdb-oneapi isn't stoping with condition
 def side_by_side_info_locals_case(api):
     return (
         {"NUMBA_OPT": 0},
-        "side-by-side.py:27 if param_a == 5",
+        "side-by-side.py:17 if param_a == 5",
         f"side-by-side.py --api={api}",
         None,
         (
@@ -115,10 +116,11 @@ def side_by_side_info_locals_case(api):
     )
 
 
+# mwang: gdb-oneapi isn't stoping with condition
 def side_by_side_2_info_locals_case(api):
     return (
         {"NUMBA_OPT": 0},
-        "side-by-side-2.py:29 if param_a == 5",
+        "side-by-side-2.py:19 if param_a == 5",
         f"side-by-side-2.py --api={api}",
         None,
         (
@@ -145,9 +147,9 @@ def side_by_side_2_info_locals_case(api):
     [
         (
             {"NUMBA_OPT": 0},
-            "sum_local_vars.py:26",
+            "sum_local_vars.py:16",
             "sum_local_vars.py",
-            r"26\s+c\[i\] = l1 \+ l2",
+            r"16\s+c\[i\] = l1 \+ l2",
             (
                 r"i = 0",
                 r"l1 = [0-9]\.[0-9]{3}",
@@ -174,25 +176,26 @@ def side_by_side_2_info_locals_case(api):
                 ),
             ),
         ),
+        # mwang: NUMBA_OPT=1 will not able to stop at breakpoint
         (
             {"NUMBA_OPT": 1},
-            "sum_local_vars.py:26",
+            "sum_local_vars.py:16",
             "sum_local_vars.py",
-            r"26\s+c\[i\] = l1 \+ l2",
+            r"16\s+c\[i\] = l1 \+ l2",
             ("No locals.",),
             (),
         ),
         (
             {"NUMBA_EXTEND_VARIABLE_LIFETIMES": 1},
-            "side-by-side.py:28",
+            "side-by-side.py:18",
             "side-by-side.py --api=numba-dpex-kernel",
             None,
-            (r"param_c = 10", r"param_d = 0", r"result = 10"),
+            (r"param_c = 0", r"param_d = 0", r"result = 10"),
             (),
         ),
         (
             {"NUMBA_EXTEND_VARIABLE_LIFETIMES": 0},
-            "side-by-side.py:28",
+            "side-by-side.py:18",
             "side-by-side.py --api=numba-dpex-kernel",
             None,
             (r"param_c = 0", r"param_d = 0", r"result = 10"),
@@ -250,7 +253,7 @@ def test_info_locals(
 
 def side_by_side_2_print_array_element_case(api):
     return (
-        "side-by-side-2.py:29 if param_a == 5",
+        "side-by-side-2.py:19 if param_a == 5",
         f"side-by-side-2.py --api={api}",
         [(r"a.data[5]", r"\$1 = 5")],
     )
@@ -260,7 +263,9 @@ def side_by_side_2_print_array_element_case(api):
     "breakpoint, script, expected_info",
     [
         side_by_side_2_print_array_element_case("numba"),
-        side_by_side_2_print_array_element_case("numba-dpex-kernel"),
+        side_by_side_2_print_array_element_case(
+            "numba-dpex-kernel"
+        ),  # mwang: dpex isn't stoping with condition
     ],
 )
 def test_print_array_element(app, breakpoint, script, expected_info):
@@ -277,7 +282,7 @@ def test_print_array_element(app, breakpoint, script, expected_info):
 
 def side_by_side_2_assignment_to_variable_case(api):
     return (
-        "side-by-side-2.py:29 if param_a == 5",
+        "side-by-side-2.py:19 if param_a == 5",
         f"side-by-side-2.py --api={api}",
         [
             (r"param_c", r"\$1 = 15"),
@@ -294,7 +299,9 @@ def side_by_side_2_assignment_to_variable_case(api):
     "breakpoint, script, expected_info",
     [
         side_by_side_2_assignment_to_variable_case("numba"),
-        side_by_side_2_assignment_to_variable_case("numba-dpex-kernel"),
+        side_by_side_2_assignment_to_variable_case(
+            "numba-dpex-kernel"
+        ),  # mwang: dpex isn't stoping with condition
     ],
 )
 def test_assignment_to_variable(app, breakpoint, script, expected_info):

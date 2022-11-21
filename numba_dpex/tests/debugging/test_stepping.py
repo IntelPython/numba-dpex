@@ -20,8 +20,8 @@ pytestmark = skip_no_gdb
 def test_next(app):
     setup_breakpoint(
         app,
-        "simple_dpex_func.py:30",
-        expected_line=r"30\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
+        "simple_dpex_func.py:20",
+        expected_line=r"20\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
     )
 
     app.next()
@@ -34,35 +34,35 @@ def test_next(app):
 def test_step(app):
     setup_breakpoint(
         app,
-        "simple_dpex_func.py:30",
-        expected_line=r"30\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
+        "simple_dpex_func.py:20",
+        expected_line=r"20\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
     )
 
     app.step()
     app.step()
 
-    app.child.expect(r"__main__::func_sum \(.*\) at simple_dpex_func.py:23")
-    app.child.expect(r"23\s+result = a_in_func \+ b_in_func")
+    app.child.expect(r"__main__::func_sum \(.*\) at simple_dpex_func.py:13")
+    app.child.expect(r"13\s+result = a_in_func \+ b_in_func")
 
 
 # commands/stepi
 def test_stepi(app):
     setup_breakpoint(
         app,
-        "simple_dpex_func.py:30",
-        expected_line=r"30\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
+        "simple_dpex_func.py:20",
+        expected_line=r"20\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)",
     )
 
     app.stepi()
 
     app.child.expect(
-        r"0x[0-f]+\s+30\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)"
+        r"0x[0-f]+\s+20\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)"
     )
 
     app.stepi()
 
     app.child.expect(r"Switching to Thread")
-    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dpex_func.py:30")
+    app.child.expect(r"Thread .* hit Breakpoint .* at simple_dpex_func.py:20")
     app.child.expect(
-        r"30\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)"
+        r"20\s+c_in_kernel\[i\] = func_sum\(a_in_kernel\[i\], b_in_kernel\[i\]\)"
     )

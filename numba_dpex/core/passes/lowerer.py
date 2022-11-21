@@ -1242,7 +1242,6 @@ def relatively_deep_copy(obj, memo):
     for key in keys:
         attr = getattr(obj, key)
         attr_cpy = relatively_deep_copy(attr, memo)
-        breakpoint()
         setattr(cpy, key, attr_cpy)
 
     return cpy
