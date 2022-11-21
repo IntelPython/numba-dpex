@@ -10,7 +10,7 @@ import numba_dpex as dpex
 
 @dpex.func(debug=True)
 def func_sum(a_in_func, b_in_func):
-    result = a_in_func + b_in_func
+    result = a_in_func + b_in_func  # breakpoint location
     return result
 
 
