@@ -5,18 +5,11 @@
 import logging
 from types import FunctionType
 
-from numba.core import compiler, ir
-from numba.core import types as numba_types
-from numba.core.compiler_lock import global_compiler_lock
+from numba.core import ir
 
-from numba_dpex import compiler as dpex_compiler
-from numba_dpex import config, spirv_generator
-from numba_dpex.core.descriptor import dpex_target
-from numba_dpex.core.exceptions import (
-    KernelHasReturnValueError,
-    UncompiledKernelError,
-    UnreachableError,
-)
+from numba_dpex import spirv_generator
+from numba_dpex.core import _compile_helper
+from numba_dpex.core.exceptions import UncompiledKernelError, UnreachableError
 
 from .kernel_base import KernelInterface
 
@@ -45,78 +38,6 @@ class SpirvKernel(KernelInterface):
             self._func_ty = ir.FunctionIR
         else:
             raise UnreachableError()
-
-    @global_compiler_lock
-    def _compile(self, args, debug=None, extra_compile_flags=None):
-        """
-        Compiles the function using the dpex compiler pipeline and returns the
-        compiled result.
-
-        Args:
-            args: The list of arguments passed to the kernel.
-            debug (bool): Optional flag to turn on debug mode compilation.
-            extra_compile_flags: Extra flags passed to the compiler.
-
-        Returns:
-            cres: Compiled result.
-
-        Raises:
-            KernelHasReturnValueError: If the compiled function returns a
-            non-void value.
-        """
-        # First compilation will trigger the initialization of the backend.
-        typingctx = dpex_target.typing_context
-        targetctx = dpex_target.target_context
-
-        flags = compiler.Flags()
-        # Do not compile the function to a binary, just lower to LLVM
-        flags.debuginfo = config.DEBUGINFO_DEFAULT
-        flags.no_compile = True
-        flags.no_cpython_wrapper = True
-        flags.nrt = False
-
-        if debug is not None:
-            flags.debuginfo = debug
-
-        # Run compilation pipeline
-        if isinstance(self._func, FunctionType):
-            cres = compiler.compile_extra(
-                typingctx=typingctx,
-                targetctx=targetctx,
-                func=self._func,
-                args=args,
-                return_type=None,
-                flags=flags,
-                locals={},
-                pipeline_class=dpex_compiler.Compiler,
-            )
-        elif isinstance(self._func, ir.FunctionIR):
-            cres = compiler.compile_ir(
-                typingctx=typingctx,
-                targetctx=targetctx,
-                func_ir=self._func,
-                args=args,
-                return_type=None,
-                flags=flags,
-                locals={},
-                pipeline_class=dpex_compiler.Compiler,
-            )
-        else:
-            raise UnreachableError()
-
-        if (
-            cres.signature.return_type is not None
-            and cres.signature.return_type != numba_types.void
-        ):
-            raise KernelHasReturnValueError(
-                kernel_name=self._pyfunc_name,
-                return_type=cres.signature.return_type,
-            )
-        # Linking depending libraries
-        library = cres.library
-        library.finalize()
-
-        return cres
 
     @property
     def llvm_module(self):
@@ -158,9 +79,13 @@ class SpirvKernel(KernelInterface):
 
         logging.debug("compiling SpirvKernel with arg types", arg_types)
 
-        cres = self._compile(
+        cres = _compile_helper.compile_with_dpex(
+            self._func,
+            self._pyfunc_name,
             args=arg_types,
+            return_type=None,
             debug=debug,
+            is_kernel=True,
             extra_compile_flags=extra_compile_flags,
         )
 
