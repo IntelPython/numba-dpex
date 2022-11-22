@@ -31,6 +31,7 @@ class gdb:
         env = os.environ.copy()
         env["NUMBA_OPT"] = "0"
         env["NUMBA_EXTEND_VARIABLE_LIFETIMES"] = "1"
+        env["NUMBA_DPEX_DEBUGINFO"] = "1"
 
         self.child = pexpect.spawn(
             "gdb-oneapi -q python", env=env, encoding="utf-8"
