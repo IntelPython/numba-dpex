@@ -17,15 +17,17 @@ barrier, at which point it returns control to all its callers.
   ``numba_dpex.barrier()`` is equivalent to setting the global memory fence
   option. For example,
 
-  .. literalinclude:: ./../../../../numba_dpex/examples/kernel/barrier.py
-   :pyobject: no_arg_barrier_support
+  .. literalinclude:: ./../../../../numba_dpex/examples/kernel/scan.py
+      :lines: 7-
+      :linenos:
 
 - ``numba_dpex.CLK_LOCAL_MEM_FENCE``: The barrier function will either flush
   any variables stored in local memory or queue a memory fence to ensure
   correct ordering of memory operations to local memory. For example,
 
-.. literalinclude:: ./../../../../numba_dpex/examples/kernel/barrier.py
-   :pyobject: local_memory
+.. literalinclude:: ./../../../../numba_dpex/examples/kernel/scan.py
+      :lines: 7-
+      :linenos:
 
 
 .. note::

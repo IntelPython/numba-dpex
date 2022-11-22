@@ -43,7 +43,7 @@ result of vector summation:
 
 .. literalinclude:: ./../../../../numba_dpex/examples/kernel/vector_sum.py
    :language: python
-   :lines: 27-28
+   :lines: 27
    :caption: **EXAMPLE:** Invocation of the vector sum kernel
    :name: ex_kernel_invocation_vector_sum
 

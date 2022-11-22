@@ -4,19 +4,17 @@
 Memory Management
 =================
 
-**Data Parallel Extension for Numba** follows `SYCL*`_ *memory model* implemented in `DPC++`_;
-``numba-dpex`` relies on DPC++ runtimes underneath, including USM memory management features.
+**Data Parallel Extension for Numba** uses USM shared memory allocator to enable host to device and device
+to host data transfers. This allows interoperability between compiled ``numba-dpex`` kernels and other
+SYCL-based Python extensions.
 
-It uses USM shared memory allocator to enable host to device and device to host data transfers.
-It allows interoperability between compiled ``numba-dpex`` kernels and other SYCL-based Python extensions.
-
-``numba-dpex`` uses the USM memory manager provided by `Data Parallel Control`_ library, ``dpctl``, and supports
+``numba-dpex`` relies on the USM memory manager provided by `Data Parallel Control`_ library, ``dpctl``, and supports
 the **SYCL USM Array Interface** protocol to enable zero-copy data exchange across USM memory-backed Python objects.
 
 .. note::
 
     USM pointers can be of four allocation types:
-    ``host``, ``device``, ``shared``, or ``unknown``.
+    ``host``, ``device``, ``shared``, and ``unknown``.
 
     Host applications, including Python interpreter, can work with USM pointers of type ``host``
     and ``shared`` as if they were ordinary host pointers.
@@ -34,7 +32,7 @@ this memory as an instance of Python class that will implement memory management
 logic (ensures that memory is freed when the instance is no longer needed).
 The need to manage memory arises whenever a library uses a custom allocator.
 For example, |sklext|_ uses Python capsule to ensure that a native
-library-allocated memory is freed using the appropriate deallocator.
+library-allocated memory is freed using the appropriate de-allocator.
 
 To enable native extensions to pass the memory allocated by a native SYCL
 library to `Numba*`_, or another SYCL-aware Python extension without making a copy,
@@ -108,33 +106,85 @@ for further details.
 Local memory
 ------------
 
-`SYCL*`_ *memory model* defines local memory as a contiguous region of memory allocated
-per work group and visible to all the work items in that group.
+Local memory is a contiguous region of memory allocated
+per work group and visible to all work items in that group.
 
 The local memory is device-only and cannot be accessed from the host. From the perspective of
 the device, the local memory is exposed as a contiguous array of a specific
 type. The maximum available local memory is hardware-specific.
 
-The SYCL local memory concept is analogous to CUDA*'s shared memory concept.
+The **Data Parallel Extensions for Python**'s local memory concept is analogous to CUDA*'s shared memory concept.
 
 ``numba-dpex`` provides a special function ``numba_dpex.local.array()`` to
 allocate local memory for a kernel.
 
-.. literalinclude:: ./../../../../numba_dpex/examples/kernel/barrier.py
-   :pyobject: local_memory
+.. literalinclude:: ./../../../../numba_dpex/examples/kernel/scan.py
+   :lines: 21-23
+
+In this example two local arrays, ``b`` and ``c``, of size ``ls`` are created. Their type is specified
+in the parameter ``dtype``.
 
 .. note::
 
-  To go convert from ``numba.cuda`` to ``numba-dpex``, replace
-  ``numba.cuda.shared.array`` with
-  ``numba_dpex.local.array(shape=local_size, dtype=float32)``.
+  To go convert from ``numba.cuda`` to ``numba-dpex``, replace ``numba.cuda.shared.array`` with
+  ``numba_dpex.local.array(shape=local_size)``.
 
 .. todo::
 
   Add details about current limitations for local memory allocation in
   ``numba-dpex``.
 
-Private and Constant memory
----------------------------
+Private memory
+--------------
 
-``numba-dpex`` does not yet support SYCL private and constant memory.
+Private memory is a region of memory allocated per work item, visible only to that work item.
+Private memory is used for kernel parameters and local stack variables. Private memory cannot be accessed from the host.
+
+Private memory is typically mapped to hardware registers. There is no mechanism in
+**Data Parallel Extensions for Python** to query the number of registers available to a particular device.
+Developers must refer to the documentation of the hardware vendor to understand
+the limits of private memory.
+
+Similarly to local memory, ``numba-dpex`` provides built-in function for private memory allocation
+``numba_dpex.private.array(shape, dtype)``
+
+Constant memory
+---------------
+
+The constant memory is a read-only device memory. ``numba-dpex`` does not yet support this type of memory.
+
+Barriers
+--------
+
+**Data Parallel Extension for Numba** has a built-in function ``numba_dpex.barrier(mem_fence_type)`` that
+allows implementing memory fencing for global and local arrays.
+
+.. list-table:: **Global and local memory fences**
+   :widths: 70 200
+   :header-rows: 1
+
+   * - ``mem_fence_type``
+     - Description
+   * - ``NDPXK_LOCAL_MEM_FENCE``
+     - The barrier function will either flush any variables stored in local memory or queue a memory fence
+       to ensure correct ordering of memory operations to local memory.
+   * - ``NDPXK_GLOBAL_MEM_FENCE``
+     - The barrier function will queue a memory fence to ensure correct ordering of memory operations to global memory.
+       This can be useful when work-items, for example, write to buffer or image objects
+       and then want to read the updated data.
+
+.. Note::
+   Calling ``numba_dpex.barrier()`` with no argument is equivalent to ``NDPXK_GLOBAL_MEM_FENCE``
+
+The following example implements Hillis-Steele algorithm for prefix sum, and illustrates the usage of
+global and local memory along with global and local barriers:
+
+.. literalinclude:: ./../../../../numba_dpex/examples/kernel/scan.py
+   :lines: 4-
+   :linenos:
+   :emphasize-lines: 19-20, 24, 34, 44
+
+Two local arrays of size equal to work-group size are allocated in lines 19-20. Local barrier on the line 24
+is used to ensure all local work-group items are initialized prior to their use in the loop starting on the line 28.
+Finally, prior to writing back to the global memory ``a[]`` the global barrier in the line 44 ensures
+work completion among all work-group items.
