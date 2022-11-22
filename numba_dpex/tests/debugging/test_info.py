@@ -100,7 +100,7 @@ def test_info_functions(app):
     app.child.expect(r"12:\s+.*__main__::data_parallel_sum\(.*\)")
 
 
-# mwang: gdb-oneapi isn't stoping with condition
+# FIXME: gdb-oneapi isn't stoping with condition
 def side_by_side_info_locals_case(api):
     return (
         {"NUMBA_OPT": 0},
@@ -116,7 +116,7 @@ def side_by_side_info_locals_case(api):
     )
 
 
-# mwang: gdb-oneapi isn't stoping with condition
+# FIXME: gdb-oneapi isn't stoping with condition
 def side_by_side_2_info_locals_case(api):
     return (
         {"NUMBA_OPT": 0},
@@ -176,7 +176,7 @@ def side_by_side_2_info_locals_case(api):
                 ),
             ),
         ),
-        # mwang: NUMBA_OPT=1 will not able to stop at breakpoint
+        # FIXME: NUMBA_OPT=1 will not able to stop at breakpoint
         (
             {"NUMBA_OPT": 1},
             "sum_local_vars.py:16",
@@ -265,7 +265,7 @@ def side_by_side_2_print_array_element_case(api):
         side_by_side_2_print_array_element_case("numba"),
         side_by_side_2_print_array_element_case(
             "numba-dpex-kernel"
-        ),  # mwang: dpex isn't stoping with condition
+        ),  # FIXME: dpex isn't stoping with condition
     ],
 )
 def test_print_array_element(app, breakpoint, script, expected_info):
@@ -301,7 +301,7 @@ def side_by_side_2_assignment_to_variable_case(api):
         side_by_side_2_assignment_to_variable_case("numba"),
         side_by_side_2_assignment_to_variable_case(
             "numba-dpex-kernel"
-        ),  # mwang: dpex isn't stoping with condition
+        ),  # FIXME: dpex isn't stoping with condition
     ],
 )
 def test_assignment_to_variable(app, breakpoint, script, expected_info):
