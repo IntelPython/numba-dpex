@@ -1,20 +1,19 @@
-#! /usr/bin/env python
-
 # SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import numpy as np
 import numpy.testing as testing
 import dpnp
 
-import numba_dpex as dpex
+import numba_dpex as ndpx
 
+# Vector size
+N = 10
 
 # Data parallel kernel implementing vector sum
-@dpex.kernel
+@ndpx.kernel
 def kernel_vector_sum(a, b, c):
-    i = dpex.get_global_id(0)
+    i = ndpx.get_global_id(0)
     c[i] = a[i] + b[i]
 
 
@@ -25,7 +24,7 @@ def driver(a, b, c, global_size):
     print("B : ", b)
 
     # Invoking kernel
-    kernel_vector_sum[global_size, dpex.DEFAULT_LOCAL_SIZE](a, b, c)
+    kernel_vector_sum[global_size, ndpx.NDPXK_DEFAULT_LOCAL_SIZE](a, b, c)
 
     # Printing result
     print("A + B = ")
@@ -39,14 +38,13 @@ def driver(a, b, c, global_size):
 
 # Main function
 def main():
-    global_size = 10
-    n = global_size
-    print("Vector size N", n)
+    global_size = N
+    print("Vector size N", N)
 
     # Create random vectors on the default device
-    a = dpnp.random.random(n)
-    b = dpnp.random.random(n)
-    c = np.ones_like(a)
+    a = dpnp.random.random(N)
+    b = dpnp.random.random(N)
+    c = dpnp.ones_like(a)
 
     print("Using device ...")
     a.device.print_device_info()
