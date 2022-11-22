@@ -24,7 +24,7 @@ def driver(a, b, c, global_size):
     print("B : ", b)
 
     # Invoking kernel
-    kernel_vector_sum[global_size, ndpx.NDPXK_DEFAULT_LOCAL_SIZE](a, b, c)
+    kernel_vector_sum[global_size, ndpx.DEFAULT_LOCAL_SIZE](a, b, c)
 
     # Printing result
     print("A + B = ")
