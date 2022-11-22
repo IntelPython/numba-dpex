@@ -165,16 +165,16 @@ allows implementing memory fencing for global and local arrays.
 
    * - ``mem_fence_type``
      - Description
-   * - ``NDPXK_LOCAL_MEM_FENCE``
+   * - ``LOCAL_MEM_FENCE``
      - The barrier function will either flush any variables stored in local memory or queue a memory fence
        to ensure correct ordering of memory operations to local memory.
-   * - ``NDPXK_GLOBAL_MEM_FENCE``
+   * - ``GLOBAL_MEM_FENCE``
      - The barrier function will queue a memory fence to ensure correct ordering of memory operations to global memory.
        This can be useful when work-items, for example, write to buffer or image objects
        and then want to read the updated data.
 
 .. Note::
-   Calling ``numba_dpex.barrier()`` with no argument is equivalent to ``NDPXK_GLOBAL_MEM_FENCE``
+   Calling ``numba_dpex.barrier()`` with no argument is equivalent to ``GLOBAL_MEM_FENCE``
 
 The following example implements Hillis-Steele algorithm for prefix sum, and illustrates the usage of
 global and local memory along with global and local barriers:
