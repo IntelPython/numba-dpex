@@ -159,7 +159,7 @@ def _llvm_spirv():
 packages = find_packages(include=["numba_dpex", "numba_dpex.*"])
 build_requires = ["cython"]
 install_requires = [
-    "numba >={},<{}".format("0.54.0", "0.56"),
+    "numba >={}".format("0.56"),
     "dpctl",
     "packaging",
 ]

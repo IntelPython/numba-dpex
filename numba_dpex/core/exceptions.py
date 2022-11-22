@@ -295,8 +295,8 @@ class SUAIProtocolError(Exception):
 
 
 class UnsupportedAccessQualifierError(Exception):
-    """Exception raised when an illegal access specifier value is specified for an
-    NumPy array argument passed to a kernel.
+    """Exception raised when an illegal access specifier value is specified for
+    a NumPy array argument passed to a kernel.
 
     Args:
         kernel_name (str): Name of kernel where the error was raised.
@@ -312,4 +312,12 @@ class UnsupportedAccessQualifierError(Exception):
         f'array {array_val} argument passed to kernel "{kernel_name}". '
         f"Legal access specifiers are {legal_access_list}."
 
+        super().__init__(self.message)
+
+
+class UnsupportedCompilationModeError(Exception):
+    def __init__(self) -> None:
+        self.message = (
+            'The dpex compiler does not support the "force_pyobject" setting.'
+        )
         super().__init__(self.message)
