@@ -5,123 +5,35 @@
 import logging
 from types import FunctionType
 
-from numba.core import compiler, ir
-from numba.core import types as numba_types
-from numba.core import utils
+from numba.core import ir, utils
 from numba.core.caching import NullCache
-from numba.core.compiler_lock import global_compiler_lock
 
-from numba_dpex import compiler as dpex_compiler
-from numba_dpex import config, spirv_generator
+from numba_dpex import spirv_generator
+from numba_dpex.core import _compile_helper
 from numba_dpex.core.caching import SpirvKernelCache
 from numba_dpex.core.descriptor import dpex_target
-from numba_dpex.core.exceptions import (
-    KernelHasReturnValueError,
-    UncompiledKernelError,
-    UnreachableError,
-)
+from numba_dpex.core.exceptions import UncompiledKernelError, UnreachableError
 
 from .kernel_base import KernelInterface
 
 
 class SpirvKernel(KernelInterface):
-    def __init__(self, pyfunc, pyfunc_name) -> None:
-        self._llvm_ir_str = None
+    def __init__(self, func, pyfunc_name) -> None:
+        self._llvm_module = None
         self._device_driver_ir_module = None
         self._module_name = None
         self._pyfunc_name = pyfunc_name
-        self._pyfunc = pyfunc
-        if isinstance(pyfunc, FunctionType):
+        self._func = func
+        self._cache = NullCache
+        if isinstance(func, FunctionType):
             self._func_ty = FunctionType
-        elif isinstance(pyfunc, ir.FunctionIR):
+        elif isinstance(func, ir.FunctionIR):
             self._func_ty = ir.FunctionIR
         else:
             raise UnreachableError()
 
-        self._cache = NullCache
-
     def enable_caching(self):
-        self._cache = SpirvKernelCache(self._pyfunc)
-
-    @global_compiler_lock
-    def _compile(self, pyfunc, args, debug=None, extra_compile_flags=None):
-        """
-        Compiles the function using the dpex compiler pipeline and returns the
-        compiled result.
-
-        Args:
-            pyfunc: The function to be compiled. Can be a Python function or a
-            Numba IR object representing a function.
-            args: The list of arguments passed to the kernel.
-            debug (bool): Optional flag to turn on debug mode compilation.
-            extra_compile_flags: Extra flags passed to the compiler.
-
-        Returns:
-            cres: Compiled result.
-
-        Raises:
-            KernelHasReturnValueError: If the compiled function returns a
-            non-void value.
-        """
-
-        # First compilation will trigger the initialization of the backend.
-        typingctx = dpex_target.typing_context
-        targetctx = dpex_target.target_context
-
-        flags = compiler.Flags()
-        # Do not compile the function to a binary, just lower to LLVM
-        flags.debuginfo = config.DEBUGINFO_DEFAULT
-        flags.no_compile = True
-        flags.no_cpython_wrapper = True
-        flags.nrt = False
-
-        if debug is not None:
-            flags.debuginfo = debug
-
-        # Run compilation pipeline
-        if isinstance(pyfunc, FunctionType):
-            cres = compiler.compile_extra(
-                typingctx=typingctx,
-                targetctx=targetctx,
-                func=pyfunc,
-                args=args,
-                return_type=None,
-                flags=flags,
-                locals={},
-                pipeline_class=dpex_compiler.Compiler,
-            )
-        elif isinstance(pyfunc, ir.FunctionIR):
-            cres = compiler.compile_ir(
-                typingctx=typingctx,
-                targetctx=targetctx,
-                func_ir=pyfunc,
-                args=args,
-                return_type=None,
-                flags=flags,
-                locals={},
-                pipeline_class=dpex_compiler.Compiler,
-            )
-        else:
-            raise UnreachableError()
-
-        if (
-            cres.signature.return_type is not None
-            and cres.signature.return_type != numba_types.void
-        ):
-            raise KernelHasReturnValueError(
-                kernel_name=pyfunc.__name__,
-                return_type=cres.signature.return_type,
-            )
-
-        # TODO: open an reproducible ticket
-        # cres.codegen = SpirvCodeLibrary
-        # why codegen doesn't exist in cres?
-
-        # Linking depending libraries
-        library = cres.library
-        library.finalize()
-
-        return cres
+        self._cache = SpirvKernelCache(self._func)
 
     @property
     def llvm_module(self):
@@ -152,12 +64,6 @@ class SpirvKernel(KernelInterface):
         else:
             raise UncompiledKernelError(self._pyfunc_name)
 
-    def get_device_driver_ir_module(self):
-        return self._device_driver_ir_module
-
-    def set_device_driver_ir_module(self, ddir_module):
-        self._device_driver_ir_module = ddir_module
-
     def compile(self, arg_types, debug, extra_compile_flags):
         """_summary_
 
@@ -169,7 +75,7 @@ class SpirvKernel(KernelInterface):
 
         logging.debug("compiling SpirvKernel with arg types", arg_types)
 
-        sig = utils.pysignature(self._pyfunc)
+        sig = utils.pysignature(self._func)
         # load the kernel from cache
         data = self._cache.load_overload(sig, dpex_target.target_context)
         # if exists
@@ -177,10 +83,13 @@ class SpirvKernel(KernelInterface):
             self._device_driver_ir_module = data[0]
             self._module_name = data[1]
         else:  # otherwise, build from the scratch
-            cres = self._compile(
-                pyfunc=self._pyfunc,
+            cres = _compile_helper.compile_with_dpex(
+                self._func,
+                self._pyfunc_name,
                 args=arg_types,
+                return_type=None,
                 debug=debug,
+                is_kernel=True,
                 extra_compile_flags=extra_compile_flags,
             )
 
