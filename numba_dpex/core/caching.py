@@ -13,62 +13,77 @@
 # limitations under the License.
 
 import hashlib
-import warnings
 
 from numba.core.caching import IndexDataCacheFile, _Cache, _CacheImpl
-
-# from numba.core.errors import NumbaWarning
 from numba.core.serialize import dumps
-
-from numba_dpex.core import compiler
-
-# from numba_dpex.core.kernel_interface.spirv_kernel import SpirvKernel
 
 
 class SpirvKernelCacheImpl(_CacheImpl):
+    """Implementation of `_CacheImpl` to be used by subclasses of `_Cache`.
+
+    This class is an implementation of `_CacheImpl` to be used by subclasses of `_Cache`.
+    To be assigned in `_impl_class`. Implements the more common and core mechanism for the
+    caching.
+
+    """
+
     def reduce(self, data):
-        # TODO: Implement
-        # return cres._reduce()
-        # return (str, str, data)
-        # return kernel._reduce_states()
+        """Serialize an object before caching.
+
+        Args:
+            data (object): The object to be serialized before pickling.
+        """
+        # TODO: Implement, but looks like we might not need it at all.
+        # Look at numba.core.caching for how to implement.
         pass
 
-    def rebuild(self, target_context, payload):
-        # TODO: Implement _rebuild()
-        # return compiler.CompileResult._rebuild(target_context, *payload)
-        # return SpirvKernel._rebuild(**payload)
+    def rebuild(self, target_context, reduced_data):
+        """Deserialize after unpickling from the cache.
+
+        Args:
+            target_context (numba_dpex.core.target.DpexTargetContext):
+                The target context for the kernel.
+            reduced_data (object): The data to be deserialzed after unpickling.
+        """
+        # TODO: Implement, but looks like we might not need it at all.
+        # Look at numba.core.caching for how to implement.
         pass
 
     def check_cachable(self, cres):
-        # For the time being, assuming all numba-dpex Kernels are always cachable.
-        # cannot_cache = None
-        # if any(not x.can_cache for x in cres.lifted):
-        #     cannot_cache = "as it uses lifted code"
-        # elif cres.library.has_dynamic_globals:
-        #     cannot_cache = (
-        #         "as it uses dynamic globals "
-        #         "(such as ctypes pointers and large global arrays)"
-        #     )
-        # if cannot_cache:
-        #     msg = 'Cannot cache compiled function "%s" %s' % (
-        #         cres.fndesc.qualname.split(".")[-1],
-        #         cannot_cache,
-        #     )
-        #     warnings.warn_explicit(
-        #         msg, NumbaWarning, self._locator._py_file, self._lineno
-        #     )
-        #     return False
+        """Check if a certain object is cacheable.
+
+        Args:
+            cres (object): The object to be cached. For example, if the object is
+            `CompileResult`, then you might want to follow the similar checks as
+            has been done in `numba.core.caching.CompileResultCacheImpl`.
+
+        Returns:
+            bool: Return `True` if cacheable, otherwise `False`.
+        """
+        # TODO: Although, for the time being, assuming all SPIR-V Kernels
+        # are always cachable. However, we might need to add some bells and
+        # whistles in the future. Look at numba.core.caching for how to implement.
         return True
 
 
 class SpirvKernelCache(_Cache):
-    """
-    Implements a cache that saves and loads CUDA kernels and compile results.
+    """Implements a cache that saves and loads SPIR-V kernels and compile results.
+
+    This class implements the ABC `_Cache`. Mainly constructs key-value pair
+    for the data to be cached. The data has been saved/retrieved from the file
+    using that key-value pair.
     """
 
+    # _CacheImpl object to be used
     _impl_class = SpirvKernelCacheImpl
 
     def __init__(self, py_func):
+        """Constructor for SprivKernelCache.
+
+        Args:
+            py_func (function): The python function of the corresponding
+                                spirv kernel to be cached.
+        """
         self._name = repr(py_func)
         self._py_func = py_func
         self._impl = self._impl_class(py_func)
@@ -85,43 +100,75 @@ class SpirvKernelCache(_Cache):
 
     @property
     def cache_path(self):
+        """Path to cache files.
+
+        Returns:
+            str: The path to cache files.
+        """
         return self._cache_path
 
     def enable(self):
+        """Enables caching."""
         self._enabled = True
 
     def disable(self):
+        """Disables caching."""
         self._enabled = False
 
     def flush(self):
+        """Flushes the buffer for cache file."""
         self._cache_file.flush()
 
     def load_overload(self, sig, target_context):
-        print("numba_dpex.caching.SpirvKernelCache.load_overload().1")
+        """Loads the 'overload', i.e. kernel from cache.
+
+        Args:
+            sig (inspect.Signature): The signature object of a python function.
+            target_context (numba_dpex.core.target.DpexTargetContext):
+                The target context of the kernel.
+
+        Returns:
+            object: The unpickled object from the cache.
+        """
         if not self._enabled:
-            print("numba_dpex.caching.SpirvKernelCache.load_overload().2")
             return
         key = self._index_key(sig, target_context.codegen())
         data = self._cache_file.load(key)
-        print("numba_dpex.caching.SpirvKernelCache.load_overload().3")
         return data
 
     def save_overload(self, sig, data, target_context):
+        """Saves the 'overload', i.e. kernel into cache.
+
+        Args:
+            sig (inspect.Signature): The signature object of a python function.
+            data (object): The object to be saved in the cache.
+            target_context (numba_dpex.core.target.DpexTargetContext):
+                The target context of the kernel.
+        """
         if not self._enabled:
             return
         if not self._impl.check_cachable(data):
             return
         self._impl.locator.ensure_cache_path()
         key = self._index_key(sig, target_context.codegen())
-        # data = self._impl.reduce(data)
         self._cache_file.save(key, data)
 
     def _index_key(self, sig, codegen):
-        """
-        Compute index key for the given signature and codegen.
-        It includes a description of the OS, target architecture and hashes of
-        the bytecode for the function and, if the function has a __closure__,
-        a hash of the cell_contents.
+        """Constructs a key from the data object.
+
+        Compute index key for the given signature and codegen. It includes
+        a description of the OS, target architecture and hashes of the bytecode
+        for the function and, if the function has a __closure__, a hash of the
+        cell_contents.
+
+        Args:
+            sig (inspect.Signature): The signature object of a python function.
+            codegen (numba_dpex.codegen.JITSPIRVCodegen):
+                The JITSPIRVCodegen found from the target context.
+
+        Returns:
+            tuple: A tuple of signature, magic_tuple of codegen and another tuple of
+                    hashcodes from bytecode and cell_contents.
         """
         codebytes = self._py_func.__code__.co_code
         if self._py_func.__closure__ is not None:
@@ -135,8 +182,8 @@ class SpirvKernelCache(_Cache):
         return (
             sig,
             codegen.magic_tuple(),
-            # device
-            # backend
+            # TODO: add device
+            # TODO: add backend
             (
                 hashlib.sha256(codebytes).hexdigest(),
                 hashlib.sha256(cvarbytes).hexdigest(),

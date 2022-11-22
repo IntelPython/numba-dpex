@@ -169,24 +169,14 @@ class SpirvKernel(KernelInterface):
 
         logging.debug("compiling SpirvKernel with arg types", arg_types)
 
-        print("-----> numba_dpex.core.kernel_interface.SpirvKernel.compile().1")
         sig = utils.pysignature(self._pyfunc)
+        # load the kernel from cache
         data = self._cache.load_overload(sig, dpex_target.target_context)
-        print(
-            "-----> numba_dpex.core.kernel_interface.SpirvKernel.compile().2",
-            "ddir_module =",
-            data[1] if data is not None else data,
-        )
+        # if exists
         if data is not None:
-            print(
-                "-----> numba_dpex.core.kernel_interface.SpirvKernel.compile().3"
-            )
             self._device_driver_ir_module = data[0]
             self._module_name = data[1]
-        else:
-            print(
-                "-----> numba_dpex.core.kernel_interface.SpirvKernel.compile().4"
-            )
+        else:  # otherwise, build from the scratch
             cres = self._compile(
                 pyfunc=self._pyfunc,
                 args=arg_types,
@@ -202,17 +192,7 @@ class SpirvKernel(KernelInterface):
             )
 
             self._llvm_ir_str = ocl_kernel.module.__str__()
-            print(
-                "-----> numba_dpex.core.kernel_interface.SpirvKernel.compile().5",
-                "self._llvm_ir_str =",
-                self._llvm_ir_str[0:10],
-            )
             self._module_name = ocl_kernel.name
-            print(
-                "-----> numba_dpex.core.kernel_interface.SpirvKernel.compile().6",
-                "self._module_name =",
-                self._module_name[0:10],
-            )
 
             # FIXME: There is no need to serialize the bitcode. It can be passed to
             # llvm-spirv directly via stdin.
@@ -225,20 +205,9 @@ class SpirvKernel(KernelInterface):
                 ocl_kernel.module.as_bitcode(),
             )
 
-            print(
-                "-----> numba_dpex.core.kernel_interface.SpirvKernel.compile().7",
-                "ddir_module =",
-                ddir_module[0:10],
-            )
-            # cache self._device_driver_ir_module
-            print(
-                "-----> numba_dpex.core.kernel_interface.SpirvKernel.compile().8"
-            )
+            # save into cache
             self._cache.save_overload(
                 sig, (ddir_module, self._module_name), self._target_context
-            )
-            print(
-                "-----> numba_dpex.core.kernel_interface.SpirvKernel.compile().9"
             )
 
             self._device_driver_ir_module = ddir_module
