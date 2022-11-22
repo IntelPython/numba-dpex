@@ -64,7 +64,14 @@ class SpirvKernel(KernelInterface):
         else:
             raise UncompiledKernelError(self._pyfunc_name)
 
-    def compile(self, arg_types, debug, extra_compile_flags):
+    def compile(
+        self,
+        arg_types,
+        debug,
+        extra_compile_flags,
+        backend=None,
+        device_type=None,
+    ):
         """_summary_
 
         Args:
@@ -76,12 +83,17 @@ class SpirvKernel(KernelInterface):
         logging.debug("compiling SpirvKernel with arg types", arg_types)
 
         sig = utils.pysignature(self._func)
+
         # load the kernel from cache
-        data = self._cache.load_overload(sig, dpex_target.target_context)
+        data = self._cache.load_overload(
+            sig,
+            dpex_target.target_context,
+            backend=backend,
+            device_type=device_type,
+        )
         # if exists
         if data is not None:
-            self._device_driver_ir_module = data[0]
-            self._module_name = data[1]
+            self._device_driver_ir_module, self._module_name = data
         else:  # otherwise, build from the scratch
             cres = _compile_helper.compile_with_dpex(
                 self._func,
@@ -116,7 +128,11 @@ class SpirvKernel(KernelInterface):
 
             # save into cache
             self._cache.save_overload(
-                sig, (ddir_module, self._module_name), self._target_context
+                sig,
+                (ddir_module, self._module_name),
+                self._target_context,
+                backend=backend,
+                device_type=device_type,
             )
 
             self._device_driver_ir_module = ddir_module

@@ -14,14 +14,14 @@
 
 import hashlib
 
-from numba.core.caching import IndexDataCacheFile, _Cache, _CacheImpl
+from numba.core.caching import CacheImpl, IndexDataCacheFile, _Cache
 from numba.core.serialize import dumps
 
 
-class SpirvKernelCacheImpl(_CacheImpl):
-    """Implementation of `_CacheImpl` to be used by subclasses of `_Cache`.
+class SpirvKernelCacheImpl(CacheImpl):
+    """Implementation of `CacheImpl` to be used by subclasses of `_Cache`.
 
-    This class is an implementation of `_CacheImpl` to be used by subclasses of `_Cache`.
+    This class is an implementation of `CacheImpl` to be used by subclasses of `_Cache`.
     To be assigned in `_impl_class`. Implements the more common and core mechanism for the
     caching.
 
@@ -119,24 +119,35 @@ class SpirvKernelCache(_Cache):
         """Flushes the buffer for cache file."""
         self._cache_file.flush()
 
-    def load_overload(self, sig, target_context):
+    def load_overload(
+        self, sig, target_context, backend=None, device_type=None
+    ):
         """Loads the 'overload', i.e. kernel from cache.
 
         Args:
             sig (inspect.Signature): The signature object of a python function.
             target_context (numba_dpex.core.target.DpexTargetContext):
                 The target context of the kernel.
+            backend (enum, optional): A 'backend_type' enum. Defaults to None.
+            device_type (enum, optional): A 'device_type' enum. Defaults to None.
 
         Returns:
             object: The unpickled object from the cache.
         """
         if not self._enabled:
             return
-        key = self._index_key(sig, target_context.codegen())
+        key = self._index_key(
+            sig,
+            target_context.codegen(),
+            backend=backend,
+            device_type=device_type,
+        )
         data = self._cache_file.load(key)
         return data
 
-    def save_overload(self, sig, data, target_context):
+    def save_overload(
+        self, sig, data, target_context, backend=None, device_type=None
+    ):
         """Saves the 'overload', i.e. kernel into cache.
 
         Args:
@@ -144,16 +155,23 @@ class SpirvKernelCache(_Cache):
             data (object): The object to be saved in the cache.
             target_context (numba_dpex.core.target.DpexTargetContext):
                 The target context of the kernel.
+            backend (enum, optional): A 'backend_type' enum. Defaults to None.
+            device_type (enum, optional): A 'device_type' enum. Defaults to None.
         """
         if not self._enabled:
             return
         if not self._impl.check_cachable(data):
             return
         self._impl.locator.ensure_cache_path()
-        key = self._index_key(sig, target_context.codegen())
+        key = self._index_key(
+            sig,
+            target_context.codegen(),
+            backend=backend,
+            device_type=device_type,
+        )
         self._cache_file.save(key, data)
 
-    def _index_key(self, sig, codegen):
+    def _index_key(self, sig, codegen, backend=None, device_type=None):
         """Constructs a key from the data object.
 
         Compute index key for the given signature and codegen. It includes
@@ -165,6 +183,8 @@ class SpirvKernelCache(_Cache):
             sig (inspect.Signature): The signature object of a python function.
             codegen (numba_dpex.codegen.JITSPIRVCodegen):
                 The JITSPIRVCodegen found from the target context.
+            backend (enum, optional): A 'backend_type' enum. Defaults to None.
+            device_type (enum, optional): A 'device_type' enum. Defaults to None.
 
         Returns:
             tuple: A tuple of signature, magic_tuple of codegen and another tuple of
@@ -182,8 +202,8 @@ class SpirvKernelCache(_Cache):
         return (
             sig,
             codegen.magic_tuple(),
-            # TODO: add device
-            # TODO: add backend
+            backend,
+            device_type,
             (
                 hashlib.sha256(codebytes).hexdigest(),
                 hashlib.sha256(cvarbytes).hexdigest(),

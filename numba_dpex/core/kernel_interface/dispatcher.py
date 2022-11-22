@@ -407,6 +407,7 @@ class Dispatcher(object):
 
         exec_queue = self._determine_kernel_launch_queue(args, argtypes)
         backend = exec_queue.backend
+        device_type = exec_queue.sycl_device.device_type
 
         if exec_queue.backend not in [
             dpctl.backend_type.opencl,
@@ -424,10 +425,6 @@ class Dispatcher(object):
         # TODO: Enable caching of kernels, but do it using Numba's caching
         # machinery
 
-        # kernel = self._cache.load_overload(sig, dpex_target.target_context)
-        # exec_queue --> backend (enum)
-        # exec_queue --> device --> type (enum)
-
         kernel = SpirvKernel(self.pyfunc, self.kernel_name)
         if self._enable_cache:
             kernel.enable_caching()
@@ -436,6 +433,8 @@ class Dispatcher(object):
             arg_types=argtypes,
             debug=self.debug_flags,
             extra_compile_flags=self.compile_flags,
+            backend=backend,
+            device_type=device_type,
         )
 
         # create a sycl::KernelBundle
