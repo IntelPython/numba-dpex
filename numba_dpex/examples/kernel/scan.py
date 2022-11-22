@@ -24,7 +24,7 @@ def kernel_hillis_steele_scan(a):
 
     # Initialize locals
     c[lid] = b[lid] = a[gid]
-    ndpx.barrier(NDPXK_LOCAL_MEM_FENCE)
+    ndpx.barrier(ndpx.LOCAL_MEM_FENCE)
 
     # Calculate prefix sum
     d = 1
@@ -34,7 +34,7 @@ def kernel_hillis_steele_scan(a):
         else:
             c[lid] = b[lid]
 
-        ndpx.barrier(NDPXK_LOCAL_MEM_FENCE)
+        ndpx.barrier(ndpx.LOCAL_MEM_FENCE)
 
         # Swap c and b
         e = c[lid]
@@ -44,12 +44,11 @@ def kernel_hillis_steele_scan(a):
         # Double the stride
         d *= 2
 
-    ndpx.barrier()  # NDPXK_GLOBAL_MEM_FENCE
+    ndpx.barrier()  # The same as ndpx.barrier(ndpx.GLOBAL_MEM_FENCE)
     a[gid] = b[lid]
 
 def main():
     arr = np.arange(N)
-    res = np.empty(N)
     print("Original array:", arr)
 
     print("Using device ...")
