@@ -16,20 +16,28 @@ import hashlib
 import warnings
 
 from numba.core.caching import IndexDataCacheFile, _Cache, _CacheImpl
-from numba.core.errors import NumbaWarning
+
+# from numba.core.errors import NumbaWarning
 from numba.core.serialize import dumps
 
 from numba_dpex.core import compiler
-from numba_dpex.core.kernel_interface.spirv_kernel import SpirvKernel
+
+# from numba_dpex.core.kernel_interface.spirv_kernel import SpirvKernel
 
 
 class SpirvKernelCacheImpl(_CacheImpl):
-    def reduce(self, kernel):
+    def reduce(self, data):
+        # TODO: Implement
+        # return cres._reduce()
+        # return (str, str, data)
         # return kernel._reduce_states()
         pass
 
     def rebuild(self, target_context, payload):
-        return SpirvKernel._rebuild(**payload)
+        # TODO: Implement _rebuild()
+        # return compiler.CompileResult._rebuild(target_context, *payload)
+        # return SpirvKernel._rebuild(**payload)
+        pass
 
     def check_cachable(self, cres):
         # For the time being, assuming all numba-dpex Kernels are always cachable.
@@ -89,10 +97,13 @@ class SpirvKernelCache(_Cache):
         self._cache_file.flush()
 
     def load_overload(self, sig, target_context):
+        print("numba_dpex.caching.SpirvKernelCache.load_overload().1")
         if not self._enabled:
+            print("numba_dpex.caching.SpirvKernelCache.load_overload().2")
             return
         key = self._index_key(sig, target_context.codegen())
         data = self._cache_file.load(key)
+        print("numba_dpex.caching.SpirvKernelCache.load_overload().3")
         return data
 
     def save_overload(self, sig, data, target_context):
@@ -102,7 +113,7 @@ class SpirvKernelCache(_Cache):
             return
         self._impl.locator.ensure_cache_path()
         key = self._index_key(sig, target_context.codegen())
-        data = self._impl.reduce(data)
+        # data = self._impl.reduce(data)
         self._cache_file.save(key, data)
 
     def _index_key(self, sig, codegen):
@@ -124,6 +135,8 @@ class SpirvKernelCache(_Cache):
         return (
             sig,
             codegen.magic_tuple(),
+            # device
+            # backend
             (
                 hashlib.sha256(codebytes).hexdigest(),
                 hashlib.sha256(cvarbytes).hexdigest(),

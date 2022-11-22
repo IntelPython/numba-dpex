@@ -8,12 +8,9 @@ from warnings import warn
 
 import dpctl
 import dpctl.program as dpctl_prog
-from numba.core import utils
-from numba.core.caching import Cache, _CacheImpl
 from numba.core.types import Array as ArrayType
 
 from numba_dpex import config
-from numba_dpex.caching import SpirvKernelCache
 from numba_dpex.core.descriptor import dpex_target
 from numba_dpex.core.exceptions import (
     ComputeFollowsDataInferenceError,
@@ -24,7 +21,6 @@ from numba_dpex.core.exceptions import (
     UnknownGlobalRangeError,
     UnsupportedBackendError,
     UnsupportedNumberOfRangeDimsError,
-    UnsupportedWorkItemSizeError,
 )
 from numba_dpex.core.kernel_interface.arg_pack_unpacker import Packer
 from numba_dpex.core.kernel_interface.spirv_kernel import SpirvKernel
@@ -60,6 +56,7 @@ class Dispatcher(object):
         debug_flags=None,
         compile_flags=None,
         array_access_specifiers=None,
+        enable_cache=True,
     ):
         self.typingctx = dpex_target.typing_context
         self.pyfunc = pyfunc
@@ -69,6 +66,8 @@ class Dispatcher(object):
         # TODO: To be removed once the__getitem__ is removed
         self._global_range = None
         self._local_range = None
+
+        self._enable_cache = enable_cache
 
         if array_access_specifiers:
             warn(
@@ -88,12 +87,7 @@ class Dispatcher(object):
         else:
             self._create_sycl_kernel_bundle_flags = []
 
-    def enable_caching(self):
-        # self._cache = SprivCache(self.pyfunc)
-        self._cache = SpirvKernelCache(self.pyfunc)
-
     def _check_range(self, range, device):
-
         if not isinstance(range, (tuple, list)):
             raise IllegalRangeValueError(self.kernel_name)
 
@@ -430,27 +424,28 @@ class Dispatcher(object):
         # TODO: Enable caching of kernels, but do it using Numba's caching
         # machinery
 
-        sig = utils.pysignature(self.pyfunc)
-        kernel = self._cache.load_overload(sig, dpex_target.target_context)
-        if kernel is None:
-            kernel = SpirvKernel(self.pyfunc, self.kernel_name)
+        # kernel = self._cache.load_overload(sig, dpex_target.target_context)
+        # exec_queue --> backend (enum)
+        # exec_queue --> device --> type (enum)
 
-            kernel.compile(
-                arg_types=argtypes,
-                debug=self.debug_flags,
-                extra_compile_flags=self.compile_flags,
-            )
+        kernel = SpirvKernel(self.pyfunc, self.kernel_name)
+        if self._enable_cache:
+            kernel.enable_caching()
 
-            # create a sycl::KernelBundle
-            kernel_bundle = dpctl_prog.create_program_from_spirv(
-                exec_queue,
-                kernel.device_driver_ir_module,
-                " ".join(self._create_sycl_kernel_bundle_flags),
-            )
-            #  get the sycl::kernel
-            kernel = kernel_bundle.get_sycl_kernel(kernel.module_name)
+        kernel.compile(
+            arg_types=argtypes,
+            debug=self.debug_flags,
+            extra_compile_flags=self.compile_flags,
+        )
 
-            self._cache.save_overload(sig, kernel, dpex_target.target_context)
+        # create a sycl::KernelBundle
+        kernel_bundle = dpctl_prog.create_program_from_spirv(
+            exec_queue,
+            kernel.device_driver_ir_module,
+            " ".join(self._create_sycl_kernel_bundle_flags),
+        )
+        #  get the sycl::kernel
+        sycl_kernel = kernel_bundle.get_sycl_kernel(kernel.module_name)
 
         packer = Packer(
             kernel_name=self.kernel_name,
@@ -461,7 +456,7 @@ class Dispatcher(object):
         )
 
         exec_queue.submit(
-            kernel,
+            sycl_kernel,
             packer.unpacked_args,
             global_range,
             local_range,
