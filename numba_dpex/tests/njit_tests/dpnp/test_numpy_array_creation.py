@@ -149,7 +149,9 @@ def filter_diag_str(request):
     return request.param
 
 
-@pytest.mark.parametrize("k", [-6, -1, 0, 1, 6], ids=["-6", "-1", "0", "1", "6"])
+@pytest.mark.parametrize(
+    "k", [-6, -1, 0, 1, 6], ids=["-6", "-1", "0", "1", "6"]
+)
 @pytest.mark.parametrize(
     "v",
     [
@@ -172,8 +174,8 @@ def filter_diag_str(request):
     ],
 )
 def test_diag(v, k, filter_diag_str):
-    if skip_test(filter_diag_str):
-        pytest.skip()
+    # if skip_test(filter_diag_str):
+    #     pytest.skip()
 
     a = np.array(v)
 
