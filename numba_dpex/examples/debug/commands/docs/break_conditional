@@ -1,0 +1,12 @@
+$ NUMBA_OPT=0 gdb-oneapi -q python
+(gdb) set breakpoint pending on
+(gdb) break simple_sum.py:23 if i == 1
+(gdb) run simple_sum.py
+...
+Thread 2.2 hit Breakpoint 1, with SIMD lane 1, __main__::data_parallel_sum () at simple_sum.py:23
+23          c[i] = a[i] + b[i]
+(gdb) print i
+$1 = 1
+(gdb) continue
+...
+Done...

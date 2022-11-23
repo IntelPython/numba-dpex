@@ -4,22 +4,18 @@ Getting Started
 Installation
 ------------
 
-Numba-dppy depends on following components:
+Numba-dpex depends on following components:
 
-* numba 0.53.* (`Intel Python Numba`_)
-* dpctl 0.8.* (`Intel Python dpctl`_)
-* dpnp >=0.6.* (optional, `Intel Python DPNP`_)
+* numba 0.54.* or 0.55.* (`Numba`_)
+* dpctl 0.13.* (`Intel Python dpctl`_)
+* dpnp 0.10.1 (`Intel Python DPNP`_)
 * `llvm-spirv`_ (SPIRV generation from LLVM IR)
 * `llvmdev`_ (LLVM IR generation)
 * `spirv-tools`_
+* `packaging`_
 * `cython`_ (for building)
 * `scipy`_ (for testing)
 * `pytest`_ (for testing)
-
-.. note::
-    Numba-dppy does not yet work with stock `Numba`_.
-    For now, we need a patched Numba version included in `Intel Python Numba`_.
-    See limitations_ for details.
 
 It is recommended to use conda packages from `Intel Distribution for Python`_
 channel or `anaconda.org/intel`_ channel.
@@ -30,7 +26,7 @@ Create conda environment:
 .. code-block:: bash
 
     export ONEAPI_ROOT=/opt/intel/oneapi
-    conda create -n numba-dppy-env numba-dppy dpnp -c ${ONEAPI_ROOT}/conda_channel
+    conda create -n numba-dpex-env numba-dpex dpnp -c ${ONEAPI_ROOT}/conda_channel
 
 Build and Install Conda Package
 -------------------------------
@@ -53,7 +49,7 @@ Install conda package:
 
 .. code-block:: bash
 
-    conda install numba-dppy
+    conda install numba-dpex
 
 Build and Install with setuptools
 ---------------------------------
@@ -64,8 +60,8 @@ installed in conda environment:
 .. code-block:: bash
 
     export ONEAPI_ROOT=/opt/intel/oneapi
-    conda create -n numba-dppy-env -c ${ONEAPI_ROOT}/conda_channel python=3.7 dpctl dpnp numba spirv-tools llvm-spirv llvmdev cython pytest
-    conda activate numba-dppy-env
+    conda create -n numba-dpex-env -c ${ONEAPI_ROOT}/conda_channel python=3.7 dpctl dpnp numba spirv-tools llvm-spirv llvmdev cython pytest
+    conda activate numba-dpex-env
 
 Activate DPC++ compiler:
 
@@ -88,34 +84,25 @@ For development:
 Testing
 -------
 
-See folder ``numba_dppy/tests``.
+See folder ``numba_dpex/tests``.
 
 To run the tests:
 
 .. code-block:: bash
 
-    python -m pytest --pyargs numba_dppy.tests
+    python -m pytest --pyargs numba_dpex.tests
 
 Examples
 --------
 
-See folder ``numba_dppy/examples``.
+See folder ``numba_dpex/examples``.
 
 To run the examples:
 
 .. code-block:: bash
 
-    python numba_dppy/examples/sum.py
+    python numba_dpex/examples/sum.py
 
-.. _limitations:
-
-Limitations
------------
-
-Using Numba-dppy requires `Intel Python Numba`_ as that version of Numba has
-patches needed to recognize :func:`dpctl.device_context` scope and trigger
-code-generation for a SYCL device. Work in underway to upstream all patches, so
-that in future Numba-dppy can work with upstream Numba.
 
 .. _`Numba`: https://github.com/numba/numba
 .. _`Intel Python Numba`: https://github.com/IntelPython/numba
@@ -124,6 +111,7 @@ that in future Numba-dppy can work with upstream Numba.
 .. _`llvm-spirv`: https://anaconda.org/intel/llvm-spirv
 .. _`llvmdev`: https://anaconda.org/intel/llvmdev
 .. _`spirv-tools`: https://anaconda.org/intel/spirv-tools
+.. _`packaging`: https://packaging.pypa.io/
 .. _`scipy`: https://anaconda.org/intel/scipy
 .. _`cython`: https://cython.org
 .. _`pytest`: https://docs.pytest.org

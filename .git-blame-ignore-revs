@@ -2,3 +2,6 @@
 
 # Migrate code style to Black
 8bd62e61bb70fe0483bd494040e4103fd050252a
+
+# Change black to use 80 chars
+2b9c67489cc8a5c6f13b28ec752b29a20c8c9a5f

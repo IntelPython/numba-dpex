@@ -4,7 +4,195 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.19.0] - 2022-11-21
+
+### Added
+* Supported numba0.56. (#818)
+* Supported dpnp0.11 and dpctl0.14.
+* Added customized exception classes. (#798)
+
+### Fixed
+* Fixed a crash when calling take() for input array with non-integer values. (#771)
+* Fixed pairwise_distance.py to run on machine with no FP64 support in HW.  (#806)
+
+## [0.18.1] - 2022-08-06
+
+### Added
+* Implemented support for `dpnp.empty()` (#728)
+
+### Changed
+* numba-dppy package is now renamed to numba-dpex.
+
+## [0.18.0] - 2022-02-22
+
+### Added
+* Run coverage in GitHub Actions and upload results to coveralls.io (#621)
+* Change black to only allow 80 char lines. Reformat sources. (#631)
+* Ignore formatting changes from git-blame. (#632)
+* Add `numba_support.py` with `numba_version` (#656)
+* Add skip_no_numba055 decorator (#662)
+* Parameterize test for atomics (#661)
+* Reuse decorator `skip_no_opencl_Xpu` to skip tests (#663)
+* Add decorator to skip unsupported atomics (#664)
+* Support arrays with `__sycl_usm_array_interface__` attribute (#629)
+* Support memory allocation in private address space (#640)
+* Move skips for opencl to helper (#665)
+* Support dpctl 0.12 (#669)
+* Implement compute-follows-data programming model [kernel API] (#598)
+* Use filter_str to skip tests on missing devices (#672)
+* Add check for DPNP and pin MKL version in workflow and dev environment (#648)
+* Add CODEOWNERS for distributing review process (#670)
+* Add `skip_no_dpnp` and apply it to all tests (#668)
+* Test skipping improvements (#675)
+* Use Python 3.9 in dev environment and pin DPNP (#644)
+* Add examples into package (#680)
+* Make possible to force debugging tests (#681)
+* Refactoring for debugging tests (#682)
+* Adopt Numba 0.55 debugging features (#654)
+* Run public CI on pull request (#695)
+* Support for coverage in internal CI (#708)
+* Update to dpnp 0.10 (#709)
+* Update recipe with dpctl and dpnp version for build (#710)
+
+### Changed
+* Move `dpcpp/llvm-spirv` from runtime to testing dependency (#659)
+
+### Fixed
+* Fix building with DPNP (#674)
+* Fix public CI: opencl driver, channel priority, dpctl version (#691)
+* Fix codestyle black (#696)
+* Fix documentation generation (#697)
+* Load dpctl lib on Linux using `libDPCTLSyclInterface.so.0` (#707)
+* Fix search llvm-spirv if dpcpp compiler package is not installed (#703)
+* Pin dpnp version in runtime to allow dev versions of dpnp (#712)
+
+## [0.17.4] - 2021-12-02
+
+### Changed
+* Move `dpcpp/llvm-spirv` from runtime to testing dependency by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/659
+
+## [0.17.3] - 2021-11-30
+
+### Changed
+* Use `llvm-spirv` from `dpcpp` compiler package by default [cherry picked from #649] (#651)
+
+### Fixed
+* Enable offloading for `numba.njit` in `dpctl.deveice_context` (#630)
+* Fix upload conditions for main and release branches (#610)
+* Fix DeprecationWarning when use `version.parse()` [cherry picked from #639] (#642)
+
+## [0.17.2] - 2021-11-15
+
+### Changed
+* Use llvm-spirv from bin-llvm during build for Linux and Windows (#626, #627)
+
+## [0.17.1] - 2021-11-10
+
+### Changed
+* Update clang to icx (#622)
+
+## [0.17.0] - 2021-11-03
+
+### Added
+* Use Python 3.9 [public CI] by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/574
+* Use `NUMBA_DPPY_DEBUG` for debugging GDB tests by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/578
+* Preliminary support Numba 0.55 (master branch) by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/583
+* Workflow for manually running tests using Numba PRs by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/586
+* Add public CI trigger on tags by @1e-to in https://github.com/IntelPython/numba-dppy/pull/589
+* Upload packages for `release*` branches by @1e-to in https://github.com/IntelPython/numba-dppy/pull/593
+* Update to dpctl 0.11 by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/595
+* Update to dpnp 0.9 by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/599
+* Improve the documenatation landing page by @diptorupd in https://github.com/IntelPython/numba-dppy/pull/601
+* Clean up README by @diptorupd in https://github.com/IntelPython/numba-dppy/pull/604
+
+### Fixed
+* Restrict dpctl to 0.10.* for release 0.16 by @1e-to in https://github.com/IntelPython/numba-dppy/pull/590
+* Fix upload from release branch by @1e-to in https://github.com/IntelPython/numba-dppy/pull/596
+* Unskip tests passing with dpnp 0.9.0rc1 by @PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/606
+
+## [0.16.1] - 2021-10-20
+
+### Changed
+* Fix dpctl to 0.10 (#590)
+* Add Public CI trigger for tags (#589)
+
+## [0.16.0] - 2021-09-28
+
+### Added
+- Improve build and infra scripts (#544)
+- Add docs about local variables lifetime (#534)
+- Public CI for Windows (#536, #558)
+- Add info about tags in documentation (#543)
+- Add code coverage configurations (#561)
+- Add support pytest-cov and pytest-xdist (#562)
+- Add documentation workflow (#547)
+- Test numba and numba-dppy API with GDB (#566)
+- Transform commands scripts for GDB to tests (#568)
+
+### Changed
+- Update dpnp 0.8 (#524)
+- Fix passing strides array to DPNP dot and matmul (#565)
+- Use older compiler for backwards compatibility (#549)
+- Update conda recipe dependency for dpnp (#535)
+- Update dpctl 0.10 (memcpy async) (#529)
+- Change channels priority in public CI (#532)
+- Added runtime dependency `llvm-spirv 11.*` (#523)
+- Update test matrix in README (#560)
+- Use dpctl 0.10* and dpnp 0.8* in development configuration (environment.yml)
+
+### Fixed
+- Update test and fix typo for atomics (#550)
+- Delete unused file `run_test.sh`
+- Fix Public CI for using development packages (#522)
+- Removed redundant import in docs (#521)
+
+## [0.15.0] - 2021-08-25
+
+### Added
+- Introduce array ultilites to check, allocate and copy memory using SYCL USM (#489)
+- Add packaging in run dependencies (#505)
+- Add skipping tests for run without GPU (#508)
+- Add CI pipeline on GitHub Actions for Linux (#507)
+- Enable dpctl.tensor.usm_ndarray for @dppy.kernel (#509)
+- Enable @vectorize for target dppy (#497)
+- Add integration channels to GitHub Actions and make workflow consistent with dpctl (#510)
+
+### Changed
+- Update to Numba 0.54.0 (#493)
+- Update to dpctl 0.9 (#514)
+- Update to dpnp 0.7 (#513)
+- Use dpcpp compiler package for Linux (#502)
+- Update go version (#515)
+
+### Removed
+- Remove llvmdev from runtime dependecies (#498)
+
+### Fixed
+- Fix required compiler flags for processing genreated DWARF symbols (#500)
+
+## [0.14.4] - 2021-07-09
+
+### Fixed
+- Fix emission of debug information (#424)
+- Fix examples demonstrating GDB usage on a numba_dppy.kernel function. (#455)
+- Remove address space cast from global to generic inside numba_dppy.kernel (#432)
+- Fix debugging of local variables (#432)
+- Assert offload to SYCL devices in tests (#466)
+- Removed calling opt to convert LLVM IR to LLVM Bitcode (#481)
+
+### Added
+- Add examples for debugging (#426)
+- Added a new NUMBA_DPPY_DEBUGINFO environment variable to control GDB usage (#460)
+- Add debug option to dppy.kernel decorator (#424)
+- Enable debugging of nested GPU functions (#424)
+- Enable setting breakpoints by function names while Debugging (#434)
+- Various fixes and improvements to documentation about debugging
+  (#479, #474, #475, #480, #475, #477, #468,#450)
+- Add automatic generation of commands for debugging (#463)
+- Add tests on debugging local variables (#421)
+- Enable eager compilation of numba_dppy.kernel (#291)
+- Increase test coverage for native atomic ops (#435)
+- Check and deter users from returning values from numba_dppy.kernel (#476)
 
 ## [0.14.3] - 2021-05-27
 

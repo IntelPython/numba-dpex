@@ -1,0 +1,19 @@
+# Run: NUMBA_OPT=0 gdb-oneapi -q -command commands/break_conditional python
+set trace-commands on
+set pagination off
+set breakpoint pending on
+break simple_sum.py:23 if i == 1
+run simple_sum.py
+# Expected:
+# ...
+# Thread 2.2 hit Breakpoint 1, with SIMD lane 1, __main__::data_parallel_sum () at simple_sum.py:23
+# 23          c[i] = a[i] + b[i]
+print i
+# Expected:
+# $1 = 1
+continue
+# Expected:
+# ...
+# Done...
+echo Done\n
+quit

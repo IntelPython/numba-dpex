@@ -1,52 +1,35 @@
 Backtrace
 ==========
 
-``backtrace``
--------------
+The ``backtrace`` command displays a summary of how your program got where it
+is. Consider the following example
+``numba_dpex/examples/debug/simple_dpex_func.py``:
 
-Let's consider the work of the command ``backtrace`` in the following example ``numba_dppy/examples/debug/simple_dppy_func.py``:
-
-.. literalinclude:: ../../../numba_dppy/examples/debug/simple_dppy_func.py
+.. literalinclude:: ../../../numba_dpex/examples/debug/simple_dpex_func.py
     :lines: 15-
     :linenos:
+    :lineno-match:
 
-.. note::
 
-    Known issues:
-        - Debug of the first line of the kernel and functions works out twice. See :ref:`single_stepping`.
+The section presents two examples of using Intel Distribution for GDB* to
+generate backtrace from a numa_dpex.kernel function. The first example presents
+the case where the kernel function does not invoke any other function. The
+second example presents the case where the kernel function invokes a
+numba_dpex.func.
 
-Run debugger:
+Example 1:
 
-.. code-block:: bash
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/backtrace_kernel
+    :language: shell-session
+    :emphasize-lines: 8,9
 
-    export NUMBA_OPT=0
-    gdb-oneapi -q --args python simple_dppy_func.py
+Example 2:
 
-Next we see the call stack from the kernel and the nested function:
-
-.. code-block:: bash
-
-    (gdb) break simple_dppy_func.py:28
-    Breakpoint 1 (simple_dppy_func.py:28) pending.
-    (gdb) run
-    Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::kernel_sum () at simple_dppy_func.py:28
-    28          i = dppy.get_global_id(0)
-    (gdb) backtrace
-    #0  __main__::kernel_sum () at simple_dppy_func.py:28
-    (gdb) step
-    Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::kernel_sum () at simple_dppy_func.py:28
-    28          i = dppy.get_global_id(0)
-    (gdb) step
-    29          c_in_kernel[i] = func_sum(a_in_kernel[i], b_in_kernel[i])
-    (gdb) step
-    __main__::func_sum () at simple_dppy_func.py:22
-    22          result = a_in_func + b_in_func
-    (gdb) backtrace
-    #0  __main__::func_sum () at simple_dppy_func.py:22
-    #1  __main__::kernel_sum () at simple_dppy_func.py:29
-    (gdb) continue
-    Continuing.
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/backtrace
+    :language: shell-session
+    :emphasize-lines: 8-10
 
 See also:
 
-    - `Backtraces in GDB <https://sourceware.org/gdb/current/onlinedocs/gdb/Backtrace.html#Backtrace>`_
+    - `Backtraces in GDB*
+      <https://sourceware.org/gdb/current/onlinedocs/gdb/Backtrace.html#Backtrace>`_

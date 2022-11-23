@@ -1,5 +1,5 @@
 package:
-    name: numba-dppy
+    name: numba-dpex
     version: {{ GIT_DESCRIBE_TAG }}
 
 source:
@@ -8,35 +8,38 @@ source:
 build:
     number: {{ GIT_DESCRIBE_NUMBER }}
     script_env:
-        - ONEAPI_ROOT
         - WHEELS_OUTPUT_FOLDER
 
 requirements:
     build:
         - {{ compiler('cxx') }}
+        - {{ compiler('dpcpp') }}  # [not osx]
     host:
         - python
         - setuptools
         - cython
-        - numba 0.53*
-        - dpctl 0.8.*
-        - dpnp >=0.6*,<0.7*  # [linux]
+        - numba 0.56*
+        - dpctl >=0.13.0
+        - dpnp >=0.11*
         - wheel
     run:
         - python
-        - numba 0.53*
-        - dpctl 0.8.*
+        - numba >=0.56*
+        - dpctl >=0.13.0
         - spirv-tools
-        - llvm-spirv
-        - llvmdev
-        - dpnp >=0.6*,<0.7*  # [linux]
+        - llvm-spirv 11.*
+        - dpnp >=0.11*
+        - packaging
 
 test:
-  requires:
-    - pytest
+    requires:
+        - pytest
+        - pytest-cov
+        - {{ compiler('dpcpp') }}  # [not osx]
+        - pexpect
 
 about:
-    home: https://github.com/IntelPython/numba-dppy
+    home: https://github.com/IntelPython/numba-dpex
     summary: "Numba extension for Intel CPU and GPU backend"
     license: Apache-2.0
     license_file: LICENSE
@@ -52,4 +55,4 @@ about:
 
 extra:
     recipe-maintainers:
-        - PokhodenkoSA
+        - Intel Python

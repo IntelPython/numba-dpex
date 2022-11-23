@@ -1,93 +1,81 @@
 Breakpoints
 ===========
 
-A `breakpoint` makes your program stop whenever a certain point in the program is reached.
+A `breakpoint` makes your program stop whenever a certain point in the program
+is reached.
 
-You can set breakpoints with the ``break`` command to specify the place where your program should stop in the kernel by line number or function name.
+You can set breakpoints with the ``break`` command to specify the place where
+your program should stop in the kernel. Define breakpoints by line numbers or
+function names.
 
 You have several ways to set breakpoints:
-  - break function
-  - break filename:function
-  - break filename:linenumber
-  
+  - break <function>
+  - break <filename>:<linenumber>
+  - break <filename>:<function>
+  - break … if <condition>
+
 See also:
-  - `GDB documentation of breakpoints`_.
+  - `Breakpoints in GDB*`_.
 
-.. _GDB documentation of breakpoints: https://sourceware.org/gdb/current/onlinedocs/gdb/Set-Breaks.html#Set-Breaks
+.. _Breakpoints in GDB*: https://sourceware.org/gdb/current/onlinedocs/gdb/Set-Breaks.html#Set-Breaks
 
-Consider ``numba-dppy`` kernel code. See source file ``numba_dppy/examples/debug/simple_sum.py``:
+Consider the following numba-dpex kernel code (refer
+``numba_dpex/examples/debug/simple_sum.py`` for full example):
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
+.. literalinclude:: ../../../numba_dpex/examples/debug/simple_sum.py
     :lines: 15-
     :linenos:
-
-Run debugger:
-
-.. code-block:: bash
-
-    export NUMBA_DPPY_DEBUGINFO=1
-    gdb-oneapi -q --args python simple_sum.py
+    :lineno-match:
 
 ``break function``
 ------------------
 
-GDB output:
+The debugger output:
 
-.. code-block:: bash
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/break_func
+    :language: shell-session
+    :emphasize-lines: 3
 
-  (gdb) break data_parallel_sum
-  Breakpoint 1 (data_parallel_sum) pending.
-  (gdb) run
+``break filename:linenumber``
+-----------------------------
 
-  Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:20
-  20      @dppy.kernel
+The debugger output:
 
-``break filename: linenumber``
-------------------------------
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/break_line_number
+    :language: shell-session
+    :emphasize-lines: 3
 
-GDB output:
+``break filename:function``
+---------------------------
 
-.. code-block:: bash
+The debugger output:
 
-  (gdb) break simple_sum.py:20
-  Breakpoint 1 (simple_sum.py:20) pending.
-  (gdb) run
-  
-  Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:20
-  20      @dppy.kernel
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/break_file_func
+    :language: shell-session
+    :emphasize-lines: 3
 
-``break filename: function``
-----------------------------
+``break … if cond``
+-------------------
 
-GDB output:
+The debugger output:
 
-.. code-block:: bash
-
-  (gdb) break simple_sum.py:data_parallel_sum
-  Breakpoint 1 (simple_sum.py:data_parallel_sum) pending.
-  (gdb) run
-  
-  Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:20
-  20      @dppy.kernel
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/break_conditional
+    :language: shell-session
+    :emphasize-lines: 3
 
 Breakpoints with nested functions
--------------------------------------
+---------------------------------
 
-Consider ``numba-dppy`` kernel code. See source file ``numba_dppy/examples/debug/simple_dppy_func.py``:
+Consider numba-dpex kernel code. See the source file
+``numba_dpex/examples/debug/simple_dpex_func.py``:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/simple_dppy_func.py
+.. literalinclude:: ../../../numba_dpex/examples/debug/simple_dpex_func.py
     :lines: 15-
     :linenos:
+    :lineno-match:
 
-GDB output:
+The debugger output:
 
-.. code-block:: bash
-
-  export NUMBA_DPPY_DEBUGINFO=1
-  gdb-oneapi -q --args python simple_sum.py
-  (gdb) break func_sum
-  Breakpoint 1 (func_sum) pending.
-  (gdb) run
-
-  Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::func_sum () at simple_dppy_func.py:22
-  22      result = a_in_func + b_in_func
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/break_nested_func
+    :language: shell-session
+    :emphasize-lines: 3

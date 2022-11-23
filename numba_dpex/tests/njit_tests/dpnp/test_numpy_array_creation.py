@@ -1,0 +1,188 @@
+# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+
+import dpctl
+import numpy as np
+import pytest
+from numba import njit
+
+from numba_dpex.tests._helper import dpnp_debug, filter_strings, skip_no_dpnp
+
+from ._helper import args_string, wrapper_function
+
+pytestmark = skip_no_dpnp
+
+list_of_dtypes = [
+    np.int32,
+    np.int64,
+    np.float32,
+    np.float64,
+]
+
+
+@pytest.fixture(params=list_of_dtypes)
+def input_array(request):
+    # The size of input and out arrays to be used
+    N = 10
+    a = np.array(np.random.random(N), request.param)
+    return a
+
+
+list_of_shape = [
+    (10),
+    (5, 2),
+]
+
+
+@pytest.fixture(params=list_of_shape)
+def get_shape(request):
+    return request.param
+
+
+list_of_unary_op = [
+    "copy",
+    "trace",
+]
+
+list_of_binary_op = [
+    "ones_like",
+    "zeros_like",
+]
+
+
+@pytest.fixture(params=list_of_unary_op)
+def unary_op(request):
+    return request.param
+
+
+@pytest.fixture(params=list_of_binary_op)
+def binary_op(request):
+    return request.param
+
+
+def get_op_fn(name, nargs):
+    args = args_string(nargs)
+    return wrapper_function(args, f"np.{name}({args})", globals())
+
+
+@pytest.mark.parametrize("filter_str", filter_strings)
+def test_unary_ops(filter_str, unary_op, input_array, capfd):
+    a = input_array
+    if unary_op == "trace":
+        a = input_array.reshape((2, 5))
+    fn = get_op_fn(unary_op, 1)
+    actual = np.empty(shape=a.shape, dtype=a.dtype)
+    expected = np.empty(shape=a.shape, dtype=a.dtype)
+
+    f = njit(fn)
+    device = dpctl.SyclDevice(filter_str)
+    with dpctl.device_context(device), dpnp_debug():
+        actual = f(a)
+        captured = capfd.readouterr()
+        assert "dpnp implementation" in captured.out
+
+    expected = fn(a)
+    np.testing.assert_allclose(actual, expected, rtol=1e-3, atol=0)
+
+
+@pytest.fixture(params=list_of_dtypes + [None])
+def dtype(request):
+    return request.param
+
+
+@pytest.mark.parametrize("filter_str", filter_strings)
+def test_binary_op(filter_str, binary_op, input_array, dtype, get_shape, capfd):
+    a = np.reshape(input_array, get_shape)
+    fn = get_op_fn(binary_op, 2)
+    actual = np.empty(shape=a.shape, dtype=a.dtype)
+    expected = np.empty(shape=a.shape, dtype=a.dtype)
+
+    f = njit(fn)
+    device = dpctl.SyclDevice(filter_str)
+    with dpctl.device_context(device), dpnp_debug():
+        actual = f(a, dtype)
+        captured = capfd.readouterr()
+        assert "dpnp implementation" in captured.out
+
+    expected = fn(a, dtype)
+    np.testing.assert_allclose(actual, expected, rtol=1e-3, atol=0)
+
+
+list_of_full = [
+    "full_like",
+]
+
+
+@pytest.fixture(params=list_of_full)
+def full_name(request):
+    return request.param
+
+
+@pytest.mark.parametrize("filter_str", filter_strings)
+def test_full(filter_str, full_name, input_array, get_shape, capfd):
+    a = np.reshape(input_array, get_shape)
+    fn = get_op_fn(full_name, 2)
+    actual = np.empty(shape=a.shape, dtype=a.dtype)
+    expected = np.empty(shape=a.shape, dtype=a.dtype)
+
+    f = njit(fn)
+    device = dpctl.SyclDevice(filter_str)
+    with dpctl.device_context(device), dpnp_debug():
+        actual = f(a, np.array([2]))
+        captured = capfd.readouterr()
+        assert "dpnp implementation" in captured.out
+
+    expected = fn(a, np.array([2]))
+    np.testing.assert_allclose(actual, expected, rtol=1e-3, atol=0)
+
+
+list_of_filter_diag_strs = [
+    "opencl:gpu:0",
+    "level_zero:gpu:0",
+    # "opencl:cpu:0",
+]
+
+
+@pytest.fixture(params=list_of_filter_diag_strs)
+def filter_diag_str(request):
+    return request.param
+
+
+@pytest.mark.parametrize("k", [-6, -1, 0, 1, 6], ids=["-6", "-1", "0", "1", "6"])
+@pytest.mark.parametrize(
+    "v",
+    [
+        [0, 1, 2, 3, 4],
+        [1, 1, 1, 1, 1],
+        [[0, 0], [0, 0]],
+        [[1, 2], [1, 2]],
+        [[1, 2], [3, 4]],
+        [[0, 1, 2], [3, 4, 5], [6, 7, 8]],
+        [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]],
+    ],
+    ids=[
+        "[0, 1, 2, 3, 4]",
+        "[1, 1, 1, 1, 1]",
+        "[[0, 0], [0, 0]]",
+        "[[1, 2], [1, 2]]",
+        "[[1, 2], [3, 4]]",
+        "[[0, 1, 2], [3, 4, 5], [6, 7, 8]]",
+        "[[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]]",
+    ],
+)
+def test_diag(v, k, filter_diag_str):
+    if skip_test(filter_diag_str):
+        pytest.skip()
+
+    a = np.array(v)
+
+    def fn(a, k):
+        return np.diag(a, k)
+
+    f = njit(fn)
+    with dpctl.device_context(filter_diag_str), dpnp_debug():
+        actual = f(a, k)
+
+    expected = fn(a, k)
+    np.testing.assert_allclose(actual, expected, rtol=1e-3, atol=0)

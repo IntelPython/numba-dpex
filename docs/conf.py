@@ -16,14 +16,16 @@
 
 import sphinx_rtd_theme
 
+import numba_dpex
+
 # -- Project information -----------------------------------------------------
 
-project = "numba-dppy"
-copyright = "2021, Intel"
+project = "numba-dpex"
+copyright = "2021,2022 Intel"
 author = "Intel"
 
 # The full version, including alpha/beta/rc tags
-release = "0.14.3"
+release = numba_dpex.__version__
 
 
 # -- General configuration ---------------------------------------------------
@@ -36,6 +38,7 @@ extensions = [
     "sphinx_rtd_theme",
     "sphinx.ext.autodoc",
     "sphinx.ext.todo",
+    "sphinx.ext.intersphinx",
     "sphinxcontrib.apidoc",
 ]
 
@@ -64,10 +67,10 @@ html_theme = "sphinx_rtd_theme"
 # so a file named "default.css" will overwrite the builtin "default.css".
 # html_static_path = ["_static"]
 
-modindex_common_prefix = ["numba_dppy."]
+modindex_common_prefix = ["numba_dpex."]
 
 # See https://github.com/sphinx-contrib/apidoc
-apidoc_module_dir = "../numba_dppy"
+apidoc_module_dir = "../numba_dpex"
 apidoc_output_dir = "apidoc"
 apidoc_excluded_paths = ["tests"]
 apidoc_separate_modules = True

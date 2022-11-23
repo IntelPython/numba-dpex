@@ -1,0 +1,65 @@
+name: Coverage
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'numba_dpex/**'
+      - environment/coverage.yml
+
+jobs:
+  main:
+    name: Generate coverage and push to Coveralls.io
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup numba-dpex
+        uses: ./.github/actions/setup-numba-dpex
+        with:
+          environment: environment/coverage.yml
+
+      - name: Test installation
+        run: |
+          conda list
+          python -c "import numba_dpex; print(numba_dpex.__file__)"
+
+      - name: Run tests with coverage
+        run: |
+          pytest -q -ra --disable-warnings --cov --cov-report term-missing --pyargs numba_dpex -vv
+
+      - name: Install coveralls
+        shell: bash -l {0}
+        run: |
+          pip install coveralls==3.2.0
+
+      - name: Upload coverage data to coveralls.io
+        run: |
+          coveralls --service=github
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+          COVERALLS_PARALLEL: true
+
+  coveralls:
+    name: Indicate completion to coveralls.io
+    needs: main
+    runs-on: ubuntu-latest
+    container: python:3-slim
+    steps:
+    - name: Coveralls Finished
+      run: |
+        pip3 install --upgrade coveralls
+        coveralls --finish
+      env:
+        GITHUB_TOKEN: ${{ secrets.github_token }}
+        COVERALLS_PARALLEL: true
