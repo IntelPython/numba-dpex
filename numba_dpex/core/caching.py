@@ -18,7 +18,7 @@ from numba.core.caching import CacheImpl, IndexDataCacheFile, _Cache
 from numba.core.serialize import dumps
 
 
-class SpirvKernelCacheImpl(CacheImpl):
+class KernelCacheImpl(CacheImpl):
     """Implementation of `CacheImpl` to be used by subclasses of `_Cache`.
 
     This class is an implementation of `CacheImpl` to be used by subclasses of `_Cache`.
@@ -60,29 +60,36 @@ class SpirvKernelCacheImpl(CacheImpl):
         Returns:
             bool: Return `True` if cacheable, otherwise `False`.
         """
-        # TODO: Although, for the time being, assuming all SPIR-V Kernels
+        # TODO: Although, for the time being, assuming all Kernels in numba_dpex
         # are always cachable. However, we might need to add some bells and
         # whistles in the future. Look at numba.core.caching for how to implement.
         return True
 
 
-class SpirvKernelCache(_Cache):
-    """Implements a cache that saves and loads SPIR-V kernels and compile results.
+class KernelCache(_Cache):
+    """Implements a cache that saves and loads kernels and compile results.
 
     This class implements the ABC `_Cache`. Mainly constructs key-value pair
     for the data to be cached. The data has been saved/retrieved from the file
     using that key-value pair.
+
+    TODO:
+        1. Hashcode from the kernel object to differentiate between two functions with
+        same signature but different bodies.
+
+        2. Implement a more efficient caching mechanism. With fixed size ordered hashtable
+        and a priority queue based on cache hit/miss.
     """
 
     # _CacheImpl object to be used
-    _impl_class = SpirvKernelCacheImpl
+    _impl_class = KernelCacheImpl
 
     def __init__(self, py_func):
-        """Constructor for SprivKernelCache.
+        """Constructor for KernelCache.
 
         Args:
             py_func (function): The python function of the corresponding
-                                spirv kernel to be cached.
+                                kernel to be cached.
         """
         self._name = repr(py_func)
         self._py_func = py_func
@@ -181,8 +188,8 @@ class SpirvKernelCache(_Cache):
 
         Args:
             sig (inspect.Signature): The signature object of a python function.
-            codegen (numba_dpex.codegen.JITSPIRVCodegen):
-                The JITSPIRVCodegen found from the target context.
+            codegen (numba.core.codegen.Codegen):
+                The codegen object found from the target context.
             backend (enum, optional): A 'backend_type' enum. Defaults to None.
             device_type (enum, optional): A 'device_type' enum. Defaults to None.
 

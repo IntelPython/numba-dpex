@@ -10,7 +10,7 @@ from numba.core.caching import NullCache
 
 from numba_dpex import spirv_generator
 from numba_dpex.core import _compile_helper
-from numba_dpex.core.caching import SpirvKernelCache
+from numba_dpex.core.caching import KernelCache
 from numba_dpex.core.descriptor import dpex_target
 from numba_dpex.core.exceptions import UncompiledKernelError, UnreachableError
 
@@ -33,7 +33,7 @@ class SpirvKernel(KernelInterface):
             raise UnreachableError()
 
     def enable_caching(self):
-        self._cache = SpirvKernelCache(self._func)
+        self._cache = KernelCache(self._func)
 
     @property
     def llvm_module(self):

@@ -30,7 +30,7 @@ def test_caching_kernel_using_same_queue(filter_str):
     c = np.ones_like(a)
 
     with dpctl.device_context(filter_str) as gpu_queue:
-        func = dpex.kernel(data_parallel_sum)
+        func = dpex.kernel(data_parallel_sum, enable_cache=True)
         cached_kernel = func[global_size, dpex.DEFAULT_LOCAL_SIZE].specialize(
             func._get_argtypes(a, b, c), gpu_queue
         )

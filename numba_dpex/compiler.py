@@ -12,12 +12,15 @@ import dpctl
 import dpctl.program as dpctl_prog
 import dpctl.utils
 import numpy as np
-from numba.core import compiler, ir, types
+from numba.core import compiler, ir, types, utils
+from numba.core.caching import NullCache
 from numba.core.compiler import CompilerBase, DefaultPassBuilder
 from numba.core.compiler_lock import global_compiler_lock
 from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
 from numba_dpex import config
+from numba_dpex.core.caching import KernelCache
+from numba_dpex.core.descriptor import dpex_target
 from numba_dpex.core.exceptions import KernelHasReturnValueError
 from numba_dpex.core.passbuilder import PassBuilder
 from numba_dpex.core.types import Array
@@ -703,13 +706,14 @@ class JitKernel(KernelBase):
         super(JitKernel, self).__init__()
 
         self.py_func = func
-        self.definitions = {}
+        # self.definitions = {}
         self.debug = debug
         self.access_types = access_types
-
-        from .core.descriptor import dpex_target
-
+        self._cache = NullCache
         self.typingctx = dpex_target.typing_context
+
+    def enable_caching(self):
+        self._cache = KernelCache(self.py_func)
 
     def _get_argtypes(self, *args):
         """
@@ -799,22 +803,30 @@ class JitKernel(KernelBase):
         # caching as well.
         assert queue is not None
 
-        sycl_ctx = None
-        kernel = None
-        # we were previously using the _env_ptr of the device_env, the sycl_queue
-        # should be sufficient to cache the compiled kernel for now, but we should
-        # use the device type to cache such kernels.
-        key_definitions = argtypes
-        result = self.definitions.get(key_definitions)
-        if result:
-            sycl_ctx, kernel = result
+        # sycl_ctx = None
+        # kernel = None
+        # # we were previously using the _env_ptr of the device_env, the sycl_queue
+        # # should be sufficient to cache the compiled kernel for now, but we should
+        # # use the device type to cache such kernels.
+        # key_definitions = argtypes
+        # result = self.definitions.get(key_definitions)
+        # if result:
+        #     sycl_ctx, kernel = result
 
-        if sycl_ctx and sycl_ctx == queue.sycl_context:
-            return kernel
-        else:
+        # if sycl_ctx and sycl_ctx == queue.sycl_context:
+        #     return kernel
+        # else:
+        #     kernel = compile_kernel(
+        #         queue, self.py_func, argtypes, self.access_types, self.debug
+        #     )
+
+        #     self.definitions[key_definitions] = (queue.sycl_context, kernel)
+
+        sig = utils.pysignature(self.py_func)
+        kernel = self._cache.load_overload(sig, queue.sycl_context)
+        if kernel is None:
             kernel = compile_kernel(
                 queue, self.py_func, argtypes, self.access_types, self.debug
             )
-
-            self.definitions[key_definitions] = (queue.sycl_context, kernel)
+            self._cache.save_overload(sig, kernel)
         return kernel
