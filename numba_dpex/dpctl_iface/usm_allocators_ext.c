@@ -356,7 +356,7 @@ error:
 
 MOD_INIT(_usm_allocators_ext)
 {
-    PyObject *m;
+    PyObject *m = NULL;
     MOD_DEF(m, "numba_dpex._usm_allocators_ext", "No docs", ext_methods)
     if (m == NULL)
         return MOD_ERROR_VAL;
