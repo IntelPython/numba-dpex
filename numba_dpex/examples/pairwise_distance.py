@@ -4,6 +4,7 @@
 
 import argparse
 from math import sqrt
+from string import Template
 from time import time
 
 import dpctl
@@ -91,7 +92,9 @@ def main():
         times = driver()
 
     times = np.asarray(times, dtype=np.float32)
-    print("Average time of %d runs is = %fs" % (args.r, times.mean()))
+    t = Template("Average time of $runs is = ${timing}")
+    tstr = t.substitute(runs=args.r, timing=times.mean())
+    print(tstr)
 
     print("Done...")
 
