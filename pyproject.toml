@@ -38,3 +38,9 @@ exclude_lines = [
   "@register_jitable",
   "def dpnp_impl",
 ]
+
+[tool.versioneer]
+VCS = "git"
+style = "pep440"
+versionfile_source = "numba_dpex/_version.py"
+parentdir_prefix = ""
