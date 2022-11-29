@@ -35,7 +35,11 @@ from numba_dpex.core.passes.passes import (
     NoPythonBackend,
     ParforPass,
     PreParforPass,
+    ParforFusionPass,
+    ParforPreLoweringPass,
+    ParforComputeFollowsDataPass,
 )
+
 from numba_dpex.core.passes.rename_numpy_functions_pass import (
     RewriteNdarrayFunctionsPass,
     RewriteOverloadedNumPyFunctionsPass,
@@ -129,6 +133,9 @@ class PassBuilder(object):
         if not state.flags.no_rewrites:
             pm.add_pass(NopythonRewrites, "nopython rewrites")
         pm.add_pass(ParforPass, "convert to parfors")
+        pm.add_pass(ParforComputeFollowsData, "tag parfors for compute follows data")
+        pm.add_pass(ParforFusionPass, "fuse parfors")
+        pm.add_pass(ParforPreLoweringPass, "parfor prelowering")
 
         # legalise
         pm.add_pass(

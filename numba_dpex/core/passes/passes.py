@@ -24,9 +24,11 @@ from numba.core.errors import (
     new_error_context,
 )
 from numba.core.ir_utils import remove_dels
-from numba.parfors.parfor import Parfor
+from numba.parfors.parfor import Parfor, ParforPassStates, has_cross_iter_dep
 from numba.parfors.parfor import ParforPass as _parfor_ParforPass
 from numba.parfors.parfor import PreParforPass as _parfor_PreParforPass
+from numba.parfors.parfor import ParforFusionPass as _parfor_ParforFusionPass
+from numba.parfors.parfor import ParforPreLoweringPass as _parfor_ParforPreLoweringPass
 from numba.parfors.parfor import swap_functions_map
 
 from numba_dpex import config
@@ -206,6 +208,206 @@ class ParforPass(FunctionPass):
         # Ensure we have an IR and type information.
         assert state.func_ir
         parfor_pass = _parfor_ParforPass(
+            state.func_ir,
+            state.type_annotation.typemap,
+            state.type_annotation.calltypes,
+            state.return_type,
+            state.typingctx,
+            state.targetctx,
+            state.flags.auto_parallel,
+            state.flags,
+            state.metadata,
+            state.parfor_diagnostics,
+        )
+
+        parfor_pass.run()
+
+        if config.DEBUG or config.DUMP_IR:
+            name = state.func_ir.func_id.func_qualname
+            print(("IR DUMP: %s" % name).center(80, "-"))
+            state.func_ir.dump()
+
+        return True
+
+
+@register_pass(mutates_CFG=True, analysis_only=False)
+class ParforFusionPass(FunctionPass):
+
+    _name = "dpex_parfor_fusion_pass"
+
+    def __init__(self):
+        FunctionPass.__init__(self)
+
+    def run_pass(self, state):
+        """
+        Convert data-parallel computations into Parfor nodes
+        """
+        # Ensure we have an IR and type information.
+        assert state.func_ir
+        parfor_pass = _parfor_ParforFusionPass(
+            state.func_ir,
+            state.type_annotation.typemap,
+            state.type_annotation.calltypes,
+            state.return_type,
+            state.typingctx,
+            state.targetctx,
+            state.flags.auto_parallel,
+            state.flags,
+            state.metadata,
+            state.parfor_diagnostics,
+        )
+
+        parfor_pass.run()
+
+        if config.DEBUG or config.DUMP_IR:
+            name = state.func_ir.func_id.func_qualname
+            print(("IR DUMP: %s" % name).center(80, "-"))
+            state.func_ir.dump()
+
+        return True
+
+
+@register_pass(mutates_CFG=True, analysis_only=False)
+class ParforPreLoweringPass(FunctionPass):
+
+    _name = "dpex_parfor_prelowering_pass"
+
+    def __init__(self):
+        FunctionPass.__init__(self)
+
+    def run_pass(self, state):
+        """
+        Convert data-parallel computations into Parfor nodes
+        """
+        # Ensure we have an IR and type information.
+        assert state.func_ir
+        parfor_pass = _parfor_ParforPreLoweringPass(
+            state.func_ir,
+            state.type_annotation.typemap,
+            state.type_annotation.calltypes,
+            state.return_type,
+            state.typingctx,
+            state.targetctx,
+            state.flags.auto_parallel,
+            state.flags,
+            state.metadata,
+            state.parfor_diagnostics,
+        )
+
+        parfor_pass.run()
+
+        if config.DEBUG or config.DUMP_IR:
+            name = state.func_ir.func_id.func_qualname
+            print(("IR DUMP: %s" % name).center(80, "-"))
+            state.func_ir.dump()
+
+        return True
+
+
+class ParforComputeFollowsData(ParforPassStates):
+
+    """ParforComputeFollowsData class is responsible for tagging parfors
+    """
+
+    def run(self):
+        """run parfor compute follows data pass"""
+
+        """
+        # simplify CFG of parfor body loops since nested parfors with extra
+        # jumps can be created with prange conversion
+        n_parfors = simplify_parfor_body_CFG(self.func_ir.blocks)
+        # simplify before fusion
+        simplify(self.func_ir, self.typemap, self.calltypes, self.metadata["parfors"])
+        # need two rounds of copy propagation to enable fusion of long sequences
+        # of parfors like test_fuse_argmin (some PYTHONHASHSEED values since
+        # apply_copies_parfor depends on set order for creating dummy assigns)
+        simplify(self.func_ir, self.typemap, self.calltypes, self.metadata["parfors"])
+
+        if self.options.fusion and n_parfors >= 2:
+            self.func_ir._definitions = build_definitions(self.func_ir.blocks)
+            self.array_analysis.equiv_sets = dict()
+            self.array_analysis.run(self.func_ir.blocks)
+
+            # Get parfor params to calculate reductions below.
+            _, parfors = get_parfor_params(self.func_ir.blocks,
+                                           self.options.fusion,
+                                           self.nested_fusion_info)
+
+            # Find reductions so that fusion can be disallowed if a
+            # subsequent parfor read a reduction variable.
+            for p in parfors:
+                p.redvars, p.reddict = get_parfor_reductions(self.func_ir,
+                                                             p,
+                                                             p.params,
+                                                             self.calltypes)
+
+            # reorder statements to maximize fusion
+            # push non-parfors down
+            maximize_fusion(self.func_ir, self.func_ir.blocks, self.typemap,
+                                                            up_direction=False)
+            dprint_func_ir(self.func_ir, "after maximize fusion down")
+            self.fuse_parfors(self.array_analysis,
+                              self.func_ir.blocks,
+                              self.func_ir,
+                              self.typemap)
+            dprint_func_ir(self.func_ir, "after first fuse")
+            # push non-parfors up
+            maximize_fusion(self.func_ir, self.func_ir.blocks, self.typemap)
+            dprint_func_ir(self.func_ir, "after maximize fusion up")
+            # try fuse again after maximize
+            self.fuse_parfors(self.array_analysis,
+                              self.func_ir.blocks,
+                              self.func_ir,
+                              self.typemap)
+            dprint_func_ir(self.func_ir, "after fusion")
+            # remove dead code after fusion to remove extra arrays and variables
+            simplify(self.func_ir, self.typemap, self.calltypes, self.metadata["parfors"])
+        """
+        self.tag_parfors(self.array_analysis,
+                         self.func_ir.blocks,
+                         self.func_ir,
+                         self.typemap)
+
+    def tag_parfors(self, array_analysis, blocks, func_ir, typemap):
+        for label, block in blocks.items():
+            for stmt in block.body:
+                if isinstance(stmt, Parfor):
+                    p1_cross_dep, p1_ip, p1_ia, p1_non_ia = has_cross_iter_dep(stmt, func_ir, typemap)
+                    # We don't handle the recursive case at the moment.
+                    # Should look at p1_non_ia, meaning arrays accessed in a parfor but not with the parfor index?
+                    for arr in p1_ia:
+                        arr_typ = typemap[arr]
+                        # if arr_typ isinstance device array then change parfor tag.
+                        # Should look at all arrays and make sure they are the same type.
+
+    """
+    def fuse_recursive_parfor(self, parfor, equiv_set, func_ir, typemap):
+        blocks = wrap_parfor_blocks(parfor)
+        maximize_fusion(self.func_ir, blocks, self.typemap)
+        dprint_func_ir(self.func_ir, "after recursive maximize fusion down", blocks)
+        arr_analysis = array_analysis.ArrayAnalysis(self.typingctx, self.func_ir,
+                                                self.typemap, self.calltypes)
+        arr_analysis.run(blocks, equiv_set)
+        self.fuse_parfors(arr_analysis, blocks, func_ir, typemap)
+        unwrap_parfor_blocks(parfor)
+    """
+
+
+@register_pass(mutates_CFG=True, analysis_only=False)
+class ParforComputeFollowsDataPass(FunctionPass):
+
+    _name = "dpex_parfor_computefollowdata_pass"
+
+    def __init__(self):
+        FunctionPass.__init__(self)
+
+    def run_pass(self, state):
+        """
+        Convert data-parallel computations into Parfor nodes
+        """
+        # Ensure we have an IR and type information.
+        assert state.func_ir
+        parfor_pass = ParforComputeFollowsData(
             state.func_ir,
             state.type_annotation.typemap,
             state.type_annotation.calltypes,
