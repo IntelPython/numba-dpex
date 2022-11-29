@@ -54,10 +54,10 @@ void *save_queue_allocator(size_t size, void *opaque)
                 "Fatal: failed to allocate memory using DPCTLmalloc_shared.\n");
         exit(-1);
     }
-// Set first pointer-sized data in allocated space to be the current queue.
-*(void **)data = cur_queue;
-// Return the pointer after this queue in memory.
-return (char *)data + sizeof(void *);
+    // Set first pointer-sized data in allocated space to be the current queue.
+    *(void **)data = cur_queue;
+    // Return the pointer after this queue in memory.
+    return (char *)data + sizeof(void *);
 }
 
 void save_queue_deallocator(void *data, void *opaque)
