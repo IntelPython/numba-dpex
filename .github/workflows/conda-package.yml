@@ -147,7 +147,6 @@ jobs:
         run: |
           ls
           pwd
-          sycl-ls
           cd ./numba-dpex/numba_dpex/examples/
           source $CONDA/etc/profile.d/conda.sh
           conda activate numba_dpex_env
