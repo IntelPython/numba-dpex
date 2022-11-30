@@ -144,6 +144,7 @@ jobs:
           export OCL_ICD_FILENAMES=libintelocl.so
           python -m pytest -q -ra --disable-warnings --pyargs $MODULE_NAME -vv
       - name: Run examples
+        run: |
           cd numba_dpex/examples/
           source $CONDA/etc/profile.d/conda.sh
           conda activate numba_dpex_env
