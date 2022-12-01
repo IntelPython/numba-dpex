@@ -8,9 +8,12 @@ from warnings import warn
 
 import dpctl
 import dpctl.program as dpctl_prog
+from numba.core import utils
+from numba.core.caching import NullCache
 from numba.core.types import Array as ArrayType
 
 from numba_dpex import config
+from numba_dpex.core.caching import KernelCache
 from numba_dpex.core.descriptor import dpex_target
 from numba_dpex.core.exceptions import (
     ComputeFollowsDataInferenceError,
@@ -67,6 +70,7 @@ class Dispatcher(object):
         self._global_range = None
         self._local_range = None
 
+        self._cache = NullCache()
         self._enable_cache = enable_cache
 
         if array_access_specifiers:
@@ -86,6 +90,9 @@ class Dispatcher(object):
             self._create_sycl_kernel_bundle_flags = ["-g", "-cl-opt-disable"]
         else:
             self._create_sycl_kernel_bundle_flags = []
+
+    def enable_caching(self):
+        self._cache = KernelCache(self.pyfunc)
 
     def _check_range(self, range, device):
         if not isinstance(range, (tuple, list)):
@@ -425,26 +432,43 @@ class Dispatcher(object):
         # TODO: Enable caching of kernels, but do it using Numba's caching
         # machinery
 
-        kernel = SpirvKernel(self.pyfunc, self.kernel_name)
-        if self._enable_cache:
-            kernel.enable_caching()
-
-        kernel.compile(
-            arg_types=argtypes,
-            debug=self.debug_flags,
-            extra_compile_flags=self.compile_flags,
+        # load the kernel from cache
+        sig = utils.pysignature(self.pyfunc)
+        artifact = self._cache.load_overload(
+            sig,
+            dpex_target.target_context,
             backend=backend,
             device_type=device_type,
         )
+        if artifact is not None:
+            device_driver_ir_module, kernel_module_name = artifact
+        else:
+            kernel = SpirvKernel(self.pyfunc, self.kernel_name)
+
+            kernel.compile(
+                arg_types=argtypes,
+                debug=self.debug_flags,
+                extra_compile_flags=self.compile_flags,
+            )
+            device_driver_ir_module = kernel.device_driver_ir_module
+            kernel_module_name = kernel.module_name
+
+            self._cache.save_overload(
+                sig,
+                (device_driver_ir_module, kernel_module_name),
+                kernel.target_context,
+                backend=backend,
+                device_type=device_type,
+            )
 
         # create a sycl::KernelBundle
         kernel_bundle = dpctl_prog.create_program_from_spirv(
             exec_queue,
-            kernel.device_driver_ir_module,
+            device_driver_ir_module,
             " ".join(self._create_sycl_kernel_bundle_flags),
         )
         #  get the sycl::kernel
-        sycl_kernel = kernel_bundle.get_sycl_kernel(kernel.module_name)
+        sycl_kernel = kernel_bundle.get_sycl_kernel(kernel_module_name)
 
         packer = Packer(
             kernel_name=self.kernel_name,

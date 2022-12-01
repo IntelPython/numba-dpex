@@ -49,11 +49,14 @@ def autojit(debug=None, access_types=None, enable_cache=True):
             pyfunc, access_types
         )
         disp = Dispatcher(
-            pyfunc=pyfunc,
+            pyfunc,
             debug_flags=debug,
             array_access_specifiers=ordered_arg_access_types,
             enable_cache=enable_cache,
         )
+
+        if enable_cache:
+            disp.enable_caching()
 
         return disp
 

@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import dpctl
+import dpctl.tensor as dpt
 import numpy as np
 import pytest
 
@@ -10,6 +11,35 @@ import numba_dpex as dpex
 from numba_dpex.tests._helper import filter_strings
 
 
+@dpex.kernel
+def data_parallel_sum(x, y, z):
+    """
+    Vector addition using the ``kernel`` decorator.
+    """
+    i = dpex.get_global_id(0)
+    z[i] = x[i] + y[i]
+
+
+# @pytest.mark.parametrize("filter_str", filter_strings)
+def test_caching_save_load_basic():
+    filter_str = "level_zero:gpu:0"
+
+    a = dpt.arange(0, 100, device=filter_str)
+    b = dpt.arange(0, 100, device=filter_str)
+    c = dpt.zeros_like(a, device=filter_str)
+
+    data_parallel_sum[(100,)](a, b, c)
+
+    p = dpt.arange(0, 100, device=filter_str)
+    q = dpt.arange(0, 100, device=filter_str)
+    r = dpt.zeros_like(a, device=filter_str)
+
+    data_parallel_sum[(100,)](p, q, r)
+
+    assert np.all(dpt.asnumpy(r) == dpt.asnumpy(c))
+
+
+@pytest.mark.skip(reason="only applicable for a non-CFD scenario")
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_caching_kernel_using_same_queue(filter_str):
     """Test kernel caching when the same queue is used to submit a kernel
@@ -42,6 +72,7 @@ def test_caching_kernel_using_same_queue(filter_str):
             assert _kernel == cached_kernel
 
 
+@pytest.mark.skip(reason="only applicable for a non-CFD scenario")
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_caching_kernel_using_same_context(filter_str):
     """Test kernel caching for the scenario where different SYCL queues that
@@ -76,3 +107,7 @@ def test_caching_kernel_using_same_context(filter_str):
                 func._get_argtypes(a, b, c), gpu_queue
             )
             assert _kernel == cached_kernel
+
+
+if __name__ == "__main__":
+    test_caching_save_load_basic()

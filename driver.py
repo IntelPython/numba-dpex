@@ -23,13 +23,19 @@ def main():
     b = dpt.arange(0, 100, device="level_zero:gpu:0")
     c = dpt.zeros_like(a, device="level_zero:gpu:0")
 
-    # d = Dispatcher(pyfunc=data_parallel_sum)
+    # d = Dispatcher(data_parallel_sum)
     # d(a, b, c, global_range=[100])
     data_parallel_sum[(100,)](a, b, c)
     print(dpt.asnumpy(a))
     print(dpt.asnumpy(b))
     print(dpt.asnumpy(c))
     print("Done...")
+
+    # data_parallel_sum[(100,)](a, b, c)
+    # print(dpt.asnumpy(a))
+    # print(dpt.asnumpy(b))
+    # print(dpt.asnumpy(c))
+    # print("Done...")
 
 
 if __name__ == "__main__":

@@ -5,13 +5,10 @@
 import logging
 from types import FunctionType
 
-from numba.core import ir, utils
-from numba.core.caching import NullCache
+from numba.core import ir
 
 from numba_dpex import spirv_generator
 from numba_dpex.core import _compile_helper
-from numba_dpex.core.caching import KernelCache
-from numba_dpex.core.descriptor import dpex_target
 from numba_dpex.core.exceptions import UncompiledKernelError, UnreachableError
 
 from .kernel_base import KernelInterface
@@ -24,16 +21,12 @@ class SpirvKernel(KernelInterface):
         self._module_name = None
         self._pyfunc_name = pyfunc_name
         self._func = func
-        self._cache = NullCache
         if isinstance(func, FunctionType):
             self._func_ty = FunctionType
         elif isinstance(func, ir.FunctionIR):
             self._func_ty = ir.FunctionIR
         else:
             raise UnreachableError()
-
-    def enable_caching(self):
-        self._cache = KernelCache(self._func)
 
     @property
     def llvm_module(self):
@@ -64,14 +57,22 @@ class SpirvKernel(KernelInterface):
         else:
             raise UncompiledKernelError(self._pyfunc_name)
 
-    def compile(
-        self,
-        arg_types,
-        debug,
-        extra_compile_flags,
-        backend=None,
-        device_type=None,
-    ):
+    @property
+    def target_context(self):
+        """_summary_
+
+        Raises:
+            UncompiledKernelError: _description_
+
+        Returns:
+            _type_: _description_
+        """
+        if self._target_context:
+            return self._target_context
+        else:
+            raise UncompiledKernelError(self._pyfunc_name)
+
+    def compile(self, arg_types, debug, extra_compile_flags):
         """_summary_
 
         Args:
@@ -82,57 +83,33 @@ class SpirvKernel(KernelInterface):
 
         logging.debug("compiling SpirvKernel with arg types", arg_types)
 
-        sig = utils.pysignature(self._func)
-
-        # load the kernel from cache
-        data = self._cache.load_overload(
-            sig,
-            dpex_target.target_context,
-            backend=backend,
-            device_type=device_type,
+        cres = _compile_helper.compile_with_dpex(
+            self._func,
+            self._pyfunc_name,
+            args=arg_types,
+            return_type=None,
+            debug=debug,
+            is_kernel=True,
+            extra_compile_flags=extra_compile_flags,
         )
-        # if exists
-        if data is not None:
-            self._device_driver_ir_module, self._module_name = data
-        else:  # otherwise, build from the scratch
-            cres = _compile_helper.compile_with_dpex(
-                self._func,
-                self._pyfunc_name,
-                args=arg_types,
-                return_type=None,
-                debug=debug,
-                is_kernel=True,
-                extra_compile_flags=extra_compile_flags,
-            )
 
-            self._target_context = cres.target_context
+        self._target_context = cres.target_context
 
-            func = cres.library.get_function(cres.fndesc.llvm_func_name)
-            ocl_kernel = cres.target_context.prepare_ocl_kernel(
-                func, cres.signature.args
-            )
+        func = cres.library.get_function(cres.fndesc.llvm_func_name)
+        ocl_kernel = cres.target_context.prepare_ocl_kernel(
+            func, cres.signature.args
+        )
 
-            self._llvm_ir_str = ocl_kernel.module.__str__()
-            self._module_name = ocl_kernel.name
+        self._llvm_ir_str = ocl_kernel.module.__str__()
+        self._module_name = ocl_kernel.name
 
-            # FIXME: There is no need to serialize the bitcode. It can be passed to
-            # llvm-spirv directly via stdin.
+        # FIXME: There is no need to serialize the bitcode. It can be passed to
+        # llvm-spirv directly via stdin.
 
-            # FIXME: There is no need for spirv-dis. We cause use --to-text
-            # (or --spirv-text) to convert SPIRV to text
-            ddir_module = spirv_generator.llvm_to_spirv(
-                self._target_context,
-                self._llvm_ir_str,
-                ocl_kernel.module.as_bitcode(),
-            )
-
-            # save into cache
-            self._cache.save_overload(
-                sig,
-                (ddir_module, self._module_name),
-                self._target_context,
-                backend=backend,
-                device_type=device_type,
-            )
-
-            self._device_driver_ir_module = ddir_module
+        # FIXME: There is no need for spirv-dis. We cause use --to-text
+        # (or --spirv-text) to convert SPIRV to text
+        self._device_driver_ir_module = spirv_generator.llvm_to_spirv(
+            self._target_context,
+            self._llvm_ir_str,
+            ocl_kernel.module.as_bitcode(),
+        )
