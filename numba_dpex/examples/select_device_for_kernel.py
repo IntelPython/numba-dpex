@@ -83,7 +83,9 @@ def select_device_ndarray(N):
     got = np.ones_like(a)
 
     # This context manager is specifying to use the Opencl GPU.
-    with numba_dpex.offload_to_sycl_device("opencl:gpu"):
+    default_device = dpctl.select_default_device()
+
+    with numba_dpex.offload_to_sycl_device(default_device.filter_string):
         sum_kernel[N, 1](a, b, got)
 
     expected = a + b
@@ -99,7 +101,8 @@ def select_device_SUAI(N):
     b = np.array(np.random.random(N), np.float32)
     got = np.ones_like(a)
 
-    device = dpctl.SyclDevice("opencl:gpu")
+    #   device = dpctl.SyclDevice("opencl:gpu")
+    device = dpctl.select_default_device()
     queue = dpctl.SyclQueue(device)
 
     # We are allocating the data in Opencl GPU and this device
