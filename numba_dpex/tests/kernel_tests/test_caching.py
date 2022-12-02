@@ -8,35 +8,54 @@ import numpy as np
 import pytest
 
 import numba_dpex as dpex
+from numba_dpex.core.kernel_interface.dispatcher import (
+    Dispatcher,
+    get_ordered_arg_access_types,
+)
 from numba_dpex.tests._helper import filter_strings
 
 
-@dpex.kernel
-def data_parallel_sum(x, y, z):
-    """
-    Vector addition using the ``kernel`` decorator.
-    """
-    i = dpex.get_global_id(0)
-    z[i] = x[i] + y[i]
+@pytest.mark.parametrize("filter_str", filter_strings)
+def test_caching_hit_counts(filter_str):
+    """Tests the correct number of cache hits.
 
+    If a Dispatcher is invoked 10 times and if the caching is enabled,
+    then the total number of cache hits will be 9. Given the fact that
+    the first time the kernel will be compiled and it will be loaded
+    off the cache for the next time on.
 
-# @pytest.mark.parametrize("filter_str", filter_strings)
-def test_caching_save_load_basic():
-    filter_str = "level_zero:gpu:0"
+    Args:
+        filter_str (str): The device name coming from filter_strings in ._helper.py
+    """
+
+    def data_parallel_sum(x, y, z):
+        """
+        Vector addition using the ``kernel`` decorator.
+        """
+        i = dpex.get_global_id(0)
+        z[i] = x[i] + y[i]
 
     a = dpt.arange(0, 100, device=filter_str)
     b = dpt.arange(0, 100, device=filter_str)
     c = dpt.zeros_like(a, device=filter_str)
 
-    data_parallel_sum[(100,)](a, b, c)
+    expected = dpt.asnumpy(a) + dpt.asnumpy(b)
 
-    p = dpt.arange(0, 100, device=filter_str)
-    q = dpt.arange(0, 100, device=filter_str)
-    r = dpt.zeros_like(a, device=filter_str)
+    d = Dispatcher(
+        data_parallel_sum,
+        array_access_specifiers=get_ordered_arg_access_types(
+            data_parallel_sum, None
+        ),
+    )
+    d.delete_cache()
 
-    data_parallel_sum[(100,)](p, q, r)
+    N = 10
+    for i in range(N):
+        d(a, b, c, global_range=[100])
+    actual = dpt.asnumpy(c)
+    d.delete_cache()
 
-    assert np.all(dpt.asnumpy(r) == dpt.asnumpy(c))
+    assert np.all(expected == actual) and (d.cache_hits == N - 1)
 
 
 @pytest.mark.skip(reason="only applicable for a non-CFD scenario")
@@ -107,7 +126,3 @@ def test_caching_kernel_using_same_context(filter_str):
                 func._get_argtypes(a, b, c), gpu_queue
             )
             assert _kernel == cached_kernel
-
-
-if __name__ == "__main__":
-    test_caching_save_load_basic()

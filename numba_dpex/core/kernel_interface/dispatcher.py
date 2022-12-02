@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
+import os
 from inspect import signature
 from warnings import warn
 
@@ -69,9 +70,12 @@ class Dispatcher(object):
         # TODO: To be removed once the__getitem__ is removed
         self._global_range = None
         self._local_range = None
-
-        self._cache = NullCache()
-        self._enable_cache = enable_cache
+        # caching related attributes
+        if enable_cache:
+            self._cache = KernelCache(self.pyfunc)
+        else:
+            self._cache = NullCache()
+        self._cache_hits = 0
 
         if array_access_specifiers:
             warn(
@@ -91,8 +95,27 @@ class Dispatcher(object):
         else:
             self._create_sycl_kernel_bundle_flags = []
 
+    @property
+    def cache(self):
+        return self._cache
+
+    @property
+    def cache_hits(self):
+        return self._cache_hits
+
     def enable_caching(self):
         self._cache = KernelCache(self.pyfunc)
+
+    def flush_cache(self):
+        self._cache.flush()
+
+    def delete_cache(self):
+        cache_path = self._cache.cache_path
+        if cache_path is not None:
+            ls = os.listdir(cache_path)
+        for item in ls:
+            if item.endswith(".nbc") or item.endswith(".nbi"):
+                os.remove(os.path.join(cache_path, item))
 
     def _check_range(self, range, device):
         if not isinstance(range, (tuple, list)):
@@ -442,6 +465,7 @@ class Dispatcher(object):
         )
         if artifact is not None:
             device_driver_ir_module, kernel_module_name = artifact
+            self._cache_hits += 1
         else:
             kernel = SpirvKernel(self.pyfunc, self.kernel_name)
 

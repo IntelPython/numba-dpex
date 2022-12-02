@@ -55,9 +55,6 @@ def autojit(debug=None, access_types=None, enable_cache=True):
             enable_cache=enable_cache,
         )
 
-        if enable_cache:
-            disp.enable_caching()
-
         return disp
 
     return _kernel_dispatcher
