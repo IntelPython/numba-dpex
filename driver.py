@@ -51,8 +51,6 @@ def test_dispatcher():
             data_parallel_sum, None
         ),
     )
-    print("d.cache.cache_path =", d.cache.cache_path)
-    d.delete_cache()
 
     for i in range(10):
         print("Dispatch =", i)
@@ -64,8 +62,6 @@ def test_dispatcher():
     print("Done...")
 
     print("Cache hits =", d.cache_hits)
-
-    d.delete_cache()
 
 
 if __name__ == "__main__":

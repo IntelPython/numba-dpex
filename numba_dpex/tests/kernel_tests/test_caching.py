@@ -47,13 +47,11 @@ def test_caching_hit_counts(filter_str):
             data_parallel_sum, None
         ),
     )
-    d.delete_cache()
 
     N = 10
     for i in range(N):
         d(a, b, c, global_range=[100])
     actual = dpt.asnumpy(c)
-    d.delete_cache()
 
     assert np.all(expected == actual) and (d.cache_hits == N - 1)
 

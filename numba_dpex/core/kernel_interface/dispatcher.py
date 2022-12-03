@@ -10,11 +10,10 @@ from warnings import warn
 import dpctl
 import dpctl.program as dpctl_prog
 from numba.core import utils
-from numba.core.caching import NullCache
 from numba.core.types import Array as ArrayType
 
 from numba_dpex import config
-from numba_dpex.core.caching import KernelCache
+from numba_dpex.core.caching import LRUCache, NullCache
 from numba_dpex.core.descriptor import dpex_target
 from numba_dpex.core.exceptions import (
     ComputeFollowsDataInferenceError,
@@ -72,7 +71,7 @@ class Dispatcher(object):
         self._local_range = None
         # caching related attributes
         if enable_cache:
-            self._cache = KernelCache(self.pyfunc)
+            self._cache = LRUCache()
         else:
             self._cache = NullCache()
         self._cache_hits = 0
@@ -95,6 +94,9 @@ class Dispatcher(object):
         else:
             self._create_sycl_kernel_bundle_flags = []
 
+    def enable_caching(self):
+        self._cache = LRUCache()
+
     @property
     def cache(self):
         return self._cache
@@ -102,20 +104,6 @@ class Dispatcher(object):
     @property
     def cache_hits(self):
         return self._cache_hits
-
-    def enable_caching(self):
-        self._cache = KernelCache(self.pyfunc)
-
-    def flush_cache(self):
-        self._cache.flush()
-
-    def delete_cache(self):
-        cache_path = self._cache.cache_path
-        if cache_path is not None:
-            ls = os.listdir(cache_path)
-        for item in ls:
-            if item.endswith(".nbc") or item.endswith(".nbi"):
-                os.remove(os.path.join(cache_path, item))
 
     def _check_range(self, range, device):
         if not isinstance(range, (tuple, list)):
@@ -457,12 +445,14 @@ class Dispatcher(object):
 
         # load the kernel from cache
         sig = utils.pysignature(self.pyfunc)
-        artifact = self._cache.load_overload(
+        key = LRUCache.build_key(
             sig,
-            dpex_target.target_context,
+            self.pyfunc,
+            dpex_target.target_context.codegen(),
             backend=backend,
             device_type=device_type,
         )
+        artifact = self._cache.get(key)
         if artifact is not None:
             device_driver_ir_module, kernel_module_name = artifact
             self._cache_hits += 1
@@ -477,13 +467,14 @@ class Dispatcher(object):
             device_driver_ir_module = kernel.device_driver_ir_module
             kernel_module_name = kernel.module_name
 
-            self._cache.save_overload(
+            key = LRUCache.build_key(
                 sig,
-                (device_driver_ir_module, kernel_module_name),
-                kernel.target_context,
+                self.pyfunc,
+                kernel.target_context.codegen(),
                 backend=backend,
                 device_type=device_type,
             )
+            self._cache.put(key, (device_driver_ir_module, kernel_module_name))
 
         # create a sycl::KernelBundle
         kernel_bundle = dpctl_prog.create_program_from_spirv(
