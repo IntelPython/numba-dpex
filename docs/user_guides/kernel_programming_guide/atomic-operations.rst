@@ -1,15 +1,14 @@
-Supported Atomic Operations
-===========================
+Atomic Operations
+=================
 
-Numba-dpex supports some of the atomic operations supported in DPC++.
-Those that are presently implemented are as follows:
+Atomic operations are the operations with local or global memory that ensure no race condition can happen
+if several parallel threads access this memory.
+
+**Data Parallel Extension for Numba** supports a few essential atomic operations:
 
 .. automodule:: numba_dpex.ocl.stubs.atomic
    :members:
    :noindex:
-
-Example
--------
 
 Example usage of atomic operations
 
