@@ -139,7 +139,7 @@ class atomic(Stub):
         """
         add(ary, idx, val)
 
-        Performs atomic addition ary[idx] -= val.
+        Performs atomic addition ary[idx] += val.
 
         Parameters:
            ary: An array on which the atomic operation is performed.
