@@ -131,7 +131,9 @@ class local(Stub):
 
 
 class atomic(Stub):
-    _description_ = "Atomic functions supported by Data Parallel Extension for Numba"
+    _description_ = (
+        "Atomic functions supported by Data Parallel Extension for Numba"
+    )
 
     def add():
         """
@@ -178,4 +180,3 @@ class atomic(Stub):
             None
 
         """
-        
