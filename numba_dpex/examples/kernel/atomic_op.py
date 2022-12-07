@@ -6,8 +6,6 @@ import dpnp as np
 
 import numba_dpex as ndpex
 
-N = 10
-
 
 @ndpex.kernel
 def atomic_reduction(a):
@@ -16,14 +14,11 @@ def atomic_reduction(a):
 
 
 def main():
-    try:
-        a = np.arange(N, device="gpu")
-    except:
-        print("No GPU device")
+    N = 10
+    a = np.arange(N)
 
     print("Using device ...")
     print(a.device)
-    print("a=", a)
 
     atomic_reduction[N, ndpex.DEFAULT_LOCAL_SIZE](a)
     print("Reduction sum =", a[0])

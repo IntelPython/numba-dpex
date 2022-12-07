@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import dpnp as np
-import numpy
 from numba import float32
 from numpy.testing import assert_almost_equal
 
