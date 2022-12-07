@@ -13,15 +13,13 @@ import dpctl.program as dpctl_prog
 import dpctl.utils
 import numpy as np
 from numba.core import compiler, ir, types
-from numba.core.compiler import CompilerBase, DefaultPassBuilder
 from numba.core.compiler_lock import global_compiler_lock
-from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
 from numba_dpex import config
+from numba_dpex.core.compiler import Compiler
 from numba_dpex.core.exceptions import KernelHasReturnValueError
 from numba_dpex.core.types import Array, USMNdArray
 from numba_dpex.dpctl_support import dpctl_version
-from numba_dpex.parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dpex.utils import (
     IndeterminateExecutionQueueError,
     as_usm_obj,
@@ -60,25 +58,6 @@ def _raise_invalid_kernel_enqueue_args():
         "The local size argument is optional."
     )
     raise ValueError(error_message)
-
-
-class Compiler(CompilerBase):
-    """The DPEX compiler pipeline."""
-
-    def define_pipelines(self):
-        # this maintains the objmode fallback behaviour
-        pms = []
-        self.state.parfor_diagnostics = ExtendedParforDiagnostics()
-        self.state.metadata[
-            "parfor_diagnostics"
-        ] = self.state.parfor_diagnostics
-        if not self.state.flags.force_pyobject:
-            pms.append(PassBuilder.define_nopython_pipeline(self.state))
-        if self.state.status.can_fallback or self.state.flags.force_pyobject:
-            pms.append(
-                DefaultPassBuilder.define_objectmode_pipeline(self.state)
-            )
-        return pms
 
 
 @global_compiler_lock
@@ -242,94 +221,6 @@ def compile_kernel_parfor(
     )
 
     return oclkern
-
-
-def compile_func(pyfunc, return_type, args, debug=None):
-    cres = compile_with_depx(
-        pyfunc=pyfunc,
-        return_type=return_type,
-        args=args,
-        is_kernel=False,
-        debug=debug,
-    )
-    func = cres.library.get_function(cres.fndesc.llvm_func_name)
-    cres.target_context.mark_ocl_device(func)
-    devfn = DpexFunction(cres)
-
-    class _function_template(ConcreteTemplate):
-        key = devfn
-        cases = [cres.signature]
-
-    cres.typing_context.insert_user_function(devfn, _function_template)
-    libs = [cres.library]
-    cres.target_context.insert_user_function(devfn, cres.fndesc, libs)
-    return devfn
-
-
-def compile_func_template(pyfunc, debug=None):
-    """Compile a DpexFunctionTemplate"""
-    from .core.descriptor import dpex_target
-
-    dft = DpexFunctionTemplate(pyfunc, debug=debug)
-
-    class _function_template(AbstractTemplate):
-        key = dft
-
-        def generic(self, args, kws):
-            assert not kws
-            return dft.compile(args)
-
-    typingctx = dpex_target.typing_context
-    typingctx.insert_user_function(dft, _function_template)
-    return dft
-
-
-class DpexFunctionTemplate(object):
-    """Unmaterialized dpex function"""
-
-    def __init__(self, pyfunc, debug=None):
-        self.py_func = pyfunc
-        self.debug = debug
-        # self.inline = inline
-        self._compileinfos = {}
-
-    def compile(self, args):
-        """Compile the function for the given argument types.
-
-        Each signature is compiled once by caching the compiled function inside
-        this object.
-        """
-        if args not in self._compileinfos:
-            cres = compile_with_depx(
-                pyfunc=self.py_func,
-                return_type=None,
-                args=args,
-                is_kernel=False,
-                debug=self.debug,
-            )
-            func = cres.library.get_function(cres.fndesc.llvm_func_name)
-            cres.target_context.mark_ocl_device(func)
-            first_definition = not self._compileinfos
-            self._compileinfos[args] = cres
-            libs = [cres.library]
-
-            if first_definition:
-                # First definition
-                cres.target_context.insert_user_function(
-                    self, cres.fndesc, libs
-                )
-            else:
-                cres.target_context.add_user_function(self, cres.fndesc, libs)
-
-        else:
-            cres = self._compileinfos[args]
-
-        return cres.signature
-
-
-class DpexFunction(object):
-    def __init__(self, cres):
-        self.cres = cres
 
 
 def _ensure_valid_work_item_grid(val, sycl_queue):
