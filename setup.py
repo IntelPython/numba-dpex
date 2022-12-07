@@ -189,11 +189,7 @@ metadata = dict(
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Software Development :: Compilers",
     ],
-    entry_points={
-        "numba_extensions": [
-            "init = numba_dpex.numpy_usm_shared:numba_register",
-        ]
-    },
+    entry_points={},
 )
 
 setup(**metadata)

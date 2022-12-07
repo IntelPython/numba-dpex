@@ -7,8 +7,7 @@
 /// \file
 /// A Python extension that defines an external allocator for Numba. The
 /// new external allocator uses SYCL's USM shared allocator exposed by DPCTL's
-/// C API (libDPCTLSyclInterface). The extension module is used by the
-/// numpy_usm_shared module.
+/// C API (libDPCTLSyclInterface).
 ///
 //===----------------------------------------------------------------------===//
 
