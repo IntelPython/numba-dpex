@@ -1065,7 +1065,7 @@ def relatively_deep_copy(obj, memo):
     from numba.core.typing.templates import Signature
     from numba.np.ufunc.dufunc import DUFunc
 
-    from numba_dpex.compiler import DpexFunctionTemplate
+    from numba_dpex.core.kernel_interface.func import DpexFunctionTemplate
 
     # objects which shouldn't or can't be copied and it's ok not to copy it.
     if isinstance(
@@ -1198,14 +1198,15 @@ def relatively_deep_copy(obj, memo):
         memo[obj_id] = cpy
         return cpy
 
-    # some python objects are not copyable. In such case exception would be raised
-    # it is just a convinient point to find such objects
+    # some python objects are not copyable. In such case exception would be
+    # raised it is just a convinient point to find such objects
     try:
         cpy = copy.copy(obj)
     except Exception as e:
         raise e
 
-    # __slots__ for subclass specify only members declared in subclass. So to get all members we need to go through
+    # __slots__ for subclass specify only members declared in subclass. So to
+    # get all members we need to go through
     # all supeclasses
     def get_slots_members(obj):
         keys = []
