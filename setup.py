@@ -45,16 +45,6 @@ def get_ext_modules():
     if IS_LIN:
         dpctl_runtime_library_dirs.append(os.path.dirname(dpctl.__file__))
 
-    ext_usm_alloc = Extension(
-        name="numba_dpex._usm_allocators_ext",
-        sources=["numba_dpex/dpctl_iface/usm_allocators_ext.c"],
-        include_dirs=[numba.core.extending.include_path(), dpctl.get_include()],
-        libraries=["DPCTLSyclInterface"],
-        library_dirs=[os.path.dirname(dpctl.__file__)],
-        runtime_library_dirs=dpctl_runtime_library_dirs,
-    )
-    ext_modules += [ext_usm_alloc]
-
     if dpnp_present:
         dpnp_lib_path = []
         dpnp_lib_path += [os.path.dirname(dpnp.__file__)]
@@ -212,11 +202,7 @@ metadata = dict(
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Software Development :: Compilers",
     ],
-    entry_points={
-        "numba_extensions": [
-            "init = numba_dpex.numpy_usm_shared:numba_register",
-        ]
-    },
+    entry_points={},
 )
 
 setup(**metadata)
