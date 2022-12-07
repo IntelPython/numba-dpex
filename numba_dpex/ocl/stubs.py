@@ -131,26 +131,52 @@ class local(Stub):
 
 
 class atomic(Stub):
-    """atomic namespace"""
-
-    _description_ = "<atomic>"
+    _description_ = (
+        "Atomic functions supported by Data Parallel Extension for Numba"
+    )
 
     def add():
-        """add(ary, idx, val)
+        """
+        add(ary, idx, val)
 
-        Perform atomic ary[idx] += val.
+        Performs atomic addition ary[idx] += val.
 
-        Returns the old value at the index location as if it is loaded atomically.
+        Parameters:
+           ary: An array on which the atomic operation is performed.
+                Allowed types: int32, int64, float32, or float64
 
-        .. note:: Supported on int32, int64, float32, float64 operands only.
+           idx (int): Index of the array element, on which atomic operation is performed
+
+           val: The value of an increment.
+                Its type must match the type of array elements, ary[]
+
+        Returns:
+               The old value at the index location ary[idx] as if it is loaded atomically.
+
+        Raises:
+            None
+
         """
 
     def sub():
-        """sub(ary, idx, val)
+        """
+        sub(ary, idx, val)
 
-        Perform atomic ary[idx] -= val.
+        Performs atomic subtraction ary[idx] -= val.
 
-        Returns the old value at the index location as if it is loaded atomically.
+        Parameters:
+           ary: An array on which the atomic operation is performed.
+                Allowed types: int32, int64, float32, or float64
 
-        .. note:: Supported on int32, int64, float32, float64 operands only.
+           idx (int): Index of the array element, on which atomic operation is performed
+
+           val: The value of a decrement.
+                Its type must match the type of array elements, ary[]
+
+        Returns:
+               The old value at the index location ary[idx] as if it is loaded atomically.
+
+        Raises:
+            None
+
         """
