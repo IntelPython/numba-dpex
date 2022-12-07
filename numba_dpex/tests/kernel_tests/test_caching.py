@@ -10,6 +10,7 @@ import numba_dpex as dpex
 from numba_dpex.tests._helper import filter_strings
 
 
+@pytest.mark.xfail
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_caching_kernel_using_same_queue(filter_str):
     """Test kernel caching when the same queue is used to submit a kernel
@@ -42,6 +43,7 @@ def test_caching_kernel_using_same_queue(filter_str):
             assert _kernel == cached_kernel
 
 
+@pytest.mark.xfail
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_caching_kernel_using_same_context(filter_str):
     """Test kernel caching for the scenario where different SYCL queues that
