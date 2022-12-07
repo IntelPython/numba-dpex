@@ -127,7 +127,7 @@ jobs:
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel $CHANNELS"
           conda list
-          conda create -n numba_dpex_env $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl dpnp=${{ matrix.dpnp }} $CHANNELS
+          conda create -n numba_dpex_env $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl dpnp=${{ matrix.dpnp }} dpcpp-llvm-spirv $CHANNELS
           # Test installed packages
           conda list
       - name: Check DPNP
@@ -136,6 +136,12 @@ jobs:
           conda activate numba_dpex_env
           export OCL_ICD_FILENAMES=libintelocl.so
           python -c "import dpnp"
+      - name: Check dpcpp-llvm-spirv
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate numba_dpex_env
+          export OCL_ICD_FILENAMES=libintelocl.so
+          python -c "import dpcpp_llvm_spirv as p; print(p.get_llvm_spirv_path())"
       - name: Run tests
         run: |
           source $CONDA/etc/profile.d/conda.sh
@@ -206,7 +212,7 @@ jobs:
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
       - name: Install numba-dpex
         run: |
-          conda install ${{ env.PACKAGE_NAME }} pytest dpcpp_win-64 python=${{ matrix.python }} dpctl ${{ matrix.dependencies }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
+          conda install ${{ env.PACKAGE_NAME }} pytest dpcpp_win-64 dpcpp-llvm-spirv python=${{ matrix.python }} dpctl ${{ matrix.dependencies }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
           # Test installed packages
           conda list
       - name: Install opencl_rt
