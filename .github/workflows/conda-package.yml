@@ -143,6 +143,20 @@ jobs:
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
           export OCL_ICD_FILENAMES=libintelocl.so
           python -m pytest -q -ra --disable-warnings --pyargs $MODULE_NAME -vv
+      - name: Run examples
+        run: |
+          ls
+          pwd
+          cd ./numba-dpex/numba_dpex/examples/
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate numba_dpex_env
+          # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
+          export OCL_ICD_FILENAMES=libintelocl.so
+          for script in $(find . \( -not -name "_*" -not -name "vectorize.py" -and -name "*.py" \))
+          do
+            echo "Executing ${script}"
+            python ${script} || exit 1
+          done
 
   test_windows:
     needs: build_windows
