@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+# scan.py is not working due to issue: https://github.com/IntelPython/numba-dpex/issues/829
+
 import dpnp as np
 
 import numba_dpex as ndpx
