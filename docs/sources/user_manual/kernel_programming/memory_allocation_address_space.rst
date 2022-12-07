@@ -5,8 +5,12 @@ The address space qualifier may be used to specify the region of memory that is
 used to allocate the object. ``numba-dpex`` supports three disjoint named address spaces:
 
 1. **Global Address Space** refers to memory objects allocated from the global
-   memory pool and will be shared among all work-items. Arguments passed to any
-   kernel are allocated in the global address space. In the below example,
+   memory pool and will be shared among all work-items. Local variables in the kernel will
+   be allocated in the global address space. You will explicitly allocate data in local or private memory
+   space using ``numba_dpex.local.array()`` and ``numba_dpex.private.array()`` functions respectively.
+
+   Arguments passed to any
+   kernel are also allocated in the global address space. In the below example,
    arguments ``a``, ``b`` and ``c`` will be allocated in the global address space:
 
    .. literalinclude:: ./../../../../numba_dpex/examples/kernel/vector_sum.py
@@ -26,8 +30,8 @@ used to allocate the object. ``numba-dpex`` supports three disjoint named addres
 
 3. **Private Address Space** refers to memory objects that are local to each
    work-item and is not shared with any other work-item. In the example below
-   ``numba_dpex.private.array(shape, dtype)`` is the API used to allocate the
-   static array ``memory`` in the private address space:
+   ``numba_dpex.private.array(shape, dtype)`` is the API used to allocate arrays ``c`` and ``z``
+   in the private address space:
 
-   .. literalinclude:: ./../../../../numba_dpex/examples/kernel_private_memory.py
-     :lines: 21
+   .. literalinclude:: ./../../../../numba_dpex/examples/kernel/interpolation.py
+     :lines: 85-90
