@@ -152,7 +152,7 @@ jobs:
           conda activate numba_dpex_env
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
           export OCL_ICD_FILENAMES=libintelocl.so
-          for script in $(find . \( -not -name "_*" -and -name "*.py" \))
+          for script in $(find . \( -not -name "_*" -not -name "vectorize.py" -not -name "usm_ndarray.py" -and -name "*.py" \))
           do
             echo "Executing ${script}"
             python ${script} || exit 1
