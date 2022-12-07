@@ -101,7 +101,6 @@ def select_device_SUAI(N):
     b = np.array(np.random.random(N), np.float32)
     got = np.ones_like(a)
 
-    #   device = dpctl.SyclDevice("opencl:gpu")
     device = dpctl.select_default_device()
     queue = dpctl.SyclQueue(device)
 
