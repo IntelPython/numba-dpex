@@ -13,15 +13,13 @@ import dpctl.program as dpctl_prog
 import dpctl.utils
 import numpy as np
 from numba.core import compiler, ir, types
-from numba.core.compiler import CompilerBase, DefaultPassBuilder
 from numba.core.compiler_lock import global_compiler_lock
-from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
 from numba_dpex import config
+from numba_dpex.core.compiler import Compiler
 from numba_dpex.core.exceptions import KernelHasReturnValueError
 from numba_dpex.core.types import Array, USMNdArray
 from numba_dpex.dpctl_support import dpctl_version
-from numba_dpex.parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dpex.utils import (
     IndeterminateExecutionQueueError,
     as_usm_obj,
@@ -60,25 +58,6 @@ def _raise_invalid_kernel_enqueue_args():
         "The local size argument is optional."
     )
     raise ValueError(error_message)
-
-
-class Compiler(CompilerBase):
-    """The DPEX compiler pipeline."""
-
-    def define_pipelines(self):
-        # this maintains the objmode fallback behaviour
-        pms = []
-        self.state.parfor_diagnostics = ExtendedParforDiagnostics()
-        self.state.metadata[
-            "parfor_diagnostics"
-        ] = self.state.parfor_diagnostics
-        if not self.state.flags.force_pyobject:
-            pms.append(PassBuilder.define_nopython_pipeline(self.state))
-        if self.state.status.can_fallback or self.state.flags.force_pyobject:
-            pms.append(
-                DefaultPassBuilder.define_objectmode_pipeline(self.state)
-            )
-        return pms
 
 
 @global_compiler_lock
