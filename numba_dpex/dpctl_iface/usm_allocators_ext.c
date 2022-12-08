@@ -278,7 +278,7 @@ static NRT_MemInfo *DPRT_MemInfo_new(size_t size, int usm_type, void *queue)
     NRT_Debug(nrt_debug_print("DPRT_MemInfo_new size=%d usm_type=%d queue=%p\n",
                               size, usm_type, queue));
 
-    AllocatorImpl *impl = (AllocatorImpl *)malloc(sizeof(*impl));
+    AllocatorImpl *impl = (AllocatorImpl *)malloc(sizeof(AllocatorImpl));
     if (impl == NULL) {
         printf("Fatal: failed to allocate memory for AllocatorImpl.\n");
         exit(-1);
