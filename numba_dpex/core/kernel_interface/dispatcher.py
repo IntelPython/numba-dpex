@@ -8,9 +8,11 @@ from warnings import warn
 
 import dpctl
 import dpctl.program as dpctl_prog
+from numba.core import utils
 from numba.core.types import Array as ArrayType
 
 from numba_dpex import config
+from numba_dpex.core.caching import LRUCache, NullCache, build_key
 from numba_dpex.core.descriptor import dpex_target
 from numba_dpex.core.exceptions import (
     ComputeFollowsDataInferenceError,
@@ -57,6 +59,7 @@ class Dispatcher(object):
         debug_flags=None,
         compile_flags=None,
         array_access_specifiers=None,
+        enable_cache=True,
     ):
         self.typingctx = dpex_target.typing_context
         self.pyfunc = pyfunc
@@ -66,6 +69,14 @@ class Dispatcher(object):
         # TODO: To be removed once the__getitem__ is removed
         self._global_range = None
         self._local_range = None
+        # caching related attributes
+        if not config.ENABLE_CACHE:
+            self._cache = NullCache()
+        elif enable_cache:
+            self._cache = LRUCache(self.pyfunc)
+        else:
+            self._cache = NullCache()
+        self._cache_hits = 0
 
         if array_access_specifiers:
             warn(
@@ -84,6 +95,20 @@ class Dispatcher(object):
             self._create_sycl_kernel_bundle_flags = ["-g", "-cl-opt-disable"]
         else:
             self._create_sycl_kernel_bundle_flags = []
+
+    @property
+    def cache(self):
+        return self._cache
+
+    @property
+    def cache_hits(self):
+        return self._cache_hits
+
+    def enable_caching(self):
+        if not config.ENABLE_CACHE:
+            self._cache = NullCache()
+        else:
+            self._cache = LRUCache(self.pyfunc)
 
     def _check_range(self, range, device):
 
@@ -406,6 +431,7 @@ class Dispatcher(object):
 
         exec_queue = self._determine_kernel_launch_queue(args, argtypes)
         backend = exec_queue.backend
+        device_type = exec_queue.sycl_device.device_type
 
         if exec_queue.backend not in [
             dpctl.backend_type.opencl,
@@ -420,24 +446,51 @@ class Dispatcher(object):
             global_range, local_range, exec_queue.sycl_device
         )
 
-        # TODO: Enable caching of kernels, but do it using Numba's caching
-        # machinery
+        # TODO: Enable caching of kernels, but do it using LRU
+        # caching and numba's pickle framework.
 
-        kernel = SpirvKernel(self.pyfunc, self.kernel_name)
-        kernel.compile(
-            arg_types=argtypes,
-            debug=self.debug_flags,
-            extra_compile_flags=self.compile_flags,
+        # load the kernel from cache
+        sig = utils.pysignature(self.pyfunc)
+        key = build_key(
+            sig,
+            self.pyfunc,
+            dpex_target.target_context.codegen(),
+            backend=backend,
+            device_type=device_type,
         )
+        artifact = self._cache.get(key)
+        # if it's not cached, i.e. first time
+        if artifact is not None:
+            device_driver_ir_module, kernel_module_name = artifact
+            self._cache_hits += 1
+        else:
+            kernel = SpirvKernel(self.pyfunc, self.kernel_name)
+            kernel.compile(
+                arg_types=argtypes,
+                debug=self.debug_flags,
+                extra_compile_flags=self.compile_flags,
+            )
+
+            device_driver_ir_module = kernel.device_driver_ir_module
+            kernel_module_name = kernel.module_name
+
+            key = build_key(
+                sig,
+                self.pyfunc,
+                kernel.target_context.codegen(),
+                backend=backend,
+                device_type=device_type,
+            )
+            self._cache.put(key, (device_driver_ir_module, kernel_module_name))
 
         # create a sycl::KernelBundle
         kernel_bundle = dpctl_prog.create_program_from_spirv(
             exec_queue,
-            kernel.device_driver_ir_module,
+            device_driver_ir_module,
             " ".join(self._create_sycl_kernel_bundle_flags),
         )
         #  get the sycl::kernel
-        kernel = kernel_bundle.get_sycl_kernel(kernel.module_name)
+        kernel = kernel_bundle.get_sycl_kernel(kernel_module_name)
 
         packer = Packer(
             kernel_name=self.kernel_name,

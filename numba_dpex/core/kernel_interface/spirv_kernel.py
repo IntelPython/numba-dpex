@@ -38,6 +38,7 @@ class SpirvKernel(KernelInterface):
             self._func_ty = ir.FunctionIR
         else:
             raise UnreachableError()
+        self._target_context = None
 
     @property
     def llvm_module(self):
@@ -65,6 +66,13 @@ class SpirvKernel(KernelInterface):
         """The name of the compiled LLVM module for the kernel."""
         if self._module_name:
             return self._module_name
+        else:
+            raise UncompiledKernelError(self._pyfunc_name)
+
+    @property
+    def target_context(self):
+        if self._target_context:
+            return self._target_context
         else:
             raise UncompiledKernelError(self._pyfunc_name)
 
