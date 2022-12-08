@@ -138,11 +138,6 @@ class Module(object):
         # Remove directory
         os.rmdir(self._tmpdir)
 
-    def _create_temp_file(self, name, mode="wb"):
-        path = self._track_temp_file(name)
-        fobj = open(path, mode=mode)
-        return fobj, path
-
     def _track_temp_file(self, name):
         path = os.path.join(
             self._tmpdir, "{0}-{1}".format(len(self._tempfiles), name)
@@ -155,8 +150,8 @@ class Module(object):
         Load LLVM with "SPIR-V friendly" SPIR 2.0 spec
         """
         # Create temp file to store the input file
-        tmp_llvm_ir, llvm_path = self._create_temp_file("llvm-friendly-spir")
-        with tmp_llvm_ir:
+        llvm_path = self._track_temp_file("llvm-friendly-spir")
+        with open(llvm_path, mode="wb") as tmp_llvm_ir:
             tmp_llvm_ir.write(self._llvmbc)
 
         self._llvmfile = llvm_path

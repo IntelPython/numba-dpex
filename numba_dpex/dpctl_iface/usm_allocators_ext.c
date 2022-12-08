@@ -50,8 +50,6 @@ void *save_queue_allocator(size_t size, void *opaque)
     // Use that queue to allocate.
     void *data = (void *)DPCTLmalloc_shared(new_size, cur_queue);
     if (data == NULL) {
-        fprintf(stderr,
-                "Fatal: failed to allocate memory using DPCTLmalloc_shared.\n");
         exit(-1);
     }
     // Set first pointer-sized data in allocated space to be the current queue.
@@ -113,27 +111,18 @@ static void *allocate(size_t size, void *opaque_data)
     if (impl->usm_type == 0) {
         data = (void *)DPCTLmalloc_shared(size, impl->queue);
         if (data == NULL) {
-            fprintf(
-                stderr,
-                "Fatal: failed to allocate memory using DPCTLmalloc_shared.\n");
             exit(-1);
         }
     }
     else if (impl->usm_type == 1) {
         data = (void *)DPCTLmalloc_host(size, impl->queue);
         if (data == NULL) {
-            fprintf(
-                stderr,
-                "Fatal: failed to allocate memory using DPCTLmalloc_host.\n");
             exit(-1);
         }
     }
     else if (impl->usm_type == 2) {
         data = (void *)DPCTLmalloc_device(size, impl->queue);
         if (data == NULL) {
-            fprintf(
-                stderr,
-                "Fatal: failed to allocate memory using DPCTLmalloc_device.\n");
             exit(-1);
         }
     }
@@ -157,10 +146,8 @@ static void deallocate(void *data, void *opaque_data)
  */
 static NRT_ExternalAllocator *create_allocator(int usm_type)
 {
-    AllocatorImpl *impl = (AllocatorImpl *)malloc(sizeof(AllocatorImpl));
+    AllocatorImpl *impl = (AllocatorImpl *)malloc(sizeof(*impl));
     if (impl == NULL) {
-        fprintf(stderr,
-                "Fatal: failed to allocate memory for AllocatorImpl.\n");
         exit(-1);
     }
     impl->usm_type = usm_type;
@@ -169,9 +156,6 @@ static NRT_ExternalAllocator *create_allocator(int usm_type)
     NRT_ExternalAllocator *allocator =
         (NRT_ExternalAllocator *)malloc(sizeof(NRT_ExternalAllocator));
     if (impl == NULL) {
-        fprintf(
-            stderr,
-            "Fatal: failed to allocate memory for NRT_ExternalAllocator.\n");
         exit(-1);
     }
     allocator->malloc = allocate;
@@ -240,7 +224,6 @@ NRT_MemInfo *NRT_MemInfo_new(void *data,
 {
     NRT_MemInfo *mi = (NRT_MemInfo *)malloc(sizeof(NRT_MemInfo));
     if (mi == NULL) {
-        fprintf(stderr, "Fatal: failed to allocate memory for NRT_MemInfo.\n");
         exit(-1);
     }
     NRT_Debug(nrt_debug_print("NRT_MemInfo_new mi=%p\n", mi));
@@ -285,10 +268,8 @@ static NRT_MemInfo *DPRT_MemInfo_new(size_t size, int usm_type, void *queue)
     NRT_Debug(nrt_debug_print("DPRT_MemInfo_new size=%d usm_type=%d queue=%p\n",
                               size, usm_type, queue));
 
-    AllocatorImpl *impl = (AllocatorImpl *)malloc(sizeof(AllocatorImpl));
+    AllocatorImpl *impl = (AllocatorImpl *)malloc(sizeof(*impl));
     if (impl == NULL) {
-        fprintf(stderr,
-                "Fatal: failed to allocate memory for AllocatorImpl.\n");
         exit(-1);
     }
     impl->usm_type = usm_type;
