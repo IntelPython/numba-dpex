@@ -92,6 +92,21 @@ DEBUGINFO_DEFAULT = _readenv(
     "NUMBA_DPEX_DEBUGINFO", int, config.DEBUGINFO_DEFAULT
 )
 
+# configs for caching
+# To see the debug messages for the caching.
+# Execute like:
+#   NUMBA_DPEX_DEBUG_CACHE=1 python <code>
+DEBUG_CACHE = _readenv("NUMBA_DPEX_DEBUG_CACHE", int, 0)
+# This is a global flag to turn the caching on/off,
+# regardless of whatever has been specified in Dispatcher.
+# Useful for debugging. Execute like:
+#   NUMBA_DPEX_ENABLE_CACHE=0 python <code>
+# to turn off the caching globally.
+ENABLE_CACHE = _readenv("NUMBA_DPEX_ENABLE_CACHE", int, 1)
+# Capacity of the cache, execute it like:
+#   NUMBA_DPEX_CACHE_SIZE=20 python <code>
+CACHE_SIZE = _readenv("NUMBA_DPEX_CACHE_SIZE", int, 10)
+
 TESTING_SKIP_NO_DPNP = _readenv("NUMBA_DPEX_TESTING_SKIP_NO_DPNP", int, 0)
 TESTING_SKIP_NO_DEBUGGING = _readenv(
     "NUMBA_DPEX_TESTING_SKIP_NO_DEBUGGING", int, 1

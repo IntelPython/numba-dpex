@@ -17,7 +17,7 @@ from numba_dpex.core.kernel_interface.func import (
 from numba_dpex.utils import npytypes_array_to_dpex_array
 
 
-def kernel(func_or_sig=None, access_types=None, debug=None):
+def kernel(func_or_sig=None, access_types=None, debug=None, enable_cache=True):
     """The decorator to write a numba_dpex kernel function.
 
     A kernel function is conceptually equivalent to a SYCL kernel function, and
@@ -29,15 +29,21 @@ def kernel(func_or_sig=None, access_types=None, debug=None):
           and have the same dtype.
     """
     if func_or_sig is None:
-        return autojit(debug=debug, access_types=access_types)
+        return autojit(
+            debug=debug, access_types=access_types, enable_cache=enable_cache
+        )
     elif not sigutils.is_signature(func_or_sig):
         func = func_or_sig
-        return autojit(debug=debug, access_types=access_types)(func)
+        return autojit(
+            debug=debug, access_types=access_types, enable_cache=enable_cache
+        )(func)
     else:
-        return _kernel_jit(func_or_sig, debug, access_types)
+        return _kernel_jit(
+            func_or_sig, debug, access_types, enable_cache=enable_cache
+        )
 
 
-def autojit(debug=None, access_types=None):
+def autojit(debug=None, access_types=None, enable_cache=True):
     def _kernel_dispatcher(pyfunc):
         ordered_arg_access_types = get_ordered_arg_access_types(
             pyfunc, access_types
@@ -46,12 +52,13 @@ def autojit(debug=None, access_types=None):
             pyfunc=pyfunc,
             debug_flags=debug,
             array_access_specifiers=ordered_arg_access_types,
+            enable_cache=enable_cache,
         )
 
     return _kernel_dispatcher
 
 
-def _kernel_jit(signature, debug, access_types):
+def _kernel_jit(signature, debug, access_types, enable_cache=True):
     argtypes, rettype = sigutils.normalize_signature(signature)
     argtypes = tuple(
         [
