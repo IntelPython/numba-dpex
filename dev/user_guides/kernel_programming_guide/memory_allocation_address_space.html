@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Supported Address Space Qualifiers &mdash; numba-dpex 0.19.0+13.g3cef533b documentation</title>
+  <title>Supported Address Space Qualifiers &mdash; numba-dpex 0.19.0+15.g46bef564 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -205,7 +205,7 @@ static array in the private address space:</p>
 
         <span class="c1"># preload</span>
         <span class="n">memory</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
-        <span class="n">numba_dpex</span><span class="o">.</span><span class="n">barrier</span><span class="p">(</span><span class="n">numba_dpex</span><span class="o">.</span><span class="n">CLK_LOCAL_MEM_FENCE</span><span class="p">)</span>  <span class="c1"># local mem fence</span>
+        <span class="n">numba_dpex</span><span class="o">.</span><span class="n">barrier</span><span class="p">(</span><span class="n">numba_dpex</span><span class="o">.</span><span class="n">LOCAL_MEM_FENCE</span><span class="p">)</span>  <span class="c1"># local mem fence</span>
 
         <span class="c1"># memory will not hold correct deterministic result if it is not</span>
         <span class="c1"># private to each thread.</span>

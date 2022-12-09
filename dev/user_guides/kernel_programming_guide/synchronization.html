@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Synchronization Functions &mdash; numba-dpex 0.19.0+13.g3cef533b documentation</title>
+  <title>Synchronization Functions &mdash; numba-dpex 0.19.0+15.g46bef564 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -104,13 +104,13 @@ function forces a thread to wait until all threads in the block reach the
 barrier, at which point it returns control to all its callers.</p>
 <p><code class="docutils literal notranslate"><span class="pre">numba_dpex.barrier()</span></code> supports two memory fence options:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex.CLK_GLOBAL_MEM_FENCE</span></code>: The barrier function will queue a memory
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex.GLOBAL_MEM_FENCE</span></code>: The barrier function will queue a memory
 fence to ensure correct ordering of memory operations to global memory. Using
 the option can be useful when work-items, for example, write to buffer or
 image objects and then want to read the updated data. Passing no arguments to
 <code class="docutils literal notranslate"><span class="pre">numba_dpex.barrier()</span></code> is equivalent to setting the global memory fence
 option. For example,</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex.CLK_LOCAL_MEM_FENCE</span></code>: The barrier function will either flush
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex.LOCAL_MEM_FENCE</span></code>: The barrier function will either flush
 any variables stored in local memory or queue a memory fence to ensure
 correct ordering of memory operations to local memory. For example,</p></li>
 </ul>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reduction on SYCL-supported Devices &mdash; numba-dpex 0.19.0+13.g3cef533b documentation</title>
+  <title>Reduction on SYCL-supported Devices &mdash; numba-dpex 0.19.0+15.g46bef564 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -165,7 +165,7 @@ section provides two approaches for writing a reduction kernel as a
     <span class="n">stride</span> <span class="o">=</span> <span class="n">group_size</span> <span class="o">//</span> <span class="mi">2</span>
     <span class="k">while</span> <span class="n">stride</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="c1"># Waiting for each 2x2 addition into given workgroup</span>
-        <span class="n">dpex</span><span class="o">.</span><span class="n">barrier</span><span class="p">(</span><span class="n">dpex</span><span class="o">.</span><span class="n">CLK_LOCAL_MEM_FENCE</span><span class="p">)</span>
+        <span class="n">dpex</span><span class="o">.</span><span class="n">barrier</span><span class="p">(</span><span class="n">dpex</span><span class="o">.</span><span class="n">LOCAL_MEM_FENCE</span><span class="p">)</span>
 
         <span class="c1"># Add elements 2 by 2 between local_id and local_id + stride</span>
         <span class="k">if</span> <span class="n">local_id</span> <span class="o">&lt;</span> <span class="n">stride</span><span class="p">:</span>
