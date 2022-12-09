@@ -1,0 +1,7 @@
+numba\_dpex.dpnp\_ndarray.models module
+=======================================
+
+.. automodule:: numba_dpex.dpnp_ndarray.models
+   :members:
+   :undoc-members:
+   :show-inheritance:
