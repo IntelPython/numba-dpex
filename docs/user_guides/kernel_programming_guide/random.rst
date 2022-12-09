@@ -1,17 +1,17 @@
 Random Number Generation
 ========================
 
-``numba-dppy`` does not provide a random number generation algorithm that can be
+Numba-dpex does not provide a random number generation algorithm that can be
 executed on the SYCL-supported Device.
 
-``numba-dppy`` provides access to NumPy random algorithms that can be executed on the
+Numba-dpex provides access to NumPy random algorithms that can be executed on the
 SYCL-supported device via integration with `dpnp Random`_.
 
 .. _`dpnp Random`: https://intelpython.github.io/dpnp/reference/comparison.html#random-sampling
 
 
-DPPY supported functions
-------------------------
+Supported functions
+-------------------
 
 Simple random
 `````````````
@@ -53,6 +53,6 @@ Distribution
 Example:
 
 .. note::
-    To ensure the code is executed on GPU set `DEBUG=1` (or `NUMBA_DPPY_DEBUG=1`) and look to stdout
+    To ensure the code is executed on GPU set `DEBUG=1` (or `NUMBA_DPEX_DEBUG=1`) and look to stdout
 
-.. literalinclude:: ../../../numba_dppy/examples/rand.py
+.. literalinclude:: ../../../numba_dpex/examples/rand.py

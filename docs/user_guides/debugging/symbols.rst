@@ -21,16 +21,16 @@ At least following syntax is supported:
 Example
 ```````
 
-Source file ``numba_dppy/examples/debug/simple_sum.py``:
+Source file ``numba_dpex/examples/debug/simple_sum.py``:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/simple_sum.py
+.. literalinclude:: ../../../numba_dpex/examples/debug/simple_sum.py
     :lines: 15-
     :linenos:
     :lineno-match:
 
 Output of the debug session:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/info_func
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/info_func
     :language: shell-session
     :emphasize-lines: 5-9
 
@@ -41,7 +41,7 @@ Output of the debug session:
 
 To print the type of a variable, run the ``ptype <variable>`` or ``whatis <variable>`` commands:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/commands/docs/local_variables_0
+.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/local_variables_0
     :language: shell-session
     :lines: 73-81
     :emphasize-lines: 1-6
@@ -49,9 +49,9 @@ To print the type of a variable, run the ``ptype <variable>`` or ``whatis <varia
 Example - Complex Data Types
 ````````````````````````````
 
-Source code :file:`numba_dppy/examples/debug/side-by-side-2.py`:
+Source code :file:`numba_dpex/examples/debug/side-by-side-2.py`:
 
-.. literalinclude:: ../../../numba_dppy/examples/debug/side-by-side-2.py
+.. literalinclude:: ../../../numba_dpex/examples/debug/side-by-side-2.py
    :pyobject: common_loop_body
    :linenos:
    :lineno-match:
@@ -68,7 +68,7 @@ Debug session:
    (gdb) set environment NUMBA_EXTEND_VARIABLE_LIFETIMES 1
    (gdb) break side-by-side-2.py:29 if param_a == 5
    ...
-   (gdb) run numba_dppy/examples/debug/side-by-side-2.py --api=numba-dppy-kernel
+   (gdb) run numba_dpex/examples/debug/side-by-side-2.py --api=numba-dpex-kernel
    ...
    Thread 2.1 hit Breakpoint 1, with SIMD lane 5, __main__::common_loop_body (i=5, a=..., b=...) at side-by-side-2.py:29
    29          result = param_c + param_d

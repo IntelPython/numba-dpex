@@ -1,0 +1,24 @@
+# Run: NUMBA_OPT=0 gdb-oneapi -q -command commands/info_func python
+set trace-commands on
+set pagination off
+set breakpoint pending on
+break simple_sum.py:22
+run simple_sum.py
+info functions data_parallel_sum
+# Expected:
+# ...
+# All functions matching regular expression "data_parallel_sum":
+# File simple_sum.py:
+# 20:         void __main__::data_parallel_sum(Array<float, 1, C, mutable, aligned>, Array<float, 1, C, mutable, aligned>, Array<float, 1, C, mutable, aligned>);
+continue
+info functions __main__
+# Expected:
+# ...
+# All functions matching regular expression "__main__":
+# 20:         void __main__::data_parallel_sum(Array<float, 1, C, mutable, aligned>, Array<float, 1, C, mutable, aligned>, Array<float, 1, C, mutable, aligned>);
+continue
+# Expected:
+# ...
+# Done...
+echo Done\n
+quit
