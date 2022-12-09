@@ -19,7 +19,7 @@ def test_private_memory(filter_str):
         i = numba_dpex.get_global_id(0)
         prvt_mem = numba_dpex.private.array(shape=1, dtype=np.float32)
         prvt_mem[0] = i
-        numba_dpex.barrier(numba_dpex.CLK_LOCAL_MEM_FENCE)  # local mem fence
+        numba_dpex.barrier(numba_dpex.LOCAL_MEM_FENCE)  # local mem fence
         A[i] = prvt_mem[0] * 2
 
     N = 64
