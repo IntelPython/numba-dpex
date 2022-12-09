@@ -2,13 +2,13 @@
  * Helper functions for converting between native value and Python objects.
  */
 
-#include "numba/_pymodule.h"
 #include "numba/_numba_common.h"
+#include "numba/_pymodule.h"
 #include "numba/core/runtime/nrt.h"
 
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-#include <numpy/ndarrayobject.h>
 #include <numpy/arrayscalars.h>
+#include <numpy/ndarrayobject.h>
 
 #include "_arraystruct.h"
 
@@ -17,19 +17,18 @@
 #include "_helpers.c"
 #include "_pysyclusmarray.c"
 
-
-static void
-syclobj_dtor(void *ptr, size_t size, void *info) {
+static void syclobj_dtor(void *ptr, size_t size, void *info)
+{
     PyGILState_STATE gstate;
     PyObject *syclobj = info;
 
-    gstate = PyGILState_Ensure();   /* ensure the GIL */
-    Py_DECREF(syclobj);            /* release the python object */
-    PyGILState_Release(gstate);     /* release the GIL */
+    gstate = PyGILState_Ensure(); /* ensure the GIL */
+    Py_DECREF(syclobj);           /* release the python object */
+    PyGILState_Release(gstate);   /* release the GIL */
 }
 
-static void *
-PySyclUsmArray_MemInfo_new(PyObject *ndary) {
+static void *PySyclUsmArray_MemInfo_new(PyObject *ndary)
+{
     size_t dummy_size = 0;
     void *data;
     PyObject *syclobj;
@@ -40,8 +39,8 @@ PySyclUsmArray_MemInfo_new(PyObject *ndary) {
     return NRT_MemInfo_new(data, dummy_size, syclobj_dtor, syclobj);
 }
 
-static int
-DPEX_RT_sycl_usm_array_from_python(PyObject *obj, dp_arystruct_t *arystruct)
+static int DPEX_RT_sycl_usm_array_from_python(PyObject *obj,
+                                              dp_arystruct_t *arystruct)
 {
     // help: NRT_adapt_ndarray_from_python
 
@@ -51,8 +50,7 @@ DPEX_RT_sycl_usm_array_from_python(PyObject *obj, dp_arystruct_t *arystruct)
     void *data;
     PyObject *syclobj;
 
-    if (!PySyclUsmArray_Check(obj))
-    {
+    if (!PySyclUsmArray_Check(obj)) {
         return -1;
     }
 
@@ -68,22 +66,18 @@ DPEX_RT_sycl_usm_array_from_python(PyObject *obj, dp_arystruct_t *arystruct)
     arystruct->parent = obj;
     arystruct->syclobj = syclobj;
     p = arystruct->shape_and_strides;
-    for (i = 0; i < ndim; i++, p++)
-    {
+    for (i = 0; i < ndim; i++, p++) {
         *p = PySyclUsmArray_DIM(ndary, i);
     }
-    for (i = 0; i < ndim; i++, p++)
-    {
+    for (i = 0; i < ndim; i++, p++) {
         // *p = PySyclUsmArray_STRIDE(ndary, i);
     }
 
     return 0;
 }
 
-
-static
-PyObject* try_to_return_parent(dp_arystruct_t *arystruct, int ndim,
-                               PyArray_Descr *descr)
+static PyObject *
+try_to_return_parent(dp_arystruct_t *arystruct, int ndim, PyArray_Descr *descr)
 {
     int i;
     PyObject *array = arystruct->parent;
@@ -105,7 +99,8 @@ PyObject* try_to_return_parent(dp_arystruct_t *arystruct, int ndim,
     // for(i = 0; i < ndim; ++i) {
     //     if (PyArray_DIMS(array)[i] != arystruct->shape_and_strides[i])
     //         goto RETURN_ARRAY_COPY;
-    //     if (PyArray_STRIDES(array)[i] != arystruct->shape_and_strides[ndim + i])
+    //     if (PyArray_STRIDES(array)[i] != arystruct->shape_and_strides[ndim +
+    //     i])
     //         goto RETURN_ARRAY_COPY;
     // }
 
@@ -131,26 +126,28 @@ RETURN_ARRAY_COPY:
  * It used to steal the reference of the arystruct.
  */
 static PyObject *
-DPEX_RT_sycl_usm_array_to_python_acqref(
-    dp_arystruct_t *arystruct, PyTypeObject *retty,
-    int ndim, int writeable, PyArray_Descr *descr)
+DPEX_RT_sycl_usm_array_to_python_acqref(dp_arystruct_t *arystruct,
+                                        PyTypeObject *retty,
+                                        int ndim,
+                                        int writeable,
+                                        PyArray_Descr *descr)
 {
     // PyArrayObject *array;
     PyObject *array;
-//    MemInfoObject *miobj = NULL;
-//    PyObject *args;
-//     npy_intp *shape, *strides;
-//     int flags = 0;
+    //    MemInfoObject *miobj = NULL;
+    //    PyObject *args;
+    //     npy_intp *shape, *strides;
+    //     int flags = 0;
 
     if (descr == NULL) {
-        PyErr_Format(PyExc_RuntimeError,
-                     "In 'DPEX_RT_sycl_usm_array_to_python_acqref', 'descr' is NULL");
+        PyErr_Format(
+            PyExc_RuntimeError,
+            "In 'DPEX_RT_sycl_usm_array_to_python_acqref', 'descr' is NULL");
         return NULL;
     }
 
     if (!NUMBA_PyArray_DescrCheck(descr)) {
-        PyErr_Format(PyExc_TypeError,
-                     "expected dtype object, got '%.200s'",
+        PyErr_Format(PyExc_TypeError, "expected dtype object, got '%.200s'",
                      Py_TYPE(descr)->tp_name);
         return NULL;
     }
@@ -162,68 +159,74 @@ DPEX_RT_sycl_usm_array_to_python_acqref(
         }
     }
 
-//     if (arystruct->meminfo) {
-//         /* wrap into MemInfoObject */
-//         miobj = PyObject_New(MemInfoObject, &MemInfoType);
-//         args = PyTuple_New(1);
-//         /* SETITEM steals reference */
-//         PyTuple_SET_ITEM(args, 0, PyLong_FromVoidPtr(arystruct->meminfo));
-//         NRT_Debug(nrt_debug_print("NRT_adapt_ndarray_to_python arystruct->meminfo=%p\n", arystruct->meminfo));
-//         /*  Note: MemInfo_init() does not incref.  This function steals the
-//          *        NRT reference, which we need to acquire.
-//          */
-//         NRT_Debug(nrt_debug_print("NRT_adapt_ndarray_to_python_acqref created MemInfo=%p\n", miobj));
-//         NRT_MemInfo_acquire(arystruct->meminfo);
-//         if (MemInfo_init(miobj, args, NULL)) {
-//             NRT_Debug(nrt_debug_print("MemInfo_init failed.\n"));
-//             return NULL;
-//         }
-//         Py_DECREF(args);
-//     }
+    //     if (arystruct->meminfo) {
+    //         /* wrap into MemInfoObject */
+    //         miobj = PyObject_New(MemInfoObject, &MemInfoType);
+    //         args = PyTuple_New(1);
+    //         /* SETITEM steals reference */
+    //         PyTuple_SET_ITEM(args, 0,
+    //         PyLong_FromVoidPtr(arystruct->meminfo));
+    //         NRT_Debug(nrt_debug_print("NRT_adapt_ndarray_to_python
+    //         arystruct->meminfo=%p\n", arystruct->meminfo));
+    //         /*  Note: MemInfo_init() does not incref.  This function steals
+    //         the
+    //          *        NRT reference, which we need to acquire.
+    //          */
+    //         NRT_Debug(nrt_debug_print("NRT_adapt_ndarray_to_python_acqref
+    //         created MemInfo=%p\n", miobj));
+    //         NRT_MemInfo_acquire(arystruct->meminfo);
+    //         if (MemInfo_init(miobj, args, NULL)) {
+    //             NRT_Debug(nrt_debug_print("MemInfo_init failed.\n"));
+    //             return NULL;
+    //         }
+    //         Py_DECREF(args);
+    //     }
 
-//     shape = arystruct->shape_and_strides;
-//     strides = shape + ndim;
-//     Py_INCREF((PyObject *) descr);
-//     array = (PyArrayObject *) PyArray_NewFromDescr(retty, descr, ndim,
-//                                                    shape, strides, arystruct->data,
-//                                                    flags, (PyObject *) miobj);
+    //     shape = arystruct->shape_and_strides;
+    //     strides = shape + ndim;
+    //     Py_INCREF((PyObject *) descr);
+    //     array = (PyArrayObject *) PyArray_NewFromDescr(retty, descr, ndim,
+    //                                                    shape, strides,
+    //                                                    arystruct->data,
+    //                                                    flags, (PyObject *)
+    //                                                    miobj);
 
-//     if (array == NULL)
-//         return NULL;
+    //     if (array == NULL)
+    //         return NULL;
 
-//     /* Set writable */
-// #if NPY_API_VERSION >= 0x00000007
-//     if (writeable) {
-//         PyArray_ENABLEFLAGS(array, NPY_ARRAY_WRITEABLE);
-//     }
-//     else {
-//         PyArray_CLEARFLAGS(array, NPY_ARRAY_WRITEABLE);
-//     }
-// #else
-//     if (writeable) {
-//         array->flags |= NPY_WRITEABLE;
-//     }
-//     else {
-//         array->flags &= ~NPY_WRITEABLE;
-//     }
-// #endif
+    //     /* Set writable */
+    // #if NPY_API_VERSION >= 0x00000007
+    //     if (writeable) {
+    //         PyArray_ENABLEFLAGS(array, NPY_ARRAY_WRITEABLE);
+    //     }
+    //     else {
+    //         PyArray_CLEARFLAGS(array, NPY_ARRAY_WRITEABLE);
+    //     }
+    // #else
+    //     if (writeable) {
+    //         array->flags |= NPY_WRITEABLE;
+    //     }
+    //     else {
+    //         array->flags &= ~NPY_WRITEABLE;
+    //     }
+    // #endif
 
-//     if (miobj) {
-//         /* Set the MemInfoObject as the base object */
-// #if NPY_API_VERSION >= 0x00000007
-//         if (-1 == PyArray_SetBaseObject(array,
-//                                         (PyObject *) miobj))
-//         {
-//             Py_DECREF(array);
-//             Py_DECREF(miobj);
-//             return NULL;
-//         }
-// #else
-//         PyArray_BASE(array) = (PyObject *) miobj;
-// #endif
+    //     if (miobj) {
+    //         /* Set the MemInfoObject as the base object */
+    // #if NPY_API_VERSION >= 0x00000007
+    //         if (-1 == PyArray_SetBaseObject(array,
+    //                                         (PyObject *) miobj))
+    //         {
+    //             Py_DECREF(array);
+    //             Py_DECREF(miobj);
+    //             return NULL;
+    //         }
+    // #else
+    //         PyArray_BASE(array) = (PyObject *) miobj;
+    // #endif
 
-//     }
-    return (PyObject *) array;
+    //     }
+    return (PyObject *)array;
 }
 
 MOD_INIT(_rt_python)
@@ -235,13 +238,19 @@ MOD_INIT(_rt_python)
 
     import_array();
 
-    PyModule_AddObject(m, "DPEX_RT_sycl_usm_array_from_python", PyLong_FromVoidPtr(&DPEX_RT_sycl_usm_array_from_python));
-    PyModule_AddObject(m, "DPEX_RT_sycl_usm_array_to_python_acqref", PyLong_FromVoidPtr(&DPEX_RT_sycl_usm_array_to_python_acqref));
+    PyModule_AddObject(m, "DPEX_RT_sycl_usm_array_from_python",
+                       PyLong_FromVoidPtr(&DPEX_RT_sycl_usm_array_from_python));
+    PyModule_AddObject(
+        m, "DPEX_RT_sycl_usm_array_to_python_acqref",
+        PyLong_FromVoidPtr(&DPEX_RT_sycl_usm_array_to_python_acqref));
 
-    PyModule_AddObject(m, "PySyclUsmArray_Check", PyLong_FromVoidPtr(&PySyclUsmArray_Check));
-    PyModule_AddObject(m, "PySyclUsmArray_NDIM", PyLong_FromVoidPtr(&PySyclUsmArray_NDIM));
+    PyModule_AddObject(m, "PySyclUsmArray_Check",
+                       PyLong_FromVoidPtr(&PySyclUsmArray_Check));
+    PyModule_AddObject(m, "PySyclUsmArray_NDIM",
+                       PyLong_FromVoidPtr(&PySyclUsmArray_NDIM));
 
-    PyModule_AddObject(m, "itemsize_from_typestr", PyLong_FromVoidPtr(&itemsize_from_typestr));
+    PyModule_AddObject(m, "itemsize_from_typestr",
+                       PyLong_FromVoidPtr(&itemsize_from_typestr));
 
     return MOD_SUCCESS_VAL(m);
 }

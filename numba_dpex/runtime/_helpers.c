@@ -1,5 +1,4 @@
-static int
-size_from_shape(PyObject *shape)
+static int size_from_shape(PyObject *shape)
 {
     Py_ssize_t pos, ndim;
     PyObject *item;
@@ -12,8 +11,7 @@ size_from_shape(PyObject *shape)
     if (ndim == 0)
         return 1;
 
-    for (pos = 0; pos < ndim; ++pos)
-    {
+    for (pos = 0; pos < ndim; ++pos) {
         item = PyTuple_GetItem(shape, pos);
         dimsize = PyLong_AsLong(item);
 
@@ -26,14 +24,12 @@ size_from_shape(PyObject *shape)
     return size;
 }
 
-static int
-itemsize_from_typestr(PyObject *typestr)
+static int itemsize_from_typestr(PyObject *typestr)
 {
     PyArray_Descr *descr;
     int itemsize = -1;
 
-    if (!PyArray_DescrConverter(typestr, &descr))
-    {
+    if (!PyArray_DescrConverter(typestr, &descr)) {
         return -1;
     }
 

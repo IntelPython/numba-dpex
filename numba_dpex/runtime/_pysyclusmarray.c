@@ -1,6 +1,5 @@
 
-static int
-PySyclUsmArray_Check(PyObject *obj)
+static int PySyclUsmArray_Check(PyObject *obj)
 {
     PyObject *dict;
 
@@ -8,8 +7,7 @@ PySyclUsmArray_Check(PyObject *obj)
         return 0;
 
     dict = PyObject_GetAttrString(obj, SYCL_USM_ARRAY_INTERFACE);
-    if (!PyDict_Check(dict))
-    {
+    if (!PyDict_Check(dict)) {
         Py_DECREF(dict);
         return 0;
     }
@@ -18,8 +16,7 @@ PySyclUsmArray_Check(PyObject *obj)
     return 1;
 }
 
-static void *
-PySyclUsmArray_DATA(PyObject *obj)
+static void *PySyclUsmArray_DATA(PyObject *obj)
 {
     PyObject *dict;
     PyObject *tuple;
@@ -29,15 +26,13 @@ PySyclUsmArray_DATA(PyObject *obj)
     dict = PyObject_GetAttrString(obj, SYCL_USM_ARRAY_INTERFACE);
     tuple = PyDict_GetItemString(dict, "data");
 
-    if (PyTuple_Size(tuple) != 2)
-    {
+    if (PyTuple_Size(tuple) != 2) {
         Py_DECREF(dict);
         return NULL;
     }
 
     item = PyTuple_GetItem(tuple, 0);
-    if (!PyLong_Check(item))
-    {
+    if (!PyLong_Check(item)) {
         Py_DECREF(dict);
         return NULL;
     }
@@ -48,8 +43,7 @@ PySyclUsmArray_DATA(PyObject *obj)
     return data;
 }
 
-static PyObject *
-PySyclUsmArray_SYCLOBJ(PyObject *obj)
+static PyObject *PySyclUsmArray_SYCLOBJ(PyObject *obj)
 {
     PyObject *dict;
     PyObject *syclobj;
@@ -63,8 +57,7 @@ PySyclUsmArray_SYCLOBJ(PyObject *obj)
     return syclobj;
 }
 
-static int
-PySyclUsmArray_NDIM(PyObject *obj)
+static int PySyclUsmArray_NDIM(PyObject *obj)
 {
     PyObject *dict;
     PyObject *shape;
@@ -79,8 +72,7 @@ PySyclUsmArray_NDIM(PyObject *obj)
     return ndim;
 }
 
-static int
-PySyclUsmArray_DIM(PyObject *obj, int pos)
+static int PySyclUsmArray_DIM(PyObject *obj, int pos)
 {
     PyObject *dict;
     PyObject *shape;
@@ -97,8 +89,7 @@ PySyclUsmArray_DIM(PyObject *obj, int pos)
     return dimsize;
 }
 
-static int
-PySyclUsmArray_SIZE(PyObject *obj)
+static int PySyclUsmArray_SIZE(PyObject *obj)
 {
     PyObject *dict;
     PyObject *shape;
@@ -113,8 +104,7 @@ PySyclUsmArray_SIZE(PyObject *obj)
     return size;
 }
 
-static int
-PySyclUsmArray_ITEMSIZE(PyObject *obj)
+static int PySyclUsmArray_ITEMSIZE(PyObject *obj)
 {
     PyObject *dict;
     PyObject *typestr;

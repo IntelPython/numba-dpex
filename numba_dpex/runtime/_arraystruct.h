@@ -6,8 +6,9 @@
  * for the dpnp_ndarray_Model class).
  */
 
-typedef struct {
-    void     *meminfo;  /* see _rt_python.c in numba_dpex/runtime */
+typedef struct
+{
+    void *meminfo; /* see _rt_python.c in numba_dpex/runtime */
     PyObject *parent;
     npy_intp nitems;
     npy_intp itemsize;
@@ -16,5 +17,4 @@ typedef struct {
     npy_intp shape_and_strides[];
 } dp_arystruct_t;
 
-
-#endif  /* NUMBA_DP_ARYSTRUCT_H_ */
+#endif /* NUMBA_DP_ARYSTRUCT_H_ */
