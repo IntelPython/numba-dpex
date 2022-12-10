@@ -16,10 +16,7 @@ def kernel_atomic_reduction(a):
 
 
 def main():
-    try:
-        a = np.arange(N, device="gpu")
-    except:
-        print("No GPU device")
+    a = np.arange(N, device="gpu")
 
     print("Using device ...")
     print(a.device)
