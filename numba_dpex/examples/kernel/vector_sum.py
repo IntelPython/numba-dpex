@@ -2,14 +2,15 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import numpy.testing as testing
 import dpnp
 import dpnp.random as dprandom
+import numpy.testing as testing
 
 import numba_dpex as ndpx
 
 # Vector size
 N = 10
+
 
 # Data parallel kernel implementing vector sum
 @ndpx.kernel

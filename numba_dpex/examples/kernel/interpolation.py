@@ -103,8 +103,7 @@ def kernel_polynomial(x, y, coefficients):
         gid * N_POINTS_PER_WORK_ITEM, (gid + 1) * N_POINTS_PER_WORK_ITEM, 1
     ):
         z[0] = x[i]  # Copy current point into the private memory
-        y[i] = ((c[0] * z[0] + c[1]) *
-                z[0] + c[2]) * z[0] + c[3]  # Coefficients are in the private memory too
+        y[i] = ((c[0] * z[0] + c[1]) * z[0] + c[2]) * z[0] + c[3]
 
 
 def main():

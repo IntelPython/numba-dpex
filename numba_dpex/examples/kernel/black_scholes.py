@@ -6,9 +6,9 @@
 from math import erf, exp, log, sqrt
 
 import dpnp as np
-import numba_dpex as ndpx
 import numpy.testing as testing
 
+import numba_dpex as ndpx
 
 # Stock price range
 S0L = 10.0
@@ -29,7 +29,7 @@ RISK_FREE = 0.1
 VOLATILITY = 0.2
 
 # Number of call-put options
-NOPT = 1024*1024
+NOPT = 1024 * 1024
 
 # Random seed
 SEED = 777
@@ -95,7 +95,9 @@ def main():
     print("Using device ...")
     print(price.device)
 
-    kernel_black_scholes[NOPT, ndpx.DEFAULT_LOCAL_SIZE](price, strike, t, rate, volatility, call, put)
+    kernel_black_scholes[NOPT, ndpx.DEFAULT_LOCAL_SIZE](
+        price, strike, t, rate, volatility, call, put
+    )
 
     call_host = np.asnumpy(call)
     put_host = np.asnumpy(put)

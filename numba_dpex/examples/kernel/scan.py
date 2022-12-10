@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import dpnp as np
-import numba_dpex as ndpx
 
+import numba_dpex as ndpx
 
 # 1D array size
 N = 64
@@ -46,6 +46,7 @@ def kernel_hillis_steele_scan(a):
 
     ndpx.barrier()  # The same as ndpx.barrier(ndpx.GLOBAL_MEM_FENCE)
     a[gid] = b[lid]
+
 
 def main():
     arr = np.arange(N)

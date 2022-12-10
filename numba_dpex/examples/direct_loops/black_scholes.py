@@ -3,10 +3,12 @@
 # SPDX-License-Identifier: Apache 2.0
 
 
+from math import erf, exp, log, sqrt
+
 import dpnp as np
-import numba_dpex as ndpx
-from math import erf, sqrt, exp, log
 import numpy.testing as testing
+
+import numba_dpex as ndpx
 
 # Stock price range
 S0L = 10.0
@@ -27,7 +29,7 @@ RISK_FREE = 0.1
 VOLATILITY = 0.2
 
 # Number of call-put options
-NOPT = 1024*1024
+NOPT = 1024 * 1024
 
 # Random seed
 SEED = 777
@@ -46,8 +48,8 @@ def initialize():
 # Cumulative normal distribution function
 @ndpx.vectorize
 def cndf(x):
-    one_over_sqrt2 = 1.0/sqrt(2.0)
-    return 0.5 + 0.5*erf(x*one_over_sqrt2)
+    one_over_sqrt2 = 1.0 / sqrt(2.0)
+    return 0.5 + 0.5 * erf(x * one_over_sqrt2)
 
 
 # call = cndf(d1)*price - cndf(d2)*strike*exp(-r*t)
@@ -60,16 +62,16 @@ def black_scholes(price, strike, t, rate, volatility):
     put = np.empty(shape=price.shape, dtype=price.dtype)
     for i in ndpx.prange(price.shape[0]):
         log_term = log(price[i] / strike[i])
-        rt = rate*t[i]
-        sigma_sqrt_t = volatility*sqrt(t[i])
-        sigma2_t_over_2 = sigma_sqrt_t*sigma_sqrt_t*0.5
+        rt = rate * t[i]
+        sigma_sqrt_t = volatility * sqrt(t[i])
+        sigma2_t_over_2 = sigma_sqrt_t * sigma_sqrt_t * 0.5
         exp_mrt = exp(-rt)
         strike_exp_mrt = strike[i] * exp_mrt
 
         d1 = (log_term + (rt + sigma2_t_over_2)) / sigma_sqrt_t
         d2 = d1 - sigma_sqrt_t
 
-        call[i] = cndf(d1)*price[i] - cndf(d2)*strike_exp_mrt
+        call[i] = cndf(d1) * price[i] - cndf(d2) * strike_exp_mrt
         put[i] = strike_exp_mrt - price[i] + call[i]
     return call, put
 

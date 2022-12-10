@@ -2,8 +2,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import numpy.testing as testing
 import dpnp.random as dprandom
+import numpy.testing as testing
 
 import numba_dpex as ndpx
 
