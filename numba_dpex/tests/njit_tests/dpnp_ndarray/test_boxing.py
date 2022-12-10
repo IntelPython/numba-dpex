@@ -1,4 +1,4 @@
-from numba_dpex.core.types import dpnp_ndarray_Type
+from numba_dpex.core.types.dpnp_types import dpnp_ndarray_Type
 
 
 def test_unbox_for_dpnp_ndarray_Type_should_be_registered():

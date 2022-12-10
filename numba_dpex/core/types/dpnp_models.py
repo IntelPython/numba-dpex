@@ -17,7 +17,7 @@ from numba.core.datamodel import StructModel
 from numba.core.datamodel.models import ArrayModel
 from numba.extending import register_model
 
-from numba_dpex.target import spirv_data_model_manager
+from numba_dpex.core.target import spirv_data_model_manager
 
 from .dpnp_types import dpnp_ndarray_Type
 

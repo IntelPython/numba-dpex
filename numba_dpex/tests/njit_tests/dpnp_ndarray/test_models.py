@@ -1,8 +1,8 @@
 from numba.core import types
 from numba.core.datamodel import default_manager, models
 
-from numba_dpex.core.types import dpnp_ndarray_Type
 from numba_dpex.core.types.dpnp_models import dpnp_ndarray_Model
+from numba_dpex.core.types.dpnp_types import dpnp_ndarray_Type
 
 
 def test_model_for_dpnp_ndarray_Type():
