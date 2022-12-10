@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import numpy.testing as testing
-import dpnp
 import dpnp.random as dprandom
 
 import numba_dpex as ndpx
@@ -11,21 +10,28 @@ import numba_dpex as ndpx
 # Vector size
 N = 10
 
-# Data parallel kernel implementing vector sum
-@ndpx.kernel
-def kernel_vector_sum(a, b, c):
-    i = ndpx.get_global_id(0)
-    c[i] = a[i] + b[i]
+
+# Data parallel kernel implementing vector sum as ufunc
+@ndpx.vectorize
+def ufunc_sum(a, b):
+    return a + b
 
 
-# Utility function for printing and testing
-def driver(a, b, c, global_size):
+# Main function
+def main():
+    print("Vector size N", N)
+    # Create random vectors on the default device
+    a = dprandom.random(N)
+    b = dprandom.random(N)
+
     # Printing inputs
     print("A : ", a)
     print("B : ", b)
+    print("Using device ...")
+    print(a.device)
 
     # Invoking kernel
-    kernel_vector_sum[global_size, ndpx.DEFAULT_LOCAL_SIZE](a, b, c)
+    c = ufunc_sum(a, b)
 
     # Printing result
     print("A + B = ")
@@ -36,20 +42,6 @@ def driver(a, b, c, global_size):
     b_np = b.asnumpy()  # Copy dpnp array a to NumPy array a_np
     testing.assert_equal(c, a_np + b_np)
 
-
-# Main function
-def main():
-    global_size = N
-    print("Vector size N", N)
-
-    # Create random vectors on the default device
-    a = dprandom.random(N)
-    b = dprandom.random(N)
-    c = dpnp.ones_like(a)
-
-    print("Using device ...")
-    print(a.device)
-    driver(a, b, c, global_size)
     print("Done...")
 
 

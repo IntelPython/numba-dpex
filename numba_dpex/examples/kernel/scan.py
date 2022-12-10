@@ -2,11 +2,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-# scan.py is not working due to issue: https://github.com/IntelPython/numba-dpex/issues/829
-
 import dpnp as np
-
 import numba_dpex as ndpx
+
 
 # 1D array size
 N = 64
@@ -49,18 +47,16 @@ def kernel_hillis_steele_scan(a):
     ndpx.barrier()  # The same as ndpx.barrier(ndpx.GLOBAL_MEM_FENCE)
     a[gid] = b[lid]
 
-
 def main():
     arr = np.arange(N)
     print("Original array:", arr)
 
     print("Using device ...")
-    print(arr.device)
+    arr.device.print_device_info()
     kernel_hillis_steele_scan[N, ndpx.DEFAULT_LOCAL_SIZE](arr)
 
     # the output should be [0, 1, 3, 6, ...]
-    arr_np = np.asnumpy(arr)
-    print(arr_np)
+    print(arr)
 
     print("Done...")
 

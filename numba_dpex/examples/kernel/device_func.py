@@ -42,7 +42,7 @@ def main():
     b = np.ones(N)
 
     print("Using device ...")
-    print(a.device)
+    a.device.print_device_info()
     driver(a, b, N)
 
     print("Done...")
