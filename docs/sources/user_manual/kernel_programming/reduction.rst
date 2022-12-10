@@ -1,26 +1,10 @@
-Reduction on SYCL-supported Devices
-===================================
+Reductions
+==========
 
-Numba-dpex does not yet provide any specific decorator to implement
-reduction kernels. However, a kernel reduction can be written explicitly. This
+``numba-dpex`` does not provide a decorator to implement reduction kernels.
+However, it provides several essential examples how to write a reduction kernel explicitly. This
 section provides two approaches for writing a reduction kernel as a
 ``numba_dpex.kernel`` function.
-
-
-Example 1
----------
-
-This example demonstrates a summation reduction on a one-dimensional array.
-
-Full example can be found at ``numba_dpex/examples/sum_reduction.py``.
-
-In this example, to reduce the array we invoke the kernel multiple times.
-
-.. literalinclude:: ./../../../../numba_dpex/examples/sum_reduction.py
-   :pyobject: sum_reduction_kernel
-
-.. literalinclude:: ./../../../../numba_dpex/examples/sum_reduction.py
-   :pyobject: sum_reduce
 
 Example 2
 ---------

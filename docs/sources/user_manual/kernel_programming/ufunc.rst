@@ -1,50 +1,41 @@
 Universal Functions
 ===================
 
-Numba provides a `set of decorators
-<https://numba.pydata.org/numba-doc/latest/user/vectorize.html>`_ to create
-`NumPy universal functions
-<http://docs.scipy.org/doc/numpy/reference/ufuncs.html>`_-like routines that are
-JIT compiled. Although, a close analog to NumPy universal functions Numba's
-``@vectorize`` are not fully compatible with a regular NumPy ufunc.. Refer
-`Creating NumPy universal functions`_ for details.
+The **Data Parallel Extension for Numba** supports universal function compilation. Universal function
+is a scalar function applied to each array element.
 
+.. image:: ./../../_images/ufunc.jpg
+    :scale: 100%
+    :align: center
+    :alt: Universal functions
 
-Numba-dpex only supports ``numba.vectorize`` decorator and not yet the
-``numba.guvectorize`` decorator. Another present limitation is that
-numba-dpex ufunc kernels cannot invoke a ``numba_dpex.kernel`` function.
-.. Ongoing work is in progress to address these limitations.
+In the above illustration the universal function `f(x)` takes a scalar input `x`
+and returns the corresponding result `y`. It is applied to each array element ``x[i]`` and produces
+an array ``y[]``.
 
-Example 1: Basic Usage
-----------------------
+The ``@vectorize`` decorator is used to specify the universal function.
+It triggers a compilation of the function in a performant form on vector inputs.
 
-Full example can be found at ``numba_dpex/examples/vectorize.py``.
+``numba-dpex`` supports both **eager compilation** (decorator-time compilation, when type signatures are
+provided in the decorator) and **lazy compilation** (call-time compilation, when type signatures are
+inferred from inputs at a function call time).
 
-.. literalinclude:: ./../../../../numba_dpex/examples/vectorize.py
-   :pyobject: ufunc_kernel
+.. seealso::
+    `Creating NumPy universal functions <https://numba.readthedocs.io/en/stable/user/vectorize.html>`_
 
-.. literalinclude:: ./../../../../numba_dpex/examples/vectorize.py
-   :pyobject: test_njit
+.. literalinclude:: ./../../../../numba_dpex/examples/kernel/vector_sum_ufunc.py
+    :caption: **EXAMPLE: Vector sum implemented using @vectorize with lazy compilation**
+    :lines: 5-
 
-Example 2: Calling ``numba.vectorize`` inside a ``numba_dpex.kernel``
----------------------------------------------------------------------
+``numba-dpex`` allows calling universal functions from another compiled function. The following example
+demonstrates calling ``@vectorize``-compiled function from ``njit``-compiled function.
 
-Full example can be found at ``numba_dpex/examples/blacksholes_njit.py``.
-
-.. literalinclude:: ./../../../../numba_dpex/examples/blacksholes_njit.py
-   :pyobject: cndf2
+.. literalinclude:: ./../../../../numba_dpex/examples/array_style/black_scholes.py
+    :caption: **EXAMPLE: Calling universal function from @njit**
+    :lines: 5-
 
 .. note::
 
-    ``numba.cuda`` requires ``target='cuda'`` parameter for ``numba.vectorize``
-    and ``numba.guvectorize`` functions. Numba-dpex eschews the ``target``
-    parameter for ``@vectorize`` and infers the target from the
-    ``dpctl.device_context`` in which the ``numba.vectorize`` function is
-    called.
+    Generalized unversal functions, decorated with Numba's ``@guvectorize`` are not supported
+    in ``numba-dpex``
 
-
-- ``numba_dpex/examples/vectorize.py``
-- ``numba_dpex/examples/blacksholes_njit.py``
-
-.. _`Universal functions (ufunc)`: http://docs.scipy.org/doc/numpy/reference/ufuncs.html
-.. _`Creating NumPy universal functions`: https://numba.pydata.org/numba-doc/latest/user/vectorize.html
