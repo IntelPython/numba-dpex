@@ -153,7 +153,7 @@ def barrier_no_arg_impl(context, builder, sig, args):
     barrier = _declare_function(
         context, builder, "barrier", sig, ["unsigned int"]
     )
-    flags = context.get_constant(types.uint32, stubs.CLK_GLOBAL_MEM_FENCE)
+    flags = context.get_constant(types.uint32, stubs.GLOBAL_MEM_FENCE)
     builder.call(barrier, [flags])
     return _void_value
 
@@ -175,7 +175,7 @@ def sub_group_barrier_impl(context, builder, sig, args):
     barrier = _declare_function(
         context, builder, "barrier", sig, ["unsigned int"]
     )
-    flags = context.get_constant(types.uint32, stubs.CLK_LOCAL_MEM_FENCE)
+    flags = context.get_constant(types.uint32, stubs.LOCAL_MEM_FENCE)
     builder.call(barrier, [flags])
     return _void_value
 

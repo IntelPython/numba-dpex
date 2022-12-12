@@ -23,7 +23,7 @@ def private_memory():
 
         # preload
         memory[0] = i
-        numba_dpex.barrier(numba_dpex.CLK_LOCAL_MEM_FENCE)  # local mem fence
+        numba_dpex.barrier(numba_dpex.LOCAL_MEM_FENCE)  # local mem fence
 
         # memory will not hold correct deterministic result if it is not
         # private to each thread.
