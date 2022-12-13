@@ -16,7 +16,7 @@ def kernel_atomic_reduction(a):
 
 
 def main():
-    a = np.arange(N, device="gpu")
+    a = np.arange(N)
 
     print("Using device ...")
     print(a.device)

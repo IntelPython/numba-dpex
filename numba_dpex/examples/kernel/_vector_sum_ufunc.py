@@ -2,6 +2,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+###########################################################################
+# This test is disabled in CI since dpnp array a is not supporting a.asnumpy().
+###########################################################################
+
 import dpnp.random as dprandom
 import numpy.testing as testing
 

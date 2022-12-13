@@ -53,7 +53,7 @@ def main():
     print("Original array:", arr)
 
     print("Using device ...")
-    arr.device.print_device_info()
+    arr.sycl_device.print_device_info()
     kernel_hillis_steele_scan[N, ndpx.DEFAULT_LOCAL_SIZE](arr)
 
     # the output should be [0, 1, 3, 6, ...]

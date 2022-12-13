@@ -102,8 +102,9 @@ def main():
     call_host = np.asnumpy(call)
     put_host = np.asnumpy(put)
 
-    testing.assert_equal(call_host[0], 1.688330986922967)
-    testing.assert_equal(put_host[0], 1.1139126320995452)
+    # price[0]= 19.17336347512901, strike[0]= 48.66382494568825, t[0]= 1.593648541951552
+    testing.assert_equal(call_host[0], 0.002199839768413904)
+    testing.assert_equal(put_host[0], 22.323759497831258)
 
     print("Done...")
 
