@@ -11,12 +11,12 @@ on:
       - release*
 
 env:
-  PACKAGE_NAME: numba-dppy
-  MODULE_NAME: numba_dppy
+  PACKAGE_NAME: numba-dpex
+  MODULE_NAME: numba_dpex
 
 jobs:
   build_linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     strategy:
       matrix:
@@ -32,7 +32,7 @@ jobs:
 
       - name: Build conda package
         env:
-          CHANNELS: -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
+          CHANNELS: -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev --override-channels
         run: ./scripts/build_conda_package.sh ${{ matrix.python }}
 
       - name: Upload artifact
@@ -54,7 +54,7 @@ jobs:
           - python: "3.8"
             integration_channels: -c dppy/label/dev
             artifact_name: -c dppy_label_dev
-            experimental: false
+            experimental: true
     continue-on-error: ${{ matrix.experimental }}
     env:
       CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
@@ -92,19 +92,13 @@ jobs:
 
   test_linux:
     needs: build_linux
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     strategy:
       matrix:
         python: ["3.8", "3.9"]
-        numba: ["0.55"]
-        dpctl: ["0.12"]
-        dpnp: ["0.10"]
-        include:
-          - python: "3.8"
-            numba: "0.54"
-            dpctl: "0.11"
-            dpnp: "0.9"
+        numba: ["0.56"]
+        dpnp: ["0.11"]
 
     steps:
       - name: Download artifact
@@ -114,10 +108,10 @@ jobs:
 
       - uses: actions/checkout@v3
         with:
-          path: numba-dppy
+          path: numba-dpex
 
       - name: Setup conda-build
-        uses: ./numba-dppy/.github/actions/setup-conda-build
+        uses: ./numba-dpex/.github/actions/setup-conda-build
 
       - name: Create conda channel
         run: |
@@ -125,25 +119,44 @@ jobs:
           mv ${PACKAGE_NAME}-*.tar.bz2 $GITHUB_WORKSPACE/channel/linux-64
           conda index $GITHUB_WORKSPACE/channel
           # Test channel
-          conda search $PACKAGE_NAME -c $GITHUB_WORKSPACE/channel --override-channels
+          conda search $PACKAGE_NAME -c $GITHUB_WORKSPACE/channel --override-channels --info
 
-      - name: Install numba-dppy
+      - name: Install numba-dpex
         env:
-          CHANNELS: -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
+          CHANNELS: -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev --override-channels
         run: |
           CHANNELS="-c $GITHUB_WORKSPACE/channel $CHANNELS"
-          conda install $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl=${{ matrix.dpctl }} dpnp=${{ matrix.dpnp }} $CHANNELS
+          conda list
+          conda create -n numba_dpex_env $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl dpnp=${{ matrix.dpnp }} $CHANNELS
           # Test installed packages
           conda list
       - name: Check DPNP
         run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate numba_dpex_env
           export OCL_ICD_FILENAMES=libintelocl.so
           python -c "import dpnp"
       - name: Run tests
         run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate numba_dpex_env
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
           export OCL_ICD_FILENAMES=libintelocl.so
           python -m pytest -q -ra --disable-warnings --pyargs $MODULE_NAME -vv
+      - name: Run examples
+        run: |
+          ls
+          pwd
+          cd ./numba-dpex/numba_dpex/examples/
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate numba_dpex_env
+          # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
+          export OCL_ICD_FILENAMES=libintelocl.so
+          for script in $(find . \( -not -name "_*" -not -name "vectorize.py" -not -name "scan.py" -and -name "*.py" \))
+          do
+            echo "Executing ${script}"
+            python ${script} || exit 1
+          done
 
   test_windows:
     needs: build_windows
@@ -152,7 +165,6 @@ jobs:
     strategy:
       matrix:
         python: ["3.8", "3.9"]
-        dpctl: ["0.11.4", "0.12"]
         integration_channels: [""]
         experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
@@ -161,20 +173,20 @@ jobs:
           - python: "3.8"
             integration_channels: -c dppy/label/dev
             artifact_name: -c dppy_label_dev
-            experimental: false  # current stable
+            experimental: true  # current stable
             dependencies: ""
     continue-on-error: ${{ matrix.experimental }}
     env:
       # conda-forge: llvm-spirv 11 not on intel channel yet
-      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev -c conda-forge --override-channels
+      CHANNELS: ${{ matrix.integration_channels }} -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev -c conda-forge --override-channels
 
     steps:
-      - name: Create dir for numba-dppy repo
+      - name: Create dir for numba-dpex repo
         run: |
-          mkdir -p ${{ github.workspace }}/dppy-repo
+          mkdir -p ${{ github.workspace }}/dpex-repo
       - uses: actions/checkout@v3
         with:
-          path: dppy-repo
+          path: dpex-repo
           fetch-depth: 0
       - name: Download artifact
         uses: actions/download-artifact@v2
@@ -206,17 +218,51 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
-      - name: Install numba-dppy
+      - name: Install numba-dpex
         run: |
-          conda install ${{ env.PACKAGE_NAME }} pytest dpcpp_win-64 python=${{ matrix.python }} dpctl=${{ matrix.dpctl }} ${{ matrix.dependencies }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
+          conda install ${{ env.PACKAGE_NAME }} pytest dpcpp_win-64 python=${{ matrix.python }} dpctl ${{ matrix.dependencies }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
           # Test installed packages
           conda list
       - name: Install opencl_rt
         run: conda install opencl_rt -c intel --override-channels
-      - name: Activate cpu driver
-        run: ${{ github.workspace }}/dppy-repo/scripts/config_cpu_device.ps1
+
+      - name: Add library
+        shell: pwsh
+        run: |
+          $conda_env_library = "$env:CONDA_PREFIX\Library"
+          echo "OCL_ICD_FILENAMES=$conda_env_library\lib\intelocl64.dll" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          try {$list = Get-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors | Select-Object -ExpandProperty Property } catch {$list=@()}
+          if ($list.count -eq 0) {
+              if (-not (Test-Path -Path HKLM:\SOFTWARE\Khronos)) {
+                 New-Item -Path HKLM:\SOFTWARE\Khronos
+              }
+              if (-not (Test-Path -Path HKLM:\SOFTWARE\Khronos\OpenCL)) {
+                 New-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL
+              }
+              if (-not (Test-Path -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors)) {
+                 New-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors
+              }
+              New-ItemProperty -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors -Name $conda_env_library\lib\intelocl64.dll -Value 0
+              try {$list = Get-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors | Select-Object -ExpandProperty Property } catch {$list=@()}
+              Write-Output $(Get-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors)
+              # Now copy OpenCL.dll into system folder
+              $system_ocl_icd_loader="C:\Windows\System32\OpenCL.dll"
+              $python_ocl_icd_loader="$conda_env_library\bin\OpenCL.dll"
+              Copy-Item -Path $python_ocl_icd_loader -Destination $system_ocl_icd_loader
+              if (Test-Path -Path $system_ocl_icd_loader) {
+                 Write-Output "$system_ocl_icd_loader has been copied"
+                 $acl = Get-Acl $system_ocl_icd_loader
+                 Write-Output $acl
+              } else {
+                 Write-Output "OCL-ICD-Loader was not copied"
+              }
+              # Variable assisting OpenCL CPU driver to find TBB DLLs which are not located where it expects them by default
+              $cl_cfg="$conda_env_library\lib\cl.cfg"
+              (Get-Content $cl_cfg) -replace '^CL_CONFIG_TBB_DLL_PATH =', "CL_CONFIG_TBB_DLL_PATH = $conda_env_library\bin" | Set-Content $cl_cfg
+          }
+
       - name: Add dpnp skip variable
-        run: echo "NUMBA_DPPY_TESTING_SKIP_NO_DPNP=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        run: echo "NUMBA_DPEX_TESTING_SKIP_NO_DPNP=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
       - name: Run tests
         run: |
           python -m pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }} -vv
@@ -224,7 +270,7 @@ jobs:
   upload_linux:
     needs: test_linux
     if: ${{github.ref == 'refs/heads/main' || (startsWith(github.ref, 'refs/heads/release') == true)}}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         python: ["3.8", "3.9"]
@@ -234,14 +280,19 @@ jobs:
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 
-      - name: Setup anaconda-client
-        uses: ./.github/actions/setup-anaconda-client
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-activate-base: true
+          activate-environment: ""
+      - name: Install anaconda-client
+        run: conda install anaconda-client
 
       - name: Upload
         env:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
-          conda install anaconda-client
+          source /usr/share/miniconda/etc/profile.d/conda.sh
+          conda activate
           anaconda --token $ANACONDA_TOKEN upload --user dppy --label dev ${PACKAGE_NAME}-*.tar.bz2
 
   upload_windows:
@@ -268,5 +319,4 @@ jobs:
         env:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
         run: |
-          conda install anaconda-client
           anaconda --token ${{ env.ANACONDA_TOKEN }} upload --user dppy --label dev ${{ env.PACKAGE_NAME }}-*.tar.bz2

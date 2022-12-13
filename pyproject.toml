@@ -1,5 +1,5 @@
 [tool.black]
-exclude = "versioneer.py|numba_dppy/_version.py"
+exclude = "versioneer.py|numba_dpex/_version.py"
 line-length = 80
 
 [tool.isort]
@@ -9,16 +9,16 @@ force_grid_wrap = 0
 use_parentheses = true
 ensure_newline_before_comments = true
 line_length = 80
-skip = ["versioneer.py", "numba_dppy/_version.py"]
+skip = ["versioneer.py", "numba_dpex/_version.py"]
 
 [tool.coverage.run]
 branch = true
 source = [
-    "numba_dppy"
+    "numba_dpex"
 ]
 omit = [
-    "numba_dppy/tests/*",
-    "numba_dppy/_version.py",
+    "numba_dpex/tests/*",
+    "numba_dpex/_version.py",
 ]
 concurrency = [
     "multiprocessing",
@@ -28,8 +28,8 @@ parallel = true
 [tool.coverage.report]
 precision = 2
 omit = [
-    "numba_dppy/tests/*",
-    "numba_dppy/_version.py",
+    "numba_dpex/tests/*",
+    "numba_dpex/_version.py",
 ]
 exclude_lines = [
   "pragma: no cover",
@@ -38,3 +38,9 @@ exclude_lines = [
   "@register_jitable",
   "def dpnp_impl",
 ]
+
+[tool.versioneer]
+VCS = "git"
+style = "pep440"
+versionfile_source = "numba_dpex/_version.py"
+parentdir_prefix = ""

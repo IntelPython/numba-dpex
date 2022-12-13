@@ -6,17 +6,17 @@ Graphics driver
 
 Install drivers using the following guides:
 
-    - `GPGPU Documents / Installation guides`_
-    - `Intel® oneAPI Toolkits Installation Guide for Linux* OS / Install Intel GPU Drivers`_
+    - `Intel® GPGPU driver installation guide`_
+    - `Intel® oneAPI GPU driver installation guide`_
 
-.. _`GPGPU Documents / Installation guides`: https://dgpu-docs.intel.com/installation-guides/index.html
-.. _`Intel® oneAPI Toolkits Installation Guide for Linux* OS / Installation Guide / Install Intel GPU Drivers`:
+.. _Intel® GPGPU driver installation guide: https://dgpu-docs.intel.com/installation-guides/index.html
+.. _Intel® oneAPI GPU driver installation guide:
     https://software.intel.com/content/www/us/en/develop/documentation/installation-guide-for-intel-oneapi-toolkits-linux/top/prerequisites/install-intel-gpu-drivers.html
 
-The user should be in the "video" group (on Ubuntu* 18, Fedora* 30, and SLES* 15 SP1)
-or "render" group (on Ubuntu* 19 and higher, CentOS* 8, and Fedora* 31).
-An administrator with sudo or root privileges can change the group owner of `/dev/dri/renderD*` and `/dev/dri/card*`
-to a group ID used by your user base:
+The user should be in the "video" group (on Ubuntu* 18, Fedora* 30, and SLES* 15
+SP1) or "render" group (on Ubuntu* 19 and higher, CentOS* 8, and Fedora* 31). An
+administrator with sudo or root privileges can change the group owner of
+`/dev/dri/renderD*` and `/dev/dri/card*` to a group ID used by your user base:
 
 .. code-block:: bash
 

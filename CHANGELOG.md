@@ -4,7 +4,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.19.0] - 2022-11-21
+
+### Added
+* Supported numba0.56. (#818)
+* Supported dpnp0.11 and dpctl0.14.
+* Added customized exception classes. (#798)
+
+### Fixed
+* Fixed a crash when calling take() for input array with non-integer values. (#771)
+* Fixed pairwise_distance.py to run on machine with no FP64 support in HW.  (#806)
+
+## [0.18.1] - 2022-08-06
+
+### Added
+* Implemented support for `dpnp.empty()` (#728)
+
+### Changed
+* numba-dppy package is now renamed to numba-dpex.
 
 ## [0.18.0] - 2022-02-22
 

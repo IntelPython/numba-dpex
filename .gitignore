@@ -26,8 +26,8 @@ __pycache__/
 docs/source/developer/autogen*
 
 # Ignore generated cpp files
-numba_dppy/dpnp_iface/*.cpp
-numba_dppy/dpnp_iface/*.h
+numba_dpex/dpnp_iface/*.cpp
+numba_dpex/dpnp_iface/*.h
 
 # Ignore coverage results
 .coverage

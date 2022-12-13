@@ -1,0 +1,23 @@
+# Run: NUMBA_OPT=0 gdb-oneapi -q -command commands/simple_sum python
+set trace-commands on
+set pagination off
+set breakpoint pending on
+break simple_sum.py:22
+run simple_sum.py
+# Expected:
+# ...
+# Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:22
+# 22           i = dpex.get_global_id(0)
+next
+# Expected:
+# Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at simple_sum.py:22
+# 22           i = dpex.get_global_id(0)
+next
+# Expected:
+# 23           c[i] = a[i] + b[i]
+continue
+# Expected:
+# ...
+# Done...
+echo Done\n
+quit

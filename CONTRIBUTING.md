@@ -33,7 +33,7 @@ go get -u github.com/google/addlicense
 Run before each commit:
 ```bash
 export PATH=${PATH}:`go env GOPATH`/bin
-addlicense -l apache -c "Intel Corporation" numba_dppy/**/*.py numba_dppy/*.py setup.py
+addlicense -l apache -c "Intel Corporation" numba_dpex/**/*.py numba_dpex/*.py setup.py
 ```
 
 ## Security
@@ -46,7 +46,7 @@ Install: `pip install bandit`
 
 - Revision: `1.7.0`
 
-Run before each commit: `bandit -r numba_dppy -lll`
+Run before each commit: `bandit -r numba_dpex -lll`
 
 ## Documentation
 
@@ -97,7 +97,7 @@ Generated documentation will be in `docs/_build/html`.
 ### Uploading to GitHub Pages
 
 Documentation for GitHub Pages is placed in following branch
-[`gh-pages`](https://github.com/IntelPython/numba-dppy/tree/gh-pages).
+[`gh-pages`](https://github.com/IntelPython/numba-dpex/tree/gh-pages).
 
 Folders:
 - `dev` folder contains current documentation for default branch.
@@ -128,7 +128,9 @@ Show report:
 coverage report
 ```
 
-- For each module executed, the report shows the count of executable statements, the number of those statements missed, and the resulting coverage, expressed as a percentage.
+- For each module executed, the report shows the count of executable
+  statements, the number of those statements missed, and the resulting
+  coverage, expressed as a percentage.
 
 The `-m` flag also shows the line numbers of missing statements:
 ```bash
@@ -145,7 +147,8 @@ Produce XML with coverage for VSCode plugin:
 coverage xml
 ```
 
-- The htmlcov folder will appear in the root folder of the project. It contains reports on python file coverage in html format.
+- The htmlcov folder will appear in the root folder of the project. It contains
+  reports on python file coverage in html format.
 
 Erase previously collected coverage data:
 ```bash
@@ -165,7 +168,7 @@ conda install pytest-cov
 
 Run pytest-cov:
 ```bash
-pytest --cov=numba_dppy
+pytest --cov=numba_dpex
 ```
 
 The complete list of command line options is:
@@ -174,4 +177,6 @@ The complete list of command line options is:
 Measure coverage for filesystem path. (multi-allowed)
 - `--cov-report=type`
 
-Type of report to generate: term(the terminal report without line numbers (default)), term-missing(the terminal report with line numbers), annotate, html, xml (multi-allowed).
+Type of report to generate: term(the terminal report without line numbers
+(default)), term-missing(the terminal report with line numbers), annotate,
+html, xml (multi-allowed).
