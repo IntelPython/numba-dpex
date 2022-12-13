@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boxing and unboxing &mdash; numba-dpex 0.19.0+37.g7f129f83 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="Define data model" href="model.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> numba-dpex
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html">Code-generation based on a device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/getting_started.html"> Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/kernel_programming_guide/index.html"> Direct kernel programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/debugging/index.html"> Debugging with GDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/interoperability/sycl_usm_array_interface.html"> SYCL USM Array Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/migrating_from_numba_cuda.html"> numba-dpex for numba.cuda Programmers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../dpnp_integration.html">dpnp integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Debugging the compilation pipeline</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">DPNP extension for Numba</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="index.html#dpnp-array">DPNP array</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#extending-numba">Extending Numba</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="numba_type.html">Define Numba type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="typeof.html">Infer Numba type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model.html">Define data model</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Boxing and unboxing</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#boxing-and-unboxing-for-dpnp-array">Boxing and unboxing for DPNP array</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#common">Common</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#topics-to-know">Topics to know</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">numba-dpex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">DPNP extension for Numba</a></li>
+      <li class="breadcrumb-item active">Boxing and unboxing</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer_guides/dpnp_extension/boxing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="boxing-and-unboxing">
+<h1>Boxing and unboxing<a class="headerlink" href="#boxing-and-unboxing" title="Permalink to this heading"></a></h1>
+<p>See documentation for low-level API <a href="#id2"><span class="problematic" id="id3">`Boxing and unboxing https://numba.readthedocs.io/en/stable/extending/low-level.html#boxing-and-unboxing`_</span></a>.
+See example <a class="reference external" href="https://numba.readthedocs.io/en/stable/extending/interval-example.html#boxing-and-unboxing">Boxing and unboxing</a>.</p>
+<p>Unbox is the other name for “convert a Python object to a native value” (it fits
+the idea of a Python object as a sophisticated box containing a simple native
+value).</p>
+<section id="boxing-and-unboxing-for-dpnp-array">
+<h2>Boxing and unboxing for DPNP array<a class="headerlink" href="#boxing-and-unboxing-for-dpnp-array" title="Permalink to this heading"></a></h2>
+<p>Unboxing for <code class="docutils literal notranslate"><span class="pre">dpnp_ndarray_Type</span></code> fallbacks to unboxing for <code class="docutils literal notranslate"><span class="pre">types.Array</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># numba_dpex/types/dpnp_boxing.py</span>
+<span class="nd">@unbox</span><span class="p">(</span><span class="n">dpnp_ndarray_Type</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">unbox_array</span><span class="p">(</span><span class="n">typ</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+  <span class="c1"># using c.pyapi for generating Python API calls</span>
+  <span class="c1"># for extracting properties from obj value</span>
+  <span class="c1"># using c.builder for generating code</span>
+  <span class="c1"># for conversion and creating native value</span>
+  <span class="o">...</span>
+  <span class="c1"># 1. make LLVM type from typ and generate code for creating native structure</span>
+  <span class="n">nativearycls</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">make_array</span><span class="p">(</span><span class="n">typ</span><span class="p">)</span>
+  <span class="n">nativeary</span> <span class="o">=</span> <span class="n">nativearycls</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">builder</span><span class="p">)</span>
+
+  <span class="c1"># 2. get LLVM variable</span>
+  <span class="n">aryptr</span> <span class="o">=</span> <span class="n">nativeary</span><span class="o">.</span><span class="n">_getpointer</span><span class="p">()</span>
+
+  <span class="c1"># 3. generating code for checking conversion</span>
+  <span class="n">failed</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">or_</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+  <span class="c1"># 4. return native value and error</span>
+  <span class="k">return</span> <span class="n">NativeValue</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">aryptr</span><span class="p">),</span> <span class="n">is_error</span><span class="o">=</span><span class="n">failed</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># numba/core/cgutils.py</span>
+<span class="k">class</span> <span class="nc">_StructProxy</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="o">...</span>
+<span class="k">class</span> <span class="nc">ValueStructProxy</span><span class="p">(</span><span class="n">_StructProxy</span><span class="p">):</span>
+  <span class="o">...</span>
+
+<span class="c1"># numba/np/arrayobj.py</span>
+<span class="k">def</span> <span class="nf">make_array</span><span class="p">(</span><span class="n">array_type</span><span class="p">):</span>
+  <span class="o">...</span>
+  <span class="c1"># class ValueStructProxy_dpnp.ndarray(ValueStructProxy):</span>
+  <span class="c1">#   _fe_type = ...</span>
+  <span class="c1">#   ...</span>
+  <span class="n">base</span> <span class="o">=</span> <span class="n">cgutils</span><span class="o">.</span><span class="n">create_struct_proxy</span><span class="p">(</span><span class="n">real_array_type</span><span class="p">)</span>
+  <span class="o">...</span>
+  <span class="k">class</span> <span class="nc">ArrayStruct</span><span class="p">(</span><span class="n">ValueStructProxy_dpnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">_make_refs</span><span class="p">():</span>
+
+    <span class="k">def</span> <span class="nf">shape</span><span class="p">():</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>Unboxing generates call to <code class="docutils literal notranslate"><span class="pre">NRT_adapt_ndarray_from_python</span></code>.
+It checks that Python object is a NumPy array.</p>
+<p>It calls <a class="reference external" href="https://numpy.org/doc/stable/reference/c-api/array.html?highlight=pyarray_check#c.PyArray_Check">PyArray_Check</a>.
+Object should be a subclass of NumPy array.
+dpnp.ndarray is not a subclass of NumPy array.
+We need another NRT function.
+dpctl ndarray support was assuming it is a subclass of NumPy array.</p>
+<p><code class="docutils literal notranslate"><span class="pre">make_array()</span></code> receives real array type from <code class="docutils literal notranslate"><span class="pre">types.Array</span></code> subclass.
+.. code-block:: python</p>
+<blockquote>
+<div><p># numba/np/arrayobj.py
+def make_array(array_type):</p>
+<blockquote>
+<div><p>real_array_type = array_type.as_array
+…</p>
+</div></blockquote>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">ArrayStruct._make_refs()</span></code> generates call for <code class="docutils literal notranslate"><span class="pre">__array__</span></code>.
+.. code-block:: python</p>
+<blockquote>
+<div><p># numba/np/arrayobj.py
+class ArrayStruct(base):</p>
+<blockquote>
+<div><dl>
+<dt>def _make_refs(self, ref):</dt><dd><p>…
+try:</p>
+<blockquote>
+<div><p>array_impl = self._context.get_function(‘__array__’, sig)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>except NotImplementedError:</dt><dd><p>return super(ArrayStruct, self)._make_refs(ref)</p>
+</dd>
+</dl>
+<p>…
+ref = array_impl(self._builder, (outer_ref,))</p>
+</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+<p>Pseudo code for unboxing:
+.. code-block:: python</p>
+<blockquote>
+<div><dl class="simple">
+<dt>def unboxing(array):</dt><dd><p>real_array = array.__array__()
+PyArray_Check(real_array)
+native_value = adapt_ndarray_from_python(real_array)
+return native_value</p>
+</dd>
+</dl>
+</div></blockquote>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="model.html" class="btn btn-neutral float-left" title="Define data model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021,2022 Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

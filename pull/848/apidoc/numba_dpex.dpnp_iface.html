@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>numba_dpex.dpnp_iface package &mdash; numba-dpex 0.19.0+37.g7f129f83 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> numba-dpex
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html">Code-generation based on a device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/getting_started.html"> Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/kernel_programming_guide/index.html"> Direct kernel programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/debugging/index.html"> Debugging with GDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/interoperability/sycl_usm_array_interface.html"> SYCL USM Array Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/migrating_from_numba_cuda.html"> numba-dpex for numba.cuda Programmers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guides/dpnp_integration.html">dpnp integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guides/dpnp_extension/index.html">DPNP extension for Numba</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">numba-dpex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">numba_dpex.dpnp_iface package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/apidoc/numba_dpex.dpnp_iface.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="numba-dpex-dpnp-iface-package">
+<h1>numba_dpex.dpnp_iface package<a class="headerlink" href="#numba-dpex-dpnp-iface-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_array_creations_impl.html">numba_dpex.dpnp_iface.dpnp_array_creations_impl module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_array_creations_impl.html#numba_dpex.dpnp_iface.dpnp_array_creations_impl.common_impl"><code class="docutils literal notranslate"><span class="pre">common_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_array_creations_impl.html#numba_dpex.dpnp_iface.dpnp_array_creations_impl.common_shape_impl"><code class="docutils literal notranslate"><span class="pre">common_shape_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_array_creations_impl.html#numba_dpex.dpnp_iface.dpnp_array_creations_impl.dpnp_full_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_full_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_array_creations_impl.html#numba_dpex.dpnp_iface.dpnp_array_creations_impl.dpnp_full_like_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_full_like_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_array_creations_impl.html#numba_dpex.dpnp_iface.dpnp_array_creations_impl.dpnp_ones_like_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_ones_like_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_array_creations_impl.html#numba_dpex.dpnp_iface.dpnp_array_creations_impl.dpnp_trace_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_trace_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_array_creations_impl.html#numba_dpex.dpnp_iface.dpnp_array_creations_impl.dpnp_zeros_like_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_zeros_like_impl()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_array_ops_impl.html">numba_dpex.dpnp_iface.dpnp_array_ops_impl module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_array_ops_impl.html#numba_dpex.dpnp_iface.dpnp_array_ops_impl.common_impl"><code class="docutils literal notranslate"><span class="pre">common_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_array_ops_impl.html#numba_dpex.dpnp_iface.dpnp_array_ops_impl.dpnp_copy_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_copy_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_array_ops_impl.html#numba_dpex.dpnp_iface.dpnp_array_ops_impl.dpnp_cumprod_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_cumprod_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_array_ops_impl.html#numba_dpex.dpnp_iface.dpnp_array_ops_impl.dpnp_cumsum_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_cumsum_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_array_ops_impl.html#numba_dpex.dpnp_iface.dpnp_array_ops_impl.dpnp_sort_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_sort_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_array_ops_impl.html#numba_dpex.dpnp_iface.dpnp_array_ops_impl.dpnp_take_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_take_impl()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_fptr_interface.html">numba_dpex.dpnp_iface.dpnp_fptr_interface module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_fptr_interface.html#numba_dpex.dpnp_iface.dpnp_fptr_interface.get_dpnp_fn_ptr"><code class="docutils literal notranslate"><span class="pre">get_dpnp_fn_ptr()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_indexing.html">numba_dpex.dpnp_iface.dpnp_indexing module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_indexing.html#numba_dpex.dpnp_iface.dpnp_indexing.dpnp_diagonal_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_diagonal_impl()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_linalgimpl.html">numba_dpex.dpnp_iface.dpnp_linalgimpl module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_linalgimpl.html#numba_dpex.dpnp_iface.dpnp_linalgimpl.common_dot_impl"><code class="docutils literal notranslate"><span class="pre">common_dot_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_linalgimpl.html#numba_dpex.dpnp_iface.dpnp_linalgimpl.common_matmul_impl"><code class="docutils literal notranslate"><span class="pre">common_matmul_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_linalgimpl.html#numba_dpex.dpnp_iface.dpnp_linalgimpl.dpnp_cholesky_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_cholesky_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_linalgimpl.html#numba_dpex.dpnp_iface.dpnp_linalgimpl.dpnp_det_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_det_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_linalgimpl.html#numba_dpex.dpnp_iface.dpnp_linalgimpl.dpnp_dot_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_dot_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_linalgimpl.html#numba_dpex.dpnp_iface.dpnp_linalgimpl.dpnp_eig_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_eig_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_linalgimpl.html#numba_dpex.dpnp_iface.dpnp_linalgimpl.dpnp_eigvals_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_eigvals_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_linalgimpl.html#numba_dpex.dpnp_iface.dpnp_linalgimpl.dpnp_matrix_power_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_matrix_power_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_linalgimpl.html#numba_dpex.dpnp_iface.dpnp_linalgimpl.dpnp_matrix_rank_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_matrix_rank_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_linalgimpl.html#numba_dpex.dpnp_iface.dpnp_linalgimpl.dpnp_multi_dot_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_multi_dot_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_linalgimpl.html#numba_dpex.dpnp_iface.dpnp_linalgimpl.dpnp_vdot_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_vdot_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_linalgimpl.html#numba_dpex.dpnp_iface.dpnp_linalgimpl.get_res_dtype"><code class="docutils literal notranslate"><span class="pre">get_res_dtype()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_logic.html">numba_dpex.dpnp_iface.dpnp_logic module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_logic.html#numba_dpex.dpnp_iface.dpnp_logic.dpnp_all_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_all_impl()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_manipulation.html">numba_dpex.dpnp_iface.dpnp_manipulation module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_manipulation.html#numba_dpex.dpnp_iface.dpnp_manipulation.dpnp_repeat_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_repeat_impl()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_randomimpl.html">numba_dpex.dpnp_iface.dpnp_randomimpl module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_randomimpl.html#numba_dpex.dpnp_iface.dpnp_randomimpl.check_range"><code class="docutils literal notranslate"><span class="pre">check_range()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_randomimpl.html#numba_dpex.dpnp_iface.dpnp_randomimpl.common_impl"><code class="docutils literal notranslate"><span class="pre">common_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_randomimpl.html#numba_dpex.dpnp_iface.dpnp_randomimpl.common_impl_0_arg"><code class="docutils literal notranslate"><span class="pre">common_impl_0_arg()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_randomimpl.html#numba_dpex.dpnp_iface.dpnp_randomimpl.common_impl_1_arg"><code class="docutils literal notranslate"><span class="pre">common_impl_1_arg()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_randomimpl.html#numba_dpex.dpnp_iface.dpnp_randomimpl.common_impl_2_arg"><code class="docutils literal notranslate"><span class="pre">common_impl_2_arg()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_randomimpl.html#numba_dpex.dpnp_iface.dpnp_randomimpl.common_impl_hypergeometric"><code class="docutils literal notranslate"><span class="pre">common_impl_hypergeometric()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_randomimpl.html#numba_dpex.dpnp_iface.dpnp_randomimpl.common_impl_multinomial"><code class="docutils literal notranslate"><span class="pre">common_impl_multinomial()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_randomimpl.html#numba_dpex.dpnp_iface.dpnp_randomimpl.common_impl_multivariate_normal"><code class="docutils literal notranslate"><span class="pre">common_impl_multivariate_normal()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_randomimpl.html#numba_dpex.dpnp_iface.dpnp_randomimpl.dpnp_random_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_random_impl()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_sort_search_countimpl.html">numba_dpex.dpnp_iface.dpnp_sort_search_countimpl module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_sort_search_countimpl.html#numba_dpex.dpnp_iface.dpnp_sort_search_countimpl.dpnp_argmax_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_argmax_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_sort_search_countimpl.html#numba_dpex.dpnp_iface.dpnp_sort_search_countimpl.dpnp_argmin_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_argmin_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_sort_search_countimpl.html#numba_dpex.dpnp_iface.dpnp_sort_search_countimpl.dpnp_argsort_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_argsort_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_sort_search_countimpl.html#numba_dpex.dpnp_iface.dpnp_sort_search_countimpl.dpnp_partition_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_partition_impl()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_statisticsimpl.html">numba_dpex.dpnp_iface.dpnp_statisticsimpl module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_statisticsimpl.html#numba_dpex.dpnp_iface.dpnp_statisticsimpl.dpnp_amax_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_amax_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_statisticsimpl.html#numba_dpex.dpnp_iface.dpnp_statisticsimpl.dpnp_amin_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_amin_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_statisticsimpl.html#numba_dpex.dpnp_iface.dpnp_statisticsimpl.dpnp_cov_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_cov_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_statisticsimpl.html#numba_dpex.dpnp_iface.dpnp_statisticsimpl.dpnp_mean_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_mean_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_statisticsimpl.html#numba_dpex.dpnp_iface.dpnp_statisticsimpl.dpnp_median_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_median_impl()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.html">numba_dpex.dpnp_iface.dpnp_transcendentalsimpl module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.html#numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.common_impl"><code class="docutils literal notranslate"><span class="pre">common_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.html#numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.dpnp_nanprod_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_nanprod_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.html#numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.dpnp_nansum_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_nansum_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.html#numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.dpnp_prod_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_prod_impl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.html#numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.dpnp_sum_impl"><code class="docutils literal notranslate"><span class="pre">dpnp_sum_impl()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpdecl.html">numba_dpex.dpnp_iface.dpnpdecl module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpdecl.html#numba_dpex.dpnp_iface.dpnpdecl.ArrayAttribute"><code class="docutils literal notranslate"><span class="pre">ArrayAttribute</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpdecl.html#numba_dpex.dpnp_iface.dpnpdecl.ArrayAttribute.key"><code class="docutils literal notranslate"><span class="pre">ArrayAttribute.key</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpdecl.html#numba_dpex.dpnp_iface.dpnpdecl.ArrayAttribute.resolve_shapeptr"><code class="docutils literal notranslate"><span class="pre">ArrayAttribute.resolve_shapeptr()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpdecl.html#numba_dpex.dpnp_iface.dpnpdecl.DpnpTemplate"><code class="docutils literal notranslate"><span class="pre">DpnpTemplate</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpdecl.html#numba_dpex.dpnp_iface.dpnpdecl.DpnpTemplate.key"><code class="docutils literal notranslate"><span class="pre">DpnpTemplate.key</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpdecl.html#numba_dpex.dpnp_iface.dpnpdecl.DpnpTemplate.resolve_dpnp"><code class="docutils literal notranslate"><span class="pre">DpnpTemplate.resolve_dpnp()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpdecl.html#numba_dpex.dpnp_iface.dpnpdecl.ListAttribute"><code class="docutils literal notranslate"><span class="pre">ListAttribute</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpdecl.html#numba_dpex.dpnp_iface.dpnpdecl.ListAttribute.key"><code class="docutils literal notranslate"><span class="pre">ListAttribute.key</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpdecl.html#numba_dpex.dpnp_iface.dpnpdecl.ListAttribute.resolve_ctypes"><code class="docutils literal notranslate"><span class="pre">ListAttribute.resolve_ctypes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpdecl.html#numba_dpex.dpnp_iface.dpnpdecl.ListAttribute.resolve_itemsize"><code class="docutils literal notranslate"><span class="pre">ListAttribute.resolve_itemsize()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpdecl.html#numba_dpex.dpnp_iface.dpnpdecl.ListAttribute.resolve_size"><code class="docutils literal notranslate"><span class="pre">ListAttribute.resolve_size()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpimpl.html">numba_dpex.dpnp_iface.dpnpimpl module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpimpl.html#numba_dpex.dpnp_iface.dpnpimpl.array_shapeptr"><code class="docutils literal notranslate"><span class="pre">array_shapeptr()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpimpl.html#numba_dpex.dpnp_iface.dpnpimpl.dpnp_func"><code class="docutils literal notranslate"><span class="pre">dpnp_func()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpimpl.html#numba_dpex.dpnp_iface.dpnpimpl.get_dpnp_fptr"><code class="docutils literal notranslate"><span class="pre">get_dpnp_fptr()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpimpl.html#numba_dpex.dpnp_iface.dpnpimpl.list_ctypes"><code class="docutils literal notranslate"><span class="pre">list_ctypes()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpimpl.html#numba_dpex.dpnp_iface.dpnpimpl.list_itemsize"><code class="docutils literal notranslate"><span class="pre">list_itemsize()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.dpnpimpl.html#numba_dpex.dpnp_iface.dpnpimpl.list_size"><code class="docutils literal notranslate"><span class="pre">list_size()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html">numba_dpex.dpnp_iface.stubs module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp"><code class="docutils literal notranslate"><span class="pre">dpnp</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.all"><code class="docutils literal notranslate"><span class="pre">dpnp.all</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.amax"><code class="docutils literal notranslate"><span class="pre">dpnp.amax</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.amin"><code class="docutils literal notranslate"><span class="pre">dpnp.amin</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.argmax"><code class="docutils literal notranslate"><span class="pre">dpnp.argmax</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.argmin"><code class="docutils literal notranslate"><span class="pre">dpnp.argmin</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.argsort"><code class="docutils literal notranslate"><span class="pre">dpnp.argsort</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.beta"><code class="docutils literal notranslate"><span class="pre">dpnp.beta</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.binomial"><code class="docutils literal notranslate"><span class="pre">dpnp.binomial</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.chisquare"><code class="docutils literal notranslate"><span class="pre">dpnp.chisquare</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.cholesky"><code class="docutils literal notranslate"><span class="pre">dpnp.cholesky</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.copy"><code class="docutils literal notranslate"><span class="pre">dpnp.copy</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.cov"><code class="docutils literal notranslate"><span class="pre">dpnp.cov</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.cumprod"><code class="docutils literal notranslate"><span class="pre">dpnp.cumprod</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.cumsum"><code class="docutils literal notranslate"><span class="pre">dpnp.cumsum</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.det"><code class="docutils literal notranslate"><span class="pre">dpnp.det</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.diagonal"><code class="docutils literal notranslate"><span class="pre">dpnp.diagonal</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.dot"><code class="docutils literal notranslate"><span class="pre">dpnp.dot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.eig"><code class="docutils literal notranslate"><span class="pre">dpnp.eig</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.eigvals"><code class="docutils literal notranslate"><span class="pre">dpnp.eigvals</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.exponential"><code class="docutils literal notranslate"><span class="pre">dpnp.exponential</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.full"><code class="docutils literal notranslate"><span class="pre">dpnp.full</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.full_like"><code class="docutils literal notranslate"><span class="pre">dpnp.full_like</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.gamma"><code class="docutils literal notranslate"><span class="pre">dpnp.gamma</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.geometric"><code class="docutils literal notranslate"><span class="pre">dpnp.geometric</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.gumbel"><code class="docutils literal notranslate"><span class="pre">dpnp.gumbel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.hypergeometric"><code class="docutils literal notranslate"><span class="pre">dpnp.hypergeometric</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.laplace"><code class="docutils literal notranslate"><span class="pre">dpnp.laplace</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.lognormal"><code class="docutils literal notranslate"><span class="pre">dpnp.lognormal</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.matmul"><code class="docutils literal notranslate"><span class="pre">dpnp.matmul</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.matrix_power"><code class="docutils literal notranslate"><span class="pre">dpnp.matrix_power</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.matrix_rank"><code class="docutils literal notranslate"><span class="pre">dpnp.matrix_rank</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.max"><code class="docutils literal notranslate"><span class="pre">dpnp.max</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.mean"><code class="docutils literal notranslate"><span class="pre">dpnp.mean</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.median"><code class="docutils literal notranslate"><span class="pre">dpnp.median</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.min"><code class="docutils literal notranslate"><span class="pre">dpnp.min</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.multi_dot"><code class="docutils literal notranslate"><span class="pre">dpnp.multi_dot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.multinomial"><code class="docutils literal notranslate"><span class="pre">dpnp.multinomial</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.multivariate_normal"><code class="docutils literal notranslate"><span class="pre">dpnp.multivariate_normal</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.nanprod"><code class="docutils literal notranslate"><span class="pre">dpnp.nanprod</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.nansum"><code class="docutils literal notranslate"><span class="pre">dpnp.nansum</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.negative_binomial"><code class="docutils literal notranslate"><span class="pre">dpnp.negative_binomial</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.normal"><code class="docutils literal notranslate"><span class="pre">dpnp.normal</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.ones_like"><code class="docutils literal notranslate"><span class="pre">dpnp.ones_like</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.partition"><code class="docutils literal notranslate"><span class="pre">dpnp.partition</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.poisson"><code class="docutils literal notranslate"><span class="pre">dpnp.poisson</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.prod"><code class="docutils literal notranslate"><span class="pre">dpnp.prod</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.rand"><code class="docutils literal notranslate"><span class="pre">dpnp.rand</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.randint"><code class="docutils literal notranslate"><span class="pre">dpnp.randint</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.random"><code class="docutils literal notranslate"><span class="pre">dpnp.random</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.random_integers"><code class="docutils literal notranslate"><span class="pre">dpnp.random_integers</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.random_sample"><code class="docutils literal notranslate"><span class="pre">dpnp.random_sample</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.ranf"><code class="docutils literal notranslate"><span class="pre">dpnp.ranf</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.rayleigh"><code class="docutils literal notranslate"><span class="pre">dpnp.rayleigh</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.repeat"><code class="docutils literal notranslate"><span class="pre">dpnp.repeat</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.sample"><code class="docutils literal notranslate"><span class="pre">dpnp.sample</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.sort"><code class="docutils literal notranslate"><span class="pre">dpnp.sort</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.standard_cauchy"><code class="docutils literal notranslate"><span class="pre">dpnp.standard_cauchy</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.standard_exponential"><code class="docutils literal notranslate"><span class="pre">dpnp.standard_exponential</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.standard_gamma"><code class="docutils literal notranslate"><span class="pre">dpnp.standard_gamma</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.standard_normal"><code class="docutils literal notranslate"><span class="pre">dpnp.standard_normal</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.sum"><code class="docutils literal notranslate"><span class="pre">dpnp.sum</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.take"><code class="docutils literal notranslate"><span class="pre">dpnp.take</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.trace"><code class="docutils literal notranslate"><span class="pre">dpnp.trace</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.uniform"><code class="docutils literal notranslate"><span class="pre">dpnp.uniform</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.vdot"><code class="docutils literal notranslate"><span class="pre">dpnp.vdot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.weibull"><code class="docutils literal notranslate"><span class="pre">dpnp.weibull</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.zeros_like"><code class="docutils literal notranslate"><span class="pre">dpnp.zeros_like</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-numba_dpex.dpnp_iface">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-numba_dpex.dpnp_iface" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.ensure_dpnp">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.</span></span><span class="sig-name descname"><span class="pre">ensure_dpnp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.ensure_dpnp" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021,2022 Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

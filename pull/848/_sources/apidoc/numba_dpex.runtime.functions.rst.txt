@@ -1,0 +1,7 @@
+numba\_dpex.runtime.functions module
+====================================
+
+.. automodule:: numba_dpex.runtime.functions
+   :members:
+   :undoc-members:
+   :show-inheritance:

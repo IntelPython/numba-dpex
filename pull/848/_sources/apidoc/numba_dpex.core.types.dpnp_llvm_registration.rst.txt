@@ -1,0 +1,7 @@
+numba\_dpex.core.types.dpnp\_llvm\_registration module
+======================================================
+
+.. automodule:: numba_dpex.core.types.dpnp_llvm_registration
+   :members:
+   :undoc-members:
+   :show-inheritance:

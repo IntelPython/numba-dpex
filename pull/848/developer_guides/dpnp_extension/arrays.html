@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arrays &mdash; numba-dpex 0.19.0+37.g7f129f83 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Define Numba type" href="numba_type.html" />
+    <link rel="prev" title="DPNP extension for Numba" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> numba-dpex
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html">Code-generation based on a device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/getting_started.html"> Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/kernel_programming_guide/index.html"> Direct kernel programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/debugging/index.html"> Debugging with GDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/interoperability/sycl_usm_array_interface.html"> SYCL USM Array Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guides/migrating_from_numba_cuda.html"> numba-dpex for numba.cuda Programmers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../dpnp_integration.html">dpnp integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Debugging the compilation pipeline</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">DPNP extension for Numba</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#dpnp-array">DPNP array</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Arrays</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#dpnp-ndarray-type"><code class="docutils literal notranslate"><span class="pre">dpnp.ndarray</span></code> type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dpctl-tensor-usm-ndarray-type"><code class="docutils literal notranslate"><span class="pre">dpctl.tensor.usm_ndarray</span></code> type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dpctl-tensor-numpy-usm-shared-ndarray-type"><code class="docutils literal notranslate"><span class="pre">dpctl.tensor.numpy_usm_shared.ndarray</span></code> type</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#extending-numba">Extending Numba</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#common">Common</a></li>
+<li class="toctree-l2"><a class="reference internal" href="index.html#topics-to-know">Topics to know</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">numba-dpex</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">DPNP extension for Numba</a></li>
+      <li class="breadcrumb-item active">Arrays</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer_guides/dpnp_extension/arrays.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="arrays">
+<h1>Arrays<a class="headerlink" href="#arrays" title="Permalink to this heading"></a></h1>
+<section id="dpnp-ndarray-type">
+<h2><code class="docutils literal notranslate"><span class="pre">dpnp.ndarray</span></code> type<a class="headerlink" href="#dpnp-ndarray-type" title="Permalink to this heading"></a></h2>
+<p>DPNP provides array type <code class="docutils literal notranslate"><span class="pre">ndarray</span></code>.</p>
+<p>It is a container for <code class="docutils literal notranslate"><span class="pre">dpctl.tensor.usm_ndarray</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># dpnp/dpnp_array.py</span>
+<span class="k">class</span> <span class="nc">dpnp_array</span><span class="p">:</span>
+    <span class="o">...</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_array_obj</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">tensor</span><span class="o">.</span><span class="n">usm_ndarray</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="o">...</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">__sycl_usm_array_interface__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_array_obj</span><span class="o">.</span><span class="n">__sycl_usm_array_interface__</span>
+
+    <span class="o">...</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code class="docutils literal notranslate"><span class="pre">dpctl.tensor.usm_ndarray</span></code> and <code class="docutils literal notranslate"><span class="pre">dpnp.ndarray</span></code> are not subclasses of
+<code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>.</p>
+</div>
+</section>
+<section id="dpctl-tensor-usm-ndarray-type">
+<h2><code class="docutils literal notranslate"><span class="pre">dpctl.tensor.usm_ndarray</span></code> type<a class="headerlink" href="#dpctl-tensor-usm-ndarray-type" title="Permalink to this heading"></a></h2>
+<p>dpctl provides <code class="docutils literal notranslate"><span class="pre">usm_ndarray</span></code>:</p>
+<div class="highlight-cpython notranslate"><div class="highlight"><pre><span></span># dpctl/tensor/__init__.py
+from dpctl.tensor._usmarray import usm_ndarray
+
+# dpctl/tensor/_usmarray.pyx
+import dpctl.memory as dpmem
+...
+cdef class usm_ndarray:
+  ...
+  @property
+  def __sycl_usm_array_interface__(self):
+    ...
+    assert isinstance(self.base_, dpmem._memory._Memory)
+    ary_iface = self.base_.__sycl_usm_array_interface__
+    ...
+    ary_iface[&#39;data&#39;] = (&lt;size_t&gt; mem_ptr, ro_flag)
+    ary_iface[&#39;shape&#39;] = self.shape
+    ...
+    ary_iface[&#39;strides&#39;] = ...
+    ...
+    ary_iface[&#39;typestr&#39;] =
+    ...
+    ary_iface[&#39;offset&#39;] =
+    ...
+  def __cinit__(..., buffer=&#39;device&#39;, ...):
+    if isinstance(buffer, dpmem._memory._Memory):
+      _buffer = buffer
+    elif isinstance(buffer, (str, bytes)):
+      if (buffer == &quot;shared&quot;):
+        _buffer = dpmem.MemoryUSMShared(...)
+      elif (buffer == &quot;device&quot;):
+        _buffer = dpmem.MemoryUSMDevice(...)
+      elif (buffer == &quot;host&quot;):
+        _buffer = dpmem.MemoryUSMHost(...)
+      elif isinstance(buffer, usm_ndarray):
+        _buffer = buffer.usm_data
+    ...
+    self.base_ = _buffer
+    ...
+
+# dpctl/memory/_memory.pyx
+cdef class _Memory:
+  ...
+  property __sycl_usm_array_interface__:
+  def __get__(self):
+    cdef dict iface = {
+      &quot;data&quot;: (&lt;size_t&gt;(&lt;void *&gt;self.memory_ptr), True), # bool(self.writeable)),
+      &quot;shape&quot;: (self.nbytes,),
+      &quot;strides&quot;: None,
+      &quot;typestr&quot;: &quot;|u1&quot;,
+      &quot;version&quot;: 1,
+      &quot;syclobj&quot;: self.queue
+    }
+    # no typedescr and offset
+    return iface
+</pre></div>
+</div>
+</section>
+<section id="dpctl-tensor-numpy-usm-shared-ndarray-type">
+<h2><code class="docutils literal notranslate"><span class="pre">dpctl.tensor.numpy_usm_shared.ndarray</span></code> type<a class="headerlink" href="#dpctl-tensor-numpy-usm-shared-ndarray-type" title="Permalink to this heading"></a></h2>
+<p>Existing implementation of array support is placed in
+<code class="file docutils literal notranslate"><span class="pre">numba_dpex/numpy_usm_shared.py</span></code> and is based on
+<code class="docutils literal notranslate"><span class="pre">dpctl.tensor.numpy_usm_shared.ndarray</span></code> from
+<code class="file docutils literal notranslate"><span class="pre">dpctl/tensor/numpy_usm_shared.py</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># numba_dpex/numpy_usm_shared.py</span>
+<span class="kn">from</span> <span class="nn">dpctl.tensor.numpy_usm_shared</span> <span class="kn">import</span> <span class="n">ndarray</span>
+
+<span class="c1"># dpctl/tensor/numpy_usm_shared.py</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="k">class</span> <span class="nc">ndarray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code class="docutils literal notranslate"><span class="pre">dpctl.tensor.numpy_usm_shared.ndarray</span></code> is not related to
+<code class="docutils literal notranslate"><span class="pre">dpnp.ndarray</span></code>.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="DPNP extension for Numba" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="numba_type.html" class="btn btn-neutral float-right" title="Define Numba type" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021,2022 Intel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

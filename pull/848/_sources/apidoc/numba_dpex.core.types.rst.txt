@@ -1,0 +1,23 @@
+numba\_dpex.core.types package
+==============================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.core.types.array_type
+   numba_dpex.core.types.dpnp_boxing
+   numba_dpex.core.types.dpnp_llvm_registration
+   numba_dpex.core.types.dpnp_models
+   numba_dpex.core.types.dpnp_typeof
+   numba_dpex.core.types.dpnp_types
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex.core.types
+   :members:
+   :undoc-members:
+   :show-inheritance:

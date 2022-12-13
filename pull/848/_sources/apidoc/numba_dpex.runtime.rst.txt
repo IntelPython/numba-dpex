@@ -1,0 +1,18 @@
+numba\_dpex.runtime package
+===========================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.runtime.functions
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex.runtime
+   :members:
+   :undoc-members:
+   :show-inheritance:
