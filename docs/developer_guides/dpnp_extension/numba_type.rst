@@ -14,16 +14,19 @@ Define Numba type for DPNP array (``dpnp.ndarray``)
 
 .. code-block:: python
 
-  # numba_dppy/dppy_array_type.py
+  # numba_dpex/dpex_array_type.py
   from numba.core import types
 
-  class DPPYArray(types.Array):
-    """Array with address space"""
-    ...
 
-  # numba_dppy/types/dpnp_types.py
-  class dpnp_ndarray_Type(DPPYArray):
-    ...
+  class DPEXArray(types.Array):
+      """Array with address space"""
+
+      ...
+
+
+  # numba_dpex/types/dpnp_types.py
+  class dpnp_ndarray_Type(DPEXArray):
+      ...
 
 Design Topics
 +++++++++++++

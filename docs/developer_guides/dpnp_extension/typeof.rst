@@ -19,9 +19,9 @@ Infer Numba type for DPNP array (``@typeof_impl.register``)
 
 .. code-block:: python
 
-  # numba_dppy/types/dpnp_typeof.py
+  # numba_dpex/types/dpnp_typeof.py
   @typeof_impl.register(dpnp.ndarray)
   def typeof_dpnp_ndarray(val, c):
-    # query properties from val
-    ...
-    return dpnp_ndarray_Type(...)
+      # query properties from val
+      ...
+      return dpnp_ndarray_Type(...)

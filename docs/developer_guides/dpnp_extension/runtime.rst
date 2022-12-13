@@ -1,7 +1,7 @@
-DPPY runtime
+DPEX runtime
 ============
 
-Unboxing generates call to ``DPPY_RT_sycl_usm_array_from_python`` which converts
+Unboxing generates call to ``DPEX_RT_sycl_usm_array_from_python`` which converts
 PyObject into native structure for USM array.
 
 This function should be implemented in Python extension.
@@ -14,7 +14,7 @@ pointers to functions.
 
 Functions should be registered in LLVM.
 
-Python module :module:`numba_dppy.runtime._dppy_rt_python`.
+Python module :module:`numba_dpex.runtime._dpex_rt_python`.
 
 
 Describing extension modules

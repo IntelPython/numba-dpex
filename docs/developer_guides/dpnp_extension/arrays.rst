@@ -18,14 +18,18 @@ It is a container for ``dpctl.tensor.usm_ndarray``.
 
   # dpnp/dpnp_array.py
   class dpnp_array:
-    ...
-    def __init__(self, shape, dtype=numpy.float64):
-      self._array_obj = dpctl.tensor.usm_ndarray(shape, dtype=dtype)
-    ...
-    @property
-    def __sycl_usm_array_interface__(self):
-        return self._array_obj.__sycl_usm_array_interface__
-    ...
+      ...
+
+      def __init__(self, shape, dtype=numpy.float64):
+          self._array_obj = dpctl.tensor.usm_ndarray(shape, dtype=dtype)
+
+      ...
+
+      @property
+      def __sycl_usm_array_interface__(self):
+          return self._array_obj.__sycl_usm_array_interface__
+
+      ...
 
 .. warning::
   ``dpctl.tensor.usm_ndarray`` and ``dpnp.ndarray`` are not subclasses of
@@ -39,7 +43,7 @@ It is a container for ``dpctl.tensor.usm_ndarray``.
 
 dpctl provides ``usm_ndarray``:
 
-.. code-block:: python
+.. code-block:: cpython
 
   # dpctl/tensor/__init__.py
   from dpctl.tensor._usmarray import usm_ndarray
@@ -100,20 +104,21 @@ dpctl provides ``usm_ndarray``:
 ``````````````````````````````````````````````
 
 Existing implementation of array support is placed in
-:file:`numba_dppy/numpy_usm_shared.py` and is based on
+:file:`numba_dpex/numpy_usm_shared.py` and is based on
 ``dpctl.tensor.numpy_usm_shared.ndarray`` from
 :file:`dpctl/tensor/numpy_usm_shared.py`.
 
 .. code-block:: python
 
-  # numba_dppy/numpy_usm_shared.py
+  # numba_dpex/numpy_usm_shared.py
   from dpctl.tensor.numpy_usm_shared import ndarray
 
   # dpctl/tensor/numpy_usm_shared.py
   import numpy as np
 
+
   class ndarray(np.ndarray):
-    ...
+      ...
 
 .. warning:: ``dpctl.tensor.numpy_usm_shared.ndarray`` is not related to
   ``dpnp.ndarray``.

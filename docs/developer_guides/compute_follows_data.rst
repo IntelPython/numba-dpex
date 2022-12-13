@@ -16,7 +16,7 @@ Native structure should contain field for queue.
 .. code-block:: python
   queue = dpctl.equivalent_queue(a, b)
   if queue is None:
-    raise ValueError
+      raise ValueError
   queue.submit(kernel)
 
 If arrays allocated on different devices (not equivalent) than raise an error
@@ -42,7 +42,7 @@ object of the particular library (that target devices).
 Numba offloading standard
 `````````````````````````
 
-DPNP array is the base for DPPY libraries (asarray() coerses to it).
+DPNP array is the base for DPEX libraries (asarray() coerses to it).
 In Numba function using DPNP means computations will be offloaded.
 
 Results allocation

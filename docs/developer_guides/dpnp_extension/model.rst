@@ -17,7 +17,7 @@ Additional information like adress space is in Numba type.
 
 .. code-block:: python
 
-  # numba_dppy/types/dpnp_models.py
+  # numba_dpex/types/dpnp_models.py
   from numba.core.datamodel.models import ArrayModel
   from numba.extending import register_model
 

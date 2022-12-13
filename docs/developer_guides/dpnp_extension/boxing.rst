@@ -15,7 +15,7 @@ Unboxing for ``dpnp_ndarray_Type`` fallbacks to unboxing for ``types.Array``.
 
 .. code-block:: python
 
-  # numba_dppy/types/dpnp_boxing.py
+  # numba_dpex/types/dpnp_boxing.py
   @unbox(dpnp_ndarray_Type)
   def unbox_array(typ, obj, c):
     # using c.pyapi for generating Python API calls
@@ -55,13 +55,15 @@ Unboxing for ``dpnp_ndarray_Type`` fallbacks to unboxing for ``types.Array``.
     class ArrayStruct(ValueStructProxy_dpnp.ndarray):
       ...
       def _make_refs():
+
       def shape():
+      ...
 
 Unboxing generates call to ``NRT_adapt_ndarray_from_python``.
 It checks that Python object is a NumPy array.
 
-.. code-block:: python
-  # numba/core/runtime/_nrt_python.c
+.. code-block:: c
+  // numba/core/runtime/_nrt_python.c
   NRT_adapt_ndarray_from_python(...) {
     ...
     if (!PyArray_Check(obj)) {
@@ -70,6 +72,7 @@ It checks that Python object is a NumPy array.
     ...
   }
 
+.. code-block:: python
   # numba/core/pythonapi.py
   def nrt_adapt_ndarray_from_python(self, ary, ptr):
     ...
@@ -77,7 +80,7 @@ It checks that Python object is a NumPy array.
     ...
     return self.builder.call(fn, (ary, ptr))
 
-  # numba_dppy/types/dpnp_boxing.py
+  # numba_dpex/types/dpnp_boxing.py
   @unbox(dpnp_ndarray_Type)
   def unbox_array(typ, obj, c):
     ...
