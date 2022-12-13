@@ -10,7 +10,7 @@ import numba.testing
 from numba_dpex.interop import asarray
 from numba_dpex.retarget import offload_to_sycl_device
 
-from . import config
+from . import config, core
 
 if config.HAS_NON_HOST_DEVICE:
     from .device_init import *

@@ -42,4 +42,7 @@ def typeof_dpnp_ndarray(val, c):
         # dpnp.ndarray does not support flags
         readonly = False
 
-    return dpnp_ndarray_Type(dtype, val.ndim, layout, readonly=readonly)
+    sycl_queue = val.device
+    return dpnp_ndarray_Type(
+        dtype, val.ndim, layout, readonly=readonly, sycl_queue=sycl_queue
+    )

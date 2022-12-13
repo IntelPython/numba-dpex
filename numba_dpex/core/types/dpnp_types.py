@@ -30,9 +30,10 @@ class dpnp_ndarray_Type(Array):
         name=None,
         aligned=True,
         addrspace=None,
+        sycl_queue=None,
     ):
         name = "dpnp.ndarray(%s, %sd, %s)" % (dtype, ndim, layout)
-
+        self.sycl_queue = sycl_queue
         super().__init__(
             dtype,
             ndim,
@@ -50,3 +51,16 @@ class dpnp_ndarray_Type(Array):
     @property
     def box_type(self):
         return ndarray
+
+    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
+
+        if method == "__call__":
+            #           for inp in inputs:
+            #               if not isinstance(inp, (types.Array, types.Number)):
+            #                   return NotImplemented
+            # Ban if all arguments are MyArrayType
+            if not all(isinstance(inp, dpnp_ndarray_Type) for inp in inputs):
+                return NotImplemented
+            return dpnp_ndarray_Type
+        else:
+            return NotImplemented
