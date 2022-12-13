@@ -90,7 +90,9 @@ which kernels may be written using numba-dpex.
     Getting Started <user_guides/getting_started>
     Direct kernel programming <user_guides/kernel_programming_guide/index>
     Debugging with GDB <user_guides/debugging/index>
+    SYCL USM Array Interface <user_guides/interoperability/sycl_usm_array_interface>
     numba-dpex for numba.cuda Programmers <user_guides/migrating_from_numba_cuda>
+
 
 .. toctree::
     :maxdepth: 1
@@ -98,7 +100,7 @@ which kernels may be written using numba-dpex.
 
     developer_guides/dpnp_integration
     developer_guides/tools
-
+    developer_guides/dpnp_extension/index
 
 Contributing
 ============
