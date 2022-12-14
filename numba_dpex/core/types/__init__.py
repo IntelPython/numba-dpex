@@ -4,6 +4,7 @@
 
 
 from .array_type import *
+from .dpnp_empty import *
 from .dpnp_types import *
 
 from . import (  # isort:skip

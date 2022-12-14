@@ -26,13 +26,24 @@ class dpnp_ndarray_Type(Array):
         dtype,
         ndim,
         layout,
+        usm_type=None,
+        sycl_queue=None,
         readonly=False,
         name=None,
         aligned=True,
         addrspace=None,
-        sycl_queue=None,
     ):
-        name = "dpnp.ndarray(%s, %sd, %s)" % (dtype, ndim, layout)
+        # name = "dpnp.ndarray(%s, %sd, %s)" % (dtype, ndim, layout)
+        if name is None:
+            type_name = "dpnp.ndarray"
+            if readonly:
+                type_name = "readonly " + type_name
+            if not aligned:
+                type_name = "unaligned " + type_name
+            name_parts = (type_name, dtype, ndim, layout, usm_type)
+            name = "%s(%s, %sd, %s, %s)" % name_parts
+
+        self.usm_type = usm_type
         self.sycl_queue = sycl_queue
         super().__init__(
             dtype,

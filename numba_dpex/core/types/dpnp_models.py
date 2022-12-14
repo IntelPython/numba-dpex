@@ -44,7 +44,7 @@ class dpnp_ndarray_Model(StructModel):
             ("itemsize", types.intp),
             ("data", types.CPointer(fe_type.dtype)),
             # from __sycl_usm_array_interface__
-            ("syclobj", types.pyobject),
+            # ("syclobj", types.voidptr),
             # from models.ArrayModel
             ("shape", types.UniTuple(types.intp, ndim)),
             ("strides", types.UniTuple(types.intp, ndim)),

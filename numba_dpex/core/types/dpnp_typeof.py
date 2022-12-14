@@ -42,7 +42,19 @@ def typeof_dpnp_ndarray(val, c):
         # dpnp.ndarray does not support flags
         readonly = False
 
-    sycl_queue = val.device
+    try:
+        usm_type = val.usm_type
+    except AttributeError:
+        raise ValueError(
+            "The usm_type for the usm_ndarray could not be inferred"
+        )
+
+    try:
+        sycl_queue = val.sycl_device.filter_string
+    except AttributeError:
+        raise ValueError("The device for the usm_ndarray could not be inferred")
+
+    #   sycl_queue = val.device
     return dpnp_ndarray_Type(
-        dtype, val.ndim, layout, readonly=readonly, sycl_queue=sycl_queue
+        dtype, val.ndim, layout, usm_type, sycl_queue, readonly=readonly
     )

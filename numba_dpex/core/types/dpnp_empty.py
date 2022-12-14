@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import dpnp
+import numba.np.arrayobj
 from llvmlite import ir
 from numba import types
 from numba.core import cgutils
@@ -33,9 +34,16 @@ def type_dpnp_empty(context):
         else:
             usm_type = parse_usm_type(usm_type)
 
+        if sycl_queue is None:
+            sycl_queue = "0"
+
         if nb_dtype is not None and ndim is not None and usm_type is not None:
             return dpnp_ndarray_Type(
-                dtype=nb_dtype, ndim=ndim, layout="C", usm_type=usm_type
+                dtype=nb_dtype,
+                ndim=ndim,
+                layout="C",
+                usm_type=usm_type,
+                sycl_queue=sycl_queue,
             )
 
     return typer
@@ -83,10 +91,13 @@ def _parse_empty_args(context, builder, sig, args):
     return (arrtype, shape, queue)
 
 
-def _empty_nd_impl(context, builder, arrtype, shapes, queue):
+def _empty_nd_impl(context, builder, arrtype, shapes):
     """See numba.np.arrayobj._empty_nd_impl().
     This implementation uses different MemInfo allocator.
     """
+    if not isinstance(arrtype, dpnp_ndarray_Type):
+        return tmpCopy(context, builder, arrtype, shapes)
+
     from numba.np.arrayobj import (
         get_itemsize,
         make_array,
@@ -147,8 +158,7 @@ def _empty_nd_impl(context, builder, arrtype, shapes, queue):
     usm_type_num = {"shared": 0, "device": 1, "host": 2}[arrtype.usm_type]
     usm_type = context.get_constant(types.int64, usm_type_num)
 
-    args = (context.get_dummy_value(), allocsize, usm_type, queue)
-
+    args = (context.get_dummy_value(), allocsize, usm_type, arrtype.sycl_queue)
     mip = types.MemInfoPointer(types.voidptr)
     arytypeclass = types.TypeRef(type(arrtype))
     sig = signature(mip, arytypeclass, types.intp, types.intp, types.voidptr)
@@ -170,6 +180,10 @@ def _empty_nd_impl(context, builder, arrtype, shapes, queue):
     )
 
     return ary
+
+
+tmpCopy = numba.np.arrayobj._empty_nd_impl
+numba.np.arrayobj._empty_nd_impl = _empty_nd_impl
 
 
 def _call_allocator(arrtype, size, usm_type, sycl_queue):
