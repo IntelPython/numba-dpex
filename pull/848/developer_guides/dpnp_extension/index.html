@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DPNP extension for Numba &mdash; numba-dpex 0.19.0+37.g7f129f83 documentation</title>
+  <title>DPNP extension for Numba &mdash; numba-dpex 0.19.0+40.gd03584ee documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -126,11 +126,12 @@ operations, functions or types.</p>
 <p>Example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span>
 <span class="linenos">2</span><span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-<span class="linenos">3</span>  <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+<span class="linenos">3</span>    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
 <span class="linenos">4</span>
-<span class="linenos">5</span><span class="n">a</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">([</span><span class="mi">10</span><span class="p">])</span>
-<span class="linenos">6</span><span class="n">b</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">([</span><span class="mi">10</span><span class="p">])</span>
-<span class="linenos">7</span><span class="n">c</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="linenos">5</span>
+<span class="linenos">6</span><span class="n">a</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">([</span><span class="mi">10</span><span class="p">])</span>
+<span class="linenos">7</span><span class="n">b</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">ndarray</span><span class="p">([</span><span class="mi">10</span><span class="p">])</span>
+<span class="linenos">8</span><span class="n">c</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="toctree-wrapper compound">

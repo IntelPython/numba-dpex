@@ -9,6 +9,7 @@ Submodules
 
    numba_dpex.core.types.array_type
    numba_dpex.core.types.dpnp_boxing
+   numba_dpex.core.types.dpnp_empty
    numba_dpex.core.types.dpnp_llvm_registration
    numba_dpex.core.types.dpnp_models
    numba_dpex.core.types.dpnp_typeof

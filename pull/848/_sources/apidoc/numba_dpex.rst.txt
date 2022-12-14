@@ -10,7 +10,6 @@ Subpackages
    numba_dpex.core
    numba_dpex.dpctl_iface
    numba_dpex.dpnp_iface
-   numba_dpex.dpnp_ndarray
    numba_dpex.ocl
    numba_dpex.runtime
    numba_dpex.utils
