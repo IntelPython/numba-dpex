@@ -34,7 +34,8 @@ Example:
 
   @numba.njit
   def sum(a, b):
-    return a + b
+      return a + b
+
 
   a = dpnp.ndarray([10])
   b = dpnp.ndarray([10])
