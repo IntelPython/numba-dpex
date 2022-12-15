@@ -1143,26 +1143,16 @@ def lower_parfor(lowerer, parfor):
     try:
         _lower_parfor_gufunc(lowerer, parfor)
         if config.DEBUG:
-
             device_filter_str = (
                 dpctl.get_current_queue().get_sycl_device().filter_string
             )
-
             msg = "Parfor offloaded to " + device_filter_str
             print(msg, parfor.loc)
     except Exception as e:
-        device_filter_str = (
-            dpctl.get_current_queue().get_sycl_device().filter_string
-        )
-        msg = (
-            "Failed to offload parfor to " + device_filter_str + ". Falling "
-            "back to default CPU parallelization. Please file a bug report "
-            "at https://github.com/IntelPython/numba-dpex. To help us debug "
-            "the issue, please add the traceback to the bug report."
-        )
-        if not config.DEBUG:
-            msg += " Set the environment variable NUMBA_DPEX_DEBUG to 1 to "
-            msg += "generate a traceback."
+        import traceback
 
-        warnings.warn(NumbaPerformanceWarning(msg, parfor.loc))
+        print(traceback.format_exc())
+        warnings.warn(
+            NumbaPerformanceWarning("Failed to lower parfor node", parfor.loc)
+        )
         raise e
