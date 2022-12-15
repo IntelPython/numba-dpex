@@ -157,8 +157,9 @@ def _empty_nd_impl(context, builder, arrtype, shapes):
 
     usm_type_num = {"shared": 0, "device": 1, "host": 2}[arrtype.usm_type]
     usm_type = context.get_constant(types.int64, usm_type_num)
+    sycl_queue_type = context.get_constant(types.voidptr, arrtype.sycl_queue)
 
-    args = (context.get_dummy_value(), allocsize, usm_type, arrtype.sycl_queue)
+    args = (context.get_dummy_value(), allocsize, usm_type, sycl_queue_type)
     mip = types.MemInfoPointer(types.voidptr)
     arytypeclass = types.TypeRef(type(arrtype))
     sig = signature(mip, arytypeclass, types.intp, types.intp, types.voidptr)

@@ -63,6 +63,10 @@ class dpnp_ndarray_Type(Array):
     def box_type(self):
         return ndarray
 
+    @property
+    def is_internal(self):
+        return True
+
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
 
         if method == "__call__":

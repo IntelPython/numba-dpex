@@ -50,7 +50,7 @@ def typeof_dpnp_ndarray(val, c):
         )
 
     try:
-        sycl_queue = val.sycl_device.filter_string
+        sycl_queue = val.sycl_device
     except AttributeError:
         raise ValueError("The device for the usm_ndarray could not be inferred")
 
