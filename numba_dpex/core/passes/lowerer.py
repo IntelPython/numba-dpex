@@ -2,10 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import ast
 import copy
-import linecache
-import os
 import sys
 import warnings
 from collections import OrderedDict
@@ -13,7 +10,7 @@ from collections import OrderedDict
 import dpctl
 import numba
 import numpy as np
-from numba.core import compiler, funcdesc, ir, lowering, sigutils, types
+from numba.core import compiler, ir, types
 from numba.core.errors import (
     NumbaParallelSafetyWarning,
     NumbaPerformanceWarning,
@@ -41,13 +38,10 @@ from numba.core.ir_utils import (
 from numba.core.lowering import Lower
 from numba.core.typing import signature
 from numba.parfors import parfor
-from numba.parfors.parfor_lowering import _lower_parfor_parallel
 
 import numba_dpex as dpex
 from numba_dpex import config
 from numba_dpex.core.exceptions import UnsupportedParforError
-from numba_dpex.core.target import DpexTargetContext
-from numba_dpex.core.types import Array
 from numba_dpex.dpctl_iface import KernelLaunchOps
 from numba_dpex.utils import address_space, npytypes_array_to_dpex_array
 
