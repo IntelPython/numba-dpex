@@ -707,6 +707,17 @@ def _lower_parfor_gufunc(lowerer, parfor):
     for instr in parfor.init_block.body:
         if config.DEBUG_ARRAY_OPT:
             print("lower init_block instr = ", instr)
+        print("======================")
+        print(str(instr))
+        print(instr.value)
+        print(type(instr.value))
+        if isinstance(instr.value, numba.core.ir.Expr):
+            print(instr.value.op)
+            if instr.value.op == "call":
+                # breakpoint()
+                print(instr.value.func.name)
+
+        print("======================")
         lowerer.lower_inst(instr)
 
     for racevar in parfor.races:

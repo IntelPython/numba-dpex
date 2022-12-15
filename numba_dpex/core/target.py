@@ -490,3 +490,104 @@ class DpexCallConv(MinimalCallConv):
         retval = builder.load(retvaltmp)
         out = self.context.get_returned_value(builder, resty, retval)
         return status, out
+
+
+import numba.core.base as base
+from numba.core import errors
+from numba.core.imputils import fix_returning_optional, impl_ret_new_ref
+
+from .types.dpnp_types import dpnp_ndarray_Type
+
+
+def _user_function(fndesc, libs):
+    """
+    A wrapper inserting code calling Numba-compiled *fndesc*.
+    """
+
+    def imp(context, builder, sig, args):
+        func = context.declare_function(builder.module, fndesc)
+        # env=None assumes this is a nopython function
+        status, retval = context.call_conv.call_function(
+            builder, func, fndesc.restype, fndesc.argtypes, args
+        )
+        with cgutils.if_unlikely(builder, status.is_error):
+            context.call_conv.return_status_propagate(builder, status)
+        # assert sig.return_type == fndesc.restype
+        # Reconstruct optional return type
+        retval = fix_returning_optional(context, builder, sig, status, retval)
+        # If the data representations don't match up
+        if retval.type != context.get_value_type(sig.return_type):
+            msg = "function returned {0} but expect {1}"
+            raise TypeError(msg.format(retval.type, sig.return_type))
+
+        return impl_ret_new_ref(context, builder, sig.return_type, retval)
+
+    imp.signature = fndesc.argtypes
+    imp.libs = tuple(libs)
+    return imp
+
+
+# Overriding the BaseContext.get_function to ensure dpnp overloads are
+# used when the type is dpnp.ndarray
+def dpex_get_function(self, fn, sig, _firstcall=True):
+    """
+    Return the implementation of function *fn* for signature *sig*.
+    The return value is a callable with the signature (builder, args).
+    """
+    print("Entering dpex get function..................", fn, sig)
+    if not (
+        isinstance(sig.return_type, dpnp_ndarray_Type)
+        or any([isinstance(arg, dpnp_ndarray_Type) for arg in sig.args])
+    ):
+        print("Reverting to default get function..................")
+        return tmpgetfn(self, fn, sig, _firstcall)
+
+    print("In modified dpex get function..................")
+    assert sig is not None
+    sig = sig.as_function()
+
+    if isinstance(fn, types.Callable):
+        key = fn.get_impl_key(sig)
+        overloads = self._defns[key]
+    else:
+        key = fn
+        overloads = self._defns[key]
+
+    try:
+        imp = overloads.find(sig.args)
+
+        if fn.name == "Function(<built-in function empty>)":
+            if len(imp.__closure__) == 1:
+                imp_fndesc = imp.__closure__[0].cell_contents
+                imp_libs = []
+            elif len(imp.__closure__) == 2:
+                imp_fndesc = imp.__closure__[0].cell_contents
+                imp_libs = imp.__closure__[1].cell_contents
+            else:
+                raise AssertionError("Unknown type of imp encountered")
+
+            imp = _user_function(imp_fndesc, imp_libs)
+
+        print("overloaded imp", type(imp), imp, "---------------------")
+        return base._wrap_impl(imp, self, sig)
+    except errors.NumbaNotImplementedError:
+        pass
+    if isinstance(fn, types.Type):
+        # It's a type instance => try to find a definition for the type class
+        try:
+            return self.get_function(type(fn), sig)
+        except NotImplementedError:
+            # Raise exception for the type instance, for a better error message
+            pass
+
+    # Automatically refresh the context to load new registries if we are
+    # calling the first time.
+    if _firstcall:
+        self.refresh()
+        return self.get_function(fn, sig, _firstcall=False)
+
+    raise NotImplementedError("No definition for lowering %s%s" % (key, sig))
+
+
+tmpgetfn = BaseContext.get_function
+BaseContext.get_function = dpex_get_function
