@@ -1,0 +1,7 @@
+numba\_dpex.device\_init module
+===============================
+
+.. automodule:: numba_dpex.device_init
+   :members:
+   :undoc-members:
+   :show-inheritance:
