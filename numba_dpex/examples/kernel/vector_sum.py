@@ -20,7 +20,6 @@ def driver(a, b, c, global_size):
 
     kernel_vector_sum[global_size, ndpx.DEFAULT_LOCAL_SIZE](a, b, c)
 
-<<<<<<< HEAD
     # Printing result
     print("A + B = ")
     print("C ", c)
@@ -29,12 +28,6 @@ def driver(a, b, c, global_size):
     a_np = dpnp.asnumpy(a)  # Copy dpnp array a to NumPy array a_np
     b_np = dpnp.asnumpy(b)  # Copy dpnp array a to NumPy array a_np
     testing.assert_equal(c, a_np + b_np)
-=======
-    a_np = dpnp.asnumpy(a)  # Copy dpnp array a to NumPy array a_np
-    b_np = dpnp.asnumpy(b)  # Copy dpnp array b to NumPy array b_np
-    c_np = dpnp.asnumpy(c)  # Copy dpnp array c to NumPy array c_np
-    testing.assert_equal(c_np, a_np + b_np)
->>>>>>> 98585b79f73a9a409ff3e5a878e2ad111213f36c
 
 
 # Main function

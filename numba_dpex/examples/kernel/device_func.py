@@ -42,11 +42,7 @@ def main():
     b = np.ones(N)
 
     print("Using device ...")
-<<<<<<< HEAD
     print(a.device)
-=======
-    a.sycl_device.print_device_info()
->>>>>>> 98585b79f73a9a409ff3e5a878e2ad111213f36c
     driver(a, b, N)
 
     print("Done...")
