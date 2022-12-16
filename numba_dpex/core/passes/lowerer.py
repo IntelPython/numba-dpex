@@ -40,12 +40,24 @@ from numba.core.typing import signature
 from numba.parfors import parfor
 
 import numba_dpex as dpex
+from numba_dpex.core.types.dpnp_types import dpnp_ndarray_Type
 from numba_dpex import config
 from numba_dpex.core.exceptions import UnsupportedParforError
 from numba_dpex.dpctl_iface import KernelLaunchOps
 from numba_dpex.utils import address_space, npytypes_array_to_dpex_array
 
 from .dufunc_inliner import dufunc_inliner
+
+
+_supported_scalar_parfor_arg_types = [
+    types.int64,
+    types.uint64,
+    types.int32,
+    types.uint32,
+    types.float64,
+    types.float32,
+    types.boolean,
+]
 
 
 def _print_block(block):
@@ -274,8 +286,8 @@ def _create_gufunc_for_parfor_body(
     races,
 ):
     """
-    Takes a parfor and creates a gufunc function for its body. There
-    are two parts to this function:
+    Takes a parfor and creates a gufunc function for the body of the parfor.
+    There are two parts to this function:
 
         1) Code to iterate across the iteration space as defined by
            the schedule.
@@ -394,26 +406,39 @@ def _create_gufunc_for_parfor_body(
 
     param_types_addrspaces = copy.copy(param_types)
 
-    # Calculate types of args passed to gufunc.
+    # Only dpnp.ndarray and scalar types are supported as parfor params, raise
+    # an exception for any other parfor argument.
     func_arg_types = [typemap[v] for v in (parfor_inputs + parfor_outputs)]
-    assert len(param_types_addrspaces) == len(addrspaces)
-    for i in range(len(param_types_addrspaces)):
-        if addrspaces[i] is not None:
-            # Convert numba.types.Array to numba_dpex.core.types.Array data
-            # type. Our Array type allows us to specify an address space for the
-            # data and other pointer arguments for the array.
-            param_types_addrspaces[i] = npytypes_array_to_dpex_array(
-                param_types_addrspaces[i], addrspaces[i]
-            )
 
-    def print_arg_with_addrspaces(args):
-        for a in args:
-            print(a, type(a))
-            if isinstance(a, types.npytypes.Array):
-                print("addrspace:", a.addrspace)
+    if not all(
+        [
+            ty in _supported_scalar_parfor_arg_types
+            or isinstance(ty, dpnp_ndarray_Type)
+            for ty in func_arg_types
+        ]
+    ):
+        # FIXME: Raise a proper exception
+        print("func_arg_types = ", func_arg_types, type(func_arg_types))
+        raise ValueError("Unsupported argument type for parfor")
+
+    # assert len(param_types_addrspaces) == len(addrspaces)
+    # for i in range(len(param_types_addrspaces)):
+    #     if addrspaces[i] is not None:
+    #         # Convert numba.types.Array to numba_dpex.core.types.Array data
+    #         # type. Our Array type allows us to specify an address space for the
+    #         # data and other pointer arguments for the array.
+    #         param_types_addrspaces[i] = npytypes_array_to_dpex_array(
+    #             param_types_addrspaces[i], addrspaces[i]
+    #         )
+
+    # def print_arg_with_addrspaces(args):
+    #     for a in args:
+    #         print(a, type(a))
+    #         if isinstance(a, types.npytypes.Array):
+    #             print("addrspace:", a.addrspace)
 
     if config.DEBUG_ARRAY_OPT >= 1:
-        print_arg_with_addrspaces(param_types)
+        # print_arg_with_addrspaces(param_types)
         print("func_arg_types = ", func_arg_types, type(func_arg_types))
 
     # Replace illegal parameter names in the loop body with legal ones.
