@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import dpnp
 import dpnp.random as dprandom
 import numpy.testing as testing
 
@@ -38,8 +39,8 @@ def main():
     print("C ", c)
 
     # Testing against NumPy
-    a_np = a.asnumpy()  # Copy dpnp array a to NumPy array a_np
-    b_np = b.asnumpy()  # Copy dpnp array a to NumPy array a_np
+    a_np = dpnp.asnumpy(a)  # Copy dpnp array a to NumPy array a_np
+    b_np = dpnp.asnumpy(b)  # Copy dpnp array a to NumPy array a_np
     testing.assert_equal(c, a_np + b_np)
 
     print("Done...")
