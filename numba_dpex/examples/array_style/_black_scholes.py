@@ -2,6 +2,10 @@
 #
 # SPDX-License-Identifier: Apache 2.0
 
+###########################################################################
+# This test is disabled in CI due to lacking support of numba_dpex.vectorize.
+###########################################################################
+
 
 from math import erf, sqrt
 
