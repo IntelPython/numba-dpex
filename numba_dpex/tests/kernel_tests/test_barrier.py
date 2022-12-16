@@ -19,7 +19,7 @@ def test_proper_lowering(filter_str):
     def twice(A):
         i = dpex.get_global_id(0)
         d = A[i]
-        dpex.barrier(dpex.CLK_LOCAL_MEM_FENCE)  # local mem fence
+        dpex.barrier(dpex.LOCAL_MEM_FENCE)  # local mem fence
         A[i] = d * 2
 
     N = 256
@@ -66,7 +66,7 @@ def test_local_memory(filter_str):
         # preload
         lm[i] = A[i]
         # barrier local or global will both work as we only have one work group
-        dpex.barrier(dpex.CLK_LOCAL_MEM_FENCE)  # local mem fence
+        dpex.barrier(dpex.LOCAL_MEM_FENCE)  # local mem fence
         # write
         A[i] += lm[blocksize - 1 - i]
 
