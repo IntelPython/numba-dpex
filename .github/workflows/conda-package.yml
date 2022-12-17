@@ -224,7 +224,7 @@ jobs:
           # Test installed packages
           conda list
       - name: Install opencl_rt
-        run: conda install opencl_rt -c intel --override-channels
+        run: conda install opencl_rt=2022.2.1 -c intel --override-channels
 
       - name: Add library
         shell: pwsh
