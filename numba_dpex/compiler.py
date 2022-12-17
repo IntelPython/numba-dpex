@@ -19,8 +19,7 @@ from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
 from numba_dpex import config
 from numba_dpex.core.exceptions import KernelHasReturnValueError
-from numba_dpex.core.types import Array
-from numba_dpex.dpctl_iface import USMNdArrayType
+from numba_dpex.core.types import Array, USMNdArrayType
 from numba_dpex.dpctl_support import dpctl_version
 from numba_dpex.parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dpex.utils import (
@@ -181,10 +180,13 @@ def compile_with_depx(pyfunc, return_type, args, is_kernel, debug=None):
 def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
     # For any array we only accept numba_dpex.types.Array
     for arg in args:
-        if isinstance(arg, types.npytypes.Array) and not isinstance(arg, Array):
+        if isinstance(arg, types.npytypes.Array) and not (
+            isinstance(arg, Array) or isinstance(arg, USMNdArrayType)
+        ):
             raise TypeError(
-                "Only numba_dpex.core.types.Array objects are supported as "
-                + "kernel arguments. Received %s" % (type(arg))
+                "Only numba_dpex.core.types.USMNdArrayType "
+                + "objects are supported as kernel arguments. "
+                + "Received %s" % (type(arg))
             )
 
     if config.DEBUG:

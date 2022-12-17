@@ -79,7 +79,7 @@ def suai_to_dpex_array(arr, addrspace=address_space.GLOBAL):
     Raises:
         NotImplementedError: If the dtype of the passed array is not supported.
     """
-    from numba_dpex.dpctl_iface import USMNdArrayType
+    from numba_dpex.core.types import USMNdArrayType
 
     (
         usm_mem,

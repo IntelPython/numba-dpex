@@ -48,9 +48,10 @@ from numba.extending import (
 from numba.np import numpy_support
 from numba.np.arrayobj import _array_copy
 
-from numba_dpex.core.types import Array, ArrayModel
+from numba_dpex.core.datamodel.models import ArrayModel
+from numba_dpex.core.types import Array
 
-from .core import target as dpex_target
+from .core.datamodel.models import dpex_data_model_manager
 
 debug = config.DEBUG
 
@@ -150,7 +151,7 @@ def typeof_ta_ndarray(val, c):
 # This tells Numba to use the default Numpy ndarray data layout for
 # object of type UsmArray.
 register_model(UsmSharedArrayType)(numba.core.datamodel.models.ArrayModel)
-dpex_target.spirv_data_model_manager.register(
+dpex_data_model_manager.register(
     UsmSharedArrayType, numba.core.datamodel.models.ArrayModel
 )
 
