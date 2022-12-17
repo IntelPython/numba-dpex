@@ -10,7 +10,7 @@ from numba.core.types.npytypes import Array
 """
 
 
-class USMNdArrayType(Array):
+class USMNdArray(Array):
     """A type class to represent dpctl.tensor.usm_ndarray."""
 
     def __init__(
@@ -25,18 +25,19 @@ class USMNdArrayType(Array):
         aligned=True,
         addrspace=None,
     ):
+        self.usm_type = usm_type
+        self.device = device
+        self.addrspace = addrspace
+
         if name is None:
             type_name = "usm_ndarray"
             if readonly:
                 type_name = "readonly " + type_name
             if not aligned:
                 type_name = "unaligned " + type_name
-            name_parts = (type_name, dtype, ndim, layout, usm_type)
-            name = "%s(%s, %sd, %s, %s)" % name_parts
+            name_parts = (type_name, dtype, ndim, layout, usm_type, device)
+            name = "%s(%s, %sd, %s, %s, %s)" % name_parts
 
-        self.usm_type = usm_type
-        self.device = device
-        self.addrspace = addrspace
         super().__init__(
             dtype,
             ndim,
@@ -70,7 +71,7 @@ class USMNdArrayType(Array):
             device = self.device
         if usm_type is None:
             usm_type = self.usm_type
-        return USMNdArrayType(
+        return USMNdArray(
             dtype=dtype,
             ndim=ndim,
             layout=layout,
@@ -83,10 +84,10 @@ class USMNdArrayType(Array):
 
     def unify(self, typingctx, other):
         """
-        Unify this with the *other* USMNdArrayType.
+        Unify this with the *other* USMNdArray.
         """
         # If other is array and the ndim matches
-        if isinstance(other, USMNdArrayType) and other.ndim == self.ndim:
+        if isinstance(other, USMNdArray) and other.ndim == self.ndim:
             # If dtype matches or other.dtype is undefined (inferred)
             if other.dtype == self.dtype or not other.dtype.is_precise():
                 if self.layout == other.layout:
@@ -95,7 +96,7 @@ class USMNdArrayType(Array):
                     layout = "A"
                 readonly = not (self.mutable and other.mutable)
                 aligned = self.aligned and other.aligned
-                return USMNdArrayType(
+                return USMNdArray(
                     dtype=self.dtype,
                     ndim=self.ndim,
                     layout=layout,
@@ -105,10 +106,10 @@ class USMNdArrayType(Array):
 
     def can_convert_to(self, typingctx, other):
         """
-        Convert this USMNdArrayType to the *other*.
+        Convert this USMNdArray to the *other*.
         """
         if (
-            isinstance(other, USMNdArrayType)
+            isinstance(other, USMNdArray)
             and other.ndim == self.ndim
             and other.dtype == self.dtype
             and other.usm_type == self.usm_type

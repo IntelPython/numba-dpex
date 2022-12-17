@@ -6,7 +6,7 @@ from numba.core import datamodel, types
 from numba.core.datamodel.models import PrimitiveModel, StructModel
 from numba.core.extending import register_model
 
-from numba_dpex.core.types import Array, USMNdArrayType
+from numba_dpex.core.types import Array, USMNdArray
 from numba_dpex.utils import address_space
 
 
@@ -61,6 +61,6 @@ def _init_data_model_manager():
 
 dpex_data_model_manager = _init_data_model_manager()
 
-# Register the USMNdArrayType type with the dpex ArrayModel
-register_model(USMNdArrayType)(ArrayModel)
-dpex_data_model_manager.register(USMNdArrayType, ArrayModel)
+# Register the USMNdArray type with the dpex ArrayModel
+register_model(USMNdArray)(ArrayModel)
+dpex_data_model_manager.register(USMNdArray, ArrayModel)

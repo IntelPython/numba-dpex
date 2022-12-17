@@ -6,7 +6,7 @@ from dpctl.tensor import usm_ndarray
 from numba.extending import typeof_impl
 from numba.np import numpy_support
 
-from numba_dpex.core.types.usm_ndarray_type import USMNdArrayType
+from numba_dpex.core.types.usm_ndarray_type import USMNdArray
 from numba_dpex.utils import address_space
 
 
@@ -51,11 +51,11 @@ def typeof_usm_ndarray(val, c):
         )
 
     try:
-        device = val.sycl_device
+        device = val.sycl_device.filter_string
     except AttributeError:
         raise ValueError("The device for the usm_ndarray could not be inferred")
 
-    return USMNdArrayType(
+    return USMNdArray(
         dtype=dtype,
         ndim=val.ndim,
         layout=layout,

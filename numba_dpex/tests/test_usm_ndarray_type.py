@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 from numba.misc.special import typeof
 
-from numba_dpex.core.types import USMNdArrayType
+from numba_dpex.core.types import USMNdArray
 
 list_of_dtypes = [
     np.int32,
@@ -38,5 +38,5 @@ def test_usm_ndarray_type(dtype, usm_type):
     a = np.array(np.random.random(10), dtype)
     da = dpt.usm_ndarray(a.shape, dtype=a.dtype, buffer=usm_type)
 
-    assert isinstance(typeof(da), USMNdArrayType)
+    assert isinstance(typeof(da), USMNdArray)
     assert da.usm_type == usm_type

@@ -24,13 +24,13 @@ from .numba_types_short_names import (
     uint64,
     void,
 )
-from .usm_ndarray_type import USMNdArrayType
+from .usm_ndarray_type import USMNdArray
 
-usm_ndarray = USMNdArrayType
+usm_ndarray = USMNdArray
 
 __all__ = [
     "Array",
-    "USMNdArrayType",
+    "USMNdArray",
     "none",
     "boolean",
     "bool_",
