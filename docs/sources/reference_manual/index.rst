@@ -1,4 +1,4 @@
-.. _index:
+.. _ref_index:
 .. include:: ./../ext_links.txt
 
 .. image:: ./../_images/DPEP-large.png
