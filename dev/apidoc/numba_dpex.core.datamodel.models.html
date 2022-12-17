@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.dpctl_iface.usm_ndarray_type module &mdash; numba-dpex 0.19.0+15.g46bef564 documentation</title>
+  <title>numba_dpex.core.datamodel.models module &mdash; numba-dpex 0.19.0+18.g511a3c55 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -69,9 +69,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a></li>
-      <li class="breadcrumb-item active">numba_dpex.dpctl_iface.usm_ndarray_type module</li>
+      <li class="breadcrumb-item active">numba_dpex.core.datamodel.models module</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/apidoc/numba_dpex.dpctl_iface.usm_ndarray_type.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/apidoc/numba_dpex.core.datamodel.models.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -79,30 +79,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-numba_dpex.dpctl_iface.usm_ndarray_type">
-<span id="numba-dpex-dpctl-iface-usm-ndarray-type-module"></span><h1>numba_dpex.dpctl_iface.usm_ndarray_type module<a class="headerlink" href="#module-numba_dpex.dpctl_iface.usm_ndarray_type" title="Permalink to this heading"></a></h1>
+  <section id="module-numba_dpex.core.datamodel.models">
+<span id="numba-dpex-core-datamodel-models-module"></span><h1>numba_dpex.core.datamodel.models module<a class="headerlink" href="#module-numba_dpex.core.datamodel.models" title="Permalink to this heading"></a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.dpctl_iface.usm_ndarray_type.USMNdArrayType">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.dpctl_iface.usm_ndarray_type.</span></span><span class="sig-name descname"><span class="pre">USMNdArrayType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpctl_iface.usm_ndarray_type.USMNdArrayType" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="numba_dpex.core.types.array_type.html#numba_dpex.core.types.array_type.Array" title="numba_dpex.core.types.array_type.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
-<dl class="simple">
-<dt>USMNdArrayType(dtype, ndim, layout, usm_type,</dt><dd><p>readonly=False, name=None,
-aligned=True, addrspace=None)</p>
-</dd>
-</dl>
-<p>creates Numba type to represent <code class="docutils literal notranslate"><span class="pre">dpctl.tensor.usm_ndarray</span></code>.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.dpctl_iface.usm_ndarray_type.USMNdArrayType.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpctl_iface.usm_ndarray_type.USMNdArrayType.copy" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
+<dt class="sig sig-object py" id="numba_dpex.core.datamodel.models.ArrayModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.datamodel.models.</span></span><span class="sig-name descname"><span class="pre">ArrayModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dmm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fe_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.datamodel.models.ArrayModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StructModel</span></code></p>
+<p>A data model to represent a Dpex’s array types in LLVM IR.</p>
+<p>Dpex’s ArrayModel is based on Numba’s ArrayModel for NumPy arrays. The
+dpex model adds an extra address space attribute to all pointer members
+in the array.</p>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.dpctl_iface.usm_ndarray_type.typeof_usm_ndarray">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.dpctl_iface.usm_ndarray_type.</span></span><span class="sig-name descname"><span class="pre">typeof_usm_ndarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpctl_iface.usm_ndarray_type.typeof_usm_ndarray" title="Permalink to this definition"></a></dt>
-<dd><p>Creates the Numba type (USMNdArrayType) when a usm_ndarray is passed as an
-argument to a kernel.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.core.datamodel.models.GenericPointerModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.datamodel.models.</span></span><span class="sig-name descname"><span class="pre">GenericPointerModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dmm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fe_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.datamodel.models.GenericPointerModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PrimitiveModel</span></code></p>
 </dd></dl>
 
 </section>
