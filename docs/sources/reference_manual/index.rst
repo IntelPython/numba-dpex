@@ -6,8 +6,8 @@
     :align: center
     :alt: Data Parallel Extensions for Python
 
-Data Parallel Extension for Numba Reference Manual
-==================================================
+Reference Manual
+================
 .. toctree::
     :caption: Reference Manual
     :maxdepth: 2

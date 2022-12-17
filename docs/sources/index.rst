@@ -9,9 +9,6 @@
 Data Parallel Extension for Numba
 =================================
 
-
-Table of Contents
-*****************
 .. toctree::
     :maxdepth: 3
 
