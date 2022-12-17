@@ -44,11 +44,10 @@ hardware vendors.
 
    writing_kernels
    memory-management
-   memory_allocation_address_space
+   selecting_device
    synchronization
    device-functions
    atomic-operations
-   selecting_device
    reduction
    ufunc
    random

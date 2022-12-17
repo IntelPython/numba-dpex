@@ -8,3 +8,8 @@
 
 Data Parallel Extension for Numba Reference Manual
 ==================================================
+.. toctree::
+    :caption: Reference Manual
+    :maxdepth: 2
+
+    ref_rng

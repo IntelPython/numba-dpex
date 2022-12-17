@@ -15,6 +15,7 @@ Data Parallel Extension for Numba User Manual
 
     getting_started
     auto_offload
+    rng
     kernel_programming/index
     performance_tips
     troubleshooting

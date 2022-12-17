@@ -23,6 +23,8 @@ the **SYCL USM Array Interface** protocol to enable zero-copy data exchange acro
 
     For more details please refer to `Data Parallel Extensions for Python*`_ documentation.
 
+.. _SYCL_USM_ARRAY_INTERFACE:
+
 SYCL USM Array Interface
 ------------------------
 
@@ -99,55 +101,72 @@ Device-only memory and explicit data transfer
 ---------------------------------------------
 
 All data transfers between the device and the host must be explicit. Please use ``dpnp`` arrays while
-working with the device data in data parallel kernels. There are ``dpnp`` conventience functions
+working with the device data in data parallel kernels. There are ``dpnp`` convenience functions
 that allow copying data from and to NumPy arrays. Read `Data Parallel Extension for Numpy*`_ documentation
 for further details.
 
-Local memory
-------------
+Address Space Qualifiers
+------------------------
 
-Local memory is a contiguous region of memory allocated
-per work group and visible to all work items in that group.
+Similarly to `SYCL*`_ standard, the `Data Parallel Extension for Numba*`_ define a clear distinction
+between various memory regions and how those are accessed. The CPU memory is known as `host memory`.
+On a device side there are three distinct memory regions, or `address spaces` exist:
 
-The local memory is device-only and cannot be accessed from the host. From the perspective of
-the device, the local memory is exposed as a contiguous array of a specific
-type. The maximum available local memory is hardware-specific.
+1. **Global Address Space** refers to memory objects allocated from the global
+   memory pool and will be shared among all work-groups and work-items. It is largest in size
+   but also the slowest memory.
 
-The **Data Parallel Extensions for Python**'s local memory concept is analogous to CUDA*'s shared memory concept.
+   By default local arrays in the kernel will
+   be allocated in the global address space. You must explicitly allocate data in local or private memory
+   space using ``numba_dpex.local.array()`` and ``numba_dpex.private.array()`` functions respectively.
 
-``numba-dpex`` provides a special function ``numba_dpex.local.array()`` to
-allocate local memory for a kernel.
+   Arguments passed to any
+   kernel are also allocated in the global address space. In the below example,
+   arguments ``a``, ``b`` and ``c`` will be allocated in the global address space:
 
-.. literalinclude:: ./../../../../numba_dpex/examples/kernel/scan.py
-   :lines: 21-23
+   .. literalinclude:: ./../../../../numba_dpex/examples/kernel/vector_sum.py
+     :lines: 14-17
 
-In this example two local arrays, ``b`` and ``c`` , of size ``ls`` are created. Their type is specified
-in the parameter ``dtype``.
+
+2. **Local Address Space** refers to memory objects that will be allocated in
+   local memory pool and are shared by all work-items of a work-group.
+   The local memory is device-only and cannot be accessed from the host. From the perspective of
+   a device, the local memory is exposed as a contiguous array of a specific
+   type. The maximum available local memory is hardware-specific.
+
+   ``numba-dpex`` does not support passing arguments that are allocated in the
+   local address space to ``@numba_dpex.kernel``. Users are allowed to allocate
+   static arrays in the local address space inside the ``@numba_dpex.kernel``. In
+   the example below ``numba_dpex.local.array(shape, dtype)`` is the API used to
+   allocate local arrays ``b`` and ``c`` in the local address space:
+
+   .. literalinclude:: ./../../../../numba_dpex/examples/kernel/scan.py
+     :lines: 14-15, 19, 21-23
 
 .. note::
 
-  To go convert from ``numba.cuda`` to ``numba-dpex``, replace ``numba.cuda.shared.array`` with
-  ``numba_dpex.local.array(shape=local_size)``.
+    The local memory concept in **Data Parallel Extensions for Python** is analogous to CUDA*'s shared memory concept.
 
+3. **Private Address Space** refers to memory objects that are visible to a
+   work-item and is not shared with any other work-item. Private memory cannot be accessed from the host.
 
-Private memory
---------------
+   In the example below
+   ``numba_dpex.private.array(shape, dtype)`` is the API used to allocate arrays ``c`` and ``z``
+   in the private address space:
 
-Private memory is a region of memory allocated per work item, visible only to that work item.
-Private memory is used for kernel parameters and local stack variables. Private memory cannot be accessed from the host.
+   .. literalinclude:: ./../../../../numba_dpex/examples/kernel/interpolation.py
+     :lines: 85-90
 
-Private memory is typically mapped to hardware registers. There is no mechanism in
-**Data Parallel Extensions for Python** to query the number of registers available to a particular device.
-Developers must refer to the documentation of the hardware vendor to understand
-the limits of private memory.
+  The compiler will attempt to allocate local scalar variables in private memory, and if
+  there is not enough private memory, it will allocate these in local memory.
 
-Similarly to local memory, ``numba-dpex`` provides built-in function for private memory allocation
-``numba_dpex.private.array(shape, dtype)``
+  Private memory is typically mapped to hardware registers. There is no mechanism in
+  **Data Parallel Extensions for Python** to query the number of registers available to a particular device.
+  Developers must refer to the documentation of the hardware vendor to understand
+  the limits of private memory.
 
-Constant memory
----------------
-
-The constant memory is a read-only device memory. ``numba-dpex`` does not yet support this type of memory.
+4. **Constant Address Space** refers to memory objects that are read-only device memory. `
+   `numba-dpex`` does not support this type of memory.
 
 Barriers
 --------
@@ -219,17 +238,17 @@ The following table summarizes allows access types declarations for a kernel.
 The following example shows how to specify access type for the kernel arguments:
 
 .. literalinclude:: ./../../../../numba_dpex/examples/kernel/black_scholes.py
-   :lines: 49-55
+   :lines: 51-57
    :linenos:
    :emphasize-lines: 2-4
 
-Lines 50-53 indicate that arguments ``price``, ``strike``, and ``t`` are read only. The need not be copied back to
-the host after the kernel ``kernel_black_scholes()`` completes execution; arguments ``call`` and ``put`` are
-write only, and hence these need not be ready by the time of the kernel invocation.
+The line 3 specifies that arguments ``price``, ``strike``, and ``t`` are read-only. They need not be copied back to
+the host after the kernel ``kernel_black_scholes()`` completes execution; in line 4 arguments ``call`` and ``put`` are
+specified as write-only, and hence these need not be ready by the time of the kernel invocation.
 
 .. note::
   Please note that arguments ``rate`` and ``volatility`` do not have access type specificators, because these
-  are scalar arguments
+  are scalar arguments.
 
 For better performance, make sure that the access types reflect the operations performed by the kernel.
 The compiler will flag an error when a write is done into the array, which is declared as ``read_only``.
