@@ -1,3 +1,6 @@
+.. _synchronization_functions:
+.. include:: ./../../ext_links.txt
+
 Synchronization Functions
 =========================
 

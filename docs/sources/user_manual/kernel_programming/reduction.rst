@@ -1,3 +1,6 @@
+.. _reductions:
+.. include:: ./../../ext_links.txt
+
 Reductions
 ==========
 

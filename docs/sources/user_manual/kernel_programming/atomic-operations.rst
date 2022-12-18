@@ -1,3 +1,6 @@
+.. _atomic_operations:
+.. include:: ./../../ext_links.txt
+
 Atomic Operations
 =================
 

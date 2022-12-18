@@ -1,3 +1,6 @@
+.. _universal_functions:
+.. include:: ./../../ext_links.txt
+
 Universal Functions
 ===================
 

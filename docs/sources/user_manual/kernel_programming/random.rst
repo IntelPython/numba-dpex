@@ -1,5 +1,8 @@
-Random Number Generation
-========================
+.. _rng_kernels:
+.. include:: ./../../ext_links.txt
+
+Random number generation in kernel functions
+============================================
 
 **Data Parallel Extension for Numba** does not provide support for *random number generation*
 from within a kernel function.

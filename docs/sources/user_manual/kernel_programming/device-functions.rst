@@ -1,4 +1,5 @@
 .. _device-functions:
+.. include:: ./../../ext_links.txt
 
 Writing Device Functions
 ========================

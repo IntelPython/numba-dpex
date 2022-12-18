@@ -85,7 +85,7 @@ in many cases is fairly straightforward process:
 To illustrate this process let's take an example of NumPy script that implements
 the Monte Carlo method for estimation of :math:`\pi`:
 
-.. literalinclude:: ./../../../numba_dpex/examples/hello_dpworld.py
+.. literalinclude:: ./../../../numba_dpex/examples/_hello_dpworld.py
     :caption: **EXAMPLE:** Original NumPy program
     :pyobject: hello_dpworld_numpy
     :lines: 3-
@@ -93,7 +93,7 @@ the Monte Carlo method for estimation of :math:`\pi`:
 
 In order to execute this script on a GPU (assuming you have one) the following changes will be required:
 
-.. literalinclude:: ./../../../numba_dpex/examples/hello_dpworld.py
+.. literalinclude:: ./../../../numba_dpex/examples/_hello_dpworld.py
     :caption: **EXAMPLE:** Modified NumPy program to run on GPU
     :pyobject: hello_dpworld_dpnp
     :lines: 3-
@@ -155,7 +155,7 @@ performed on that GPU device:
 Let's take one step further and modify our script so that part of ``dpnp`` code will be compiled
 into a GPU offload kernel using ``numba-dpex``:
 
-.. literalinclude:: ./../../../numba_dpex/examples/hello_dpworld.py
+.. literalinclude:: ./../../../numba_dpex/examples/_hello_dpworld.py
     :caption: **EXAMPLE:** Compile for GPU using Data Parallel Extension for Numba
     :pyobject: hello_dpworld_ndpx
     :lines: 3-
@@ -178,3 +178,36 @@ arrays you're also risking to end up, when the device operations will be perform
 This is where `Numba*`_ is really useful. Rather than performing multiple array operations on large data
 the compiler can fuse these operations and perform these on smaller data chunks eliminating the need
 to store large temporary data.
+
+Next steps
+==========
+This documentation contains a number of useful :ref:`examples <examples>`, which can be used as a hands-on
+experience in trying out **Data Parallel Extension for Numba**, ``numba-dpex``.
+
+The following **User Manual** sections are organized as follows:
+
+* :ref:`Introduction to automatic offload <auto_offload>`
+    Section discusses basics how ``numba-dpex`` determines a data-parallel regions, what is offloaded
+    to device and what stays on the host. It also discusses what is similar to ``numba.njit``
+    and what is different.
+
+* **Array-style programming**
+    Basics of writing data-parallel programs using *array-style* programming.
+    Discussion of what parts of array code worth compiling and what can be left to ``dpnp``
+
+* **Programming direct loops**
+    Caveats of compiling direct loops. How to get the best performance out a data-parallel
+    region expressed as a loop.
+
+* :ref:`Data-parallel kernel programming <kernel_programming_index>`
+    Large section of the User Manual discussing ``numba-dpex`` capabilities for writing
+    data-parallel kernels. It also discusses how to port ``@cuda.jit`` codes to ``@numba_dpex.jit``.
+
+* :ref:`Performance tips <performance_tips>`
+    Section discusses different aspects of getting performance with **Data Parallel Extensions for Python**
+
+* :ref:`Troubleshooting <troubleshooting>`
+    Section discusses approaches to root cause issues with **Data Parallel Extension for Numba**
+
+* :ref:`Troubleshooting <troubleshooting>`
+    Section discusses approaches to root cause issues with **Data Parallel Extension for Numba**

@@ -29,7 +29,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'Data Parallel Extensions for Python*'
+project = 'Data Parallel Extension for Numba*'
 copyright = '2022, Intel Corporation'
 author = 'Intel Corporation'
 

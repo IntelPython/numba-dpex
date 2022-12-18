@@ -1,4 +1,4 @@
-.. _index:
+.. _kernel_programming_index:
 .. include:: ./../../ext_links.txt
 
 Data Parallel Kernel Programming
