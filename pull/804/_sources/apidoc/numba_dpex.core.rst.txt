@@ -7,9 +7,11 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   numba_dpex.core.datamodel
    numba_dpex.core.kernel_interface
    numba_dpex.core.passes
    numba_dpex.core.types
+   numba_dpex.core.typing
 
 Submodules
 ----------

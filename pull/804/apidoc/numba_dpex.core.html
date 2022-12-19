@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core package &mdash; numba-dpex 0.19.0+43.g52824988 documentation</title>
+  <title>numba_dpex.core package &mdash; numba-dpex 0.19.0+44.g065cd0fe documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -85,6 +85,18 @@
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.datamodel.html">numba_dpex.core.datamodel package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.datamodel.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.datamodel.models.html">numba_dpex.core.datamodel.models module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.datamodel.models.html#numba_dpex.core.datamodel.models.ArrayModel"><code class="docutils literal notranslate"><span class="pre">ArrayModel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.datamodel.models.html#numba_dpex.core.datamodel.models.GenericPointerModel"><code class="docutils literal notranslate"><span class="pre">GenericPointerModel</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.datamodel.html#module-numba_dpex.core.datamodel">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.kernel_interface.html">numba_dpex.core.kernel_interface package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.kernel_interface.html#submodules">Submodules</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.kernel_interface.arg_pack_unpacker.html">numba_dpex.core.kernel_interface.arg_pack_unpacker module</a><ul>
@@ -166,12 +178,46 @@
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.html#submodules">Submodules</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.types.array_type.html">numba_dpex.core.types.array_type module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.types.array_type.html#numba_dpex.core.types.array_type.Array"><code class="docutils literal notranslate"><span class="pre">Array</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.types.array_type.html#numba_dpex.core.types.array_type.ArrayModel"><code class="docutils literal notranslate"><span class="pre">ArrayModel</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.types.numba_types_short_names.html">numba_dpex.core.types.numba_types_short_names module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.types.usm_ndarray_type.html">numba_dpex.core.types.usm_ndarray_type module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.types.usm_ndarray_type.html#numba_dpex.core.types.usm_ndarray_type.USMNdArray"><code class="docutils literal notranslate"><span class="pre">USMNdArray</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.html#module-numba_dpex.core.types">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.html#module-numba_dpex.core.types">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.types.html#numba_dpex.core.types.Array"><code class="docutils literal notranslate"><span class="pre">Array</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.types.html#numba_dpex.core.types.Array.box_type"><code class="docutils literal notranslate"><span class="pre">Array.box_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.types.html#numba_dpex.core.types.Array.copy"><code class="docutils literal notranslate"><span class="pre">Array.copy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.types.html#numba_dpex.core.types.Array.is_precise"><code class="docutils literal notranslate"><span class="pre">Array.is_precise()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.types.html#numba_dpex.core.types.Array.key"><code class="docutils literal notranslate"><span class="pre">Array.key</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.types.html#numba_dpex.core.types.USMNdArray"><code class="docutils literal notranslate"><span class="pre">USMNdArray</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.types.html#numba_dpex.core.types.USMNdArray.as_array"><code class="docutils literal notranslate"><span class="pre">USMNdArray.as_array</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.types.html#numba_dpex.core.types.USMNdArray.box_type"><code class="docutils literal notranslate"><span class="pre">USMNdArray.box_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.types.html#numba_dpex.core.types.USMNdArray.can_convert_to"><code class="docutils literal notranslate"><span class="pre">USMNdArray.can_convert_to()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.types.html#numba_dpex.core.types.USMNdArray.copy"><code class="docutils literal notranslate"><span class="pre">USMNdArray.copy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.types.html#numba_dpex.core.types.USMNdArray.key"><code class="docutils literal notranslate"><span class="pre">USMNdArray.key</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.types.html#numba_dpex.core.types.USMNdArray.unify"><code class="docutils literal notranslate"><span class="pre">USMNdArray.unify()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.types.html#numba_dpex.core.types.usm_ndarray"><code class="docutils literal notranslate"><span class="pre">usm_ndarray</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.typing.html">numba_dpex.core.typing package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.typing.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.typing.typeof.html">numba_dpex.core.typing.typeof module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.typing.typeof.html#numba_dpex.core.typing.typeof.typeof_usm_ndarray"><code class="docutils literal notranslate"><span class="pre">typeof_usm_ndarray()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.typing.html#module-numba_dpex.core.typing">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -293,7 +339,6 @@
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTypingContext.resolve_argument_type"><code class="docutils literal notranslate"><span class="pre">DpexTypingContext.resolve_argument_type()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.GenericPointerModel"><code class="docutils literal notranslate"><span class="pre">GenericPointerModel</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.SyclDevice"><code class="docutils literal notranslate"><span class="pre">SyclDevice</span></code></a></li>
 </ul>
 </li>
