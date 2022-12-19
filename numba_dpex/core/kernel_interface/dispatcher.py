@@ -28,7 +28,7 @@ from numba_dpex.core.exceptions import (
 )
 from numba_dpex.core.kernel_interface.arg_pack_unpacker import Packer
 from numba_dpex.core.kernel_interface.spirv_kernel import SpirvKernel
-from numba_dpex.dpctl_iface import USMNdArrayType
+from numba_dpex.core.types import USMNdArray
 
 
 def get_ordered_arg_access_types(pyfunc, access_types):
@@ -223,17 +223,17 @@ class Dispatcher(object):
             ExecutionQueueInferenceError: If the queue could not be inferred
                 using the dpctl queue manager.
         """
-        # Temporary workaround as USMNdArrayType derives from Array
+        # Temporary workaround as USMNdArray derives from Array
         array_argnums = [
             i
             for i, arg in enumerate(args)
             if isinstance(argtypes[i], ArrayType)
-            and not isinstance(argtypes[i], USMNdArrayType)
+            and not isinstance(argtypes[i], USMNdArray)
         ]
         usmarray_argnums = [
             i
             for i, arg in enumerate(args)
-            if isinstance(argtypes[i], USMNdArrayType)
+            if isinstance(argtypes[i], USMNdArray)
         ]
 
         # if usm and non-usm array arguments are getting mixed, then the

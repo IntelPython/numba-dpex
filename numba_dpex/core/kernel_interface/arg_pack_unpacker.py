@@ -15,7 +15,7 @@ from numba_dpex.core.exceptions import (
     UnsupportedAccessQualifierError,
     UnsupportedKernelArgumentError,
 )
-from numba_dpex.dpctl_iface import USMNdArrayType
+from numba_dpex.core.types import USMNdArray
 
 
 class _NumPyArrayPackerPayload:
@@ -216,7 +216,7 @@ class Packer:
 
         """
 
-        if isinstance(ty, USMNdArrayType):
+        if isinstance(ty, USMNdArray):
             return self._unpack_usm_array(val)
         elif isinstance(ty, types.Array):
             return self._unpack_array(val, access_specifier)
