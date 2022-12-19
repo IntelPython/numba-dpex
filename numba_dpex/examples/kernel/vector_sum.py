@@ -26,8 +26,9 @@ def driver(a, b, c, global_size):
 
     # Testing against NumPy
     a_np = dpnp.asnumpy(a)  # Copy dpnp array a to NumPy array a_np
-    b_np = dpnp.asnumpy(b)  # Copy dpnp array a to NumPy array a_np
-    testing.assert_equal(c, a_np + b_np)
+    b_np = dpnp.asnumpy(b)  # Copy dpnp array b to NumPy array b_np
+    c_np = dpnp.asnumpy(c)  # Copy dpnp array c to NumPy array c_np
+    testing.assert_equal(c_np, a_np + b_np)
 
 
 # Main function
