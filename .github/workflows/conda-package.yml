@@ -16,7 +16,7 @@ env:
 
 jobs:
   build_linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     strategy:
       matrix:
@@ -92,7 +92,7 @@ jobs:
 
   test_linux:
     needs: build_linux
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     strategy:
       matrix:
@@ -143,6 +143,20 @@ jobs:
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
           export OCL_ICD_FILENAMES=libintelocl.so
           python -m pytest -q -ra --disable-warnings --pyargs $MODULE_NAME -vv
+      - name: Run examples
+        run: |
+          ls
+          pwd
+          cd ./numba-dpex/numba_dpex/examples/
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate numba_dpex_env
+          # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
+          export OCL_ICD_FILENAMES=libintelocl.so
+          for script in $(find . \( -not -name "_*" -not -name "vectorize.py" -not -name "scan.py" -and -name "*.py" \))
+          do
+            echo "Executing ${script}"
+            python ${script} || exit 1
+          done
 
   test_windows:
     needs: build_windows
@@ -256,7 +270,7 @@ jobs:
   upload_linux:
     needs: test_linux
     if: ${{github.ref == 'refs/heads/main' || (startsWith(github.ref, 'refs/heads/release') == true)}}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         python: ["3.8", "3.9"]
