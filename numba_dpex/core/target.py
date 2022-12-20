@@ -16,7 +16,7 @@ from numba.core.registry import cpu_target
 from numba.core.target_extension import GPU, target_registry
 from numba.core.utils import cached_property
 
-from numba_dpex.core.types import Array, ArrayModel
+from numba_dpex.core.datamodel.models import _init_data_model_manager
 from numba_dpex.utils import (
     address_space,
     calling_conv,
@@ -93,27 +93,6 @@ class DpexTypingContext(typing.BaseContext):
         self.install_registry(mathdecl.registry)
         self.install_registry(cmathdecl.registry)
         self.install_registry(npydecl.registry)
-
-
-class GenericPointerModel(datamodel.PrimitiveModel):
-    def __init__(self, dmm, fe_type):
-        adrsp = (
-            fe_type.addrspace
-            if fe_type.addrspace is not None
-            else address_space.GLOBAL
-        )
-        be_type = dmm.lookup(fe_type.dtype).get_data_type().as_pointer(adrsp)
-        super(GenericPointerModel, self).__init__(dmm, fe_type, be_type)
-
-
-def _init_data_model_manager():
-    dmm = datamodel.default_manager.copy()
-    dmm.register(types.CPointer, GenericPointerModel)
-    dmm.register(Array, ArrayModel)
-    return dmm
-
-
-spirv_data_model_manager = _init_data_model_manager()
 
 
 class SyclDevice(GPU):

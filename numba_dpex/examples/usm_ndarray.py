@@ -1,19 +1,16 @@
-#! /usr/bin/env python
-
 # SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
 import dpctl
 import dpctl.tensor as dpt
-import numpy as np
 import numpy.testing as testing
 
 import numba_dpex as dpex
 
 
 @dpex.kernel
-def data_parallel_sum(a, b, c):
+def vector_add(a, b, c):
     """
     Vector addition using the ``kernel`` decorator.
     """
@@ -22,39 +19,25 @@ def data_parallel_sum(a, b, c):
 
 
 def driver(a, b, c, global_size):
-    print("A : ", a)
-    print("B : ", b)
-    data_parallel_sum[global_size, dpex.DEFAULT_LOCAL_SIZE](a, b, c)
-    print("A + B = ")
-    print("C ", c)
-    testing.assert_equal(c, a + b)
+    vector_add[global_size, dpex.DEFAULT_LOCAL_SIZE](a, b, c)
+    npa = dpt.asnumpy(a)
+    npb = dpt.asnumpy(b)
+    npc = dpt.asnumpy(c)
+    testing.assert_equal(npc, npa + npb)
 
 
 def main():
-    global_size = 10
-    N = global_size
+    N = 1024
     print("N", N)
 
-    a = np.array(np.random.random(N), dtype=np.float32)
-    b = np.array(np.random.random(N), dtype=np.float32)
-    c = np.ones_like(a)
+    a = dpt.arange(N)
+    b = dpt.arange(N)
+    c = dpt.zeros(N)
 
-    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
-    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
-    device = dpctl.select_default_device()
     print("Using device ...")
-    device.print_device_info()
+    a.sycl_device.print_device_info()
 
-    with dpctl.device_context(device):
-        da = dpt.usm_ndarray(a.shape, dtype=a.dtype, buffer="shared")
-        da.usm_data.copy_from_host(a.reshape((-1)).view("|u1"))
-
-        db = dpt.usm_ndarray(b.shape, dtype=b.dtype, buffer="shared")
-        db.usm_data.copy_from_host(b.reshape((-1)).view("|u1"))
-
-        dc = dpt.usm_ndarray(c.shape, dtype=c.dtype, buffer="shared")
-
-        driver(da, db, dc, global_size)
+    driver(a, b, c, N)
 
     print("Done...")
 

@@ -104,9 +104,9 @@ def get_func_local(op_type, dtype):
     def f(a):
         lm = dpex.local.array(1, dtype)
         lm[0] = a[0]
-        dpex.barrier(dpex.CLK_GLOBAL_MEM_FENCE)
+        dpex.barrier(dpex.GLOBAL_MEM_FENCE)
         op(lm, 0, 1)
-        dpex.barrier(dpex.CLK_GLOBAL_MEM_FENCE)
+        dpex.barrier(dpex.GLOBAL_MEM_FENCE)
         a[0] = lm[0]
 
     return f
