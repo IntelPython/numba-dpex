@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.dpctl_iface.usm_ndarray_type module &mdash; numba-dpex 0.19.0+9.g58e55874 documentation</title>
+  <title>numba_dpex.core.typing.typeof module &mdash; numba-dpex 0.19.0+25.gacbcf48d documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -69,9 +69,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a></li>
-      <li class="breadcrumb-item active">numba_dpex.dpctl_iface.usm_ndarray_type module</li>
+      <li class="breadcrumb-item active">numba_dpex.core.typing.typeof module</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/apidoc/numba_dpex.dpctl_iface.usm_ndarray_type.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/apidoc/numba_dpex.core.typing.typeof.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -79,30 +79,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-numba_dpex.dpctl_iface.usm_ndarray_type">
-<span id="numba-dpex-dpctl-iface-usm-ndarray-type-module"></span><h1>numba_dpex.dpctl_iface.usm_ndarray_type module<a class="headerlink" href="#module-numba_dpex.dpctl_iface.usm_ndarray_type" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.dpctl_iface.usm_ndarray_type.USMNdArrayType">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.dpctl_iface.usm_ndarray_type.</span></span><span class="sig-name descname"><span class="pre">USMNdArrayType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpctl_iface.usm_ndarray_type.USMNdArrayType" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="numba_dpex.core.types.array_type.html#numba_dpex.core.types.array_type.Array" title="numba_dpex.core.types.array_type.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
+  <section id="module-numba_dpex.core.typing.typeof">
+<span id="numba-dpex-core-typing-typeof-module"></span><h1>numba_dpex.core.typing.typeof module<a class="headerlink" href="#module-numba_dpex.core.typing.typeof" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.typing.typeof.typeof_usm_ndarray">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.typing.typeof.</span></span><span class="sig-name descname"><span class="pre">typeof_usm_ndarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.typing.typeof.typeof_usm_ndarray" title="Permalink to this definition"></a></dt>
+<dd><p>Registers the type inference implementation function for
+dpctl.tensor.usm_ndarray</p>
 <dl class="simple">
-<dt>USMNdArrayType(dtype, ndim, layout, usm_type,</dt><dd><p>readonly=False, name=None,
-aligned=True, addrspace=None)</p>
+<dt>Args:</dt><dd><p>val : A Python object that should be an instance of a
+dpctl.tensor.usm_ndarray
+c : Unused argument used to be consistent with Numba API.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If an unsupported dtype encountered or val has
+no <code class="docutils literal notranslate"><span class="pre">usm_type</span></code> or sycl_device attribute.</p>
 </dd>
 </dl>
-<p>creates Numba type to represent <code class="docutils literal notranslate"><span class="pre">dpctl.tensor.usm_ndarray</span></code>.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.dpctl_iface.usm_ndarray_type.USMNdArrayType.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpctl_iface.usm_ndarray_type.USMNdArrayType.copy" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.dpctl_iface.usm_ndarray_type.typeof_usm_ndarray">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.dpctl_iface.usm_ndarray_type.</span></span><span class="sig-name descname"><span class="pre">typeof_usm_ndarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpctl_iface.usm_ndarray_type.typeof_usm_ndarray" title="Permalink to this definition"></a></dt>
-<dd><p>Creates the Numba type (USMNdArrayType) when a usm_ndarray is passed as an
-argument to a kernel.</p>
+<p>Returns: The Numba type corresponding to dpctl.tensor.usm_ndarray</p>
 </dd></dl>
 
 </section>

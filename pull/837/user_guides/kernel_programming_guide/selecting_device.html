@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Defining the execution queue for a kernel function &mdash; numba-dpex 0.19.0+9.g58e55874 documentation</title>
+  <title>Defining the execution queue for a kernel function &mdash; numba-dpex 0.19.0+25.gacbcf48d documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -243,7 +243,9 @@ print out a warning to inform the user.</p></li>
     <span class="n">got</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 
     <span class="c1"># This context manager is specifying to use the Opencl GPU.</span>
-    <span class="k">with</span> <span class="n">numba_dpex</span><span class="o">.</span><span class="n">offload_to_sycl_device</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">):</span>
+    <span class="n">default_device</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">select_default_device</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="n">numba_dpex</span><span class="o">.</span><span class="n">offload_to_sycl_device</span><span class="p">(</span><span class="n">default_device</span><span class="o">.</span><span class="n">filter_string</span><span class="p">):</span>
         <span class="n">sum_kernel</span><span class="p">[</span><span class="n">N</span><span class="p">,</span> <span class="mi">1</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">got</span><span class="p">)</span>
 
     <span class="n">expected</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
@@ -259,7 +261,7 @@ print out a warning to inform the user.</p></li>
     <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
     <span class="n">got</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 
-    <span class="n">device</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">SyclDevice</span><span class="p">(</span><span class="s2">&quot;opencl:gpu&quot;</span><span class="p">)</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">select_default_device</span><span class="p">()</span>
     <span class="n">queue</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">SyclQueue</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 
     <span class="c1"># We are allocating the data in Opencl GPU and this device</span>
