@@ -29,7 +29,7 @@ def sum_reduction_kernel(A, partial_sums):
     stride = group_size // 2
     while stride > 0:
         # Waiting for each 2x2 addition into given workgroup
-        dpex.barrier(dpex.CLK_LOCAL_MEM_FENCE)
+        dpex.barrier(dpex.LOCAL_MEM_FENCE)
 
         # Add elements 2 by 2 between local_id and local_id + stride
         if local_id < stride:

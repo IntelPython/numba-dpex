@@ -5,8 +5,8 @@
 _stub_error = NotImplementedError("This is a stub.")
 
 # mem fence
-CLK_LOCAL_MEM_FENCE = 0x1
-CLK_GLOBAL_MEM_FENCE = 0x2
+LOCAL_MEM_FENCE = 0x1
+GLOBAL_MEM_FENCE = 0x2
 
 
 def get_global_id(*args, **kargs):

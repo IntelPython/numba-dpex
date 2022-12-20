@@ -4,8 +4,8 @@
 
 # Re export
 from .ocl.stubs import (
-    CLK_GLOBAL_MEM_FENCE,
-    CLK_LOCAL_MEM_FENCE,
+    GLOBAL_MEM_FENCE,
+    LOCAL_MEM_FENCE,
     atomic,
     barrier,
     get_global_id,
