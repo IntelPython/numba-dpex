@@ -23,14 +23,20 @@ class KernelHasReturnValueError(Exception):
         the kernel function.
     """
 
-    def __init__(self, kernel_name, return_type) -> None:
+    def __init__(self, kernel_name, return_type, sig=None) -> None:
         self.return_type = return_type
-        self.kernel_name = kernel_name
-        self.message = (
-            f'Kernel "{self.kernel_name}" has a return value '
-            f'of type "{self.return_type}". '
-            "A numba-dpex kernel must have a void return type."
-        )
+        if sig:
+            self.message = (
+                f'Specialized kernel signature "{sig}" has a return value '
+                f'of type "{return_type}". '
+                "A numba-dpex kernel must have a void return type."
+            )
+        else:
+            self.message = (
+                f'Kernel "{kernel_name}" has a return value '
+                f'of type "{return_type}". '
+                "A numba-dpex kernel must have a void return type."
+            )
 
         super().__init__(self.message)
 
@@ -320,4 +326,15 @@ class UnsupportedCompilationModeError(Exception):
         self.message = (
             'The dpex compiler does not support the "force_pyobject" setting.'
         )
+        super().__init__(self.message)
+
+
+class InvalidKernelSpecializationError(Exception):
+    def __init__(
+        self, kernel_name, invalid_sig, unsupported_argnum_list
+    ) -> None:
+        unsupported = ",".join([str(i) for i in unsupported_argnum_list])
+        self.message = f"Kernel {kernel_name} cannot be specialized for "
+        f'"{invalid_sig}". Arguments {unsupported} are not supported.'
+
         super().__init__(self.message)

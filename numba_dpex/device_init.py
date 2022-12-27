@@ -33,7 +33,7 @@ import dpctl
 
 from . import initialize
 from .core import target
-from .decorators import autojit, func, kernel
+from .decorators import func, kernel
 
 
 def is_available():
