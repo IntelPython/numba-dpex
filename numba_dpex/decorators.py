@@ -2,12 +2,12 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import dpctl
+from warnings import warn
+
 from numba.core import sigutils, types
 
-from numba_dpex.compiler import JitKernel
 from numba_dpex.core.kernel_interface.dispatcher import (
-    Dispatcher,
+    JitKernel,
     get_ordered_arg_access_types,
 )
 from numba_dpex.core.kernel_interface.func import (
@@ -17,71 +17,59 @@ from numba_dpex.core.kernel_interface.func import (
 from numba_dpex.utils import npytypes_array_to_dpex_array
 
 
-def kernel(func_or_sig=None, access_types=None, debug=None, enable_cache=True):
-    """The decorator to write a numba_dpex kernel function.
+def kernel(
+    func_or_sig=None,
+    access_types=None,
+    debug=None,
+    enable_cache=True,
+):
+    """A decorator to define a kernel function.
 
     A kernel function is conceptually equivalent to a SYCL kernel function, and
     gets compiled into either an OpenCL or a LevelZero SPIR-V binary kernel.
-    A dpex kernel imposes the following restrictions:
+    A kernel decorated Python function has the following restrictions:
 
-        * A numba_dpex.kernel function can not return any value.
-        * All array arguments passed to a kernel should be of the same type
-          and have the same dtype.
+        * The function can not return any value.
+        * All array arguments passed to a kernel should adhere to compute
+          follows data programming model.
     """
-    if func_or_sig is None:
-        return autojit(
-            debug=debug, access_types=access_types, enable_cache=enable_cache
-        )
-    elif not sigutils.is_signature(func_or_sig):
-        func = func_or_sig
-        return autojit(
-            debug=debug, access_types=access_types, enable_cache=enable_cache
-        )(func)
-    else:
-        return _kernel_jit(
-            func_or_sig, debug, access_types, enable_cache=enable_cache
-        )
 
-
-def autojit(debug=None, access_types=None, enable_cache=True):
-    def _kernel_dispatcher(pyfunc):
+    def _kernel_dispatcher(pyfunc, sigs=None):
         ordered_arg_access_types = get_ordered_arg_access_types(
             pyfunc, access_types
         )
-        return Dispatcher(
+        return JitKernel(
             pyfunc=pyfunc,
             debug_flags=debug,
             array_access_specifiers=ordered_arg_access_types,
             enable_cache=enable_cache,
+            specialization_sigs=sigs,
         )
 
-    return _kernel_dispatcher
+    if func_or_sig is None:
+        return _kernel_dispatcher
+    elif not sigutils.is_signature(func_or_sig):
+        func = func_or_sig
+        return _kernel_dispatcher(func)
+    else:
+        # Specialized signatures can either be a single signature or a list.
+        # In case only one signature is provided convert it to a list
+        if not isinstance(func_or_sig, list):
+            func_or_sig = [func_or_sig]
 
+        def _specialized_kernel_dispatcher(pyfunc):
+            ordered_arg_access_types = get_ordered_arg_access_types(
+                pyfunc, access_types
+            )
+            return JitKernel(
+                pyfunc=pyfunc,
+                debug_flags=debug,
+                array_access_specifiers=ordered_arg_access_types,
+                enable_cache=enable_cache,
+                specialization_sigs=func_or_sig,
+            )
 
-def _kernel_jit(signature, debug, access_types, enable_cache=True):
-    argtypes, rettype = sigutils.normalize_signature(signature)
-    argtypes = tuple(
-        [
-            npytypes_array_to_dpex_array(ty)
-            if isinstance(ty, types.npytypes.Array)
-            else ty
-            for ty in argtypes
-        ]
-    )
-
-    def _wrapped(pyfunc):
-        current_queue = dpctl.get_current_queue()
-        ordered_arg_access_types = get_ordered_arg_access_types(
-            pyfunc, access_types
-        )
-        # We create an instance of JitKernel to make sure at call time
-        # we are going through the caching mechanism.
-        kernel = JitKernel(pyfunc, debug, ordered_arg_access_types)
-        # This will make sure we are compiling eagerly.
-        kernel.specialize(argtypes, current_queue)
-        return kernel
-
-    return _wrapped
+        return _specialized_kernel_dispatcher
 
 
 def func(signature=None, debug=None):

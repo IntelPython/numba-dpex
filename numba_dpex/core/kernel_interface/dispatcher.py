@@ -9,8 +9,9 @@ from warnings import warn
 
 import dpctl
 import dpctl.program as dpctl_prog
-from numba.core import utils
-from numba.core.types import Array as ArrayType
+from numba.core import sigutils, types, utils
+from numba.core.types import Array as NpArrayType
+from numba.core.types import void
 
 from numba_dpex import config
 from numba_dpex.core.caching import LRUCache, NullCache, build_key
@@ -20,7 +21,8 @@ from numba_dpex.core.exceptions import (
     ExecutionQueueInferenceError,
     IllegalRangeValueError,
     InvalidKernelLaunchArgsError,
-    SUAIProtocolError,
+    InvalidKernelSpecializationError,
+    KernelHasReturnValueError,
     UnknownGlobalRangeError,
     UnsupportedBackendError,
     UnsupportedNumberOfRangeDimsError,
@@ -46,9 +48,15 @@ def get_ordered_arg_access_types(pyfunc, access_types):
     return ordered_arg_access_types
 
 
-class Dispatcher(object):
-    """Creates a Kernel object from a @kernel decorated function and enqueues
-    the Kernel object on a specified device.
+class JitKernel:
+    """An abstract function object wrapping a concrete device kernel function.
+
+    A JitKernel is returned by the kernel decorator and wraps an instance of a
+    device kernel function. A device kernel function is specialized for a
+    backend may represent a binary object in a lower-level IR. Currently, only
+    SPIR-V binary format device functions for level-zero and opencl backends
+    are supported.
+
     """
 
     # The list of SYCL backends supported by the Dispatcher
@@ -60,6 +68,7 @@ class Dispatcher(object):
         debug_flags=None,
         compile_flags=None,
         array_access_specifiers=None,
+        specialization_sigs=None,
         enable_cache=True,
     ):
         self.typingctx = dpex_target.typing_context
@@ -67,9 +76,11 @@ class Dispatcher(object):
         self.debug_flags = debug_flags
         self.compile_flags = compile_flags
         self.kernel_name = pyfunc.__name__
+
         # TODO: To be removed once the__getitem__ is removed
         self._global_range = None
         self._local_range = None
+
         # caching related attributes
         if not config.ENABLE_CACHE:
             self._cache = NullCache()
@@ -99,6 +110,12 @@ class Dispatcher(object):
         else:
             self._create_sycl_kernel_bundle_flags = []
 
+        # Specialization of kernel based on signatures. If specialization
+        # signatures are found, they are compiled ahead of time and cached.
+        if specialization_sigs:
+            for sig in specialization_sigs:
+                self._specialize(sig)
+
     @property
     def cache(self):
         return self._cache
@@ -107,13 +124,91 @@ class Dispatcher(object):
     def cache_hits(self):
         return self._cache_hits
 
-    def enable_caching(self):
-        if not config.ENABLE_CACHE:
-            self._cache = NullCache()
-        else:
-            self._cache = LRUCache(
-                capacity=config.CACHE_SIZE, pyfunc=self.pyfunc
+    def _compile_and_cache(self, argtypes, sig, backend, device_type):
+        kernel = SpirvKernel(self.pyfunc, self.kernel_name)
+        kernel.compile(
+            arg_types=argtypes,
+            debug=self.debug_flags,
+            extra_compile_flags=self.compile_flags,
+        )
+
+        device_driver_ir_module = kernel.device_driver_ir_module
+        kernel_module_name = kernel.module_name
+
+        key = build_key(
+            sig,
+            tuple(argtypes),
+            self.pyfunc,
+            kernel.target_context.codegen(),
+            backend=backend,
+            device_type=device_type,
+        )
+        self._cache.put(key, (device_driver_ir_module, kernel_module_name))
+
+        return device_driver_ir_module, kernel_module_name
+
+    def _specialize(self, sig):
+        """Compiles a device kernel ahead of time based on provided argtypes.
+
+        Args:
+            sig (_type_): _description_
+        """
+
+        argtypes, return_type = sigutils.normalize_signature(sig)
+
+        # Check if signature has a non-void return type
+        if return_type and return_type != void:
+            raise KernelHasReturnValueError(
+                kernel_name=None, return_type=return_type, sig=sig
             )
+
+        # USMNdarray check
+        usmarray_argnums = []
+        usmndarray_argtypes = []
+        unsupported_argnum_list = []
+
+        for i, argtype in enumerate(argtypes):
+            # FIXME: Add checks for other types of unsupported kernel args, e.g.
+            # complex.
+
+            # Check if a non-USMNdArray Array type is passed to the kernel
+            if isinstance(argtype, NpArrayType) and not isinstance(
+                argtype, USMNdArray
+            ):
+                unsupported_argnum_list.append(i)
+            elif isinstance(argtype, USMNdArray):
+                usmarray_argnums.append(i)
+                usmndarray_argtypes.append(argtype)
+
+        if unsupported_argnum_list:
+            raise InvalidKernelSpecializationError(
+                kernel_name=self.kernel_name,
+                invalid_sig=sig,
+                unsupported_argnum_list=unsupported_argnum_list,
+            )
+
+        # CFD check and get the execution queue
+        device = self._chk_compute_follows_data_compliance(usmndarray_argtypes)
+        if not device:
+            raise ComputeFollowsDataInferenceError(
+                self.kernel_name, usmarray_argnum_list=usmarray_argnums
+            )
+
+        if device.backend not in [
+            dpctl.backend_type.opencl,
+            dpctl.backend_type.level_zero,
+        ]:
+            raise UnsupportedBackendError(
+                self.kernel_name, device.backend, JitKernel._supported_backends
+            )
+
+        # compile and cache the kernel
+        self._compile_and_cache(
+            argtypes=argtypes,
+            sig=sig,
+            backend=device.backend,
+            device_type=device.device_type,
+        )
 
     def _check_range(self, range, device):
 
@@ -140,30 +235,42 @@ class Dispatcher(object):
         #         )
         pass
 
-    def _determine_compute_follows_data_queue(self, usm_array_list):
-        """Determine the execution queue for the list of usm array args using
-        compute follows data programming model.
+    def _chk_compute_follows_data_compliance(self, usm_array_arglist):
+        """Check if all the usm ndarray's have the same device.
 
-        Uses ``dpctl.utils.get_execution_queue()`` to check if the list of
-        queues belonging to the usm_ndarrays are equivalent. If the queues are
-        equivalent, then returns the queue. If the queues are not equivalent
-        then returns None.
+        Extracts the device filter string from the Numba inferred USMNdArray
+        type. Check if the devices corresponding to the filter string are
+        equivalent and return a ``dpctl.SyclDevice`` object corresponding to the
+        common filter string.
+
+        If an exception occurred in creating a ``dpctl.SyclDevice``, or the
+        devices are not equivalent then returns None.
 
         Args:
-            usm_array_list : A list of usm_ndarray objects
+            usm_array_arglist : A list of usm_ndarray types specified as
+            arguments to the kernel.
 
         Returns:
-            A queue the common queue used to allocate the arrays. If no such
-            queue exists, then returns None.
+            A ``dpctl.SyclDevice`` object if all USMNdArray have same device, or
+            else None is returned.
         """
-        queues = []
-        for usm_array in usm_array_list:
+
+        device = None
+
+        for usm_array in usm_array_arglist:
+            filter_str = usm_array.device
             try:
-                q = usm_array.__sycl_usm_array_interface__["syclobj"]
-                queues.append(q)
-            except:
-                raise SUAIProtocolError(self.kernel_name, usm_array)
-        return dpctl.utils.get_execution_queue(queues)
+                _device = dpctl.SyclDevice(filter_str)
+            except Exception as e:
+                print(e)
+                return None
+            if not device:
+                device = _device
+            else:
+                if _device != device:
+                    return None
+
+        return device
 
     def _determine_kernel_launch_queue(self, args, argtypes):
         """Determines the queue where the kernel is to be launched.
@@ -223,17 +330,18 @@ class Dispatcher(object):
             ExecutionQueueInferenceError: If the queue could not be inferred
                 using the dpctl queue manager.
         """
-        # Temporary workaround as USMNdArray derives from Array
+
+        # FIXME: The args parameter is not needed once numpy support is removed
+
+        # Needed as USMNdArray derives from Array
         array_argnums = [
             i
-            for i, arg in enumerate(args)
-            if isinstance(argtypes[i], ArrayType)
+            for i, _ in enumerate(args)
+            if isinstance(argtypes[i], NpArrayType)
             and not isinstance(argtypes[i], USMNdArray)
         ]
         usmarray_argnums = [
-            i
-            for i, arg in enumerate(args)
-            if isinstance(argtypes[i], USMNdArray)
+            i for i, _ in enumerate(args) if isinstance(argtypes[i], USMNdArray)
         ]
 
         # if usm and non-usm array arguments are getting mixed, then the
@@ -269,15 +377,19 @@ class Dispatcher(object):
                     + "are dpctl.tensor.usm_ndarray based array containers."
                 )
             usm_array_args = [
-                arg for i, arg in enumerate(args) if i in usmarray_argnums
+                argtype
+                for i, argtype in enumerate(argtypes)
+                if i in usmarray_argnums
             ]
-            queue = self._determine_compute_follows_data_queue(usm_array_args)
-            if not queue:
+
+            device = self._chk_compute_follows_data_compliance(usm_array_args)
+
+            if not device:
                 raise ComputeFollowsDataInferenceError(
                     self.kernel_name, usmarray_argnum_list=usmarray_argnums
                 )
             else:
-                return queue
+                return dpctl.SyclQueue(device)
         else:
             if dpctl.is_in_device_context():
                 warn(
@@ -409,8 +521,8 @@ class Dispatcher(object):
         # invoked using a SYCL nd_range
         if global_range and not local_range:
             self._check_range(global_range, device)
-            # FIXME:[::-1] is done as OpenCL and SYCl have different orders when it
-            # comes to specifying dimensions.
+            # FIXME:[::-1] is done as OpenCL and SYCl have different orders when
+            # it comes to specifying dimensions.
             global_range = list(global_range)[::-1]
         else:
             if isinstance(local_range, int):
@@ -433,7 +545,9 @@ class Dispatcher(object):
             local_range (_type_): _description_.
         """
         argtypes = [self.typingctx.resolve_argument_type(arg) for arg in args]
-
+        # FIXME: For specialized and ahead of time compiled and cached kernels,
+        # the CFD check was already done statically. The run-time check is
+        # redundant. We should avoid these checks for the specialized case.
         exec_queue = self._determine_kernel_launch_queue(args, argtypes)
         backend = exec_queue.backend
         device_type = exec_queue.sycl_device.device_type
@@ -443,16 +557,13 @@ class Dispatcher(object):
             dpctl.backend_type.level_zero,
         ]:
             raise UnsupportedBackendError(
-                self.kernel_name, backend, Dispatcher._supported_backends
+                self.kernel_name, backend, JitKernel._supported_backends
             )
 
         # TODO: Refactor after __getitem__ is removed
         global_range, local_range = self._get_ranges(
             global_range, local_range, exec_queue.sycl_device
         )
-
-        # TODO: Enable caching of kernels, but do it using LRU
-        # caching and numba's pickle framework.
 
         # load the kernel from cache
         sig = utils.pysignature(self.pyfunc)
@@ -470,25 +581,15 @@ class Dispatcher(object):
             device_driver_ir_module, kernel_module_name = artifact
             self._cache_hits += 1
         else:
-            kernel = SpirvKernel(self.pyfunc, self.kernel_name)
-            kernel.compile(
-                arg_types=argtypes,
-                debug=self.debug_flags,
-                extra_compile_flags=self.compile_flags,
-            )
-
-            device_driver_ir_module = kernel.device_driver_ir_module
-            kernel_module_name = kernel.module_name
-
-            key = build_key(
-                sig,
-                tuple(argtypes),
-                self.pyfunc,
-                kernel.target_context.codegen(),
+            (
+                device_driver_ir_module,
+                kernel_module_name,
+            ) = self._compile_and_cache(
+                argtypes=argtypes,
+                sig=sig,
                 backend=backend,
                 device_type=device_type,
             )
-            self._cache.put(key, (device_driver_ir_module, kernel_module_name))
 
         # create a sycl::KernelBundle
         kernel_bundle = dpctl_prog.create_program_from_spirv(
@@ -497,7 +598,7 @@ class Dispatcher(object):
             " ".join(self._create_sycl_kernel_bundle_flags),
         )
         #  get the sycl::kernel
-        kernel = kernel_bundle.get_sycl_kernel(kernel_module_name)
+        sycl_kernel = kernel_bundle.get_sycl_kernel(kernel_module_name)
 
         packer = Packer(
             kernel_name=self.kernel_name,
@@ -508,7 +609,7 @@ class Dispatcher(object):
         )
 
         exec_queue.submit(
-            kernel,
+            sycl_kernel,
             packer.unpacked_args,
             global_range,
             local_range,
