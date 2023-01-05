@@ -6,10 +6,13 @@
 import dpctl.tensor as dpt
 
 import numba_dpex as dpex
-from numba_dpex.core.kernel_interface.dispatcher import Dispatcher
+from numba_dpex import usm_ndarray
+from numba_dpex.core.kernel_interface.dispatcher import JitKernel
+
+arrty = usm_ndarray(int, 1, "C", "device", "gpu")
 
 
-@dpex.kernel
+@dpex.kernel((arrty, arrty, arrty))
 def data_parallel_sum(a, b, c):
     """
     Vector addition using the ``kernel`` decorator.
