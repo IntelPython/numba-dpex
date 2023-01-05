@@ -37,6 +37,7 @@ from numba_dpex.core.passes.passes import (
     PreParforPass,
 )
 from numba_dpex.core.passes.rename_numpy_functions_pass import (
+    IdentifyNumPyFunctionsPass,
     RewriteNdarrayFunctionsPass,
     RewriteOverloadedNumPyFunctionsPass,
 )
@@ -62,6 +63,12 @@ class PassBuilder(object):
         pm.add_pass(
             RewriteOverloadedNumPyFunctionsPass,
             "Rewrite name of Numpy functions to overload already overloaded function",
+        )
+
+        # this pass count number of Numpy functions calls
+        pm.add_pass(
+            IdentifyNumPyFunctionsPass,
+            "Identify number of NumPy functions Calls",
         )
 
         # Add pass to ensure when users are allocating static

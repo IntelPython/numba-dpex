@@ -6,6 +6,7 @@ from numba.core import ir, types
 from numba.core.compiler_machinery import FunctionPass, register_pass
 from numba.core.ir_utils import (
     find_topo_order,
+    get_definition,
     mk_unique_var,
     remove_dead,
     simplify_CFG,
@@ -129,7 +130,6 @@ class _RewriteNumPyOverloadedFunctionsImpl(object):
         blocks = func_ir.blocks
         topo_order = find_topo_order(blocks)
         replaced = False
-
         for label in topo_order:
             block = blocks[label]
             saved_arr_arg = {}
@@ -139,7 +139,9 @@ class _RewriteNumPyOverloadedFunctionsImpl(object):
                     stmt.value, ir.Expr
                 ):
                     lhs = stmt.target.name
+                    # print("lhs.name= ",lhs)
                     rhs = stmt.value
+                    # print("rhs.op= ", rhs.op)
                     # replace np.FOO with name from self.function_name_map["FOO"]
                     # e.g. np.sum will be replaced with numba_dpex.dpnp.sum
                     if (
@@ -357,6 +359,78 @@ class RewriteNdarrayFunctionsPass(FunctionPass):
         )
 
         mutated = rewrite_ndarray_function_name_pass.run()
+
+        if mutated:
+            remove_dead(
+                state.func_ir.blocks, state.func_ir.arg_names, state.func_ir
+            )
+        state.func_ir.blocks = simplify_CFG(state.func_ir.blocks)
+
+        return mutated
+
+
+class _IdentifyNumPyFunctionsPassImpl(object):
+    def __init__(
+        self, state, rewrite_function_name_map=rewrite_function_name_map
+    ):
+        self.state = state
+        self.function_name_map = rewrite_function_name_map
+
+    def run(self):
+
+        func_ir = self.state.func_ir
+        blocks = func_ir.blocks
+        topo_order = find_topo_order(blocks)
+
+        for label in topo_order:
+            block = blocks[label]
+            numOp = 0
+            numNp = 0
+            for stmt in block.body:
+                if isinstance(stmt, ir.Assign) and isinstance(
+                    stmt.value, ir.Expr
+                ):
+
+                    rhs = stmt.value
+
+                    if rhs.op == "call":
+                        numOp += 1
+                        name = rhs.func.name
+                        rhs = get_definition(func_ir, name)
+
+                        while not isinstance(rhs, ir.Global):
+                            rhs = get_definition(func_ir, rhs.value)
+
+                        print(
+                            "Call ops ",
+                            numOp,
+                            " : ",
+                            name,
+                            " is loaded from ",
+                            rhs.value,
+                        )
+                        if "numpy" in str(rhs):
+                            numNp += 1
+
+            print("Num of Instructions (IR nodes) = ", len(block.body))
+            print("Num of Call Operations         = ", numOp)
+            print("Num of Numpy Functions         = ", numNp)
+        return True
+
+
+@register_pass(mutates_CFG=True, analysis_only=False)
+class IdentifyNumPyFunctionsPass(FunctionPass):
+    _name = "dpex_count_functions_pass"
+
+    def __init__(self):
+        FunctionPass.__init__(self)
+
+    def run_pass(self, state):
+        rewrite_function_name_pass = _IdentifyNumPyFunctionsPassImpl(
+            state, rewrite_function_name_map
+        )
+
+        mutated = rewrite_function_name_pass.run()
 
         if mutated:
             remove_dead(
