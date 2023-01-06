@@ -95,16 +95,18 @@ class _CacheImpl(CacheImpl):
         """Check if a certain object is cacheable.
 
         Args:
-            cres (object): The object to be cached. For example, if the object is
-            `CompileResult`, then you might want to follow the similar checks as
-            has been done in `numba.core.caching.CompileResultCacheImpl`.
+            cres (object): The object to be cached. For example, if the object
+            is `CompileResult`, then you might want to follow the similar
+            checks as has been done in
+            `numba.core.caching.CompileResultCacheImpl`.
 
         Returns:
             bool: Return `True` if cacheable, otherwise `False`.
         """
         # TODO: Although, for the time being, assuming all Kernels in numba_dpex
         # are always cachable. However, we might need to add some bells and
-        # whistles in the future. Look at numba.core.caching for how to implement.
+        # whistles in the future. Look at numba.core.caching for how to
+        # implement.
         return True
 
 
@@ -167,7 +169,8 @@ class NullCache(AbstractCache):
 
         Args:
             key (object): The key to the data (i.e. compiled kernel/function).
-            value (object): The data to be cached (i.e. compiled kernel/function).
+            value (object): The data to be cached (i.e.
+            compiled kernel/function).
         """
         pass
 
@@ -298,8 +301,8 @@ class LRUCache(AbstractCache):
         obj_id = id(obj)
         if obj_id in seen:
             return 0
-        # Important mark as seen *before* entering recursion to gracefully handle
-        # self-referential objects
+        # Important mark as seen *before* entering recursion to gracefully
+        # handle self-referential objects
         seen.add(obj_id)
         if isinstance(obj, dict):
             size += sum([self._get_memsize(v, seen) for v in obj.values()])
@@ -420,9 +423,8 @@ class LRUCache(AbstractCache):
                 value = self._cache_file.load(key)
                 if config.DEBUG_CACHE:
                     print(
-                        "[cache]: unpickled an evicted artifact, key: {0:s}.".format(
-                            str(key)
-                        )
+                        "[cache]: unpickled an evicted artifact, "
+                        "key: {0:s}.".format(str(key))
                     )
             else:
                 value = self._evicted[key]
@@ -469,7 +471,8 @@ class LRUCache(AbstractCache):
             if self._cache_file:
                 if config.DEBUG_CACHE:
                     print(
-                        "[cache] size: {0:d}, pickling the LRU item, key: {1:s}, indexed at {2:s}.".format(
+                        "[cache] size: {0:d}, pickling the LRU item, "
+                        "key: {1:s}, indexed at {2:s}.".format(
                             len(self._lookup),
                             str(self._head.key),
                             self._cache_file._index_path,
