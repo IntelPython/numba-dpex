@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>numba_dpex.core.caching module &mdash; numba-dpex 0.19.0+48.g62255306 documentation</title>
+  <title>numba_dpex.core.caching module &mdash; numba-dpex 0.19.0+52.g33bc3529 documentation</title>
   
 
   
@@ -346,7 +346,8 @@ from the cache</p>
 into the cache.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>key (object): The key to the data (i.e. compiled kernel/function).
-value (object): The data to be cached (i.e. compiled kernel/function).</p>
+value (object): The data to be cached (i.e.
+compiled kernel/function).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -355,21 +356,22 @@ value (object): The data to be cached (i.e. compiled kernel/function).</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.caching.build_key">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.caching.</span></span><span class="sig-name descname"><span class="pre">build_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">codegen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.build_key" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>Constructs a key from python function, context, backend</dt><dd><p>and the device type.</p>
-</dd>
-</dl>
-<p>Compute index key for the given signature and codegen.
-It includes a description of the OS, target architecture
-and hashes of the bytecode for the function and, if the
-function has a __closure__, a hash of the cell_contents.</p>
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.caching.</span></span><span class="sig-name descname"><span class="pre">build_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">codegen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.build_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a key from python function, context, backend and the device
+type.</p>
+<p>Compute index key for the given argument types and codegen. It includes a
+description of the OS, target architecture and hashes of the bytecode for
+the function and, if the function has a __closure__, a hash of the
+cell_contents.type</p>
+<dl>
+<dt>Args:</dt><dd><p>argtypes : A tuple of numba types corresponding to the arguments to the
+compiled function.
+pyfunc : The Python function that is to be compiled and cached.
+codegen (numba.core.codegen.Codegen):</p>
+<blockquote>
+<div><p>The codegen object found from the target context.</p>
+</div></blockquote>
 <dl class="simple">
-<dt>Args:</dt><dd><dl class="simple">
-<dt>sig (inspect.Signature): The signature object of</dt><dd><p>a python function.</p>
-</dd>
-<dt>codegen (numba.core.codegen.Codegen):</dt><dd><p>The codegen object found from the target context.</p>
-</dd>
 <dt>backend (enum, optional): A ‘backend_type’ enum.</dt><dd><p>Defaults to None.</p>
 </dd>
 <dt>device_type (enum, optional): A ‘device_type’ enum.</dt><dd><p>Defaults to None.</p>
@@ -377,8 +379,7 @@ function has a __closure__, a hash of the cell_contents.</p>
 </dl>
 </dd>
 <dt>Returns:</dt><dd><dl class="simple">
-<dt>tuple: A tuple of signature, magic_tuple of codegen</dt><dd><p>and another tuple of hashcodes from bytecode and
-cell_contents.</p>
+<dt>tuple: A tuple of return type, argtpes, magic_tuple of codegen</dt><dd><p>and another tuple of hashcodes from bytecode and cell_contents.</p>
 </dd>
 </dl>
 </dd>
