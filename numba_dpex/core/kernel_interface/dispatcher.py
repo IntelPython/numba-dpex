@@ -23,6 +23,7 @@ from numba_dpex.core.exceptions import (
     InvalidKernelLaunchArgsError,
     InvalidKernelSpecializationError,
     KernelHasReturnValueError,
+    MissingSpecializationError,
     UnknownGlobalRangeError,
     UnsupportedBackendError,
     UnsupportedNumberOfRangeDimsError,
@@ -113,8 +114,20 @@ class JitKernel:
         # Specialization of kernel based on signatures. If specialization
         # signatures are found, they are compiled ahead of time and cached.
         if specialization_sigs:
+            self._has_specializations = True
+            self._specialization_cache = LRUCache(
+                capacity=config.CACHE_SIZE, pyfunc=self.pyfunc
+            )
             for sig in specialization_sigs:
                 self._specialize(sig)
+            if self._specialization_cache.size() == 0:
+                raise AssertionError(
+                    "JitKernel could not be specialized for signatures: "
+                    + specialization_sigs
+                )
+        else:
+            self._has_specializations = False
+            self._specialization_cache = NullCache()
 
     @property
     def cache(self):
@@ -124,7 +137,7 @@ class JitKernel:
     def cache_hits(self):
         return self._cache_hits
 
-    def _compile_and_cache(self, argtypes, sig, backend, device_type):
+    def _compile_and_cache(self, argtypes, backend, device_type, cache):
         kernel = SpirvKernel(self.pyfunc, self.kernel_name)
         kernel.compile(
             arg_types=argtypes,
@@ -136,14 +149,13 @@ class JitKernel:
         kernel_module_name = kernel.module_name
 
         key = build_key(
-            sig,
             tuple(argtypes),
             self.pyfunc,
             kernel.target_context.codegen(),
             backend=backend,
             device_type=device_type,
         )
-        self._cache.put(key, (device_driver_ir_module, kernel_module_name))
+        cache.put(key, (device_driver_ir_module, kernel_module_name))
 
         return device_driver_ir_module, kernel_module_name
 
@@ -201,13 +213,12 @@ class JitKernel:
             raise UnsupportedBackendError(
                 self.kernel_name, device.backend, JitKernel._supported_backends
             )
-
         # compile and cache the kernel
         self._compile_and_cache(
             argtypes=argtypes,
-            sig=sig,
             backend=device.backend,
             device_type=device.device_type,
+            cache=self._specialization_cache,
         )
 
     def _check_range(self, range, device):
@@ -566,30 +577,38 @@ class JitKernel:
         )
 
         # load the kernel from cache
-        sig = utils.pysignature(self.pyfunc)
         key = build_key(
-            sig,
             tuple(argtypes),
             self.pyfunc,
             dpex_target.target_context.codegen(),
             backend=backend,
             device_type=device_type,
         )
-        artifact = self._cache.get(key)
-        # if it's not cached, i.e. first time
-        if artifact is not None:
-            device_driver_ir_module, kernel_module_name = artifact
-            self._cache_hits += 1
+
+        # If the JitKernel was specialized then raise exception if argtypes
+        # do not match one of the specialized versions.
+        if self._has_specializations:
+            artifact = self._specialization_cache.get(key)
+            if artifact is not None:
+                device_driver_ir_module, kernel_module_name = artifact
+            else:
+                raise MissingSpecializationError(self.kernel_name, argtypes)
         else:
-            (
-                device_driver_ir_module,
-                kernel_module_name,
-            ) = self._compile_and_cache(
-                argtypes=argtypes,
-                sig=sig,
-                backend=backend,
-                device_type=device_type,
-            )
+            artifact = self._cache.get(key)
+            # if the kernel was not previously cached, compile it.
+            if artifact is not None:
+                device_driver_ir_module, kernel_module_name = artifact
+                self._cache_hits += 1
+            else:
+                (
+                    device_driver_ir_module,
+                    kernel_module_name,
+                ) = self._compile_and_cache(
+                    argtypes=argtypes,
+                    backend=backend,
+                    device_type=device_type,
+                    cache=self._cache,
+                )
 
         # create a sycl::KernelBundle
         kernel_bundle = dpctl_prog.create_program_from_spirv(
