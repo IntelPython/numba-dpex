@@ -6,10 +6,10 @@
 import dpctl.tensor as dpt
 
 import numba_dpex as dpex
-from numba_dpex import usm_ndarray
+from numba_dpex import int64, usm_ndarray
 from numba_dpex.core.kernel_interface.dispatcher import JitKernel
 
-arrty = usm_ndarray(int, 1, "C", "device", "gpu")
+arrty = usm_ndarray(int64, 1, "C", "device", "level_zero:gpu:0")
 
 
 @dpex.kernel((arrty, arrty, arrty))
