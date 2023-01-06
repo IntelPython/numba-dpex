@@ -48,10 +48,7 @@ def kernel(
 
     if func_or_sig is None:
         return _kernel_dispatcher
-    elif not sigutils.is_signature(func_or_sig):
-        func = func_or_sig
-        return _kernel_dispatcher(func)
-    else:
+    elif isinstance(func_or_sig, list) or sigutils.is_signature(func_or_sig):
         # Specialized signatures can either be a single signature or a list.
         # In case only one signature is provided convert it to a list
         if not isinstance(func_or_sig, list):
@@ -70,6 +67,9 @@ def kernel(
             )
 
         return _specialized_kernel_dispatcher
+    else:
+        func = func_or_sig
+        return _kernel_dispatcher(func)
 
 
 def func(signature=None, debug=None):

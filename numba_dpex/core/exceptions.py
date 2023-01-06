@@ -314,9 +314,11 @@ class UnsupportedAccessQualifierError(Exception):
     def __init__(
         self, kernel_name, array_val, illegal_access_type, legal_access_list
     ) -> None:
-        self.message = f"Invalid access type {illegal_access_type} applied to "
-        f'array {array_val} argument passed to kernel "{kernel_name}". '
-        f"Legal access specifiers are {legal_access_list}."
+        self.message = (
+            f"Invalid access type {illegal_access_type} applied to "
+            f'array {array_val} argument passed to kernel "{kernel_name}". '
+            f"Legal access specifiers are {legal_access_list}."
+        )
 
         super().__init__(self.message)
 
@@ -330,11 +332,47 @@ class UnsupportedCompilationModeError(Exception):
 
 
 class InvalidKernelSpecializationError(Exception):
+    """Exception raised when a the specialization argument types are not
+    supported by the dpex kernel decorator.
+
+    The exception is raised whenever an unsupported kernel argument is
+    provided in the specialization signature passed to a dpex kernel decorator
+    instance. For example, dpex kernels require arrays to be of USMNdArray type
+    and no other Array type, such as NumPy ndarray, are supported. If the
+    signature has an non USMNdArray Array type the exception is raised.
+
+    Args:
+        kernel_name (str): Name of kernel where the error was raised.
+        invalid_sig: Unsupported signature.
+        unsupported_argnum_list : The list of argument numbers that are
+        unsupported.
+    """
+
     def __init__(
         self, kernel_name, invalid_sig, unsupported_argnum_list
     ) -> None:
         unsupported = ",".join([str(i) for i in unsupported_argnum_list])
-        self.message = f"Kernel {kernel_name} cannot be specialized for "
-        f'"{invalid_sig}". Arguments {unsupported} are not supported.'
+        self.message = (
+            f"Kernel {kernel_name} cannot be specialized for "
+            f'"{invalid_sig}". Arguments {unsupported} are not supported.'
+        )
+
+        super().__init__(self.message)
+
+
+class MissingSpecializationError(Exception):
+    """Exception raised when a specialized JitKernel was called with arguments
+     that do not match any of the specialized versions of the JitKernel.
+
+    Args:
+        kernel_name (str): Name of kernel where the error was raised.
+        sig: Unsupported argument types used to call a specialized JitKernel.
+    """
+
+    def __init__(self, kernel_name, argtypes) -> None:
+        self.message = (
+            f"No specialized version of the kernel {kernel_name} "
+            f"exists for argument types: {argtypes}."
+        )
 
         super().__init__(self.message)
