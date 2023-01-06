@@ -12,18 +12,19 @@ from numba.core.serialize import dumps
 from numba_dpex import config
 
 
-def build_key(sig, argtypes, pyfunc, codegen, backend=None, device_type=None):
-    """Constructs a key from python function, context, backend
-        and the device type.
+def build_key(argtypes, pyfunc, codegen, backend=None, device_type=None):
+    """Constructs a key from python function, context, backend and the device
+    type.
 
-    Compute index key for the given signature and codegen.
-    It includes a description of the OS, target architecture
-    and hashes of the bytecode for the function and, if the
-    function has a __closure__, a hash of the cell_contents.
+    Compute index key for the given argument types and codegen. It includes a
+    description of the OS, target architecture and hashes of the bytecode for
+    the function and, if the function has a __closure__, a hash of the
+    cell_contents.type
 
     Args:
-        sig (inspect.Signature): The signature object of
-            a python function.
+        argtypes : A tuple of numba types corresponding to the arguments to the
+        compiled function.
+        pyfunc : The Python function that is to be compiled and cached.
         codegen (numba.core.codegen.Codegen):
             The codegen object found from the target context.
         backend (enum, optional): A 'backend_type' enum.
@@ -32,9 +33,8 @@ def build_key(sig, argtypes, pyfunc, codegen, backend=None, device_type=None):
             Defaults to None.
 
     Returns:
-        tuple: A tuple of signature, magic_tuple of codegen
-            and another tuple of hashcodes from bytecode and
-            cell_contents.
+        tuple: A tuple of return type, argtpes, magic_tuple of codegen
+            and another tuple of hashcodes from bytecode and cell_contents.
     """
 
     codebytes = pyfunc.__code__.co_code
@@ -50,7 +50,6 @@ def build_key(sig, argtypes, pyfunc, codegen, backend=None, device_type=None):
         cvarbytes = b""
 
     return (
-        sig,
         argtypes,
         codegen.magic_tuple(),
         backend,
