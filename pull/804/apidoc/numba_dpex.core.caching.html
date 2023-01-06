@@ -1,34 +1,71 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.caching module &mdash; numba-dpex 0.19.0+44.ge236f474 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+  <title>numba_dpex.core.caching module &mdash; numba-dpex 0.19.0+50.g0411a014 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
-    <script src="../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="../index.html" class="icon icon-home"> numba-dpex
+          
+
+          
           </a>
+
+          
+            
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -36,7 +73,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html">Code-generation based on a device</a></li>
@@ -55,35 +103,76 @@
 <li class="toctree-l1"><a class="reference internal" href="../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">numba-dpex</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
-      <li class="breadcrumb-item active">numba_dpex.core.caching module</li>
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>numba_dpex.core.caching module</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
             <a href="../_sources/apidoc/numba_dpex.core.caching.rst.txt" rel="nofollow"> View page source</a>
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <section id="module-numba_dpex.core.caching">
-<span id="numba-dpex-core-caching-module"></span><h1>numba_dpex.core.caching module<a class="headerlink" href="#module-numba_dpex.core.caching" title="Permalink to this heading"></a></h1>
+<span id="numba-dpex-core-caching-module"></span><h1>numba_dpex.core.caching module<a class="headerlink" href="#module-numba_dpex.core.caching" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.core.caching.AbstractCache">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.caching.</span></span><span class="sig-name descname"><span class="pre">AbstractCache</span></span><a class="headerlink" href="#numba_dpex.core.caching.AbstractCache" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.caching.</span></span><span class="sig-name descname"><span class="pre">AbstractCache</span></span><a class="headerlink" href="#numba_dpex.core.caching.AbstractCache" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Abstract cache class to specify basic caching operations.</p>
 <p>This class will be used to create an non-functional dummy cache
@@ -98,13 +187,13 @@ will be used as a placeholder when caching is disabled.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.caching.AbstractCache.get">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.AbstractCache.get" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.AbstractCache.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>An abstract method to retrieve item from the cache.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.caching.AbstractCache.put">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.AbstractCache.put" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.AbstractCache.put" title="Permalink to this definition">¶</a></dt>
 <dd><p>An abstract method to save item into the cache.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><dl class="simple">
@@ -121,7 +210,7 @@ will be used as a placeholder when caching is disabled.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.core.caching.LRUCache">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.caching.</span></span><span class="sig-name descname"><span class="pre">LRUCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">capacity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.LRUCache" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.caching.</span></span><span class="sig-name descname"><span class="pre">LRUCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">capacity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.LRUCache" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#numba_dpex.core.caching.AbstractCache" title="numba_dpex.core.caching.AbstractCache"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractCache</span></code></a></p>
 <p>LRUCache implementation for caching kernels,
 functions and modules.</p>
@@ -129,13 +218,13 @@ functions and modules.</p>
 with a dictionary as a lookup table.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.caching.LRUCache.clean">
-<span class="sig-name descname"><span class="pre">clean</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.LRUCache.clean" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">clean</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.LRUCache.clean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clean the cache</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="numba_dpex.core.caching.LRUCache.evicted">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evicted</span></span><a class="headerlink" href="#numba_dpex.core.caching.LRUCache.evicted" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">evicted</span></span><a class="headerlink" href="#numba_dpex.core.caching.LRUCache.evicted" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the list of evicted items from the cache.</p>
 <p>This is used for testing/debugging purposes.</p>
 <dl class="simple">
@@ -146,7 +235,7 @@ with a dictionary as a lookup table.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.caching.LRUCache.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.LRUCache.get" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.LRUCache.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the value associated with the key.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>key (object): A key for the lookup table.</p>
@@ -158,7 +247,7 @@ with a dictionary as a lookup table.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="numba_dpex.core.caching.LRUCache.head">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">head</span></span><a class="headerlink" href="#numba_dpex.core.caching.LRUCache.head" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">head</span></span><a class="headerlink" href="#numba_dpex.core.caching.LRUCache.head" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the head of the cache.</p>
 <p>This is used for testing/debugging purposes.</p>
 <dl class="simple">
@@ -169,7 +258,7 @@ with a dictionary as a lookup table.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.caching.LRUCache.memsize">
-<span class="sig-name descname"><span class="pre">memsize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.LRUCache.memsize" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">memsize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.LRUCache.memsize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the total memory size of the cache.</p>
 <p>This function might be useful in the future when
 size based (not count based) cache limit will be
@@ -182,7 +271,7 @@ implemented.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.caching.LRUCache.put">
-<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.LRUCache.put" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.LRUCache.put" title="Permalink to this definition">¶</a></dt>
 <dd><p>Store the key-value pair into the cache.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>key (object): The key for the data.
@@ -193,7 +282,7 @@ value (object): The data to be saved.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.caching.LRUCache.size">
-<span class="sig-name descname"><span class="pre">size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.LRUCache.size" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.LRUCache.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the current size of the cache.</p>
 <dl class="simple">
 <dt>Returns:</dt><dd><p>int: The current number of items in the cache.</p>
@@ -203,7 +292,7 @@ value (object): The data to be saved.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="numba_dpex.core.caching.LRUCache.tail">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tail</span></span><a class="headerlink" href="#numba_dpex.core.caching.LRUCache.tail" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tail</span></span><a class="headerlink" href="#numba_dpex.core.caching.LRUCache.tail" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the tail of the cache.</p>
 <p>This is used for testing/debugging purposes.</p>
 <dl class="simple">
@@ -216,14 +305,14 @@ value (object): The data to be saved.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.core.caching.Node">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.caching.</span></span><span class="sig-name descname"><span class="pre">Node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.Node" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.caching.</span></span><span class="sig-name descname"><span class="pre">Node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.Node" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A ‘Node’ class for LRUCache.</p>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.core.caching.NullCache">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.caching.</span></span><span class="sig-name descname"><span class="pre">NullCache</span></span><a class="headerlink" href="#numba_dpex.core.caching.NullCache" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.caching.</span></span><span class="sig-name descname"><span class="pre">NullCache</span></span><a class="headerlink" href="#numba_dpex.core.caching.NullCache" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#numba_dpex.core.caching.AbstractCache" title="numba_dpex.core.caching.AbstractCache"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractCache</span></code></a></p>
 <p>A dummy cache used if user decides to disable caching.</p>
 <p>If the caching is disabled this class will be used to
@@ -236,7 +325,7 @@ other caching classes will be derived.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.caching.NullCache.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.NullCache.get" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.NullCache.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to get an item (i.e. compiled kernel/function)
 from the cache</p>
 <dl class="simple">
@@ -252,7 +341,7 @@ from the cache</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.caching.NullCache.put">
-<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.NullCache.put" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.NullCache.put" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to save a compiled kernel/function
 into the cache.</p>
 <dl class="simple">
@@ -266,7 +355,7 @@ value (object): The data to be cached (i.e. compiled kernel/function).</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.caching.build_key">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.caching.</span></span><span class="sig-name descname"><span class="pre">build_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">codegen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.build_key" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.caching.</span></span><span class="sig-name descname"><span class="pre">build_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">codegen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.build_key" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Constructs a key from python function, context, backend</dt><dd><p>and the device type.</p>
 </dd>
@@ -300,30 +389,46 @@ cell_contents.</p>
 
 
            </div>
+           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021,2022 Intel.</p>
-  </div>
+    <p>
+        &#169; Copyright 2021,2022 Intel.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

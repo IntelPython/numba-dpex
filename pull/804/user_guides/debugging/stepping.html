@@ -1,36 +1,73 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stepping &mdash; numba-dpex 0.19.0+44.ge236f474 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+  <title>Stepping &mdash; numba-dpex 0.19.0+50.g0411a014 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Information About a Frame" href="frame_info.html" />
     <link rel="prev" title="Breakpoints" href="breakpoints.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="../../index.html" class="icon icon-home"> numba-dpex
+          
+
+          
           </a>
+
+          
+            
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -38,7 +75,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html">Code-generation based on a device</a></li>
@@ -78,34 +126,77 @@
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">numba-dpex</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="index.html">Debugging with Intel® Distribution for GDB*</a></li>
-          <li class="breadcrumb-item"><a href="features.html">Supported Features</a></li>
-      <li class="breadcrumb-item active">Stepping</li>
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Debugging with Intel® Distribution for GDB*</a> &raquo;</li>
+        
+          <li><a href="features.html">Supported Features</a> &raquo;</li>
+        
+      <li>Stepping</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
             <a href="../../_sources/user_guides/debugging/stepping.rst.txt" rel="nofollow"> View page source</a>
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <section id="stepping">
-<h1>Stepping<a class="headerlink" href="#stepping" title="Permalink to this heading"></a></h1>
+<h1>Stepping<a class="headerlink" href="#stepping" title="Permalink to this heading">¶</a></h1>
 <p>Stepping allows you to go through the program by lines of source code or by
 machine instructions.</p>
 <p>Consider the following examples.</p>
@@ -148,9 +239,9 @@ machine instructions.</p>
 </pre></div>
 </div>
 <section id="step">
-<h2><code class="docutils literal notranslate"><span class="pre">step</span></code><a class="headerlink" href="#step" title="Permalink to this heading"></a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">step</span></code><a class="headerlink" href="#step" title="Permalink to this heading">¶</a></h2>
 <p>Run the debugger and use the following commands:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q python
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>gdb-oneapi<span class="w"> </span>-q<span class="w"> </span>python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_sum.py:22</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_sum.py</span>
@@ -169,7 +260,7 @@ machine instructions.</p>
 </pre></div>
 </div>
 <p>You can use stepping to switch to a nested function. See the example below:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q python
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>gdb-oneapi<span class="w"> </span>-q<span class="w"> </span>python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_dpex_func.py:29</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_dpex_func.py</span>
@@ -190,9 +281,9 @@ machine instructions.</p>
 </div>
 </section>
 <section id="stepi">
-<h2><code class="docutils literal notranslate"><span class="pre">stepi</span></code><a class="headerlink" href="#stepi" title="Permalink to this heading"></a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">stepi</span></code><a class="headerlink" href="#stepi" title="Permalink to this heading">¶</a></h2>
 <p>The command allows you to move forward by machine instructions. The example uses an additional command <code class="docutils literal notranslate"><span class="pre">x/i</span> <span class="pre">$pc</span></code>, which prints the instruction to be executed.</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q python
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>gdb-oneapi<span class="w"> </span>-q<span class="w"> </span>python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_dpex_func.py:29</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_dpex_func.py</span>
@@ -212,9 +303,9 @@ machine instructions.</p>
 </div>
 </section>
 <section id="next">
-<h2><code class="docutils literal notranslate"><span class="pre">next</span></code><a class="headerlink" href="#next" title="Permalink to this heading"></a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">next</span></code><a class="headerlink" href="#next" title="Permalink to this heading">¶</a></h2>
 <p>The command has stepping-like behavior, but it skips nested functions.</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q python
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>gdb-oneapi<span class="w"> </span>-q<span class="w"> </span>python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_dpex_func.py:29</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_dpex_func.py</span>
@@ -232,14 +323,14 @@ machine instructions.</p>
 </div>
 </section>
 <section id="set-scheduler-locking-step">
-<span id="single-stepping"></span><h2><code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">scheduler-locking</span> <span class="pre">step</span></code><a class="headerlink" href="#set-scheduler-locking-step" title="Permalink to this heading"></a></h2>
+<span id="single-stepping"></span><h2><code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">scheduler-locking</span> <span class="pre">step</span></code><a class="headerlink" href="#set-scheduler-locking-step" title="Permalink to this heading">¶</a></h2>
 <p>The first line of the kernel and functions is debugged twice. This happens
 because you are debugging a multi-threaded program, so multiple events may be
 received from different threads. This is the default behavior, but you can
 configure it for more efficient debugging. To ensure the current thread executes
 a single line without interference, set the scheduler-locking setting to <cite>on</cite> or
 <cite>step</cite>:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span> gdb-oneapi -q python
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>gdb-oneapi<span class="w"> </span>-q<span class="w"> </span>python
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_dpex_func.py:29</span>
 <span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_dpex_func.py</span>
@@ -272,33 +363,50 @@ a single line without interference, set the scheduler-locking setting to <cite>o
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="breakpoints.html" class="btn btn-neutral float-left" title="Breakpoints" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="frame_info.html" class="btn btn-neutral float-right" title="Information About a Frame" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="breakpoints.html" class="btn btn-neutral float-left" title="Breakpoints" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021,2022 Intel.</p>
-  </div>
+    <p>
+        &#169; Copyright 2021,2022 Intel.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
