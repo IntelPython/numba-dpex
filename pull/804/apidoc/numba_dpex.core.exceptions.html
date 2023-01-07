@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>numba_dpex.core.exceptions module &mdash; numba-dpex 0.19.0+53.g308b3743 documentation</title>
+  <title>numba_dpex.core.exceptions module &mdash; numba-dpex 0.19.0+57.ga56dfd91 documentation</title>
   
 
   
@@ -371,12 +371,14 @@ supported_backends (List): The list of supported backends.</p>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="numba_dpex.core.exceptions.UnsupportedKernelArgumentError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedKernelArgumentError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.exceptions.UnsupportedKernelArgumentError" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedKernelArgumentError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.exceptions.UnsupportedKernelArgumentError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>Exception raised when the type of a kernel argument is not supported by
 the compiler.</p>
 <dl class="simple">
-<dt>Args:</dt><dd><p>kernel_name (str): Name of kernel where the error was raised.</p>
+<dt>Args:</dt><dd><p>type (str): The type of the unsupported argument.
+value (object): The Python object passed as a kernel argument.
+kernel_name (str): Name of kernel where the error was raised.</p>
 </dd>
 </dl>
 </dd></dl>

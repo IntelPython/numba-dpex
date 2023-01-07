@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>numba_dpex.utils.array_utils module &mdash; numba-dpex 0.19.0+53.g308b3743 documentation</title>
+  <title>numba_dpex.utils.array_utils module &mdash; numba-dpex 0.19.0+57.ga56dfd91 documentation</title>
   
 
   
@@ -253,24 +253,6 @@ obj (numpy.ndarray): Numpy ndarray, the data will be copied into.</p>
 <dt>ValueError:</dt><dd><p>If size of data does not match.</p>
 </dd>
 </dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.utils.array_utils.get_info_from_suai">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.array_utils.</span></span><span class="sig-name descname"><span class="pre">get_info_from_suai</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.array_utils.get_info_from_suai" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convenience function to gather information from __sycl_usm_array_interface__.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>obj: Array with SUAI attribute.</p>
-</dd>
-<dt>Returns:</dt><dd><p>usm_mem: USM memory object.
-total_size: Total number of items in the array.
-shape: Shape of the array.
-ndim: Total number of dimensions.
-itemsize: Size of each item.
-strides: Stride of the array.
-dtype: Dtype of the array.</p>
 </dd>
 </dl>
 </dd></dl>
