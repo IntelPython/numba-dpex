@@ -9,7 +9,7 @@ from llvmlite import binding as ll
 from llvmlite import ir as llvmir
 from llvmlite.llvmpy import core as lc
 from numba import typeof
-from numba.core import cgutils, datamodel, types, typing, utils
+from numba.core import cgutils, types, typing, utils
 from numba.core.base import BaseContext
 from numba.core.callconv import MinimalCallConv
 from numba.core.registry import cpu_target
@@ -17,12 +17,13 @@ from numba.core.target_extension import GPU, target_registry
 from numba.core.utils import cached_property
 
 from numba_dpex.core.datamodel.models import _init_data_model_manager
+from numba_dpex.core.exceptions import UnsupportedKernelArgumentError
+from numba_dpex.core.typeconv import to_usm_ndarray
+from numba_dpex.core.utils import get_info_from_suai
 from numba_dpex.utils import (
     address_space,
     calling_conv,
-    has_usm_memory,
     npytypes_array_to_dpex_array,
-    suai_to_dpex_array,
 )
 
 from .. import codegen
@@ -69,14 +70,20 @@ class DpexTypingContext(typing.BaseContext):
         try:
             _type = type(typeof(val))
         except ValueError:
-            # For arbitrary array that is not recognized by Numba,
-            # we will end up in this path. We check if the array
-            # has __sycl_usm_array_interface__ attribute. If yes,
-            # we create the necessary Numba type to represent it
-            # and send it back.
-            if has_usm_memory(val) is not None:
-                return suai_to_dpex_array(val)
+            # When an array-like kernel argument is not recognized by
+            # numba-dpex, this additional check sees if the array-like object
+            # implements the __sycl_usm_array_interface__ protocol. For such
+            # cases, we treat the object as an UsmNdArray type.
+            try:
+                suai_attrs = get_info_from_suai(val)
+                return to_usm_ndarray(suai_attrs)
+            except Exception:
+                raise UnsupportedKernelArgumentError(
+                    type=str(type(val)), value=val
+                )
 
+        # FIXME: Remove once NumPy arrays are no longer supported as kernel
+        # args.
         if _type is types.npytypes.Array:
             # Convert npytypes.Array to numba_dpex.core.types.Array
             return npytypes_array_to_dpex_array(typeof(val))

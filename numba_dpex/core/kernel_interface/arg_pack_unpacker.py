@@ -16,6 +16,7 @@ from numba_dpex.core.exceptions import (
     UnsupportedKernelArgumentError,
 )
 from numba_dpex.core.types import USMNdArray
+from numba_dpex.core.utils import SyclUSMArrayInterface, get_info_from_suai
 
 
 class _NumPyArrayPackerPayload:
@@ -40,53 +41,6 @@ class Packer:
                 ",".join(Packer._access_types),
             )
 
-    def _get_info_from_suai(self, obj):
-        """
-        Extracts the metadata of an arrya-like object that provides a
-        __sycl_usm_array_interface__ (SUAI) attribute.
-
-        The ``dpctl.memory.as_usm_memory`` function converts the array-like
-        object into a dpctl.memory.USMMemory object. Using the ``as_usm_memory``
-        is an implicit way to verify if the array-like object is a legal
-        SYCL USM memory back Python object that can be passed to a dpex kernel.
-
-        Args:
-            obj: array-like object with a SUAI attribute.
-
-        Returns:
-            usm_mem: USM memory object.
-            total_size: Total number of items in the array.
-            shape: Shape of the array.
-            ndim: Total number of dimensions.
-            itemsize: Size of each item.
-            strides: Stride of the array.
-            dtype: Dtype of the array.
-        """
-        try:
-            usm_mem = dpctl_mem.as_usm_memory(obj)
-        except Exception:
-            logging.exception(
-                "array-like object does not implement the SUAI protocol."
-            )
-            raise SUAIProtocolError(self._pyfunc_name, obj)
-
-        shape = obj.__sycl_usm_array_interface__["shape"]
-        total_size = np.prod(obj.__sycl_usm_array_interface__["shape"])
-        ndim = len(obj.__sycl_usm_array_interface__["shape"])
-        itemsize = np.dtype(
-            obj.__sycl_usm_array_interface__["typestr"]
-        ).itemsize
-        dtype = np.dtype(obj.__sycl_usm_array_interface__["typestr"])
-        strides = obj.__sycl_usm_array_interface__["strides"]
-
-        if strides is None:
-            strides = [1] * ndim
-            for i in reversed(range(1, ndim)):
-                strides[i - 1] = strides[i] * shape[i]
-            strides = tuple(strides)
-
-        return usm_mem, total_size, shape, ndim, itemsize, strides, dtype
-
     def _unpack_array_helper(self, size, itemsize, buf, shape, strides, ndim):
         """
         Implements the unpacking logic for array arguments.
@@ -105,11 +59,11 @@ class Packer:
         """
         unpacked_array_attrs = []
 
-        # meminfo (FIXME: should be removed and the USMArrayType modified once
-        # NumPy support is removed)
+        # meminfo (FIXME: should be removed and the USMNdArray type modified
+        # once NumPy support is removed)
         unpacked_array_attrs.append(ctypes.c_size_t(0))
-        # meminfo (FIXME: Evaluate if the attribute should be removed and the
-        # USMArrayType modified once NumPy support is removed)
+        # parent (FIXME: Evaluate if the attribute should be removed and the
+        # USMNdArray type modified once NumPy support is removed)
         unpacked_array_attrs.append(ctypes.c_size_t(0))
         unpacked_array_attrs.append(ctypes.c_longlong(size))
         unpacked_array_attrs.append(ctypes.c_longlong(itemsize))
@@ -122,26 +76,30 @@ class Packer:
         return unpacked_array_attrs
 
     def _unpack_usm_array(self, val):
-        (
-            usm_mem,
-            total_size,
-            shape,
-            ndim,
-            itemsize,
-            strides,
-            dtype,
-        ) = self._get_info_from_suai(val)
+        """Flattens an object of USMNdArray type into ctypes objects to be
+        passed as kernel arguments.
+
+        Args:
+            val : An object of dpctl.types.UsmNdArray type.
+
+        Returns:
+            _type_: _description_
+        """
+        suai_attrs = get_info_from_suai(val)
 
         return self._unpack_array_helper(
-            total_size,
-            itemsize,
-            usm_mem,
-            shape,
-            strides,
-            ndim,
+            size=suai_attrs.size,
+            itemsize=suai_attrs.itemsize,
+            buf=suai_attrs.data,
+            shape=suai_attrs.shape,
+            strides=suai_attrs.strides,
+            ndim=suai_attrs.dimensions,
         )
 
     def _unpack_array(self, val, access_type):
+        """Deprecated to be removed once NumPy array support in kernels is
+        removed.
+        """
         packed_val = val
         # Check if the NumPy array is backed by USM memory
         usm_mem = utils.has_usm_memory(val)

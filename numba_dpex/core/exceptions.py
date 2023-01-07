@@ -270,12 +270,14 @@ class UnsupportedKernelArgumentError(Exception):
     the compiler.
 
     Args:
+        type (str): The type of the unsupported argument.
+        value (object): The Python object passed as a kernel argument.
         kernel_name (str): Name of kernel where the error was raised.
     """
 
-    def __init__(self, type, value, kernel_name) -> None:
+    def __init__(self, type, value, kernel_name="") -> None:
         self.message = (
-            f'Argument {value} passed to kernel "{kernel_name}" is of an '
+            f"Argument {value} passed to kernel {kernel_name} is of an "
             f"unsupported type ({type})."
         )
         super().__init__(self.message)
