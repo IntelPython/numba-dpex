@@ -33,7 +33,7 @@ def test_kernel_valid_usm_obj(dtype):
     """Test if a ``numba_dpex.kernel`` function accepts a DuckUSMArray argument.
 
     The ``DuckUSMArray`` uses ``dpctl.memory`` to allocate a Python object that
-    defines a ``__sycl_usm_array__interface__`` attribute. We test if
+    defines a ``__sycl_usm_array_interface__`` attribute. We test if
     ``numba_dpex`` recognizes the ``DuckUSMArray`` as a valid USM-backed Python
     object and accepts it as a kernel argument.
 
