@@ -19,6 +19,7 @@ from numba_dpex import config
 from numba_dpex.core.compiler import Compiler
 from numba_dpex.core.exceptions import KernelHasReturnValueError
 from numba_dpex.core.types import Array, USMNdArray
+from numba_dpex.core.utils import get_info_from_suai
 from numba_dpex.dpctl_support import dpctl_version
 from numba_dpex.utils import (
     IndeterminateExecutionQueueError,
@@ -26,7 +27,6 @@ from numba_dpex.utils import (
     cfd_ctx_mgr_wrng_msg,
     copy_from_numpy_to_usm_obj,
     copy_to_numpy_from_usm_obj,
-    get_info_from_suai,
     has_usm_memory,
     mix_datatype_err_msg,
 )
