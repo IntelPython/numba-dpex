@@ -35,21 +35,4 @@ from . import initialize
 from .core import target
 from .decorators import autojit, func, kernel
 
-
-def is_available():
-    """Returns a boolean indicating if dpctl could find a default device.
-
-    A ValueError is thrown by dpctl if no default device is found and it
-    implies that numba_dpex cannot create a SYCL queue to compile kernels.
-
-    Returns:
-        bool: True if a default SYCL device is found, otherwise False.
-    """
-    try:
-        d = dpctl.select_default_device()
-        return not d.is_host
-    except ValueError:
-        return False
-
-
 initialize.load_dpctl_sycl_interface()
