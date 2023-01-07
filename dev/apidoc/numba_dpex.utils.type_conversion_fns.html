@@ -1,34 +1,71 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.utils.type_conversion_fns module &mdash; numba-dpex 0.19.0+18.g511a3c55 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+  <title>numba_dpex.utils.type_conversion_fns module &mdash; numba-dpex 0.19.0+21.ga541db59 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
-    <script src="../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="../index.html" class="icon icon-home"> numba-dpex
+          
+
+          
           </a>
+
+          
+            
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -36,7 +73,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html">Code-generation based on a device</a></li>
@@ -55,32 +103,73 @@
 <li class="toctree-l1"><a class="reference internal" href="../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">numba-dpex</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
-      <li class="breadcrumb-item active">numba_dpex.utils.type_conversion_fns module</li>
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>numba_dpex.utils.type_conversion_fns module</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
             <a href="../_sources/apidoc/numba_dpex.utils.type_conversion_fns.rst.txt" rel="nofollow"> View page source</a>
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <section id="module-numba_dpex.utils.type_conversion_fns">
-<span id="numba-dpex-utils-type-conversion-fns-module"></span><h1>numba_dpex.utils.type_conversion_fns module<a class="headerlink" href="#module-numba_dpex.utils.type_conversion_fns" title="Permalink to this heading"></a></h1>
+<span id="numba-dpex-utils-type-conversion-fns-module"></span><h1>numba_dpex.utils.type_conversion_fns module<a class="headerlink" href="#module-numba_dpex.utils.type_conversion_fns" title="Permalink to this heading">¶</a></h1>
 <p>Provides helper functions to convert from numba types to dpex types.</p>
 <dl class="simple">
 <dt>Currently the module supports the following converter functions:</dt><dd><ul class="simple">
@@ -90,7 +179,7 @@
 </dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.utils.type_conversion_fns.npytypes_array_to_dpex_array">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.type_conversion_fns.</span></span><span class="sig-name descname"><span class="pre">npytypes_array_to_dpex_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arrtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addrspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.type_conversion_fns.npytypes_array_to_dpex_array" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.type_conversion_fns.</span></span><span class="sig-name descname"><span class="pre">npytypes_array_to_dpex_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arrtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addrspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.type_conversion_fns.npytypes_array_to_dpex_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts Numba’s <code class="docutils literal notranslate"><span class="pre">Array</span></code> type to <code class="docutils literal notranslate"><span class="pre">numba_dpex.core.types.Array</span></code>
 type.</p>
 <p>Numba’s <code class="docutils literal notranslate"><span class="pre">Array</span></code> type does not have a notion of address space for the data
@@ -124,7 +213,7 @@ belongs.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.utils.type_conversion_fns.suai_to_dpex_array">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.type_conversion_fns.</span></span><span class="sig-name descname"><span class="pre">suai_to_dpex_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addrspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.type_conversion_fns.suai_to_dpex_array" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.type_conversion_fns.</span></span><span class="sig-name descname"><span class="pre">suai_to_dpex_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addrspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.type_conversion_fns.suai_to_dpex_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create type for Array with __sycl_usm_array_interface__ (SUAI) attribute.</p>
 <p>This function creates a Numba type for arrays with SUAI attribute.</p>
 <dl class="simple">
@@ -143,30 +232,46 @@ addrspace: Address space this array is allocated in.</p>
 
 
            </div>
+           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021,2022 Intel.</p>
-  </div>
+    <p>
+        &#169; Copyright 2021,2022 Intel.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
