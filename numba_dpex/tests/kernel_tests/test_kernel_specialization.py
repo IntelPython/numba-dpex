@@ -79,3 +79,18 @@ def test_execution_of_specialized_kernel():
 
     npc_expected = np.full(1024, 2, dtype=np.int64)
     assert np.array_equal(npc, npc_expected)
+
+
+def test_string_specialization():
+    """Test if NotImplementedError is raised when signature is a string"""
+
+    with pytest.raises(NotImplementedError):
+        dpex.kernel("(i64arrty, i64arrty, i64arrty)")
+
+    with pytest.raises(NotImplementedError):
+        dpex.kernel(
+            ["(i64arrty, i64arrty, i64arrty)", "(f32arrty, f32arrty, f32arrty)"]
+        )
+
+    with pytest.raises(ValueError):
+        dpex.kernel((i64arrty))
