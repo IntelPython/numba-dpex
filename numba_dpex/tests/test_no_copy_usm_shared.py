@@ -10,7 +10,7 @@ from numba import prange
 from numba.core import compiler, cpu
 from numba.core.registry import cpu_target
 
-from numba_dpex.compiler import Compiler
+from numba_dpex.core.compiler import Compiler
 from numba_dpex.tests._helper import skip_no_opencl_gpu
 
 
