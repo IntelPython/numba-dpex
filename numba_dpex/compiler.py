@@ -18,37 +18,23 @@ from numba.core.compiler_lock import global_compiler_lock
 from numba_dpex import config
 from numba_dpex.core.compiler import Compiler
 from numba_dpex.core.exceptions import KernelHasReturnValueError
-from numba_dpex.core.types import Array, USMNdArray
-from numba_dpex.core.utils import get_info_from_suai
-from numba_dpex.dpctl_support import dpctl_version
-from numba_dpex.utils import (
-    IndeterminateExecutionQueueError,
-    as_usm_obj,
-    cfd_ctx_mgr_wrng_msg,
-    copy_from_numpy_to_usm_obj,
-    copy_to_numpy_from_usm_obj,
-    has_usm_memory,
-    mix_datatype_err_msg,
-)
+from numba_dpex.core.types import Array  # , USMNdArray
 
 from . import spirv_generator
+
+# from numba_dpex.core.utils import get_info_from_suai
+# from numba_dpex.utils import (
+#     as_usm_obj,
+#     copy_from_numpy_to_usm_obj,
+#     copy_to_numpy_from_usm_obj,
+#     has_usm_memory,
+#     mix_datatype_err_msg,
+# )
+
 
 _RO_KERNEL_ARG = "read_only"
 _WO_KERNEL_ARG = "write_only"
 _RW_KERNEL_ARG = "read_write"
-
-
-def _raise_datatype_mixed_error(argtypes):
-    error_message = mix_datatype_err_msg + ("%s" % str(argtypes))
-    raise TypeError(error_message)
-
-
-def _raise_no_device_found_error():
-    error_message = (
-        "No SYCL device specified. "
-        "Usage : jit_fn[device, globalsize, localsize](...)"
-    )
-    raise ValueError(error_message)
 
 
 def _raise_invalid_kernel_enqueue_args():
@@ -138,46 +124,6 @@ def compile_with_depx(pyfunc, return_type, args, is_kernel, debug=None):
     library.finalize()
 
     return cres
-
-
-def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
-    # For any array we only accept numba_dpex.types.Array
-    for arg in args:
-        if isinstance(arg, types.npytypes.Array) and not (
-            isinstance(arg, Array) or isinstance(arg, USMNdArray)
-        ):
-            raise TypeError(
-                "Only numba_dpex.core.types.USMNdArray "
-                + "objects are supported as kernel arguments. "
-                + "Received %s" % (type(arg))
-            )
-
-    if config.DEBUG:
-        print("compile_kernel", args)
-        debug = True
-    if not sycl_queue:
-        # We expect the sycl_queue to be provided when this function is called
-        raise ValueError("SYCL queue is required for compiling a kernel")
-
-    cres = compile_with_depx(
-        pyfunc=pyfunc, return_type=None, args=args, is_kernel=True, debug=debug
-    )
-    func = cres.library.get_function(cres.fndesc.llvm_func_name)
-    kernel = cres.target_context.prepare_ocl_kernel(func, cres.signature.args)
-
-    # A reference to the target context is stored in the Kernel to
-    # reference the context later in code generation. For example, we link
-    # the kernel object with a spir_func defining atomic operations only
-    # when atomic operations are used in the kernel.
-    oclkern = Kernel(
-        context=cres.target_context,
-        sycl_queue=sycl_queue,
-        llvm_module=kernel.module,
-        name=kernel.name,
-        argtypes=cres.signature.args,
-        ordered_arg_access_types=access_types,
-    )
-    return oclkern
 
 
 def compile_kernel_parfor(
@@ -365,344 +311,222 @@ class Kernel(KernelBase):
         #  create a kernel
         self.kernel = self.program.get_sycl_kernel(self.entry_name)
 
-    def __call__(self, *args):
-        """
-        Create a list of the kernel arguments by unpacking pyobject values
-        into ctypes values.
-        """
+    # def __call__(self, *args):
+    #     """
+    #     Create a list of the kernel arguments by unpacking pyobject values
+    #     into ctypes values.
+    #     """
 
-        kernelargs = []
-        internal_device_arrs = []
-        for ty, val, access_type in zip(
-            self.argument_types, args, self.ordered_arg_access_types
-        ):
-            self._unpack_argument(
-                ty,
-                val,
-                self.sycl_queue,
-                kernelargs,
-                internal_device_arrs,
-                access_type,
-            )
+    #     kernelargs = []
+    #     internal_device_arrs = []
+    #     for ty, val, access_type in zip(
+    #         self.argument_types, args, self.ordered_arg_access_types
+    #     ):
+    #         self._unpack_argument(
+    #             ty,
+    #             val,
+    #             self.sycl_queue,
+    #             kernelargs,
+    #             internal_device_arrs,
+    #             access_type,
+    #         )
 
-        self.sycl_queue.submit(
-            self.kernel, kernelargs, self.global_size, self.local_size
-        )
-        self.sycl_queue.wait()
+    #     self.sycl_queue.submit(
+    #         self.kernel, kernelargs, self.global_size, self.local_size
+    #     )
+    #     self.sycl_queue.wait()
 
-        for ty, val, i_dev_arr, access_type in zip(
-            self.argument_types,
-            args,
-            internal_device_arrs,
-            self.ordered_arg_access_types,
-        ):
-            self._pack_argument(
-                ty, val, self.sycl_queue, i_dev_arr, access_type
-            )
+    #     for ty, val, i_dev_arr, access_type in zip(
+    #         self.argument_types,
+    #         args,
+    #         internal_device_arrs,
+    #         self.ordered_arg_access_types,
+    #     ):
+    #         self._pack_argument(
+    #             ty, val, self.sycl_queue, i_dev_arr, access_type
+    #         )
 
-    def _pack_argument(self, ty, val, sycl_queue, device_arr, access_type):
-        """
-        Copy device data back to host
-        """
-        if device_arr and (
-            access_type not in self.valid_access_types
-            or access_type in self.valid_access_types
-            and self.valid_access_types[access_type] != _RO_KERNEL_ARG
-        ):
-            # We copy the data back from usm allocated data
-            # container to original data container.
-            usm_mem, orig_ndarr, packed_ndarr, packed = device_arr
-            copy_to_numpy_from_usm_obj(usm_mem, packed_ndarr)
-            if packed:
-                np.copyto(orig_ndarr, packed_ndarr)
+    # def _pack_argument(self, ty, val, sycl_queue, device_arr, access_type):
+    #     """
+    #     Copy device data back to host
+    #     """
+    #     if device_arr and (
+    #         access_type not in self.valid_access_types
+    #         or access_type in self.valid_access_types
+    #         and self.valid_access_types[access_type] != _RO_KERNEL_ARG
+    #     ):
+    #         # We copy the data back from usm allocated data
+    #         # container to original data container.
+    #         usm_mem, orig_ndarr, packed_ndarr, packed = device_arr
+    #         copy_to_numpy_from_usm_obj(usm_mem, packed_ndarr)
+    #         if packed:
+    #             np.copyto(orig_ndarr, packed_ndarr)
 
-    def _unpack_device_array_argument(
-        self, size, itemsize, buf, shape, strides, ndim, kernelargs
-    ):
-        """
-        Implements the unpacking logic for array arguments.
+    # def _unpack_device_array_argument(
+    #     self, size, itemsize, buf, shape, strides, ndim, kernelargs
+    # ):
+    #     """
+    #     Implements the unpacking logic for array arguments.
 
-        Args:
-            size: Total number of elements in the array.
-            itemsize: Size in bytes of each element in the array.
-            buf: The pointer to the memory.
-            shape: The shape of the array.
-            ndim: Number of dimension.
-            kernelargs: Array where the arguments of the kernel is stored.
-        """
-        # meminfo
-        kernelargs.append(ctypes.c_size_t(0))
-        # parent
-        kernelargs.append(ctypes.c_size_t(0))
-        kernelargs.append(ctypes.c_longlong(size))
-        kernelargs.append(ctypes.c_longlong(itemsize))
-        kernelargs.append(buf)
-        for ax in range(ndim):
-            kernelargs.append(ctypes.c_longlong(shape[ax]))
-        for ax in range(ndim):
-            kernelargs.append(ctypes.c_longlong(strides[ax]))
+    #     Args:
+    #         size: Total number of elements in the array.
+    #         itemsize: Size in bytes of each element in the array.
+    #         buf: The pointer to the memory.
+    #         shape: The shape of the array.
+    #         ndim: Number of dimension.
+    #         kernelargs: Array where the arguments of the kernel is stored.
+    #     """
+    #     # meminfo
+    #     kernelargs.append(ctypes.c_size_t(0))
+    #     # parent
+    #     kernelargs.append(ctypes.c_size_t(0))
+    #     kernelargs.append(ctypes.c_longlong(size))
+    #     kernelargs.append(ctypes.c_longlong(itemsize))
+    #     kernelargs.append(buf)
+    #     for ax in range(ndim):
+    #         kernelargs.append(ctypes.c_longlong(shape[ax]))
+    #     for ax in range(ndim):
+    #         kernelargs.append(ctypes.c_longlong(strides[ax]))
 
-    def _unpack_USMNdArray(self, val, kernelargs):
-        (
-            usm_mem,
-            total_size,
-            shape,
-            ndim,
-            itemsize,
-            strides,
-            dtype,
-        ) = get_info_from_suai(val)
+    # def _unpack_USMNdArray(self, val, kernelargs):
+    #     (
+    #         usm_mem,
+    #         total_size,
+    #         shape,
+    #         ndim,
+    #         itemsize,
+    #         strides,
+    #         dtype,
+    #     ) = get_info_from_suai(val)
 
-        self._unpack_device_array_argument(
-            total_size,
-            itemsize,
-            usm_mem,
-            shape,
-            strides,
-            ndim,
-            kernelargs,
-        )
+    #     self._unpack_device_array_argument(
+    #         total_size,
+    #         itemsize,
+    #         usm_mem,
+    #         shape,
+    #         strides,
+    #         ndim,
+    #         kernelargs,
+    #     )
 
-    def _unpack_Array(
-        self, val, sycl_queue, kernelargs, device_arrs, access_type
-    ):
-        packed_val = val
-        usm_mem = has_usm_memory(val)
-        if usm_mem is None:
-            default_behavior = self.check_for_invalid_access_type(access_type)
-            usm_mem = as_usm_obj(val, queue=sycl_queue, copy=False)
+    # def _unpack_Array(
+    #     self, val, sycl_queue, kernelargs, device_arrs, access_type
+    # ):
+    #     packed_val = val
+    #     usm_mem = has_usm_memory(val)
+    #     if usm_mem is None:
+    #         default_behavior = self.check_for_invalid_access_type(access_type)
+    #         usm_mem = as_usm_obj(val, queue=sycl_queue, copy=False)
 
-            orig_val = val
-            packed = False
-            if not val.flags.c_contiguous:
-                # If the numpy.ndarray is not C-contiguous
-                # we pack the strided array into a packed array.
-                # This allows us to treat the data from here on as C-contiguous.
-                # While packing we treat the data as C-contiguous.
-                # We store the reference of both (strided and packed)
-                # array and during unpacking we use numpy.copyto() to copy
-                # the data back from the packed temporary array to the
-                # original strided array.
-                packed_val = val.flatten(order="C")
-                packed = True
+    #         orig_val = val
+    #         packed = False
+    #         if not val.flags.c_contiguous:
+    #             # If the numpy.ndarray is not C-contiguous
+    #             # we pack the strided array into a packed array.
+    #             # This allows us to treat the data from here on as C-contiguous.
+    #             # While packing we treat the data as C-contiguous.
+    #             # We store the reference of both (strided and packed)
+    #             # array and during unpacking we use numpy.copyto() to copy
+    #             # the data back from the packed temporary array to the
+    #             # original strided array.
+    #             packed_val = val.flatten(order="C")
+    #             packed = True
 
-            if (
-                default_behavior
-                or self.valid_access_types[access_type] == _RO_KERNEL_ARG
-                or self.valid_access_types[access_type] == _RW_KERNEL_ARG
-            ):
-                copy_from_numpy_to_usm_obj(usm_mem, packed_val)
+    #         if (
+    #             default_behavior
+    #             or self.valid_access_types[access_type] == _RO_KERNEL_ARG
+    #             or self.valid_access_types[access_type] == _RW_KERNEL_ARG
+    #         ):
+    #             copy_from_numpy_to_usm_obj(usm_mem, packed_val)
 
-            device_arrs[-1] = (usm_mem, orig_val, packed_val, packed)
+    #         device_arrs[-1] = (usm_mem, orig_val, packed_val, packed)
 
-        self._unpack_device_array_argument(
-            packed_val.size,
-            packed_val.dtype.itemsize,
-            usm_mem,
-            packed_val.shape,
-            packed_val.strides,
-            packed_val.ndim,
-            kernelargs,
-        )
+    #     self._unpack_device_array_argument(
+    #         packed_val.size,
+    #         packed_val.dtype.itemsize,
+    #         usm_mem,
+    #         packed_val.shape,
+    #         packed_val.strides,
+    #         packed_val.ndim,
+    #         kernelargs,
+    #     )
 
-    def _unpack_argument(
-        self, ty, val, sycl_queue, kernelargs, device_arrs, access_type
-    ):
-        """
-        Unpacks the arguments that are to be passed to the SYCL kernel from
-        Numba types to Ctypes.
+    # def _unpack_argument(
+    #     self, ty, val, sycl_queue, kernelargs, device_arrs, access_type
+    # ):
+    #     """
+    #     Unpacks the arguments that are to be passed to the SYCL kernel from
+    #     Numba types to Ctypes.
 
-        Args:
-            ty: The data types of the kernel argument defined as in instance of
-                numba.types.
-            val: The value of the kernel argument.
-            sycl_queue (dpctl.SyclQueue): A ``dpctl.SyclQueue`` object. The
-                queue object will be used whenever USM memory allocation is
-                needed during unpacking of an numpy.ndarray argument.
-            kernelargs (list): The list of kernel arguments into which the
-                current kernel argument will be appended.
-            device_arrs (list): A list of tuples that is used to store the
-                triples corresponding to the USM memorry allocated for an
-                ``numpy.ndarray`` argument, a wrapper ``ndarray`` created from
-                the USM memory, and the original ``ndarray`` argument.
-            access_type : The type of access for an array argument.
+    #     Args:
+    #         ty: The data types of the kernel argument defined as in instance of
+    #             numba.types.
+    #         val: The value of the kernel argument.
+    #         sycl_queue (dpctl.SyclQueue): A ``dpctl.SyclQueue`` object. The
+    #             queue object will be used whenever USM memory allocation is
+    #             needed during unpacking of an numpy.ndarray argument.
+    #         kernelargs (list): The list of kernel arguments into which the
+    #             current kernel argument will be appended.
+    #         device_arrs (list): A list of tuples that is used to store the
+    #             triples corresponding to the USM memorry allocated for an
+    #             ``numpy.ndarray`` argument, a wrapper ``ndarray`` created from
+    #             the USM memory, and the original ``ndarray`` argument.
+    #         access_type : The type of access for an array argument.
 
-        Raises:
-            NotImplementedError: If the type of argument is not yet supported,
-                then a ``NotImplementedError`` is raised.
+    #     Raises:
+    #         NotImplementedError: If the type of argument is not yet supported,
+    #             then a ``NotImplementedError`` is raised.
 
-        """
+    #     """
 
-        device_arrs.append(None)
+    #     device_arrs.append(None)
 
-        if isinstance(ty, USMNdArray):
-            self._unpack_USMNdArray(val, kernelargs)
-        elif isinstance(ty, types.Array):
-            self._unpack_Array(
-                val, sycl_queue, kernelargs, device_arrs, access_type
-            )
-        elif ty == types.int64:
-            cval = ctypes.c_longlong(val)
-            kernelargs.append(cval)
-        elif ty == types.uint64:
-            cval = ctypes.c_ulonglong(val)
-            kernelargs.append(cval)
-        elif ty == types.int32:
-            cval = ctypes.c_int(val)
-            kernelargs.append(cval)
-        elif ty == types.uint32:
-            cval = ctypes.c_uint(val)
-            kernelargs.append(cval)
-        elif ty == types.float64:
-            cval = ctypes.c_double(val)
-            kernelargs.append(cval)
-        elif ty == types.float32:
-            cval = ctypes.c_float(val)
-            kernelargs.append(cval)
-        elif ty == types.boolean:
-            cval = ctypes.c_uint8(int(val))
-            kernelargs.append(cval)
-        elif ty == types.complex64:
-            raise NotImplementedError(ty, val)
-        elif ty == types.complex128:
-            raise NotImplementedError(ty, val)
-        else:
-            raise NotImplementedError(ty, val)
+    #     if isinstance(ty, USMNdArray):
+    #         self._unpack_USMNdArray(val, kernelargs)
+    #     elif isinstance(ty, types.Array):
+    #         self._unpack_Array(
+    #             val, sycl_queue, kernelargs, device_arrs, access_type
+    #         )
+    #     elif ty == types.int64:
+    #         cval = ctypes.c_longlong(val)
+    #         kernelargs.append(cval)
+    #     elif ty == types.uint64:
+    #         cval = ctypes.c_ulonglong(val)
+    #         kernelargs.append(cval)
+    #     elif ty == types.int32:
+    #         cval = ctypes.c_int(val)
+    #         kernelargs.append(cval)
+    #     elif ty == types.uint32:
+    #         cval = ctypes.c_uint(val)
+    #         kernelargs.append(cval)
+    #     elif ty == types.float64:
+    #         cval = ctypes.c_double(val)
+    #         kernelargs.append(cval)
+    #     elif ty == types.float32:
+    #         cval = ctypes.c_float(val)
+    #         kernelargs.append(cval)
+    #     elif ty == types.boolean:
+    #         cval = ctypes.c_uint8(int(val))
+    #         kernelargs.append(cval)
+    #     elif ty == types.complex64:
+    #         raise NotImplementedError(ty, val)
+    #     elif ty == types.complex128:
+    #         raise NotImplementedError(ty, val)
+    #     else:
+    #         raise NotImplementedError(ty, val)
 
-    def check_for_invalid_access_type(self, access_type):
-        if access_type not in self.valid_access_types:
-            msg = (
-                "[!] %s is not a valid access type. "
-                "Supported access types are [" % (access_type)
-            )
-            for key in self.valid_access_types:
-                msg += " %s |" % (key)
+    # def check_for_invalid_access_type(self, access_type):
+    #     if access_type not in self.valid_access_types:
+    #         msg = (
+    #             "[!] %s is not a valid access type. "
+    #             "Supported access types are [" % (access_type)
+    #         )
+    #         for key in self.valid_access_types:
+    #             msg += " %s |" % (key)
 
-            msg = msg[:-1] + "]"
-            if access_type is not None:
-                print(msg)
-            return True
-        else:
-            return False
-
-
-class JitKernel(KernelBase):
-    def __init__(self, func, debug, access_types):
-
-        super(JitKernel, self).__init__()
-
-        self.py_func = func
-        self.definitions = {}
-        self.debug = debug
-        self.access_types = access_types
-
-        from .core.descriptor import dpex_target
-
-        self.typingctx = dpex_target.typing_context
-
-    def _get_argtypes(self, *args):
-        """
-        Convenience function to get the type of each argument.
-        """
-        return tuple([self.typingctx.resolve_argument_type(a) for a in args])
-
-    def _datatype_is_same(self, argtypes):
-        """
-        This function will determine if there is any argument of type array and
-        in case there are multiple array types if they are all of the same type.
-
-        Args:
-            argtypes: Numba type for each argument passed to a JitKernel.
-
-        Returns:
-            array_type: None if there are no argument of type array, or the
-                        Numba type in case there is array type argument.
-            bool: True if no array type arguments or if all array type arguments
-                  are of same Numba type, False otherwise.
-
-        """
-        array_type = None
-        for i, argtype in enumerate(argtypes):
-            arg_is_array_type = isinstance(argtype, USMNdArray) or isinstance(
-                argtype, types.Array
-            )
-            if array_type is None and arg_is_array_type:
-                array_type = argtype
-            elif (
-                array_type is not None
-                and arg_is_array_type
-                and type(argtype) is not type(array_type)
-            ):
-                return None, False
-        return array_type, True
-
-    def __call__(self, *args, **kwargs):
-        assert not kwargs, "Keyword Arguments are not supported"
-
-        argtypes = self._get_argtypes(*args)
-        compute_queue = None
-
-        # Get the array type and whether all array are of same type or not
-        array_type, uniform = self._datatype_is_same(argtypes)
-        if not uniform:
-            _raise_datatype_mixed_error(argtypes)
-
-        if type(array_type) == USMNdArray:
-            if dpctl.is_in_device_context():
-                warnings.warn(cfd_ctx_mgr_wrng_msg)
-
-            queues = []
-            for i, argtype in enumerate(argtypes):
-                if type(argtype) == USMNdArray:
-                    memory = dpctl.memory.as_usm_memory(args[i])
-                    if dpctl_version < (0, 12):
-                        queue = memory._queue
-                    else:
-                        queue = memory.sycl_queue
-                    queues.append(queue)
-
-            # dpctl.utils.get_exeuction_queue() checks if the queues passed are
-            # equivalent and returns a SYCL queue if they are equivalent and
-            # None if they are not.
-            compute_queue = dpctl.utils.get_execution_queue(queues)
-            if compute_queue is None:
-                raise IndeterminateExecutionQueueError(
-                    "Data passed as argument are not equivalent. Please "
-                    "create dpctl.tensor.usm_ndarray with equivalent SYCL queue."
-                )
-
-        if compute_queue is None:
-            try:
-                compute_queue = dpctl.get_current_queue()
-            except:
-                _raise_no_device_found_error()
-
-        kernel = self.specialize(argtypes, compute_queue)
-        cfg = kernel.configure(
-            kernel.sycl_queue, self.global_size, self.local_size
-        )
-        cfg(*args)
-
-    def specialize(self, argtypes, queue):
-        # We specialize for argtypes and queue. These two are used as key for
-        # caching as well.
-        assert queue is not None
-
-        sycl_ctx = None
-        kernel = None
-        # we were previously using the _env_ptr of the device_env, the sycl_queue
-        # should be sufficient to cache the compiled kernel for now, but we should
-        # use the device type to cache such kernels.
-        key_definitions = argtypes
-        result = self.definitions.get(key_definitions)
-        if result:
-            sycl_ctx, kernel = result
-
-        if sycl_ctx and sycl_ctx == queue.sycl_context:
-            return kernel
-        else:
-            kernel = compile_kernel(
-                queue, self.py_func, argtypes, self.access_types, self.debug
-            )
-            self.definitions[key_definitions] = (queue.sycl_context, kernel)
-        return kernel
+    #         msg = msg[:-1] + "]"
+    #         if access_type is not None:
+    #             print(msg)
+    #         return True
+    #     else:
+    #         return False
