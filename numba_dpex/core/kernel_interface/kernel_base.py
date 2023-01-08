@@ -55,6 +55,6 @@ class KernelInterface(metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def compile(self, target_ctx, args, debug, compile_flags):
+    def compile(self, target_ctx, typing_ctx, args, debug, compile_flags):
         """Abstract method to compile a Kernel instance."""
         raise NotImplementedError
