@@ -8,7 +8,7 @@ from types import FunctionType
 from numba.core import ir
 
 from numba_dpex import spirv_generator
-from numba_dpex.core import _compile_helper
+from numba_dpex.core.compiler import compile_with_dpex
 from numba_dpex.core.exceptions import UncompiledKernelError, UnreachableError
 
 from .kernel_base import KernelInterface
@@ -71,33 +71,66 @@ class SpirvKernel(KernelInterface):
 
     @property
     def target_context(self):
+        """Returns the target context that was used to compile the kernel.
+
+        Raises:
+            UncompiledKernelError: If the kernel was not yet compiled.
+
+        Returns:
+            target context used to compile the kernel
+        """
         if self._target_context:
             return self._target_context
         else:
             raise UncompiledKernelError(self._pyfunc_name)
 
-    def compile(self, arg_types, debug, extra_compile_flags):
-        """_summary_
+    @property
+    def typing_context(self):
+        """Returns the typing context that was used to compile the kernel.
+
+        Raises:
+            UncompiledKernelError: If the kernel was not yet compiled.
+
+        Returns:
+            typing context used to compile the kernel
+        """
+        if self._typing_context:
+            return self._typing_context
+        else:
+            raise UncompiledKernelError(self._pyfunc_name)
+
+    def compile(
+        self,
+        target_ctx,
+        typing_ctx,
+        args,
+        debug,
+        compile_flags,
+    ):
+        """Compiles a kernel using numba_dpex.core.compiler.Compiler.
 
         Args:
-            arg_types (_type_): _description_
+            args (_type_): _description_
             debug (_type_): _description_
-            extra_compile_flags (_type_): _description_
+            compile_flags (_type_): _description_
         """
 
-        logging.debug("compiling SpirvKernel with arg types", arg_types)
+        logging.debug("compiling SpirvKernel with arg types", args)
 
-        cres = _compile_helper.compile_with_dpex(
+        self._target_context = target_ctx
+        self._typing_context = typing_ctx
+
+        cres = compile_with_dpex(
             self._func,
             self._pyfunc_name,
-            args=arg_types,
+            args=args,
             return_type=None,
             debug=debug,
             is_kernel=True,
-            extra_compile_flags=extra_compile_flags,
+            typing_context=typing_ctx,
+            target_context=target_ctx,
+            extra_compile_flags=compile_flags,
         )
-
-        self._target_context = cres.target_context
 
         func = cres.library.get_function(cres.fndesc.llvm_func_name)
         kernel = cres.target_context.prepare_ocl_kernel(

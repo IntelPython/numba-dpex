@@ -9,7 +9,7 @@ from warnings import warn
 
 import dpctl
 import dpctl.program as dpctl_prog
-from numba.core import sigutils, types, utils
+from numba.core import sigutils
 from numba.core.types import Array as NpArrayType
 from numba.core.types import void
 
@@ -138,11 +138,17 @@ class JitKernel:
         return self._cache_hits
 
     def _compile_and_cache(self, argtypes, backend, device_type, cache):
+        # We always compile the kernel using the dpex_target.
+        typingctx = dpex_target.typing_context
+        targetctx = dpex_target.target_context
+
         kernel = SpirvKernel(self.pyfunc, self.kernel_name)
         kernel.compile(
-            arg_types=argtypes,
+            args=argtypes,
+            typing_ctx=typingctx,
+            target_ctx=targetctx,
             debug=self.debug_flags,
-            extra_compile_flags=self.compile_flags,
+            compile_flags=self.compile_flags,
         )
 
         device_driver_ir_module = kernel.device_driver_ir_module
