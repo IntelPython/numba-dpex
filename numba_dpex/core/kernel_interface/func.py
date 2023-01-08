@@ -8,7 +8,8 @@
 
 from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
-from numba_dpex.core._compile_helper import compile_with_dpex
+from numba_dpex.core.compiler import compile_with_dpex
+from numba_dpex.core.descriptor import dpex_target
 
 
 def compile_func(pyfunc, return_type, args, debug=None):
@@ -16,6 +17,8 @@ def compile_func(pyfunc, return_type, args, debug=None):
         pyfunc=pyfunc,
         pyfunc_name=pyfunc.__name__,
         return_type=return_type,
+        target_context=dpex_target.target_context,
+        typing_context=dpex_target.typing_context,
         args=args,
         is_kernel=False,
         debug=debug,
@@ -36,7 +39,6 @@ def compile_func(pyfunc, return_type, args, debug=None):
 
 def compile_func_template(pyfunc, debug=None):
     """Compile a DpexFunctionTemplate"""
-    from numba_dpex.core.descriptor import dpex_target
 
     dft = DpexFunctionTemplate(pyfunc, debug=debug)
 
@@ -48,8 +50,7 @@ def compile_func_template(pyfunc, debug=None):
                 raise AssertionError("No keyword arguments allowed.")
             return dft.compile(args)
 
-    typingctx = dpex_target.typing_context
-    typingctx.insert_user_function(dft, _function_template)
+    dpex_target.typing_context.insert_user_function(dft, _function_template)
     return dft
 
 
@@ -73,6 +74,8 @@ class DpexFunctionTemplate(object):
                 pyfunc=self.py_func,
                 pyfunc_name=self.py_func.__name__,
                 return_type=None,
+                target_context=dpex_target.target_context,
+                typing_context=dpex_target.typing_context,
                 args=args,
                 is_kernel=False,
                 debug=self.debug,

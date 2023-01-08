@@ -2,14 +2,13 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import os
-
 import dpctl
 import numpy as np
 import pytest
 
 import numba_dpex as dpex
 from numba_dpex import config
+from numba_dpex.core.descriptor import dpex_target
 from numba_dpex.tests._helper import filter_strings, override_config
 
 global_size = 100
@@ -217,9 +216,11 @@ def test_atomic_fp_native(
 
     with override_config("NATIVE_FP_ATOMICS", NATIVE_FP_ATOMICS):
         kernel.compile(
-            arg_types=argtypes,
+            args=argtypes,
             debug=None,
-            extra_compile_flags=None,
+            compile_flags=None,
+            target_ctx=dpex_target.target_context,
+            typing_ctx=dpex_target.typing_context,
         )
 
         is_native_atomic = expected_spirv_function in kernel._llvm_module

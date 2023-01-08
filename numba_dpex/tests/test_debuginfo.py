@@ -6,12 +6,11 @@
 
 import re
 
-import dpctl
 import pytest
 from numba.core import types
 
 import numba_dpex as dpex
-from numba_dpex import compiler
+from numba_dpex.core.descriptor import dpex_target
 from numba_dpex.tests._helper import override_config
 from numba_dpex.utils import npytypes_array_to_dpex_array
 
@@ -28,9 +27,11 @@ def get_kernel_ir(fn, sig, debug=None):
         fn, fn.__name__
     )
     kernel.compile(
-        arg_types=sig,
+        args=sig,
+        target_ctx=dpex_target.target_context,
+        typing_ctx=dpex_target.typing_context,
         debug=debug,
-        extra_compile_flags=None,
+        compile_flags=None,
     )
     return kernel.llvm_module
 
