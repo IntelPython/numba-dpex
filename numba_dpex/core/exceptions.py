@@ -108,6 +108,16 @@ class UnsupportedNumberOfRangeDimsError(Exception):
         super().__init__(self.message)
 
 
+class UnmatchedNumberOfRangeDimsError(Exception):
+    def __init__(self, kernel_name, global_ndims, local_ndims) -> None:
+        self.message = (
+            f"Specified global_range for kernel {kernel_name} has {global_ndims} dimensions, "
+            f"while specified local_range with dimenstions of {local_ndims} doesn't match "
+            "with global_range."
+        )
+        super().__init__(self.message)
+
+
 class UnsupportedWorkItemSizeError(Exception):
     """
 
@@ -123,6 +133,23 @@ class UnsupportedWorkItemSizeError(Exception):
             f"{requested_work_items} work items in dimension {dim} is not "
             f"supported. The device supports only {supported_work_items} "
             f"work items for dimension {dim}."
+        )
+        super().__init__(self.message)
+
+
+class UnsupportedGroupWorkItemSizeError(Exception):
+    """
+
+    Args:
+        Exception (_type_): _description_
+    """
+
+    def __init__(self, kernel_name, dim, work_groups, work_items) -> None:
+        self.message = (
+            f"Attempting to launch kernel {kernel_name} with "
+            f"{work_groups} global work groups and {work_items} local work items "
+            f"in dimension {dim} is not supported. The global work groups must be "
+            f"able to divide local work items evenly."
         )
         super().__init__(self.message)
 
