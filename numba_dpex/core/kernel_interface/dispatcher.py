@@ -25,7 +25,9 @@ from numba_dpex.core.exceptions import (
     KernelHasReturnValueError,
     MissingSpecializationError,
     UnknownGlobalRangeError,
+    UnmatchedNumberOfRangeDimsError,
     UnsupportedBackendError,
+    UnsupportedGroupWorkItemSizeError,
     UnsupportedNumberOfRangeDimsError,
     UnsupportedWorkItemSizeError,
 )
@@ -227,6 +229,16 @@ class JitKernel:
             cache=self._specialization_cache,
         )
 
+    def _check_size(self, dim, size, size_limit):
+
+        if size > size_limit:
+            raise UnsupportedWorkItemSizeError(
+                kernel_name=self.kernel_name,
+                dim=dim,
+                requested_work_items=size,
+                supported_work_items=size_limit,
+            )
+
     def _check_range(self, range, device):
 
         if not isinstance(range, (tuple, list)):
@@ -242,15 +254,26 @@ class JitKernel:
             )
 
     def _check_ndrange(self, global_range, local_range, device):
-        # for dim, size in enumerate(val):
-        #     if val[dim] > work_item_sizes[dim]:
-        #         raise UnsupportedWorkItemSizeError(
-        #             kernel_name=self.kernel_name,
-        #             dim=dim,
-        #             requested_work_items=val[dim],
-        #             supported_work_items=work_item_sizes[dim],
-        #         )
-        pass
+
+        self._check_range(local_range, device)
+
+        self._check_range(global_range, device)
+        if len(local_range) != len(global_range):
+            raise UnmatchedNumberOfRangeDimsError(
+                kernel_name=self.kernel_name,
+                global_ndims=len(global_range),
+                local_ndims=len(local_range),
+            )
+
+        for i in range(len(global_range)):
+            self._check_size(i, local_range[i], device.max_work_item_sizes[i])
+            if global_range[i] % local_range[i] != 0:
+                raise UnsupportedGroupWorkItemSizeError(
+                    kernel_name=self.kernel_name,
+                    dim=i,
+                    work_groups=global_range[i],
+                    work_items=local_range[i],
+                )
 
     def _chk_compute_follows_data_compliance(self, usm_array_arglist):
         """Check if all the usm ndarray's have the same device.
@@ -536,6 +559,7 @@ class JitKernel:
         # N is one, two or three.
         # If both local and global range values are specified the kernel is
         # invoked using a SYCL nd_range
+
         if global_range and not local_range:
             self._check_range(global_range, device)
             # FIXME:[::-1] is done as OpenCL and SYCl have different orders when
