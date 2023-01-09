@@ -19,8 +19,7 @@ from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
 from numba_dpex import config
 from numba_dpex.core.exceptions import KernelHasReturnValueError
-from numba_dpex.core.types import Array
-from numba_dpex.dpctl_iface import USMNdArrayType
+from numba_dpex.core.types import Array, USMNdArray
 from numba_dpex.dpctl_support import dpctl_version
 from numba_dpex.parfor_diagnostics import ExtendedParforDiagnostics
 from numba_dpex.utils import (
@@ -181,10 +180,13 @@ def compile_with_depx(pyfunc, return_type, args, is_kernel, debug=None):
 def compile_kernel(sycl_queue, pyfunc, args, access_types, debug=None):
     # For any array we only accept numba_dpex.types.Array
     for arg in args:
-        if isinstance(arg, types.npytypes.Array) and not isinstance(arg, Array):
+        if isinstance(arg, types.npytypes.Array) and not (
+            isinstance(arg, Array) or isinstance(arg, USMNdArray)
+        ):
             raise TypeError(
-                "Only numba_dpex.core.types.Array objects are supported as "
-                + "kernel arguments. Received %s" % (type(arg))
+                "Only numba_dpex.core.types.USMNdArray "
+                + "objects are supported as kernel arguments. "
+                + "Received %s" % (type(arg))
             )
 
     if config.DEBUG:
@@ -565,7 +567,7 @@ class Kernel(KernelBase):
         for ax in range(ndim):
             kernelargs.append(ctypes.c_longlong(strides[ax]))
 
-    def _unpack_USMNdArrayType(self, val, kernelargs):
+    def _unpack_USMNdArray(self, val, kernelargs):
         (
             usm_mem,
             total_size,
@@ -658,8 +660,8 @@ class Kernel(KernelBase):
 
         device_arrs.append(None)
 
-        if isinstance(ty, USMNdArrayType):
-            self._unpack_USMNdArrayType(val, kernelargs)
+        if isinstance(ty, USMNdArray):
+            self._unpack_USMNdArray(val, kernelargs)
         elif isinstance(ty, types.Array):
             self._unpack_Array(
                 val, sycl_queue, kernelargs, device_arrs, access_type
@@ -746,9 +748,9 @@ class JitKernel(KernelBase):
         """
         array_type = None
         for i, argtype in enumerate(argtypes):
-            arg_is_array_type = isinstance(
-                argtype, USMNdArrayType
-            ) or isinstance(argtype, types.Array)
+            arg_is_array_type = isinstance(argtype, USMNdArray) or isinstance(
+                argtype, types.Array
+            )
             if array_type is None and arg_is_array_type:
                 array_type = argtype
             elif (
@@ -770,13 +772,13 @@ class JitKernel(KernelBase):
         if not uniform:
             _raise_datatype_mixed_error(argtypes)
 
-        if type(array_type) == USMNdArrayType:
+        if type(array_type) == USMNdArray:
             if dpctl.is_in_device_context():
                 warnings.warn(cfd_ctx_mgr_wrng_msg)
 
             queues = []
             for i, argtype in enumerate(argtypes):
-                if type(argtype) == USMNdArrayType:
+                if type(argtype) == USMNdArray:
                     memory = dpctl.memory.as_usm_memory(args[i])
                     if dpctl_version < (0, 12):
                         queue = memory._queue
