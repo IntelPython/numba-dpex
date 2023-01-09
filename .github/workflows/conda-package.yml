@@ -166,7 +166,7 @@ jobs:
       matrix:
         python: ["3.8", "3.9"]
         integration_channels: [""]
-        experimental: [true]  # packages are not available on -c intel yet
+        experimental: [false]  # packages are not available on -c intel yet
         artifact_name: [""]
         dependencies: [""]
         include:
