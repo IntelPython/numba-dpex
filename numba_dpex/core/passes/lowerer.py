@@ -11,6 +11,7 @@ import warnings
 from collections import OrderedDict
 
 import dpctl
+import dpctl.program as dpctl_prog
 import numba
 import numpy as np
 from numba.core import compiler, funcdesc, ir, lowering, sigutils, types
@@ -44,12 +45,98 @@ from numba.parfors.parfor_lowering import _lower_parfor_parallel
 
 import numba_dpex as dpex
 from numba_dpex import config
+from numba_dpex.core.descriptor import dpex_target
+import numba_dpex.core.kernel_interface as kiface
 from numba_dpex.core.target import DpexTargetContext
 from numba_dpex.core.types import Array
 from numba_dpex.dpctl_iface import KernelLaunchOps
 from numba_dpex.utils import address_space, npytypes_array_to_dpex_array
 
 from .dufunc_inliner import dufunc_inliner
+
+
+def _compile_kernel_parfor(
+    sycl_queue, kernel_name, func_ir, args, args_with_addrspaces, debug=None
+):
+    # We only accept numba_dpex.core.types.Array type
+    for arg in args_with_addrspaces:
+        if isinstance(arg, types.npytypes.Array) and not isinstance(arg, Array):
+            raise TypeError(
+                "Only numba_dpex.core.types.Array objects are supported as "
+                + "kernel arguments. Received %s" % (type(arg))
+            )
+    if config.DEBUG:
+        print("compile_kernel_parfor", args)
+        for a in args_with_addrspaces:
+            print(a, type(a))
+            if isinstance(a, types.npytypes.Array):
+                print("addrspace:", a.addrspace)
+
+    # Create a SPIRVKernel object
+    kernel = kiface.SpirvKernel(func_ir, kernel_name)
+
+    # compile the kernel
+    kernel.compile(
+        args=args_with_addrspaces,
+        typing_ctx=dpex_target.typing_context,
+        target_ctx=dpex_target.target_context,
+        debug=debug,
+        compile_flags=None,
+    )
+    # cres = compile_with_depx(
+    #     pyfunc=func_ir,
+    #     return_type=None,
+    #     args=args_with_addrspaces,
+    #     is_kernel=True,
+    #     debug=debug,
+    # )
+    # func = cres.library.get_function(cres.fndesc.llvm_func_name)
+
+    # if config.DEBUG:
+    #     print("compile_kernel_parfor signature", cres.signature.args)
+    #     for a in cres.signature.args:
+    #         print(a, type(a))
+
+    # kernel = cres.target_context.prepare_ocl_kernel(func, cres.signature.args)
+
+    # Compile a SYCL Kernel object rom the SPIRVKernel
+
+    dpctl_create_program_from_spirv_flags = []
+    # # First-time compilation using SPIRV-Tools
+    # if config.DEBUG:
+    #     with open("llvm_kernel.ll", "w") as f:
+    #         f.write(self.binary)
+
+    if debug or config.OPT == 0:
+        # if debug is ON we need to pass additional
+        # flags to igc.
+        dpctl_create_program_from_spirv_flags = ["-g", "-cl-opt-disable"]
+
+    # self.spirv_bc = spirv_generator.llvm_to_spirv(
+    #     self.context, self.assembly, self._llvm_module.as_bitcode()
+    # )
+
+    # create a program
+    kernel_bundle = dpctl_prog.create_program_from_spirv(
+        sycl_queue,
+        kernel.device_driver_ir_module,
+        " ".join(dpctl_create_program_from_spirv_flags),
+    )
+    #  create a kernel
+    sycl_kernel = kernel_bundle.get_sycl_kernel(self.entry_name)
+
+    # oclkern = Kernel(
+    #     context=cres.target_context,
+    #     sycl_queue=sycl_queue,
+    #     llvm_module=kernel.module,
+    #     name=kernel.name,
+    #     argtypes=args_with_addrspaces,
+    # )
+
+    # Create a wrapper kernel object that has similar attributes as the previous
+    # compiler.Kernel class and return it.
+
+    return sycl_kernel
 
 
 def _print_block(block):
@@ -268,13 +355,9 @@ def _create_gufunc_for_parfor_body(
     lowerer,
     parfor,
     typemap,
-    typingctx,
-    targetctx,
     flags,
     loop_ranges,
-    locals,
     has_aliases,
-    index_var_typ,
     races,
 ):
     """
@@ -656,8 +739,9 @@ def _create_gufunc_for_parfor_body(
         print("after DUFunc inline".center(80, "-"))
         gufunc_ir.dump()
 
-    kernel_func = dpex.compiler.compile_kernel_parfor(
+    sycl_kernel = _compile_kernel_parfor(
         dpctl.get_current_queue(),
+        gufunc_name,
         gufunc_ir,
         gufunc_param_types,
         param_types_addrspaces,
@@ -669,7 +753,7 @@ def _create_gufunc_for_parfor_body(
     if config.DEBUG_ARRAY_OPT:
         print("kernel_sig = ", kernel_sig)
 
-    return kernel_func, parfor_args, kernel_sig, func_arg_types, setitems
+    return sycl_kernel, parfor_args, kernel_sig, func_arg_types, setitems
 
 
 def _lower_parfor_gufunc(lowerer, parfor):
@@ -762,13 +846,9 @@ def _lower_parfor_gufunc(lowerer, parfor):
             lowerer,
             parfor,
             typemap,
-            typingctx,
-            targetctx,
             flags,
             loop_ranges,
-            {},
             bool(alias_map),
-            index_var_typ,
             parfor.races,
         )
     finally:
