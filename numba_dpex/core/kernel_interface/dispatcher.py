@@ -471,13 +471,13 @@ class JitKernel:
             global_range and local_range attributes initialized.
 
         .. deprecated:: 0.19
-            Use :func:`KernelLauncher.execute` instead.
         """
 
         warn(
             "The [] (__getitem__) method to set global and local ranges for "
             + "launching a kernel is deprecated. "
-            + "Use the execute function instead.",
+            + 'Set the "global_range" and the "local_range" keyword '
+            + "arguments when calling the kernel instead.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -518,8 +518,8 @@ class JitKernel:
             if self._global_range:
                 warn(
                     "Use of __getitem__ to set the global_range attribute is "
-                    + 'deprecated. Use the keyword argument "global_range" of '
-                    + "__call__ method to set the attribute."
+                    + 'deprecated. Use the keyword argument "global_range" '
+                    + "when calling the kernel to specify the global range."
                 )
                 global_range = self._global_range
             else:
@@ -535,8 +535,8 @@ class JitKernel:
             if self._local_range:
                 warn(
                     "Use of __getitem__ to set the local_range attribute is "
-                    + 'deprecated. Use the keyword argument "local_range" of '
-                    + "__call__ method to set the attribute."
+                    + 'deprecated. Use the keyword argument "local_range" '
+                    + "when calling the kernel to specify the local range."
                 )
                 local_range = self._local_range
             else:
@@ -548,7 +548,7 @@ class JitKernel:
                     + "Consider setting the local range value for the kernel "
                     + "execution.\n"
                     + "The local_range keyword may be made a required argument "
-                    + "in the future."
+                    + "in the future when calling a kernel."
                 )
 
         if isinstance(global_range, int):
