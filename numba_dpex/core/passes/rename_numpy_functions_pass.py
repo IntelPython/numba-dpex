@@ -6,6 +6,7 @@ from numba.core import ir, types
 from numba.core.compiler_machinery import FunctionPass, register_pass
 from numba.core.ir_utils import (
     find_topo_order,
+    get_definition,
     mk_unique_var,
     remove_dead,
     simplify_CFG,
@@ -88,6 +89,64 @@ rewrite_function_name_map = {
     "sort": (["numpy"], "sort"),
     "take": (["numpy"], "take"),
 }
+
+
+class _CountNumpyOpsImpl(object):
+    def __init__(
+        self, state, rewrite_function_name_map=rewrite_function_name_map
+    ):
+        self.state = state
+        self.function_name_map = rewrite_function_name_map
+
+    def run(self):
+        """ """
+        func_ir = self.state.func_ir
+        blocks = func_ir.blocks
+        topo_order = find_topo_order(blocks)
+        replaced = False
+
+        for label in topo_order:
+            block = blocks[label]
+            num_np_calls = 0
+            for stmt in block.body:
+                if isinstance(stmt, ir.Assign) and isinstance(
+                    stmt.value, ir.Expr
+                ):
+                    # lhs = stmt.target.name
+                    rhs = stmt.value
+                    if rhs.op == "call":
+                        name = rhs.func.name
+                        defn = get_definition(func_ir, name)
+
+                        while not isinstance(defn, ir.Global):
+                            defn = get_definition(func_ir, defn.value)
+                        if "numpy" in str(defn):
+                            num_np_calls += 1
+            print("Number of numpy calls =", num_np_calls)
+            return replaced
+
+
+@register_pass(mutates_CFG=True, analysis_only=False)
+class CountNumpyOpsPass(FunctionPass):
+    _name = "count_numpy_ops_pass"
+
+    def __init__(self):
+        FunctionPass.__init__(self)
+
+    def run_pass(self, state):
+        count_numpy_ops_pass = _CountNumpyOpsImpl(
+            state, rewrite_function_name_map
+        )
+
+        mutated = count_numpy_ops_pass.run()
+
+        if mutated:
+            remove_dead(
+                state.func_ir.blocks, state.func_ir.arg_names, state.func_ir
+            )
+        state.func_ir.blocks = simplify_CFG(state.func_ir.blocks)
+
+        return mutated
 
 
 class _RewriteNumPyOverloadedFunctionsImpl(object):
@@ -280,6 +339,7 @@ class _RewriteNdarrayFunctionsImpl(object):
                             self.typemap[rhs.value.name], types.npytypes.Array
                         )
                     ):
+                        # print("-----> rhs.attr =", rhs.attr)
                         rhs = stmt.value
                         arr = rhs.value
                         saved_arr_arg[lhs] = arr

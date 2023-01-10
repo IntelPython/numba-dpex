@@ -37,6 +37,7 @@ from numba_dpex.core.passes.passes import (
     PreParforPass,
 )
 from numba_dpex.core.passes.rename_numpy_functions_pass import (
+    CountNumpyOpsPass,
     RewriteNdarrayFunctionsPass,
     RewriteOverloadedNumPyFunctionsPass,
 )
@@ -57,6 +58,10 @@ class PassBuilder(object):
             pm.add_pass(FixupArgs, "fix up args")
         pm.add_pass(IRProcessing, "processing IR")
         pm.add_pass(WithLifting, "Handle with contexts")
+
+        pm.add_pass(
+            CountNumpyOpsPass, "Count the number of numpy function calls"
+        )
 
         # this pass rewrites name of NumPy functions we intend to overload
         pm.add_pass(
