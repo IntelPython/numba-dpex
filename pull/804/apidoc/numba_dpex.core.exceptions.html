@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>numba_dpex.core.exceptions module &mdash; numba-dpex 0.19.0+63.gf3cb55e6 documentation</title>
+  <title>numba_dpex.core.exceptions module &mdash; numba-dpex 0.19.0+62.g1faa6294 documentation</title>
   
 
   
@@ -325,6 +325,12 @@ range.</p>
 </dd></dl>
 
 <dl class="py exception">
+<dt class="sig sig-object py" id="numba_dpex.core.exceptions.UnmatchedNumberOfRangeDimsError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnmatchedNumberOfRangeDimsError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_ndims</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_ndims</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.exceptions.UnmatchedNumberOfRangeDimsError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
 <dt class="sig sig-object py" id="numba_dpex.core.exceptions.UnreachableError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnreachableError</span></span><a class="headerlink" href="#numba_dpex.core.exceptions.UnreachableError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
@@ -367,6 +373,16 @@ supported_backends (List): The list of supported backends.</p>
 <dt class="sig sig-object py" id="numba_dpex.core.exceptions.UnsupportedCompilationModeError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedCompilationModeError</span></span><a class="headerlink" href="#numba_dpex.core.exceptions.UnsupportedCompilationModeError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="numba_dpex.core.exceptions.UnsupportedGroupWorkItemSizeError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedGroupWorkItemSizeError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">work_groups</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">work_items</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.exceptions.UnsupportedGroupWorkItemSizeError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>Exception (_type_): _description_</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py exception">
