@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
-import dpnp
+import dpctl.tensor as dpt
 import pytest
 
 import numba_dpex as ndpx
@@ -29,11 +29,10 @@ def test_ndrange_config_error(error, ndrange):
     """Test if a exception is raised when calling a
     ndrange kernel with unspported arguments.
     """
-    N = 10
 
-    a = dpnp.random.random(N)
-    b = dpnp.random.random(N)
-    c = dpnp.ones_like(a)
+    a = dpt.ones(1024, dtype=dpt.int32, device="0")
+    b = dpt.ones(1024, dtype=dpt.int32, device="0")
+    c = dpt.zeros(1024, dtype=dpt.int64, device="0")
 
     with pytest.raises(error):
         kernel_vector_sum[ndrange](a, b, c)
