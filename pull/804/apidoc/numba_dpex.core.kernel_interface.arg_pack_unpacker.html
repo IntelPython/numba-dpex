@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>numba_dpex.core.kernel_interface.arg_pack_unpacker module &mdash; numba-dpex 0.19.0+65.g79e21734 documentation</title>
+  <title>numba_dpex.core.kernel_interface.arg_pack_unpacker module &mdash; numba-dpex 0.19.0+67.gcd3ecb20 documentation</title>
   
 
   
@@ -174,15 +174,19 @@
 <dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.arg_pack_unpacker.Packer">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.kernel_interface.arg_pack_unpacker.</span></span><span class="sig-name descname"><span class="pre">Packer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argty_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_specifiers_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.arg_pack_unpacker.Packer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Implements the functionality to unpack a Python object passed as an
+argument to a numba_dpex kernel fucntion into corresponding ctype object.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.arg_pack_unpacker.Packer.repacked_args">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">repacked_args</span></span><a class="headerlink" href="#numba_dpex.core.kernel_interface.arg_pack_unpacker.Packer.repacked_args" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the list of NumPy</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.arg_pack_unpacker.Packer.unpacked_args">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unpacked_args</span></span><a class="headerlink" href="#numba_dpex.core.kernel_interface.arg_pack_unpacker.Packer.unpacked_args" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the list of unpacked arguments created by a Packer object.</p>
+</dd></dl>
 
 </dd></dl>
 

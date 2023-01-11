@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>numba_dpex.core.kernel_interface.dispatcher module &mdash; numba-dpex 0.19.0+65.g79e21734 documentation</title>
+  <title>numba_dpex.core.kernel_interface.dispatcher module &mdash; numba-dpex 0.19.0+67.gcd3ecb20 documentation</title>
   
 
   
@@ -174,7 +174,8 @@
 <dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.dispatcher.JitKernel">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.kernel_interface.dispatcher.</span></span><span class="sig-name descname"><span class="pre">JitKernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compile_flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array_access_specifiers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specialization_sigs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.dispatcher.JitKernel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>An abstract function object wrapping a concrete device kernel function.</p>
+<p>Functor to wrap a kernel function and JIT compile and dispatch it to a
+specified SYCL queue.</p>
 <p>A JitKernel is returned by the kernel decorator and wraps an instance of a
 device kernel function. A device kernel function is specialized for a
 backend may represent a binary object in a lower-level IR. Currently, only
@@ -195,7 +196,8 @@ are supported.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.dispatcher.get_ordered_arg_access_types">
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.core.kernel_interface.dispatcher.</span></span><span class="sig-name descname"><span class="pre">get_ordered_arg_access_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_types</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.dispatcher.get_ordered_arg_access_types" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Deprecated and to be removed in next release.</p>
+</dd></dl>
 
 </section>
 
