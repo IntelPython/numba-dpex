@@ -128,12 +128,7 @@ def get_info_from_suai(obj):
             strides[i - 1] = strides[i] * shape[i]
         strides = tuple(strides)
 
-    syclobj = usm_mem.__sycl_usm_array_interface__["syclobj"]
-    if not isinstance(syclobj, dpctl.SyclQueue):
-        raise ValueError(
-            "dpctl.SyclQueue could not be inferred. "
-            "The __sycl_usm_array_interface__ may be malformed."
-        )
+    syclobj = usm_mem.sycl_queue
     device = syclobj.sycl_device.filter_string
     usm_type = usm_mem.get_usm_type()
 

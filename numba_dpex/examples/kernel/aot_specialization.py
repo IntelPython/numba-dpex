@@ -2,9 +2,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import logging
+
 import dpctl.tensor as dpt
 import numpy as np
-import pytest
 
 import numba_dpex as dpex
 from numba_dpex import float32, int64, usm_ndarray
@@ -117,8 +118,8 @@ except MissingSpecializationError as mse:
 
 try:
     dpex.kernel((int64[::1], int64[::1], int64[::1]))
-except InvalidKernelSpecializationError as ikse:
-    print(ikse)
+except InvalidKernelSpecializationError:
+    logging.exception()
 
 
 # ------------                 Limitations                       ------------ #
@@ -130,5 +131,5 @@ except InvalidKernelSpecializationError as ikse:
 
 try:
     dpex.kernel("(i64arrty, i64arrty, i64arrty)")
-except NotImplementedError as nie:
-    print(nie)
+except NotImplementedError:
+    logging.exception()
