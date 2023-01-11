@@ -607,7 +607,6 @@ class JitKernel:
             kernel_name=self.kernel_name,
             arg_list=args,
             argty_list=argtypes,
-            queue=exec_queue,
         )
 
         exec_queue.submit(
@@ -618,6 +617,3 @@ class JitKernel:
         )
 
         exec_queue.wait()
-
-        # TODO remove once NumPy support is removed
-        packer.repacked_args

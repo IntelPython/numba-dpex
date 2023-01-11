@@ -197,21 +197,11 @@ class Packer:
         else:
             raise UnsupportedKernelArgumentError(ty, val, self._pyfunc_name)
 
-    def _pack_array(self):
-        """
-        Copy device data back to host
-        """
-        for obj in self._repack_list:
-            utils.copy_to_numpy_from_usm_obj(obj._usm_mem, obj._packed_val)
-            if obj._packed:
-                np.copyto(obj._orig_val, obj._packed_val)
-
     def __init__(
         self,
         kernel_name,
         arg_list,
         argty_list,
-        queue,
     ) -> None:
         """_summary_
 
@@ -222,10 +212,6 @@ class Packer:
         self._pyfunc_name = kernel_name
         self._arg_list = arg_list
         self._argty_list = argty_list
-        self._queue = queue
-        # Create a list to store the numpy arrays that need to be
-        # repacked beoe returning from a kernel.
-        self._repack_list = []
 
         # loop over the arg_list and generate the kernelargs list
         self._unpacked_args = []
@@ -242,8 +228,3 @@ class Packer:
     @property
     def unpacked_args(self):
         return self._unpacked_args
-
-    @property
-    def repacked_args(self):
-        self._pack_array()
-        return self._repack_list
