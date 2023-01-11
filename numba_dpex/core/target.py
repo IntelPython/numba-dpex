@@ -14,11 +14,13 @@ from numba.core.base import BaseContext
 from numba.core.callconv import MinimalCallConv
 from numba.core.registry import cpu_target
 from numba.core.target_extension import GPU, target_registry
+from numba.core.types import Array as NpArrayType
 from numba.core.utils import cached_property
 
 from numba_dpex.core.datamodel.models import _init_data_model_manager
 from numba_dpex.core.exceptions import UnsupportedKernelArgumentError
 from numba_dpex.core.typeconv import to_usm_ndarray
+from numba_dpex.core.types import USMNdArray
 from numba_dpex.core.utils import get_info_from_suai
 from numba_dpex.utils import (
     address_space,
@@ -68,7 +70,7 @@ class DpexTypingContext(typing.BaseContext):
 
         """
         try:
-            _type = type(typeof(val))
+            type(typeof(val))
         except ValueError:
             # When an array-like kernel argument is not recognized by
             # numba-dpex, this additional check sees if the array-like object
@@ -82,13 +84,12 @@ class DpexTypingContext(typing.BaseContext):
                     type=str(type(val)), value=val
                 )
 
-        # FIXME: Remove once NumPy arrays are no longer supported as kernel
-        # args.
-        if _type is types.npytypes.Array:
-            # Convert npytypes.Array to numba_dpex.core.types.Array
-            return npytypes_array_to_dpex_array(typeof(val))
-        else:
-            return super().resolve_argument_type(val)
+        if isinstance(typeof(val), NpArrayType) and not isinstance(
+            typeof(val), USMNdArray
+        ):
+            raise UnsupportedKernelArgumentError(type=str(type(val)), value=val)
+
+        return super().resolve_argument_type(val)
 
     def load_additional_registries(self):
         """Register the OpenCL API and math and other functions."""
