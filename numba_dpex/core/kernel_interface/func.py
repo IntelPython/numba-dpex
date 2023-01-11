@@ -8,24 +8,149 @@
 
 from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
+from numba_dpex import config
+from numba_dpex.core.caching import LRUCache, NullCache, build_key
 from numba_dpex.core.compiler import compile_with_dpex
 from numba_dpex.core.descriptor import dpex_target
 
 
+class DpexFunction(object):
+    def __init__(self, pyfunc, return_type, debug=None):
+        self._pyfunc = pyfunc
+        self._return_type = return_type
+        self._debug = debug
+        self._enable_cache = True
+
+        if not config.ENABLE_CACHE:
+            self._cache = NullCache()
+        elif self._enable_cache:
+            self._cache = LRUCache(
+                capacity=config.CACHE_SIZE, pyfunc=self._pyfunc
+            )
+        else:
+            self._cache = NullCache()
+        self._cache_hits = 0
+
+    @property
+    def cache(self):
+        return self._cache
+
+    @property
+    def cache_hits(self):
+        return self._cache_hits
+
+    def compile(self, args):
+        argtypes = [
+            dpex_target.typing_context.resolve_argument_type(arg)
+            for arg in args
+        ]
+        key = build_key(
+            tuple(argtypes),
+            self._pyfunc,
+            dpex_target.target_context.codegen(),
+        )
+        breakpoint()
+        cres = self._cache.get(key)
+        if cres is None:
+            self._cache_hits += 1
+            print("----------> DpexFunction hit")
+            cres = compile_with_dpex(
+                pyfunc=self._pyfunc,
+                pyfunc_name=self._pyfunc.__name__,
+                return_type=self._return_type,
+                target_context=dpex_target.target_context,
+                typing_context=dpex_target.typing_context,
+                args=args,
+                is_kernel=False,
+                debug=self._debug,
+            )
+            func = cres.library.get_function(cres.fndesc.llvm_func_name)
+            cres.target_context.mark_ocl_device(func)
+            self._cache.put(key, cres)
+
+        return cres
+
+
+class DpexFunctionTemplate(object):
+    """Unmaterialized dpex function"""
+
+    def __init__(self, pyfunc, debug=None, enable_cache=True):
+        self._pyfunc = pyfunc
+        self._debug = debug
+        self._enable_cache = enable_cache
+        self._compileinfos = {}
+
+        if not config.ENABLE_CACHE:
+            self._cache = NullCache()
+        elif self._enable_cache:
+            self._cache = LRUCache(
+                capacity=config.CACHE_SIZE, pyfunc=self._pyfunc
+            )
+        else:
+            self._cache = NullCache()
+        self._cache_hits = 0
+
+    @property
+    def cache(self):
+        return self._cache
+
+    @property
+    def cache_hits(self):
+        return self._cache_hits
+
+    def compile(self, args):
+        """Compile a dpex.func decorated Python function with the given
+        argument types.
+
+        Each signature is compiled once by caching the compiled function inside
+        this object.
+        """
+        argtypes = [
+            dpex_target.typing_context.resolve_argument_type(arg)
+            for arg in args
+        ]
+        key = build_key(
+            tuple(argtypes),
+            self._pyfunc,
+            dpex_target.target_context.codegen(),
+        )
+        breakpoint()
+        cres = self._cache.get(key)
+        if cres is None:
+            self._cache_hits += 1
+            print("----------> DpexFunctionTemplate hit")
+            cres = compile_with_dpex(
+                pyfunc=self._pyfunc,
+                pyfunc_name=self._pyfunc.__name__,
+                return_type=None,
+                target_context=dpex_target.target_context,
+                typing_context=dpex_target.typing_context,
+                args=args,
+                is_kernel=False,
+                debug=self._debug,
+            )
+            func = cres.library.get_function(cres.fndesc.llvm_func_name)
+            cres.target_context.mark_ocl_device(func)
+            first_definition = not self._compileinfos
+            self._compileinfos[args] = cres
+            libs = [cres.library]
+
+            if first_definition:
+                # First definition
+                cres.target_context.insert_user_function(
+                    self, cres.fndesc, libs
+                )
+            else:
+                cres.target_context.add_user_function(self, cres.fndesc, libs)
+            self._cache.put(key, cres)
+
+        return cres.signature
+
+
 def compile_func(pyfunc, return_type, args, debug=None):
-    cres = compile_with_dpex(
-        pyfunc=pyfunc,
-        pyfunc_name=pyfunc.__name__,
-        return_type=return_type,
-        target_context=dpex_target.target_context,
-        typing_context=dpex_target.typing_context,
-        args=args,
-        is_kernel=False,
-        debug=debug,
-    )
-    func = cres.library.get_function(cres.fndesc.llvm_func_name)
-    cres.target_context.mark_ocl_device(func)
-    devfn = DpexFunction(cres)
+
+    devfn = DpexFunction(pyfunc, return_type, debug=debug)
+    cres = devfn.compile(args)
 
     class _function_template(ConcreteTemplate):
         key = devfn
@@ -52,54 +177,3 @@ def compile_func_template(pyfunc, debug=None):
 
     dpex_target.typing_context.insert_user_function(dft, _function_template)
     return dft
-
-
-class DpexFunctionTemplate(object):
-    """Unmaterialized dpex function"""
-
-    def __init__(self, pyfunc, debug=None):
-        self.py_func = pyfunc
-        self.debug = debug
-        self._compileinfos = {}
-
-    def compile(self, args):
-        """Compile a dpex.func decorated Python function with the given
-        argument types.
-
-        Each signature is compiled once by caching the compiled function inside
-        this object.
-        """
-        if args not in self._compileinfos:
-            cres = compile_with_dpex(
-                pyfunc=self.py_func,
-                pyfunc_name=self.py_func.__name__,
-                return_type=None,
-                target_context=dpex_target.target_context,
-                typing_context=dpex_target.typing_context,
-                args=args,
-                is_kernel=False,
-                debug=self.debug,
-            )
-            func = cres.library.get_function(cres.fndesc.llvm_func_name)
-            cres.target_context.mark_ocl_device(func)
-            first_definition = not self._compileinfos
-            self._compileinfos[args] = cres
-            libs = [cres.library]
-
-            if first_definition:
-                # First definition
-                cres.target_context.insert_user_function(
-                    self, cres.fndesc, libs
-                )
-            else:
-                cres.target_context.add_user_function(self, cres.fndesc, libs)
-
-        else:
-            cres = self._compileinfos[args]
-
-        return cres.signature
-
-
-class DpexFunction(object):
-    def __init__(self, cres):
-        self.cres = cres

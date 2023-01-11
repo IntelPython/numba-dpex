@@ -94,39 +94,31 @@ def kernel(
         return _kernel_dispatcher(func)
 
 
-def func(signature=None, debug=None):
-    if signature is None:
-        return _func_autojit_wrapper(debug=debug)
-    elif not sigutils.is_signature(signature):
-        func = signature
-        return _func_autojit(func, debug=debug)
-    else:
-        return _func_jit(signature, debug=debug)
-
-
-def _func_jit(signature, debug=None):
-    argtypes, restype = sigutils.normalize_signature(signature)
-    argtypes = tuple(
-        [
-            npytypes_array_to_dpex_array(ty)
-            if isinstance(ty, types.npytypes.Array)
-            else ty
-            for ty in argtypes
-        ]
-    )
-
-    def _wrapped(pyfunc):
-        return compile_func(pyfunc, restype, argtypes, debug=debug)
-
-    return _wrapped
-
-
-def _func_autojit_wrapper(debug=None):
-    def _func_autojit(pyfunc, debug=debug):
+def func(func_or_sig=None, debug=None, enable_cache=True):
+    def _func_autojit(pyfunc, debug=None):
         return compile_func_template(pyfunc, debug=debug)
 
-    return _func_autojit
+    def _func_autojit_wrapper(debug=None):
+        return _func_autojit
 
+    if func_or_sig is None:
+        return _func_autojit_wrapper(debug=debug)
+    elif not sigutils.is_signature(func_or_sig):
+        func = func_or_sig
+        return _func_autojit(func, debug=debug)
+    else:
+        argtypes, restype = sigutils.normalize_signature(func_or_sig)
+        argtypes = tuple(
+            [
+                npytypes_array_to_dpex_array(ty)
+                if isinstance(ty, types.npytypes.Array)
+                else ty
+                for ty in argtypes
+            ]
+        )
 
-def _func_autojit(pyfunc, debug=None):
-    return compile_func_template(pyfunc, debug=debug)
+        def _wrapped(pyfunc):
+            print("----------> _wrapped()")
+            return compile_func(pyfunc, restype, argtypes, debug=debug)
+
+        return _wrapped
