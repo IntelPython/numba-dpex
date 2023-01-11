@@ -10,7 +10,8 @@ import numba_dpex as ndpex
 N = 10
 
 
-# A device callable function that can be invoked from ``kernel`` and other device functions
+# A device callable function that can be invoked from ``kernel`` and other
+# device functions
 @ndpex.func
 def a_device_function(a):
     return a + 1

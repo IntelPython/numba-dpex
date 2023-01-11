@@ -21,8 +21,9 @@ class USMNdArray(Array):
         dtype,
         ndim,
         layout,
-        usm_type,
-        device,
+        usm_type="unknown",
+        device="unknown",
+        queue=None,
         readonly=False,
         name=None,
         aligned=True,
@@ -33,8 +34,13 @@ class USMNdArray(Array):
 
         # Normalize the device filter string and get the fully qualified three
         # tuple (backend:device_type:device_num) filter string from dpctl.
-        _d = dpctl.SyclDevice(device)
-        self.device = _d.filter_string
+        if device != "unknown":
+            _d = dpctl.SyclDevice(device)
+            self.device = _d.filter_string
+        else:
+            self.device = "unknown"
+
+        self.queue = queue
 
         if name is None:
             type_name = "usm_ndarray"

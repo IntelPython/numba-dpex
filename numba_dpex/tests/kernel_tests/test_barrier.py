@@ -11,7 +11,7 @@ import numba_dpex as dpex
 from numba_dpex import float32, usm_ndarray, void
 from numba_dpex.tests._helper import filter_strings
 
-f32arrty = usm_ndarray(float32, 1, "C", usm_type="device", device="0")
+f32arrty = usm_ndarray(float32, 1, "C")
 
 
 @pytest.mark.parametrize("filter_str", filter_strings)
@@ -25,7 +25,7 @@ def test_proper_lowering(filter_str):
         A[i] = d * 2
 
     N = 256
-    arr = dpt.arange(N, dtype=dpt.float32, device="0")
+    arr = dpt.arange(N, dtype=dpt.float32)
     orig = dpt.asnumpy(arr)
     twice[N, N // 2](arr)
     after = dpt.asnumpy(arr)
@@ -44,7 +44,7 @@ def test_no_arg_barrier_support(filter_str):
         A[i] = d * 2
 
     N = 256
-    arr = dpt.arange(N, dtype=dpt.float32, device="0")
+    arr = dpt.arange(N, dtype=dpt.float32)
     orig = dpt.asnumpy(arr)
     twice[N, dpex.DEFAULT_LOCAL_SIZE](arr)
     after = dpt.asnumpy(arr)
@@ -68,7 +68,7 @@ def test_local_memory(filter_str):
         # write
         A[i] += lm[blocksize - 1 - i]
 
-    arr = dpt.arange(blocksize, dtype=dpt.float32, device="0")
+    arr = dpt.arange(blocksize, dtype=dpt.float32)
     orig = dpt.asnumpy(arr)
     reverse_array[blocksize, blocksize](arr)
     after = dpt.asnumpy(arr)
