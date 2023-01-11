@@ -9,7 +9,7 @@ import pytest
 import numba_dpex as dpex
 from numba_dpex import int32, usm_ndarray
 
-i32arrty = usm_ndarray(int32, 1, "C", usm_type="device", device="0")
+i32arrty = usm_ndarray(int32, 1, "C")
 
 
 def f(a):

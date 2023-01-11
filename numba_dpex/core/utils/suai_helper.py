@@ -27,6 +27,7 @@ class SyclUSMArrayInterface:
         dtype,
         usm_type,
         device,
+        queue,
     ):
         self._data = data
         self._data_writeable = writable
@@ -38,6 +39,7 @@ class SyclUSMArrayInterface:
         self._dtype = dtype
         self._usm_type = usm_type
         self._device = device
+        self._queue = queue
 
     @property
     def data(self):
@@ -78,6 +80,10 @@ class SyclUSMArrayInterface:
     @property
     def device(self):
         return self._device
+
+    @property
+    def queue(self):
+        return self._queue
 
 
 def get_info_from_suai(obj):
@@ -138,6 +144,7 @@ def get_info_from_suai(obj):
         size=total_size,
         usm_type=usm_type,
         device=device,
+        queue=syclobj,
         shape=shape,
         dimensions=ndim,
         itemsize=itemsize,

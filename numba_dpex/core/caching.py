@@ -10,6 +10,7 @@ from numba.core.caching import CacheImpl, IndexDataCacheFile
 from numba.core.serialize import dumps
 
 from numba_dpex import config
+from numba_dpex.core.types import USMNdArray
 
 
 def build_key(argtypes, pyfunc, codegen, backend=None, device_type=None):
@@ -48,6 +49,15 @@ def build_key(argtypes, pyfunc, codegen, backend=None, device_type=None):
             cvarbytes = b""  # a temporary solution for function template
     else:
         cvarbytes = b""
+
+    argtylist = list(argtypes)
+    for i, argty in enumerate(argtylist):
+        if isinstance(argty, USMNdArray):
+            # Convert the USMNdArray to an abridged type that disregards the
+            # usm_type, device, queue, address space attributes.
+            argtylist[i] = (argty.ndim, argty.dtype, argty.layout)
+
+    argtypes = tuple(argtylist)
 
     return (
         argtypes,

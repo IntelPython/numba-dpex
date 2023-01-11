@@ -141,7 +141,7 @@ class JitKernel:
     def cache_hits(self):
         return self._cache_hits
 
-    def _compile_and_cache(self, argtypes, backend, device_type, cache):
+    def _compile_and_cache(self, argtypes, cache):
         """Helper function to compile the Python function or Numba FunctionIR
         object passed to a JitKernel and store it in an internal cache.
         """
@@ -165,8 +165,6 @@ class JitKernel:
             tuple(argtypes),
             self.pyfunc,
             kernel.target_context.codegen(),
-            backend=backend,
-            device_type=device_type,
         )
         cache.put(key, (device_driver_ir_module, kernel_module_name))
 
@@ -212,25 +210,8 @@ class JitKernel:
                 unsupported_argnum_list=unsupported_argnum_list,
             )
 
-        # CFD check and get the execution queue
-        device = self._chk_compute_follows_data_compliance(usmndarray_argtypes)
-        if not device:
-            raise ComputeFollowsDataInferenceError(
-                self.kernel_name, usmarray_argnum_list=usmarray_argnums
-            )
-
-        if device.backend not in [
-            dpctl.backend_type.opencl,
-            dpctl.backend_type.level_zero,
-        ]:
-            raise UnsupportedBackendError(
-                self.kernel_name, device.backend, JitKernel._supported_backends
-            )
-        # compile and cache the kernel
         self._compile_and_cache(
             argtypes=argtypes,
-            backend=device.backend,
-            device_type=device.device_type,
             cache=self._specialization_cache,
         )
 
@@ -310,22 +291,17 @@ class JitKernel:
             else None is returned.
         """
 
-        device = None
+        queue = None
 
         for usm_array in usm_array_arglist:
-            filter_str = usm_array.device
-            try:
-                _device = dpctl.SyclDevice(filter_str)
-            except Exception as e:
-                print(e)
-                return None
-            if not device:
-                device = _device
+            _queue = usm_array.queue
+            if not queue:
+                queue = _queue
             else:
-                if _device != device:
+                if _queue != queue:
                     return None
 
-        return device
+        return queue
 
     def _determine_kernel_launch_queue(self, args, argtypes):
         """Determines the queue where the kernel is to be launched.
@@ -437,14 +413,14 @@ class JitKernel:
                 if i in usmarray_argnums
             ]
 
-            device = self._chk_compute_follows_data_compliance(usm_array_args)
+            queue = self._chk_compute_follows_data_compliance(usm_array_args)
 
-            if not device:
+            if not queue:
                 raise ComputeFollowsDataInferenceError(
                     self.kernel_name, usmarray_argnum_list=usmarray_argnums
                 )
 
-            return dpctl.SyclQueue(device)
+            return queue
         else:
             if dpctl.is_in_device_context():
                 warn(
@@ -617,7 +593,6 @@ class JitKernel:
         # redundant. We should avoid these checks for the specialized case.
         exec_queue = self._determine_kernel_launch_queue(args, argtypes)
         backend = exec_queue.backend
-        device_type = exec_queue.sycl_device.device_type
 
         if exec_queue.backend not in [
             dpctl.backend_type.opencl,
@@ -637,8 +612,6 @@ class JitKernel:
             tuple(argtypes),
             self.pyfunc,
             dpex_target.target_context.codegen(),
-            backend=backend,
-            device_type=device_type,
         )
 
         # If the JitKernel was specialized then raise exception if argtypes
@@ -661,8 +634,6 @@ class JitKernel:
                     kernel_module_name,
                 ) = self._compile_and_cache(
                     argtypes=argtypes,
-                    backend=backend,
-                    device_type=device_type,
                     cache=self._cache,
                 )
 
