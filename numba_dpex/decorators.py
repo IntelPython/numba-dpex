@@ -6,10 +6,7 @@ import inspect
 
 from numba.core import sigutils, types
 
-from numba_dpex.core.kernel_interface.dispatcher import (
-    JitKernel,
-    get_ordered_arg_access_types,
-)
+from numba_dpex.core.kernel_interface.dispatcher import JitKernel
 from numba_dpex.core.kernel_interface.func import (
     compile_func,
     compile_func_template,
@@ -35,13 +32,10 @@ def kernel(
     """
 
     def _kernel_dispatcher(pyfunc, sigs=None):
-        ordered_arg_access_types = get_ordered_arg_access_types(
-            pyfunc, access_types
-        )
+
         return JitKernel(
             pyfunc=pyfunc,
             debug_flags=debug,
-            array_access_specifiers=ordered_arg_access_types,
             enable_cache=enable_cache,
             specialization_sigs=sigs,
         )
@@ -70,13 +64,10 @@ def kernel(
             func_or_sig = [func_or_sig]
 
         def _specialized_kernel_dispatcher(pyfunc):
-            ordered_arg_access_types = get_ordered_arg_access_types(
-                pyfunc, access_types
-            )
+
             return JitKernel(
                 pyfunc=pyfunc,
                 debug_flags=debug,
-                array_access_specifiers=ordered_arg_access_types,
                 enable_cache=enable_cache,
                 specialization_sigs=func_or_sig,
             )

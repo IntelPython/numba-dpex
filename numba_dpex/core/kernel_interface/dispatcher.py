@@ -70,7 +70,6 @@ class JitKernel:
         pyfunc,
         debug_flags=None,
         compile_flags=None,
-        array_access_specifiers=None,
         specialization_sigs=None,
         enable_cache=True,
     ):
@@ -94,17 +93,6 @@ class JitKernel:
         else:
             self._cache = NullCache()
         self._cache_hits = 0
-
-        if array_access_specifiers:
-            warn(
-                "Access specifiers apply only to NumPy ndarrays. "
-                + "Support for NumPy ndarray objects as kernel arguments "
-                + "and access specifiers flags is deprecated. "
-                + "Use dpctl.tensor.usm_ndarray based arrays instead.",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-        self.array_access_specifiers = array_access_specifiers
 
         if debug_flags or config.OPT == 0:
             # if debug is ON we need to pass additional
@@ -391,31 +379,8 @@ class JitKernel:
                 array_argnums, usmarray_argnum_list=usmarray_argnums
             )
         elif array_argnums and not usmarray_argnums:
-            if dpctl.is_in_device_context():
-                warn(
-                    "Support for dpctl.device_context to specify the "
-                    + "execution queue is deprecated. "
-                    + "Use dpctl.tensor.usm_ndarray based array "
-                    + "containers instead. ",
-                    DeprecationWarning,
-                    stacklevel=2,
-                )
-                warn(
-                    "Support for NumPy ndarray objects as kernel arguments is "
-                    + "deprecated. Use dpctl.tensor.usm_ndarray based array "
-                    + "containers instead. ",
-                    DeprecationWarning,
-                    stacklevel=2,
-                )
-                return dpctl.get_current_queue()
-            else:
-                raise ExecutionQueueInferenceError(self.kernel_name)
+            raise ExecutionQueueInferenceError(self.kernel_name)
         elif usmarray_argnums and not array_argnums:
-            if dpctl.is_in_device_context():
-                warn(
-                    "dpctl.device_context ignored as the kernel arguments "
-                    + "are dpctl.tensor.usm_ndarray based array containers."
-                )
             usm_array_args = [
                 argtype
                 for i, argtype in enumerate(argtypes)
@@ -431,18 +396,7 @@ class JitKernel:
             else:
                 return dpctl.SyclQueue(device)
         else:
-            if dpctl.is_in_device_context():
-                warn(
-                    "Support for dpctl.device_context to specify the "
-                    + "execution queue is deprecated. "
-                    + "Use dpctl.tensor.usm_ndarray based array "
-                    + "containers instead. ",
-                    DeprecationWarning,
-                    stacklevel=2,
-                )
-                return dpctl.get_current_queue()
-            else:
-                raise ExecutionQueueInferenceError(self.kernel_name)
+            raise ExecutionQueueInferenceError(self.kernel_name)
 
     def __getitem__(self, args):
         """Mimic's ``numba.cuda`` square-bracket notation for configuring the
@@ -654,7 +608,6 @@ class JitKernel:
             arg_list=args,
             argty_list=argtypes,
             queue=exec_queue,
-            access_specifiers_list=self.array_access_specifiers,
         )
 
         exec_queue.submit(

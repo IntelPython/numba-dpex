@@ -158,7 +158,7 @@ class Packer:
             packed_val.ndim,
         )
 
-    def _unpack_argument(self, ty, val, access_specifier):
+    def _unpack_argument(self, ty, val):
         """
         Unpack a Python object into a ctype value using Numba's
         type-inference machinery.
@@ -176,8 +176,6 @@ class Packer:
 
         if isinstance(ty, USMNdArray):
             return self._unpack_usm_array(val)
-        elif isinstance(ty, types.Array):
-            return self._unpack_array(val, access_specifier)
         elif ty == types.int64:
             return ctypes.c_longlong(val)
         elif ty == types.uint64:
@@ -209,14 +207,17 @@ class Packer:
                 np.copyto(obj._orig_val, obj._packed_val)
 
     def __init__(
-        self, kernel_name, arg_list, argty_list, access_specifiers_list, queue
+        self,
+        kernel_name,
+        arg_list,
+        argty_list,
+        queue,
     ) -> None:
         """_summary_
 
         Args:
             arg_list (_type_): _description_
             argty_list (_type_): _description_
-            queue: _description_
         """
         self._pyfunc_name = kernel_name
         self._arg_list = arg_list
@@ -232,7 +233,6 @@ class Packer:
             arg = self._unpack_argument(
                 ty=argty_list[i],
                 val=val,
-                access_specifier=access_specifiers_list[i],
             )
             if type(arg) == list:
                 self._unpacked_args.extend(arg)
