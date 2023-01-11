@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>numba_dpex.core.utils package &mdash; numba-dpex 0.19.0+67.gcd3ecb20 documentation</title>
+  <title>numba_dpex.core.utils package &mdash; numba-dpex 0.19.0+67.gd8168033 documentation</title>
   
 
   
@@ -182,6 +182,7 @@
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.dtype"><code class="docutils literal notranslate"><span class="pre">SyclUSMArrayInterface.dtype</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.is_writable"><code class="docutils literal notranslate"><span class="pre">SyclUSMArrayInterface.is_writable</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.itemsize"><code class="docutils literal notranslate"><span class="pre">SyclUSMArrayInterface.itemsize</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.queue"><code class="docutils literal notranslate"><span class="pre">SyclUSMArrayInterface.queue</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.shape"><code class="docutils literal notranslate"><span class="pre">SyclUSMArrayInterface.shape</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.size"><code class="docutils literal notranslate"><span class="pre">SyclUSMArrayInterface.size</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.strides"><code class="docutils literal notranslate"><span class="pre">SyclUSMArrayInterface.strides</span></code></a></li>
@@ -198,7 +199,7 @@
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-numba_dpex.core.utils" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.SyclUSMArrayInterface">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.utils.</span></span><span class="sig-name descname"><span class="pre">SyclUSMArrayInterface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">writable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">itemsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.SyclUSMArrayInterface" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.utils.</span></span><span class="sig-name descname"><span class="pre">SyclUSMArrayInterface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">writable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">itemsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.SyclUSMArrayInterface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Stores as attributes the information extracted from a
 __sycl_usm_array_interface__ dictionary as defined by dpctl.memory.Memory*
@@ -231,6 +232,11 @@ classes.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="numba_dpex.core.utils.SyclUSMArrayInterface.itemsize">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">itemsize</span></span><a class="headerlink" href="#numba_dpex.core.utils.SyclUSMArrayInterface.itemsize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.SyclUSMArrayInterface.queue">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">queue</span></span><a class="headerlink" href="#numba_dpex.core.utils.SyclUSMArrayInterface.queue" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
