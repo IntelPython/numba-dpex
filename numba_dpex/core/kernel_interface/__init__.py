@@ -2,5 +2,5 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-"""Defines the Kernel classes that abstract a SYCL device kernel.
+"""Defines the interface for kernel compilation using numba-dpex.
 """
