@@ -89,7 +89,9 @@ class JitKernel:
             self._cache = NullCache()
         elif enable_cache:
             self._cache = LRUCache(
-                capacity=config.CACHE_SIZE, pyfunc=self.pyfunc
+                name="SPIRVKernelCache",
+                capacity=config.CACHE_SIZE,
+                pyfunc=self.pyfunc,
             )
         else:
             self._cache = NullCache()
@@ -118,7 +120,9 @@ class JitKernel:
         if specialization_sigs:
             self._has_specializations = True
             self._specialization_cache = LRUCache(
-                capacity=config.CACHE_SIZE, pyfunc=self.pyfunc
+                name="SPIRVKernelSpecializationCache",
+                capacity=config.CACHE_SIZE,
+                pyfunc=self.pyfunc,
             )
             for sig in specialization_sigs:
                 self._specialize(sig)
