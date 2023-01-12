@@ -97,14 +97,6 @@ def func(signature=None, debug=None):
 
 def _func_jit(signature, debug=None):
     argtypes, restype = sigutils.normalize_signature(signature)
-    argtypes = tuple(
-        [
-            npytypes_array_to_dpex_array(ty)
-            if isinstance(ty, types.npytypes.Array)
-            else ty
-            for ty in argtypes
-        ]
-    )
 
     def _wrapped(pyfunc):
         return compile_func(pyfunc, restype, argtypes, debug=debug)

@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import dpctl
-import numpy as np
+import dpctl.tensor as dpt
 
 import numba_dpex as dpex
 from numba_dpex.tests._helper import skip_no_opencl_gpu
@@ -23,14 +23,17 @@ class TestFunc:
             i = dpex.get_global_id(0)
             b[i] = g(a[i])
 
-        a = np.ones(self.N)
-        b = np.ones(self.N)
+        a = dpt.ones(self.N, dtype=dpt.int32)
+        b = dpt.ones(self.N, dtype=dpt.int32)
 
         device = dpctl.SyclDevice("opencl:gpu")
         with dpctl.device_context(device):
             f[self.N, dpex.DEFAULT_LOCAL_SIZE](a, b)
 
-        assert np.all(b == 2)
+        npb = dpt.asnumpy(b)
+        import numpy as np
+
+        assert np.all(npb == 2)
 
     def test_func_ndarray(self):
         @dpex.func
@@ -47,15 +50,17 @@ class TestFunc:
             i = dpex.get_global_id(0)
             b[i] = g(a[i]) + 1
 
-        a = np.ones(self.N)
-        b = np.ones(self.N)
+        a = dpt.ones(self.N, dtype=dpt.int32)
+        b = dpt.ones(self.N, dtype=dpt.int32)
 
         device = dpctl.SyclDevice("opencl:gpu")
         with dpctl.device_context(device):
             f[self.N, dpex.DEFAULT_LOCAL_SIZE](a, b)
+            npb = dpt.asnumpy(b)
+            import numpy as np
 
-            assert np.all(b == 2)
+            assert np.all(npb == 2)
 
             h[self.N, dpex.DEFAULT_LOCAL_SIZE](a, b)
-
-            assert np.all(b == 3)
+            npb = dpt.asnumpy(b)
+            assert np.all(npb == 3)
