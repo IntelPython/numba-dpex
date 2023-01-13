@@ -14,11 +14,11 @@ from numba_dpex.core.exceptions import (
     MissingSpecializationError,
 )
 
-# Similar to Numba, numba-dpex supports ahead-of-time (AOT) compilation of
-# functions. The following examples demonstrate the feature for
-# numba_dpex.kernel and presents usage scenarios and current limitations.
+# Similar to Numba, numba-dpex supports eager compilation of functions. The
+# following examples demonstrate the feature for numba_dpex.kernel and presents
+# usage scenarios and current limitations.
 
-# ------------                 AOT Example 1.                   ------------ #
+# ------------                 Example 1.                   ------------ #
 
 # Define type specializations using the numba_dpex usm_ndarray data type.
 i64arrty = usm_ndarray(int64, 1, "C", usm_type="device", device="0")
@@ -49,9 +49,9 @@ npc_expected = np.full(1024, 2, dtype=np.int64)
 assert np.array_equal(npc, npc_expected)
 
 
-# ------------                 AOT Example 2.                   ------------ #
+# ------------                 Example 2.                   ------------ #
 
-# Multiple signatures can be specified as a list to AOT compile multiple
+# Multiple signatures can be specified as a list to eager compile multiple
 # versions of the kernel.
 
 # specialize a kernel for the i64arrty
@@ -91,9 +91,9 @@ npc_expected = np.full(1024, 2, dtype=np.float32)
 assert np.array_equal(npc, npc_expected)
 
 
-# ------------                 AOT Example 3.                   ------------ #
+# ------------                 Example 3.                   ------------ #
 
-# AOT specialized kernels cannot be jit compiled. Calling a specialized kernel
+# A specialized kernel cannot be jit compiled. Calling a specialized kernel
 # with arguments having type different from the specialization will result in
 # an MissingSpecializationError.
 
@@ -109,11 +109,11 @@ except MissingSpecializationError as mse:
     print(mse)
 
 
-# ------------                 AOT Example 4.                   ------------ #
+# ------------                 Example 4.                   ------------ #
 
 # Numba_dpex does not support NumPy arrays as kernel arguments and all
 # array arguments should be inferable as a numba_dpex.types.usm_ndarray. Trying
-# to AOT with a NumPy array-based signature will lead to an
+# to eager compile with a NumPy array-based signature will lead to an
 # InvalidKernelSpecializationError
 
 try:
