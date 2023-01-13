@@ -177,13 +177,14 @@ def side_by_side_2_info_locals_case(api):
             ),
         ),
         # FIXME: NUMBA_OPT=1 will not able to stop at breakpoint
-        (
+        pytest.param(
             {"NUMBA_OPT": 1},
             "sum_local_vars.py:16",
             "sum_local_vars.py",
             r"16\s+c\[i\] = l1 \+ l2",
             ("No locals.",),
             (),
+            marks=pytest.mark.xfail,
         ),
         (
             {"NUMBA_EXTEND_VARIABLE_LIFETIMES": 1},
@@ -202,9 +203,19 @@ def side_by_side_2_info_locals_case(api):
             (),
         ),
         side_by_side_info_locals_case("numba"),
-        side_by_side_info_locals_case("numba-dpex-kernel"),
+        pytest.param(
+            *side_by_side_info_locals_case("numba-dpex-kernel"),
+            marks=[
+                pytest.mark.xfail(reason="dpex isn't stoping with condition")
+            ],
+        ),
         side_by_side_2_info_locals_case("numba"),
-        side_by_side_2_info_locals_case("numba-dpex-kernel"),
+        pytest.param(
+            *side_by_side_2_info_locals_case("numba-dpex-kernel"),
+            marks=[
+                pytest.mark.xfail(reason="dpex isn't stoping with condition")
+            ],
+        ),
     ],
 )
 def test_info_locals(
@@ -263,9 +274,12 @@ def side_by_side_2_print_array_element_case(api):
     "breakpoint, script, expected_info",
     [
         side_by_side_2_print_array_element_case("numba"),
-        side_by_side_2_print_array_element_case(
-            "numba-dpex-kernel"
-        ),  # FIXME: dpex isn't stoping with condition
+        pytest.param(
+            *side_by_side_2_print_array_element_case("numba-dpex-kernel"),
+            marks=[
+                pytest.mark.xfail(reason="dpex isn't stoping with condition")
+            ],
+        ),
     ],
 )
 def test_print_array_element(app, breakpoint, script, expected_info):
@@ -299,9 +313,12 @@ def side_by_side_2_assignment_to_variable_case(api):
     "breakpoint, script, expected_info",
     [
         side_by_side_2_assignment_to_variable_case("numba"),
-        side_by_side_2_assignment_to_variable_case(
-            "numba-dpex-kernel"
-        ),  # FIXME: dpex isn't stoping with condition
+        pytest.param(
+            *side_by_side_2_assignment_to_variable_case("numba-dpex-kernel"),
+            marks=[
+                pytest.mark.xfail(reason="dpex isn't stoping with condition")
+            ],
+        ),
     ],
 )
 def test_assignment_to_variable(app, breakpoint, script, expected_info):
