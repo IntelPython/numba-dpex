@@ -27,6 +27,7 @@ class SyclUSMArrayInterface:
         dtype,
         usm_type,
         device,
+        queue,
     ):
         self._data = data
         self._data_writeable = writable
@@ -38,6 +39,7 @@ class SyclUSMArrayInterface:
         self._dtype = dtype
         self._usm_type = usm_type
         self._device = device
+        self._queue = queue
 
     @property
     def data(self):
@@ -78,6 +80,10 @@ class SyclUSMArrayInterface:
     @property
     def device(self):
         return self._device
+
+    @property
+    def queue(self):
+        return self._queue
 
 
 def get_info_from_suai(obj):
@@ -128,12 +134,7 @@ def get_info_from_suai(obj):
             strides[i - 1] = strides[i] * shape[i]
         strides = tuple(strides)
 
-    syclobj = usm_mem.__sycl_usm_array_interface__["syclobj"]
-    if not isinstance(syclobj, dpctl.SyclQueue):
-        raise ValueError(
-            "dpctl.SyclQueue could not be inferred. "
-            "The __sycl_usm_array_interface__ may be malformed."
-        )
+    syclobj = usm_mem.sycl_queue
     device = syclobj.sycl_device.filter_string
     usm_type = usm_mem.get_usm_type()
 
@@ -143,6 +144,7 @@ def get_info_from_suai(obj):
         size=total_size,
         usm_type=usm_type,
         device=device,
+        queue=syclobj,
         shape=shape,
         dimensions=ndim,
         itemsize=itemsize,

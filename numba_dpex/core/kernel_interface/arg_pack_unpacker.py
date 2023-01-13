@@ -11,12 +11,11 @@ from numba.core import types
 
 import numba_dpex.utils as utils
 from numba_dpex.core.exceptions import (
-    SUAIProtocolError,
     UnsupportedAccessQualifierError,
     UnsupportedKernelArgumentError,
 )
 from numba_dpex.core.types import USMNdArray
-from numba_dpex.core.utils import SyclUSMArrayInterface, get_info_from_suai
+from numba_dpex.core.utils import get_info_from_suai
 
 
 class _NumPyArrayPackerPayload:
@@ -28,6 +27,9 @@ class _NumPyArrayPackerPayload:
 
 
 class Packer:
+    """Implements the functionality to unpack a Python object passed as an
+    argument to a numba_dpex kernel fucntion into corresponding ctype object.
+    """
 
     # TODO: Remove after NumPy support is removed
     _access_types = ("read_only", "write_only", "read_write")
@@ -44,8 +46,6 @@ class Packer:
     def _unpack_array_helper(self, size, itemsize, buf, shape, strides, ndim):
         """
         Implements the unpacking logic for array arguments.
-
-        TODO: Add more detail
 
         Args:
             size: Total number of elements in the array.
@@ -83,7 +83,7 @@ class Packer:
             val : An object of dpctl.types.UsmNdArray type.
 
         Returns:
-            _type_: _description_
+            list: A list of ctype objects representing the flattened usm_ndarray
         """
         suai_attrs = get_info_from_suai(val)
 
@@ -160,7 +160,7 @@ class Packer:
 
     def _unpack_argument(self, ty, val, access_specifier):
         """
-        Unpack a Python object into a ctype value using Numba's
+        Unpack a Python object into one or more ctype values using Numba's
         type-inference machinery.
 
         Args:
@@ -201,7 +201,8 @@ class Packer:
 
     def _pack_array(self):
         """
-        Copy device data back to host
+        Deprecated to be removed once NumPy array support in kernels is
+        removed.
         """
         for obj in self._repack_list:
             utils.copy_to_numpy_from_usm_obj(obj._usm_mem, obj._packed_val)
@@ -211,12 +212,18 @@ class Packer:
     def __init__(
         self, kernel_name, arg_list, argty_list, access_specifiers_list, queue
     ) -> None:
-        """_summary_
+        """Initializes new Packer object and unpacks the input argument list.
 
         Args:
-            arg_list (_type_): _description_
-            argty_list (_type_): _description_
-            queue: _description_
+            arg_list (list): A list of arguments to be unpacked
+            argty_list (list): A list of Numba inferred types for each argument.
+            access_specifiers_list(list): A list of access specifiers for
+            NumPy arrays to optimize host to device memory copy.
+            [Deprecated: can be removed along with NumPy array support]
+            queue (dpctl.SyclQueue): The SYCL queue where the kernel is to be
+            executed. The queue is required to allocate USM memory for NumPy
+            arrays.
+            [Deprecated: can be removed along with NumPy array support]
         """
         self._pyfunc_name = kernel_name
         self._arg_list = arg_list
@@ -241,9 +248,11 @@ class Packer:
 
     @property
     def unpacked_args(self):
+        """Returns the list of unpacked arguments created by a Packer object."""
         return self._unpacked_args
 
     @property
     def repacked_args(self):
+        """Returns the list of NumPy"""
         self._pack_array()
         return self._repack_list
