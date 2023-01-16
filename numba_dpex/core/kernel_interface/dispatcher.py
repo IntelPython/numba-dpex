@@ -464,14 +464,23 @@ class JitKernel:
         .. deprecated:: 0.19
         """
 
-        warn(
-            "The [] (__getitem__) method to set global and local ranges for "
-            + "launching a kernel is deprecated. "
-            + 'Set the "global_range" and the "local_range" keyword '
-            + "arguments when calling the kernel instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
+        # if not (isinstance(args, Range) or isinstance(args, NdRange)):
+        #     warn(
+        #         "Setting ranges directly in the [] (__getitem__) method "
+        #         + "is deprecated. The index space for the kernel should be "
+        #         + "specified via a Range or an NdRange instance.",
+        #         DeprecationWarning,
+        #         stacklevel=2,
+        #     )
+
+        # Check if an int is passed, if so the only global range from int
+
+        # If it is a tuple and the individual elements of the tuple are not
+        # tuples, then treat it as a multi-dimensional global range
+
+        # If it is a tuple and each element is a tuple then length of the tuple
+        # needs to be two. First element of the tuple is the global range
+        # the next is the local range.
 
         nargs = len(args)
         # Check if the kernel launch arguments are sane.
@@ -579,13 +588,11 @@ class JitKernel:
 
         return (global_range, local_range)
 
-    def __call__(self, *args, global_range=None, local_range=None):
+    def __call__(self, *args):
         """Functor to launch a kernel.
 
         Args:
-            global_range (list or tuple): optional global range for kernel
-            launch.
-            local_range (list or tuple): optional local range for kernel launch.
+            args: List of arguments passed to the kernel
         """
         argtypes = [self.typingctx.resolve_argument_type(arg) for arg in args]
         # FIXME: For specialized and ahead of time compiled and cached kernels,
@@ -601,11 +608,6 @@ class JitKernel:
             raise UnsupportedBackendError(
                 self.kernel_name, backend, JitKernel._supported_backends
             )
-
-        # TODO: Refactor after __getitem__ is removed
-        global_range, local_range = self._get_ranges(
-            global_range, local_range, exec_queue.sycl_device
-        )
 
         # load the kernel from cache
         key = build_key(
@@ -657,8 +659,8 @@ class JitKernel:
         exec_queue.submit(
             sycl_kernel,
             packer.unpacked_args,
-            global_range,
-            local_range,
+            self._global_range,
+            self._local_range,
         )
 
         exec_queue.wait()
