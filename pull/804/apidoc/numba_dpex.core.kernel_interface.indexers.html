@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>numba_dpex.core.kernel_interface.kernel_base module &mdash; numba-dpex 0.19.0+69.gd2bf343c documentation</title>
+  <title>numba_dpex.core.kernel_interface.indexers module &mdash; numba-dpex 0.19.0+69.gd2bf343c documentation</title>
   
 
   
@@ -149,13 +149,13 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>numba_dpex.core.kernel_interface.kernel_base module</li>
+      <li>numba_dpex.core.kernel_interface.indexers module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/apidoc/numba_dpex.core.kernel_interface.kernel_base.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/apidoc/numba_dpex.core.kernel_interface.indexers.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -168,50 +168,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="module-numba_dpex.core.kernel_interface.kernel_base">
-<span id="numba-dpex-core-kernel-interface-kernel-base-module"></span><h1>numba_dpex.core.kernel_interface.kernel_base module<a class="headerlink" href="#module-numba_dpex.core.kernel_interface.kernel_base" title="Permalink to this heading">¶</a></h1>
+  <section id="module-numba_dpex.core.kernel_interface.indexers">
+<span id="numba-dpex-core-kernel-interface-indexers-module"></span><h1>numba_dpex.core.kernel_interface.indexers module<a class="headerlink" href="#module-numba_dpex.core.kernel_interface.indexers" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.kernel_base.KernelInterface">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.kernel_interface.kernel_base.</span></span><span class="sig-name descname"><span class="pre">KernelInterface</span></span><a class="headerlink" href="#numba_dpex.core.kernel_interface.kernel_base.KernelInterface" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.indexers.Range">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.kernel_interface.indexers.</span></span><span class="sig-name descname"><span class="pre">Range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.indexers.Range" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>An interface for compute kernel that was generated either from a
-Python function object or as a Numba IR FunctionType object.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>metaclass (optional): The interface is derived from abc.ABCMeta.</p>
-</dd>
-<dt>Raises:</dt><dd><p>NotImplementedError: The interface does not implement any of the
-methods and subclasses are required to implement them.</p>
-</dd>
-</dl>
+<p>Defines an 1,2,or 3 dimensional index space over which a kernel is
+executed.</p>
+<p>The Range class is analogous to SYCL’s <code class="docutils literal notranslate"><span class="pre">sycl::range</span></code> class.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.kernel_base.KernelInterface.compile">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">compile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_ctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typing_ctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compile_flags</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.kernel_base.KernelInterface.compile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Abstract method to compile a Kernel instance.</p>
-</dd></dl>
+<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.indexers.Range.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.indexers.Range.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.kernel_base.KernelInterface.device_driver_ir_module">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">device_driver_ir_module</span></span><a class="headerlink" href="#numba_dpex.core.kernel_interface.kernel_base.KernelInterface.device_driver_ir_module" title="Permalink to this definition">¶</a></dt>
-<dd><p>The module in a device IR (such as SPIR-V or PTX) format.</p>
-</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.indexers.Range.rank">
+<span class="sig-name descname"><span class="pre">rank</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.indexers.Range.rank" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.kernel_base.KernelInterface.llvm_module">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">llvm_module</span></span><a class="headerlink" href="#numba_dpex.core.kernel_interface.kernel_base.KernelInterface.llvm_module" title="Permalink to this definition">¶</a></dt>
-<dd><p>The LLVM IR Module corresponding to the Kernel instance.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.kernel_base.KernelInterface.module_name">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">module_name</span></span><a class="headerlink" href="#numba_dpex.core.kernel_interface.kernel_base.KernelInterface.module_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>The LLVM module name for the compiled kernel.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.kernel_base.KernelInterface.pyfunc_name">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pyfunc_name</span></span><a class="headerlink" href="#numba_dpex.core.kernel_interface.kernel_base.KernelInterface.pyfunc_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>The Python function name corresponding to the Kernel instance.</p>
-</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.indexers.Range.size">
+<span class="sig-name descname"><span class="pre">size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.indexers.Range.size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
