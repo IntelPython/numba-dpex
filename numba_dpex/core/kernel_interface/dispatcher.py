@@ -82,7 +82,6 @@ class JitKernel:
         self.compile_flags = compile_flags
         self.kernel_name = pyfunc.__name__
 
-        # TODO: To be removed once the__getitem__ is removed
         self._global_range = None
         self._local_range = None
 
@@ -461,132 +460,80 @@ class JitKernel:
             KernelLauncher: A clone of the KernelLauncher object, but with the
             global_range and local_range attributes initialized.
 
-        .. deprecated:: 0.19
         """
 
-        warn(
-            "The [] (__getitem__) method to set global and local ranges for "
-            + "launching a kernel is deprecated. "
-            + 'Set the "global_range" and the "local_range" keyword '
-            + "arguments when calling the kernel instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
-        nargs = len(args)
-        # Check if the kernel launch arguments are sane.
-        if nargs < 1:
-            raise UnknownGlobalRangeError(kernel_name=self.kernel_name)
-        elif nargs > 2:
-            raise InvalidKernelLaunchArgsError(
-                kernel_name=self.kernel_name, args=args
-            )
-        self._global_range = args[0]
-        if nargs == 2 and args[1] != []:
-            self._local_range = args[1]
-        else:
+        if isinstance(args, int):
+            self._global_range = [args]
             self._local_range = None
+        elif (isinstance(args, tuple) or isinstance(args, list)) and all(
+            isinstance(v, int) for v in args
+        ):
+            self._global_range = list(args)
+            self._local_range = None
+        elif isinstance(args, tuple) and len(args) == 2:
+
+            gr = args[0]
+            lr = args[1]
+            if isinstance(gr, int):
+                self._global_range = [gr]
+            elif all(isinstance(v, int) for v in gr) and len(gr) != 0:
+                self._global_range = list(gr)
+            else:
+                raise IllegalRangeValueError(kernel_name=self.kernel_name)
+
+            if isinstance(lr, int):
+                self._local_range = [lr]
+            elif isinstance(lr, list) and len(lr) == 0:
+                # deprecation warning
+                warn(
+                    "Specifying the local range as an empty list "
+                    "(DEFAULT_LOCAL_SIZE) is deprecated. The kernel will be "
+                    "executed as a basic data-parallel kernel over the global "
+                    "range. Specify a valid local range to execute the kernel "
+                    "as an ND-range kernel.",
+                    DeprecationWarning,
+                    stacklevel=2,
+                )
+                self._local_range = None
+            elif all(isinstance(v, int) for v in lr) and len(lr) != 0:
+                self._local_range = list(lr)
+            else:
+                raise IllegalRangeValueError(kernel_name=self.kernel_name)
+        else:
+            raise IllegalRangeValueError(kernel_name=self.kernel_name)
+
+        # FIXME:[::-1] is done as OpenCL and SYCl have different orders when
+        # it comes to specifying dimensions.
+        self._global_range = list(self._global_range)[::-1]
+        if self._local_range:
+            self._local_range = list(self._local_range)[::-1]
 
         return copy.copy(self)
 
-    def _get_ranges(self, global_range, local_range, device):
-        """Helper to get the global and local range values needed to launch a
-        kernel.
-
-        The global and local range arguments can either be provided using the
-        __getitem__ method or as keyword arguments to the __call__ method.
-        The function verifies that the range values are specified using at least
-        one of the method.
+    def _check_ranges(self, device):
+        """Helper to get the validate the global and local range values prior
+        to launching a kernel.
 
         Args:
-            global_range (list or tuple): The global range to be used for kernel
-            launch.
-            local_range (list or tuple): The local range to be used for kernel
-            launch.
             device (dpctl.SyclDevice): The device on which to launch the kernel.
-
-        Raises:
-            UnknownGlobalRangeError: When no global range was specified for
-            kernel launch.
         """
-        if global_range:
-            if self._global_range:
-                warn(
-                    "Ignoring the previously set value of global_range and "
-                    + "using the value specified at the kernel call site."
-                )
-        else:
-            if self._global_range:
-                warn(
-                    "Use of __getitem__ to set the global_range attribute is "
-                    + 'deprecated. Use the keyword argument "global_range" '
-                    + "when calling the kernel to specify the global range."
-                )
-                global_range = self._global_range
-            else:
-                raise UnknownGlobalRangeError(self.kernel_name)
-
-        if local_range:
-            if self._local_range:
-                warn(
-                    "Ignoring the previously set value of local_range and "
-                    + "using the value specified at the kernel call site.."
-                )
-        else:
-            if self._local_range:
-                warn(
-                    "Use of __getitem__ to set the local_range attribute is "
-                    + 'deprecated. Use the keyword argument "local_range" '
-                    + "when calling the kernel to specify the local range."
-                )
-                local_range = self._local_range
-            else:
-                local_range = None
-                warn(
-                    "Kernel to be submitted without a local range letting "
-                    + "the SYCL runtime select a local range. The behavior "
-                    + "can lead to suboptimal performance in certain cases. "
-                    + "Consider setting the local range value for the kernel "
-                    + "execution.\n"
-                    + "The local_range keyword may be made a required argument "
-                    + "in the future when calling a kernel."
-                )
-
-        if isinstance(global_range, int):
-            global_range = [global_range]
-
         # If only global range value is provided, then the kernel is invoked
         # over an N-dimensional index space defined by a SYCL range<N>, where
         # N is one, two or three.
         # If both local and global range values are specified the kernel is
-        # invoked using a SYCL nd_range
+        # invoked as a SYCL nd_range kernel.
 
-        if global_range and not local_range:
-            self._check_range(global_range, device)
-            # FIXME:[::-1] is done as OpenCL and SYCl have different orders when
-            # it comes to specifying dimensions.
-            global_range = list(global_range)[::-1]
+        if self._global_range and not self._local_range:
+            self._check_range(self._global_range, device)
         else:
-            if isinstance(local_range, int):
-                local_range = [local_range]
             self._check_ndrange(
-                global_range=global_range,
-                local_range=local_range,
+                global_range=self._global_range,
+                local_range=self._local_range,
                 device=device,
             )
-            global_range = list(global_range)[::-1]
-            local_range = list(local_range)[::-1]
 
-        return (global_range, local_range)
-
-    def __call__(self, *args, global_range=None, local_range=None):
-        """Functor to launch a kernel.
-
-        Args:
-            global_range (list or tuple): optional global range for kernel
-            launch.
-            local_range (list or tuple): optional local range for kernel launch.
-        """
+    def __call__(self, *args):
+        """Functor to launch a kernel."""
         argtypes = [self.typingctx.resolve_argument_type(arg) for arg in args]
         # FIXME: For specialized and ahead of time compiled and cached kernels,
         # the CFD check was already done statically. The run-time check is
@@ -601,11 +548,6 @@ class JitKernel:
             raise UnsupportedBackendError(
                 self.kernel_name, backend, JitKernel._supported_backends
             )
-
-        # TODO: Refactor after __getitem__ is removed
-        global_range, local_range = self._get_ranges(
-            global_range, local_range, exec_queue.sycl_device
-        )
 
         # load the kernel from cache
         key = build_key(
@@ -654,11 +596,14 @@ class JitKernel:
             access_specifiers_list=self.array_access_specifiers,
         )
 
+        # Make sure the kernel lauch range/nd_range are sane
+        self._check_ranges(exec_queue.sycl_device)
+
         exec_queue.submit(
             sycl_kernel,
             packer.unpacked_args,
-            global_range,
-            local_range,
+            self._global_range,
+            self._local_range,
         )
 
         exec_queue.wait()
