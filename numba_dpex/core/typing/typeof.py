@@ -62,5 +62,6 @@ def typeof_usm_ndarray(val, c):
         readonly=readonly,
         usm_type=usm_type,
         device=device,
+        queue=val.sycl_queue,
         addrspace=address_space.GLOBAL,
     )

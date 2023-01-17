@@ -37,6 +37,7 @@ from numba_dpex.core.types import USMNdArray
 
 
 def get_ordered_arg_access_types(pyfunc, access_types):
+    """Deprecated and to be removed in next release."""
     # Construct a list of access type of each arg according to their position
     ordered_arg_access_types = []
     sig = signature(pyfunc, follow_wrapped=False)
@@ -52,7 +53,8 @@ def get_ordered_arg_access_types(pyfunc, access_types):
 
 
 class JitKernel:
-    """An abstract function object wrapping a concrete device kernel function.
+    """Functor to wrap a kernel function and JIT compile and dispatch it to a
+    specified SYCL queue.
 
     A JitKernel is returned by the kernel decorator and wraps an instance of a
     device kernel function. A device kernel function is specialized for a
@@ -127,7 +129,10 @@ class JitKernel:
     def cache_hits(self):
         return self._cache_hits
 
-    def _compile_and_cache(self, argtypes, backend, device_type, cache):
+    def _compile_and_cache(self, argtypes, cache):
+        """Helper function to compile the Python function or Numba FunctionIR
+        object passed to a JitKernel and store it in an internal cache.
+        """
         # We always compile the kernel using the dpex_target.
         typingctx = dpex_target.typing_context
         targetctx = dpex_target.target_context
@@ -148,18 +153,16 @@ class JitKernel:
             tuple(argtypes),
             self.pyfunc,
             kernel.target_context.codegen(),
-            backend=backend,
-            device_type=device_type,
         )
         cache.put(key, (device_driver_ir_module, kernel_module_name))
 
         return device_driver_ir_module, kernel_module_name
 
     def _specialize(self, sig):
-        """Compiles a device kernel ahead of time based on provided argtypes.
+        """Compiles a device kernel ahead of time based on provided signature.
 
         Args:
-            sig (_type_): _description_
+            sig: The signature on which the kernel is to be specialized.
         """
 
         argtypes, return_type = sigutils.normalize_signature(sig)
@@ -195,29 +198,15 @@ class JitKernel:
                 unsupported_argnum_list=unsupported_argnum_list,
             )
 
-        # CFD check and get the execution queue
-        device = self._chk_compute_follows_data_compliance(usmndarray_argtypes)
-        if not device:
-            raise ComputeFollowsDataInferenceError(
-                self.kernel_name, usmarray_argnum_list=usmarray_argnums
-            )
-
-        if device.backend not in [
-            dpctl.backend_type.opencl,
-            dpctl.backend_type.level_zero,
-        ]:
-            raise UnsupportedBackendError(
-                self.kernel_name, device.backend, JitKernel._supported_backends
-            )
-        # compile and cache the kernel
         self._compile_and_cache(
             argtypes=argtypes,
-            backend=device.backend,
-            device_type=device.device_type,
             cache=self._specialization_cache,
         )
 
     def _check_size(self, dim, size, size_limit):
+        """Checks if the range value is sane based on the number of work items
+        supported by the device.
+        """
 
         if size > size_limit:
             raise UnsupportedWorkItemSizeError(
@@ -228,6 +217,11 @@ class JitKernel:
             )
 
     def _check_range(self, range, device):
+        """Checks if the requested range to launch the kernel is valid.
+
+        Range is checked against the number of dimensions and if the range
+        argument is specified as a valid list of tuple.
+        """
 
         if not isinstance(range, (tuple, list)):
             raise IllegalRangeValueError(self.kernel_name)
@@ -242,7 +236,9 @@ class JitKernel:
             )
 
     def _check_ndrange(self, global_range, local_range, device):
-
+        """Checks if the specified nd_range (global_range, local_range) is
+        legal for a device on which the kernel will be launched.
+        """
         self._check_range(local_range, device)
 
         self._check_range(global_range, device)
@@ -283,22 +279,17 @@ class JitKernel:
             else None is returned.
         """
 
-        device = None
+        queue = None
 
         for usm_array in usm_array_arglist:
-            filter_str = usm_array.device
-            try:
-                _device = dpctl.SyclDevice(filter_str)
-            except Exception as e:
-                print(e)
-                return None
-            if not device:
-                device = _device
+            _queue = usm_array.queue
+            if not queue:
+                queue = _queue
             else:
-                if _device != device:
+                if _queue != queue:
                     return None
 
-        return device
+        return queue
 
     def _determine_kernel_launch_queue(self, args, argtypes):
         """Determines the queue where the kernel is to be launched.
@@ -387,14 +378,14 @@ class JitKernel:
                 if i in usmarray_argnums
             ]
 
-            device = self._chk_compute_follows_data_compliance(usm_array_args)
+            queue = self._chk_compute_follows_data_compliance(usm_array_args)
 
-            if not device:
+            if not queue:
                 raise ComputeFollowsDataInferenceError(
                     self.kernel_name, usmarray_argnum_list=usmarray_argnums
                 )
-            else:
-                return dpctl.SyclQueue(device)
+
+            return queue
         else:
             raise ExecutionQueueInferenceError(self.kernel_name)
 
@@ -427,14 +418,23 @@ class JitKernel:
         .. deprecated:: 0.19
         """
 
-        warn(
-            "The [] (__getitem__) method to set global and local ranges for "
-            + "launching a kernel is deprecated. "
-            + 'Set the "global_range" and the "local_range" keyword '
-            + "arguments when calling the kernel instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
+        # if not (isinstance(args, Range) or isinstance(args, NdRange)):
+        #     warn(
+        #         "Setting ranges directly in the [] (__getitem__) method "
+        #         + "is deprecated. The index space for the kernel should be "
+        #         + "specified via a Range or an NdRange instance.",
+        #         DeprecationWarning,
+        #         stacklevel=2,
+        #     )
+
+        # Check if an int is passed, if so the only global range from int
+
+        # If it is a tuple and the individual elements of the tuple are not
+        # tuples, then treat it as a multi-dimensional global range
+
+        # If it is a tuple and each element is a tuple then length of the tuple
+        # needs to be two. First element of the tuple is the global range
+        # the next is the local range.
 
         nargs = len(args)
         # Check if the kernel launch arguments are sane.
@@ -453,14 +453,24 @@ class JitKernel:
         return copy.copy(self)
 
     def _get_ranges(self, global_range, local_range, device):
-        """_summary_
+        """Helper to get the global and local range values needed to launch a
+        kernel.
+
+        The global and local range arguments can either be provided using the
+        __getitem__ method or as keyword arguments to the __call__ method.
+        The function verifies that the range values are specified using at least
+        one of the method.
 
         Args:
-            global_range (_type_): _description_
-            local_range (_type_): _description_
+            global_range (list or tuple): The global range to be used for kernel
+            launch.
+            local_range (list or tuple): The local range to be used for kernel
+            launch.
+            device (dpctl.SyclDevice): The device on which to launch the kernel.
 
         Raises:
-            UnknownGlobalRangeError: _description_
+            UnknownGlobalRangeError: When no global range was specified for
+            kernel launch.
         """
         if global_range:
             if self._global_range:
@@ -532,12 +542,11 @@ class JitKernel:
 
         return (global_range, local_range)
 
-    def __call__(self, *args, global_range=None, local_range=None):
-        """_summary_
+    def __call__(self, *args):
+        """Functor to launch a kernel.
 
         Args:
-            global_range (_type_): _description_
-            local_range (_type_): _description_.
+            args: List of arguments passed to the kernel
         """
         argtypes = [self.typingctx.resolve_argument_type(arg) for arg in args]
         # FIXME: For specialized and ahead of time compiled and cached kernels,
@@ -545,7 +554,6 @@ class JitKernel:
         # redundant. We should avoid these checks for the specialized case.
         exec_queue = self._determine_kernel_launch_queue(args, argtypes)
         backend = exec_queue.backend
-        device_type = exec_queue.sycl_device.device_type
 
         if exec_queue.backend not in [
             dpctl.backend_type.opencl,
@@ -555,18 +563,11 @@ class JitKernel:
                 self.kernel_name, backend, JitKernel._supported_backends
             )
 
-        # TODO: Refactor after __getitem__ is removed
-        global_range, local_range = self._get_ranges(
-            global_range, local_range, exec_queue.sycl_device
-        )
-
         # load the kernel from cache
         key = build_key(
             tuple(argtypes),
             self.pyfunc,
             dpex_target.target_context.codegen(),
-            backend=backend,
-            device_type=device_type,
         )
 
         # If the JitKernel was specialized then raise exception if argtypes
@@ -589,8 +590,6 @@ class JitKernel:
                     kernel_module_name,
                 ) = self._compile_and_cache(
                     argtypes=argtypes,
-                    backend=backend,
-                    device_type=device_type,
                     cache=self._cache,
                 )
 
@@ -612,8 +611,8 @@ class JitKernel:
         exec_queue.submit(
             sycl_kernel,
             packer.unpacked_args,
-            global_range,
-            local_range,
+            self._global_range,
+            self._local_range,
         )
 
         exec_queue.wait()
