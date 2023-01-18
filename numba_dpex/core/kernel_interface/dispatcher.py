@@ -461,46 +461,45 @@ class JitKernel:
             global_range and local_range attributes initialized.
 
         """
-
         if isinstance(args, int):
             self._global_range = [args]
             self._local_range = None
-        elif (isinstance(args, tuple) or isinstance(args, list)) and all(
-            isinstance(v, int) for v in args
-        ):
-            self._global_range = list(args)
-            self._local_range = None
-        elif isinstance(args, tuple) and len(args) == 2:
-
-            gr = args[0]
-            lr = args[1]
-            if isinstance(gr, int):
-                self._global_range = [gr]
-            elif all(isinstance(v, int) for v in gr) and len(gr) != 0:
-                self._global_range = list(gr)
-            else:
-                raise IllegalRangeValueError(kernel_name=self.kernel_name)
-
-            if isinstance(lr, int):
-                self._local_range = [lr]
-            elif isinstance(lr, list) and len(lr) == 0:
-                # deprecation warning
-                warn(
-                    "Specifying the local range as an empty list "
-                    "(DEFAULT_LOCAL_SIZE) is deprecated. The kernel will be "
-                    "executed as a basic data-parallel kernel over the global "
-                    "range. Specify a valid local range to execute the kernel "
-                    "as an ND-range kernel.",
-                    DeprecationWarning,
-                    stacklevel=2,
-                )
+        elif isinstance(args, tuple) or isinstance(args, list):
+            if len(args) == 1 and all(isinstance(v, int) for v in args):
+                self._global_range = list(args)
                 self._local_range = None
-            elif all(isinstance(v, int) for v in lr) and len(lr) != 0:
-                self._local_range = list(lr)
+            elif len(args) == 2:
+                gr = args[0]
+                lr = args[1]
+                if isinstance(gr, int):
+                    self._global_range = [gr]
+                elif len(gr) != 0 and all(isinstance(v, int) for v in gr):
+                    self._global_range = list(gr)
+                else:
+                    raise IllegalRangeValueError(kernel_name=self.kernel_name)
+
+                if isinstance(lr, int):
+                    self._local_range = [lr]
+                elif isinstance(lr, list) and len(lr) == 0:
+                    # deprecation warning
+                    warn(
+                        "Specifying the local range as an empty list "
+                        "(DEFAULT_LOCAL_SIZE) is deprecated. The kernel will "
+                        "be executed as a basic data-parallel kernel over the "
+                        "global range. Specify a valid local range to execute "
+                        "the kernel as an ND-range kernel.",
+                        DeprecationWarning,
+                        stacklevel=2,
+                    )
+                    self._local_range = None
+                elif len(lr) != 0 and all(isinstance(v, int) for v in lr):
+                    self._local_range = list(lr)
+                else:
+                    raise IllegalRangeValueError(kernel_name=self.kernel_name)
             else:
-                raise IllegalRangeValueError(kernel_name=self.kernel_name)
+                raise InvalidKernelLaunchArgsError(kernel_name=self.kernel_name)
         else:
-            raise IllegalRangeValueError(kernel_name=self.kernel_name)
+            raise InvalidKernelLaunchArgsError(kernel_name=self.kernel_name)
 
         # FIXME:[::-1] is done as OpenCL and SYCl have different orders when
         # it comes to specifying dimensions.

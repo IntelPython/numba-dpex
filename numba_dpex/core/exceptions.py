@@ -55,18 +55,9 @@ class InvalidKernelLaunchArgsError(Exception):
     """
 
     def __init__(self, kernel_name):
-        warn(
-            "The InvalidKernelLaunchArgsError class is deprecated, and will "
-            + "be removed once kernel launching using __getitem__ for the "
-            + "KernelLauncher class is removed.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
         self.message = (
-            "Invalid launch arguments specified for launching the Kernel "
-            f'"{kernel_name}". Launch arguments can only be a tuple '
-            "specifying the global range or a tuple of tuples specifying "
-            "global and local ranges."
+            "Invalid global and local range arguments specified for launching "
+            f' the Kernel "{kernel_name}". Refer documentation for details.'
         )
         super().__init__(self.message)
 
