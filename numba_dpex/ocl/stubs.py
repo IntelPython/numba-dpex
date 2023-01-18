@@ -131,26 +131,43 @@ class local(Stub):
 
 
 class atomic(Stub):
-    """atomic namespace"""
-
-    _description_ = "<atomic>"
 
     def add():
-        """add(ary, idx, val)
+        """
+        add(ary, idx, val)
 
-        Perform atomic ary[idx] += val.
+        Performs atomic addition.
 
-        Returns the old value at the index location as if it is loaded atomically.
+           Parameters:
+               ary: An array on which the atomic addition is performed. Elements can only be of type
+                    int32, int64, float32, or float64
+               idx (int): Index of the array element ary[idx] on which atomic addition is performed
+               val: The value of an increment, ary[idx] += val. The type must match the type of array elements, ary[]
 
-        .. note:: Supported on int32, int64, float32, float64 operands only.
+           Returns:
+                   The old value at the index location ary[idx] as if it is loaded atomically.
+
+           Raises:
+                Exception1: Description1
+                Exception2: Description2
         """
 
     def sub():
-        """sub(ary, idx, val)
+        """
+        sub(ary, idx, val)
 
-        Perform atomic ary[idx] -= val.
+        Performs atomic addition.
 
-        Returns the old value at the index location as if it is loaded atomically.
+           Parameters:
+               ary: An array on which the atomic subtraction is performed. Elements can only be of type
+                    int32, int64, float32, or float64
+               idx (int): Index of the array element ary[idx] on which atomic subtraction is performed
+               val: The value of an increment, ary[idx] -= val. The type must match the type of array elements, ary[]
 
-        .. note:: Supported on int32, int64, float32, float64 operands only.
+           Returns:
+                   The old value at the index location ary[idx] as if it is loaded atomically.
+
+           Raises:
+                Exception1: Description1
+                Exception2: Description2
         """
