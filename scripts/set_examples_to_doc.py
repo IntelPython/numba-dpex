@@ -9,36 +9,36 @@ def convert_commands_to_docs():
     os.chdir(commands_dir + "/docs")
     for file in examples:
         if file != "docs":
-            open_file = open(commands_dir + "/" + file, "r")
-            read_lines = open_file.readlines()
-            if os.path.exists(file):
-                os.remove(file)
-            write_file = open(file, "a")
-            for line in read_lines:
-                if (
-                    line.startswith("# Expected")
-                    or line.startswith("echo Done")
-                    or line.startswith("quit")
-                    or line.startswith("set trace-commands")
-                    or line.startswith("set pagination")
-                ):
-                    continue
-                if line.startswith("# Run: "):
-                    line = line.replace("# Run:", "$")
-                    words = line.split()
-                    for i in range(len(words)):
-                        if words[i] == "-command" or words[i].startswith(
-                            "commands"
+            with open(commands_dir + "/" + file, "r") as open_file:
+                read_lines = open_file.readlines()
+                if os.path.exists(file):
+                    os.remove(file)
+                with open(file, "a") as write_file:
+                    for line in read_lines:
+                        if (
+                            line.startswith("# Expected")
+                            or line.startswith("echo Done")
+                            or line.startswith("quit")
+                            or line.startswith("set trace-commands")
+                            or line.startswith("set pagination")
                         ):
-                            words[i] = ""
-                    line = " ".join(words)
-                    line = " ".join(line.split()) + "\n"
-                elif line.startswith("# "):
-                    line = line.replace("# ", "")
-                else:
-                    line = "(gdb) " + line
+                            continue
+                        if line.startswith("# Run: "):
+                            line = line.replace("# Run:", "$")
+                            words = line.split()
+                            for i in range(len(words)):
+                                if words[i] == "-command" or words[
+                                    i
+                                ].startswith("commands"):
+                                    words[i] = ""
+                            line = " ".join(words)
+                            line = " ".join(line.split()) + "\n"
+                        elif line.startswith("# "):
+                            line = line.replace("# ", "")
+                        else:
+                            line = "(gdb) " + line
 
-                write_file.write(line)
+                        write_file.write(line)
 
 
 if __name__ == "__main__":
