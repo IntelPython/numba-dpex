@@ -17,7 +17,7 @@ pytestmark = skip_no_gdb
 
 @pytest.mark.parametrize(
     "file_name, mark, expected",
-    [("side-by-side.py", "Set breakpoint here", "side-by-side.py:25")],
+    [("side-by-side.py", "Set breakpoint here", "side-by-side.py:15")],
 )
 def test_breakpoint_by_mark(file_name, mark, expected):
     assert expected == breakpoint_by_mark(file_name, mark)
@@ -25,7 +25,7 @@ def test_breakpoint_by_mark(file_name, mark, expected):
 
 @pytest.mark.parametrize(
     "file_name, function, expected",
-    [("side-by-side.py", "common_loop_body", "side-by-side.py:25")],
+    [("side-by-side.py", "common_loop_body", "side-by-side.py:15")],
 )
 def test_breakpoint_by_function(file_name, function, expected):
     assert expected == breakpoint_by_function(file_name, function)
@@ -35,14 +35,14 @@ def test_breakpoint_by_function(file_name, function, expected):
     "breakpoint, script, expected_location, expected_line",
     [
         (
-            "simple_sum.py:24",
+            "simple_sum.py:14",
             "simple_sum.py",
-            "simple_sum.py:24",
-            r"24\s+c\[i\] = a\[i\] \+ b\[i\]",
+            "simple_sum.py:14",
+            r"14\s+c\[i\] = a\[i\] \+ b\[i\]",
         ),
-        ("simple_sum.py:24", "simple_sum.py", "simple_sum.py:24", None),
-        ("simple_sum.py:24", "simple_sum.py", None, None),
-        ("simple_sum.py:24", None, None, None),
+        ("simple_sum.py:14", "simple_sum.py", "simple_sum.py:14", None),
+        ("simple_sum.py:14", "simple_sum.py", None, None),
+        ("simple_sum.py:14", None, None, None),
         ("simple_sum.py:data_parallel_sum", None, None, None),
         ("data_parallel_sum", "simple_sum.py", None, None),
     ],

@@ -28,7 +28,7 @@ simple_sum_condition_breakpoint = breakpoint_by_mark(
 )
 
 common_loop_body_native_function_name = {
-    "numba": "common_loop_body_242",
+    "numba": "common_loop_body",
     "numba-dpex-kernel": "common_loop_body",
 }
 
