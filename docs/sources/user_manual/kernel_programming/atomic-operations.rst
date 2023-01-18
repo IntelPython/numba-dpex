@@ -8,8 +8,8 @@ Those that are presently implemented are as follows:
    :members: atomic
    :noindex:
 
-Example
--------
+Example atomic
+--------------
 
 Example usage of atomic operations
 
@@ -38,7 +38,7 @@ Example command:
     NUMBA_DPEX_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv \
     python program.py
 
-Full examples
--------------
+Full atomic examples
+--------------------
 
 - ``numba_dpex/examples/atomic_op.py``

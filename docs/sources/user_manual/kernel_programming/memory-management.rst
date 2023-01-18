@@ -121,7 +121,7 @@ allocate local memory for a kernel.
 .. literalinclude:: ./../../../../numba_dpex/examples/kernel/scan.py
    :lines: 21-23
 
-In this example two local arrays, ``b`` and ``c``, of size ``ls`` are created. Their type is specified
+In this example two local arrays, ``b`` and ``c`` , of size ``ls`` are created. Their type is specified
 in the parameter ``dtype``.
 
 .. note::
@@ -129,10 +129,6 @@ in the parameter ``dtype``.
   To go convert from ``numba.cuda`` to ``numba-dpex``, replace ``numba.cuda.shared.array`` with
   ``numba_dpex.local.array(shape=local_size)``.
 
-.. todo::
-
-  Add details about current limitations for local memory allocation in
-  ``numba-dpex``.
 
 Private memory
 --------------
@@ -188,3 +184,54 @@ Two local arrays of size equal to work-group size are allocated in lines 19-20. 
 is used to ensure all local work-group items are initialized prior to their use in the loop starting on the line 28.
 Finally, prior to writing back to the global memory ``a[]`` the global barrier in the line 44 ensures
 work completion among all work-group items.
+
+Memory access types
+-------------------
+
+The access type declares how the programmer intends to use the memory associated with an array argument of a kernel.
+It is used by the runtime to create an execution order for the kernels and perform data movement.
+This will ensure that kernels are executed in an order intended by the programmer.
+Depending on the capabilities of the underlying hardware, the runtime can execute kernels concurrently
+if the dependencies do not give rise to dependency violations or race conditions.
+
+The following table summarizes allows access types declarations for a kernel.
+
+.. list-table:: **Memory access types**
+   :widths: 70 200
+   :header-rows: 1
+
+   * - ``access_type``
+     - Description
+   * - ``read_only``
+     - Declares that a given argument is readable only.
+       It informs the runtime that the data needs to be available on the device before the kernel can begin executing,
+       but the data need not be copied from the device to the host at the end of the computation.
+   * - ``write_only``
+     - Decalares that a given argument is writable only. It informs the runtime that the data does not need
+       to be available on the device before the kernel can begin executing. However, the data need to be copied
+       from the device to the host at the end of the computation.
+   * - ``read_write``
+     - Decalares that a given argument is both readable and writable.
+       It informs the runtime that the data has to be available on the device before the kernel
+       can begin executing. It also informs that the data need to be copied from the device back to the host
+       at the end of the computation.
+
+The following example shows how to specify access type for the kernel arguments:
+
+.. literalinclude:: ./../../../../numba_dpex/examples/kernel/black_scholes.py
+   :lines: 49-55
+   :linenos:
+   :emphasize-lines: 2-4
+
+Lines 50-53 indicate that arguments ``price``, ``strike``, and ``t`` are read only. The need not be copied back to
+the host after the kernel ``kernel_black_scholes()`` completes execution; arguments ``call`` and ``put`` are
+write only, and hence these need not be ready by the time of the kernel invocation.
+
+.. note::
+  Please note that arguments ``rate`` and ``volatility`` do not have access type specificators, because these
+  are scalar arguments
+
+For better performance, make sure that the access types reflect the operations performed by the kernel.
+The compiler will flag an error when a write is done into the array, which is declared as ``read_only``.
+Also the compiler does not change the declaration of an accessor form ``read_write`` to ``read_only`` if no write
+is done in the kernel.
