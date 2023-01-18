@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>numba_dpex.utils package &mdash; numba-dpex 0.19.0+39.gada8f19b documentation</title>
+  <title>numba_dpex.utils package &mdash; numba-dpex 0.19.0+91.g187782d2 documentation</title>
   
 
   
@@ -178,7 +178,6 @@
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.array_utils.html#numba_dpex.utils.array_utils.as_usm_obj"><code class="docutils literal notranslate"><span class="pre">as_usm_obj()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.array_utils.html#numba_dpex.utils.array_utils.copy_from_numpy_to_usm_obj"><code class="docutils literal notranslate"><span class="pre">copy_from_numpy_to_usm_obj()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.array_utils.html#numba_dpex.utils.array_utils.copy_to_numpy_from_usm_obj"><code class="docutils literal notranslate"><span class="pre">copy_to_numpy_from_usm_obj()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.array_utils.html#numba_dpex.utils.array_utils.get_info_from_suai"><code class="docutils literal notranslate"><span class="pre">get_info_from_suai()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.array_utils.html#numba_dpex.utils.array_utils.has_usm_memory"><code class="docutils literal notranslate"><span class="pre">has_usm_memory()</span></code></a></li>
 </ul>
 </li>
@@ -224,7 +223,6 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="numba_dpex.utils.type_conversion_fns.html">numba_dpex.utils.type_conversion_fns module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.type_conversion_fns.html#numba_dpex.utils.type_conversion_fns.npytypes_array_to_dpex_array"><code class="docutils literal notranslate"><span class="pre">npytypes_array_to_dpex_array()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.type_conversion_fns.html#numba_dpex.utils.type_conversion_fns.suai_to_dpex_array"><code class="docutils literal notranslate"><span class="pre">suai_to_dpex_array()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -458,24 +456,6 @@ context: The LLVM IR builder context.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.utils.get_info_from_suai">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.</span></span><span class="sig-name descname"><span class="pre">get_info_from_suai</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.get_info_from_suai" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convenience function to gather information from __sycl_usm_array_interface__.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>obj: Array with SUAI attribute.</p>
-</dd>
-<dt>Returns:</dt><dd><p>usm_mem: USM memory object.
-total_size: Total number of items in the array.
-shape: Shape of the array.
-ndim: Total number of dimensions.
-itemsize: Size of each item.
-strides: Stride of the array.
-dtype: Dtype of the array.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.utils.get_llvm_ptr_type">
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.</span></span><span class="sig-name descname"><span class="pre">get_llvm_ptr_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.get_llvm_ptr_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an LLVM pointer type for a give LLVM type object.</p>
@@ -569,23 +549,6 @@ belongs.</p>
 <dt>NotImplementedError: If the input numba type is not</dt><dd><p><code class="docutils literal notranslate"><span class="pre">numba.types.Array</span></code></p>
 </dd>
 </dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.utils.suai_to_dpex_array">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.</span></span><span class="sig-name descname"><span class="pre">suai_to_dpex_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addrspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.suai_to_dpex_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create type for Array with __sycl_usm_array_interface__ (SUAI) attribute.</p>
-<p>This function creates a Numba type for arrays with SUAI attribute.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>arr: Array with SUAI attribute.
-addrspace: Address space this array is allocated in.</p>
-</dd>
-</dl>
-<p>Returns: The Numba type for SUAI array.</p>
-<dl class="simple">
-<dt>Raises:</dt><dd><p>NotImplementedError: If the dtype of the passed array is not supported.</p>
 </dd>
 </dl>
 </dd></dl>

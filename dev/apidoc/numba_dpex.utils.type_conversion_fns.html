@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>numba_dpex.utils.type_conversion_fns module &mdash; numba-dpex 0.19.0+39.gada8f19b documentation</title>
+  <title>numba_dpex.utils.type_conversion_fns module &mdash; numba-dpex 0.19.0+91.g187782d2 documentation</title>
   
 
   
@@ -207,23 +207,6 @@ belongs.</p>
 <dt>NotImplementedError: If the input numba type is not</dt><dd><p><code class="docutils literal notranslate"><span class="pre">numba.types.Array</span></code></p>
 </dd>
 </dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.utils.type_conversion_fns.suai_to_dpex_array">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.type_conversion_fns.</span></span><span class="sig-name descname"><span class="pre">suai_to_dpex_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addrspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.type_conversion_fns.suai_to_dpex_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create type for Array with __sycl_usm_array_interface__ (SUAI) attribute.</p>
-<p>This function creates a Numba type for arrays with SUAI attribute.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>arr: Array with SUAI attribute.
-addrspace: Address space this array is allocated in.</p>
-</dd>
-</dl>
-<p>Returns: The Numba type for SUAI array.</p>
-<dl class="simple">
-<dt>Raises:</dt><dd><p>NotImplementedError: If the dtype of the passed array is not supported.</p>
 </dd>
 </dl>
 </dd></dl>

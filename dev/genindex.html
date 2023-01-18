@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Index &mdash; numba-dpex 0.19.0+39.gada8f19b documentation</title>
+  <title>Index &mdash; numba-dpex 0.19.0+91.g187782d2 documentation</title>
   
 
   
@@ -185,6 +185,7 @@
  | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#Q"><strong>Q</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
@@ -196,6 +197,8 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.AbstractCache">AbstractCache (class in numba_dpex.core.caching)</a>
+</li>
       <li><a href="apidoc/numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_order.acq_rel">acq_rel (numba_dpex.ocl.atomics.atomic_helper.sycl_memory_order attribute)</a>
 </li>
       <li><a href="apidoc/numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_order.acquire">acquire (numba_dpex.ocl.atomics.atomic_helper.sycl_memory_order attribute)</a>
@@ -230,10 +233,10 @@
       </ul></li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnpimpl.html#numba_dpex.dpnp_iface.dpnpimpl.array_shapeptr">array_shapeptr() (in module numba_dpex.dpnp_iface.dpnpimpl)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.dpnp_iface.dpnpdecl.html#numba_dpex.dpnp_iface.dpnpdecl.ArrayAttribute">ArrayAttribute (class in numba_dpex.dpnp_iface.dpnpdecl)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.dpnp_iface.dpnpdecl.html#numba_dpex.dpnp_iface.dpnpdecl.ArrayAttribute">ArrayAttribute (class in numba_dpex.dpnp_iface.dpnpdecl)</a>
+</li>
       <li><a href="apidoc/numba_dpex.core.datamodel.models.html#numba_dpex.core.datamodel.models.ArrayModel">ArrayModel (class in numba_dpex.core.datamodel.models)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.types.usm_ndarray_type.html#numba_dpex.core.types.usm_ndarray_type.USMNdArray.as_array">as_array (numba_dpex.core.types.usm_ndarray_type.USMNdArray property)</a>
@@ -267,8 +270,6 @@
       <li><a href="apidoc/numba_dpex.ocl.oclimpl.html#numba_dpex.ocl.oclimpl.atomic_sub_wrapper">atomic_sub_wrapper() (in module numba_dpex.ocl.oclimpl)</a>
 </li>
       <li><a href="apidoc/numba_dpex.ocl.atomics.html#numba_dpex.ocl.atomics.atomic_support_present">atomic_support_present() (in module numba_dpex.ocl.atomics)</a>
-</li>
-      <li><a href="apidoc/numba_dpex.decorators.html#numba_dpex.decorators.autojit">autojit() (in module numba_dpex.decorators)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -306,6 +307,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.vectorizers.html#numba_dpex.vectorizers.UFuncMechanism.broadcast_device">broadcast_device() (numba_dpex.vectorizers.UFuncMechanism method)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.build_key">build_key() (in module numba_dpex.core.caching)</a>
+</li>
       <li><a href="apidoc/numba_dpex.vectorizers.html#numba_dpex.vectorizers.Vectorize.build_ufunc">build_ufunc() (numba_dpex.vectorizers.Vectorize method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.byte_ptr_ptr_t">byte_ptr_ptr_t (numba_dpex.utils.llvm_codegen_helpers.LLVMTypes attribute)</a>
@@ -332,6 +335,10 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.dispatcher.html#numba_dpex.core.kernel_interface.dispatcher.JitKernel.cache">cache (numba_dpex.core.kernel_interface.dispatcher.JitKernel property)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.dispatcher.html#numba_dpex.core.kernel_interface.dispatcher.JitKernel.cache_hits">cache_hits (numba_dpex.core.kernel_interface.dispatcher.JitKernel property)</a>
+</li>
       <li><a href="apidoc/numba_dpex.vectorizers.html#numba_dpex.vectorizers.UFuncMechanism.call">call() (numba_dpex.vectorizers.UFuncMechanism class method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.call_conv">call_conv (numba_dpex.core.target.DpexTargetContext property)</a>
@@ -400,9 +407,9 @@
       </ul></li>
       <li><a href="apidoc/numba_dpex.spirv_generator.html#numba_dpex.spirv_generator.check_call">check_call() (in module numba_dpex.spirv_generator)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.Kernel.check_for_invalid_access_type">check_for_invalid_access_type() (numba_dpex.compiler.Kernel method)</a>
-</li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_randomimpl.html#numba_dpex.dpnp_iface.dpnp_randomimpl.check_range">check_range() (in module numba_dpex.dpnp_iface.dpnp_randomimpl)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.LRUCache.clean">clean() (numba_dpex.core.caching.LRUCache method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.spirv_generator.html#numba_dpex.spirv_generator.CmdLine">CmdLine (class in numba_dpex.spirv_generator)</a>
 </li>
@@ -420,12 +427,12 @@
         <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.html#numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.common_impl">(in module numba_dpex.dpnp_iface.dpnp_transcendentalsimpl)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_randomimpl.html#numba_dpex.dpnp_iface.dpnp_randomimpl.common_impl_0_arg">common_impl_0_arg() (in module numba_dpex.dpnp_iface.dpnp_randomimpl)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_randomimpl.html#numba_dpex.dpnp_iface.dpnp_randomimpl.common_impl_1_arg">common_impl_1_arg() (in module numba_dpex.dpnp_iface.dpnp_randomimpl)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_randomimpl.html#numba_dpex.dpnp_iface.dpnp_randomimpl.common_impl_2_arg">common_impl_2_arg() (in module numba_dpex.dpnp_iface.dpnp_randomimpl)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_randomimpl.html#numba_dpex.dpnp_iface.dpnp_randomimpl.common_impl_hypergeometric">common_impl_hypergeometric() (in module numba_dpex.dpnp_iface.dpnp_randomimpl)</a>
@@ -438,25 +445,25 @@
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_array_creations_impl.html#numba_dpex.dpnp_iface.dpnp_array_creations_impl.common_shape_impl">common_shape_impl() (in module numba_dpex.dpnp_iface.dpnp_array_creations_impl)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.DpexFunctionTemplate.compile">compile() (numba_dpex.compiler.DpexFunctionTemplate method)</a>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.func.html#numba_dpex.core.kernel_interface.func.DpexFunctionTemplate.compile">compile() (numba_dpex.core.kernel_interface.func.DpexFunctionTemplate method)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.kernel_base.html#numba_dpex.core.kernel_interface.kernel_base.KernelInterface.compile">(numba_dpex.core.kernel_interface.kernel_base.KernelInterface method)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.compile_func">compile_func() (in module numba_dpex.compiler)</a>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.spirv_kernel.html#numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel.compile">(numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel method)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.compile_func_template">compile_func_template() (in module numba_dpex.compiler)</a>
+      </ul></li>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.func.html#numba_dpex.core.kernel_interface.func.compile_func">compile_func() (in module numba_dpex.core.kernel_interface.func)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.compile_kernel">compile_kernel() (in module numba_dpex.compiler)</a>
-</li>
-      <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.compile_kernel_parfor">compile_kernel_parfor() (in module numba_dpex.compiler)</a>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.func.html#numba_dpex.core.kernel_interface.func.compile_func_template">compile_func_template() (in module numba_dpex.core.kernel_interface.func)</a>
 </li>
       <li><a href="apidoc/numba_dpex.retarget.html#numba_dpex.retarget.DpexRetarget.compile_retarget">compile_retarget() (numba_dpex.retarget.DpexRetarget method)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.compile_with_depx">compile_with_depx() (in module numba_dpex.compiler)</a>
+      <li><a href="apidoc/numba_dpex.core.compiler.html#numba_dpex.core.compiler.compile_with_dpex">compile_with_dpex() (in module numba_dpex.core.compiler)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.Compiler">Compiler (class in numba_dpex.compiler)</a>
+      <li><a href="apidoc/numba_dpex.core.compiler.html#numba_dpex.core.compiler.Compiler">Compiler (class in numba_dpex.core.compiler)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.ComputeFollowsDataInferenceError">ComputeFollowsDataInferenceError</a>
-</li>
-      <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.KernelBase.configure">configure() (numba_dpex.compiler.KernelBase method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.printimpl.html#numba_dpex.printimpl.const_print_impl">const_print_impl() (in module numba_dpex.printimpl)</a>
 </li>
@@ -473,8 +480,6 @@
       <li><a href="apidoc/numba_dpex.html#numba_dpex.Array.copy">copy() (numba_dpex.Array method)</a>
 
       <ul>
-        <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.KernelBase.copy">(numba_dpex.compiler.KernelBase method)</a>
-</li>
         <li><a href="apidoc/numba_dpex.core.types.html#numba_dpex.core.types.Array.copy">(numba_dpex.core.types.Array method)</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.types.array_type.html#numba_dpex.core.types.array_type.Array.copy">(numba_dpex.core.types.array_type.Array method)</a>
@@ -522,20 +527,48 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.data">data (numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface property)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.SyclUSMArrayInterface.data">(numba_dpex.core.utils.SyclUSMArrayInterface property)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.declare_function">declare_function() (numba_dpex.core.target.DpexTargetContext method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.printimpl.html#numba_dpex.printimpl.declare_print">declare_print() (in module numba_dpex.printimpl)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.passbuilder.html#numba_dpex.passbuilder.PassBuilder.default_numba_nopython_pipeline">default_numba_nopython_pipeline() (numba_dpex.passbuilder.PassBuilder static method)</a>
+      <li><a href="apidoc/numba_dpex.core.compiler.html#numba_dpex.core.compiler.PassBuilder.define_nopython_lowering_pipeline">define_nopython_lowering_pipeline() (numba_dpex.core.compiler.PassBuilder static method)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.passbuilder.html#numba_dpex.passbuilder.PassBuilder.define_nopython_pipeline">define_nopython_pipeline() (numba_dpex.passbuilder.PassBuilder static method)</a>
+      <li><a href="apidoc/numba_dpex.core.compiler.html#numba_dpex.core.compiler.PassBuilder.define_nopython_pipeline">define_nopython_pipeline() (numba_dpex.core.compiler.PassBuilder static method)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.Compiler.define_pipelines">define_pipelines() (numba_dpex.compiler.Compiler method)</a>
+      <li><a href="apidoc/numba_dpex.core.compiler.html#numba_dpex.core.compiler.Compiler.define_pipelines">define_pipelines() (numba_dpex.core.compiler.Compiler method)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_scope.device">device (numba_dpex.ocl.atomics.atomic_helper.sycl_memory_scope attribute)</a>
+      <li><a href="apidoc/numba_dpex.core.compiler.html#numba_dpex.core.compiler.PassBuilder.define_typed_pipeline">define_typed_pipeline() (numba_dpex.core.compiler.PassBuilder static method)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.compiler.html#numba_dpex.core.compiler.PassBuilder.define_untyped_pipeline">define_untyped_pipeline() (numba_dpex.core.compiler.PassBuilder static method)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.device">device (numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface property)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.SyclUSMArrayInterface.device">(numba_dpex.core.utils.SyclUSMArrayInterface property)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_scope.device">(numba_dpex.ocl.atomics.atomic_helper.sycl_memory_scope attribute)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/numba_dpex.vectorizers.html#numba_dpex.vectorizers.UFuncMechanism.device_array">device_array() (numba_dpex.vectorizers.UFuncMechanism method)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.kernel_base.html#numba_dpex.core.kernel_interface.kernel_base.KernelInterface.device_driver_ir_module">device_driver_ir_module (numba_dpex.core.kernel_interface.kernel_base.KernelInterface property)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.spirv_kernel.html#numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel.device_driver_ir_module">(numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel property)</a>
+</li>
+      </ul></li>
+      <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.dimensions">dimensions (numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface property)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.SyclUSMArrayInterface.dimensions">(numba_dpex.core.utils.SyclUSMArrayInterface property)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/numba_dpex.spirv_generator.html#numba_dpex.spirv_generator.CmdLine.disassemble">disassemble() (numba_dpex.spirv_generator.CmdLine method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.numpy_usm_shared.html#numba_dpex.numpy_usm_shared.DparrayAsNdarray">DparrayAsNdarray (class in numba_dpex.numpy_usm_shared)</a>
@@ -570,9 +603,9 @@
 </li>
       <li><a href="apidoc/numba_dpex.debuginfo.html#numba_dpex.debuginfo.DpexDIBuilder">DpexDIBuilder (class in numba_dpex.debuginfo)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.DpexFunction">DpexFunction (class in numba_dpex.compiler)</a>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.func.html#numba_dpex.core.kernel_interface.func.DpexFunction">DpexFunction (class in numba_dpex.core.kernel_interface.func)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.DpexFunctionTemplate">DpexFunctionTemplate (class in numba_dpex.compiler)</a>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.func.html#numba_dpex.core.kernel_interface.func.DpexFunctionTemplate">DpexFunctionTemplate (class in numba_dpex.core.kernel_interface.func)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.DPEXLowerer">DPEXLowerer (class in numba_dpex.core.passes.lowerer)</a>
 </li>
@@ -656,6 +689,8 @@
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.median">dpnp.median (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.min">dpnp.min (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.multi_dot">dpnp.multi_dot (class in numba_dpex.dpnp_iface.stubs)</a>
@@ -664,8 +699,6 @@
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.multivariate_normal">dpnp.multivariate_normal (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.nanprod">dpnp.nanprod (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.nansum">dpnp.nansum (class in numba_dpex.dpnp_iface.stubs)</a>
@@ -804,6 +837,12 @@
 </li>
       <li><a href="apidoc/numba_dpex.numpy_usm_shared.html#numba_dpex.numpy_usm_shared.dprint">dprint() (in module numba_dpex.numpy_usm_shared)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.dtype">dtype (numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface property)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.SyclUSMArrayInterface.dtype">(numba_dpex.core.utils.SyclUSMArrayInterface property)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/numba_dpex.core.passes.dufunc_inliner.html#numba_dpex.core.passes.dufunc_inliner.dufunc_inliner">dufunc_inliner() (in module numba_dpex.core.passes.dufunc_inliner)</a>
 </li>
       <li><a href="apidoc/numba_dpex.parfor_diagnostics.html#numba_dpex.parfor_diagnostics.ExtendedParforDiagnostics.dump">dump() (numba_dpex.parfor_diagnostics.ExtendedParforDiagnostics method)</a>
@@ -831,6 +870,8 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.LRUCache.evicted">evicted (numba_dpex.core.caching.LRUCache property)</a>
+</li>
       <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.ExecutionQueueInferenceError">ExecutionQueueInferenceError</a>
 </li>
       <li><a href="apidoc/numba_dpex.parfor_diagnostics.html#numba_dpex.parfor_diagnostics.ExtendedParforDiagnostics">ExtendedParforDiagnostics (class in numba_dpex.parfor_diagnostics)</a>
@@ -891,6 +932,14 @@
 </li>
       <li><a href="apidoc/numba_dpex.core.datamodel.models.html#numba_dpex.core.datamodel.models.GenericPointerModel">GenericPointerModel (class in numba_dpex.core.datamodel.models)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.AbstractCache.get">get() (numba_dpex.core.caching.AbstractCache method)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.LRUCache.get">(numba_dpex.core.caching.LRUCache method)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.NullCache.get">(numba_dpex.core.caching.NullCache method)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/numba_dpex.codegen.html#numba_dpex.codegen.SPIRVCodeLibrary.get_asm_str">get_asm_str() (numba_dpex.codegen.SPIRVCodeLibrary method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.ocl.atomics.html#numba_dpex.ocl.atomics.get_atomic_spirv_path">get_atomic_spirv_path() (in module numba_dpex.ocl.atomics)</a>
@@ -921,12 +970,12 @@
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.rename_numpy_functions_pass.html#numba_dpex.core.passes.rename_numpy_functions_pass.get_dpnp_func_typ">get_dpnp_func_typ() (in module numba_dpex.core.passes.rename_numpy_functions_pass)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.get_global_id">get_global_id() (in module numba_dpex.ocl.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dpex.ocl.oclimpl.html#numba_dpex.ocl.oclimpl.get_global_id_impl">get_global_id_impl() (in module numba_dpex.ocl.oclimpl)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.get_global_size">get_global_size() (in module numba_dpex.ocl.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dpex.ocl.oclimpl.html#numba_dpex.ocl.oclimpl.get_global_size_impl">get_global_size_impl() (in module numba_dpex.ocl.oclimpl)</a>
@@ -935,10 +984,10 @@
 </li>
       <li><a href="apidoc/numba_dpex.ocl.oclimpl.html#numba_dpex.ocl.oclimpl.get_group_id_impl">get_group_id_impl() (in module numba_dpex.ocl.oclimpl)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.utils.html#numba_dpex.utils.get_info_from_suai">get_info_from_suai() (in module numba_dpex.utils)</a>
+      <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.get_info_from_suai">get_info_from_suai() (in module numba_dpex.core.utils)</a>
 
       <ul>
-        <li><a href="apidoc/numba_dpex.utils.array_utils.html#numba_dpex.utils.array_utils.get_info_from_suai">(in module numba_dpex.utils.array_utils)</a>
+        <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.get_info_from_suai">(in module numba_dpex.core.utils.suai_helper)</a>
 </li>
       </ul></li>
       <li><a href="apidoc/numba_dpex.utils.html#numba_dpex.utils.get_llvm_ptr_type">get_llvm_ptr_type() (in module numba_dpex.utils)</a>
@@ -973,7 +1022,7 @@
         <li><a href="apidoc/numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.get_one">(in module numba_dpex.utils.llvm_codegen_helpers)</a>
 </li>
       </ul></li>
-      <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.get_ordered_arg_access_types">get_ordered_arg_access_types() (in module numba_dpex.compiler)</a>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.dispatcher.html#numba_dpex.core.kernel_interface.dispatcher.get_ordered_arg_access_types">get_ordered_arg_access_types() (in module numba_dpex.core.kernel_interface.dispatcher)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_linalgimpl.html#numba_dpex.dpnp_iface.dpnp_linalgimpl.get_res_dtype">get_res_dtype() (in module numba_dpex.dpnp_iface.dpnp_linalgimpl)</a>
 </li>
@@ -1010,11 +1059,17 @@
 </li>
       </ul></li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.LRUCache.head">head (numba_dpex.core.caching.LRUCache property)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.IllegalRangeValueError">IllegalRangeValueError</a>
+</li>
       <li><a href="apidoc/numba_dpex.dpnp_ndarray.dpnp_empty.html#numba_dpex.dpnp_ndarray.dpnp_empty.impl_dpnp_empty">impl_dpnp_empty() (in module numba_dpex.dpnp_ndarray.dpnp_empty)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.implement_powi_as_math_call">implement_powi_as_math_call (numba_dpex.core.target.DpexTargetContext attribute)</a>
@@ -1045,17 +1100,19 @@
         <li><a href="apidoc/numba_dpex.utils.html#numba_dpex.utils.LLVMTypes.int64_ptr_t">(numba_dpex.utils.LLVMTypes attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.int64_t">int64_t (numba_dpex.utils.llvm_codegen_helpers.LLVMTypes attribute)</a>
 
       <ul>
         <li><a href="apidoc/numba_dpex.utils.html#numba_dpex.utils.LLVMTypes.int64_t">(numba_dpex.utils.LLVMTypes attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.printimpl.html#numba_dpex.printimpl.int_print_impl">int_print_impl() (in module numba_dpex.printimpl)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.InvalidKernelLaunchArgsError">InvalidKernelLaunchArgsError</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.InvalidKernelSpecializationError">InvalidKernelSpecializationError</a>
 </li>
       <li><a href="apidoc/numba_dpex.vectorizers.html#numba_dpex.vectorizers.UFuncMechanism.is_device_array">is_device_array() (numba_dpex.vectorizers.UFuncMechanism method)</a>
 </li>
@@ -1071,13 +1128,25 @@
       </ul></li>
       <li><a href="apidoc/numba_dpex.numpy_usm_shared.html#numba_dpex.numpy_usm_shared.is_usm_callback">is_usm_callback() (in module numba_dpex.numpy_usm_shared)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.is_writable">is_writable (numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface property)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.SyclUSMArrayInterface.is_writable">(numba_dpex.core.utils.SyclUSMArrayInterface property)</a>
+</li>
+      </ul></li>
+      <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.itemsize">itemsize (numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface property)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.SyclUSMArrayInterface.itemsize">(numba_dpex.core.utils.SyclUSMArrayInterface property)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="J">J</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.JitKernel">JitKernel (class in numba_dpex.compiler)</a>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.dispatcher.html#numba_dpex.core.kernel_interface.dispatcher.JitKernel">JitKernel (class in numba_dpex.core.kernel_interface.dispatcher)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -1089,13 +1158,11 @@
 <h2 id="K">K</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.Kernel">Kernel (class in numba_dpex.compiler)</a>
-</li>
       <li><a href="apidoc/numba_dpex.decorators.html#numba_dpex.decorators.kernel">kernel() (in module numba_dpex.decorators)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.KernelBase">KernelBase (class in numba_dpex.compiler)</a>
-</li>
       <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.KernelHasReturnValueError">KernelHasReturnValueError</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.kernel_base.html#numba_dpex.core.kernel_interface.kernel_base.KernelInterface">KernelInterface (class in numba_dpex.core.kernel_interface.kernel_base)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpctl_iface.kernel_launch_ops.html#numba_dpex.dpctl_iface.kernel_launch_ops.KernelLaunchOps">KernelLaunchOps (class in numba_dpex.dpctl_iface.kernel_launch_ops)</a>
 </li>
@@ -1251,6 +1318,12 @@
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnpdecl.html#numba_dpex.dpnp_iface.dpnpdecl.ListAttribute">ListAttribute (class in numba_dpex.dpnp_iface.dpnpdecl)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.kernel_base.html#numba_dpex.core.kernel_interface.kernel_base.KernelInterface.llvm_module">llvm_module (numba_dpex.core.kernel_interface.kernel_base.KernelInterface property)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.spirv_kernel.html#numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel.llvm_module">(numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel property)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/numba_dpex.spirv_generator.html#numba_dpex.spirv_generator.llvm_to_spirv">llvm_to_spirv() (in module numba_dpex.spirv_generator)</a>
 </li>
       <li><a href="apidoc/numba_dpex.utils.html#numba_dpex.utils.LLVMTypes">LLVMTypes (class in numba_dpex.utils)</a>
@@ -1282,6 +1355,8 @@
       <li><a href="apidoc/numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.DPEXLowerer.lower">lower() (numba_dpex.core.passes.lowerer.DPEXLowerer method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.lower_parfor_rollback">lower_parfor_rollback() (in module numba_dpex.core.passes.lowerer)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.LRUCache">LRUCache (class in numba_dpex.core.caching)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1399,6 +1474,10 @@
 </li>
       <li><a href="apidoc/numba_dpex.ocl.oclimpl.html#numba_dpex.ocl.oclimpl.mem_fence_impl">mem_fence_impl() (in module numba_dpex.ocl.oclimpl)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.LRUCache.memsize">memsize() (numba_dpex.core.caching.LRUCache method)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.MissingSpecializationError">MissingSpecializationError</a>
+</li>
       <li>
     module
 
@@ -1407,11 +1486,13 @@
 </li>
         <li><a href="apidoc/numba_dpex.codegen.html#module-numba_dpex.codegen">numba_dpex.codegen</a>
 </li>
-        <li><a href="apidoc/numba_dpex.compiler.html#module-numba_dpex.compiler">numba_dpex.compiler</a>
-</li>
         <li><a href="apidoc/numba_dpex.config.html#module-numba_dpex.config">numba_dpex.config</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.html#module-numba_dpex.core">numba_dpex.core</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.caching.html#module-numba_dpex.core.caching">numba_dpex.core.caching</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.compiler.html#module-numba_dpex.core.compiler">numba_dpex.core.compiler</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.datamodel.html#module-numba_dpex.core.datamodel">numba_dpex.core.datamodel</a>
 </li>
@@ -1422,6 +1503,18 @@
         <li><a href="apidoc/numba_dpex.core.exceptions.html#module-numba_dpex.core.exceptions">numba_dpex.core.exceptions</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.itanium_mangler.html#module-numba_dpex.core.itanium_mangler">numba_dpex.core.itanium_mangler</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.html#module-numba_dpex.core.kernel_interface">numba_dpex.core.kernel_interface</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.arg_pack_unpacker.html#module-numba_dpex.core.kernel_interface.arg_pack_unpacker">numba_dpex.core.kernel_interface.arg_pack_unpacker</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.dispatcher.html#module-numba_dpex.core.kernel_interface.dispatcher">numba_dpex.core.kernel_interface.dispatcher</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.func.html#module-numba_dpex.core.kernel_interface.func">numba_dpex.core.kernel_interface.func</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.kernel_base.html#module-numba_dpex.core.kernel_interface.kernel_base">numba_dpex.core.kernel_interface.kernel_base</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.spirv_kernel.html#module-numba_dpex.core.kernel_interface.spirv_kernel">numba_dpex.core.kernel_interface.spirv_kernel</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.passes.html#module-numba_dpex.core.passes">numba_dpex.core.passes</a>
 </li>
@@ -1435,6 +1528,10 @@
 </li>
         <li><a href="apidoc/numba_dpex.core.target.html#module-numba_dpex.core.target">numba_dpex.core.target</a>
 </li>
+        <li><a href="apidoc/numba_dpex.core.typeconv.html#module-numba_dpex.core.typeconv">numba_dpex.core.typeconv</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.typeconv.array_conversion.html#module-numba_dpex.core.typeconv.array_conversion">numba_dpex.core.typeconv.array_conversion</a>
+</li>
         <li><a href="apidoc/numba_dpex.core.types.html#module-numba_dpex.core.types">numba_dpex.core.types</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.types.array_type.html#module-numba_dpex.core.types.array_type">numba_dpex.core.types.array_type</a>
@@ -1446,6 +1543,10 @@
         <li><a href="apidoc/numba_dpex.core.typing.html#module-numba_dpex.core.typing">numba_dpex.core.typing</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.typing.typeof.html#module-numba_dpex.core.typing.typeof">numba_dpex.core.typing.typeof</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.utils.html#module-numba_dpex.core.utils">numba_dpex.core.utils</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#module-numba_dpex.core.utils.suai_helper">numba_dpex.core.utils.suai_helper</a>
 </li>
         <li><a href="apidoc/numba_dpex.debuginfo.html#module-numba_dpex.debuginfo">numba_dpex.debuginfo</a>
 </li>
@@ -1531,8 +1632,6 @@
 </li>
         <li><a href="apidoc/numba_dpex.parfor_diagnostics.html#module-numba_dpex.parfor_diagnostics">numba_dpex.parfor_diagnostics</a>
 </li>
-        <li><a href="apidoc/numba_dpex.passbuilder.html#module-numba_dpex.passbuilder">numba_dpex.passbuilder</a>
-</li>
         <li><a href="apidoc/numba_dpex.printimpl.html#module-numba_dpex.printimpl">numba_dpex.printimpl</a>
 </li>
         <li><a href="apidoc/numba_dpex.retarget.html#module-numba_dpex.retarget">numba_dpex.retarget</a>
@@ -1560,6 +1659,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.spirv_generator.html#numba_dpex.spirv_generator.Module">Module (class in numba_dpex.spirv_generator)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.kernel_base.html#numba_dpex.core.kernel_interface.kernel_base.KernelInterface.module_name">module_name (numba_dpex.core.kernel_interface.kernel_base.KernelInterface property)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.spirv_kernel.html#numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel.module_name">(numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel property)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -1567,6 +1672,8 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.ocl.oclimpl.html#numba_dpex.ocl.oclimpl.native_atomic_add">native_atomic_add() (in module numba_dpex.ocl.oclimpl)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.Node">Node (class in numba_dpex.core.caching)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.NoPythonBackend">NoPythonBackend (class in numba_dpex.core.passes.passes)</a>
 </li>
@@ -1576,6 +1683,8 @@
         <li><a href="apidoc/numba_dpex.utils.type_conversion_fns.html#numba_dpex.utils.type_conversion_fns.npytypes_array_to_dpex_array">(in module numba_dpex.utils.type_conversion_fns)</a>
 </li>
       </ul></li>
+      <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.NullCache">NullCache (class in numba_dpex.core.caching)</a>
+</li>
       <li>
     numba_dpex
 
@@ -1591,13 +1700,6 @@
 </li>
       </ul></li>
       <li>
-    numba_dpex.compiler
-
-      <ul>
-        <li><a href="apidoc/numba_dpex.compiler.html#module-numba_dpex.compiler">module</a>
-</li>
-      </ul></li>
-      <li>
     numba_dpex.config
 
       <ul>
@@ -1609,6 +1711,20 @@
 
       <ul>
         <li><a href="apidoc/numba_dpex.core.html#module-numba_dpex.core">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.core.caching
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.caching.html#module-numba_dpex.core.caching">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.core.compiler
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.compiler.html#module-numba_dpex.core.compiler">module</a>
 </li>
       </ul></li>
       <li>
@@ -1644,6 +1760,48 @@
 
       <ul>
         <li><a href="apidoc/numba_dpex.core.itanium_mangler.html#module-numba_dpex.core.itanium_mangler">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.core.kernel_interface
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.html#module-numba_dpex.core.kernel_interface">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.core.kernel_interface.arg_pack_unpacker
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.arg_pack_unpacker.html#module-numba_dpex.core.kernel_interface.arg_pack_unpacker">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.core.kernel_interface.dispatcher
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.dispatcher.html#module-numba_dpex.core.kernel_interface.dispatcher">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.core.kernel_interface.func
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.func.html#module-numba_dpex.core.kernel_interface.func">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.core.kernel_interface.kernel_base
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.kernel_base.html#module-numba_dpex.core.kernel_interface.kernel_base">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.core.kernel_interface.spirv_kernel
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.spirv_kernel.html#module-numba_dpex.core.kernel_interface.spirv_kernel">module</a>
 </li>
       </ul></li>
       <li>
@@ -1689,6 +1847,20 @@
 </li>
       </ul></li>
       <li>
+    numba_dpex.core.typeconv
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.typeconv.html#module-numba_dpex.core.typeconv">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.core.typeconv.array_conversion
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.typeconv.array_conversion.html#module-numba_dpex.core.typeconv.array_conversion">module</a>
+</li>
+      </ul></li>
+      <li>
     numba_dpex.core.types
 
       <ul>
@@ -1728,6 +1900,20 @@
 
       <ul>
         <li><a href="apidoc/numba_dpex.core.typing.typeof.html#module-numba_dpex.core.typing.typeof">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.core.utils
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.utils.html#module-numba_dpex.core.utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.core.utils.suai_helper
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#module-numba_dpex.core.utils.suai_helper">module</a>
 </li>
       </ul></li>
       <li>
@@ -1800,6 +1986,8 @@
         <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_array_creations_impl.html#module-numba_dpex.dpnp_iface.dpnp_array_creations_impl">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     numba_dpex.dpnp_iface.dpnp_array_ops_impl
 
@@ -1842,8 +2030,6 @@
         <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_manipulation.html#module-numba_dpex.dpnp_iface.dpnp_manipulation">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     numba_dpex.dpnp_iface.dpnp_randomimpl
 
@@ -2027,13 +2213,6 @@
 </li>
       </ul></li>
       <li>
-    numba_dpex.passbuilder
-
-      <ul>
-        <li><a href="apidoc/numba_dpex.passbuilder.html#module-numba_dpex.passbuilder">module</a>
-</li>
-      </ul></li>
-      <li>
     numba_dpex.printimpl
 
       <ul>
@@ -2180,6 +2359,8 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.arg_pack_unpacker.html#numba_dpex.core.kernel_interface.arg_pack_unpacker.Packer">Packer (class in numba_dpex.core.kernel_interface.arg_pack_unpacker)</a>
+</li>
       <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.ParforPass">ParforPass (class in numba_dpex.core.passes.passes)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_ndarray.dpnp_empty.html#numba_dpex.dpnp_ndarray.dpnp_empty.parse_usm_type">parse_usm_type() (in module numba_dpex.dpnp_ndarray.dpnp_empty)</a>
@@ -2202,12 +2383,12 @@
         <li><a href="apidoc/numba_dpex.core.passes.rename_numpy_functions_pass.html#numba_dpex.core.passes.rename_numpy_functions_pass.RewriteOverloadedNumPyFunctionsPass.pass_id">(numba_dpex.core.passes.rename_numpy_functions_pass.RewriteOverloadedNumPyFunctionsPass attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="apidoc/numba_dpex.passbuilder.html#numba_dpex.passbuilder.PassBuilder">PassBuilder (class in numba_dpex.passbuilder)</a>
+      <li><a href="apidoc/numba_dpex.core.compiler.html#numba_dpex.core.compiler.PassBuilder">PassBuilder (class in numba_dpex.core.compiler)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.prepare_ocl_kernel">prepare_ocl_kernel() (numba_dpex.core.target.DpexTargetContext method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.PreParforPass">PreParforPass (class in numba_dpex.core.passes.passes)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.itanium_mangler.html#numba_dpex.core.itanium_mangler.prepend_namespace">prepend_namespace() (in module numba_dpex.core.itanium_mangler)</a>
@@ -2228,6 +2409,32 @@
       </ul></li>
       <li><a href="apidoc/numba_dpex.dpctl_iface.kernel_launch_ops.html#numba_dpex.dpctl_iface.kernel_launch_ops.KernelLaunchOps.process_kernel_arg">process_kernel_arg() (numba_dpex.dpctl_iface.kernel_launch_ops.KernelLaunchOps method)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.AbstractCache.put">put() (numba_dpex.core.caching.AbstractCache method)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.LRUCache.put">(numba_dpex.core.caching.LRUCache method)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.NullCache.put">(numba_dpex.core.caching.NullCache method)</a>
+</li>
+      </ul></li>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.kernel_base.html#numba_dpex.core.kernel_interface.kernel_base.KernelInterface.pyfunc_name">pyfunc_name (numba_dpex.core.kernel_interface.kernel_base.KernelInterface property)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.spirv_kernel.html#numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel.pyfunc_name">(numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel property)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Q">Q</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.queue">queue (numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface property)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.SyclUSMArrayInterface.queue">(numba_dpex.core.utils.SyclUSMArrayInterface property)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -2245,6 +2452,8 @@
       <li><a href="apidoc/numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_order.relaxed">relaxed (numba_dpex.ocl.atomics.atomic_helper.sycl_memory_order attribute)</a>
 </li>
       <li><a href="apidoc/numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_order.release">release (numba_dpex.ocl.atomics.atomic_helper.sycl_memory_order attribute)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.arg_pack_unpacker.html#numba_dpex.core.kernel_interface.arg_pack_unpacker.Packer.repacked_args">repacked_args (numba_dpex.core.kernel_interface.arg_pack_unpacker.Packer property)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.replace_numpy_ufunc_with_opencl_supported_functions">replace_numpy_ufunc_with_opencl_supported_functions() (numba_dpex.core.target.DpexTargetContext method)</a>
 </li>
@@ -2340,10 +2549,10 @@
 </li>
       <li><a href="apidoc/numba_dpex.ocl.ocldecl.html#numba_dpex.ocl.ocldecl.OclModuleTemplate.resolve_get_local_id">resolve_get_local_id() (numba_dpex.ocl.ocldecl.OclModuleTemplate method)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.ocl.ocldecl.html#numba_dpex.ocl.ocldecl.OclModuleTemplate.resolve_get_local_size">resolve_get_local_size() (numba_dpex.ocl.ocldecl.OclModuleTemplate method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.ocl.ocldecl.html#numba_dpex.ocl.ocldecl.OclModuleTemplate.resolve_get_local_size">resolve_get_local_size() (numba_dpex.ocl.ocldecl.OclModuleTemplate method)</a>
+</li>
       <li><a href="apidoc/numba_dpex.ocl.ocldecl.html#numba_dpex.ocl.ocldecl.OclModuleTemplate.resolve_get_num_groups">resolve_get_num_groups() (numba_dpex.ocl.ocldecl.OclModuleTemplate method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.ocl.ocldecl.html#numba_dpex.ocl.ocldecl.OclModuleTemplate.resolve_get_work_dim">resolve_get_work_dim() (numba_dpex.ocl.ocldecl.OclModuleTemplate method)</a>
@@ -2462,22 +2671,38 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_order.seq_cst">seq_cst (numba_dpex.ocl.atomics.atomic_helper.sycl_memory_order attribute)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.compiler.html#numba_dpex.compiler.JitKernel.specialize">specialize() (numba_dpex.compiler.JitKernel method)</a>
+      <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.shape">shape (numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface property)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.SyclUSMArrayInterface.shape">(numba_dpex.core.utils.SyclUSMArrayInterface property)</a>
+</li>
+      </ul></li>
+      <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.size">size (numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface property)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.SyclUSMArrayInterface.size">(numba_dpex.core.utils.SyclUSMArrayInterface property)</a>
+</li>
+      </ul></li>
+      <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.LRUCache.size">size() (numba_dpex.core.caching.LRUCache method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.codegen.html#numba_dpex.codegen.SPIRVCodeLibrary">SPIRVCodeLibrary (class in numba_dpex.codegen)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub">Stub (class in numba_dpex.ocl.stubs)</a>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.spirv_kernel.html#numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel">SpirvKernel (class in numba_dpex.core.kernel_interface.spirv_kernel)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.utils.html#numba_dpex.utils.suai_to_dpex_array">suai_to_dpex_array() (in module numba_dpex.utils)</a>
+      <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.strides">strides (numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface property)</a>
 
       <ul>
-        <li><a href="apidoc/numba_dpex.utils.type_conversion_fns.html#numba_dpex.utils.type_conversion_fns.suai_to_dpex_array">(in module numba_dpex.utils.type_conversion_fns)</a>
+        <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.SyclUSMArrayInterface.strides">(numba_dpex.core.utils.SyclUSMArrayInterface property)</a>
 </li>
       </ul></li>
-      <li><a href="apidoc/numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.atomic.sub">sub() (numba_dpex.ocl.stubs.atomic method)</a>
+      <li><a href="apidoc/numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub">Stub (class in numba_dpex.ocl.stubs)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.SUAIProtocolError">SUAIProtocolError</a>
+</li>
+      <li><a href="apidoc/numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.atomic.sub">sub() (numba_dpex.ocl.stubs.atomic method)</a>
+</li>
       <li><a href="apidoc/numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_scope.sub_group">sub_group (numba_dpex.ocl.atomics.atomic_helper.sycl_memory_scope attribute)</a>
 </li>
       <li><a href="apidoc/numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.sub_group_barrier">sub_group_barrier() (in module numba_dpex.ocl.stubs)</a>
@@ -2490,6 +2715,12 @@
 </li>
       <li><a href="apidoc/numba_dpex.core.target.html#numba_dpex.core.target.SyclDevice">SyclDevice (class in numba_dpex.core.target)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.SyclUSMArrayInterface">SyclUSMArrayInterface (class in numba_dpex.core.utils)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface">(class in numba_dpex.core.utils.suai_helper)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_scope.system">system (numba_dpex.ocl.atomics.atomic_helper.sycl_memory_scope attribute)</a>
 </li>
   </ul></td>
@@ -2498,8 +2729,14 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="apidoc/numba_dpex.core.descriptor.html#numba_dpex.core.descriptor.DpexTarget.target_context">target_context (numba_dpex.core.descriptor.DpexTarget property)</a>
+      <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.LRUCache.tail">tail (numba_dpex.core.caching.LRUCache property)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.descriptor.html#numba_dpex.core.descriptor.DpexTarget.target_context">target_context (numba_dpex.core.descriptor.DpexTarget property)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.spirv_kernel.html#numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel.target_context">(numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel property)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.target_data">target_data (numba_dpex.core.target.DpexTargetContext property)</a>
 </li>
       <li><a href="apidoc/numba_dpex.offload_dispatcher.html#numba_dpex.offload_dispatcher.OffloadDispatcher.targetdescr">targetdescr (numba_dpex.offload_dispatcher.OffloadDispatcher attribute)</a>
@@ -2512,6 +2749,12 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.core.typeconv.html#numba_dpex.core.typeconv.to_usm_ndarray">to_usm_ndarray() (in module numba_dpex.core.typeconv)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.typeconv.array_conversion.html#numba_dpex.core.typeconv.array_conversion.to_usm_ndarray">(in module numba_dpex.core.typeconv.array_conversion)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/numba_dpex.dpnp_ndarray.dpnp_empty.html#numba_dpex.dpnp_ndarray.dpnp_empty.type_dpnp_empty">type_dpnp_empty() (in module numba_dpex.dpnp_ndarray.dpnp_empty)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_ndarray.typeof.html#numba_dpex.dpnp_ndarray.typeof.typeof_dpnp_ndarray">typeof_dpnp_ndarray() (in module numba_dpex.dpnp_ndarray.typeof)</a>
@@ -2523,7 +2766,11 @@
       <li><a href="apidoc/numba_dpex.numpy_usm_shared.html#numba_dpex.numpy_usm_shared.types_replace_array">types_replace_array() (in module numba_dpex.numpy_usm_shared)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.descriptor.html#numba_dpex.core.descriptor.DpexTarget.typing_context">typing_context (numba_dpex.core.descriptor.DpexTarget property)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.spirv_kernel.html#numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel.typing_context">(numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel property)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -2546,18 +2793,40 @@
       </ul></li>
       <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.UnknownGlobalRangeError">UnknownGlobalRangeError</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.UnmatchedNumberOfRangeDimsError">UnmatchedNumberOfRangeDimsError</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.arg_pack_unpacker.html#numba_dpex.core.kernel_interface.arg_pack_unpacker.Packer.unpacked_args">unpacked_args (numba_dpex.core.kernel_interface.arg_pack_unpacker.Packer property)</a>
+</li>
       <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.UnreachableError">UnreachableError</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.UnsupportedAccessQualifierError">UnsupportedAccessQualifierError</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.UnsupportedBackendError">UnsupportedBackendError</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.UnsupportedCompilationModeError">UnsupportedCompilationModeError</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.UnsupportedGroupWorkItemSizeError">UnsupportedGroupWorkItemSizeError</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.UnsupportedKernelArgumentError">UnsupportedKernelArgumentError</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.UnsupportedNumberOfRangeDimsError">UnsupportedNumberOfRangeDimsError</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.UnsupportedWorkItemSizeError">UnsupportedWorkItemSizeError</a>
+</li>
       <li><a href="apidoc/numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.unwrap_loop_body">unwrap_loop_body() (in module numba_dpex.core.passes.lowerer)</a>
 </li>
       <li><a href="apidoc/numba_dpex.html#numba_dpex.usm_ndarray">usm_ndarray (in module numba_dpex)</a>
 
       <ul>
         <li><a href="apidoc/numba_dpex.core.types.html#numba_dpex.core.types.usm_ndarray">(in module numba_dpex.core.types)</a>
+</li>
+      </ul></li>
+      <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.usm_type">usm_type (numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface property)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.SyclUSMArrayInterface.usm_type">(numba_dpex.core.utils.SyclUSMArrayInterface property)</a>
 </li>
       </ul></li>
       <li><a href="apidoc/numba_dpex.numpy_usm_shared.html#numba_dpex.numpy_usm_shared.usmarray_conversion_as">usmarray_conversion_as() (in module numba_dpex.numpy_usm_shared)</a>
