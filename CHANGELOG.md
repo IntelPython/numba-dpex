@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+* Updated examples for kernel API demonstrating compute-follows-data programming
+  model. (#826)
+* Numba type aliases to numba_dpex. (#851)
+
+### Changed
+* `CLK_GLOBAL_MEM_FENCE` and `CLK_LOCAL_MEM_FENCE` flags renamed to `GLOBAL_MEM_FENCE`
+  and `LOCAL_MEM_FENCE`. (#844)
+
+### Fixed
+* Kernel specialization
 ## [0.19.0] - 2022-11-21
 
 ### Added
