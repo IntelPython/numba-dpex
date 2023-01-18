@@ -114,10 +114,9 @@ def main():
 
     print("Using device ...")
     print(xp.device)
-
-    kernel_polynomial[N_POINTS // N_POINTS_PER_WORK_ITEM, LOCAL_SIZE](
-        xp, yp, COEFFICIENTS
-    )
+    global_range = (N_POINTS // N_POINTS_PER_WORK_ITEM,)
+    local_range = (LOCAL_SIZE,)
+    kernel_polynomial[global_range, local_range](xp, yp, COEFFICIENTS)
 
     # Copy results back to the host
     nyp = np.asnumpy(yp)

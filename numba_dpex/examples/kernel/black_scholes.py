@@ -94,9 +94,7 @@ def main():
     print("Using device ...")
     print(price.device)
 
-    kernel_black_scholes[NOPT, ndpx.DEFAULT_LOCAL_SIZE](
-        price, strike, t, rate, volatility, call, put
-    )
+    kernel_black_scholes[NOPT](price, strike, t, rate, volatility, call, put)
 
     print("Call:", call)
     print("Put:", put)

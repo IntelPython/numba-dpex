@@ -2,14 +2,13 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import os
-
 import dpctl
 import numpy as np
 import pytest
 
 import numba_dpex as dpex
 from numba_dpex import config
+from numba_dpex.core.descriptor import dpex_target
 from numba_dpex.tests._helper import filter_strings, override_config
 
 global_size = 100
@@ -121,7 +120,9 @@ def test_kernel_atomic_local(filter_str, input_arrays, return_list_of_op):
     kernel = dpex.kernel(f)
     device = dpctl.SyclDevice(filter_str)
     with dpctl.device_context(device):
-        kernel[global_size, global_size](a)
+        gs = (N,)
+        ls = (N,)
+        kernel[gs, ls](a)
     assert a[0] == expected
 
 
@@ -176,7 +177,6 @@ def skip_if_disabled(*args):
     return pytest.param(*args, marks=skip_NATIVE_FP_ATOMICS_0)
 
 
-@pytest.mark.parametrize("filter_str", filter_strings)
 @skip_no_atomic_support
 @pytest.mark.parametrize(
     "NATIVE_FP_ATOMICS, expected_native_atomic_for_device",
@@ -197,7 +197,6 @@ def skip_if_disabled(*args):
 )
 @pytest.mark.parametrize("dtype", list_of_f_dtypes)
 def test_atomic_fp_native(
-    filter_str,
     NATIVE_FP_ATOMICS,
     expected_native_atomic_for_device,
     function_generator,
@@ -206,20 +205,27 @@ def test_atomic_fp_native(
     dtype,
 ):
     function = function_generator(operator_name, dtype)
-    kernel = dpex.kernel(function)
-    argtypes = kernel._get_argtypes(np.array([0], dtype))
+    kernel = dpex.core.kernel_interface.spirv_kernel.SpirvKernel(
+        function, function.__name__
+    )
+    args = [np.array([0], dtype)]
+    argtypes = [
+        dpex.core.descriptor.dpex_target.typing_context.resolve_argument_type(
+            arg
+        )
+        for arg in args
+    ]
 
     with override_config("NATIVE_FP_ATOMICS", NATIVE_FP_ATOMICS):
+        kernel.compile(
+            args=argtypes,
+            debug=None,
+            compile_flags=None,
+            target_ctx=dpex_target.target_context,
+            typing_ctx=dpex_target.typing_context,
+        )
 
-        with dpctl.device_context(filter_str) as sycl_queue:
-
-            specialized_kernel = kernel[
-                global_size, dpex.DEFAULT_LOCAL_SIZE
-            ].specialize(argtypes, sycl_queue)
-
-            is_native_atomic = (
-                expected_spirv_function in specialized_kernel.assembly
-            )
-            assert is_native_atomic == expected_native_atomic_for_device(
-                filter_str
-            )
+        is_native_atomic = expected_spirv_function in kernel._llvm_module
+        assert is_native_atomic == expected_native_atomic_for_device(
+            dpctl.select_default_device().filter_string
+        )

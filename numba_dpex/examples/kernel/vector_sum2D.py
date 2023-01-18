@@ -5,6 +5,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import dpctl
+import dpctl.tensor as dpt
 import numpy as np
 
 import numba_dpex as dpex
@@ -21,10 +22,7 @@ def data_parallel_sum(a, b, c):
 
 
 def driver(a, b, c, global_size):
-    print("before A: ", a)
-    print("before B: ", b)
-    data_parallel_sum[global_size, dpex.DEFAULT_LOCAL_SIZE](a, b, c)
-    print("after  C : ", c)
+    data_parallel_sum[global_size](a, b, c)
 
 
 def main():
@@ -34,19 +32,26 @@ def main():
     global_size = X, Y
 
     a = np.arange(X * Y, dtype=np.float32).reshape(X, Y)
-    b = np.array(np.random.random(X * Y), dtype=np.float32).reshape(X, Y)
-    c = np.ones_like(a).reshape(X, Y)
+    b = np.arange(X * Y, dtype=np.float32).reshape(X, Y)
+    c = np.empty_like(a).reshape(X, Y)
 
-    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
-    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
+    c = a + b
+
     device = dpctl.select_default_device()
+    a_dpt = dpt.arange(X * Y, dtype=dpt.float32, device=device)
+    a_dpt = dpt.reshape(a_dpt, (X, Y))
+    b_dpt = dpt.arange(X * Y, dtype=dpt.float32, device=device)
+    b_dpt = dpt.reshape(b_dpt, (X, Y))
+    c_dpt = dpt.empty_like(a_dpt)
+    c_dpt = dpt.reshape(c_dpt, (X, Y))
+
     print("Using device ...")
     device.print_device_info()
 
-    with dpctl.device_context(device):
-        driver(a, b, c, global_size)
+    driver(a_dpt, b_dpt, c_dpt, global_size)
 
-    print(c)
+    c_out = dpt.asnumpy(c_dpt)
+    assert np.allclose(c, c_out)
 
     print("Done...")
 

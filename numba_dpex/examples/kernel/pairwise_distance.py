@@ -25,9 +25,9 @@ parser.add_argument("-l", type=int, default=1, help="local_work_size")
 args = parser.parse_args()
 
 # Global work size is equal to the number of points
-global_size = args.n
+global_size = (args.n,)
 # Local Work size is optional
-local_size = args.l
+local_size = (args.l,)
 
 X = np.random.random((args.n, args.d)).astype(np.single)
 D = np.empty((args.n, args.n), dtype=np.single)

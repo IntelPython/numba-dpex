@@ -9,8 +9,7 @@ partial reductions in separate kernels.
 """
 
 import dpctl
-import dpctl.memory as dpctl_mem
-import numpy as np
+import dpctl.tensor as dpt
 from numba import int32
 
 import numba_dpex as dpex
@@ -59,12 +58,13 @@ def sum_recursive_reduction(size, group_size, Dinp, Dpartial_sums):
             nb_work_groups += 1
             passed_size = nb_work_groups * group_size
 
-    sum_reduction_kernel[passed_size, group_size](Dinp, size, Dpartial_sums)
+    gr = (passed_size,)
+    lr = (group_size,)
+
+    sum_reduction_kernel[gr, lr](Dinp, size, Dpartial_sums)
 
     if nb_work_groups <= group_size:
-        sum_reduction_kernel[group_size, group_size](
-            Dpartial_sums, nb_work_groups, Dinp
-        )
+        sum_reduction_kernel[lr, lr](Dpartial_sums, nb_work_groups, Dinp)
         result = Dinp[0]
     else:
         result = sum_recursive_reduction(
@@ -81,40 +81,18 @@ def sum_reduce(A):
     if (global_size % work_group_size) != 0:
         nb_work_groups += 1
 
-    partial_sums = np.zeros(nb_work_groups).astype(A.dtype)
-
-    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
-    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
-    device = dpctl.select_default_device()
-    print("Using device ...")
-    device.print_device_info()
-
-    with dpctl.device_context(device) as q:
-        inp_buf = dpctl_mem.MemoryUSMShared(A.size * A.dtype.itemsize, queue=q)
-        inp_ndarray = np.ndarray(A.shape, buffer=inp_buf, dtype=A.dtype)
-        np.copyto(inp_ndarray, A)
-
-        partial_sums_buf = dpctl_mem.MemoryUSMShared(
-            partial_sums.size * partial_sums.dtype.itemsize, queue=q
-        )
-        partial_sums_ndarray = np.ndarray(
-            partial_sums.shape,
-            buffer=partial_sums_buf,
-            dtype=partial_sums.dtype,
-        )
-        np.copyto(partial_sums_ndarray, partial_sums)
-
-        result = sum_recursive_reduction(
-            global_size, work_group_size, inp_ndarray, partial_sums_ndarray
-        )
+    partial_sums = dpt.zeros(nb_work_groups, dtype=A.dtype, device=A.device)
+    result = sum_recursive_reduction(
+        global_size, work_group_size, A, partial_sums
+    )
 
     return result
 
 
 def test_sum_reduce():
     N = 20000
-
-    A = np.ones(N).astype(np.int32)
+    device = dpctl.select_default_device()
+    A = dpt.ones(N, dtype=dpt.int32, device=device)
 
     print("Running recursive reduction")
 
