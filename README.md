@@ -41,7 +41,7 @@ Once you run the tests and make sure your numba-dpex installation is up and
 running, try out the examples inside the **numba_dpex/examples** folder. For
 example, you can try the `vector addition` example as follows:
 ```bash
-python numba_dpex/examples/sum.py
+python numba_dpex/examples/vector_sum.py
 ```
 
 # Known Issue

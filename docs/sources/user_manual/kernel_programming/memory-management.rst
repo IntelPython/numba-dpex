@@ -1,3 +1,6 @@
+.. _memory_management:
+.. include:: ./../../ext_links.txt
+
 Memory Management
 =================
 
