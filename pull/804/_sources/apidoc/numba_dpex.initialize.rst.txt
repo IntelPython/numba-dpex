@@ -1,7 +1,0 @@
-numba\_dpex.initialize module
-=============================
-
-.. automodule:: numba_dpex.initialize
-   :members:
-   :undoc-members:
-   :show-inheritance:
