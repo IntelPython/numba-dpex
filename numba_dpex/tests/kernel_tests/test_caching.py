@@ -48,9 +48,11 @@ def test_caching_hit_counts(filter_str):
         ),
     )
 
+    d_launcher = d[100]
+
     N = 10
     for i in range(N):
-        d(a, b, c, global_range=[100])
+        d_launcher(a, b, c)
     actual = dpt.asnumpy(c)
 
-    assert np.array_equal(expected, actual) and (d.cache_hits == N - 1)
+    assert np.array_equal(expected, actual) and (d_launcher.cache_hits == N - 1)

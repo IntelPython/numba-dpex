@@ -30,9 +30,9 @@ def test_ndrange_config_error(error, ndrange):
     ndrange kernel with unspported arguments.
     """
 
-    a = dpt.ones(1024, dtype=dpt.int32, device="0")
-    b = dpt.ones(1024, dtype=dpt.int32, device="0")
-    c = dpt.zeros(1024, dtype=dpt.int64, device="0")
+    a = dpt.ones(1024, dtype=dpt.int32)
+    b = dpt.ones(1024, dtype=dpt.int32)
+    c = dpt.zeros(1024, dtype=dpt.int64)
 
     with pytest.raises(error):
         kernel_vector_sum[ndrange](a, b, c)

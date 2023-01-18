@@ -27,7 +27,9 @@ def test_proper_lowering(filter_str):
     N = 256
     arr = dpt.arange(N, dtype=dpt.float32)
     orig = dpt.asnumpy(arr)
-    twice[N, N // 2](arr)
+    global_size = (N,)
+    local_size = (N // 2,)
+    twice[global_size, local_size](arr)
     after = dpt.asnumpy(arr)
     # The computation is correct?
     np.testing.assert_allclose(orig * 2, after)
@@ -46,7 +48,7 @@ def test_no_arg_barrier_support(filter_str):
     N = 256
     arr = dpt.arange(N, dtype=dpt.float32)
     orig = dpt.asnumpy(arr)
-    twice[N, dpex.DEFAULT_LOCAL_SIZE](arr)
+    twice[N](arr)
     after = dpt.asnumpy(arr)
     # The computation is correct?
     np.testing.assert_allclose(orig * 2, after)
@@ -70,7 +72,7 @@ def test_local_memory(filter_str):
 
     arr = dpt.arange(blocksize, dtype=dpt.float32)
     orig = dpt.asnumpy(arr)
-    reverse_array[blocksize, blocksize](arr)
+    reverse_array[(blocksize,), (blocksize,)](arr)
     after = dpt.asnumpy(arr)
     expected = orig[::-1] + orig
     np.testing.assert_allclose(expected, after)

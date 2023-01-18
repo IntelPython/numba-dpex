@@ -120,7 +120,9 @@ def test_kernel_atomic_local(filter_str, input_arrays, return_list_of_op):
     kernel = dpex.kernel(f)
     device = dpctl.SyclDevice(filter_str)
     with dpctl.device_context(device):
-        kernel[global_size, global_size](a)
+        gs = (N,)
+        ls = (N,)
+        kernel[gs, ls](a)
     assert a[0] == expected
 
 
