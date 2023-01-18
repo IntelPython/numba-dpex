@@ -48,7 +48,8 @@ def main():
     b = dpnp.random.random(n)
     c = np.ones_like(a)
 
-    print("Using device ...", a.device)
+    print("Using device ...")
+    a.device.print_device_info()
     driver(a, b, c, global_size)
     print("Done...")
 
