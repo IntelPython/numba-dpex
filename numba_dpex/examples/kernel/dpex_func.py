@@ -2,52 +2,48 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import dpctl
-import numpy as np
+import dpnp as np
 
-import numba_dpex as dpex
+import numba_dpex as ndpex
+
+# Array size
+N = 10
 
 
-@dpex.func
+# A device callable function that can be invoked from ``kernel`` and other device functions
+@ndpex.func
 def a_device_function(a):
-    """
-    A ``func`` is a device callable function that can be invoked from
-    ``kernel`` and other ``func`` functions.
-    """
     return a + 1
 
 
-@dpex.func
+# A device callable function can call another device function
+@ndpex.func
 def another_device_function(a):
-    return a_device_function(a)
+    return a_device_function(a * 2)
 
 
-@dpex.kernel
+# A kernel function that calls the device function
+@ndpex.kernel
 def a_kernel_function(a, b):
-    i = dpex.get_global_id(0)
+    i = ndpex.get_global_id(0)
     b[i] = another_device_function(a[i])
 
 
+# Utility function for printing
 def driver(a, b, N):
-    print(b)
-    print("--------")
-    a_kernel_function[N, dpex.DEFAULT_LOCAL_SIZE](a, b)
-    print(b)
+    print("A=", a)
+    a_kernel_function[N, ndpex.DEFAULT_LOCAL_SIZE](a, b)
+    print("B=", b)
 
 
+# Main function
 def main():
-    N = 10
     a = np.ones(N)
     b = np.ones(N)
 
-    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
-    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
-    device = dpctl.select_default_device()
     print("Using device ...")
-    device.print_device_info()
-
-    with dpctl.device_context(device):
-        driver(a, b, N)
+    a.device.print_device_info()
+    driver(a, b, N)
 
     print("Done...")
 
