@@ -35,6 +35,9 @@ programming models ``numba_dpex`` is built on top of `SYCL*`_ , which is hardwar
 that with ``numba_dpex.kernel`` programming model you will be able to write a portable code targeting different
 hardware vendors.
 
+.. note::
+   The current version of ``numba-dpex`` supports Intel SYCL devices only
+
 .. toctree::
    :caption: This document will cover the following chapters:
    :maxdepth: 2
