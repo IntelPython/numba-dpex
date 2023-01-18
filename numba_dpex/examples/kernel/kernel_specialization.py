@@ -2,8 +2,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import logging
-
 import dpctl.tensor as dpt
 import numpy as np
 
@@ -21,8 +19,8 @@ from numba_dpex.core.exceptions import (
 # ------------                 Example 1.                   ------------ #
 
 # Define type specializations using the numba_dpex usm_ndarray data type.
-i64arrty = usm_ndarray(int64, 1, "C", usm_type="device", device="0")
-f32arrty = usm_ndarray(float32, 1, "C", usm_type="device", device="0")
+i64arrty = usm_ndarray(int64, 1, "C")
+f32arrty = usm_ndarray(float32, 1, "C")
 
 
 # specialize a kernel for the i64arrty
@@ -36,13 +34,11 @@ def data_parallel_sum(a, b, c):
 
 
 # run the specialized kernel
-a = dpt.ones(1024, dtype=dpt.int64, device="0")
-b = dpt.ones(1024, dtype=dpt.int64, device="0")
-c = dpt.zeros(1024, dtype=dpt.int64, device="0")
+a = dpt.ones(1024, dtype=dpt.int64)
+b = dpt.ones(1024, dtype=dpt.int64)
+c = dpt.zeros(1024, dtype=dpt.int64)
 
-data_parallel_sum[
-    1024,
-](a, b, c)
+data_parallel_sum[1024](a, b, c)
 
 npc = dpt.asnumpy(c)
 npc_expected = np.full(1024, 2, dtype=np.int64)
@@ -65,26 +61,22 @@ def data_parallel_sum2(a, b, c):
 
 
 # run the i64 specialized kernel
-a = dpt.ones(1024, dtype=dpt.int64, device="0")
-b = dpt.ones(1024, dtype=dpt.int64, device="0")
-c = dpt.zeros(1024, dtype=dpt.int64, device="0")
+a = dpt.ones(1024, dtype=dpt.int64)
+b = dpt.ones(1024, dtype=dpt.int64)
+c = dpt.zeros(1024, dtype=dpt.int64)
 
-data_parallel_sum2[
-    1024,
-](a, b, c)
+data_parallel_sum2[1024](a, b, c)
 
 npc = dpt.asnumpy(c)
 npc_expected = np.full(1024, 2, dtype=np.int64)
 assert np.array_equal(npc, npc_expected)
 
 # run the f32 specialized kernel
-a = dpt.ones(1024, dtype=dpt.float32, device="0")
-b = dpt.ones(1024, dtype=dpt.float32, device="0")
-c = dpt.zeros(1024, dtype=dpt.float32, device="0")
+a = dpt.ones(1024, dtype=dpt.float32)
+b = dpt.ones(1024, dtype=dpt.float32)
+c = dpt.zeros(1024, dtype=dpt.float32)
 
-data_parallel_sum2[
-    1024,
-](a, b, c)
+data_parallel_sum2[1024](a, b, c)
 
 npc = dpt.asnumpy(c)
 npc_expected = np.full(1024, 2, dtype=np.float32)
@@ -102,9 +94,7 @@ b = dpt.ones(1024, dtype=dpt.int32)
 c = dpt.zeros(1024, dtype=dpt.int32)
 
 try:
-    data_parallel_sum[
-        1024,
-    ](a, b, c)
+    data_parallel_sum[1024](a, b, c)
 except MissingSpecializationError as mse:
     print(mse)
 
@@ -118,8 +108,9 @@ except MissingSpecializationError as mse:
 
 try:
     dpex.kernel((int64[::1], int64[::1], int64[::1]))
-except InvalidKernelSpecializationError:
-    logging.exception()
+except InvalidKernelSpecializationError as e:
+    print("Dpex kernels cannot be specialized using NumPy arrays.")
+    print(e)
 
 
 # ------------                 Limitations                       ------------ #
@@ -131,5 +122,9 @@ except InvalidKernelSpecializationError:
 
 try:
     dpex.kernel("(i64arrty, i64arrty, i64arrty)")
-except NotImplementedError:
-    logging.exception()
+except NotImplementedError as e:
+    print(
+        "Dpex kernels cannot be specialized using signatures specified as "
+        "strings."
+    )
+    print(e)

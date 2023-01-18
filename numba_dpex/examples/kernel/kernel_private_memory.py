@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import dpctl
+import dpctl.tensor as dpt
 import numpy as np
 from numba import float32
 
@@ -30,21 +31,22 @@ def private_memory():
         A[i] = memory[0] * 2
 
     N = 4
-    arr = np.zeros(N).astype(np.float32)
+    device = dpctl.select_default_device()
+
+    arr = dpt.zeros(N, dtype=dpt.float32, device=device)
     orig = np.arange(N).astype(np.float32)
 
-    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
-    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
-    device = dpctl.select_default_device()
     print("Using device ...")
     device.print_device_info()
 
-    with numba_dpex.offload_to_sycl_device(device):
-        private_memory_kernel[N, N](arr)
+    global_range = (N,)
+    local_range = (N,)
+    private_memory_kernel[global_range, local_range](arr)
 
-    np.testing.assert_allclose(orig * 2, arr)
+    arr_out = dpt.asnumpy(arr)
+    np.testing.assert_allclose(orig * 2, arr_out)
     # the output should be `orig[i] * 2, i.e. [0, 2, 4, ..]``
-    print(arr)
+    print(arr_out)
 
 
 def main():

@@ -33,7 +33,7 @@ def a_kernel_function(a, b):
 # Utility function for printing
 def driver(a, b, N):
     print("A=", a)
-    a_kernel_function[N, ndpex.DEFAULT_LOCAL_SIZE](a, b)
+    a_kernel_function[N](a, b)
     print("B=", b)
 
 

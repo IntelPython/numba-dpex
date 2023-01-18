@@ -56,7 +56,7 @@ def main():
 
     print("Using device ...")
     print(arr.device)
-    kernel_hillis_steele_scan[N, ndpx.DEFAULT_LOCAL_SIZE](arr)
+    kernel_hillis_steele_scan[N](arr)
 
     # the output should be [0, 1, 3, 6, ...]
     arr_np = np.asnumpy(arr)

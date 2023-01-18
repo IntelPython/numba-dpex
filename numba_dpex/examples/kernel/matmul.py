@@ -5,6 +5,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import dpctl
+import dpctl.tensor as dpt
 import numpy as np
 
 import numba_dpex as dpex
@@ -41,16 +42,20 @@ def driver(a, b, c):
 def main():
     a = np.arange(X * X, dtype=np.float32).reshape(X, X)
     b = np.array(np.random.random(X * X), dtype=np.float32).reshape(X, X)
-    c = np.ones_like(a).reshape(X, X)
 
-    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
-    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
     device = dpctl.select_default_device()
+    a_dpt = dpt.arange(X * X, dtype=dpt.float32, device=device)
+    a_dpt = dpt.reshape(a_dpt, (X, X))
+    b_dpt = dpt.asarray(b, dtype=dpt.float32, device=device)
+    b_dpt = dpt.reshape(b_dpt, (X, X))
+    c_dpt = dpt.ones_like(a_dpt)
+    c_dpt = dpt.reshape(c_dpt, (X, X))
+
     print("Using device ...")
     device.print_device_info()
 
-    with dpctl.device_context(device):
-        driver(a, b, c)
+    driver(a_dpt, b_dpt, c_dpt)
+    c_out = dpt.asnumpy(c_dpt)
 
     # Host compute using standard NumPy
     Amat = np.matrix(a)
@@ -58,7 +63,7 @@ def main():
     Cans = Amat * Bmat
 
     # Check result
-    assert np.allclose(c, Cans)
+    assert np.allclose(c_out, Cans)
 
     print("Done...")
 

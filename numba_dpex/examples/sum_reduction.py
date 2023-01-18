@@ -34,9 +34,7 @@ def sum_reduce(A):
     with dpctl.device_context(device):
         while total > 1:
             global_size = total // 2
-            sum_reduction_kernel[global_size, dpex.DEFAULT_LOCAL_SIZE](
-                A, R, global_size
-            )
+            sum_reduction_kernel[global_size](A, R, global_size)
             total = total // 2
 
     return R[0]
