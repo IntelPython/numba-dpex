@@ -152,6 +152,7 @@ jobs:
           conda activate numba_dpex_env
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
           export OCL_ICD_FILENAMES=libintelocl.so
+          export DPNP_RAISE_EXCEPION_ON_NUMPY_FALLBACK=0
           for script in $(find . \( -not -name "_*" -not -name "vectorize.py" -not -name "scan.py" -and -name "*.py" \))
           do
             echo "Executing ${script}"
