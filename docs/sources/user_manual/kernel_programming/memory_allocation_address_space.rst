@@ -24,8 +24,8 @@ Numba-dpex supports three disjoint named address spaces:
     the example below `numba_dpex.local.array(shape, dtype)` is the API used to
     allocate a static array in the local address space:
 
-    .. literalinclude:: ./../../../../numba_dpex/examples/barrier.py
-      :lines: 54-87
+    .. literalinclude:: ./../../../../numba_dpex/examples/kernel/barrier.py
+      :lines: 54-79
 
 3. Private Address Space
     Private Address Space refers to memory objects that are local to each
