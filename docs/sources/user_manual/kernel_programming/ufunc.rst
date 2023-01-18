@@ -42,8 +42,6 @@ Full example can be found at ``numba_dpex/examples/blacksholes_njit.py``.
     ``dpctl.device_context`` in which the ``numba.vectorize`` function is
     called.
 
-Full Examples
--------------
 
 - ``numba_dpex/examples/vectorize.py``
 - ``numba_dpex/examples/blacksholes_njit.py``

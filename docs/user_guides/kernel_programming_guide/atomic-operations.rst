@@ -4,8 +4,8 @@ Supported Atomic Operations
 Numba-dpex supports some of the atomic operations supported in DPC++.
 Those that are presently implemented are as follows:
 
-.. automodule:: numba_dpex.ocl.stubs
-   :members: atomic
+.. automodule:: numba_dpex.ocl.stubs.atomic
+   :members:
    :noindex:
 
 Example
@@ -19,7 +19,7 @@ Example usage of atomic operations
 .. note::
 
     The ``numba_dpex.atomic.add`` function is analogous to The
-    ``numba.cuda.atomic.add`` provided by the ``numba.cuda`` backend.
+    ``numba.cuda.atomic.add``.
 
 Generating Native FP Atomics
 ----------------------------
