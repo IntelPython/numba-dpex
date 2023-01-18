@@ -10,7 +10,6 @@ Submodules
    numba_dpex.core.kernel_interface.arg_pack_unpacker
    numba_dpex.core.kernel_interface.dispatcher
    numba_dpex.core.kernel_interface.func
-   numba_dpex.core.kernel_interface.indexers
    numba_dpex.core.kernel_interface.kernel_base
    numba_dpex.core.kernel_interface.spirv_kernel
 
