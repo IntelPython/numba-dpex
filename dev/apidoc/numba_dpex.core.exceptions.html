@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>numba_dpex.core.exceptions module &mdash; numba-dpex 0.19.0+91.g187782d2 documentation</title>
+  <title>numba_dpex.core.exceptions module &mdash; numba-dpex 0.19.0+93.g9809c950 documentation</title>
   
 
   
@@ -218,6 +218,12 @@ ndarray kernel arguments.</p>
 <dt class="sig sig-object py" id="numba_dpex.core.exceptions.IllegalRangeValueError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">IllegalRangeValueError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.exceptions.IllegalRangeValueError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception raised when a range used to launch a kernel is not well-formed.</p>
+<p>A non-well-formed range value is either empty or is not a list of ints.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>kernel_name (str): The kernel function name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py exception">
@@ -328,6 +334,14 @@ range.</p>
 <dt class="sig sig-object py" id="numba_dpex.core.exceptions.UnmatchedNumberOfRangeDimsError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnmatchedNumberOfRangeDimsError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_ndims</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_ndims</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.exceptions.UnmatchedNumberOfRangeDimsError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception raised when the global range and local range have different
+number of dimensions or rank.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>kernel_name (str): The kernel function name.
+global_ndims (int): Rank of the global range.
+local_ndims (int): Rank of the local range.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py exception">
@@ -379,8 +393,15 @@ supported_backends (List): The list of supported backends.</p>
 <dt class="sig sig-object py" id="numba_dpex.core.exceptions.UnsupportedGroupWorkItemSizeError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedGroupWorkItemSizeError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">work_groups</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">work_items</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.exceptions.UnsupportedGroupWorkItemSizeError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception raised when the value in a specific dimension of a global
+range is not evenly divisible by the value in the corresponding dimension
+in a local range.</p>
 <dl class="simple">
-<dt>Args:</dt><dd><p>Exception (_type_): _description_</p>
+<dt>Args:</dt><dd><p>kernel_name (str): The kernel function name.
+dim (int): Dimension where the mismatch was identified.
+work_groups (int): Number of requested work groups.
+work_items (int): Number of requested work items in the errant
+dimension of the local range.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -403,14 +424,27 @@ kernel_name (str): Name of kernel where the error was raised.</p>
 <dt class="sig sig-object py" id="numba_dpex.core.exceptions.UnsupportedNumberOfRangeDimsError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedNumberOfRangeDimsError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndims</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_work_item_dims</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.exceptions.UnsupportedNumberOfRangeDimsError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception raised when a range is created for a device that has more
+number of dimensions than is supported by the device.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>kernel_name (str): The kernel function name.
+ndims (int): Rank of the errant range.
+max_work_item_dims (int): Maximum number of range dimensions supported
+by the device.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="numba_dpex.core.exceptions.UnsupportedWorkItemSizeError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedWorkItemSizeError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requested_work_items</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supported_work_items</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.exceptions.UnsupportedWorkItemSizeError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception raised when the number of work items requested for a
+specific dimension exceeds the number supported by the device.</p>
 <dl class="simple">
-<dt>Args:</dt><dd><p>Exception (_type_): _description_</p>
+<dt>Args:</dt><dd><p>kernel_name (str): The kernel function name.
+requested_work_items (int): Number of requested work items.
+supported_work_items (int): Supported number of work items.</p>
 </dd>
 </dl>
 </dd></dl>
