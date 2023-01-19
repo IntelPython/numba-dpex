@@ -1,9 +1,9 @@
 name: dev
 channels:
   - defaults
+  - intel
   - dppy/label/dev
   - numba
-  - intel
   - numba/label/dev
   - nodefaults
 dependencies:

@@ -36,7 +36,6 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          export DPNP_RAISE_EXCEPION_ON_NUMPY_FALLBACK=0
           pytest -q -ra --disable-warnings --cov --cov-report term-missing --pyargs numba_dpex -vv
 
       - name: Install coveralls
