@@ -29,3 +29,5 @@ dependencies:
     - sphinx-rtd-theme
     - sphinxcontrib-apidoc
     - sphinxcontrib-googleanalytics
+    - sphinxcontrib.programoutput
+    - pydata-sphinx-theme
