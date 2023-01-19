@@ -57,7 +57,13 @@ jobs:
             experimental: true
     continue-on-error: ${{ matrix.experimental }}
     env:
-      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
+      CHANNELS: ${{ matrix.integration_channels }}                             \
+        -c intel                                                               \
+        -c defaults                                                            \
+        -c numba                                                               \
+        -c numba/label/dev                                                     \
+        -c dppy/label/dev                                                      \
+        --override-channels
       conda-bld: C:\Miniconda\conda-bld\win-64\
 
     steps:
@@ -170,17 +176,17 @@ jobs:
         experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
         dependencies: [""]
-        # include:
-        #   - python: "3.8"
-        #     integration_channels: -c dppy/label/dev
-        #     artifact_name: -c dppy_label_dev
-        #     experimental: true  # current stable
-        #     dependencies: ""
-    continue-on-error: ${{ matrix.experimental }}
-    env:
-      # conda-forge: llvm-spirv 11 not on intel channel yet
-      CHANNELS: ${{ matrix.integration_channels }} -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev -c conda-forge --override-channels
 
+    continue-on-error: ${{ matrix.experimental }}
+    env: >
+      # conda-forge: llvm-spirv 11 not on intel channel yet
+      CHANNELS: ${{ matrix.integration_channels }}
+          -c dppy/label/dev
+          -c defaults
+          -c numba
+          -c numba/label/dev
+          -c conda-forge
+          --override-channels
     steps:
       - name: Create dir for numba-dpex repo
         run: |
@@ -205,15 +211,26 @@ jobs:
           # Test channel
           conda search ${{ env.PACKAGE_NAME }} -c $env:GITHUB_WORKSPACE/channel --override-channels
       - name: Collect dependencies
-        run: conda install ${{ env.PACKAGE_NAME }} python=${{ matrix.python }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }} --only-deps --dry-run > lockfile
+        run: >
+           conda install
+              ${{ env.PACKAGE_NAME }}
+              python=${{ matrix.python }}
+              -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
+              --only-deps --dry-run > lockfile
       - name: Install numba-dpex
-        run: |
-          conda install brotli ${{ env.PACKAGE_NAME }} pytest dpcpp_win-64 python=${{ matrix.python }} dpctl ${{ matrix.dependencies }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
-          # Test installed packages
-          conda list
+        run: >
+          conda install
+              ${{ env.PACKAGE_NAME }}
+              pytest
+              dpcpp_win-64
+              python=${{ matrix.python }}
+              dpctl
+              ${{ matrix.dependencies }}
+              -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
+      - name: Test installed packages
+        run: conda list
       - name: Install opencl_rt
         run: conda install opencl_rt -c intel --override-channels
-
       - name: Add library
         shell: pwsh
         run: |
