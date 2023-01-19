@@ -29,13 +29,13 @@ class KernelHasReturnValueError(Exception):
             self.message = (
                 f'Specialized kernel signature "{sig}" has a return value '
                 f'of type "{return_type}". '
-                "A numba-dpex kernel must have a void return type."
+                "A kernel must have a void return type."
             )
         else:
             self.message = (
                 f'Kernel "{kernel_name}" has a return value '
                 f'of type "{return_type}". '
-                "A numba-dpex kernel must have a void return type."
+                "A kernel must have a void return type."
             )
 
         super().__init__(self.message)
@@ -80,16 +80,34 @@ class UnknownGlobalRangeError(Exception):
 
 
 class IllegalRangeValueError(Exception):
+    """Exception raised when a range used to launch a kernel is not well-formed.
+
+    A non-well-formed range value is either empty or is not a list of ints.
+
+    Args:
+        kernel_name (str): The kernel function name.
+    """
+
     def __init__(self, kernel_name) -> None:
         self.message = (
-            f"Kernel {kernel_name} cannot be dispatched with the "
-            "specified range. The range should be specified as a list, tuple, "
-            "or an int."
+            f"Specified range to launch Kernel {kernel_name} is not "
+            "well-formed. A range should be specified as a list, tuple, "
+            "or an int using the [] (__getitem__) method of the kernel."
         )
         super().__init__(self.message)
 
 
 class UnsupportedNumberOfRangeDimsError(Exception):
+    """Exception raised when a range is created for a device that has more
+    number of dimensions than is supported by the device.
+
+    Args:
+        kernel_name (str): The kernel function name.
+        ndims (int): Rank of the errant range.
+        max_work_item_dims (int): Maximum number of range dimensions supported
+        by the device.
+    """
+
     def __init__(self, kernel_name, ndims, max_work_item_dims) -> None:
         self.message = (
             f"Specified range for kernel {kernel_name} has {ndims} dimensions, "
@@ -100,21 +118,33 @@ class UnsupportedNumberOfRangeDimsError(Exception):
 
 
 class UnmatchedNumberOfRangeDimsError(Exception):
+    """Exception raised when the global range and local range have different
+    number of dimensions or rank.
+
+    Args:
+        kernel_name (str): The kernel function name.
+        global_ndims (int): Rank of the global range.
+        local_ndims (int): Rank of the local range.
+    """
+
     def __init__(self, kernel_name, global_ndims, local_ndims) -> None:
         self.message = (
             f"Specified global_range for kernel {kernel_name} has "
             f"{global_ndims} dimensions, "
-            f"while specified local_range with dimenstions of {local_ndims} "
+            f"while specified local_range with dimensions of {local_ndims} "
             "doesn't match with global_range."
         )
         super().__init__(self.message)
 
 
 class UnsupportedWorkItemSizeError(Exception):
-    """
+    """Exception raised when the number of work items requested for a
+    specific dimension exceeds the number supported by the device.
 
     Args:
-        Exception (_type_): _description_
+        kernel_name (str): The kernel function name.
+        requested_work_items (int): Number of requested work items.
+        supported_work_items (int): Supported number of work items.
     """
 
     def __init__(
@@ -130,10 +160,16 @@ class UnsupportedWorkItemSizeError(Exception):
 
 
 class UnsupportedGroupWorkItemSizeError(Exception):
-    """
+    """Exception raised when the value in a specific dimension of a global
+    range is not evenly divisible by the value in the corresponding dimension
+    in a local range.
 
     Args:
-        Exception (_type_): _description_
+        kernel_name (str): The kernel function name.
+        dim (int): Dimension where the mismatch was identified.
+        work_groups (int): Number of requested work groups.
+        work_items (int): Number of requested work items in the errant
+        dimension of the local range.
     """
 
     def __init__(self, kernel_name, dim, work_groups, work_items) -> None:
@@ -141,7 +177,7 @@ class UnsupportedGroupWorkItemSizeError(Exception):
             f"Attempting to launch kernel {kernel_name} with "
             f"{work_groups} global work groups and {work_items} local work "
             f"items in dimension {dim} is not supported. The global work "
-            "groups must be evenly divisibly by the local work items."
+            "groups must be evenly divisible by the local work items."
         )
         super().__init__(self.message)
 

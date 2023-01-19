@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-import copy
 from inspect import signature
 from warnings import warn
 
@@ -234,7 +233,11 @@ class JitKernel:
         argument is specified as a valid list of tuple.
         """
 
-        if not isinstance(range, (tuple, list)):
+        if not (
+            range
+            and isinstance(range, list)
+            and all(isinstance(v, int) for v in range)
+        ):
             raise IllegalRangeValueError(self.kernel_name)
 
         max_work_item_dims = device.max_work_item_dims
@@ -507,7 +510,7 @@ class JitKernel:
         if self._local_range:
             self._local_range = list(self._local_range)[::-1]
 
-        return copy.copy(self)
+        return self
 
     def _check_ranges(self, device):
         """Helper to get the validate the global and local range values prior
@@ -522,7 +525,9 @@ class JitKernel:
         # If both local and global range values are specified the kernel is
         # invoked as a SYCL nd_range kernel.
 
-        if self._global_range and not self._local_range:
+        if not self._global_range:
+            raise UnknownGlobalRangeError(self.kernel_name)
+        elif self._global_range and not self._local_range:
             self._check_range(self._global_range, device)
         else:
             self._check_ndrange(
@@ -533,6 +538,7 @@ class JitKernel:
 
     def __call__(self, *args):
         """Functor to launch a kernel."""
+
         argtypes = [self.typingctx.resolve_argument_type(arg) for arg in args]
         # FIXME: For specialized and ahead of time compiled and cached kernels,
         # the CFD check was already done statically. The run-time check is
