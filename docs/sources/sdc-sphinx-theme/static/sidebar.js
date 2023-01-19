@@ -104,7 +104,7 @@ $(function() {
     var sidebar_offset = sidebar.offset().top;
     var sidebar_height = Math.max(bodywrapper.height(), sidebar.height());
     sidebarbutton.find('span').css({
-        'font-family': '"Lucida Grande",Arial,sans-serif', 
+        'font-family': '"Lucida Grande",Arial,sans-serif',
 	'display': 'block',
 	'top': Math.min(viewport_height/2, sidebar_height/2 + sidebar_offset) - 10,
 	'width': 12,

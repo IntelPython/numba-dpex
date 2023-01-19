@@ -290,7 +290,7 @@ div.topbar ul li a {
   text-decoration: none;
   padding: 5px;
   display: block;
-  height: auto; 
+  height: auto;
   text-align: center;
   vertical-align: middle;
   border-radius: 4px;
@@ -315,7 +315,7 @@ div.dropdown-content {
     width: 235px;
     height: 155px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    padding-top: 3px; 
+    padding-top: 3px;
     padding-right: 15px;
     position: fixed;
 }
