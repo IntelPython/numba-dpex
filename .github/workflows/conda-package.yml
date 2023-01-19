@@ -207,7 +207,7 @@ jobs:
           # Test channel
           conda search ${{ env.PACKAGE_NAME }} -c $env:GITHUB_WORKSPACE/channel --override-channels
       - name: Collect dependencies
-        run: conda install ${{ env.PACKAGE_NAME }} python=${{ matrix.python }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }} --only-deps --dry-run > lockfile
+        run: conda install brotli ${{ env.PACKAGE_NAME }} python=${{ matrix.python }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }} --only-deps --dry-run > lockfile
       - name: Cache conda packages
         uses: actions/cache@v2
         env:
