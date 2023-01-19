@@ -134,5 +134,6 @@ def func(func_or_sig=None, debug=None, enable_cache=True):
 
         return _wrapped
     else:
+        # no signature
         func = func_or_sig
         return _func_autojit(func, debug=debug)

@@ -17,11 +17,31 @@ from numba_dpex.utils import npytypes_array_to_dpex_array
 
 
 class DpexFunction(object):
+    """Class to materialize dpex function"""
+
     def __init__(self, pyfunc, debug=None):
+        """Constructor for DpexFunction
+
+        Args:
+            pyfunc (function): A python function to be compiled.
+            debug (object, optional): Debug option for compilation.
+                Defaults to None.
+        """
         self._pyfunc = pyfunc
         self._debug = debug
 
     def compile(self, arg_types, return_types):
+        """The actual compilation function.
+
+        Args:
+            arg_types (tuple): Function argument types in a tuple.
+            return_types (numba.core.types.scalars.Integer):
+                An integer value to specify the return type.
+
+        Returns:
+            numba.core.compiler.CompileResult: The compiled result
+        """
+
         cres = compile_with_dpex(
             pyfunc=self._pyfunc,
             pyfunc_name=self._pyfunc.__name__,
@@ -42,6 +62,15 @@ class DpexFunctionTemplate(object):
     """Unmaterialized dpex function"""
 
     def __init__(self, pyfunc, debug=None, enable_cache=True):
+        """AI is creating summary for __init__
+
+        Args:
+            pyfunc (function): A python function to be compiled.
+            debug (object, optional): Debug option for compilation.
+                Defaults to None.
+            enable_cache (bool, optional): Flag to turn on/off caching.
+                Defaults to True.
+        """
         self._pyfunc = pyfunc
         self._debug = debug
         self._enable_cache = enable_cache
@@ -60,19 +89,29 @@ class DpexFunctionTemplate(object):
 
     @property
     def cache(self):
+        """Cache accessor"""
         return self._cache
 
     @property
     def cache_hits(self):
+        """Cache hit count accessor"""
         return self._cache_hits
 
     def compile(self, args):
-        """Compile a dpex.func decorated Python function with the given
-        argument types.
+        """Compile a dpex.func decorated Python function
 
-        Each signature is compiled once by caching the compiled function inside
-        this object.
+        Compile a dpex.func decorated Python function with the given
+        argument types. Each signature is compiled once by caching the
+        compiled function inside this object.
+
+        Args:
+            args (tuple): Function argument types in a tuple.
+
+        Returns:
+            numba.core.typing.templates.Signature: Signature of the
+                compiled result.
         """
+
         argtypes = [
             dpex_target.typing_context.resolve_argument_type(arg)
             for arg in args
@@ -102,11 +141,21 @@ class DpexFunctionTemplate(object):
             cres.target_context.insert_user_function(self, cres.fndesc, libs)
             # cres.target_context.add_user_function(self, cres.fndesc, libs)
             self._cache.put(key, cres)
-
         return cres.signature
 
 
 def compile_func(pyfunc, signature, debug=None):
+    """AI is creating summary for compile_func
+
+    Args:
+        pyfunc (function): A python function to be compiled.
+        signature (list): A list of numba.core.typing.templates.Signature's
+        debug (object, optional): Debug options. Defaults to None.
+
+    Returns:
+        numba_dpex.core.kernel_interface.func.DpexFunction: DpexFunction object
+    """
+
     devfn = DpexFunction(pyfunc, debug=debug)
 
     cres = []
@@ -139,7 +188,20 @@ def compile_func(pyfunc, signature, debug=None):
 
 
 def compile_func_template(pyfunc, debug=None):
-    """Compile a DpexFunctionTemplate"""
+    """Compile a DpexFunctionTemplate
+
+    Args:
+        pyfunc (function): A python function to be compiled.
+        debug (object, optional): Debug options. Defaults to None.
+
+    Raises:
+        AssertionError: Raised if keyword arguments are supplied in
+            the inner generic function.
+
+    Returns:
+        numba_dpex.core.kernel_interface.func.DpexFunctionTemplate:
+            A DpexFunctionTemplate object.
+    """
 
     dft = DpexFunctionTemplate(pyfunc, debug=debug)
 
@@ -148,10 +210,13 @@ def compile_func_template(pyfunc, debug=None):
         exact_match_required = True
         key = dft
 
+        # TODO: Talk with the numba team and see why this has been
+        # called twice, could be a bug with numba.
         def generic(self, args, kws):
             if kws:
                 raise AssertionError("No keyword arguments allowed.")
             return dft.compile(args)
 
     dpex_target.typing_context.insert_user_function(dft, _function_template)
+
     return dft

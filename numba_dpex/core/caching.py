@@ -228,6 +228,8 @@ class LRUCache(AbstractCache):
         """Constructor for LRUCache.
 
         Args:
+            name (str, optional): The name of the cache, useful for
+                debugging.
             capacity (int, optional): The max capacity of the cache.
                 Defaults to 10.
             pyfunc (NoneType, optional): A python function to be cached.
