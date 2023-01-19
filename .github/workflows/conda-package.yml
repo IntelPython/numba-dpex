@@ -170,12 +170,12 @@ jobs:
         experimental: [true]  # packages are not available on -c intel yet
         artifact_name: [""]
         dependencies: [""]
-        include:
-          - python: "3.8"
-            integration_channels: -c dppy/label/dev
-            artifact_name: -c dppy_label_dev
-            experimental: true  # current stable
-            dependencies: ""
+        # include:
+        #   - python: "3.8"
+        #     integration_channels: -c dppy/label/dev
+        #     artifact_name: -c dppy_label_dev
+        #     experimental: true  # current stable
+        #     dependencies: ""
     continue-on-error: ${{ matrix.experimental }}
     env:
       # conda-forge: llvm-spirv 11 not on intel channel yet
@@ -197,8 +197,6 @@ jobs:
         with:
           auto-activate-base: true
           activate-environment: ""
-      - name: Install conda-build
-        run: conda install conda-build
       - name: Create conda channel
         run: |
           mkdir -p $env:GITHUB_WORKSPACE/channel/win-64
@@ -207,21 +205,10 @@ jobs:
           # Test channel
           conda search ${{ env.PACKAGE_NAME }} -c $env:GITHUB_WORKSPACE/channel --override-channels
       - name: Collect dependencies
-        run: conda install brotli ${{ env.PACKAGE_NAME }} python=${{ matrix.python }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }} --only-deps --dry-run > lockfile
-      - name: Cache conda packages
-        uses: actions/cache@v2
-        env:
-          CACHE_NUMBER: 0  # Increase to reset cache
-        with:
-          path: /home/runner/conda_pkgs_dir
-          key:
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-${{hashFiles('lockfile') }}
-          restore-keys: |
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
+        run: conda install ${{ env.PACKAGE_NAME }} python=${{ matrix.python }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }} --only-deps --dry-run > lockfile
       - name: Install numba-dpex
         run: |
-          conda install ${{ env.PACKAGE_NAME }} pytest dpcpp_win-64 python=${{ matrix.python }} dpctl ${{ matrix.dependencies }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
+          conda install brotli ${{ env.PACKAGE_NAME }} pytest dpcpp_win-64 python=${{ matrix.python }} dpctl ${{ matrix.dependencies }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
           # Test installed packages
           conda list
       - name: Install opencl_rt
