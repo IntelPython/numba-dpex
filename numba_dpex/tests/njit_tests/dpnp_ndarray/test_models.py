@@ -5,18 +5,18 @@
 from numba import types
 from numba.core.datamodel import default_manager, models
 
-from numba_dpex.dpnp_ndarray import dpnp_ndarray_Type
+from numba_dpex.core.types.dpnp_ndarray_types import DpnpNdarray
 from numba_dpex.dpnp_ndarray.models import dpnp_ndarray_Model
 
 
-def test_model_for_dpnp_ndarray_Type():
-    """Test that model is registered for dpnp_ndarray_Type instances.
+def test_model_for_DpnpNdarray():
+    """Test that model is registered for DpnpNdarray instances.
 
-    The model for dpnp_ndarray_Type is dpnp_ndarray_Model.
+    The model for DpnpNdarray is dpnp_ndarray_Model.
 
     """
 
-    model = default_manager.lookup(dpnp_ndarray_Type(types.float64, 1, "C"))
+    model = default_manager.lookup(DpnpNdarray(types.float64, 1, "C"))
     assert isinstance(model, dpnp_ndarray_Model)
 
 

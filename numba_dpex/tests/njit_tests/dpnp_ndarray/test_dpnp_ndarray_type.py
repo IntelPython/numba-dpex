@@ -11,7 +11,7 @@ from dpctl.tensor.numpy_usm_shared import ndarray as dpctl_ndarray
 from dpnp import ndarray as dpnp_ndarray
 from numba import njit, typeof, types
 
-from numba_dpex.dpnp_ndarray import dpnp_ndarray_Type
+from numba_dpex.core.types.dpnp_ndarray_types import DpnpNdarray
 from numba_dpex.numpy_usm_shared import UsmSharedArrayType
 
 
@@ -19,7 +19,7 @@ from numba_dpex.numpy_usm_shared import UsmSharedArrayType
     "array_type, expected_numba_type",
     [
         (dpctl_ndarray, UsmSharedArrayType),
-        (dpnp_ndarray, dpnp_ndarray_Type),
+        (dpnp_ndarray, DpnpNdarray),
     ],
 )
 @pytest.mark.parametrize(
