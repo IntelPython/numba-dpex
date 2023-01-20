@@ -11,7 +11,7 @@ from dpctl.tensor.numpy_usm_shared import ndarray as dpctl_ndarray
 from dpnp import ndarray as dpnp_ndarray
 from numba import njit, typeof, types
 
-from numba_dpex.core.types.dpnp_ndarray_types import DpnpNdarray
+from numba_dpex.core.types.dpnp_ndarray_type import DpnpNdarray
 from numba_dpex.numpy_usm_shared import UsmSharedArrayType
 
 

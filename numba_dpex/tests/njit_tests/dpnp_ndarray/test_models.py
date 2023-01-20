@@ -5,7 +5,7 @@
 from numba import types
 from numba.core.datamodel import default_manager, models
 
-from numba_dpex.core.types.dpnp_ndarray_types import DpnpNdarray
+from numba_dpex.core.types.dpnp_ndarray_type import DpnpNdarray
 from numba_dpex.dpnp_ndarray.models import dpnp_ndarray_Model
 
 

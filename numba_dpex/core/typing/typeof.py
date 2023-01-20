@@ -6,7 +6,7 @@ from dpctl.tensor import usm_ndarray
 from numba.extending import typeof_impl
 from numba.np import numpy_support
 
-from numba_dpex.core.types.dpnp_ndarray_types import DpnpNdarray
+from numba_dpex.core.types.dpnp_ndarray_type import DpnpNdarray
 from numba_dpex.core.types.usm_ndarray_type import USMNdArray
 from numba_dpex.utils import address_space
 

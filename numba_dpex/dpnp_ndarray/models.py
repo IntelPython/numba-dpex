@@ -7,7 +7,7 @@ from numba.extending import register_model
 
 from numba_dpex.core.datamodel.models import dpex_data_model_manager
 
-from ..core.types.dpnp_ndarray_types import DpnpNdarray
+from ..core.types.dpnp_ndarray_type import DpnpNdarray
 
 # This tells Numba to use the default Numpy ndarray data layout for
 # object of type dpnp.ndarray.
