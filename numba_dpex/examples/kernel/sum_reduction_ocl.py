@@ -56,7 +56,7 @@ def sum_reduce(A):
     final_sum = 0
     # calculate the final sum in HOST
     for i in range(nb_work_groups):
-        final_sum += partial_sums[i]
+        final_sum += int(partial_sums[i])
 
     return final_sum
 

@@ -65,7 +65,7 @@ def sum_recursive_reduction(size, group_size, Dinp, Dpartial_sums):
 
     if nb_work_groups <= group_size:
         sum_reduction_kernel[lr, lr](Dpartial_sums, nb_work_groups, Dinp)
-        result = Dinp[0]
+        result = int(Dinp[0])
     else:
         result = sum_recursive_reduction(
             nb_work_groups, group_size, Dpartial_sums, Dinp
