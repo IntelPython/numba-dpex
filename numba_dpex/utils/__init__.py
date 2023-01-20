@@ -21,7 +21,6 @@ from numba_dpex.utils.llvm_codegen_helpers import (
     get_one,
     get_zero,
 )
-from numba_dpex.utils.misc import IndeterminateExecutionQueueError
 from numba_dpex.utils.type_conversion_fns import npytypes_array_to_dpex_array
 
 __all__ = [
@@ -39,5 +38,4 @@ __all__ = [
     "as_usm_obj",
     "copy_from_numpy_to_usm_obj",
     "copy_to_numpy_from_usm_obj",
-    "IndeterminateExecutionQueueError",
 ]
