@@ -22,7 +22,7 @@ def debug_option(request):
     return request.param
 
 
-def get_kernel_ir(fn, sig, debug=None):
+def get_kernel_ir(fn, sig, debug=False):
     kernel = dpex.core.kernel_interface.spirv_kernel.SpirvKernel(
         fn, fn.__name__
     )

@@ -30,13 +30,13 @@ class DpexFunction(object):
     the function is invoked.
     """
 
-    def __init__(self, pyfunc, debug=None):
+    def __init__(self, pyfunc, debug=False):
         """Constructor for `DpexFunction`
 
         Args:
             pyfunc (`function`): A python function to be compiled.
-            debug (`object`, optional): Debug option for compilation.
-                Defaults to `None`.
+            debug (`bool`, optional): Debug option for compilation.
+                Defaults to `False`.
         """
         self._pyfunc = pyfunc
         self._debug = debug
@@ -77,13 +77,13 @@ class DpexFunctionTemplate(object):
     calling convention.
     """
 
-    def __init__(self, pyfunc, debug=None, enable_cache=True):
+    def __init__(self, pyfunc, debug=False, enable_cache=True):
         """Constructor for `DpexFunctionTemplate`
 
         Args:
             pyfunc (function): A python function to be compiled.
-            debug (object, optional): Debug option for compilation.
-                Defaults to `None`.
+            debug (bool, optional): Debug option for compilation.
+                Defaults to `False`.
             enable_cache (bool, optional): Flag to turn on/off caching.
                 Defaults to `True`.
         """
@@ -159,7 +159,7 @@ class DpexFunctionTemplate(object):
         return cres.signature
 
 
-def compile_func(pyfunc, signature, debug=None):
+def compile_func(pyfunc, signature, debug=False):
     """Compiles a specialized `numba_dpex.func`
 
     Compiles a specialized `numba_dpex.func` decorated function to native
@@ -169,7 +169,7 @@ def compile_func(pyfunc, signature, debug=None):
     Args:
         pyfunc (`function`): A python function to be compiled.
         signature (`list`): A list of `numba.core.typing.templates.Signature`'s
-        debug (`object`, optional): Debug options. Defaults to `None`.
+        debug (`bool`, optional): Debug options. Defaults to `False`.
 
     Returns:
         `numba_dpex.core.kernel_interface.func.DpexFunction`: A `DpexFunction` object
@@ -205,7 +205,7 @@ def compile_func(pyfunc, signature, debug=None):
     return devfn
 
 
-def compile_func_template(pyfunc, debug=None, enable_cache=True):
+def compile_func_template(pyfunc, debug=False, enable_cache=True):
     """Converts a `numba_dpex.func` function to an `AbstractTemplate`
 
     Converts a `numba_dpex.func` decorated function to a Numba
@@ -219,7 +219,7 @@ def compile_func_template(pyfunc, debug=None, enable_cache=True):
 
     Args:
         pyfunc (`function`): A python function to be compiled.
-        debug (`object`, optional): Debug options. Defaults to `None`.
+        debug (`bool`, optional): Debug options. Defaults to `False`.
 
     Raises:
         `AssertionError`: Raised if keyword arguments are supplied in

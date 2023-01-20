@@ -55,7 +55,7 @@ from .dufunc_inliner import dufunc_inliner
 
 
 def _compile_kernel_parfor(
-    sycl_queue, kernel_name, func_ir, args, args_with_addrspaces, debug=None
+    sycl_queue, kernel_name, func_ir, args, args_with_addrspaces, debug=False
 ):
     # We only accept numba_dpex.core.types.Array type
     for arg in args_with_addrspaces:

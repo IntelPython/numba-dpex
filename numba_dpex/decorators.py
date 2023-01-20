@@ -19,7 +19,7 @@ from numba_dpex.core.kernel_interface.func import (
 def kernel(
     func_or_sig=None,
     access_types=None,
-    debug=None,
+    debug=False,
     enable_cache=True,
 ):
     """A decorator to define a kernel function.
@@ -93,7 +93,7 @@ def kernel(
         return _kernel_dispatcher(func)
 
 
-def func(func_or_sig=None, debug=None, enable_cache=True):
+def func(func_or_sig=None, debug=False, enable_cache=True):
     """A decorator to define a kernel device function.
 
     Device functions are functions that can be only invoked from a kernel
@@ -105,16 +105,13 @@ def func(func_or_sig=None, debug=None, enable_cache=True):
     normal functions.
     """
 
-    def _func_autojit(pyfunc, debug=None):
+    def _func_autojit(pyfunc):
         return compile_func_template(
             pyfunc, debug=debug, enable_cache=enable_cache
         )
 
-    def _func_autojit_wrapper(debug=None):
-        return _func_autojit
-
     if func_or_sig is None:
-        return _func_autojit_wrapper(debug=debug)
+        return _func_autojit
     elif isinstance(func_or_sig, str):
         raise NotImplementedError(
             "Specifying signatures as string is not yet supported by numba-dpex"
@@ -143,4 +140,4 @@ def func(func_or_sig=None, debug=None, enable_cache=True):
     else:
         # no signature
         func = func_or_sig
-        return _func_autojit(func, debug=debug)
+        return _func_autojit(func)
