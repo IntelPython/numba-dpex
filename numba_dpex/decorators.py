@@ -54,7 +54,7 @@ def kernel(
     elif isinstance(func_or_sig, list) or sigutils.is_signature(func_or_sig):
         # String signatures are not supported as passing usm_ndarray type as
         # a string is not possible. Numba's sigutils relies on the type being
-        # available in Numba's types.__dpct__ and dpex types are not registered
+        # available in Numba's `types.__dict__` and dpex types are not registered
         # there yet.
         if isinstance(func_or_sig, list):
             for sig in func_or_sig:
@@ -68,7 +68,6 @@ def kernel(
         if not isinstance(func_or_sig, list):
             func_or_sig = [func_or_sig]
 
-        # TODO: This function is 99% same as _kernel_dispatcher()
         def _specialized_kernel_dispatcher(pyfunc):
             ordered_arg_access_types = get_ordered_arg_access_types(
                 pyfunc, access_types
@@ -95,13 +94,21 @@ def kernel(
 
 
 def func(func_or_sig=None, debug=None, enable_cache=True):
-    """
-    TODO: make similar to kernel version and when the signature is a list
-        remove the caching for specialization in func
+    """A decorator to define a kernel device function.
+
+    Device functions are functions that can be only invoked from a kernel
+    and not from a host function. This provides a special decorator
+    `numba_dpex.func` specifically to implement a device function.
+
+    A device function can be invoked from another device function and
+    unlike a kernel function, a device function can return a value like
+    normal functions.
     """
 
     def _func_autojit(pyfunc, debug=None):
-        return compile_func_template(pyfunc, debug=debug)
+        return compile_func_template(
+            pyfunc, debug=debug, enable_cache=enable_cache
+        )
 
     def _func_autojit_wrapper(debug=None):
         return _func_autojit
@@ -115,7 +122,7 @@ def func(func_or_sig=None, debug=None, enable_cache=True):
     elif isinstance(func_or_sig, list) or sigutils.is_signature(func_or_sig):
         # String signatures are not supported as passing usm_ndarray type as
         # a string is not possible. Numba's sigutils relies on the type being
-        # available in Numba's types.__dpct__ and dpex types are not registered
+        # available in Numba's types.__dict__ and dpex types are not registered
         # there yet.
         if isinstance(func_or_sig, list):
             for sig in func_or_sig:

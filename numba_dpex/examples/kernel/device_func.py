@@ -68,7 +68,10 @@ def test1():
     print(a.device)
 
     print("A=", a)
-    a_kernel_function[N](a, b)
+    try:
+        a_kernel_function[N](a, b)
+    except Exception as err:
+        print(err)
     print("B=", b)
 
     print("Done...")
@@ -83,7 +86,10 @@ def test2():
     print(a.device)
 
     print("A=", a)
-    a_kernel_function_int32[N](a, b)
+    try:
+        a_kernel_function_int32[N](a, b)
+    except Exception as err:
+        print(err)
     print("B=", b)
 
     print("Done...")
@@ -98,7 +104,10 @@ def test3():
     print(a.device)
 
     print("A=", a)
-    a_kernel_function_int32_float32[N](a, b)
+    try:
+        a_kernel_function_int32_float32[N](a, b)
+    except Exception as err:
+        print(err)
     print("B=", b)
 
     # with a different dtype
@@ -109,7 +118,10 @@ def test3():
     print(a.device)
 
     print("A=", a)
-    a_kernel_function_int32_float32[N](a, b)
+    try:
+        a_kernel_function_int32_float32[N](a, b)
+    except Exception as err:
+        print(err)
     print("B=", b)
 
     # this will fail, since int64 is not in
@@ -121,7 +133,10 @@ def test3():
     print(a.device)
 
     print("A=", a)
-    a_kernel_function_int32_float32[N](a, b)
+    try:
+        a_kernel_function_int32_float32[N](a, b)
+    except Exception as err:
+        print(err)
     print("B=", b)
 
     print("Done...")
