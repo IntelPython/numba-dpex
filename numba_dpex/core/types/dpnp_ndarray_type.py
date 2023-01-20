@@ -3,14 +3,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-from numba_dpex.core.types import USMNdArray
+from .usm_ndarray_type import USMNdArray
 
 
 class DpnpNdArray(USMNdArray):
     """
-    This is Numba type to represent dpnp ndarray.
-
-    The type structure is the same as USM Ndarray.
+    The Numba type to represent an dpnp.ndarray. The type has the same
+    structure as USMNdArray used to represnet dpctl.tensor.usm_ndarray.
     """
 
     pass

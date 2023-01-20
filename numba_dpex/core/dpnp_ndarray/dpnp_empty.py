@@ -13,7 +13,7 @@ from numba.extending import (
     type_callable,
 )
 
-from ..core.types.dpnp_ndarray_type import DpnpNdArray
+from numba_dpex.core.types import DpnpNdArray
 
 
 @type_callable(dpnp.empty)

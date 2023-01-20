@@ -4,20 +4,20 @@
 
 from numba import types
 from numba.core.datamodel import default_manager, models
+from numba.core.datamodel.models import ArrayModel
 
 from numba_dpex.core.types.dpnp_ndarray_type import DpnpNdArray
-from numba_dpex.dpnp_ndarray.models import dpnp_ndarray_Model
 
 
 def test_model_for_DpnpNdArray():
     """Test that model is registered for DpnpNdArray instances.
 
-    The model for DpnpNdArray is dpnp_ndarray_Model.
+    The model for DpnpNdArray is dpex's ArrayModel.
 
     """
 
     model = default_manager.lookup(DpnpNdArray(types.float64, 1, "C"))
-    assert isinstance(model, dpnp_ndarray_Model)
+    assert isinstance(model, ArrayModel)
 
 
 def test_dpnp_ndarray_Model():
@@ -26,5 +26,5 @@ def test_dpnp_ndarray_Model():
     It is a subclass of models.StructModel and models.ArrayModel.
     """
 
-    assert issubclass(dpnp_ndarray_Model, models.StructModel)
-    assert issubclass(dpnp_ndarray_Model, models.ArrayModel)
+    assert issubclass(ArrayModel, models.StructModel)
+    assert issubclass(ArrayModel, models.ArrayModel)
