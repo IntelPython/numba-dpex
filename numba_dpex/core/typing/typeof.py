@@ -7,7 +7,7 @@ from dpnp import ndarray
 from numba.extending import typeof_impl
 from numba.np import numpy_support
 
-from numba_dpex.core.types.dpnp_ndarray_type import DpnpNdarray
+from numba_dpex.core.types.dpnp_ndarray_type import DpnpNdArray
 from numba_dpex.core.types.usm_ndarray_type import USMNdArray
 from numba_dpex.utils import address_space
 
@@ -89,4 +89,4 @@ def typeof_dpnp_ndarray(val, c):
 
     Returns: The Numba type corresponding to dpnp.ndarray
     """
-    return _typeof_helper(val, DpnpNdarray)
+    return _typeof_helper(val, DpnpNdArray)

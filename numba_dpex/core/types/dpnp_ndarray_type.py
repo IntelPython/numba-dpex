@@ -6,7 +6,7 @@
 from numba_dpex.core.types import USMNdArray
 
 
-class DpnpNdarray(USMNdArray):
+class DpnpNdArray(USMNdArray):
     """
     This is Numba type to represent dpnp ndarray.
 
