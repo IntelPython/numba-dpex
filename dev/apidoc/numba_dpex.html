@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>numba_dpex package &mdash; numba-dpex 0.19.0+95.gacacdbee documentation</title>
+  <title>numba_dpex package &mdash; numba-dpex 0.19.0+108.g1b7cbc35 documentation</title>
   
 
   
@@ -179,6 +179,11 @@
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.datamodel.html">numba_dpex.core.datamodel package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.datamodel.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.datamodel.html#module-numba_dpex.core.datamodel">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.dpnp_ndarray.html">numba_dpex.core.dpnp_ndarray package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.dpnp_ndarray.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.dpnp_ndarray.html#module-numba_dpex.core.dpnp_ndarray">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.kernel_interface.html">numba_dpex.core.kernel_interface package</a><ul>
@@ -420,28 +425,6 @@
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.html#numba_dpex.dpnp_iface.ensure_dpnp"><code class="docutils literal notranslate"><span class="pre">ensure_dpnp()</span></code></a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpnp_ndarray.html">numba_dpex.dpnp_ndarray package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_ndarray.html#submodules">Submodules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_ndarray.dpnp_empty.html">numba_dpex.dpnp_ndarray.dpnp_empty module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="numba_dpex.dpnp_ndarray.dpnp_empty.html#numba_dpex.dpnp_ndarray.dpnp_empty.impl_dpnp_empty"><code class="docutils literal notranslate"><span class="pre">impl_dpnp_empty()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="numba_dpex.dpnp_ndarray.dpnp_empty.html#numba_dpex.dpnp_ndarray.dpnp_empty.parse_usm_type"><code class="docutils literal notranslate"><span class="pre">parse_usm_type()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="numba_dpex.dpnp_ndarray.dpnp_empty.html#numba_dpex.dpnp_ndarray.dpnp_empty.type_dpnp_empty"><code class="docutils literal notranslate"><span class="pre">type_dpnp_empty()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_ndarray.models.html">numba_dpex.dpnp_ndarray.models module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_ndarray.typeof.html">numba_dpex.dpnp_ndarray.typeof module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="numba_dpex.dpnp_ndarray.typeof.html#numba_dpex.dpnp_ndarray.typeof.typeof_dpnp_ndarray"><code class="docutils literal notranslate"><span class="pre">typeof_dpnp_ndarray()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_ndarray.types.html">numba_dpex.dpnp_ndarray.types module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="numba_dpex.dpnp_ndarray.types.html#numba_dpex.dpnp_ndarray.types.dpnp_ndarray_Type"><code class="docutils literal notranslate"><span class="pre">dpnp_ndarray_Type</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_ndarray.html#module-numba_dpex.dpnp_ndarray">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="numba_dpex.ocl.html">numba_dpex.ocl package</a><ul>
@@ -846,6 +829,14 @@ type inference.  Default implementation returns True.</p>
 in subclasses.</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.DpnpNdArray">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.</span></span><span class="sig-name descname"><span class="pre">DpnpNdArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.DpnpNdArray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.core.types.usm_ndarray_type.html#numba_dpex.core.types.usm_ndarray_type.USMNdArray" title="numba_dpex.core.types.usm_ndarray_type.USMNdArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">USMNdArray</span></code></a></p>
+<p>The Numba type to represent an dpnp.ndarray. The type has the same
+structure as USMNdArray used to represnet dpctl.tensor.usm_ndarray.</p>
 </dd></dl>
 
 <dl class="py class">

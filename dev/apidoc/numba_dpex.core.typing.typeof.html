@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>numba_dpex.core.typing.typeof module &mdash; numba-dpex 0.19.0+95.gacacdbee documentation</title>
+  <title>numba_dpex.core.typing.typeof module &mdash; numba-dpex 0.19.0+108.g1b7cbc35 documentation</title>
   
 
   
@@ -170,6 +170,22 @@
             
   <section id="module-numba_dpex.core.typing.typeof">
 <span id="numba-dpex-core-typing-typeof-module"></span><h1>numba_dpex.core.typing.typeof module<a class="headerlink" href="#module-numba_dpex.core.typing.typeof" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.typing.typeof.typeof_dpnp_ndarray">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.typing.typeof.</span></span><span class="sig-name descname"><span class="pre">typeof_dpnp_ndarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.typing.typeof.typeof_dpnp_ndarray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers the type inference implementation function for dpnp.ndarray.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>val : A Python object that should be an instance of a
+dpnp.ndarray
+c : Unused argument used to be consistent with Numba API.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ValueError: If an unsupported dtype encountered or val has
+no <code class="docutils literal notranslate"><span class="pre">usm_type</span></code> or sycl_device attribute.</p>
+</dd>
+</dl>
+<p>Returns: The Numba type corresponding to dpnp.ndarray</p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.typing.typeof.typeof_usm_ndarray">
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.core.typing.typeof.</span></span><span class="sig-name descname"><span class="pre">typeof_usm_ndarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.typing.typeof.typeof_usm_ndarray" title="Permalink to this definition">¶</a></dt>

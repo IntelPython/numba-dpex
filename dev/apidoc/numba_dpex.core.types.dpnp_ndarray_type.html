@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>numba_dpex.dpnp_ndarray.typeof module &mdash; numba-dpex 0.19.0+95.gacacdbee documentation</title>
+  <title>numba_dpex.core.types.dpnp_ndarray_type module &mdash; numba-dpex 0.19.0+108.g1b7cbc35 documentation</title>
   
 
   
@@ -149,13 +149,13 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>numba_dpex.dpnp_ndarray.typeof module</li>
+      <li>numba_dpex.core.types.dpnp_ndarray_type module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/apidoc/numba_dpex.dpnp_ndarray.typeof.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/apidoc/numba_dpex.core.types.dpnp_ndarray_type.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -168,12 +168,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="module-numba_dpex.dpnp_ndarray.typeof">
-<span id="numba-dpex-dpnp-ndarray-typeof-module"></span><h1>numba_dpex.dpnp_ndarray.typeof module<a class="headerlink" href="#module-numba_dpex.dpnp_ndarray.typeof" title="Permalink to this heading">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.dpnp_ndarray.typeof.typeof_dpnp_ndarray">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_ndarray.typeof.</span></span><span class="sig-name descname"><span class="pre">typeof_dpnp_ndarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_ndarray.typeof.typeof_dpnp_ndarray" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+  <section id="module-numba_dpex.core.types.dpnp_ndarray_type">
+<span id="numba-dpex-core-types-dpnp-ndarray-type-module"></span><h1>numba_dpex.core.types.dpnp_ndarray_type module<a class="headerlink" href="#module-numba_dpex.core.types.dpnp_ndarray_type" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.types.dpnp_ndarray_type.</span></span><span class="sig-name descname"><span class="pre">DpnpNdArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="numba_dpex.core.types.usm_ndarray_type.html#numba_dpex.core.types.usm_ndarray_type.USMNdArray" title="numba_dpex.core.types.usm_ndarray_type.USMNdArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">USMNdArray</span></code></a></p>
+<p>The Numba type to represent an dpnp.ndarray. The type has the same
+structure as USMNdArray used to represnet dpctl.tensor.usm_ndarray.</p>
+</dd></dl>
 
 </section>
 
