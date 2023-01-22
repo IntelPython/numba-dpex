@@ -12,7 +12,6 @@ import numba_dpex.core.types as types
 
 # Re-export all type names
 from numba_dpex.core.types import *
-from numba_dpex.interop import asarray
 from numba_dpex.retarget import offload_to_sycl_device
 
 from . import config
