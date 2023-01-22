@@ -116,9 +116,11 @@ def spirv_compile():
     ]
     spirv_args = [
         _llvm_spirv(),
+        "--spirv-max-version",
+        "1.1",
+        "numba_dpex/ocl/atomics/atomic_ops.bc",
         "-o",
         "numba_dpex/ocl/atomics/atomic_ops.spir",
-        "numba_dpex/ocl/atomics/atomic_ops.bc",
     ]
     subprocess.check_call(
         clang_args,
@@ -140,15 +142,14 @@ def _llvm_spirv():
 
     result = None
 
-    if result is None:
-        # use llvm-spirv from dpcpp package.
-        # assume dpcpp from .../bin folder.
-        # assume llvm-spirv from .../bin-llvm folder.
-        dpcpp_path = shutil.which("dpcpp")
-        if dpcpp_path is not None:
-            bin_llvm = os.path.dirname(dpcpp_path) + "/../bin-llvm/"
-            bin_llvm = os.path.normpath(bin_llvm)
-            result = shutil.which("llvm-spirv", path=bin_llvm)
+    # use llvm-spirv from dpcpp package.
+    # assume dpcpp from .../bin folder.
+    # assume llvm-spirv from .../bin-llvm folder.
+    dpcpp_path = shutil.which("icx")
+    if dpcpp_path is not None:
+        bin_llvm = os.path.dirname(dpcpp_path) + "/../bin-llvm/"
+        bin_llvm = os.path.normpath(bin_llvm)
+        result = shutil.which("llvm-spirv", path=bin_llvm)
 
     if result is None:
         result = "llvm-spirv"
