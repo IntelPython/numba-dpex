@@ -15,7 +15,7 @@ except ImportError:
 
 from numba.core.retarget import BasicRetarget
 
-from numba_dpex.core.target import DPEX_TARGET_NAME
+from numba_dpex.core.targets.kernel_target import DPEX_KERNEL_TARGET_NAME
 
 
 class DpexRetarget(BasicRetarget):
@@ -25,10 +25,10 @@ class DpexRetarget(BasicRetarget):
 
     @property
     def output_target(self):
-        return DPEX_TARGET_NAME
+        return DPEX_KERNEL_TARGET_NAME
 
     def compile_retarget(self, cpu_disp):
-        kernel = njit(_target=DPEX_TARGET_NAME)(cpu_disp.py_func)
+        kernel = njit(_target=DPEX_KERNEL_TARGET_NAME)(cpu_disp.py_func)
         return kernel
 
 

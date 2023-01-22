@@ -45,8 +45,8 @@ from numba.parfors.parfor_lowering import _lower_parfor_parallel
 
 import numba_dpex as dpex
 from numba_dpex import config
-from numba_dpex.core.descriptor import dpex_target
-from numba_dpex.core.target import DpexTargetContext
+from numba_dpex.core.descriptor import dpex_kernel_target
+from numba_dpex.core.targets.kernel_target import DpexKernelTargetContext
 from numba_dpex.core.types import Array
 from numba_dpex.dpctl_iface import KernelLaunchOps
 from numba_dpex.utils import address_space, npytypes_array_to_dpex_array
@@ -79,8 +79,8 @@ def _compile_kernel_parfor(
     # compile the kernel
     kernel.compile(
         args=args_with_addrspaces,
-        typing_ctx=dpex_target.typing_context,
-        target_ctx=dpex_target.target_context,
+        typing_ctx=dpex_kernel_target.typing_context,
+        target_ctx=dpex_kernel_target.target_context,
         debug=debug,
         compile_flags=None,
     )
@@ -1311,7 +1311,7 @@ class DPEXLowerer(Lower):
 
         cpu_context = (
             context.cpu_context
-            if isinstance(context, DpexTargetContext)
+            if isinstance(context, DpexKernelTargetContext)
             else context
         )
         self.gpu_lower = self._lower(

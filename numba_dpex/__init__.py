@@ -9,6 +9,7 @@ import numba.testing
 
 # Re-export types itself
 import numba_dpex.core.types as types
+import numba_dpex.offload_dispatcher
 
 # Re-export all type names
 from numba_dpex.core.types import *

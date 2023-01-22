@@ -8,7 +8,7 @@ import pytest
 
 import numba_dpex as dpex
 from numba_dpex import config
-from numba_dpex.core.descriptor import dpex_target
+from numba_dpex.core.descriptor import dpex_kernel_target
 from numba_dpex.tests._helper import filter_strings, override_config
 
 global_size = 100
@@ -210,9 +210,7 @@ def test_atomic_fp_native(
     )
     args = [np.array([0], dtype)]
     argtypes = [
-        dpex.core.descriptor.dpex_target.typing_context.resolve_argument_type(
-            arg
-        )
+        dpex_kernel_target.typing_context.resolve_argument_type(arg)
         for arg in args
     ]
 
@@ -221,8 +219,8 @@ def test_atomic_fp_native(
             args=argtypes,
             debug=False,
             compile_flags=None,
-            target_ctx=dpex_target.target_context,
-            typing_ctx=dpex_target.typing_context,
+            target_ctx=dpex_kernel_target.target_context,
+            typing_ctx=dpex_kernel_target.typing_context,
         )
 
         is_native_atomic = expected_spirv_function in kernel._llvm_module

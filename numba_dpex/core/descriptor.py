@@ -6,21 +6,25 @@ from numba.core import utils
 from numba.core.cpu import CPUTargetOptions
 from numba.core.descriptors import TargetDescriptor
 
-from .target import DPEX_TARGET_NAME, DpexTargetContext, DpexTypingContext
+from .targets.kernel_target import (
+    DPEX_KERNEL_TARGET_NAME,
+    DpexKernelTargetContext,
+    DpexKernelTypingContext,
+)
 
 
-class DpexTarget(TargetDescriptor):
+class DpexKernelTarget(TargetDescriptor):
     options = CPUTargetOptions
 
     @utils.cached_property
     def _toplevel_target_context(self):
         """Lazily-initialized top-level target context, for all threads."""
-        return DpexTargetContext(self.typing_context, self._target_name)
+        return DpexKernelTargetContext(self.typing_context, self._target_name)
 
     @utils.cached_property
     def _toplevel_typing_context(self):
         """Lazily-initialized top-level typing context, for all threads."""
-        return DpexTypingContext()
+        return DpexKernelTypingContext()
 
     @property
     def target_context(self):
@@ -37,5 +41,5 @@ class DpexTarget(TargetDescriptor):
         return self._toplevel_typing_context
 
 
-# The global Dpex target
-dpex_target = DpexTarget(DPEX_TARGET_NAME)
+# A global instance of the DpexKernelTarget
+dpex_kernel_target = DpexKernelTarget(DPEX_KERNEL_TARGET_NAME)

@@ -12,7 +12,7 @@ from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 from numba_dpex import config
 from numba_dpex.core.caching import LRUCache, NullCache, build_key
 from numba_dpex.core.compiler import compile_with_dpex
-from numba_dpex.core.descriptor import dpex_target
+from numba_dpex.core.descriptor import dpex_kernel_target
 from numba_dpex.utils import npytypes_array_to_dpex_array
 
 
@@ -57,8 +57,8 @@ class DpexFunction(object):
             pyfunc=self._pyfunc,
             pyfunc_name=self._pyfunc.__name__,
             return_type=return_types,
-            target_context=dpex_target.target_context,
-            typing_context=dpex_target.typing_context,
+            target_context=dpex_kernel_target.target_context,
+            typing_context=dpex_kernel_target.typing_context,
             args=arg_types,
             is_kernel=False,
             debug=self._debug,
@@ -129,13 +129,13 @@ class DpexFunctionTemplate(object):
         """
 
         argtypes = [
-            dpex_target.typing_context.resolve_argument_type(arg)
+            dpex_kernel_target.typing_context.resolve_argument_type(arg)
             for arg in args
         ]
         key = build_key(
             tuple(argtypes),
             self._pyfunc,
-            dpex_target.target_context.codegen(),
+            dpex_kernel_target.target_context.codegen(),
         )
         cres = self._cache.get(key)
         if cres is None:
@@ -144,8 +144,8 @@ class DpexFunctionTemplate(object):
                 pyfunc=self._pyfunc,
                 pyfunc_name=self._pyfunc.__name__,
                 return_type=None,
-                target_context=dpex_target.target_context,
-                typing_context=dpex_target.typing_context,
+                target_context=dpex_kernel_target.target_context,
+                typing_context=dpex_kernel_target.typing_context,
                 args=args,
                 is_kernel=False,
                 debug=self._debug,
@@ -242,6 +242,8 @@ def compile_func_template(pyfunc, debug=False, enable_cache=True):
                 raise AssertionError("No keyword arguments allowed.")
             return dft.compile(args)
 
-    dpex_target.typing_context.insert_user_function(dft, _function_template)
+    dpex_kernel_target.typing_context.insert_user_function(
+        dft, _function_template
+    )
 
     return dft
