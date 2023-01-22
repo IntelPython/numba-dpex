@@ -26,7 +26,7 @@ from numba_dpex.utils import (
     npytypes_array_to_dpex_array,
 )
 
-from .. import codegen
+from . import codegen
 
 CC_SPIR_KERNEL = "spir_kernel"
 CC_SPIR_FUNC = "spir_func"
