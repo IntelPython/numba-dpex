@@ -26,7 +26,6 @@ Submodules
    numba_dpex.device_init
    numba_dpex.dpctl_support
    numba_dpex.initialize
-   numba_dpex.interop
    numba_dpex.numba_support
    numba_dpex.numpy_usm_shared
    numba_dpex.offload_dispatcher
