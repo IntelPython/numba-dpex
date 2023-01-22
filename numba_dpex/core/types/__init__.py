@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from .array_type import Array
+from .dpnp_ndarray_type import DpnpNdArray
 from .numba_types_short_names import (
     b1,
     bool_,
@@ -30,6 +31,7 @@ usm_ndarray = USMNdArray
 
 __all__ = [
     "Array",
+    "DpnpNdArray",
     "USMNdArray",
     "none",
     "boolean",

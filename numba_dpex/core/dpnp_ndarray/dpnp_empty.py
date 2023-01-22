@@ -13,7 +13,7 @@ from numba.extending import (
     type_callable,
 )
 
-from .types import dpnp_ndarray_Type
+from numba_dpex.core.types import DpnpNdArray
 
 
 @type_callable(dpnp.empty)
@@ -34,7 +34,7 @@ def type_dpnp_empty(context):
             usm_type = parse_usm_type(usm_type)
 
         if nb_dtype is not None and ndim is not None and usm_type is not None:
-            return dpnp_ndarray_Type(
+            return DpnpNdArray(
                 dtype=nb_dtype, ndim=ndim, layout="C", usm_type=usm_type
             )
 
@@ -177,7 +177,7 @@ def _call_allocator(arrtype, size, usm_type, sycl_queue):
     return arrtype._allocate(size, usm_type, sycl_queue)
 
 
-@overload_classmethod(dpnp_ndarray_Type, "_allocate")
+@overload_classmethod(DpnpNdArray, "_allocate")
 def _ol_dpnp_array_allocate(cls, size, usm_type, sycl_queue):
     def impl(cls, size, usm_type, sycl_queue):
         return intrin_alloc(size, usm_type, sycl_queue)
