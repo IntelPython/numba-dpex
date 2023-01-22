@@ -1,0 +1,18 @@
+numba\_dpex.core.utils package
+==============================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.core.utils.suai_helper
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex.core.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

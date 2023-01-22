@@ -1,0 +1,328 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>numba_dpex.core.utils package &mdash; numba-dpex 0.20.0dev1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> numba-dpex
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html">Code-generation based on a device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html#automatic-offload-of-numpy-expressions">Automatic offload of NumPy expressions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/getting_started.html"> Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/kernel_programming_guide/index.html"> Direct kernel programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/debugging/index.html"> Debugging with GDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guides/migrating_from_numba_cuda.html"> numba-dpex for numba.cuda Programmers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guides/dpnp_integration.html">dpnp integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">numba-dpex</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>numba_dpex.core.utils package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/apidoc/numba_dpex.core.utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="numba-dpex-core-utils-package">
+<h1>numba_dpex.core.utils package<a class="headerlink" href="#numba-dpex-core-utils-package" title="Permalink to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html">numba_dpex.core.utils.suai_helper module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface"><code class="docutils literal notranslate"><span class="pre">SyclUSMArrayInterface</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.data"><code class="docutils literal notranslate"><span class="pre">SyclUSMArrayInterface.data</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.device"><code class="docutils literal notranslate"><span class="pre">SyclUSMArrayInterface.device</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.dimensions"><code class="docutils literal notranslate"><span class="pre">SyclUSMArrayInterface.dimensions</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.dtype"><code class="docutils literal notranslate"><span class="pre">SyclUSMArrayInterface.dtype</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.is_writable"><code class="docutils literal notranslate"><span class="pre">SyclUSMArrayInterface.is_writable</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.itemsize"><code class="docutils literal notranslate"><span class="pre">SyclUSMArrayInterface.itemsize</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.queue"><code class="docutils literal notranslate"><span class="pre">SyclUSMArrayInterface.queue</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.shape"><code class="docutils literal notranslate"><span class="pre">SyclUSMArrayInterface.shape</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.size"><code class="docutils literal notranslate"><span class="pre">SyclUSMArrayInterface.size</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.strides"><code class="docutils literal notranslate"><span class="pre">SyclUSMArrayInterface.strides</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.usm_type"><code class="docutils literal notranslate"><span class="pre">SyclUSMArrayInterface.usm_type</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.get_info_from_suai"><code class="docutils literal notranslate"><span class="pre">get_info_from_suai()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-numba_dpex.core.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-numba_dpex.core.utils" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.SyclUSMArrayInterface">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.utils.</span></span><span class="sig-name descname"><span class="pre">SyclUSMArrayInterface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">writable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">itemsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.SyclUSMArrayInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Stores as attributes the information extracted from a
+__sycl_usm_array_interface__ dictionary as defined by dpctl.memory.Memory*
+classes.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.SyclUSMArrayInterface.data">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#numba_dpex.core.utils.SyclUSMArrayInterface.data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.SyclUSMArrayInterface.device">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">device</span></span><a class="headerlink" href="#numba_dpex.core.utils.SyclUSMArrayInterface.device" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.SyclUSMArrayInterface.dimensions">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dimensions</span></span><a class="headerlink" href="#numba_dpex.core.utils.SyclUSMArrayInterface.dimensions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.SyclUSMArrayInterface.dtype">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#numba_dpex.core.utils.SyclUSMArrayInterface.dtype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.SyclUSMArrayInterface.is_writable">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_writable</span></span><a class="headerlink" href="#numba_dpex.core.utils.SyclUSMArrayInterface.is_writable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.SyclUSMArrayInterface.itemsize">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">itemsize</span></span><a class="headerlink" href="#numba_dpex.core.utils.SyclUSMArrayInterface.itemsize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.SyclUSMArrayInterface.queue">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">queue</span></span><a class="headerlink" href="#numba_dpex.core.utils.SyclUSMArrayInterface.queue" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.SyclUSMArrayInterface.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#numba_dpex.core.utils.SyclUSMArrayInterface.shape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.SyclUSMArrayInterface.size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#numba_dpex.core.utils.SyclUSMArrayInterface.size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.SyclUSMArrayInterface.strides">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">strides</span></span><a class="headerlink" href="#numba_dpex.core.utils.SyclUSMArrayInterface.strides" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.SyclUSMArrayInterface.usm_type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">usm_type</span></span><a class="headerlink" href="#numba_dpex.core.utils.SyclUSMArrayInterface.usm_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.get_info_from_suai">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.utils.</span></span><span class="sig-name descname"><span class="pre">get_info_from_suai</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.get_info_from_suai" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the metadata of an object of type UsmNdArray using the objects
+__sycl_usm_array_interface__ (SUAI) attribute.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">dpctl.memory.as_usm_memory</span></code> function converts the array-like
+object into a dpctl.memory.USMMemory object. Using the <code class="docutils literal notranslate"><span class="pre">as_usm_memory</span></code>
+is an implicit way to verify if the array-like object is a legal
+SYCL USM memory back Python object that can be passed to a dpex kernel.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>obj: array-like object with a SUAI attribute.</p>
+</dd>
+<dt>Returns:</dt><dd><p>A SyclUSMArrayInterface object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021,2022 Intel.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
