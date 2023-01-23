@@ -7,9 +7,10 @@ The numba-dpex extension module adds data-parallel offload support to Numba.
 """
 import numba.testing
 
+import numba_dpex.core.offload_dispatcher
+
 # Re-export types itself
 import numba_dpex.core.types as types
-import numba_dpex.offload_dispatcher
 
 # Re-export all type names
 from numba_dpex.core.types import *
