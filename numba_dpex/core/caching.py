@@ -224,15 +224,18 @@ class LRUCache(AbstractCache):
     with a dictionary as a lookup table.
     """
 
-    def __init__(self, capacity=10, pyfunc=None):
+    def __init__(self, name="cache", capacity=10, pyfunc=None):
         """Constructor for LRUCache.
 
         Args:
+            name (str, optional): The name of the cache, useful for
+                debugging.
             capacity (int, optional): The max capacity of the cache.
                 Defaults to 10.
             pyfunc (NoneType, optional): A python function to be cached.
                 Defaults to None.
         """
+        self._name = name
         self._capacity = capacity
         self._lookup = {}
         self._evicted = {}
@@ -432,8 +435,8 @@ class LRUCache(AbstractCache):
                 value = self._cache_file.load(key)
                 if config.DEBUG_CACHE:
                     print(
-                        "[cache]: unpickled an evicted artifact, "
-                        "key: {0:s}.".format(str(key))
+                        "[{0:s}]: unpickled an evicted artifact, "
+                        "key: {1:s}.".format(self._name, str(key))
                     )
             else:
                 value = self._evicted[key]
@@ -442,8 +445,8 @@ class LRUCache(AbstractCache):
         else:
             if config.DEBUG_CACHE:
                 print(
-                    "[cache] size: {0:d}, loading artifact, key: {1:s}".format(
-                        len(self._lookup), str(key)
+                    "[{0:s}] size: {1:d}, loading artifact, key: {2:s}".format(
+                        self._name, len(self._lookup), str(key)
                     )
                 )
             node = self._lookup[key]
@@ -464,8 +467,8 @@ class LRUCache(AbstractCache):
         if key in self._lookup:
             if config.DEBUG_CACHE:
                 print(
-                    "[cache] size: {0:d}, storing artifact, key: {1:s}".format(
-                        len(self._lookup), str(key)
+                    "[{0:s}] size: {1:d}, storing artifact, key: {2:s}".format(
+                        self._name, len(self._lookup), str(key)
                     )
                 )
             self._lookup[key].value = value
@@ -480,8 +483,9 @@ class LRUCache(AbstractCache):
             if self._cache_file:
                 if config.DEBUG_CACHE:
                     print(
-                        "[cache] size: {0:d}, pickling the LRU item, "
-                        "key: {1:s}, indexed at {2:s}.".format(
+                        "[{0:s}] size: {1:d}, pickling the LRU item, "
+                        "key: {2:s}, indexed at {3:s}.".format(
+                            self._name,
                             len(self._lookup),
                             str(self._head.key),
                             self._cache_file._index_path,
@@ -496,8 +500,8 @@ class LRUCache(AbstractCache):
             self._lookup.pop(self._head.key)
             if config.DEBUG_CACHE:
                 print(
-                    "[cache] size: {0:d}, capacity exceeded, evicted".format(
-                        len(self._lookup)
+                    "[{0:s}] size: {1:d}, capacity exceeded, evicted".format(
+                        self._name, len(self._lookup)
                     ),
                     self._head.key,
                 )
@@ -509,7 +513,7 @@ class LRUCache(AbstractCache):
         self._append_tail(new_node)
         if config.DEBUG_CACHE:
             print(
-                "[cache] size: {0:d}, saved artifact, key: {1:s}".format(
-                    len(self._lookup), str(key)
+                "[{0:s}] size: {1:d}, saved artifact, key: {2:s}".format(
+                    self._name, len(self._lookup), str(key)
                 )
             )

@@ -219,7 +219,7 @@ def test_atomic_fp_native(
     with override_config("NATIVE_FP_ATOMICS", NATIVE_FP_ATOMICS):
         kernel.compile(
             args=argtypes,
-            debug=None,
+            debug=False,
             compile_flags=None,
             target_ctx=dpex_target.target_context,
             typing_ctx=dpex_target.typing_context,

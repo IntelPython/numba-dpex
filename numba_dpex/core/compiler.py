@@ -225,7 +225,7 @@ def compile_with_dpex(
     return_type,
     target_context,
     typing_context,
-    debug=None,
+    debug=False,
     is_kernel=True,
     extra_compile_flags=None,
 ):
@@ -256,7 +256,7 @@ def compile_with_dpex(
     flags.no_cpython_wrapper = True
     flags.nrt = False
 
-    if debug is not None:
+    if debug:
         flags.debuginfo = debug
 
     # Run compilation pipeline

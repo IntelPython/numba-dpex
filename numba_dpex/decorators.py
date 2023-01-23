@@ -4,7 +4,7 @@
 
 import inspect
 
-from numba.core import sigutils, types
+from numba.core import sigutils
 
 from numba_dpex.core.kernel_interface.dispatcher import (
     JitKernel,
@@ -14,13 +14,12 @@ from numba_dpex.core.kernel_interface.func import (
     compile_func,
     compile_func_template,
 )
-from numba_dpex.utils import npytypes_array_to_dpex_array
 
 
 def kernel(
     func_or_sig=None,
     access_types=None,
-    debug=None,
+    debug=False,
     enable_cache=True,
 ):
     """A decorator to define a kernel function.
@@ -55,7 +54,7 @@ def kernel(
     elif isinstance(func_or_sig, list) or sigutils.is_signature(func_or_sig):
         # String signatures are not supported as passing usm_ndarray type as
         # a string is not possible. Numba's sigutils relies on the type being
-        # available in Numba's types.__dpct__ and dpex types are not registered
+        # available in Numba's `types.__dict__` and dpex types are not registered
         # there yet.
         if isinstance(func_or_sig, list):
             for sig in func_or_sig:
@@ -94,39 +93,51 @@ def kernel(
         return _kernel_dispatcher(func)
 
 
-def func(signature=None, debug=None):
-    if signature is None:
-        return _func_autojit_wrapper(debug=debug)
-    elif not sigutils.is_signature(signature):
-        func = signature
-        return _func_autojit(func, debug=debug)
+def func(func_or_sig=None, debug=False, enable_cache=True):
+    """A decorator to define a kernel device function.
+
+    Device functions are functions that can be only invoked from a kernel
+    and not from a host function. This provides a special decorator
+    `numba_dpex.func` specifically to implement a device function.
+
+    A device function can be invoked from another device function and
+    unlike a kernel function, a device function can return a value like
+    normal functions.
+    """
+
+    def _func_autojit(pyfunc):
+        return compile_func_template(
+            pyfunc, debug=debug, enable_cache=enable_cache
+        )
+
+    if func_or_sig is None:
+        return _func_autojit
+    elif isinstance(func_or_sig, str):
+        raise NotImplementedError(
+            "Specifying signatures as string is not yet supported by numba-dpex"
+        )
+    elif isinstance(func_or_sig, list) or sigutils.is_signature(func_or_sig):
+        # String signatures are not supported as passing usm_ndarray type as
+        # a string is not possible. Numba's sigutils relies on the type being
+        # available in Numba's types.__dict__ and dpex types are not registered
+        # there yet.
+        if isinstance(func_or_sig, list):
+            for sig in func_or_sig:
+                if isinstance(sig, str):
+                    raise NotImplementedError(
+                        "Specifying signatures as string is not yet supported "
+                        "by numba-dpex"
+                    )
+        # Specialized signatures can either be a single signature or a list.
+        # In case only one signature is provided convert it to a list
+        if not isinstance(func_or_sig, list):
+            func_or_sig = [func_or_sig]
+
+        def _wrapped(pyfunc):
+            return compile_func(pyfunc, func_or_sig, debug=debug)
+
+        return _wrapped
     else:
-        return _func_jit(signature, debug=debug)
-
-
-def _func_jit(signature, debug=None):
-    argtypes, restype = sigutils.normalize_signature(signature)
-    argtypes = tuple(
-        [
-            npytypes_array_to_dpex_array(ty)
-            if isinstance(ty, types.npytypes.Array)
-            else ty
-            for ty in argtypes
-        ]
-    )
-
-    def _wrapped(pyfunc):
-        return compile_func(pyfunc, restype, argtypes, debug=debug)
-
-    return _wrapped
-
-
-def _func_autojit_wrapper(debug=None):
-    def _func_autojit(pyfunc, debug=debug):
-        return compile_func_template(pyfunc, debug=debug)
-
-    return _func_autojit
-
-
-def _func_autojit(pyfunc, debug=None):
-    return compile_func_template(pyfunc, debug=debug)
+        # no signature
+        func = func_or_sig
+        return _func_autojit(func)
