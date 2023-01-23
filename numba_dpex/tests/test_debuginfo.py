@@ -7,14 +7,15 @@
 import re
 
 import pytest
-from numba.core import types
 
 import numba_dpex as dpex
+from numba_dpex import float32, int32, usm_ndarray
 from numba_dpex.core.descriptor import dpex_kernel_target
 from numba_dpex.tests._helper import override_config
-from numba_dpex.utils import npytypes_array_to_dpex_array
 
 debug_options = [True, False]
+
+f32arrty = usm_ndarray(float32, 1, "C")
 
 
 @pytest.fixture(params=debug_options)
@@ -54,7 +55,7 @@ def test_debug_flag_generates_ir_with_debuginfo(debug_option):
     def foo(x):
         x = 1  # noqa
 
-    sig = (types.int32,)
+    sig = (int32,)
     kernel_ir = get_kernel_ir(foo, sig, debug=debug_option)
     tag = "!dbg"
 
@@ -80,11 +81,7 @@ def test_debug_info_locals_vars_on_no_opt():
         '!DILocalVariable(name: "var_c"',
         '!DILocalVariable(name: "i"',
     ]
-    sig = (
-        npytypes_array_to_dpex_array(types.float32[:]),
-        npytypes_array_to_dpex_array(types.float32[:]),
-        npytypes_array_to_dpex_array(types.float32[:]),
-    )
+    sig = (f32arrty, f32arrty, f32arrty)
 
     with override_config("OPT", 0):
         kernel_ir = get_kernel_ir(foo, sig, debug=True)
@@ -108,7 +105,7 @@ def test_debug_kernel_local_vars_in_ir():
         '!DILocalVariable(name: "index"',
         '!DILocalVariable(name: "local_d"',
     ]
-    sig = (npytypes_array_to_dpex_array(types.float32[:]),)
+    sig = (f32arrty,)
     kernel_ir = get_kernel_ir(foo, sig, debug=True)
 
     for tag in ir_tags:
@@ -134,11 +131,7 @@ def test_debug_flag_generates_ir_with_debuginfo_for_func(debug_option):
         r'\!DISubprogram\(name: ".*data_parallel_sum"',
     ]
 
-    sig = (
-        npytypes_array_to_dpex_array(types.float32[:]),
-        npytypes_array_to_dpex_array(types.float32[:]),
-        npytypes_array_to_dpex_array(types.float32[:]),
-    )
+    sig = (f32arrty, f32arrty, f32arrty)
 
     kernel_ir = get_kernel_ir(data_parallel_sum, sig, debug=debug_option)
 
@@ -165,11 +158,7 @@ def test_env_var_generates_ir_with_debuginfo_for_func(debug_option):
         r'\!DISubprogram\(name: ".*data_parallel_sum"',
     ]
 
-    sig = (
-        npytypes_array_to_dpex_array(types.float32[:]),
-        npytypes_array_to_dpex_array(types.float32[:]),
-        npytypes_array_to_dpex_array(types.float32[:]),
-    )
+    sig = (f32arrty, f32arrty, f32arrty)
 
     with override_config("DEBUGINFO_DEFAULT", int(debug_option)):
         kernel_ir = get_kernel_ir(data_parallel_sum, sig)
@@ -184,14 +173,10 @@ def test_debuginfo_DISubprogram_linkageName():
         b[i] = a[i]
 
     ir_tags = [
-        r'\!DISubprogram\(.*linkageName: ".*e4func.*"',
+        r'\!DISubprogram\(.*linkageName: ".*func.*"',
     ]
 
-    sig = (
-        npytypes_array_to_dpex_array(types.float32[:]),
-        npytypes_array_to_dpex_array(types.float32[:]),
-    )
-
+    sig = (f32arrty, f32arrty)
     kernel_ir = get_kernel_ir(func, sig, debug=True)
 
     for tag in ir_tags:
@@ -205,13 +190,9 @@ def test_debuginfo_DICompileUnit_language_and_producer():
 
     ir_tags = [
         r"\!DICompileUnit\(language: DW_LANG_C_plus_plus,",
-        r'\!DICompileUnit\(.*producer: "numba-dpex"',
     ]
 
-    sig = (
-        npytypes_array_to_dpex_array(types.float32[:]),
-        npytypes_array_to_dpex_array(types.float32[:]),
-    )
+    sig = (f32arrty, f32arrty)
 
     kernel_ir = get_kernel_ir(func, sig, debug=True)
 

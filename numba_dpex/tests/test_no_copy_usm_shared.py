@@ -10,7 +10,7 @@ from numba import prange
 from numba.core import compiler, cpu
 from numba.core.registry import cpu_target
 
-from numba_dpex.core.compiler import Compiler
+from numba_dpex.core.pipelines.offload_compiler import OffloadCompiler
 from numba_dpex.tests._helper import skip_no_opencl_gpu
 
 
@@ -47,7 +47,7 @@ def test_no_copy_usm_shared(capfd):
             return_type=args,
             flags=flags,
             locals={},
-            pipeline_class=Compiler,
+            pipeline_class=OffloadCompiler,
         )
 
         assert "DPCTLQueue_Memcpy" not in cres.library.get_llvm_str()
@@ -61,7 +61,7 @@ def test_no_copy_usm_shared(capfd):
             return_type=args,
             flags=flags,
             locals={},
-            pipeline_class=Compiler,
+            pipeline_class=OffloadCompiler,
         )
 
         assert "DPCTLQueue_Memcpy" in cres.library.get_llvm_str()
