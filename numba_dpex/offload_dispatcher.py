@@ -22,7 +22,7 @@ class OffloadDispatcher(dispatcher.Dispatcher):
         pipeline_class=compiler.Compiler,
     ):
         if dpex_config.HAS_NON_HOST_DEVICE:
-            from numba_dpex.compiler import Compiler
+            from numba_dpex.core.compiler import Compiler
 
             targetoptions["parallel"] = True
             dispatcher.Dispatcher.__init__(

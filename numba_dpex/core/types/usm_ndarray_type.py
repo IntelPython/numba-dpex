@@ -2,12 +2,15 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+"""A type class to represent dpctl.tensor.usm_ndarray type in Numba
+"""
+
+import dpctl
 import dpctl.tensor
 from numba.core.typeconv import Conversion
 from numba.core.types.npytypes import Array
 
-"""A type class to represent dpctl.tensor.usm_ndarray type in Numba
-"""
+from numba_dpex.utils import address_space
 
 
 class USMNdArray(Array):
@@ -18,16 +21,26 @@ class USMNdArray(Array):
         dtype,
         ndim,
         layout,
-        usm_type,
-        device,
+        usm_type="unknown",
+        device="unknown",
+        queue=None,
         readonly=False,
         name=None,
         aligned=True,
-        addrspace=None,
+        addrspace=address_space.GLOBAL,
     ):
         self.usm_type = usm_type
-        self.device = device
         self.addrspace = addrspace
+
+        # Normalize the device filter string and get the fully qualified three
+        # tuple (backend:device_type:device_num) filter string from dpctl.
+        if device != "unknown":
+            _d = dpctl.SyclDevice(device)
+            self.device = _d.filter_string
+        else:
+            self.device = "unknown"
+
+        self.queue = queue
 
         if name is None:
             type_name = "usm_ndarray"
@@ -35,8 +48,19 @@ class USMNdArray(Array):
                 type_name = "readonly " + type_name
             if not aligned:
                 type_name = "unaligned " + type_name
-            name_parts = (type_name, dtype, ndim, layout, usm_type, device)
-            name = "%s(%s, %sd, %s, %s, %s)" % name_parts
+            name_parts = (
+                type_name,
+                dtype,
+                ndim,
+                layout,
+                self.addrspace,
+                usm_type,
+                self.device,
+            )
+            name = (
+                "%s(dtype=%s, ndim=%s, layout=%s, address_space=%s, "
+                "usm_type=%s, sycl_device=%s)" % name_parts
+            )
 
         super().__init__(
             dtype,
@@ -86,8 +110,16 @@ class USMNdArray(Array):
         """
         Unify this with the *other* USMNdArray.
         """
-        # If other is array and the ndim matches
-        if isinstance(other, USMNdArray) and other.ndim == self.ndim:
+        # If other is array and the ndim, usm_type, address_space, and device
+        # attributes match
+
+        if (
+            isinstance(other, USMNdArray)
+            and other.ndim == self.ndim
+            and self.device == other.device
+            and self.addrspace == other.addrspace
+            and self.usm_type == other.usm_type
+        ):
             # If dtype matches or other.dtype is undefined (inferred)
             if other.dtype == self.dtype or not other.dtype.is_precise():
                 if self.layout == other.layout:
@@ -102,6 +134,9 @@ class USMNdArray(Array):
                     layout=layout,
                     readonly=readonly,
                     aligned=aligned,
+                    usm_type=self.usm_type,
+                    device=self.device,
+                    addrspace=self.addrspace,
                 )
 
     def can_convert_to(self, typingctx, other):

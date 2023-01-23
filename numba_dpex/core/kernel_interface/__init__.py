@@ -2,8 +2,5 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from numba.core import types
-
-
-class IndeterminateExecutionQueueError(Exception):
-    pass
+"""Defines the interface for kernel compilation using numba-dpex.
+"""

@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import dpctl
-import numpy as np
+import dpctl.tensor as dpt
 from numba import int32
 
 import numba_dpex as dpex
@@ -47,28 +47,24 @@ def sum_reduce(A):
     # nb_work_groups have to be even for this implementation
     nb_work_groups = global_size // work_group_size
 
-    partial_sums = np.zeros(nb_work_groups).astype(A.dtype)
+    partial_sums = dpt.zeros(nb_work_groups, dtype=A.dtype, device=A.device)
 
-    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
-    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
-    device = dpctl.select_default_device()
-    print("Using device ...")
-    device.print_device_info()
-
-    with dpctl.device_context(device):
-        sum_reduction_kernel[global_size, work_group_size](A, partial_sums)
+    gs = (global_size,)
+    ls = (work_group_size,)
+    sum_reduction_kernel[gs, ls](A, partial_sums)
 
     final_sum = 0
     # calculate the final sum in HOST
     for i in range(nb_work_groups):
-        final_sum += partial_sums[i]
+        final_sum += int(partial_sums[i])
 
     return final_sum
 
 
 def test_sum_reduce():
     N = 1024
-    A = np.ones(N).astype(np.int32)
+    device = dpctl.select_default_device()
+    A = dpt.ones(N, dtype=dpt.int32, device=device)
 
     print("Running Device + Host reduction")
 

@@ -20,7 +20,7 @@ def main():
     print("Using device ...")
     print(a.device)
 
-    atomic_reduction[N, ndpex.DEFAULT_LOCAL_SIZE](a)
+    atomic_reduction[N](a)
     print("Reduction sum =", a[0])
 
     print("Done...")

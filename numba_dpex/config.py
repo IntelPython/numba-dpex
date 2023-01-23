@@ -2,9 +2,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import imp
+import logging
 import os
-import warnings
 
 from numba.core import config
 
@@ -15,25 +14,23 @@ def _ensure_dpctl():
     """
     from numba_dpex.dpctl_support import dpctl_version
 
-    if dpctl_version < (0, 8):
-        raise ImportError("numba_dpex needs dpctl 0.8 or greater")
+    if dpctl_version < (0, 14):
+        raise ImportError("numba_dpex needs dpctl 0.14 or greater")
 
 
 def _dpctl_has_non_host_device():
     """
-    Make sure dpctl has non-host SYCL devices on the system.
+    Ensure dpctl can create a default sycl device
     """
     import dpctl
 
-    # For the numba_dpex extension to work, we should have at least one
-    # non-host SYCL device installed.
-    # FIXME: In future, we should support just the host device.
-    if not dpctl.select_default_device().is_host:
+    try:
+        dpctl.select_default_device()
         return True
-    else:
+    except Exception:
         msg = "dpctl could not find any non-host SYCL device on the system. "
         msg += "A non-host SYCL device is required to use numba_dpex."
-        warnings.warn(msg, UserWarning)
+        logging.exception(msg)
         return False
 
 
@@ -58,11 +55,8 @@ def _readenv(name, ctor, default):
     try:
         return ctor(value)
     except Exception:
-        import warnings
-
-        warnings.warn(
-            "environ %s defined but failed to parse '%s'" % (name, value),
-            RuntimeWarning,
+        logging.exception(
+            "environ %s defined but failed to parse '%s'" % (name, value)
         )
         return default
 
@@ -92,6 +86,21 @@ DEBUG = _readenv("NUMBA_DPEX_DEBUG", int, config.DEBUG)
 DEBUGINFO_DEFAULT = _readenv(
     "NUMBA_DPEX_DEBUGINFO", int, config.DEBUGINFO_DEFAULT
 )
+
+# configs for caching
+# To see the debug messages for the caching.
+# Execute like:
+#   NUMBA_DPEX_DEBUG_CACHE=1 python <code>
+DEBUG_CACHE = _readenv("NUMBA_DPEX_DEBUG_CACHE", int, 0)
+# This is a global flag to turn the caching on/off,
+# regardless of whatever has been specified in Dispatcher.
+# Useful for debugging. Execute like:
+#   NUMBA_DPEX_ENABLE_CACHE=0 python <code>
+# to turn off the caching globally.
+ENABLE_CACHE = _readenv("NUMBA_DPEX_ENABLE_CACHE", int, 1)
+# Capacity of the cache, execute it like:
+#   NUMBA_DPEX_CACHE_SIZE=20 python <code>
+CACHE_SIZE = _readenv("NUMBA_DPEX_CACHE_SIZE", int, 10)
 
 TESTING_SKIP_NO_DPNP = _readenv("NUMBA_DPEX_TESTING_SKIP_NO_DPNP", int, 0)
 TESTING_SKIP_NO_DEBUGGING = _readenv(

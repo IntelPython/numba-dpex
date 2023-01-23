@@ -20,7 +20,7 @@ jobs:
 
     strategy:
       matrix:
-        python: ["3.8", "3.9"]
+        python: ["3.8", "3.9", "3.10"]
 
     steps:
       - uses: actions/checkout@v3
@@ -46,18 +46,12 @@ jobs:
 
     strategy:
       matrix:
-        python: ["3.8", "3.9"]
-        integration_channels: [""]
+        python: ["3.8", "3.9", "3.10"]
         experimental: [false]
         artifact_name: [""]
-        include:
-          - python: "3.8"
-            integration_channels: -c dppy/label/dev
-            artifact_name: -c dppy_label_dev
-            experimental: true
     continue-on-error: ${{ matrix.experimental }}
     env:
-      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
+      CHANNELS: -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev --override-channels
       conda-bld: C:\Miniconda\conda-bld\win-64\
 
     steps:
@@ -96,7 +90,7 @@ jobs:
 
     strategy:
       matrix:
-        python: ["3.8", "3.9"]
+        python: ["3.8", "3.9", "3.10"]
         numba: ["0.56"]
         dpnp: ["0.11"]
 
@@ -152,7 +146,7 @@ jobs:
           conda activate numba_dpex_env
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
           export OCL_ICD_FILENAMES=libintelocl.so
-          for script in $(find . \( -not -name "_*" -not -name "vectorize.py" -not -name "scan.py" -and -name "*.py" \))
+          for script in $(find . \( -not -name "_*" -not "vector_sum2D.py" -not -name "vectorize.py" -not -name "scan.py" -and -name "*.py" \))
           do
             echo "Executing ${script}"
             python ${script} || exit 1
@@ -164,21 +158,13 @@ jobs:
 
     strategy:
       matrix:
-        python: ["3.8", "3.9"]
+        python: ["3.8", "3.9", "3.10"]
         integration_channels: [""]
-        experimental: [true]  # packages are not available on -c intel yet
-        artifact_name: [""]
-        dependencies: [""]
-        include:
-          - python: "3.8"
-            integration_channels: -c dppy/label/dev
-            artifact_name: -c dppy_label_dev
-            experimental: true  # current stable
-            dependencies: ""
+        experimental: [false]  # packages are not available on -c intel yet
     continue-on-error: ${{ matrix.experimental }}
     env:
       # conda-forge: llvm-spirv 11 not on intel channel yet
-      CHANNELS: ${{ matrix.integration_channels }} -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev -c conda-forge --override-channels
+      CHANNELS: -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev --override-channels
 
     steps:
       - name: Create dir for numba-dpex repo
@@ -189,15 +175,16 @@ jobs:
           path: dpex-repo
           fetch-depth: 0
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
-          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }} ${{ matrix.artifact_name }}
+          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
       - uses: conda-incubator/setup-miniconda@v2
         with:
-          auto-activate-base: true
-          activate-environment: ""
-      - name: Install conda-build
-        run: conda install conda-build
+          use-only-tar-bz2: true
+          auto-update-conda: true
+          conda-build-version: '*'
+          miniconda-version: 'latest'
+          activate-environment: "numba_dpex_wintest"
       - name: Create conda channel
         run: |
           mkdir -p $env:GITHUB_WORKSPACE/channel/win-64
@@ -210,7 +197,7 @@ jobs:
       - name: Cache conda packages
         uses: actions/cache@v2
         env:
-          CACHE_NUMBER: 0  # Increase to reset cache
+          CACHE_NUMBER: 1  # Increase to reset cache
         with:
           path: /home/runner/conda_pkgs_dir
           key:
@@ -273,7 +260,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        python: ["3.8", "3.9"]
+        python: ["3.8", "3.9", "3.10"]
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v2
@@ -301,7 +288,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python: ["3.8", "3.9"]
+        python: ["3.8", "3.9", "3.10"]
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v2

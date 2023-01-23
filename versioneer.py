@@ -1391,6 +1391,7 @@ def do_vcs_install(versionfile_source, ipy):
     if not present:
         with open(".gitattributes", "a+") as fobj:
             fobj.write(f"{versionfile_source} export-subst\n")
+
         files.append(".gitattributes")
     run_command(GITS, ["add", "--"] + files)
 

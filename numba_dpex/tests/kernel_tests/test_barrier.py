@@ -2,20 +2,22 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import platform
-
 import dpctl
+import dpctl.tensor as dpt
 import numpy as np
 import pytest
 
 import numba_dpex as dpex
+from numba_dpex import float32, usm_ndarray, void
 from numba_dpex.tests._helper import filter_strings
+
+f32arrty = usm_ndarray(float32, 1, "C")
 
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_proper_lowering(filter_str):
     # This will trigger eager compilation
-    @dpex.kernel("void(float32[::1])")
+    @dpex.kernel(void(f32arrty))
     def twice(A):
         i = dpex.get_global_id(0)
         d = A[i]
@@ -23,19 +25,19 @@ def test_proper_lowering(filter_str):
         A[i] = d * 2
 
     N = 256
-    arr = np.random.random(N).astype(np.float32)
-    orig = arr.copy()
-
-    with dpctl.device_context(filter_str):
-        twice[N, N // 2](arr)
-
+    arr = dpt.arange(N, dtype=dpt.float32)
+    orig = dpt.asnumpy(arr)
+    global_size = (N,)
+    local_size = (N // 2,)
+    twice[global_size, local_size](arr)
+    after = dpt.asnumpy(arr)
     # The computation is correct?
-    np.testing.assert_allclose(orig * 2, arr)
+    np.testing.assert_allclose(orig * 2, after)
 
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_no_arg_barrier_support(filter_str):
-    @dpex.kernel("void(float32[::1])")
+    @dpex.kernel(void(f32arrty))
     def twice(A):
         i = dpex.get_global_id(0)
         d = A[i]
@@ -44,21 +46,19 @@ def test_no_arg_barrier_support(filter_str):
         A[i] = d * 2
 
     N = 256
-    arr = np.random.random(N).astype(np.float32)
-    orig = arr.copy()
-
-    with dpctl.device_context(filter_str):
-        twice[N, dpex.DEFAULT_LOCAL_SIZE](arr)
-
+    arr = dpt.arange(N, dtype=dpt.float32)
+    orig = dpt.asnumpy(arr)
+    twice[N](arr)
+    after = dpt.asnumpy(arr)
     # The computation is correct?
-    np.testing.assert_allclose(orig * 2, arr)
+    np.testing.assert_allclose(orig * 2, after)
 
 
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_local_memory(filter_str):
     blocksize = 10
 
-    @dpex.kernel("void(float32[::1])")
+    @dpex.kernel(void(f32arrty))
     def reverse_array(A):
         lm = dpex.local.array(shape=10, dtype=np.float32)
         i = dpex.get_global_id(0)
@@ -70,11 +70,9 @@ def test_local_memory(filter_str):
         # write
         A[i] += lm[blocksize - 1 - i]
 
-    arr = np.arange(blocksize).astype(np.float32)
-    orig = arr.copy()
-
-    with dpctl.device_context(filter_str):
-        reverse_array[blocksize, blocksize](arr)
-
+    arr = dpt.arange(blocksize, dtype=dpt.float32)
+    orig = dpt.asnumpy(arr)
+    reverse_array[(blocksize,), (blocksize,)](arr)
+    after = dpt.asnumpy(arr)
     expected = orig[::-1] + orig
-    np.testing.assert_allclose(expected, arr)
+    np.testing.assert_allclose(expected, after)
