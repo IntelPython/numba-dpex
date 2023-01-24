@@ -14,7 +14,7 @@ from numba.core.types import void
 
 from numba_dpex import config
 from numba_dpex.core.caching import LRUCache, NullCache, build_key
-from numba_dpex.core.descriptor import dpex_target
+from numba_dpex.core.descriptor import dpex_kernel_target
 from numba_dpex.core.exceptions import (
     ComputeFollowsDataInferenceError,
     ExecutionQueueInferenceError,
@@ -75,7 +75,7 @@ class JitKernel:
         specialization_sigs=None,
         enable_cache=True,
     ):
-        self.typingctx = dpex_target.typing_context
+        self.typingctx = dpex_kernel_target.typing_context
         self.pyfunc = pyfunc
         self.debug_flags = debug_flags
         self.compile_flags = compile_flags
@@ -148,8 +148,8 @@ class JitKernel:
         object passed to a JitKernel and store it in an internal cache.
         """
         # We always compile the kernel using the dpex_target.
-        typingctx = dpex_target.typing_context
-        targetctx = dpex_target.target_context
+        typingctx = dpex_kernel_target.typing_context
+        targetctx = dpex_kernel_target.target_context
 
         kernel = SpirvKernel(self.pyfunc, self.kernel_name)
         kernel.compile(
@@ -562,7 +562,7 @@ class JitKernel:
         key = build_key(
             tuple(argtypes),
             self.pyfunc,
-            dpex_target.target_context.codegen(),
+            dpex_kernel_target.target_context.codegen(),
         )
 
         # If the JitKernel was specialized then raise exception if argtypes

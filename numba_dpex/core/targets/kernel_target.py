@@ -35,13 +35,11 @@ LINK_ATOMIC = 111
 LLVM_SPIRV_ARGS = 112
 
 
-class DpexTypingContext(typing.BaseContext):
-    """A typing context inheriting Numba's ``BaseContext`` to support
-    dpex-specific data types.
+class DpexKernelTypingContext(typing.BaseContext):
+    """Custom typing context to support kernel compilation.
 
-    :class:`DpexTypingContext` is a customized typing context that inherits from
-    Numba's ``typing.BaseContext`` class. We add two specific functionalities to
-    the basic Numba typing context features: An overridden
+    The customized typing context provides two features required to compile
+    Python functions decorated by the kernel decorator: An overridden
     :func:`resolve_argument_type` that changes all ``npytypes.Array`` to
     :class:`numba_depx.core.types.Array`. An overridden
     :func:`load_additional_registries` that registers OpenCL math and other
@@ -94,7 +92,7 @@ class DpexTypingContext(typing.BaseContext):
         """Register the OpenCL API and math and other functions."""
         from numba.core.typing import cmathdecl, npydecl
 
-        from ..ocl import mathdecl, ocldecl
+        from ...ocl import mathdecl, ocldecl
 
         self.install_registry(ocldecl.registry)
         self.install_registry(mathdecl.registry)
@@ -108,23 +106,21 @@ class SyclDevice(GPU):
     pass
 
 
-DPEX_TARGET_NAME = "SyclDevice"
+DPEX_KERNEL_TARGET_NAME = "SyclDevice"
 
-target_registry[DPEX_TARGET_NAME] = SyclDevice
-
-import numba_dpex.offload_dispatcher
+target_registry[DPEX_KERNEL_TARGET_NAME] = SyclDevice
 
 
-class DpexTargetContext(BaseContext):
+class DpexKernelTargetContext(BaseContext):
     """A target context inheriting Numba's ``BaseContext`` that is customized
     for generating SYCL kernels.
 
-    :class:`DpexTargetContext` is a customized target context that inherits from
-    Numba's ``numba.core.base.BaseContext`` class. The class defines helper
-    functions to mark LLVM functions as SPIR-V kernels. The class also registers
-    OpenCL math and API functions, helper functions for inserting LLVM address
-    space cast instructions, and other functionalities used by dpex compiler
-    passes.
+    A customized target context for generating SPIR-V kernels. The class defines
+    helper functions to generates SPIR-V kernels as LLVM IR using the required
+    calling conventions and metadata. The class also registers OpenCL math and
+    API functions, helper functions for inserting LLVM address
+    space cast instructions, and other functionalities used by the compiler
+    to generate SPIR-V kernels.
 
     """
 
@@ -258,7 +254,7 @@ class DpexTargetContext(BaseContext):
         module.get_function(func.name).linkage = "internal"
         return wrapper
 
-    def __init__(self, typingctx, target=DPEX_TARGET_NAME):
+    def __init__(self, typingctx, target=DPEX_KERNEL_TARGET_NAME):
         super().__init__(typingctx, target)
 
     def init(self):
@@ -340,8 +336,8 @@ class DpexTargetContext(BaseContext):
         """
         from numba.np import npyimpl
 
-        from .. import printimpl
-        from ..ocl import mathimpl, oclimpl
+        from ... import printimpl
+        from ...ocl import mathimpl, oclimpl
 
         self.insert_func_defn(oclimpl.registry.functions)
         self.insert_func_defn(mathimpl.registry.functions)
@@ -402,7 +398,9 @@ class DpexTargetContext(BaseContext):
         fn = module.get_or_insert_function(fnty, name=fndesc.mangled_name)
         if not self.enable_debuginfo:
             fn.attributes.add("alwaysinline")
-        ret = super(DpexTargetContext, self).declare_function(module, fndesc)
+        ret = super(DpexKernelTargetContext, self).declare_function(
+            module, fndesc
+        )
         ret.calling_convention = calling_conv.CC_SPIR_FUNC
         return ret
 
