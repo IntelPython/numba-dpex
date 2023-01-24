@@ -1,0 +1,7 @@
+numba\_dpex.core.offload\_dispatcher module
+===========================================
+
+.. automodule:: numba_dpex.core.offload_dispatcher
+   :members:
+   :undoc-members:
+   :show-inheritance:

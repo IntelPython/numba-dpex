@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>numba_dpex.core package &mdash; numba-dpex 0.20.0dev1+9.g8b3cf31b documentation</title>
+  <title>numba_dpex.core package &mdash; numba-dpex 0.20.0dev1+17.gc0e5be0b documentation</title>
   
 
   
@@ -276,6 +276,40 @@
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.passes.html#module-numba_dpex.core.passes">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.pipelines.html">numba_dpex.core.pipelines package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.pipelines.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.pipelines.kernel_compiler.html">numba_dpex.core.pipelines.kernel_compiler module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.pipelines.kernel_compiler.html#numba_dpex.core.pipelines.kernel_compiler.KernelCompiler"><code class="docutils literal notranslate"><span class="pre">KernelCompiler</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.pipelines.offload_compiler.html">numba_dpex.core.pipelines.offload_compiler module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.pipelines.offload_compiler.html#numba_dpex.core.pipelines.offload_compiler.OffloadCompiler"><code class="docutils literal notranslate"><span class="pre">OffloadCompiler</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.pipelines.html#module-numba_dpex.core.pipelines">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.targets.html">numba_dpex.core.targets package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.targets.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.targets.dpjit_target.html">numba_dpex.core.targets.dpjit_target module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.targets.dpjit_target.html#numba_dpex.core.targets.dpjit_target.Dpex"><code class="docutils literal notranslate"><span class="pre">Dpex</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.targets.dpjit_target.html#numba_dpex.core.targets.dpjit_target.DpexTargetContext"><code class="docutils literal notranslate"><span class="pre">DpexTargetContext</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.targets.kernel_target.html">numba_dpex.core.targets.kernel_target module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.targets.kernel_target.html#numba_dpex.core.targets.kernel_target.DpexCallConv"><code class="docutils literal notranslate"><span class="pre">DpexCallConv</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.targets.kernel_target.html#numba_dpex.core.targets.kernel_target.DpexKernelTargetContext"><code class="docutils literal notranslate"><span class="pre">DpexKernelTargetContext</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.targets.kernel_target.html#numba_dpex.core.targets.kernel_target.DpexKernelTypingContext"><code class="docutils literal notranslate"><span class="pre">DpexKernelTypingContext</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.targets.kernel_target.html#numba_dpex.core.targets.kernel_target.SyclDevice"><code class="docutils literal notranslate"><span class="pre">SyclDevice</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.targets.html#module-numba_dpex.core.targets">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.typeconv.html">numba_dpex.core.typeconv package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.typeconv.html#submodules">Submodules</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.typeconv.array_conversion.html">numba_dpex.core.typeconv.array_conversion module</a><ul>
@@ -404,26 +438,36 @@
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.caching.html#numba_dpex.core.caching.build_key"><code class="docutils literal notranslate"><span class="pre">build_key()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.codegen.html">numba_dpex.core.codegen module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.codegen.html#numba_dpex.core.codegen.JITSPIRVCodegen"><code class="docutils literal notranslate"><span class="pre">JITSPIRVCodegen</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.codegen.html#numba_dpex.core.codegen.SPIRVCodeLibrary"><code class="docutils literal notranslate"><span class="pre">SPIRVCodeLibrary</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.codegen.html#numba_dpex.core.codegen.SPIRVCodeLibrary.get_asm_str"><code class="docutils literal notranslate"><span class="pre">SPIRVCodeLibrary.get_asm_str()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.compiler.html">numba_dpex.core.compiler module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.compiler.html#numba_dpex.core.compiler.Compiler"><code class="docutils literal notranslate"><span class="pre">Compiler</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.compiler.html#numba_dpex.core.compiler.Compiler.define_pipelines"><code class="docutils literal notranslate"><span class="pre">Compiler.define_pipelines()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.compiler.html#numba_dpex.core.compiler.PassBuilder"><code class="docutils literal notranslate"><span class="pre">PassBuilder</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.compiler.html#numba_dpex.core.compiler.PassBuilder.define_nopython_lowering_pipeline"><code class="docutils literal notranslate"><span class="pre">PassBuilder.define_nopython_lowering_pipeline()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.compiler.html#numba_dpex.core.compiler.PassBuilder.define_nopython_pipeline"><code class="docutils literal notranslate"><span class="pre">PassBuilder.define_nopython_pipeline()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.compiler.html#numba_dpex.core.compiler.PassBuilder.define_typed_pipeline"><code class="docutils literal notranslate"><span class="pre">PassBuilder.define_typed_pipeline()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.compiler.html#numba_dpex.core.compiler.PassBuilder.define_untyped_pipeline"><code class="docutils literal notranslate"><span class="pre">PassBuilder.define_untyped_pipeline()</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.compiler.html#numba_dpex.core.compiler.compile_with_dpex"><code class="docutils literal notranslate"><span class="pre">compile_with_dpex()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.descriptor.html">numba_dpex.core.descriptor module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.descriptor.html#numba_dpex.core.descriptor.DpexKernelTarget"><code class="docutils literal notranslate"><span class="pre">DpexKernelTarget</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.descriptor.html#numba_dpex.core.descriptor.DpexKernelTarget.options"><code class="docutils literal notranslate"><span class="pre">DpexKernelTarget.options</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.descriptor.html#numba_dpex.core.descriptor.DpexKernelTarget.target_context"><code class="docutils literal notranslate"><span class="pre">DpexKernelTarget.target_context</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.descriptor.html#numba_dpex.core.descriptor.DpexKernelTarget.typing_context"><code class="docutils literal notranslate"><span class="pre">DpexKernelTarget.typing_context</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.descriptor.html#numba_dpex.core.descriptor.DpexTarget"><code class="docutils literal notranslate"><span class="pre">DpexTarget</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.descriptor.html#numba_dpex.core.descriptor.DpexTarget.options"><code class="docutils literal notranslate"><span class="pre">DpexTarget.options</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.descriptor.html#numba_dpex.core.descriptor.DpexTarget.target_context"><code class="docutils literal notranslate"><span class="pre">DpexTarget.target_context</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.descriptor.html#numba_dpex.core.descriptor.DpexTarget.typing_context"><code class="docutils literal notranslate"><span class="pre">DpexTarget.typing_context</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.dpjit_dispatcher.html">numba_dpex.core.dpjit_dispatcher module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.dpjit_dispatcher.html#numba_dpex.core.dpjit_dispatcher.DpjitDispatcher"><code class="docutils literal notranslate"><span class="pre">DpjitDispatcher</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.dpjit_dispatcher.html#numba_dpex.core.dpjit_dispatcher.DpjitDispatcher.targetdescr"><code class="docutils literal notranslate"><span class="pre">DpjitDispatcher.targetdescr</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -467,35 +511,11 @@
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.itanium_mangler.html#numba_dpex.core.itanium_mangler.prepend_namespace"><code class="docutils literal notranslate"><span class="pre">prepend_namespace()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.target.html">numba_dpex.core.target module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexCallConv"><code class="docutils literal notranslate"><span class="pre">DpexCallConv</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexCallConv.call_function"><code class="docutils literal notranslate"><span class="pre">DpexCallConv.call_function()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.offload_dispatcher.html">numba_dpex.core.offload_dispatcher module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.offload_dispatcher.html#numba_dpex.core.offload_dispatcher.OffloadDispatcher"><code class="docutils literal notranslate"><span class="pre">OffloadDispatcher</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.offload_dispatcher.html#numba_dpex.core.offload_dispatcher.OffloadDispatcher.targetdescr"><code class="docutils literal notranslate"><span class="pre">OffloadDispatcher.targetdescr</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext"><code class="docutils literal notranslate"><span class="pre">DpexTargetContext</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.addrspacecast"><code class="docutils literal notranslate"><span class="pre">DpexTargetContext.addrspacecast()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.call_conv"><code class="docutils literal notranslate"><span class="pre">DpexTargetContext.call_conv</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.codegen"><code class="docutils literal notranslate"><span class="pre">DpexTargetContext.codegen()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.create_module"><code class="docutils literal notranslate"><span class="pre">DpexTargetContext.create_module()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.declare_function"><code class="docutils literal notranslate"><span class="pre">DpexTargetContext.declare_function()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.get_ufunc_info"><code class="docutils literal notranslate"><span class="pre">DpexTargetContext.get_ufunc_info()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.implement_powi_as_math_call"><code class="docutils literal notranslate"><span class="pre">DpexTargetContext.implement_powi_as_math_call</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.init"><code class="docutils literal notranslate"><span class="pre">DpexTargetContext.init()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.insert_const_string"><code class="docutils literal notranslate"><span class="pre">DpexTargetContext.insert_const_string()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.load_additional_registries"><code class="docutils literal notranslate"><span class="pre">DpexTargetContext.load_additional_registries()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.mangler"><code class="docutils literal notranslate"><span class="pre">DpexTargetContext.mangler()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.mark_ocl_device"><code class="docutils literal notranslate"><span class="pre">DpexTargetContext.mark_ocl_device()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.prepare_ocl_kernel"><code class="docutils literal notranslate"><span class="pre">DpexTargetContext.prepare_ocl_kernel()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.replace_numpy_ufunc_with_opencl_supported_functions"><code class="docutils literal notranslate"><span class="pre">DpexTargetContext.replace_numpy_ufunc_with_opencl_supported_functions()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTargetContext.target_data"><code class="docutils literal notranslate"><span class="pre">DpexTargetContext.target_data</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTypingContext"><code class="docutils literal notranslate"><span class="pre">DpexTypingContext</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTypingContext.load_additional_registries"><code class="docutils literal notranslate"><span class="pre">DpexTypingContext.load_additional_registries()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.DpexTypingContext.resolve_argument_type"><code class="docutils literal notranslate"><span class="pre">DpexTypingContext.resolve_argument_type()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.target.html#numba_dpex.core.target.SyclDevice"><code class="docutils literal notranslate"><span class="pre">SyclDevice</span></code></a></li>
 </ul>
 </li>
 </ul>

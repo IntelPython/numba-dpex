@@ -1,0 +1,19 @@
+numba\_dpex.core.targets package
+================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.core.targets.dpjit_target
+   numba_dpex.core.targets.kernel_target
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex.core.targets
+   :members:
+   :undoc-members:
+   :show-inheritance:

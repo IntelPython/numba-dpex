@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>numba_dpex.codegen module &mdash; numba-dpex 0.20.0dev1+9.g8b3cf31b documentation</title>
+  <title>numba_dpex.core.pipelines.offload_compiler module &mdash; numba-dpex 0.20.0dev1+17.gc0e5be0b documentation</title>
   
 
   
@@ -149,13 +149,13 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>numba_dpex.codegen module</li>
+      <li>numba_dpex.core.pipelines.offload_compiler module</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/apidoc/numba_dpex.codegen.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/apidoc/numba_dpex.core.pipelines.offload_compiler.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -168,23 +168,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="module-numba_dpex.codegen">
-<span id="numba-dpex-codegen-module"></span><h1>numba_dpex.codegen module<a class="headerlink" href="#module-numba_dpex.codegen" title="Permalink to this heading">¶</a></h1>
+  <section id="module-numba_dpex.core.pipelines.offload_compiler">
+<span id="numba-dpex-core-pipelines-offload-compiler-module"></span><h1>numba_dpex.core.pipelines.offload_compiler module<a class="headerlink" href="#module-numba_dpex.core.pipelines.offload_compiler" title="Permalink to this heading">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.codegen.JITSPIRVCodegen">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.codegen.</span></span><span class="sig-name descname"><span class="pre">JITSPIRVCodegen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.codegen.JITSPIRVCodegen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">CPUCodegen</span></code></p>
-<p>This codegen implementation generates optimized SPIR 2.0</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.codegen.SPIRVCodeLibrary">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.codegen.</span></span><span class="sig-name descname"><span class="pre">SPIRVCodeLibrary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">codegen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.codegen.SPIRVCodeLibrary" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">CPUCodeLibrary</span></code></p>
+<dt class="sig sig-object py" id="numba_dpex.core.pipelines.offload_compiler.OffloadCompiler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.pipelines.offload_compiler.</span></span><span class="sig-name descname"><span class="pre">OffloadCompiler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typingctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locals</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.pipelines.offload_compiler.OffloadCompiler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">CompilerBase</span></code></p>
+<p>Dpex’s offload compiler pipeline that can offload parfor nodes and
+other NumPy-based library calls to a SYCL device.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Deprecated in 0.20
+The offload compiler is deprecated and will be removed in a future
+release.</p>
+</div>
 <dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.codegen.SPIRVCodeLibrary.get_asm_str">
-<span class="sig-name descname"><span class="pre">get_asm_str</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.codegen.SPIRVCodeLibrary.get_asm_str" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the human-readable assembly.</p>
+<dt class="sig sig-object py" id="numba_dpex.core.pipelines.offload_compiler.OffloadCompiler.define_pipelines">
+<span class="sig-name descname"><span class="pre">define_pipelines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.pipelines.offload_compiler.OffloadCompiler.define_pipelines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Child classes override this to customize the pipelines in use.</p>
 </dd></dl>
 
 </dd></dl>
