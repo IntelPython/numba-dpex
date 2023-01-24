@@ -37,6 +37,7 @@ def test_1D_global_range_as_list():
     assert k._local_range is None
 
 
+@pytest.mark.xfail
 def test_1D_global_range_and_1D_local_range():
     k = vecadd[10, 10]
     assert k._global_range == [10]

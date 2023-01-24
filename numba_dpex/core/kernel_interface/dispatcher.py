@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
+from collections.abc import Iterable
 from inspect import signature
 from warnings import warn
 
@@ -441,6 +442,56 @@ class JitKernel:
             else:
                 raise ExecutionQueueInferenceError(self.kernel_name)
 
+    def _raise_invalid_kernel_enqueue_args(self):
+        error_message = (
+            "Incorrect number of arguments for enqueuing numba_dpex.kernel. "
+            "Usage: device_env, global size, local size. "
+            "The local size argument is optional."
+        )
+        raise InvalidKernelLaunchArgsError(error_message)
+
+    def _ensure_valid_work_item_grid(self, val):
+        if not isinstance(val, (tuple, list, int)):
+            error_message = (
+                "Cannot create work item dimension from provided argument"
+            )
+            raise ValueError(error_message)
+
+        if isinstance(val, int):
+            val = [val]
+
+        # TODO: we need some way to check the max dimensions
+        """
+        if len(val) > device_env.get_max_work_item_dims():
+            error_message = ("Unsupported number of work item dimensions ")
+            raise ValueError(error_message)
+        """
+
+        return list(
+            val[::-1]
+        )  # reversing due to sycl and opencl interop kernel range mismatch semantic
+
+    def _ensure_valid_work_group_size(self, val, work_item_grid):
+        if not isinstance(val, (tuple, list, int)):
+            error_message = (
+                "Cannot create work item dimension from provided argument"
+            )
+            raise ValueError(error_message)
+
+        if isinstance(val, int):
+            val = [val]
+
+        if len(val) != len(work_item_grid):
+            error_message = (
+                "Unsupported number of work item dimensions, "
+                + "dimensions of global and local work items has to be the same "
+            )
+            raise IllegalRangeValueError(error_message)
+
+        return list(
+            val[::-1]
+        )  # reversing due to sycl and opencl interop kernel range mismatch semantic
+
     def __getitem__(self, args):
         """Mimic's ``numba.cuda`` square-bracket notation for configuring the
         global_range and local_range settings when launching a kernel on a
@@ -468,51 +519,58 @@ class JitKernel:
             global_range and local_range attributes initialized.
 
         """
-        if isinstance(args, int):
-            self._global_range = [args]
+        # print("args =", args)
+
+        if (
+            isinstance(args, tuple)
+            and len(args) == 2
+            and isinstance(args[0], int)
+            and isinstance(args[1], int)
+        ):
+            # print("----------> here")
+            # print("args =", args)
+            self._global_range = list(args)
+            # print("self._global_range =", self._global_range)
             self._local_range = None
-        elif isinstance(args, tuple) or isinstance(args, list):
-            if len(args) == 1 and all(isinstance(v, int) for v in args):
-                self._global_range = list(args)
-                self._local_range = None
-            elif len(args) == 2:
-                gr = args[0]
-                lr = args[1]
-                if isinstance(gr, int):
-                    self._global_range = [gr]
-                elif len(gr) != 0 and all(isinstance(v, int) for v in gr):
-                    self._global_range = list(gr)
-                else:
-                    raise IllegalRangeValueError(kernel_name=self.kernel_name)
+            # print("self._local_range =", self._local_range)
+            return self
 
-                if isinstance(lr, int):
-                    self._local_range = [lr]
-                elif isinstance(lr, list) and len(lr) == 0:
-                    # deprecation warning
-                    warn(
-                        "Specifying the local range as an empty list "
-                        "(DEFAULT_LOCAL_SIZE) is deprecated. The kernel will "
-                        "be executed as a basic data-parallel kernel over the "
-                        "global range. Specify a valid local range to execute "
-                        "the kernel as an ND-range kernel.",
-                        DeprecationWarning,
-                        stacklevel=2,
-                    )
-                    self._local_range = None
-                elif len(lr) != 0 and all(isinstance(v, int) for v in lr):
-                    self._local_range = list(lr)
-                else:
-                    raise IllegalRangeValueError(kernel_name=self.kernel_name)
+        if not isinstance(args, Iterable):
+            args = [args]
+
+        ls = None
+        nargs = len(args)
+        # print("nargs =", nargs)
+        # Check if the kernel enquing arguments are sane
+        if nargs < 1 or nargs > 2:
+            self._raise_invalid_kernel_enqueue_args()
+
+        # sycl_queue = dpctl.get_current_queue()
+
+        gs = self._ensure_valid_work_item_grid(args[0])
+        # If the optional local size argument is provided
+        if nargs == 2:
+            if args[1] != []:
+                ls = self._ensure_valid_work_group_size(args[1], gs)
             else:
-                raise InvalidKernelLaunchArgsError(kernel_name=self.kernel_name)
-        else:
-            raise InvalidKernelLaunchArgsError(kernel_name=self.kernel_name)
+                warn(
+                    "Empty local_range calls will be deprecated in the future.",
+                    DeprecationWarning,
+                )
 
-        # FIXME:[::-1] is done as OpenCL and SYCl have different orders when
-        # it comes to specifying dimensions.
-        self._global_range = list(self._global_range)[::-1]
-        if self._local_range:
-            self._local_range = list(self._local_range)[::-1]
+        self._global_range = list(gs)[::-1]
+        if ls:
+            self._local_range = list(ls)[::-1]
+        else:
+            self._local_range = None
+
+        # print("self._global_range =", self._global_range)
+        # print("self._local_range =", self._local_range)
+
+        if self._global_range == [] and self._local_range is None:
+            raise IllegalRangeValueError(
+                "Illegal range values for kernel launch parameters."
+            )
 
         return self
 
