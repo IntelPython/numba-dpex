@@ -147,9 +147,9 @@ class NdRange:
     @property
     def global_range(self):
         """Return the constituent global range."""
-        return self._global_size
+        return self._global_range
 
     @property
     def local_range(self):
         """Return the constituent local range."""
-        return self._local_size
+        return self._local_range

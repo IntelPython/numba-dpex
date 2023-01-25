@@ -5,7 +5,7 @@
 
 from collections.abc import Iterable
 from inspect import signature
-from warnings import warn
+from warnings import simplefilter, warn
 
 import dpctl
 import dpctl.program as dpctl_prog
@@ -32,8 +32,11 @@ from numba_dpex.core.exceptions import (
     UnsupportedWorkItemSizeError,
 )
 from numba_dpex.core.kernel_interface.arg_pack_unpacker import Packer
+from numba_dpex.core.kernel_interface.indexers import NdRange
 from numba_dpex.core.kernel_interface.spirv_kernel import SpirvKernel
 from numba_dpex.core.types import USMNdArray
+
+simplefilter("always", DeprecationWarning)
 
 
 def get_ordered_arg_access_types(pyfunc, access_types):
@@ -519,59 +522,56 @@ class JitKernel:
             global_range and local_range attributes initialized.
 
         """
-        # print("args =", args)
 
-        if (
-            isinstance(args, tuple)
-            and len(args) == 2
-            and isinstance(args[0], int)
-            and isinstance(args[1], int)
-        ):
-            # print("----------> here")
-            # print("args =", args)
-            self._global_range = list(args)
-            # print("self._global_range =", self._global_range)
-            self._local_range = None
-            # print("self._local_range =", self._local_range)
-            return self
-
-        if not isinstance(args, Iterable):
-            args = [args]
-
-        ls = None
-        nargs = len(args)
-        # print("nargs =", nargs)
-        # Check if the kernel enquing arguments are sane
-        if nargs < 1 or nargs > 2:
-            self._raise_invalid_kernel_enqueue_args()
-
-        # sycl_queue = dpctl.get_current_queue()
-
-        gs = self._ensure_valid_work_item_grid(args[0])
-        # If the optional local size argument is provided
-        if nargs == 2:
-            if args[1] != []:
-                ls = self._ensure_valid_work_group_size(args[1], gs)
-            else:
+        if isinstance(args, NdRange):
+            self._global_range = list(args.global_range)[::-1]
+            self._local_range = list(args.local_range)[::-1]
+        else:
+            if (
+                isinstance(args, tuple)
+                and len(args) == 2
+                and isinstance(args[0], int)
+                and isinstance(args[1], int)
+            ):
                 warn(
-                    "Empty local_range calls will be deprecated in the future.",
+                    "Ambiguous kernel launch paramters. "
+                    + "If your data have dimensions > 1, "
+                    + "include a default/empty local_range. "
+                    + "i.e. <function>[(M,N), numba_dpex.DEFAULT_LOCAL_RANGE](<params>), "
+                    + "otherwise your code might produce erroneous results.",
                     DeprecationWarning,
                 )
+                self._global_range = [args[0]]
+                self._local_range = [args[1]]
+                return self
 
-        self._global_range = list(gs)[::-1]
-        if ls:
-            self._local_range = list(ls)[::-1]
-        else:
-            self._local_range = None
+            if not isinstance(args, Iterable):
+                args = [args]
 
-        # print("self._global_range =", self._global_range)
-        # print("self._local_range =", self._local_range)
+            ls = None
+            nargs = len(args)
+            # Check if the kernel enquing arguments are sane
+            if nargs < 1 or nargs > 2:
+                self._raise_invalid_kernel_enqueue_args()
 
-        if self._global_range == [] and self._local_range is None:
-            raise IllegalRangeValueError(
-                "Illegal range values for kernel launch parameters."
-            )
+            gs = self._ensure_valid_work_item_grid(args[0])
+            # If the optional local size argument is provided
+            if nargs == 2:
+                if args[1] != []:
+                    ls = self._ensure_valid_work_group_size(args[1], gs)
+                else:
+                    warn(
+                        "Empty local_range calls will be deprecated in the future.",
+                        DeprecationWarning,
+                    )
 
+            self._global_range = list(gs)[::-1]
+            self._local_range = list(ls)[::-1] if ls else None
+
+            if self._global_range == [] and self._local_range is None:
+                raise IllegalRangeValueError(
+                    "Illegal range values for kernel launch parameters."
+                )
         return self
 
     def _check_ranges(self, device):
