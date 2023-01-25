@@ -5,10 +5,7 @@ import dpctl.tensor as dpt
 import pytest
 
 import numba_dpex as ndpx
-from numba_dpex.core.exceptions import (
-    UnmatchedNumberOfRangeDimsError,
-    UnsupportedGroupWorkItemSizeError,
-)
+from numba_dpex.core.kernel_interface.utils import Ranges
 
 
 # Data parallel kernel implementing vector sum
@@ -19,13 +16,13 @@ def kernel_vector_sum(a, b, c):
 
 
 @pytest.mark.parametrize(
-    "error, ndrange",
+    "error, ranges",
     [
-        (UnmatchedNumberOfRangeDimsError, ((2, 2), (1, 1, 1))),
-        (UnsupportedGroupWorkItemSizeError, ((3, 3, 3), (2, 2, 2))),
+        (ValueError, ((2, 2), (1, 1, 1))),
+        (ValueError, ((3, 3, 3), (2, 2, 2))),
     ],
 )
-def test_ndrange_config_error(error, ndrange):
+def test_ndrange_config_error(error, ranges):
     """Test if a exception is raised when calling a
     ndrange kernel with unspported arguments.
     """
@@ -35,4 +32,5 @@ def test_ndrange_config_error(error, ndrange):
     c = dpt.zeros(1024, dtype=dpt.int64)
 
     with pytest.raises(error):
-        kernel_vector_sum[ndrange](a, b, c)
+        range = Ranges(ranges[0], ranges[1])
+        kernel_vector_sum[range](a, b, c)

@@ -32,8 +32,8 @@ from numba_dpex.core.exceptions import (
     UnsupportedWorkItemSizeError,
 )
 from numba_dpex.core.kernel_interface.arg_pack_unpacker import Packer
-from numba_dpex.core.kernel_interface.indexers import NdRange
 from numba_dpex.core.kernel_interface.spirv_kernel import SpirvKernel
+from numba_dpex.core.kernel_interface.utils import Ranges
 from numba_dpex.core.types import USMNdArray
 
 simplefilter("always", DeprecationWarning)
@@ -523,7 +523,7 @@ class JitKernel:
 
         """
 
-        if isinstance(args, NdRange):
+        if isinstance(args, Ranges):
             self._global_range = list(args.global_range)[::-1]
             self._local_range = list(args.local_range)[::-1]
         else:

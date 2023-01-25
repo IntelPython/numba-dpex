@@ -22,7 +22,7 @@ def data_parallel_sum(a, b, c):
 
 
 def driver(a, b, c, global_size):
-    data_parallel_sum[global_size](a, b, c)
+    data_parallel_sum[global_size, dpex.DEFAULT_LOCAL_SIZE](a, b, c)
 
 
 def main():
