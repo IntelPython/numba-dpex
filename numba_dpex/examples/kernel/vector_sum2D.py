@@ -9,6 +9,7 @@ import dpctl.tensor as dpt
 import numpy as np
 
 import numba_dpex as dpex
+from numba_dpex.core.kernel_interface.utils import NdRange, Range
 
 
 @dpex.kernel
@@ -23,6 +24,11 @@ def data_parallel_sum(a, b, c):
 
 def driver(a, b, c, global_size):
     data_parallel_sum[global_size, dpex.DEFAULT_LOCAL_SIZE](a, b, c)
+
+
+def driver_with_range(a, b, c, global_size):
+    ranges = Range(*global_size)
+    data_parallel_sum[ranges](a, b, c)
 
 
 def main():
@@ -48,8 +54,13 @@ def main():
     print("Using device ...")
     device.print_device_info()
 
+    print("Running kernel ...")
     driver(a_dpt, b_dpt, c_dpt, global_size)
+    c_out = dpt.asnumpy(c_dpt)
+    assert np.allclose(c, c_out)
 
+    print("Running kernel with the new lanuch parameter syntax ...")
+    driver_with_range(a_dpt, b_dpt, c_dpt, global_size)
     c_out = dpt.asnumpy(c_dpt)
     assert np.allclose(c, c_out)
 

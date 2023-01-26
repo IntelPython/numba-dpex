@@ -1,146 +1,218 @@
-class Ranges:
-    """A data structure to encapsulate kernel lauch parameters.
+from collections.abc import Iterable
 
-    This is just a wrapper class on top of tuples. The kernel
-    launch parameter is consisted of two int's (or two tuples of int's).
-    The first value is called `global_range` and the second value
-    is called `local_range`.
 
-    The `global_range` is analogous to DPC++'s "global size"
-    and the `local_range` is analogous to DPC++'s "workgroup size",
-    respectively.
+class Range(tuple):
+    """A data structure to encapsulate a single kernel lauch parameter.
+
+    The range is an abstraction that describes the number of elements
+    in each dimension of buffers and index spaces. It can contain
+    1, 2, or 3 numbers, dependending on the dimensionality of the
+    object it describes.
+
+    This is just a wrapper class on top of a 3-tuple. The kernel launch
+    parameter is consisted of three int's. This class basically mimics
+    the behavior of `sycl::range`.
     """
 
-    def __init__(self, global_range, local_range=None):
-        """Constructor for Ranges.
+    def __new__(cls, dim0, dim1=None, dim2=None):
+        """Constructs a 1, 2, or 3 dimensional range.
 
         Args:
-            global_range (tuple or int): An int or a tuple of int's
-                to specify DPC++'s global size.
-            local_range (tuple, optional): An int or a tuple of int's
-                to specify DPC++'s workgroup size. Defaults to None.
-        """
-        self._global_range = global_range
-        self._local_range = local_range
-        self._check_sanity()
-
-    def _check_sanity(self):
-        """Sanity checks for the global and local range tuples.
+            dim0 (int): The range of the first dimension.
+            dim1 (int, optional): The range of second dimension.
+                                    Defaults to None.
+            dim2 (int, optional): The range of the third dimension.
+                                    Defaults to None.
 
         Raises:
-            ValueError: If the length of global_range is more than 3, if tuple.
-            ValueError: If each of value global_range is not an int, if tuple.
-            ValueError: If the global_range is not a tuple or an int.
-            ValueError: If the length of local_range is more than 3, if tuple.
-            ValueError: If the dimensions of local_range
-                        and global_range are not same, if tuples.
-            ValueError: If each of value local_range is not an int, if tuple.
-            ValueError: If the range limits in the global_range is not
-                        divisible by the range limit in the local_range
-                        at the corresponding dimension.
-            ValueError: If the local_range is not a tuple or an int.
+            TypeError: If dim0 is not an int.
+            TypeError: If dim1 is not an int.
+            TypeError: If dim2 is not an int.
         """
-        if isinstance(self._global_range, tuple):
-            if len(self._global_range) > 3:
-                raise ValueError(
-                    "The maximum allowed dimension for global_range is 3."
-                )
-            for i in range(len(self._global_range)):
-                if not isinstance(self._global_range[i], int):
-                    raise ValueError("The range limit values must be an int.")
-        elif isinstance(self._global_range, int):
-            self._global_range = tuple([self._global_range])
+        if not isinstance(dim0, int):
+            raise TypeError("dim0 of a Range must be an int.")
+        _values = [dim0]
+        if dim1:
+            if not isinstance(dim1, int):
+                raise TypeError("dim1 of a Range must be an int.")
+            _values.append(dim1)
+            if dim2:
+                if not isinstance(dim2, int):
+                    raise TypeError("dim2 of a Range must be an int.")
+                _values.append(dim2)
+        return super(Range, cls).__new__(cls, tuple(_values))
+
+    def get(self, index):
+        """Returns the range of a single dimension.
+
+        Args:
+            index (int): The index of the dimension, i.e. [0,2]
+
+        Returns:
+            int: The range of the dimension indexed by `index`.
+        """
+        return self[index]
+
+    def size(self):
+        """Returns the size of a range.
+
+        Returns the size of a range by multiplying
+        the range of the individual dimensions.
+
+        Returns:
+            int: The size of a range.
+        """
+        n = len(self)
+        if n > 2:
+            return self[0] * self[1] * self[2]
+        elif n > 1:
+            return self[0] * self[1]
         else:
-            raise ValueError("global_range must be a tuple or an int.")
-        if self._local_range:
-            if isinstance(self._local_range, tuple):
-                if len(self._local_range) > 3:
-                    raise ValueError(
-                        "The maximum allowed dimension for local_range is 3."
-                    )
-                if len(self._global_range) != len(self._local_range):
-                    raise ValueError(
-                        "global_range and local_range must "
-                        + "have the same dimensions."
-                    )
-                for i in range(len(self._local_range)):
-                    if not isinstance(self._local_range[i], int):
-                        raise ValueError(
-                            "The range limit values must be an int."
-                        )
-                    if self._global_range[i] % self._local_range[i] != 0:
-                        raise ValueError(
-                            "Each limit in global_range must be divisible "
-                            + "by each limit in local_range at "
-                            + " the corresponding dimension."
-                        )
-            elif isinstance(self._local_range, int):
-                self._local_range = tuple([self._local_range])
-            else:
-                raise ValueError("local_range must be a tuple or an int.")
+            return self[0]
+
+
+class NdRange:
+    """A class to encapsulate all kernel launch parameters.
+
+    The NdRange defines the index space for a work group as well as
+    the global index space. It is passed to parallel_for to execute
+    a kernel on a set of work items.
+
+    This class basically contains two Range object, one for the global_range
+    and the other for the local_range. The global_range parameter contains
+    the global index space and the local_range parameter contains the index
+    space of a work group. This class mimics the behavior of `sycl::nd_range`
+    class.
+    """
+
+    def __init__(self, global_size, local_size):
+        """Constructor for NdRange class.
+
+        Args:
+            global_size (Range or tuple of int's): The values for
+                the global_range.
+            local_size (Range or tuple of int's, optional): The values for
+                the local_range. Defaults to None.
+        """
+        if isinstance(global_size, Range):
+            self._global_range = global_size
+        elif isinstance(global_size, Iterable):
+            self._global_range = Range(*global_size)
+        else:
+            TypeError("Unknwon argument type for NdRange global_size.")
+
+        if isinstance(local_size, Range):
+            self._local_range = local_size
+        elif isinstance(local_size, Iterable):
+            self._local_range = Range(*local_size)
+        else:
+            TypeError("Unknwon argument type for NdRange local_size.")
 
     @property
     def global_range(self):
-        """global_range accessor.
+        """Accessor for global_range.
 
         Returns:
-            tuple: global_range
+            Range: The `global_range` `Range` object.
         """
         return self._global_range
 
     @property
     def local_range(self):
-        """local_range accessor.
+        """Accessor for local_range.
 
         Returns:
-            tuple: local_range
+            Range: The `local_range` `Range` object.
         """
         return self._local_range
 
-    def __str__(self) -> str:
-        """str() function for this class.
+    def get_global_range(self):
+        """Returns a Range defining the index space.
 
         Returns:
-            str: str representation of a Ranges object.
+            Range: A `Range` object defining the index space.
+        """
+        return self._global_range
+
+    def get_local_range(self):
+        """Returns a Range defining the index space of a work group.
+
+        Returns:
+            Range: A `Range` object to specify index space of a work group.
+        """
+        return self._local_range
+
+    def __str__(self):
+        """str() function for NdRange class.
+
+        Returns:
+            str: str representation for NdRange class.
         """
         return (
             "(" + str(self._global_range) + ", " + str(self._local_range) + ")"
         )
 
-    def __repr__(self) -> str:
-        """repr() function for this class.
+    def __repr__(self):
+        """repr() function for NdRange class.
 
         Returns:
-            str: str representation of a Ranges object.
+            str: str representation for NdRange class.
         """
         return self.__str__()
 
 
-# tester
 if __name__ == "__main__":
-    ranges = Ranges(1)
-    print(ranges)
+    r1 = Range(1)
+    print("r1 =", r1)
 
-    ranges = Ranges(1, 1)
-    print(ranges)
+    r2 = Range(1, 2)
+    print("r2 =", r2)
 
-    ranges = Ranges((2, 2, 2), (1, 1, 1))
-    print(ranges)
+    r3 = Range(1, 2, 3)
+    print("r3 =", r3, ", len(r3) =", len(r3))
 
-    ranges = Ranges((2, 2, 2))
-    print(ranges)
+    r3 = Range(*(1, 2, 3))
+    print("r3 =", r3, ", len(r3) =", len(r3))
+
+    r3 = Range(*[1, 2, 3])
+    print("r3 =", r3, ", len(r3) =", len(r3))
+
+    print("r1.get(0) =", r1.get(0))
+    try:
+        print("r2.get(2) =", r2.get(2))
+    except Exception as e:
+        print(e)
+
+    print("r3.get(0) =", r3.get(0))
+    print("r3.get(1) =", r3.get(1))
+
+    print("r1[0] =", r1[0])
+    try:
+        print("r2[2] =", r2[2])
+    except Exception as e:
+        print(e)
+
+    print("r3[0] =", r3[0])
+    print("r3[1] =", r3[1])
 
     try:
-        ranges = Ranges((1, 1, 1, 1))
+        r4 = Range(1, 2, 3, 4)
     except Exception as e:
         print(e)
 
     try:
-        ranges = Ranges((2, 2, 2), (1, 1))
+        r5 = Range(*(1, 2, 3, 4))
     except Exception as e:
         print(e)
 
-    try:
-        ranges = Ranges((3, 3, 3), (2, 2, 2))
-    except Exception as e:
-        print(e)
+    ndr1 = NdRange(Range(1, 2))
+    print("ndr1 =", ndr1)
+
+    ndr2 = NdRange(Range(1, 2), Range(1, 1, 1))
+    print("ndr2 =", ndr2)
+
+    ndr3 = NdRange((1, 2))
+    print("ndr3 =", ndr3)
+
+    ndr4 = NdRange((1, 2), (1, 1, 1))
+    print("ndr4 =", ndr4)

@@ -40,7 +40,7 @@ def test_1D_global_range_as_list():
     assert k._local_range is None
 
 
-def test_1D_global_range_and_1D_local_range():
+def test_1D_global_range_and_1D_local_range1():
     k = vecadd[[10, 10]]
     assert k._global_range == [10]
     assert k._local_range == [10]
@@ -52,7 +52,7 @@ def test_1D_global_range_and_1D_local_range2():
     assert k._local_range == [10]
 
 
-def test_2D_global_range_and_2D_local_range():
+def test_2D_global_range_and_2D_local_range1():
     k = vecadd[(10, 10), (10, 10)]
     assert k._global_range == [10, 10]
     assert k._local_range == [10, 10]
@@ -76,7 +76,7 @@ def test_2D_global_range_and_2D_local_range4():
     assert k._local_range == [10, 10]
 
 
-def test_deprecation_warning_for_empty_local_range():
+def test_deprecation_warning_for_empty_local_range1():
     with pytest.deprecated_call():
         k = vecadd[[10, 10], []]
     assert k._global_range == [10, 10]
@@ -118,7 +118,7 @@ def test_unknown_global_range_error():
         assert "No global range" in e.message
 
 
-def test_illegal_kernel_launch_arg():
+def test_illegal_kernel_launch_arg1():
     with pytest.raises(InvalidKernelLaunchArgsError):
         vecadd[()]
 

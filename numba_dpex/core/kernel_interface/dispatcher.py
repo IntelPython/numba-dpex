@@ -5,7 +5,7 @@
 
 from collections.abc import Iterable
 from inspect import signature
-from warnings import simplefilter, warn
+from warnings import warn
 
 import dpctl
 import dpctl.program as dpctl_prog
@@ -33,10 +33,8 @@ from numba_dpex.core.exceptions import (
 )
 from numba_dpex.core.kernel_interface.arg_pack_unpacker import Packer
 from numba_dpex.core.kernel_interface.spirv_kernel import SpirvKernel
-from numba_dpex.core.kernel_interface.utils import Ranges
+from numba_dpex.core.kernel_interface.utils import NdRange, Range
 from numba_dpex.core.types import USMNdArray
-
-simplefilter("always", DeprecationWarning)
 
 
 def get_ordered_arg_access_types(pyfunc, access_types):
@@ -445,56 +443,6 @@ class JitKernel:
             else:
                 raise ExecutionQueueInferenceError(self.kernel_name)
 
-    def _raise_invalid_kernel_enqueue_args(self):
-        error_message = (
-            "Incorrect number of arguments for enqueuing numba_dpex.kernel. "
-            "Usage: device_env, global size, local size. "
-            "The local size argument is optional."
-        )
-        raise InvalidKernelLaunchArgsError(error_message)
-
-    def _ensure_valid_work_item_grid(self, val):
-        if not isinstance(val, (tuple, list, int)):
-            error_message = (
-                "Cannot create work item dimension from provided argument"
-            )
-            raise ValueError(error_message)
-
-        if isinstance(val, int):
-            val = [val]
-
-        # TODO: we need some way to check the max dimensions
-        """
-        if len(val) > device_env.get_max_work_item_dims():
-            error_message = ("Unsupported number of work item dimensions ")
-            raise ValueError(error_message)
-        """
-
-        return list(
-            val[::-1]
-        )  # reversing due to sycl and opencl interop kernel range mismatch semantic
-
-    def _ensure_valid_work_group_size(self, val, work_item_grid):
-        if not isinstance(val, (tuple, list, int)):
-            error_message = (
-                "Cannot create work item dimension from provided argument"
-            )
-            raise ValueError(error_message)
-
-        if isinstance(val, int):
-            val = [val]
-
-        if len(val) != len(work_item_grid):
-            error_message = (
-                "Unsupported number of work item dimensions, "
-                + "dimensions of global and local work items has to be the same "
-            )
-            raise IllegalRangeValueError(error_message)
-
-        return list(
-            val[::-1]
-        )  # reversing due to sycl and opencl interop kernel range mismatch semantic
-
     def __getitem__(self, args):
         """Mimic's ``numba.cuda`` square-bracket notation for configuring the
         global_range and local_range settings when launching a kernel on a
@@ -522,8 +470,11 @@ class JitKernel:
             global_range and local_range attributes initialized.
 
         """
-
-        if isinstance(args, Ranges):
+        if isinstance(args, Range):
+            # we need inversions, see github issue #889
+            self._global_range = list(args)[::-1]
+        elif isinstance(args, NdRange):
+            # we need inversions, see github issue #889
             self._global_range = list(args.global_range)[::-1]
             self._local_range = list(args.local_range)[::-1]
         else:
@@ -534,44 +485,73 @@ class JitKernel:
                 and isinstance(args[1], int)
             ):
                 warn(
-                    "Ambiguous kernel launch paramters. "
-                    + "If your data have dimensions > 1, "
-                    + "include a default/empty local_range. "
-                    + "i.e. <function>[(M,N), numba_dpex.DEFAULT_LOCAL_RANGE](<params>), "
+                    "Ambiguous kernel launch paramters. If your data have "
+                    + "dimensions > 1, include a default/empty local_range:\n"
+                    + "    <function>[(X,Y), numba_dpex.DEFAULT_LOCAL_RANGE](<params>)\n"
                     + "otherwise your code might produce erroneous results.",
                     DeprecationWarning,
+                    stacklevel=2,
                 )
                 self._global_range = [args[0]]
                 self._local_range = [args[1]]
                 return self
 
-            if not isinstance(args, Iterable):
-                args = [args]
+            warn(
+                "The current syntax for specification of kernel lauch "
+                + "parameters is deprecated. Users should set the kernel "
+                + "parameters through Range/NdRange classes.\n"
+                + "Example:\n"
+                + "    from numba_dpex.core.kernel_interface.utils import Range,NdRange\n\n"
+                + "    # for global range only\n"
+                + "    <function>[Range(X,Y)](<parameters>)\n"
+                + "    # or,\n"
+                + "    # for both global and local ranges\n"
+                + "    <function>[NdRange((X,Y), (P,Q))](<parameters>)",
+                DeprecationWarning,
+                stacklevel=2,
+            )
 
-            ls = None
+            args = [args] if not isinstance(args, Iterable) else args
             nargs = len(args)
+
             # Check if the kernel enquing arguments are sane
             if nargs < 1 or nargs > 2:
-                self._raise_invalid_kernel_enqueue_args()
+                raise InvalidKernelLaunchArgsError(kernel_name=self.kernel_name)
 
-            gs = self._ensure_valid_work_item_grid(args[0])
+            g_range = (
+                [args[0]] if not isinstance(args[0], Iterable) else args[0]
+            )
             # If the optional local size argument is provided
+            l_range = None
             if nargs == 2:
                 if args[1] != []:
-                    ls = self._ensure_valid_work_group_size(args[1], gs)
+                    l_range = (
+                        [args[1]]
+                        if not isinstance(args[1], Iterable)
+                        else args[1]
+                    )
                 else:
                     warn(
-                        "Empty local_range calls will be deprecated in the future.",
+                        "Empty local_range calls are deprecated. Please use Range/NdRange "
+                        + "to specify the kernel launch parameters:\n"
+                        + "Example:\n"
+                        + "    from numba_dpex.core.kernel_interface.utils import Range,NdRange\n\n"
+                        + "    # for global range only\n"
+                        + "    <function>[Range(X,Y)](<parameters>)\n"
+                        + "    # or,\n"
+                        + "    # for both global and local ranges\n"
+                        + "    <function>[NdRange((X,Y), (P,Q))](<parameters>)",
                         DeprecationWarning,
+                        stacklevel=2,
                     )
 
-            self._global_range = list(gs)[::-1]
-            self._local_range = list(ls)[::-1] if ls else None
+            if len(g_range) < 1:
+                raise IllegalRangeValueError(kernel_name=self.kernel_name)
 
-            if self._global_range == [] and self._local_range is None:
-                raise IllegalRangeValueError(
-                    "Illegal range values for kernel launch parameters."
-                )
+            # we need inversions, see github issue #889
+            self._global_range = list(g_range)[::-1]
+            self._local_range = list(l_range)[::-1] if l_range else None
+
         return self
 
     def _check_ranges(self, device):

@@ -5,7 +5,7 @@ import dpctl.tensor as dpt
 import pytest
 
 import numba_dpex as ndpx
-from numba_dpex.core.kernel_interface.utils import Ranges
+from numba_dpex.core.kernel_interface.utils import NdRange
 
 
 # Data parallel kernel implementing vector sum
@@ -18,8 +18,8 @@ def kernel_vector_sum(a, b, c):
 @pytest.mark.parametrize(
     "error, ranges",
     [
-        (ValueError, ((2, 2), (1, 1, 1))),
-        (ValueError, ((3, 3, 3), (2, 2, 2))),
+        (TypeError, ((2, 2), ("a", 1, 1))),
+        (TypeError, ((3, 3, 3, 3), (2, 2, 2))),
     ],
 )
 def test_ndrange_config_error(error, ranges):
@@ -32,5 +32,5 @@ def test_ndrange_config_error(error, ranges):
     c = dpt.zeros(1024, dtype=dpt.int64)
 
     with pytest.raises(error):
-        range = Ranges(ranges[0], ranges[1])
+        range = NdRange(ranges[0], ranges[1])
         kernel_vector_sum[range](a, b, c)
