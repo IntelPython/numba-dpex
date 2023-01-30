@@ -9,6 +9,7 @@ import numba
 import numpy as np
 
 import numba_dpex as dpex
+from numba_dpex.core.kernel_interface.utils import Range
 
 
 def common_loop_body(i, a, b):
@@ -50,7 +51,7 @@ def numba_func_driver(a, b, c):
 def dpex_func_driver(a, b, c):
     device = dpctl.select_default_device()
     with dpctl.device_context(device):
-        kernel[len(c), dpex.DEFAULT_LOCAL_SIZE](a, b, c)
+        kernel[Range(len(c))](a, b, c)
 
 
 @dpex.kernel(debug=True)

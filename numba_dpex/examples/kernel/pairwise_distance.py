@@ -12,6 +12,7 @@ import dpctl.memory as dpctl_mem
 import numpy as np
 
 import numba_dpex as dpex
+from numba_dpex.core.kernel_interface.utils import NdRange, Range
 
 parser = argparse.ArgumentParser(
     description="Program to compute pairwise distance"
@@ -25,9 +26,9 @@ parser.add_argument("-l", type=int, default=1, help="local_work_size")
 args = parser.parse_args()
 
 # Global work size is equal to the number of points
-global_size = (args.n,)
+global_size = Range(args.n)
 # Local Work size is optional
-local_size = (args.l,)
+local_size = Range(args.l)
 
 X = np.random.random((args.n, args.d)).astype(np.single)
 D = np.empty((args.n, args.n), dtype=np.single)
@@ -65,7 +66,7 @@ def driver():
 
     for repeat in range(args.r):
         start = time()
-        pairwise_distance[global_size, local_size](
+        pairwise_distance[NdRange(global_size, local_size)](
             x_ndarray, d_ndarray, X.shape[0], X.shape[1]
         )
         end = time()

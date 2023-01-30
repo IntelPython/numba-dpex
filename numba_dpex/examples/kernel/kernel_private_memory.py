@@ -8,6 +8,7 @@ import numpy as np
 from numba import float32
 
 import numba_dpex
+from numba_dpex.core.kernel_interface.utils import NdRange, Range
 
 
 def private_memory():
@@ -39,9 +40,9 @@ def private_memory():
     print("Using device ...")
     device.print_device_info()
 
-    global_range = (N,)
-    local_range = (N,)
-    private_memory_kernel[global_range, local_range](arr)
+    global_range = Range(N)
+    local_range = Range(N)
+    private_memory_kernel[NdRange(global_range, local_range)](arr)
 
     arr_out = dpt.asnumpy(arr)
     np.testing.assert_allclose(orig * 2, arr_out)

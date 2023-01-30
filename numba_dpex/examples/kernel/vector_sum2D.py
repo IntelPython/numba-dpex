@@ -23,19 +23,14 @@ def data_parallel_sum(a, b, c):
 
 
 def driver(a, b, c, global_size):
-    data_parallel_sum[global_size, dpex.DEFAULT_LOCAL_SIZE](a, b, c)
-
-
-def driver_with_range(a, b, c, global_size):
-    ranges = Range(*global_size)
-    data_parallel_sum[ranges](a, b, c)
+    data_parallel_sum[global_size](a, b, c)
 
 
 def main():
     # Array dimensions
     X = 8
     Y = 8
-    global_size = X, Y
+    global_size = Range(X, Y)
 
     a = np.arange(X * Y, dtype=np.float32).reshape(X, Y)
     b = np.arange(X * Y, dtype=np.float32).reshape(X, Y)
@@ -56,11 +51,6 @@ def main():
 
     print("Running kernel ...")
     driver(a_dpt, b_dpt, c_dpt, global_size)
-    c_out = dpt.asnumpy(c_dpt)
-    assert np.allclose(c, c_out)
-
-    print("Running kernel with the new lanuch parameter syntax ...")
-    driver_with_range(a_dpt, b_dpt, c_dpt, global_size)
     c_out = dpt.asnumpy(c_dpt)
     assert np.allclose(c, c_out)
 

@@ -13,6 +13,7 @@ import dpctl.tensor as dpt
 from numba import int32
 
 import numba_dpex as dpex
+from numba_dpex.core.kernel_interface.utils import NdRange, Range
 
 
 @dpex.kernel
@@ -58,13 +59,15 @@ def sum_recursive_reduction(size, group_size, Dinp, Dpartial_sums):
             nb_work_groups += 1
             passed_size = nb_work_groups * group_size
 
-    gr = (passed_size,)
-    lr = (group_size,)
+    gr = Range(passed_size)
+    lr = Range(group_size)
 
-    sum_reduction_kernel[gr, lr](Dinp, size, Dpartial_sums)
+    sum_reduction_kernel[NdRange(gr, lr)](Dinp, size, Dpartial_sums)
 
     if nb_work_groups <= group_size:
-        sum_reduction_kernel[lr, lr](Dpartial_sums, nb_work_groups, Dinp)
+        sum_reduction_kernel[NdRange(lr, lr)](
+            Dpartial_sums, nb_work_groups, Dinp
+        )
         result = int(Dinp[0])
     else:
         result = sum_recursive_reduction(

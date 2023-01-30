@@ -5,6 +5,7 @@
 import dpnp as np
 
 import numba_dpex as ndpex
+from numba_dpex.core.kernel_interface.utils import Range
 
 
 @ndpex.kernel
@@ -20,7 +21,7 @@ def main():
     print("Using device ...")
     print(a.device)
 
-    atomic_reduction[N](a)
+    atomic_reduction[Range(N)](a)
     print("Reduction sum =", a[0])
 
     print("Done...")

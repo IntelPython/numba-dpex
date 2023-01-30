@@ -6,6 +6,7 @@ import dpctl
 import numpy as np
 
 import numba_dpex as dpex
+from numba_dpex.core.kernel_interface.utils import Range
 
 
 @dpex.kernel(debug=True)
@@ -20,7 +21,7 @@ def driver(a, b, c, global_size):
     print("before : ", a)
     print("before : ", b)
     print("before : ", c)
-    data_parallel_sum[global_size, dpex.DEFAULT_LOCAL_SIZE](a, b, c)
+    data_parallel_sum[Range(global_size)](a, b, c)
     print("after : ", c)
 
 

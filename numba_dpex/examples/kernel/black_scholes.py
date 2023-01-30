@@ -8,6 +8,7 @@ from math import erf, exp, log, sqrt
 import dpnp as np
 
 import numba_dpex as ndpx
+from numba_dpex.core.kernel_interface.utils import Range
 
 # Stock price range
 S0L = 10.0
@@ -94,7 +95,9 @@ def main():
     print("Using device ...")
     print(price.device)
 
-    kernel_black_scholes[NOPT](price, strike, t, rate, volatility, call, put)
+    kernel_black_scholes[Range(NOPT)](
+        price, strike, t, rate, volatility, call, put
+    )
 
     print("Call:", call)
     print("Put:", put)

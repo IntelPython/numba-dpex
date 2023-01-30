@@ -6,6 +6,7 @@ import dpctl
 import numpy as np
 
 import numba_dpex as dpex
+from numba_dpex.core.kernel_interface.utils import Range
 
 
 @dpex.func(debug=True)
@@ -24,7 +25,7 @@ def driver(a, b, c, global_size):
     print("a = ", a)
     print("b = ", b)
     print("c = ", c)
-    kernel_sum[global_size, dpex.DEFAULT_LOCAL_SIZE](a, b, c)
+    kernel_sum[Range(global_size)](a, b, c)
     print("a + b = ", c)
 
 
