@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Index &mdash; numba-dpex 0.20.0dev1+17.gc0e5be0b documentation</title>
+  <title>Index &mdash; numba-dpex 0.20.0dev1+24.gaa4eb5b5 documentation</title>
   
 
   
@@ -953,6 +953,8 @@
 </li>
         <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.NullCache.get">(numba_dpex.core.caching.NullCache method)</a>
 </li>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.utils.html#numba_dpex.core.kernel_interface.utils.Range.get">(numba_dpex.core.kernel_interface.utils.Range method)</a>
+</li>
       </ul></li>
       <li><a href="apidoc/numba_dpex.core.codegen.html#numba_dpex.core.codegen.SPIRVCodeLibrary.get_asm_str">get_asm_str() (numba_dpex.core.codegen.SPIRVCodeLibrary method)</a>
 </li>
@@ -984,11 +986,13 @@
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.rename_numpy_functions_pass.html#numba_dpex.core.passes.rename_numpy_functions_pass.get_dpnp_func_typ">get_dpnp_func_typ() (in module numba_dpex.core.passes.rename_numpy_functions_pass)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.get_global_id">get_global_id() (in module numba_dpex.ocl.stubs)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.ocl.oclimpl.html#numba_dpex.ocl.oclimpl.get_global_id_impl">get_global_id_impl() (in module numba_dpex.ocl.oclimpl)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.utils.html#numba_dpex.core.kernel_interface.utils.NdRange.get_global_range">get_global_range() (numba_dpex.core.kernel_interface.utils.NdRange method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.get_global_size">get_global_size() (in module numba_dpex.ocl.stubs)</a>
 </li>
@@ -1019,6 +1023,8 @@
       <li><a href="apidoc/numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.get_local_id">get_local_id() (in module numba_dpex.ocl.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dpex.ocl.oclimpl.html#numba_dpex.ocl.oclimpl.get_local_id_impl">get_local_id_impl() (in module numba_dpex.ocl.oclimpl)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.utils.html#numba_dpex.core.kernel_interface.utils.NdRange.get_local_range">get_local_range() (numba_dpex.core.kernel_interface.utils.NdRange method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.get_local_size">get_local_size() (in module numba_dpex.ocl.stubs)</a>
 </li>
@@ -1060,6 +1066,8 @@
         <li><a href="apidoc/numba_dpex.utils.constants.html#numba_dpex.utils.constants.address_space.GLOBAL">(numba_dpex.utils.constants.address_space attribute)</a>
 </li>
       </ul></li>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.utils.html#numba_dpex.core.kernel_interface.utils.NdRange.global_range">global_range (numba_dpex.core.kernel_interface.utils.NdRange property)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -1364,6 +1372,8 @@
         <li><a href="apidoc/numba_dpex.utils.constants.html#numba_dpex.utils.constants.address_space.LOCAL">(numba_dpex.utils.constants.address_space attribute)</a>
 </li>
       </ul></li>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.utils.html#numba_dpex.core.kernel_interface.utils.NdRange.local_range">local_range (numba_dpex.core.kernel_interface.utils.NdRange property)</a>
+</li>
       <li><a href="apidoc/numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.DPEXLowerer.lower">lower() (numba_dpex.core.passes.lowerer.DPEXLowerer method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.lower_parfor_rollback">lower_parfor_rollback() (in module numba_dpex.core.passes.lowerer)</a>
@@ -1534,6 +1544,8 @@
 </li>
         <li><a href="apidoc/numba_dpex.core.kernel_interface.spirv_kernel.html#module-numba_dpex.core.kernel_interface.spirv_kernel">numba_dpex.core.kernel_interface.spirv_kernel</a>
 </li>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.utils.html#module-numba_dpex.core.kernel_interface.utils">numba_dpex.core.kernel_interface.utils</a>
+</li>
         <li><a href="apidoc/numba_dpex.core.offload_dispatcher.html#module-numba_dpex.core.offload_dispatcher">numba_dpex.core.offload_dispatcher</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.passes.html#module-numba_dpex.core.passes">numba_dpex.core.passes</a>
@@ -1687,6 +1699,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.ocl.oclimpl.html#numba_dpex.ocl.oclimpl.native_atomic_add">native_atomic_add() (in module numba_dpex.ocl.oclimpl)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.utils.html#numba_dpex.core.kernel_interface.utils.NdRange">NdRange (class in numba_dpex.core.kernel_interface.utils)</a>
+</li>
       <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.Node">Node (class in numba_dpex.core.caching)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.NoPythonBackend">NoPythonBackend (class in numba_dpex.core.passes.passes)</a>
@@ -1837,6 +1851,13 @@
 
       <ul>
         <li><a href="apidoc/numba_dpex.core.kernel_interface.spirv_kernel.html#module-numba_dpex.core.kernel_interface.spirv_kernel">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.core.kernel_interface.utils
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.utils.html#module-numba_dpex.core.kernel_interface.utils">module</a>
 </li>
       </ul></li>
       <li>
@@ -2466,6 +2487,8 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.core.kernel_interface.utils.html#numba_dpex.core.kernel_interface.utils.Range">Range (class in numba_dpex.core.kernel_interface.utils)</a>
+</li>
       <li><a href="apidoc/numba_dpex.ocl.atomics.html#numba_dpex.ocl.atomics.read_atomic_spirv_file">read_atomic_spirv_file() (in module numba_dpex.ocl.atomics)</a>
 </li>
       <li><a href="apidoc/numba_dpex.printimpl.html#numba_dpex.printimpl.real_print_impl">real_print_impl() (in module numba_dpex.printimpl)</a>
@@ -2709,7 +2732,11 @@
 </li>
       </ul></li>
       <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.LRUCache.size">size() (numba_dpex.core.caching.LRUCache method)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.kernel_interface.utils.html#numba_dpex.core.kernel_interface.utils.Range.size">(numba_dpex.core.kernel_interface.utils.Range method)</a>
 </li>
+      </ul></li>
       <li><a href="apidoc/numba_dpex.core.codegen.html#numba_dpex.core.codegen.SPIRVCodeLibrary">SPIRVCodeLibrary (class in numba_dpex.core.codegen)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.kernel_interface.spirv_kernel.html#numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel">SpirvKernel (class in numba_dpex.core.kernel_interface.spirv_kernel)</a>
@@ -2720,10 +2747,10 @@
         <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.SyclUSMArrayInterface.strides">(numba_dpex.core.utils.SyclUSMArrayInterface property)</a>
 </li>
       </ul></li>
-      <li><a href="apidoc/numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub">Stub (class in numba_dpex.ocl.stubs)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.Stub">Stub (class in numba_dpex.ocl.stubs)</a>
+</li>
       <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.SUAIProtocolError">SUAIProtocolError</a>
 </li>
       <li><a href="apidoc/numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.atomic.sub">sub() (numba_dpex.ocl.stubs.atomic method)</a>

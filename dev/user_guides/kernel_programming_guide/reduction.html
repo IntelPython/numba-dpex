@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Reduction on SYCL-supported Devices &mdash; numba-dpex 0.20.0dev1+17.gc0e5be0b documentation</title>
+  <title>Reduction on SYCL-supported Devices &mdash; numba-dpex 0.20.0dev1+24.gaa4eb5b5 documentation</title>
   
 
   
@@ -224,7 +224,7 @@ section provides two approaches for writing a reduction kernel as a
     <span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
         <span class="k">while</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">global_size</span> <span class="o">=</span> <span class="n">total</span> <span class="o">//</span> <span class="mi">2</span>
-            <span class="n">sum_reduction_kernel</span><span class="p">[</span><span class="n">global_size</span><span class="p">](</span><span class="n">A</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">global_size</span><span class="p">)</span>
+            <span class="n">sum_reduction_kernel</span><span class="p">[</span><span class="n">Range</span><span class="p">(</span><span class="n">global_size</span><span class="p">)](</span><span class="n">A</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">global_size</span><span class="p">)</span>
             <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">//</span> <span class="mi">2</span>
 
     <span class="k">return</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
