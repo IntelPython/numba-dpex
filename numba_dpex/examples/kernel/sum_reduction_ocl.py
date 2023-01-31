@@ -7,6 +7,7 @@ import dpctl.tensor as dpt
 from numba import int32
 
 import numba_dpex as dpex
+from numba_dpex.core.kernel_interface.utils import NdRange, Range
 
 
 @dpex.kernel
@@ -49,9 +50,9 @@ def sum_reduce(A):
 
     partial_sums = dpt.zeros(nb_work_groups, dtype=A.dtype, device=A.device)
 
-    gs = (global_size,)
-    ls = (work_group_size,)
-    sum_reduction_kernel[gs, ls](A, partial_sums)
+    gs = Range(global_size)
+    ls = Range(work_group_size)
+    sum_reduction_kernel[NdRange(gs, ls)](A, partial_sums)
 
     final_sum = 0
     # calculate the final sum in HOST

@@ -9,6 +9,7 @@ import dpctl.tensor as dpt
 import numpy as np
 
 import numba_dpex as dpex
+from numba_dpex.core.kernel_interface.utils import NdRange, Range
 
 
 @dpex.kernel
@@ -29,7 +30,7 @@ def main():
     # Array dimensions
     X = 8
     Y = 8
-    global_size = X, Y
+    global_size = Range(X, Y)
 
     a = np.arange(X * Y, dtype=np.float32).reshape(X, Y)
     b = np.arange(X * Y, dtype=np.float32).reshape(X, Y)
@@ -48,8 +49,8 @@ def main():
     print("Using device ...")
     device.print_device_info()
 
+    print("Running kernel ...")
     driver(a_dpt, b_dpt, c_dpt, global_size)
-
     c_out = dpt.asnumpy(c_dpt)
     assert np.allclose(c, c_out)
 

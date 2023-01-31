@@ -11,6 +11,7 @@ from numba_dpex.core.exceptions import (
     InvalidKernelSpecializationError,
     MissingSpecializationError,
 )
+from numba_dpex.core.kernel_interface.utils import Range
 
 # Similar to Numba, numba-dpex supports eager compilation of functions. The
 # following examples demonstrate the feature for numba_dpex.kernel and presents
@@ -38,7 +39,7 @@ a = dpt.ones(1024, dtype=dpt.int64)
 b = dpt.ones(1024, dtype=dpt.int64)
 c = dpt.zeros(1024, dtype=dpt.int64)
 
-data_parallel_sum[1024](a, b, c)
+data_parallel_sum[Range(1024)](a, b, c)
 
 npc = dpt.asnumpy(c)
 npc_expected = np.full(1024, 2, dtype=np.int64)
@@ -65,7 +66,7 @@ a = dpt.ones(1024, dtype=dpt.int64)
 b = dpt.ones(1024, dtype=dpt.int64)
 c = dpt.zeros(1024, dtype=dpt.int64)
 
-data_parallel_sum2[1024](a, b, c)
+data_parallel_sum2[Range(1024)](a, b, c)
 
 npc = dpt.asnumpy(c)
 npc_expected = np.full(1024, 2, dtype=np.int64)
@@ -76,7 +77,7 @@ a = dpt.ones(1024, dtype=dpt.float32)
 b = dpt.ones(1024, dtype=dpt.float32)
 c = dpt.zeros(1024, dtype=dpt.float32)
 
-data_parallel_sum2[1024](a, b, c)
+data_parallel_sum2[Range(1024)](a, b, c)
 
 npc = dpt.asnumpy(c)
 npc_expected = np.full(1024, 2, dtype=np.float32)
@@ -94,7 +95,7 @@ b = dpt.ones(1024, dtype=dpt.int32)
 c = dpt.zeros(1024, dtype=dpt.int32)
 
 try:
-    data_parallel_sum[1024](a, b, c)
+    data_parallel_sum[Range(1024)](a, b, c)
 except MissingSpecializationError as mse:
     print(mse)
 
@@ -128,3 +129,5 @@ except NotImplementedError as e:
         "strings."
     )
     print(e)
+
+print("Done...")

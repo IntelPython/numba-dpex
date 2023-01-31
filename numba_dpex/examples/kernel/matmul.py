@@ -9,6 +9,7 @@ import dpctl.tensor as dpt
 import numpy as np
 
 import numba_dpex as dpex
+from numba_dpex.core.kernel_interface.utils import NdRange, Range
 
 
 @dpex.kernel
@@ -30,13 +31,13 @@ X = 1024
 Y = 16
 global_size = X, X
 
-griddim = X, X
-blockdim = Y, Y
+griddim = Range(X, X)
+blockdim = Range(Y, Y)
 
 
 def driver(a, b, c):
     # Invoke the kernel
-    gemm[griddim, blockdim](a, b, c)
+    gemm[NdRange(griddim, blockdim)](a, b, c)
 
 
 def main():

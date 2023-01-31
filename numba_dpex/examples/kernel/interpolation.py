@@ -7,6 +7,7 @@ from numba import float32
 from numpy.testing import assert_almost_equal
 
 import numba_dpex as ndpex
+from numba_dpex.core.kernel_interface.utils import NdRange, Range
 
 # Interpolation domain
 XLO = 10.0
@@ -114,9 +115,13 @@ def main():
 
     print("Using device ...")
     print(xp.device)
-    global_range = (N_POINTS // N_POINTS_PER_WORK_ITEM,)
-    local_range = (LOCAL_SIZE,)
-    kernel_polynomial[global_range, local_range](xp, yp, COEFFICIENTS)
+    global_range = Range(
+        N_POINTS // N_POINTS_PER_WORK_ITEM,
+    )
+    local_range = Range(
+        LOCAL_SIZE,
+    )
+    kernel_polynomial[NdRange(global_range, local_range)](xp, yp, COEFFICIENTS)
 
     # Copy results back to the host
     nyp = np.asnumpy(yp)

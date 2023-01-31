@@ -6,6 +6,7 @@ import dpnp as np
 
 import numba_dpex as ndpex
 from numba_dpex import float32, int32, int64
+from numba_dpex.core.kernel_interface.utils import Range
 
 # Array size
 N = 10
@@ -69,7 +70,7 @@ def test1():
 
     print("A=", a)
     try:
-        a_kernel_function[N](a, b)
+        a_kernel_function[Range(N)](a, b)
     except Exception as err:
         print(err)
     print("B=", b)
@@ -87,7 +88,7 @@ def test2():
 
     print("A=", a)
     try:
-        a_kernel_function_int32[N](a, b)
+        a_kernel_function_int32[Range(N)](a, b)
     except Exception as err:
         print(err)
     print("B=", b)
@@ -105,7 +106,7 @@ def test3():
 
     print("A=", a)
     try:
-        a_kernel_function_int32_float32[N](a, b)
+        a_kernel_function_int32_float32[Range(N)](a, b)
     except Exception as err:
         print(err)
     print("B=", b)
@@ -119,7 +120,7 @@ def test3():
 
     print("A=", a)
     try:
-        a_kernel_function_int32_float32[N](a, b)
+        a_kernel_function_int32_float32[Range(N)](a, b)
     except Exception as err:
         print(err)
     print("B=", b)
@@ -134,7 +135,7 @@ def test3():
 
     print("A=", a)
     try:
-        a_kernel_function_int32_float32[N](a, b)
+        a_kernel_function_int32_float32[Range(N)](a, b)
     except Exception as err:
         print(err)
     print("B=", b)

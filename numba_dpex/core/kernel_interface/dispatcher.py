@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
+from collections.abc import Iterable
 from inspect import signature
 from warnings import warn
 
@@ -32,6 +33,7 @@ from numba_dpex.core.exceptions import (
 )
 from numba_dpex.core.kernel_interface.arg_pack_unpacker import Packer
 from numba_dpex.core.kernel_interface.spirv_kernel import SpirvKernel
+from numba_dpex.core.kernel_interface.utils import NdRange, Range
 from numba_dpex.core.types import USMNdArray
 
 
@@ -468,51 +470,87 @@ class JitKernel:
             global_range and local_range attributes initialized.
 
         """
-        if isinstance(args, int):
-            self._global_range = [args]
-            self._local_range = None
-        elif isinstance(args, tuple) or isinstance(args, list):
-            if len(args) == 1 and all(isinstance(v, int) for v in args):
-                self._global_range = list(args)
-                self._local_range = None
-            elif len(args) == 2:
-                gr = args[0]
-                lr = args[1]
-                if isinstance(gr, int):
-                    self._global_range = [gr]
-                elif len(gr) != 0 and all(isinstance(v, int) for v in gr):
-                    self._global_range = list(gr)
-                else:
-                    raise IllegalRangeValueError(kernel_name=self.kernel_name)
+        if isinstance(args, Range):
+            # we need inversions, see github issue #889
+            self._global_range = list(args)[::-1]
+        elif isinstance(args, NdRange):
+            # we need inversions, see github issue #889
+            self._global_range = list(args.global_range)[::-1]
+            self._local_range = list(args.local_range)[::-1]
+        else:
+            if (
+                isinstance(args, tuple)
+                and len(args) == 2
+                and isinstance(args[0], int)
+                and isinstance(args[1], int)
+            ):
+                warn(
+                    "Ambiguous kernel launch paramters. If your data have "
+                    + "dimensions > 1, include a default/empty local_range:\n"
+                    + "    <function>[(X,Y), numba_dpex.DEFAULT_LOCAL_RANGE](<params>)\n"
+                    + "otherwise your code might produce erroneous results.",
+                    DeprecationWarning,
+                    stacklevel=2,
+                )
+                self._global_range = [args[0]]
+                self._local_range = [args[1]]
+                return self
 
-                if isinstance(lr, int):
-                    self._local_range = [lr]
-                elif isinstance(lr, list) and len(lr) == 0:
-                    # deprecation warning
+            warn(
+                "The current syntax for specification of kernel lauch "
+                + "parameters is deprecated. Users should set the kernel "
+                + "parameters through Range/NdRange classes.\n"
+                + "Example:\n"
+                + "    from numba_dpex.core.kernel_interface.utils import Range,NdRange\n\n"
+                + "    # for global range only\n"
+                + "    <function>[Range(X,Y)](<parameters>)\n"
+                + "    # or,\n"
+                + "    # for both global and local ranges\n"
+                + "    <function>[NdRange((X,Y), (P,Q))](<parameters>)",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
+            args = [args] if not isinstance(args, Iterable) else args
+            nargs = len(args)
+
+            # Check if the kernel enquing arguments are sane
+            if nargs < 1 or nargs > 2:
+                raise InvalidKernelLaunchArgsError(kernel_name=self.kernel_name)
+
+            g_range = (
+                [args[0]] if not isinstance(args[0], Iterable) else args[0]
+            )
+            # If the optional local size argument is provided
+            l_range = None
+            if nargs == 2:
+                if args[1] != []:
+                    l_range = (
+                        [args[1]]
+                        if not isinstance(args[1], Iterable)
+                        else args[1]
+                    )
+                else:
                     warn(
-                        "Specifying the local range as an empty list "
-                        "(DEFAULT_LOCAL_SIZE) is deprecated. The kernel will "
-                        "be executed as a basic data-parallel kernel over the "
-                        "global range. Specify a valid local range to execute "
-                        "the kernel as an ND-range kernel.",
+                        "Empty local_range calls are deprecated. Please use Range/NdRange "
+                        + "to specify the kernel launch parameters:\n"
+                        + "Example:\n"
+                        + "    from numba_dpex.core.kernel_interface.utils import Range,NdRange\n\n"
+                        + "    # for global range only\n"
+                        + "    <function>[Range(X,Y)](<parameters>)\n"
+                        + "    # or,\n"
+                        + "    # for both global and local ranges\n"
+                        + "    <function>[NdRange((X,Y), (P,Q))](<parameters>)",
                         DeprecationWarning,
                         stacklevel=2,
                     )
-                    self._local_range = None
-                elif len(lr) != 0 and all(isinstance(v, int) for v in lr):
-                    self._local_range = list(lr)
-                else:
-                    raise IllegalRangeValueError(kernel_name=self.kernel_name)
-            else:
-                raise InvalidKernelLaunchArgsError(kernel_name=self.kernel_name)
-        else:
-            raise InvalidKernelLaunchArgsError(kernel_name=self.kernel_name)
 
-        # FIXME:[::-1] is done as OpenCL and SYCl have different orders when
-        # it comes to specifying dimensions.
-        self._global_range = list(self._global_range)[::-1]
-        if self._local_range:
-            self._local_range = list(self._local_range)[::-1]
+            if len(g_range) < 1:
+                raise IllegalRangeValueError(kernel_name=self.kernel_name)
+
+            # we need inversions, see github issue #889
+            self._global_range = list(g_range)[::-1]
+            self._local_range = list(l_range)[::-1] if l_range else None
 
         return self
 

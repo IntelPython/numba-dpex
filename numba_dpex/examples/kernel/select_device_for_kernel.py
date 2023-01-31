@@ -9,6 +9,7 @@ import dpctl.tensor as dpt
 import numpy as np
 
 import numba_dpex
+from numba_dpex.core.kernel_interface.utils import NdRange, Range
 
 """
 We support passing arrays of two types to a @numba_dpex.kernel decorated
@@ -86,7 +87,7 @@ def select_device_ndarray(N):
     default_device = dpctl.select_default_device()
 
     with numba_dpex.offload_to_sycl_device(default_device.filter_string):
-        sum_kernel[(N,), (1,)](a, b, got)
+        sum_kernel[NdRange(Range(N), Range(1))](a, b, got)
 
     expected = a + b
 
@@ -110,7 +111,7 @@ def select_device_SUAI(N):
 
     # Users don't need to specify where the computation will
     # take place. It will be inferred from data.
-    sum_kernel[(N,), (1,)](da, db, dc)
+    sum_kernel[NdRange(Range(N), Range(1))](da, db, dc)
 
     dc.usm_data.copy_to_host(got.reshape((-1)).view("|u1"))
 
