@@ -3,14 +3,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import inspect
+import warnings
 
-from numba.core import sigutils, types
-from numba.core.target_extension import (
-    JitDecorator,
-    dispatcher_registry,
-    jit_registry,
-    target_registry,
-)
+from numba.core import decorators, sigutils
+from numba.core.target_extension import jit_registry, target_registry
 
 from numba_dpex.core.kernel_interface.dispatcher import (
     JitKernel,
@@ -20,6 +16,7 @@ from numba_dpex.core.kernel_interface.func import (
     compile_func,
     compile_func_template,
 )
+from numba_dpex.core.pipelines.offload_compiler import OffloadCompiler
 
 
 def kernel(
@@ -152,38 +149,26 @@ def func(func_or_sig=None, debug=False, enable_cache=True):
 # ----------------- Experimental dpjit decorator ------------------------------#
 
 
-class _dpjit(JitDecorator):
-    def __init__(self, *args, **kwargs):
-        self._args = args
-        self._kwargs = kwargs
-
-    def __call__(self, *args):
-        # FIXME: Improve argument handling.
-        if len(args) < 2:
-            raise AssertionError("Only two arguments expected")
-        if args:
-            func = args[0]
-        else:
-            func = self._args[0]
-        self.py_func = func
-        # wrap in dispatcher
-        return self.dispatcher_wrapper()
-
-    def get_dispatcher(self):
-        """
-        Returns the dispatcher
-        """
-        return dispatcher_registry[target_registry["dpex"]]
-
-    def dispatcher_wrapper(self):
-        return self.get_dispatcher()
+def dpjit(*args, **kws):
+    if "nopython" in kws:
+        warnings.warn(
+            "nopython is set for dpjit and is ignored", RuntimeWarning
+        )
+    if "forceobj" in kws:
+        warnings.warn(
+            "forceobj is set for dpjit and is ignored", RuntimeWarning
+        )
+        del kws["forceobj"]
+    if "pipeline_class" in kws:
+        warnings.warn(
+            "pipeline class is set for dpjit and is ignored", RuntimeWarning
+        )
+        del kws["forceobj"]
+    kws.update({"nopython": True})
+    kws.update({"pipeline_class": OffloadCompiler})
+    return decorators.jit(*args, **kws)
 
 
 # add it to the decorator registry, this is so e.g. @overload can look up a
 # JIT function to do the compilation work.
-jit_registry[target_registry["dpex"]] = _dpjit
-
-
-def dpjit(func):
-    # FIXME: Much remians to be done
-    return _dpjit(func)
+jit_registry[target_registry["dpex"]] = dpjit
