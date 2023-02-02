@@ -26,7 +26,7 @@ d = a + b
 
 
 @skip_no_opencl_cpu
-class TestArrayArgsGPU:
+class TestArrayArgsCPU:
     def test_device_array_args_cpu(self):
         c = np.ones_like(a)
 
@@ -37,7 +37,7 @@ class TestArrayArgsGPU:
 
 
 @skip_no_opencl_gpu
-class TestArrayArgsCPU:
+class TestArrayArgsGPU:
     def test_device_array_args_gpu(self):
         c = np.ones_like(a)
 

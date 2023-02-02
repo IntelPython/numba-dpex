@@ -13,7 +13,9 @@ from numba_dpex import config
 from numba_dpex.core.types import USMNdArray
 
 
-def build_key(argtypes, pyfunc, codegen, backend=None, device_type=None):
+def build_key(
+    argtypes, pyfunc, codegen, backend=None, device_type=None, exec_queue=None
+):
     """Constructs a key from python function, context, backend and the device
     type.
 
@@ -64,6 +66,7 @@ def build_key(argtypes, pyfunc, codegen, backend=None, device_type=None):
         codegen.magic_tuple(),
         backend,
         device_type,
+        exec_queue,
         (
             hashlib.sha256(codebytes).hexdigest(),
             hashlib.sha256(cvarbytes).hexdigest(),
