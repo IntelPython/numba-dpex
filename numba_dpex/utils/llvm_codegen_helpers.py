@@ -23,7 +23,7 @@ class LLVMTypes:
 
 
 def get_llvm_type(context, type):
-    """Returns the LLVM Value corresponsing to a Numba type.
+    """Returns the LLVM Value corresponding to a Numba type.
 
     Args:
         context: The LLVM context or the execution state of the current IR
@@ -82,7 +82,7 @@ def get_zero(context):
     Args:
         context: The LLVM IR builder context.
 
-    Returns: An LLVM Contant Value storing zero.
+    Returns: An LLVM Constant Value storing zero.
 
     """
     return context.get_constant(types.uintp, 0)
@@ -94,7 +94,7 @@ def get_one(context):
     Args:
         context: The LLVM IR builder context.
 
-    Returns: An LLVM Contant Value storing one.
+    Returns: An LLVM Constant Value storing one.
 
     """
     return context.get_constant(types.uintp, 1)
