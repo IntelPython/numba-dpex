@@ -237,7 +237,7 @@ class RewriteOverloadedNumPyFunctionsPass(FunctionPass):
 def get_dpnp_func_typ(func):
     from numba.core.typing.templates import builtin_registry
 
-    for (k, v) in builtin_registry.globals:
+    for k, v in builtin_registry.globals:
         if k == func:
             return v
     raise RuntimeError("type for func ", func, " not found")

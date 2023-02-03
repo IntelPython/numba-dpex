@@ -640,7 +640,7 @@ def _create_gufunc_for_parfor_body(
                 prev_block.append(ir.Jump(body_first_label, loc))
                 # Add all the parfor loop body blocks to the gufunc function's
                 # IR.
-                for (l, b) in loop_body.items():
+                for l, b in loop_body.items():
                     gufunc_ir.blocks[l] = b
                 body_last_label = max(loop_body.keys())
                 gufunc_ir.blocks[new_label] = block
@@ -1036,7 +1036,6 @@ def generate_kernel_launch_ops(
         all_val_types,
         range(len(expr_args)),
     ):
-
         if config.DEBUG_ARRAY_OPT:
             print(
                 "var:",
@@ -1447,7 +1446,6 @@ def lower_parfor_rollback(lowerer, parfor):
     try:
         _lower_parfor_gufunc(lowerer, parfor)
         if config.DEBUG:
-
             device_filter_str = (
                 dpctl.get_current_queue().get_sycl_device().filter_string
             )
