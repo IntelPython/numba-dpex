@@ -12,6 +12,7 @@ from numba_dpex.core.exceptions import (
     InvalidKernelLaunchArgsError,
     UnknownGlobalRangeError,
 )
+from numba_dpex.core.kernel_interface.utils import Range
 
 
 @dpex.kernel
@@ -27,9 +28,7 @@ def test_1D_global_range_as_int():
 
 
 def test_1D_global_range_as_one_tuple():
-    k = vecadd[
-        10,
-    ]
+    k = vecadd[Range(10)]
     assert k._global_range == [10]
     assert k._local_range is None
 

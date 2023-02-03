@@ -72,7 +72,6 @@ for (
     py_name,
     c_address,
 ) in numba_dpex._usm_allocators_ext.c_helpers.items():
-
     llb.add_symbol(py_name, c_address)
 
 
@@ -154,6 +153,7 @@ register_model(UsmSharedArrayType)(numba.core.datamodel.models.ArrayModel)
 dpex_data_model_manager.register(
     UsmSharedArrayType, numba.core.datamodel.models.ArrayModel
 )
+
 
 # This tells Numba how to convert from its native representation
 # of a UsmArray in a njit function back to a Python UsmArray.

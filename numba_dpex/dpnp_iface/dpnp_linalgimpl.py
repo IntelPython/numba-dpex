@@ -431,7 +431,6 @@ def dpnp_dot_impl(a, b):
         dpnp_func = dpnp_ext.dpnp_func("dpnp_dot", [a.dtype.name, "NONE"], sig)
 
         def dot_2_vv(a, b):
-
             (m,) = a.shape
             (n,) = b.shape
 

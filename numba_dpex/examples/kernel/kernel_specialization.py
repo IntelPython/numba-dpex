@@ -51,6 +51,7 @@ assert np.array_equal(npc, npc_expected)
 # Multiple signatures can be specified as a list to eager compile multiple
 # versions of the kernel.
 
+
 # specialize a kernel for the i64arrty
 @dpex.kernel([(i64arrty, i64arrty, i64arrty), (f32arrty, f32arrty, f32arrty)])
 def data_parallel_sum2(a, b, c):
