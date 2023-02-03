@@ -24,6 +24,7 @@ from numba.core.errors import (
     new_error_context,
 )
 from numba.core.ir_utils import remove_dels
+from numba.core.typed_passes import NativeLowering
 from numba.parfors.parfor import Parfor
 from numba.parfors.parfor import ParforPass as _parfor_ParforPass
 from numba.parfors.parfor import PreParforPass as _parfor_PreParforPass
@@ -387,3 +388,33 @@ class DumpParforDiagnostics(AnalysisPass):
             else:
                 raise RuntimeError("Diagnostics failed.")
         return True
+
+
+@register_pass(mutates_CFG=False, analysis_only=True)
+class QualNameDisambiguationLowering(NativeLowering):
+    """Qualified name disambiguarion lowering pass
+
+    If there are multiple @func decorated functions exist inside
+    another @func decorated block, the numba compiler machinery
+    creates same qualified names for different compiled function.
+    Therefore, we utilize `unique_name` to resolve the ambiguity.
+
+    Args:
+        NativeLowering (CompilerPass): Superclass from which this
+        class has been inherited.
+
+    Returns:
+        bool: True if `run_pass()` of the superclass is successful.
+    """
+
+    _name = "qual-name-disambiguation-lowering"
+
+    def __init__(self):
+        NativeLowering.__init__(self)
+
+    def run_pass(self, state):
+        qual_name = state.func_id.func_qualname
+        state.func_id.func_qualname = state.func_id.unique_name
+        ret = NativeLowering.run_pass(self, state)
+        state.func_id.func_qualname = qual_name
+        return ret

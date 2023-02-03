@@ -4,10 +4,9 @@
 
 from numba.core.compiler import CompilerBase
 from numba.core.compiler_machinery import PassManager
-from numba.core.typed_passes import (
+from numba.core.typed_passes import (  # We are using FreevarDisambiguationLowering instead; numba-dpex github issue: 898; NativeLowering,
     AnnotateTypes,
     IRLegalization,
-    NativeLowering,
     NopythonRewrites,
     NoPythonSupportedFeatureValidation,
     NopythonTypeInference,
@@ -34,6 +33,7 @@ from numba_dpex.core.exceptions import UnsupportedCompilationModeError
 from numba_dpex.core.passes.passes import (
     ConstantSizeStaticLocalMemoryPass,
     NoPythonBackend,
+    QualNameDisambiguationLowering,
 )
 
 
@@ -139,7 +139,14 @@ class _KernelPassBuilder(object):
         pm.add_pass(IRLegalization, "ensure IR is legal prior to lowering")
 
         # lower
-        pm.add_pass(NativeLowering, "native lowering")
+        # NativeLowering has some issue with freevar ambiguity,
+        # therefore, we are using QualNameDisambiguationLowering instead
+        # numba-dpex github issue: 898
+        # pm.add_pass(NativeLowering, "native lowering")
+        pm.add_pass(
+            QualNameDisambiguationLowering,
+            "numba_dpex qualified name disambiguation",
+        )
         pm.add_pass(NoPythonBackend, "nopython mode backend")
 
         pm.finalize()
