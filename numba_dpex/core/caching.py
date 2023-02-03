@@ -68,6 +68,7 @@ def build_key(argtypes, pyfunc, codegen, backend=None, device_type=None):
             hashlib.sha256(codebytes).hexdigest(),
             hashlib.sha256(cvarbytes).hexdigest(),
         ),
+        id(pyfunc)
     )
 
 
