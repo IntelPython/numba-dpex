@@ -7,7 +7,6 @@
 import dpnp as np
 
 import numba_dpex as ndpx
-from numba_dpex.core.kernel_interface.utils import Range
 
 # 1D array size
 N = 64
@@ -57,7 +56,7 @@ def main():
 
     print("Using device ...")
     print(arr.device)
-    kernel_hillis_steele_scan[Range(N)](arr)
+    kernel_hillis_steele_scan[ndpx.Range(N)](arr)
 
     # the output should be [0, 1, 3, 6, ...]
     arr_np = np.asnumpy(arr)

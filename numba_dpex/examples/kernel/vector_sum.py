@@ -6,7 +6,6 @@ import dpnp
 import numpy.testing as testing
 
 import numba_dpex as ndpx
-from numba_dpex.core.kernel_interface.utils import Range
 
 
 # Data parallel kernel implementing vector sum
@@ -18,8 +17,7 @@ def kernel_vector_sum(a, b, c):
 
 # Utility function for printing and testing
 def driver(a, b, c, global_size):
-    kernel_vector_sum[Range(global_size)](a, b, c)
-
+    kernel_vector_sum[ndpx.Range(global_size)](a, b, c)
     a_np = dpnp.asnumpy(a)  # Copy dpnp array a to NumPy array a_np
     b_np = dpnp.asnumpy(b)  # Copy dpnp array b to NumPy array b_np
     c_np = dpnp.asnumpy(c)  # Copy dpnp array c to NumPy array c_np

@@ -8,17 +8,16 @@ import dpctl
 import dpctl.tensor as dpt
 import numpy as np
 
-import numba_dpex as dpex
-from numba_dpex.core.kernel_interface.utils import NdRange, Range
+import numba_dpex as ndpx
 
 
-@dpex.kernel
+@ndpx.kernel
 def gemm(a, b, c):
     """
     A basic DGEMM implemented as a ``kernel`` function.
     """
-    i = dpex.get_global_id(0)
-    j = dpex.get_global_id(1)
+    i = ndpx.get_global_id(0)
+    j = ndpx.get_global_id(1)
     if i >= c.shape[0] or j >= c.shape[1]:
         return
     c[i, j] = 0
@@ -31,13 +30,13 @@ X = 1024
 Y = 16
 global_size = X, X
 
-griddim = Range(X, X)
-blockdim = Range(Y, Y)
+griddim = ndpx.Range(X, X)
+blockdim = ndpx.Range(Y, Y)
 
 
 def driver(a, b, c):
     # Invoke the kernel
-    gemm[NdRange(griddim, blockdim)](a, b, c)
+    gemm[ndpx.NdRange(griddim, blockdim)](a, b, c)
 
 
 def main():

@@ -5,13 +5,12 @@
 import dpctl
 import numpy as np
 
-import numba_dpex as dpex
-from numba_dpex.core.kernel_interface.utils import Range
+import numba_dpex as ndpx
 
 
-@dpex.kernel(debug=True)
+@ndpx.kernel(debug=True)
 def data_parallel_sum(a, b, c):
-    i = dpex.get_global_id(0)
+    i = ndpx.get_global_id(0)
     c[i] = a[i] + b[i]  # Condition breakpoint location
 
 
@@ -24,6 +23,6 @@ c = np.ones_like(a)
 
 device = dpctl.select_default_device()
 with dpctl.device_context(device):
-    data_parallel_sum[Range(global_size)](a, b, c)
+    data_parallel_sum[ndpx.Range(global_size)](a, b, c)
 
 print("Done...")

@@ -4,9 +4,8 @@
 
 import dpnp as np
 
-import numba_dpex as ndpex
+import numba_dpex as ndpx
 from numba_dpex import float32, int32, int64
-from numba_dpex.core.kernel_interface.utils import Range
 
 # Array size
 N = 10
@@ -14,49 +13,49 @@ N = 10
 
 # A device callable function that can be invoked from
 # ``kernel`` and other device functions
-@ndpex.func
+@ndpx.func
 def a_device_function(a):
     return a + 1
 
 
 # A device callable function with signature that can be invoked
 # from ``kernel`` and other device functions
-@ndpex.func(int32(int32))
+@ndpx.func(int32(int32))
 def a_device_function_int32(a):
     return a + 1
 
 
 # A device callable function with list signature that can be invoked
 # from ``kernel`` and other device functions
-@ndpex.func([int32(int32), float32(float32)])
+@ndpx.func([int32(int32), float32(float32)])
 def a_device_function_int32_float32(a):
     return a + 1
 
 
 # A device callable function can call another device function
-@ndpex.func
+@ndpx.func
 def another_device_function(a):
     return a_device_function(a * 2)
 
 
 # A kernel function that calls the device function
-@ndpex.kernel
+@ndpx.kernel
 def a_kernel_function(a, b):
-    i = ndpex.get_global_id(0)
+    i = ndpx.get_global_id(0)
     b[i] = another_device_function(a[i])
 
 
 # A kernel function that calls the device function
-@ndpex.kernel
+@ndpx.kernel
 def a_kernel_function_int32(a, b):
-    i = ndpex.get_global_id(0)
+    i = ndpx.get_global_id(0)
     b[i] = a_device_function_int32(a[i])
 
 
 # A kernel function that calls the device function
-@ndpex.kernel
+@ndpx.kernel
 def a_kernel_function_int32_float32(a, b):
-    i = ndpex.get_global_id(0)
+    i = ndpx.get_global_id(0)
     b[i] = a_device_function_int32_float32(a[i])
 
 
@@ -70,7 +69,7 @@ def test1():
 
     print("A=", a)
     try:
-        a_kernel_function[Range(N)](a, b)
+        a_kernel_function[ndpx.Range(N)](a, b)
     except Exception as err:
         print(err)
     print("B=", b)
@@ -88,7 +87,7 @@ def test2():
 
     print("A=", a)
     try:
-        a_kernel_function_int32[Range(N)](a, b)
+        a_kernel_function_int32[ndpx.Range(N)](a, b)
     except Exception as err:
         print(err)
     print("B=", b)
@@ -106,7 +105,7 @@ def test3():
 
     print("A=", a)
     try:
-        a_kernel_function_int32_float32[Range(N)](a, b)
+        a_kernel_function_int32_float32[ndpx.Range(N)](a, b)
     except Exception as err:
         print(err)
     print("B=", b)
@@ -120,7 +119,7 @@ def test3():
 
     print("A=", a)
     try:
-        a_kernel_function_int32_float32[Range(N)](a, b)
+        a_kernel_function_int32_float32[ndpx.Range(N)](a, b)
     except Exception as err:
         print(err)
     print("B=", b)
@@ -135,7 +134,7 @@ def test3():
 
     print("A=", a)
     try:
-        a_kernel_function_int32_float32[Range(N)](a, b)
+        a_kernel_function_int32_float32[ndpx.Range(N)](a, b)
     except Exception as err:
         print(err)
     print("B=", b)

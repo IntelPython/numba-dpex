@@ -11,6 +11,7 @@ import numba_dpex.core.offload_dispatcher
 
 # Re-export types itself
 import numba_dpex.core.types as types
+from numba_dpex.core.kernel_interface.utils import *
 
 # Re-export all type names
 from numba_dpex.core.types import *
