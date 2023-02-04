@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Reduction on SYCL-supported Devices &mdash; numba-dpex 0.20.0dev1+30.gb524dbcf documentation</title>
+  <title>Reduction on SYCL-supported Devices &mdash; numba-dpex 0.20.0dev1+34.gf36062c5 documentation</title>
   
 
   
@@ -200,9 +200,9 @@ section provides two approaches for writing a reduction kernel as a
 <p>This example demonstrates a summation reduction on a one-dimensional array.</p>
 <p>Full example can be found at <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction.py</span></code>.</p>
 <p>In this example, to reduce the array we invoke the kernel multiple times.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@dpex</span><span class="o">.</span><span class="n">kernel</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span>
 <span class="k">def</span> <span class="nf">sum_reduction_kernel</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">stride</span><span class="p">):</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="n">dpex</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="c1"># sum two element</span>
     <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">stride</span><span class="p">]</span>
     <span class="c1"># store the sum to be used in nex iteration</span>
@@ -224,7 +224,7 @@ section provides two approaches for writing a reduction kernel as a
     <span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
         <span class="k">while</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">global_size</span> <span class="o">=</span> <span class="n">total</span> <span class="o">//</span> <span class="mi">2</span>
-            <span class="n">sum_reduction_kernel</span><span class="p">[</span><span class="n">Range</span><span class="p">(</span><span class="n">global_size</span><span class="p">)](</span><span class="n">A</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">global_size</span><span class="p">)</span>
+            <span class="n">sum_reduction_kernel</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">global_size</span><span class="p">)](</span><span class="n">A</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">global_size</span><span class="p">)</span>
             <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">//</span> <span class="mi">2</span>
 
     <span class="k">return</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
