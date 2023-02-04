@@ -8,8 +8,7 @@ import dpctl
 import dpctl.tensor as dpt
 import numpy as np
 
-import numba_dpex
-from numba_dpex.core.kernel_interface.utils import NdRange, Range
+import numba_dpex as ndpx
 
 """
 We support passing arrays of two types to a @numba_dpex.kernel decorated
@@ -27,7 +26,7 @@ The following are how users can specify in which device they want to offload
 their computation.
 
 1. numpy.ndarray
-    Using context manager provided by numba_dpex. Please look at method:
+    Using context manager provided by ndpx. Please look at method:
         select_device_ndarray()
 
 2. Array with __sycl_usm_array_interface__ attribute
@@ -43,9 +42,9 @@ their computation.
 """
 
 
-@numba_dpex.kernel
+@ndpx.kernel
 def sum_kernel(a, b, c):
-    i = numba_dpex.get_global_id(0)
+    i = ndpx.get_global_id(0)
     c[i] = a[i] + b[i]
 
 
@@ -86,8 +85,8 @@ def select_device_ndarray(N):
     # This context manager is specifying to use the Opencl GPU.
     default_device = dpctl.select_default_device()
 
-    with numba_dpex.offload_to_sycl_device(default_device.filter_string):
-        sum_kernel[NdRange(Range(N), Range(1))](a, b, got)
+    with ndpx.offload_to_sycl_device(default_device.filter_string):
+        sum_kernel[ndpx.NdRange(ndpx.Range(N), ndpx.Range(1))](a, b, got)
 
     expected = a + b
 
@@ -111,7 +110,7 @@ def select_device_SUAI(N):
 
     # Users don't need to specify where the computation will
     # take place. It will be inferred from data.
-    sum_kernel[NdRange(Range(N), Range(1))](da, db, dc)
+    sum_kernel[ndpx.NdRange(ndpx.Range(N), ndpx.Range(1))](da, db, dc)
 
     dc.usm_data.copy_to_host(got.reshape((-1)).view("|u1"))
 

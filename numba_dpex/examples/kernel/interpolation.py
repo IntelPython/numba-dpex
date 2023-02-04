@@ -6,8 +6,7 @@ import dpnp as np
 from numba import float32
 from numpy.testing import assert_almost_equal
 
-import numba_dpex as ndpex
-from numba_dpex.core.kernel_interface.utils import NdRange, Range
+import numba_dpex as ndpx
 
 # Interpolation domain
 XLO = 10.0
@@ -82,15 +81,15 @@ COEFFICIENTS = np.asarray(
 )
 
 
-@ndpex.kernel()
+@ndpx.kernel()
 def kernel_polynomial(x, y, coefficients):
-    c = ndpex.private.array(
+    c = ndpx.private.array(
         4, dtype=float32
     )  # Coefficients of a polynomial of a given segment
-    z = ndpex.private.array(1, dtype=float32)  # Keep x[i] in private memory
+    z = ndpx.private.array(1, dtype=float32)  # Keep x[i] in private memory
 
-    gid = ndpex.get_global_id(0)
-    gr_id = ndpex.get_group_id(0)
+    gid = ndpx.get_global_id(0)
+    gr_id = ndpx.get_group_id(0)
 
     # Polynomial coefficients are fixed within a workgroup
     c[0] = coefficients[gr_id][0]
@@ -115,13 +114,15 @@ def main():
 
     print("Using device ...")
     print(xp.device)
-    global_range = Range(
+    global_range = ndpx.Range(
         N_POINTS // N_POINTS_PER_WORK_ITEM,
     )
-    local_range = Range(
+    local_range = ndpx.Range(
         LOCAL_SIZE,
     )
-    kernel_polynomial[NdRange(global_range, local_range)](xp, yp, COEFFICIENTS)
+    kernel_polynomial[ndpx.NdRange(global_range, local_range)](
+        xp, yp, COEFFICIENTS
+    )
 
     # Copy results back to the host
     nyp = np.asnumpy(yp)

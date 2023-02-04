@@ -8,17 +8,16 @@ import dpctl
 import dpctl.tensor as dpt
 import numpy as np
 
-import numba_dpex as dpex
-from numba_dpex.core.kernel_interface.utils import NdRange, Range
+import numba_dpex as ndpx
 
 
-@dpex.kernel
+@ndpx.kernel
 def data_parallel_sum(a, b, c):
     """
     A two-dimensional vector addition example using the ``kernel`` decorator.
     """
-    i = dpex.get_global_id(0)
-    j = dpex.get_global_id(1)
+    i = ndpx.get_global_id(0)
+    j = ndpx.get_global_id(1)
     c[i, j] = a[i, j] + b[i, j]
 
 
@@ -30,7 +29,7 @@ def main():
     # Array dimensions
     X = 8
     Y = 8
-    global_size = Range(X, Y)
+    global_size = ndpx.Range(X, Y)
 
     a = np.arange(X * Y, dtype=np.float32).reshape(X, Y)
     b = np.arange(X * Y, dtype=np.float32).reshape(X, Y)

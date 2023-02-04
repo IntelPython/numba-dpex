@@ -13,7 +13,7 @@ from numba.core import sigutils
 from numba.core.types import Array as NpArrayType
 from numba.core.types import void
 
-from numba_dpex import config
+from numba_dpex import NdRange, Range, config
 from numba_dpex.core.caching import LRUCache, NullCache, build_key
 from numba_dpex.core.descriptor import dpex_kernel_target
 from numba_dpex.core.exceptions import (
@@ -33,7 +33,6 @@ from numba_dpex.core.exceptions import (
 )
 from numba_dpex.core.kernel_interface.arg_pack_unpacker import Packer
 from numba_dpex.core.kernel_interface.spirv_kernel import SpirvKernel
-from numba_dpex.core.kernel_interface.utils import NdRange, Range
 from numba_dpex.core.types import USMNdArray
 
 
