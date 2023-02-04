@@ -36,7 +36,6 @@ from .lowerer import DPEXLowerer
 
 @register_pass(mutates_CFG=True, analysis_only=False)
 class ConstantSizeStaticLocalMemoryPass(FunctionPass):
-
     _name = "dpex_constant_size_static_local_memory_pass"
 
     def __init__(self):
@@ -86,7 +85,6 @@ class ConstantSizeStaticLocalMemoryPass(FunctionPass):
                                         and attr_node.op == "getattr"
                                         and attr_node.attr == "local"
                                     ):
-
                                         arg = None
                                         # at first look in keyword arguments to
                                         # get the shape, which has to be
@@ -147,7 +145,6 @@ class ConstantSizeStaticLocalMemoryPass(FunctionPass):
 
 @register_pass(mutates_CFG=True, analysis_only=False)
 class PreParforPass(FunctionPass):
-
     _name = "dpex_pre_parfor_pass"
 
     def __init__(self):
@@ -193,7 +190,6 @@ class PreParforPass(FunctionPass):
 
 @register_pass(mutates_CFG=True, analysis_only=False)
 class ParforPass(FunctionPass):
-
     _name = "dpex_parfor_pass"
 
     def __init__(self):
@@ -260,7 +256,6 @@ def fallback_context(state, msg):
 
 @register_pass(mutates_CFG=True, analysis_only=False)
 class DpexLowering(LoweringPass):
-
     _name = "dpex_lowering"
 
     def __init__(self):
@@ -340,7 +335,6 @@ class DpexLowering(LoweringPass):
 
 @register_pass(mutates_CFG=True, analysis_only=False)
 class NoPythonBackend(FunctionPass):
-
     _name = "dpex_nopython_backend"
 
     def __init__(self):
@@ -380,7 +374,6 @@ class NoPythonBackend(FunctionPass):
 
 @register_pass(mutates_CFG=False, analysis_only=True)
 class DumpParforDiagnostics(AnalysisPass):
-
     _name = "dpex_dump_parfor_diagnostics"
 
     def __init__(self):
