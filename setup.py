@@ -183,7 +183,7 @@ metadata = dict(
         "Environment :: GPU",
         "Environment :: Plugins",
         "Intended Audience :: Developers",
-        "License :: OSI Approved :: BSD License",
+        "License :: OSI Approved :: Apache 2.0",
         "Operating System :: OS Independent",
         "Programming Language :: Cython",
         "Programming Language :: Python :: 3",
