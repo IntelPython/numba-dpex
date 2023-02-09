@@ -2,12 +2,14 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import sys
+
 import dpctl
+import dpctl.tensor as dpt
 import numpy as np
 import pytest
 
 import numba_dpex as dpex
-from numba_dpex.tests._helper import filter_strings
 
 global_size = 1054
 local_size = 1
@@ -35,15 +37,39 @@ def input_arrays(request):
     return a, b, c[0]
 
 
-@pytest.mark.parametrize("filter_str", filter_strings)
-def test_kernel_arg_types(filter_str, input_arrays):
-    kernel = dpex.kernel(mul_kernel)
-    a, actual, c = input_arrays
+def test_kernel_arg_types(input_arrays):
+    usm_type = "device"
+
+    a, b, c = input_arrays
     expected = a * c
-    device = dpctl.SyclDevice(filter_str)
-    with dpctl.device_context(device):
-        kernel[global_size, local_size](a, actual, c)
-    np.testing.assert_allclose(actual, expected, rtol=1e-5, atol=0)
+
+    queue = dpctl.SyclQueue(dpctl.select_default_device())
+
+    da = dpt.usm_ndarray(
+        a.shape,
+        dtype=a.dtype,
+        buffer=usm_type,
+        buffer_ctor_kwargs={"queue": queue},
+    )
+    da.usm_data.copy_from_host(a.reshape((-1)).view("|u1"))
+
+    db = dpt.usm_ndarray(
+        b.shape,
+        dtype=b.dtype,
+        buffer=usm_type,
+        buffer_ctor_kwargs={"queue": queue},
+    )
+    db.usm_data.copy_from_host(b.reshape((-1)).view("|u1"))
+
+    kernel = dpex.kernel(mul_kernel)
+    kernel[dpex.NdRange(dpex.Range(global_size), dpex.Range(local_size))](
+        da, db, c
+    )
+
+    result = np.zeros_like(b)
+    db.usm_data.copy_to_host(result.reshape((-1)).view("|u1"))
+
+    np.testing.assert_allclose(result, expected, rtol=1e-5, atol=0)
 
 
 def check_bool_kernel(A, test):
@@ -53,14 +79,28 @@ def check_bool_kernel(A, test):
         A[0] = 222
 
 
-@pytest.mark.parametrize("filter_str", filter_strings)
-def test_bool_type(filter_str):
-    kernel = dpex.kernel(check_bool_kernel)
+def test_bool_type():
+    usm_type = "device"
     a = np.array([2], np.int64)
 
-    device = dpctl.SyclDevice(filter_str)
-    with dpctl.device_context(device):
-        kernel[a.size, dpex.DEFAULT_LOCAL_SIZE](a, True)
-        assert a[0] == 111
-        kernel[a.size, dpex.DEFAULT_LOCAL_SIZE](a, False)
-        assert a[0] == 222
+    queue = dpctl.SyclQueue(dpctl.select_default_device())
+
+    da = dpt.usm_ndarray(
+        a.shape,
+        dtype=a.dtype,
+        buffer=usm_type,
+        buffer_ctor_kwargs={"queue": queue},
+    )
+    da.usm_data.copy_from_host(a.reshape((-1)).view("|u1"))
+
+    kernel = dpex.kernel(check_bool_kernel)
+
+    kernel[dpex.Range(a.size)](da, True)
+    result = np.zeros_like(a)
+    da.usm_data.copy_to_host(result.reshape((-1)).view("|u1"))
+    assert result[0] == 111
+
+    kernel[dpex.Range(a.size)](da, False)
+    result = np.zeros_like(a)
+    da.usm_data.copy_to_host(result.reshape((-1)).view("|u1"))
+    assert result[0] == 222
