@@ -1,0 +1,7 @@
+numba\_dpex.dpctl\_support module
+=================================
+
+.. automodule:: numba_dpex.dpctl_support
+   :members:
+   :undoc-members:
+   :show-inheritance:

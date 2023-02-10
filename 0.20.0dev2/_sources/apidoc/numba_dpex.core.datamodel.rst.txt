@@ -1,0 +1,18 @@
+numba\_dpex.core.datamodel package
+==================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.core.datamodel.models
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex.core.datamodel
+   :members:
+   :undoc-members:
+   :show-inheritance:

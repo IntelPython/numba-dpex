@@ -1,0 +1,7 @@
+numba\_dpex.config module
+=========================
+
+.. automodule:: numba_dpex.config
+   :members:
+   :undoc-members:
+   :show-inheritance:
