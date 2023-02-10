@@ -392,7 +392,7 @@ class DumpParforDiagnostics(AnalysisPass):
 
 @register_pass(mutates_CFG=False, analysis_only=True)
 class QualNameDisambiguationLowering(NativeLowering):
-    """Qualified name disambiguarion lowering pass
+    """Qualified name disambiguation lowering pass
 
     If there are multiple @func decorated functions exist inside
     another @func decorated block, the numba compiler machinery
@@ -408,9 +408,6 @@ class QualNameDisambiguationLowering(NativeLowering):
     """
 
     _name = "qual-name-disambiguation-lowering"
-
-    def __init__(self):
-        NativeLowering.__init__(self)
 
     def run_pass(self, state):
         qual_name = state.func_id.func_qualname
