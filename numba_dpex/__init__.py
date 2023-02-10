@@ -7,7 +7,14 @@ The numba-dpex extension module adds data-parallel offload support to Numba.
 """
 import numba.testing
 
-from numba_dpex.interop import asarray
+import numba_dpex.core.offload_dispatcher
+
+# Re-export types itself
+import numba_dpex.core.types as types
+from numba_dpex.core.kernel_interface.utils import *
+
+# Re-export all type names
+from numba_dpex.core.types import *
 from numba_dpex.retarget import offload_to_sycl_device
 
 from . import config
@@ -23,4 +30,4 @@ from ._version import get_versions
 __version__ = get_versions()["version"]
 del get_versions
 
-__all__ = ["offload_to_sycl_device"]
+__all__ = ["offload_to_sycl_device"] + types.__all__

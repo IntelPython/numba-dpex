@@ -2,109 +2,173 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import dpctl
-from numba.core import sigutils, types
+import inspect
+import warnings
 
-from numba_dpex.core.exceptions import KernelHasReturnValueError
-from numba_dpex.utils import npytypes_array_to_dpex_array
+from numba.core import decorators, sigutils
+from numba.core.target_extension import jit_registry, target_registry
 
-from .compiler import (
+from numba_dpex.core.kernel_interface.dispatcher import (
     JitKernel,
-    compile_func,
-    compile_func_template,
     get_ordered_arg_access_types,
 )
+from numba_dpex.core.kernel_interface.func import (
+    compile_func,
+    compile_func_template,
+)
+from numba_dpex.core.pipelines.offload_compiler import OffloadCompiler
 
 
-def kernel(signature=None, access_types=None, debug=None):
-    """The decorator to write a numba_dpex kernel function.
+def kernel(
+    func_or_sig=None,
+    access_types=None,
+    debug=False,
+    enable_cache=True,
+):
+    """A decorator to define a kernel function.
 
     A kernel function is conceptually equivalent to a SYCL kernel function, and
     gets compiled into either an OpenCL or a LevelZero SPIR-V binary kernel.
-    A dpex kernel imposes the following restrictions:
+    A kernel decorated Python function has the following restrictions:
 
-        * A numba_dpex.kernel function can not return any value.
-        * All array arguments passed to a kernel should be of the same type
-          and have the same dtype.
+        * The function can not return any value.
+        * All array arguments passed to a kernel should adhere to compute
+          follows data programming model.
     """
-    if signature is None:
-        return autojit(debug=debug, access_types=access_types)
-    elif not sigutils.is_signature(signature):
-        func = signature
-        return autojit(debug=debug, access_types=access_types)(func)
-    else:
-        return _kernel_jit(signature, debug, access_types)
 
-
-def autojit(debug=None, access_types=None):
-    def _kernel_autojit(pyfunc):
+    def _kernel_dispatcher(pyfunc, sigs=None):
         ordered_arg_access_types = get_ordered_arg_access_types(
             pyfunc, access_types
         )
-        return JitKernel(pyfunc, debug, ordered_arg_access_types)
-
-    return _kernel_autojit
-
-
-def _kernel_jit(signature, debug, access_types):
-    argtypes, rettype = sigutils.normalize_signature(signature)
-    argtypes = tuple(
-        [
-            npytypes_array_to_dpex_array(ty)
-            if isinstance(ty, types.npytypes.Array)
-            else ty
-            for ty in argtypes
-        ]
-    )
-
-    def _wrapped(pyfunc):
-        current_queue = dpctl.get_current_queue()
-        ordered_arg_access_types = get_ordered_arg_access_types(
-            pyfunc, access_types
+        return JitKernel(
+            pyfunc=pyfunc,
+            debug_flags=debug,
+            array_access_specifiers=ordered_arg_access_types,
+            enable_cache=enable_cache,
+            specialization_sigs=sigs,
         )
-        # We create an instance of JitKernel to make sure at call time
-        # we are going through the caching mechanism.
-        kernel = JitKernel(pyfunc, debug, ordered_arg_access_types)
-        # This will make sure we are compiling eagerly.
-        kernel.specialize(argtypes, current_queue)
-        return kernel
 
-    return _wrapped
+    if func_or_sig is None:
+        return _kernel_dispatcher
+    elif isinstance(func_or_sig, str):
+        raise NotImplementedError(
+            "Specifying signatures as string is not yet supported by numba-dpex"
+        )
+    elif isinstance(func_or_sig, list) or sigutils.is_signature(func_or_sig):
+        # String signatures are not supported as passing usm_ndarray type as
+        # a string is not possible. Numba's sigutils relies on the type being
+        # available in Numba's `types.__dict__` and dpex types are not registered
+        # there yet.
+        if isinstance(func_or_sig, list):
+            for sig in func_or_sig:
+                if isinstance(sig, str):
+                    raise NotImplementedError(
+                        "Specifying signatures as string is not yet supported "
+                        "by numba-dpex"
+                    )
+        # Specialized signatures can either be a single signature or a list.
+        # In case only one signature is provided convert it to a list
+        if not isinstance(func_or_sig, list):
+            func_or_sig = [func_or_sig]
 
+        def _specialized_kernel_dispatcher(pyfunc):
+            ordered_arg_access_types = get_ordered_arg_access_types(
+                pyfunc, access_types
+            )
+            return JitKernel(
+                pyfunc=pyfunc,
+                debug_flags=debug,
+                array_access_specifiers=ordered_arg_access_types,
+                enable_cache=enable_cache,
+                specialization_sigs=func_or_sig,
+            )
 
-def func(signature=None, debug=None):
-    if signature is None:
-        return _func_autojit_wrapper(debug=debug)
-    elif not sigutils.is_signature(signature):
-        func = signature
-        return _func_autojit(func, debug=debug)
+        return _specialized_kernel_dispatcher
     else:
-        return _func_jit(signature, debug=debug)
+        func = func_or_sig
+        if not inspect.isfunction(func):
+            raise ValueError(
+                "Argument passed to the kernel decorator is neither a "
+                "function object, nor a signature. If you are trying to "
+                "specialize the kernel that takes a single argument, specify "
+                "the return type as void explicitly."
+            )
+        return _kernel_dispatcher(func)
 
 
-def _func_jit(signature, debug=None):
-    argtypes, restype = sigutils.normalize_signature(signature)
-    argtypes = tuple(
-        [
-            npytypes_array_to_dpex_array(ty)
-            if isinstance(ty, types.npytypes.Array)
-            else ty
-            for ty in argtypes
-        ]
-    )
+def func(func_or_sig=None, debug=False, enable_cache=True):
+    """A decorator to define a kernel device function.
 
-    def _wrapped(pyfunc):
-        return compile_func(pyfunc, restype, argtypes, debug=debug)
+    Device functions are functions that can be only invoked from a kernel
+    and not from a host function. This provides a special decorator
+    `numba_dpex.func` specifically to implement a device function.
 
-    return _wrapped
+    A device function can be invoked from another device function and
+    unlike a kernel function, a device function can return a value like
+    normal functions.
+    """
+
+    def _func_autojit(pyfunc):
+        return compile_func_template(
+            pyfunc, debug=debug, enable_cache=enable_cache
+        )
+
+    if func_or_sig is None:
+        return _func_autojit
+    elif isinstance(func_or_sig, str):
+        raise NotImplementedError(
+            "Specifying signatures as string is not yet supported by numba-dpex"
+        )
+    elif isinstance(func_or_sig, list) or sigutils.is_signature(func_or_sig):
+        # String signatures are not supported as passing usm_ndarray type as
+        # a string is not possible. Numba's sigutils relies on the type being
+        # available in Numba's types.__dict__ and dpex types are not registered
+        # there yet.
+        if isinstance(func_or_sig, list):
+            for sig in func_or_sig:
+                if isinstance(sig, str):
+                    raise NotImplementedError(
+                        "Specifying signatures as string is not yet supported "
+                        "by numba-dpex"
+                    )
+        # Specialized signatures can either be a single signature or a list.
+        # In case only one signature is provided convert it to a list
+        if not isinstance(func_or_sig, list):
+            func_or_sig = [func_or_sig]
+
+        def _wrapped(pyfunc):
+            return compile_func(pyfunc, func_or_sig, debug=debug)
+
+        return _wrapped
+    else:
+        # no signature
+        func = func_or_sig
+        return _func_autojit(func)
 
 
-def _func_autojit_wrapper(debug=None):
-    def _func_autojit(pyfunc, debug=debug):
-        return compile_func_template(pyfunc, debug=debug)
-
-    return _func_autojit
+# ----------------- Experimental dpjit decorator ------------------------------#
 
 
-def _func_autojit(pyfunc, debug=None):
-    return compile_func_template(pyfunc, debug=debug)
+def dpjit(*args, **kws):
+    if "nopython" in kws:
+        warnings.warn(
+            "nopython is set for dpjit and is ignored", RuntimeWarning
+        )
+    if "forceobj" in kws:
+        warnings.warn(
+            "forceobj is set for dpjit and is ignored", RuntimeWarning
+        )
+        del kws["forceobj"]
+    if "pipeline_class" in kws:
+        warnings.warn(
+            "pipeline class is set for dpjit and is ignored", RuntimeWarning
+        )
+        del kws["forceobj"]
+    kws.update({"nopython": True})
+    kws.update({"pipeline_class": OffloadCompiler})
+    return decorators.jit(*args, **kws)
+
+
+# add it to the decorator registry, this is so e.g. @overload can look up a
+# JIT function to do the compilation work.
+jit_registry[target_registry["dpex"]] = dpjit

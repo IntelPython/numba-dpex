@@ -4,8 +4,8 @@
 
 # Re export
 from .ocl.stubs import (
-    CLK_GLOBAL_MEM_FENCE,
-    CLK_LOCAL_MEM_FENCE,
+    GLOBAL_MEM_FENCE,
+    LOCAL_MEM_FENCE,
     atomic,
     barrier,
     get_global_id,
@@ -32,24 +32,7 @@ DEFAULT_LOCAL_SIZE = []
 import dpctl
 
 from . import initialize
-from .core import target
-from .decorators import autojit, func, kernel
-
-
-def is_available():
-    """Returns a boolean indicating if dpctl could find a default device.
-
-    A ValueError is thrown by dpctl if no default device is found and it
-    implies that numba_dpex cannot create a SYCL queue to compile kernels.
-
-    Returns:
-        bool: True if a default SYCL device is found, otherwise False.
-    """
-    try:
-        d = dpctl.select_default_device()
-        return not d.is_host
-    except ValueError:
-        return False
-
+from .core.targets import dpjit_target, kernel_target
+from .decorators import dpjit, func, kernel
 
 initialize.load_dpctl_sycl_interface()

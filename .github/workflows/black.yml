@@ -14,7 +14,7 @@ jobs:
   # This workflow contains a single job called "black"
   black:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -27,3 +27,4 @@ jobs:
       - uses: psf/black@stable
         with:
           args: ". --check"
+          version: "23.1.0"

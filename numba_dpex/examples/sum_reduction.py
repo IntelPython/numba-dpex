@@ -7,12 +7,12 @@ import math
 import dpctl
 import numpy as np
 
-import numba_dpex as dpex
+import numba_dpex as ndpx
 
 
-@dpex.kernel
+@ndpx.kernel
 def sum_reduction_kernel(A, R, stride):
-    i = dpex.get_global_id(0)
+    i = ndpx.get_global_id(0)
     # sum two element
     R[i] = A[i] + A[i + stride]
     # store the sum to be used in nex iteration
@@ -34,9 +34,7 @@ def sum_reduce(A):
     with dpctl.device_context(device):
         while total > 1:
             global_size = total // 2
-            sum_reduction_kernel[global_size, dpex.DEFAULT_LOCAL_SIZE](
-                A, R, global_size
-            )
+            sum_reduction_kernel[ndpx.Range(global_size)](A, R, global_size)
             total = total // 2
 
     return R[0]

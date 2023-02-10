@@ -129,7 +129,6 @@ def dufunc_inliner(func_ir, calltypes, typemap, typingctx, targetctx):
     while work_list:
         label, block = work_list.pop()
         for i, instr in enumerate(block.body):
-
             if isinstance(instr, ir.Assign):
                 expr = instr.value
                 if isinstance(expr, ir.Expr):

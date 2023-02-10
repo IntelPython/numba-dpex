@@ -18,7 +18,7 @@ docs/_build/
 docs/gh-pages/
 dist/
 .idea/
-.vscode/settings.json
+.vscode/
 .mypy_cache/
 .ipynb_checkpoints/
 __pycache__/
