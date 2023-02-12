@@ -1,92 +1,46 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>dpnp integration &mdash; numba-dpex 0.20.0dev1+39.g127cc7fb documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>dpnp integration &mdash; numba-dpex 0.20.0dev2+3.g28e36ea6 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Debugging the compilation pipeline" href="tools.html" />
     <link rel="prev" title="numba-dpex for numba.cuda Developers" href="../user_guides/migrating_from_numba_cuda.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../index.html" class="icon icon-home"> numba-dpex
           
-
-          
+          <a href="../index.html" class="icon icon-home">
+            numba-dpex
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../CoreFeatures.html">Code-generation based on a device</a></li>
@@ -116,73 +70,32 @@
 <li class="toctree-l1"><a class="reference internal" href="tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">numba-dpex</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>dpnp integration</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">dpnp integration</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../_sources/developer_guides/dpnp_integration.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <section id="dpnp-integration">
-<span id="id1"></span><h1>dpnp integration<a class="headerlink" href="#dpnp-integration" title="Permalink to this heading">¶</a></h1>
+<span id="id1"></span><h1>dpnp integration<a class="headerlink" href="#dpnp-integration" title="Permalink to this heading"></a></h1>
 <p>Data-Parallel Numeric Python (dpnp) is a drop-in NumPy replacement library. The
 library is developed using SYCL and oneMKL. Numba-dpex relies on dpnp to
 support offloading NumPy library functions to SYCL devices. For NumPy functions
@@ -214,7 +127,7 @@ end-user and is implemented as a renaming pass in numba-dpex’s pass pipeline.<
 <p>The following sections go over as aspects of the dpnp integration inside
 numba-dpex.</p>
 <section id="repository-map">
-<span id="dpnp-integration-repository-map"></span><h2>Repository map<a class="headerlink" href="#repository-map" title="Permalink to this heading">¶</a></h2>
+<span id="dpnp-integration-repository-map"></span><h2>Repository map<a class="headerlink" href="#repository-map" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p>The code for numba-dpex’s dpnp integration resides in the
 <code class="file docutils literal notranslate"><span class="pre">numba_dpex/dpnp_iface</span></code> sub-module.</p></li>
@@ -223,7 +136,7 @@ numba-dpex.</p>
 </ul>
 </section>
 <section id="design">
-<span id="dpnp-integration-architecture"></span><h2>Design<a class="headerlink" href="#design" title="Permalink to this heading">¶</a></h2>
+<span id="dpnp-integration-architecture"></span><h2>Design<a class="headerlink" href="#design" title="Permalink to this heading"></a></h2>
 <p>The rewrite logic to substitute NumPy functions with dpnp function calls in the
 Numba IR is implemented by the <code class="xref py py-class docutils literal notranslate"><span class="pre">RewriteOverloadedNumPyFunctionsPass</span></code>
 pass. The <a class="reference internal" href="../apidoc/numba_dpex.dpnp_iface.stubs.html#module-numba_dpex.dpnp_iface.stubs" title="numba_dpex.dpnp_iface.stubs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.dpnp_iface.stubs</span></code></a> module defines a set of <cite>stub</cite>
@@ -253,7 +166,7 @@ inserts a call to a dpnp low-level API function using Numba’s
 function implementation can be found in the <a class="reference internal" href="#overload-for-stub"><span class="std std-ref">Writing overload for stub function</span></a> section.</p>
 </section>
 <section id="steps-to-support-a-new-numpy-function-using-dpnp">
-<h2>Steps to support a new NumPy function using dpnp<a class="headerlink" href="#steps-to-support-a-new-numpy-function-using-dpnp" title="Permalink to this heading">¶</a></h2>
+<h2>Steps to support a new NumPy function using dpnp<a class="headerlink" href="#steps-to-support-a-new-numpy-function-using-dpnp" title="Permalink to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>Add new stub class in <code class="file docutils literal notranslate"><span class="pre">numba_dpex/dpnp_iface/stubs.py</span></code>.</p></li>
 <li><p>Update the new function in the <code class="xref py py-class docutils literal notranslate"><span class="pre">DPNPFuncName</span></code> enum inside
@@ -273,7 +186,7 @@ knows to substitute the function.</p></li>
 </ol>
 </section>
 <section id="writing-overload-for-stub-function">
-<span id="overload-for-stub"></span><h2>Writing overload for stub function<a class="headerlink" href="#writing-overload-for-stub-function" title="Permalink to this heading">¶</a></h2>
+<span id="overload-for-stub"></span><h2>Writing overload for stub function<a class="headerlink" href="#writing-overload-for-stub-function" title="Permalink to this heading"></a></h2>
 <p>Overloads for stub functions resides in <code class="file docutils literal notranslate"><span class="pre">numba_dpex/dpnp_iface/</span><em><span class="pre">*</span></em><span class="pre">.py</span></code>
 modules. If you need create a new module, try to name it corresponding to dpnp
 naming convention. I.e. <code class="file docutils literal notranslate"><span class="pre">dpnp/backend/kernels/dpnp_krnl_indexing.cpp</span></code> -&gt;
@@ -421,7 +334,7 @@ creating the new one.</p>
 <li><p>Print debug information used for testing</p></li>
 </ol>
 <section id="types-matching-for-numba-and-dpnp">
-<span id="dpnp-integration-types-matching"></span><h3>Types matching for Numba and DPNP<a class="headerlink" href="#types-matching-for-numba-and-dpnp" title="Permalink to this heading">¶</a></h3>
+<span id="dpnp-integration-types-matching"></span><h3>Types matching for Numba and DPNP<a class="headerlink" href="#types-matching-for-numba-and-dpnp" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="samp docutils literal notranslate"><span class="pre">[const]</span> <em><span class="pre">T</span></em><span class="pre">*</span></code> -&gt; <code class="xref py py-obj docutils literal notranslate"><span class="pre">types.voidptr</span></code></p></li>
 <li><p><cite>size_t</cite> -&gt; <code class="xref py py-obj docutils literal notranslate"><span class="pre">types.intp</span></code></p></li>
@@ -434,7 +347,7 @@ any mismatch in the size of the container to hold different types of pointer.</p
 </section>
 </section>
 <section id="writing-dpnp-integration-tests">
-<span id="dpnp-integration-tests"></span><h2>Writing <cite>DPNP</cite> integration tests<a class="headerlink" href="#writing-dpnp-integration-tests" title="Permalink to this heading">¶</a></h2>
+<span id="dpnp-integration-tests"></span><h2>Writing <cite>DPNP</cite> integration tests<a class="headerlink" href="#writing-dpnp-integration-tests" title="Permalink to this heading"></a></h2>
 <p>See all <cite>DPNP</cite> integration tests in <code class="file docutils literal notranslate"><span class="pre">numba_dpex/tests/njit_tests/dpnp</span></code>.</p>
 <p>Usually adding new test is as easy as adding function name to the corresponding list of function names.
 Each item in the list is used as a parameter for tests.
@@ -481,7 +394,7 @@ and receive <code class="xref py py-obj docutils literal notranslate"><span clas
 </ol>
 </section>
 <section id="troubleshooting">
-<span id="dpnp-troubleshooting"></span><h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this heading">¶</a></h2>
+<span id="dpnp-troubleshooting"></span><h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>Do not forget build numba-dpex with current installed version of dpnp.
 There is headers dependency in <cite>Cython</cite> files (i.e. <code class="file docutils literal notranslate"><span class="pre">numba_dpex/dpnp_iface/dpnp_fptr_interface.pyx</span></code>).</p></li>
@@ -494,50 +407,33 @@ As a result wrong data could be passed to <cite>DPNP</cite> function.</p></li>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="tools.html" class="btn btn-neutral float-right" title="Debugging the compilation pipeline" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../user_guides/migrating_from_numba_cuda.html" class="btn btn-neutral float-left" title="numba-dpex for numba.cuda Developers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tools.html" class="btn btn-neutral float-right" title="Debugging the compilation pipeline" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021,2022 Intel.
-
-    </p>
+    <p>&#169; Copyright 2021,2022 Intel.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

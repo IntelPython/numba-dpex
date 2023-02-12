@@ -1,92 +1,46 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Debugging Local Variables &mdash; numba-dpex 0.20.0dev1+39.g127cc7fb documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>Debugging Local Variables &mdash; numba-dpex 0.20.0dev2+3.g28e36ea6 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Debugging Features in Numba 0.55" href="numba-0.55.html" />
     <link rel="prev" title="Altering Execution" href="altering.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../../index.html" class="icon icon-home"> numba-dpex
           
-
-          
+          <a href="../../index.html" class="icon icon-home">
+            numba-dpex
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../CoreFeatures.html">Code-generation based on a device</a></li>
@@ -126,84 +80,41 @@
 <li class="toctree-l1"><a class="reference internal" href="../../developer_guides/tools.html">Debugging the compilation pipeline</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">numba-dpex</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="index.html">Debugging with Intel® Distribution for GDB*</a> &raquo;</li>
-        
-          <li><a href="features.html">Supported Features</a> &raquo;</li>
-        
-      <li>Debugging Local Variables</li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Debugging with Intel® Distribution for GDB*</a></li>
+          <li class="breadcrumb-item"><a href="features.html">Supported Features</a></li>
+      <li class="breadcrumb-item active">Debugging Local Variables</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/user_guides/debugging/local_variables.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <section id="debugging-local-variables">
-<h1>Debugging Local Variables<a class="headerlink" href="#debugging-local-variables" title="Permalink to this heading">¶</a></h1>
+<h1>Debugging Local Variables<a class="headerlink" href="#debugging-local-variables" title="Permalink to this heading"></a></h1>
 <p>Several conditions could influence debugging of local variables:</p>
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="#numba-opt"><span class="std std-ref">Optimization Level for LLVM</span></a></p></li>
 <li><p><a class="reference internal" href="#local-variables-lifetime"><span class="std std-ref">Local Variables Lifetime in Numba IR</span></a></p></li>
 </ol>
 <section id="optimization-level-for-llvm">
-<span id="numba-opt"></span><h2>Optimization Level for LLVM<a class="headerlink" href="#optimization-level-for-llvm" title="Permalink to this heading">¶</a></h2>
+<span id="numba-opt"></span><h2>Optimization Level for LLVM<a class="headerlink" href="#optimization-level-for-llvm" title="Permalink to this heading"></a></h2>
 <p>Numba provides environment variable <code class="docutils literal notranslate"><span class="pre">NUMBA_OPT</span></code> for configuring
 optimization level for LLVM. The default optimization level is three.
 Refer <a class="reference external" href="https://numba.readthedocs.io/en/stable/reference/envvars.html?#envvar-NUMBA_OPT">Numba documentation</a> for details. It is recommended to debug with
@@ -214,7 +125,7 @@ as follows:</p>
 <li><p><code class="samp docutils literal notranslate"><span class="pre">NUMBA_OPT=1</span></code> or higher levels - some variables may be optimized out.</p></li>
 </ul>
 <section id="example">
-<h3>Example<a class="headerlink" href="#example" title="Permalink to this heading">¶</a></h3>
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this heading"></a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/sum_local_vars.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">11</span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="linenos">12</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
@@ -259,7 +170,7 @@ as follows:</p>
 </section>
 </section>
 <section id="local-variables-lifetime-in-numba-ir">
-<span id="local-variables-lifetime"></span><h2>Local Variables Lifetime in Numba IR<a class="headerlink" href="#local-variables-lifetime-in-numba-ir" title="Permalink to this heading">¶</a></h2>
+<span id="local-variables-lifetime"></span><h2>Local Variables Lifetime in Numba IR<a class="headerlink" href="#local-variables-lifetime-in-numba-ir" title="Permalink to this heading"></a></h2>
 <p>Lifetime of Python variables are different from lifetime of variables in compiled code.
 Numba analyses variables lifetime and try to optimize it.
 The debugger can show the variable values, but they may be zeros
@@ -271,7 +182,7 @@ for extending the lifetime of variables to the end of the block in which their l
 <p>Default is zero.</p>
 <p>It is recommended to debug with <code class="samp docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES=1</span></code>.</p>
 <section id="example-1-using-numba-extend-variable-lifetimes">
-<h3>Example 1 - Using <code class="docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES</span></code><a class="headerlink" href="#example-1-using-numba-extend-variable-lifetimes" title="Permalink to this heading">¶</a></h3>
+<h3>Example 1 - Using <code class="docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES</span></code><a class="headerlink" href="#example-1-using-numba-extend-variable-lifetimes" title="Permalink to this heading"></a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dpex/tests/debugging/test_info.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">14</span><span class="k">def</span> <span class="nf">common_loop_body</span><span class="p">(</span><span class="n">param_a</span><span class="p">,</span> <span class="n">param_b</span><span class="p">):</span>
 <span class="linenos">15</span>    <span class="n">param_c</span> <span class="o">=</span> <span class="n">param_a</span> <span class="o">+</span> <span class="mi">10</span>  <span class="c1"># Set breakpoint here</span>
@@ -315,7 +226,7 @@ for extending the lifetime of variables to the end of the block in which their l
 </div>
 </section>
 <section id="example-2-using-numba-dump-annotation">
-<span id="example-numba-dump-annotation"></span><h3>Example 2 - Using <code class="docutils literal notranslate"><span class="pre">NUMBA_DUMP_ANNOTATION</span></code><a class="headerlink" href="#example-2-using-numba-dump-annotation" title="Permalink to this heading">¶</a></h3>
+<span id="example-numba-dump-annotation"></span><h3>Example 2 - Using <code class="docutils literal notranslate"><span class="pre">NUMBA_DUMP_ANNOTATION</span></code><a class="headerlink" href="#example-2-using-numba-dump-annotation" title="Permalink to this heading"></a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/sum_local_vars.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">11</span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="linenos">12</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
@@ -512,7 +423,7 @@ It will show that numba inserts <cite>del</cite> for variables at the end of the
 </div>
 </section>
 <section id="example-3-using-info-locals">
-<h3>Example 3 - Using <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code><a class="headerlink" href="#example-3-using-info-locals" title="Permalink to this heading">¶</a></h3>
+<h3>Example 3 - Using <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code><a class="headerlink" href="#example-3-using-info-locals" title="Permalink to this heading"></a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">sum_local_vars.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span>    <span class="n">l2</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.3</span>
 <span class="linenos">16</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l1</span> <span class="o">+</span> <span class="n">l2</span>
@@ -613,50 +524,33 @@ It will show that numba inserts <cite>del</cite> for variables at the end of the
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="numba-0.55.html" class="btn btn-neutral float-right" title="Debugging Features in Numba 0.55" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="altering.html" class="btn btn-neutral float-left" title="Altering Execution" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="numba-0.55.html" class="btn btn-neutral float-right" title="Debugging Features in Numba 0.55" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021,2022 Intel.
-
-    </p>
+    <p>&#169; Copyright 2021,2022 Intel.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
