@@ -62,10 +62,22 @@ def _init_data_model_manager():
 
 dpex_data_model_manager = _init_data_model_manager()
 
+# XXX A kernel function has the spir_kernel ABI and requires pointers to have an
+# address space attribute. For this reason, the UsmNdArray type uses dpex's
+# ArrayModel where the pointers are address space casted to have a SYCL-specific
+# address space value. The DpnpNdArray type can be used inside djit functions
+# as host function calls arguments, such as dpnp library calls. The DpnpNdArray
+# needs to use Numba's array model as its data model. Thus, from a Numba typing
+# perspective dpnp.ndarrays cannot be directly passed to a kernel. To get
+# around the limitation, the DpexKernelTypingContext does not resolve the type
+# of dpnp.array args to a kernel as DpnpNdArray type objects, but uses the
+# ``to_usm_ndarray`` utility function to convert them into a UsmNdArray type
+# object.
+
 # Register the USMNdArray type with the dpex ArrayModel
 register_model(USMNdArray)(ArrayModel)
 dpex_data_model_manager.register(USMNdArray, ArrayModel)
 
-# Register the DpnpNdArray type with the dpex ArrayModel
+# Register the DpnpNdArray type with the Numba ArrayModel
 register_model(DpnpNdArray)(DpnpNdArrayModel)
 dpex_data_model_manager.register(DpnpNdArray, DpnpNdArrayModel)

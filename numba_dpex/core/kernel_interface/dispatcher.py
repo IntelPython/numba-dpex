@@ -486,7 +486,8 @@ class JitKernel:
                 warn(
                     "Ambiguous kernel launch paramters. If your data have "
                     + "dimensions > 1, include a default/empty local_range:\n"
-                    + "    <function>[(X,Y), numba_dpex.DEFAULT_LOCAL_RANGE](<params>)\n"
+                    + "    <function>[(X,Y), numba_dpex.DEFAULT_LOCAL_RANGE]"
+                    "(<params>)\n"
                     + "otherwise your code might produce erroneous results.",
                     DeprecationWarning,
                     stacklevel=2,
@@ -500,7 +501,7 @@ class JitKernel:
                 + "parameters is deprecated. Users should set the kernel "
                 + "parameters through Range/NdRange classes.\n"
                 + "Example:\n"
-                + "    from numba_dpex.core.kernel_interface.utils import Range,NdRange\n\n"
+                + "    from numba_dpex import Range,NdRange\n\n"
                 + "    # for global range only\n"
                 + "    <function>[Range(X,Y)](<parameters>)\n"
                 + "    # or,\n"
@@ -531,10 +532,11 @@ class JitKernel:
                     )
                 else:
                     warn(
-                        "Empty local_range calls are deprecated. Please use Range/NdRange "
-                        + "to specify the kernel launch parameters:\n"
+                        "Empty local_range calls are deprecated. Please use "
+                        "Range/NdRange to specify the kernel launch parameters:"
+                        "\n"
                         + "Example:\n"
-                        + "    from numba_dpex.core.kernel_interface.utils import Range,NdRange\n\n"
+                        + "    from numba_dpex import Range,NdRange\n\n"
                         + "    # for global range only\n"
                         + "    <function>[Range(X,Y)](<parameters>)\n"
                         + "    # or,\n"
