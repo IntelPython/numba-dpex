@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.caching module &mdash; numba-dpex 0.20.0dev2+5.g8a891bb2 documentation</title>
+  <title>numba_dpex.core.caching module &mdash; numba-dpex 0.20.0dev2+8.g8d0c8ea8 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -269,9 +269,9 @@ compiled kernel/function).</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.caching.build_key">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.caching.</span></span><span class="sig-name descname"><span class="pre">build_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">codegen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.build_key" title="Permalink to this definition"></a></dt>
-<dd><p>Constructs a key from python function, context, backend and the device
-type.</p>
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.caching.</span></span><span class="sig-name descname"><span class="pre">build_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">argtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">codegen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exec_queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.caching.build_key" title="Permalink to this definition"></a></dt>
+<dd><p>Constructs a key from python function, context, backend, the device
+type and execution queue.</p>
 <p>Compute index key for the given argument types and codegen. It includes a
 description of the OS, target architecture and hashes of the bytecode for
 the function and, if the function has a __closure__, a hash of the
@@ -290,6 +290,7 @@ codegen (numba.core.codegen.Codegen):</p>
 <dt>device_type (enum, optional): A ‘device_type’ enum.</dt><dd><p>Defaults to None.</p>
 </dd>
 </dl>
+<p>exec_queue (dpctl._sycl_queue.SyclQueue’, optional): A SYCL queue object.</p>
 </dd>
 <dt>Returns:</dt><dd><dl class="simple">
 <dt>tuple: A tuple of return type, argtpes, magic_tuple of codegen</dt><dd><p>and another tuple of hashcodes from bytecode and cell_contents.</p>
