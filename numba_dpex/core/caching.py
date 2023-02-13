@@ -13,9 +13,11 @@ from numba_dpex import config
 from numba_dpex.core.types import USMNdArray
 
 
-def build_key(argtypes, pyfunc, codegen, backend=None, device_type=None):
-    """Constructs a key from python function, context, backend and the device
-    type.
+def build_key(
+    argtypes, pyfunc, codegen, backend=None, device_type=None, exec_queue=None
+):
+    """Constructs a key from python function, context, backend, the device
+    type and execution queue.
 
     Compute index key for the given argument types and codegen. It includes a
     description of the OS, target architecture and hashes of the bytecode for
@@ -32,6 +34,7 @@ def build_key(argtypes, pyfunc, codegen, backend=None, device_type=None):
             Defaults to None.
         device_type (enum, optional): A 'device_type' enum.
             Defaults to None.
+        exec_queue (dpctl._sycl_queue.SyclQueue', optional): A SYCL queue object.
 
     Returns:
         tuple: A tuple of return type, argtpes, magic_tuple of codegen
@@ -64,6 +67,7 @@ def build_key(argtypes, pyfunc, codegen, backend=None, device_type=None):
         codegen.magic_tuple(),
         backend,
         device_type,
+        exec_queue,
         (
             hashlib.sha256(codebytes).hexdigest(),
             hashlib.sha256(cvarbytes).hexdigest(),

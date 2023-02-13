@@ -88,14 +88,21 @@ class JitKernel:
         # caching related attributes
         if not config.ENABLE_CACHE:
             self._cache = NullCache()
+            self._kernel_bundle_cache = NullCache()
         elif enable_cache:
             self._cache = LRUCache(
                 name="SPIRVKernelCache",
                 capacity=config.CACHE_SIZE,
                 pyfunc=self.pyfunc,
             )
+            self._kernel_bundle_cache = LRUCache(
+                name="KernelBundleCache",
+                capacity=config.CACHE_SIZE,
+                pyfunc=self.pyfunc,
+            )
         else:
             self._cache = NullCache()
+            self._kernel_bundle_cache = NullCache()
         self._cache_hits = 0
 
         if array_access_specifiers:
@@ -627,12 +634,26 @@ class JitKernel:
                     cache=self._cache,
                 )
 
-        # create a sycl::KernelBundle
-        kernel_bundle = dpctl_prog.create_program_from_spirv(
-            exec_queue,
-            device_driver_ir_module,
-            " ".join(self._create_sycl_kernel_bundle_flags),
+        kernel_bundle_key = build_key(
+            tuple(argtypes),
+            self.pyfunc,
+            dpex_kernel_target.target_context.codegen(),
+            exec_queue=exec_queue,
         )
+
+        artifact = self._kernel_bundle_cache.get(kernel_bundle_key)
+
+        if artifact is None:
+            # create a sycl::KernelBundle
+            kernel_bundle = dpctl_prog.create_program_from_spirv(
+                exec_queue,
+                device_driver_ir_module,
+                " ".join(self._create_sycl_kernel_bundle_flags),
+            )
+            self._kernel_bundle_cache.put(kernel_bundle_key, kernel_bundle)
+        else:
+            kernel_bundle = artifact
+
         #  get the sycl::kernel
         sycl_kernel = kernel_bundle.get_sycl_kernel(kernel_module_name)
 
