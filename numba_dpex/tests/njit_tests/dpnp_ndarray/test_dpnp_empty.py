@@ -13,6 +13,7 @@ dtypes = ["f8", dpnp.float32]
 usm_types = ["device", "shared", "host"]
 
 
+@pytest.mark.skip(reason="Disabling old dpnp.empty tests")
 @pytest.mark.parametrize("shape", shapes)
 @pytest.mark.parametrize("dtype", dtypes)
 @pytest.mark.parametrize("usm_type", usm_types)
