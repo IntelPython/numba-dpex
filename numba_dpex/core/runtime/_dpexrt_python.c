@@ -5,7 +5,7 @@
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// A Python module that provides constructors to create a Numba MemInfo
+/// A Python module that pprovides constructors to create a Numba MemInfo
 /// PyObject using a sycl USM allocator as the external memory allocator.
 /// The Module also provides the Numba box and unbox implementations for a
 /// dpnp.ndarray object.
@@ -336,6 +336,87 @@ error:
         __FILE__, __LINE__);
     free(mi);
     free(ext_alloca);
+    return NULL;
+}
+
+/*!
+ * @brief Creates a NRT_MemInfo object whose data is allocated using a USM
+ * allocator.
+ *
+ * @param    size         The size of memory (data) owned by the NRT_MemInfo
+ *                        object.
+ * @param    usm_type     The usm type of the memory.
+ * @param    device       The device on which the memory was allocated.
+ * @return   {return}     A new NRT_MemInfo object, NULL if no NRT_MemInfo
+ *                        object could be created.
+ */
+static NRT_MemInfo *
+DPEXRT_MemInfo_alloc(npy_intp size, size_t usm_type, const char *device)
+{
+    NRT_MemInfo *mi = NULL;
+    NRT_ExternalAllocator *ext_alloca = NULL;
+    MemInfoDtorInfo *midtor_info = NULL;
+    DPCTLSyclDeviceSelectorRef dselector = NULL;
+    DPCTLSyclDeviceRef dref = NULL;
+    DPCTLSyclQueueRef qref = NULL;
+
+    nrt_debug_print("DPEXRT-DEBUG: Inside DPEXRT_MemInfo_alloc  %s, line %d\n",
+                    __FILE__, __LINE__);
+    // Allocate a new NRT_MemInfo object
+    if (!(mi = (NRT_MemInfo *)malloc(sizeof(NRT_MemInfo)))) {
+        nrt_debug_print(
+            "DPEXRT-ERROR: Could not allocate a new NRT_MemInfo object.\n");
+        goto error;
+    }
+
+    if (!(dselector = DPCTLFilterSelector_Create(device))) {
+        nrt_debug_print(
+            "DPEXRT-ERROR: Could not create a sycl::device_selector from "
+            "filter string: %s at %s %d.\n",
+            device, __FILE__, __LINE__);
+        goto error;
+    }
+
+    if (!(dref = DPCTLDevice_CreateFromSelector(dselector)))
+        goto error;
+
+    if (!(qref = DPCTLQueue_CreateForDevice(dref, NULL, 0)))
+        goto error;
+
+    DPCTLDeviceSelector_Delete(dselector);
+    DPCTLDevice_Delete(dref);
+
+    // Allocate a new NRT_ExternalAllocator
+    if (!(ext_alloca = NRT_ExternalAllocator_new_for_usm(qref, usm_type)))
+        goto error;
+
+    if (!(midtor_info = MemInfoDtorInfo_new(mi, NULL)))
+        goto error;
+
+    mi->refct = 1; /* starts with 1 refct */
+    mi->dtor = usmndarray_meminfo_dtor;
+    mi->dtor_info = midtor_info;
+    mi->data = ext_alloca->malloc(size, qref);
+
+    if (mi->data == NULL)
+        goto error;
+
+    mi->size = size;
+    mi->external_allocator = ext_alloca;
+    nrt_debug_print(
+        "DPEXRT-DEBUG: DPEXRT_MemInfo_alloc mi=%p "
+        "external_allocator=%p for usm_type %zu on device %s, %s at %d\n",
+        mi, ext_alloca, usm_type, device, __FILE__, __LINE__);
+
+    return mi;
+
+error:
+    free(mi);
+    free(ext_alloca);
+    free(midtor_info);
+    DPCTLDeviceSelector_Delete(dselector);
+    DPCTLDevice_Delete(dref);
+
     return NULL;
 }
 
@@ -757,6 +838,7 @@ static PyObject *build_c_helpers_dict(void)
                  &DPEXRT_sycl_usm_ndarray_from_python);
     _declpointer("DPEXRT_sycl_usm_ndarray_to_python_acqref",
                  &DPEXRT_sycl_usm_ndarray_to_python_acqref);
+    _declpointer("DPEXRT_MemInfo_alloc", &DPEXRT_MemInfo_alloc);
     _declpointer("NRT_ExternalAllocator_new_for_usm",
                  &NRT_ExternalAllocator_new_for_usm);
 
@@ -796,6 +878,8 @@ MOD_INIT(_dpexrt_python)
     PyModule_AddObject(m, "dpnp_array_type", dpnp_array_type);
 
     Py_DECREF(dpnp_array_mod);
+    static PyTypeObject *dpnp_array_type_obj;
+    dpnp_array_type_obj = (PyTypeObject *)(dpnp_array_type);
 
     PyModule_AddObject(m, "NRT_ExternalAllocator_new_for_usm",
                        PyLong_FromVoidPtr(&NRT_ExternalAllocator_new_for_usm));
@@ -805,6 +889,8 @@ MOD_INIT(_dpexrt_python)
     PyModule_AddObject(
         m, "DPEXRT_sycl_usm_ndarray_to_python_acqref",
         PyLong_FromVoidPtr(&DPEXRT_sycl_usm_ndarray_to_python_acqref));
+    PyModule_AddObject(m, "DPEXRT_MemInfo_alloc",
+                       PyLong_FromVoidPtr(&DPEXRT_MemInfo_alloc));
 
     PyModule_AddObject(m, "c_helpers", build_c_helpers_dict());
     return MOD_SUCCESS_VAL(m);
