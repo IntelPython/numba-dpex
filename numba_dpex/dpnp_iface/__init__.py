@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+from . import arrayobj
+
 
 def ensure_dpnp(name):
     try:
@@ -23,5 +25,6 @@ def _init_dpnp():
 
 
 _init_dpnp()
+
 
 DEBUG = None
