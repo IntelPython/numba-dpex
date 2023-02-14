@@ -47,30 +47,79 @@ def common_impl(a, out, dpnp_func, print_debug):
         print("dpnp implementation")
 
 
-@overload(stubs.dpnp.cumsum)
-def dpnp_cumsum_impl(a):
+@register_jitable
+def common_impl_1(sycl_queue, a, out, dpnp_func, print_debug):
+    if a.size == 0:
+        raise ValueError("Passed Empty array")
+
+    event = dpnp_func(sycl_queue, a.ctypes.data, out.ctypes.data, a.size, 0)
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
+
+    dpnp_ext._dummy_liveness_func([a.size, out.size])
+
+    if print_debug:
+        print("dpnp implementation")
+
+
+import ctypes
+import os
+from ctypes import cdll
+
+import dpnp
+import numpy
+
+path = os.path.abspath(
+    "testlib.so"
+)  # testlib.so should be in the working directory
+ll = cdll.LoadLibrary(path)
+get_foo_ptr_sig = ctypes.CFUNCTYPE(ctypes.c_size_t)
+gfp = ctypes.cast(ll.get_foo_ptr, get_foo_ptr_sig)
+
+
+# @overload(stubs.dpnp.cumsum, target="dpex")
+@overload(dpnp.cumsum)
+def dpnp_cumsum_impl(a, out=None):
     name = "cumsum"
     dpnp_lowering.ensure_dpnp(name)
 
-    res_type = types.void
+    res_type = types.voidptr
     """
     dpnp source:
     https://github.com/IntelPython/dpnp/blob/0.5.1/dpnp/backend/kernels/dpnp_krnl_mathematical.cpp#L135
     Function declaration:
     void dpnp_cumsum_c(void* array1_in, void* result1, size_t size)
     """
-    sig = signature(res_type, types.voidptr, types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
+    sig = signature(
+        res_type,
+        types.intp,
+        types.voidptr,
+        types.voidptr,
+        types.intp,
+        types.intp,
+    )
+    dpnp_func = types.ExternalFunctionPointer(sig, get_pointer=lambda x: gfp())
+    sycl_queue = numba_dpex.core.runtime.get_queue_ref(a.queue)
 
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
-    def dpnp_impl(a):
-        out = np.arange(0, a.size, 1, a.dtype)
-        common_impl(a, out, dpnp_func, PRINT_DEBUG)
+    if isinstance(out, (types.Omitted, types.NoneType)) or out is None:
 
-        return out
+        def dpnp_impl(a, out=None):
+            out = dpnp.empty(a.size, a.dtype)
+            common_impl_1(sycl_queue, a, out, dpnp_func, PRINT_DEBUG)
 
-    return dpnp_impl
+            return out
+
+        return dpnp_impl
+    else:
+
+        def dpnp_impl(a, out=None):
+            common_impl_1(sycl_queue, a, out, dpnp_func, PRINT_DEBUG)
+
+            return out
+
+        return dpnp_impl
 
 
 @overload(stubs.dpnp.cumprod)
