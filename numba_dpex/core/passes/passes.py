@@ -25,17 +25,16 @@ from numba.core.errors import (
 )
 from numba.core.ir_utils import remove_dels
 from numba.core.typed_passes import NativeLowering
-from numba.parfors.parfor import Parfor
-from numba.parfors.parfor import ParforFusionPass as _parfor_ParforFusionPass
-from numba.parfors.parfor import ParforPass as _parfor_ParforPass
-from numba.parfors.parfor import (
-    ParforPreLoweringPass as _parfor_ParforPreLoweringPass,
-)
+from numba.core.typed_passes import PreParforPass as _parfor_PreParforPass
 from numba.parfors.parfor import swap_functions_map
 
 from numba_dpex import config
 
 from .lowerer import DPEXLowerer
+from .parfor import Parfor
+from .parfor import ParforFusionPass as _parfor_ParforFusionPass
+from .parfor import ParforPass as _parfor_ParforPass
+from .parfor import ParforPreLoweringPass as _parfor_ParforPreLoweringPass
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
@@ -147,49 +146,49 @@ class ConstantSizeStaticLocalMemoryPass(FunctionPass):
         return True
 
 
-# @register_pass(mutates_CFG=True, analysis_only=False)
-# class PreParforPass(FunctionPass):
-#     _name = "dpex_pre_parfor_pass"
+@register_pass(mutates_CFG=True, analysis_only=False)
+class PreParforPass(FunctionPass):
+    _name = "dpex_pre_parfor_pass"
 
-#     def __init__(self):
-#         FunctionPass.__init__(self)
+    def __init__(self):
+        FunctionPass.__init__(self)
 
-#     def run_pass(self, state):
-#         """
-#         Preprocessing for data-parallel computations.
-#         """
+    def run_pass(self, state):
+        """
+        Preprocessing for data-parallel computations.
+        """
 
-#         # Ensure we have an IR and type information.
-#         assert state.func_ir
-#         functions_map = swap_functions_map.copy()
-#         functions_map.pop(("dot", "numpy"), None)
-#         functions_map.pop(("sum", "numpy"), None)
-#         functions_map.pop(("prod", "numpy"), None)
-#         functions_map.pop(("argmax", "numpy"), None)
-#         functions_map.pop(("max", "numpy"), None)
-#         functions_map.pop(("argmin", "numpy"), None)
-#         functions_map.pop(("min", "numpy"), None)
-#         functions_map.pop(("mean", "numpy"), None)
+        # Ensure we have an IR and type information.
+        assert state.func_ir
+        functions_map = swap_functions_map.copy()
+        functions_map.pop(("dot", "numpy"), None)
+        functions_map.pop(("sum", "numpy"), None)
+        functions_map.pop(("prod", "numpy"), None)
+        functions_map.pop(("argmax", "numpy"), None)
+        functions_map.pop(("max", "numpy"), None)
+        functions_map.pop(("argmin", "numpy"), None)
+        functions_map.pop(("min", "numpy"), None)
+        functions_map.pop(("mean", "numpy"), None)
 
-#         preparfor_pass = _parfor_PreParforPass(
-#             state.func_ir,
-#             state.type_annotation.typemap,
-#             state.type_annotation.calltypes,
-#             state.typingctx,
-#             state.targetctx,
-#             state.flags.auto_parallel,
-#             state.parfor_diagnostics.replaced_fns,
-#             replace_functions_map=functions_map,
-#         )
+        preparfor_pass = _parfor_PreParforPass(
+            state.func_ir,
+            state.type_annotation.typemap,
+            state.type_annotation.calltypes,
+            state.typingctx,
+            state.targetctx,
+            state.flags.auto_parallel,
+            state.parfor_diagnostics.replaced_fns,
+            replace_functions_map=functions_map,
+        )
 
-#         preparfor_pass.run()
+        preparfor_pass.run()
 
-#         if config.DEBUG or config.DUMP_IR:
-#             name = state.func_ir.func_id.func_qualname
-#             print(("IR DUMP: %s" % name).center(80, "-"))
-#             state.func_ir.dump()
+        if config.DEBUG or config.DUMP_IR:
+            name = state.func_ir.func_id.func_qualname
+            print(("IR DUMP: %s" % name).center(80, "-"))
+            state.func_ir.dump()
 
-#         return True
+        return True
 
 
 # this is here so it pickles and for no other reason

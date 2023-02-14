@@ -165,6 +165,7 @@ def dpjit(*args, **kws):
         )
         del kws["forceobj"]
     kws.update({"nopython": True})
+    kws.update({"parallel": True})
     kws.update({"pipeline_class": DpjitCompiler})
 
     # FIXME: When trying to use dpex's target context, overloads do not work
