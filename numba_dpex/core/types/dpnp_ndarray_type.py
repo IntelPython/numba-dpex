@@ -23,6 +23,14 @@ class DpnpNdArray(USMNdArray):
     def is_internal(self):
         return True
 
+    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
+        if method == "__call__":
+            if not all(isinstance(inp, DpnpNdArray) for inp in inputs):
+                return NotImplemented
+            return DpnpNdArray
+        else:
+            return
+
 
 # --------------- Boxing/Unboxing logic for dpnp.ndarray ----------------------#
 
