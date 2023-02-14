@@ -18,3 +18,4 @@ exclude =
     __pycache__,
     _version.py,
     lowerer.py,
+    parfor.py
