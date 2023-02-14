@@ -8,6 +8,7 @@ import contextlib
 import shutil
 
 import dpctl
+import numpy
 import pytest
 from numba.tests.support import captured_stdout
 
@@ -213,3 +214,13 @@ def assert_auto_offloading(parfor_offloaded=1, parfor_offloaded_failure=0):
         "Expected %d parfor(s) to be not auto offloaded, instead got %d parfor(s) not auto offloaded"
         % (parfor_offloaded_failure, got_parfor_offloaded_failure)
     )
+
+
+def skip_unsupported_dtype(filter_string, dtype):
+    dtype = numpy.dtype(dtype)
+    device = dpctl.SyclDevice(filter_string)
+
+    if dtype == numpy.float64 and not device.has_aspect_fp64:
+        pytest.skip(
+            f"'{device.name}' device doesn't support '{dtype.name}' type"
+        )

@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import dpnp
 import numpy as np
 from numba import types
 from numba.core.extending import overload, register_jitable
@@ -11,6 +12,7 @@ import numba_dpex
 import numba_dpex.dpctl_iface as dpctl_functions
 import numba_dpex.dpnp_iface as dpnp_lowering
 import numba_dpex.dpnp_iface.dpnpimpl as dpnp_ext
+from numba_dpex.core.types import DpnpNdArray
 
 from . import stubs
 
@@ -47,30 +49,96 @@ def common_impl(a, out, dpnp_func, print_debug):
         print("dpnp implementation")
 
 
+def common_impl_ext(a, out, dpnp_func, print_debug):
+    pass
+
+
+@overload(common_impl_ext)
+def ol_common_impl_ext(a, out, dpnp_func, print_debug):
+    if a.device != out.device:
+        raise TypeError(
+            f"""Device for input and output arrays must be the same.\n"""
+            f"""Device for input array is '{a.device}'. Device for output array is '{out.device}'"""
+        )
+
+    sycl_queue = numba_dpex.core.runtime.get_queue_ref(a.queue)
+
+    def common_impl_ext_impl(a, out, dpnp_func, print_debug):
+        if a.size == 0:
+            raise ValueError("Passed Empty array")
+
+        event = dpnp_func(sycl_queue, a.ctypes.data, out.ctypes.data, a.size, 0)
+
+        dpctl_functions.event_wait(event)
+        dpctl_functions.event_delete(event)
+
+        dpnp_ext._dummy_liveness_func([a.size, out.size])
+
+        if print_debug:
+            print("dpnp implementation")
+
+    return common_impl_ext_impl
+
+
 @overload(stubs.dpnp.cumsum)
+@overload(dpnp.cumsum)
 def dpnp_cumsum_impl(a):
     name = "cumsum"
     dpnp_lowering.ensure_dpnp(name)
 
-    res_type = types.void
     """
     dpnp source:
     https://github.com/IntelPython/dpnp/blob/0.5.1/dpnp/backend/kernels/dpnp_krnl_mathematical.cpp#L135
     Function declaration:
     void dpnp_cumsum_c(void* array1_in, void* result1, size_t size)
     """
-    sig = signature(res_type, types.voidptr, types.voidptr, types.intp)
-    dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
 
-    PRINT_DEBUG = dpnp_lowering.DEBUG
+    if isinstance(a.dtype, types.Integer):
+        ret_dtype = np.int64
+    else:
+        ret_dtype = a.dtype
 
-    def dpnp_impl(a):
-        out = np.arange(0, a.size, 1, a.dtype)
-        common_impl(a, out, dpnp_func, PRINT_DEBUG)
+    if isinstance(a, DpnpNdArray):
+        res_type = types.voidptr
+        sig = signature(
+            res_type,
+            types.intp,
+            types.voidptr,
+            types.voidptr,
+            types.intp,
+            types.intp,
+        )
 
-        return out
+        dpnp_func = dpnp_ext.dpnp_func(
+            "dpnp_" + name + "_ext", [a.dtype.name, "NONE"], sig
+        )
+        device = a.device
 
-    return dpnp_impl
+        PRINT_DEBUG = dpnp_lowering.DEBUG
+
+        def dpnp_impl(a):
+            out = dpnp.empty(a.size, ret_dtype, device=device)
+            common_impl_ext(a, out, dpnp_func, PRINT_DEBUG)
+
+            return out
+
+        return dpnp_impl
+    else:
+        res_type = types.void
+        sig = signature(res_type, types.voidptr, types.voidptr, types.intp)
+        dpnp_func = dpnp_ext.dpnp_func(
+            "dpnp_" + name, [a.dtype.name, "NONE"], sig
+        )
+
+        PRINT_DEBUG = dpnp_lowering.DEBUG
+
+        def dpnp_impl(a):
+            out = np.empty(a.size, ret_dtype)
+            common_impl(a, out, dpnp_func, PRINT_DEBUG)
+
+            return out
+
+        return dpnp_impl
 
 
 @overload(stubs.dpnp.cumprod)

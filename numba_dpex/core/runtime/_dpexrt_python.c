@@ -968,6 +968,23 @@ DPEXRT_sycl_usm_ndarray_to_python_acqref(arystruct_t *arystruct,
     return (PyObject *)dpnp_ary;
 }
 
+/*!
+ * @brief A helper function to extract raw pointer to sycl queue form python
+ * dpctl.SyclQueue
+ *
+ * @param    syclQueue      dpctl.SyclQueue
+ * @return   {return}       Raw pointer to sycl queue
+ */
+static void *DPEXRT_get_queue_ref(PyObject *syclQueue)
+{
+    // TODO: add type check
+    struct PySyclQueueObject *pysycl = (struct PySyclQueueObject *)syclQueue;
+    PyGILState_STATE state = PyGILState_Ensure();
+    void *queue = SyclQueue_GetQueueRef(pysycl);
+    PyGILState_Release(state);
+    return queue;
+}
+
 /*----------------------------------------------------------------------------*/
 /*--------------------- The _dpexrt_python Python extension module  -- -------*/
 /*----------------------------------------------------------------------------*/
@@ -1049,5 +1066,8 @@ MOD_INIT(_dpexrt_python)
     PyModule_AddObject(m, "DPEXRT_MemInfo_fill",
                        PyLong_FromVoidPtr(&DPEXRT_MemInfo_fill));
     PyModule_AddObject(m, "c_helpers", build_c_helpers_dict());
+
+    PyModule_AddObject(m, "get_queue_ref",
+                       PyLong_FromVoidPtr(DPEXRT_get_queue_ref));
     return MOD_SUCCESS_VAL(m);
 }

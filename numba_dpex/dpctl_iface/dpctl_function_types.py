@@ -26,7 +26,7 @@ def dpctl_queue_memcpy():
 
 
 def dpctl_event_wait():
-    ret_type = types.voidptr
+    ret_type = types.void
     sig = signature(ret_type, types.voidptr)
     return types.ExternalFunction("DPCTLEvent_Wait", sig)
 
