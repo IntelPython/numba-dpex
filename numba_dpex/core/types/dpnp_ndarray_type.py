@@ -2,8 +2,11 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from numba.core import cgutils
+
+import dpnp
+from numba.core import cgutils, ir, types
 from numba.core.errors import NumbaNotImplementedError
+from numba.core.ir_utils import get_np_ufunc_typ, mk_unique_var
 from numba.core.pythonapi import NativeValue, PythonAPI, box, unbox
 from numba.np import numpy_support
 
@@ -30,6 +33,116 @@ class DpnpNdArray(USMNdArray):
             return DpnpNdArray
         else:
             return
+
+    def __allocate__(
+        self,
+        typingctx,
+        typemap,
+        calltypes,
+        lhs,
+        size_var,
+        dtype,
+        scope,
+        loc,
+        lhs_typ,
+        size_typ,
+        out,
+    ):
+        # g_np_var = Global(dpnp)
+        g_np_var = ir.Var(scope, mk_unique_var("$np_g_var"), loc)
+        if typemap:
+            typemap[g_np_var.name] = types.misc.Module(dpnp)
+        g_np = ir.Global("np", dpnp, loc)
+        g_np_assign = ir.Assign(g_np, g_np_var, loc)
+        # attr call: empty_attr = getattr(g_np_var, empty)
+        empty_attr_call = ir.Expr.getattr(g_np_var, "empty", loc)
+        attr_var = ir.Var(scope, mk_unique_var("$empty_attr_attr"), loc)
+        if typemap:
+            typemap[attr_var.name] = get_np_ufunc_typ(dpnp.empty)
+        attr_assign = ir.Assign(empty_attr_call, attr_var, loc)
+        # Assume str(dtype) returns a valid type
+        dtype_str = str(dtype)
+        # alloc call: lhs = empty_attr(size_var, typ_var)
+        typ_var = ir.Var(scope, mk_unique_var("$np_typ_var"), loc)
+        if typemap:
+            typemap[typ_var.name] = types.functions.NumberClass(dtype)
+        # If dtype is a datetime/timedelta with a unit,
+        # then it won't return a valid type and instead can be created
+        # with a string. i.e. "datetime64[ns]")
+        if (
+            isinstance(dtype, (types.NPDatetime, types.NPTimedelta))
+            and dtype.unit != ""
+        ):
+            typename_const = ir.Const(dtype_str, loc)
+            typ_var_assign = ir.Assign(typename_const, typ_var, loc)
+        else:
+            if dtype_str == "bool":
+                # empty doesn't like 'bool' sometimes (e.g. kmeans example)
+                dtype_str = "bool_"
+            np_typ_getattr = ir.Expr.getattr(g_np_var, dtype_str, loc)
+            typ_var_assign = ir.Assign(np_typ_getattr, typ_var, loc)
+        alloc_call = ir.Expr.call(attr_var, [size_var, typ_var], (), loc)
+
+        if calltypes:
+            cac = typemap[attr_var.name].get_call_type(
+                typingctx, [size_typ, types.functions.NumberClass(dtype)], {}
+            )
+            # By default, all calls to "empty" are typed as returning a standard
+            # NumPy ndarray.  If we are allocating a ndarray subclass here then
+            # just change the return type to be that of the subclass.
+            cac._return_type = (
+                lhs_typ.copy(layout="C") if lhs_typ.layout == "F" else lhs_typ
+            )
+            calltypes[alloc_call] = cac
+
+        if lhs_typ.layout == "F":
+            assert False and "F Arrays are not yet supported"
+            empty_c_typ = lhs_typ.copy(layout="C")
+            empty_c_var = ir.Var(scope, mk_unique_var("$empty_c_var"), loc)
+            if typemap:
+                typemap[empty_c_var.name] = lhs_typ.copy(layout="C")
+            empty_c_assign = ir.Assign(alloc_call, empty_c_var, loc)
+
+            # attr call: asfortranarray = getattr(g_np_var, asfortranarray)
+            asfortranarray_attr_call = ir.Expr.getattr(
+                g_np_var, "asfortranarray", loc
+            )
+            afa_attr_var = ir.Var(
+                scope, mk_unique_var("$asfortran_array_attr"), loc
+            )
+            if typemap:
+                typemap[afa_attr_var.name] = get_np_ufunc_typ(
+                    dpnp.asfortranarray
+                )
+            afa_attr_assign = ir.Assign(
+                asfortranarray_attr_call, afa_attr_var, loc
+            )
+            # call asfortranarray
+            asfortranarray_call = ir.Expr.call(
+                afa_attr_var, [empty_c_var], (), loc
+            )
+            if calltypes:
+                calltypes[asfortranarray_call] = typemap[
+                    afa_attr_var.name
+                ].get_call_type(typingctx, [empty_c_typ], {})
+
+            asfortranarray_assign = ir.Assign(asfortranarray_call, lhs, loc)
+
+            out.extend(
+                [
+                    g_np_assign,
+                    attr_assign,
+                    typ_var_assign,
+                    empty_c_assign,
+                    afa_attr_assign,
+                    asfortranarray_assign,
+                ]
+            )
+        else:
+            alloc_assign = ir.Assign(alloc_call, lhs, loc)
+            out.extend([g_np_assign, attr_assign, typ_var_assign, alloc_assign])
+
+        return out
 
 
 # --------------- Boxing/Unboxing logic for dpnp.ndarray ----------------------#
