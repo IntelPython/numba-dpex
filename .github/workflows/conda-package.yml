@@ -250,6 +250,8 @@ jobs:
 
       - name: Add dpnp skip variable
         run: echo "NUMBA_DPEX_TESTING_SKIP_NO_DPNP=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Smoke test
+        run: python -c "import numba_dpex.core.runtime._dpexrt_python"
       - name: Run tests
         run: |
           python -m pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }} -vv
