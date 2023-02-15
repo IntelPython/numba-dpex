@@ -16,6 +16,7 @@ from numba.core.typed_passes import (
 )
 
 from numba_dpex.core.exceptions import UnsupportedCompilationModeError
+from numba_dpex.core.passes.dpex_parfor_lower import ParforLower
 from numba_dpex.core.passes.passes import (
     DpexLowering,
     DumpParforDiagnostics,
