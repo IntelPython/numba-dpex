@@ -14,7 +14,6 @@ import numba_dpex.dpnp_iface.dpnpimpl as dpnp_ext
 
 from . import stubs
 
-
 @register_jitable
 def common_impl(a, out, dpnp_func, print_debug):
     if a.size == 0:
@@ -47,26 +46,49 @@ def common_impl(a, out, dpnp_func, print_debug):
         print("dpnp implementation")
 
 
+@register_jitable
+def common_impl_1(sycl_queue, a, out, dpnp_func, print_debug):
+    if a.size == 0:
+        raise ValueError("Passed Empty array")
+
+    event = dpnp_func(sycl_queue, a._data_ptr, out._data_ptr, a.size, 0)
+
+    dpctl_functions.event_wait(event)
+    dpctl_functions.event_delete(event)
+
+    dpnp_ext._dummy_liveness_func([a.size, out.size])
+
+    if print_debug:
+        print("dpnp implementation")
+
+import dpnp
+
 @overload(stubs.dpnp.cumsum)
 def dpnp_cumsum_impl(a):
     name = "cumsum"
     dpnp_lowering.ensure_dpnp(name)
 
-    res_type = types.void
+    res_type = types.voidptr
     """
     dpnp source:
     https://github.com/IntelPython/dpnp/blob/0.5.1/dpnp/backend/kernels/dpnp_krnl_mathematical.cpp#L135
     Function declaration:
     void dpnp_cumsum_c(void* array1_in, void* result1, size_t size)
     """
-    sig = signature(res_type, types.voidptr, types.voidptr, types.intp)
+    # sig = signature(res_type, types.voidptr, types.voidptr, types.intp)
+    sig = signature(res_type, types.intp, types.voidptr, types.voidptr, types.intp, types.intp)
     dpnp_func = dpnp_ext.dpnp_func("dpnp_" + name, [a.dtype.name, "NONE"], sig)
+    sycl_queue = numba_dpex.core.runtime.get_queue_ref(a.queue)
 
     PRINT_DEBUG = dpnp_lowering.DEBUG
 
+    # cmon_impl_1 = numba_dpex.dpjit(common_impl_1)
+
     def dpnp_impl(a):
-        out = np.arange(0, a.size, 1, a.dtype)
-        common_impl(a, out, dpnp_func, PRINT_DEBUG)
+        out = dpnp.empty(a.size, a.dtype)
+        common_impl_1(sycl_queue, a, out, dpnp_func, PRINT_DEBUG)
+        # out = np.arange(0, a.size, 1, a.dtype)
+        # common_impl(a, out, dpnp_func, PRINT_DEBUG)
 
         return out
 

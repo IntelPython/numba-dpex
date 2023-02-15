@@ -5,7 +5,7 @@
 from numba.core import datamodel, types
 from numba.core.datamodel.models import ArrayModel as DpnpNdArrayModel
 from numba.core.datamodel.models import OpaqueModel, PrimitiveModel, StructModel
-from numba.core.extending import register_model
+from numba.core.extending import register_model, make_attribute_wrapper
 
 from numba_dpex.utils import address_space
 
@@ -86,3 +86,4 @@ dpex_data_model_manager.register(DpnpNdArray, DpnpNdArrayModel)
 # Register the DpctlSyclQueue type with Numba's OpaqueModel
 register_model(DpctlSyclQueue)(OpaqueModel)
 dpex_data_model_manager.register(DpctlSyclQueue, OpaqueModel)
+make_attribute_wrapper(DpnpNdArray, 'data', '_data_ptr')
