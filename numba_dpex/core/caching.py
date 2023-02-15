@@ -2,77 +2,16 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import hashlib
 import sys
 from abc import ABCMeta, abstractmethod
 
 from numba.core.caching import CacheImpl, IndexDataCacheFile
-from numba.core.serialize import dumps
 
 from numba_dpex import config
-from numba_dpex.core.types import USMNdArray
 
 
-def build_key(
-    argtypes, pyfunc, codegen, backend=None, device_type=None, exec_queue=None
-):
-    """Constructs a key from python function, context, backend, the device
-    type and execution queue.
-
-    Compute index key for the given argument types and codegen. It includes a
-    description of the OS, target architecture and hashes of the bytecode for
-    the function and, if the function has a __closure__, a hash of the
-    cell_contents.type
-
-    Args:
-        argtypes : A tuple of numba types corresponding to the arguments to the
-        compiled function.
-        pyfunc : The Python function that is to be compiled and cached.
-        codegen (numba.core.codegen.Codegen):
-            The codegen object found from the target context.
-        backend (enum, optional): A 'backend_type' enum.
-            Defaults to None.
-        device_type (enum, optional): A 'device_type' enum.
-            Defaults to None.
-        exec_queue (dpctl._sycl_queue.SyclQueue', optional): A SYCL queue object.
-
-    Returns:
-        tuple: A tuple of return type, argtpes, magic_tuple of codegen
-            and another tuple of hashcodes from bytecode and cell_contents.
-    """
-
-    codebytes = pyfunc.__code__.co_code
-    if pyfunc.__closure__ is not None:
-        try:
-            cvars = tuple([x.cell_contents for x in pyfunc.__closure__])
-            # Note: cloudpickle serializes a function differently depending
-            #       on how the process is launched; e.g. multiprocessing.Process
-            cvarbytes = dumps(cvars)
-        except:
-            cvarbytes = b""  # a temporary solution for function template
-    else:
-        cvarbytes = b""
-
-    argtylist = list(argtypes)
-    for i, argty in enumerate(argtylist):
-        if isinstance(argty, USMNdArray):
-            # Convert the USMNdArray to an abridged type that disregards the
-            # usm_type, device, queue, address space attributes.
-            argtylist[i] = (argty.ndim, argty.dtype, argty.layout)
-
-    argtypes = tuple(argtylist)
-
-    return (
-        argtypes,
-        codegen.magic_tuple(),
-        backend,
-        device_type,
-        exec_queue,
-        (
-            hashlib.sha256(codebytes).hexdigest(),
-            hashlib.sha256(cvarbytes).hexdigest(),
-        ),
-    )
+def build_key(*args):
+    return tuple(args)
 
 
 class _CacheImpl(CacheImpl):
@@ -476,7 +415,6 @@ class LRUCache(AbstractCache):
                     )
                 )
             self._lookup[key].value = value
-            self.get(key)
             return
 
         if key in self._evicted:

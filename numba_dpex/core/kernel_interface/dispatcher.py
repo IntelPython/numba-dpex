@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
+import hashlib
 from collections.abc import Iterable
 from inspect import signature
 from warnings import warn
@@ -10,6 +11,7 @@ from warnings import warn
 import dpctl
 import dpctl.program as dpctl_prog
 from numba.core import sigutils
+from numba.core.serialize import dumps
 from numba.core.types import Array as NpArrayType
 from numba.core.types import void
 
@@ -85,6 +87,8 @@ class JitKernel:
         self._global_range = None
         self._local_range = None
 
+        self._func_hash = self._create_func_hash()
+
         # caching related attributes
         if not config.ENABLE_CACHE:
             self._cache = NullCache()
@@ -143,6 +147,28 @@ class JitKernel:
             self._has_specializations = False
             self._specialization_cache = NullCache()
 
+    def _create_func_hash(self):
+        """Creates a tuple of sha256 hashes out of code and variable bytes extracted from the compiled funtion."""
+
+        codebytes = self.pyfunc.__code__.co_code
+        if self.pyfunc.__closure__ is not None:
+            try:
+                cvars = tuple(
+                    [x.cell_contents for x in self.pyfunc.__closure__]
+                )
+                # Note: cloudpickle serializes a function differently depending
+                #       on how the process is launched; e.g. multiprocessing.Process
+                cvarbytes = dumps(cvars)
+            except:
+                cvarbytes = b""  # a temporary solution for function template
+        else:
+            cvarbytes = b""
+
+        return (
+            hashlib.sha256(codebytes).hexdigest(),
+            hashlib.sha256(cvarbytes).hexdigest(),
+        )
+
     @property
     def cache(self):
         return self._cache
@@ -151,7 +177,7 @@ class JitKernel:
     def cache_hits(self):
         return self._cache_hits
 
-    def _compile_and_cache(self, argtypes, cache):
+    def _compile_and_cache(self, argtypes, cache, key=None):
         """Helper function to compile the Python function or Numba FunctionIR
         object passed to a JitKernel and store it in an internal cache.
         """
@@ -171,11 +197,13 @@ class JitKernel:
         device_driver_ir_module = kernel.device_driver_ir_module
         kernel_module_name = kernel.module_name
 
-        key = build_key(
-            tuple(argtypes),
-            self.pyfunc,
-            kernel.target_context.codegen(),
-        )
+        if not key:
+            stripped_argtypes = self._strip_usm_metadata(argtypes)
+            codegen_magic_tuple = kernel.target_context.codegen().magic_tuple()
+            key = build_key(
+                stripped_argtypes, codegen_magic_tuple, self._func_hash
+            )
+
         cache.put(key, (device_driver_ir_module, kernel_module_name))
 
         return device_driver_ir_module, kernel_module_name
@@ -586,6 +614,20 @@ class JitKernel:
                 device=device,
             )
 
+    def _strip_usm_metadata(self, argtypes):
+        stripped_argtypes = []
+        for argty in argtypes:
+            if isinstance(argty, USMNdArray):
+                # Convert the USMNdArray to an abridged type that disregards the
+                # usm_type, device, queue, address space attributes.
+                stripped_argtypes.append(
+                    (argty.ndim, argty.dtype, argty.layout)
+                )
+            else:
+                stripped_argtypes.append(argty)
+
+        return tuple(stripped_argtypes)
+
     def __call__(self, *args):
         """Functor to launch a kernel."""
 
@@ -604,12 +646,12 @@ class JitKernel:
                 self.kernel_name, backend, JitKernel._supported_backends
             )
 
-        # load the kernel from cache
-        key = build_key(
-            tuple(argtypes),
-            self.pyfunc,
-            dpex_kernel_target.target_context.codegen(),
+        # Generate key used for cache lookup
+        stripped_argtypes = self._strip_usm_metadata(argtypes)
+        codegen_magic_tuple = (
+            dpex_kernel_target.target_context.codegen().magic_tuple()
         )
+        key = build_key(stripped_argtypes, codegen_magic_tuple, self._func_hash)
 
         # If the JitKernel was specialized then raise exception if argtypes
         # do not match one of the specialized versions.
@@ -630,15 +672,11 @@ class JitKernel:
                     device_driver_ir_module,
                     kernel_module_name,
                 ) = self._compile_and_cache(
-                    argtypes=argtypes,
-                    cache=self._cache,
+                    argtypes=argtypes, cache=self._cache, key=key
                 )
 
         kernel_bundle_key = build_key(
-            tuple(argtypes),
-            self.pyfunc,
-            dpex_kernel_target.target_context.codegen(),
-            exec_queue=exec_queue,
+            stripped_argtypes, codegen_magic_tuple, exec_queue, self._func_hash
         )
 
         artifact = self._kernel_bundle_cache.get(kernel_bundle_key)

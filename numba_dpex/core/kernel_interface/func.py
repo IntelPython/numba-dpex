@@ -5,14 +5,17 @@
 """_summary_
 """
 
+import hashlib
 
 from numba.core import sigutils, types
+from numba.core.serialize import dumps
 from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
 from numba_dpex import config
 from numba_dpex.core.caching import LRUCache, NullCache, build_key
 from numba_dpex.core.compiler import compile_with_dpex
 from numba_dpex.core.descriptor import dpex_kernel_target
+from numba_dpex.core.types import USMNdArray
 from numba_dpex.utils import npytypes_array_to_dpex_array
 
 
@@ -91,6 +94,8 @@ class DpexFunctionTemplate(object):
         self._debug = debug
         self._enable_cache = enable_cache
 
+        self._func_hash = self._create_func_hash()
+
         if not config.ENABLE_CACHE:
             self._cache = NullCache()
         elif self._enable_cache:
@@ -103,6 +108,28 @@ class DpexFunctionTemplate(object):
             self._cache = NullCache()
         self._cache_hits = 0
 
+    def _create_func_hash(self):
+        """Creates a tuple of sha256 hashes out of code and variable bytes extracted from the compiled funtion."""
+
+        codebytes = self._pyfunc.__code__.co_code
+        if self._pyfunc.__closure__ is not None:
+            try:
+                cvars = tuple(
+                    [x.cell_contents for x in self._pyfunc.__closure__]
+                )
+                # Note: cloudpickle serializes a function differently depending
+                #       on how the process is launched; e.g. multiprocessing.Process
+                cvarbytes = dumps(cvars)
+            except:
+                cvarbytes = b""  # a temporary solution for function template
+        else:
+            cvarbytes = b""
+
+        return (
+            hashlib.sha256(codebytes).hexdigest(),
+            hashlib.sha256(cvarbytes).hexdigest(),
+        )
+
     @property
     def cache(self):
         """Cache accessor"""
@@ -112,6 +139,20 @@ class DpexFunctionTemplate(object):
     def cache_hits(self):
         """Cache hit count accessor"""
         return self._cache_hits
+
+    def _strip_usm_metadata(self, argtypes):
+        stripped_argtypes = []
+        for argty in argtypes:
+            if isinstance(argty, USMNdArray):
+                # Convert the USMNdArray to an abridged type that disregards the
+                # usm_type, device, queue, address space attributes.
+                stripped_argtypes.append(
+                    (argty.ndim, argty.dtype, argty.layout)
+                )
+            else:
+                stripped_argtypes.append(argty)
+
+        return tuple(stripped_argtypes)
 
     def compile(self, args):
         """Compile a `numba_dpex.func` decorated function
@@ -132,11 +173,14 @@ class DpexFunctionTemplate(object):
             dpex_kernel_target.typing_context.resolve_argument_type(arg)
             for arg in args
         ]
-        key = build_key(
-            tuple(argtypes),
-            self._pyfunc,
-            dpex_kernel_target.target_context.codegen(),
+
+        # Generate key used for cache lookup
+        stripped_argtypes = self._strip_usm_metadata(argtypes)
+        codegen_magic_tuple = (
+            dpex_kernel_target.target_context.codegen().magic_tuple()
         )
+        key = build_key(stripped_argtypes, codegen_magic_tuple, self._func_hash)
+
         cres = self._cache.get(key)
         if cres is None:
             self._cache_hits += 1
