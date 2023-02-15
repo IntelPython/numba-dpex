@@ -177,7 +177,9 @@ def _llvm_spirv():
     return result
 
 
-packages = find_packages(include=["numba_dpex", "numba_dpex.*"])
+packages = find_packages(
+    include=["numba_dpex", "numba_dpex.*", "_dpexrt_python"]
+)
 build_requires = ["cython"]
 install_requires = [
     "numba >={}".format("0.56"),
