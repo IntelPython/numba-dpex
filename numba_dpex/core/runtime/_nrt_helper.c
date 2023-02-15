@@ -4,8 +4,15 @@
 
 #include "_nrt_helper.h"
 #include <assert.h>
-#include <stdatomic.h>
+
 #include <stdbool.h>
+
+#ifdef _MSC_VER
+#include "_stdatomic.h"
+#else
+#include <stdatomic.h>
+#endif
+
 /*
  * Global resources.
  */
