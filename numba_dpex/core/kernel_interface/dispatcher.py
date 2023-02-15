@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-import hashlib
 from collections.abc import Iterable
 from inspect import signature
 from warnings import warn
@@ -11,12 +10,11 @@ from warnings import warn
 import dpctl
 import dpctl.program as dpctl_prog
 from numba.core import sigutils
-from numba.core.serialize import dumps
 from numba.core.types import Array as NpArrayType
 from numba.core.types import void
 
 from numba_dpex import NdRange, Range, config
-from numba_dpex.core.caching import LRUCache, NullCache, build_key
+from numba_dpex.core.caching import LRUCache, NullCache
 from numba_dpex.core.descriptor import dpex_kernel_target
 from numba_dpex.core.exceptions import (
     ComputeFollowsDataInferenceError,
@@ -36,6 +34,11 @@ from numba_dpex.core.exceptions import (
 from numba_dpex.core.kernel_interface.arg_pack_unpacker import Packer
 from numba_dpex.core.kernel_interface.spirv_kernel import SpirvKernel
 from numba_dpex.core.types import USMNdArray
+from numba_dpex.core.utils import (
+    build_key,
+    create_func_hash,
+    strip_usm_metadata,
+)
 
 
 def get_ordered_arg_access_types(pyfunc, access_types):
@@ -87,7 +90,7 @@ class JitKernel:
         self._global_range = None
         self._local_range = None
 
-        self._func_hash = self._create_func_hash()
+        self._func_hash = create_func_hash(pyfunc)
 
         # caching related attributes
         if not config.ENABLE_CACHE:
@@ -147,28 +150,6 @@ class JitKernel:
             self._has_specializations = False
             self._specialization_cache = NullCache()
 
-    def _create_func_hash(self):
-        """Creates a tuple of sha256 hashes out of code and variable bytes extracted from the compiled funtion."""
-
-        codebytes = self.pyfunc.__code__.co_code
-        if self.pyfunc.__closure__ is not None:
-            try:
-                cvars = tuple(
-                    [x.cell_contents for x in self.pyfunc.__closure__]
-                )
-                # Note: cloudpickle serializes a function differently depending
-                #       on how the process is launched; e.g. multiprocessing.Process
-                cvarbytes = dumps(cvars)
-            except:
-                cvarbytes = b""  # a temporary solution for function template
-        else:
-            cvarbytes = b""
-
-        return (
-            hashlib.sha256(codebytes).hexdigest(),
-            hashlib.sha256(cvarbytes).hexdigest(),
-        )
-
     @property
     def cache(self):
         return self._cache
@@ -198,7 +179,7 @@ class JitKernel:
         kernel_module_name = kernel.module_name
 
         if not key:
-            stripped_argtypes = self._strip_usm_metadata(argtypes)
+            stripped_argtypes = strip_usm_metadata(argtypes)
             codegen_magic_tuple = kernel.target_context.codegen().magic_tuple()
             key = build_key(
                 stripped_argtypes, codegen_magic_tuple, self._func_hash
@@ -614,20 +595,6 @@ class JitKernel:
                 device=device,
             )
 
-    def _strip_usm_metadata(self, argtypes):
-        stripped_argtypes = []
-        for argty in argtypes:
-            if isinstance(argty, USMNdArray):
-                # Convert the USMNdArray to an abridged type that disregards the
-                # usm_type, device, queue, address space attributes.
-                stripped_argtypes.append(
-                    (argty.ndim, argty.dtype, argty.layout)
-                )
-            else:
-                stripped_argtypes.append(argty)
-
-        return tuple(stripped_argtypes)
-
     def __call__(self, *args):
         """Functor to launch a kernel."""
 
@@ -647,7 +614,7 @@ class JitKernel:
             )
 
         # Generate key used for cache lookup
-        stripped_argtypes = self._strip_usm_metadata(argtypes)
+        stripped_argtypes = strip_usm_metadata(argtypes)
         codegen_magic_tuple = (
             dpex_kernel_target.target_context.codegen().magic_tuple()
         )

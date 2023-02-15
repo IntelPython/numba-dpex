@@ -10,10 +10,6 @@ from numba.core.caching import CacheImpl, IndexDataCacheFile
 from numba_dpex import config
 
 
-def build_key(*args):
-    return tuple(args)
-
-
 class _CacheImpl(CacheImpl):
     """Implementation of `CacheImpl` to be used by subclasses of `_Cache`.
 
@@ -414,7 +410,13 @@ class LRUCache(AbstractCache):
                         self._name, len(self._lookup), str(key)
                     )
                 )
-            self._lookup[key].value = value
+            node = self._lookup[key]
+            node.value = value
+
+            if node is not self._tail:
+                self._unlink_node(node)
+                self._append_tail(node)
+
             return
 
         if key in self._evicted:
