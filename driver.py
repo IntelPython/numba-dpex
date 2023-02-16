@@ -9,13 +9,13 @@ def vecadd(a, b):
     return a + b
 
 
-@dpex.dpjit
-def sin(a):
-    return np.sin(a)
+# @dpex.dpjit
+# def sin(a):
+#     return np.sin(a)
 
 
 a = dpnp.ones(10)
 b = dpnp.ones(10)
-# c = vecadd(a, b)
+c = vecadd(a, b)
 
-a = sin(a)
+# a = sin(a)

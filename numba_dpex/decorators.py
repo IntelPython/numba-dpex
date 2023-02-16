@@ -16,7 +16,7 @@ from numba_dpex.core.kernel_interface.func import (
     compile_func,
     compile_func_template,
 )
-from numba_dpex.core.pipelines.dpjit_pipeline import DpjitCompiler
+from numba_dpex.core.pipelines.dpjit_compiler import DpjitCompiler
 
 
 def kernel(
