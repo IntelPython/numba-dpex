@@ -8,6 +8,7 @@ from llvmlite.ir import Constant
 from numba import errors, types
 from numba.core import cgutils
 from numba.core.typing import signature
+from numba.core.typing.npydecl import parse_dtype as ty_parse_dtype
 from numba.core.typing.npydecl import parse_shape
 from numba.extending import intrinsic, overload, overload_classmethod
 from numba.np.arrayobj import (
@@ -16,6 +17,7 @@ from numba.np.arrayobj import (
     make_array,
     populate_array,
 )
+from numba.np.numpy_support import is_nonelike
 
 from numba_dpex.core.runtime import context as dpexrt
 from numba_dpex.core.types import DpnpNdArray
@@ -263,6 +265,15 @@ def ol_dpnp_empty(
     if not ndim:
         raise errors.TypingError("Could not infer the rank of the ndarray")
 
+    # If a dtype value was passed in, then try to convert it to the
+    # coresponding Numba type. If None was passed, the default, then pass None
+    # to the DpnpNdArray constructor. The default dtype will be derived based
+    # on the behavior defined in dpctl.tensor.usm_ndarray.
+    if not is_nonelike(dtype):
+        nb_dtype = ty_parse_dtype(dtype)
+    else:
+        nb_dtype = None
+
     if usm_type is not None:
         usm_type = _parse_usm_type(usm_type)
     else:
@@ -275,7 +286,7 @@ def ol_dpnp_empty(
 
     if ndim is not None:
         retty = DpnpNdArray(
-            dtype=dtype,
+            dtype=nb_dtype,
             ndim=ndim,
             usm_type=usm_type,
             device=device,
