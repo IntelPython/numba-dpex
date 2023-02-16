@@ -16,9 +16,8 @@ from numba.core.typed_passes import (
 )
 
 from numba_dpex.core.exceptions import UnsupportedCompilationModeError
-from numba_dpex.core.passes.dpex_parfor_lower import ParforLower
+from numba_dpex.core.passes import ParforLoweringPass
 from numba_dpex.core.passes.passes import (
-    DpexLowering,
     DumpParforDiagnostics,
     NoPythonBackend,
     ParforFusionPass,
@@ -73,7 +72,7 @@ class _DpjitPassBuilder(object):
         pm.add_pass(IRLegalization, "ensure IR is legal prior to lowering")
 
         # lower
-        pm.add_pass(DpexLowering, "Custom Lowerer with auto-offload support")
+        pm.add_pass(ParforLoweringPass, "Custom lowerer for dpex parfor nodes")
         pm.add_pass(NoPythonBackend, "nopython mode backend")
         pm.add_pass(DumpParforDiagnostics, "dump parfor diagnostics")
 
