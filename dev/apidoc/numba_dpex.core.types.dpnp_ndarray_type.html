@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.types.dpnp_ndarray_type module &mdash; numba-dpex 0.20.0dev2+8.g8d0c8ea8 documentation</title>
+  <title>numba_dpex.core.types.dpnp_ndarray_type module &mdash; numba-dpex 0.20.0dev2+24.gbf100869 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -88,7 +88,33 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.types.dpnp_ndarray_type.</span></span><span class="sig-name descname"><span class="pre">DpnpNdArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="numba_dpex.core.types.usm_ndarray_type.html#numba_dpex.core.types.usm_ndarray_type.USMNdArray" title="numba_dpex.core.types.usm_ndarray_type.USMNdArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">USMNdArray</span></code></a></p>
 <p>The Numba type to represent an dpnp.ndarray. The type has the same
-structure as USMNdArray used to represnet dpctl.tensor.usm_ndarray.</p>
+structure as USMNdArray used to represent dpctl.tensor.usm_ndarray.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray.is_internal">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_internal</span></span><a class="headerlink" href="#numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray.is_internal" title="Permalink to this definition"></a></dt>
+<dd><p>Returns True if this class is an internally defined Numba type by
+virtue of the module in which it is instantiated, False else.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.types.dpnp_ndarray_type.box_array">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.types.dpnp_ndarray_type.</span></span><span class="sig-name descname"><span class="pre">box_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.types.dpnp_ndarray_type.box_array" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.types.dpnp_ndarray_type.unbox_dpnp_nd_array">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.types.dpnp_ndarray_type.</span></span><span class="sig-name descname"><span class="pre">unbox_dpnp_nd_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.types.dpnp_ndarray_type.unbox_dpnp_nd_array" title="Permalink to this definition"></a></dt>
+<dd><p>Converts a dpnp.ndarray object to a Numba internal array structure.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>typ : The Numba type of the PyObject
+obj : The actual PyObject to be unboxed
+c :</p>
+</dd>
+<dt>Returns:</dt><dd><p>_type_: _description_</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

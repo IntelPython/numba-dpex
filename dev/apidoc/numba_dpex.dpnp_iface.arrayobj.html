@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.dpnp_ndarray package &mdash; numba-dpex 0.20.0dev2+8.g8d0c8ea8 documentation</title>
+  <title>numba_dpex.dpnp_iface.arrayobj module &mdash; numba-dpex 0.20.0dev2+24.gbf100869 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -71,9 +71,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">numba_dpex.core.dpnp_ndarray package</li>
+      <li class="breadcrumb-item active">numba_dpex.dpnp_iface.arrayobj module</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/apidoc/numba_dpex.core.dpnp_ndarray.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/apidoc/numba_dpex.dpnp_iface.arrayobj.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -81,24 +81,36 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="numba-dpex-core-dpnp-ndarray-package">
-<h1>numba_dpex.core.dpnp_ndarray package<a class="headerlink" href="#numba-dpex-core-dpnp-ndarray-package" title="Permalink to this heading"></a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.dpnp_ndarray.dpnp_empty.html">numba_dpex.core.dpnp_ndarray.dpnp_empty module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.dpnp_ndarray.dpnp_empty.html#numba_dpex.core.dpnp_ndarray.dpnp_empty.impl_dpnp_empty"><code class="docutils literal notranslate"><span class="pre">impl_dpnp_empty()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.dpnp_ndarray.dpnp_empty.html#numba_dpex.core.dpnp_ndarray.dpnp_empty.parse_usm_type"><code class="docutils literal notranslate"><span class="pre">parse_usm_type()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.dpnp_ndarray.dpnp_empty.html#numba_dpex.core.dpnp_ndarray.dpnp_empty.type_dpnp_empty"><code class="docutils literal notranslate"><span class="pre">type_dpnp_empty()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</div>
-</section>
-<section id="module-numba_dpex.core.dpnp_ndarray">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-numba_dpex.core.dpnp_ndarray" title="Permalink to this heading"></a></h2>
-</section>
+  <section id="module-numba_dpex.dpnp_iface.arrayobj">
+<span id="numba-dpex-dpnp-iface-arrayobj-module"></span><h1>numba_dpex.dpnp_iface.arrayobj module<a class="headerlink" href="#module-numba_dpex.dpnp_iface.arrayobj" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.arrayobj.</span></span><span class="sig-name descname"><span class="pre">ol_dpnp_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty" title="Permalink to this definition"></a></dt>
+<dd><p>Implementation of an overload to support dpnp.empty inside a jit
+function.</p>
+<dl>
+<dt>Args:</dt><dd><p>shape (tuple): Dimensions of the array to be created.
+dtype optional): Data type of the array. Can be typestring,</p>
+<blockquote>
+<div><p>a <cite>numpy.dtype</cite> object, <cite>numpy</cite> char string, or a numpy
+scalar type. Default: None</p>
+</div></blockquote>
+<dl class="simple">
+<dt>usm_type (“device”|”shared”|”host”, optional): The type of SYCL USM</dt><dd><p>allocation for the output array. Default: <cite>“device”</cite>.</p>
+</dd>
+<dt>device (optional): array API concept of device where the output array</dt><dd><p>is created. <cite>device</cite> can be <cite>None</cite>, a oneAPI filter selector string,
+an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclDevice</span></code> corresponding to a
+non-partitioned SYCL device, an instance of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code>, or a <cite>Device</cite> object returnedby
+<cite>dpctl.tensor.usm_array.device</cite>. Default: <cite>None</cite>.</p>
+</dd>
+</dl>
+<p>sycl_queue (<code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code>, optional): Not supported.</p>
+</dd>
+</dl>
+<p>Returns: Numba implementation of the dpnp.empty</p>
+</dd></dl>
+
 </section>
 
 

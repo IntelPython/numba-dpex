@@ -7,6 +7,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   numba_dpex.dpnp_iface.arrayobj
    numba_dpex.dpnp_iface.dpnp_array_creations_impl
    numba_dpex.dpnp_iface.dpnp_array_ops_impl
    numba_dpex.dpnp_iface.dpnp_fptr_interface

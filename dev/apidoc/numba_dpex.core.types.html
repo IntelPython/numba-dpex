@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.types package &mdash; numba-dpex 0.20.0dev2+8.g8d0c8ea8 documentation</title>
+  <title>numba_dpex.core.types package &mdash; numba-dpex 0.20.0dev2+24.gbf100869 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -97,8 +97,20 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.types.dpctl_types.html">numba_dpex.core.types.dpctl_types module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue"><code class="docutils literal notranslate"><span class="pre">DpctlSyclQueue</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.box_pyobject"><code class="docutils literal notranslate"><span class="pre">box_pyobject()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.type_interval"><code class="docutils literal notranslate"><span class="pre">type_interval()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.unbox_sycl_queue"><code class="docutils literal notranslate"><span class="pre">unbox_sycl_queue()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.types.dpnp_ndarray_type.html">numba_dpex.core.types.dpnp_ndarray_type module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.dpnp_ndarray_type.html#numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray"><code class="docutils literal notranslate"><span class="pre">DpnpNdArray</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.dpnp_ndarray_type.html#numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray"><code class="docutils literal notranslate"><span class="pre">DpnpNdArray</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.types.dpnp_ndarray_type.html#numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray.is_internal"><code class="docutils literal notranslate"><span class="pre">DpnpNdArray.is_internal</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.dpnp_ndarray_type.html#numba_dpex.core.types.dpnp_ndarray_type.box_array"><code class="docutils literal notranslate"><span class="pre">box_array()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.dpnp_ndarray_type.html#numba_dpex.core.types.dpnp_ndarray_type.unbox_dpnp_nd_array"><code class="docutils literal notranslate"><span class="pre">unbox_dpnp_nd_array()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.types.numba_types_short_names.html">numba_dpex.core.types.numba_types_short_names module</a></li>
@@ -152,11 +164,28 @@ in subclasses.</p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.core.types.DpctlSyclQueue">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.types.</span></span><span class="sig-name descname"><span class="pre">DpctlSyclQueue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.types.DpctlSyclQueue" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></p>
+<p>A Numba type to represent a dpctl.SyclQueue PyObject.</p>
+<p>For now, a dpctl.SyclQueue is represented as a Numba opaque type that allows
+passing in and using a SyclQueue object as an opaque pointer type inside
+Numba.</p>
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.core.types.DpnpNdArray">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.types.</span></span><span class="sig-name descname"><span class="pre">DpnpNdArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.types.DpnpNdArray" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="numba_dpex.core.types.usm_ndarray_type.html#numba_dpex.core.types.usm_ndarray_type.USMNdArray" title="numba_dpex.core.types.usm_ndarray_type.USMNdArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">USMNdArray</span></code></a></p>
 <p>The Numba type to represent an dpnp.ndarray. The type has the same
-structure as USMNdArray used to represnet dpctl.tensor.usm_ndarray.</p>
+structure as USMNdArray used to represent dpctl.tensor.usm_ndarray.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.types.DpnpNdArray.is_internal">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_internal</span></span><a class="headerlink" href="#numba_dpex.core.types.DpnpNdArray.is_internal" title="Permalink to this definition"></a></dt>
+<dd><p>Returns True if this class is an internally defined Numba type by
+virtue of the module in which it is instantiated, False else.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
