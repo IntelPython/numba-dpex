@@ -5,7 +5,6 @@
 from numba.core import cgutils, types
 from numba.core.ir_utils import legalize_names
 
-from numba_dpex import numpy_usm_shared as nus
 from numba_dpex import utils
 from numba_dpex.dpctl_iface import DpctlCAPIFnBuilder
 from numba_dpex.dpctl_iface._helpers import numba_type_to_dpctl_typenum
@@ -251,79 +250,60 @@ class KernelLaunchOps:
                 context=self.context, type=types.voidptr
             )
 
-            if isinstance(arg_type, nus.UsmSharedArrayType):
-                self._form_kernel_arg_and_arg_ty(
+            malloc_fn = DpctlCAPIFnBuilder.get_dpctl_malloc_shared(
+                builder=self.builder, context=self.context
+            )
+            memcpy_fn = DpctlCAPIFnBuilder.get_dpctl_queue_memcpy(
+                builder=self.builder, context=self.context
+            )
+            event_del_fn = DpctlCAPIFnBuilder.get_dpctl_event_delete(
+                builder=self.builder, context=self.context
+            )
+            event_wait_fn = DpctlCAPIFnBuilder.get_dpctl_event_wait(
+                builder=self.builder, context=self.context
+            )
+
+            # Not known to be USM so we need to copy to USM.
+            buffer_name = "buffer_ptr" + str(self.cur_arg)
+            # Create void * to hold new USM buffer.
+            buffer_ptr = cgutils.alloca_once(
+                self.builder,
+                utils.get_llvm_type(context=self.context, type=types.voidptr),
+                name=buffer_name,
+            )
+            # Setup the args to the USM allocator, size and SYCL queue.
+            args = [
+                self.builder.load(total_size),
+                self.builder.load(sycl_queue_val),
+            ]
+            # Call USM shared allocator and store in buffer_ptr.
+            self.builder.store(self.builder.call(malloc_fn, args), buffer_ptr)
+
+            if legal_names[var] in modified_arrays:
+                self.write_buffs.append((buffer_ptr, total_size, data_member))
+            else:
+                self.read_only_buffs.append(
+                    (buffer_ptr, total_size, data_member)
+                )
+
+            # We really need to detect when an array needs to be copied over
+            if index < self.num_inputs:
+                args = [
+                    self.builder.load(sycl_queue_val),
+                    self.builder.load(buffer_ptr),
                     self.builder.bitcast(
                         self.builder.load(data_member),
                         utils.get_llvm_type(
                             context=self.context, type=types.voidptr
                         ),
                     ),
-                    ty,
-                )
-            else:
-                malloc_fn = DpctlCAPIFnBuilder.get_dpctl_malloc_shared(
-                    builder=self.builder, context=self.context
-                )
-                memcpy_fn = DpctlCAPIFnBuilder.get_dpctl_queue_memcpy(
-                    builder=self.builder, context=self.context
-                )
-                event_del_fn = DpctlCAPIFnBuilder.get_dpctl_event_delete(
-                    builder=self.builder, context=self.context
-                )
-                event_wait_fn = DpctlCAPIFnBuilder.get_dpctl_event_wait(
-                    builder=self.builder, context=self.context
-                )
-
-                # Not known to be USM so we need to copy to USM.
-                buffer_name = "buffer_ptr" + str(self.cur_arg)
-                # Create void * to hold new USM buffer.
-                buffer_ptr = cgutils.alloca_once(
-                    self.builder,
-                    utils.get_llvm_type(
-                        context=self.context, type=types.voidptr
-                    ),
-                    name=buffer_name,
-                )
-                # Setup the args to the USM allocator, size and SYCL queue.
-                args = [
                     self.builder.load(total_size),
-                    self.builder.load(sycl_queue_val),
                 ]
-                # Call USM shared allocator and store in buffer_ptr.
-                self.builder.store(
-                    self.builder.call(malloc_fn, args), buffer_ptr
-                )
+                event_ref = self.builder.call(memcpy_fn, args)
+                self.builder.call(event_wait_fn, [event_ref])
+                self.builder.call(event_del_fn, [event_ref])
 
-                if legal_names[var] in modified_arrays:
-                    self.write_buffs.append(
-                        (buffer_ptr, total_size, data_member)
-                    )
-                else:
-                    self.read_only_buffs.append(
-                        (buffer_ptr, total_size, data_member)
-                    )
-
-                # We really need to detect when an array needs to be copied over
-                if index < self.num_inputs:
-                    args = [
-                        self.builder.load(sycl_queue_val),
-                        self.builder.load(buffer_ptr),
-                        self.builder.bitcast(
-                            self.builder.load(data_member),
-                            utils.get_llvm_type(
-                                context=self.context, type=types.voidptr
-                            ),
-                        ),
-                        self.builder.load(total_size),
-                    ]
-                    event_ref = self.builder.call(memcpy_fn, args)
-                    self.builder.call(event_wait_fn, [event_ref])
-                    self.builder.call(event_del_fn, [event_ref])
-
-                self._form_kernel_arg_and_arg_ty(
-                    self.builder.load(buffer_ptr), ty
-                )
+            self._form_kernel_arg_and_arg_ty(self.builder.load(buffer_ptr), ty)
 
             # Handle shape
             shape_member = self.builder.gep(
