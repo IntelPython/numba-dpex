@@ -8,7 +8,14 @@
 #include <stdbool.h>
 
 #ifdef _MSC_VER
-#include "_stdatomic.h"
+#include <stddef.h>
+#include <stdint.h>
+#include <windows.h>
+typedef intptr_t atomic_size_t;
+#ifdef _WIN64
+#define atomic_fetch_add(obj, op) InterlockedExchangeAdd64(obj, op)
+#endif
+#define atomic_fetch_add_explicit(obj, op, od) atomic_fetch_add(obj, op)
 #else
 #include <stdatomic.h>
 #endif
