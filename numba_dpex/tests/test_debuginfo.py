@@ -15,7 +15,7 @@ from numba_dpex.tests._helper import override_config
 
 debug_options = [True, False]
 
-f32arrty = usm_ndarray(float32, 1, "C")
+f32arrty = usm_ndarray(ndim=1, dtype=float32, layout="C")
 
 
 @pytest.fixture(params=debug_options)

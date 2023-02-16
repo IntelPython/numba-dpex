@@ -13,8 +13,8 @@ from numba_dpex.core.exceptions import (
 )
 from numba_dpex.core.kernel_interface.utils import Range
 
-i64arrty = usm_ndarray(int64, 1, "C")
-f32arrty = usm_ndarray(float32, 1, "C")
+i64arrty = usm_ndarray(ndim=1, dtype=int64, layout="C")
+f32arrty = usm_ndarray(ndim=1, dtype=float32, layout="C")
 
 specialized_kernel1 = dpex.kernel((i64arrty, i64arrty, i64arrty))
 specialized_kernel2 = dpex.kernel(

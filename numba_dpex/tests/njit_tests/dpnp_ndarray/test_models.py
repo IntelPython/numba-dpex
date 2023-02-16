@@ -16,7 +16,9 @@ def test_model_for_DpnpNdArray():
 
     """
 
-    model = default_manager.lookup(DpnpNdArray(types.float64, 1, "C"))
+    model = default_manager.lookup(
+        DpnpNdArray(ndim=1, dtype=types.float64, layout="C")
+    )
     assert isinstance(model, ArrayModel)
 
 

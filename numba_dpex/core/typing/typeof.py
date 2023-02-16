@@ -2,14 +2,18 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+from dpctl import SyclQueue
 from dpctl.tensor import usm_ndarray
 from dpnp import ndarray
+from numba.core import types
 from numba.extending import typeof_impl
 from numba.np import numpy_support
 
-from numba_dpex.core.types.dpnp_ndarray_type import DpnpNdArray
-from numba_dpex.core.types.usm_ndarray_type import USMNdArray
 from numba_dpex.utils import address_space
+
+from ..types.dpctl_types import sycl_queue_ty
+from ..types.dpnp_ndarray_type import DpnpNdArray
+from ..types.usm_ndarray_type import USMNdArray
 
 
 def _typeof_helper(val, array_class_type):
@@ -90,3 +94,17 @@ def typeof_dpnp_ndarray(val, c):
     Returns: The Numba type corresponding to dpnp.ndarray
     """
     return _typeof_helper(val, DpnpNdArray)
+
+
+@typeof_impl.register(SyclQueue)
+def typeof_dpctl_sycl_queue(val, c):
+    """Registers the type inference implementation function for a
+    dpctl.SyclQueue PyObject.
+
+    Args:
+        val : An instance of dpctl.SyclQueue.
+        c : Unused argument used to be consistent with Numba API.
+
+    Returns: A numba_dpex.core.types.dpctl_types.DpctlSyclQueue instance.
+    """
+    return sycl_queue_ty

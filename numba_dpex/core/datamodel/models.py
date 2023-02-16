@@ -4,11 +4,12 @@
 
 from numba.core import datamodel, types
 from numba.core.datamodel.models import ArrayModel as DpnpNdArrayModel
-from numba.core.datamodel.models import PrimitiveModel, StructModel
+from numba.core.datamodel.models import OpaqueModel, PrimitiveModel, StructModel
 from numba.core.extending import register_model
 
-from numba_dpex.core.types import Array, DpnpNdArray, USMNdArray
 from numba_dpex.utils import address_space
+
+from ..types import Array, DpctlSyclQueue, DpnpNdArray, USMNdArray
 
 
 class GenericPointerModel(PrimitiveModel):
@@ -81,3 +82,7 @@ dpex_data_model_manager.register(USMNdArray, ArrayModel)
 # Register the DpnpNdArray type with the Numba ArrayModel
 register_model(DpnpNdArray)(DpnpNdArrayModel)
 dpex_data_model_manager.register(DpnpNdArray, DpnpNdArrayModel)
+
+# Register the DpctlSyclQueue type with Numba's OpaqueModel
+register_model(DpctlSyclQueue)(OpaqueModel)
+dpex_data_model_manager.register(DpctlSyclQueue, OpaqueModel)
