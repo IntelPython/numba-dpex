@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -11,7 +11,7 @@ import numba_dpex as dpex
 from numba_dpex import float32, usm_ndarray, void
 from numba_dpex.tests._helper import filter_strings
 
-f32arrty = usm_ndarray(float32, 1, "C")
+f32arrty = usm_ndarray(ndim=1, dtype=float32, layout="C")
 
 
 @pytest.mark.parametrize("filter_str", filter_strings)

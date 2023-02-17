@@ -1,11 +1,15 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
 """Defines the target and typing contexts for numba_dpex's dpjit decorator.
 """
 
+from numba.core import utils
+from numba.core.codegen import JITCPUCodegen
+from numba.core.compiler_lock import global_compiler_lock
 from numba.core.cpu import CPUContext
+from numba.core.imputils import Registry, RegistryLoader
 from numba.core.target_extension import CPU, target_registry
 
 
@@ -19,7 +23,38 @@ DPEX_TARGET_NAME = "dpex"
 # permits lookup and reference in user space by the string "dpex"
 target_registry[DPEX_TARGET_NAME] = Dpex
 
+# This is the function registry for the dpu, it just has one registry, this one!
+dpex_function_registry = Registry()
+
 
 class DpexTargetContext(CPUContext):
     def __init__(self, typingctx, target=DPEX_TARGET_NAME):
         super().__init__(typingctx, target)
+
+    @global_compiler_lock
+    def init(self):
+        self.is32bit = utils.MACHINE_BITS == 32
+        self._internal_codegen = JITCPUCodegen("numba.exec")
+        self.lower_extensions = {}
+        # Initialize NRT runtime
+        # rtsys.initialize(self)
+        self.refresh()
+
+    @utils.cached_property
+    def dpexrt(self):
+        from numba_dpex.core.runtime.context import DpexRTContext
+
+        return DpexRTContext(self)
+
+    def refresh(self):
+        registry = dpex_function_registry
+        try:
+            loader = self._registries[registry]
+        except KeyError:
+            loader = RegistryLoader(registry)
+            self._registries[registry] = loader
+        self.install_registry(registry)
+        # Also refresh typing context, since @overload declarations can
+        # affect it.
+        self.typing_context.refresh()
+        super().refresh()

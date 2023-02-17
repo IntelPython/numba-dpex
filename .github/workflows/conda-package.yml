@@ -36,7 +36,7 @@ jobs:
         run: ./scripts/build_conda_package.sh ${{ matrix.python }}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
           path: /usr/share/miniconda/conda-bld/linux-64/${{ env.PACKAGE_NAME }}-*.tar.bz2
@@ -64,7 +64,7 @@ jobs:
           activate-environment: ""
 
       - name: Cache conda packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           CACHE_NUMBER: 0  # Increase to reset cache
         with:
@@ -79,7 +79,7 @@ jobs:
       - name: Build conda package
         run: conda build --no-test --python ${{ matrix.python }} ${{ env.CHANNELS }} conda-recipe
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }} ${{ matrix.artifact_name }}
           path: ${{ env.conda-bld }}${{ env.PACKAGE_NAME }}-*.tar.bz2
@@ -96,7 +96,7 @@ jobs:
 
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 
@@ -146,7 +146,7 @@ jobs:
           conda activate numba_dpex_env
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
           export OCL_ICD_FILENAMES=libintelocl.so
-          for script in $(find . \( -not -name "_*" -not "vector_sum2D.py" -not -name "vectorize.py" -not -name "scan.py" -and -name "*.py" \))
+          for script in $(find . \( -not -name "_*" -not -name "vector_sum2D.py" -not -name "vectorize.py" -not -name "scan.py" -and -name "*.py" \))
           do
             echo "Executing ${script}"
             python ${script} || exit 1
@@ -195,7 +195,7 @@ jobs:
       - name: Collect dependencies
         run: conda install ${{ env.PACKAGE_NAME }} python=${{ matrix.python }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }} --only-deps --dry-run > lockfile
       - name: Cache conda packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           CACHE_NUMBER: 1  # Increase to reset cache
         with:
@@ -250,6 +250,8 @@ jobs:
 
       - name: Add dpnp skip variable
         run: echo "NUMBA_DPEX_TESTING_SKIP_NO_DPNP=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Smoke test
+        run: python -c "import numba_dpex.core.runtime._dpexrt_python"
       - name: Run tests
         run: |
           python -m pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }} -vv
@@ -263,7 +265,7 @@ jobs:
         python: ["3.8", "3.9", "3.10"]
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 
@@ -291,7 +293,7 @@ jobs:
         python: ["3.8", "3.9", "3.10"]
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 

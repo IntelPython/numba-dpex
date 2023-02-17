@@ -1,13 +1,17 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
 """
 The numba-dpex extension module adds data-parallel offload support to Numba.
 """
-import numba.testing
 
+import numba_dpex.core.dpjit_dispatcher
 import numba_dpex.core.offload_dispatcher
+
+# Initialize the _dpexrt_python extension
+import numba_dpex.core.runtime
+import numba_dpex.core.targets.dpjit_target
 
 # Re-export types itself
 import numba_dpex.core.types as types

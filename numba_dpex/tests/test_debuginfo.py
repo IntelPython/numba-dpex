@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# Copyright 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -15,7 +15,7 @@ from numba_dpex.tests._helper import override_config
 
 debug_options = [True, False]
 
-f32arrty = usm_ndarray(float32, 1, "C")
+f32arrty = usm_ndarray(ndim=1, dtype=float32, layout="C")
 
 
 @pytest.fixture(params=debug_options)
@@ -127,8 +127,8 @@ def test_debug_flag_generates_ir_with_debuginfo_for_func(debug_option):
         c[i] = func_sum(a[i], b[i])
 
     ir_tags = [
-        r'\!DISubprogram\(name: ".*func_sum"',
-        r'\!DISubprogram\(name: ".*data_parallel_sum"',
+        r'\!DISubprogram\(name: ".*func_sum\$?\d*"',
+        r'\!DISubprogram\(name: ".*data_parallel_sum\$?\d*"',
     ]
 
     sig = (f32arrty, f32arrty, f32arrty)
@@ -154,8 +154,8 @@ def test_env_var_generates_ir_with_debuginfo_for_func(debug_option):
         c[i] = func_sum(a[i], b[i])
 
     ir_tags = [
-        r'\!DISubprogram\(name: ".*func_sum"',
-        r'\!DISubprogram\(name: ".*data_parallel_sum"',
+        r'\!DISubprogram\(name: ".*func_sum\$?\d*"',
+        r'\!DISubprogram\(name: ".*data_parallel_sum\$\d*"',
     ]
 
     sig = (f32arrty, f32arrty, f32arrty)

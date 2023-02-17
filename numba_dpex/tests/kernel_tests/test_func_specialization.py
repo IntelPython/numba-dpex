@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2023 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+
 import dpctl.tensor as dpt
 import numpy as np
 import pytest

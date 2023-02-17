@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2022 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -7,7 +7,6 @@ from numba.core.compiler_machinery import PassManager
 from numba.core.typed_passes import (
     AnnotateTypes,
     IRLegalization,
-    NativeLowering,
     NopythonRewrites,
     NoPythonSupportedFeatureValidation,
     NopythonTypeInference,
@@ -34,6 +33,7 @@ from numba_dpex.core.exceptions import UnsupportedCompilationModeError
 from numba_dpex.core.passes.passes import (
     ConstantSizeStaticLocalMemoryPass,
     NoPythonBackend,
+    QualNameDisambiguationLowering,
 )
 
 
@@ -139,7 +139,13 @@ class _KernelPassBuilder(object):
         pm.add_pass(IRLegalization, "ensure IR is legal prior to lowering")
 
         # lower
-        pm.add_pass(NativeLowering, "native lowering")
+        # NativeLowering has some issue with freevar ambiguity,
+        # therefore, we are using QualNameDisambiguationLowering instead
+        # numba-dpex github issue: https://github.com/IntelPython/numba-dpex/issues/898
+        pm.add_pass(
+            QualNameDisambiguationLowering,
+            "numba_dpex qualified name disambiguation",
+        )
         pm.add_pass(NoPythonBackend, "nopython mode backend")
 
         pm.finalize()

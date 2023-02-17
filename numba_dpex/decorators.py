@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -166,6 +166,12 @@ def dpjit(*args, **kws):
         del kws["forceobj"]
     kws.update({"nopython": True})
     kws.update({"pipeline_class": OffloadCompiler})
+
+    # FIXME: When trying to use dpex's target context, overloads do not work
+    # properly. We will turn on dpex target once the issue is fixed.
+
+    # kws.update({"_target": "dpex"})
+
     return decorators.jit(*args, **kws)
 
 

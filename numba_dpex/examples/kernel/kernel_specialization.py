@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -19,8 +19,8 @@ from numba_dpex.core.exceptions import (
 # ------------                 Example 1.                   ------------ #
 
 # Define type specializations using the numba_ndpx usm_ndarray data type.
-i64arrty = usm_ndarray(int64, 1, "C")
-f32arrty = usm_ndarray(float32, 1, "C")
+i64arrty = usm_ndarray(1, "C", int64)
+f32arrty = usm_ndarray(1, "C", float32)
 
 
 # specialize a kernel for the i64arrty

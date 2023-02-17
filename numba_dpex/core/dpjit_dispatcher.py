@@ -1,7 +1,6 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
-
 
 from numba.core import compiler, dispatcher
 from numba.core.target_extension import dispatcher_registry, target_registry
@@ -12,6 +11,14 @@ from .descriptor import dpex_target
 
 
 class DpjitDispatcher(dispatcher.Dispatcher):
+    """A dpex.djit-specific dispatcher.
+
+    The DpjitDispatcher sets the targetdescr string to "dpex" so that Numba's
+    Dispatcher can lookup the global target_registry with that string and
+    correctly use the DpexTarget context.
+
+    """
+
     targetdescr = dpex_target
 
     def __init__(

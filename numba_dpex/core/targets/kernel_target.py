@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -19,6 +19,7 @@ from numba.core.utils import cached_property
 from numba_dpex.core.datamodel.models import _init_data_model_manager
 from numba_dpex.core.exceptions import UnsupportedKernelArgumentError
 from numba_dpex.core.typeconv import to_usm_ndarray
+from numba_dpex.core.types import DpnpNdArray
 from numba_dpex.core.utils import get_info_from_suai
 from numba_dpex.utils import (
     address_space,
@@ -67,6 +68,20 @@ class DpexKernelTypingContext(typing.BaseContext):
         """
         try:
             _type = type(typeof(val))
+
+            # XXX A kernel function has the spir_kernel ABI and requires
+            # pointers to have an address space attribute. For this reason, the
+            # UsmNdArray type uses a custom data model where the pointers are
+            # address space casted to have a SYCL-specific address space value.
+            # The DpnpNdArray type on the other hand is meant to be used inside
+            # host functions and has Numba's array model as its data model.
+            # If the value is a DpnpNdArray then use the ``to_usm_ndarray``
+            # function to convert it into a UsmNdArray type rather than passing
+            # it to the kernel as a DpnpNdArray. Thus, from a Numba typing
+            # perspective dpnp.ndarrays cannot be directly passed to a kernel.
+            if _type is DpnpNdArray:
+                suai_attrs = get_info_from_suai(val)
+                return to_usm_ndarray(suai_attrs)
         except ValueError:
             # When an array-like kernel argument is not recognized by
             # numba-dpex, this additional check sees if the array-like object

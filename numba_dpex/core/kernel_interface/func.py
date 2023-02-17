@@ -1,18 +1,22 @@
-# SPDX-FileCopyrightText: 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2022 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
 """_summary_
 """
 
-
 from numba.core import sigutils, types
 from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
 from numba_dpex import config
-from numba_dpex.core.caching import LRUCache, NullCache, build_key
+from numba_dpex.core.caching import LRUCache, NullCache
 from numba_dpex.core.compiler import compile_with_dpex
 from numba_dpex.core.descriptor import dpex_kernel_target
+from numba_dpex.core.utils import (
+    build_key,
+    create_func_hash,
+    strip_usm_metadata,
+)
 from numba_dpex.utils import npytypes_array_to_dpex_array
 
 
@@ -91,6 +95,8 @@ class DpexFunctionTemplate(object):
         self._debug = debug
         self._enable_cache = enable_cache
 
+        self._func_hash = create_func_hash(pyfunc)
+
         if not config.ENABLE_CACHE:
             self._cache = NullCache()
         elif self._enable_cache:
@@ -132,11 +138,14 @@ class DpexFunctionTemplate(object):
             dpex_kernel_target.typing_context.resolve_argument_type(arg)
             for arg in args
         ]
-        key = build_key(
-            tuple(argtypes),
-            self._pyfunc,
-            dpex_kernel_target.target_context.codegen(),
+
+        # Generate key used for cache lookup
+        stripped_argtypes = strip_usm_metadata(argtypes)
+        codegen_magic_tuple = (
+            dpex_kernel_target.target_context.codegen().magic_tuple()
         )
+        key = build_key(stripped_argtypes, codegen_magic_tuple, self._func_hash)
+
         cres = self._cache.get(key)
         if cres is None:
             self._cache_hits += 1

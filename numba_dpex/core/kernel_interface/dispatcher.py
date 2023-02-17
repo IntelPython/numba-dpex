@@ -1,7 +1,6 @@
-# SPDX-FileCopyrightText: 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2022 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
-
 
 from collections.abc import Iterable
 from inspect import signature
@@ -14,7 +13,7 @@ from numba.core.types import Array as NpArrayType
 from numba.core.types import void
 
 from numba_dpex import NdRange, Range, config
-from numba_dpex.core.caching import LRUCache, NullCache, build_key
+from numba_dpex.core.caching import LRUCache, NullCache
 from numba_dpex.core.descriptor import dpex_kernel_target
 from numba_dpex.core.exceptions import (
     ComputeFollowsDataInferenceError,
@@ -34,6 +33,11 @@ from numba_dpex.core.exceptions import (
 from numba_dpex.core.kernel_interface.arg_pack_unpacker import Packer
 from numba_dpex.core.kernel_interface.spirv_kernel import SpirvKernel
 from numba_dpex.core.types import USMNdArray
+from numba_dpex.core.utils import (
+    build_key,
+    create_func_hash,
+    strip_usm_metadata,
+)
 
 
 def get_ordered_arg_access_types(pyfunc, access_types):
@@ -85,17 +89,26 @@ class JitKernel:
         self._global_range = None
         self._local_range = None
 
+        self._func_hash = create_func_hash(pyfunc)
+
         # caching related attributes
         if not config.ENABLE_CACHE:
             self._cache = NullCache()
+            self._kernel_bundle_cache = NullCache()
         elif enable_cache:
             self._cache = LRUCache(
                 name="SPIRVKernelCache",
                 capacity=config.CACHE_SIZE,
                 pyfunc=self.pyfunc,
             )
+            self._kernel_bundle_cache = LRUCache(
+                name="KernelBundleCache",
+                capacity=config.CACHE_SIZE,
+                pyfunc=self.pyfunc,
+            )
         else:
             self._cache = NullCache()
+            self._kernel_bundle_cache = NullCache()
         self._cache_hits = 0
 
         if array_access_specifiers:
@@ -144,7 +157,7 @@ class JitKernel:
     def cache_hits(self):
         return self._cache_hits
 
-    def _compile_and_cache(self, argtypes, cache):
+    def _compile_and_cache(self, argtypes, cache, key=None):
         """Helper function to compile the Python function or Numba FunctionIR
         object passed to a JitKernel and store it in an internal cache.
         """
@@ -164,11 +177,13 @@ class JitKernel:
         device_driver_ir_module = kernel.device_driver_ir_module
         kernel_module_name = kernel.module_name
 
-        key = build_key(
-            tuple(argtypes),
-            self.pyfunc,
-            kernel.target_context.codegen(),
-        )
+        if not key:
+            stripped_argtypes = strip_usm_metadata(argtypes)
+            codegen_magic_tuple = kernel.target_context.codegen().magic_tuple()
+            key = build_key(
+                stripped_argtypes, codegen_magic_tuple, self._func_hash
+            )
+
         cache.put(key, (device_driver_ir_module, kernel_module_name))
 
         return device_driver_ir_module, kernel_module_name
@@ -486,7 +501,8 @@ class JitKernel:
                 warn(
                     "Ambiguous kernel launch paramters. If your data have "
                     + "dimensions > 1, include a default/empty local_range:\n"
-                    + "    <function>[(X,Y), numba_dpex.DEFAULT_LOCAL_RANGE](<params>)\n"
+                    + "    <function>[(X,Y), numba_dpex.DEFAULT_LOCAL_RANGE]"
+                    "(<params>)\n"
                     + "otherwise your code might produce erroneous results.",
                     DeprecationWarning,
                     stacklevel=2,
@@ -500,7 +516,7 @@ class JitKernel:
                 + "parameters is deprecated. Users should set the kernel "
                 + "parameters through Range/NdRange classes.\n"
                 + "Example:\n"
-                + "    from numba_dpex.core.kernel_interface.utils import Range,NdRange\n\n"
+                + "    from numba_dpex import Range,NdRange\n\n"
                 + "    # for global range only\n"
                 + "    <function>[Range(X,Y)](<parameters>)\n"
                 + "    # or,\n"
@@ -531,10 +547,11 @@ class JitKernel:
                     )
                 else:
                     warn(
-                        "Empty local_range calls are deprecated. Please use Range/NdRange "
-                        + "to specify the kernel launch parameters:\n"
+                        "Empty local_range calls are deprecated. Please use "
+                        "Range/NdRange to specify the kernel launch parameters:"
+                        "\n"
                         + "Example:\n"
-                        + "    from numba_dpex.core.kernel_interface.utils import Range,NdRange\n\n"
+                        + "    from numba_dpex import Range,NdRange\n\n"
                         + "    # for global range only\n"
                         + "    <function>[Range(X,Y)](<parameters>)\n"
                         + "    # or,\n"
@@ -595,12 +612,12 @@ class JitKernel:
                 self.kernel_name, backend, JitKernel._supported_backends
             )
 
-        # load the kernel from cache
-        key = build_key(
-            tuple(argtypes),
-            self.pyfunc,
-            dpex_kernel_target.target_context.codegen(),
+        # Generate key used for cache lookup
+        stripped_argtypes = strip_usm_metadata(argtypes)
+        codegen_magic_tuple = (
+            dpex_kernel_target.target_context.codegen().magic_tuple()
         )
+        key = build_key(stripped_argtypes, codegen_magic_tuple, self._func_hash)
 
         # If the JitKernel was specialized then raise exception if argtypes
         # do not match one of the specialized versions.
@@ -621,16 +638,26 @@ class JitKernel:
                     device_driver_ir_module,
                     kernel_module_name,
                 ) = self._compile_and_cache(
-                    argtypes=argtypes,
-                    cache=self._cache,
+                    argtypes=argtypes, cache=self._cache, key=key
                 )
 
-        # create a sycl::KernelBundle
-        kernel_bundle = dpctl_prog.create_program_from_spirv(
-            exec_queue,
-            device_driver_ir_module,
-            " ".join(self._create_sycl_kernel_bundle_flags),
+        kernel_bundle_key = build_key(
+            stripped_argtypes, codegen_magic_tuple, exec_queue, self._func_hash
         )
+
+        artifact = self._kernel_bundle_cache.get(kernel_bundle_key)
+
+        if artifact is None:
+            # create a sycl::KernelBundle
+            kernel_bundle = dpctl_prog.create_program_from_spirv(
+                exec_queue,
+                device_driver_ir_module,
+                " ".join(self._create_sycl_kernel_bundle_flags),
+            )
+            self._kernel_bundle_cache.put(kernel_bundle_key, kernel_bundle)
+        else:
+            kernel_bundle = artifact
+
         #  get the sycl::kernel
         sycl_kernel = kernel_bundle.get_sycl_kernel(kernel_module_name)
 
