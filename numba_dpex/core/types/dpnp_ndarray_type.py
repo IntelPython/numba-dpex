@@ -1,7 +1,6 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
-
 
 from numba.core import cgutils
 from numba.core.errors import NumbaNotImplementedError

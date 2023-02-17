@@ -1,7 +1,6 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
-
 
 from numba.core import compiler, dispatcher
 from numba.core.target_extension import dispatcher_registry, target_registry
