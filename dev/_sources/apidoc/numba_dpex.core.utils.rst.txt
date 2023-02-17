@@ -7,6 +7,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   numba_dpex.core.utils.caching_utils
    numba_dpex.core.utils.suai_helper
 
 Module contents

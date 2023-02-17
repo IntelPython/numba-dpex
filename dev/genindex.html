@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; numba-dpex 0.20.0dev2+28.g7b237f99 documentation</title>
+  <title>Index &mdash; numba-dpex 0.20.0dev2+33.gae994cda documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -215,8 +215,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.vectorizers.html#numba_dpex.vectorizers.UFuncMechanism.broadcast_device">broadcast_device() (numba_dpex.vectorizers.UFuncMechanism method)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.build_key">build_key() (in module numba_dpex.core.caching)</a>
+      <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.build_key">build_key() (in module numba_dpex.core.utils)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.utils.caching_utils.html#numba_dpex.core.utils.caching_utils.build_key">(in module numba_dpex.core.utils.caching_utils)</a>
 </li>
+      </ul></li>
       <li><a href="apidoc/numba_dpex.vectorizers.html#numba_dpex.vectorizers.Vectorize.build_ufunc">build_ufunc() (numba_dpex.vectorizers.Vectorize method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.byte_ptr_ptr_t">byte_ptr_ptr_t (numba_dpex.utils.llvm_codegen_helpers.LLVMTypes attribute)</a>
@@ -423,6 +427,12 @@
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.DPEXLowerer.create_cpython_wrapper">create_cpython_wrapper() (numba_dpex.core.passes.lowerer.DPEXLowerer method)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.create_func_hash">create_func_hash() (in module numba_dpex.core.utils)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.utils.caching_utils.html#numba_dpex.core.utils.caching_utils.create_func_hash">(in module numba_dpex.core.utils.caching_utils)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/numba_dpex.core.targets.kernel_target.html#numba_dpex.core.targets.kernel_target.DpexKernelTargetContext.create_module">create_module() (numba_dpex.core.targets.kernel_target.DpexKernelTargetContext method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.utils.html#numba_dpex.utils.create_null_ptr">create_null_ptr() (in module numba_dpex.utils)</a>
@@ -1510,6 +1520,8 @@
 </li>
         <li><a href="apidoc/numba_dpex.core.utils.html#module-numba_dpex.core.utils">numba_dpex.core.utils</a>
 </li>
+        <li><a href="apidoc/numba_dpex.core.utils.caching_utils.html#module-numba_dpex.core.utils.caching_utils">numba_dpex.core.utils.caching_utils</a>
+</li>
         <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#module-numba_dpex.core.utils.suai_helper">numba_dpex.core.utils.suai_helper</a>
 </li>
         <li><a href="apidoc/numba_dpex.debuginfo.html#module-numba_dpex.debuginfo">numba_dpex.debuginfo</a>
@@ -1934,13 +1946,20 @@
         <li><a href="apidoc/numba_dpex.core.typing.typeof.html#module-numba_dpex.core.typing.typeof">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     numba_dpex.core.utils
 
       <ul>
         <li><a href="apidoc/numba_dpex.core.utils.html#module-numba_dpex.core.utils">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    numba_dpex.core.utils.caching_utils
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.utils.caching_utils.html#module-numba_dpex.core.utils.caching_utils">module</a>
 </li>
       </ul></li>
       <li>
@@ -2620,6 +2639,12 @@
 
       <ul>
         <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.SyclUSMArrayInterface.strides">(numba_dpex.core.utils.SyclUSMArrayInterface property)</a>
+</li>
+      </ul></li>
+      <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.strip_usm_metadata">strip_usm_metadata() (in module numba_dpex.core.utils)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.utils.caching_utils.html#numba_dpex.core.utils.caching_utils.strip_usm_metadata">(in module numba_dpex.core.utils.caching_utils)</a>
 </li>
       </ul></li>
   </ul></td>
