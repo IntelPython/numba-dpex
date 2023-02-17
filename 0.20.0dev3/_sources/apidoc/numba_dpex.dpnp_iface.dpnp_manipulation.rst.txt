@@ -1,0 +1,7 @@
+numba\_dpex.dpnp\_iface.dpnp\_manipulation module
+=================================================
+
+.. automodule:: numba_dpex.dpnp_iface.dpnp_manipulation
+   :members:
+   :undoc-members:
+   :show-inheritance:
