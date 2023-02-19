@@ -7,10 +7,14 @@ import shutil
 import subprocess
 import sys
 import sysconfig
+import warnings
+from pathlib import Path
 
 import dpctl
 import numba
 import numpy
+import pkgconfig
+import setuptools.command.build_ext as orig_build_ext
 import setuptools.command.develop as orig_develop
 import setuptools.command.install as orig_install
 from Cython.Build import cythonize
@@ -85,23 +89,23 @@ def get_ext_modules():
         return ext_modules
 
 
-class install(orig_install.install):
-    def run(self):
-        spirv_compile()
-        super().run()
+def _llvm_spirv():
+    """Return path to llvm-spirv executable."""
+    result = None
 
+    # use llvm-spirv from dpcpp package.
+    # assume dpcpp from .../bin folder.
+    # assume llvm-spirv from .../bin-llvm folder.
+    dpcpp_path = shutil.which("icx")
+    if dpcpp_path is not None:
+        bin_llvm = os.path.dirname(dpcpp_path) + "/../bin-llvm/"
+        bin_llvm = os.path.normpath(bin_llvm)
+        result = shutil.which("llvm-spirv", path=bin_llvm)
 
-class develop(orig_develop.develop):
-    def run(self):
-        spirv_compile()
-        super().run()
+    if result is None:
+        result = "llvm-spirv"
 
-
-def _get_cmdclass():
-    cmdclass = versioneer.get_cmdclass()
-    cmdclass["install"] = install
-    cmdclass["develop"] = develop
-    return cmdclass
+    return result
 
 
 def spirv_compile():
@@ -148,23 +152,64 @@ def spirv_compile():
     )
 
 
-def _llvm_spirv():
-    """Return path to llvm-spirv executable."""
-    result = None
+def numba_mlir_compile():
+    # try:
+    llvm_path = os.environ.get("LLVM_PATH")
+    if not llvm_path:
+        llvm_path = Path(shutil.which("mlir-opt")).resolve().parent
+    print("llvm_path =", llvm_path)
 
-    # use llvm-spirv from dpcpp package.
-    # assume dpcpp from .../bin folder.
-    # assume llvm-spirv from .../bin-llvm folder.
-    dpcpp_path = shutil.which("icx")
-    if dpcpp_path is not None:
-        bin_llvm = os.path.dirname(dpcpp_path) + "/../bin-llvm/"
-        bin_llvm = os.path.normpath(bin_llvm)
-        result = shutil.which("llvm-spirv", path=bin_llvm)
+    tbb_path = os.environ.get("TBB_PATH")
+    if not tbb_path:
+        tbb_path = (
+            Path(pkgconfig.libs("tbb").split()[0][2:])
+            .resolve()
+            .parent.parent.parent
+        )
+    print("tbb_path =", tbb_path)
 
-    if result is None:
-        result = "llvm-spirv"
+    env = os.environ.copy()
+    env["LLVM_PATH"] = str(llvm_path)
+    env["TBB_PATH"] = str(tbb_path)
+    env["LEVEL_ZERO_VERSION_CHECK_OFF"] = "1"
+    env["NUMBA_MLIR_ENABLE_IGPU_DIALECT"] = "1"
 
-    return result
+    cmd = ["python", "setup.py", "develop"]
+
+    subprocess.check_call(
+        cmd, env=env, cwd="numba-mlir/numba_mlir", shell=False
+    )
+
+
+# except Exception as e:
+#     print(e)
+# warnings.warn("LLVM, TBB or L0 Loader not found, skipping compilation of numba-mlir.")
+
+
+class install(orig_install.install):
+    def run(self):
+        spirv_compile()
+        super().run()
+
+
+class develop(orig_develop.develop):
+    def run(self):
+        spirv_compile()
+        numba_mlir_compile()
+        super().run()
+
+
+# class build_ext(orig_build_ext.build_ext):
+#     def run(self):
+#         numba_mlir_compile()
+#         super.run()
+
+
+def _get_cmdclass():
+    cmdclass = versioneer.get_cmdclass()
+    cmdclass["install"] = install
+    cmdclass["develop"] = develop
+    return cmdclass
 
 
 packages = find_packages(

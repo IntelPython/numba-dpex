@@ -1,0 +1,4 @@
+[submodule "numba-mlir"]
+	path = numba-mlir
+	url = https://github.com/chudur-budur/numba-mlir.git
+	branch = main.copy

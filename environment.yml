@@ -11,12 +11,18 @@ dependencies:
   - gxx_linux-64
   - dpcpp_linux-64
   - cython
+  - cmake
   - numba >=0.56*
   - dpctl >=0.14*
   - dpnp >=0.11*
+  - lit
   - mkl >=2021.3.0  # for dpnp
+  - mkl-devel-dpcpp >=2023.0
+  - ninja
+  - scikit-learn
   - spirv-tools
   - packaging
+  - pkgconfig
   - pytest
   - pip
   - pip:
