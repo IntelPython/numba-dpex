@@ -194,8 +194,8 @@ class install(orig_install.install):
 
 class develop(orig_develop.develop):
     def run(self):
-        spirv_compile()
         numba_mlir_compile()
+        spirv_compile()
         super().run()
 
 
