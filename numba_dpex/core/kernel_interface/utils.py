@@ -1,222 +1,180 @@
-# SPDX-FileCopyrightText: 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2022 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from collections.abc import Iterable
+from warnings import warn
+
+import dpctl
+from numba.core.types import Array as NpArrayType
+
+from numba_dpex.core.exceptions import (
+    ComputeFollowsDataInferenceError,
+    ExecutionQueueInferenceError,
+)
+from numba_dpex.core.types import USMNdArray
 
 
-class Range(tuple):
-    """A data structure to encapsulate a single kernel lauch parameter.
+def chk_compute_follows_data_compliance(usm_array_arglist):
+    """Check if all the usm ndarray's have the same device.
 
-    The range is an abstraction that describes the number of elements
-    in each dimension of buffers and index spaces. It can contain
-    1, 2, or 3 numbers, dependending on the dimensionality of the
-    object it describes.
+    Extracts the device filter string from the Numba inferred USMNdArray
+    type. Check if the devices corresponding to the filter string are
+    equivalent and return a ``dpctl.SyclDevice`` object corresponding to the
+    common filter string.
 
-    This is just a wrapper class on top of a 3-tuple. The kernel launch
-    parameter is consisted of three int's. This class basically mimics
-    the behavior of `sycl::range`.
+    If an exception occurred in creating a ``dpctl.SyclDevice``, or the
+    devices are not equivalent then returns None.
+
+    Args:
+        usm_array_arglist : A list of usm_ndarray types specified as
+        arguments to the kernel.
+
+    Returns:
+        A ``dpctl.SyclDevice`` object if all USMNdArray have same device, or
+        else None is returned.
     """
 
-    def __new__(cls, dim0, dim1=None, dim2=None):
-        """Constructs a 1, 2, or 3 dimensional range.
+    queue = None
 
-        Args:
-            dim0 (int): The range of the first dimension.
-            dim1 (int, optional): The range of second dimension.
-                                    Defaults to None.
-            dim2 (int, optional): The range of the third dimension.
-                                    Defaults to None.
-
-        Raises:
-            TypeError: If dim0 is not an int.
-            TypeError: If dim1 is not an int.
-            TypeError: If dim2 is not an int.
-        """
-        if not isinstance(dim0, int):
-            raise TypeError("dim0 of a Range must be an int.")
-        _values = [dim0]
-        if dim1:
-            if not isinstance(dim1, int):
-                raise TypeError("dim1 of a Range must be an int.")
-            _values.append(dim1)
-            if dim2:
-                if not isinstance(dim2, int):
-                    raise TypeError("dim2 of a Range must be an int.")
-                _values.append(dim2)
-        return super(Range, cls).__new__(cls, tuple(_values))
-
-    def get(self, index):
-        """Returns the range of a single dimension.
-
-        Args:
-            index (int): The index of the dimension, i.e. [0,2]
-
-        Returns:
-            int: The range of the dimension indexed by `index`.
-        """
-        return self[index]
-
-    def size(self):
-        """Returns the size of a range.
-
-        Returns the size of a range by multiplying
-        the range of the individual dimensions.
-
-        Returns:
-            int: The size of a range.
-        """
-        n = len(self)
-        if n > 2:
-            return self[0] * self[1] * self[2]
-        elif n > 1:
-            return self[0] * self[1]
+    for usm_array in usm_array_arglist:
+        _queue = usm_array.queue
+        if not queue:
+            queue = _queue
         else:
-            return self[0]
+            if _queue != queue:
+                return None
+
+    return queue
 
 
-class NdRange:
-    """A class to encapsulate all kernel launch parameters.
+def determine_kernel_launch_queue(args, argtypes, kernel_name):
+    """Determines the queue where the kernel is to be launched.
 
-    The NdRange defines the index space for a work group as well as
-    the global index space. It is passed to parallel_for to execute
-    a kernel on a set of work items.
+    The execution queue is derived using the following algorithm. In future,
+    support for ``numpy.ndarray`` and ``dpctl.device_context`` is to be
+    removed and queue derivation will follows Python Array API's
+    "compute follows data" logic.
 
-    This class basically contains two Range object, one for the global_range
-    and the other for the local_range. The global_range parameter contains
-    the global index space and the local_range parameter contains the index
-    space of a work group. This class mimics the behavior of `sycl::nd_range`
-    class.
+    Check if there are array arguments.
+    True:
+        Check if all array arguments are of type numpy.ndarray
+        (numba.types.Array)
+            True:
+                Check if the kernel was invoked from within a
+                dpctl.device_context.
+                True:
+                    Provide a deprecation warning for device_context use and
+                    point to using dpctl.tensor.usm_ndarray or dpnp.ndarray
+
+                    return dpctl.get_current_queue
+                False:
+                    Raise ExecutionQueueInferenceError
+            False:
+                Check if all of the arrays are USMNdarray
+                    True:
+                        Check if execution queue could be inferred using
+                        compute follows data rules
+                        True:
+                            return the compute follows data inferred queue
+                        False:
+                            Raise ComputeFollowsDataInferenceError
+                    False:
+                        Raise ComputeFollowsDataInferenceError
+    False:
+        Check if the kernel was invoked from within a dpctl.device_context.
+        True:
+            Provide a deprecation warning for device_context use and
+            point to using dpctl.tensor.usm_ndarray of dpnp.ndarray
+
+            return dpctl.get_current_queue
+        False:
+            Raise ExecutionQueueInferenceError
+
+    Args:
+        args : A list of arguments passed to the kernel stored in the
+        launcher.
+        argtypes : The Numba inferred type for each argument.
+
+    Returns:
+        A queue the common queue used to allocate the arrays. If no such
+        queue exists, then raises an Exception.
+
+    Raises:
+        ComputeFollowsDataInferenceError: If the queue could not be inferred
+            using compute follows data rules.
+        ExecutionQueueInferenceError: If the queue could not be inferred
+            using the dpctl queue manager.
     """
 
-    def __init__(self, global_size, local_size):
-        """Constructor for NdRange class.
+    # FIXME: The args parameter is not needed once numpy support is removed
 
-        Args:
-            global_size (Range or tuple of int's): The values for
-                the global_range.
-            local_size (Range or tuple of int's, optional): The values for
-                the local_range. Defaults to None.
-        """
-        if isinstance(global_size, Range):
-            self._global_range = global_size
-        elif isinstance(global_size, Iterable):
-            self._global_range = Range(*global_size)
-        else:
-            TypeError("Unknwon argument type for NdRange global_size.")
+    # Needed as USMNdArray derives from Array
+    array_argnums = [
+        i
+        for i, _ in enumerate(args)
+        if isinstance(argtypes[i], NpArrayType)
+        and not isinstance(argtypes[i], USMNdArray)
+    ]
+    usmarray_argnums = [
+        i for i, _ in enumerate(args) if isinstance(argtypes[i], USMNdArray)
+    ]
 
-        if isinstance(local_size, Range):
-            self._local_range = local_size
-        elif isinstance(local_size, Iterable):
-            self._local_range = Range(*local_size)
-        else:
-            TypeError("Unknwon argument type for NdRange local_size.")
-
-    @property
-    def global_range(self):
-        """Accessor for global_range.
-
-        Returns:
-            Range: The `global_range` `Range` object.
-        """
-        return self._global_range
-
-    @property
-    def local_range(self):
-        """Accessor for local_range.
-
-        Returns:
-            Range: The `local_range` `Range` object.
-        """
-        return self._local_range
-
-    def get_global_range(self):
-        """Returns a Range defining the index space.
-
-        Returns:
-            Range: A `Range` object defining the index space.
-        """
-        return self._global_range
-
-    def get_local_range(self):
-        """Returns a Range defining the index space of a work group.
-
-        Returns:
-            Range: A `Range` object to specify index space of a work group.
-        """
-        return self._local_range
-
-    def __str__(self):
-        """str() function for NdRange class.
-
-        Returns:
-            str: str representation for NdRange class.
-        """
-        return (
-            "(" + str(self._global_range) + ", " + str(self._local_range) + ")"
+    # if usm and non-usm array arguments are getting mixed, then the
+    # execution queue cannot be inferred using compute follows data rules.
+    if array_argnums and usmarray_argnums:
+        raise ComputeFollowsDataInferenceError(
+            array_argnums, usmarray_argnum_list=usmarray_argnums
         )
+    elif array_argnums and not usmarray_argnums:
+        if dpctl.is_in_device_context():
+            warn(
+                "Support for dpctl.device_context to specify the "
+                + "execution queue is deprecated. "
+                + "Use dpctl.tensor.usm_ndarray based array "
+                + "containers instead. ",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            warn(
+                "Support for NumPy ndarray objects as kernel arguments is "
+                + "deprecated. Use dpctl.tensor.usm_ndarray based array "
+                + "containers instead. ",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return dpctl.get_current_queue()
+        else:
+            raise ExecutionQueueInferenceError(kernel_name)
+    elif usmarray_argnums and not array_argnums:
+        if dpctl.is_in_device_context():
+            warn(
+                "dpctl.device_context ignored as the kernel arguments "
+                + "are dpctl.tensor.usm_ndarray based array containers."
+            )
+        usm_array_args = [
+            argtype
+            for i, argtype in enumerate(argtypes)
+            if i in usmarray_argnums
+        ]
 
-    def __repr__(self):
-        """repr() function for NdRange class.
+        queue = chk_compute_follows_data_compliance(usm_array_args)
 
-        Returns:
-            str: str representation for NdRange class.
-        """
-        return self.__str__()
+        if not queue:
+            raise ComputeFollowsDataInferenceError(
+                kernel_name, usmarray_argnum_list=usmarray_argnums
+            )
 
-
-if __name__ == "__main__":
-    r1 = Range(1)
-    print("r1 =", r1)
-
-    r2 = Range(1, 2)
-    print("r2 =", r2)
-
-    r3 = Range(1, 2, 3)
-    print("r3 =", r3, ", len(r3) =", len(r3))
-
-    r3 = Range(*(1, 2, 3))
-    print("r3 =", r3, ", len(r3) =", len(r3))
-
-    r3 = Range(*[1, 2, 3])
-    print("r3 =", r3, ", len(r3) =", len(r3))
-
-    print("r1.get(0) =", r1.get(0))
-    try:
-        print("r2.get(2) =", r2.get(2))
-    except Exception as e:
-        print(e)
-
-    print("r3.get(0) =", r3.get(0))
-    print("r3.get(1) =", r3.get(1))
-
-    print("r1[0] =", r1[0])
-    try:
-        print("r2[2] =", r2[2])
-    except Exception as e:
-        print(e)
-
-    print("r3[0] =", r3[0])
-    print("r3[1] =", r3[1])
-
-    try:
-        r4 = Range(1, 2, 3, 4)
-    except Exception as e:
-        print(e)
-
-    try:
-        r5 = Range(*(1, 2, 3, 4))
-    except Exception as e:
-        print(e)
-
-    ndr1 = NdRange(Range(1, 2))
-    print("ndr1 =", ndr1)
-
-    ndr2 = NdRange(Range(1, 2), Range(1, 1, 1))
-    print("ndr2 =", ndr2)
-
-    ndr3 = NdRange((1, 2))
-    print("ndr3 =", ndr3)
-
-    ndr4 = NdRange((1, 2), (1, 1, 1))
-    print("ndr4 =", ndr4)
+        return queue
+    else:
+        if dpctl.is_in_device_context():
+            warn(
+                "Support for dpctl.device_context to specify the "
+                + "execution queue is deprecated. "
+                + "Use dpctl.tensor.usm_ndarray based array "
+                + "containers instead. ",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            return dpctl.get_current_queue()
+        else:
+            raise ExecutionQueueInferenceError(kernel_name)

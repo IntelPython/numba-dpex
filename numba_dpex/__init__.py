@@ -15,7 +15,7 @@ import numba_dpex.core.targets.dpjit_target
 
 # Re-export types itself
 import numba_dpex.core.types as types
-from numba_dpex.core.kernel_interface.utils import *
+from numba_dpex.core.kernel_interface.indexers import NdRange, Range
 
 # Re-export all type names
 from numba_dpex.core.types import *
@@ -34,4 +34,4 @@ from ._version import get_versions
 __version__ = get_versions()["version"]
 del get_versions
 
-__all__ = ["offload_to_sycl_device"] + types.__all__
+__all__ = ["offload_to_sycl_device"] + types.__all__ + ["Range", "NdRange"]
