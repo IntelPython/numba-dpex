@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex package &mdash; numba-dpex 0.20.0dev3+4.ga0a88715 documentation</title>
+  <title>numba_dpex package &mdash; numba-dpex 0.20.0dev3+6.g56e71299 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -700,6 +700,99 @@ structure as USMNdArray used to represent dpctl.tensor.usm_ndarray.</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_internal</span></span><a class="headerlink" href="#numba_dpex.DpnpNdArray.is_internal" title="Permalink to this definition"></a></dt>
 <dd><p>Returns True if this class is an internally defined Numba type by
 virtue of the module in which it is instantiated, False else.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.NdRange">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.</span></span><span class="sig-name descname"><span class="pre">NdRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.NdRange" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to encapsulate all kernel launch parameters.</p>
+<p>The NdRange defines the index space for a work group as well as
+the global index space. It is passed to parallel_for to execute
+a kernel on a set of work items.</p>
+<p>This class basically contains two Range object, one for the global_range
+and the other for the local_range. The global_range parameter contains
+the global index space and the local_range parameter contains the index
+space of a work group. This class mimics the behavior of <cite>sycl::nd_range</cite>
+class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.NdRange.get_global_range">
+<span class="sig-name descname"><span class="pre">get_global_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.NdRange.get_global_range" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a Range defining the index space.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Range: A <cite>Range</cite> object defining the index space.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.NdRange.get_local_range">
+<span class="sig-name descname"><span class="pre">get_local_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.NdRange.get_local_range" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a Range defining the index space of a work group.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Range: A <cite>Range</cite> object to specify index space of a work group.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.NdRange.global_range">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">global_range</span></span><a class="headerlink" href="#numba_dpex.NdRange.global_range" title="Permalink to this definition"></a></dt>
+<dd><p>Accessor for global_range.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Range: The <cite>global_range</cite> <cite>Range</cite> object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.NdRange.local_range">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">local_range</span></span><a class="headerlink" href="#numba_dpex.NdRange.local_range" title="Permalink to this definition"></a></dt>
+<dd><p>Accessor for local_range.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Range: The <cite>local_range</cite> <cite>Range</cite> object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.Range">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.</span></span><span class="sig-name descname"><span class="pre">Range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.Range" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<p>A data structure to encapsulate a single kernel lauch parameter.</p>
+<p>The range is an abstraction that describes the number of elements
+in each dimension of buffers and index spaces. It can contain
+1, 2, or 3 numbers, dependending on the dimensionality of the
+object it describes.</p>
+<p>This is just a wrapper class on top of a 3-tuple. The kernel launch
+parameter is consisted of three int’s. This class basically mimics
+the behavior of <cite>sycl::range</cite>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.Range.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.Range.get" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the range of a single dimension.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>index (int): The index of the dimension, i.e. [0,2]</p>
+</dd>
+<dt>Returns:</dt><dd><p>int: The range of the dimension indexed by <cite>index</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.Range.size">
+<span class="sig-name descname"><span class="pre">size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.Range.size" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the size of a range.</p>
+<p>Returns the size of a range by multiplying
+the range of the individual dimensions.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>int: The size of a range.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

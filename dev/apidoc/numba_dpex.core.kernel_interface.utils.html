@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.kernel_interface.utils module &mdash; numba-dpex 0.20.0dev3+4.ga0a88715 documentation</title>
+  <title>numba_dpex.core.kernel_interface.utils module &mdash; numba-dpex 0.20.0dev3+6.g56e71299 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -83,97 +83,104 @@
              
   <section id="module-numba_dpex.core.kernel_interface.utils">
 <span id="numba-dpex-core-kernel-interface-utils-module"></span><h1>numba_dpex.core.kernel_interface.utils module<a class="headerlink" href="#module-numba_dpex.core.kernel_interface.utils" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.utils.NdRange">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.kernel_interface.utils.</span></span><span class="sig-name descname"><span class="pre">NdRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.utils.NdRange" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A class to encapsulate all kernel launch parameters.</p>
-<p>The NdRange defines the index space for a work group as well as
-the global index space. It is passed to parallel_for to execute
-a kernel on a set of work items.</p>
-<p>This class basically contains two Range object, one for the global_range
-and the other for the local_range. The global_range parameter contains
-the global index space and the local_range parameter contains the index
-space of a work group. This class mimics the behavior of <cite>sycl::nd_range</cite>
-class.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.utils.NdRange.get_global_range">
-<span class="sig-name descname"><span class="pre">get_global_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.utils.NdRange.get_global_range" title="Permalink to this definition"></a></dt>
-<dd><p>Returns a Range defining the index space.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.utils.chk_compute_follows_data_compliance">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.kernel_interface.utils.</span></span><span class="sig-name descname"><span class="pre">chk_compute_follows_data_compliance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">usm_array_arglist</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.utils.chk_compute_follows_data_compliance" title="Permalink to this definition"></a></dt>
+<dd><p>Check if all the usm ndarray’s have the same device.</p>
+<p>Extracts the device filter string from the Numba inferred USMNdArray
+type. Check if the devices corresponding to the filter string are
+equivalent and return a <code class="docutils literal notranslate"><span class="pre">dpctl.SyclDevice</span></code> object corresponding to the
+common filter string.</p>
+<p>If an exception occurred in creating a <code class="docutils literal notranslate"><span class="pre">dpctl.SyclDevice</span></code>, or the
+devices are not equivalent then returns None.</p>
 <dl class="simple">
-<dt>Returns:</dt><dd><p>Range: A <cite>Range</cite> object defining the index space.</p>
+<dt>Args:</dt><dd><p>usm_array_arglist : A list of usm_ndarray types specified as
+arguments to the kernel.</p>
+</dd>
+<dt>Returns:</dt><dd><p>A <code class="docutils literal notranslate"><span class="pre">dpctl.SyclDevice</span></code> object if all USMNdArray have same device, or
+else None is returned.</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.utils.NdRange.get_local_range">
-<span class="sig-name descname"><span class="pre">get_local_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.utils.NdRange.get_local_range" title="Permalink to this definition"></a></dt>
-<dd><p>Returns a Range defining the index space of a work group.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.utils.determine_kernel_launch_queue">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.kernel_interface.utils.</span></span><span class="sig-name descname"><span class="pre">determine_kernel_launch_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.utils.determine_kernel_launch_queue" title="Permalink to this definition"></a></dt>
+<dd><p>Determines the queue where the kernel is to be launched.</p>
+<p>The execution queue is derived using the following algorithm. In future,
+support for <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> and <code class="docutils literal notranslate"><span class="pre">dpctl.device_context</span></code> is to be
+removed and queue derivation will follows Python Array API’s
+“compute follows data” logic.</p>
+<p>Check if there are array arguments.
+True:</p>
+<blockquote>
+<div><p>Check if all array arguments are of type numpy.ndarray
+(numba.types.Array)</p>
+<blockquote>
+<div><dl>
+<dt>True:</dt><dd><p>Check if the kernel was invoked from within a
+dpctl.device_context.
+True:</p>
+<blockquote>
+<div><p>Provide a deprecation warning for device_context use and
+point to using dpctl.tensor.usm_ndarray or dpnp.ndarray</p>
+<p>return dpctl.get_current_queue</p>
+</div></blockquote>
 <dl class="simple">
-<dt>Returns:</dt><dd><p>Range: A <cite>Range</cite> object to specify index space of a work group.</p>
+<dt>False:</dt><dd><p>Raise ExecutionQueueInferenceError</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.utils.NdRange.global_range">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">global_range</span></span><a class="headerlink" href="#numba_dpex.core.kernel_interface.utils.NdRange.global_range" title="Permalink to this definition"></a></dt>
-<dd><p>Accessor for global_range.</p>
+</dd>
+<dt>False:</dt><dd><dl>
+<dt>Check if all of the arrays are USMNdarray</dt><dd><dl>
+<dt>True:</dt><dd><p>Check if execution queue could be inferred using
+compute follows data rules
+True:</p>
+<blockquote>
+<div><p>return the compute follows data inferred queue</p>
+</div></blockquote>
 <dl class="simple">
-<dt>Returns:</dt><dd><p>Range: The <cite>global_range</cite> <cite>Range</cite> object.</p>
+<dt>False:</dt><dd><p>Raise ComputeFollowsDataInferenceError</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.utils.NdRange.local_range">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">local_range</span></span><a class="headerlink" href="#numba_dpex.core.kernel_interface.utils.NdRange.local_range" title="Permalink to this definition"></a></dt>
-<dd><p>Accessor for local_range.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>Range: The <cite>local_range</cite> <cite>Range</cite> object.</p>
+</dd>
+<dt>False:</dt><dd><p>Raise ComputeFollowsDataInferenceError</p>
 </dd>
 </dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.utils.Range">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.kernel_interface.utils.</span></span><span class="sig-name descname"><span class="pre">Range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.utils.Range" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
-<p>A data structure to encapsulate a single kernel lauch parameter.</p>
-<p>The range is an abstraction that describes the number of elements
-in each dimension of buffers and index spaces. It can contain
-1, 2, or 3 numbers, dependending on the dimensionality of the
-object it describes.</p>
-<p>This is just a wrapper class on top of a 3-tuple. The kernel launch
-parameter is consisted of three int’s. This class basically mimics
-the behavior of <cite>sycl::range</cite>.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.utils.Range.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.utils.Range.get" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the range of a single dimension.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>index (int): The index of the dimension, i.e. [0,2]</p>
-</dd>
-<dt>Returns:</dt><dd><p>int: The range of the dimension indexed by <cite>index</cite>.</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.utils.Range.size">
-<span class="sig-name descname"><span class="pre">size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.utils.Range.size" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the size of a range.</p>
-<p>Returns the size of a range by multiplying
-the range of the individual dimensions.</p>
-<dl class="simple">
-<dt>Returns:</dt><dd><p>int: The size of a range.</p>
 </dd>
 </dl>
-</dd></dl>
-
+</div></blockquote>
+</div></blockquote>
+<dl>
+<dt>False:</dt><dd><p>Check if the kernel was invoked from within a dpctl.device_context.
+True:</p>
+<blockquote>
+<div><p>Provide a deprecation warning for device_context use and
+point to using dpctl.tensor.usm_ndarray of dpnp.ndarray</p>
+<p>return dpctl.get_current_queue</p>
+</div></blockquote>
+<dl class="simple">
+<dt>False:</dt><dd><p>Raise ExecutionQueueInferenceError</p>
+</dd>
+</dl>
+</dd>
+<dt>Args:</dt><dd><p>args : A list of arguments passed to the kernel stored in the
+launcher.
+argtypes : The Numba inferred type for each argument.</p>
+</dd>
+<dt>Returns:</dt><dd><p>A queue the common queue used to allocate the arrays. If no such
+queue exists, then raises an Exception.</p>
+</dd>
+<dt>Raises:</dt><dd><dl class="simple">
+<dt>ComputeFollowsDataInferenceError: If the queue could not be inferred</dt><dd><p>using compute follows data rules.</p>
+</dd>
+<dt>ExecutionQueueInferenceError: If the queue could not be inferred</dt><dd><p>using the dpctl queue manager.</p>
+</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
