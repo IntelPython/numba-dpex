@@ -4,4 +4,18 @@
 
 import dpctl
 
-dpctl_version = tuple(map(int, dpctl.__version__.split(".")[:2]))
+
+def _parse_version():
+    t = dpctl.__version__.split(".")
+    if len(t) > 1:
+        try:
+            return tuple(map(int, t))
+        except ValueError:
+            return (0, 0)
+    else:
+        return (0, 0)
+
+
+dpctl_version = _parse_version()
+
+del _parse_version
