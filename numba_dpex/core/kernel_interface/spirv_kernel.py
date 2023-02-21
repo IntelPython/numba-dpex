@@ -140,7 +140,7 @@ class SpirvKernel(KernelInterface):
         self._module_name = kernel.name
 
         # Dump LLVM IR if DEBUG flag is set.
-        if config.DEBUG:
+        if config.DUMP_KERNEL_LLVM:
             import hashlib
 
             # Embed hash of module name in the output file name
