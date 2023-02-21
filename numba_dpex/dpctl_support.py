@@ -9,7 +9,7 @@ def _parse_version():
     t = dpctl.__version__.split(".")
     if len(t) > 1:
         try:
-            return tuple(map(int, t))
+            return tuple(map(int, t[:2]))
         except ValueError:
             return (0, 0)
     else:
