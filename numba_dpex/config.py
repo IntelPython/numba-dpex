@@ -90,7 +90,9 @@ DEBUGINFO_DEFAULT = _readenv(
 )
 
 # Emit LLVM assembly language format(.ll)
-DUMP_KERNEL_LLVM = _readenv("NUMBA_DPEX_DUMP_KERNEL_LLVM", int, config.DUMP_OPTIMIZED)
+DUMP_KERNEL_LLVM = _readenv(
+    "NUMBA_DPEX_DUMP_KERNEL_LLVM", int, config.DUMP_OPTIMIZED
+)
 
 # configs for caching
 # To see the debug messages for the caching.
