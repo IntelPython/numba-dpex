@@ -207,7 +207,7 @@ def _dbgprint_after_each_array_assignments(lowerer, loop_body, typemap):
 
 
 def _generate_kernel_indexing(
-    parfor_dim, legal_loop_indices, loop_ranges, param_dict
+    parfor_dim, legal_loop_indices, loop_ranges, param_dict, has_reduction, redvars, typemap
 ):
     """Generates the indexing intrinsic calls inside a dpex kernel.
 
@@ -225,6 +225,7 @@ def _generate_kernel_indexing(
     for_loop_dim = parfor_dim
 
     if parfor_dim > 3:
+        raise NotImplementedError
         global_id_dim = 3
     else:
         global_id_dim = parfor_dim
@@ -238,6 +239,45 @@ def _generate_kernel_indexing(
             + str(eachdim)
             + ")\n"
         )
+
+    if has_reduction:
+        for eachdim in range(global_id_dim):
+            gufunc_txt += (
+                "    "
+                + f"local_id{eachdim} = "
+                + "dpex.get_local_id("
+                + str(eachdim)
+                + ")\n"
+            )
+        for eachdim in range(global_id_dim):
+            gufunc_txt += (
+                "    "
+                + f"local_size{eachdim} = "
+                + "dpex.get_local_size("
+                + str(eachdim)
+                + ")\n"
+            )
+        for eachdim in range(global_id_dim):
+            gufunc_txt += (
+                "    "
+                + f"group_id{eachdim} = "
+                + "dpex.get_local_size("
+                + str(eachdim)
+                + ")\n"
+            )
+
+        # Allocate local_sums arrays for each reduction variable.
+        for redvar in redvars:
+            rtyp = str(typemap[redvar])
+            gufunc_txt += (
+                "    "
+                + f"local_sums_{redvar} = "
+                + f"dpex.local.array(8, {rtyp})\n"
+            )
+            gufunc_txt += (
+                "    "
+                + f"local_sums_{redvar}[local_id0] = 0\n"
+            )
 
     for eachdim in range(global_id_dim, for_loop_dim):
         for indent in range(1 + (eachdim - global_id_dim)):
@@ -352,8 +392,8 @@ def create_kernel_for_parfor(
     )
     has_reduction = False if len(parfor_redvars) == 0 else True
 
-    if has_reduction:
-        raise NotImplementedError
+    # if has_reduction:
+    #     raise NotImplementedError
 
     # Compute just the parfor inputs as a set difference.
     parfor_inputs = sorted(list(set(parfor_params) - set(parfor_outputs)))
@@ -447,13 +487,47 @@ def create_kernel_for_parfor(
     gufunc_txt += "(" + (", ".join(parfor_params)) + "):\n"
 
     gufunc_txt += _generate_kernel_indexing(
-        parfor_dim, legal_loop_indices, loop_ranges, param_dict
+        parfor_dim, legal_loop_indices, loop_ranges, param_dict, has_reduction, parfor_redvars, typemap
     )
 
     # Add the sentinel assignment so that we can find the loop body position
     # in the IR.
     gufunc_txt += "    "
     gufunc_txt += sentinel_name + " = 0\n"
+
+    if has_reduction:
+        # Generate local_sum[local_id0] = redvar, for each reduction variable
+        for redvar in redvars:
+            gufunc_txt += (
+                "    "
+                + f"local_sums_{redvar}[local_id0] = {redvar}\n"
+            )
+
+        gufunc_txt += (
+            "    stride0 = group_size0 // 2\n" +
+            "    while stride0 > 0:\n" +
+            "        dpex.barrier(dpex.LOCAL_MEM_FENCE)\n" +
+            "        if local_id0 < stride0:\n"
+        )
+
+        for redvar in redvars:
+            gufunc_txt += (
+                "            "
+                + f"local_sums_{redvar}[local_id0] += local_sums_{redvar}[local_id0 + stride0]\n"
+            )
+
+        gufunc_txt += (
+            "        stride0 >>= 1\n"
+        )
+
+        gufunc_txt += (
+            "    if local_id0 == 0:\n"
+        )
+        for redvar in redvars:
+            gufunc_txt += (
+                "            "
+                + f"partial_sums_{redvar}[group_id0] = local_sums_{redvar}[0]\n"
+            )
 
     # gufunc returns nothing
     gufunc_txt += "    return None\n"
