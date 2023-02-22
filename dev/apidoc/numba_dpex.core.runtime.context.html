@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.runtime.context module &mdash; numba-dpex 0.20.0dev3+11.gc59b4b91 documentation</title>
+  <title>numba_dpex.core.runtime.context module &mdash; numba-dpex 0.20.0dev3+13.g1b948c24 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -106,6 +106,12 @@ ptr (_type_): _description_</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc">
 <span class="sig-name descname"><span class="pre">meminfo_alloc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc" title="Permalink to this definition"></a></dt>
+<dd><p>A wrapped caller for meminfo_alloc_unchecked() with null check.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc_unchecked">
+<span class="sig-name descname"><span class="pre">meminfo_alloc_unchecked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc_unchecked" title="Permalink to this definition"></a></dt>
 <dd><p>Allocate a new MemInfo with a data payload of <cite>size</cite> bytes.</p>
 <p>The result of the call is checked and if it is NULL, i.e. allocation
 failed, then a MemoryError is raised. If the allocation succeeded then
@@ -125,11 +131,34 @@ DPC++ filter selector string.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc_unchecked">
-<span class="sig-name descname"><span class="pre">meminfo_alloc_unchecked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc_unchecked" title="Permalink to this definition"></a></dt>
-<dd><p>Allocate a new MemInfo with a data payload of <cite>size</cite> bytes.</p>
-<p>A pointer to the MemInfo is returned.</p>
-<p>Returns NULL to indicate error/failure to allocate.</p>
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.meminfo_fill">
+<span class="sig-name descname"><span class="pre">meminfo_fill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meminfo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">itemsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.meminfo_fill" title="Permalink to this definition"></a></dt>
+<dd><p>A wrapped caller for meminfo_fill_unchecked() with null check.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.meminfo_fill_unchecked">
+<span class="sig-name descname"><span class="pre">meminfo_fill_unchecked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">meminfo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">itemsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.meminfo_fill_unchecked" title="Permalink to this definition"></a></dt>
+<dd><p>Fills an allocated <cite>MemInfo</cite> with the value specified.</p>
+<p>The result of the call is checked and if it is <cite>NULL</cite>, i.e. the fill
+operation failed, then a <cite>MemoryError</cite> is raised. If the fill operation
+is succeeded then a pointer to the <cite>MemInfo</cite> is returned.</p>
+<dl>
+<dt>Args:</dt><dd><p>builder (llvmlite.ir.builder.IRBuilder): LLVM IR builder
+meminfo (llvmlite.ir.instructions.LoadInstr): LLVM uint64 value</p>
+<blockquote>
+<div><p>specifying the size in bytes for the data payload.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>itemsize (llvmlite.ir.values.Constant): An LLVM Constant value</dt><dd><p>specifying the size of the each data item allocated by the
+usm allocator.</p>
+</dd>
+<dt>device (llvmlite.ir.values.FormattedConstant): An LLVM ArrayType</dt><dd><p>storing a const string for a DPC++ filter selector string.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Returns: A pointer to the <cite>MemInfo</cite> is returned.</p>
 </dd></dl>
 
 <dl class="py method">

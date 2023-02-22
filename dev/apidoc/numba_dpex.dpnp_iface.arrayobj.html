@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.dpnp_iface.arrayobj module &mdash; numba-dpex 0.20.0dev3+11.gc59b4b91 documentation</title>
+  <title>numba_dpex.dpnp_iface.arrayobj module &mdash; numba-dpex 0.20.0dev3+13.g1b948c24 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -84,6 +84,11 @@
   <section id="module-numba_dpex.dpnp_iface.arrayobj">
 <span id="numba-dpex-dpnp-iface-arrayobj-module"></span><h1>numba_dpex.dpnp_iface.arrayobj module<a class="headerlink" href="#module-numba_dpex.dpnp_iface.arrayobj" title="Permalink to this heading"></a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.arrayobj.aryobj_fill">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.arrayobj.</span></span><span class="sig-name descname"><span class="pre">aryobj_fill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">llargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.arrayobj.aryobj_fill" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty">
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.arrayobj.</span></span><span class="sig-name descname"><span class="pre">ol_dpnp_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty" title="Permalink to this definition"></a></dt>
 <dd><p>Implementation of an overload to support dpnp.empty inside a jit
@@ -110,6 +115,16 @@ non-partitioned SYCL device, an instance of
 </dl>
 <p>Returns: Numba implementation of the dpnp.empty</p>
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.arrayobj.ol_dpnp_ones">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.arrayobj.</span></span><span class="sig-name descname"><span class="pre">ol_dpnp_ones</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_ones" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.arrayobj.ol_dpnp_zeros">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.arrayobj.</span></span><span class="sig-name descname"><span class="pre">ol_dpnp_zeros</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_zeros" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </section>
 
