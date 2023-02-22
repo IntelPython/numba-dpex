@@ -1,9 +1,9 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
 """
-There are multiple ways of implementing reduction using numba_dpex. Here we
+There are multiple ways of implementing reduction using numba_ndpx. Here we
 demonstrate another way of implementing reduction using recursion to compute
 partial reductions in separate kernels.
 """
@@ -12,17 +12,17 @@ import dpctl
 import dpctl.tensor as dpt
 from numba import int32
 
-import numba_dpex as dpex
+import numba_dpex as ndpx
 
 
-@dpex.kernel
+@ndpx.kernel
 def sum_reduction_kernel(A, input_size, partial_sums):
-    local_id = dpex.get_local_id(0)
-    global_id = dpex.get_global_id(0)
-    group_size = dpex.get_local_size(0)
-    group_id = dpex.get_group_id(0)
+    local_id = ndpx.get_local_id(0)
+    global_id = ndpx.get_global_id(0)
+    group_size = ndpx.get_local_size(0)
+    group_id = ndpx.get_group_id(0)
 
-    local_sums = dpex.local.array(64, int32)
+    local_sums = ndpx.local.array(64, int32)
 
     local_sums[local_id] = 0
 
@@ -33,7 +33,7 @@ def sum_reduction_kernel(A, input_size, partial_sums):
     stride = group_size // 2
     while stride > 0:
         # Waiting for each 2x2 addition into given workgroup
-        dpex.barrier(dpex.LOCAL_MEM_FENCE)
+        ndpx.barrier(ndpx.LOCAL_MEM_FENCE)
 
         # Add elements 2 by 2 between local_id and local_id + stride
         if local_id < stride:
@@ -58,13 +58,15 @@ def sum_recursive_reduction(size, group_size, Dinp, Dpartial_sums):
             nb_work_groups += 1
             passed_size = nb_work_groups * group_size
 
-    gr = (passed_size,)
-    lr = (group_size,)
+    gr = ndpx.Range(passed_size)
+    lr = ndpx.Range(group_size)
 
-    sum_reduction_kernel[gr, lr](Dinp, size, Dpartial_sums)
+    sum_reduction_kernel[ndpx.NdRange(gr, lr)](Dinp, size, Dpartial_sums)
 
     if nb_work_groups <= group_size:
-        sum_reduction_kernel[lr, lr](Dpartial_sums, nb_work_groups, Dinp)
+        sum_reduction_kernel[ndpx.NdRange(lr, lr)](
+            Dpartial_sums, nb_work_groups, Dinp
+        )
         result = int(Dinp[0])
     else:
         result = sum_recursive_reduction(

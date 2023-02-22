@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -431,7 +431,6 @@ def dpnp_dot_impl(a, b):
         dpnp_func = dpnp_ext.dpnp_func("dpnp_dot", [a.dtype.name, "NONE"], sig)
 
         def dot_2_vv(a, b):
-
             (m,) = a.shape
             (n,) = b.shape
 

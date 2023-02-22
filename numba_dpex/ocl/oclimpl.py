@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -14,8 +14,8 @@ from numba.core import cgutils, types
 from numba.core.imputils import Registry
 from numba.core.typing.npydecl import parse_dtype
 
-from numba_dpex import config, target
-from numba_dpex.codegen import SPIR_DATA_LAYOUT
+from numba_dpex import config, kernel_target
+from numba_dpex.core.codegen import SPIR_DATA_LAYOUT
 from numba_dpex.core.itanium_mangler import mangle, mangle_c, mangle_type
 from numba_dpex.core.types import Array
 from numba_dpex.ocl.atomics import atomic_helper
@@ -63,7 +63,7 @@ def _declare_function(context, builder, name, sig, cargs, mangler=mangle_c):
     fnty = Type.function(llretty, llargs)
     mangled = mangler(name, cargs)
     fn = cgutils.get_or_insert_function(mod, fnty, mangled)
-    fn.calling_convention = target.CC_SPIR_FUNC
+    fn.calling_convention = kernel_target.CC_SPIR_FUNC
     return fn
 
 
@@ -230,7 +230,7 @@ def insert_and_call_atomic_fn(
     fnty = ir.FunctionType(llretty, llargs)
 
     fn = cgutils.get_or_insert_function(mod, fnty, name)
-    fn.calling_convention = target.CC_SPIR_FUNC
+    fn.calling_convention = kernel_target.CC_SPIR_FUNC
 
     generic_ptr = context.addrspacecast(builder, ptr, address_space.GENERIC)
 
@@ -264,7 +264,7 @@ def native_atomic_add(context, builder, sig, args):
     ptr = cgutils.get_item_pointer(context, builder, aryty, lary, indices)
 
     if dtype == types.float32 or dtype == types.float64:
-        context.extra_compile_options[target.LLVM_SPIRV_ARGS] = [
+        context.extra_compile_options[kernel_target.LLVM_SPIRV_ARGS] = [
             "--spirv-ext=+SPV_EXT_shader_atomic_float_add"
         ]
         name = "__spirv_AtomicFAddEXT"
@@ -301,7 +301,7 @@ def native_atomic_add(context, builder, sig, args):
 
     fnty = ir.FunctionType(retty, spirv_fn_arg_types)
     fn = cgutils.get_or_insert_function(builder.module, fnty, mangled_fn_name)
-    fn.calling_convention = target.CC_SPIR_FUNC
+    fn.calling_convention = kernel_target.CC_SPIR_FUNC
 
     sycl_memory_order = atomic_helper.sycl_memory_order.relaxed
     sycl_memory_scope = atomic_helper.sycl_memory_scope.device
@@ -397,7 +397,7 @@ def atomic_add(context, builder, sig, args, name):
     from .atomics import atomic_support_present
 
     if atomic_support_present():
-        context.extra_compile_options[target.LINK_ATOMIC] = True
+        context.extra_compile_options[kernel_target.LINK_ATOMIC] = True
         aryty, indty, valty = sig.args
         ary, inds, val = args
         dtype = aryty.dtype

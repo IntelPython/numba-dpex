@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -100,7 +100,7 @@ DEBUG_CACHE = _readenv("NUMBA_DPEX_DEBUG_CACHE", int, 0)
 ENABLE_CACHE = _readenv("NUMBA_DPEX_ENABLE_CACHE", int, 1)
 # Capacity of the cache, execute it like:
 #   NUMBA_DPEX_CACHE_SIZE=20 python <code>
-CACHE_SIZE = _readenv("NUMBA_DPEX_CACHE_SIZE", int, 10)
+CACHE_SIZE = _readenv("NUMBA_DPEX_CACHE_SIZE", int, 128)
 
 TESTING_SKIP_NO_DPNP = _readenv("NUMBA_DPEX_TESTING_SKIP_NO_DPNP", int, 0)
 TESTING_SKIP_NO_DEBUGGING = _readenv(

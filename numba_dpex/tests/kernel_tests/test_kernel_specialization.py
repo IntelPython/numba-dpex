@@ -11,9 +11,10 @@ from numba_dpex.core.exceptions import (
     InvalidKernelSpecializationError,
     MissingSpecializationError,
 )
+from numba_dpex.core.kernel_interface.indexers import Range
 
-i64arrty = usm_ndarray(int64, 1, "C")
-f32arrty = usm_ndarray(float32, 1, "C")
+i64arrty = usm_ndarray(ndim=1, dtype=int64, layout="C")
+f32arrty = usm_ndarray(ndim=1, dtype=float32, layout="C")
 
 specialized_kernel1 = dpex.kernel((i64arrty, i64arrty, i64arrty))
 specialized_kernel2 = dpex.kernel(
@@ -59,9 +60,7 @@ def test_missing_specialization_error():
     c = dpt.zeros(1024, dtype=dpt.int32)
 
     with pytest.raises(MissingSpecializationError):
-        specialized_kernel1(data_parallel_sum)[
-            1024,
-        ](a, b, c)
+        specialized_kernel1(data_parallel_sum)[Range(1024)](a, b, c)
 
 
 def test_execution_of_specialized_kernel():
@@ -70,9 +69,7 @@ def test_execution_of_specialized_kernel():
     b = dpt.ones(1024, dtype=dpt.int64)
     c = dpt.zeros(1024, dtype=dpt.int64)
 
-    specialized_kernel1(data_parallel_sum)[
-        1024,
-    ](a, b, c)
+    specialized_kernel1(data_parallel_sum)[Range(1024)](a, b, c)
 
     npc = dpt.asnumpy(c)
     import numpy as np

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -19,6 +19,7 @@ from numba.core.utils import cached_property
 from numba_dpex.core.datamodel.models import _init_data_model_manager
 from numba_dpex.core.exceptions import UnsupportedKernelArgumentError
 from numba_dpex.core.typeconv import to_usm_ndarray
+from numba_dpex.core.types import DpnpNdArray
 from numba_dpex.core.utils import get_info_from_suai
 from numba_dpex.utils import (
     address_space,
@@ -35,13 +36,11 @@ LINK_ATOMIC = 111
 LLVM_SPIRV_ARGS = 112
 
 
-class DpexTypingContext(typing.BaseContext):
-    """A typing context inheriting Numba's ``BaseContext`` to support
-    dpex-specific data types.
+class DpexKernelTypingContext(typing.BaseContext):
+    """Custom typing context to support kernel compilation.
 
-    :class:`DpexTypingContext` is a customized typing context that inherits from
-    Numba's ``typing.BaseContext`` class. We add two specific functionalities to
-    the basic Numba typing context features: An overridden
+    The customized typing context provides two features required to compile
+    Python functions decorated by the kernel decorator: An overridden
     :func:`resolve_argument_type` that changes all ``npytypes.Array`` to
     :class:`numba_depx.core.types.Array`. An overridden
     :func:`load_additional_registries` that registers OpenCL math and other
@@ -69,6 +68,20 @@ class DpexTypingContext(typing.BaseContext):
         """
         try:
             _type = type(typeof(val))
+
+            # XXX A kernel function has the spir_kernel ABI and requires
+            # pointers to have an address space attribute. For this reason, the
+            # UsmNdArray type uses a custom data model where the pointers are
+            # address space casted to have a SYCL-specific address space value.
+            # The DpnpNdArray type on the other hand is meant to be used inside
+            # host functions and has Numba's array model as its data model.
+            # If the value is a DpnpNdArray then use the ``to_usm_ndarray``
+            # function to convert it into a UsmNdArray type rather than passing
+            # it to the kernel as a DpnpNdArray. Thus, from a Numba typing
+            # perspective dpnp.ndarrays cannot be directly passed to a kernel.
+            if _type is DpnpNdArray:
+                suai_attrs = get_info_from_suai(val)
+                return to_usm_ndarray(suai_attrs)
         except ValueError:
             # When an array-like kernel argument is not recognized by
             # numba-dpex, this additional check sees if the array-like object
@@ -94,7 +107,7 @@ class DpexTypingContext(typing.BaseContext):
         """Register the OpenCL API and math and other functions."""
         from numba.core.typing import cmathdecl, npydecl
 
-        from ..ocl import mathdecl, ocldecl
+        from ...ocl import mathdecl, ocldecl
 
         self.install_registry(ocldecl.registry)
         self.install_registry(mathdecl.registry)
@@ -108,23 +121,21 @@ class SyclDevice(GPU):
     pass
 
 
-DPEX_TARGET_NAME = "SyclDevice"
+DPEX_KERNEL_TARGET_NAME = "SyclDevice"
 
-target_registry[DPEX_TARGET_NAME] = SyclDevice
-
-import numba_dpex.offload_dispatcher
+target_registry[DPEX_KERNEL_TARGET_NAME] = SyclDevice
 
 
-class DpexTargetContext(BaseContext):
+class DpexKernelTargetContext(BaseContext):
     """A target context inheriting Numba's ``BaseContext`` that is customized
     for generating SYCL kernels.
 
-    :class:`DpexTargetContext` is a customized target context that inherits from
-    Numba's ``numba.core.base.BaseContext`` class. The class defines helper
-    functions to mark LLVM functions as SPIR-V kernels. The class also registers
-    OpenCL math and API functions, helper functions for inserting LLVM address
-    space cast instructions, and other functionalities used by dpex compiler
-    passes.
+    A customized target context for generating SPIR-V kernels. The class defines
+    helper functions to generates SPIR-V kernels as LLVM IR using the required
+    calling conventions and metadata. The class also registers OpenCL math and
+    API functions, helper functions for inserting LLVM address
+    space cast instructions, and other functionalities used by the compiler
+    to generate SPIR-V kernels.
 
     """
 
@@ -258,7 +269,7 @@ class DpexTargetContext(BaseContext):
         module.get_function(func.name).linkage = "internal"
         return wrapper
 
-    def __init__(self, typingctx, target=DPEX_TARGET_NAME):
+    def __init__(self, typingctx, target=DPEX_KERNEL_TARGET_NAME):
         super().__init__(typingctx, target)
 
     def init(self):
@@ -340,8 +351,8 @@ class DpexTargetContext(BaseContext):
         """
         from numba.np import npyimpl
 
-        from .. import printimpl
-        from ..ocl import mathimpl, oclimpl
+        from ... import printimpl
+        from ...ocl import mathimpl, oclimpl
 
         self.insert_func_defn(oclimpl.registry.functions)
         self.insert_func_defn(mathimpl.registry.functions)
@@ -402,7 +413,9 @@ class DpexTargetContext(BaseContext):
         fn = module.get_or_insert_function(fnty, name=fndesc.mangled_name)
         if not self.enable_debuginfo:
             fn.attributes.add("alwaysinline")
-        ret = super(DpexTargetContext, self).declare_function(module, fndesc)
+        ret = super(DpexKernelTargetContext, self).declare_function(
+            module, fndesc
+        )
         ret.calling_convention = calling_conv.CC_SPIR_FUNC
         return ret
 

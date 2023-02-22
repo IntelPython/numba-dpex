@@ -1,8 +1,8 @@
-# SPDX-FileCopyrightText: 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2022 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
-
+from collections.abc import Iterable
 from inspect import signature
 from warnings import warn
 
@@ -12,12 +12,10 @@ from numba.core import sigutils
 from numba.core.types import Array as NpArrayType
 from numba.core.types import void
 
-from numba_dpex import config
-from numba_dpex.core.caching import LRUCache, NullCache, build_key
-from numba_dpex.core.descriptor import dpex_target
+from numba_dpex import NdRange, Range, config
+from numba_dpex.core.caching import LRUCache, NullCache
+from numba_dpex.core.descriptor import dpex_kernel_target
 from numba_dpex.core.exceptions import (
-    ComputeFollowsDataInferenceError,
-    ExecutionQueueInferenceError,
     IllegalRangeValueError,
     InvalidKernelLaunchArgsError,
     InvalidKernelSpecializationError,
@@ -33,6 +31,13 @@ from numba_dpex.core.exceptions import (
 from numba_dpex.core.kernel_interface.arg_pack_unpacker import Packer
 from numba_dpex.core.kernel_interface.spirv_kernel import SpirvKernel
 from numba_dpex.core.types import USMNdArray
+from numba_dpex.core.utils import (
+    build_key,
+    create_func_hash,
+    strip_usm_metadata,
+)
+
+from .utils import determine_kernel_launch_queue
 
 
 def get_ordered_arg_access_types(pyfunc, access_types):
@@ -75,7 +80,7 @@ class JitKernel:
         specialization_sigs=None,
         enable_cache=True,
     ):
-        self.typingctx = dpex_target.typing_context
+        self.typingctx = dpex_kernel_target.typing_context
         self.pyfunc = pyfunc
         self.debug_flags = debug_flags
         self.compile_flags = compile_flags
@@ -84,17 +89,26 @@ class JitKernel:
         self._global_range = None
         self._local_range = None
 
+        self._func_hash = create_func_hash(pyfunc)
+
         # caching related attributes
         if not config.ENABLE_CACHE:
             self._cache = NullCache()
+            self._kernel_bundle_cache = NullCache()
         elif enable_cache:
             self._cache = LRUCache(
                 name="SPIRVKernelCache",
                 capacity=config.CACHE_SIZE,
                 pyfunc=self.pyfunc,
             )
+            self._kernel_bundle_cache = LRUCache(
+                name="KernelBundleCache",
+                capacity=config.CACHE_SIZE,
+                pyfunc=self.pyfunc,
+            )
         else:
             self._cache = NullCache()
+            self._kernel_bundle_cache = NullCache()
         self._cache_hits = 0
 
         if array_access_specifiers:
@@ -143,13 +157,13 @@ class JitKernel:
     def cache_hits(self):
         return self._cache_hits
 
-    def _compile_and_cache(self, argtypes, cache):
+    def _compile_and_cache(self, argtypes, cache, key=None):
         """Helper function to compile the Python function or Numba FunctionIR
         object passed to a JitKernel and store it in an internal cache.
         """
         # We always compile the kernel using the dpex_target.
-        typingctx = dpex_target.typing_context
-        targetctx = dpex_target.target_context
+        typingctx = dpex_kernel_target.typing_context
+        targetctx = dpex_kernel_target.target_context
 
         kernel = SpirvKernel(self.pyfunc, self.kernel_name)
         kernel.compile(
@@ -163,11 +177,13 @@ class JitKernel:
         device_driver_ir_module = kernel.device_driver_ir_module
         kernel_module_name = kernel.module_name
 
-        key = build_key(
-            tuple(argtypes),
-            self.pyfunc,
-            kernel.target_context.codegen(),
-        )
+        if not key:
+            stripped_argtypes = strip_usm_metadata(argtypes)
+            codegen_magic_tuple = kernel.target_context.codegen().magic_tuple()
+            key = build_key(
+                stripped_argtypes, codegen_magic_tuple, self._func_hash
+            )
+
         cache.put(key, (device_driver_ir_module, kernel_module_name))
 
         return device_driver_ir_module, kernel_module_name
@@ -277,170 +293,6 @@ class JitKernel:
                     work_items=local_range[i],
                 )
 
-    def _chk_compute_follows_data_compliance(self, usm_array_arglist):
-        """Check if all the usm ndarray's have the same device.
-
-        Extracts the device filter string from the Numba inferred USMNdArray
-        type. Check if the devices corresponding to the filter string are
-        equivalent and return a ``dpctl.SyclDevice`` object corresponding to the
-        common filter string.
-
-        If an exception occurred in creating a ``dpctl.SyclDevice``, or the
-        devices are not equivalent then returns None.
-
-        Args:
-            usm_array_arglist : A list of usm_ndarray types specified as
-            arguments to the kernel.
-
-        Returns:
-            A ``dpctl.SyclDevice`` object if all USMNdArray have same device, or
-            else None is returned.
-        """
-
-        queue = None
-
-        for usm_array in usm_array_arglist:
-            _queue = usm_array.queue
-            if not queue:
-                queue = _queue
-            else:
-                if _queue != queue:
-                    return None
-
-        return queue
-
-    def _determine_kernel_launch_queue(self, args, argtypes):
-        """Determines the queue where the kernel is to be launched.
-
-        The execution queue is derived using the following algorithm. In future,
-        support for ``numpy.ndarray`` and ``dpctl.device_context`` is to be
-        removed and queue derivation will follows Python Array API's
-        "compute follows data" logic.
-
-        Check if there are array arguments.
-        True:
-          Check if all array arguments are of type numpy.ndarray
-          (numba.types.Array)
-              True:
-                  Check if the kernel was invoked from within a
-                  dpctl.device_context.
-                  True:
-                      Provide a deprecation warning for device_context use and
-                      point to using dpctl.tensor.usm_ndarray or dpnp.ndarray
-
-                      return dpctl.get_current_queue
-                  False:
-                      Raise ExecutionQueueInferenceError
-              False:
-                  Check if all of the arrays are USMNdarray
-                      True:
-                          Check if execution queue could be inferred using
-                          compute follows data rules
-                          True:
-                              return the compute follows data inferred queue
-                          False:
-                              Raise ComputeFollowsDataInferenceError
-                      False:
-                          Raise ComputeFollowsDataInferenceError
-        False:
-          Check if the kernel was invoked from within a dpctl.device_context.
-            True:
-                Provide a deprecation warning for device_context use and
-                point to using dpctl.tensor.usm_ndarray of dpnp.ndarray
-
-                return dpctl.get_current_queue
-            False:
-                Raise ExecutionQueueInferenceError
-
-        Args:
-            args : A list of arguments passed to the kernel stored in the
-            launcher.
-            argtypes : The Numba inferred type for each argument.
-
-        Returns:
-            A queue the common queue used to allocate the arrays. If no such
-            queue exists, then raises an Exception.
-
-        Raises:
-            ComputeFollowsDataInferenceError: If the queue could not be inferred
-                using compute follows data rules.
-            ExecutionQueueInferenceError: If the queue could not be inferred
-                using the dpctl queue manager.
-        """
-
-        # FIXME: The args parameter is not needed once numpy support is removed
-
-        # Needed as USMNdArray derives from Array
-        array_argnums = [
-            i
-            for i, _ in enumerate(args)
-            if isinstance(argtypes[i], NpArrayType)
-            and not isinstance(argtypes[i], USMNdArray)
-        ]
-        usmarray_argnums = [
-            i for i, _ in enumerate(args) if isinstance(argtypes[i], USMNdArray)
-        ]
-
-        # if usm and non-usm array arguments are getting mixed, then the
-        # execution queue cannot be inferred using compute follows data rules.
-        if array_argnums and usmarray_argnums:
-            raise ComputeFollowsDataInferenceError(
-                array_argnums, usmarray_argnum_list=usmarray_argnums
-            )
-        elif array_argnums and not usmarray_argnums:
-            if dpctl.is_in_device_context():
-                warn(
-                    "Support for dpctl.device_context to specify the "
-                    + "execution queue is deprecated. "
-                    + "Use dpctl.tensor.usm_ndarray based array "
-                    + "containers instead. ",
-                    DeprecationWarning,
-                    stacklevel=2,
-                )
-                warn(
-                    "Support for NumPy ndarray objects as kernel arguments is "
-                    + "deprecated. Use dpctl.tensor.usm_ndarray based array "
-                    + "containers instead. ",
-                    DeprecationWarning,
-                    stacklevel=2,
-                )
-                return dpctl.get_current_queue()
-            else:
-                raise ExecutionQueueInferenceError(self.kernel_name)
-        elif usmarray_argnums and not array_argnums:
-            if dpctl.is_in_device_context():
-                warn(
-                    "dpctl.device_context ignored as the kernel arguments "
-                    + "are dpctl.tensor.usm_ndarray based array containers."
-                )
-            usm_array_args = [
-                argtype
-                for i, argtype in enumerate(argtypes)
-                if i in usmarray_argnums
-            ]
-
-            queue = self._chk_compute_follows_data_compliance(usm_array_args)
-
-            if not queue:
-                raise ComputeFollowsDataInferenceError(
-                    self.kernel_name, usmarray_argnum_list=usmarray_argnums
-                )
-
-            return queue
-        else:
-            if dpctl.is_in_device_context():
-                warn(
-                    "Support for dpctl.device_context to specify the "
-                    + "execution queue is deprecated. "
-                    + "Use dpctl.tensor.usm_ndarray based array "
-                    + "containers instead. ",
-                    DeprecationWarning,
-                    stacklevel=2,
-                )
-                return dpctl.get_current_queue()
-            else:
-                raise ExecutionQueueInferenceError(self.kernel_name)
-
     def __getitem__(self, args):
         """Mimic's ``numba.cuda`` square-bracket notation for configuring the
         global_range and local_range settings when launching a kernel on a
@@ -468,51 +320,89 @@ class JitKernel:
             global_range and local_range attributes initialized.
 
         """
-        if isinstance(args, int):
-            self._global_range = [args]
-            self._local_range = None
-        elif isinstance(args, tuple) or isinstance(args, list):
-            if len(args) == 1 and all(isinstance(v, int) for v in args):
-                self._global_range = list(args)
-                self._local_range = None
-            elif len(args) == 2:
-                gr = args[0]
-                lr = args[1]
-                if isinstance(gr, int):
-                    self._global_range = [gr]
-                elif len(gr) != 0 and all(isinstance(v, int) for v in gr):
-                    self._global_range = list(gr)
-                else:
-                    raise IllegalRangeValueError(kernel_name=self.kernel_name)
+        if isinstance(args, Range):
+            # we need inversions, see github issue #889
+            self._global_range = list(args)[::-1]
+        elif isinstance(args, NdRange):
+            # we need inversions, see github issue #889
+            self._global_range = list(args.global_range)[::-1]
+            self._local_range = list(args.local_range)[::-1]
+        else:
+            if (
+                isinstance(args, tuple)
+                and len(args) == 2
+                and isinstance(args[0], int)
+                and isinstance(args[1], int)
+            ):
+                warn(
+                    "Ambiguous kernel launch paramters. If your data have "
+                    + "dimensions > 1, include a default/empty local_range:\n"
+                    + "    <function>[(X,Y), numba_dpex.DEFAULT_LOCAL_RANGE]"
+                    "(<params>)\n"
+                    + "otherwise your code might produce erroneous results.",
+                    DeprecationWarning,
+                    stacklevel=2,
+                )
+                self._global_range = [args[0]]
+                self._local_range = [args[1]]
+                return self
 
-                if isinstance(lr, int):
-                    self._local_range = [lr]
-                elif isinstance(lr, list) and len(lr) == 0:
-                    # deprecation warning
+            warn(
+                "The current syntax for specification of kernel lauch "
+                + "parameters is deprecated. Users should set the kernel "
+                + "parameters through Range/NdRange classes.\n"
+                + "Example:\n"
+                + "    from numba_dpex import Range,NdRange\n\n"
+                + "    # for global range only\n"
+                + "    <function>[Range(X,Y)](<parameters>)\n"
+                + "    # or,\n"
+                + "    # for both global and local ranges\n"
+                + "    <function>[NdRange((X,Y), (P,Q))](<parameters>)",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
+            args = [args] if not isinstance(args, Iterable) else args
+            nargs = len(args)
+
+            # Check if the kernel enquing arguments are sane
+            if nargs < 1 or nargs > 2:
+                raise InvalidKernelLaunchArgsError(kernel_name=self.kernel_name)
+
+            g_range = (
+                [args[0]] if not isinstance(args[0], Iterable) else args[0]
+            )
+            # If the optional local size argument is provided
+            l_range = None
+            if nargs == 2:
+                if args[1] != []:
+                    l_range = (
+                        [args[1]]
+                        if not isinstance(args[1], Iterable)
+                        else args[1]
+                    )
+                else:
                     warn(
-                        "Specifying the local range as an empty list "
-                        "(DEFAULT_LOCAL_SIZE) is deprecated. The kernel will "
-                        "be executed as a basic data-parallel kernel over the "
-                        "global range. Specify a valid local range to execute "
-                        "the kernel as an ND-range kernel.",
+                        "Empty local_range calls are deprecated. Please use "
+                        "Range/NdRange to specify the kernel launch parameters:"
+                        "\n"
+                        + "Example:\n"
+                        + "    from numba_dpex import Range,NdRange\n\n"
+                        + "    # for global range only\n"
+                        + "    <function>[Range(X,Y)](<parameters>)\n"
+                        + "    # or,\n"
+                        + "    # for both global and local ranges\n"
+                        + "    <function>[NdRange((X,Y), (P,Q))](<parameters>)",
                         DeprecationWarning,
                         stacklevel=2,
                     )
-                    self._local_range = None
-                elif len(lr) != 0 and all(isinstance(v, int) for v in lr):
-                    self._local_range = list(lr)
-                else:
-                    raise IllegalRangeValueError(kernel_name=self.kernel_name)
-            else:
-                raise InvalidKernelLaunchArgsError(kernel_name=self.kernel_name)
-        else:
-            raise InvalidKernelLaunchArgsError(kernel_name=self.kernel_name)
 
-        # FIXME:[::-1] is done as OpenCL and SYCl have different orders when
-        # it comes to specifying dimensions.
-        self._global_range = list(self._global_range)[::-1]
-        if self._local_range:
-            self._local_range = list(self._local_range)[::-1]
+            if len(g_range) < 1:
+                raise IllegalRangeValueError(kernel_name=self.kernel_name)
+
+            # we need inversions, see github issue #889
+            self._global_range = list(g_range)[::-1]
+            self._local_range = list(l_range)[::-1] if l_range else None
 
         return self
 
@@ -547,7 +437,9 @@ class JitKernel:
         # FIXME: For specialized and ahead of time compiled and cached kernels,
         # the CFD check was already done statically. The run-time check is
         # redundant. We should avoid these checks for the specialized case.
-        exec_queue = self._determine_kernel_launch_queue(args, argtypes)
+        exec_queue = determine_kernel_launch_queue(
+            args, argtypes, self.kernel_name
+        )
         backend = exec_queue.backend
 
         if exec_queue.backend not in [
@@ -558,12 +450,12 @@ class JitKernel:
                 self.kernel_name, backend, JitKernel._supported_backends
             )
 
-        # load the kernel from cache
-        key = build_key(
-            tuple(argtypes),
-            self.pyfunc,
-            dpex_target.target_context.codegen(),
+        # Generate key used for cache lookup
+        stripped_argtypes = strip_usm_metadata(argtypes)
+        codegen_magic_tuple = (
+            dpex_kernel_target.target_context.codegen().magic_tuple()
         )
+        key = build_key(stripped_argtypes, codegen_magic_tuple, self._func_hash)
 
         # If the JitKernel was specialized then raise exception if argtypes
         # do not match one of the specialized versions.
@@ -584,16 +476,26 @@ class JitKernel:
                     device_driver_ir_module,
                     kernel_module_name,
                 ) = self._compile_and_cache(
-                    argtypes=argtypes,
-                    cache=self._cache,
+                    argtypes=argtypes, cache=self._cache, key=key
                 )
 
-        # create a sycl::KernelBundle
-        kernel_bundle = dpctl_prog.create_program_from_spirv(
-            exec_queue,
-            device_driver_ir_module,
-            " ".join(self._create_sycl_kernel_bundle_flags),
+        kernel_bundle_key = build_key(
+            stripped_argtypes, codegen_magic_tuple, exec_queue, self._func_hash
         )
+
+        artifact = self._kernel_bundle_cache.get(kernel_bundle_key)
+
+        if artifact is None:
+            # create a sycl::KernelBundle
+            kernel_bundle = dpctl_prog.create_program_from_spirv(
+                exec_queue,
+                device_driver_ir_module,
+                " ".join(self._create_sycl_kernel_bundle_flags),
+            )
+            self._kernel_bundle_cache.put(kernel_bundle_key, kernel_bundle)
+        else:
+            kernel_bundle = artifact
+
         #  get the sycl::kernel
         sycl_kernel = kernel_bundle.get_sycl_kernel(kernel_module_name)
 

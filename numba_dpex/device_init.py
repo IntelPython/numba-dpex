@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -32,7 +32,7 @@ DEFAULT_LOCAL_SIZE = []
 import dpctl
 
 from . import initialize
-from .core import target
-from .decorators import func, kernel
+from .core.targets import dpjit_target, kernel_target
+from .decorators import dpjit, func, kernel
 
 initialize.load_dpctl_sycl_interface()

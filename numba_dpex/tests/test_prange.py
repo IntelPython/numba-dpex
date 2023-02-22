@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# Copyright 2020 - 2022 Intel Corporation
+# Copyright 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -12,7 +12,6 @@ from numba import njit, prange
 from numba_dpex.tests._helper import assert_auto_offloading, skip_no_opencl_gpu
 
 
-@skip_no_opencl_gpu
 class TestPrange:
     def test_one_prange(self):
         @njit
@@ -25,7 +24,7 @@ class TestPrange:
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        device = dpctl.SyclDevice("opencl:gpu")
+        device = dpctl.select_default_device()
         with assert_auto_offloading(), dpctl.device_context(device):
             f(a, b)
 
@@ -46,7 +45,7 @@ class TestPrange:
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        device = dpctl.SyclDevice("opencl:gpu")
+        device = dpctl.select_default_device()
         with assert_auto_offloading(), dpctl.device_context(device):
             f(a, b)
 
@@ -72,7 +71,7 @@ class TestPrange:
         a = np.ones((m, n))
         b = np.ones((m, n))
 
-        device = dpctl.SyclDevice("opencl:gpu")
+        device = dpctl.select_default_device()
         with assert_auto_offloading(parfor_offloaded=2), dpctl.device_context(
             device
         ):
@@ -99,7 +98,7 @@ class TestPrange:
         a = np.ones((m, n, o))
         b = np.ones((m, n, o))
 
-        device = dpctl.SyclDevice("opencl:gpu")
+        device = dpctl.select_default_device()
         with assert_auto_offloading(parfor_offloaded=1), dpctl.device_context(
             device
         ):
@@ -121,7 +120,7 @@ class TestPrange:
 
         jitted = njit(prange_example)
 
-        device = dpctl.SyclDevice("opencl:gpu")
+        device = dpctl.select_default_device()
         with assert_auto_offloading(parfor_offloaded=2), dpctl.device_context(
             device
         ):
@@ -145,7 +144,7 @@ class TestPrange:
 
         jitted = njit(prange_example)
 
-        device = dpctl.SyclDevice("opencl:gpu")
+        device = dpctl.select_default_device()
         with assert_auto_offloading(parfor_offloaded=2), dpctl.device_context(
             device
         ):

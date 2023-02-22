@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -9,7 +9,7 @@ import pytest
 import numba_dpex as dpex
 from numba_dpex import int32, usm_ndarray
 
-i32arrty = usm_ndarray(int32, 1, "C")
+i32arrty = usm_ndarray(ndim=1, dtype=int32, layout="C")
 
 
 def f(a):

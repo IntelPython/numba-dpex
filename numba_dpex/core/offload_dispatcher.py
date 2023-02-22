@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -7,7 +7,7 @@ from numba.core.registry import cpu_target
 from numba.core.target_extension import dispatcher_registry, target_registry
 
 import numba_dpex.config as dpex_config
-from numba_dpex.core.target import DPEX_TARGET_NAME
+from numba_dpex.core.targets.kernel_target import DPEX_KERNEL_TARGET_NAME
 
 
 class OffloadDispatcher(dispatcher.Dispatcher):
@@ -22,7 +22,9 @@ class OffloadDispatcher(dispatcher.Dispatcher):
         pipeline_class=compiler.Compiler,
     ):
         if dpex_config.HAS_NON_HOST_DEVICE:
-            from numba_dpex.core.compiler import Compiler
+            from numba_dpex.core.pipelines.offload_compiler import (
+                OffloadCompiler,
+            )
 
             targetoptions["parallel"] = True
             dispatcher.Dispatcher.__init__(
@@ -31,7 +33,7 @@ class OffloadDispatcher(dispatcher.Dispatcher):
                 locals=locals,
                 targetoptions=targetoptions,
                 impl_kind=impl_kind,
-                pipeline_class=Compiler,
+                pipeline_class=OffloadCompiler,
             )
         else:
             print(
@@ -53,4 +55,6 @@ class OffloadDispatcher(dispatcher.Dispatcher):
             )
 
 
-dispatcher_registry[target_registry[DPEX_TARGET_NAME]] = OffloadDispatcher
+dispatcher_registry[
+    target_registry[DPEX_KERNEL_TARGET_NAME]
+] = OffloadDispatcher

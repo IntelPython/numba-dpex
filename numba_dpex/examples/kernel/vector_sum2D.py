@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -8,16 +8,16 @@ import dpctl
 import dpctl.tensor as dpt
 import numpy as np
 
-import numba_dpex as dpex
+import numba_dpex as ndpx
 
 
-@dpex.kernel
+@ndpx.kernel
 def data_parallel_sum(a, b, c):
     """
     A two-dimensional vector addition example using the ``kernel`` decorator.
     """
-    i = dpex.get_global_id(0)
-    j = dpex.get_global_id(1)
+    i = ndpx.get_global_id(0)
+    j = ndpx.get_global_id(1)
     c[i, j] = a[i, j] + b[i, j]
 
 
@@ -29,7 +29,7 @@ def main():
     # Array dimensions
     X = 8
     Y = 8
-    global_size = X, Y
+    global_size = ndpx.Range(X, Y)
 
     a = np.arange(X * Y, dtype=np.float32).reshape(X, Y)
     b = np.arange(X * Y, dtype=np.float32).reshape(X, Y)
@@ -48,8 +48,8 @@ def main():
     print("Using device ...")
     device.print_device_info()
 
+    print("Running kernel ...")
     driver(a_dpt, b_dpt, c_dpt, global_size)
-
     c_out = dpt.asnumpy(c_dpt)
     assert np.allclose(c, c_out)
 

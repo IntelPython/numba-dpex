@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -8,7 +8,7 @@ import dpctl
 import numba
 import numpy as np
 
-import numba_dpex as dpex
+import numba_dpex as ndpx
 
 
 def common_loop_body(i, a, b):
@@ -26,8 +26,8 @@ def scenario(api):
     global_size = 10
     a, b, c = arguments(global_size)
 
-    if api == "numba-dpex-kernel":
-        dpex_func_driver(a, b, c)
+    if api == "numba-ndpx-kernel":
+        ndpx_func_driver(a, b, c)
     else:
         numba_func_driver(a, b, c)
 
@@ -47,20 +47,20 @@ def numba_func_driver(a, b, c):
         c[i] = numba_loop_body(i, a, b)
 
 
-def dpex_func_driver(a, b, c):
+def ndpx_func_driver(a, b, c):
     device = dpctl.select_default_device()
     with dpctl.device_context(device):
-        kernel[len(c), dpex.DEFAULT_LOCAL_SIZE](a, b, c)
+        kernel[ndpx.Range(len(c))](a, b, c)
 
 
-@dpex.kernel(debug=True)
+@ndpx.kernel(debug=True)
 def kernel(a_in_kernel, b_in_kernel, c_in_kernel):
-    i = dpex.get_global_id(0)
-    c_in_kernel[i] = dpex_loop_body(i, a_in_kernel, b_in_kernel)
+    i = ndpx.get_global_id(0)
+    c_in_kernel[i] = ndpx_loop_body(i, a_in_kernel, b_in_kernel)
 
 
 numba_loop_body = numba.njit(debug=True)(common_loop_body)
-dpex_loop_body = dpex.func(debug=True)(common_loop_body)
+ndpx_loop_body = ndpx.func(debug=True)(common_loop_body)
 
 
 def main():
@@ -69,8 +69,8 @@ def main():
         "--api",
         required=False,
         default="numba",
-        choices=["numba", "numba-dpex-kernel"],
-        help="Start the version of functions using numba or numba-dpex API",
+        choices=["numba", "numba-ndpx-kernel"],
+        help="Start the version of functions using numba or numba-ndpx API",
     )
 
     args = parser.parse_args()

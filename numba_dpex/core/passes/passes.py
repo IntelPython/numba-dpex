@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -24,6 +24,7 @@ from numba.core.errors import (
     new_error_context,
 )
 from numba.core.ir_utils import remove_dels
+from numba.core.typed_passes import NativeLowering
 from numba.parfors.parfor import Parfor
 from numba.parfors.parfor import ParforPass as _parfor_ParforPass
 from numba.parfors.parfor import PreParforPass as _parfor_PreParforPass
@@ -36,7 +37,6 @@ from .lowerer import DPEXLowerer
 
 @register_pass(mutates_CFG=True, analysis_only=False)
 class ConstantSizeStaticLocalMemoryPass(FunctionPass):
-
     _name = "dpex_constant_size_static_local_memory_pass"
 
     def __init__(self):
@@ -86,7 +86,6 @@ class ConstantSizeStaticLocalMemoryPass(FunctionPass):
                                         and attr_node.op == "getattr"
                                         and attr_node.attr == "local"
                                     ):
-
                                         arg = None
                                         # at first look in keyword arguments to
                                         # get the shape, which has to be
@@ -147,7 +146,6 @@ class ConstantSizeStaticLocalMemoryPass(FunctionPass):
 
 @register_pass(mutates_CFG=True, analysis_only=False)
 class PreParforPass(FunctionPass):
-
     _name = "dpex_pre_parfor_pass"
 
     def __init__(self):
@@ -193,7 +191,6 @@ class PreParforPass(FunctionPass):
 
 @register_pass(mutates_CFG=True, analysis_only=False)
 class ParforPass(FunctionPass):
-
     _name = "dpex_parfor_pass"
 
     def __init__(self):
@@ -260,7 +257,6 @@ def fallback_context(state, msg):
 
 @register_pass(mutates_CFG=True, analysis_only=False)
 class DpexLowering(LoweringPass):
-
     _name = "dpex_lowering"
 
     def __init__(self):
@@ -340,7 +336,6 @@ class DpexLowering(LoweringPass):
 
 @register_pass(mutates_CFG=True, analysis_only=False)
 class NoPythonBackend(FunctionPass):
-
     _name = "dpex_nopython_backend"
 
     def __init__(self):
@@ -380,7 +375,6 @@ class NoPythonBackend(FunctionPass):
 
 @register_pass(mutates_CFG=False, analysis_only=True)
 class DumpParforDiagnostics(AnalysisPass):
-
     _name = "dpex_dump_parfor_diagnostics"
 
     def __init__(self):
@@ -394,3 +388,30 @@ class DumpParforDiagnostics(AnalysisPass):
             else:
                 raise RuntimeError("Diagnostics failed.")
         return True
+
+
+@register_pass(mutates_CFG=False, analysis_only=True)
+class QualNameDisambiguationLowering(NativeLowering):
+    """Qualified name disambiguation lowering pass
+
+    If there are multiple @func decorated functions exist inside
+    another @func decorated block, the numba compiler machinery
+    creates same qualified names for different compiled function.
+    Therefore, we utilize `unique_name` to resolve the ambiguity.
+
+    Args:
+        NativeLowering (CompilerPass): Superclass from which this
+        class has been inherited.
+
+    Returns:
+        bool: True if `run_pass()` of the superclass is successful.
+    """
+
+    _name = "qual-name-disambiguation-lowering"
+
+    def run_pass(self, state):
+        qual_name = state.func_id.func_qualname
+        state.func_id.func_qualname = state.func_id.unique_name
+        ret = NativeLowering.run_pass(self, state)
+        state.func_id.func_qualname = qual_name
+        return ret

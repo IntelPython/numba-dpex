@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -7,7 +7,7 @@ import dpctl.tensor as dpt
 import numpy as np
 from numba import float32
 
-import numba_dpex
+import numba_dpex as ndpx
 
 
 def private_memory():
@@ -17,14 +17,14 @@ def private_memory():
     allocated on the devices private address space.
     """
 
-    @numba_dpex.kernel
+    @ndpx.kernel
     def private_memory_kernel(A):
-        memory = numba_dpex.private.array(shape=1, dtype=np.float32)
-        i = numba_dpex.get_global_id(0)
+        memory = ndpx.private.array(shape=1, dtype=np.float32)
+        i = ndpx.get_global_id(0)
 
         # preload
         memory[0] = i
-        numba_dpex.barrier(numba_dpex.LOCAL_MEM_FENCE)  # local mem fence
+        ndpx.barrier(ndpx.LOCAL_MEM_FENCE)  # local mem fence
 
         # memory will not hold correct deterministic result if it is not
         # private to each thread.
@@ -39,9 +39,9 @@ def private_memory():
     print("Using device ...")
     device.print_device_info()
 
-    global_range = (N,)
-    local_range = (N,)
-    private_memory_kernel[global_range, local_range](arr)
+    global_range = ndpx.Range(N)
+    local_range = ndpx.Range(N)
+    private_memory_kernel[ndpx.NdRange(global_range, local_range)](arr)
 
     arr_out = dpt.asnumpy(arr)
     np.testing.assert_allclose(orig * 2, arr_out)

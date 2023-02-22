@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -10,7 +10,7 @@ import tempfile
 from subprocess import CalledProcessError, check_call
 
 from numba_dpex import config
-from numba_dpex.core.target import LINK_ATOMIC, LLVM_SPIRV_ARGS
+from numba_dpex.core.targets.kernel_target import LINK_ATOMIC, LLVM_SPIRV_ARGS
 
 
 def _raise_bad_env_path(msg, path, extra=None):

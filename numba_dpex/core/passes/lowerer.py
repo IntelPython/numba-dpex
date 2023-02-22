@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -45,8 +45,8 @@ from numba.parfors.parfor_lowering import _lower_parfor_parallel
 
 import numba_dpex as dpex
 from numba_dpex import config
-from numba_dpex.core.descriptor import dpex_target
-from numba_dpex.core.target import DpexTargetContext
+from numba_dpex.core.descriptor import dpex_kernel_target
+from numba_dpex.core.targets.kernel_target import DpexKernelTargetContext
 from numba_dpex.core.types import Array
 from numba_dpex.dpctl_iface import KernelLaunchOps
 from numba_dpex.utils import address_space, npytypes_array_to_dpex_array
@@ -79,8 +79,8 @@ def _compile_kernel_parfor(
     # compile the kernel
     kernel.compile(
         args=args_with_addrspaces,
-        typing_ctx=dpex_target.typing_context,
-        target_ctx=dpex_target.target_context,
+        typing_ctx=dpex_kernel_target.typing_context,
+        target_ctx=dpex_kernel_target.target_context,
         debug=debug,
         compile_flags=None,
     )
@@ -640,7 +640,7 @@ def _create_gufunc_for_parfor_body(
                 prev_block.append(ir.Jump(body_first_label, loc))
                 # Add all the parfor loop body blocks to the gufunc function's
                 # IR.
-                for (l, b) in loop_body.items():
+                for l, b in loop_body.items():
                     gufunc_ir.blocks[l] = b
                 body_last_label = max(loop_body.keys())
                 gufunc_ir.blocks[new_label] = block
@@ -1036,7 +1036,6 @@ def generate_kernel_launch_ops(
         all_val_types,
         range(len(expr_args)),
     ):
-
         if config.DEBUG_ARRAY_OPT:
             print(
                 "var:",
@@ -1311,7 +1310,7 @@ class DPEXLowerer(Lower):
 
         cpu_context = (
             context.cpu_context
-            if isinstance(context, DpexTargetContext)
+            if isinstance(context, DpexKernelTargetContext)
             else context
         )
         self.gpu_lower = self._lower(
@@ -1447,7 +1446,6 @@ def lower_parfor_rollback(lowerer, parfor):
     try:
         _lower_parfor_gufunc(lowerer, parfor)
         if config.DEBUG:
-
             device_filter_str = (
                 dpctl.get_current_queue().get_sycl_device().filter_string
             )

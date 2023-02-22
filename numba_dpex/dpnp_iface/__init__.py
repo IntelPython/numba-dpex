@@ -1,6 +1,8 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
+
+from . import arrayobj
 
 
 def ensure_dpnp(name):
@@ -23,5 +25,6 @@ def _init_dpnp():
 
 
 _init_dpnp()
+
 
 DEBUG = None

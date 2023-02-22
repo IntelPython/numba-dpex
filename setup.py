@@ -1,11 +1,16 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
 import os
+import shutil
 import subprocess
 import sys
+import sysconfig
 
+import dpctl
+import numba
+import numpy
 import setuptools.command.develop as orig_develop
 import setuptools.command.install as orig_install
 from Cython.Build import cythonize
@@ -35,23 +40,10 @@ def get_ext_modules():
         else:
             raise ImportError("DPNP is not available")
 
-    import dpctl
-    import numba
-
     dpctl_runtime_library_dirs = []
 
     if IS_LIN:
         dpctl_runtime_library_dirs.append(os.path.dirname(dpctl.__file__))
-
-    ext_usm_alloc = Extension(
-        name="numba_dpex._usm_allocators_ext",
-        sources=["numba_dpex/dpctl_iface/usm_allocators_ext.c"],
-        include_dirs=[numba.core.extending.include_path(), dpctl.get_include()],
-        libraries=["DPCTLSyclInterface"],
-        library_dirs=[os.path.dirname(dpctl.__file__)],
-        runtime_library_dirs=dpctl_runtime_library_dirs,
-    )
-    ext_modules += [ext_usm_alloc]
 
     if dpnp_present:
         dpnp_lib_path = []
@@ -66,6 +58,26 @@ def get_ext_modules():
             language="c++",
         )
         ext_modules += [ext_dpnp_iface]
+
+    ext_dpexrt_python = Extension(
+        name="numba_dpex.core.runtime._dpexrt_python",
+        sources=[
+            "numba_dpex/core/runtime/_dpexrt_python.c",
+            "numba_dpex/core/runtime/_nrt_helper.c",
+            "numba_dpex/core/runtime/_nrt_python_helper.c",
+        ],
+        libraries=["DPCTLSyclInterface"],
+        library_dirs=[os.path.dirname(dpctl.__file__)],
+        runtime_library_dirs=dpctl_runtime_library_dirs,
+        include_dirs=[
+            sysconfig.get_paths()["include"],
+            numba.extending.include_path(),
+            numpy.get_include(),
+            dpctl.get_include(),
+        ],
+    )
+
+    ext_modules += [ext_dpexrt_python]
 
     if dpnp_present:
         return cythonize(ext_modules)
@@ -138,8 +150,6 @@ def spirv_compile():
 
 def _llvm_spirv():
     """Return path to llvm-spirv executable."""
-    import shutil
-
     result = None
 
     # use llvm-spirv from dpcpp package.
@@ -157,7 +167,9 @@ def _llvm_spirv():
     return result
 
 
-packages = find_packages(include=["numba_dpex", "numba_dpex.*"])
+packages = find_packages(
+    include=["numba_dpex", "numba_dpex.*", "_dpexrt_python"]
+)
 build_requires = ["cython"]
 install_requires = [
     "numba >={}".format("0.56"),
@@ -183,18 +195,14 @@ metadata = dict(
         "Environment :: GPU",
         "Environment :: Plugins",
         "Intended Audience :: Developers",
-        "License :: OSI Approved :: BSD License",
+        "License :: OSI Approved :: Apache 2.0",
         "Operating System :: OS Independent",
         "Programming Language :: Cython",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Software Development :: Compilers",
     ],
-    entry_points={
-        "numba_extensions": [
-            "init = numba_dpex.numpy_usm_shared:numba_register",
-        ]
-    },
+    entry_points={},
 )
 
 setup(**metadata)

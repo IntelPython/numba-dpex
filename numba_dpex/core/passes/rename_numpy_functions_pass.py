@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -239,7 +239,7 @@ class RewriteOverloadedNumPyFunctionsPass(FunctionPass):
 def get_dpnp_func_typ(func):
     from numba.core.typing.templates import builtin_registry
 
-    for (k, v) in builtin_registry.globals:
+    for k, v in builtin_registry.globals:
         if k == func:
             return v
     raise RuntimeError("type for func ", func, " not found")
@@ -377,7 +377,6 @@ class _IdentifyNumPyFunctionsPassImpl(object):
         self.function_name_map = rewrite_function_name_map
 
     def run(self):
-
         func_ir = self.state.func_ir
         blocks = func_ir.blocks
         topo_order = find_topo_order(blocks)
@@ -390,7 +389,6 @@ class _IdentifyNumPyFunctionsPassImpl(object):
                 if isinstance(stmt, ir.Assign) and isinstance(
                     stmt.value, ir.Expr
                 ):
-
                     rhs = stmt.value
 
                     if rhs.op == "call":
