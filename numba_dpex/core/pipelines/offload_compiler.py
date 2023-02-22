@@ -18,6 +18,7 @@ from numba.core.untyped_passes import (
     FindLiterallyCalls,
     FixupArgs,
     GenericRewrites,
+    IdentifyNumPyFunctionsPass,
     InlineClosureLikes,
     InlineInlinables,
     IRProcessing,

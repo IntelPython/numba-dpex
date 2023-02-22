@@ -17,6 +17,7 @@ from numba.core.untyped_passes import (
     FindLiterallyCalls,
     FixupArgs,
     GenericRewrites,
+    IdentifyNumPyFunctionsPass,
     InlineClosureLikes,
     InlineInlinables,
     IRProcessing,
@@ -61,6 +62,11 @@ class _KernelPassBuilder(object):
         pm.add_pass(WithLifting, "Handle with contexts")
 
         # --- dpex passes added to the untyped pipeline                      --#
+        # this pass count number of Numpy functions calls
+        pm.add_pass(
+            IdentifyNumPyFunctionsPass,
+            "Identify number of NumPy functions Calls",
+        )
 
         # Add pass to ensure when users allocate static constant memory the
         # size of the allocation is a constant and not specified by a closure
