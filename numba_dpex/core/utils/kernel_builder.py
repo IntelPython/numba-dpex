@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
+import sys
 import warnings
 
 import dpctl.program as dpctl_prog
@@ -31,9 +32,6 @@ from ..descriptor import dpex_kernel_target
 from ..kernel_interface.utils import determine_kernel_launch_queue
 from ..passes import parfor
 from ..types.dpnp_ndarray_type import DpnpNdArray
-
-if config.DEBUG_ARRAY_OPT:
-    import sys
 
 
 def _print_block(block):
@@ -642,11 +640,16 @@ def create_kernel_for_parfor(
         debug=flags.debuginfo,
     )
 
-    breakpoint()
-
     flags.noalias = old_alias
 
     if config.DEBUG_ARRAY_OPT:
         print("kernel_sig = ", kernel_sig)
 
-    return sycl_kernel, parfor_args, kernel_sig, func_arg_types, setitems
+    return (
+        sycl_kernel,
+        parfor_args,
+        kernel_sig,
+        func_arg_types,
+        setitems,
+        exec_queue,
+    )

@@ -12,7 +12,7 @@ from numba.parfors.parfor_lowering import (
 )
 
 from numba_dpex import config
-from numba_dpex.dpctl_iface import KernelLaunchOps
+from numba_dpex.dpctl_iface.kernel_launcher import KernelLauncher
 
 from ..exceptions import UnsupportedParforError
 from ..types.dpnp_ndarray_type import DpnpNdArray
@@ -21,6 +21,29 @@ from .parfor import Parfor, find_potential_aliases_parfor, get_parfor_outputs
 
 # A global list of kernels to keep the objects alive indefinitely.
 keep_alive_kernels = []
+
+config.DEBUG_ARRAY_OPT = True
+
+
+def _getvar_or_none(lowerer, x):
+    try:
+        return lowerer.getvar(x)
+    except:
+        return None
+
+
+def _loadvar_or_none(lowerer, x):
+    try:
+        return lowerer.loadvar(x)
+    except:
+        return None
+
+
+def _val_type_or_none(context, lowerer, x):
+    try:
+        return context.get_value_type(lowerer.fndesc.typemap[x])
+    except:
+        return None
 
 
 def _create_shape_signature(
@@ -91,9 +114,10 @@ def _create_shape_signature(
     return (gu_sin, gu_sout)
 
 
-def _generate_kernel_launch_ops(
+def _submit_gufunc_kernel(
     lowerer,
     kernel,
+    exec_queue,
     gu_signature,
     outer_sig,
     expr_args,
@@ -105,6 +129,7 @@ def _generate_kernel_launch_ops(
     """
     Adds the call to the gufunc function from the main function.
     """
+
     context = lowerer.context
     # builder = lowerer.builder
     sin, sout = gu_signature
@@ -129,8 +154,9 @@ def _generate_kernel_launch_ops(
         # print("cres", cres, type(cres))
         print("modified_arrays", modified_arrays)
 
-    # get dpex_cpu_portion_lowerer object
-    kernel_launcher = KernelLaunchOps(lowerer, kernel, num_inputs)
+    # A convenience wrapper to generate the dpctl function calls to submit
+    # the kernel
+    kernel_launcher = KernelLauncher(lowerer, kernel, num_inputs)
 
     # Get a pointer to the current queue
     curr_queue = kernel_launcher.get_current_queue()
@@ -154,31 +180,15 @@ def _generate_kernel_launch_ops(
 
     ninouts = len(expr_args)
 
-    def getvar_or_none(lowerer, x):
-        try:
-            return lowerer.getvar(x)
-        except:
-            return None
-
-    def loadvar_or_none(lowerer, x):
-        try:
-            return lowerer.loadvar(x)
-        except:
-            return None
-
-    def val_type_or_none(context, lowerer, x):
-        try:
-            return context.get_value_type(lowerer.fndesc.typemap[x])
-        except:
-            return None
-
-    all_llvm_args = [getvar_or_none(lowerer, x) for x in expr_args[:ninouts]]
+    all_llvm_args = [_getvar_or_none(lowerer, x) for x in expr_args[:ninouts]]
     all_val_types = [
-        val_type_or_none(context, lowerer, x) for x in expr_args[:ninouts]
+        _val_type_or_none(context, lowerer, x) for x in expr_args[:ninouts]
     ]
-    # all_args = [loadvar_or_none(lowerer, x) for x in expr_args[:ninouts]]
+    # all_args = [_loadvar_or_none(lowerer, x) for x in expr_args[:ninouts]]
 
     keep_alive_kernels.append(kernel)
+
+    breakpoint()
 
     # Call clSetKernelArg for each arg and create arg array for
     # the enqueue function. Put each part of each argument into
@@ -310,6 +320,7 @@ def _lower_parfor_gufunc(lowerer, parfor):
             func_sig,
             func_arg_types,
             modified_arrays,
+            exec_queue,
         ) = create_kernel_for_parfor(
             lowerer,
             parfor,
@@ -346,9 +357,10 @@ def _lower_parfor_gufunc(lowerer, parfor):
         typemap,
     )
 
-    _generate_kernel_launch_ops(
+    _submit_gufunc_kernel(
         lowerer,
         func,
+        exec_queue,
         gu_signature,
         func_sig,
         func_args,
