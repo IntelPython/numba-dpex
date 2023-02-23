@@ -3493,12 +3493,9 @@ class ParforCFDPass(ParforPassStates):
 
     def run(self):
         # Get parfor params to calculate reductions below.
-        _, parfors = get_parfor_params(
-            self.func_ir.blocks,
-            self.options.fusion,
-            self.nested_fusion_info,
-        )
-        typeSet = set()
+
+        paramsNameSet = set()
+
         topo_order = find_topo_order(self.func_ir.blocks)
         for label in topo_order:
             block = self.func_ir.blocks[label]
@@ -3506,9 +3503,9 @@ class ParforCFDPass(ParforPassStates):
                 for para in parfor.params:
                     if not isinstance(self.typemap[para], DpnpNdArray):
                         continue
-                    typeSet.add(para)
+                    paramsNameSet.add(para)
 
-            print("---->tyepSet: ", typeSet)
+            print("---->tyepSet: ", paramsNameSet)
             for stmt in block.body:
                 if isinstance(stmt, ir.Assign) and isinstance(
                     stmt.value, ir.Expr
@@ -3520,8 +3517,20 @@ class ParforCFDPass(ParforPassStates):
                     print("----------->rhs= ", rhs)
                     if rhs.value == "call":
                         continue
-                    if rhs.value.name in typeSet:
+                    if rhs.value.name in paramsNameSet:
+                        if self.typemap[lhs] == self.typemap[rhs.value.name]:
+                            continue
+                        # now update typemap
+                        paramsNameSet.add(lhs)
+                        self.typemap.pop(lhs)
+                        self.typemap[lhs] = self.typemap[rhs.value.name]
                         breakpoint()
+
+        _, parfors = get_parfor_params(
+            self.func_ir.blocks,
+            self.options.fusion,
+            self.nested_fusion_info,
+        )
         # check input and output arrays in parfor are same type.
         for parfor in parfors:
             locType = None
@@ -3538,15 +3547,6 @@ class ParforCFDPass(ParforPassStates):
             if locType and isinstance(locType, DpnpNdArray):
                 parfor.lowerer = _lower_parfor_gufunc
                 breakpoint()
-
-
-# type(input) -> if parfor.params - > everything to be input type
-
-
-# if isinstance(inst, Parfor):
-#     breakpoint()
-# update the type
-# breakpoint()
 
 
 class ParforFusionPass(ParforPassStates):
