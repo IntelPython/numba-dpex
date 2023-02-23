@@ -116,6 +116,8 @@ from numba.parfors.array_analysis import (
 from numba.stencils import stencilparfor
 from numba.stencils.stencilparfor import StencilPass
 
+from numba_dpex.core.types.dpnp_ndarray_type import DpnpNdArray
+
 # circular dependency: import numba.npyufunc.dufunc.DUFunc
 
 # wrapped pretty print
@@ -3496,30 +3498,40 @@ class ParforCFDPass(ParforPassStates):
             self.options.fusion,
             self.nested_fusion_info,
         )
-
+        typeSet = set()
         topo_order = find_topo_order(self.func_ir.blocks)
         for label in topo_order:
             block = self.func_ir.blocks[label]
+            for i, parfor in _find_parfors(block.body):
+                for para in parfor.params:
+                    if not isinstance(self.typemap[para], DpnpNdArray):
+                        continue
+                    typeSet.add(para)
+
+            print("---->tyepSet: ", typeSet)
             for stmt in block.body:
                 if isinstance(stmt, ir.Assign) and isinstance(
                     stmt.value, ir.Expr
                 ):
                     lhs = stmt.target.name
                     rhs = stmt.value
+
                     print("----------->lhs= ", lhs)
                     print("----------->rhs= ", rhs)
-
+                    if rhs.value == "call":
+                        continue
+                    if rhs.value.name in typeSet:
+                        breakpoint()
         # check input and output arrays in parfor are same type.
         for parfor in parfors:
             locType = None
             for para in parfor.params:
-                if not isinstance(self.typemap[para], types.npytypes.Array):
+                if not isinstance(self.typemap[para], DpnpNdArray):
                     continue
                 if locType == None:
                     locType = self.typemap[para]
                 if self.typemap[para] != locType:
                     raise AssertionError
-            from numba_dpex.core.types.dpnp_ndarray_type import DpnpNdArray
 
             from .parfor_lowering_pass import _lower_parfor_gufunc
 
