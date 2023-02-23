@@ -6,6 +6,7 @@ from numba.core import cgutils, types
 from numba.core.ir_utils import legalize_names
 
 from numba_dpex import utils
+from numba_dpex.core.runtime.context import DpexRTContext
 from numba_dpex.dpctl_iface import DpctlCAPIFnBuilder
 from numba_dpex.dpctl_iface._helpers import numba_type_to_dpctl_typenum
 
@@ -50,21 +51,32 @@ class KernelLauncher:
         # list of buffer that does not need to comeback to host
         self.read_only_buffs = []
 
-    def get_current_queue(self):
+    def get_queue(self, exec_queue):
         """Allocates memory on the stack to store a DPCTLSyclQueueRef.
 
         Return: A LLVM Value storing the pointer to the SYCL queue created using
         the filter string for the Python exec_queue (dpctl.SyclQueue)
 
         """
+
+        # Allocate a stack var to store the queue created from the filter string
         sycl_queue_val = cgutils.alloca_once(
             self.builder,
             utils.get_llvm_type(context=self.context, type=types.voidptr),
         )
-        fn = DpctlCAPIFnBuilder.get_dpctl_queuemgr_get_current_queue(
-            builder=self.builder, context=self.context
+        # Insert a global constant to store the filter string
+        device = self.context.insert_const_string(
+            self.builder.module, exec_queue.sycl_device.filter_string
         )
-        self.builder.store(self.builder.call(fn, []), sycl_queue_val)
+        # Store the queue returned by DPEXRTQueue_CreateFromFilterString in the
+        # local variable
+        rtctx = DpexRTContext(self.context)
+        self.builder.store(
+            rtctx.get_queue_from_filter_string(
+                builder=self.builder, device=device
+            ),
+            sycl_queue_val,
+        )
         return sycl_queue_val
 
     def free_queue(self, sycl_queue_val):

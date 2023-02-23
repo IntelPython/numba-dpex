@@ -129,7 +129,7 @@ class DpexRTContext(object):
         return self.error
 
     def usm_ndarray_to_python_acqref(self, pyapi, aryty, ary, dtypeptr):
-        """_summary_
+        """Boxes a DpnpNdArray native object into a Python dpnp.ndarray.
 
         Args:
             pyapi (_type_): _description_
@@ -165,3 +165,27 @@ class DpexRTContext(object):
 
         args = [ptr, serial_aryty_pytype, ndim, writable, dtypeptr]
         return pyapi.builder.call(fn, args)
+
+    def get_queue_from_filter_string(self, builder, device):
+        """Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue
+        from a given filter string.
+
+        Args:
+            device (llvmlite.ir.values.FormattedConstant): An LLVM ArrayType
+                storing a const string for a DPC++ filter selector string.
+
+        Returns: A DPCTLSyclQueueRef pointer.
+        """
+        mod = builder.module
+        fnty = ir.FunctionType(
+            cgutils.voidptr_t,
+            [cgutils.voidptr_t],
+        )
+        fn = cgutils.get_or_insert_function(
+            mod, fnty, "DPEXRTQueue_CreateFromFilterString"
+        )
+        fn.return_value.add_attribute("noalias")
+
+        ret = builder.call(fn, [device])
+
+        return ret
