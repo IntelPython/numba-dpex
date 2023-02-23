@@ -32,6 +32,7 @@ from numba_dpex import config
 
 from .lowerer import DPEXLowerer
 from .parfor import Parfor
+from .parfor import ParforCFDPass as _parfor_ParforCFDPass
 from .parfor import ParforFusionPass as _parfor_ParforFusionPass
 from .parfor import ParforPass as _parfor_ParforPass
 from .parfor import ParforPreLoweringPass as _parfor_ParforPreLoweringPass
@@ -260,6 +261,36 @@ class ParforPass(FunctionPass):
 
         # Add reload function to initialize the parallel backend.
         state.reload_init.append(_reload_parfors)
+        return True
+
+
+@register_pass(mutates_CFG=True, analysis_only=False)
+class ParforCFDPass(FunctionPass):
+    _name = "parfor_CFD_pass"
+
+    def __init__(self):
+        FunctionPass.__init__(self)
+
+    def run_pass(self, state):
+        """
+        Enforce CFD of parfor nodes.
+        """
+        # Ensure we have an IR and type information.
+        assert state.func_ir
+        parfor_pass = _parfor_ParforCFDPass(
+            state.func_ir,
+            state.typemap,
+            state.calltypes,
+            state.return_type,
+            state.typingctx,
+            state.targetctx,
+            state.flags.auto_parallel,
+            state.flags,
+            state.metadata,
+            state.parfor_diagnostics,
+        )
+        parfor_pass.run()
+
         return True
 
 

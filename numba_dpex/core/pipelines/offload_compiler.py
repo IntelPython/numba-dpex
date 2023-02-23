@@ -18,7 +18,6 @@ from numba.core.untyped_passes import (
     FindLiterallyCalls,
     FixupArgs,
     GenericRewrites,
-    IdentifyNumPyFunctionsPass,
     InlineClosureLikes,
     InlineInlinables,
     IRProcessing,
@@ -40,6 +39,7 @@ from numba_dpex.core.passes.passes import (
     PreParforPass,
 )
 from numba_dpex.core.passes.rename_numpy_functions_pass import (
+    IdentifyNumPyFunctionsPass,
     RewriteNdarrayFunctionsPass,
     RewriteOverloadedNumPyFunctionsPass,
 )
@@ -71,7 +71,11 @@ class _OffloadPassBuilder(object):
         pm.add_pass(WithLifting, "Handle with contexts")
 
         # --- Begin dpex passes added to the untyped pipeline                --#
-
+        # this pass count number of Numpy functions calls
+        pm.add_pass(
+            IdentifyNumPyFunctionsPass,
+            "Identify number of NumPy functions Calls",
+        )
         # The RewriteOverloadedNumPyFunctionsPass rewrites the module namespace
         # of specific NumPy functions to dpnp, as we overload these functions
         # differently.

@@ -157,7 +157,7 @@ class _ParforLower(Lower):
     def lower_inst(self, inst):
         if isinstance(inst, Parfor):
             # FIXME: Temporary for testing
-            inst.lowerer = _lower_parfor_gufunc
+            # inst.lowerer = _lower_parfor_gufunc
 
             if inst.lowerer is None:
                 _lower_parfor_parallel_std(self, inst)

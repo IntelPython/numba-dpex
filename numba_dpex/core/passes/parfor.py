@@ -3485,13 +3485,63 @@ class ParforPass(ParforPassStates):
         return _mk_parfor_loops(self.typemap, size_vars, scope, loc)
 
 
+class ParforCFDPass(ParforPassStates):
+
+    """ParforCFDPass class is responsible for enforce CFD"""
+
+    def run(self):
+        # Get parfor params to calculate reductions below.
+        _, parfors = get_parfor_params(
+            self.func_ir.blocks,
+            self.options.fusion,
+            self.nested_fusion_info,
+        )
+
+        topo_order = find_topo_order(self.func_ir.blocks)
+        for label in topo_order:
+            block = self.func_ir.blocks[label]
+            for stmt in block.body:
+                if isinstance(stmt, ir.Assign) and isinstance(
+                    stmt.value, ir.Expr
+                ):
+                    lhs = stmt.target.name
+                    rhs = stmt.value
+                    print("----------->lhs= ", lhs)
+                    print("----------->rhs= ", rhs)
+
+        # check input and output arrays in parfor are same type.
+        for parfor in parfors:
+            locType = None
+            for para in parfor.params:
+                if not isinstance(self.typemap[para], types.npytypes.Array):
+                    continue
+                if locType == None:
+                    locType = self.typemap[para]
+                if self.typemap[para] != locType:
+                    raise AssertionError
+            from numba_dpex.core.types.dpnp_ndarray_type import DpnpNdArray
+
+            from .parfor_lowering_pass import _lower_parfor_gufunc
+
+            if locType and isinstance(locType, DpnpNdArray):
+                parfor.lowerer = _lower_parfor_gufunc
+                breakpoint()
+
+
+# type(input) -> if parfor.params - > everything to be input type
+
+
+# if isinstance(inst, Parfor):
+#     breakpoint()
+# update the type
+# breakpoint()
+
+
 class ParforFusionPass(ParforPassStates):
 
     """ParforFusionPass class is responsible for fusing parfors"""
 
     def run(self):
-        """run parfor fusion pass"""
-
         # simplify CFG of parfor body loops since nested parfors with extra
         # jumps can be created with prange conversion
         n_parfors = simplify_parfor_body_CFG(self.func_ir.blocks)
