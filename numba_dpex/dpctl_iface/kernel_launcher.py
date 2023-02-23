@@ -10,11 +10,10 @@ from numba_dpex.dpctl_iface import DpctlCAPIFnBuilder
 from numba_dpex.dpctl_iface._helpers import numba_type_to_dpctl_typenum
 
 
-class KernelLaunchOps:
+class KernelLauncher:
     """
-    KernelLaunchOps(lowerer, cres, num_inputs)
-    Defines a set of functions to launch a SYCL kernel on the "current queue"
-    as defined in the dpctl queue manager.
+    KernelLauncher(lowerer, cres, num_inputs)
+    Defines a set of functions to launch a SYCL kernel on a specified SyclQueue.
     """
 
     def _form_kernel_arg_and_arg_ty(self, val, ty):
@@ -31,7 +30,7 @@ class KernelLaunchOps:
         self.builder.store(ty, kernel_arg_ty_dst)
 
     def __init__(self, lowerer, kernel, num_inputs):
-        """Create an instance of KernelLaunchOps.
+        """Create a KernelLauncher for the specified kernel.
 
         Args:
             lowerer: The Numba Lowerer that will be used to generate the code.
@@ -52,15 +51,10 @@ class KernelLaunchOps:
         self.read_only_buffs = []
 
     def get_current_queue(self):
-        """Allocates memory on the stack to store the current queue from dpctl.
+        """Allocates memory on the stack to store a DPCTLSyclQueueRef.
 
-        A SYCL queue is needed to allocate USM memory and submit a kernel. This
-        function gets the queue returned by ``DPCTLQueueMgr_GetCurrentQueue``
-        function and stores it on the stack. The queue should be freed properly
-        after returning from the kernel.
-
-        Return: A LLVM Value storing the pointer to the SYCL queue returned
-                by ``DPCTLQueueMgr_GetCurrentQueue``.
+        Return: A LLVM Value storing the pointer to the SYCL queue created using
+        the filter string for the Python exec_queue (dpctl.SyclQueue)
 
         """
         sycl_queue_val = cgutils.alloca_once(
@@ -124,7 +118,7 @@ class KernelLaunchOps:
             llvm_arg : Only used for array arguments and points to the LLVM
             value previously allocated to store the array arg.
             arg_type : The Numba type for the argument.
-            index : The poisition of the argument in the list of arguments.
+            index : The position of the argument in the list of arguments.
             modified_arrays : The list of array arguments that are written to
             inside the kernel. The list is used to check if the argument is
             read-only or not.
@@ -134,6 +128,7 @@ class KernelLaunchOps:
             encountered.
 
         """
+        breakpoint()
         if isinstance(arg_type, types.npytypes.Array):
             if llvm_arg is None:
                 raise NotImplementedError(arg_type, var)

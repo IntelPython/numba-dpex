@@ -25,7 +25,6 @@ from numba.core.errors import (
 )
 from numba.core.ir_utils import remove_dels
 from numba.core.typed_passes import NativeLowering
-from numba.core.typed_passes import PreParforPass as _parfor_PreParforPass
 from numba.parfors.parfor import swap_functions_map
 
 from numba_dpex import config
@@ -36,6 +35,7 @@ from .parfor import ParforCFDPass as _parfor_ParforCFDPass
 from .parfor import ParforFusionPass as _parfor_ParforFusionPass
 from .parfor import ParforPass as _parfor_ParforPass
 from .parfor import ParforPreLoweringPass as _parfor_ParforPreLoweringPass
+from .parfor import PreParforPass as _parfor_PreParforPass
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
@@ -161,6 +161,7 @@ class PreParforPass(FunctionPass):
 
         # Ensure we have an IR and type information.
         assert state.func_ir
+
         functions_map = swap_functions_map.copy()
         functions_map.pop(("dot", "numpy"), None)
         functions_map.pop(("sum", "numpy"), None)

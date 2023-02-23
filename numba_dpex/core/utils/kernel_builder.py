@@ -3,8 +3,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
+import sys
 import warnings
 
+import dpctl.program as dpctl_prog
 import dpnp
 import numba
 from numba.core import compiler, ir, types
@@ -26,11 +28,10 @@ import numba_dpex as dpex
 from numba_dpex import config
 from numba_dpex.utils import address_space
 
+from ..descriptor import dpex_kernel_target
+from ..kernel_interface.utils import determine_kernel_launch_queue
 from ..passes import parfor
 from ..types.dpnp_ndarray_type import DpnpNdArray
-
-if config.DEBUG_ARRAY_OPT:
-    import sys
 
 
 def _print_block(block):
@@ -562,7 +563,7 @@ def create_kernel_for_parfor(
                 prev_block.body = block.body[:i]
 
                 # The current block is used for statements after the sentinel.
-                block.body = block.body[i + 1 :]
+                block.body = block.body[i + 1 :]  # noqa: E203
                 # But the current block gets a new label.
                 body_first_label = min(loop_body.keys())
 
@@ -606,7 +607,7 @@ def create_kernel_for_parfor(
         gufunc_ir.dump()
 
     kernel_sig = signature(types.none, *gufunc_param_types)
-    breakpoint()
+
     if config.DEBUG_ARRAY_OPT:
         sys.stdout.flush()
 
@@ -623,12 +624,16 @@ def create_kernel_for_parfor(
     #     lowerer.context,
     # )
 
-    # if config.DEBUG_ARRAY_OPT:
-    #     print("after DUFunc inline".center(80, "-"))
-    #     gufunc_ir.dump()
+    if config.DEBUG_ARRAY_OPT:
+        print("after DUFunc inline".center(80, "-"))
+        gufunc_ir.dump()
+
+    exec_queue = determine_kernel_launch_queue(
+        args=parfor_args, argtypes=gufunc_param_types, kernel_name=gufunc_name
+    )
 
     sycl_kernel = _compile_kernel_parfor(
-        dpctl.get_current_queue(),
+        exec_queue,
         gufunc_name,
         gufunc_ir,
         gufunc_param_types,
@@ -640,4 +645,11 @@ def create_kernel_for_parfor(
     if config.DEBUG_ARRAY_OPT:
         print("kernel_sig = ", kernel_sig)
 
-    return sycl_kernel, parfor_args, kernel_sig, func_arg_types, setitems
+    return (
+        sycl_kernel,
+        parfor_args,
+        kernel_sig,
+        func_arg_types,
+        setitems,
+        exec_queue,
+    )
