@@ -159,7 +159,7 @@ def _submit_gufunc_kernel(
     kernel_launcher = KernelLauncher(lowerer, kernel, num_inputs)
 
     # Get a pointer to the current queue
-    curr_queue = kernel_launcher.get_current_queue()
+    curr_queue = kernel_launcher.get_queue(exec_queue=exec_queue)
 
     # Compute number of args
     num_expanded_args = 0
@@ -272,8 +272,13 @@ def _lower_parfor_gufunc(lowerer, parfor):
     loc = parfor.init_block.loc
     scope = parfor.init_block.scope
 
+    # Lower the init block of the parfor.
     for instr in parfor.init_block.body:
         lowerer.lower_inst(instr)
+        print(instr)
+        print(varmap)
+
+    breakpoint()
 
     for racevar in parfor.races:
         if racevar not in varmap:
