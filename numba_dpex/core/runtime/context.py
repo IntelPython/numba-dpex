@@ -31,6 +31,17 @@ class DpexRTContext(object):
 
     @_check_null_result
     def meminfo_alloc(self, builder, size, usm_type, device):
+        """A wrapped caller for meminfo_alloc_unchecked() with null check."""
+        return self.meminfo_alloc_unchecked(builder, size, usm_type, device)
+
+    @_check_null_result
+    def meminfo_fill(self, builder, meminfo, itemsize, is_float, value, device):
+        """A wrapped caller for meminfo_fill_unchecked() with null check."""
+        return self.meminfo_fill_unchecked(
+            builder, meminfo, itemsize, is_float, value, device
+        )
+
+    def meminfo_alloc_unchecked(self, builder, size, usm_type, device):
         """Allocate a new MemInfo with a data payload of `size` bytes.
 
         The result of the call is checked and if it is NULL, i.e. allocation
@@ -49,17 +60,6 @@ class DpexRTContext(object):
 
         Returns: A pointer to the MemInfo is returned.
         """
-
-        return self.meminfo_alloc_unchecked(builder, size, usm_type, device)
-
-    def meminfo_alloc_unchecked(self, builder, size, usm_type, device):
-        """
-        Allocate a new MemInfo with a data payload of `size` bytes.
-
-        A pointer to the MemInfo is returned.
-
-        Returns NULL to indicate error/failure to allocate.
-        """
         mod = builder.module
         u64 = ir.IntType(64)
         fnty = ir.FunctionType(
@@ -69,6 +69,41 @@ class DpexRTContext(object):
         fn.return_value.add_attribute("noalias")
 
         ret = builder.call(fn, [size, usm_type, device])
+
+        return ret
+
+    def meminfo_fill_unchecked(
+        self, builder, meminfo, itemsize, is_float, value, device
+    ):
+        """Fills an allocated `MemInfo` with the value specified.
+
+        The result of the call is checked and if it is `NULL`, i.e. the fill
+        operation failed, then a `MemoryError` is raised. If the fill operation
+        is succeeded then a pointer to the `MemInfo` is returned.
+
+        Args:
+            builder (llvmlite.ir.builder.IRBuilder): LLVM IR builder
+            meminfo (llvmlite.ir.instructions.LoadInstr): LLVM uint64 value
+                specifying the size in bytes for the data payload.
+            itemsize (llvmlite.ir.values.Constant): An LLVM Constant value
+                specifying the size of the each data item allocated by the
+                usm allocator.
+            device (llvmlite.ir.values.FormattedConstant): An LLVM ArrayType
+                storing a const string for a DPC++ filter selector string.
+
+        Returns: A pointer to the `MemInfo` is returned.
+        """
+        mod = builder.module
+        u64 = ir.IntType(64)
+        b = ir.IntType(1)
+        fnty = ir.FunctionType(
+            cgutils.voidptr_t,
+            [cgutils.voidptr_t, u64, b, cgutils.int8_t, cgutils.voidptr_t],
+        )
+        fn = cgutils.get_or_insert_function(mod, fnty, "DPEXRT_MemInfo_fill")
+        fn.return_value.add_attribute("noalias")
+
+        ret = builder.call(fn, [meminfo, itemsize, is_float, value, device])
 
         return ret
 

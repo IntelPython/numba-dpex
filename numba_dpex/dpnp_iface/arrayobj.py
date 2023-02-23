@@ -7,6 +7,7 @@ from llvmlite import ir
 from llvmlite.ir import Constant
 from numba import errors, types
 from numba.core import cgutils
+from numba.core.types.scalars import Float
 from numba.core.typing import signature
 from numba.core.typing.npydecl import parse_dtype as ty_parse_dtype
 from numba.core.typing.npydecl import parse_shape
@@ -218,10 +219,57 @@ def impl_dpnp_empty(
 
     sig = ty_retty(ty_shape, ty_dtype, ty_usm_type, ty_device, ty_retty_ref)
 
-    def codegen(cgctx, builder, sig, llargs):
-        arrtype = _parse_empty_args(cgctx, builder, sig, llargs)
-        ary = _empty_nd_impl(cgctx, builder, *arrtype)
+    def codegen(context, builder, sig, llargs):
+        arrtype = _parse_empty_args(context, builder, sig, llargs)
+        ary = _empty_nd_impl(context, builder, *arrtype)
         return ary._getvalue()
+
+    return sig, codegen
+
+
+def aryobj_fill(context, builder, sig, llargs, value):
+    arrtype = _parse_empty_args(context, builder, sig, llargs)
+    ary = _empty_nd_impl(context, builder, *arrtype)
+    itemsize = context.get_constant(
+        types.intp, get_itemsize(context, arrtype[0])
+    )
+    device = context.insert_const_string(builder.module, arrtype[0].device)
+    value = context.get_constant(types.int8, value)
+    if isinstance(arrtype[0].dtype, Float):
+        is_float = context.get_constant(types.boolean, 1)
+    else:
+        is_float = context.get_constant(types.boolean, 0)
+    dpexrtCtx = dpexrt.DpexRTContext(context)
+    dpexrtCtx.meminfo_fill(
+        builder, ary.meminfo, itemsize, is_float, value, device
+    )
+    return ary._getvalue()
+
+
+@intrinsic
+def impl_dpnp_zeros(
+    tyctx, ty_shape, ty_dtype, ty_usm_type, ty_device, ty_retty_ref
+):
+    ty_retty = ty_retty_ref.instance_type
+
+    sig = ty_retty(ty_shape, ty_dtype, ty_usm_type, ty_device, ty_retty_ref)
+
+    def codegen(context, builder, sig, llargs):
+        return aryobj_fill(context, builder, sig, llargs, 0)
+
+    return sig, codegen
+
+
+@intrinsic
+def impl_dpnp_ones(
+    tyctx, ty_shape, ty_dtype, ty_usm_type, ty_device, ty_retty_ref
+):
+    ty_retty = ty_retty_ref.instance_type
+
+    sig = ty_retty(ty_shape, ty_dtype, ty_usm_type, ty_device, ty_retty_ref)
+
+    def codegen(context, builder, sig, llargs):
+        return aryobj_fill(context, builder, sig, llargs, 1)
 
     return sig, codegen
 
@@ -296,6 +344,114 @@ def ol_dpnp_empty(
             shape, dtype=None, usm_type=None, device=None, sycl_queue=None
         ):
             return impl_dpnp_empty(shape, dtype, usm_type, device, retty)
+
+        return impl
+    else:
+        msg = (
+            f"Cannot parse input types to function dpnp.empty({shape}, {dtype})"
+        )
+        raise errors.TypingError(msg)
+
+
+@overload(dpnp.zeros, prefer_literal=True)
+def ol_dpnp_zeros(
+    shape, dtype=None, usm_type=None, device=None, sycl_queue=None
+):
+    if sycl_queue:
+        raise errors.TypingError(
+            "The sycl_queue keyword is not yet supported by dpnp.empty inside "
+            "a dpjit decorated function."
+        )
+
+    ndim = parse_shape(shape)
+    if not ndim:
+        raise errors.TypingError("Could not infer the rank of the ndarray")
+
+    # If a dtype value was passed in, then try to convert it to the
+    # coresponding Numba type. If None was passed, the default, then pass None
+    # to the DpnpNdArray constructor. The default dtype will be derived based
+    # on the behavior defined in dpctl.tensor.usm_ndarray.
+    if not is_nonelike(dtype):
+        nb_dtype = ty_parse_dtype(dtype)
+    else:
+        nb_dtype = None
+
+    if usm_type is not None:
+        usm_type = _parse_usm_type(usm_type)
+    else:
+        usm_type = "device"
+
+    if device is not None:
+        device = _parse_device_filter_string(device)
+    else:
+        device = "unknown"
+
+    if ndim is not None:
+        retty = DpnpNdArray(
+            dtype=nb_dtype,
+            ndim=ndim,
+            usm_type=usm_type,
+            device=device,
+        )
+
+        def impl(
+            shape, dtype=None, usm_type=None, device=None, sycl_queue=None
+        ):
+            return impl_dpnp_zeros(shape, dtype, usm_type, device, retty)
+
+        return impl
+    else:
+        msg = (
+            f"Cannot parse input types to function dpnp.empty({shape}, {dtype})"
+        )
+        raise errors.TypingError(msg)
+
+
+@overload(dpnp.ones, prefer_literal=True)
+def ol_dpnp_ones(
+    shape, dtype=None, usm_type=None, device=None, sycl_queue=None
+):
+    if sycl_queue:
+        raise errors.TypingError(
+            "The sycl_queue keyword is not yet supported by dpnp.empty inside "
+            "a dpjit decorated function."
+        )
+
+    ndim = parse_shape(shape)
+    if not ndim:
+        raise errors.TypingError("Could not infer the rank of the ndarray")
+
+    # If a dtype value was passed in, then try to convert it to the
+    # coresponding Numba type. If None was passed, the default, then pass None
+    # to the DpnpNdArray constructor. The default dtype will be derived based
+    # on the behavior defined in dpctl.tensor.usm_ndarray.
+    if not is_nonelike(dtype):
+        nb_dtype = ty_parse_dtype(dtype)
+    else:
+        nb_dtype = None
+
+    if usm_type is not None:
+        usm_type = _parse_usm_type(usm_type)
+    else:
+        usm_type = "device"
+
+    if device is not None:
+        device = _parse_device_filter_string(device)
+    else:
+        device = "unknown"
+
+    if ndim is not None:
+        retty = DpnpNdArray(
+            dtype=nb_dtype,
+            ndim=ndim,
+            usm_type=usm_type,
+            device=device,
+        )
+
+        def impl(
+            shape, dtype=None, usm_type=None, device=None, sycl_queue=None
+        ):
+            return impl_dpnp_ones(shape, dtype, usm_type, device, retty)
 
         return impl
     else:
