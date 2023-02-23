@@ -207,7 +207,14 @@ def _dbgprint_after_each_array_assignments(lowerer, loop_body, typemap):
 
 
 def _generate_kernel_indexing(
-    parfor_dim, legal_loop_indices, loop_ranges, param_dict, has_reduction, redvars, typemap
+    parfor_dim,
+    legal_loop_indices,
+    loop_ranges,
+    param_dict,
+    has_reduction,
+    redvars,
+    typemap,
+    redvars_dict,
 ):
     """Generates the indexing intrinsic calls inside a dpex kernel.
 
@@ -261,7 +268,7 @@ def _generate_kernel_indexing(
             gufunc_txt += (
                 "    "
                 + f"group_id{eachdim} = "
-                + "dpex.get_local_size("
+                + "dpex.get_group_id("
                 + str(eachdim)
                 + ")\n"
             )
@@ -269,15 +276,13 @@ def _generate_kernel_indexing(
         # Allocate local_sums arrays for each reduction variable.
         for redvar in redvars:
             rtyp = str(typemap[redvar])
+            redvar = redvars_dict[redvar]
             gufunc_txt += (
                 "    "
                 + f"local_sums_{redvar} = "
-                + f"dpex.local.array(8, {rtyp})\n"
+                + f"dpex.local.array(8, dpnp.{rtyp})\n"
             )
-            gufunc_txt += (
-                "    "
-                + f"local_sums_{redvar}[local_id0] = 0\n"
-            )
+            gufunc_txt += "    " + f"local_sums_{redvar}[local_id0] = 0\n"
 
     for eachdim in range(global_id_dim, for_loop_dim):
         for indent in range(1 + (eachdim - global_id_dim)):
@@ -415,6 +420,7 @@ def create_kernel_for_parfor(
     # dict of potentially illegal param name to guaranteed legal name.
     param_dict = _legalize_names_with_typemap(parfor_params, typemap)
     ind_dict = _legalize_names_with_typemap(loop_indices, typemap)
+    redvars_dict = legalize_names(parfor_redvars)
 
     # Compute a new list of legal loop index names.
     legal_loop_indices = [ind_dict[v] for v in loop_indices]
@@ -451,6 +457,7 @@ def create_kernel_for_parfor(
 
     # Replace illegal parameter names in the loop body with legal ones.
     replace_var_names(loop_body, param_dict)
+
     # remember the name before legalizing as the actual arguments
     parfor_args = parfor_params
     # Change parfor_params to be legal names.
@@ -471,6 +478,7 @@ def create_kernel_for_parfor(
 
     # Change parfor body to replace illegal loop index vars with legal ones.
     replace_var_names(loop_body, ind_dict)
+
     loop_body_var_table = get_name_var_table(loop_body)
     sentinel_name = get_unused_var_name("__sentinel__", loop_body_var_table)
 
@@ -487,7 +495,14 @@ def create_kernel_for_parfor(
     gufunc_txt += "(" + (", ".join(parfor_params)) + "):\n"
 
     gufunc_txt += _generate_kernel_indexing(
-        parfor_dim, legal_loop_indices, loop_ranges, param_dict, has_reduction, parfor_redvars, typemap
+        parfor_dim,
+        legal_loop_indices,
+        loop_ranges,
+        param_dict,
+        has_reduction,
+        parfor_redvars,
+        typemap,
+        redvars_dict,
     )
 
     # Add the sentinel assignment so that we can find the loop body position
@@ -497,33 +512,31 @@ def create_kernel_for_parfor(
 
     if has_reduction:
         # Generate local_sum[local_id0] = redvar, for each reduction variable
-        for redvar in redvars:
+        for redvar in parfor_redvars:
+            redvar = redvars_dict[redvar]
             gufunc_txt += (
-                "    "
-                + f"local_sums_{redvar}[local_id0] = {redvar}\n"
+                "    " + f"local_sums_{redvar}[local_id0] = {redvar}\n"
             )
 
         gufunc_txt += (
-            "    stride0 = group_size0 // 2\n" +
-            "    while stride0 > 0:\n" +
-            "        dpex.barrier(dpex.LOCAL_MEM_FENCE)\n" +
-            "        if local_id0 < stride0:\n"
+            "    stride0 = local_size0 // 2\n"
+            + "    while stride0 > 0:\n"
+            + "        dpex.barrier(dpex.LOCAL_MEM_FENCE)\n"
+            + "        if local_id0 < stride0:\n"
         )
 
-        for redvar in redvars:
+        for redvar in parfor_redvars:
+            redvar = redvars_dict[redvar]
             gufunc_txt += (
                 "            "
                 + f"local_sums_{redvar}[local_id0] += local_sums_{redvar}[local_id0 + stride0]\n"
             )
 
-        gufunc_txt += (
-            "        stride0 >>= 1\n"
-        )
+        gufunc_txt += "        stride0 >>= 1\n"
 
-        gufunc_txt += (
-            "    if local_id0 == 0:\n"
-        )
-        for redvar in redvars:
+        gufunc_txt += "    if local_id0 == 0:\n"
+        for redvar in parfor_redvars:
+            redvar = redvars_dict[redvar]
             gufunc_txt += (
                 "            "
                 + f"partial_sums_{redvar}[group_id0] = local_sums_{redvar}[0]\n"
@@ -713,6 +726,8 @@ def create_kernel_for_parfor(
         gufunc_param_types,
         debug=flags.debuginfo,
     )
+
+    breakpoint()
 
     flags.noalias = old_alias
 
