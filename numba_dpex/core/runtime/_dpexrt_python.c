@@ -424,6 +424,123 @@ error:
     return NULL;
 }
 
+/**
+ * @brief Interface for the core.runtime.context.DpexRTContext.meminfo_alloc.
+ * This function takes an allocated memory as NRT_MemInfo and fills it with
+ * the value specified by `value`.
+ *
+ * @param mi            An NRT_MemInfo object, should be found from memory
+ * allocation.
+ * @param itemsize      The itemsize, the size of each item in the array.
+ * @param is_float      Flag to specify if the data being float or not.
+ * @param value         The value to be used to fill an array.
+ * @param device        The device on which the memory was allocated.
+ * @return NRT_MemInfo* A new NRT_MemInfo object, NULL if no NRT_MemInfo
+ *                        object could be created.
+ */
+static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
+                                        size_t itemsize,
+                                        bool is_float,
+                                        uint8_t value,
+                                        const char *device)
+{
+    DPCTLSyclDeviceSelectorRef dselector = NULL;
+    DPCTLSyclDeviceRef dref = NULL;
+    DPCTLSyclQueueRef qref = NULL;
+    DPCTLSyclEventRef eref = NULL;
+    size_t count = 0, size = 0, exp = 0;
+
+    size = mi->size;
+    while (itemsize >>= 1)
+        exp++;
+    count = (unsigned int)(size >> exp);
+
+    NRT_Debug(nrt_debug_print(
+        "DPEXRT-DEBUG: mi->size = %u, itemsize = %u, count = %u, "
+        "value = %u, Inside DPEXRT_MemInfo_fill %s, line %d\n",
+        mi->size, itemsize << exp, count, value, __FILE__, __LINE__));
+
+    if (mi->data == NULL) {
+        NRT_Debug(nrt_debug_print("DPEXRT-DEBUG: mi->data is NULL, "
+                                  "Inside DPEXRT_MemInfo_fill %s, line %d\n",
+                                  __FILE__, __LINE__));
+        goto error;
+    }
+
+    if (!(dselector = DPCTLFilterSelector_Create(device))) {
+        NRT_Debug(nrt_debug_print(
+            "DPEXRT-ERROR: Could not create a sycl::device_selector from "
+            "filter string: %s at %s %d.\n",
+            device, __FILE__, __LINE__));
+        goto error;
+    }
+
+    if (!(dref = DPCTLDevice_CreateFromSelector(dselector)))
+        goto error;
+
+    if (!(qref = DPCTLQueue_CreateForDevice(dref, NULL, 0)))
+        goto error;
+
+    DPCTLDeviceSelector_Delete(dselector);
+    DPCTLDevice_Delete(dref);
+
+    switch (exp) {
+    case 3:
+    {
+        uint64_t value_assign = (uint64_t)value;
+        if (is_float) {
+            double const_val = (double)value;
+            // To stop warning: dereferencing type-punned pointer
+            // will break strict-aliasing rules [-Wstrict-aliasing]
+            double *p = &const_val;
+            value_assign = *((uint64_t *)(p));
+        }
+        if (!(eref = DPCTLQueue_Fill64(qref, mi->data, value_assign, count)))
+            goto error;
+        break;
+    }
+    case 2:
+    {
+        uint32_t value_assign = (uint32_t)value;
+        if (is_float) {
+            float const_val = (float)value;
+            // To stop warning: dereferencing type-punned pointer
+            // will break strict-aliasing rules [-Wstrict-aliasing]
+            float *p = &const_val;
+            value_assign = *((uint32_t *)(p));
+        }
+        if (!(eref = DPCTLQueue_Fill32(qref, mi->data, value_assign, count)))
+            goto error;
+        break;
+    }
+    case 1:
+        if (!(eref = DPCTLQueue_Fill16(qref, mi->data, value, count)))
+            goto error;
+        break;
+    case 0:
+        if (!(eref = DPCTLQueue_Fill8(qref, mi->data, value, count)))
+            goto error;
+        break;
+    default:
+        goto error;
+    }
+
+    DPCTLEvent_Wait(eref);
+
+    DPCTLQueue_Delete(qref);
+    DPCTLEvent_Delete(eref);
+
+    return mi;
+
+error:
+    DPCTLQueue_Delete(qref);
+    DPCTLEvent_Delete(eref);
+    DPCTLDeviceSelector_Delete(dselector);
+    DPCTLDevice_Delete(dref);
+
+    return NULL;
+}
+
 /*----------------------------------------------------------------------------*/
 /*--------- Helpers to get attributes out of a dpnp.ndarray PyObject ---------*/
 /*----------------------------------------------------------------------------*/
@@ -487,12 +604,13 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
                                                arystruct_t *arystruct)
 {
     struct PyUSMArrayObject *arrayobj = NULL;
-    int i, ndim;
+    int i = 0, ndim = 0, exp = 0;
     npy_intp *shape = NULL, *strides = NULL;
-    npy_intp *p = NULL, nitems, itemsize;
+    npy_intp *p = NULL, nitems;
     void *data = NULL;
     DPCTLSyclQueueRef qref = NULL;
     PyGILState_STATE gstate;
+    npy_intp itemsize = 0;
 
     // Increment the ref count on obj to prevent CPython from garbage
     // collecting the array.
@@ -546,20 +664,29 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
 
     p = arystruct->shape_and_strides;
 
+    // Calculate the exponent from the arystruct->itemsize as we know
+    // itemsize is a power of two
+    while (itemsize >>= 1)
+        exp++;
+
     for (i = 0; i < ndim; ++i, ++p)
         *p = shape[i];
 
-    // DPCTL returns a NULL pointer if the array is contiguous
+    // DPCTL returns a NULL pointer if the array is contiguous. dpctl stores
+    // strides as number of elements and Numba stores strides as bytes, for
+    // that reason we are multiplying stride by itemsize when unboxing the
+    // external array.
+
     // FIXME: Stride computation should check order and adjust how strides are
     // calculated. Right now strides are assuming that order is C contigous.
     if (strides) {
         for (i = 0; i < ndim; ++i, ++p) {
-            *p = strides[i];
+            *p = strides[i] << exp;
         }
     }
     else {
         for (i = 1; i < ndim; ++i, ++p) {
-            *p = shape[i];
+            *p = shape[i] << exp;
         }
         *p = 1;
     }
@@ -598,11 +725,12 @@ static PyObject *box_from_arystruct_parent(arystruct_t *arystruct,
                                            int ndim,
                                            PyArray_Descr *descr)
 {
-    int i;
-    npy_intp *p;
+    int i = 0, exp = 0;
+    npy_intp *p = NULL;
     npy_intp *shape = NULL, *strides = NULL;
     PyObject *array = arystruct->parent;
     struct PyUSMArrayObject *arrayobj = NULL;
+    npy_intp itemsize = 0;
 
     NRT_Debug(nrt_debug_print("DPEXRT-DEBUG: In try_to_return_parent.\n"));
 
@@ -623,9 +751,16 @@ static PyObject *box_from_arystruct_parent(arystruct_t *arystruct,
         if (shape[i] != *p)
             return NULL;
     }
-
+    // Calculate the exponent from the arystruct->itemsize as we know
+    // itemsize is a power of two
+    itemsize = arystruct->itemsize;
+    while (itemsize >>= 1)
+        exp++;
+    // dpctl stores strides as number of elements and Numba stores strides as
+    // bytes, for that reason we are multiplying stride by itemsize when
+    // unboxing the external array.
     if (strides) {
-        if (strides[i] != *p)
+        if (strides[i] << exp != *p)
             return NULL;
     }
     else {
@@ -680,6 +815,8 @@ DPEXRT_sycl_usm_ndarray_to_python_acqref(arystruct_t *arystruct,
     npy_intp *shape = NULL, *strides = NULL;
     int typenum = 0;
     int status = 0;
+    int exp = 0;
+    npy_intp itemsize = 0;
 
     NRT_Debug(nrt_debug_print(
         "DPEXRT-DEBUG: In DPEXRT_sycl_usm_ndarray_to_python_acqref.\n"));
@@ -750,7 +887,20 @@ DPEXRT_sycl_usm_ndarray_to_python_acqref(arystruct_t *arystruct,
     }
 
     shape = arystruct->shape_and_strides;
-    strides = shape + ndim;
+
+    // Calculate the exponent from the arystruct->itemsize as we know
+    // itemsize is a power of two
+    itemsize = arystruct->itemsize;
+    while (itemsize >>= 1)
+        exp++;
+
+    // Numba internally stores strides as bytes and not as elements. Divide
+    // the stride by itemsize to get number of elements.
+    for (size_t idx = ndim; idx < 2 * ((size_t)ndim); ++idx)
+        arystruct->shape_and_strides[idx] =
+            arystruct->shape_and_strides[idx] >> exp;
+    strides = (shape + ndim);
+
     typenum = descr->type_num;
     usm_ndarr_obj = UsmNDArray_MakeFromPtr(
         ndim, shape, typenum, strides, (DPCTLSyclUSMRef)arystruct->data,
@@ -845,6 +995,7 @@ static PyObject *build_c_helpers_dict(void)
     _declpointer("DPEXRT_sycl_usm_ndarray_to_python_acqref",
                  &DPEXRT_sycl_usm_ndarray_to_python_acqref);
     _declpointer("DPEXRT_MemInfo_alloc", &DPEXRT_MemInfo_alloc);
+    _declpointer("DPEXRT_MemInfo_fill", &DPEXRT_MemInfo_fill);
     _declpointer("NRT_ExternalAllocator_new_for_usm",
                  &NRT_ExternalAllocator_new_for_usm);
 
@@ -895,7 +1046,8 @@ MOD_INIT(_dpexrt_python)
         PyLong_FromVoidPtr(&DPEXRT_sycl_usm_ndarray_to_python_acqref));
     PyModule_AddObject(m, "DPEXRT_MemInfo_alloc",
                        PyLong_FromVoidPtr(&DPEXRT_MemInfo_alloc));
-
+    PyModule_AddObject(m, "DPEXRT_MemInfo_fill",
+                       PyLong_FromVoidPtr(&DPEXRT_MemInfo_fill));
     PyModule_AddObject(m, "c_helpers", build_c_helpers_dict());
     return MOD_SUCCESS_VAL(m);
 }

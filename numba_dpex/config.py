@@ -15,7 +15,10 @@ def _ensure_dpctl():
     from numba_dpex.dpctl_support import dpctl_version
 
     if dpctl_version < (0, 14):
-        raise ImportError("numba_dpex needs dpctl 0.14 or greater")
+        logging.warning(
+            "numba_dpex needs dpctl 0.14 or greater, using "
+            f"dpctl={dpctl_version} may cause unexpected behavior"
+        )
 
 
 def _dpctl_has_non_host_device():
