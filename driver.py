@@ -6,8 +6,7 @@ import numpy as np
 import numba_dpex as dpex
 
 
-# @dpex.dpjit
-@nb.njit(parallel=True)
+@dpex.dpjit
 def vecadd(a, b):
     return a + b
 
@@ -27,10 +26,10 @@ def vecadd_prange(a, b):
 
 a = np.ones(10)
 b = np.ones(10)
-# c = vecadd(a, b)
+c = vecadd(a, b)
 # s = vecadd_prange(a, b)
 
 # a = sin(a)
 
-with dpctl.device_context("gpu"):
-    c = vecadd(a, b)
+# with dpctl.device_context("gpu"):
+#     c = vecadd(a, b)

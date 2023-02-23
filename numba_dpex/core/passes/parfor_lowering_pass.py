@@ -188,8 +188,6 @@ def _submit_gufunc_kernel(
 
     keep_alive_kernels.append(kernel)
 
-    breakpoint()
-
     # Call clSetKernelArg for each arg and create arg array for
     # the enqueue function. Put each part of each argument into
     # kernel_arg_array.
@@ -256,6 +254,7 @@ def _lower_parfor_gufunc(lowerer, parfor):
         - The body of the parfor is transformed into a gufunc function.
 
     """
+    breakpoint()
     # We copy the typemap here because for race condition variable we'll
     # update their type to array so they can be updated by the gufunc.
     orig_typemap = lowerer.fndesc.typemap
@@ -277,8 +276,6 @@ def _lower_parfor_gufunc(lowerer, parfor):
         lowerer.lower_inst(instr)
         print(instr)
         print(varmap)
-
-    breakpoint()
 
     for racevar in parfor.races:
         if racevar not in varmap:
@@ -380,23 +377,69 @@ def _lower_parfor_gufunc(lowerer, parfor):
     lowerer.fndesc.typemap = orig_typemap
 
 
+class WrapperDefaultLower(Lower):
+    @property
+    def _disable_sroa_like_opt(self):
+        """We always return True."""
+        return True
+
+
 class _ParforLower(Lower):
     """Extends standard lowering to accommodate parfor.Parfor nodes that may
     have the `lowerer` attribute set.
     """
 
-    # custom instruction lowering to handle parfor nodes
-    def lower_inst(self, inst):
-        if isinstance(inst, Parfor):
-            # FIXME: Temporary for testing
-            inst.lowerer = _lower_parfor_gufunc
+    def __init__(self, context, library, fndesc, func_ir, metadata=None):
+        Lower.__init__(self, context, library, fndesc, func_ir, metadata)
+        self.dpex_lower = self._lower(
+            context, library, fndesc, func_ir, metadata
+        )
 
-            if inst.lowerer is None:
-                _lower_parfor_parallel_std(self, inst)
-            else:
-                inst.lowerer(self, inst)
-        else:
-            super().lower_inst(inst)
+    def _lower(self, context, library, fndesc, func_ir, metadata):
+        """Create Lower with changed linkageName in debug info"""
+        lower = WrapperDefaultLower(context, library, fndesc, func_ir, metadata)
+
+        # Debuginfo
+        if context.enable_debuginfo:
+            from numba.core.funcdesc import default_mangler, qualifying_prefix
+
+            from numba_dpex.debuginfo import DpexDIBuilder
+
+            qualprefix = qualifying_prefix(fndesc.modname, fndesc.qualname)
+            mangled_qualname = default_mangler(qualprefix, fndesc.argtypes)
+
+            lower.debuginfo = DpexDIBuilder(
+                module=lower.module,
+                filepath=func_ir.loc.filename,
+                linkage_name=mangled_qualname,
+                cgctx=context,
+            )
+
+        return lower
+
+    def lower(self):
+        context = self.dpex_lower.context
+
+        # Only Numba's CPUContext has the `lower_extension` attribute
+        context.lower_extensions[Parfor] = lower_parfor_dpex
+        self.dpex_lower.lower()
+        self.base_lower = self.dpex_lower
+
+        self.env = self.base_lower.env
+        self.call_helper = self.base_lower.call_helper
+
+    def create_cpython_wrapper(self, release_gil=False):
+        return self.base_lower.create_cpython_wrapper(release_gil)
+
+
+def lower_parfor_dpex(lowerer, parfor):
+    # FIXME: Temporary for testing
+    parfor.lowerer = _lower_parfor_gufunc
+
+    if parfor.lowerer is None:
+        _lower_parfor_parallel_std(lowerer, parfor)
+    else:
+        parfor.lowerer(lowerer, parfor)
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
