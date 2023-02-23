@@ -3493,6 +3493,11 @@ class ParforCFDPass(ParforPassStates):
 
     def run(self):
         # Get parfor params to calculate reductions below.
+        _, parfors = get_parfor_params(
+            self.func_ir.blocks,
+            self.options.fusion,
+            self.nested_fusion_info,
+        )
 
         paramsNameSet = set()
 
@@ -3503,6 +3508,7 @@ class ParforCFDPass(ParforPassStates):
                 for para in parfor.params:
                     if not isinstance(self.typemap[para], DpnpNdArray):
                         continue
+                    # breakpoint()
                     paramsNameSet.add(para)
 
             print("---->tyepSet: ", paramsNameSet)
@@ -3515,22 +3521,54 @@ class ParforCFDPass(ParforPassStates):
 
                     print("----------->lhs= ", lhs)
                     print("----------->rhs= ", rhs)
-                    if rhs.value == "call":
+
+                    if rhs.op == "call":
+                        continue
+                    if (
+                        rhs.op == "getattr"
+                        or rhs.op == "getitem"
+                        or rhs.op == "static_getitem"
+                    ):
                         continue
                     if rhs.value.name in paramsNameSet:
                         if self.typemap[lhs] == self.typemap[rhs.value.name]:
                             continue
                         # now update typemap
+                        # breakpoint()
                         paramsNameSet.add(lhs)
-                        self.typemap.pop(lhs)
-                        self.typemap[lhs] = self.typemap[rhs.value.name]
-                        breakpoint()
+                        # self.typemap.pop(lhs)
+                        self.typemap[lhs].device = self.typemap[
+                            rhs.value.name
+                        ].device
+                        self.typemap[lhs].sycl_queue = self.typemap[
+                            rhs.value.name
+                        ].sycl_queue
+                elif isinstance(stmt, Parfor):
+                    print("---->params: ", stmt.params)
+                    print("----->stmt", stmt)
+                    if rhs.op == "call":
+                        continue
+                    if (
+                        rhs.op == "getattr"
+                        or rhs.op == "getitem"
+                        or rhs.op == "static_getitem"
+                    ):
+                        continue
+                    if rhs.value.name in paramsNameSet:
+                        if self.typemap[lhs] == self.typemap[rhs.value.name]:
+                            continue
+                        # now update typemap
+                        # breakpoint()
+                        paramsNameSet.add(lhs)
+                        # self.typemap.pop(lhs)
+                        self.typemap[lhs].device = self.typemap[
+                            rhs.value.name
+                        ].device
+                        self.typemap[lhs].sycl_queue = self.typemap[
+                            rhs.value.name
+                        ].sycl_queue
+                    breakpoint()
 
-        _, parfors = get_parfor_params(
-            self.func_ir.blocks,
-            self.options.fusion,
-            self.nested_fusion_info,
-        )
         # check input and output arrays in parfor are same type.
         for parfor in parfors:
             locType = None
@@ -3546,7 +3584,7 @@ class ParforCFDPass(ParforPassStates):
 
             if locType and isinstance(locType, DpnpNdArray):
                 parfor.lowerer = _lower_parfor_gufunc
-                breakpoint()
+                # breakpoint()
 
 
 class ParforFusionPass(ParforPassStates):
