@@ -768,7 +768,7 @@ def _lower_parfor_gufunc(lowerer, parfor):
             rvtyp = typemap[racevar]
             rv = ir.Var(scope, racevar, loc)
             lowerer._alloca_var(rv.name, rvtyp)
-
+    breakpoint()
     alias_map = {}
     arg_aliases = {}
     numba.parfors.parfor.find_potential_aliases_parfor(
