@@ -140,7 +140,7 @@ class KernelLauncher:
             encountered.
 
         """
-        breakpoint()
+
         if isinstance(arg_type, types.npytypes.Array):
             if llvm_arg is None:
                 raise NotImplementedError(arg_type, var)

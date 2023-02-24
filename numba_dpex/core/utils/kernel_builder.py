@@ -727,8 +727,6 @@ def create_kernel_for_parfor(
         debug=flags.debuginfo,
     )
 
-    breakpoint()
-
     flags.noalias = old_alias
 
     if config.DEBUG_ARRAY_OPT:

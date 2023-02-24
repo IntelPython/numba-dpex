@@ -48,6 +48,7 @@ class ParforCFDPass(ParforPassStates):
                 elif isinstance(stmt, Parfor):
                     if stmt.params is None:
                         continue
+
                     outputParams = get_parfor_outputs(stmt, stmt.params)
                     if len(outputParams) > 1:
                         raise AssertionError
