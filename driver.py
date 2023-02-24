@@ -8,7 +8,7 @@ import numba_dpex as dpex
 
 @dpex.dpjit
 def vecadd(a, b):
-    #    c = a + b
+    # c = a + b
     d = dpnp.ones(10)
     return d
 
@@ -28,7 +28,7 @@ def vecadd_prange(a, b):
 
 
 a = dpnp.ones(10, device="cpu")
-b = dpnp.ones(10, device="cpu")
+b = dpnp.ones(10, device="gpu")
 
 c = vecadd(a, b)
 # s = vecadd_prange(a, b)

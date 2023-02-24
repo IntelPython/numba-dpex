@@ -29,9 +29,9 @@ from numba.parfors.parfor import swap_functions_map
 
 from numba_dpex import config
 
+from .cfd_parfor_pass import ParforCFDPass as _parfor_ParforCFDPass
 from .lowerer import DPEXLowerer
 from .parfor import Parfor
-from .parfor import ParforCFDPass as _parfor_ParforCFDPass
 from .parfor import ParforFusionPass as _parfor_ParforFusionPass
 from .parfor import ParforPass as _parfor_ParforPass
 from .parfor import ParforPreLoweringPass as _parfor_ParforPreLoweringPass
