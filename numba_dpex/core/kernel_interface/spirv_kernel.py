@@ -7,7 +7,7 @@ from types import FunctionType
 
 from numba.core import ir
 
-from numba_dpex import spirv_generator
+from numba_dpex import config, spirv_generator
 from numba_dpex.core.compiler import compile_with_dpex
 from numba_dpex.core.exceptions import UncompiledKernelError, UnreachableError
 
@@ -138,6 +138,20 @@ class SpirvKernel(KernelInterface):
         )
         self._llvm_module = kernel.module.__str__()
         self._module_name = kernel.name
+
+        # Dump LLVM IR if DEBUG flag is set.
+        if config.DUMP_KERNEL_LLVM:
+            import hashlib
+
+            # Embed hash of module name in the output file name
+            # so that different kernels are written to separate files
+            with open(
+                "llvm_kernel_"
+                + hashlib.sha256(self._module_name.encode()).hexdigest()
+                + ".ll",
+                "w",
+            ) as f:
+                f.write(self._llvm_module)
 
         # FIXME: There is no need to serialize the bitcode. It can be passed to
         # llvm-spirv directly via stdin.
