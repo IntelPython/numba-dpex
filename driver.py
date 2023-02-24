@@ -8,8 +8,8 @@ import numba_dpex as dpex
 
 @dpex.dpjit
 def vecadd(a, b):
-    c = a + b
-    d = dpnp.ones_like(c)
+    #    c = a + b
+    d = dpnp.ones(10)
     return d
 
 

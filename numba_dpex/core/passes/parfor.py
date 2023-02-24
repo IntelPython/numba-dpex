@@ -3500,18 +3500,11 @@ class ParforCFDPass(ParforPassStates):
         )
 
         paramsNameSet = set()
+        from numba_dpex.core.exceptions import ComputeFollowsDataInferenceError
 
         topo_order = find_topo_order(self.func_ir.blocks)
         for label in topo_order:
             block = self.func_ir.blocks[label]
-            for i, parfor in _find_parfors(block.body):
-                for para in parfor.params:
-                    if not isinstance(self.typemap[para], DpnpNdArray):
-                        continue
-                    # breakpoint()
-                    paramsNameSet.add(para)
-
-            print("---->tyepSet: ", paramsNameSet)
             for stmt in block.body:
                 if isinstance(stmt, ir.Assign) and isinstance(
                     stmt.value, ir.Expr
@@ -3523,68 +3516,62 @@ class ParforCFDPass(ParforPassStates):
                     print("----------->rhs= ", rhs)
 
                     if rhs.op == "call":
-                        continue
-                    if (
-                        rhs.op == "getattr"
-                        or rhs.op == "getitem"
-                        or rhs.op == "static_getitem"
-                    ):
-                        continue
-                    if rhs.value.name in paramsNameSet:
-                        if self.typemap[lhs] == self.typemap[rhs.value.name]:
-                            continue
-                        # now update typemap
-                        # breakpoint()
-                        paramsNameSet.add(lhs)
-                        # self.typemap.pop(lhs)
-                        self.typemap[lhs].device = self.typemap[
-                            rhs.value.name
-                        ].device
-                        self.typemap[lhs].sycl_queue = self.typemap[
-                            rhs.value.name
-                        ].sycl_queue
+                        for ele in rhs.list_vars():
+                            if ele.name in paramsNameSet:
+                                raise ComputeFollowsDataInferenceError
+
                 elif isinstance(stmt, Parfor):
                     print("---->params: ", stmt.params)
                     print("----->stmt", stmt)
-                    if rhs.op == "call":
+
+                    if stmt.params == None:
                         continue
-                    if (
-                        rhs.op == "getattr"
-                        or rhs.op == "getitem"
-                        or rhs.op == "static_getitem"
+                    outputParams = get_parfor_outputs(stmt, stmt.params)
+                    if len(outputParams) > 1:
+                        raise AssertionError
+                    intputDevice = None
+                    for para in stmt.params:
+                        if not isinstance(self.typemap[para], DpnpNdArray):
+                            continue
+                        # breakpoint()
+                        paramsNameSet.add(para)
+                        # assuming DpnpNdArray either input or output, and no intermdiate value
+                        if para not in outputParams:
+                            if intputDevice == None:
+                                intputDevice = self.typemap[para].device
+                            if intputDevice != self.typemap[para].device:
+                                raise ComputeFollowsDataInferenceError
+
+                    # only update device
+                    # FIXME: sycl_queue will be updated later
+                    if intputDevice == None:
+                        raise AssertionError
+
+                    if not isinstance(
+                        self.typemap[outputParams[0]], DpnpNdArray
                     ):
                         continue
-                    if rhs.value.name in paramsNameSet:
-                        if self.typemap[lhs] == self.typemap[rhs.value.name]:
-                            continue
-                        # now update typemap
-                        # breakpoint()
-                        paramsNameSet.add(lhs)
-                        # self.typemap.pop(lhs)
-                        self.typemap[lhs].device = self.typemap[
-                            rhs.value.name
-                        ].device
-                        self.typemap[lhs].sycl_queue = self.typemap[
-                            rhs.value.name
-                        ].sycl_queue
-                    breakpoint()
+                    if self.typemap[outputParams[0]].device == intputDevice:
+                        continue
+                    # now update typemap
+                    self.typemap[outputParams[0]].device = intputDevice
 
-        # check input and output arrays in parfor are same type.
-        for parfor in parfors:
-            locType = None
-            for para in parfor.params:
-                if not isinstance(self.typemap[para], DpnpNdArray):
-                    continue
-                if locType == None:
-                    locType = self.typemap[para]
-                if self.typemap[para] != locType:
-                    raise AssertionError
+        # # check input and output arrays in parfor are same type.
+        # for parfor in parfors:
+        #     locType = None
+        #     for para in parfor.params:
+        #         if not isinstance(self.typemap[para], DpnpNdArray):
+        #             continue
+        #         if locType == None:
+        #             locType = self.typemap[para]
+        #         if self.typemap[para] != locType:
+        #             raise AssertionError
 
-            from .parfor_lowering_pass import _lower_parfor_gufunc
+        #     from .parfor_lowering_pass import _lower_parfor_gufunc
 
-            if locType and isinstance(locType, DpnpNdArray):
-                parfor.lowerer = _lower_parfor_gufunc
-                # breakpoint()
+        #     if locType and isinstance(locType, DpnpNdArray):
+        #         parfor.lowerer = _lower_parfor_gufunc
+        #         # breakpoint()
 
 
 class ParforFusionPass(ParforPassStates):

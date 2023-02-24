@@ -34,6 +34,12 @@ class USMNdArray(Array):
         self.usm_type = usm_type
         self.addrspace = addrspace
 
+        self.readonly = readonly
+        self.aligned = aligned
+        self.layout = layout
+
+        self.ndim = ndim
+
         if queue is not None and device != "unknown":
             if not isinstance(device, str):
                 raise TypeError(
@@ -52,7 +58,7 @@ class USMNdArray(Array):
                     "different SYCL devices"
                 )
             self.queue = queue
-            self.device = device
+            self._device = device
         elif queue is None and device != "unknown":
             if not isinstance(device, str):
                 raise TypeError(
@@ -60,17 +66,17 @@ class USMNdArray(Array):
                     "a SYCL filter selector"
                 )
             self.queue = dpctl.SyclQueue(device)
-            self.device = device
+            self._device = device
         elif queue is not None and device == "unknown":
             if not isinstance(queue, dpctl.SyclQueue):
                 raise TypeError(
                     "The queue keyword arg should be a dpctl.SyclQueue object"
                 )
-            self.device = self.queue.sycl_device.filter_string
+            self._device = self.queue.sycl_device.filter_string
             self.queue = queue
         else:
             self.queue = dpctl.SyclQueue()
-            self.device = self.queue.sycl_device.filter_string
+            self._device = self.queue.sycl_device.filter_string
 
         if not dtype:
             dummy_tensor = dpctl.tensor.empty(
@@ -83,32 +89,16 @@ class USMNdArray(Array):
             self.dtype = dtype
 
         if name is None:
-            type_name = "usm_ndarray"
-            if readonly:
-                type_name = "readonly " + type_name
-            if not aligned:
-                type_name = "unaligned " + type_name
-            name_parts = (
-                type_name,
-                self.dtype,
-                ndim,
-                layout,
-                self.addrspace,
-                usm_type,
-                self.device,
-                self.queue,
-            )
-            name = (
-                "%s(dtype=%s, ndim=%s, layout=%s, address_space=%s, "
-                "usm_type=%s, device=%s, sycl_device=%s)" % name_parts
-            )
+            self.name = self._construct_name()
+        else:
+            self.name = name
 
         super().__init__(
             self.dtype,
             ndim,
             layout,
             readonly=readonly,
-            name=name,
+            name=self.name,
             aligned=aligned,
         )
 
@@ -133,7 +123,7 @@ class USMNdArray(Array):
         if addrspace is None:
             addrspace = self.addrspace
         if device is None:
-            device = self.device
+            device = self._device
         if usm_type is None:
             usm_type = self.usm_type
         return USMNdArray(
@@ -157,7 +147,7 @@ class USMNdArray(Array):
         if (
             isinstance(other, USMNdArray)
             and other.ndim == self.ndim
-            and self.device == other.device
+            and self._device == other.device
             and self.addrspace == other.addrspace
             and self.usm_type == other.usm_type
         ):
@@ -176,7 +166,7 @@ class USMNdArray(Array):
                     readonly=readonly,
                     aligned=aligned,
                     usm_type=self.usm_type,
-                    device=self.device,
+                    device=self._device,
                     addrspace=self.addrspace,
                 )
 
@@ -189,7 +179,7 @@ class USMNdArray(Array):
             and other.ndim == self.ndim
             and other.dtype == self.dtype
             and other.usm_type == self.usm_type
-            and other.device == self.device
+            and other.device == self._device
         ):
             if (
                 other.layout in ("A", self.layout)
@@ -200,7 +190,7 @@ class USMNdArray(Array):
 
     @property
     def key(self):
-        return (*super().key, self.addrspace, self.usm_type, self.device)
+        return (*super().key, self.addrspace, self.usm_type, self._device)
 
     @property
     def as_array(self):
@@ -209,3 +199,35 @@ class USMNdArray(Array):
     @property
     def box_type(self):
         return dpctl.tensor.usm_ndarray
+
+    def _construct_name(self):
+        type_name = "usm_ndarray"
+        if self.readonly:
+            type_name = "readonly " + type_name
+        if not self.aligned:
+            type_name = "unaligned " + type_name
+        name_parts = (
+            type_name,
+            self.dtype,
+            self.ndim,
+            self.layout,
+            self.addrspace,
+            self.usm_type,
+            self._device,
+            self.queue,
+        )
+        rt_name = (
+            "%s(dtype=%s, ndim=%s, layout=%s, address_space=%s, "
+            "usm_type=%s, device=%s, sycl_device=%s)" % name_parts
+        )
+        return rt_name
+
+    @property
+    def device(self):
+        return self._device
+
+    @device.setter
+    def device(self, input):
+        self._device = input
+        self.queue = dpctl.SyclQueue(self._device)
+        self.name = self._construct_name()

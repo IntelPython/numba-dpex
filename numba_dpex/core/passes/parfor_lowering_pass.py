@@ -254,7 +254,7 @@ def _lower_parfor_gufunc(lowerer, parfor):
         - The body of the parfor is transformed into a gufunc function.
 
     """
-    breakpoint()
+
     # We copy the typemap here because for race condition variable we'll
     # update their type to array so they can be updated by the gufunc.
     orig_typemap = lowerer.fndesc.typemap
