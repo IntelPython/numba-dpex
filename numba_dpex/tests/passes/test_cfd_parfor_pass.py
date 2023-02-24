@@ -2,11 +2,17 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+"""
+Tests for checking enforcing CFD in parfor pass.
+"""
+
+
 import dpctl
 import dpnp
 import pytest
 
 from numba_dpex import dpjit
+from numba_dpex.core.exceptions import ComputeFollowsDataInferenceError
 from numba_dpex.tests._helper import skip_no_opencl_gpu
 
 shapes = [10, (2, 5)]
@@ -15,17 +21,18 @@ usm_types = ["device"]
 devices = ["gpu"]
 
 
+@dpjit
+def func1(a, b):
+    c = a + b
+    return c
+
+
 @skip_no_opencl_gpu
 @pytest.mark.parametrize("shape", shapes)
 @pytest.mark.parametrize("dtype", dtypes)
 @pytest.mark.parametrize("usm_type", usm_types)
 @pytest.mark.parametrize("device", devices)
 def test_cfd_parfor_dpnp(shape, dtype, usm_type, device):
-    @dpjit
-    def func1(a, b):
-        c = a + b
-        return c
-
     a = dpnp.zeros(shape=shape, dtype=dtype, usm_type=usm_type, device=device)
     b = dpnp.ones(shape=shape, dtype=dtype, usm_type=usm_type, device=device)
     try:
@@ -47,3 +54,11 @@ def test_cfd_parfor_dpnp(shape, dtype, usm_type, device):
         )
     else:
         c.sycl_device.filter_string == dpctl.SyclDevice().filter_string
+
+
+def test_cfd_parfor_dpnp_raise():
+    a = dpnp.zeros(shape=10, device="cpu")
+    b = dpnp.ones(shape=10, device="gpu")
+
+    with pytest.raises(TypeError):
+        func1(a, b)

@@ -30,6 +30,7 @@ from numba.core.untyped_passes import (
     WithLifting,
 )
 
+from numba_dpex import config
 from numba_dpex.core.exceptions import UnsupportedCompilationModeError
 from numba_dpex.core.passes.passes import (
     DpexLowering,
@@ -71,11 +72,12 @@ class _OffloadPassBuilder(object):
         pm.add_pass(WithLifting, "Handle with contexts")
 
         # --- Begin dpex passes added to the untyped pipeline                --#
-        # this pass count number of Numpy functions calls
-        pm.add_pass(
-            IdentifyNumPyFunctionsPass,
-            "Identify number of NumPy functions Calls",
-        )
+        if config.WHITEBOARD:
+            # this pass count number of Numpy functions calls
+            pm.add_pass(
+                IdentifyNumPyFunctionsPass,
+                "Identify number of NumPy functions Calls",
+            )
         # The RewriteOverloadedNumPyFunctionsPass rewrites the module namespace
         # of specific NumPy functions to dpnp, as we overload these functions
         # differently.
