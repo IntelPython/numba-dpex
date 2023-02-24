@@ -24,8 +24,8 @@ def vecadd_prange(a, b):
 # def sin(a):
 #     return np.sin(a)
 
-a = np.ones(10)
-b = np.ones(10)
+a = dpnp.ones(10)
+b = dpnp.ones(10)
 c = vecadd(a, b)
 # s = vecadd_prange(a, b)
 

@@ -99,7 +99,9 @@ class KernelLauncher:
             [self.context.get_constant(types.int32, arg_num)],
         )
         self.builder.store(val, kernel_arg_dst)
-        self.builder.store(ty, kernel_arg_ty_dst)
+        self.builder.store(
+            numba_type_to_dpctl_typenum(self.context, ty), kernel_arg_ty_dst
+        )
 
     def build_array_arg(
         self, array_val, array_rank, arg_list, args_ty_list, arg_num
@@ -110,6 +112,9 @@ class KernelLauncher:
         The steps performed here are the same as in
         numba_dpex.core.kernel_interface.arg_pack_unpacker._unpack_array_helper
         """
+
+        print("Array_val:", array_val)
+
         # Argument 1: Null pointer for the NRT_MemInfo attribute of the array
         nullptr = self._build_nullptr()
         self.build_arg(
@@ -253,7 +258,7 @@ class KernelLauncher:
         )
         self.builder.call(fn, [self.builder.load(sycl_queue_val)])
 
-    def allocate_kernel_arg_array(self, num_kernel_args, kernel_name_tag):
+    def allocate_kernel_arg_array(self, num_kernel_args):
         """Allocates an array to store the LLVM Value for every kernel argument.
 
         Args:
@@ -268,14 +273,12 @@ class KernelLauncher:
             self.builder,
             utils.get_llvm_type(context=self.context, type=types.voidptr),
             size=self.context.get_constant(types.uintp, num_kernel_args),
-            name="kernel_arg_array_" + kernel_name_tag,
         )
 
         args_ty_list = cgutils.alloca_once(
             self.builder,
             utils.LLVMTypes.int32_t,
             size=self.context.get_constant(types.uintp, num_kernel_args),
-            name="kernel_arg_ty_array_" + kernel_name_tag,
         )
 
         return args_list, args_ty_list

@@ -117,7 +117,7 @@ def _create_shape_signature(
 def _submit_gufunc_kernel(
     lowerer,
     gufunc_kernel,
-    gu_signature,
+    gu_signature,  # REMOVE
     num_inputs,
     loop_ranges,
 ):
@@ -158,9 +158,12 @@ def _submit_gufunc_kernel(
     kernel_arg_num = 0
     for arg_num, arg in enumerate(gufunc_kernel.kernel_args):
         argtype = gufunc_kernel.kernel_arg_types[arg_num]
+        llvm_val = _getvar_or_none(lowerer, arg)
+        if not llvm_val:
+            raise AssertionError
         if isinstance(argtype, DpnpNdArray):
             kernel_launcher.build_array_arg(
-                array_val=arg,
+                array_val=llvm_val,
                 array_rank=argtype.ndim,
                 arg_list=args_list,
                 args_ty_list=args_ty_list,
@@ -169,9 +172,6 @@ def _submit_gufunc_kernel(
             # FIXME: Get rid of magic constants
             kernel_arg_num += 5 + (2 * argtype.ndim)
         else:
-            llvm_val = _getvar_or_none(lowerer, arg)
-            if not llvm_val:
-                raise AssertionError
             kernel_launcher.build_arg(
                 llvm_val, argtype, args_list, args_ty_list, kernel_arg_num
             )
@@ -208,6 +208,7 @@ def _submit_gufunc_kernel(
             return context.get_constant(types.uintp, v)
 
     num_dim = len(loop_ranges)
+    breakpoint()
     for i in range(num_dim):
         start, stop, step = loop_ranges[i]
         start = load_range(start)
