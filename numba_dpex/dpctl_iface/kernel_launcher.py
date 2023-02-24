@@ -7,6 +7,7 @@ from numba.core.ir_utils import legalize_names
 
 from numba_dpex import utils
 from numba_dpex.core.runtime.context import DpexRTContext
+from numba_dpex.core.types import DpnpNdArray
 from numba_dpex.dpctl_iface import DpctlCAPIFnBuilder
 from numba_dpex.dpctl_iface._helpers import numba_type_to_dpctl_typenum
 
@@ -17,18 +18,168 @@ class KernelLauncher:
     Defines a set of functions to launch a SYCL kernel on a specified SyclQueue.
     """
 
-    def _form_kernel_arg_and_arg_ty(self, val, ty):
+    def _build_nullptr(self):
+        zero = cgutils.alloca_once(self.builder, utils.LLVMTypes.int64_t)
+        self.builder.store(self.context.get_constant(types.int64, 0), zero)
+        return self.builder.bitcast(
+            zero, utils.get_llvm_type(context=self.context, type=types.voidptr)
+        )
+
+    def _build_array_attr(
+        self,
+        array_val,
+        array_attr_pos,
+        array_attr_ty,
+        arg_list,
+        args_ty_list,
+        arg_num,
+    ):
+        array_attr = self.builder.gep(
+            array_val,
+            [
+                self.context.get_constant(types.int32, 0),
+                self.context.get_constant(types.int32, array_attr_pos),
+            ],
+        )
+        array_attr_val = self.builder.bitcast(
+            array_attr,
+            utils.get_llvm_type(context=self.context, type=types.voidptr),
+        )
+        self.build_arg(
+            val=array_attr_val,
+            ty=array_attr_ty,
+            arg_list=arg_list,
+            args_ty_list=args_ty_list,
+            arg_num=arg_num,
+        )
+
+    def _build_flattened_args(
+        self, array_val, array_attr_pos, ndims, arg_list, args_ty_list, arg_num
+    ):
+        array_attr = self.builder.gep(
+            array_val,
+            [
+                self.context.get_constant(types.int32, 0),
+                self.context.get_constant(types.int32, array_attr_pos),
+            ],
+        )
+
+        for ndim in range(ndims):
+            value = self.builder.gep(
+                array_attr,
+                [
+                    self.context.get_constant(types.int32, 0),
+                    self.context.get_constant(types.int32, ndim),
+                ],
+            )
+            self.build_arg(
+                val=value,
+                ty=types.int64,
+                arg_list=arg_list,
+                args_ty_list=args_ty_list,
+                arg_num=arg_num + ndim,
+            )
+
+    def build_arg(self, val, ty, arg_list, args_ty_list, arg_num):
+        """_summary_
+
+        Args:
+            val (_type_): _description_
+            ty (_type_): _description_
+            arg_list (_type_): _description_
+            args_ty_list (_type_): _description_
+            arg_num (_type_): _description_
+        """
         kernel_arg_dst = self.builder.gep(
-            self.kernel_arg_array,
-            [self.context.get_constant(types.int32, self.cur_arg)],
+            arg_list,
+            [self.context.get_constant(types.int32, arg_num)],
         )
         kernel_arg_ty_dst = self.builder.gep(
-            self.kernel_arg_ty_array,
-            [self.context.get_constant(types.int32, self.cur_arg)],
+            args_ty_list,
+            [self.context.get_constant(types.int32, arg_num)],
         )
-        self.cur_arg += 1
         self.builder.store(val, kernel_arg_dst)
         self.builder.store(ty, kernel_arg_ty_dst)
+
+    def build_array_arg(
+        self, array_val, array_rank, arg_list, args_ty_list, arg_num
+    ):
+        """Creates a list of LLVM Values for an unpacked DpnpNdArray kernel
+        argument.
+
+        The steps performed here are the same as in
+        numba_dpex.core.kernel_interface.arg_pack_unpacker._unpack_array_helper
+        """
+        # Argument 1: Null pointer for the NRT_MemInfo attribute of the array
+        nullptr = self._build_nullptr()
+        self.build_arg(
+            val=nullptr,
+            ty=types.int64,
+            arg_list=arg_list,
+            args_ty_list=args_ty_list,
+            arg_num=arg_num,
+        )
+        arg_num += 1
+        # Argument 2: Null pointer for the Parent attribute of the array
+        nullptr = self._build_nullptr()
+        self.build_arg(
+            val=nullptr,
+            ty=types.int64,
+            arg_list=arg_list,
+            args_ty_list=args_ty_list,
+            arg_num=arg_num,
+        )
+        arg_num += 1
+        # Argument 3: Array size
+        self._build_array_attr(
+            array_val=array_val,
+            array_attr_pos=2,
+            array_attr_ty=types.int64,
+            arg_list=arg_list,
+            args_ty_list=args_ty_list,
+            arg_num=arg_num,
+        )
+        arg_num += 1
+        # Argument 4: itemsize
+        self._build_array_attr(
+            array_val=array_val,
+            array_attr_pos=3,
+            array_attr_ty=types.int64,
+            arg_list=arg_list,
+            args_ty_list=args_ty_list,
+            arg_num=arg_num,
+        )
+        arg_num += 1
+        # Argument 5: data pointer
+        self._build_array_attr(
+            array_val=array_val,
+            array_attr_pos=4,
+            array_attr_ty=types.voidptr,
+            arg_list=arg_list,
+            args_ty_list=args_ty_list,
+            arg_num=arg_num,
+        )
+        arg_num += 1
+        # Arguments for flattened shape
+        self._build_flattened_args(
+            array_val=array_val,
+            array_attr_pos=5,
+            ndims=array_rank,
+            arg_list=arg_list,
+            args_ty_list=args_ty_list,
+            arg_num=arg_num,
+        )
+        arg_num += array_rank
+        # Arguments for flattened stride
+        self._build_flattened_args(
+            array_val=array_val,
+            array_attr_pos=6,
+            ndims=array_rank,
+            arg_list=arg_list,
+            args_ty_list=args_ty_list,
+            arg_num=arg_num,
+        )
+        arg_num += array_rank
 
     def __init__(self, lowerer, kernel, num_inputs):
         """Create a KernelLauncher for the specified kernel.
@@ -50,6 +201,16 @@ class KernelLauncher:
         self.write_buffs = []
         # list of buffer that does not need to comeback to host
         self.read_only_buffs = []
+
+        self.submit_range_fn = DpctlCAPIFnBuilder.get_dpctl_queue_submit_range(
+            builder=self.builder, context=self.context
+        )
+        self.queue_wait_fn = DpctlCAPIFnBuilder.get_dpctl_queue_wait(
+            builder=self.builder, context=self.context
+        )
+        self.event_del_fn = DpctlCAPIFnBuilder.get_dpctl_event_delete(
+            builder=self.builder, context=self.context
+        )
 
     def get_queue(self, exec_queue):
         """Allocates memory on the stack to store a DPCTLSyclQueueRef.
@@ -92,7 +253,7 @@ class KernelLauncher:
         )
         self.builder.call(fn, [self.builder.load(sycl_queue_val)])
 
-    def allocate_kernel_arg_array(self, num_kernel_args):
+    def allocate_kernel_arg_array(self, num_kernel_args, kernel_name_tag):
         """Allocates an array to store the LLVM Value for every kernel argument.
 
         Args:
@@ -103,354 +264,70 @@ class KernelLauncher:
         self.total_kernel_args = num_kernel_args
 
         # we need a kernel arg array to enqueue
-        self.kernel_arg_array = cgutils.alloca_once(
+        args_list = cgutils.alloca_once(
             self.builder,
             utils.get_llvm_type(context=self.context, type=types.voidptr),
             size=self.context.get_constant(types.uintp, num_kernel_args),
-            name="kernel_arg_array",
+            name="kernel_arg_array_" + kernel_name_tag,
         )
 
-        self.kernel_arg_ty_array = cgutils.alloca_once(
+        args_ty_list = cgutils.alloca_once(
             self.builder,
             utils.LLVMTypes.int32_t,
             size=self.context.get_constant(types.uintp, num_kernel_args),
-            name="kernel_arg_ty_array",
+            name="kernel_arg_ty_array_" + kernel_name_tag,
         )
 
-    def process_kernel_arg(
-        self, var, llvm_arg, arg_type, index, modified_arrays, sycl_queue_val
-    ):
-        """
-        process_kernel_arg(var, llvm_arg, arg_type, index, modified_arrays,
-        sycl_queue_val)
-        Creates an LLVM Value for each kernel argument.
+        return args_list, args_ty_list
+
+    def _create_sycl_range(self, idx_range):
+        """_summary_
 
         Args:
-            var : A kernel argument represented as a Numba type.
-            llvm_arg : Only used for array arguments and points to the LLVM
-            value previously allocated to store the array arg.
-            arg_type : The Numba type for the argument.
-            index : The position of the argument in the list of arguments.
-            modified_arrays : The list of array arguments that are written to
-            inside the kernel. The list is used to check if the argument is
-            read-only or not.
-
-        Raises:
-            NotImplementedError: If an unsupported type of kernel argument is
-            encountered.
-
+            idx_range (_type_): _description_
+            kernel_name_tag (_type_): _description_
         """
-        breakpoint()
-        if isinstance(arg_type, types.npytypes.Array):
-            if llvm_arg is None:
-                raise NotImplementedError(arg_type, var)
-
-            storage = cgutils.alloca_once(self.builder, utils.LLVMTypes.int64_t)
-            self.builder.store(
-                self.context.get_constant(types.int64, 0), storage
-            )
-            ty = numba_type_to_dpctl_typenum(
-                context=self.context, type=types.int64
-            )
-            self._form_kernel_arg_and_arg_ty(
-                self.builder.bitcast(
-                    storage,
-                    utils.get_llvm_type(
-                        context=self.context, type=types.voidptr
-                    ),
-                ),
-                ty,
-            )
-
-            storage = cgutils.alloca_once(self.builder, utils.LLVMTypes.int64_t)
-            self.builder.store(
-                self.context.get_constant(types.int64, 0), storage
-            )
-            ty = numba_type_to_dpctl_typenum(
-                context=self.context, type=types.int64
-            )
-            self._form_kernel_arg_and_arg_ty(
-                self.builder.bitcast(
-                    storage,
-                    utils.get_llvm_type(
-                        context=self.context, type=types.voidptr
-                    ),
-                ),
-                ty,
-            )
-
-            # Handle array size
-            array_size_member = self.builder.gep(
-                llvm_arg,
-                [
-                    self.context.get_constant(types.int32, 0),
-                    self.context.get_constant(types.int32, 2),
-                ],
-            )
-
-            ty = numba_type_to_dpctl_typenum(
-                context=self.context, type=types.int64
-            )
-            self._form_kernel_arg_and_arg_ty(
-                self.builder.bitcast(
-                    array_size_member,
-                    utils.get_llvm_type(
-                        context=self.context, type=types.voidptr
-                    ),
-                ),
-                ty,
-            )
-
-            # Handle itemsize
-            item_size_member = self.builder.gep(
-                llvm_arg,
-                [
-                    self.context.get_constant(types.int32, 0),
-                    self.context.get_constant(types.int32, 3),
-                ],
-            )
-
-            ty = numba_type_to_dpctl_typenum(
-                context=self.context, type=types.int64
-            )
-            self._form_kernel_arg_and_arg_ty(
-                self.builder.bitcast(
-                    item_size_member,
-                    utils.get_llvm_type(
-                        context=self.context, type=types.voidptr
-                    ),
-                ),
-                ty,
-            )
-
-            # Calculate total buffer size
-            total_size = cgutils.alloca_once(
-                self.builder,
-                utils.get_llvm_type(context=self.context, type=types.intp),
-                size=utils.get_one(context=self.context),
-                name="total_size" + str(self.cur_arg),
-            )
-            self.builder.store(
-                self.builder.sext(
-                    self.builder.mul(
-                        self.builder.load(array_size_member),
-                        self.builder.load(item_size_member),
-                    ),
-                    utils.get_llvm_type(context=self.context, type=types.intp),
-                ),
-                total_size,
-            )
-
-            # Handle data
-            data_member = self.builder.gep(
-                llvm_arg,
-                [
-                    self.context.get_constant(types.int32, 0),
-                    self.context.get_constant(types.int32, 4),
-                ],
-            )
-
-            # names are replaced using legalize names, we have to do the same
-            # here for them to match.
-            legal_names = legalize_names([var])
-            ty = numba_type_to_dpctl_typenum(
-                context=self.context, type=types.voidptr
-            )
-
-            malloc_fn = DpctlCAPIFnBuilder.get_dpctl_malloc_shared(
-                builder=self.builder, context=self.context
-            )
-            memcpy_fn = DpctlCAPIFnBuilder.get_dpctl_queue_memcpy(
-                builder=self.builder, context=self.context
-            )
-            event_del_fn = DpctlCAPIFnBuilder.get_dpctl_event_delete(
-                builder=self.builder, context=self.context
-            )
-            event_wait_fn = DpctlCAPIFnBuilder.get_dpctl_event_wait(
-                builder=self.builder, context=self.context
-            )
-
-            # Not known to be USM so we need to copy to USM.
-            buffer_name = "buffer_ptr" + str(self.cur_arg)
-            # Create void * to hold new USM buffer.
-            buffer_ptr = cgutils.alloca_once(
-                self.builder,
-                utils.get_llvm_type(context=self.context, type=types.voidptr),
-                name=buffer_name,
-            )
-            # Setup the args to the USM allocator, size and SYCL queue.
-            args = [
-                self.builder.load(total_size),
-                self.builder.load(sycl_queue_val),
-            ]
-            # Call USM shared allocator and store in buffer_ptr.
-            self.builder.store(self.builder.call(malloc_fn, args), buffer_ptr)
-
-            if legal_names[var] in modified_arrays:
-                self.write_buffs.append((buffer_ptr, total_size, data_member))
-            else:
-                self.read_only_buffs.append(
-                    (buffer_ptr, total_size, data_member)
-                )
-
-            # We really need to detect when an array needs to be copied over
-            if index < self.num_inputs:
-                args = [
-                    self.builder.load(sycl_queue_val),
-                    self.builder.load(buffer_ptr),
-                    self.builder.bitcast(
-                        self.builder.load(data_member),
-                        utils.get_llvm_type(
-                            context=self.context, type=types.voidptr
-                        ),
-                    ),
-                    self.builder.load(total_size),
-                ]
-                event_ref = self.builder.call(memcpy_fn, args)
-                self.builder.call(event_wait_fn, [event_ref])
-                self.builder.call(event_del_fn, [event_ref])
-
-            self._form_kernel_arg_and_arg_ty(self.builder.load(buffer_ptr), ty)
-
-            # Handle shape
-            shape_member = self.builder.gep(
-                llvm_arg,
-                [
-                    self.context.get_constant(types.int32, 0),
-                    self.context.get_constant(types.int32, 5),
-                ],
-            )
-
-            for this_dim in range(arg_type.ndim):
-                shape_entry = self.builder.gep(
-                    shape_member,
-                    [
-                        self.context.get_constant(types.int32, 0),
-                        self.context.get_constant(types.int32, this_dim),
-                    ],
-                )
-                ty = numba_type_to_dpctl_typenum(
-                    context=self.context, type=types.int64
-                )
-                self._form_kernel_arg_and_arg_ty(
-                    self.builder.bitcast(
-                        shape_entry,
-                        utils.get_llvm_type(
-                            context=self.context, type=types.voidptr
-                        ),
-                    ),
-                    ty,
-                )
-
-            # Handle strides
-            stride_member = self.builder.gep(
-                llvm_arg,
-                [
-                    self.context.get_constant(types.int32, 0),
-                    self.context.get_constant(types.int32, 6),
-                ],
-            )
-
-            for this_stride in range(arg_type.ndim):
-                stride_entry = self.builder.gep(
-                    stride_member,
-                    [
-                        self.context.get_constant(types.int32, 0),
-                        self.context.get_constant(types.int32, this_stride),
-                    ],
-                )
-
-                ty = numba_type_to_dpctl_typenum(
-                    context=self.context, type=types.int64
-                )
-                self._form_kernel_arg_and_arg_ty(
-                    self.builder.bitcast(
-                        stride_entry,
-                        utils.get_llvm_type(
-                            context=self.context, type=types.voidptr
-                        ),
-                    ),
-                    ty,
-                )
-
-        else:
-            ty = numba_type_to_dpctl_typenum(
-                context=self.context, type=arg_type
-            )
-            self._form_kernel_arg_and_arg_ty(
-                self.builder.bitcast(
-                    llvm_arg,
-                    utils.get_llvm_type(
-                        context=self.context, type=types.voidptr
-                    ),
-                ),
-                ty,
-            )
-
-    def enqueue_kernel_and_copy_back(self, dim_bounds, sycl_queue_val):
-        """
-        enqueue_kernel_and_copy_back(dim_bounds, sycl_queue_val)
-        Submits the kernel to the specified queue, waits and then copies
-        back any results to the host.
-
-        Args:
-            dim_bounds : An array of three tuple representing the starting
-                         offset, end offset and the stride (step) for each
-                         dimension of the input arrays. Every array in a parfor
-                         is of the same dimensionality and shape, thus ensuring
-                         the bounds are the same.
-            sycl_queue_val : The SYCL queue on which the kernel is
-                             submitted.
-        """
-        submit_fn = DpctlCAPIFnBuilder.get_dpctl_queue_submit_range(
-            builder=self.builder, context=self.context
-        )
-        queue_wait_fn = DpctlCAPIFnBuilder.get_dpctl_queue_wait(
-            builder=self.builder, context=self.context
-        )
-        event_del_fn = DpctlCAPIFnBuilder.get_dpctl_event_delete(
-            builder=self.builder, context=self.context
-        )
-        memcpy_fn = DpctlCAPIFnBuilder.get_dpctl_queue_memcpy(
-            builder=self.builder, context=self.context
-        )
-        free_fn = DpctlCAPIFnBuilder.get_dpctl_free_with_queue(
-            builder=self.builder, context=self.context
-        )
-        event_wait_fn = DpctlCAPIFnBuilder.get_dpctl_event_wait(
-            builder=self.builder, context=self.context
-        )
-
-        # the assumption is loop_ranges will always be less than or equal to 3
-        # dimensions
-        num_dim = len(dim_bounds) if len(dim_bounds) < 4 else 3
+        intp_t = utils.get_llvm_type(context=self.context, type=types.intp)
+        intp_ptr_t = utils.get_llvm_ptr_type(intp_t)
+        num_dim = len(idx_range)
 
         # form the global range
         global_range = cgutils.alloca_once(
             self.builder,
             utils.get_llvm_type(context=self.context, type=types.uintp),
             size=self.context.get_constant(types.uintp, num_dim),
-            name="global_range",
         )
 
-        intp_t = utils.get_llvm_type(context=self.context, type=types.intp)
-        intp_ptr_t = utils.get_llvm_ptr_type(intp_t)
-
         for i in range(num_dim):
-            start, stop, step = dim_bounds[i]
-            if stop.type != utils.LLVMTypes.int64_t:
-                stop = self.builder.sext(stop, utils.LLVMTypes.int64_t)
+            rext = idx_range[i]
+            if rext.type != utils.LLVMTypes.int64_t:
+                rext = self.builder.sext(rext, utils.LLVMTypes.int64_t)
 
             # we reverse the global range to account for how sycl and opencl
             # range differs
             self.builder.store(
-                stop,
+                rext,
                 self.builder.gep(
                     global_range,
                     [self.context.get_constant(types.uintp, (num_dim - 1) - i)],
                 ),
             )
 
+        return self.builder.bitcast(global_range, intp_ptr_t)
+
+    def submit_sync_ranged_kernel(self, idx_range, sycl_queue_val):
+        """
+        submit_sync_ranged_kernel(dim_bounds, sycl_queue_val)
+        Submits the kernel to the specified queue, waits and then copies
+        back any results to the host.
+
+        Args:
+            idx_range: Tuple specifying the range over which the kernel is
+            to be submitted.
+            sycl_queue_val : The SYCL queue on which the kernel is
+                             submitted.
+        """
+        gr = self._create_sycl_range(idx_range)
         args = [
             self.builder.inttoptr(
                 self.context.get_constant(types.uintp, self.kernel_addr),
@@ -460,8 +337,8 @@ class KernelLauncher:
             self.kernel_arg_array,
             self.kernel_arg_ty_array,
             self.context.get_constant(types.uintp, self.total_kernel_args),
-            self.builder.bitcast(global_range, intp_ptr_t),
-            self.context.get_constant(types.uintp, num_dim),
+            gr,
+            self.context.get_constant(types.uintp, len(idx_range)),
             self.builder.bitcast(
                 utils.create_null_ptr(
                     builder=self.builder, context=self.context
@@ -472,52 +349,15 @@ class KernelLauncher:
         ]
 
         # Submit the kernel
-        event_ref = self.builder.call(submit_fn, args)
+        event_ref = self.builder.call(self.submit_range_fn, args)
 
         # Add a wait on the queue
-        self.builder.call(queue_wait_fn, [self.builder.load(sycl_queue_val)])
+        self.builder.call(
+            self.queue_wait_fn, [self.builder.load(sycl_queue_val)]
+        )
 
         # Note that the dpctl_queue_wait call waits on the event and then
         # decrements the ref count of the sycl::event C++ object. However, the
         # event object returned by the get_dpctl_queue_submit_range call still
         # needs to be explicitly deleted to free up the event object properly.
-        self.builder.call(event_del_fn, [event_ref])
-
-        # read buffers back to host
-        for write_buff in self.write_buffs:
-            buffer_ptr, total_size, data_member = write_buff
-            args = [
-                self.builder.load(sycl_queue_val),
-                self.builder.bitcast(
-                    self.builder.load(data_member),
-                    utils.get_llvm_type(
-                        context=self.context, type=types.voidptr
-                    ),
-                ),
-                self.builder.load(buffer_ptr),
-                self.builder.load(total_size),
-            ]
-            # FIXME: In future, when the DctlQueue_Memcpy is made non-blocking
-            # the returned event should be explicitly freed by calling
-            # get_dpctl_event_delete.
-            event_ref = self.builder.call(memcpy_fn, args)
-            self.builder.call(event_wait_fn, [event_ref])
-            self.builder.call(event_del_fn, [event_ref])
-
-            self.builder.call(
-                free_fn,
-                [
-                    self.builder.load(buffer_ptr),
-                    self.builder.load(sycl_queue_val),
-                ],
-            )
-
-        for read_buff in self.read_only_buffs:
-            buffer_ptr, total_size, data_member = read_buff
-            self.builder.call(
-                free_fn,
-                [
-                    self.builder.load(buffer_ptr),
-                    self.builder.load(sycl_queue_val),
-                ],
-            )
+        self.builder.call(self.event_del_fn, [event_ref])

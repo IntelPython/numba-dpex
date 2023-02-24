@@ -16,7 +16,7 @@ from numba_dpex.dpctl_iface.kernel_launcher import KernelLauncher
 
 from ..exceptions import UnsupportedParforError
 from ..types.dpnp_ndarray_type import DpnpNdArray
-from ..utils.kernel_builder import create_kernel_for_parfor
+from ..utils.kernel_builder import GufuncKernel, create_kernel_for_parfor
 from .parfor import Parfor, find_potential_aliases_parfor, get_parfor_outputs
 
 # A global list of kernels to keep the objects alive indefinitely.
@@ -116,111 +116,89 @@ def _create_shape_signature(
 
 def _submit_gufunc_kernel(
     lowerer,
-    kernel,
-    exec_queue,
+    gufunc_kernel,
     gu_signature,
-    outer_sig,
-    expr_args,
     num_inputs,
-    expr_arg_types,
     loop_ranges,
-    modified_arrays,
 ):
     """
     Adds the call to the gufunc function from the main function.
     """
 
     context = lowerer.context
-    # builder = lowerer.builder
     sin, sout = gu_signature
     num_dim = len(loop_ranges)
 
-    if config.DEBUG_ARRAY_OPT:
-        print("_generate_kernel_launch_ops")
-        print("args = ", expr_args)
-        print(
-            "outer_sig = ",
-            outer_sig.args,
-            outer_sig.return_type,
-            outer_sig.recvr,
-            outer_sig.pysig,
-        )
-        print("loop_ranges = ", loop_ranges)
-        print("expr_args", expr_args)
-        print("expr_arg_types", expr_arg_types)
-        print("gu_signature", gu_signature)
-        print("sin", sin)
-        print("sout", sout)
-        # print("cres", cres, type(cres))
-        print("modified_arrays", modified_arrays)
+    keep_alive_kernels.append(gufunc_kernel.kernel)
 
-    # A convenience wrapper to generate the dpctl function calls to submit
-    # the kernel
-    kernel_launcher = KernelLauncher(lowerer, kernel, num_inputs)
+    # Helper class that generates the dpctl function calls
+    kernel_launcher = KernelLauncher(lowerer, gufunc_kernel.kernel, num_inputs)
 
-    # Get a pointer to the current queue
-    curr_queue = kernel_launcher.get_queue(exec_queue=exec_queue)
+    # Create a local variable storing a pointer to a sycl queue
+    curr_queue = kernel_launcher.get_queue(exec_queue=gufunc_kernel.queue)
 
-    # Compute number of args
-    num_expanded_args = 0
+    num_flattened_args = 0
 
-    for arg_type in expr_arg_types:
+    # Compute number of args to be passed to the kernel. Note that the
+    # actual number of kernel arguments is greater than the count of
+    # gufunc_kernel.kernel_args as arrays get flattened.
+    for arg_type in gufunc_kernel.kernel_arg_types:
         if isinstance(arg_type, DpnpNdArray):
             # FIXME: Remove magic constants
-            num_expanded_args += 5 + (2 * arg_type.ndim)
+            num_flattened_args += 5 + (2 * arg_type.ndim)
         else:
-            num_expanded_args += 1
+            num_flattened_args += 1
 
-    if config.DEBUG_ARRAY_OPT:
-        print("num_expanded_args = ", num_expanded_args)
+    # Create LLVM values for the kernel args list and kernel arg types list
+    args_list, args_ty_list = kernel_launcher.allocate_kernel_arg_array(
+        num_flattened_args
+    )
 
-    # now that we know the total number of kernel args, lets allocate
-    # a kernel_arg array
-    kernel_launcher.allocate_kernel_arg_array(num_expanded_args)
+    # Populate the args_list and the args_ty_list LLVM arrays
+    kernel_arg_num = 0
+    for arg_num, arg in enumerate(gufunc_kernel.kernel_args):
+        argtype = gufunc_kernel.kernel_arg_types[arg_num]
+        if isinstance(argtype, DpnpNdArray):
+            kernel_launcher.build_array_arg(
+                array_val=arg,
+                array_rank=argtype.ndim,
+                arg_list=args_list,
+                args_ty_list=args_ty_list,
+                arg_num=kernel_arg_num,
+            )
+            # FIXME: Get rid of magic constants
+            kernel_arg_num += 5 + (2 * argtype.ndim)
+        else:
+            llvm_val = _getvar_or_none(lowerer, arg)
+            if not llvm_val:
+                raise AssertionError
+            kernel_launcher.build_arg(
+                llvm_val, argtype, args_list, args_ty_list, kernel_arg_num
+            )
+            kernel_arg_num += 1
 
-    ninouts = len(expr_args)
+    # ninouts = len(expr_args)
 
-    all_llvm_args = [_getvar_or_none(lowerer, x) for x in expr_args[:ninouts]]
-    all_val_types = [
-        _val_type_or_none(context, lowerer, x) for x in expr_args[:ninouts]
-    ]
+    # all_llvm_args = [_getvar_or_none(lowerer, x) for x in expr_args[:ninouts]]
+    # all_val_types = [
+    #     _val_type_or_none(context, lowerer, x) for x in expr_args[:ninouts]
+    # ]
     # all_args = [_loadvar_or_none(lowerer, x) for x in expr_args[:ninouts]]
 
-    keep_alive_kernels.append(kernel)
-
-    # Call clSetKernelArg for each arg and create arg array for
-    # the enqueue function. Put each part of each argument into
-    # kernel_arg_array.
-    for var, llvm_arg, arg_type, gu_sig, val_type, index in zip(
-        expr_args,
-        all_llvm_args,
-        expr_arg_types,
-        sin + sout,
-        all_val_types,
-        range(len(expr_args)),
-    ):
-        if config.DEBUG_ARRAY_OPT:
-            print(
-                "var:",
-                var,
-                type(var),
-                "\n\tllvm_arg:",
-                llvm_arg,
-                type(llvm_arg),
-                "\n\targ_type:",
-                arg_type,
-                type(arg_type),
-                "\n\tgu_sig:",
-                gu_sig,
-                "\n\tval_type:",
-                val_type,
-                type(val_type),
-                "\n\tindex:",
-                index,
-            )
-        kernel_launcher.process_kernel_arg(
-            var, llvm_arg, arg_type, index, modified_arrays, curr_queue
-        )
+    # # Call clSetKernelArg for each arg and create arg array for
+    # # the enqueue function. Put each part of each argument into
+    # # kernel_arg_array.
+    # for var, llvm_arg, arg_type, gu_sig, val_type, index in zip(
+    #     expr_args,
+    #     all_llvm_args,
+    #     expr_arg_types,
+    #     sin + sout,
+    #     all_val_types,
+    #     range(len(expr_args)),
+    # ):
+    #     kernel_launcher.process_kernel_arg(
+    #         var, llvm_arg, arg_type, index, modified_arrays, curr_queue
+    #     )
 
     # loadvars for loop_ranges
     def load_range(v):
@@ -238,7 +216,7 @@ def _submit_gufunc_kernel(
         step = load_range(step)
         loop_ranges[i] = (start, stop, step)
 
-    kernel_launcher.enqueue_kernel_and_copy_back(loop_ranges, curr_queue)
+    kernel_launcher.submit_sync_ranged_kernel(loop_ranges, curr_queue)
 
     # At this point we can free the DPCTLSyclQueueRef (curr_queue)
     kernel_launcher.free_queue(sycl_queue_val=curr_queue)
@@ -254,7 +232,6 @@ def _lower_parfor_gufunc(lowerer, parfor):
         - The body of the parfor is transformed into a gufunc function.
 
     """
-    breakpoint()
     # We copy the typemap here because for race condition variable we'll
     # update their type to array so they can be updated by the gufunc.
     orig_typemap = lowerer.fndesc.typemap
@@ -316,14 +293,7 @@ def _lower_parfor_gufunc(lowerer, parfor):
     ]
 
     try:
-        (
-            func,
-            func_args,
-            func_sig,
-            func_arg_types,
-            modified_arrays,
-            exec_queue,
-        ) = create_kernel_for_parfor(
+        gufunc_kernel = create_kernel_for_parfor(
             lowerer,
             parfor,
             typemap,
@@ -337,39 +307,22 @@ def _lower_parfor_gufunc(lowerer, parfor):
         # FIXME: Make the exception more informative
         raise UnsupportedParforError
 
-    num_inputs = len(func_args) - len(parfor_output_arrays)
-    if config.DEBUG_ARRAY_OPT:
-        print("func", func, type(func))
-        print("func_args", func_args, type(func_args))
-        print("func_sig", func_sig, type(func_sig))
-        print("num_inputs = ", num_inputs)
-        print("parfor_outputs = ", parfor_output_arrays)
-
-    # call the func in parallel by wrapping it with ParallelGUFuncBuilder
-    if config.DEBUG_ARRAY_OPT:
-        print("loop_nests = ", parfor.loop_nests)
-        print("loop_ranges = ", loop_ranges)
-
+    num_inputs = len(gufunc_kernel.kernel_args) - len(parfor_output_arrays)
     gu_signature = _create_shape_signature(
         parfor.get_shape_classes,
         num_inputs,
-        func_args,
-        func_sig,
+        gufunc_kernel.kernel_args,
+        gufunc_kernel.signature,
         parfor.races,
         typemap,
     )
 
     _submit_gufunc_kernel(
         lowerer,
-        func,
-        exec_queue,
+        gufunc_kernel,
         gu_signature,
-        func_sig,
-        func_args,
         num_inputs,
-        func_arg_types,
         loop_ranges,
-        modified_arrays,
     )
 
     # Restore the original typemap of the function that was replaced
@@ -450,7 +403,7 @@ class ParforLoweringPass(LoweringPass):
     FIXME: Redesign once numba-dpex supports Numba 0.57
     """
 
-    _name = "dpex_parfor_lowering"
+    _name = "dpjit_lowering"
 
     def __init__(self):
         LoweringPass.__init__(self)

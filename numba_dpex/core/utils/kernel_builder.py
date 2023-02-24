@@ -34,6 +34,24 @@ from ..passes import parfor
 from ..types.dpnp_ndarray_type import DpnpNdArray
 
 
+class GufuncKernel:
+    def __init__(
+        self,
+        name,
+        kernel,
+        signature,
+        kernel_args,
+        kernel_arg_types,
+        queue,
+    ):
+        self.name = name
+        self.kernel = kernel
+        self.signature = signature
+        self.kernel_args = kernel_args
+        self.kernel_arg_types = kernel_arg_types
+        self.queue = queue
+
+
 def _print_block(block):
     for i, inst in enumerate(block.body):
         print("    ", i, inst)
@@ -529,7 +547,8 @@ def create_kernel_for_parfor(
             redvar = redvars_dict[redvar]
             gufunc_txt += (
                 "            "
-                + f"local_sums_{redvar}[local_id0] += local_sums_{redvar}[local_id0 + stride0]\n"
+                f"local_sums_{redvar}[local_id0] "
+                f"+= local_sums_{redvar}[local_id0 + stride0]\n"
             )
 
         gufunc_txt += "        stride0 >>= 1\n"
@@ -610,8 +629,13 @@ def create_kernel_for_parfor(
     # wrapped_blocks = _wrap_loop_body(loop_body)
     # # hoisted, not_hoisted = hoist(parfor_params, loop_body,
     # #                             typemap, wrapped_blocks)
-    setitems = set()
-    _find_setitems_body(setitems, loop_body, typemap)
+
+    # Setitems has the list of arrays that are written or set inside a kernel
+    # the list was needed in the case of NumPy to write back data to device.
+    # We do not need it anymore with DpnpNdArray.
+
+    # setitems = set()
+    # _find_setitems_body(setitems, loop_body, typemap)
 
     # hoisted = []
     # not_hoisted = []
@@ -727,18 +751,16 @@ def create_kernel_for_parfor(
         debug=flags.debuginfo,
     )
 
-    breakpoint()
-
     flags.noalias = old_alias
 
     if config.DEBUG_ARRAY_OPT:
         print("kernel_sig = ", kernel_sig)
 
-    return (
-        sycl_kernel,
-        parfor_args,
-        kernel_sig,
-        func_arg_types,
-        setitems,
-        exec_queue,
+    return GufuncKernel(
+        name=gufunc_name,
+        kernel=sycl_kernel,
+        signature=kernel_sig,
+        kernel_args=parfor_args,
+        kernel_arg_types=func_arg_types,
+        queue=exec_queue,
     )
