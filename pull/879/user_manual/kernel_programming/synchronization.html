@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Synchronization Functions &#8212; Data Parallel Extensions for Python* 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sdc.css" />
+    
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script type="text/javascript" src="../../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../../_static/copybutton.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Writing Device Functions" href="device-functions.html" />
+    <link rel="prev" title="Memory Management" href="memory-management.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Intel Python projects" href="../../other_intel_python_projects.html"></a>
+  <a class="brand_sdc" title="Documentation Home" href="../../index.html"></a>
+
+  <ul>
+    <li><a class="exampleslink" title="Examples" href="../../examples.html"></a></li>
+    <li><a class="issueslink" title="Issues" href="https://community.intel.com/t5/Intel-Distribution-for-Python/bd-p/distribution-python"></a></li>
+    <li><a class="emaillink" title="Email" href="mailto:scripting@intel.com"></a></li>
+    <li><a class="homelink" title="GitHub" href="https://github.com/IntelPython/numba-dpex"></a></li>
+    <li>
+      
+      
+<form action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="device-functions.html" title="Writing Device Functions">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="memory-management.html" title="Memory Management">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="../../index.html">Data Parallel Extensions for Python* 0.1 documentation</a>
+	 &#187;
+      </li>
+      <li><a href="../index.html" >Data Parallel Extension for Numba User Manual</a> &#187;</li>
+      <li><a href="index.html" accesskey="U">Data Parallel Kernel Programming</a> &#187;</li>
+      
+      <li>Synchronization Functions</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="synchronization-functions">
+<h1>Synchronization Functions<a class="headerlink" href="#synchronization-functions" title="Permalink to this heading">¶</a></h1>
+<p>Numba-dpex only supports some of the SYCL synchronization operations. For
+synchronization of all threads in the same thread block, numba-dpex provides
+a helper function called <code class="docutils literal notranslate"><span class="pre">numba_dpex.barrier()</span></code>. This function implements the
+same pattern as barriers in traditional multi-threaded programming: invoking the
+function forces a thread to wait until all threads in the block reach the
+barrier, at which point it returns control to all its callers.</p>
+<p><code class="docutils literal notranslate"><span class="pre">numba_dpex.barrier()</span></code> supports two memory fence options:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex.CLK_GLOBAL_MEM_FENCE</span></code>: The barrier function will queue a memory
+fence to ensure correct ordering of memory operations to global memory. Using
+the option can be useful when work-items, for example, write to buffer or
+image objects and then want to read the updated data. Passing no arguments to
+<code class="docutils literal notranslate"><span class="pre">numba_dpex.barrier()</span></code> is equivalent to setting the global memory fence
+option. For example,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex.CLK_LOCAL_MEM_FENCE</span></code>: The barrier function will either flush
+any variables stored in local memory or queue a memory fence to ensure
+correct ordering of memory operations to local memory. For example,</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">numba_dpex.barrier()</span></code> function is semantically equivalent to
+<code class="docutils literal notranslate"><span class="pre">numba.cuda.syncthreads</span></code>.</p>
+</div>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Table of Contents</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Data Parallel Extension for Numba User Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html">Prerequisites and installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../auto_offload.html">Automatic Offload</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Data Parallel Kernel Programming</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="writing_kernels.html">Writing Data Parallel Kernels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory-management.html">Memory Management</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Synchronization Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="selecting_device.html">Defining the execution queue for a kernel function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="random.html">Random Number Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../performance_tips.html">Performance Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../useful_links.html">Useful links</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../useful_links.html#to-do">To-Do</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference_manual/index.html">Data Parallel Extension for Numba Reference Manual</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">List of examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release-notes.html">Release Notes</a></li>
+</ul>
+
+<form action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="memory-management.html"
+                          title="previous chapter">Memory Management</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="device-functions.html"
+                          title="next chapter">Writing Device Functions</a></p>
+  </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2022, Intel Corporation.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 6.1.3. &nbsp;
+  </p>
+</footer>
+  </body>
+</html>

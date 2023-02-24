@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Data Parallel Extension for Numba &#8212; Data Parallel Extensions for Python* 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sdc.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Data Parallel Extension for Numba User Manual" href="user_manual/index.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Intel Python projects" href="other_intel_python_projects.html"></a>
+  <a class="brand_sdc" title="Documentation Home" href="#"></a>
+
+  <ul>
+    <li><a class="exampleslink" title="Examples" href="examples.html"></a></li>
+    <li><a class="issueslink" title="Issues" href="https://community.intel.com/t5/Intel-Distribution-for-Python/bd-p/distribution-python"></a></li>
+    <li><a class="emaillink" title="Email" href="mailto:scripting@intel.com"></a></li>
+    <li><a class="homelink" title="GitHub" href="https://github.com/IntelPython/numba-dpex"></a></li>
+    <li>
+      
+      
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="user_manual/index.html" title="Data Parallel Extension for Numba User Manual">
+	  next &raquo;
+	</a>
+      </li>
+      <li>
+	<a href="#">Data Parallel Extensions for Python* 0.1 documentation</a>
+	 &#187;
+      </li>
+      
+       
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <span class="target" id="index"></span><a class="reference internal image-reference" href="_images/DPEP-large.png"><img alt="Data Parallel Extensions for Python" class="align-center" src="_images/DPEP-large.png" style="width: 400px;" /></a>
+<section id="id1">
+<h1>Data Parallel Extension for Numba<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h1>
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_manual/index.html">Data Parallel Extension for Numba User Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user_manual/getting_started.html">Prerequisites and installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_manual/auto_offload.html">Automatic Offload</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_manual/kernel_programming/index.html">Data Parallel Kernel Programming</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="user_manual/kernel_programming/writing_kernels.html">Writing Data Parallel Kernels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_manual/kernel_programming/memory-management.html">Memory Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_manual/kernel_programming/synchronization.html">Synchronization Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_manual/kernel_programming/device-functions.html">Writing Device Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_manual/kernel_programming/atomic-operations.html">Supported Atomic Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_manual/kernel_programming/selecting_device.html">Defining the execution queue for a kernel function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_manual/kernel_programming/memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_manual/kernel_programming/reduction.html">Reduction on SYCL-supported Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_manual/kernel_programming/ufunc.html">Universal Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_manual/kernel_programming/random.html">Random Number Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_manual/kernel_programming/supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="user_manual/performance_tips.html">Performance Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_manual/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_manual/useful_links.html">Useful links</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_manual/useful_links.html#to-do">To-Do</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference_manual/index.html">Data Parallel Extension for Numba Reference Manual</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">List of examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#benchmarks">Benchmarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#jupyter-notebooks">Jupyter* Notebooks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release-notes.html">Release Notes</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Table of Contents</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user_manual/index.html">Data Parallel Extension for Numba User Manual</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference_manual/index.html">Data Parallel Extension for Numba Reference Manual</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">List of examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release-notes.html">Release Notes</a></li>
+</ul>
+
+<form action="search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="user_manual/index.html"
+                          title="next chapter">Data Parallel Extension for Numba User Manual</a></p>
+  </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2022, Intel Corporation.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 6.1.3. &nbsp;
+  </p>
+</footer>
+  </body>
+</html>

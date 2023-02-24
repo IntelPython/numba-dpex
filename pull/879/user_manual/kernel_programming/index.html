@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Data Parallel Kernel Programming &#8212; Data Parallel Extensions for Python* 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sdc.css" />
+    
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script type="text/javascript" src="../../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../../_static/copybutton.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Writing Data Parallel Kernels" href="writing_kernels.html" />
+    <link rel="prev" title="Automatic Offload" href="../auto_offload.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Intel Python projects" href="../../other_intel_python_projects.html"></a>
+  <a class="brand_sdc" title="Documentation Home" href="../../index.html"></a>
+
+  <ul>
+    <li><a class="exampleslink" title="Examples" href="../../examples.html"></a></li>
+    <li><a class="issueslink" title="Issues" href="https://community.intel.com/t5/Intel-Distribution-for-Python/bd-p/distribution-python"></a></li>
+    <li><a class="emaillink" title="Email" href="mailto:scripting@intel.com"></a></li>
+    <li><a class="homelink" title="GitHub" href="https://github.com/IntelPython/numba-dpex"></a></li>
+    <li>
+      
+      
+<form action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="writing_kernels.html" title="Writing Data Parallel Kernels">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="../auto_offload.html" title="Automatic Offload">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="../../index.html">Data Parallel Extensions for Python* 0.1 documentation</a>
+	 &#187;
+      </li>
+      <li><a href="../index.html" accesskey="U">Data Parallel Extension for Numba User Manual</a> &#187;</li>
+      
+      <li>Data Parallel Kernel Programming</li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <span class="target" id="index"></span><section id="data-parallel-kernel-programming">
+<h1>Data Parallel Kernel Programming<a class="headerlink" href="#data-parallel-kernel-programming" title="Permalink to this heading">¶</a></h1>
+<p><a class="reference external" href="https://intelpython.github.io/DPEP/main/">Data Parallel Extensions for Python*</a> introduce a concept of an <em>offload kernel</em>, defined as
+a part of a Python program being submitted for execution to the device queue.</p>
+<a class="reference internal image-reference" href="../../_images/kernel-queue-device.png"><img alt="Offload Kernel" class="align-center" src="../../_images/kernel-queue-device.png" style="width: 520.0px; height: 351.0px;" /></a>
+<p>There are multiple ways how to write offload kernels. CUDA*, OpenCl*, and SYCL* offer similar programming model
+known as the <em>data parallel kernel programming</em>. In this model you express the work in terms of <em>work items</em>.
+You split data into small pieces, and each piece will be a unit of work, or a <em>work item</em>. The total number of
+work items is called <em>global size</em>. You can also group work items into bigger chunks called <em>work groups</em>.
+The number of work items in the work group is called the <em>local size</em>.</p>
+<a class="reference internal image-reference" href="../../_images/kernel_prog_model.png"><img alt="Offload Kernel" class="align-center" src="../../_images/kernel_prog_model.png" style="width: 344.0px; height: 223.0px;" /></a>
+<p>In this example there are 48 <em>work items</em> (8 in dimension 0, and 6 in dimension 1), that is the <em>global size</em> is 48.
+Work items are grouped in <em>work groups</em> with the <em>local size</em> 8 (4 in dimension 0, and 2 in dimension 1). There are
+total 48/8 = 6 work groups.</p>
+<p>In the <em>data parallel kernel programming</em> model you write a function that processes a given work item.
+Such a function is called the <em>data parallel kernel</em>.</p>
+<p><strong>Data Parallel Extension for Numba</strong> offers a way to write data parallel kernels directly using Python using
+<code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code>. It bears similarities with <code class="docutils literal notranslate"><span class="pre">numba.cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">numba.roc</span></code>, but unlike these proprietary
+programming models <code class="docutils literal notranslate"><span class="pre">numba_dpex</span></code> is built on top of <a class="reference external" href="https://www.khronos.org/sycl/">SYCL*</a> , which is hardware agnostic, meaning
+that with <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code> programming model you will be able to write a portable code targeting different
+hardware vendors.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The current version of <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> supports Intel SYCL devices only</p>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">This document will cover the following chapters:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="writing_kernels.html">Writing Data Parallel Kernels</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html#kernel-declaration">Kernel declaration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html#kernel-invocation">Kernel invocation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html#kernel-indexing-functions">Kernel indexing functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memory-management.html">Memory Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="memory-management.html#sycl-usm-array-interface">SYCL USM Array Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory-management.html#device-only-memory-and-explicit-data-transfer">Device-only memory and explicit data transfer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory-management.html#local-memory">Local memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory-management.html#private-and-constant-memory">Private and Constant memory</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html#generating-native-fp-atomics">Generating Native FP Atomics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html#full-examples">Full examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="selecting_device.html">Defining the execution queue for a kernel function</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="selecting_device.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reduction.html#example-1">Example 1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reduction.html#example-2">Example 2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reduction.html#full-examples">Full examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ufunc.html">Universal Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ufunc.html#example-1-basic-usage">Example 1: Basic Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ufunc.html#example-2-calling-numba-vectorize-inside-a-numba-dpex-kernel">Example 2: Calling <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> inside a <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ufunc.html#full-examples">Full Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="random.html">Random Number Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="random.html#supported-functions">Supported functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#built-in-types">Built-in types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#built-in-functions">Built-in functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#standard-library-modules">Standard library modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#unsupported-constructs">Unsupported Constructs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#numpy-support">NumPy support</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Table of Contents</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Data Parallel Extension for Numba User Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html">Prerequisites and installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../auto_offload.html">Automatic Offload</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Data Parallel Kernel Programming</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="writing_kernels.html">Writing Data Parallel Kernels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory-management.html">Memory Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="selecting_device.html">Defining the execution queue for a kernel function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="random.html">Random Number Generation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../performance_tips.html">Performance Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../useful_links.html">Useful links</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../useful_links.html#to-do">To-Do</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference_manual/index.html">Data Parallel Extension for Numba Reference Manual</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">List of examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release-notes.html">Release Notes</a></li>
+</ul>
+
+<form action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="../auto_offload.html"
+                          title="previous chapter">Automatic Offload</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="writing_kernels.html"
+                          title="next chapter">Writing Data Parallel Kernels</a></p>
+  </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2022, Intel Corporation.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 6.1.3. &nbsp;
+  </p>
+</footer>
+  </body>
+</html>

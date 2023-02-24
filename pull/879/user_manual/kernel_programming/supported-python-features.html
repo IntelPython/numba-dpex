@@ -1,0 +1,256 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Supported Python Features inside numba_dpex.kernel &#8212; Data Parallel Extensions for Python* 0.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sdc.css" />
+    
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script type="text/javascript" src="../../_static/sidebar.js"></script>
+    <script type="text/javascript" src="../../_static/copybutton.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Performance Tips" href="../performance_tips.html" />
+    <link rel="prev" title="Random Number Generation" href="random.html" />
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,600' rel='stylesheet' type='text/css'/>
+
+  </head><body>
+<div class="topbar">
+  <a class="brand" title="Intel Python projects" href="../../other_intel_python_projects.html"></a>
+  <a class="brand_sdc" title="Documentation Home" href="../../index.html"></a>
+
+  <ul>
+    <li><a class="exampleslink" title="Examples" href="../../examples.html"></a></li>
+    <li><a class="issueslink" title="Issues" href="https://community.intel.com/t5/Intel-Distribution-for-Python/bd-p/distribution-python"></a></li>
+    <li><a class="emaillink" title="Email" href="mailto:scripting@intel.com"></a></li>
+    <li><a class="homelink" title="GitHub" href="https://github.com/IntelPython/numba-dpex"></a></li>
+    <li>
+      
+      
+<form action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+      
+    </li>
+  </ul>
+</div>
+
+<div class="related">
+    <h3>Navigation</h3>
+    <ul>
+      <li class="right">
+	<a href="../performance_tips.html" title="Performance Tips">
+	  next &raquo;
+	</a>
+      </li>
+      <li class="right">
+	<a href="random.html" title="Random Number Generation">
+	  &laquo; previous
+	</a>
+	 |
+      </li>
+      <li>
+	<a href="../../index.html">Data Parallel Extensions for Python* 0.1 documentation</a>
+	 &#187;
+      </li>
+      <li><a href="../index.html" >Data Parallel Extension for Numba User Manual</a> &#187;</li>
+      <li><a href="index.html" accesskey="U">Data Parallel Kernel Programming</a> &#187;</li>
+      
+      <li>Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></li> 
+    </ul>
+</div>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="supported-python-features-inside-numba-dpex-kernel">
+<h1>Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code><a class="headerlink" href="#supported-python-features-inside-numba-dpex-kernel" title="Permalink to this heading">¶</a></h1>
+<p>This page lists the Python features supported inside a <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code>
+function.</p>
+<section id="built-in-types">
+<h2>Built-in types<a class="headerlink" href="#built-in-types" title="Permalink to this heading">¶</a></h2>
+<p><strong>Supported Types</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p></li>
+</ul>
+<p><strong>Unsupported Types</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">complex</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tuple</span></code></p></li>
+</ul>
+</section>
+<section id="built-in-functions">
+<h2>Built-in functions<a class="headerlink" href="#built-in-functions" title="Permalink to this heading">¶</a></h2>
+<p>The following built-in functions are supported:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">abs()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">len()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">range()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">round()</span></code></p></li>
+</ul>
+</section>
+<section id="standard-library-modules">
+<h2>Standard library modules<a class="headerlink" href="#standard-library-modules" title="Permalink to this heading">¶</a></h2>
+<p>The following functions from the math module are supported:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">math.acos()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.asin()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.atan()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.acosh()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.asinh()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.atanh()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.cos()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.sin()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.tan()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.cosh()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.sinh()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.tanh()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.erf()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.erfc()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.exp()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.expm1()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.fabs()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.gamma()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.lgamma()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.log()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.log10()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.log1p()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.sqrt()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.ceil()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math.floor()</span></code></p></li>
+</ul>
+<p>The following functions from the operator module are supported:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.add()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.eq()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.floordiv()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.ge()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.gt()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.iadd()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.ifloordiv()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.imod()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.imul()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.ipow()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.isub()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.itruediv()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.le()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.lshift()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.lt()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.mod()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.mul()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.ne()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.neg()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.not_()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.or_()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.pos()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.pow()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.sub()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">operator.truediv()</span></code></p></li>
+</ul>
+</section>
+<section id="unsupported-constructs">
+<h2>Unsupported Constructs<a class="headerlink" href="#unsupported-constructs" title="Permalink to this heading">¶</a></h2>
+<p>The following Python constructs are <strong>not supported</strong>:</p>
+<ul class="simple">
+<li><p>Exception handling (<code class="docutils literal notranslate"><span class="pre">try</span> <span class="pre">..</span> <span class="pre">except</span></code>, <code class="docutils literal notranslate"><span class="pre">try</span> <span class="pre">..</span> <span class="pre">finally</span></code>)</p></li>
+<li><p>Context management (the <code class="docutils literal notranslate"><span class="pre">with</span></code> statement)</p></li>
+<li><p>Comprehensions (either list, dict, set or generator comprehensions)</p></li>
+<li><p>Generator (any <code class="docutils literal notranslate"><span class="pre">yield</span></code> statements)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">raise</span></code> statement</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">assert</span></code> statement</p></li>
+</ul>
+</section>
+<section id="numpy-support">
+<h2>NumPy support<a class="headerlink" href="#numpy-support" title="Permalink to this heading">¶</a></h2>
+<p>NumPy functions are whole array operations and are not supported within a
+<code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code>.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><h3>Table of Contents</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Data Parallel Extension for Numba User Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../getting_started.html">Prerequisites and installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../auto_offload.html">Automatic Offload</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Data Parallel Kernel Programming</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="writing_kernels.html">Writing Data Parallel Kernels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory-management.html">Memory Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="selecting_device.html">Defining the execution queue for a kernel function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="random.html">Random Number Generation</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../performance_tips.html">Performance Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../useful_links.html">Useful links</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../useful_links.html#to-do">To-Do</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reference_manual/index.html">Data Parallel Extension for Numba Reference Manual</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">List of examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release-notes.html">Release Notes</a></li>
+</ul>
+
+<form action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="random.html"
+                          title="previous chapter">Random Number Generation</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="../performance_tips.html"
+                          title="next chapter">Performance Tips</a></p>
+  </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+<footer class="footer">
+  <p class="pull-right"> &nbsp;
+    <a href="#">Back to Top</a></p>
+  <p>
+    &copy; Copyright 2022, Intel Corporation.<br/>
+    Created using <a href="http://www.sphinx-doc.org/en/stable/">Sphinx</a> 6.1.3. &nbsp;
+  </p>
+</footer>
+  </body>
+</html>
