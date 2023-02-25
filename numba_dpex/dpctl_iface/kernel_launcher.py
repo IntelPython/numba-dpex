@@ -12,20 +12,51 @@ from numba_dpex.dpctl_iface import DpctlCAPIFnBuilder
 from numba_dpex.dpctl_iface._helpers import numba_type_to_dpctl_typenum
 
 
-class KernelLauncher:
+class KernelLaunchIRBuilder:
     """
-    KernelLauncher(lowerer, cres, num_inputs)
-    Defines a set of functions to launch a SYCL kernel on a specified SyclQueue.
+    KernelLaunchIRBuilder(lowerer, cres)
+    Helper class to build the LLVM IR for the submission of a kernel.
+
+    The class generates LLVM IR inside the current LLVM module that is needed
+    for submitting kernels. The LLVM Values that
     """
 
+    def __init__(self, lowerer, kernel):
+        """Create a KernelLauncher for the specified kernel.
+
+        Args:
+            lowerer: The Numba Lowerer that will be used to generate the code.
+            kernel: The SYCL kernel for which we are generating the code.
+            num_inputs: The number of arguments to the kernels.
+        """
+        self.lowerer = lowerer
+        self.context = self.lowerer.context
+        self.builder = self.lowerer.builder
+        self.kernel = kernel
+        self.kernel_addr = self.kernel.addressof_ref()
+
+        self.submit_range_fn = DpctlCAPIFnBuilder.get_dpctl_queue_submit_range(
+            builder=self.builder, context=self.context
+        )
+        self.queue_wait_fn = DpctlCAPIFnBuilder.get_dpctl_queue_wait(
+            builder=self.builder, context=self.context
+        )
+        self.event_del_fn = DpctlCAPIFnBuilder.get_dpctl_event_delete(
+            builder=self.builder, context=self.context
+        )
+
     def _build_nullptr(self):
+        """Builds the LLVM IR to represent a null pointer.
+
+        Returns: An LLVM Value storing a null pointer
+        """
         zero = cgutils.alloca_once(self.builder, utils.LLVMTypes.int64_t)
         self.builder.store(self.context.get_constant(types.int64, 0), zero)
         return self.builder.bitcast(
             zero, utils.get_llvm_type(context=self.context, type=types.voidptr)
         )
 
-    def _build_array_attr(
+    def _build_array_attr_arg(
         self,
         array_val,
         array_attr_pos,
@@ -41,19 +72,15 @@ class KernelLauncher:
                 self.context.get_constant(types.int32, array_attr_pos),
             ],
         )
-        array_attr_val = self.builder.bitcast(
-            array_attr,
-            utils.get_llvm_type(context=self.context, type=types.voidptr),
-        )
         self.build_arg(
-            val=array_attr_val,
+            val=array_attr,
             ty=array_attr_ty,
             arg_list=arg_list,
             args_ty_list=args_ty_list,
             arg_num=arg_num,
         )
 
-    def _build_flattened_args(
+    def _build_flattened_array_args(
         self, array_val, array_attr_pos, ndims, arg_list, args_ty_list, arg_num
     ):
         array_attr = self.builder.gep(
@@ -65,16 +92,10 @@ class KernelLauncher:
         )
 
         for ndim in range(ndims):
-            value = self.builder.gep(
-                array_attr,
-                [
-                    self.context.get_constant(types.int32, 0),
-                    self.context.get_constant(types.int32, ndim),
-                ],
-            )
-            self.build_arg(
-                val=value,
-                ty=types.int64,
+            self._build_array_attr_arg(
+                array_val=array_attr,
+                array_attr_pos=ndim,
+                array_attr_ty=types.int64,
                 arg_list=arg_list,
                 args_ty_list=args_ty_list,
                 arg_num=arg_num + ndim,
@@ -98,6 +119,10 @@ class KernelLauncher:
             args_ty_list,
             [self.context.get_constant(types.int32, arg_num)],
         )
+        val = self.builder.bitcast(
+            val,
+            utils.get_llvm_type(context=self.context, type=types.voidptr),
+        )
         self.builder.store(val, kernel_arg_dst)
         self.builder.store(
             numba_type_to_dpctl_typenum(self.context, ty), kernel_arg_ty_dst
@@ -112,9 +137,6 @@ class KernelLauncher:
         The steps performed here are the same as in
         numba_dpex.core.kernel_interface.arg_pack_unpacker._unpack_array_helper
         """
-
-        print("Array_val:", array_val)
-
         # Argument 1: Null pointer for the NRT_MemInfo attribute of the array
         nullptr = self._build_nullptr()
         self.build_arg(
@@ -136,7 +158,7 @@ class KernelLauncher:
         )
         arg_num += 1
         # Argument 3: Array size
-        self._build_array_attr(
+        self._build_array_attr_arg(
             array_val=array_val,
             array_attr_pos=2,
             array_attr_ty=types.int64,
@@ -146,7 +168,7 @@ class KernelLauncher:
         )
         arg_num += 1
         # Argument 4: itemsize
-        self._build_array_attr(
+        self._build_array_attr_arg(
             array_val=array_val,
             array_attr_pos=3,
             array_attr_ty=types.int64,
@@ -156,7 +178,7 @@ class KernelLauncher:
         )
         arg_num += 1
         # Argument 5: data pointer
-        self._build_array_attr(
+        self._build_array_attr_arg(
             array_val=array_val,
             array_attr_pos=4,
             array_attr_ty=types.voidptr,
@@ -166,7 +188,7 @@ class KernelLauncher:
         )
         arg_num += 1
         # Arguments for flattened shape
-        self._build_flattened_args(
+        self._build_flattened_array_args(
             array_val=array_val,
             array_attr_pos=5,
             ndims=array_rank,
@@ -176,7 +198,7 @@ class KernelLauncher:
         )
         arg_num += array_rank
         # Arguments for flattened stride
-        self._build_flattened_args(
+        self._build_flattened_array_args(
             array_val=array_val,
             array_attr_pos=6,
             ndims=array_rank,
@@ -186,43 +208,11 @@ class KernelLauncher:
         )
         arg_num += array_rank
 
-    def __init__(self, lowerer, kernel, num_inputs):
-        """Create a KernelLauncher for the specified kernel.
-
-        Args:
-            lowerer: The Numba Lowerer that will be used to generate the code.
-            kernel: The SYCL kernel for which we are generating the code.
-            num_inputs: The number of arguments to the kernels.
-        """
-        self.lowerer = lowerer
-        self.context = self.lowerer.context
-        self.builder = self.lowerer.builder
-        self.kernel = kernel
-        self.kernel_addr = self.kernel.addressof_ref()
-        self.total_kernel_args = 0
-        self.cur_arg = 0
-        self.num_inputs = num_inputs
-        # list of buffer that needs to comeback to host
-        self.write_buffs = []
-        # list of buffer that does not need to comeback to host
-        self.read_only_buffs = []
-
-        self.submit_range_fn = DpctlCAPIFnBuilder.get_dpctl_queue_submit_range(
-            builder=self.builder, context=self.context
-        )
-        self.queue_wait_fn = DpctlCAPIFnBuilder.get_dpctl_queue_wait(
-            builder=self.builder, context=self.context
-        )
-        self.event_del_fn = DpctlCAPIFnBuilder.get_dpctl_event_delete(
-            builder=self.builder, context=self.context
-        )
-
     def get_queue(self, exec_queue):
         """Allocates memory on the stack to store a DPCTLSyclQueueRef.
 
-        Return: A LLVM Value storing the pointer to the SYCL queue created using
-        the filter string for the Python exec_queue (dpctl.SyclQueue)
-
+        Returns: A LLVM Value storing the pointer to the SYCL queue created
+        using the filter string for the Python exec_queue (dpctl.SyclQueue).
         """
 
         # Allocate a stack var to store the queue created from the filter string
@@ -262,26 +252,38 @@ class KernelLauncher:
         """Allocates an array to store the LLVM Value for every kernel argument.
 
         Args:
-            num_kernel_args : The number of kernel arguments for the kernel.
+            num_kernel_args (int): The number of kernel arguments that
+            determines the size of args array to allocate.
 
+        Returns: An LLVM IR value pointing to an array to store the kernel
+        arguments.
         """
-
-        self.total_kernel_args = num_kernel_args
-
-        # we need a kernel arg array to enqueue
         args_list = cgutils.alloca_once(
             self.builder,
             utils.get_llvm_type(context=self.context, type=types.voidptr),
             size=self.context.get_constant(types.uintp, num_kernel_args),
         )
 
+        return args_list
+
+    def allocate_kernel_arg_ty_array(self, num_kernel_args):
+        """Allocates an array to store the LLVM Value for the typenum for
+        every kernel argument.
+
+        Args:
+            num_kernel_args (int): The number of kernel arguments that
+            determines the size of args array to allocate.
+
+        Returns: An LLVM IR value pointing to an array to store the kernel
+        arguments typenums as defined in dpctl.
+        """
         args_ty_list = cgutils.alloca_once(
             self.builder,
             utils.LLVMTypes.int32_t,
             size=self.context.get_constant(types.uintp, num_kernel_args),
         )
 
-        return args_list, args_ty_list
+        return args_ty_list
 
     def _create_sycl_range(self, idx_range):
         """_summary_
@@ -318,7 +320,9 @@ class KernelLauncher:
 
         return self.builder.bitcast(global_range, intp_ptr_t)
 
-    def submit_sync_ranged_kernel(self, idx_range, sycl_queue_val):
+    def submit_sync_ranged_kernel(
+        self, idx_range, sycl_queue_val, total_kernel_args
+    ):
         """
         submit_sync_ranged_kernel(dim_bounds, sycl_queue_val)
         Submits the kernel to the specified queue, waits and then copies
@@ -339,7 +343,7 @@ class KernelLauncher:
             self.builder.load(sycl_queue_val),
             self.kernel_arg_array,
             self.kernel_arg_ty_array,
-            self.context.get_constant(types.uintp, self.total_kernel_args),
+            self.context.get_constant(types.uintp, total_kernel_args),
             gr,
             self.context.get_constant(types.uintp, len(idx_range)),
             self.builder.bitcast(

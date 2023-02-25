@@ -79,10 +79,7 @@ def _compile_kernel_parfor(sycl_queue, kernel_name, func_ir, args, debug=False):
         compile_flags=None,
     )
 
-    # Compile a SYCL Kernel object rom the SPIRVKernel
-
     dpctl_create_program_from_spirv_flags = []
-
     if debug or config.OPT == 0:
         # if debug is ON we need to pass additional flags to igc.
         dpctl_create_program_from_spirv_flags = ["-g", "-cl-opt-disable"]
@@ -624,7 +621,7 @@ def create_kernel_for_parfor(
         print("parfor loop body")
         _print_body(loop_body)
 
-    # ----------- Remove as CPU LICM does nto work for kernels ---------------##
+    # ----------- Remove as CPU LICM does not work for kernels ---------------##
 
     # wrapped_blocks = _wrap_loop_body(loop_body)
     # # hoisted, not_hoisted = hoist(parfor_params, loop_body,

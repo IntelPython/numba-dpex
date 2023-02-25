@@ -12,11 +12,11 @@ from numba.parfors.parfor_lowering import (
 )
 
 from numba_dpex import config
-from numba_dpex.dpctl_iface.kernel_launcher import KernelLauncher
+from numba_dpex.dpctl_iface.kernel_launcher import KernelLaunchIRBuilder
 
 from ..exceptions import UnsupportedParforError
 from ..types.dpnp_ndarray_type import DpnpNdArray
-from ..utils.kernel_builder import GufuncKernel, create_kernel_for_parfor
+from ..utils.kernel_builder import create_kernel_for_parfor
 from .parfor import Parfor, find_potential_aliases_parfor, get_parfor_outputs
 
 # A global list of kernels to keep the objects alive indefinitely.
@@ -30,6 +30,13 @@ def _getvar_or_none(lowerer, x):
         return lowerer.getvar(x)
     except:
         return None
+
+
+def _load_range(lowerer, value):
+    if isinstance(value, ir.Var):
+        return lowerer.loadvar(value.name)
+    else:
+        return lowerer.context.get_constant(types.uintp, value)
 
 
 def _loadvar_or_none(lowerer, x):
@@ -117,25 +124,22 @@ def _create_shape_signature(
 def _submit_gufunc_kernel(
     lowerer,
     gufunc_kernel,
-    gu_signature,  # REMOVE
-    num_inputs,
     loop_ranges,
 ):
     """
     Adds the call to the gufunc function from the main function.
     """
 
-    context = lowerer.context
-    sin, sout = gu_signature
     num_dim = len(loop_ranges)
 
     keep_alive_kernels.append(gufunc_kernel.kernel)
 
-    # Helper class that generates the dpctl function calls
-    kernel_launcher = KernelLauncher(lowerer, gufunc_kernel.kernel, num_inputs)
+    # Helper class that generates the LLVM IR values inside the current LLVM
+    # module that are needed to submit the kernel to a queue.
+    ir_builder = KernelLaunchIRBuilder(lowerer, gufunc_kernel.kernel)
 
-    # Create a local variable storing a pointer to a sycl queue
-    curr_queue = kernel_launcher.get_queue(exec_queue=gufunc_kernel.queue)
+    # Create a local variable storing a pointer to a DPCTLSyclQueueRef pointer.
+    curr_queue = ir_builder.get_queue(exec_queue=gufunc_kernel.queue)
 
     num_flattened_args = 0
 
@@ -150,9 +154,8 @@ def _submit_gufunc_kernel(
             num_flattened_args += 1
 
     # Create LLVM values for the kernel args list and kernel arg types list
-    args_list, args_ty_list = kernel_launcher.allocate_kernel_arg_array(
-        num_flattened_args
-    )
+    args_list = ir_builder.allocate_kernel_arg_array(num_flattened_args)
+    args_ty_list = ir_builder.allocate_kernel_arg_ty_array(num_flattened_args)
 
     # Populate the args_list and the args_ty_list LLVM arrays
     kernel_arg_num = 0
@@ -162,7 +165,7 @@ def _submit_gufunc_kernel(
         if not llvm_val:
             raise AssertionError
         if isinstance(argtype, DpnpNdArray):
-            kernel_launcher.build_array_arg(
+            ir_builder.build_array_arg(
                 array_val=llvm_val,
                 array_rank=argtype.ndim,
                 arg_list=args_list,
@@ -172,7 +175,7 @@ def _submit_gufunc_kernel(
             # FIXME: Get rid of magic constants
             kernel_arg_num += 5 + (2 * argtype.ndim)
         else:
-            kernel_launcher.build_arg(
+            ir_builder.build_arg(
                 llvm_val, argtype, args_list, args_ty_list, kernel_arg_num
             )
             kernel_arg_num += 1
@@ -200,27 +203,20 @@ def _submit_gufunc_kernel(
     #         var, llvm_arg, arg_type, index, modified_arrays, curr_queue
     #     )
 
-    # loadvars for loop_ranges
-    def load_range(v):
-        if isinstance(v, ir.Var):
-            return lowerer.loadvar(v.name)
-        else:
-            return context.get_constant(types.uintp, v)
-
     num_dim = len(loop_ranges)
-    breakpoint()
+
     for i in range(num_dim):
         start, stop, step = loop_ranges[i]
-        start = load_range(start)
-        stop = load_range(stop)
+        start = _load_range(lowerer, start)
+        stop = _load_range(lowerer, stop)
         assert step == 1  # We do not support loop steps other than 1
-        step = load_range(step)
+        step = _load_range(lowerer, step)
         loop_ranges[i] = (start, stop, step)
 
-    kernel_launcher.submit_sync_ranged_kernel(loop_ranges, curr_queue)
+    ir_builder.submit_sync_ranged_kernel(loop_ranges, curr_queue)
 
     # At this point we can free the DPCTLSyclQueueRef (curr_queue)
-    kernel_launcher.free_queue(sycl_queue_val=curr_queue)
+    ir_builder.free_queue(sycl_queue_val=curr_queue)
 
 
 def _lower_parfor_gufunc(lowerer, parfor):
@@ -308,21 +304,19 @@ def _lower_parfor_gufunc(lowerer, parfor):
         # FIXME: Make the exception more informative
         raise UnsupportedParforError
 
-    num_inputs = len(gufunc_kernel.kernel_args) - len(parfor_output_arrays)
-    gu_signature = _create_shape_signature(
-        parfor.get_shape_classes,
-        num_inputs,
-        gufunc_kernel.kernel_args,
-        gufunc_kernel.signature,
-        parfor.races,
-        typemap,
-    )
+    # num_inputs = len(gufunc_kernel.kernel_args) - len(parfor_output_arrays)
+    # gu_signature = _create_shape_signature(
+    #     parfor.get_shape_classes,
+    #     num_inputs,
+    #     gufunc_kernel.kernel_args,
+    #     gufunc_kernel.signature,
+    #     parfor.races,
+    #     typemap,
+    # )
 
     _submit_gufunc_kernel(
         lowerer,
         gufunc_kernel,
-        gu_signature,
-        num_inputs,
         loop_ranges,
     )
 
