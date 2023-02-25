@@ -321,7 +321,12 @@ class KernelLaunchIRBuilder:
         return self.builder.bitcast(global_range, intp_ptr_t)
 
     def submit_sync_ranged_kernel(
-        self, idx_range, sycl_queue_val, total_kernel_args
+        self,
+        idx_range,
+        sycl_queue_val,
+        total_kernel_args,
+        arg_list,
+        arg_ty_list,
     ):
         """
         submit_sync_ranged_kernel(dim_bounds, sycl_queue_val)
@@ -341,8 +346,8 @@ class KernelLaunchIRBuilder:
                 utils.get_llvm_type(context=self.context, type=types.voidptr),
             ),
             self.builder.load(sycl_queue_val),
-            self.kernel_arg_array,
-            self.kernel_arg_ty_array,
+            arg_list,
+            arg_ty_list,
             self.context.get_constant(types.uintp, total_kernel_args),
             gr,
             self.context.get_constant(types.uintp, len(idx_range)),
