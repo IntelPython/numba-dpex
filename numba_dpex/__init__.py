@@ -23,6 +23,7 @@ from numba_dpex.core.kernel_interface.indexers import NdRange, Range
 
 # Re-export all type names
 from numba_dpex.core.types import *
+from numba_dpex.dpnp_iface import dpnpimpl
 from numba_dpex.retarget import offload_to_sycl_device
 
 from . import config

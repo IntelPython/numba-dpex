@@ -10,7 +10,7 @@ from numba.core.typing import signature
 import numba_dpex
 import numba_dpex.dpctl_iface as dpctl_functions
 import numba_dpex.dpnp_iface as dpnp_lowering
-import numba_dpex.dpnp_iface.dpnpimpl as dpnp_ext
+import numba_dpex.dpnp_iface.dpnp_stubs_impl as dpnp_ext
 
 from . import stubs
 

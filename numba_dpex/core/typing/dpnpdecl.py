@@ -8,18 +8,12 @@ _math_operations = [
     "add",
     "subtract",
     "multiply",
-    "logaddexp",
-    "logaddexp2",
-    "true_divide",
     "floor_divide",
     "negative",
-    "positive",
     "power",
-    "float_power",
     "remainder",
     "fmod",
     "absolute",
-    "rint",
     "sign",
     "conjugate",
     "exp",
@@ -35,11 +29,8 @@ _math_operations = [
     "reciprocal",
     "divide",
     "mod",
-    "divmod",
     "abs",
     "fabs",
-    "gcd",
-    "lcm",
 ]
 
 _trigonometric_functions = [
@@ -94,19 +85,15 @@ _floating_functions = [
     "isfinite",
     "isinf",
     "isnan",
-    "signbit",
     "copysign",
-    "nextafter",
     "modf",
-    "ldexp",
     "frexp",
     "floor",
     "ceil",
     "trunc",
-    "spacing",
 ]
 
-_logic_functions = ["isnat"]
+_logic_functions = []
 
 
 # This is a set of the ufuncs that are not yet supported by Lowering. In order
@@ -118,6 +105,20 @@ _unsupported = set(
     [
         "frexp",
         "modf",
+        "logaddexp",
+        "logaddexp2",
+        "true_divide",
+        "positive",
+        "float_power",
+        "rint",
+        "divmod",
+        "gcd",
+        "lcm",
+        "signbit",
+        "nextafter",
+        "ldexp",
+        "spacing",
+        "isnat",
     ]
 )
 
