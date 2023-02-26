@@ -40,6 +40,20 @@ class DpexTargetContext(CPUContext):
         # rtsys.initialize(self)
         self.refresh()
 
+        # #adding dpnp as target in ufunc_db
+        # list_of_ufuncs = ["add", "subtract"]
+        # from numba.np.ufunc_db import _lazy_init_db
+        # _lazy_init_db()
+        # from numba.np.ufunc_db import _ufunc_db as ufunc_db
+        # import dpnp
+        # import numpy as np
+        # for ufuncop in list_of_ufuncs:
+        #     op = getattr(dpnp, ufuncop)
+        #     npop = getattr(np, ufuncop)
+        #     op.nin = npop.nin
+        #     op.nout = npop.nout
+        #     ufunc_db.update({op, ufunc_db[npop]})
+
     @utils.cached_property
     def dpexrt(self):
         from numba_dpex.core.runtime.context import DpexRTContext

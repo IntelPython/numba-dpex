@@ -25,6 +25,7 @@ from numba.core.errors import (
 )
 from numba.core.ir_utils import remove_dels
 from numba.core.typed_passes import NativeLowering
+from numba.np.ufunc.array_exprs import RewriteArrayExprs
 from numba.parfors.parfor import swap_functions_map
 
 from numba_dpex import config
@@ -162,6 +163,7 @@ class PreParforPass(FunctionPass):
         assert state.func_ir
 
         functions_map = swap_functions_map.copy()
+        # FIXME: remove once reduction is implemented
         functions_map.pop(("dot", "numpy"), None)
         functions_map.pop(("sum", "numpy"), None)
         functions_map.pop(("prod", "numpy"), None)

@@ -12,6 +12,11 @@ def vecadd(a, b):
 
 
 @dpex.dpjit
+def vecadd1(a, b):
+    return dpnp.add(a, b)
+
+
+@dpex.dpjit
 def vecadd_prange(a, b):
     c = a + b
     s = 0
@@ -26,7 +31,9 @@ def vecadd_prange(a, b):
 
 a = dpnp.ones(10)
 b = dpnp.ones(10)
-c = vecadd(a, b)
+# c = vecadd(a, b)
+
+c = vecadd1(a, b)
 # s = vecadd_prange(a, b)
 
 # a = sin(a)
