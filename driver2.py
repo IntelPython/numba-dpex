@@ -25,6 +25,9 @@ def fill_ufunc_db_with_dpnp_ufuncs():
         op.types = npop.types
         op.is_dpnp_ufunc = True
         ufunc_db.update({op: ufunc_db[npop]})
+        for key in list(ufunc_db[op].keys()):
+            if "FF->" in key or "DD->" in key or "F->" in key or "D->" in key:
+                ufunc_db[op].pop(key)
 
     # from numba.np import npyfuncs
     # from numba.cpython import cmathimpl, mathimpl, numbers
