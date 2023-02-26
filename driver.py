@@ -31,9 +31,11 @@ def vecadd_prange(a, b):
 
 a = dpnp.ones(10)
 b = dpnp.ones(10)
-# c = vecadd(a, b)
 
-c = vecadd1(a, b)
+c = vecadd(a, b)
+
+print(c)
+
 # s = vecadd_prange(a, b)
 
 # a = sin(a)

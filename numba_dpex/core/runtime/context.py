@@ -4,9 +4,7 @@
 
 import functools
 
-import llvmlite.llvmpy.core as lc
-from llvmlite import ir
-from llvmlite.llvmpy.core import ATTR_NO_CAPTURE, Type
+from llvmlite import ir as llvmir
 from numba.core import cgutils, types
 
 
@@ -61,8 +59,8 @@ class DpexRTContext(object):
         Returns: A pointer to the MemInfo is returned.
         """
         mod = builder.module
-        u64 = ir.IntType(64)
-        fnty = ir.FunctionType(
+        u64 = llvmir.IntType(64)
+        fnty = llvmir.FunctionType(
             cgutils.voidptr_t, [cgutils.intp_t, u64, cgutils.voidptr_t]
         )
         fn = cgutils.get_or_insert_function(mod, fnty, "DPEXRT_MemInfo_alloc")
@@ -94,9 +92,9 @@ class DpexRTContext(object):
         Returns: A pointer to the `MemInfo` is returned.
         """
         mod = builder.module
-        u64 = ir.IntType(64)
-        b = ir.IntType(1)
-        fnty = ir.FunctionType(
+        u64 = llvmir.IntType(64)
+        b = llvmir.IntType(1)
+        fnty = llvmir.FunctionType(
             cgutils.voidptr_t,
             [cgutils.voidptr_t, u64, b, cgutils.int8_t, cgutils.voidptr_t],
         )
@@ -119,10 +117,12 @@ class DpexRTContext(object):
         Returns:
             _type_: _description_
         """
-        fnty = Type.function(Type.int(), [pyapi.pyobj, pyapi.voidptr])
+        fnty = llvmir.FunctionType(
+            llvmir.IntType(32), [pyapi.pyobj, pyapi.voidptr]
+        )
         fn = pyapi._get_function(fnty, "DPEXRT_sycl_usm_ndarray_from_python")
-        fn.args[0].add_attribute(lc.ATTR_NO_CAPTURE)
-        fn.args[1].add_attribute(lc.ATTR_NO_CAPTURE)
+        fn.args[0].add_attribute("nocapture")
+        fn.args[1].add_attribute("nocapture")
 
         self.error = pyapi.builder.call(fn, (obj, ptr))
 
@@ -143,15 +143,15 @@ class DpexRTContext(object):
         args = [
             pyapi.voidptr,
             pyapi.pyobj,
-            ir.IntType(32),
-            ir.IntType(32),
+            llvmir.IntType(32),
+            llvmir.IntType(32),
             pyapi.pyobj,
         ]
-        fnty = Type.function(pyapi.pyobj, args)
+        fnty = llvmir.FunctionType(pyapi.pyobj, args)
         fn = pyapi._get_function(
             fnty, "DPEXRT_sycl_usm_ndarray_to_python_acqref"
         )
-        fn.args[0].add_attribute(ATTR_NO_CAPTURE)
+        fn.args[0].add_attribute("nocapture")
 
         aryptr = cgutils.alloca_once_value(pyapi.builder, ary)
         ptr = pyapi.builder.bitcast(aryptr, pyapi.voidptr)

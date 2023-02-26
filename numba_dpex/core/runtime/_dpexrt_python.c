@@ -123,9 +123,11 @@ static void *DPEXRTQueue_CreateFromFilterString(const char *device)
     DPCTLSyclDeviceRef dref = NULL;
     DPCTLSyclQueueRef qref = NULL;
 
-    NRT_Debug(nrt_debug_print(
-        "DPEXRT-DEBUG: Inside DPEXRT_get_sycl_queue %s, line %d\n", __FILE__,
-        __LINE__));
+    // NRT_Debug(
+    nrt_debug_print("DPEXRT-DEBUG: Inside DPEXRT_get_sycl_queue %s, line %d\n",
+                    __FILE__, __LINE__)
+        //)
+        ;
 
     if (!(dselector = DPCTLFilterSelector_Create(device))) {
         NRT_Debug(nrt_debug_print(
@@ -143,6 +145,10 @@ static void *DPEXRTQueue_CreateFromFilterString(const char *device)
 
     DPCTLDeviceSelector_Delete(dselector);
     DPCTLDevice_Delete(dref);
+
+    nrt_debug_print(
+        "DPEXRT-DEBUG: Created sycl::queue on device %s at %s, line %d\n",
+        device, __FILE__, __LINE__);
 
     return (void *)qref;
 

@@ -2,8 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import llvmlite.ir as lir
-import llvmlite.llvmpy.core as lc
+from llvmlite import ir as llvmir
 from numba.core import cgutils, types
 
 
@@ -12,14 +11,14 @@ class LLVMTypes:
     A helper class to get LLVM Values for integer C types.
     """
 
-    byte_t = lc.Type.int(8)
-    byte_ptr_t = lc.Type.pointer(byte_t)
-    byte_ptr_ptr_t = lc.Type.pointer(byte_ptr_t)
-    int32_t = lc.Type.int(32)
-    int32_ptr_t = lc.Type.pointer(int32_t)
-    int64_t = lc.Type.int(64)
-    int64_ptr_t = lc.Type.pointer(int64_t)
-    void_t = lir.VoidType()
+    byte_t = llvmir.IntType(8)
+    byte_ptr_t = byte_t.as_pointer()
+    byte_ptr_ptr_t = byte_ptr_t.as_pointer()
+    int32_t = llvmir.IntType(32)
+    int32_ptr_t = int32_t.as_pointer()
+    int64_t = llvmir.IntType(64)
+    int64_ptr_t = int64_t.as_pointer()
+    void_t = llvmir.VoidType()
 
 
 def get_llvm_type(context, type):
@@ -46,7 +45,7 @@ def get_llvm_ptr_type(type):
     Returns: An LLVM pointer type object corresponding to the input LLVM type.
 
     """
-    return lc.Type.pointer(type)
+    return type.as_pointer()
 
 
 def create_null_ptr(builder, context):

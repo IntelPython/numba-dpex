@@ -22,8 +22,6 @@ from .parfor import Parfor, find_potential_aliases_parfor, get_parfor_outputs
 # A global list of kernels to keep the objects alive indefinitely.
 keep_alive_kernels = []
 
-config.DEBUG_ARRAY_OPT = True
-
 
 def _getvar_or_none(lowerer, x):
     try:
@@ -121,7 +119,7 @@ def _create_shape_signature(
     return (gu_sin, gu_sout)
 
 
-def _submit_gufunc_kernel(
+def _submit_parfor_kernel(
     lowerer,
     gufunc_kernel,
     loop_ranges,
@@ -129,9 +127,6 @@ def _submit_gufunc_kernel(
     """
     Adds the call to the gufunc function from the main function.
     """
-
-    num_dim = len(loop_ranges)
-
     keep_alive_kernels.append(gufunc_kernel.kernel)
 
     # Helper class that generates the LLVM IR values inside the current LLVM
@@ -180,53 +175,40 @@ def _submit_gufunc_kernel(
             )
             kernel_arg_num += 1
 
-    # ninouts = len(expr_args)
-
-    # all_llvm_args = [_getvar_or_none(lowerer, x) for x in expr_args[:ninouts]]
-    # all_val_types = [
-    #     _val_type_or_none(context, lowerer, x) for x in expr_args[:ninouts]
-    # ]
-    # all_args = [_loadvar_or_none(lowerer, x) for x in expr_args[:ninouts]]
-
-    # # Call clSetKernelArg for each arg and create arg array for
-    # # the enqueue function. Put each part of each argument into
-    # # kernel_arg_array.
-    # for var, llvm_arg, arg_type, gu_sig, val_type, index in zip(
-    #     expr_args,
-    #     all_llvm_args,
-    #     expr_arg_types,
-    #     sin + sout,
-    #     all_val_types,
-    #     range(len(expr_args)),
-    # ):
-    #     kernel_launcher.process_kernel_arg(
-    #         var, llvm_arg, arg_type, index, modified_arrays, curr_queue
-    #     )
-
-    num_dim = len(loop_ranges)
-
-    for i in range(num_dim):
+    # Create a global range over which to submit the kernel based on the
+    # loop_ranges of the parfor
+    global_range = []
+    # SYCL ranges can have at max 3 dimension. If the parfor is of a higher
+    # dimension then the indexing for the higher dimensions is done inside
+    # the kernel.
+    global_range_rank = len(loop_ranges) if len(loop_ranges) < 3 else 3
+    for i in range(global_range_rank):
         start, stop, step = loop_ranges[i]
-        start = _load_range(lowerer, start)
         stop = _load_range(lowerer, stop)
-        assert step == 1  # We do not support loop steps other than 1
-        step = _load_range(lowerer, step)
-        loop_ranges[i] = (start, stop, step)
+        if step != 1:
+            raise UnsupportedParforError(
+                "non-unit strides are not yet supported."
+            )
+        global_range.append(stop)
 
-    ir_builder.submit_sync_ranged_kernel(loop_ranges, curr_queue)
+    # Submit a synchronous kernel
+    ir_builder.submit_sync_ranged_kernel(
+        global_range, curr_queue, kernel_arg_num, args_list, args_ty_list
+    )
 
     # At this point we can free the DPCTLSyclQueueRef (curr_queue)
     ir_builder.free_queue(sycl_queue_val=curr_queue)
 
 
-def _lower_parfor_gufunc(lowerer, parfor):
+def _lower_parfor_as_kernel(lowerer, parfor):
     """Lowers a parfor node created by the dpjit compiler to a kernel.
 
     The general approach is as follows:
 
         - The code from the parfor's init block is lowered normally
-        in the context of the current function.
-        - The body of the parfor is transformed into a gufunc function.
+          in the context of the current function.
+        - The body of the parfor is transformed into a kernel function.
+        - Dpctl runtime calls to submit the kernel are added.
 
     """
     # We copy the typemap here because for race condition variable we'll
@@ -248,8 +230,6 @@ def _lower_parfor_gufunc(lowerer, parfor):
     # Lower the init block of the parfor.
     for instr in parfor.init_block.body:
         lowerer.lower_inst(instr)
-        print(instr)
-        print(varmap)
 
     for racevar in parfor.races:
         if racevar not in varmap:
@@ -304,22 +284,21 @@ def _lower_parfor_gufunc(lowerer, parfor):
         # FIXME: Make the exception more informative
         raise UnsupportedParforError
 
-    # num_inputs = len(gufunc_kernel.kernel_args) - len(parfor_output_arrays)
-    # gu_signature = _create_shape_signature(
-    #     parfor.get_shape_classes,
-    #     num_inputs,
-    #     gufunc_kernel.kernel_args,
-    #     gufunc_kernel.signature,
-    #     parfor.races,
-    #     typemap,
-    # )
+    num_inputs = len(gufunc_kernel.kernel_args) - len(parfor_output_arrays)
+    gu_signature = _create_shape_signature(
+        parfor.get_shape_classes,
+        num_inputs,
+        gufunc_kernel.kernel_args,
+        gufunc_kernel.signature,
+        parfor.races,
+        typemap,
+    )
 
-    _submit_gufunc_kernel(
+    _submit_parfor_kernel(
         lowerer,
         gufunc_kernel,
         loop_ranges,
     )
-
     # Restore the original typemap of the function that was replaced
     # temporarily at the beginning of this function.
     lowerer.fndesc.typemap = orig_typemap
@@ -382,7 +361,7 @@ class _ParforLower(Lower):
 
 def lower_parfor_dpex(lowerer, parfor):
     # FIXME: Temporary for testing
-    parfor.lowerer = _lower_parfor_gufunc
+    parfor.lowerer = _lower_parfor_as_kernel
 
     if parfor.lowerer is None:
         _lower_parfor_parallel_std(lowerer, parfor)
