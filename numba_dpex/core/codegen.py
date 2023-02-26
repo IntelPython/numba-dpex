@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from llvmlite import binding as ll
-from llvmlite.llvmpy import core as lc
+from llvmlite import ir as llvmir
 from numba.core import utils
 from numba.core.codegen import CPUCodegen, CPUCodeLibrary
 
@@ -71,7 +71,7 @@ class JITSPIRVCodegen(CPUCodegen):
         )
 
     def _create_empty_module(self, name):
-        ir_module = lc.Module(name)
+        ir_module = llvmir.Module(name)
         ir_module.triple = SPIR_TRIPLE[utils.MACHINE_BITS]
         if self._data_layout:
             ir_module.data_layout = self._data_layout
