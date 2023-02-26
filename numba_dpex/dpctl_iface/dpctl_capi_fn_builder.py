@@ -7,7 +7,7 @@ This module provides a set of wrapper functions to insert dpctl C API function
 declarations into an LLVM module.
 """
 
-import llvmlite.llvmpy.core as lc
+from llvmlite import ir as llvmir
 from numba.core import cgutils, types
 
 import numba_dpex.utils as utils
@@ -36,7 +36,7 @@ class DpctlCAPIFnBuilder:
         Return: A Python object wrapping an LLVM Function.
 
         """
-        func_ty = lc.Type.function(return_ty, arg_list)
+        func_ty = llvmir.FunctionType(return_ty, arg_list)
         fn = cgutils.get_or_insert_function(builder.module, func_ty, func_name)
         return fn
 

@@ -7,7 +7,6 @@ import re
 import numpy as np
 from llvmlite import binding as ll
 from llvmlite import ir as llvmir
-from llvmlite.llvmpy import core as lc
 from numba import typeof
 from numba.core import cgutils, types, typing, utils
 from numba.core.base import BaseContext
@@ -153,40 +152,40 @@ class DpexKernelTargetContext(BaseContext):
             else:
                 codes.append(address_space.PRIVATE)
 
-        consts = [lc.Constant.int(lc.Type.int(), x) for x in codes]
-        name = lc.MetaDataString.get(mod, "kernel_arg_addr_space")
-        return lc.MetaData.get(mod, [name] + consts)
+        consts = [llvmir.Constant(llvmir.IntType(32), x) for x in codes]
+        name = llvmir.MetaDataString(mod, "kernel_arg_addr_space")
+        return mod.add_metadata([name] + consts)
 
     def _gen_arg_access_qual_md(self, fn):
         """Generate kernel_arg_access_qual metadata."""
         mod = fn.module
-        consts = [lc.MetaDataString.get(mod, "none")] * len(fn.args)
-        name = lc.MetaDataString.get(mod, "kernel_arg_access_qual")
-        return lc.MetaData.get(mod, [name] + consts)
+        consts = [llvmir.MetaDataString(mod, "none")] * len(fn.args)
+        name = llvmir.MetaDataString(mod, "kernel_arg_access_qual")
+        return mod.add_metadata([name] + consts)
 
     def _gen_arg_type(self, fn):
         """Generate kernel_arg_type metadata."""
         mod = fn.module
         fnty = fn.type.pointee
-        consts = [lc.MetaDataString.get(mod, str(a)) for a in fnty.args]
-        name = lc.MetaDataString.get(mod, "kernel_arg_type")
-        return lc.MetaData.get(mod, [name] + consts)
+        consts = [llvmir.MetaDataString(mod, str(a)) for a in fnty.args]
+        name = llvmir.MetaDataString(mod, "kernel_arg_type")
+        return mod.add_metadata([name] + consts)
 
     def _gen_arg_type_qual(self, fn):
         """Generate kernel_arg_type_qual metadata."""
         mod = fn.module
         fnty = fn.type.pointee
-        consts = [lc.MetaDataString.get(mod, "") for _ in fnty.args]
-        name = lc.MetaDataString.get(mod, "kernel_arg_type_qual")
-        return lc.MetaData.get(mod, [name] + consts)
+        consts = [llvmir.MetaDataString(mod, "") for _ in fnty.args]
+        name = llvmir.MetaDataString(mod, "kernel_arg_type_qual")
+        return mod.add_metadata([name] + consts)
 
     def _gen_arg_base_type(self, fn):
         """Generate kernel_arg_base_type metadata."""
         mod = fn.module
         fnty = fn.type.pointee
-        consts = [lc.MetaDataString.get(mod, str(a)) for a in fnty.args]
-        name = lc.MetaDataString.get(mod, "kernel_arg_base_type")
-        return lc.MetaData.get(mod, [name] + consts)
+        consts = [llvmir.MetaDataString(mod, str(a)) for a in fnty.args]
+        name = llvmir.MetaDataString(mod, "kernel_arg_base_type")
+        return mod.add_metadata([name] + consts)
 
     def _finalize_wrapper_module(self, fn):
         """Add metadata and calling convention to the wrapper function.
@@ -207,10 +206,11 @@ class DpexKernelTargetContext(BaseContext):
         fn.calling_convention = CC_SPIR_KERNEL
 
         # Mark kernels
-        ocl_kernels = mod.get_or_insert_named_metadata("opencl.kernels")
+        ocl_kernels = cgutils.get_or_insert_named_metadata(
+            mod, "opencl.kernels"
+        )
         ocl_kernels.add(
-            lc.MetaData.get(
-                mod,
+            mod.add_metadata(
                 [
                     fn,
                     self._gen_arg_addrspace_md(fn),
@@ -223,7 +223,6 @@ class DpexKernelTargetContext(BaseContext):
         )
 
         # Other metadata
-        empty_md = lc.MetaData.get(mod, ())
         others = [
             "opencl.used.extensions",
             "opencl.used.optional.core.features",
@@ -231,25 +230,27 @@ class DpexKernelTargetContext(BaseContext):
         ]
 
         for name in others:
-            nmd = mod.get_or_insert_named_metadata(name)
+            nmd = cgutils.get_or_insert_named_metadata(mod, name)
             if not nmd.operands:
-                nmd.add(empty_md)
+                mod.add_metadata([])
 
     def _generate_kernel_wrapper(self, func, argtypes):
         module = func.module
         arginfo = self.get_arg_packer(argtypes)
-        wrapperfnty = lc.Type.function(lc.Type.void(), arginfo.argument_types)
+        wrapperfnty = llvmir.FunctionType(
+            llvmir.VoidType(), arginfo.argument_types
+        )
         wrapper_module = self.create_module("dpex.kernel.wrapper")
         wrappername = "dpexPy_{name}".format(name=func.name)
         argtys = list(arginfo.argument_types)
-        fnty = lc.Type.function(
-            lc.Type.int(),
+        fnty = llvmir.FunctionType(
+            llvmir.IntType(32),
             [self.call_conv.get_return_type(types.pyobject)] + argtys,
         )
-        func = wrapper_module.add_function(fnty, name=func.name)
+        func = llvmir.Function(wrapper_module, fnty, name=func.name)
         func.calling_convention = CC_SPIR_FUNC
-        wrapper = wrapper_module.add_function(wrapperfnty, name=wrappername)
-        builder = lc.Builder(wrapper.append_basic_block(""))
+        wrapper = llvmir.Function(wrapper_module, wrapperfnty, name=wrappername)
+        builder = llvmir.IRBuilder(wrapper.append_basic_block(""))
 
         callargs = arginfo.from_arguments(builder, wrapper.args)
 
@@ -399,7 +400,7 @@ class DpexKernelTargetContext(BaseContext):
         function.
 
         Args:
-            module (llvmlite.llvmpy.core.Module) : The LLVM module into which
+            module (llvmlite.ir.Module) : The LLVM module into which
                 the kernel function will be inserted.
             fndesc (numba.core.funcdesc.PythonFunctionDescriptor) : The
                 signature of the function.
@@ -410,7 +411,9 @@ class DpexKernelTargetContext(BaseContext):
 
         """
         fnty = self.call_conv.get_function_type(fndesc.restype, fndesc.argtypes)
-        fn = module.get_or_insert_function(fnty, name=fndesc.mangled_name)
+        fn = cgutils.get_or_insert_function(
+            module, fnty, name=fndesc.mangled_name
+        )
         if not self.enable_debuginfo:
             fn.attributes.add("alwaysinline")
         ret = super(DpexKernelTargetContext, self).declare_function(
