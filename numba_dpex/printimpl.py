@@ -4,8 +4,8 @@
 
 from functools import singledispatch
 
-import llvmlite.llvmpy.core as lc
-from numba.core import cgutils, types, typing
+import llvmlite.ir as llvmir
+from numba.core import cgutils, types
 from numba.core.imputils import Registry
 
 from numba_dpex.utils import address_space
@@ -15,8 +15,12 @@ lower = registry.lower
 
 
 def declare_print(lmod):
-    voidptrty = lc.Type.pointer(lc.Type.int(8), addrspace=address_space.GENERIC)
-    printfty = lc.Type.function(lc.Type.int(), [voidptrty], var_arg=True)
+    voidptrty = llvmir.PointerType(
+        llvmir.IntType(8), addrspace=address_space.GENERIC
+    )
+    printfty = llvmir.FunctionType(
+        llvmir.IntType(32), [voidptrty], var_arg=True
+    )
     printf = cgutils.get_or_insert_function(lmod, printfty, "printf")
     return printf
 
