@@ -1,0 +1,22 @@
+numba\_dpex.core.types package
+==============================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.core.types.array_type
+   numba_dpex.core.types.dpctl_types
+   numba_dpex.core.types.dpnp_ndarray_type
+   numba_dpex.core.types.numba_types_short_names
+   numba_dpex.core.types.usm_ndarray_type
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex.core.types
+   :members:
+   :undoc-members:
+   :show-inheritance:
