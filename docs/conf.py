@@ -43,7 +43,7 @@ extensions = [
     "sphinxcontrib.googleanalytics",
 ]
 
-googleanalytics_id = 'G-LGGL0NJK6P'
+googleanalytics_id = "G-LGGL0NJK6P"
 googleanalytics_enabled = True
 
 todo_include_todos = True
