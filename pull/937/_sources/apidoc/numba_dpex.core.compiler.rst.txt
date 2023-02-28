@@ -1,7 +1,0 @@
-numba\_dpex.core.compiler module
-================================
-
-.. automodule:: numba_dpex.core.compiler
-   :members:
-   :undoc-members:
-   :show-inheritance:

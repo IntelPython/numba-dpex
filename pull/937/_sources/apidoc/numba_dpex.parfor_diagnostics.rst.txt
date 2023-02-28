@@ -1,7 +1,0 @@
-numba\_dpex.parfor\_diagnostics module
-======================================
-
-.. automodule:: numba_dpex.parfor_diagnostics
-   :members:
-   :undoc-members:
-   :show-inheritance:

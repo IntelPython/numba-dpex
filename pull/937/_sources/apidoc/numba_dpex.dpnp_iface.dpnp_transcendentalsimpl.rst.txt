@@ -1,7 +1,0 @@
-numba\_dpex.dpnp\_iface.dpnp\_transcendentalsimpl module
-========================================================
-
-.. automodule:: numba_dpex.dpnp_iface.dpnp_transcendentalsimpl
-   :members:
-   :undoc-members:
-   :show-inheritance:

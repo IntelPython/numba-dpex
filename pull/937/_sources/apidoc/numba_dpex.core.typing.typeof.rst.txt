@@ -1,7 +1,0 @@
-numba\_dpex.core.typing.typeof module
-=====================================
-
-.. automodule:: numba_dpex.core.typing.typeof
-   :members:
-   :undoc-members:
-   :show-inheritance:
