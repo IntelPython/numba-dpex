@@ -49,7 +49,8 @@ class ParforLegalizeCFDPass(ParforPassStates):
             self.options.fusion,
             self.nested_fusion_info,
         )
-        inputUsmTypeDict = {"device": 3, "shared": 2, "host": 1}
+        inputUsmTypeStrToInt = {"device": 3, "shared": 2, "host": 1}
+        inputUsmTypeIntToStr = {3: "device", 2: "shared", 1: "host"}
         paramsNameSet = set()
 
         topo_order = find_topo_order(self.func_ir.blocks)
@@ -93,7 +94,7 @@ class ParforLegalizeCFDPass(ParforPassStates):
                             rhsDeviceTypes.add(argty.device)
                             try:
                                 rhsUsmTypes.append(
-                                    inputUsmTypeDict[argty.usm_type]
+                                    inputUsmTypeStrToInt[argty.usm_type]
                                 )
                             except KeyError:
                                 raise ValueError(
@@ -111,7 +112,6 @@ class ParforLegalizeCFDPass(ParforPassStates):
                     # Derive the RHS usm_type based on usm allocator
                     # precedence rule: device > shared > host
                     rhs_usm_ty = max(rhsUsmTypes)
-
                     # only update device and usm_type
                     # FIXME: sycl_queue will be updated later
                     if len(rhsDeviceTypes) == 0:
@@ -124,7 +124,9 @@ class ParforLegalizeCFDPass(ParforPassStates):
                             continue
                         # now update typemap of RHS
                         self.typemap[para].device = rhs_device_ty
-                        self.typemap[para].usm_type = rhs_usm_ty
+                        self.typemap[para].usm_type = inputUsmTypeIntToStr[
+                            rhs_usm_ty
+                        ]
 
                     # We have legalized the parfor for CFD, so set the lowerer
                     # to dpex's lowerer.
