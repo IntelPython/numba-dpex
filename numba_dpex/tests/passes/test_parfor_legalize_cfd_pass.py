@@ -56,6 +56,7 @@ def test_parfor_legalize_cfd_pass(shape, dtype, usm_type, device):
         c.sycl_device.filter_string == dpctl.SyclDevice().filter_string
 
 
+@skip_no_opencl_gpu
 def test_parfor_legalize_cfd_pass_raise():
     a = dpnp.zeros(shape=10, device="cpu")
     b = dpnp.ones(shape=10, device="gpu")
