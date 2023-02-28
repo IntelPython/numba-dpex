@@ -363,11 +363,11 @@ def create_kernel_for_parfor(
     # Get all the parfor params.
     parfor_params = parfor_node.params
 
-    for start, stop, _ in loop_ranges:
-        if isinstance(start, ir.Var):
-            parfor_params.add(start.name)
-        if isinstance(stop, ir.Var):
-            parfor_params.add(stop.name)
+    # for start, stop, _ in loop_ranges:
+    #     if isinstance(start, ir.Var):
+    #         parfor_params.add(start.name)
+    #     if isinstance(stop, ir.Var):
+    #         parfor_params.add(stop.name)
 
     # Get all parfor reduction vars, and operators.
     typemap = lowerer.fndesc.typemap
@@ -668,11 +668,19 @@ def create_kernel_for_parfor(
         print("after DUFunc inline".center(80, "-"))
         gufunc_ir.dump()
 
-    # FIXME: Enable check after CFD pass has been added
-    # exec_queue = determine_kernel_launch_queue(
-    #     args=parfor_args, argtypes=gufunc_param_types, kernel_name=gufunc_name
-    # )
-    exec_queue = typemap[parfor_args[0]].queue
+    # The ParforLegalizeCFD pass has already ensured that the LHS and RHS
+    # arrays are on same device. We can take the queue from the first input
+    # array and use that to compile the kernel.
+
+    exec_queue = None
+
+    for arg in parfor_inputs:
+        obj = typemap[arg]
+        if isinstance(obj, DpnpNdArray):
+            exec_queue = obj.queue
+
+    if not exec_queue:
+        raise AssertionError
 
     sycl_kernel = _compile_kernel_parfor(
         exec_queue,
