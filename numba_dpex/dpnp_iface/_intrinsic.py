@@ -6,6 +6,7 @@ from llvmlite import ir
 from llvmlite.ir import Constant
 from numba import types
 from numba.core import cgutils
+from numba.core import config as numba_config
 from numba.core.typing import signature
 from numba.extending import intrinsic
 from numba.np.arrayobj import (
@@ -20,6 +21,8 @@ from numba_dpex.core.runtime import context as dpexrt
 
 from ..decorators import dpjit
 
+numba_config.DISABLE_PERFORMANCE_WARNINGS = 0
+
 
 @dpjit
 # TODO: rename this to _call_allocator and see below
@@ -27,6 +30,9 @@ def _call_usm_allocator(arrtype, size, usm_type, device):
     """Trampoline to call the intrinsic used for allocation"""
 
     return arrtype._usm_allocate(size, usm_type, device)
+
+
+numba_config.DISABLE_PERFORMANCE_WARNINGS = 1
 
 
 def _empty_nd_impl(context, builder, arrtype, shapes):
