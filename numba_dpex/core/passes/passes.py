@@ -25,6 +25,8 @@ from numba.core.errors import (
 )
 from numba.core.ir_utils import remove_dels
 from numba.core.typed_passes import NativeLowering
+from numba.parfors.parfor import ParforPass as _numba_parfor_ParforPass
+from numba.parfors.parfor import PreParforPass as _numba_parfor_PreParforPass
 from numba.parfors.parfor import swap_functions_map
 
 from numba_dpex import config
@@ -170,7 +172,7 @@ class PreParforPass(FunctionPass):
         functions_map.pop(("min", "numpy"), None)
         functions_map.pop(("mean", "numpy"), None)
 
-        preparfor_pass = _parfor_PreParforPass(
+        preparfor_pass = _numba_parfor_PreParforPass(
             state.func_ir,
             state.type_annotation.typemap,
             state.type_annotation.calltypes,
@@ -191,6 +193,42 @@ class PreParforPass(FunctionPass):
         return True
 
 
+@register_pass(mutates_CFG=True, analysis_only=False)
+class ParforPass(FunctionPass):
+    _name = "dpex_parfor_pass"
+
+    def __init__(self):
+        FunctionPass.__init__(self)
+
+    def run_pass(self, state):
+        """
+        Convert data-parallel computations into Parfor nodes
+        """
+        # Ensure we have an IR and type information.
+        assert state.func_ir
+        parfor_pass = _numba_parfor_ParforPass(
+            state.func_ir,
+            state.type_annotation.typemap,
+            state.type_annotation.calltypes,
+            state.return_type,
+            state.typingctx,
+            state.targetctx,
+            state.flags.auto_parallel,
+            state.flags,
+            state.metadata,
+            state.parfor_diagnostics,
+        )
+
+        parfor_pass.run()
+
+        if config.DEBUG or config.DUMP_IR:
+            name = state.func_ir.func_id.func_qualname
+            print(("IR DUMP: %s" % name).center(80, "-"))
+            state.func_ir.dump()
+
+        return True
+
+
 # this is here so it pickles and for no other reason
 def _reload_parfors():
     """Reloader for cached parfors"""
@@ -201,7 +239,7 @@ def _reload_parfors():
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
-class ParforPass(FunctionPass):
+class SplitParforPass(FunctionPass):
     _name = "dpex_parfor_pass"
 
     def __init__(self):
