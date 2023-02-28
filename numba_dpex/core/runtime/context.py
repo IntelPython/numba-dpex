@@ -129,7 +129,7 @@ class DpexRTContext(object):
         return self.error
 
     def usm_ndarray_to_python_acqref(self, pyapi, aryty, ary, dtypeptr):
-        """_summary_
+        """Boxes a DpnpNdArray native object into a Python dpnp.ndarray.
 
         Args:
             pyapi (_type_): _description_
@@ -140,14 +140,14 @@ class DpexRTContext(object):
         Returns:
             _type_: _description_
         """
-        args = [
+        argtys = [
             pyapi.voidptr,
             pyapi.pyobj,
             llvmir.IntType(32),
             llvmir.IntType(32),
             pyapi.pyobj,
         ]
-        fnty = llvmir.FunctionType(pyapi.pyobj, args)
+        fnty = llvmir.FunctionType(pyapi.pyobj, argtys)
         fn = pyapi._get_function(
             fnty, "DPEXRT_sycl_usm_ndarray_to_python_acqref"
         )
@@ -165,3 +165,86 @@ class DpexRTContext(object):
 
         args = [ptr, serial_aryty_pytype, ndim, writable, dtypeptr]
         return pyapi.builder.call(fn, args)
+
+    def get_queue_from_filter_string(self, builder, device):
+        """Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue
+        from a given filter string.
+
+        Args:
+            device (llvmlite.ir.values.FormattedConstant): An LLVM ArrayType
+                storing a const string for a DPC++ filter selector string.
+
+        Returns: A DPCTLSyclQueueRef pointer.
+        """
+        mod = builder.module
+        fnty = llvmir.FunctionType(
+            cgutils.voidptr_t,
+            [cgutils.voidptr_t],
+        )
+        fn = cgutils.get_or_insert_function(
+            mod, fnty, "DPEXRTQueue_CreateFromFilterString"
+        )
+        fn.return_value.add_attribute("noalias")
+
+        ret = builder.call(fn, [device])
+
+        return ret
+
+    def submit_range(
+        self,
+        builder,
+        kref,
+        qref,
+        args,
+        argtys,
+        nargs,
+        range,
+        nrange,
+        depevents,
+        ndepevents,
+    ):
+        """Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue
+        from a given filter string.
+
+        Args:
+            device (llvmlite.ir.values.FormattedConstant): An LLVM ArrayType
+                storing a const string for a DPC++ filter selector string.
+
+        Returns: A DPCTLSyclQueueRef pointer.
+        """
+        mod = builder.module
+        fnty = llvmir.FunctionType(
+            llvmir.types.VoidType(),
+            [
+                cgutils.voidptr_t,
+                cgutils.voidptr_t,
+                cgutils.voidptr_t.as_pointer(),
+                cgutils.int32_t.as_pointer(),
+                llvmir.IntType(64),
+                llvmir.IntType(64).as_pointer(),
+                llvmir.IntType(64),
+                cgutils.voidptr_t,
+                llvmir.IntType(64),
+            ],
+        )
+        fn = cgutils.get_or_insert_function(
+            mod, fnty, "DpexrtQueue_SubmitRange"
+        )
+        # fn.return_value.add_attribute("noalias")
+
+        ret = builder.call(
+            fn,
+            [
+                kref,
+                qref,
+                args,
+                argtys,
+                nargs,
+                range,
+                nrange,
+                depevents,
+                ndepevents,
+            ],
+        )
+
+        return ret
