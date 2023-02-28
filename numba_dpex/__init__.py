@@ -8,6 +8,9 @@ The numba-dpex extension module adds data-parallel offload support to Numba.
 
 from numba.core import ir_utils
 
+from .numba_patches.patch_mk_alloc import _mk_alloc  # isort: skip
+
+ir_utils.mk_alloc = _mk_alloc  # isort: skip
 import numba_dpex.core.dpjit_dispatcher
 import numba_dpex.core.offload_dispatcher
 
@@ -25,9 +28,6 @@ from numba_dpex.retarget import offload_to_sycl_device
 
 from . import config
 from ._version import get_versions
-from .numba_patches import _mk_alloc
-
-ir_utils.mk_alloc = _mk_alloc
 
 if config.HAS_NON_HOST_DEVICE:
     from .device_init import *
