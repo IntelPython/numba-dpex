@@ -12,7 +12,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; numba-dpex 0.20.0dev3+23.g5c1b2c33 documentation</title>
+  <title>Index &mdash; numba-dpex 0.20.0dev3+25.g5d311b0c documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -154,15 +154,13 @@
       </ul></li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnpimpl.html#numba_dpex.dpnp_iface.dpnpimpl.array_shapeptr">array_shapeptr() (in module numba_dpex.dpnp_iface.dpnpimpl)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.dpnp_iface.dpnpdecl.html#numba_dpex.dpnp_iface.dpnpdecl.ArrayAttribute">ArrayAttribute (class in numba_dpex.dpnp_iface.dpnpdecl)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.dpnp_iface.dpnpdecl.html#numba_dpex.dpnp_iface.dpnpdecl.ArrayAttribute">ArrayAttribute (class in numba_dpex.dpnp_iface.dpnpdecl)</a>
+</li>
       <li><a href="apidoc/numba_dpex.core.datamodel.models.html#numba_dpex.core.datamodel.models.ArrayModel">ArrayModel (class in numba_dpex.core.datamodel.models)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.runtime.context.html#numba_dpex.core.runtime.context.DpexRTContext.arraystruct_from_python">arraystruct_from_python() (numba_dpex.core.runtime.context.DpexRTContext method)</a>
-</li>
-      <li><a href="apidoc/numba_dpex.dpnp_iface.arrayobj.html#numba_dpex.dpnp_iface.arrayobj.aryobj_fill">aryobj_fill() (in module numba_dpex.dpnp_iface.arrayobj)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.types.usm_ndarray_type.html#numba_dpex.core.types.usm_ndarray_type.USMNdArray.as_array">as_array (numba_dpex.core.types.usm_ndarray_type.USMNdArray property)</a>
 
@@ -225,6 +223,8 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.vectorizers.html#numba_dpex.vectorizers.UFuncMechanism.broadcast_device">broadcast_device() (numba_dpex.vectorizers.UFuncMechanism method)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.dpnp_iface.arrayobj.html#numba_dpex.dpnp_iface.arrayobj.build_dpnp_ndarray">build_dpnp_ndarray() (in module numba_dpex.dpnp_iface.arrayobj)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.build_key">build_key() (in module numba_dpex.core.utils)</a>
 
@@ -2365,10 +2365,10 @@
 </li>
       <li><a href="apidoc/numba_dpex.ocl.ocldecl.html#numba_dpex.ocl.ocldecl.Ocl_sub_group_barrier">Ocl_sub_group_barrier (class in numba_dpex.ocl.ocldecl)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.ocl.ocldecl.html#numba_dpex.ocl.ocldecl.OclAtomicTemplate">OclAtomicTemplate (class in numba_dpex.ocl.ocldecl)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.ocl.ocldecl.html#numba_dpex.ocl.ocldecl.OclLocalTemplate">OclLocalTemplate (class in numba_dpex.ocl.ocldecl)</a>
 </li>
       <li><a href="apidoc/numba_dpex.ocl.ocldecl.html#numba_dpex.ocl.ocldecl.OclModuleTemplate">OclModuleTemplate (class in numba_dpex.ocl.ocldecl)</a>
@@ -2383,9 +2383,15 @@
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.arrayobj.html#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty">ol_dpnp_empty() (in module numba_dpex.dpnp_iface.arrayobj)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.dpnp_iface.arrayobj.html#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty_like">ol_dpnp_empty_like() (in module numba_dpex.dpnp_iface.arrayobj)</a>
+</li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.arrayobj.html#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_ones">ol_dpnp_ones() (in module numba_dpex.dpnp_iface.arrayobj)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.dpnp_iface.arrayobj.html#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_ones_like">ol_dpnp_ones_like() (in module numba_dpex.dpnp_iface.arrayobj)</a>
+</li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.arrayobj.html#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_zeros">ol_dpnp_zeros() (in module numba_dpex.dpnp_iface.arrayobj)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.dpnp_iface.arrayobj.html#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_zeros_like">ol_dpnp_zeros_like() (in module numba_dpex.dpnp_iface.arrayobj)</a>
 </li>
       <li><a href="apidoc/numba_dpex.spirv_generator.html#numba_dpex.spirv_generator.CmdLine.optimize">optimize() (numba_dpex.spirv_generator.CmdLine method)</a>
 </li>
