@@ -24,15 +24,20 @@ def vecadd_prange(a, b):
     return s
 
 
+@dpex.dpjit
+def vecadd2(a, b):
+    return dpnp.add(a, b)
+
+
 # @dpex.dpjit
 # def sin(a):
 #     return np.sin(a)
 
 a = dpnp.ones(1024, dtype=dpnp.int64, usm_type="shared", device="gpu")
-b = dpnp.ones(1024, dtype=dpnp.int64, usm_type="shared", device="cpu")
+b = dpnp.ones(1024, dtype=dpnp.int64, usm_type="shared", device="gpu")
 
 print(a)
-c = vecadd(a, 1)
+c = vecadd2(a, b)
 
 print(c)
 print(c.usm_type)

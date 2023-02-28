@@ -10,9 +10,17 @@ from numba.core import ir_utils
 from numba.np import arrayobj
 from numba.np.ufunc import array_exprs
 
+from .numba_patches.patch_empty_nd_impl import (  # isort: skip
+    _dpex_empty_nd_impl,
+)
+
 from .numba_patches.patch_mk_alloc import _mk_alloc  # isort: skip
+from .numba_patches.patch_is_ufunc import _dpex_is_ufunc  # isort: skip
 
 ir_utils.mk_alloc = _mk_alloc  # isort: skip
+arrayobj._empty_nd_impl = _dpex_empty_nd_impl  # isort: skip
+array_exprs._is_ufunc = _dpex_is_ufunc  # isort: skip
+
 import numba_dpex.core.dpjit_dispatcher
 import numba_dpex.core.offload_dispatcher
 
@@ -26,16 +34,11 @@ from numba_dpex.core.kernel_interface.indexers import NdRange, Range
 
 # Re-export all type names
 from numba_dpex.core.types import *
+from numba_dpex.dpnp_iface import dpnpimpl
 from numba_dpex.retarget import offload_to_sycl_device
 
 from . import config
 from ._version import get_versions
-from .numba_patches.patch_empty_nd_impl import _dpex_empty_nd_impl
-from .numba_patches.patch_is_ufunc import _dpex_is_ufunc
-
-arrayobj._empty_nd_impl = _dpex_empty_nd_impl
-array_exprs._is_ufunc = _dpex_is_ufunc
-
 
 if config.HAS_NON_HOST_DEVICE:
     from .device_init import *
