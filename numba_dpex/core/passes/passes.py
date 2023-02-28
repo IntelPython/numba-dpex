@@ -37,6 +37,9 @@ from .parfor import ParforFusionPass as _parfor_ParforFusionPass
 from .parfor import ParforPass as _parfor_ParforPass
 from .parfor import ParforPreLoweringPass as _parfor_ParforPreLoweringPass
 from .parfor import PreParforPass as _parfor_PreParforPass
+from .parfor_legalize_cfd_pass import (
+    ParforLegalizeCFDPass as _ParforLegalizeCFDPass,
+)
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
@@ -298,6 +301,36 @@ class SplitParforPass(FunctionPass):
 
         # Add reload function to initialize the parallel backend.
         state.reload_init.append(_reload_parfors)
+        return True
+
+
+@register_pass(mutates_CFG=True, analysis_only=False)
+class ParforLegalizeCFDPass(FunctionPass):
+    _name = "parfor_Legalize_CFD_pass"
+
+    def __init__(self):
+        FunctionPass.__init__(self)
+
+    def run_pass(self, state):
+        """
+        Legalize CFD of parfor nodes.
+        """
+        # Ensure we have an IR and type information.
+        assert state.func_ir
+        parfor_pass = _ParforLegalizeCFDPass(
+            state.func_ir,
+            state.typemap,
+            state.calltypes,
+            state.return_type,
+            state.typingctx,
+            state.targetctx,
+            state.flags.auto_parallel,
+            state.flags,
+            state.metadata,
+            state.parfor_diagnostics,
+        )
+        parfor_pass.run()
+
         return True
 
 

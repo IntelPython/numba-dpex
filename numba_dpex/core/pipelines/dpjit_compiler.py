@@ -21,6 +21,7 @@ from numba_dpex.core.passes.passes import (
     DumpParforDiagnostics,
     NoPythonBackend,
     ParforFusionPass,
+    ParforLegalizeCFDPass,
     ParforPreLoweringPass,
     SplitParforPass,
 )
@@ -53,6 +54,7 @@ class _DpjitPassBuilder(object):
         if not state.flags.no_rewrites:
             pm.add_pass(NopythonRewrites, "nopython rewrites")
         pm.add_pass(SplitParforPass, "convert to parfors")
+        pm.add_pass(ParforLegalizeCFDPass, "Legalize CFD parfors")
         pm.add_pass(ParforFusionPass, "fuse parfors")
         pm.add_pass(ParforPreLoweringPass, "parfor prelowering")
 
