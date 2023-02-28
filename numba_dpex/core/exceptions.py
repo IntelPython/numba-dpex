@@ -433,3 +433,13 @@ class MissingSpecializationError(Exception):
         )
 
         super().__init__(self.message)
+
+
+class UnsupportedParforError(Exception):
+    """Exception raised when a parfor node could not be lowered by Numba-dpex"""
+
+    def __init__(self, extra_msg=None) -> None:
+        self.message = "Expression cannot be offloaded"
+        if extra_msg:
+            self.message += " due to " + extra_msg
+        super().__init__(self.message)
