@@ -103,14 +103,20 @@ class NdRange:
         elif isinstance(global_size, Iterable):
             self._global_range = Range(*global_size)
         else:
-            TypeError("Unknwon argument type for NdRange global_size.")
+            raise TypeError(
+                "Unknwon argument type for NdRange global_size, "
+                + "must be of either type Range or Iterable of int's."
+            )
 
         if isinstance(local_size, Range):
             self._local_range = local_size
         elif isinstance(local_size, Iterable):
             self._local_range = Range(*local_size)
         else:
-            TypeError("Unknwon argument type for NdRange local_size.")
+            raise TypeError(
+                "Unknwon argument type for NdRange local_size, "
+                + "must be of either type Range or Iterable of int's."
+            )
 
     @property
     def global_range(self):
