@@ -18,6 +18,7 @@ from numba_dpex.core.runtime import context as dpexrt
 from numba_dpex.core.types import DpnpNdArray
 
 # from numba_dpex.dpnp_iface.arrayobj import _call_usm_allocator
+numba_config.DISABLE_PERFORMANCE_WARNINGS = 1
 
 
 def _dpex_empty_nd_impl(context, builder, arrtype, shapes):

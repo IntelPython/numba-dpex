@@ -23,7 +23,9 @@
 
 /* Debugging facilities - enabled at compile-time */
 /* #undef NDEBUG */
-#if 1
+
+#if 0
+
 #include <stdio.h>
 #define DPEXRT_DEBUG(X)                                                        \
     {                                                                          \
@@ -160,9 +162,9 @@ static void *DPEXRTQueue_CreateFromFilterString(const char *device)
     DPCTLDeviceSelector_Delete(dselector);
     DPCTLDevice_Delete(dref);
 
-    nrt_debug_print(
+    DPEXRT_DEBUG(nrt_debug_print(
         "DPEXRT-DEBUG: Created sycl::queue on device %s at %s, line %d\n",
-        device, __FILE__, __LINE__);
+        device, __FILE__, __LINE__));
 
     return (void *)qref;
 
@@ -184,16 +186,20 @@ static void DpexrtQueue_SubmitRange(const void *KRef,
                                     size_t NDepEvents)
 {
     DPCTLSyclEventRef eref = NULL;
+
+    DPCTLSyclQueueRef qref = NULL;
+
     DPEXRT_DEBUG(nrt_debug_print(
         "DPEXRT-DEBUG: Inside DpexrtQueue_SubmitRange %s, line %d\n", __FILE__,
         __LINE__));
-    nrt_debug_print("DPEXRT-DEBUG: NArgs: %zu, NRange %zu\n", NArgs, NRange);
+
+    qref = (DPCTLSyclQueueRef)QRef;
 
     eref = DPCTLQueue_SubmitRange(
-        (DPCTLSyclKernelRef)KRef, (DPCTLSyclQueueRef)QRef, Args,
-        (DPCTLKernelArgType *)ArgTypes, NArgs, Range, NRange,
-        (DPCTLSyclEventRef *)DepEvents, NDepEvents);
-    DPCTLQueue_Wait(QRef);
+        (DPCTLSyclKernelRef)KRef, qref, Args, (DPCTLKernelArgType *)ArgTypes,
+        NArgs, Range, NRange, (DPCTLSyclEventRef *)DepEvents, NDepEvents);
+    DPCTLQueue_Wait(qref);
+
     DPCTLEvent_Wait(eref);
     DPCTLEvent_Delete(eref);
 
