@@ -61,7 +61,7 @@ def compile_with_dpex(
         flags.debuginfo = debug
 
     # Run compilation pipeline
-    if isinstance(pyfunc, FunctionType):
+    if isinstance(pyfunc, FunctionType) or isinstance(pyfunc, ir.FunctionIR):
         cres = compiler.compile_extra(
             typingctx=typingctx,
             targetctx=targetctx,
@@ -71,21 +71,6 @@ def compile_with_dpex(
             flags=flags,
             locals={},
             pipeline_class=KernelCompiler,
-        )
-    elif isinstance(pyfunc, ir.FunctionIR):
-        # FIXME: Kernels in the form of Numba IR need to be compiled
-        # using the offload compiler due to them retaining parfor
-        # nodes due to the use of gufuncs. Once the kernel builder is
-        # ready we should be able to switch to the KernelCompiler.
-        cres = compiler.compile_ir(
-            typingctx=typingctx,
-            targetctx=targetctx,
-            func_ir=pyfunc,
-            args=args,
-            return_type=return_type,
-            flags=flags,
-            locals={},
-            pipeline_class=OffloadCompiler,
         )
     else:
         raise UnreachableError()
