@@ -59,8 +59,10 @@ class USMNdArray(Array):
                     "The device keyword arg should be a str object specifying "
                     "a SYCL filter selector"
                 )
-            self.queue = dpctl.SyclQueue(device)
-            self.device = self.queue.sycl_device.filter_string
+            self.queue = dpctl.tensor._device.normalize_queue_device(
+                device=device
+            )
+            self.device = device
         elif queue is not None and device == "unknown":
             if not isinstance(queue, dpctl.SyclQueue):
                 raise TypeError(
@@ -69,7 +71,7 @@ class USMNdArray(Array):
             self.device = self.queue.sycl_device.filter_string
             self.queue = queue
         else:
-            self.queue = dpctl.SyclQueue()
+            self.queue = dpctl.tensor._device.normalize_queue_device()
             self.device = self.queue.sycl_device.filter_string
 
         if not dtype:
