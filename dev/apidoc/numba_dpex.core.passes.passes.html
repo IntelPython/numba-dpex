@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.passes.passes module &mdash; numba-dpex 0.20.0dev3+27.g4bf151c5 documentation</title>
+  <title>numba_dpex.core.passes.passes module &mdash; numba-dpex 0.20.0dev3+29.g1c1f371b documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -115,7 +115,7 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">LoweringPass</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.core.passes.passes.DpexLowering.pass_id">
-<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">43</span></em><a class="headerlink" href="#numba_dpex.core.passes.passes.DpexLowering.pass_id" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">46</span></em><a class="headerlink" href="#numba_dpex.core.passes.passes.DpexLowering.pass_id" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -133,7 +133,7 @@ statement level modification took place.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisPass</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.core.passes.passes.DumpParforDiagnostics.pass_id">
-<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">45</span></em><a class="headerlink" href="#numba_dpex.core.passes.passes.DumpParforDiagnostics.pass_id" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">48</span></em><a class="headerlink" href="#numba_dpex.core.passes.passes.DumpParforDiagnostics.pass_id" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -151,13 +151,30 @@ statement level modification took place.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionPass</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.core.passes.passes.NoPythonBackend.pass_id">
-<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">44</span></em><a class="headerlink" href="#numba_dpex.core.passes.passes.NoPythonBackend.pass_id" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">47</span></em><a class="headerlink" href="#numba_dpex.core.passes.passes.NoPythonBackend.pass_id" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.passes.passes.NoPythonBackend.run_pass">
 <span class="sig-name descname"><span class="pre">run_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.passes.passes.NoPythonBackend.run_pass" title="Permalink to this definition"></a></dt>
 <dd><p>Back-end: Generate LLVM IR from Numba IR, compile to machine code</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.ParforFusionPass">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.passes.passes.</span></span><span class="sig-name descname"><span class="pre">ParforFusionPass</span></span><a class="headerlink" href="#numba_dpex.core.passes.passes.ParforFusionPass" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionPass</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.ParforFusionPass.pass_id">
+<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">44</span></em><a class="headerlink" href="#numba_dpex.core.passes.passes.ParforFusionPass.pass_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.ParforFusionPass.run_pass">
+<span class="sig-name descname"><span class="pre">run_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.passes.passes.ParforFusionPass.run_pass" title="Permalink to this definition"></a></dt>
+<dd><p>Do fusion of parfor nodes.</p>
 </dd></dl>
 
 </dd></dl>
@@ -175,6 +192,23 @@ statement level modification took place.</p>
 <dt class="sig sig-object py" id="numba_dpex.core.passes.passes.ParforPass.run_pass">
 <span class="sig-name descname"><span class="pre">run_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.passes.passes.ParforPass.run_pass" title="Permalink to this definition"></a></dt>
 <dd><p>Convert data-parallel computations into Parfor nodes</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.ParforPreLoweringPass">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.passes.passes.</span></span><span class="sig-name descname"><span class="pre">ParforPreLoweringPass</span></span><a class="headerlink" href="#numba_dpex.core.passes.passes.ParforPreLoweringPass" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionPass</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.ParforPreLoweringPass.pass_id">
+<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">45</span></em><a class="headerlink" href="#numba_dpex.core.passes.passes.ParforPreLoweringPass.pass_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.ParforPreLoweringPass.run_pass">
+<span class="sig-name descname"><span class="pre">run_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.passes.passes.ParforPreLoweringPass.run_pass" title="Permalink to this definition"></a></dt>
+<dd><p>Prepare parfors for lowering.</p>
 </dd></dl>
 
 </dd></dl>
@@ -214,7 +248,7 @@ class has been inherited.</p>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.core.passes.passes.QualNameDisambiguationLowering.pass_id">
-<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">46</span></em><a class="headerlink" href="#numba_dpex.core.passes.passes.QualNameDisambiguationLowering.pass_id" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">49</span></em><a class="headerlink" href="#numba_dpex.core.passes.passes.QualNameDisambiguationLowering.pass_id" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -222,6 +256,23 @@ class has been inherited.</p>
 <span class="sig-name descname"><span class="pre">run_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.passes.passes.QualNameDisambiguationLowering.run_pass" title="Permalink to this definition"></a></dt>
 <dd><p>Runs the pass itself. Must return True/False depending on whether
 statement level modification took place.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.SplitParforPass">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.passes.passes.</span></span><span class="sig-name descname"><span class="pre">SplitParforPass</span></span><a class="headerlink" href="#numba_dpex.core.passes.passes.SplitParforPass" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionPass</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.SplitParforPass.pass_id">
+<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">43</span></em><a class="headerlink" href="#numba_dpex.core.passes.passes.SplitParforPass.pass_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.SplitParforPass.run_pass">
+<span class="sig-name descname"><span class="pre">run_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.passes.passes.SplitParforPass.run_pass" title="Permalink to this definition"></a></dt>
+<dd><p>Convert data-parallel computations into Parfor nodes</p>
 </dd></dl>
 
 </dd></dl>
