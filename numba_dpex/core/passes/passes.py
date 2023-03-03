@@ -2,37 +2,30 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import operator
 import warnings
-import weakref
-from collections import deque, namedtuple
 from contextlib import contextmanager
 
-import numba
 import numpy as np
-from numba.core import errors, funcdesc, ir, lowering, types, typing, utils
+from numba.core import errors, funcdesc, ir, typing, utils
 from numba.core.compiler_machinery import (
     AnalysisPass,
     FunctionPass,
     LoweringPass,
     register_pass,
 )
-from numba.core.errors import (
-    LiteralTypingError,
-    LoweringError,
-    TypingError,
-    new_error_context,
-)
 from numba.core.ir_utils import remove_dels
 from numba.core.typed_passes import NativeLowering
-from numba.parfors.parfor import Parfor
-from numba.parfors.parfor import ParforPass as _parfor_ParforPass
-from numba.parfors.parfor import PreParforPass as _parfor_PreParforPass
+from numba.parfors.parfor import ParforPass as _numba_parfor_ParforPass
+from numba.parfors.parfor import PreParforPass as _numba_parfor_PreParforPass
 from numba.parfors.parfor import swap_functions_map
 
 from numba_dpex import config
 
 from .lowerer import DPEXLowerer
+from .parfor import Parfor
+from .parfor import ParforFusionPass as _parfor_ParforFusionPass
+from .parfor import ParforPass as _parfor_ParforPass
+from .parfor import ParforPreLoweringPass as _parfor_ParforPreLoweringPass
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)
@@ -168,7 +161,7 @@ class PreParforPass(FunctionPass):
         functions_map.pop(("min", "numpy"), None)
         functions_map.pop(("mean", "numpy"), None)
 
-        preparfor_pass = _parfor_PreParforPass(
+        preparfor_pass = _numba_parfor_PreParforPass(
             state.func_ir,
             state.type_annotation.typemap,
             state.type_annotation.calltypes,
@@ -202,7 +195,7 @@ class ParforPass(FunctionPass):
         """
         # Ensure we have an IR and type information.
         assert state.func_ir
-        parfor_pass = _parfor_ParforPass(
+        parfor_pass = _numba_parfor_ParforPass(
             state.func_ir,
             state.type_annotation.typemap,
             state.type_annotation.calltypes,
@@ -221,6 +214,138 @@ class ParforPass(FunctionPass):
             name = state.func_ir.func_id.func_qualname
             print(("IR DUMP: %s" % name).center(80, "-"))
             state.func_ir.dump()
+
+        return True
+
+
+# this is here so it pickles and for no other reason
+def _reload_parfors():
+    """Reloader for cached parfors"""
+    # Re-initialize the parallel backend when load from cache.
+    from numba.np.ufunc.parallel import _launch_threads
+
+    _launch_threads()
+
+
+@register_pass(mutates_CFG=True, analysis_only=False)
+class SplitParforPass(FunctionPass):
+    _name = "dpex_parfor_pass"
+
+    def __init__(self):
+        FunctionPass.__init__(self)
+
+    def run_pass(self, state):
+        """
+        Convert data-parallel computations into Parfor nodes
+        """
+        # Ensure we have an IR and type information.
+        assert state.func_ir
+        parfor_pass = _parfor_ParforPass(
+            state.func_ir,
+            state.typemap,
+            state.calltypes,
+            state.return_type,
+            state.typingctx,
+            state.targetctx,
+            state.flags.auto_parallel,
+            state.flags,
+            state.metadata,
+            state.parfor_diagnostics,
+        )
+        parfor_pass.run()
+
+        # check the parfor pass worked and warn if it didn't
+        has_parfor = False
+        for blk in state.func_ir.blocks.values():
+            for stmnt in blk.body:
+                if isinstance(stmnt, Parfor):
+                    has_parfor = True
+                    break
+            else:
+                continue
+            break
+
+        if not has_parfor:
+            # parfor calls the compiler chain again with a string
+            if not (
+                config.DISABLE_PERFORMANCE_WARNINGS
+                or state.func_ir.loc.filename == "<string>"
+            ):
+                url = (
+                    "https://numba.readthedocs.io/en/stable/user/"
+                    "parallel.html#diagnostics"
+                )
+                msg = (
+                    "\nThe keyword argument 'parallel=True' was specified "
+                    "but no transformation for parallel execution was "
+                    "possible.\n\nTo find out why, try turning on parallel "
+                    "diagnostics, see %s for help." % url
+                )
+                warnings.warn(
+                    errors.NumbaPerformanceWarning(msg, state.func_ir.loc)
+                )
+
+        # Add reload function to initialize the parallel backend.
+        state.reload_init.append(_reload_parfors)
+        return True
+
+
+@register_pass(mutates_CFG=True, analysis_only=False)
+class ParforFusionPass(FunctionPass):
+    _name = "parfor_fusion_pass"
+
+    def __init__(self):
+        FunctionPass.__init__(self)
+
+    def run_pass(self, state):
+        """
+        Do fusion of parfor nodes.
+        """
+        # Ensure we have an IR and type information.
+        assert state.func_ir
+        parfor_pass = _parfor_ParforFusionPass(
+            state.func_ir,
+            state.typemap,
+            state.calltypes,
+            state.return_type,
+            state.typingctx,
+            state.targetctx,
+            state.flags.auto_parallel,
+            state.flags,
+            state.metadata,
+            state.parfor_diagnostics,
+        )
+        parfor_pass.run()
+
+        return True
+
+
+@register_pass(mutates_CFG=True, analysis_only=False)
+class ParforPreLoweringPass(FunctionPass):
+    _name = "parfor_prelowering_pass"
+
+    def __init__(self):
+        FunctionPass.__init__(self)
+
+    def run_pass(self, state):
+        """
+        Prepare parfors for lowering.
+        """
+        # Ensure we have an IR and type information.
+        assert state.func_ir
+        parfor_pass = _parfor_ParforPreLoweringPass(
+            state.func_ir,
+            state.typemap,
+            state.calltypes,
+            state.return_type,
+            state.typingctx,
+            state.targetctx,
+            state.flags.auto_parallel,
+            state.flags,
+            state.metadata,
+            state.parfor_diagnostics,
+        )
+        parfor_pass.run()
 
         return True
 
