@@ -22,10 +22,6 @@ Submodules
    numba_dpex.config
    numba_dpex.debuginfo
    numba_dpex.decorators
-   numba_dpex.device_init
-   numba_dpex.dpctl_support
-   numba_dpex.initialize
-   numba_dpex.numba_support
    numba_dpex.parfor_diagnostics
    numba_dpex.printimpl
    numba_dpex.retarget
