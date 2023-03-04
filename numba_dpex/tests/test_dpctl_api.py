@@ -5,7 +5,7 @@
 import dpctl
 import pytest
 
-from numba_dpex.dpctl_support import dpctl_version
+from numba_dpex import dpctl_version
 from numba_dpex.tests._helper import filter_strings
 
 

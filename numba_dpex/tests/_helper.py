@@ -11,8 +11,7 @@ import dpctl
 import pytest
 from numba.tests.support import captured_stdout
 
-from numba_dpex import config
-from numba_dpex.numba_support import numba_version
+from numba_dpex import config, numba_version
 
 
 def has_opencl_gpu():
