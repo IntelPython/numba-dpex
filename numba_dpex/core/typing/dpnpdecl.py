@@ -3,11 +3,42 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import dpnp
+import numpy as np
 from numba.core import types
-from numba.core.typing.npydecl import Numpy_rules_ufunc, infer_global
+from numba.core.typing.npydecl import (
+    Numpy_rules_ufunc,
+    NumpyRulesArrayOperator,
+    NumpyRulesInplaceArrayOperator,
+    NumpyRulesUnaryArrayOperator,
+    infer_global,
+)
+
+
+class DpnpRulesArrayOperator(NumpyRulesArrayOperator):
+    @property
+    def ufunc(self):
+        try:
+            op = getattr(dpnp, self._op_map[self.key])
+            npop = getattr(np, self._op_map[self.key])
+            op.nin = npop.nin
+            op.nout = npop.nout
+            op.nargs = npop.nargs
+            op.types = npop.types
+            op.is_dpnp_ufunc = True
+            return op
+        except:
+            pass
+
+
+class DpnpRulesInplaceArrayOperator(NumpyRulesInplaceArrayOperator):
+    pass
+
+
+class DpnpRulesUnaryArrayOperator(NumpyRulesUnaryArrayOperator):
+    pass
+
 
 # list of unary ufuncs to register
-
 _math_operations = [
     "add",
     "subtract",
@@ -32,6 +63,7 @@ _math_operations = [
     "cbrt",
     "reciprocal",
     "divide",
+    "true_divide",
     "mod",
     "abs",
     "fabs",
@@ -107,11 +139,10 @@ _logic_functions = []
 # It also works as a nice TODO list for ufunc support :)
 _unsupported = set(
     [
-        "frexp",
-        "modf",
+        "frexp",  # Not supported by Numba
+        "modf",  # Not supported by Numba
         "logaddexp",
         "logaddexp2",
-        "true_divide",
         "positive",
         "float_power",
         "rint",
@@ -126,8 +157,8 @@ _unsupported = set(
     ]
 )
 
-# A list of ufuncs that are in fact aliases of other ufuncs. They need to insert the
-# resolve method, but not register the ufunc itself
+# A list of ufuncs that are in fact aliases of other ufuncs. They need to insert
+# the resolve method, but not register the ufunc itself
 _aliases = set(["bitwise_not", "mod", "abs"])
 
 all_ufuncs = sum(
@@ -159,3 +190,8 @@ def _dpnp_ufunc(name):
 
 for func in supported_ufuncs:
     _dpnp_ufunc(func)
+
+
+DpnpRulesArrayOperator.install_operations()
+DpnpRulesInplaceArrayOperator.install_operations()
+DpnpRulesUnaryArrayOperator.install_operations()
