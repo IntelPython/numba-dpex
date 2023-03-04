@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.types package &mdash; numba-dpex 0.20.0dev3+33.g547a28bb documentation</title>
+  <title>numba_dpex.core.types package &mdash; numba-dpex 0.20.0dev3+35.ga3087842 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -191,8 +191,12 @@ structure as USMNdArray used to represent dpctl.tensor.usm_ndarray.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="numba_dpex.core.types.DpnpNdArray.is_internal">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_internal</span></span><a class="headerlink" href="#numba_dpex.core.types.DpnpNdArray.is_internal" title="Permalink to this definition"></a></dt>
-<dd><p>Returns True if this class is an internally defined Numba type by
-virtue of the module in which it is instantiated, False else.</p>
+<dd><p>Sets the property so that DpnpNdArray expressions can be converted
+to Numba array_expression objects.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>bool: Always returns True.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

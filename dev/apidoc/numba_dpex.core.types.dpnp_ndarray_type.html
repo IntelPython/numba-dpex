@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.types.dpnp_ndarray_type module &mdash; numba-dpex 0.20.0dev3+33.g547a28bb documentation</title>
+  <title>numba_dpex.core.types.dpnp_ndarray_type module &mdash; numba-dpex 0.20.0dev3+35.ga3087842 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -101,8 +101,12 @@ structure as USMNdArray used to represent dpctl.tensor.usm_ndarray.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray.is_internal">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_internal</span></span><a class="headerlink" href="#numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray.is_internal" title="Permalink to this definition"></a></dt>
-<dd><p>Returns True if this class is an internally defined Numba type by
-virtue of the module in which it is instantiated, False else.</p>
+<dd><p>Sets the property so that DpnpNdArray expressions can be converted
+to Numba array_expression objects.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>bool: Always returns True.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -110,7 +114,16 @@ virtue of the module in which it is instantiated, False else.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.types.dpnp_ndarray_type.box_array">
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.core.types.dpnp_ndarray_type.</span></span><span class="sig-name descname"><span class="pre">box_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.types.dpnp_ndarray_type.box_array" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Boxes a NativeValue representation of DpnpNdArray type into a
+dpnp.ndarray PyObject</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>typ: The representation of the DpnpNdArray type.
+val: A native representation of a Numba DpnpNdArray type object.
+c: The boxing context.</p>
+</dd>
+</dl>
+<p>Returns: A Pyobject for a dpnp.ndarray boxed from the Numba native value.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.types.dpnp_ndarray_type.unbox_dpnp_nd_array">
@@ -119,11 +132,10 @@ virtue of the module in which it is instantiated, False else.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>typ : The Numba type of the PyObject
 obj : The actual PyObject to be unboxed
-c :</p>
-</dd>
-<dt>Returns:</dt><dd><p>_type_: _description_</p>
+c : The unboxing context</p>
 </dd>
 </dl>
+<p>Returns: A NativeValue object representing an unboxed dpnp.ndarray</p>
 </dd></dl>
 
 </section>
