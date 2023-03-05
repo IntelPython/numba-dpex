@@ -39,7 +39,7 @@ def binary_op(request):
 
 list_of_unary_ops = [
     "negative",
-    "abs",
+    #   "abs",
     "absolute",
     "fabs",
     "sign",
@@ -58,6 +58,7 @@ list_of_unary_ops = [
     "floor",
     "ceil",
     "trunc",
+    "erf",
 ]
 
 

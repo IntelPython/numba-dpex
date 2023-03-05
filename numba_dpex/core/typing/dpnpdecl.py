@@ -67,6 +67,7 @@ _math_operations = [
     "mod",
     "abs",
     "fabs",
+    "erf",
 ]
 
 _trigonometric_functions = [
