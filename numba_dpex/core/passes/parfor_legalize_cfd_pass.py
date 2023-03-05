@@ -12,13 +12,13 @@ from numba_dpex.core.types.dpnp_ndarray_type import DpnpNdArray
 
 from .parfor import (
     Parfor,
-    ParforPassStates,
+    ParforDiagnostics,
     get_parfor_outputs,
     get_parfor_params,
 )
 
 
-class ParforLegalizeCFDPassImpl(ParforPassStates):
+class ParforLegalizeCFDPassImpl:
 
     """Legalizes the compute-follows-data based device attribute for parfor
     nodes.
@@ -46,6 +46,13 @@ class ParforLegalizeCFDPassImpl(ParforPassStates):
     inputUsmTypeStrToInt = {"device": 3, "shared": 2, "host": 1}
     inputUsmTypeIntToStr = {3: "device", 2: "shared", 1: "host"}
 
+    def __init__(self, state) -> None:
+        self._state = state
+        self._cfd_updated_values = set()
+        self._seen_array_set = set()
+        diagnostics = ParforDiagnostics()
+        self.nested_fusion_info = diagnostics.nested_fusion_info
+
     def _check_if_dpnp_empty_call(self, call_stmt, block):
         func_def = block.find_variable_assignment(call_stmt.name)
         if not (
@@ -69,9 +76,9 @@ class ParforLegalizeCFDPassImpl(ParforPassStates):
         usmTypes = []
 
         for para in checklist:
-            if not isinstance(self.typemap[para], DpnpNdArray):
+            if not isinstance(self._state.typemap[para], DpnpNdArray):
                 continue
-            argty = self.typemap[para]
+            argty = self._state.typemap[para]
             deviceTypes.add(argty.device)
             try:
                 usmTypes.append(
@@ -100,40 +107,48 @@ class ParforLegalizeCFDPassImpl(ParforPassStates):
 
     def _legalize_dpnp_empty_call(self, required_arrty, call_stmt, block):
         args = call_stmt.args
-        sigargs = self.calltypes[call_stmt].args
+        sigargs = self._state.calltypes[call_stmt].args
         sigargs_new = list(sigargs)
-        # Update the RHS usm_type, device, dtype attributes
+        # Update the RHS usm_type, device, attributes
         for idx, arg in enumerate(args):
             argdef = block.find_variable_assignment(arg.name)
             if argdef:
                 attribute = argdef.target.name
                 if "usm_type" in attribute:
-                    self.typemap.update(
+                    self._state.typemap.update(
                         {attribute: types.literal(required_arrty.usm_type)}
                     )
                     sigargs_new[idx] = types.literal(required_arrty.usm_type)
                 elif "device" in attribute:
-                    self.typemap.update(
+                    self._state.typemap.update(
                         {attribute: types.literal(required_arrty.device)}
                     )
                     sigargs_new[idx] = types.literal(required_arrty.device)
         sigargs = tuple(sigargs_new)
-        new_sig = self.typingctx.resolve_function_type(
-            self.typemap[call_stmt.func.name], sigargs, {}
+        new_sig = self._state.typingctx.resolve_function_type(
+            self._state.typemap[call_stmt.func.name], sigargs, {}
         )
-        self.calltypes.update({call_stmt: new_sig})
+        self._state.calltypes.update({call_stmt: new_sig})
 
     def _legalize_array_attrs(
         self, arrattr, legalized_device_ty, legalized_usm_ty
     ):
         modified = False
-        if self.typemap[arrattr].device != legalized_device_ty:
-            self.typemap[arrattr].device = legalized_device_ty
+        updated_device = None
+        updated_usm_ty = None
+
+        if self._state.typemap[arrattr].device != legalized_device_ty:
+            updated_device = legalized_device_ty
             modified = True
 
-        if self.typemap[arrattr].usm_type != legalized_usm_ty:
-            self.typemap[arrattr].usm_type = legalized_usm_ty
+        if self._state.typemap[arrattr].usm_type != legalized_usm_ty:
+            updated_usm_ty = legalized_usm_ty
             modified = True
+
+        if modified:
+            ty = self._state.typemap[arrattr]
+            new_ty = ty.copy(device=updated_device, usm_type=updated_usm_ty)
+            self._state.typemap.update({arrattr: new_ty})
 
         return modified
 
@@ -150,14 +165,14 @@ class ParforLegalizeCFDPassImpl(ParforPassStates):
         """
         if parfor.params is None:
             return
-        outputParams = get_parfor_outputs(parfor, parfor.params)
 
+        outputParams = get_parfor_outputs(parfor, parfor.params)
         checklist = sorted(list(set(parfor.params) - set(outputParams)))
 
         # Check if any output param was defined outside the parfor
         for para in outputParams:
             if (
-                isinstance(self.typemap[para], DpnpNdArray)
+                isinstance(self._state.typemap[para], DpnpNdArray)
                 and para in self._seen_array_set
             ):
                 checklist.append(para)
@@ -168,7 +183,7 @@ class ParforLegalizeCFDPassImpl(ParforPassStates):
 
         # Update any outputs that are generated in the parfor
         for para in outputParams:
-            if not isinstance(self.typemap[para], DpnpNdArray):
+            if not isinstance(self._state.typemap[para], DpnpNdArray):
                 continue
             # Legalize LHS. Skip if we already updated the type before and no
             # further legalization is needed.
@@ -208,13 +223,7 @@ class ParforLegalizeCFDPassImpl(ParforPassStates):
 
     def _legalize_expr(self, stmt, lhs, lhsty, parent_block, inparfor=False):
         rhs = stmt.value
-        if rhs.op != "call":
-            # The assumption is all other expr types are by now
-            # either parfors or are benign like setattr, getattr,
-            # getitem, etc. and we do not need to do CFD
-            # legalization.
-            self._seen_array_set.add(lhs)
-        else:
+        if rhs.op == "call":
             if self._check_if_dpnp_empty_call(rhs.func, parent_block):
                 if inparfor and lhs in self._cfd_updated_values:
                     self._legalize_dpnp_empty_call(lhsty, rhs, parent_block)
@@ -229,11 +238,30 @@ class ParforLegalizeCFDPassImpl(ParforPassStates):
                             "Compute follows data is not currently "
                             "supported for function calls."
                         )
+        elif rhs.op == "cast" and rhs.value.name in self._cfd_updated_values:
+            device_ty = self._state.typemap[rhs.value.name].device
+            usm_ty = self._state.typemap[rhs.value.name].usm_type
+            if self._legalize_array_attrs(
+                arrattr=lhs,
+                legalized_device_ty=device_ty,
+                legalized_usm_ty=usm_ty,
+            ):
+                self._cfd_updated_values.add(lhs)
+            else:
+                try:
+                    self._cfd_updated_values.remove(lhs)
+                except KeyError:
+                    pass
+        else:
+            # The assumption is all other expr types are by now either parfors
+            # or are insts like setattr, getattr,  # getitem, etc. and do not
+            # need CFD legalization.
+            self._seen_array_set.add(lhs)
 
     def _legalize_stmt(self, stmt, parent_block, inparfor=False):
         if isinstance(stmt, ir.Assign):
             lhs = stmt.target.name
-            lhsty = self.typemap[lhs]
+            lhsty = self._state.typemap[lhs]
             if isinstance(lhsty, DpnpNdArray):
                 if isinstance(stmt.value, ir.Arg):
                     self._seen_array_set.add(lhs)
@@ -243,28 +271,35 @@ class ParforLegalizeCFDPassImpl(ParforPassStates):
                     )
         elif isinstance(stmt, Parfor):
             self._legalize_cfd_parfor_blocks(stmt)
+        elif isinstance(stmt, ir.Return):
+            # Check if the return value is a DpnpNdArray and was changed by
+            # compute follows data legalization
+            retty = self._state.typemap[stmt.value.name]
+            if (
+                isinstance(retty, DpnpNdArray)
+                and stmt.value.name in self._cfd_updated_values
+                and self._state.return_type != retty
+            ):
+                self._state.return_type = retty
 
     def run(self):
         # The get_parfor_params needs to be run here to initialize the parfor
         # nodes prior to using them.
         _, _ = get_parfor_params(
-            self.func_ir.blocks,
-            self.options.fusion,
+            self._state.func_ir.blocks,
+            self._state.flags.auto_parallel,
             self.nested_fusion_info,
         )
-
-        self._cfd_updated_values = set()
-        self._seen_array_set = set()
 
         # FIXME: Traversing the blocks in  topological order is not sufficient.
         # The traversal should be converted to a backward data flow traversal of
         # the CFG. The algorithm needs to then become a fixed-point work list
         # algorithm.
-        topo_order = find_topo_order(self.func_ir.blocks)
+        topo_order = find_topo_order(self._state.func_ir.blocks)
 
         # Apply CFD legalization to parfor nodes and dpnp_empty calls
         for label in topo_order:
-            block = self.func_ir.blocks[label]
+            block = self._state.func_ir.blocks[label]
             for stmt in block.body:
                 self._legalize_stmt(stmt, block)
 
@@ -282,18 +317,7 @@ class ParforLegalizeCFDPass(FunctionPass):
         """
         # Ensure we have an IR and type information.
         assert state.func_ir
-        parfor_pass = ParforLegalizeCFDPassImpl(
-            state.func_ir,
-            state.typemap,
-            state.calltypes,
-            state.return_type,
-            state.typingctx,
-            state.targetctx,
-            state.flags.auto_parallel,
-            state.flags,
-            state.metadata,
-            state.parfor_diagnostics,
-        )
-        parfor_pass.run()
+        cfd_legalizer = ParforLegalizeCFDPassImpl(state)
+        cfd_legalizer.run()
 
         return True

@@ -136,7 +136,7 @@ class USMNdArray(Array):
             device = self.device
         if usm_type is None:
             usm_type = self.usm_type
-        return USMNdArray(
+        return type(self)(
             dtype=dtype,
             ndim=ndim,
             layout=layout,
@@ -169,7 +169,7 @@ class USMNdArray(Array):
                     layout = "A"
                 readonly = not (self.mutable and other.mutable)
                 aligned = self.aligned and other.aligned
-                return USMNdArray(
+                return type(self)(
                     dtype=self.dtype,
                     ndim=self.ndim,
                     layout=layout,
