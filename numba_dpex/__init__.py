@@ -74,6 +74,7 @@ if dpctl_version < (0, 14):
         f"dpctl={dpctl_version} may cause unexpected behavior"
     )
 
+from numba import prange  # noqa E402
 
 import numba_dpex.core.dpjit_dispatcher  # noqa E402
 import numba_dpex.core.offload_dispatcher  # noqa E402
