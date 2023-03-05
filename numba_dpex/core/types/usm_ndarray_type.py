@@ -60,7 +60,7 @@ class USMNdArray(Array):
                     "a SYCL filter selector"
                 )
             self.queue = dpctl.SyclQueue(device)
-            self.device = device
+            self.device = self.queue.sycl_device.filter_string
         elif queue is not None and device == "unknown":
             if not isinstance(queue, dpctl.SyclQueue):
                 raise TypeError(
