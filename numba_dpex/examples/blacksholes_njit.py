@@ -27,8 +27,6 @@ def blackscholes(sptprice, strike, timev, rate, volatility):
     generate a single SYCL kernel. The kernel is automatically offloaded to
     the device specified where the function is invoked.
     """
-    NofXd1 = dpnp.empty_like(sptprice)
-    NofXd2 = dpnp.empty_like(sptprice)
 
     a = dpnp.log(sptprice / strike)
     b = timev * -rate
@@ -38,9 +36,8 @@ def blackscholes(sptprice, strike, timev, rate, volatility):
     w1 = (a - b + c) * y
     w2 = (a - b - c) * y
 
-    for idx in numba.prange(sptprice.shape[0]):
-        NofXd1[idx] = 0.5 + 0.5 * math.erf(w1[idx])
-        NofXd2[idx] = 0.5 + 0.5 * math.erf(w2[idx])
+    NofXd1 = 0.5 + 0.5 * dpnp.erf(w1)
+    NofXd2 = 0.5 + 0.5 * dpnp.erf(w2)
 
     futureValue = strike * dpnp.exp(b)
     call = sptprice * NofXd1 - futureValue * NofXd2
@@ -71,7 +68,8 @@ def run(iterations):
     t1 = time.time()
     put = blackscholes(sptprice, initStrike, rate, volatility, timev)
     t = time.time() - t1
-    print("checksum: ", sum(put))
+    #  print("checksum: ", sum(put))
+    print(put)
     print("SELFTIMED ", t)
 
 
