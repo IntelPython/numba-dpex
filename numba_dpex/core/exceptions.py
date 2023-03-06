@@ -221,7 +221,7 @@ class ComputeFollowsDataInferenceError(Exception):
                 f"Arguments {ndarray_args} are non-usm arrays, "
                 f"and arguments {usmarray_args} are usm arrays."
             )
-        elif usmarray_argnum_list:
+        elif usmarray_argnum_list is not None:
             usmarray_args = ",".join([str(i) for i in usmarray_argnum_list])
             self.message = (
                 f'Execution queue for kernel "{kernel_name}" could '
@@ -432,4 +432,14 @@ class MissingSpecializationError(Exception):
             f"exists for argument types: {argtypes}."
         )
 
+        super().__init__(self.message)
+
+
+class UnsupportedParforError(Exception):
+    """Exception raised when a parfor node could not be lowered by Numba-dpex"""
+
+    def __init__(self, extra_msg=None) -> None:
+        self.message = "Expression cannot be offloaded"
+        if extra_msg:
+            self.message += " due to " + extra_msg
         super().__init__(self.message)

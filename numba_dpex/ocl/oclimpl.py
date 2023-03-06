@@ -14,12 +14,12 @@ from numba.core.typing.npydecl import parse_dtype
 
 from numba_dpex import config, kernel_target
 from numba_dpex.core.codegen import SPIR_DATA_LAYOUT
-from numba_dpex.core.itanium_mangler import mangle, mangle_c, mangle_type
 from numba_dpex.core.types import Array
 from numba_dpex.ocl.atomics import atomic_helper
 from numba_dpex.utils import address_space
 
 from . import stubs
+from ._declare_function import _declare_function
 
 registry = Registry()
 lower = registry.lower
@@ -28,42 +28,6 @@ _void_value = llvmir.Constant(llvmir.IntType(8).as_pointer(), None)
 
 
 # -----------------------------------------------------------------------------
-
-
-def _declare_function(context, builder, name, sig, cargs, mangler=mangle_c):
-    """Insert declaration for a opencl builtin function.
-    Uses the Itanium mangler.
-
-    Args
-    ----
-    context: target context
-
-    builder: llvm builder
-
-    name: str
-        symbol name
-
-    sig: signature
-        function signature of the symbol being declared
-
-    cargs: sequence of str
-        C type names for the arguments
-
-    mangler: a mangler function
-        function to use to mangle the symbol
-
-    """
-    mod = builder.module
-    if sig.return_type == types.void:
-        llretty = llvmir.VoidType()
-    else:
-        llretty = context.get_value_type(sig.return_type)
-    llargs = [context.get_value_type(t) for t in sig.args]
-    fnty = llvmir.FunctionType(llretty, llargs)
-    mangled = mangler(name, cargs)
-    fn = cgutils.get_or_insert_function(mod, fnty, mangled)
-    fn.calling_convention = kernel_target.CC_SPIR_FUNC
-    return fn
 
 
 @lower(stubs.get_global_id, types.uint32)

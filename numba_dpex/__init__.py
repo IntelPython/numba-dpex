@@ -74,6 +74,7 @@ if dpctl_version < (0, 14):
         f"dpctl={dpctl_version} may cause unexpected behavior"
     )
 
+from numba import prange  # noqa E402
 
 import numba_dpex.core.dpjit_dispatcher  # noqa E402
 import numba_dpex.core.offload_dispatcher  # noqa E402
@@ -92,6 +93,7 @@ from numba_dpex.core.kernel_interface.indexers import (  # noqa E402
 
 # Re-export all type names
 from numba_dpex.core.types import *  # noqa E402
+from numba_dpex.dpnp_iface import dpnpimpl  # noqa E402
 from numba_dpex.retarget import offload_to_sycl_device  # noqa E402
 
 if config.HAS_NON_HOST_DEVICE:

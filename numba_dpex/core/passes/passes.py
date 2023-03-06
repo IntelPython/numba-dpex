@@ -152,6 +152,7 @@ class PreParforPass(FunctionPass):
         # Ensure we have an IR and type information.
         assert state.func_ir
         functions_map = swap_functions_map.copy()
+        # FIXME: remove once reduction is implemented
         functions_map.pop(("dot", "numpy"), None)
         functions_map.pop(("sum", "numpy"), None)
         functions_map.pop(("prod", "numpy"), None)

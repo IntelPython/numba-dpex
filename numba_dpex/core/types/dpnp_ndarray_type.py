@@ -108,7 +108,7 @@ class DpnpNdArray(USMNdArray):
         # Assume str(dtype) returns a valid type
         dtype_str = str(dtype)
         # alloc call: lhs = empty_attr(size_var, typ_var)
-        typ_var = ir.Var(scope, mk_unique_var("$np_typ_var"), loc)
+        typ_var = ir.Var(scope, mk_unique_var("$np_dtype_var"), loc)
         if typemap:
             typemap[typ_var.name] = types.functions.NumberClass(dtype)
         # If dtype is a datetime/timedelta with a unit,
@@ -126,11 +126,53 @@ class DpnpNdArray(USMNdArray):
                 dtype_str = "bool_"
             np_typ_getattr = ir.Expr.getattr(g_np_var, dtype_str, loc)
             typ_var_assign = ir.Assign(np_typ_getattr, typ_var, loc)
-        alloc_call = ir.Expr.call(attr_var, [size_var, typ_var], (), loc)
+
+        # A default usm_type arg added as a placeholder
+        layout_var = ir.Var(scope, mk_unique_var("$layout_var"), loc)
+        usm_typ_var = ir.Var(scope, mk_unique_var("$np_usm_type_var"), loc)
+        # A default device string arg added as a placeholder
+        device_typ_var = ir.Var(scope, mk_unique_var("$np_device_var"), loc)
+
+        if typemap:
+            typemap[layout_var.name] = types.literal(lhs_typ.layout)
+            typemap[usm_typ_var.name] = types.literal(lhs_typ.usm_type)
+            typemap[device_typ_var.name] = types.literal(lhs_typ.device)
+
+        layout_var_assign = ir.Assign(
+            ir.Const(lhs_typ.layout, loc), layout_var, loc
+        )
+        usm_typ_var_assign = ir.Assign(
+            ir.Const(lhs_typ.usm_type, loc), usm_typ_var, loc
+        )
+        device_typ_var_assign = ir.Assign(
+            ir.Const(lhs_typ.device, loc), device_typ_var, loc
+        )
+
+        out.extend(
+            [layout_var_assign, usm_typ_var_assign, device_typ_var_assign]
+        )
+
+        alloc_call = ir.Expr.call(
+            attr_var,
+            [size_var, typ_var, layout_var, device_typ_var, usm_typ_var],
+            (),
+            loc,
+        )
 
         if calltypes:
             cac = typemap[attr_var.name].get_call_type(
-                typingctx, [size_typ, types.functions.NumberClass(dtype)], {}
+                typingctx,
+                [
+                    typemap[x.name]
+                    for x in [
+                        size_var,
+                        typ_var,
+                        layout_var,
+                        device_typ_var,
+                        usm_typ_var,
+                    ]
+                ],
+                {},
             )
             # By default, all calls to "empty" are typed as returning a standard
             # NumPy ndarray.  If we are allocating a ndarray subclass here then

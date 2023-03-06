@@ -258,13 +258,11 @@ def _empty_nd_impl(context, builder, arrtype, shapes):
         )
         from numba_dpex.decorators import dpjit
 
-        numba_config.DISABLE_PERFORMANCE_WARNINGS = 0
         op = dpjit(_call_usm_allocator)
         fnop = context.typing_context.resolve_value_type(op)
         # The _call_usm_allocator function will be compiled and added to registry
         # when the get_call_type function is invoked.
         fnop.get_call_type(context.typing_context, sig.args, {})
-        numba_config.DISABLE_PERFORMANCE_WARNINGS = 1
         eqfn = context.get_function(fnop, sig)
         meminfo = eqfn(builder, args)
     else:
@@ -309,9 +307,15 @@ def _ol_array_allocate(cls, allocsize, usm_type, device):
     return impl
 
 
+numba_config.DISABLE_PERFORMANCE_WARNINGS = 0
+
+
 def _call_usm_allocator(arrtype, size, usm_type, device):
     """Trampoline to call the intrinsic used for allocation"""
     return arrtype._usm_allocate(size, usm_type, device)
+
+
+numba_config.DISABLE_PERFORMANCE_WARNINGS = 1
 
 
 @intrinsic

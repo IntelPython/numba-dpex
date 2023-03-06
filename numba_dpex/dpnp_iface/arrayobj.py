@@ -50,6 +50,22 @@ def _parse_dtype(dtype, data=None):
     return _dtype
 
 
+def _parse_layout(layout):
+    if isinstance(layout, types.StringLiteral):
+        layout_type_str = layout.literal_value
+        if layout_type_str not in ["C", "F", "A"]:
+            msg = f"Invalid layout specified: '{layout_type_str}'"
+            raise errors.NumbaValueError(msg)
+        return layout_type_str
+    elif isinstance(layout, str):
+        return layout
+    else:
+        raise TypeError(
+            "The parameter 'layout' is neither of "
+            + "'str' nor 'types.StringLiteral'"
+        )
+
+
 def _parse_usm_type(usm_type):
     """Parse usm_type parameter.
 
@@ -152,8 +168,7 @@ def build_dpnp_ndarray(
             The type has the same structure as USMNdArray used to
             represent dpctl.tensor.usm_ndarray.
     """
-
-    if queue:
+    if queue and not isinstance(queue, types.misc.Omitted):
         raise errors.TypingError(
             "The sycl_queue keyword is not yet supported by "
             "dpnp.empty(), dpnp.zeros(), dpnp.ones(), dpnp.empty_like(), "
@@ -162,7 +177,7 @@ def build_dpnp_ndarray(
         )
 
     # If a dtype value was passed in, then try to convert it to the
-    # coresponding Numba type. If None was passed, the default, then pass None
+    # corresponding Numba type. If None was passed, the default, then pass None
     # to the DpnpNdArray constructor. The default dtype will be derived based
     # on the behavior defined in dpctl.tensor.usm_ndarray.
 
@@ -231,6 +246,7 @@ def ol_dpnp_empty(
 
     _ndim = _ty_parse_shape(shape)
     _dtype = _parse_dtype(dtype)
+    _layout = _parse_layout(order)
     _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
     _device = (
         _parse_device_filter_string(device) if device is not None else "unknown"
@@ -238,7 +254,7 @@ def ol_dpnp_empty(
     if _ndim:
         ret_ty = build_dpnp_ndarray(
             _ndim,
-            layout=order,
+            layout=_layout,
             dtype=_dtype,
             usm_type=_usm_type,
             device=_device,
