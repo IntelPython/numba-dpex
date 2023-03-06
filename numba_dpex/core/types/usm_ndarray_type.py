@@ -60,7 +60,7 @@ class USMNdArray(Array):
                     "a SYCL filter selector"
                 )
             self.queue = dpctl.SyclQueue(device)
-            self.device = device
+            self.device = self.queue.sycl_device.filter_string
         elif queue is not None and device == "unknown":
             if not isinstance(queue, dpctl.SyclQueue):
                 raise TypeError(
@@ -136,7 +136,7 @@ class USMNdArray(Array):
             device = self.device
         if usm_type is None:
             usm_type = self.usm_type
-        return USMNdArray(
+        return type(self)(
             dtype=dtype,
             ndim=ndim,
             layout=layout,
@@ -169,7 +169,7 @@ class USMNdArray(Array):
                     layout = "A"
                 readonly = not (self.mutable and other.mutable)
                 aligned = self.aligned and other.aligned
-                return USMNdArray(
+                return type(self)(
                     dtype=self.dtype,
                     ndim=self.ndim,
                     layout=layout,

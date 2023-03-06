@@ -21,7 +21,7 @@ import numba_dpex
 # -- Project information -----------------------------------------------------
 
 project = "numba-dpex"
-copyright = "2021,2022 Intel"
+copyright = "2021-2023 Intel Corporation"
 author = "Intel"
 
 # The full version, including alpha/beta/rc tags
@@ -40,7 +40,11 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.intersphinx",
     "sphinxcontrib.apidoc",
+    "sphinxcontrib.googleanalytics",
 ]
+
+googleanalytics_id = "G-LGGL0NJK6P"
+googleanalytics_enabled = True
 
 todo_include_todos = True
 

@@ -2,78 +2,57 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import numpy as np
-from llvmlite import ir
-from numba.core import types
-from numba.core.extending import register_jitable
-from numba.core.imputils import lower_getattr
-from numba.cpython import listobj
+import dpnp
+from numba.np import npyimpl
 
-ll_void_p = ir.IntType(8).as_pointer()
+from numba_dpex.core.typing.dpnpdecl import _unsupported
+from numba_dpex.dpnp_iface import dpnp_ufunc_db
 
 
-def get_dpnp_fptr(fn_name, type_names):
-    from . import dpnp_fptr_interface as dpnp_iface
+def _register_dpnp_ufuncs():
+    kernels = {}
+    # NOTE: Assuming ufunc implementation for the CPUContext.
+    for ufunc in dpnp_ufunc_db.get_ufuncs():
+        kernels[ufunc] = npyimpl.register_ufunc_kernel(
+            ufunc, npyimpl._ufunc_db_function(ufunc)
+        )
 
-    f_ptr = dpnp_iface.get_dpnp_fn_ptr(fn_name, type_names)
-    return f_ptr
+    for _op_map in (
+        npyimpl.npydecl.NumpyRulesUnaryArrayOperator._op_map,
+        npyimpl.npydecl.NumpyRulesArrayOperator._op_map,
+    ):
+        for operator, ufunc_name in _op_map.items():
+            if ufunc_name in _unsupported:
+                continue
+            ufunc = getattr(dpnp, ufunc_name)
+            kernel = kernels[ufunc]
+            if ufunc.nin == 1:
+                npyimpl.register_unary_operator_kernel(operator, ufunc, kernel)
+            elif ufunc.nin == 2:
+                npyimpl.register_binary_operator_kernel(operator, ufunc, kernel)
+            else:
+                raise RuntimeError(
+                    "There shouldn't be any non-unary or binary operators"
+                )
 
-
-@register_jitable
-def _check_finite_matrix(a):
-    for v in np.nditer(a):
-        if not np.isfinite(v.item()):
-            raise np.linalg.LinAlgError("Array must not contain infs or NaNs.")
-
-
-@register_jitable
-def _dummy_liveness_func(a):
-    """pass a list of variables to be preserved through dead code elimination"""
-    return a[0]
-
-
-def dpnp_func(fn_name, type_names, sig):
-    f_ptr = get_dpnp_fptr(fn_name, type_names)
-
-    def get_pointer(obj):
-        return f_ptr
-
-    return types.ExternalFunctionPointer(sig, get_pointer=get_pointer)
-
-
-"""
-This function retrieves the pointer to the structure where the shape
-of an ndarray is stored. We cast it to void * to make it easier to
-pass around.
-"""
-
-
-@lower_getattr(types.Array, "shapeptr")
-def array_shapeptr(context, builder, typ, value):
-    shape_ptr = builder.gep(
-        value.operands[0],
-        [
-            context.get_constant(types.int32, 0),
-            context.get_constant(types.int32, 5),
-        ],
-    )
-
-    return builder.bitcast(shape_ptr, ll_void_p)
+    for _op_map in (npyimpl.npydecl.NumpyRulesInplaceArrayOperator._op_map,):
+        for operator, ufunc_name in _op_map.items():
+            if ufunc_name in _unsupported:
+                continue
+            ufunc = getattr(dpnp, ufunc_name)
+            kernel = kernels[ufunc]
+            if ufunc.nin == 1:
+                npyimpl.register_unary_operator_kernel(
+                    operator, ufunc, kernel, inplace=True
+                )
+            elif ufunc.nin == 2:
+                npyimpl.register_binary_operator_kernel(
+                    operator, ufunc, kernel, inplace=True
+                )
+            else:
+                raise RuntimeError(
+                    "There shouldn't be any non-unary or binary operators"
+                )
 
 
-@lower_getattr(types.List, "size")
-def list_size(context, builder, typ, value):
-    inst = listobj.ListInstance(context, builder, typ, value)
-    return inst.size
-
-
-@lower_getattr(types.List, "itemsize")
-def list_itemsize(context, builder, typ, value):
-    llty = context.get_data_type(typ.dtype)
-    return context.get_constant(types.uintp, context.get_abi_sizeof(llty))
-
-
-@lower_getattr(types.List, "ctypes")
-def list_ctypes(context, builder, typ, value):
-    inst = listobj.ListInstance(context, builder, typ, value)
-    return builder.bitcast(inst.data, ll_void_p)
+_register_dpnp_ufuncs()
