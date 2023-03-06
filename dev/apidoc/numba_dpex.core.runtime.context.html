@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.runtime.context module &mdash; numba-dpex 0.20.0dev3+37.gbb8b497c documentation</title>
+  <title>numba_dpex.core.runtime.context module &mdash; numba-dpex 0.20.0dev3+59.g5a2238b1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -113,6 +113,21 @@ ptr (_type_): _description_</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.get_queue_from_filter_string">
+<span class="sig-name descname"><span class="pre">get_queue_from_filter_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.get_queue_from_filter_string" title="Permalink to this definition"></a></dt>
+<dd><p>Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue
+from a given filter string.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>device (llvmlite.ir.values.FormattedConstant): An LLVM ArrayType</dt><dd><p>storing a const string for a DPC++ filter selector string.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Returns: A DPCTLSyclQueueRef pointer.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc">
 <span class="sig-name descname"><span class="pre">meminfo_alloc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc" title="Permalink to this definition"></a></dt>
 <dd><p>A wrapped caller for meminfo_alloc_unchecked() with null check.</p>
@@ -171,9 +186,24 @@ usm allocator.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.submit_range">
+<span class="sig-name descname"><span class="pre">submit_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nargs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nrange</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depevents</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndepevents</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.submit_range" title="Permalink to this definition"></a></dt>
+<dd><p>Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue
+from a given filter string.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>device (llvmlite.ir.values.FormattedConstant): An LLVM ArrayType</dt><dd><p>storing a const string for a DPC++ filter selector string.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Returns: A DPCTLSyclQueueRef pointer.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.usm_ndarray_to_python_acqref">
 <span class="sig-name descname"><span class="pre">usm_ndarray_to_python_acqref</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyapi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aryty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtypeptr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.usm_ndarray_to_python_acqref" title="Permalink to this definition"></a></dt>
-<dd><p>_summary_</p>
+<dd><p>Boxes a DpnpNdArray native object into a Python dpnp.ndarray.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>pyapi (_type_): _description_
 aryty (_type_): _description_

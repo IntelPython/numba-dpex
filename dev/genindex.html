@@ -12,7 +12,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; numba-dpex 0.20.0dev3+37.gbb8b497c documentation</title>
+  <title>Index &mdash; numba-dpex 0.20.0dev3+59.g5a2238b1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -136,7 +136,13 @@
       </ul></li>
       <li><a href="apidoc/numba_dpex.core.targets.kernel_target.html#numba_dpex.core.targets.kernel_target.DpexKernelTargetContext.addrspacecast">addrspacecast() (numba_dpex.core.targets.kernel_target.DpexKernelTargetContext method)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.dpctl_iface.legacy_kernel_launch_ops.html#numba_dpex.dpctl_iface.legacy_kernel_launch_ops.KernelLaunchOps.allocate_kernel_arg_array">allocate_kernel_arg_array() (numba_dpex.dpctl_iface.legacy_kernel_launch_ops.KernelLaunchOps method)</a>
+      <li><a href="apidoc/numba_dpex.core.utils.kernel_launcher.html#numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.allocate_kernel_arg_array">allocate_kernel_arg_array() (numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder method)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.dpctl_iface.legacy_kernel_launch_ops.html#numba_dpex.dpctl_iface.legacy_kernel_launch_ops.KernelLaunchOps.allocate_kernel_arg_array">(numba_dpex.dpctl_iface.legacy_kernel_launch_ops.KernelLaunchOps method)</a>
+</li>
+      </ul></li>
+      <li><a href="apidoc/numba_dpex.core.utils.kernel_launcher.html#numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.allocate_kernel_arg_ty_array">allocate_kernel_arg_ty_array() (numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.ParforDiagnostics.allocation_hoist">allocation_hoist() (numba_dpex.core.passes.parfor.ParforDiagnostics method)</a>
 </li>
@@ -234,9 +240,13 @@
         <li><a href="apidoc/numba_dpex.html#numba_dpex.USMNdArray.box_type">(numba_dpex.USMNdArray property)</a>
 </li>
       </ul></li>
+      <li><a href="apidoc/numba_dpex.vectorizers.html#numba_dpex.vectorizers.UFuncMechanism.broadcast_device">broadcast_device() (numba_dpex.vectorizers.UFuncMechanism method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="apidoc/numba_dpex.vectorizers.html#numba_dpex.vectorizers.UFuncMechanism.broadcast_device">broadcast_device() (numba_dpex.vectorizers.UFuncMechanism method)</a>
+      <li><a href="apidoc/numba_dpex.core.utils.kernel_launcher.html#numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.build_arg">build_arg() (numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder method)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.utils.kernel_launcher.html#numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.build_array_arg">build_array_arg() (numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.arrayobj.html#numba_dpex.dpnp_iface.arrayobj.build_dpnp_ndarray">build_dpnp_ndarray() (in module numba_dpex.dpnp_iface.arrayobj)</a>
 </li>
@@ -380,10 +390,10 @@
         <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.html#numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.common_impl">(in module numba_dpex.dpnp_iface.dpnp_transcendentalsimpl)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_randomimpl.html#numba_dpex.dpnp_iface.dpnp_randomimpl.common_impl_0_arg">common_impl_0_arg() (in module numba_dpex.dpnp_iface.dpnp_randomimpl)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_randomimpl.html#numba_dpex.dpnp_iface.dpnp_randomimpl.common_impl_1_arg">common_impl_1_arg() (in module numba_dpex.dpnp_iface.dpnp_randomimpl)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_randomimpl.html#numba_dpex.dpnp_iface.dpnp_randomimpl.common_impl_2_arg">common_impl_2_arg() (in module numba_dpex.dpnp_iface.dpnp_randomimpl)</a>
@@ -480,6 +490,8 @@
         <li><a href="apidoc/numba_dpex.core.utils.caching_utils.html#numba_dpex.core.utils.caching_utils.create_func_hash">(in module numba_dpex.core.utils.caching_utils)</a>
 </li>
       </ul></li>
+      <li><a href="apidoc/numba_dpex.core.utils.kernel_builder.html#numba_dpex.core.utils.kernel_builder.create_kernel_for_parfor">create_kernel_for_parfor() (in module numba_dpex.core.utils.kernel_builder)</a>
+</li>
       <li><a href="apidoc/numba_dpex.core.targets.kernel_target.html#numba_dpex.core.targets.kernel_target.DpexKernelTargetContext.create_module">create_module() (numba_dpex.core.targets.kernel_target.DpexKernelTargetContext method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.utils.html#numba_dpex.utils.create_null_ptr">create_null_ptr() (in module numba_dpex.utils)</a>
@@ -504,9 +516,11 @@
 </li>
       <li><a href="apidoc/numba_dpex.printimpl.html#numba_dpex.printimpl.declare_print">declare_print() (in module numba_dpex.printimpl)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.core.pipelines.kernel_compiler.html#numba_dpex.core.pipelines.kernel_compiler.KernelCompiler.define_pipelines">define_pipelines() (numba_dpex.core.pipelines.kernel_compiler.KernelCompiler method)</a>
+      <li><a href="apidoc/numba_dpex.core.pipelines.dpjit_compiler.html#numba_dpex.core.pipelines.dpjit_compiler.DpjitCompiler.define_pipelines">define_pipelines() (numba_dpex.core.pipelines.dpjit_compiler.DpjitCompiler method)</a>
 
       <ul>
+        <li><a href="apidoc/numba_dpex.core.pipelines.kernel_compiler.html#numba_dpex.core.pipelines.kernel_compiler.KernelCompiler.define_pipelines">(numba_dpex.core.pipelines.kernel_compiler.KernelCompiler method)</a>
+</li>
         <li><a href="apidoc/numba_dpex.core.pipelines.offload_compiler.html#numba_dpex.core.pipelines.offload_compiler.OffloadCompiler.define_pipelines">(numba_dpex.core.pipelines.offload_compiler.OffloadCompiler method)</a>
 </li>
       </ul></li>
@@ -528,6 +542,8 @@
         <li><a href="apidoc/numba_dpex.core.kernel_interface.spirv_kernel.html#numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel.device_driver_ir_module">(numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel property)</a>
 </li>
       </ul></li>
+      <li><a href="apidoc/numba_dpex.core.passes.parfor_lowering_pass.html#numba_dpex.core.passes.parfor_lowering_pass.ParforLowerFactory.device_to_lowerer_map">device_to_lowerer_map (numba_dpex.core.passes.parfor_lowering_pass.ParforLowerFactory attribute)</a>
+</li>
       <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.dimensions">dimensions (numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface property)</a>
 
       <ul>
@@ -606,6 +622,8 @@
 </li>
       <li><a href="apidoc/numba_dpex.decorators.html#numba_dpex.decorators.dpjit">dpjit() (in module numba_dpex.decorators)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.pipelines.dpjit_compiler.html#numba_dpex.core.pipelines.dpjit_compiler.DpjitCompiler">DpjitCompiler (class in numba_dpex.core.pipelines.dpjit_compiler)</a>
+</li>
       <li><a href="apidoc/numba_dpex.core.dpjit_dispatcher.html#numba_dpex.core.dpjit_dispatcher.DpjitDispatcher">DpjitDispatcher (class in numba_dpex.core.dpjit_dispatcher)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp">dpnp (class in numba_dpex.dpnp_iface.stubs)</a>
@@ -674,10 +692,10 @@
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.max">dpnp.max (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.mean">dpnp.mean (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.median">dpnp.median (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.min">dpnp.min (class in numba_dpex.dpnp_iface.stubs)</a>
@@ -828,6 +846,12 @@
         <li><a href="apidoc/numba_dpex.core.types.dpnp_ndarray_type.html#numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray">(class in numba_dpex.core.types.dpnp_ndarray_type)</a>
 </li>
       </ul></li>
+      <li><a href="apidoc/numba_dpex.core.typing.dpnpdecl.html#numba_dpex.core.typing.dpnpdecl.DpnpRulesArrayOperator">DpnpRulesArrayOperator (class in numba_dpex.core.typing.dpnpdecl)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.typing.dpnpdecl.html#numba_dpex.core.typing.dpnpdecl.DpnpRulesInplaceArrayOperator">DpnpRulesInplaceArrayOperator (class in numba_dpex.core.typing.dpnpdecl)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.typing.dpnpdecl.html#numba_dpex.core.typing.dpnpdecl.DpnpRulesUnaryArrayOperator">DpnpRulesUnaryArrayOperator (class in numba_dpex.core.typing.dpnpdecl)</a>
+</li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnpdecl.html#numba_dpex.dpnp_iface.dpnpdecl.DpnpTemplate">DpnpTemplate (class in numba_dpex.dpnp_iface.dpnpdecl)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.dprint">dprint() (in module numba_dpex.core.passes.parfor)</a>
@@ -850,8 +874,12 @@
         <li><a href="apidoc/numba_dpex.parfor_diagnostics.html#numba_dpex.parfor_diagnostics.ExtendedParforDiagnostics.dump">(numba_dpex.parfor_diagnostics.ExtendedParforDiagnostics method)</a>
 </li>
       </ul></li>
-      <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.DumpParforDiagnostics">DumpParforDiagnostics (class in numba_dpex.core.passes.passes)</a>
+      <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.DumpParforDiagnostics">DumpParforDiagnostics (class in numba_dpex.core.passes)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.DumpParforDiagnostics">(class in numba_dpex.core.passes.passes)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -905,12 +933,16 @@
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.FusionReport.first">first (numba_dpex.core.passes.parfor.FusionReport attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.fix_generator_types">fix_generator_types() (in module numba_dpex.core.passes.parfor)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.dpctl_iface.legacy_kernel_launch_ops.html#numba_dpex.dpctl_iface.legacy_kernel_launch_ops.KernelLaunchOps.free_queue">free_queue() (numba_dpex.dpctl_iface.legacy_kernel_launch_ops.KernelLaunchOps method)</a>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.core.utils.kernel_launcher.html#numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.free_queue">free_queue() (numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder method)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.dpctl_iface.legacy_kernel_launch_ops.html#numba_dpex.dpctl_iface.legacy_kernel_launch_ops.KernelLaunchOps.free_queue">(numba_dpex.dpctl_iface.legacy_kernel_launch_ops.KernelLaunchOps method)</a>
 </li>
+      </ul></li>
       <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.checker_impl.func">func (numba_dpex.core.passes.parfor.checker_impl attribute)</a>
 </li>
       <li><a href="apidoc/numba_dpex.decorators.html#numba_dpex.decorators.func">func() (in module numba_dpex.decorators)</a>
@@ -1029,14 +1061,14 @@
         <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.get_info_from_suai">(in module numba_dpex.core.utils.suai_helper)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.utils.html#numba_dpex.utils.get_llvm_ptr_type">get_llvm_ptr_type() (in module numba_dpex.utils)</a>
 
       <ul>
         <li><a href="apidoc/numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.get_llvm_ptr_type">(in module numba_dpex.utils.llvm_codegen_helpers)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.utils.html#numba_dpex.utils.get_llvm_type">get_llvm_type() (in module numba_dpex.utils)</a>
 
       <ul>
@@ -1056,6 +1088,8 @@
       <li><a href="apidoc/numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.get_local_size">get_local_size() (in module numba_dpex.ocl.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dpex.ocl.oclimpl.html#numba_dpex.ocl.oclimpl.get_local_size_impl">get_local_size_impl() (in module numba_dpex.ocl.oclimpl)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.passes.parfor_lowering_pass.html#numba_dpex.core.passes.parfor_lowering_pass.ParforLowerFactory.get_lowerer">get_lowerer() (numba_dpex.core.passes.parfor_lowering_pass.ParforLowerFactory class method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.get_memory_semantics_mask">get_memory_semantics_mask() (in module numba_dpex.ocl.atomics.atomic_helper)</a>
 </li>
@@ -1093,6 +1127,10 @@
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.ParforDiagnostics.get_parfors_simple">get_parfors_simple() (numba_dpex.core.passes.parfor.ParforDiagnostics method)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.utils.kernel_launcher.html#numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.get_queue">get_queue() (numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder method)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.runtime.context.html#numba_dpex.core.runtime.context.DpexRTContext.get_queue_from_filter_string">get_queue_from_filter_string() (numba_dpex.core.runtime.context.DpexRTContext method)</a>
+</li>
       <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.get_reduce_nodes">get_reduce_nodes() (in module numba_dpex.core.passes.parfor)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.get_reduction_init">get_reduction_init() (in module numba_dpex.core.passes.parfor)</a>
@@ -1106,6 +1144,8 @@
       <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.ParforDiagnostics.get_stats">get_stats() (numba_dpex.core.passes.parfor.ParforDiagnostics method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.targets.kernel_target.html#numba_dpex.core.targets.kernel_target.DpexKernelTargetContext.get_ufunc_info">get_ufunc_info() (numba_dpex.core.targets.kernel_target.DpexKernelTargetContext method)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_ufunc_db.html#numba_dpex.dpnp_iface.dpnp_ufunc_db.get_ufuncs">get_ufuncs() (in module numba_dpex.dpnp_iface.dpnp_ufunc_db)</a>
 </li>
       <li><a href="apidoc/numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.get_work_dim">get_work_dim() (in module numba_dpex.ocl.stubs)</a>
 </li>
@@ -1129,6 +1169,8 @@
         <li><a href="apidoc/numba_dpex.html#numba_dpex.NdRange.global_range">(numba_dpex.NdRange property)</a>
 </li>
       </ul></li>
+      <li><a href="apidoc/numba_dpex.core.utils.kernel_builder.html#numba_dpex.core.utils.kernel_builder.GufuncKernel">GufuncKernel (class in numba_dpex.core.utils.kernel_builder)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -1173,6 +1215,10 @@
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.init_prange_overload">init_prange_overload() (in module numba_dpex.core.passes.parfor)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.passes.parfor_legalize_cfd_pass.html#numba_dpex.core.passes.parfor_legalize_cfd_pass.ParforLegalizeCFDPassImpl.inputUsmTypeIntToStr">inputUsmTypeIntToStr (numba_dpex.core.passes.parfor_legalize_cfd_pass.ParforLegalizeCFDPassImpl attribute)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.passes.parfor_legalize_cfd_pass.html#numba_dpex.core.passes.parfor_legalize_cfd_pass.ParforLegalizeCFDPassImpl.inputUsmTypeStrToInt">inputUsmTypeStrToInt (numba_dpex.core.passes.parfor_legalize_cfd_pass.ParforLegalizeCFDPassImpl attribute)</a>
+</li>
       <li><a href="apidoc/numba_dpex.ocl.oclimpl.html#numba_dpex.ocl.oclimpl.insert_and_call_atomic_fn">insert_and_call_atomic_fn() (in module numba_dpex.ocl.oclimpl)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.targets.kernel_target.html#numba_dpex.core.targets.kernel_target.DpexKernelTargetContext.insert_const_string">insert_const_string() (numba_dpex.core.targets.kernel_target.DpexKernelTargetContext method)</a>
@@ -1197,14 +1243,14 @@
         <li><a href="apidoc/numba_dpex.utils.html#numba_dpex.utils.LLVMTypes.int64_ptr_t">(numba_dpex.utils.LLVMTypes attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.int64_t">int64_t (numba_dpex.utils.llvm_codegen_helpers.LLVMTypes attribute)</a>
 
       <ul>
         <li><a href="apidoc/numba_dpex.utils.html#numba_dpex.utils.LLVMTypes.int64_t">(numba_dpex.utils.LLVMTypes attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.printimpl.html#numba_dpex.printimpl.int_print_impl">int_print_impl() (in module numba_dpex.printimpl)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.internal_prange">internal_prange (class in numba_dpex.core.passes.parfor)</a>
@@ -1272,6 +1318,8 @@
       <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.KernelHasReturnValueError">KernelHasReturnValueError</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.kernel_interface.kernel_base.html#numba_dpex.core.kernel_interface.kernel_base.KernelInterface">KernelInterface (class in numba_dpex.core.kernel_interface.kernel_base)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.utils.kernel_launcher.html#numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder">KernelLaunchIRBuilder (class in numba_dpex.core.utils.kernel_launcher)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpctl_iface.legacy_kernel_launch_ops.html#numba_dpex.dpctl_iface.legacy_kernel_launch_ops.KernelLaunchOps">KernelLaunchOps (class in numba_dpex.dpctl_iface.legacy_kernel_launch_ops)</a>
 </li>
@@ -1472,6 +1520,8 @@
       <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.LoopNest">LoopNest (class in numba_dpex.core.passes.parfor)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.DPEXLowerer.lower">lower() (numba_dpex.core.passes.lowerer.DPEXLowerer method)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.passes.parfor_lowering_pass.html#numba_dpex.core.passes.parfor_lowering_pass.lower_parfor_dpex">lower_parfor_dpex() (in module numba_dpex.core.passes.parfor_lowering_pass)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.lower_parfor_rollback">lower_parfor_rollback() (in module numba_dpex.core.passes.lowerer)</a>
 </li>
@@ -1675,11 +1725,17 @@
 </li>
         <li><a href="apidoc/numba_dpex.core.passes.parfor.html#module-numba_dpex.core.passes.parfor">numba_dpex.core.passes.parfor</a>
 </li>
+        <li><a href="apidoc/numba_dpex.core.passes.parfor_legalize_cfd_pass.html#module-numba_dpex.core.passes.parfor_legalize_cfd_pass">numba_dpex.core.passes.parfor_legalize_cfd_pass</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.passes.parfor_lowering_pass.html#module-numba_dpex.core.passes.parfor_lowering_pass">numba_dpex.core.passes.parfor_lowering_pass</a>
+</li>
         <li><a href="apidoc/numba_dpex.core.passes.passes.html#module-numba_dpex.core.passes.passes">numba_dpex.core.passes.passes</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.passes.rename_numpy_functions_pass.html#module-numba_dpex.core.passes.rename_numpy_functions_pass">numba_dpex.core.passes.rename_numpy_functions_pass</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.pipelines.html#module-numba_dpex.core.pipelines">numba_dpex.core.pipelines</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.pipelines.dpjit_compiler.html#module-numba_dpex.core.pipelines.dpjit_compiler">numba_dpex.core.pipelines.dpjit_compiler</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.pipelines.kernel_compiler.html#module-numba_dpex.core.pipelines.kernel_compiler">numba_dpex.core.pipelines.kernel_compiler</a>
 </li>
@@ -1713,11 +1769,17 @@
 </li>
         <li><a href="apidoc/numba_dpex.core.typing.html#module-numba_dpex.core.typing">numba_dpex.core.typing</a>
 </li>
+        <li><a href="apidoc/numba_dpex.core.typing.dpnpdecl.html#module-numba_dpex.core.typing.dpnpdecl">numba_dpex.core.typing.dpnpdecl</a>
+</li>
         <li><a href="apidoc/numba_dpex.core.typing.typeof.html#module-numba_dpex.core.typing.typeof">numba_dpex.core.typing.typeof</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.utils.html#module-numba_dpex.core.utils">numba_dpex.core.utils</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.utils.caching_utils.html#module-numba_dpex.core.utils.caching_utils">numba_dpex.core.utils.caching_utils</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.utils.kernel_builder.html#module-numba_dpex.core.utils.kernel_builder">numba_dpex.core.utils.kernel_builder</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.utils.kernel_launcher.html#module-numba_dpex.core.utils.kernel_launcher">numba_dpex.core.utils.kernel_launcher</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#module-numba_dpex.core.utils.suai_helper">numba_dpex.core.utils.suai_helper</a>
 </li>
@@ -1759,7 +1821,11 @@
 </li>
         <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.html#module-numba_dpex.dpnp_iface.dpnp_transcendentalsimpl">numba_dpex.dpnp_iface.dpnp_transcendentalsimpl</a>
 </li>
+        <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_ufunc_db.html#module-numba_dpex.dpnp_iface.dpnp_ufunc_db">numba_dpex.dpnp_iface.dpnp_ufunc_db</a>
+</li>
         <li><a href="apidoc/numba_dpex.dpnp_iface.dpnpdecl.html#module-numba_dpex.dpnp_iface.dpnpdecl">numba_dpex.dpnp_iface.dpnpdecl</a>
+</li>
+        <li><a href="apidoc/numba_dpex.dpnp_iface.dpnpimpl.html#module-numba_dpex.dpnp_iface.dpnpimpl">numba_dpex.dpnp_iface.dpnpimpl</a>
 </li>
         <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#module-numba_dpex.dpnp_iface.stubs">numba_dpex.dpnp_iface.stubs</a>
 </li>
@@ -1828,8 +1894,12 @@
       </ul></li>
       <li><a href="apidoc/numba_dpex.core.caching.html#numba_dpex.core.caching.Node">Node (class in numba_dpex.core.caching)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.NoPythonBackend">NoPythonBackend (class in numba_dpex.core.passes.passes)</a>
+      <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.NoPythonBackend">NoPythonBackend (class in numba_dpex.core.passes)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.NoPythonBackend">(class in numba_dpex.core.passes.passes)</a>
 </li>
+      </ul></li>
       <li><a href="apidoc/numba_dpex.utils.html#numba_dpex.utils.npytypes_array_to_dpex_array">npytypes_array_to_dpex_array() (in module numba_dpex.utils)</a>
 
       <ul>
@@ -2014,6 +2084,20 @@
 </li>
       </ul></li>
       <li>
+    numba_dpex.core.passes.parfor_legalize_cfd_pass
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.passes.parfor_legalize_cfd_pass.html#module-numba_dpex.core.passes.parfor_legalize_cfd_pass">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.core.passes.parfor_lowering_pass
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.passes.parfor_lowering_pass.html#module-numba_dpex.core.passes.parfor_lowering_pass">module</a>
+</li>
+      </ul></li>
+      <li>
     numba_dpex.core.passes.passes
 
       <ul>
@@ -2032,6 +2116,13 @@
 
       <ul>
         <li><a href="apidoc/numba_dpex.core.pipelines.html#module-numba_dpex.core.pipelines">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.core.pipelines.dpjit_compiler
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.pipelines.dpjit_compiler.html#module-numba_dpex.core.pipelines.dpjit_compiler">module</a>
 </li>
       </ul></li>
       <li>
@@ -2132,8 +2223,6 @@
         <li><a href="apidoc/numba_dpex.core.types.numba_types_short_names.html#module-numba_dpex.core.types.numba_types_short_names">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     numba_dpex.core.types.usm_ndarray_type
 
@@ -2141,11 +2230,20 @@
         <li><a href="apidoc/numba_dpex.core.types.usm_ndarray_type.html#module-numba_dpex.core.types.usm_ndarray_type">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     numba_dpex.core.typing
 
       <ul>
         <li><a href="apidoc/numba_dpex.core.typing.html#module-numba_dpex.core.typing">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.core.typing.dpnpdecl
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.typing.dpnpdecl.html#module-numba_dpex.core.typing.dpnpdecl">module</a>
 </li>
       </ul></li>
       <li>
@@ -2167,6 +2265,20 @@
 
       <ul>
         <li><a href="apidoc/numba_dpex.core.utils.caching_utils.html#module-numba_dpex.core.utils.caching_utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.core.utils.kernel_builder
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.utils.kernel_builder.html#module-numba_dpex.core.utils.kernel_builder">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.core.utils.kernel_launcher
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.utils.kernel_launcher.html#module-numba_dpex.core.utils.kernel_launcher">module</a>
 </li>
       </ul></li>
       <li>
@@ -2310,10 +2422,24 @@
 </li>
       </ul></li>
       <li>
+    numba_dpex.dpnp_iface.dpnp_ufunc_db
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_ufunc_db.html#module-numba_dpex.dpnp_iface.dpnp_ufunc_db">module</a>
+</li>
+      </ul></li>
+      <li>
     numba_dpex.dpnp_iface.dpnpdecl
 
       <ul>
         <li><a href="apidoc/numba_dpex.dpnp_iface.dpnpdecl.html#module-numba_dpex.dpnp_iface.dpnpdecl">module</a>
+</li>
+      </ul></li>
+      <li>
+    numba_dpex.dpnp_iface.dpnpimpl
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.dpnp_iface.dpnpimpl.html#module-numba_dpex.dpnp_iface.dpnpimpl">module</a>
 </li>
       </ul></li>
       <li>
@@ -2547,29 +2673,71 @@
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.ParforDiagnostics">ParforDiagnostics (class in numba_dpex.core.passes.parfor)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.ParforFusionPass">ParforFusionPass (class in numba_dpex.core.passes.parfor)</a>
+      <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.ParforFusionPass">ParforFusionPass (class in numba_dpex.core.passes)</a>
 
       <ul>
+        <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.ParforFusionPass">(class in numba_dpex.core.passes.parfor)</a>
+</li>
         <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.ParforFusionPass">(class in numba_dpex.core.passes.passes)</a>
 </li>
       </ul></li>
-      <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.ParforPass">ParforPass (class in numba_dpex.core.passes.parfor)</a>
+      <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.ParforLegalizeCFDPass">ParforLegalizeCFDPass (class in numba_dpex.core.passes)</a>
 
       <ul>
+        <li><a href="apidoc/numba_dpex.core.passes.parfor_legalize_cfd_pass.html#numba_dpex.core.passes.parfor_legalize_cfd_pass.ParforLegalizeCFDPass">(class in numba_dpex.core.passes.parfor_legalize_cfd_pass)</a>
+</li>
+      </ul></li>
+      <li><a href="apidoc/numba_dpex.core.passes.parfor_legalize_cfd_pass.html#numba_dpex.core.passes.parfor_legalize_cfd_pass.ParforLegalizeCFDPassImpl">ParforLegalizeCFDPassImpl (class in numba_dpex.core.passes.parfor_legalize_cfd_pass)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.passes.parfor_lowering_pass.html#numba_dpex.core.passes.parfor_lowering_pass.ParforLowerFactory">ParforLowerFactory (class in numba_dpex.core.passes.parfor_lowering_pass)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.passes.parfor_lowering_pass.html#numba_dpex.core.passes.parfor_lowering_pass.ParforLowerImpl">ParforLowerImpl (class in numba_dpex.core.passes.parfor_lowering_pass)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.ParforLoweringPass">ParforLoweringPass (class in numba_dpex.core.passes)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.passes.parfor_lowering_pass.html#numba_dpex.core.passes.parfor_lowering_pass.ParforLoweringPass">(class in numba_dpex.core.passes.parfor_lowering_pass)</a>
+</li>
+      </ul></li>
+      <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.ParforPass">ParforPass (class in numba_dpex.core.passes)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.ParforPass">(class in numba_dpex.core.passes.parfor)</a>
+</li>
         <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.ParforPass">(class in numba_dpex.core.passes.passes)</a>
 </li>
       </ul></li>
       <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.ParforPassStates">ParforPassStates (class in numba_dpex.core.passes.parfor)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.ParforPreLoweringPass">ParforPreLoweringPass (class in numba_dpex.core.passes.parfor)</a>
+      <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.ParforPreLoweringPass">ParforPreLoweringPass (class in numba_dpex.core.passes)</a>
 
       <ul>
+        <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.ParforPreLoweringPass">(class in numba_dpex.core.passes.parfor)</a>
+</li>
         <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.ParforPreLoweringPass">(class in numba_dpex.core.passes.passes)</a>
 </li>
       </ul></li>
-      <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass.pass_id">pass_id (numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass attribute)</a>
+      <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.DumpParforDiagnostics.pass_id">pass_id (numba_dpex.core.passes.DumpParforDiagnostics attribute)</a>
 
       <ul>
+        <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.NoPythonBackend.pass_id">(numba_dpex.core.passes.NoPythonBackend attribute)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.passes.parfor_legalize_cfd_pass.html#numba_dpex.core.passes.parfor_legalize_cfd_pass.ParforLegalizeCFDPass.pass_id">(numba_dpex.core.passes.parfor_legalize_cfd_pass.ParforLegalizeCFDPass attribute)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.passes.parfor_lowering_pass.html#numba_dpex.core.passes.parfor_lowering_pass.ParforLoweringPass.pass_id">(numba_dpex.core.passes.parfor_lowering_pass.ParforLoweringPass attribute)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.ParforFusionPass.pass_id">(numba_dpex.core.passes.ParforFusionPass attribute)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.ParforLegalizeCFDPass.pass_id">(numba_dpex.core.passes.ParforLegalizeCFDPass attribute)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.ParforLoweringPass.pass_id">(numba_dpex.core.passes.ParforLoweringPass attribute)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.ParforPass.pass_id">(numba_dpex.core.passes.ParforPass attribute)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.ParforPreLoweringPass.pass_id">(numba_dpex.core.passes.ParforPreLoweringPass attribute)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass.pass_id">(numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass attribute)</a>
+</li>
         <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.DpexLowering.pass_id">(numba_dpex.core.passes.passes.DpexLowering attribute)</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.DumpParforDiagnostics.pass_id">(numba_dpex.core.passes.passes.DumpParforDiagnostics attribute)</a>
@@ -2588,18 +2756,24 @@
 </li>
         <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.SplitParforPass.pass_id">(numba_dpex.core.passes.passes.SplitParforPass attribute)</a>
 </li>
+        <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.PreParforPass.pass_id">(numba_dpex.core.passes.PreParforPass attribute)</a>
+</li>
         <li><a href="apidoc/numba_dpex.core.passes.rename_numpy_functions_pass.html#numba_dpex.core.passes.rename_numpy_functions_pass.RewriteNdarrayFunctionsPass.pass_id">(numba_dpex.core.passes.rename_numpy_functions_pass.RewriteNdarrayFunctionsPass attribute)</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.passes.rename_numpy_functions_pass.html#numba_dpex.core.passes.rename_numpy_functions_pass.RewriteOverloadedNumPyFunctionsPass.pass_id">(numba_dpex.core.passes.rename_numpy_functions_pass.RewriteOverloadedNumPyFunctionsPass attribute)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.SplitParforPass.pass_id">(numba_dpex.core.passes.SplitParforPass attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.core.targets.kernel_target.html#numba_dpex.core.targets.kernel_target.DpexKernelTargetContext.prepare_ocl_kernel">prepare_ocl_kernel() (numba_dpex.core.targets.kernel_target.DpexKernelTargetContext method)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.PreParforPass">PreParforPass (class in numba_dpex.core.passes.parfor)</a>
+      <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.PreParforPass">PreParforPass (class in numba_dpex.core.passes)</a>
 
       <ul>
+        <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.PreParforPass">(class in numba_dpex.core.passes.parfor)</a>
+</li>
         <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.PreParforPass">(class in numba_dpex.core.passes.passes)</a>
 </li>
       </ul></li>
@@ -2773,8 +2947,6 @@
 </li>
       <li><a href="apidoc/numba_dpex.ocl.ocldecl.html#numba_dpex.ocl.ocldecl.OclModuleTemplate.resolve_get_global_size">resolve_get_global_size() (numba_dpex.ocl.ocldecl.OclModuleTemplate method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.ocl.ocldecl.html#numba_dpex.ocl.ocldecl.OclModuleTemplate.resolve_get_group_id">resolve_get_group_id() (numba_dpex.ocl.ocldecl.OclModuleTemplate method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.ocl.ocldecl.html#numba_dpex.ocl.ocldecl.OclModuleTemplate.resolve_get_local_id">resolve_get_local_id() (numba_dpex.ocl.ocldecl.OclModuleTemplate method)</a>
@@ -2787,6 +2959,8 @@
 </li>
       <li><a href="apidoc/numba_dpex.ocl.mathdecl.html#numba_dpex.ocl.mathdecl.MathModuleAttribute.resolve_isinf">resolve_isinf() (numba_dpex.ocl.mathdecl.MathModuleAttribute method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.ocl.mathdecl.html#numba_dpex.ocl.mathdecl.MathModuleAttribute.resolve_isnan">resolve_isnan() (numba_dpex.ocl.mathdecl.MathModuleAttribute method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnpdecl.html#numba_dpex.dpnp_iface.dpnpdecl.ListAttribute.resolve_itemsize">resolve_itemsize() (numba_dpex.dpnp_iface.dpnpdecl.ListAttribute method)</a>
@@ -2854,10 +3028,30 @@
 </li>
         <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.PreParforPass.run">(numba_dpex.core.passes.parfor.PreParforPass method)</a>
 </li>
+        <li><a href="apidoc/numba_dpex.core.passes.parfor_legalize_cfd_pass.html#numba_dpex.core.passes.parfor_legalize_cfd_pass.ParforLegalizeCFDPassImpl.run">(numba_dpex.core.passes.parfor_legalize_cfd_pass.ParforLegalizeCFDPassImpl method)</a>
+</li>
       </ul></li>
-      <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass.run_pass">run_pass() (numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass method)</a>
+      <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.DumpParforDiagnostics.run_pass">run_pass() (numba_dpex.core.passes.DumpParforDiagnostics method)</a>
 
       <ul>
+        <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.NoPythonBackend.run_pass">(numba_dpex.core.passes.NoPythonBackend method)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.passes.parfor_legalize_cfd_pass.html#numba_dpex.core.passes.parfor_legalize_cfd_pass.ParforLegalizeCFDPass.run_pass">(numba_dpex.core.passes.parfor_legalize_cfd_pass.ParforLegalizeCFDPass method)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.passes.parfor_lowering_pass.html#numba_dpex.core.passes.parfor_lowering_pass.ParforLoweringPass.run_pass">(numba_dpex.core.passes.parfor_lowering_pass.ParforLoweringPass method)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.ParforFusionPass.run_pass">(numba_dpex.core.passes.ParforFusionPass method)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.ParforLegalizeCFDPass.run_pass">(numba_dpex.core.passes.ParforLegalizeCFDPass method)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.ParforLoweringPass.run_pass">(numba_dpex.core.passes.ParforLoweringPass method)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.ParforPass.run_pass">(numba_dpex.core.passes.ParforPass method)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.ParforPreLoweringPass.run_pass">(numba_dpex.core.passes.ParforPreLoweringPass method)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass.run_pass">(numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass method)</a>
+</li>
         <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.DpexLowering.run_pass">(numba_dpex.core.passes.passes.DpexLowering method)</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.DumpParforDiagnostics.run_pass">(numba_dpex.core.passes.passes.DumpParforDiagnostics method)</a>
@@ -2876,9 +3070,13 @@
 </li>
         <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.SplitParforPass.run_pass">(numba_dpex.core.passes.passes.SplitParforPass method)</a>
 </li>
+        <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.PreParforPass.run_pass">(numba_dpex.core.passes.PreParforPass method)</a>
+</li>
         <li><a href="apidoc/numba_dpex.core.passes.rename_numpy_functions_pass.html#numba_dpex.core.passes.rename_numpy_functions_pass.RewriteNdarrayFunctionsPass.run_pass">(numba_dpex.core.passes.rename_numpy_functions_pass.RewriteNdarrayFunctionsPass method)</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.passes.rename_numpy_functions_pass.html#numba_dpex.core.passes.rename_numpy_functions_pass.RewriteOverloadedNumPyFunctionsPass.run_pass">(numba_dpex.core.passes.rename_numpy_functions_pass.RewriteOverloadedNumPyFunctionsPass method)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.SplitParforPass.run_pass">(numba_dpex.core.passes.SplitParforPass method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -2923,18 +3121,22 @@
 </li>
       <li><a href="apidoc/numba_dpex.core.kernel_interface.spirv_kernel.html#numba_dpex.core.kernel_interface.spirv_kernel.SpirvKernel">SpirvKernel (class in numba_dpex.core.kernel_interface.spirv_kernel)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.SplitParforPass">SplitParforPass (class in numba_dpex.core.passes.passes)</a>
+      <li><a href="apidoc/numba_dpex.core.passes.html#numba_dpex.core.passes.SplitParforPass">SplitParforPass (class in numba_dpex.core.passes)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.SplitParforPass">(class in numba_dpex.core.passes.passes)</a>
 </li>
+      </ul></li>
       <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.std_parallel_impl">std_parallel_impl() (in module numba_dpex.core.passes.parfor)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.strides">strides (numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface property)</a>
 
       <ul>
         <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.SyclUSMArrayInterface.strides">(numba_dpex.core.utils.SyclUSMArrayInterface property)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.strip_usm_metadata">strip_usm_metadata() (in module numba_dpex.core.utils)</a>
 
       <ul>
@@ -2952,6 +3154,10 @@
       <li><a href="apidoc/numba_dpex.ocl.stubs.html#numba_dpex.ocl.stubs.sub_group_barrier">sub_group_barrier() (in module numba_dpex.ocl.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dpex.ocl.oclimpl.html#numba_dpex.ocl.oclimpl.sub_group_barrier_impl">sub_group_barrier_impl() (in module numba_dpex.ocl.oclimpl)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.runtime.context.html#numba_dpex.core.runtime.context.DpexRTContext.submit_range">submit_range() (numba_dpex.core.runtime.context.DpexRTContext method)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.utils.kernel_launcher.html#numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.submit_sync_ranged_kernel">submit_sync_ranged_kernel() (numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.sum_parallel_impl">sum_parallel_impl() (in module numba_dpex.core.passes.parfor)</a>
 </li>
@@ -3033,6 +3239,8 @@
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.core.typing.dpnpdecl.html#numba_dpex.core.typing.dpnpdecl.DpnpRulesArrayOperator.ufunc">ufunc (numba_dpex.core.typing.dpnpdecl.DpnpRulesArrayOperator property)</a>
+</li>
       <li><a href="apidoc/numba_dpex.vectorizers.html#numba_dpex.vectorizers.UFuncDispatcher">UFuncDispatcher (class in numba_dpex.vectorizers)</a>
 </li>
       <li><a href="apidoc/numba_dpex.vectorizers.html#numba_dpex.vectorizers.UFuncMechanism">UFuncMechanism (class in numba_dpex.vectorizers)</a>
@@ -3072,6 +3280,8 @@
       <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.UnsupportedKernelArgumentError">UnsupportedKernelArgumentError</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.UnsupportedNumberOfRangeDimsError">UnsupportedNumberOfRangeDimsError</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.UnsupportedParforError">UnsupportedParforError</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.exceptions.html#numba_dpex.core.exceptions.UnsupportedWorkItemSizeError">UnsupportedWorkItemSizeError</a>
 </li>
@@ -3137,14 +3347,18 @@
 </li>
       <li><a href="apidoc/numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_scope.work_item">work_item (numba_dpex.ocl.atomics.atomic_helper.sycl_memory_scope attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.wrap_loop_body">wrap_loop_body() (in module numba_dpex.core.passes.lowerer)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.wrap_parfor_blocks">wrap_parfor_blocks() (in module numba_dpex.core.passes.parfor)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.WrapperDefaultLower">WrapperDefaultLower (class in numba_dpex.core.passes.lowerer)</a>
+
+      <ul>
+        <li><a href="apidoc/numba_dpex.core.passes.parfor_lowering_pass.html#numba_dpex.core.passes.parfor_lowering_pass.WrapperDefaultLower">(class in numba_dpex.core.passes.parfor_lowering_pass)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 

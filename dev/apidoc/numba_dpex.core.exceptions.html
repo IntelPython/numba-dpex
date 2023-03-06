@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.exceptions module &mdash; numba-dpex 0.20.0dev3+37.gbb8b497c documentation</title>
+  <title>numba_dpex.core.exceptions module &mdash; numba-dpex 0.20.0dev3+59.g5a2238b1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -355,6 +355,13 @@ max_work_item_dims (int): Maximum number of range dimensions supported
 by the device.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="numba_dpex.core.exceptions.UnsupportedParforError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedParforError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extra_msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.exceptions.UnsupportedParforError" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception raised when a parfor node could not be lowered by Numba-dpex</p>
 </dd></dl>
 
 <dl class="py exception">

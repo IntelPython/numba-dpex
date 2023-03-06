@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Universal Functions &mdash; numba-dpex 0.20.0dev3+37.gbb8b497c documentation</title>
+  <title>Universal Functions &mdash; numba-dpex 0.20.0dev3+59.g5a2238b1 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -154,12 +154,6 @@ numba-dpex ufunc kernels cannot invoke a <code class="docutils literal notransla
 <section id="example-2-calling-numba-vectorize-inside-a-numba-dpex-kernel">
 <h2>Example 2: Calling <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> inside a <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code><a class="headerlink" href="#example-2-calling-numba-vectorize-inside-a-numba-dpex-kernel" title="Permalink to this heading"></a></h2>
 <p>Full example can be found at <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/blacksholes_njit.py</span></code>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@numba</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">cndf2</span><span class="p">(</span><span class="n">inp</span><span class="p">):</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">erf</span><span class="p">((</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">inp</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">out</span>
-</pre></div>
-</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><code class="docutils literal notranslate"><span class="pre">numba.cuda</span></code> requires <code class="docutils literal notranslate"><span class="pre">target='cuda'</span></code> parameter for <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code>
