@@ -1,0 +1,7 @@
+numba\_dpex.core.targets.kernel\_target module
+==============================================
+
+.. automodule:: numba_dpex.core.targets.kernel_target
+   :members:
+   :undoc-members:
+   :show-inheritance:

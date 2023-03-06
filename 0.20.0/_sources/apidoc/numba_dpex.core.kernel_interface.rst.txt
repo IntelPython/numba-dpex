@@ -1,0 +1,24 @@
+numba\_dpex.core.kernel\_interface package
+==========================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.core.kernel_interface.arg_pack_unpacker
+   numba_dpex.core.kernel_interface.dispatcher
+   numba_dpex.core.kernel_interface.func
+   numba_dpex.core.kernel_interface.indexers
+   numba_dpex.core.kernel_interface.kernel_base
+   numba_dpex.core.kernel_interface.spirv_kernel
+   numba_dpex.core.kernel_interface.utils
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex.core.kernel_interface
+   :members:
+   :undoc-members:
+   :show-inheritance:
