@@ -1,7 +1,0 @@
-numba\_dpex.descriptor module
-=============================
-
-.. automodule:: numba_dpex.descriptor
-   :members:
-   :undoc-members:
-   :show-inheritance:

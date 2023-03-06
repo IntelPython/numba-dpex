@@ -1,0 +1,7 @@
+numba\_dpex.core.kernel\_interface.arg\_pack\_unpacker module
+=============================================================
+
+.. automodule:: numba_dpex.core.kernel_interface.arg_pack_unpacker
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -10,7 +10,7 @@ barrier, at which point it returns control to all its callers.
 
 ``numba_dpex.barrier()`` supports two memory fence options:
 
-- ``numba_dpex.CLK_GLOBAL_MEM_FENCE``: The barrier function will queue a memory
+- ``numba_dpex.GLOBAL_MEM_FENCE``: The barrier function will queue a memory
   fence to ensure correct ordering of memory operations to global memory. Using
   the option can be useful when work-items, for example, write to buffer or
   image objects and then want to read the updated data. Passing no arguments to
@@ -20,7 +20,7 @@ barrier, at which point it returns control to all its callers.
   .. literalinclude:: ../../../numba_dpex/examples/barrier.py
    :pyobject: no_arg_barrier_support
 
-- ``numba_dpex.CLK_LOCAL_MEM_FENCE``: The barrier function will either flush
+- ``numba_dpex.LOCAL_MEM_FENCE``: The barrier function will either flush
   any variables stored in local memory or queue a memory fence to ensure
   correct ordering of memory operations to local memory. For example,
 

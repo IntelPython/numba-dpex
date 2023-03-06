@@ -1,0 +1,7 @@
+numba\_dpex.core.pipelines.dpjit\_compiler module
+=================================================
+
+.. automodule:: numba_dpex.core.pipelines.dpjit_compiler
+   :members:
+   :undoc-members:
+   :show-inheritance:

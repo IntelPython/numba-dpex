@@ -9,8 +9,7 @@ Submodules
 
    numba_dpex.dpctl_iface.dpctl_capi_fn_builder
    numba_dpex.dpctl_iface.dpctl_function_types
-   numba_dpex.dpctl_iface.kernel_launch_ops
-   numba_dpex.dpctl_iface.usm_ndarray_type
+   numba_dpex.dpctl_iface.legacy_kernel_launch_ops
 
 Module contents
 ---------------

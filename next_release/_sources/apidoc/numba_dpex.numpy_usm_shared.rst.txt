@@ -1,7 +1,0 @@
-numba\_dpex.numpy\_usm\_shared module
-=====================================
-
-.. automodule:: numba_dpex.numpy_usm_shared
-   :members:
-   :undoc-members:
-   :show-inheritance:
