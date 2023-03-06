@@ -230,10 +230,24 @@ class Math_atanh(Math_unary):
 
 class Math_floor(Math_unary):
     key = math.floor
+    cases = [
+        signature(types.intp, types.intp),
+        signature(types.int64, types.int64),
+        signature(types.uint64, types.uint64),
+        signature(types.int64, types.float32),
+        signature(types.int64, types.float64),
+    ]
 
 
 class Math_ceil(Math_unary):
     key = math.ceil
+    cases = [
+        signature(types.intp, types.intp),
+        signature(types.int64, types.int64),
+        signature(types.uint64, types.uint64),
+        signature(types.int64, types.float32),
+        signature(types.int64, types.float64),
+    ]
 
 
 class Math_trunc(Math_unary):
