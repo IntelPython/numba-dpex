@@ -10,13 +10,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Updated examples for kernel API demonstrating compute-follows-data programming
   model. (#826)
 * Numba type aliases to numba_dpex. (#851)
+* New LRU cache for kernels (#804) and funcs (#877)
+* New DpexTarget and dispatcher for compiling using numba-dpex (#887)
+* New dpjit decorator supporting dpnp compilation (#887)
+* New Range and NdRange classes for kernel submission that follow sycl's range
+  and ndrange syntax. (#888)
+* Monkey pacthes to Numba 0.56.4 to support dpnp ufuncs, allocating dpnp arrays (#954)
+* Backported the split parfor pass from upstream Numba. (#949)
+* New config flag (NUMBA_DPEX_DUMP_KERNEL_LLVM) to dump a kernel's LLVM IR (#924)
+* A badge to our gitter chatroom (#919)
+* A small script to update copyright headers (#917)
+* Boxing and unboxing functionality for dpnp.ndarray to numba_dpex (#902)
+* Overload implementation for dpnp.empty (#902)
+* Overload implementation for dpnp.empty_like, dpnp.zeros_like and
+  dpnp.ones_like inside dpjit (#928)
+* Overload implementation for dpnp.zeros and dpnp.ones inside dpjit (#923)
+* A USM-based NRT_MemInfo allocator to dpexrt_python module (#902)
 
 ### Changed
-* `CLK_GLOBAL_MEM_FENCE` and `CLK_LOCAL_MEM_FENCE` flags renamed to `GLOBAL_MEM_FENCE`
-  and `LOCAL_MEM_FENCE`. (#844)
+* `CLK_GLOBAL_MEM_FENCE` and `CLK_LOCAL_MEM_FENCE` flags renamed to
+  `GLOBAL_MEM_FENCE` and `LOCAL_MEM_FENCE`. (#844)
+* Switched from Ubuntu-latest to Ubuntu-20.04 for conda package build (#836)
+* Rename USMNdArrayType to USMNdArray (#851)
+* Changes to the Numba type to represent dpnp ndarray typess now renamed to
+  DpnpNdarray (#880)
+* Updated internal API for kernel interface, improved exceptions, improved
+  support for sycl_usm_array_interface supporting arrays as kernel arguments (#804)
+* Pin generated spirv version for kernels to 1.1 (#885)
+* Rename DpexContext and DpexTypingContext (#887)
+* License in setup.py to match actual project licensing (#904)
+* Renamed existing dpnp overloads that used stubs to dpnp_stubs_impl.py (#953)
+* Removes the usage of llvmlite.llvmpy (#932)
+* Dpctl version requirement mismatch is now a warning and not an ImportError (#925)
+* Update to versioneer 0.28 (#827)
+* Update to dpctl 0.14 (#858)
+* Update linters: black to 23.1.0, isort to 5.12.0 (#900)
 
 ### Fixed
-* Kernel specialization
+* Kernel specialization, compute follows data programming model for kernels (#804)
+* Dispatcher/caching rewrite to address performance regression (#912, #896)
+* func decorator qualname ambiguation fix (#905)
+
+### Removed
+* Removes the numpy_usm_shared module from numba_dpex. (#841)
+
+### Deprecated
+* Support for NumPy arrays as kernel arguments (#804)
+* Kernel argument access specifiers (#804)
+* Support for dpctl.device_context to launch kernels and njit offloading (#804)
+* Dpnp overloads using stubs. (#953)
+
 ## [0.19.0] - 2022-11-21
 
 ### Added
