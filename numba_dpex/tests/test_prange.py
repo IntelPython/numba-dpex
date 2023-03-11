@@ -28,9 +28,11 @@ def test_one_prange_mul():
     b = dpnp.ones((m, n), device=device)
 
     f(a, b)
+    na = dpnp.asnumpy(a)
+    nb = dpnp.asnumpy(b)
 
     for i in range(4):
-        assert b[i, 0] == a[i, 0] * 10
+        assert nb[i, 0] == na[i, 0] * 10
 
 
 @pytest.mark.skip(reason="dpnp.add() doesn't support variable + scalar.")
