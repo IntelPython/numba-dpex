@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.runtime package &mdash; numba-dpex 0.20.0+4.g33b3af49 documentation</title>
+  <title>numba_dpex.core.utils.kernel_templates.range_kernel_template module &mdash; numba-dpex 0.20.0+4.g33b3af49 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -80,9 +80,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">numba_dpex.core.runtime package</li>
+      <li class="breadcrumb-item active">numba_dpex.core.utils.kernel_templates.range_kernel_template module</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/apidoc/numba_dpex.core.runtime.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/apidoc/numba_dpex.core.utils.kernel_templates.range_kernel_template.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -90,32 +90,45 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="numba-dpex-core-runtime-package">
-<h1>numba_dpex.core.runtime package<a class="headerlink" href="#numba-dpex-core-runtime-package" title="Permalink to this heading"></a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.runtime.context.html">numba_dpex.core.runtime.context module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.runtime.context.html#numba_dpex.core.runtime.context.DpexRTContext"><code class="docutils literal notranslate"><span class="pre">DpexRTContext</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.runtime.context.html#numba_dpex.core.runtime.context.DpexRTContext.arraystruct_from_python"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.arraystruct_from_python()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.runtime.context.html#numba_dpex.core.runtime.context.DpexRTContext.get_queue_from_filter_string"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.get_queue_from_filter_string()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.runtime.context.html#numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.meminfo_alloc()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.runtime.context.html#numba_dpex.core.runtime.context.DpexRTContext.meminfo_alloc_unchecked"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.meminfo_alloc_unchecked()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.runtime.context.html#numba_dpex.core.runtime.context.DpexRTContext.meminfo_fill"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.meminfo_fill()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.runtime.context.html#numba_dpex.core.runtime.context.DpexRTContext.meminfo_fill_unchecked"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.meminfo_fill_unchecked()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.runtime.context.html#numba_dpex.core.runtime.context.DpexRTContext.submit_range"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.submit_range()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.runtime.context.html#numba_dpex.core.runtime.context.DpexRTContext.usm_ndarray_to_python_acqref"><code class="docutils literal notranslate"><span class="pre">DpexRTContext.usm_ndarray_to_python_acqref()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</div>
-</section>
-<section id="module-numba_dpex.core.runtime">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-numba_dpex.core.runtime" title="Permalink to this heading"></a></h2>
-</section>
+  <section id="module-numba_dpex.core.utils.kernel_templates.range_kernel_template">
+<span id="numba-dpex-core-utils-kernel-templates-range-kernel-template-module"></span><h1>numba_dpex.core.utils.kernel_templates.range_kernel_template module<a class="headerlink" href="#module-numba_dpex.core.utils.kernel_templates.range_kernel_template" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_templates.range_kernel_template.RangeKernelTemplate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.utils.kernel_templates.range_kernel_template.</span></span><span class="sig-name descname"><span class="pre">RangeKernelTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_rank</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ivar_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sentinel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop_ranges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_templates.range_kernel_template.RangeKernelTemplate" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A template class to generate a numba_dpex.kernel decorated function
+representing a basic range kernel.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_templates.range_kernel_template.RangeKernelTemplate.dump_kernel_ir">
+<span class="sig-name descname"><span class="pre">dump_kernel_ir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_templates.range_kernel_template.RangeKernelTemplate.dump_kernel_ir" title="Permalink to this definition"></a></dt>
+<dd><p>Helper to dump the Numba IR for the RangeKernelTemplate.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_templates.range_kernel_template.RangeKernelTemplate.dump_kernel_string">
+<span class="sig-name descname"><span class="pre">dump_kernel_string</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_templates.range_kernel_template.RangeKernelTemplate.dump_kernel_string" title="Permalink to this definition"></a></dt>
+<dd><p>Helper to print the kernel function string.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_templates.range_kernel_template.RangeKernelTemplate.kernel_ir">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kernel_ir</span></span><a class="headerlink" href="#numba_dpex.core.utils.kernel_templates.range_kernel_template.RangeKernelTemplate.kernel_ir" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the Numba IR generated for a RangeKernelTemplate.</p>
+<p>Returns: The Numba functionIR object for the compiled kernel_txt string.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_templates.range_kernel_template.RangeKernelTemplate.kernel_string">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kernel_string</span></span><a class="headerlink" href="#numba_dpex.core.utils.kernel_templates.range_kernel_template.RangeKernelTemplate.kernel_string" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the function string generated for a RangeKernelTemplate.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>str: A string representing a stub kernel function for the parfor.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

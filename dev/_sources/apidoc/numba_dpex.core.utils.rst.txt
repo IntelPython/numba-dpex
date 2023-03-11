@@ -1,6 +1,14 @@
 numba\_dpex.core.utils package
 ==============================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.core.utils.kernel_templates
+
 Submodules
 ----------
 
