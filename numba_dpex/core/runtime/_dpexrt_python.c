@@ -959,6 +959,13 @@ DPEXRT_sycl_usm_ndarray_to_python_acqref(arystruct_t *arystruct,
         }
         Py_DECREF(args);
     }
+    else {
+        PyErr_Format(PyExc_ValueError,
+                     "In 'DPEXRT_sycl_usm_ndarray_to_python_acqref', "
+                     "failed to create a new MemInfoObject object since "
+                     "meminfo field was null");
+        return MOD_ERROR_VAL;
+    }
 
     shape = arystruct->shape_and_strides;
 
