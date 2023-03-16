@@ -103,6 +103,54 @@ To run the examples:
 
     python numba_dpex/examples/sum.py
 
+Docker
+------
+
+An easy way you can try `numba_dpex` is by using docker.
+There are several prebuilt images available:
+
+.. code-block:: text
+
+    ghcr.io/intelpython/numba-dpex/runtime:<numba_dpex_version>-py<python_version>[-gpu]
+
+.. code-block:: text
+
+    ghcr.io/intelpython/numba-dpex/builder:<numba_dpex_version>-py<python_version>[-gpu]
+
+To try out numba dpex simpy run:
+
+.. code-block:: bash
+
+    docker run --rm -it ghcr.io/intelpython/numba-dpex/runtime:0.20.0-py3.10
+
+Within the container you can check available devices by running
+
+.. code-block:: bash
+
+    sycl-ls
+
+or
+
+.. code-block:: bash
+
+    python -c "import dpctl; dpctl.lsplatform();".
+
+.. note::
+
+    If you want to enable GPU you need to pass it within container and use ``*-gpu`` tag.
+
+    For passing GPU into container on linux use arguments ``--device=/dev/dri``.
+    However if you are using WSL you need to pass
+    ``--device=/dev/dxg -v /usr/lib/wsl:/usr/lib/wsl`` instead.
+
+So, for example, if you want to run numba dpex container with GPU support on WSL:
+
+.. code-block:: bash
+
+    docker run --rm -it \
+    --device=/dev/dxg -v /usr/lib/wsl:/usr/lib/wsl \
+    ghcr.io/intelpython/numba-dpex/runtime:0.20.0-py3.10-gpu
+
 
 .. _`Numba`: https://github.com/numba/numba
 .. _`Intel Python Numba`: https://github.com/IntelPython/numba

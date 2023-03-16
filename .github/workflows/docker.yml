@@ -1,0 +1,524 @@
+name: Docker build
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        default: '0.20.0'
+      dpctl_version:
+        default: '0.14.2'
+      dpnp_version:
+        default: '0.11.1'
+      numpy_version:
+        default: '1.22.3'
+      numba_version:
+        default: '0.56.4'
+      cython_version:
+        default: "0.29.33"
+      scikit_build_version:
+        default: "0.16.7"
+      oneapi_version:
+        default: '2023.0.0'
+
+
+jobs:
+  env:
+    runs-on: ubuntu-latest
+    outputs:
+      repository: ${{ steps.write.outputs.repository }}
+      BUILD_ARGS: ${{ steps.write.outputs.BUILD_ARGS }}
+      DOCKER_TAG: ${{ steps.write.outputs.DOCKER_TAG }}
+      DOCKER_STAGES_IMAGE: ${{ steps.write.outputs.DOCKER_STAGES_IMAGE }}
+      DOCKER_REPO_IMAGE: ${{ steps.write.outputs.DOCKER_REPO_IMAGE }}
+    steps:
+      - name: Write output env
+        id: write
+        run: |
+          export REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')
+          echo repository=$REPOSITORY >> "$GITHUB_OUTPUT"
+          echo "BUILD_ARGS<<EOF" >> $GITHUB_OUTPUT
+
+          echo "ONEAPI_VERSION=${{ inputs.oneapi_version }}" >> $GITHUB_OUTPUT
+          echo "DPCTL_GIT_BRANCH=${{ inputs.dpctl_version }}" >> $GITHUB_OUTPUT
+          echo "DPNP_GIT_BRANCH=${{ inputs.dpnp_version }}" >> $GITHUB_OUTPUT
+          echo "NUMBA_DPEX_GIT_BRANCH=${{ inputs.version }}" >> $GITHUB_OUTPUT
+          echo "INTEL_NUMPY_VERSION===${{ inputs.numpy_version }}" >> $GITHUB_OUTPUT
+          echo "INTEL_NUMBA_VERSION===${{ inputs.numba_version }}" >> $GITHUB_OUTPUT
+          echo "CYTHON_VERSION===${{ inputs.cython_version }}" >> $GITHUB_OUTPUT
+          echo "SCIKIT_BUILD_VERSION===${{ inputs.scikit_build_version }}" >> $GITHUB_OUTPUT
+          echo "GITHUB_USER=${{ github.actor }}" >> $GITHUB_OUTPUT
+          echo "GITHUB_PASSWORD=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_OUTPUT
+
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "DOCKER_STAGES_IMAGE=ghcr.io/$REPOSITORY/stages" >> $GITHUB_OUTPUT
+          echo "DOCKER_REPO_IMAGE=ghcr.io/$REPOSITORY" >> $GITHUB_OUTPUT
+
+  build-toolkit:
+    needs: env
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Numba does not support 3.11
+        # https://github.com/numba/numba/issues/8304
+        python_version: ['3.7', '3.8', '3.9', '3.10']
+    env:
+      BUILD_TARGET: toolkit
+      DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver-opts: |
+            image=moby/buildkit:v0.11.4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Docker meta
+        uses: docker/metadata-action@v4
+        id: meta
+        with:
+          images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
+          tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          target: ${{ env.BUILD_TARGET }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            ${{ needs.env.outputs.BUILD_ARGS }}
+            PYTHON_VERSION=${{ matrix.python_version }}
+
+  build-runtime-base:
+    needs: [env, build-toolkit]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Numba does not support 3.11
+        # https://github.com/numba/numba/issues/8304
+        python_version: ['3.7', '3.8', '3.9', '3.10']
+    env:
+      BUILD_TARGET: runtime-base
+      DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver-opts: |
+            image=moby/buildkit:v0.11.4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Docker meta
+        uses: docker/metadata-action@v4
+        id: meta
+        with:
+          images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
+          tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          target: ${{ env.BUILD_TARGET }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            ${{ needs.env.outputs.BUILD_ARGS }}
+            TOOLKIT_IMAGE=${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}:${{ env.DOCKER_TAG }}-toolkit
+            PYTHON_VERSION=${{ matrix.python_version }}
+
+
+  build-builder:
+    needs: [env, build-runtime-base]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Numba does not support 3.11
+        # https://github.com/numba/numba/issues/8304
+        python_version: ['3.7', '3.8', '3.9', '3.10']
+    env:
+      BUILD_TARGET: builder
+      DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver-opts: |
+            image=moby/buildkit:v0.11.4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Docker meta
+        uses: docker/metadata-action@v4
+        id: meta
+        with:
+          images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
+          tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          target: ${{ env.BUILD_TARGET }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            ${{ needs.env.outputs.BUILD_ARGS }}
+            TOOLKIT_IMAGE=${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}:${{ env.DOCKER_TAG }}-toolkit
+            RUNTIME_BASE_IMAGE=${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}:${{ env.DOCKER_TAG }}-runtime-base
+            PYTHON_VERSION=${{ matrix.python_version }}
+
+  build-dpctl-builder:
+    needs: [env, build-builder]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Numba does not support 3.11
+        # https://github.com/numba/numba/issues/8304
+        python_version: ['3.7', '3.8', '3.9', '3.10']
+    env:
+      BUILD_TARGET: dpctl-builder
+      DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver-opts: |
+            image=moby/buildkit:v0.11.4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Docker meta
+        uses: docker/metadata-action@v4
+        id: meta
+        with:
+          images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
+          tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          target: ${{ env.BUILD_TARGET }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            ${{ needs.env.outputs.BUILD_ARGS }}
+            BUILDER_IMAGE=${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}:${{ env.DOCKER_TAG }}-builder
+            PYTHON_VERSION=${{ matrix.python_version }}
+
+  build-dpnp-builder:
+    needs: [env, build-dpctl-builder]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Numba does not support 3.11
+        # https://github.com/numba/numba/issues/8304
+        python_version: ['3.7', '3.8', '3.9', '3.10']
+    env:
+      BUILD_TARGET: dpnp-builder
+      DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver-opts: |
+            image=moby/buildkit:v0.11.4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Docker meta
+        uses: docker/metadata-action@v4
+        id: meta
+        with:
+          images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
+          tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          target: ${{ env.BUILD_TARGET }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            ${{ needs.env.outputs.BUILD_ARGS }}
+            BUILDER_IMAGE=${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}:${{ env.DOCKER_TAG }}-builder
+            DPCTL_BUILDER_IMAGE=${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}:${{ env.DOCKER_TAG }}-dpctl-builder
+            PYTHON_VERSION=${{ matrix.python_version }}
+
+  build-numba-dpex-builder-runtime:
+    needs: [env, build-dpctl-builder, build-dpnp-builder]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Numba does not support 3.11
+        # https://github.com/numba/numba/issues/8304
+        python_version: ['3.7', '3.8', '3.9', '3.10']
+    env:
+      BUILD_TARGET: numba-dpex-builder-runtime
+      DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
+      DEST_TAG: ${{ needs.env.outputs.DOCKER_REPO_IMAGE }}/builder:${{ inputs.version }}-py${{ matrix.python_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver-opts: |
+            image=moby/buildkit:v0.11.4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Docker meta
+        uses: docker/metadata-action@v4
+        id: meta
+        with:
+          images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
+          tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          target: ${{ env.BUILD_TARGET }}
+          tags: ${{ steps.meta.outputs.tags }},${{ env.DEST_TAG }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            ${{ needs.env.outputs.BUILD_ARGS }}
+            BUILDER_IMAGE=${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}:${{ env.DOCKER_TAG }}-builder
+            DPCTL_BUILDER_IMAGE=${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}:${{ env.DOCKER_TAG }}-dpctl-builder
+            DPNP_BUILDER_IMAGE=${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}:${{ env.DOCKER_TAG }}-dpnp-builder
+            PYTHON_VERSION=${{ matrix.python_version }}
+
+  build-runtime:
+    needs: [env, build-runtime-base, build-dpctl-builder, build-dpnp-builder, build-numba-dpex-builder-runtime]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Numba does not support 3.11
+        # https://github.com/numba/numba/issues/8304
+        python_version: ['3.7', '3.8', '3.9', '3.10']
+    env:
+      BUILD_TARGET: runtime
+      DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
+      DEST_TAG: ${{ needs.env.outputs.DOCKER_REPO_IMAGE }}/runtime:${{ inputs.version }}-py${{ matrix.python_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver-opts: |
+            image=moby/buildkit:v0.11.4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Docker meta
+        uses: docker/metadata-action@v4
+        id: meta
+        with:
+          images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
+          tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          target: ${{ env.BUILD_TARGET }}
+          tags: ${{ steps.meta.outputs.tags }},${{ env.DEST_TAG }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            ${{ needs.env.outputs.BUILD_ARGS }}
+            BUILDER_IMAGE=${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}:${{ env.DOCKER_TAG }}-builder
+            DPCTL_BUILDER_IMAGE=${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}:${{ env.DOCKER_TAG }}-dpctl-builder
+            DPNP_BUILDER_IMAGE=${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}:${{ env.DOCKER_TAG }}-dpnp-builder
+            NUMBA_DPEX_BUILDER_RUNTIME_IMAGE=${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}:${{ env.DOCKER_TAG }}-numba-dpex-builder-runtime
+            RUNTIME_BASE_IMAGE=${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}:${{ env.DOCKER_TAG }}-runtime-base
+            PYTHON_VERSION=${{ matrix.python_version }}
+
+  build-drivers:
+    needs: [env]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Numba does not support 3.11
+        # https://github.com/numba/numba/issues/8304
+        python_version: ['3.7', '3.8', '3.9', '3.10']
+    env:
+      BUILD_TARGET: drivers
+      DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver-opts: |
+            image=moby/buildkit:v0.11.4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Docker meta
+        uses: docker/metadata-action@v4
+        id: meta
+        with:
+          images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
+          tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          target: ${{ env.BUILD_TARGET }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            ${{ needs.env.outputs.BUILD_ARGS }}
+            PYTHON_VERSION=${{ matrix.python_version }}
+
+  build-runtime-gpu:
+    needs: [env, build-runtime, build-drivers]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Numba does not support 3.11
+        # https://github.com/numba/numba/issues/8304
+        python_version: ['3.7', '3.8', '3.9', '3.10']
+    env:
+      BUILD_TARGET: runtime-gpu
+      DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
+      DEST_TAG: ${{ needs.env.outputs.DOCKER_REPO_IMAGE }}/runtime:${{ inputs.version }}-py${{ matrix.python_version }}-gpu
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver-opts: |
+            image=moby/buildkit:v0.11.4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Docker meta
+        uses: docker/metadata-action@v4
+        id: meta
+        with:
+          images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
+          tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          target: ${{ env.BUILD_TARGET }}
+          tags: ${{ steps.meta.outputs.tags }},${{ env.DEST_TAG }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            ${{ needs.env.outputs.BUILD_ARGS }}
+            RUNTIME_IMAGE=${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}:${{ env.DOCKER_TAG }}-runtime
+            PYTHON_VERSION=${{ matrix.python_version }}
+
+  build-numba-dpex-builder-runtime-gpu:
+    needs: [env, build-numba-dpex-builder-runtime, build-drivers]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Numba does not support 3.11
+        # https://github.com/numba/numba/issues/8304
+        python_version: ['3.7', '3.8', '3.9', '3.10']
+    env:
+      BUILD_TARGET: numba-dpex-builder-runtime-gpu
+      DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
+      DEST_TAG: ${{ needs.env.outputs.DOCKER_REPO_IMAGE }}/builder:${{ inputs.version }}-py${{ matrix.python_version }}-gpu
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver-opts: |
+            image=moby/buildkit:v0.11.4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Docker meta
+        uses: docker/metadata-action@v4
+        id: meta
+        with:
+          images: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}
+          tags: ${{ env.DOCKER_TAG }}-${{ env.BUILD_TARGET }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          target: ${{ env.BUILD_TARGET }}
+          tags: ${{ steps.meta.outputs.tags }},${{ env.DEST_TAG }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            ${{ needs.env.outputs.BUILD_ARGS }}
+            RUNTIME_IMAGE=${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}:${{ env.DOCKER_TAG }}-runtime
+            NUMBA_DPEX_BUILDER_RUNTIME_IMAGE=${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}:${{ env.DOCKER_TAG }}-numba-dpex-builder-runtime
+            PYTHON_VERSION=${{ matrix.python_version }}
+
+  test:
+    needs: [env, build-runtime]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Numba does not support 3.11
+        # https://github.com/numba/numba/issues/8304
+        python_version: ['3.7', '3.8', '3.9', '3.10']
+        pyargs: ['dpctl', 'numba_dpex.tests', '/root/dpnp_tests', '/root/dpnp_tests/third_party']
+    env:
+      DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
+    container:
+      image: ${{ needs.env.outputs.DOCKER_STAGES_IMAGE }}:${{ inputs.version }}-py${{ matrix.python_version }}-runtime
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: List devices
+        run: sycl-ls
+      - name: Python version
+        run: python --version
+      - name: Setup pytest
+        run: pip install pytest
+      - name: Testing ${{ matrix.pyargs }}
+        run: pytest --pyargs ${{ matrix.pyargs }}
