@@ -1,7 +1,0 @@
-numba\_dpex.utils.messages module
-=================================
-
-.. automodule:: numba_dpex.utils.messages
-   :members:
-   :undoc-members:
-   :show-inheritance:

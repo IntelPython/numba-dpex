@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LGGL0NJK6P"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-LGGL0NJK6P');
+    </script>
+    
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.utils package &mdash; numba-dpex 0.19.0+26.g0d801b9a documentation</title>
+  <title>numba_dpex.utils package &mdash; numba-dpex 0.20.0+17.g55b309d9 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -27,11 +35,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> numba-dpex
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            numba-dpex
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -68,7 +80,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">numba_dpex.utils package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/apidoc/numba_dpex.utils.rst.txt" rel="nofollow"> View page source</a>
@@ -89,7 +101,6 @@
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.array_utils.html#numba_dpex.utils.array_utils.as_usm_obj"><code class="docutils literal notranslate"><span class="pre">as_usm_obj()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.array_utils.html#numba_dpex.utils.array_utils.copy_from_numpy_to_usm_obj"><code class="docutils literal notranslate"><span class="pre">copy_from_numpy_to_usm_obj()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.array_utils.html#numba_dpex.utils.array_utils.copy_to_numpy_from_usm_obj"><code class="docutils literal notranslate"><span class="pre">copy_to_numpy_from_usm_obj()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.array_utils.html#numba_dpex.utils.array_utils.get_info_from_suai"><code class="docutils literal notranslate"><span class="pre">get_info_from_suai()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.array_utils.html#numba_dpex.utils.array_utils.has_usm_memory"><code class="docutils literal notranslate"><span class="pre">has_usm_memory()</span></code></a></li>
 </ul>
 </li>
@@ -128,14 +139,8 @@
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.llvm_codegen_helpers.html#numba_dpex.utils.llvm_codegen_helpers.get_zero"><code class="docutils literal notranslate"><span class="pre">get_zero()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="numba_dpex.utils.messages.html">numba_dpex.utils.messages module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="numba_dpex.utils.misc.html">numba_dpex.utils.misc module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.misc.html#numba_dpex.utils.misc.IndeterminateExecutionQueueError"><code class="docutils literal notranslate"><span class="pre">IndeterminateExecutionQueueError</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="numba_dpex.utils.type_conversion_fns.html">numba_dpex.utils.type_conversion_fns module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.type_conversion_fns.html#numba_dpex.utils.type_conversion_fns.npytypes_array_to_dpex_array"><code class="docutils literal notranslate"><span class="pre">npytypes_array_to_dpex_array()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.utils.type_conversion_fns.html#numba_dpex.utils.type_conversion_fns.suai_to_dpex_array"><code class="docutils literal notranslate"><span class="pre">suai_to_dpex_array()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -144,12 +149,6 @@
 <section id="module-numba_dpex.utils">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-numba_dpex.utils" title="Permalink to this heading"></a></h2>
 <p>Various utility functions and classes to aid LLVM IR building.</p>
-<dl class="py exception">
-<dt class="sig sig-object py" id="numba_dpex.utils.IndeterminateExecutionQueueError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.</span></span><span class="sig-name descname"><span class="pre">IndeterminateExecutionQueueError</span></span><a class="headerlink" href="#numba_dpex.utils.IndeterminateExecutionQueueError" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-</dd></dl>
-
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.utils.LLVMTypes">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.</span></span><span class="sig-name descname"><span class="pre">LLVMTypes</span></span><a class="headerlink" href="#numba_dpex.utils.LLVMTypes" title="Permalink to this definition"></a></dt>
@@ -203,10 +202,6 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>The address space values supported by numba_dpex.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 60%" />
-<col style="width: 40%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Address space</p></th>
 <th class="head"><p>Value</p></th>
@@ -373,24 +368,6 @@ context: The LLVM IR builder context.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.utils.get_info_from_suai">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.</span></span><span class="sig-name descname"><span class="pre">get_info_from_suai</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.get_info_from_suai" title="Permalink to this definition"></a></dt>
-<dd><p>Convenience function to gather information from __sycl_usm_array_interface__.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>obj: Array with SUAI attribute.</p>
-</dd>
-<dt>Returns:</dt><dd><p>usm_mem: USM memory object.
-total_size: Total number of items in the array.
-shape: Shape of the array.
-ndim: Total number of dimensions.
-itemsize: Size of each item.
-strides: Stride of the array.
-dtype: Dtype of the array.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.utils.get_llvm_ptr_type">
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.</span></span><span class="sig-name descname"><span class="pre">get_llvm_ptr_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.get_llvm_ptr_type" title="Permalink to this definition"></a></dt>
 <dd><p>Returns an LLVM pointer type for a give LLVM type object.</p>
@@ -404,7 +381,7 @@ dtype: Dtype of the array.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.utils.get_llvm_type">
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.</span></span><span class="sig-name descname"><span class="pre">get_llvm_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.get_llvm_type" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the LLVM Value corresponsing to a Numba type.</p>
+<dd><p>Returns the LLVM Value corresponding to a Numba type.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>context: The LLVM context or the execution state of the current IR
 generator.
@@ -423,7 +400,7 @@ type: A Numba type object.</p>
 <dt>Args:</dt><dd><p>context: The LLVM IR builder context.</p>
 </dd>
 </dl>
-<p>Returns: An LLVM Contant Value storing one.</p>
+<p>Returns: An LLVM Constant Value storing one.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -434,7 +411,7 @@ type: A Numba type object.</p>
 <dt>Args:</dt><dd><p>context: The LLVM IR builder context.</p>
 </dd>
 </dl>
-<p>Returns: An LLVM Contant Value storing zero.</p>
+<p>Returns: An LLVM Constant Value storing zero.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -488,23 +465,6 @@ belongs.</p>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.utils.suai_to_dpex_array">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.</span></span><span class="sig-name descname"><span class="pre">suai_to_dpex_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addrspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.suai_to_dpex_array" title="Permalink to this definition"></a></dt>
-<dd><p>Create type for Array with __sycl_usm_array_interface__ (SUAI) attribute.</p>
-<p>This function creates a Numba type for arrays with SUAI attribute.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>arr: Array with SUAI attribute.
-addrspace: Address space this array is allocated in.</p>
-</dd>
-</dl>
-<p>Returns: The Numba type for SUAI array.</p>
-<dl class="simple">
-<dt>Raises:</dt><dd><p>NotImplementedError: If the dtype of the passed array is not supported.</p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 </section>
 
@@ -516,7 +476,7 @@ addrspace: Address space this array is allocated in.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021,2022 Intel.</p>
+    <p>&#169; Copyright 2021-2023 Intel Corporation.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LGGL0NJK6P"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-LGGL0NJK6P');
+    </script>
+    
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.decorators module &mdash; numba-dpex 0.19.0+26.g0d801b9a documentation</title>
+  <title>numba_dpex.decorators module &mdash; numba-dpex 0.20.0+17.g55b309d9 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -27,11 +35,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> numba-dpex
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            numba-dpex
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -68,7 +80,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">numba_dpex.decorators module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/apidoc/numba_dpex.decorators.rst.txt" rel="nofollow"> View page source</a>
@@ -82,27 +94,34 @@
   <section id="module-numba_dpex.decorators">
 <span id="numba-dpex-decorators-module"></span><h1>numba_dpex.decorators module<a class="headerlink" href="#module-numba_dpex.decorators" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.decorators.autojit">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.decorators.</span></span><span class="sig-name descname"><span class="pre">autojit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.decorators.autojit" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dpex.decorators.dpjit">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.decorators.</span></span><span class="sig-name descname"><span class="pre">dpjit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kws</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.decorators.dpjit" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.decorators.func">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.decorators.</span></span><span class="sig-name descname"><span class="pre">func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.decorators.func" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.decorators.</span></span><span class="sig-name descname"><span class="pre">func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_or_sig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.decorators.func" title="Permalink to this definition"></a></dt>
+<dd><p>A decorator to define a kernel device function.</p>
+<p>Device functions are functions that can be only invoked from a kernel
+and not from a host function. This provides a special decorator
+<cite>numba_dpex.func</cite> specifically to implement a device function.</p>
+<p>A device function can be invoked from another device function and
+unlike a kernel function, a device function can return a value like
+normal functions.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.decorators.kernel">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.decorators.</span></span><span class="sig-name descname"><span class="pre">kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.decorators.kernel" title="Permalink to this definition"></a></dt>
-<dd><p>The decorator to write a numba_dpex kernel function.</p>
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.decorators.</span></span><span class="sig-name descname"><span class="pre">kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func_or_sig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.decorators.kernel" title="Permalink to this definition"></a></dt>
+<dd><p>A decorator to define a kernel function.</p>
 <p>A kernel function is conceptually equivalent to a SYCL kernel function, and
 gets compiled into either an OpenCL or a LevelZero SPIR-V binary kernel.
-A dpex kernel imposes the following restrictions:</p>
+A kernel decorated Python function has the following restrictions:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>A numba_dpex.kernel function can not return any value.</p></li>
-<li><p>All array arguments passed to a kernel should be of the same type
-and have the same dtype.</p></li>
+<li><p>The function can not return any value.</p></li>
+<li><p>All array arguments passed to a kernel should adhere to compute
+follows data programming model.</p></li>
 </ul>
 </div></blockquote>
 </dd></dl>
@@ -117,7 +136,7 @@ and have the same dtype.</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021,2022 Intel.</p>
+    <p>&#169; Copyright 2021-2023 Intel Corporation.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
