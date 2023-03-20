@@ -61,7 +61,7 @@ jobs:
       matrix:
         # Numba does not support 3.11
         # https://github.com/numba/numba/issues/8304
-        python_version: ['3.7', '3.8', '3.9', '3.10']
+        python_version: ['3.8', '3.9', '3.10']
     env:
       BUILD_TARGET: toolkit
       DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
@@ -103,7 +103,7 @@ jobs:
       matrix:
         # Numba does not support 3.11
         # https://github.com/numba/numba/issues/8304
-        python_version: ['3.7', '3.8', '3.9', '3.10']
+        python_version: ['3.8', '3.9', '3.10']
     env:
       BUILD_TARGET: runtime-base
       DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
@@ -147,7 +147,7 @@ jobs:
       matrix:
         # Numba does not support 3.11
         # https://github.com/numba/numba/issues/8304
-        python_version: ['3.7', '3.8', '3.9', '3.10']
+        python_version: ['3.8', '3.9', '3.10']
     env:
       BUILD_TARGET: builder
       DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
@@ -191,7 +191,7 @@ jobs:
       matrix:
         # Numba does not support 3.11
         # https://github.com/numba/numba/issues/8304
-        python_version: ['3.7', '3.8', '3.9', '3.10']
+        python_version: ['3.8', '3.9', '3.10']
     env:
       BUILD_TARGET: dpctl-builder
       DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
@@ -234,7 +234,7 @@ jobs:
       matrix:
         # Numba does not support 3.11
         # https://github.com/numba/numba/issues/8304
-        python_version: ['3.7', '3.8', '3.9', '3.10']
+        python_version: ['3.8', '3.9', '3.10']
     env:
       BUILD_TARGET: dpnp-builder
       DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
@@ -278,7 +278,7 @@ jobs:
       matrix:
         # Numba does not support 3.11
         # https://github.com/numba/numba/issues/8304
-        python_version: ['3.7', '3.8', '3.9', '3.10']
+        python_version: ['3.8', '3.9', '3.10']
     env:
       BUILD_TARGET: numba-dpex-builder-runtime
       DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
@@ -324,7 +324,7 @@ jobs:
       matrix:
         # Numba does not support 3.11
         # https://github.com/numba/numba/issues/8304
-        python_version: ['3.7', '3.8', '3.9', '3.10']
+        python_version: ['3.8', '3.9', '3.10']
     env:
       BUILD_TARGET: runtime
       DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
@@ -372,7 +372,7 @@ jobs:
       matrix:
         # Numba does not support 3.11
         # https://github.com/numba/numba/issues/8304
-        python_version: ['3.7', '3.8', '3.9', '3.10']
+        python_version: ['3.8', '3.9', '3.10']
     env:
       BUILD_TARGET: drivers
       DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
@@ -414,7 +414,7 @@ jobs:
       matrix:
         # Numba does not support 3.11
         # https://github.com/numba/numba/issues/8304
-        python_version: ['3.7', '3.8', '3.9', '3.10']
+        python_version: ['3.8', '3.9', '3.10']
     env:
       BUILD_TARGET: runtime-gpu
       DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
@@ -458,7 +458,7 @@ jobs:
       matrix:
         # Numba does not support 3.11
         # https://github.com/numba/numba/issues/8304
-        python_version: ['3.7', '3.8', '3.9', '3.10']
+        python_version: ['3.8', '3.9', '3.10']
     env:
       BUILD_TARGET: numba-dpex-builder-runtime-gpu
       DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
@@ -504,7 +504,7 @@ jobs:
       matrix:
         # Numba does not support 3.11
         # https://github.com/numba/numba/issues/8304
-        python_version: ['3.7', '3.8', '3.9', '3.10']
+        python_version: ['3.8', '3.9', '3.10']
         pyargs: ['dpctl', 'numba_dpex.tests', '/root/dpnp_tests', '/root/dpnp_tests/third_party']
     env:
       DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
