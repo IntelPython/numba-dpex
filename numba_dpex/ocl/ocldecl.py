@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -140,7 +140,6 @@ class OCL_local_array(CallableTemplate):
 
     def generic(self):
         def typer(shape, dtype):
-
             # Only integer literals and tuples of integer literals are valid
             # shapes
             if isinstance(shape, types.Integer):
@@ -184,7 +183,6 @@ class OCL_private_array(CallableTemplate):
 
     def generic(self):
         def typer(shape, dtype):
-
             # Only integer literals and tuples of integer literals are valid
             # shapes
             if isinstance(shape, types.Integer):

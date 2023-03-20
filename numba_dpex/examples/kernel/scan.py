@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -56,7 +56,7 @@ def main():
 
     print("Using device ...")
     print(arr.device)
-    kernel_hillis_steele_scan[N, ndpx.DEFAULT_LOCAL_SIZE](arr)
+    kernel_hillis_steele_scan[ndpx.Range(N)](arr)
 
     # the output should be [0, 1, 3, 6, ...]
     arr_np = np.asnumpy(arr)

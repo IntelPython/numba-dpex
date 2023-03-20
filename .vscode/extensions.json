@@ -1,8 +1,0 @@
-{
-  "recommendations": [
-    "ms-python.python",
-    "timonwong.shellcheck",
-    "eamodio.gitlens",
-    "ryanluker.vscode-coverage-gutters"
-  ]
-}

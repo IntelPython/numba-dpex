@@ -1,156 +1,202 @@
 #! /usr/bin/env python
 
-# Copyright 2020 - 2022 Intel Corporation
+# Copyright 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
 import dpctl
+import dpnp
 import numpy as np
 import pytest
-from numba import njit, prange
+from numba import njit
 
-from numba_dpex.tests._helper import assert_auto_offloading, skip_no_opencl_gpu
+from numba_dpex import dpjit, prange
 
 
-@skip_no_opencl_gpu
-class TestPrange:
-    def test_one_prange(self):
-        @njit
-        def f(a, b):
-            for i in prange(4):
-                b[i, 0] = a[i, 0] * 10
+def test_one_prange_mul():
+    @dpjit
+    def f(a, b):
+        for i in prange(4):
+            b[i, 0] = a[i, 0] * 10
+        return
 
-        m = 8
-        n = 8
-        a = np.ones((m, n))
-        b = np.ones((m, n))
+    device = dpctl.select_default_device()
 
-        device = dpctl.SyclDevice("opencl:gpu")
-        with assert_auto_offloading(), dpctl.device_context(device):
-            f(a, b)
+    m = 8
+    n = 8
+    a = dpnp.ones((m, n), device=device)
+    b = dpnp.ones((m, n), device=device)
 
-        for i in range(4):
-            assert b[i, 0] == a[i, 0] * 10
+    f(a, b)
+    na = dpnp.asnumpy(a)
+    nb = dpnp.asnumpy(b)
 
-    def test_nested_prange(self):
-        @njit
-        def f(a, b):
-            # dimensions must be provided as scalar
-            m, n = a.shape
-            for i in prange(m):
-                for j in prange(n):
-                    b[i, j] = a[i, j] * 10
+    for i in range(4):
+        assert nb[i, 0] == na[i, 0] * 10
 
-        m = 8
-        n = 8
-        a = np.ones((m, n))
-        b = np.ones((m, n))
 
-        device = dpctl.SyclDevice("opencl:gpu")
-        with assert_auto_offloading(), dpctl.device_context(device):
-            f(a, b)
+@pytest.mark.skip(reason="dpnp.add() doesn't support variable + scalar.")
+def test_one_prange_add_scalar():
+    @dpjit
+    def f(a, b):
+        for i in prange(4):
+            b[i, 0] = a[i, 0] + 10
+        return
 
-        assert np.all(b == 10)
+    device = dpctl.select_default_device()
 
-    @pytest.mark.skip
-    def test_multiple_prange(self):
-        @njit
-        def f(a, b):
-            # dimensions must be provided as scalar
-            m, n = a.shape
-            for i in prange(m):
-                val = 10
-                for j in prange(n):
-                    b[i, j] = a[i, j] * val
+    m = 8
+    n = 8
+    a = dpnp.ones((m, n), device=device)
+    b = dpnp.ones((m, n), device=device)
 
-            for i in prange(m):
-                for j in prange(n):
-                    a[i, j] = a[i, j] * 10
+    f(a, b)
 
-        m = 8
-        n = 8
-        a = np.ones((m, n))
-        b = np.ones((m, n))
+    for i in range(4):
+        assert b[i, 0] == a[i, 0] + 10
 
-        device = dpctl.SyclDevice("opencl:gpu")
-        with assert_auto_offloading(parfor_offloaded=2), dpctl.device_context(
-            device
-        ):
-            f(a, b)
 
-        assert np.all(b == 10)
-        assert np.all(a == 10)
+@pytest.mark.skip(reason="[i,:] like indexing is not supported yet.")
+def test_prange_2d_array():
+    device = dpctl.select_default_device()
+    n = 10
 
-    def test_three_prange(self):
-        @njit
-        def f(a, b):
-            # dimensions must be provided as scalar
-            m, n, o = a.shape
-            for i in prange(m):
-                val = 10
-                for j in prange(n):
-                    constant = 2
-                    for k in prange(o):
-                        b[i, j, k] = a[i, j, k] * (val + constant)
+    @dpjit
+    def f(a, b, c):
+        for i in prange(n):
+            c[i, :] = a[i, :] + b[i, :]
+        return
 
-        m = 8
-        n = 8
-        o = 8
-        a = np.ones((m, n, o))
-        b = np.ones((m, n, o))
+    a = dpnp.ones((n, n), dtype=dpnp.int32, device=device)
+    b = dpnp.ones((n, n), dtype=dpnp.int32, device=device)
+    c = dpnp.ones((n, n), dtype=dpnp.int32, device=device)
 
-        device = dpctl.SyclDevice("opencl:gpu")
-        with assert_auto_offloading(parfor_offloaded=1), dpctl.device_context(
-            device
-        ):
-            f(a, b)
+    f(a, b, c)
 
-        assert np.all(b == 12)
+    np.testing.assert_equal(c.asnumpy(), np.ones((n, n), dtype=np.int32) * 2)
 
-    @pytest.mark.skip(reason="numba-dpex issue 110")
-    def test_two_consequent_prange(self):
-        def prange_example():
-            n = 10
-            a = np.ones((n), dtype=np.float64)
-            b = np.ones((n), dtype=np.float64)
-            c = np.ones((n), dtype=np.float64)
-            for i in prange(n // 2):
-                a[i] = b[i] + c[i]
 
-            return a
+@pytest.mark.skip(reason="Nested prange is not supported yet.")
+def test_nested_prange():
+    @dpjit
+    def f(a, b):
+        # dimensions must be provided as scalar
+        m, n = a.shape
+        for i in prange(m):
+            for j in prange(n):
+                b[i, j] = a[i, j] * 10
+        return
 
-        jitted = njit(prange_example)
+    device = dpctl.select_default_device()
 
-        device = dpctl.SyclDevice("opencl:gpu")
-        with assert_auto_offloading(parfor_offloaded=2), dpctl.device_context(
-            device
-        ):
-            jitted_res = jitted()
+    m = 8
+    n = 8
+    a = dpnp.ones((m, n), device=device)
+    b = dpnp.ones((m, n), device=device)
 
-        res = prange_example()
+    f(a, b)
 
-        np.testing.assert_equal(res, jitted_res)
+    assert np.all(b.asnumpy() == 10)
 
-    @pytest.mark.skip(reason="NRT required but not enabled")
-    def test_2d_arrays(self):
-        def prange_example():
-            n = 10
-            a = np.ones((n, n), dtype=np.float64)
-            b = np.ones((n, n), dtype=np.float64)
-            c = np.ones((n, n), dtype=np.float64)
-            for i in prange(n // 2):
-                a[i] = b[i] + c[i]
 
-            return a
+@pytest.mark.skip(reason="Nested prange is not supported yet.")
+def test_multiple_prange():
+    @dpjit
+    def f(a, b):
+        # dimensions must be provided as scalar
+        m, n = a.shape
+        for i in prange(m):
+            val = 10
+            for j in prange(n):
+                b[i, j] = a[i, j] * val
 
-        jitted = njit(prange_example)
+        for i in prange(m):
+            for j in prange(n):
+                a[i, j] = a[i, j] * 10
+        return
 
-        device = dpctl.SyclDevice("opencl:gpu")
-        with assert_auto_offloading(parfor_offloaded=2), dpctl.device_context(
-            device
-        ):
-            jitted_res = jitted()
+    device = dpctl.select_default_device()
 
-        res = prange_example()
+    m = 8
+    n = 8
+    a = dpnp.ones((m, n), device=device)
+    b = dpnp.ones((m, n), device=device)
 
-        np.testing.assert_equal(res, jitted_res)
+    f(a, b)
+
+    assert np.all(b.asnumpy() == 10)
+    assert np.all(a.asnumpy() == 10)
+
+
+@pytest.mark.skip(reason="Nested prange is not supported yet.")
+def test_three_prange():
+    @dpjit
+    def f(a, b):
+        # dimensions must be provided as scalar
+        m, n, o = a.shape
+        for i in prange(m):
+            val = 10
+            for j in prange(n):
+                constant = 2
+                for k in prange(o):
+                    b[i, j, k] = a[i, j, k] * (val + constant)
+        return
+
+    device = dpctl.select_default_device()
+
+    m = 8
+    n = 8
+    o = 8
+    a = dpnp.ones((m, n, o), device=device)
+    b = dpnp.ones((m, n, o), device=device)
+
+    f(a, b)
+
+    assert np.all(b.asnumpy() == 12)
+
+
+def test_two_consecutive_prange():
+    @dpjit
+    def prange_example(a, b, c, d):
+        for i in prange(n):
+            c[i] = a[i] + b[i]
+        for i in prange(n):
+            d[i] = a[i] - b[i]
+        return
+
+    device = dpctl.select_default_device()
+
+    n = 10
+    a = dpnp.ones((n), dtype=dpnp.float64, device=device)
+    b = dpnp.ones((n), dtype=dpnp.float64, device=device)
+    c = dpnp.zeros((n), dtype=dpnp.float64, device=device)
+    d = dpnp.zeros((n), dtype=dpnp.float64, device=device)
+
+    prange_example(a, b, c, d)
+
+    np.testing.assert_equal(c.asnumpy(), np.ones((n), dtype=np.float64) * 2)
+    np.testing.assert_equal(d.asnumpy(), np.zeros((n), dtype=np.float64))
+
+
+@pytest.mark.skip(reason="[i,:] like indexing is not supported yet.")
+def test_two_consecutive_prange_2d():
+    @dpjit
+    def prange_example(a, b, c, d):
+        for i in prange(n):
+            c[i, :] = a[i, :] + b[i, :]
+        for i in prange(n):
+            d[i, :] = a[i, :] - b[i, :]
+        return
+
+    device = dpctl.select_default_device()
+
+    n = 10
+    a = dpnp.ones((n, n), dtype=dpnp.int32, device=device)
+    b = dpnp.ones((n, n), dtype=dpnp.int32, device=device)
+    c = dpnp.ones((n, n), dtype=dpnp.int32, device=device)
+    d = dpnp.ones((n, n), dtype=dpnp.int32, device=device)
+
+    prange_example(a, b, c, d)
+
+    np.testing.assert_equal(c.asnumpy(), np.ones((n, n), dtype=np.int32) * 2)
+    np.testing.assert_equal(d.asnumpy(), np.zeros((n, n), dtype=np.int32))

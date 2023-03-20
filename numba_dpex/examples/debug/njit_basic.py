@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -20,3 +20,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    print("Done ...")

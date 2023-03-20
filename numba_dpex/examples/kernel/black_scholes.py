@@ -1,7 +1,6 @@
-# Copyright 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2022 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache 2.0
-
 
 from math import erf, exp, log, sqrt
 
@@ -94,7 +93,7 @@ def main():
     print("Using device ...")
     print(price.device)
 
-    kernel_black_scholes[NOPT, ndpx.DEFAULT_LOCAL_SIZE](
+    kernel_black_scholes[ndpx.Range(NOPT)](
         price, strike, t, rate, volatility, call, put
     )
 

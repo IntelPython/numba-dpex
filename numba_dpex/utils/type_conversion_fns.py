@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -9,14 +9,12 @@ Currently the module supports the following converter functions:
 
 """
 from numba.core import types
-from numba.np import numpy_support
 
 from numba_dpex.core.types import Array
 
-from .array_utils import get_info_from_suai
 from .constants import address_space
 
-__all__ = ["npytypes_array_to_dpex_array", "suai_to_dpex_array"]
+__all__ = ["npytypes_array_to_dpex_array"]
 
 
 def npytypes_array_to_dpex_array(arrtype, addrspace=address_space.GLOBAL):
@@ -63,47 +61,3 @@ def npytypes_array_to_dpex_array(arrtype, addrspace=address_space.GLOBAL):
         )
     else:
         raise NotImplementedError
-
-
-def suai_to_dpex_array(arr, addrspace=address_space.GLOBAL):
-    """Create type for Array with __sycl_usm_array_interface__ (SUAI) attribute.
-
-    This function creates a Numba type for arrays with SUAI attribute.
-
-    Args:
-        arr: Array with SUAI attribute.
-        addrspace: Address space this array is allocated in.
-
-    Returns: The Numba type for SUAI array.
-
-    Raises:
-        NotImplementedError: If the dtype of the passed array is not supported.
-    """
-    from numba_dpex.core.types import USMNdArray
-
-    (
-        usm_mem,
-        total_size,
-        shape,
-        ndim,
-        itemsize,
-        strides,
-        dtype,
-    ) = get_info_from_suai(arr)
-
-    try:
-        dtype = numpy_support.from_dtype(dtype)
-    except NotImplementedError:
-        raise ValueError("Unsupported array dtype: %s" % (dtype,))
-
-    layout = "C"
-    readonly = False
-
-    return USMNdArray(
-        dtype,
-        ndim,
-        layout,
-        None,
-        readonly,
-        addrspace=addrspace,
-    )

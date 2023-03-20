@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# Copyright 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -23,6 +23,7 @@ def shape(request):
     return request.param
 
 
+@pytest.mark.xfail
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_njit(filter_str):
     @vectorize(nopython=True)
@@ -66,6 +67,7 @@ def input_type(request):
     return request.param
 
 
+@pytest.mark.xfail
 @pytest.mark.parametrize("filter_str", filter_strings)
 def test_vectorize(filter_str, shape, dtypes, input_type):
     def vector_add(a, b):

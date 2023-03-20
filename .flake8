@@ -17,5 +17,5 @@ exclude =
     .git,
     __pycache__,
     _version.py,
-    numpy_usm_shared.py,
     lowerer.py,
+    parfor.py

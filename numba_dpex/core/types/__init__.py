@@ -1,8 +1,10 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
 from .array_type import Array
+from .dpctl_types import DpctlSyclQueue
+from .dpnp_ndarray_type import DpnpNdArray
 from .numba_types_short_names import (
     b1,
     bool_,
@@ -30,6 +32,8 @@ usm_ndarray = USMNdArray
 
 __all__ = [
     "Array",
+    "DpctlSyclQueue",
+    "DpnpNdArray",
     "USMNdArray",
     "none",
     "boolean",

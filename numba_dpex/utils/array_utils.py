@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -18,40 +18,6 @@ supported_numpy_dtype = [
     np.float32,
     np.float64,
 ]
-
-
-def get_info_from_suai(obj):
-    """
-    Convenience function to gather information from __sycl_usm_array_interface__.
-
-    Args:
-        obj: Array with SUAI attribute.
-
-    Returns:
-        usm_mem: USM memory object.
-        total_size: Total number of items in the array.
-        shape: Shape of the array.
-        ndim: Total number of dimensions.
-        itemsize: Size of each item.
-        strides: Stride of the array.
-        dtype: Dtype of the array.
-    """
-    usm_mem = dpctl_mem.as_usm_memory(obj)
-
-    assert usm_mem is not None
-
-    shape = obj.__sycl_usm_array_interface__["shape"]
-    total_size = np.prod(obj.__sycl_usm_array_interface__["shape"])
-    ndim = len(obj.__sycl_usm_array_interface__["shape"])
-    itemsize = np.dtype(obj.__sycl_usm_array_interface__["typestr"]).itemsize
-    dtype = np.dtype(obj.__sycl_usm_array_interface__["typestr"])
-    strides = obj.__sycl_usm_array_interface__["strides"]
-    if strides is None:
-        strides = [1] * ndim
-        for i in reversed(range(1, ndim)):
-            strides[i - 1] = strides[i] * shape[i]
-        strides = tuple(strides)
-    return usm_mem, total_size, shape, ndim, itemsize, strides, dtype
 
 
 def has_usm_memory(obj):

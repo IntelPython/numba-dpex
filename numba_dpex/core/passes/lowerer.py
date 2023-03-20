@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -11,6 +11,7 @@ import warnings
 from collections import OrderedDict
 
 import dpctl
+import dpctl.program as dpctl_prog
 import numba
 import numpy as np
 from numba.core import compiler, funcdesc, ir, lowering, sigutils, types
@@ -44,12 +45,64 @@ from numba.parfors.parfor_lowering import _lower_parfor_parallel
 
 import numba_dpex as dpex
 from numba_dpex import config
-from numba_dpex.core.target import DpexTargetContext
+from numba_dpex.core.descriptor import dpex_kernel_target
+from numba_dpex.core.targets.kernel_target import DpexKernelTargetContext
 from numba_dpex.core.types import Array
 from numba_dpex.dpctl_iface import KernelLaunchOps
 from numba_dpex.utils import address_space, npytypes_array_to_dpex_array
 
 from .dufunc_inliner import dufunc_inliner
+
+
+def _compile_kernel_parfor(
+    sycl_queue, kernel_name, func_ir, args, args_with_addrspaces, debug=False
+):
+    # We only accept numba_dpex.core.types.Array type
+    for arg in args_with_addrspaces:
+        if isinstance(arg, types.npytypes.Array) and not isinstance(arg, Array):
+            raise TypeError(
+                "Only numba_dpex.core.types.Array objects are supported as "
+                + "kernel arguments. Received %s" % (type(arg))
+            )
+    if config.DEBUG:
+        print("compile_kernel_parfor", args)
+        for a in args_with_addrspaces:
+            print(a, type(a))
+            if isinstance(a, types.npytypes.Array):
+                print("addrspace:", a.addrspace)
+
+    # Create a SPIRVKernel object
+    kernel = dpex.core.kernel_interface.spirv_kernel.SpirvKernel(
+        func_ir, kernel_name
+    )
+
+    # compile the kernel
+    kernel.compile(
+        args=args_with_addrspaces,
+        typing_ctx=dpex_kernel_target.typing_context,
+        target_ctx=dpex_kernel_target.target_context,
+        debug=debug,
+        compile_flags=None,
+    )
+
+    # Compile a SYCL Kernel object rom the SPIRVKernel
+
+    dpctl_create_program_from_spirv_flags = []
+
+    if debug or config.OPT == 0:
+        # if debug is ON we need to pass additional flags to igc.
+        dpctl_create_program_from_spirv_flags = ["-g", "-cl-opt-disable"]
+
+    # create a program
+    kernel_bundle = dpctl_prog.create_program_from_spirv(
+        sycl_queue,
+        kernel.device_driver_ir_module,
+        " ".join(dpctl_create_program_from_spirv_flags),
+    )
+    #  create a kernel
+    sycl_kernel = kernel_bundle.get_sycl_kernel(kernel.module_name)
+
+    return sycl_kernel
 
 
 def _print_block(block):
@@ -268,13 +321,9 @@ def _create_gufunc_for_parfor_body(
     lowerer,
     parfor,
     typemap,
-    typingctx,
-    targetctx,
     flags,
     loop_ranges,
-    locals,
     has_aliases,
-    index_var_typ,
     races,
 ):
     """
@@ -591,7 +640,7 @@ def _create_gufunc_for_parfor_body(
                 prev_block.append(ir.Jump(body_first_label, loc))
                 # Add all the parfor loop body blocks to the gufunc function's
                 # IR.
-                for (l, b) in loop_body.items():
+                for l, b in loop_body.items():
                     gufunc_ir.blocks[l] = b
                 body_last_label = max(loop_body.keys())
                 gufunc_ir.blocks[new_label] = block
@@ -656,8 +705,9 @@ def _create_gufunc_for_parfor_body(
         print("after DUFunc inline".center(80, "-"))
         gufunc_ir.dump()
 
-    kernel_func = dpex.compiler.compile_kernel_parfor(
+    sycl_kernel = _compile_kernel_parfor(
         dpctl.get_current_queue(),
+        gufunc_name,
         gufunc_ir,
         gufunc_param_types,
         param_types_addrspaces,
@@ -669,7 +719,7 @@ def _create_gufunc_for_parfor_body(
     if config.DEBUG_ARRAY_OPT:
         print("kernel_sig = ", kernel_sig)
 
-    return kernel_func, parfor_args, kernel_sig, func_arg_types, setitems
+    return sycl_kernel, parfor_args, kernel_sig, func_arg_types, setitems
 
 
 def _lower_parfor_gufunc(lowerer, parfor):
@@ -762,13 +812,9 @@ def _lower_parfor_gufunc(lowerer, parfor):
             lowerer,
             parfor,
             typemap,
-            typingctx,
-            targetctx,
             flags,
             loop_ranges,
-            {},
             bool(alias_map),
-            index_var_typ,
             parfor.races,
         )
     finally:
@@ -893,7 +939,7 @@ keep_alive_kernels = []
 
 def generate_kernel_launch_ops(
     lowerer,
-    cres,
+    kernel,
     gu_signature,
     outer_sig,
     expr_args,
@@ -930,7 +976,7 @@ def generate_kernel_launch_ops(
         print("modified_arrays", modified_arrays)
 
     # get dpex_cpu_portion_lowerer object
-    kernel_launcher = KernelLaunchOps(lowerer, cres.kernel, num_inputs)
+    kernel_launcher = KernelLaunchOps(lowerer, kernel, num_inputs)
 
     # Get a pointer to the current queue
     curr_queue = kernel_launcher.get_current_queue()
@@ -977,7 +1023,7 @@ def generate_kernel_launch_ops(
     ]
     all_args = [loadvar_or_none(lowerer, x) for x in expr_args[:ninouts]]
 
-    keep_alive_kernels.append(cres)
+    keep_alive_kernels.append(kernel)
 
     # Call clSetKernelArg for each arg and create arg array for
     # the enqueue function. Put each part of each argument into
@@ -990,7 +1036,6 @@ def generate_kernel_launch_ops(
         all_val_types,
         range(len(expr_args)),
     ):
-
         if config.DEBUG_ARRAY_OPT:
             print(
                 "var:",
@@ -1065,7 +1110,7 @@ def relatively_deep_copy(obj, memo):
     from numba.core.typing.templates import Signature
     from numba.np.ufunc.dufunc import DUFunc
 
-    from numba_dpex.compiler import DpexFunctionTemplate
+    from numba_dpex.core.kernel_interface.func import DpexFunctionTemplate
 
     # objects which shouldn't or can't be copied and it's ok not to copy it.
     if isinstance(
@@ -1198,14 +1243,15 @@ def relatively_deep_copy(obj, memo):
         memo[obj_id] = cpy
         return cpy
 
-    # some python objects are not copyable. In such case exception would be raised
-    # it is just a convinient point to find such objects
+    # some python objects are not copyable. In such case exception would be
+    # raised it is just a convinient point to find such objects
     try:
         cpy = copy.copy(obj)
     except Exception as e:
         raise e
 
-    # __slots__ for subclass specify only members declared in subclass. So to get all members we need to go through
+    # __slots__ for subclass specify only members declared in subclass. So to
+    # get all members we need to go through
     # all supeclasses
     def get_slots_members(obj):
         keys = []
@@ -1264,7 +1310,7 @@ class DPEXLowerer(Lower):
 
         cpu_context = (
             context.cpu_context
-            if isinstance(context, DpexTargetContext)
+            if isinstance(context, DpexKernelTargetContext)
             else context
         )
         self.gpu_lower = self._lower(
@@ -1400,7 +1446,6 @@ def lower_parfor_rollback(lowerer, parfor):
     try:
         _lower_parfor_gufunc(lowerer, parfor)
         if config.DEBUG:
-
             device_filter_str = (
                 dpctl.get_current_queue().get_sycl_device().filter_string
             )

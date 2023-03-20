@@ -1,7 +1,7 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Coverage Status](https://coveralls.io/repos/github/IntelPython/numba-dpex/badge.svg?branch=main)](https://coveralls.io/github/IntelPython/numba-dpex?branch=main)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
-
+[![Join the chat at https://matrix.to/#/#Data-Parallel-Python_community:gitter.im](https://badges.gitter.im/Join%20Chat.svg)](https://app.gitter.im/#/room/#Data-Parallel-Python_community:gitter.im)
 <img align="left" src="https://spec.oneapi.io/oneapi-logo-white-scaled.jpg" alt="oneAPI logo" width="75"/>
 <br/>
 <br/>
@@ -9,86 +9,53 @@
 <br/>
 
 
-# What?
 
-The data-parallel extension to Numba (Numba-dpex) adds data-parallel kernel
-programming and auto-offload capabilities to [Numba](http://numba.pydata.org).
-The extension uses the Intel&reg; DPC++ runtime and supports various OpenCL and
-Level Zero devices. Refer the [user
-guide](https://intelpython.github.io/numba-dpex/) for more details.
+Data-parallel Extension for Numba* (numba-dpex) is a standalone extension for
+the [Numba](http://numba.pydata.org) Python JIT compiler. Numba-dpex provides
+a generic kernel programming API and an offload feature that extends Numba's
+auto-parallelizer to generate data-parallel kernels for `parfor` nodes.
 
-# Installing
+Numba-dpex's kernel API has a design and API similar to Numba's `cuda.jit`
+module, but is based on the [SYCL](https://sycl.tech/) language. The
+code-generation for the kernel API currently supports
+[SPIR-V](https://www.khronos.org/spir/)-based
+[OpenCL](https://www.khronos.org/opencl/) and
+[oneAPI Level Zero](https://spec.oneapi.io/level-zero/latest/index.html)
+devices that are supported by Intel&reg; DPC++ SYCL compiler runtime. Supported
+devices include Intel&reg CPUs, integrated GPUs and discrete GPUs.
+
+The offload functionality in numba-dpex is based on Numba's `parfor`
+loop-parallelizer. Our compiler extends Numba's `parfor` feature to generate
+kernels and offload them to devices supported by DPC++ SYCL compiler runtime.
+The offload functionality is supported via a new NumPy drop-in replacement
+library: [dpnp](https://github.com/IntelPython/dpnp) and NumPy-based expressions
+and `numba.prange` loops are not offloaded.
+
+Refer the [documentation](https://intelpython.github.io/numba-dpex) and examples
+to learn more.
+
+## Getting Started
 
 Numba-dpex is part of the Intel&reg; Distribution of Python (IDP) and Intel&reg;
-oneAPI BaseKit, and can be installed along with oneAPI. Additionally, we support
-installing it from Anaconda cloud and PyPi. Please refer the instructions
+oneAPI AIKit, and can be installed along with oneAPI. Additionally, we support
+installing it from Anaconda cloud. Please refer the instructions
 on our [documentation page](https://intelpython.github.io/numba-dpex/latest/user_guides/getting_started.html)
 for more details.
 
-# Getting started
-
-A good starting point is to run the test suite that includes the unit tests
-inside the **numba_dpex/tests** module. To run the tests, invoke:
+Once the package is installed, a good starting point is to run the examples in
+the `numba_dpex/examples` directory. The test suite may also be invoked as
+follows:
 
 ```bash
 python -m pytest --pyargs numba_dpex.tests
 ```
-or
-```bash
-pytest
-```
-Once you run the tests and make sure your numba-dpex installation is up and
-running, try out the examples inside the **numba_dpex/examples** folder. For
-example, you can try the `vector addition` example as follows:
-```bash
-python numba_dpex/examples/sum.py
-```
 
-# Known Issue
-Floor division operator `//` is not supported inside the `numba_dpex.kernel`
-kernel programming API. The below code snippet will result in error reported in
-this [Issue](https://github.com/IntelPython/numba-dpex/issues/571).
+## Contributing
 
-```
-import numpy as np, numba_dpex
-@numba_dpex.kernel
-def div_kernel(dst, src, m):
-    i = numba_dpex.get_global_id(0)
-    dst[i] = src[i] // m
+Please create an issue for feature requests and bug reports. You can also use
+the GitHub Discussions feature for general questions.
 
-import dpctl
-with dpctl.device_context(dpctl.SyclQueue()):
-    X = np.arange(10)
-    Y = np.arange(10)
-    div_kernel[10, numba_dpex.DEFAULT_LOCAL_SIZE](Y, X, 5)
-    D = X//5
-    print(Y, D)
-```
+If you want to chat with the developers, join the
+[#Data-Parallel-Python_community](https://app.gitter.im/#/room/#Data-Parallel-Python_community:gitter.im) room on Gitter.im.
 
-To bypass this issue, the `llvm-spirv` tool from the `dpcpp` conda package needs
-to be used.
-
-For linux: `conda install dpcpp_linux-64`
-For Windows: `conda install dpcpp_win-64`
-
-# Learn more?
-
-Detailed documentation including user guides are hosted on our
-[documentation site](https://intelpython.github.io/numba-dpex).
-
-# Found a bug?
-
-Please report issues and bugs directly on
-[github](https://github.com/IntelPython/numba-dpex/issues).
-
-## Test Matrix:
-
-|   #   |   OS    | Distribution |  Python  |  Architecture   | Test type |  IntelOneAPI   | Build Commands |    Dependencies    |   Backend   |
-| :---: | :-----: | :----------: | :------: | :-------------: | :-------: | :------------: | :------------: | :----------------: | :---------: |
-|   1   |  Linux  | Ubuntu 20.04 | 3.7, 3.8 | Gen9 Integrated |    CI     | 2021.3, 2021.4 |      (1)       | Numba, NumPy, dpnp | OCL, L0-1.1 |
-|   2   |  Linux  | Ubuntu 20.04 | 3.7, 3.8 | Gen12 Discrete  |  Manual   | 2021.3, 2021.4 |      (1)       | Numba, NumPy, dpnp | OCL, L0-1.1 |
-|   3   |  Linux  | Ubuntu 20.04 | 3.7, 3.8 |    i7-10710U    |    CI     | 2021.3, 2021.4 |      (1)       | Numba, NumPy, dpnp | OCL, L0-1.1 |
-|   4   | Windows |      10      | 3.7, 3.8 | Gen9 Integrated |    CI     | 2021.3, 2021.4 |      (1)       |    Numba, NumPy    |     OCL     |
-|   5   | Windows |      10      | 3.7, 3.8 |    i7-10710     |    CI     | 2021.3, 2021.4 |      (1)       |    Numba, NumPy    |     OCL     |
-
-(1): `python setup.py install; pytest -q -ra --disable-warnings --pyargs numba_dpex -vv`
+Also refer our [CONTRIBUTING](https://github.com/IntelPython/numba-dpex/blob/main/CONTRIBUTING.md) page.

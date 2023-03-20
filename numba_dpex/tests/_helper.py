@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# Copyright 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -11,8 +11,7 @@ import dpctl
 import pytest
 from numba.tests.support import captured_stdout
 
-from numba_dpex import config
-from numba_dpex.numba_support import numba_version
+from numba_dpex import config, numba_version
 
 
 def has_opencl_gpu():

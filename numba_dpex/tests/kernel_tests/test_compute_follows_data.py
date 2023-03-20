@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -10,16 +10,11 @@ import numpy as np
 import pytest
 
 import numba_dpex
+from numba_dpex.core.exceptions import ComputeFollowsDataInferenceError
 from numba_dpex.tests._helper import (
     filter_strings,
     skip_no_level_zero_gpu,
     skip_no_opencl_gpu,
-)
-from numba_dpex.utils import (
-    IndeterminateExecutionQueueError,
-    IndeterminateExecutionQueueError_msg,
-    cfd_ctx_mgr_wrng_msg,
-    mix_datatype_err_msg,
 )
 
 global_size = 10
@@ -115,7 +110,7 @@ def test_ndarray_argtype(offload_device, input_arrays):
 def test_mix_argtype(offload_device, input_arrays):
     usm_type = "device"
 
-    a, b, expected = input_arrays
+    a, b, _ = input_arrays
     got = np.ones_like(a)
 
     device = dpctl.SyclDevice(offload_device)
@@ -136,10 +131,8 @@ def test_mix_argtype(offload_device, input_arrays):
         buffer_ctor_kwargs={"queue": queue},
     )
 
-    with pytest.raises(TypeError) as error_msg:
+    with pytest.raises(ComputeFollowsDataInferenceError):
         sum_kernel[global_size, local_size](da, b, dc)
-
-        assert mix_datatype_err_msg in error_msg
 
 
 @pytest.mark.parametrize("offload_device", filter_strings)
@@ -235,9 +228,8 @@ def test_equivalent_usm_ndarray(input_arrays):
         buffer_ctor_kwargs={"queue": queue1},
     )
 
-    with pytest.raises(IndeterminateExecutionQueueError) as error_msg:
+    with pytest.raises(ComputeFollowsDataInferenceError):
         sum_kernel[global_size, local_size](da, not_equivalent_db, dc)
-        assert IndeterminateExecutionQueueError_msg in str(error_msg.value)
 
     sum_kernel[global_size, local_size](da, equivalent_db, dc)
     dc.usm_data.copy_to_host(got.reshape((-1)).view("|u1"))

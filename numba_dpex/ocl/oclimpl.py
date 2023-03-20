@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -6,65 +6,28 @@ import operator
 from functools import reduce
 
 import dpctl
-import llvmlite.binding as ll
-import llvmlite.llvmpy.core as lc
-from llvmlite import ir
-from llvmlite.llvmpy.core import Type
+from llvmlite import binding as ll
+from llvmlite import ir as llvmir
 from numba.core import cgutils, types
 from numba.core.imputils import Registry
 from numba.core.typing.npydecl import parse_dtype
 
-from numba_dpex import config, target
-from numba_dpex.codegen import SPIR_DATA_LAYOUT
-from numba_dpex.core.itanium_mangler import mangle, mangle_c, mangle_type
+from numba_dpex import config, kernel_target
+from numba_dpex.core.codegen import SPIR_DATA_LAYOUT
 from numba_dpex.core.types import Array
 from numba_dpex.ocl.atomics import atomic_helper
 from numba_dpex.utils import address_space
 
 from . import stubs
+from ._declare_function import _declare_function
 
 registry = Registry()
 lower = registry.lower
 
-_void_value = lc.Constant.null(lc.Type.pointer(lc.Type.int(8)))
+_void_value = llvmir.Constant(llvmir.IntType(8).as_pointer(), None)
+
 
 # -----------------------------------------------------------------------------
-
-
-def _declare_function(context, builder, name, sig, cargs, mangler=mangle_c):
-    """Insert declaration for a opencl builtin function.
-    Uses the Itanium mangler.
-
-    Args
-    ----
-    context: target context
-
-    builder: llvm builder
-
-    name: str
-        symbol name
-
-    sig: signature
-        function signature of the symbol being declared
-
-    cargs: sequence of str
-        C type names for the arguments
-
-    mangler: a mangler function
-        function to use to mangle the symbol
-
-    """
-    mod = builder.module
-    if sig.return_type == types.void:
-        llretty = lc.Type.void()
-    else:
-        llretty = context.get_value_type(sig.return_type)
-    llargs = [context.get_value_type(t) for t in sig.args]
-    fnty = Type.function(llretty, llargs)
-    mangled = mangler(name, cargs)
-    fn = cgutils.get_or_insert_function(mod, fnty, mangled)
-    fn.calling_convention = target.CC_SPIR_FUNC
-    return fn
 
 
 @lower(stubs.get_global_id, types.uint32)
@@ -186,7 +149,7 @@ def insert_and_call_atomic_fn(
     ll_p = None
     name = ""
     if dtype.name == "float32":
-        ll_val = ir.FloatType()
+        ll_val = llvmir.FloatType()
         ll_p = ll_val.as_pointer()
         if fn_type == "add":
             name = "numba_dpex_atomic_add_f32"
@@ -196,7 +159,7 @@ def insert_and_call_atomic_fn(
             raise TypeError("Operation type is not supported %s" % (fn_type))
     elif dtype.name == "float64":
         if True:
-            ll_val = ir.DoubleType()
+            ll_val = llvmir.DoubleType()
             ll_p = ll_val.as_pointer()
             if fn_type == "add":
                 name = "numba_dpex_atomic_add_f64"
@@ -222,15 +185,15 @@ def insert_and_call_atomic_fn(
 
     mod = builder.module
     if sig.return_type == types.void:
-        llretty = lc.Type.void()
+        llretty = llvmir.VoidType()
     else:
         llretty = context.get_value_type(sig.return_type)
 
     llargs = [ll_p, context.get_value_type(sig.args[2])]
-    fnty = ir.FunctionType(llretty, llargs)
+    fnty = llvmir.FunctionType(llretty, llargs)
 
     fn = cgutils.get_or_insert_function(mod, fnty, name)
-    fn.calling_convention = target.CC_SPIR_FUNC
+    fn.calling_convention = kernel_target.CC_SPIR_FUNC
 
     generic_ptr = context.addrspacecast(builder, ptr, address_space.GENERIC)
 
@@ -264,7 +227,7 @@ def native_atomic_add(context, builder, sig, args):
     ptr = cgutils.get_item_pointer(context, builder, aryty, lary, indices)
 
     if dtype == types.float32 or dtype == types.float64:
-        context.extra_compile_options[target.LLVM_SPIRV_ARGS] = [
+        context.extra_compile_options[kernel_target.LLVM_SPIRV_ARGS] = [
             "--spirv-ext=+SPV_EXT_shader_atomic_float_add"
         ]
         name = "__spirv_AtomicFAddEXT"
@@ -281,8 +244,8 @@ def native_atomic_add(context, builder, sig, args):
     retty = context.get_value_type(sig.return_type)
     spirv_fn_arg_types = [
         ptr_type,
-        ir.IntType(32),
-        ir.IntType(32),
+        llvmir.IntType(32),
+        llvmir.IntType(32),
         context.get_value_type(sig.args[2]),
     ]
 
@@ -299,9 +262,9 @@ def native_atomic_add(context, builder, sig, args):
         ],
     )
 
-    fnty = ir.FunctionType(retty, spirv_fn_arg_types)
+    fnty = llvmir.FunctionType(retty, spirv_fn_arg_types)
     fn = cgutils.get_or_insert_function(builder.module, fnty, mangled_fn_name)
-    fn.calling_convention = target.CC_SPIR_FUNC
+    fn.calling_convention = kernel_target.CC_SPIR_FUNC
 
     sycl_memory_order = atomic_helper.sycl_memory_order.relaxed
     sycl_memory_scope = atomic_helper.sycl_memory_scope.device
@@ -397,7 +360,7 @@ def atomic_add(context, builder, sig, args, name):
     from .atomics import atomic_support_present
 
     if atomic_support_present():
-        context.extra_compile_options[target.LINK_ATOMIC] = True
+        context.extra_compile_options[kernel_target.LINK_ATOMIC] = True
         aryty, indty, valty = sig.args
         ary, inds, val = args
         dtype = aryty.dtype
@@ -516,18 +479,20 @@ def _generic_array(context, builder, shape, dtype, symbol_name, addrspace):
     """
     elemcount = reduce(operator.mul, shape)
     lldtype = context.get_data_type(dtype)
-    laryty = Type.array(lldtype, elemcount)
+    laryty = llvmir.ArrayType(lldtype, elemcount)
 
     if addrspace == address_space.LOCAL:
         lmod = builder.module
 
         # Create global variable in the requested address-space
-        gvmem = lmod.add_global_variable(laryty, symbol_name, addrspace)
+        gvmem = cgutils.add_global_variable(
+            lmod, laryty, symbol_name, addrspace
+        )
 
         if elemcount <= 0:
             raise ValueError("array length <= 0")
         else:
-            gvmem.linkage = lc.LINKAGE_INTERNAL
+            gvmem.linkage = "internal"
 
         if dtype not in types.number_domain:
             raise TypeError("unsupported type: %s" % dtype)

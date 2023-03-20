@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -129,7 +129,6 @@ def dufunc_inliner(func_ir, calltypes, typemap, typingctx, targetctx):
     while work_list:
         label, block = work_list.pop()
         for i, instr in enumerate(block.body):
-
             if isinstance(instr, ir.Assign):
                 expr = instr.value
                 if isinstance(expr, ir.Expr):

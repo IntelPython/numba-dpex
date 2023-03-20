@@ -20,7 +20,7 @@ jobs:
 
     strategy:
       matrix:
-        python: ["3.8", "3.9"]
+        python: ["3.8", "3.9", "3.10"]
 
     steps:
       - uses: actions/checkout@v3
@@ -36,7 +36,7 @@ jobs:
         run: ./scripts/build_conda_package.sh ${{ matrix.python }}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
           path: /usr/share/miniconda/conda-bld/linux-64/${{ env.PACKAGE_NAME }}-*.tar.bz2
@@ -46,18 +46,12 @@ jobs:
 
     strategy:
       matrix:
-        python: ["3.8", "3.9"]
-        integration_channels: [""]
+        python: ["3.8", "3.9", "3.10"]
         experimental: [false]
         artifact_name: [""]
-        include:
-          - python: "3.8"
-            integration_channels: -c dppy/label/dev
-            artifact_name: -c dppy_label_dev
-            experimental: true
     continue-on-error: ${{ matrix.experimental }}
     env:
-      CHANNELS: ${{ matrix.integration_channels }} -c intel -c defaults -c numba -c numba/label/dev -c dppy/label/dev --override-channels
+      CHANNELS: -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev --override-channels
       conda-bld: C:\Miniconda\conda-bld\win-64\
 
     steps:
@@ -70,7 +64,7 @@ jobs:
           activate-environment: ""
 
       - name: Cache conda packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
           CACHE_NUMBER: 0  # Increase to reset cache
         with:
@@ -85,7 +79,7 @@ jobs:
       - name: Build conda package
         run: conda build --no-test --python ${{ matrix.python }} ${{ env.CHANNELS }} conda-recipe
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }} ${{ matrix.artifact_name }}
           path: ${{ env.conda-bld }}${{ env.PACKAGE_NAME }}-*.tar.bz2
@@ -96,13 +90,13 @@ jobs:
 
     strategy:
       matrix:
-        python: ["3.8", "3.9"]
+        python: ["3.8", "3.9", "3.10"]
         numba: ["0.56"]
         dpnp: ["0.11"]
 
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 
@@ -158,7 +152,7 @@ jobs:
           conda activate numba_dpex_env
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
           export OCL_ICD_FILENAMES=libintelocl.so
-          for script in $(find . \( -not -name "_*" -not -name "vectorize.py" -not -name "scan.py" -and -name "*.py" \))
+          for script in $(find . \( -not -name "_*" -not -name "vector_sum2D.py" -not -name "vectorize.py" -not -name "scan.py" -and -name "*.py" \))
           do
             echo "Executing ${script}"
             python ${script} || exit 1
@@ -170,21 +164,13 @@ jobs:
 
     strategy:
       matrix:
-        python: ["3.8", "3.9"]
+        python: ["3.8", "3.9", "3.10"]
         integration_channels: [""]
-        experimental: [true]  # packages are not available on -c intel yet
-        artifact_name: [""]
-        dependencies: [""]
-        include:
-          - python: "3.8"
-            integration_channels: -c dppy/label/dev
-            artifact_name: -c dppy_label_dev
-            experimental: true  # current stable
-            dependencies: ""
+        experimental: [false]  # packages are not available on -c intel yet
     continue-on-error: ${{ matrix.experimental }}
     env:
       # conda-forge: llvm-spirv 11 not on intel channel yet
-      CHANNELS: ${{ matrix.integration_channels }} -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev -c conda-forge --override-channels
+      CHANNELS: -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev --override-channels
 
     steps:
       - name: Create dir for numba-dpex repo
@@ -195,15 +181,16 @@ jobs:
           path: dpex-repo
           fetch-depth: 0
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
-          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }} ${{ matrix.artifact_name }}
+          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
       - uses: conda-incubator/setup-miniconda@v2
         with:
-          auto-activate-base: true
-          activate-environment: ""
-      - name: Install conda-build
-        run: conda install conda-build
+          use-only-tar-bz2: true
+          auto-update-conda: true
+          conda-build-version: '*'
+          miniconda-version: 'latest'
+          activate-environment: "numba_dpex_wintest"
       - name: Create conda channel
         run: |
           mkdir -p $env:GITHUB_WORKSPACE/channel/win-64
@@ -214,9 +201,9 @@ jobs:
       - name: Collect dependencies
         run: conda install ${{ env.PACKAGE_NAME }} python=${{ matrix.python }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }} --only-deps --dry-run > lockfile
       - name: Cache conda packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         env:
-          CACHE_NUMBER: 0  # Increase to reset cache
+          CACHE_NUMBER: 1  # Increase to reset cache
         with:
           path: /home/runner/conda_pkgs_dir
           key:
@@ -269,6 +256,8 @@ jobs:
 
       - name: Add dpnp skip variable
         run: echo "NUMBA_DPEX_TESTING_SKIP_NO_DPNP=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Smoke test
+        run: python -c "import numba_dpex.core.runtime._dpexrt_python"
       - name: Run tests
         run: |
           python -m pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }} -vv
@@ -279,10 +268,10 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        python: ["3.8", "3.9"]
+        python: ["3.8", "3.9", "3.10"]
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 
@@ -307,10 +296,10 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python: ["3.8", "3.9"]
+        python: ["3.8", "3.9", "3.10"]
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 

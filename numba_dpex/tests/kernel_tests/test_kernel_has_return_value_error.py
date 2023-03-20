@@ -1,13 +1,15 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import dpctl
+import dpctl.tensor as dpt
 import numpy as np
 import pytest
 
 import numba_dpex as dpex
-from numba_dpex.tests._helper import filter_strings
+from numba_dpex import int32, usm_ndarray
+
+i32arrty = usm_ndarray(ndim=1, dtype=int32, layout="C")
 
 
 def f(a):
@@ -16,7 +18,7 @@ def f(a):
 
 list_of_sig = [
     None,
-    ("int32[::1](int32[::1])"),
+    (i32arrty(i32arrty)),
 ]
 
 
@@ -25,13 +27,9 @@ def sig(request):
     return request.param
 
 
-@pytest.mark.parametrize("filter_str", filter_strings)
-def test_return(filter_str, sig):
-    a = np.array(np.random.random(122), np.int32)
+def test_return(sig):
+    a = dpt.arange(1024, dtype=dpt.int32, device="0")
 
     with pytest.raises(dpex.core.exceptions.KernelHasReturnValueError):
         kernel = dpex.kernel(sig)(f)
-
-        device = dpctl.SyclDevice(filter_str)
-        with dpctl.device_context(device):
-            kernel[a.size, dpex.DEFAULT_LOCAL_SIZE](a)
+        kernel[a.size, dpex.DEFAULT_LOCAL_SIZE](a)

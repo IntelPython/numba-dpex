@@ -1,13 +1,18 @@
-# SPDX-FileCopyrightText: 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2022 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import dpctl.tensor
-from numba.core.typeconv import Conversion
-from numba.core.types.npytypes import Array
-
 """A type class to represent dpctl.tensor.usm_ndarray type in Numba
 """
+
+import dpctl
+import dpctl.tensor
+from numba.core.typeconv import Conversion
+from numba.core.typeinfer import CallConstraint
+from numba.core.types.npytypes import Array
+from numba.np.numpy_support import from_dtype
+
+from numba_dpex.utils import address_space
 
 
 class USMNdArray(Array):
@@ -15,19 +20,67 @@ class USMNdArray(Array):
 
     def __init__(
         self,
-        dtype,
         ndim,
-        layout,
-        usm_type,
-        device,
+        layout="C",
+        dtype=None,
+        usm_type="device",
+        device="unknown",
+        queue=None,
         readonly=False,
         name=None,
         aligned=True,
-        addrspace=None,
+        addrspace=address_space.GLOBAL,
     ):
         self.usm_type = usm_type
-        self.device = device
         self.addrspace = addrspace
+
+        if queue is not None and device != "unknown":
+            if not isinstance(device, str):
+                raise TypeError(
+                    "The device keyword arg should be a str object specifying "
+                    "a SYCL filter selector"
+                )
+            if not isinstance(queue, dpctl.SyclQueue):
+                raise TypeError(
+                    "The queue keyword arg should be a dpctl.SyclQueue object"
+                )
+            d1 = queue.sycl_device
+            d2 = dpctl.SyclDevice(device)
+            if d1 != d2:
+                raise TypeError(
+                    "The queue keyword arg and the device keyword arg specify "
+                    "different SYCL devices"
+                )
+            self.queue = queue
+            self.device = device
+        elif queue is None and device != "unknown":
+            if not isinstance(device, str):
+                raise TypeError(
+                    "The device keyword arg should be a str object specifying "
+                    "a SYCL filter selector"
+                )
+            self.queue = dpctl.SyclQueue(device)
+            self.device = self.queue.sycl_device.filter_string
+        elif queue is not None and device == "unknown":
+            if not isinstance(queue, dpctl.SyclQueue):
+                raise TypeError(
+                    "The queue keyword arg should be a dpctl.SyclQueue object"
+                )
+            self.device = self.queue.sycl_device.filter_string
+            self.queue = queue
+        else:
+            self.queue = dpctl.SyclQueue()
+            self.device = self.queue.sycl_device.filter_string
+
+        if not dtype:
+            dummy_tensor = dpctl.tensor.empty(
+                sh=1, order=layout, usm_type=usm_type, sycl_queue=self.queue
+            )
+            # convert dpnp type to numba/numpy type
+            _dtype = dummy_tensor.dtype
+            self.dtype = from_dtype(_dtype)
+        else:
+            self.dtype = dtype
 
         if name is None:
             type_name = "usm_ndarray"
@@ -35,11 +88,23 @@ class USMNdArray(Array):
                 type_name = "readonly " + type_name
             if not aligned:
                 type_name = "unaligned " + type_name
-            name_parts = (type_name, dtype, ndim, layout, usm_type, device)
-            name = "%s(%s, %sd, %s, %s, %s)" % name_parts
+            name_parts = (
+                type_name,
+                self.dtype,
+                ndim,
+                layout,
+                self.addrspace,
+                usm_type,
+                self.device,
+                self.queue,
+            )
+            name = (
+                "%s(dtype=%s, ndim=%s, layout=%s, address_space=%s, "
+                "usm_type=%s, device=%s, sycl_device=%s)" % name_parts
+            )
 
         super().__init__(
-            dtype,
+            self.dtype,
             ndim,
             layout,
             readonly=readonly,
@@ -71,7 +136,7 @@ class USMNdArray(Array):
             device = self.device
         if usm_type is None:
             usm_type = self.usm_type
-        return USMNdArray(
+        return type(self)(
             dtype=dtype,
             ndim=ndim,
             layout=layout,
@@ -86,8 +151,16 @@ class USMNdArray(Array):
         """
         Unify this with the *other* USMNdArray.
         """
-        # If other is array and the ndim matches
-        if isinstance(other, USMNdArray) and other.ndim == self.ndim:
+        # If other is array and the ndim, usm_type, address_space, and device
+        # attributes match
+
+        if (
+            isinstance(other, USMNdArray)
+            and other.ndim == self.ndim
+            and self.device == other.device
+            and self.addrspace == other.addrspace
+            and self.usm_type == other.usm_type
+        ):
             # If dtype matches or other.dtype is undefined (inferred)
             if other.dtype == self.dtype or not other.dtype.is_precise():
                 if self.layout == other.layout:
@@ -96,12 +169,15 @@ class USMNdArray(Array):
                     layout = "A"
                 readonly = not (self.mutable and other.mutable)
                 aligned = self.aligned and other.aligned
-                return USMNdArray(
+                return type(self)(
                     dtype=self.dtype,
                     ndim=self.ndim,
                     layout=layout,
                     readonly=readonly,
                     aligned=aligned,
+                    usm_type=self.usm_type,
+                    device=self.device,
+                    addrspace=self.addrspace,
                 )
 
     def can_convert_to(self, typingctx, other):

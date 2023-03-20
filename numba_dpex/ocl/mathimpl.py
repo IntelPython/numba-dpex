@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -11,7 +11,7 @@ from numba.core.imputils import Registry
 
 from numba_dpex.core.itanium_mangler import mangle
 
-from .oclimpl import _declare_function
+from ._declare_function import _declare_function
 
 registry = Registry()
 lower = registry.lower

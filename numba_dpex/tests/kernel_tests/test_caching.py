@@ -1,78 +1,152 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import dpctl
+import string
+
+import dpctl.tensor as dpt
 import numpy as np
 import pytest
 
 import numba_dpex as dpex
+from numba_dpex.core.caching import LRUCache
+from numba_dpex.core.kernel_interface.dispatcher import (
+    JitKernel,
+    get_ordered_arg_access_types,
+)
 from numba_dpex.tests._helper import filter_strings
 
 
-@pytest.mark.parametrize("filter_str", filter_strings)
-def test_caching_kernel_using_same_queue(filter_str):
-    """Test kernel caching when the same queue is used to submit a kernel
-    multiple times.
+def test_LRUcache_operations():
+    """Test rigorous caching operations.
 
-    Args:
-        filter_str: SYCL filter selector string
+    Performs different permutations of caching operations
+    and check if the state of the cache is correct.
     """
-    global_size = 10
-    N = global_size
+    alphabet = list(string.ascii_lowercase)
+    cache = LRUCache(name="testcache", capacity=4, pyfunc=None)
+    assert str(cache) == "{}" and cache.head is None and cache.tail is None
 
-    def data_parallel_sum(a, b, c):
-        i = dpex.get_global_id(0)
-        c[i] = a[i] + b[i]
-
-    a = np.array(np.random.random(N), dtype=np.float32)
-    b = np.array(np.random.random(N), dtype=np.float32)
-    c = np.ones_like(a)
-
-    with dpctl.device_context(filter_str) as gpu_queue:
-        func = dpex.kernel(data_parallel_sum)
-        cached_kernel = func[global_size, dpex.DEFAULT_LOCAL_SIZE].specialize(
-            func._get_argtypes(a, b, c), gpu_queue
-        )
-
-        for i in range(10):
-            _kernel = func[global_size, dpex.DEFAULT_LOCAL_SIZE].specialize(
-                func._get_argtypes(a, b, c), gpu_queue
-            )
-            assert _kernel == cached_kernel
-
-
-@pytest.mark.parametrize("filter_str", filter_strings)
-def test_caching_kernel_using_same_context(filter_str):
-    """Test kernel caching for the scenario where different SYCL queues that
-    share a SYCL context are used to submit a kernel.
-
-    Args:
-        filter_str: SYCL filter selector string
-    """
-    global_size = 10
-    N = global_size
-
-    def data_parallel_sum(a, b, c):
-        i = dpex.get_global_id(0)
-        c[i] = a[i] + b[i]
-
-    a = np.array(np.random.random(N), dtype=np.float32)
-    b = np.array(np.random.random(N), dtype=np.float32)
-    c = np.ones_like(a)
-
-    # Set the global queue to the default device so that the cached_kernel gets
-    # created for that device
-    dpctl.set_global_queue(filter_str)
-    func = dpex.kernel(data_parallel_sum)
-    default_queue = dpctl.get_current_queue()
-    cached_kernel = func[global_size, dpex.DEFAULT_LOCAL_SIZE].specialize(
-        func._get_argtypes(a, b, c), default_queue
+    states = []
+    for i in range(4):
+        cache.put(i, alphabet[i])
+        tail_key = cache.get(cache.tail.key)
+        head_key = cache.get(cache.head.key)
+        states.append((cache, tail_key, head_key))
+    assert (
+        str(states)
+        == "["
+        + "({(2: c), (1: b), (3: d), (0: a)}, 'a', 'a'), "
+        + "({(2: c), (1: b), (3: d), (0: a)}, 'b', 'a'), "
+        + "({(2: c), (1: b), (3: d), (0: a)}, 'c', 'b'), "
+        + "({(2: c), (1: b), (3: d), (0: a)}, 'd', 'a')"
+        + "]"
     )
-    for i in range(0, 10):
-        # Each iteration create a fresh queue that will share the same context
-        with dpctl.device_context(filter_str) as gpu_queue:
-            _kernel = func[global_size, dpex.DEFAULT_LOCAL_SIZE].specialize(
-                func._get_argtypes(a, b, c), gpu_queue
-            )
-            assert _kernel == cached_kernel
+
+    states = []
+    picking_order = [3, 1, 0, 2, 2]
+    for index in picking_order:
+        value = cache.get(index)
+        states.append((value, cache, cache.head, cache.tail))
+    assert (
+        str(states)
+        == "["
+        + "('d', {(3: d), (1: b), (0: a), (2: c)}, (2: c), (3: d)), "
+        + "('b', {(3: d), (1: b), (0: a), (2: c)}, (2: c), (1: b)), "
+        + "('a', {(3: d), (1: b), (0: a), (2: c)}, (2: c), (0: a)), "
+        + "('c', {(3: d), (1: b), (0: a), (2: c)}, (3: d), (2: c)), "
+        + "('c', {(3: d), (1: b), (0: a), (2: c)}, (3: d), (2: c))"
+        + "]"
+    )
+
+    states = []
+    for i in range(5, 10):
+        cache.put(i, alphabet[i])
+        tail_key = cache.get(cache.tail.key)
+        head_key = cache.get(cache.head.key)
+        states.append((cache, tail_key, head_key))
+    assert (
+        str(states)
+        == "["
+        + "({(8: i), (2: c), (9: j), (1: b)}, 'f', 'b'), "
+        + "({(8: i), (2: c), (9: j), (1: b)}, 'g', 'c'), "
+        + "({(8: i), (2: c), (9: j), (1: b)}, 'h', 'b'), "
+        + "({(8: i), (2: c), (9: j), (1: b)}, 'i', 'c'), "
+        + "({(8: i), (2: c), (9: j), (1: b)}, 'j', 'b')"
+        + "]"
+    )
+    assert str(cache.evicted) == "{3: 'd', 0: 'a', 5: 'f', 6: 'g', 7: 'h'}"
+
+    picking_order = [2, 1, 3]
+    states = []
+    for index in picking_order:
+        value = cache.get(index)
+        states.append((value, cache, cache.head, cache.tail))
+    assert (
+        str(states)
+        == "["
+        + "('c', {(9: j), (2: c), (1: b), (3: d)}, (8: i), (2: c)), "
+        + "('b', {(9: j), (2: c), (1: b), (3: d)}, (8: i), (1: b)), "
+        + "('d', {(9: j), (2: c), (1: b), (3: d)}, (9: j), (3: d))"
+        + "]"
+    )
+    assert str(cache.evicted) == "{0: 'a', 5: 'f', 6: 'g', 7: 'h', 8: 'i'}"
+
+    cache.put(0, "x")
+    assert (
+        str(cache) == "{(2: c), (1: b), (3: d), (0: x)}"
+        and str(cache.head) == "(2: c)"
+        and str(cache.tail) == "(0: x)"
+    )
+    assert str(cache.evicted) == "{5: 'f', 6: 'g', 7: 'h', 8: 'i', 9: 'j'}"
+
+    cache.put(6, "y")
+    assert (
+        str(cache) == "{(1: b), (3: d), (0: x), (6: y)}"
+        and str(cache.head) == "(1: b)"
+        and str(cache.tail) == "(6: y)"
+    )
+    assert str(cache.evicted) == "{5: 'f', 7: 'h', 8: 'i', 9: 'j', 2: 'c'}"
+
+
+@pytest.mark.parametrize("filter_str", filter_strings)
+def test_caching_hit_counts(filter_str):
+    """Tests the correct number of cache hits.
+    If a Dispatcher is invoked 10 times and if the caching is enabled,
+    then the total number of cache hits will be 9. Given the fact that
+    the first time the kernel will be compiled and it will be loaded
+    off the cache for the next time on.
+
+    Args:
+        filter_str (str): The device name coming from filter_strings in
+        ._helper.py
+    """
+
+    def data_parallel_sum(x, y, z):
+        """
+        Vector addition using the ``kernel`` decorator.
+        """
+        i = dpex.get_global_id(0)
+        z[i] = x[i] + y[i]
+
+    a = dpt.arange(0, 100, device=filter_str)
+    b = dpt.arange(0, 100, device=filter_str)
+    c = dpt.zeros_like(a, device=filter_str)
+
+    expected = dpt.asnumpy(a) + dpt.asnumpy(b)
+
+    d = JitKernel(
+        data_parallel_sum,
+        array_access_specifiers=get_ordered_arg_access_types(
+            data_parallel_sum, None
+        ),
+    )
+
+    d_launcher = d[100]
+
+    N = 10
+    for i in range(N):
+        d_launcher(a, b, c)
+    actual = dpt.asnumpy(c)
+
+    assert np.array_equal(expected, actual) and (d_launcher.cache_hits == N - 1)
