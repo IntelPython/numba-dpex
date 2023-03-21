@@ -191,8 +191,7 @@ RUN \
   rsync \
   && rm -rf /var/lib/apt/lists/* \
   && rsync -a /opt/toolkit/bin/ /usr/local/bin/ \
-  && rsync -a /opt/toolkit/lib/ /usr/local/lib/ \
-  && rsync -a /opt/toolkit/include/ /usr/local/include/
+  && rsync -a /opt/toolkit/lib/ /usr/local/lib/
 
 ENV OCL_ICD_FILENAMES=libintelocl_emu.so:libintelocl.so
 
@@ -201,7 +200,8 @@ FROM $RUNTIME_BASE_IMAGE as builder-base
 RUN \
   --mount=type=bind,target=/opt/toolkit,source=/opt/toolkit,from=toolkit-dist \
   rsync -a /opt/toolkit/bin-dev/ /usr/local/bin/ \
-  && rsync -a /opt/toolkit/lib-dev/ /usr/local/lib/
+  && rsync -a /opt/toolkit/lib-dev/ /usr/local/lib/ \
+  && rsync -a /opt/toolkit/include/ /usr/local/include/
 
 
 FROM base as drivers
@@ -407,7 +407,7 @@ RUN \
   && rm -rf /var/lib/apt/lists/*
 
 # DPNP does not ship tests with package so we deliver it here to be able to test environment
-COPY --from=dpnp-builder-dist /build/tests /root/dpnp_tests
+COPY --from=dpnp-builder-dist /build/tests /opt/dpnp/tests
 
 # runtime python packages
 RUN \

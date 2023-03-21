@@ -505,7 +505,7 @@ jobs:
         # Numba does not support 3.11
         # https://github.com/numba/numba/issues/8304
         python_version: ['3.8', '3.9', '3.10']
-        pyargs: ['dpctl', 'numba_dpex.tests', '/root/dpnp_tests', '/root/dpnp_tests/third_party']
+        pyargs: ['dpctl', 'numba_dpex.tests', '/opt/dpnp/tests', '/opt/dpnp/tests/third_party']
     env:
       DOCKER_TAG: ${{ inputs.version }}-py${{ matrix.python_version }}
     container:
