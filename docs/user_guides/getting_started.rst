@@ -81,6 +81,30 @@ For development:
 
     python setup.py develop
 
+
+Build and Install with docker
+---------------------------------
+
+.. code-block:: bash
+
+    docker run --rm -it \
+    -v /path/to/numba-dpex/source:/build \
+    -v /path/to/dist:/dist
+    ghcr.io/intelpython/numba-dpex/builder:0.20.0-py3.10
+
+    python setup.py develop
+    python setup.py bdist_wheel
+    cp dist/numba_dpex*.whl /dist/
+
+Now you can install numba-dpex wheel in whatever compatible environment with ``pip``.
+You will find ``numba_dpex*.whl`` file in the ``/path/to/dist`` location in
+your host system.
+
+You can check what dpctl and dpnp is shipped with builder by running ``pip list``.
+In case you need another version, consider building ``builder`` target with necessary
+build args. Refer to :ref:`Docker <docker>` section for more details.
+
+
 Testing
 -------
 
@@ -119,7 +143,7 @@ To try out numba dpex simply run:
 
     dpctl.lsplatform()
 
-Refer to Docker section for more options.
+Refer to :ref:`Docker <docker>` section for more options.
 
 .. _`Numba`: https://github.com/numba/numba
 .. _`Intel Python Numba`: https://github.com/IntelPython/numba
