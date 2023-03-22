@@ -1,0 +1,7 @@
+numba\_dpex.core.passes.parfor module
+=====================================
+
+.. automodule:: numba_dpex.core.passes.parfor
+   :members:
+   :undoc-members:
+   :show-inheritance:
