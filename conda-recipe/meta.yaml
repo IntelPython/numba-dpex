@@ -16,7 +16,7 @@ requirements:
         - {{ compiler('dpcpp') }}  # [not osx]
     host:
         - python
-        - setuptools
+        - setuptools >=63.*
         - cython
         - numba 0.56*
         - dpctl >=0.14*
@@ -27,7 +27,7 @@ requirements:
         - numba >=0.56*
         - dpctl >=0.14*
         - spirv-tools
-        - llvm-spirv 11.*
+        - dpcpp-llvm-spirv
         - dpnp >=0.11*
         - packaging
 
