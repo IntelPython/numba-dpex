@@ -15,6 +15,7 @@ dependencies:
   - dpctl 0.14*
   - dpnp >=0.10.2
   - spirv-tools
+  - dpcpp-llvm-spirv
   - packaging
   - pytest
   - pip
