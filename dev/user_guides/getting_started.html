@@ -13,14 +13,15 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Getting Started &mdash; numba-dpex 0.20.0+8.g4c18ebd2 documentation</title>
+  <title>Getting Started &mdash; numba-dpex 0.20.0+9.g9d3d5073 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
@@ -61,12 +62,15 @@
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#build-and-install-conda-package">Build and Install Conda Package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#build-and-install-with-setuptools">Build and Install with setuptools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build-and-install-with-docker">Build and Install with docker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#docker">Docker</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="kernel_programming_guide/index.html"> Direct kernel programming</a></li>
 <li class="toctree-l1"><a class="reference internal" href="debugging/index.html"> Debugging with GDB</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docker.html"> Docker</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migrating_from_numba_cuda.html"> numba-dpex for numba.cuda Programmers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Developer Guides</span></p>
@@ -164,6 +168,25 @@ conda<span class="w"> </span>activate<span class="w"> </span>numba-dpex-env
 </pre></div>
 </div>
 </section>
+<section id="build-and-install-with-docker">
+<h2>Build and Install with docker<a class="headerlink" href="#build-and-install-with-docker" title="Permalink to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-it<span class="w"> </span><span class="se">\</span>
+-v<span class="w"> </span>/path/to/numba-dpex/source:/build<span class="w"> </span><span class="se">\</span>
+-v<span class="w"> </span>/path/to/dist:/dist
+ghcr.io/intelpython/numba-dpex/builder:0.20.0-py3.10
+
+python<span class="w"> </span>setup.py<span class="w"> </span>develop
+python<span class="w"> </span>setup.py<span class="w"> </span>bdist_wheel
+cp<span class="w"> </span>dist/numba_dpex*.whl<span class="w"> </span>/dist/
+</pre></div>
+</div>
+<p>Now you can install numba-dpex wheel in whatever compatible environment with <code class="docutils literal notranslate"><span class="pre">pip</span></code>.
+You will find <code class="docutils literal notranslate"><span class="pre">numba_dpex*.whl</span></code> file in the <code class="docutils literal notranslate"><span class="pre">/path/to/dist</span></code> location in
+your host system.</p>
+<p>You can check what dpctl and dpnp is shipped with builder by running <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">list</span></code>.
+In case you need another version, consider building <code class="docutils literal notranslate"><span class="pre">builder</span></code> target with necessary
+build args. Refer to <a class="reference internal" href="docker.html#docker"><span class="std std-ref">Docker</span></a> section for more details.</p>
+</section>
 <section id="testing">
 <h2>Testing<a class="headerlink" href="#testing" title="Permalink to this heading"></a></h2>
 <p>See folder <code class="docutils literal notranslate"><span class="pre">numba_dpex/tests</span></code>.</p>
@@ -179,6 +202,20 @@ conda<span class="w"> </span>activate<span class="w"> </span>numba-dpex-env
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>numba_dpex/examples/sum.py
 </pre></div>
 </div>
+</section>
+<section id="docker">
+<h2>Docker<a class="headerlink" href="#docker" title="Permalink to this heading"></a></h2>
+<p>An easy way you can try <cite>numba_dpex</cite> is by using docker.
+To try out numba dpex simply run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-it<span class="w"> </span>ghcr.io/intelpython/numba-dpex/runtime:0.20.0-py3.10
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpctl</span>
+
+<span class="n">dpctl</span><span class="o">.</span><span class="n">lsplatform</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Refer to <a class="reference internal" href="docker.html#docker"><span class="std std-ref">Docker</span></a> section for more options.</p>
 </section>
 </section>
 
