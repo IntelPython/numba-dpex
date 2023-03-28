@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Getting Started &mdash; numba-dpex 0.20.0+11.gd672a7a9 documentation</title>
+  <title>Getting Started &mdash; numba-dpex 0.20.0+12.g68bec346 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -112,7 +112,7 @@
 <li><p>numba 0.54.* or 0.55.* (<a class="reference external" href="https://github.com/numba/numba">Numba</a>)</p></li>
 <li><p>dpctl 0.13.* (<a class="reference external" href="https://github.com/IntelPython/dpctl">Intel Python dpctl</a>)</p></li>
 <li><p>dpnp 0.10.1 (<a class="reference external" href="https://github.com/IntelPython/dpnp">Intel Python DPNP</a>)</p></li>
-<li><p><a class="reference external" href="https://anaconda.org/intel/llvm-spirv">llvm-spirv</a> (SPIRV generation from LLVM IR)</p></li>
+<li><p><a class="reference external" href="https://github.com/IntelPython/dpcpp-llvm-spirv">dpcpp-llvm-spirv</a> (SPIRV generation from LLVM IR)</p></li>
 <li><p><a class="reference external" href="https://anaconda.org/intel/llvmdev">llvmdev</a> (LLVM IR generation)</p></li>
 <li><p><a class="reference external" href="https://anaconda.org/intel/spirv-tools">spirv-tools</a></p></li>
 <li><p><a class="reference external" href="https://packaging.pypa.io/">packaging</a></p></li>
@@ -151,7 +151,7 @@ conda<span class="w"> </span>build<span class="w"> </span>conda-recipe<span clas
 <p><code class="docutils literal notranslate"><span class="pre">setup.py</span></code> requires environment variable <code class="docutils literal notranslate"><span class="pre">ONEAPI_ROOT</span></code> and following packages
 installed in conda environment:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ONEAPI_ROOT</span><span class="o">=</span>/opt/intel/oneapi
-conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w"> </span>-c<span class="w"> </span><span class="si">${</span><span class="nv">ONEAPI_ROOT</span><span class="si">}</span>/conda_channel<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7<span class="w"> </span>dpctl<span class="w"> </span>dpnp<span class="w"> </span>numba<span class="w"> </span>spirv-tools<span class="w"> </span>llvm-spirv<span class="w"> </span>llvmdev<span class="w"> </span>cython<span class="w"> </span>pytest
+conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w"> </span>-c<span class="w"> </span><span class="si">${</span><span class="nv">ONEAPI_ROOT</span><span class="si">}</span>/conda_channel<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7<span class="w"> </span>dpctl<span class="w"> </span>dpnp<span class="w"> </span>numba<span class="w"> </span>spirv-tools<span class="w"> </span>dpcpp-llvm-spirv<span class="w"> </span>llvmdev<span class="w"> </span>cython<span class="w"> </span>pytest
 conda<span class="w"> </span>activate<span class="w"> </span>numba-dpex-env
 </pre></div>
 </div>
