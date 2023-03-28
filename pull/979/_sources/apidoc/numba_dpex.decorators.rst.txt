@@ -1,7 +1,0 @@
-numba\_dpex.decorators module
-=============================
-
-.. automodule:: numba_dpex.decorators
-   :members:
-   :undoc-members:
-   :show-inheritance:
