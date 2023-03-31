@@ -19,23 +19,9 @@
 #include "_nrt_helper.h"
 #include "_nrt_python_helper.h"
 
+#include "_dbg_printer.h"
+#include "_queuestruct.h"
 #include "numba/_arraystruct.h"
-
-/* Debugging facilities - enabled at compile-time */
-/* #undef NDEBUG */
-#if 0
-#include <stdio.h>
-#define DPEXRT_DEBUG(X)                                                        \
-    {                                                                          \
-        X;                                                                     \
-        fflush(stdout);                                                        \
-    }
-#else
-#define DPEXRT_DEBUG(X)                                                        \
-    if (0) {                                                                   \
-        X;                                                                     \
-    }
-#endif
 
 // forward declarations
 static struct PyUSMArrayObject *PyUSMNdArray_ARRAYOBJ(PyObject *obj);
@@ -66,6 +52,9 @@ DPEXRT_sycl_usm_ndarray_to_python_acqref(arystruct_t *arystruct,
                                          int ndim,
                                          int writeable,
                                          PyArray_Descr *descr);
+static int DPEXRT_sycl_queue_from_python(PyObject *obj,
+                                         queuestruct_t *queue_struct);
+static PyObject *DPEXRT_sycl_queue_to_python(queuestruct_t *queuestruct);
 
 /*
  * Debugging printf function used internally
@@ -663,7 +652,9 @@ static npy_intp product_of_shape(npy_intp *shape, npy_intp ndim)
     return nelems;
 }
 
+/*----------------------------------------------------------------------------*/
 /*----- Boxing and Unboxing implementations for a dpnp.ndarray PyObject ------*/
+/*----------------------------------------------------------------------------*/
 
 /*!
  * @brief Unboxes a PyObject that may represent a dpnp.ndarray into a Numba
@@ -1050,6 +1041,107 @@ DPEXRT_sycl_usm_ndarray_to_python_acqref(arystruct_t *arystruct,
 }
 
 /*----------------------------------------------------------------------------*/
+/*--------------------- Box-unbox helpers for dpctl.SyclQueue       ----------*/
+/*----------------------------------------------------------------------------*/
+
+/*!
+ * @brief Helper to unbox a Python dpctl.SyclQueue object to a Numba-native
+ * queuestruct_t instance.
+ *
+ * @param    obj            A dpctl.SyclQueue Python object
+ * @param    queue_struct   An instance of the struct numba-dpex uses to
+ *                          represent a dpctl.SyclQueue inside Numba.
+ * @return   {return}       Return code indicating success (0) or failure (-1).
+ */
+static int DPEXRT_sycl_queue_from_python(PyObject *obj,
+                                         queuestruct_t *queue_struct)
+{
+
+    struct PySyclQueueObject *queue_obj = NULL;
+    DPCTLSyclQueueRef queue_ref = NULL;
+    PyGILState_STATE gstate;
+
+    // Increment the ref count on obj to prevent CPython from garbage
+    // collecting the array.
+    Py_IncRef(obj);
+
+    // We are unconditionally casting obj to a struct PySyclQueueObject*. If
+    // the obj is not a struct PySyclQueueObject* then the SyclQueue_GetQueueRef
+    // will error out.
+    queue_obj = (struct PySyclQueueObject *)obj;
+
+    DPEXRT_DEBUG(
+        nrt_debug_print("DPEXRT-DEBUG: In DPEXRT_sycl_queue_from_python.\n"));
+
+    if (!(queue_ref = SyclQueue_GetQueueRef(queue_obj))) {
+        DPEXRT_DEBUG(nrt_debug_print(
+            "DPEXRT-ERROR: SyclQueue_GetQueueRef returned NULL at "
+            "%s, line %d.\n",
+            __FILE__, __LINE__));
+        goto error;
+    }
+
+    queue_struct->parent = obj;
+    queue_struct->queue_ref = queue_ref;
+
+    return 0;
+
+error:
+    // If the check failed then decrement the refcount and return an error
+    // code of -1.
+    // Decref the Pyobject of the array
+    // ensure the GIL
+    DPEXRT_DEBUG(nrt_debug_print(
+        "DPEXRT-ERROR: Failed to unbox dpctl SyclQueue into a Numba "
+        "queuestruct at %s, line %d\n",
+        __FILE__, __LINE__));
+    gstate = PyGILState_Ensure();
+    // decref the python object
+    Py_DECREF(obj);
+    // release the GIL
+    PyGILState_Release(gstate);
+
+    return -1;
+}
+
+/*!
+ * @brief A helper function that boxes a Numba-dpex queuestruct_t object into a
+ * dctl.SyclQueue PyObject using the queuestruct_t's parent attribute.
+ *
+ * If there is no parent pointer stored in the queuestruct, then an error will
+ * be raised.
+ *
+ * @param    queuestruct    A Numba-dpex queuestruct object.
+ * @return   {return}       A PyObject created from the queuestruct->parent, if
+ *                          the PyObject could not be created return NULL.
+ */
+static PyObject *DPEXRT_sycl_queue_to_python(queuestruct_t *queuestruct)
+{
+    PyObject *orig_queue = NULL;
+    PyGILState_STATE gstate;
+
+    orig_queue = queuestruct->parent;
+    // FIXME: Better error checking is needed to enforce the boxing of the queue
+    // object. For now, only the minimal is done as the returning of SyclQueue
+    // from a dpjit function should not be a used often and the dpctl C API for
+    // type checking etc. is not ready.
+    if (orig_queue == NULL) {
+        PyErr_Format(PyExc_ValueError,
+                     "In 'box_from_queuestruct_parent', "
+                     "failed to create a new dpctl.SyclQueue object.");
+        return NULL;
+    }
+
+    gstate = PyGILState_Ensure();
+    // decref the parent python object as we did an incref when unboxing it
+    Py_DECREF(orig_queue);
+    // release the GIL
+    PyGILState_Release(gstate);
+
+    return orig_queue;
+}
+
+/*----------------------------------------------------------------------------*/
 /*--------------------- The _dpexrt_python Python extension module  -- -------*/
 /*----------------------------------------------------------------------------*/
 
@@ -1082,6 +1174,9 @@ static PyObject *build_c_helpers_dict(void)
     _declpointer("DPEXRT_MemInfo_fill", &DPEXRT_MemInfo_fill);
     _declpointer("NRT_ExternalAllocator_new_for_usm",
                  &NRT_ExternalAllocator_new_for_usm);
+    _declpointer("DPEXRT_sycl_queue_from_python",
+                 &DPEXRT_sycl_queue_from_python);
+    _declpointer("DPEXRT_sycl_queue_to_python", &DPEXRT_sycl_queue_to_python);
 
 #undef _declpointer
     return dct;
@@ -1128,6 +1223,11 @@ MOD_INIT(_dpexrt_python)
     PyModule_AddObject(
         m, "DPEXRT_sycl_usm_ndarray_to_python_acqref",
         PyLong_FromVoidPtr(&DPEXRT_sycl_usm_ndarray_to_python_acqref));
+
+    PyModule_AddObject(m, "DPEXRT_sycl_queue_from_python",
+                       PyLong_FromVoidPtr(&DPEXRT_sycl_queue_from_python));
+    PyModule_AddObject(m, "DPEXRT_sycl_queue_to_python",
+                       PyLong_FromVoidPtr(&DPEXRT_sycl_queue_to_python));
 
     PyModule_AddObject(m, "DPEXRTQueue_CreateFromFilterString",
                        PyLong_FromVoidPtr(&DPEXRTQueue_CreateFromFilterString));

@@ -11,7 +11,7 @@ from numba.np import numpy_support
 
 from numba_dpex.utils import address_space
 
-from ..types.dpctl_types import sycl_queue_ty
+from ..types.dpctl_types import DpctlSyclQueue
 from ..types.dpnp_ndarray_type import DpnpNdArray
 from ..types.usm_ndarray_type import USMNdArray
 
@@ -107,4 +107,4 @@ def typeof_dpctl_sycl_queue(val, c):
 
     Returns: A numba_dpex.core.types.dpctl_types.DpctlSyclQueue instance.
     """
-    return sycl_queue_ty
+    return DpctlSyclQueue()
