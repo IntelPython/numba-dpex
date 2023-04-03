@@ -21,6 +21,7 @@ def test_one_prange_mul():
         return
 
     device = dpctl.select_default_device()
+    print("device=", device)
 
     m = 8
     n = 8
