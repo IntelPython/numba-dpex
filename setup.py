@@ -150,19 +150,13 @@ def spirv_compile():
 
 def _llvm_spirv():
     """Return path to llvm-spirv executable."""
-    result = None
 
-    # use llvm-spirv from dpcpp package.
-    # assume dpcpp from .../bin folder.
-    # assume llvm-spirv from .../bin-llvm folder.
-    dpcpp_path = shutil.which("icx")
-    if dpcpp_path is not None:
-        bin_llvm = os.path.dirname(dpcpp_path) + "/../bin-llvm/"
-        bin_llvm = os.path.normpath(bin_llvm)
-        result = shutil.which("llvm-spirv", path=bin_llvm)
+    try:
+        import dpcpp_llvm_spirv as dls
+    except ImportError:
+        raise ImportError("Cannot import dpcpp-llvm-spirv package")
 
-    if result is None:
-        result = "llvm-spirv"
+    result = dls.get_llvm_spirv_path()
 
     return result
 

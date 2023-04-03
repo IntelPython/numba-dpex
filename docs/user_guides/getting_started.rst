@@ -9,7 +9,7 @@ Numba-dpex depends on following components:
 * numba 0.54.* or 0.55.* (`Numba`_)
 * dpctl 0.13.* (`Intel Python dpctl`_)
 * dpnp 0.10.1 (`Intel Python DPNP`_)
-* `llvm-spirv`_ (SPIRV generation from LLVM IR)
+* `dpcpp-llvm-spirv`_ (SPIRV generation from LLVM IR)
 * `llvmdev`_ (LLVM IR generation)
 * `spirv-tools`_
 * `packaging`_
@@ -60,7 +60,7 @@ installed in conda environment:
 .. code-block:: bash
 
     export ONEAPI_ROOT=/opt/intel/oneapi
-    conda create -n numba-dpex-env -c ${ONEAPI_ROOT}/conda_channel python=3.7 dpctl dpnp numba spirv-tools llvm-spirv llvmdev cython pytest
+    conda create -n numba-dpex-env -c ${ONEAPI_ROOT}/conda_channel python=3.7 dpctl dpnp numba spirv-tools dpcpp-llvm-spirv llvmdev cython pytest
     conda activate numba-dpex-env
 
 Activate DPC++ compiler:
@@ -80,6 +80,30 @@ For development:
 .. code-block:: bash
 
     python setup.py develop
+
+
+Build and Install with docker
+---------------------------------
+
+.. code-block:: bash
+
+    docker run --rm -it \
+    -v /path/to/numba-dpex/source:/build \
+    -v /path/to/dist:/dist
+    ghcr.io/intelpython/numba-dpex/builder:0.20.0-py3.10
+
+    python setup.py develop
+    python setup.py bdist_wheel
+    cp dist/numba_dpex*.whl /dist/
+
+Now you can install numba-dpex wheel in whatever compatible environment with ``pip``.
+You will find ``numba_dpex*.whl`` file in the ``/path/to/dist`` location in
+your host system.
+
+You can check what dpctl and dpnp is shipped with builder by running ``pip list``.
+In case you need another version, consider building ``builder`` target with necessary
+build args. Refer to :ref:`Docker <docker>` section for more details.
+
 
 Testing
 -------
@@ -103,12 +127,29 @@ To run the examples:
 
     python numba_dpex/examples/sum.py
 
+Docker
+------
+
+An easy way you can try `numba_dpex` is by using docker.
+To try out numba dpex simply run:
+
+.. code-block:: bash
+
+    docker run --rm -it ghcr.io/intelpython/numba-dpex/runtime:0.20.0-py3.10
+
+.. code-block:: python
+
+    import dpctl
+
+    dpctl.lsplatform()
+
+Refer to :ref:`Docker <docker>` section for more options.
 
 .. _`Numba`: https://github.com/numba/numba
 .. _`Intel Python Numba`: https://github.com/IntelPython/numba
 .. _`Intel Python dpctl`: https://github.com/IntelPython/dpctl
 .. _`Intel Python dpnp`: https://github.com/IntelPython/dpnp
-.. _`llvm-spirv`: https://anaconda.org/intel/llvm-spirv
+.. _`dpcpp-llvm-spirv`: https://github.com/IntelPython/dpcpp-llvm-spirv
 .. _`llvmdev`: https://anaconda.org/intel/llvmdev
 .. _`spirv-tools`: https://anaconda.org/intel/spirv-tools
 .. _`packaging`: https://packaging.pypa.io/
