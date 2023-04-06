@@ -29,14 +29,35 @@ class DpexRTContext(object):
 
     @_check_null_result
     def meminfo_alloc(self, builder, size, usm_type, device):
-        """A wrapped caller for meminfo_alloc_unchecked() with null check."""
+        """
+        Wrapper to call :func:`~context.DpexRTContext.meminfo_alloc_unchecked`
+        with null checking of the returned value.
+        """
         return self.meminfo_alloc_unchecked(builder, size, usm_type, device)
 
     @_check_null_result
-    def meminfo_fill(self, builder, meminfo, itemsize, is_float, value, device):
-        """A wrapped caller for meminfo_fill_unchecked() with null check."""
+    def meminfo_fill(
+        self,
+        builder,
+        meminfo,
+        itemsize,
+        dest_is_float,
+        value_is_float,
+        value,
+        device,
+    ):
+        """
+        Wrapper to call :func:`~context.DpexRTContext.meminfo_fill_unchecked`
+        with null checking of the returned value.
+        """
         return self.meminfo_fill_unchecked(
-            builder, meminfo, itemsize, is_float, value, device
+            builder,
+            meminfo,
+            itemsize,
+            dest_is_float,
+            value_is_float,
+            value,
+            device,
         )
 
     def meminfo_alloc_unchecked(self, builder, size, usm_type, device):
@@ -71,7 +92,14 @@ class DpexRTContext(object):
         return ret
 
     def meminfo_fill_unchecked(
-        self, builder, meminfo, itemsize, is_float, value, device
+        self,
+        builder,
+        meminfo,
+        itemsize,
+        dest_is_float,
+        value_is_float,
+        value,
+        device,
     ):
         """Fills an allocated `MemInfo` with the value specified.
 
@@ -96,12 +124,15 @@ class DpexRTContext(object):
         b = llvmir.IntType(1)
         fnty = llvmir.FunctionType(
             cgutils.voidptr_t,
-            [cgutils.voidptr_t, u64, b, cgutils.int8_t, cgutils.voidptr_t],
+            [cgutils.voidptr_t, u64, b, b, u64, cgutils.voidptr_t],
         )
         fn = cgutils.get_or_insert_function(mod, fnty, "DPEXRT_MemInfo_fill")
         fn.return_value.add_attribute("noalias")
 
-        ret = builder.call(fn, [meminfo, itemsize, is_float, value, device])
+        ret = builder.call(
+            fn,
+            [meminfo, itemsize, dest_is_float, value_is_float, value, device],
+        )
 
         return ret
 

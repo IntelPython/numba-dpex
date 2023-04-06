@@ -10,7 +10,7 @@ import pytest
 
 from numba_dpex import dpjit
 
-shapes = [10, (2, 5)]
+shapes = [11, (2, 5)]
 dtypes = [dpnp.int32, dpnp.int64, dpnp.float32, dpnp.float64]
 usm_types = ["device", "shared", "host"]
 devices = ["cpu", "unknown"]
@@ -22,14 +22,12 @@ devices = ["cpu", "unknown"]
 @pytest.mark.parametrize("device", devices)
 def test_dpnp_empty(shape, dtype, usm_type, device):
     @dpjit
-    def func1(shape):
-        c = dpnp.empty(
-            shape=shape, dtype=dtype, usm_type=usm_type, device=device
-        )
+    def func(shape):
+        c = dpnp.empty(shape, dtype=dtype, usm_type=usm_type, device=device)
         return c
 
     try:
-        c = func1(shape)
+        c = func(shape)
     except Exception:
         pytest.fail("Calling dpnp.empty inside dpjit failed")
 
@@ -52,12 +50,12 @@ def test_dpnp_empty(shape, dtype, usm_type, device):
 @pytest.mark.parametrize("shape", shapes)
 def test_dpnp_empty_default_dtype(shape):
     @dpjit
-    def func1(shape):
-        c = dpnp.empty(shape=shape)
+    def func(shape):
+        c = dpnp.empty(shape)
         return c
 
     try:
-        c = func1(shape)
+        c = func(shape)
     except Exception:
         pytest.fail("Calling dpnp.empty inside dpjit failed")
 
@@ -65,10 +63,6 @@ def test_dpnp_empty_default_dtype(shape):
         assert c.shape[0] == shape
     else:
         assert c.shape == shape
-
-    dummy_tensor = dpctl.tensor.empty(shape=1)
-
-    assert c.dtype == dummy_tensor.dtype
 
     dummy_tensor = dpctl.tensor.empty(shape)
 
