@@ -128,20 +128,17 @@ jobs:
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate numba_dpex_env
-          export OCL_ICD_FILENAMES=libintelocl.so
           python -c "import dpnp"
       - name: Check dpcpp-llvm-spirv
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate numba_dpex_env
-          export OCL_ICD_FILENAMES=libintelocl.so
           python -c "import dpcpp_llvm_spirv as p; print(p.get_llvm_spirv_path())"
       - name: Run tests
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate numba_dpex_env
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
-          export OCL_ICD_FILENAMES=libintelocl.so
           python -m pytest -q -ra --disable-warnings --pyargs $MODULE_NAME -vv
       - name: Run examples
         run: |
@@ -151,7 +148,6 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate numba_dpex_env
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
-          export OCL_ICD_FILENAMES=libintelocl.so
           for script in $(find . \( -not -name "_*" -not -name "vector_sum2D.py" -not -name "vectorize.py" -not -name "scan.py" -and -name "*.py" \))
           do
             echo "Executing ${script}"
@@ -222,37 +218,11 @@ jobs:
       - name: Add library
         shell: pwsh
         run: |
-          $conda_env_library = "$env:CONDA_PREFIX\Library"
-          echo "OCL_ICD_FILENAMES=$conda_env_library\lib\intelocl64.dll" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          try {$list = Get-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors | Select-Object -ExpandProperty Property } catch {$list=@()}
-          if ($list.count -eq 0) {
-              if (-not (Test-Path -Path HKLM:\SOFTWARE\Khronos)) {
-                 New-Item -Path HKLM:\SOFTWARE\Khronos
-              }
-              if (-not (Test-Path -Path HKLM:\SOFTWARE\Khronos\OpenCL)) {
-                 New-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL
-              }
-              if (-not (Test-Path -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors)) {
-                 New-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors
-              }
-              New-ItemProperty -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors -Name $conda_env_library\lib\intelocl64.dll -Value 0
-              try {$list = Get-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors | Select-Object -ExpandProperty Property } catch {$list=@()}
-              Write-Output $(Get-Item -Path HKLM:\SOFTWARE\Khronos\OpenCL\Vendors)
-              # Now copy OpenCL.dll into system folder
-              $system_ocl_icd_loader="C:\Windows\System32\OpenCL.dll"
-              $python_ocl_icd_loader="$conda_env_library\bin\OpenCL.dll"
-              Copy-Item -Path $python_ocl_icd_loader -Destination $system_ocl_icd_loader
-              if (Test-Path -Path $system_ocl_icd_loader) {
-                 Write-Output "$system_ocl_icd_loader has been copied"
-                 $acl = Get-Acl $system_ocl_icd_loader
-                 Write-Output $acl
-              } else {
-                 Write-Output "OCL-ICD-Loader was not copied"
-              }
-              # Variable assisting OpenCL CPU driver to find TBB DLLs which are not located where it expects them by default
-              $cl_cfg="$conda_env_library\lib\cl.cfg"
-              (Get-Content $cl_cfg) -replace '^CL_CONFIG_TBB_DLL_PATH =', "CL_CONFIG_TBB_DLL_PATH = $conda_env_library\bin" | Set-Content $cl_cfg
-          }
+          $script_path="$env:CONDA_PREFIX\Scripts\set-intel-ocl-icd-registry.ps1"
+          &$script_path
+          # Check the variable assisting OpenCL CPU driver to find TBB DLLs which are not located where it expects them by default
+          $cl_cfg="$env:CONDA_PREFIX\Library\lib\cl.cfg"
+          Get-Content -Tail 5 -Path $cl_cfg
 
       - name: Add dpnp skip variable
         run: echo "NUMBA_DPEX_TESTING_SKIP_NO_DPNP=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
