@@ -4,10 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - 2023-03-28
+## [0.20.1] - 2023-04-07
 
 ### Added
-* Replaced llvm_spirv from oneAPI path by dpcpp-llvm-spirv package.
+* Replaced llvm_spirv from oneAPI path by dpcpp-llvm-spirv package.(#979)
+* Added Dockerfile and a manual workflow to publish pre-built packages to the repo.(#973)
+
+### Fixed
+* Fixed default dtype derivation when creating a dpnp.ndarray. (#993)
+* Adjusted test_windows step to work with intel-opencl-rt=2023.1.0. (#990)
+* Fixed layout in dpnp overload.(#987)
+* Handled the case when arraystruct->meminfo is null to close gh-965. (#972)
 
 ## [0.20.0] - 2023-03-06
 
@@ -59,6 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Update to dpctl 0.14 (#858)
 * Update linters: black to 23.1.0, isort to 5.12.0 (#900)
 * License in setup.py to match actual project licensing (#904)
+
 ### Fixed
 * Kernel specialization, compute follows data programming model for
   kernels (#804)
