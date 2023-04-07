@@ -47,3 +47,29 @@ def test_dpnp_empty(shape, dtype, usm_type, device):
         )
     else:
         c.sycl_device.filter_string == dpctl.SyclDevice().filter_string
+
+
+@pytest.mark.parametrize("shape", shapes)
+def test_dpnp_empty_default_dtype(shape):
+    @dpjit
+    def func1(shape):
+        c = dpnp.empty(shape=shape)
+        return c
+
+    try:
+        c = func1(shape)
+    except Exception:
+        pytest.fail("Calling dpnp.empty inside dpjit failed")
+
+    if len(c.shape) == 1:
+        assert c.shape[0] == shape
+    else:
+        assert c.shape == shape
+
+    dummy_tensor = dpctl.tensor.empty(shape=1)
+
+    assert c.dtype == dummy_tensor.dtype
+
+    dummy_tensor = dpctl.tensor.empty(shape)
+
+    assert c.dtype == dummy_tensor.dtype
