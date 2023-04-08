@@ -1,0 +1,18 @@
+numba\_dpex.core.utils.kernel\_templates package
+================================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.core.utils.kernel_templates.range_kernel_template
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex.core.utils.kernel_templates
+   :members:
+   :undoc-members:
+   :show-inheritance:

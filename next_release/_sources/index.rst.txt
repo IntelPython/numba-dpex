@@ -90,6 +90,7 @@ which kernels may be written using numba-dpex.
     Getting Started <user_guides/getting_started>
     Direct kernel programming <user_guides/kernel_programming_guide/index>
     Debugging with GDB <user_guides/debugging/index>
+    Docker <user_guides/docker>
     numba-dpex for numba.cuda Programmers <user_guides/migrating_from_numba_cuda>
 
 .. toctree::
