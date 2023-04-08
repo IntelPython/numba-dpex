@@ -1,0 +1,7 @@
+numba\_dpex.core.utils.kernel\_launcher module
+==============================================
+
+.. automodule:: numba_dpex.core.utils.kernel_launcher
+   :members:
+   :undoc-members:
+   :show-inheritance:

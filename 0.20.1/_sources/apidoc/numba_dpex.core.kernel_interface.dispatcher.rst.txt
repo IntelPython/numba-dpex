@@ -1,0 +1,7 @@
+numba\_dpex.core.kernel\_interface.dispatcher module
+====================================================
+
+.. automodule:: numba_dpex.core.kernel_interface.dispatcher
+   :members:
+   :undoc-members:
+   :show-inheritance:
