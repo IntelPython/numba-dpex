@@ -16,6 +16,7 @@ dependencies:
   - dpnp >=0.11*
   - mkl >=2021.3.0  # for dpnp
   - spirv-tools
+  - dpcpp-llvm-spirv
   - packaging
   - pytest
   - pip

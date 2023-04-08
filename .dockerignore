@@ -1,0 +1,6 @@
+# Ignore everything
+*
+
+# Allow files and directories
+!/scripts/builder_entrypoint.sh
+!/scripts/github_load.py
