@@ -12,7 +12,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; numba-dpex 0.20.0+20.gdc255049 documentation</title>
+  <title>Index &mdash; numba-dpex 0.20.1+3.g46c09ff2 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -226,7 +226,7 @@
 </li>
       <li><a href="apidoc/numba_dpex.core.types.dpnp_ndarray_type.html#numba_dpex.core.types.dpnp_ndarray_type.box_array">box_array() (in module numba_dpex.core.types.dpnp_ndarray_type)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.box_pyobject">box_pyobject() (in module numba_dpex.core.types.dpctl_types)</a>
+      <li><a href="apidoc/numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.box_sycl_queue">box_sycl_queue() (in module numba_dpex.core.types.dpctl_types)</a>
 </li>
       <li><a href="apidoc/numba_dpex.html#numba_dpex.Array.box_type">box_type (numba_dpex.Array property)</a>
 
@@ -235,17 +235,23 @@
 </li>
         <li><a href="apidoc/numba_dpex.core.types.array_type.html#numba_dpex.core.types.array_type.Array.box_type">(numba_dpex.core.types.array_type.Array property)</a>
 </li>
+        <li><a href="apidoc/numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue.box_type">(numba_dpex.core.types.dpctl_types.DpctlSyclQueue property)</a>
+</li>
+        <li><a href="apidoc/numba_dpex.core.types.html#numba_dpex.core.types.DpctlSyclQueue.box_type">(numba_dpex.core.types.DpctlSyclQueue property)</a>
+</li>
         <li><a href="apidoc/numba_dpex.core.types.usm_ndarray_type.html#numba_dpex.core.types.usm_ndarray_type.USMNdArray.box_type">(numba_dpex.core.types.usm_ndarray_type.USMNdArray property)</a>
 </li>
         <li><a href="apidoc/numba_dpex.core.types.html#numba_dpex.core.types.USMNdArray.box_type">(numba_dpex.core.types.USMNdArray property)</a>
 </li>
+        <li><a href="apidoc/numba_dpex.html#numba_dpex.DpctlSyclQueue.box_type">(numba_dpex.DpctlSyclQueue property)</a>
+</li>
         <li><a href="apidoc/numba_dpex.html#numba_dpex.USMNdArray.box_type">(numba_dpex.USMNdArray property)</a>
 </li>
       </ul></li>
-      <li><a href="apidoc/numba_dpex.vectorizers.html#numba_dpex.vectorizers.UFuncMechanism.broadcast_device">broadcast_device() (numba_dpex.vectorizers.UFuncMechanism method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.vectorizers.html#numba_dpex.vectorizers.UFuncMechanism.broadcast_device">broadcast_device() (numba_dpex.vectorizers.UFuncMechanism method)</a>
+</li>
       <li><a href="apidoc/numba_dpex.core.utils.kernel_launcher.html#numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.build_arg">build_arg() (numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder method)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.utils.kernel_launcher.html#numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.build_array_arg">build_array_arg() (numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder method)</a>
@@ -2871,14 +2877,18 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.core.passes.passes.html#numba_dpex.core.passes.passes.QualNameDisambiguationLowering">QualNameDisambiguationLowering (class in numba_dpex.core.passes.passes)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.core.utils.suai_helper.html#numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface.queue">queue (numba_dpex.core.utils.suai_helper.SyclUSMArrayInterface property)</a>
 
       <ul>
         <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.SyclUSMArrayInterface.queue">(numba_dpex.core.utils.SyclUSMArrayInterface property)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.core.runtime.context.html#numba_dpex.core.runtime.context.DpexRTContext.queuestruct_from_python">queuestruct_from_python() (numba_dpex.core.runtime.context.DpexRTContext method)</a>
+</li>
+      <li><a href="apidoc/numba_dpex.core.runtime.context.html#numba_dpex.core.runtime.context.DpexRTContext.queuestruct_to_python">queuestruct_to_python() (numba_dpex.core.runtime.context.DpexRTContext method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -3219,6 +3229,8 @@
 </li>
       <li><a href="apidoc/numba_dpex.core.targets.kernel_target.html#numba_dpex.core.targets.kernel_target.SyclDevice">SyclDevice (class in numba_dpex.core.targets.kernel_target)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.datamodel.models.html#numba_dpex.core.datamodel.models.SyclQueueModel">SyclQueueModel (class in numba_dpex.core.datamodel.models)</a>
+</li>
       <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.SyclUSMArrayInterface">SyclUSMArrayInterface (class in numba_dpex.core.utils)</a>
 
       <ul>
@@ -3255,10 +3267,10 @@
 </li>
       <li><a href="apidoc/numba_dpex.vectorizers.html#numba_dpex.vectorizers.UFuncMechanism.to_host">to_host() (numba_dpex.vectorizers.UFuncMechanism method)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.to_scalar_from_0d">to_scalar_from_0d() (in module numba_dpex.core.passes.lowerer)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/numba_dpex.core.passes.lowerer.html#numba_dpex.core.passes.lowerer.to_scalar_from_0d">to_scalar_from_0d() (in module numba_dpex.core.passes.lowerer)</a>
+</li>
       <li><a href="apidoc/numba_dpex.core.typeconv.html#numba_dpex.core.typeconv.to_usm_ndarray">to_usm_ndarray() (in module numba_dpex.core.typeconv)</a>
 
       <ul>
@@ -3266,8 +3278,6 @@
 </li>
       </ul></li>
       <li><a href="apidoc/numba_dpex.core.passes.parfor.html#numba_dpex.core.passes.parfor.try_fuse">try_fuse() (in module numba_dpex.core.passes.parfor)</a>
-</li>
-      <li><a href="apidoc/numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.type_interval">type_interval() (in module numba_dpex.core.types.dpctl_types)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.typing.typeof.html#numba_dpex.core.typing.typeof.typeof_dpctl_sycl_queue">typeof_dpctl_sycl_queue() (in module numba_dpex.core.typing.typeof)</a>
 </li>

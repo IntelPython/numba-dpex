@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.datamodel.models module &mdash; numba-dpex 0.20.0+20.gdc255049 documentation</title>
+  <title>numba_dpex.core.datamodel.models module &mdash; numba-dpex 0.20.1+3.g46c09ff2 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -108,6 +108,27 @@ in the array.</p>
 <dt class="sig sig-object py" id="numba_dpex.core.datamodel.models.GenericPointerModel">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.datamodel.models.</span></span><span class="sig-name descname"><span class="pre">GenericPointerModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dmm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fe_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.datamodel.models.GenericPointerModel" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PrimitiveModel</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.core.datamodel.models.SyclQueueModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.datamodel.models.</span></span><span class="sig-name descname"><span class="pre">SyclQueueModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dmm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fe_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.datamodel.models.SyclQueueModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StructModel</span></code></p>
+<p>Represents the native data model for a dpctl.SyclQueue PyObject.</p>
+<p>Numba-dpex uses a C struct as defined in
+numba_dpex/core/runtime._queuestruct.h to store the required attributes for
+a <code class="docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code> Python object.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">queue_ref</span></code>: An opaque C pointer to an actual SYCL queue C++ object.</p></li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">parent</span></code>: A PyObject* that stores a reference back to the original</dt><dd><p><code class="docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code> PyObject if the native struct is
+created by unboxing the PyObject.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
 </dd></dl>
 
 </section>

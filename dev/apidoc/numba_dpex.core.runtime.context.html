@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.runtime.context module &mdash; numba-dpex 0.20.0+20.gdc255049 documentation</title>
+  <title>numba_dpex.core.runtime.context module &mdash; numba-dpex 0.20.1+3.g46c09ff2 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -104,14 +104,6 @@
 <span class="sig-name descname"><span class="pre">arraystruct_from_python</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyapi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ptr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.arraystruct_from_python" title="Permalink to this definition"></a></dt>
 <dd><p>Generates a call to DPEXRT_sycl_usm_ndarray_from_python C function
 defined in the _DPREXRT_python Python extension.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>pyapi (_type_): _description_
-obj (_type_): _description_
-ptr (_type_): _description_</p>
-</dd>
-<dt>Returns:</dt><dd><p>_type_: _description_</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -185,6 +177,18 @@ usm allocator.</p>
 </dd>
 </dl>
 <p>Returns: A pointer to the <cite>MemInfo</cite> is returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.queuestruct_from_python">
+<span class="sig-name descname"><span class="pre">queuestruct_from_python</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyapi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ptr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.queuestruct_from_python" title="Permalink to this definition"></a></dt>
+<dd><p>Calls the c function DPEXRT_sycl_queue_from_python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.runtime.context.DpexRTContext.queuestruct_to_python">
+<span class="sig-name descname"><span class="pre">queuestruct_to_python</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyapi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.runtime.context.DpexRTContext.queuestruct_to_python" title="Permalink to this definition"></a></dt>
+<dd><p>Calls the c function DPEXRT_sycl_queue_to_python</p>
 </dd></dl>
 
 <dl class="py method">

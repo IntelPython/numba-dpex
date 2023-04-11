@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.types package &mdash; numba-dpex 0.20.0+20.gdc255049 documentation</title>
+  <title>numba_dpex.core.types package &mdash; numba-dpex 0.20.1+3.g46c09ff2 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -109,9 +109,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.types.dpctl_types.html">numba_dpex.core.types.dpctl_types module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue"><code class="docutils literal notranslate"><span class="pre">DpctlSyclQueue</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.box_pyobject"><code class="docutils literal notranslate"><span class="pre">box_pyobject()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.type_interval"><code class="docutils literal notranslate"><span class="pre">type_interval()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue"><code class="docutils literal notranslate"><span class="pre">DpctlSyclQueue</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue.box_type"><code class="docutils literal notranslate"><span class="pre">DpctlSyclQueue.box_type</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.box_sycl_queue"><code class="docutils literal notranslate"><span class="pre">box_sycl_queue()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.unbox_sycl_queue"><code class="docutils literal notranslate"><span class="pre">unbox_sycl_queue()</span></code></a></li>
 </ul>
 </li>
@@ -182,6 +184,11 @@ in subclasses.</p>
 <p>For now, a dpctl.SyclQueue is represented as a Numba opaque type that allows
 passing in and using a SyclQueue object as an opaque pointer type inside
 Numba.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.types.DpctlSyclQueue.box_type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">box_type</span></span><a class="headerlink" href="#numba_dpex.core.types.DpctlSyclQueue.box_type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py class">

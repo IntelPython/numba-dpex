@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.types.dpctl_types module &mdash; numba-dpex 0.20.0+20.gdc255049 documentation</title>
+  <title>numba_dpex.core.types.dpctl_types module &mdash; numba-dpex 0.20.1+3.g46c09ff2 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -102,22 +102,35 @@
 <p>For now, a dpctl.SyclQueue is represented as a Numba opaque type that allows
 passing in and using a SyclQueue object as an opaque pointer type inside
 Numba.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.types.dpctl_types.DpctlSyclQueue.box_type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">box_type</span></span><a class="headerlink" href="#numba_dpex.core.types.dpctl_types.DpctlSyclQueue.box_type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.core.types.dpctl_types.box_pyobject">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.types.dpctl_types.</span></span><span class="sig-name descname"><span class="pre">box_pyobject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.types.dpctl_types.box_pyobject" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.core.types.dpctl_types.type_interval">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.types.dpctl_types.</span></span><span class="sig-name descname"><span class="pre">type_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.types.dpctl_types.type_interval" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="numba_dpex.core.types.dpctl_types.box_sycl_queue">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.types.dpctl_types.</span></span><span class="sig-name descname"><span class="pre">box_sycl_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.types.dpctl_types.box_sycl_queue" title="Permalink to this definition"></a></dt>
+<dd><p>Boxes a NativeValue representation of DpctlSyclQueue type into a
+dpctl.SyclQueue PyObject</p>
+<p>At this point numba-dpex does not support creating a dpctl.SyclQueue inside
+a dpjit decorated function. For this reason, boxing is only returns the
+original parent object stored in DpctlSyclQueue’s data model.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>typ: The representation of the DpnpNdArray type.
+val: A native representation of a Numba DpnpNdArray type object.
+c: The boxing context.</p>
+</dd>
+</dl>
+<p>Returns: A Pyobject for a dpnp.ndarray boxed from the Numba native value.</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.core.types.dpctl_types.unbox_sycl_queue">
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.core.types.dpctl_types.</span></span><span class="sig-name descname"><span class="pre">unbox_sycl_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.types.dpctl_types.unbox_sycl_queue" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Convert a SyclQueue object to a native structure.</p>
+</dd></dl>
 
 </section>
 
