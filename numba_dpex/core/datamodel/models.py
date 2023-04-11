@@ -4,7 +4,7 @@
 
 from numba.core import datamodel, types
 from numba.core.datamodel.models import ArrayModel as DpnpNdArrayModel
-from numba.core.datamodel.models import OpaqueModel, PrimitiveModel, StructModel
+from numba.core.datamodel.models import PrimitiveModel, StructModel
 from numba.core.extending import register_model
 
 from numba_dpex.utils import address_space
@@ -54,6 +54,33 @@ class ArrayModel(StructModel):
         super(ArrayModel, self).__init__(dmm, fe_type, members)
 
 
+class SyclQueueModel(StructModel):
+    """Represents the native data model for a dpctl.SyclQueue PyObject.
+
+    Numba-dpex uses a C struct as defined in
+    numba_dpex/core/runtime._queuestruct.h to store the required attributes for
+    a ``dpctl.SyclQueue`` Python object.
+
+        - ``queue_ref``: An opaque C pointer to an actual SYCL queue C++ object.
+        - ``parent``: A PyObject* that stores a reference back to the original
+                      ``dpctl.SyclQueue`` PyObject if the native struct is
+                      created by unboxing the PyObject.
+    """
+
+    def __init__(self, dmm, fe_type):
+        members = [
+            (
+                "parent",
+                types.CPointer(types.int8),
+            ),
+            (
+                "queue_ref",
+                types.CPointer(types.int8),
+            ),
+        ]
+        super(SyclQueueModel, self).__init__(dmm, fe_type, members)
+
+
 def _init_data_model_manager():
     dmm = datamodel.default_manager.copy()
     dmm.register(types.CPointer, GenericPointerModel)
@@ -83,6 +110,6 @@ dpex_data_model_manager.register(USMNdArray, ArrayModel)
 register_model(DpnpNdArray)(DpnpNdArrayModel)
 dpex_data_model_manager.register(DpnpNdArray, DpnpNdArrayModel)
 
-# Register the DpctlSyclQueue type with Numba's OpaqueModel
-register_model(DpctlSyclQueue)(OpaqueModel)
-dpex_data_model_manager.register(DpctlSyclQueue, OpaqueModel)
+# Register the DpctlSyclQueue type
+register_model(DpctlSyclQueue)(SyclQueueModel)
+dpex_data_model_manager.register(DpctlSyclQueue, SyclQueueModel)

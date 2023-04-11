@@ -109,13 +109,6 @@ class DpexRTContext(object):
         """Generates a call to DPEXRT_sycl_usm_ndarray_from_python C function
         defined in the _DPREXRT_python Python extension.
 
-        Args:
-            pyapi (_type_): _description_
-            obj (_type_): _description_
-            ptr (_type_): _description_
-
-        Returns:
-            _type_: _description_
         """
         fnty = llvmir.FunctionType(
             llvmir.IntType(32), [pyapi.pyobj, pyapi.voidptr]
@@ -125,6 +118,34 @@ class DpexRTContext(object):
         fn.args[1].add_attribute("nocapture")
 
         self.error = pyapi.builder.call(fn, (obj, ptr))
+
+        return self.error
+
+    def queuestruct_from_python(self, pyapi, obj, ptr):
+        """Calls the c function DPEXRT_sycl_queue_from_python"""
+
+        fnty = llvmir.FunctionType(
+            llvmir.IntType(32), [pyapi.pyobj, pyapi.voidptr]
+        )
+
+        fn = pyapi._get_function(fnty, "DPEXRT_sycl_queue_from_python")
+        fn.args[0].add_attribute("nocapture")
+        fn.args[1].add_attribute("nocapture")
+
+        self.error = pyapi.builder.call(fn, (obj, ptr))
+
+        return self.error
+
+    def queuestruct_to_python(self, pyapi, val):
+        """Calls the c function DPEXRT_sycl_queue_to_python"""
+
+        fnty = llvmir.FunctionType(pyapi.pyobj, [pyapi.voidptr])
+
+        fn = pyapi._get_function(fnty, "DPEXRT_sycl_queue_to_python")
+        fn.args[0].add_attribute("nocapture")
+        qptr = cgutils.alloca_once_value(pyapi.builder, val)
+        ptr = pyapi.builder.bitcast(qptr, pyapi.voidptr)
+        self.error = pyapi.builder.call(fn, [ptr])
 
         return self.error
 
@@ -230,7 +251,6 @@ class DpexRTContext(object):
         fn = cgutils.get_or_insert_function(
             mod, fnty, "DpexrtQueue_SubmitRange"
         )
-        # fn.return_value.add_attribute("noalias")
 
         ret = builder.call(
             fn,
