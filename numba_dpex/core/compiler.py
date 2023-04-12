@@ -85,7 +85,7 @@ def compile_with_dpex(
             return_type=return_type,
             flags=flags,
             locals={},
-            pipeline_class=OffloadCompiler,
+            pipeline_class=KernelCompiler,
         )
     else:
         raise UnreachableError()
