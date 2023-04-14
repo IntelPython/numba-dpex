@@ -65,7 +65,7 @@ static PyObject *DPEXRT_sycl_queue_to_python(queuestruct_t *queuestruct);
 /*
  * Debugging printf function used internally
  */
-void nrt_debug_print(char *fmt, ...)
+void drt_debug_print(const char *fmt, ...)
 {
     va_list args;
 
@@ -134,12 +134,12 @@ static void *DPEXRTQueue_CreateFromFilterString(const char *device)
     DPCTLSyclDeviceRef dref = NULL;
     DPCTLSyclQueueRef qref = NULL;
 
-    DPEXRT_DEBUG(nrt_debug_print(
+    DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-DEBUG: Inside DPEXRT_get_sycl_queue %s, line %d\n", __FILE__,
         __LINE__));
 
     if (!(dselector = DPCTLFilterSelector_Create(device))) {
-        DPEXRT_DEBUG(nrt_debug_print(
+        DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: Could not create a sycl::device_selector from "
             "filter string: %s at %s %d.\n",
             device, __FILE__, __LINE__));
@@ -155,7 +155,7 @@ static void *DPEXRTQueue_CreateFromFilterString(const char *device)
     DPCTLDeviceSelector_Delete(dselector);
     DPCTLDevice_Delete(dref);
 
-    DPEXRT_DEBUG(nrt_debug_print(
+    DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-DEBUG: Created sycl::queue on device %s at %s, line %d\n",
         device, __FILE__, __LINE__));
 
@@ -181,7 +181,7 @@ static void DpexrtQueue_SubmitRange(const void *KRef,
     DPCTLSyclEventRef eref = NULL;
     DPCTLSyclQueueRef qref = NULL;
 
-    DPEXRT_DEBUG(nrt_debug_print(
+    DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-DEBUG: Inside DpexrtQueue_SubmitRange %s, line %d\n", __FILE__,
         __LINE__));
 
@@ -194,7 +194,7 @@ static void DpexrtQueue_SubmitRange(const void *KRef,
     DPCTLEvent_Wait(eref);
     DPCTLEvent_Delete(eref);
 
-    DPEXRT_DEBUG(nrt_debug_print(
+    DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-DEBUG: Done with DpexrtQueue_SubmitRange %s, line %d\n",
         __FILE__, __LINE__));
 }
@@ -226,13 +226,13 @@ NRT_ExternalAllocator_new_for_usm(DPCTLSyclQueueRef qref, size_t usm_type)
     allocator = (NRT_ExternalAllocator *)malloc(sizeof(NRT_ExternalAllocator));
     if (allocator == NULL) {
         DPEXRT_DEBUG(
-            nrt_debug_print("DPEXRT-ERROR: failed to allocate memory for "
+            drt_debug_print("DPEXRT-ERROR: failed to allocate memory for "
                             "NRT_ExternalAllocator at %s, line %d.\n",
                             __FILE__, __LINE__));
         goto error;
     }
     DPEXRT_DEBUG(
-        nrt_debug_print("DPEXRT-DEBUG: usm type = %d at %s, line %d.\n",
+        drt_debug_print("DPEXRT-DEBUG: usm type = %d at %s, line %d.\n",
                         usm_type, __FILE__, __LINE__));
 
     switch (usm_type) {
@@ -246,7 +246,7 @@ NRT_ExternalAllocator_new_for_usm(DPCTLSyclQueueRef qref, size_t usm_type)
         allocator->malloc = usm_host_malloc;
         break;
     default:
-        DPEXRT_DEBUG(nrt_debug_print("DPEXRT-ERROR: Encountered an unknown usm "
+        DPEXRT_DEBUG(drt_debug_print("DPEXRT-ERROR: Encountered an unknown usm "
                                      "allocation type (%d) at %s, line %d\n",
                                      usm_type, __FILE__, __LINE__));
         goto error;
@@ -292,7 +292,7 @@ static void usmndarray_meminfo_dtor(void *ptr, size_t size, void *info)
 
     // Sanity-check to make sure the mi_dtor_info is an actual pointer.
     if (!(mi_dtor_info = (MemInfoDtorInfo *)info)) {
-        DPEXRT_DEBUG(nrt_debug_print(
+        DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: MemInfoDtorInfo object might be corrupted. Aborting "
             "MemInfo destruction at %s, line %d\n",
             __FILE__, __LINE__));
@@ -347,7 +347,7 @@ static MemInfoDtorInfo *MemInfoDtorInfo_new(NRT_MemInfo *mi, PyObject *owner)
     MemInfoDtorInfo *mi_dtor_info = NULL;
 
     if (!(mi_dtor_info = (MemInfoDtorInfo *)malloc(sizeof(MemInfoDtorInfo)))) {
-        DPEXRT_DEBUG(nrt_debug_print("DPEXRT-ERROR: Could not allocate a new "
+        DPEXRT_DEBUG(drt_debug_print("DPEXRT-ERROR: Could not allocate a new "
                                      "MemInfoDtorInfo object at %s, line %d\n",
                                      __FILE__, __LINE__));
         return NULL;
@@ -382,7 +382,7 @@ static NRT_MemInfo *NRT_MemInfo_new_from_usmndarray(PyObject *ndarrobj,
 
     // Allocate a new NRT_MemInfo object
     if (!(mi = (NRT_MemInfo *)malloc(sizeof(NRT_MemInfo)))) {
-        DPEXRT_DEBUG(nrt_debug_print(
+        DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: Could not allocate a new NRT_MemInfo "
             "object  at %s, line %d\n",
             __FILE__, __LINE__));
@@ -390,7 +390,7 @@ static NRT_MemInfo *NRT_MemInfo_new_from_usmndarray(PyObject *ndarrobj,
     }
 
     if (!(cref = DPCTLQueue_GetContext(qref))) {
-        DPEXRT_DEBUG(nrt_debug_print(
+        DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: Could not get the DPCTLSyclContext from "
             "the queue object at %s, line %d\n",
             __FILE__, __LINE__));
@@ -403,7 +403,7 @@ static NRT_MemInfo *NRT_MemInfo_new_from_usmndarray(PyObject *ndarrobj,
     // Allocate a new NRT_ExternalAllocator
     if (!(ext_alloca = NRT_ExternalAllocator_new_for_usm(qref, usm_type))) {
         DPEXRT_DEBUG(
-            nrt_debug_print("DPEXRT-ERROR: Could not allocate a new "
+            drt_debug_print("DPEXRT-ERROR: Could not allocate a new "
                             "NRT_ExternalAllocator object  at %s, line %d\n",
                             __FILE__, __LINE__));
         goto error;
@@ -411,7 +411,7 @@ static NRT_MemInfo *NRT_MemInfo_new_from_usmndarray(PyObject *ndarrobj,
 
     // Allocate a new MemInfoDtorInfo
     if (!(midtor_info = MemInfoDtorInfo_new(mi, ndarrobj))) {
-        DPEXRT_DEBUG(nrt_debug_print("DPEXRT-ERROR: Could not allocate a new "
+        DPEXRT_DEBUG(drt_debug_print("DPEXRT-ERROR: Could not allocate a new "
                                      "MemInfoDtorInfo object  at %s, line %d\n",
                                      __FILE__, __LINE__));
         goto error;
@@ -425,14 +425,14 @@ static NRT_MemInfo *NRT_MemInfo_new_from_usmndarray(PyObject *ndarrobj,
     mi->size = nitems * itemsize;
     mi->external_allocator = ext_alloca;
 
-    DPEXRT_DEBUG(nrt_debug_print(
+    DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-DEBUG: NRT_MemInfo_init mi=%p external_allocator=%p\n", mi,
         ext_alloca));
 
     return mi;
 
 error:
-    DPEXRT_DEBUG(nrt_debug_print(
+    DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-ERROR: Failed inside NRT_MemInfo_new_from_usmndarray clean up "
         "and return NULL at %s, line %d\n",
         __FILE__, __LINE__));
@@ -460,12 +460,12 @@ DPEXRT_MemInfo_alloc(npy_intp size, size_t usm_type, const char *device)
     MemInfoDtorInfo *midtor_info = NULL;
     DPCTLSyclQueueRef qref = NULL;
 
-    DPEXRT_DEBUG(nrt_debug_print(
+    DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-DEBUG: Inside DPEXRT_MemInfo_alloc  %s, line %d\n", __FILE__,
         __LINE__));
     // Allocate a new NRT_MemInfo object
     if (!(mi = (NRT_MemInfo *)malloc(sizeof(NRT_MemInfo)))) {
-        DPEXRT_DEBUG(nrt_debug_print(
+        DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: Could not allocate a new NRT_MemInfo object.\n"));
         goto error;
     }
@@ -473,7 +473,7 @@ DPEXRT_MemInfo_alloc(npy_intp size, size_t usm_type, const char *device)
     if (!(qref = (DPCTLSyclQueueRef)DPEXRTQueue_CreateFromFilterString(device)))
     {
         DPEXRT_DEBUG(
-            nrt_debug_print("DPEXRT-ERROR: Could not create a sycl::queue from "
+            drt_debug_print("DPEXRT-ERROR: Could not create a sycl::queue from "
                             "filter string: %s at %s %d.\n",
                             device, __FILE__, __LINE__));
         goto error;
@@ -496,7 +496,7 @@ DPEXRT_MemInfo_alloc(npy_intp size, size_t usm_type, const char *device)
 
     mi->size = size;
     mi->external_allocator = ext_alloca;
-    DPEXRT_DEBUG(nrt_debug_print(
+    DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-DEBUG: DPEXRT_MemInfo_alloc mi=%p "
         "external_allocator=%p for usm_type %zu on device %s, %s at %d\n",
         mi, ext_alloca, usm_type, device, __FILE__, __LINE__));
@@ -562,13 +562,13 @@ static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
         exp++;
     count = (unsigned int)(size >> exp);
 
-    DPEXRT_DEBUG(nrt_debug_print(
+    DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-DEBUG: mi->size = %u, itemsize = %u, count = %u, "
         "value = %u, Inside DPEXRT_MemInfo_fill %s, line %d\n",
         mi->size, itemsize << exp, count, value, __FILE__, __LINE__));
 
     if (mi->data == NULL) {
-        DPEXRT_DEBUG(nrt_debug_print("DPEXRT-DEBUG: mi->data is NULL, "
+        DPEXRT_DEBUG(drt_debug_print("DPEXRT-DEBUG: mi->data is NULL, "
                                      "Inside DPEXRT_MemInfo_fill %s, line %d\n",
                                      __FILE__, __LINE__));
         goto error;
@@ -755,20 +755,20 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
     // collecting the array.
     Py_IncRef(obj);
 
-    DPEXRT_DEBUG(nrt_debug_print(
+    DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-DEBUG: In DPEXRT_sycl_usm_ndarray_from_python.\n"));
 
     // Check if the PyObject obj has an _array_obj attribute that is of
     // dpctl.tensor.usm_ndarray type.
     if (!(arrayobj = PyUSMNdArray_ARRAYOBJ(obj))) {
-        DPEXRT_DEBUG(nrt_debug_print(
+        DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: PyUSMNdArray_ARRAYOBJ check failed %d\n", __FILE__,
             __LINE__));
         goto error;
     }
 
     if (!(ndim = UsmNDArray_GetNDim(arrayobj))) {
-        DPEXRT_DEBUG(nrt_debug_print(
+        DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: UsmNDArray_GetNDim returned 0 at %s, line %d\n",
             __FILE__, __LINE__));
         goto error;
@@ -779,7 +779,7 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
     nitems = product_of_shape(shape, ndim);
     itemsize = (npy_intp)UsmNDArray_GetElementSize(arrayobj);
     if (!(qref = UsmNDArray_GetQueueRef(arrayobj))) {
-        DPEXRT_DEBUG(nrt_debug_print(
+        DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: UsmNDArray_GetQueueRef returned NULL at "
             "%s, line %d.\n",
             __FILE__, __LINE__));
@@ -789,7 +789,7 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
     if (!(arystruct->meminfo = NRT_MemInfo_new_from_usmndarray(
               obj, data, nitems, itemsize, qref)))
     {
-        DPEXRT_DEBUG(nrt_debug_print(
+        DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: NRT_MemInfo_new_from_usmndarray failed "
             "at %s, line %d.\n",
             __FILE__, __LINE__));
@@ -837,7 +837,7 @@ error:
     // code of -1.
     // Decref the Pyobject of the array
     // ensure the GIL
-    DPEXRT_DEBUG(nrt_debug_print(
+    DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-ERROR: Failed to unbox dpnp ndarray into a Numba "
         "arraystruct at %s, line %d\n",
         __FILE__, __LINE__));
@@ -871,7 +871,7 @@ static PyObject *box_from_arystruct_parent(arystruct_t *arystruct,
     struct PyUSMArrayObject *arrayobj = NULL;
     npy_intp itemsize = 0;
 
-    DPEXRT_DEBUG(nrt_debug_print("DPEXRT-DEBUG: In try_to_return_parent.\n"));
+    DPEXRT_DEBUG(drt_debug_print("DPEXRT-DEBUG: In try_to_return_parent.\n"));
 
     if (!(arrayobj = PyUSMNdArray_ARRAYOBJ(arystruct->parent)))
         return NULL;
@@ -917,7 +917,7 @@ static PyObject *box_from_arystruct_parent(arystruct_t *arystruct,
     // parent, we need to increment the reference count of the parent here.
     Py_IncRef(array);
 
-    DPEXRT_DEBUG(nrt_debug_print(
+    DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-DEBUG: try_to_return_parent found a valid parent.\n"));
 
     /* Yes, it is the same array return a new reference */
@@ -957,7 +957,7 @@ DPEXRT_sycl_usm_ndarray_to_python_acqref(arystruct_t *arystruct,
     int exp = 0;
     npy_intp itemsize = 0;
 
-    DPEXRT_DEBUG(nrt_debug_print(
+    DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-DEBUG: In DPEXRT_sycl_usm_ndarray_to_python_acqref.\n"));
 
     if (descr == NULL) {
@@ -976,7 +976,7 @@ DPEXRT_sycl_usm_ndarray_to_python_acqref(arystruct_t *arystruct,
     // If the arystruct has a parent attribute, try to box the parent and
     // return it.
     if (arystruct->parent) {
-        DPEXRT_DEBUG(nrt_debug_print(
+        DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-DEBUG: arystruct has a parent, therefore "
             "trying to box and return the parent at %s, line %d\n",
             __FILE__, __LINE__));
@@ -1014,7 +1014,7 @@ DPEXRT_sycl_usm_ndarray_to_python_acqref(arystruct_t *arystruct,
         NRT_MemInfo_acquire(arystruct->meminfo);
         status = MemInfo_init(miobj, args, NULL);
         if (status != 0) {
-            DPEXRT_DEBUG(nrt_debug_print("MemInfo_init failed at %s, line %d\n",
+            DPEXRT_DEBUG(drt_debug_print("MemInfo_init failed at %s, line %d\n",
                                          __FILE__, __LINE__));
             Py_DECREF(args);
             PyErr_Format(PyExc_ValueError,
@@ -1106,7 +1106,7 @@ DPEXRT_sycl_usm_ndarray_to_python_acqref(arystruct_t *arystruct,
         return (PyObject *)NULL;
     }
 
-    DPEXRT_DEBUG(nrt_debug_print(
+    DPEXRT_DEBUG(drt_debug_print(
         "Returning from DPEXRT_sycl_usm_ndarray_to_python_acqref "
         "at %s, line %d\n",
         __FILE__, __LINE__));
@@ -1145,10 +1145,10 @@ static int DPEXRT_sycl_queue_from_python(PyObject *obj,
     queue_obj = (struct PySyclQueueObject *)obj;
 
     DPEXRT_DEBUG(
-        nrt_debug_print("DPEXRT-DEBUG: In DPEXRT_sycl_queue_from_python.\n"));
+        drt_debug_print("DPEXRT-DEBUG: In DPEXRT_sycl_queue_from_python.\n"));
 
     if (!(queue_ref = SyclQueue_GetQueueRef(queue_obj))) {
-        DPEXRT_DEBUG(nrt_debug_print(
+        DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: SyclQueue_GetQueueRef returned NULL at "
             "%s, line %d.\n",
             __FILE__, __LINE__));
@@ -1165,7 +1165,7 @@ error:
     // code of -1.
     // Decref the Pyobject of the array
     // ensure the GIL
-    DPEXRT_DEBUG(nrt_debug_print(
+    DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-ERROR: Failed to unbox dpctl SyclQueue into a Numba "
         "queuestruct at %s, line %d\n",
         __FILE__, __LINE__));

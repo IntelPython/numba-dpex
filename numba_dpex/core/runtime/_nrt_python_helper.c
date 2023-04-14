@@ -28,7 +28,7 @@ int MemInfo_init(MemInfoObject *self, PyObject *args, PyObject *kwds)
     }
     raw_ptr = PyLong_AsVoidPtr(raw_ptr_obj);
     NRT_Debug(
-        nrt_debug_print("MemInfo_init self=%p raw_ptr=%p\n", self, raw_ptr));
+        drt_debug_print("MemInfo_init self=%p raw_ptr=%p\n", self, raw_ptr));
 
     if (PyErr_Occurred())
         return -1;
