@@ -15,6 +15,7 @@ from ._intrinsic import (
     impl_dpnp_empty,
     impl_dpnp_empty_like,
     impl_dpnp_full,
+    impl_dpnp_full_like,
     impl_dpnp_ones,
     impl_dpnp_ones_like,
     impl_dpnp_zeros,
@@ -811,6 +812,118 @@ def ol_dpnp_ones_like(
         raise errors.TypingError(
             "Cannot parse input types to "
             + f"function dpnp.empty_like({x1}, {dtype}, ...)."
+        )
+
+
+@overload(dpnp.full_like, prefer_literal=True)
+def ol_dpnp_full_like(
+    x1,
+    fill_value,
+    dtype=None,
+    order="C",
+    subok=None,
+    shape=None,
+    device=None,
+    usm_type=None,
+    sycl_queue=None,
+):
+    """Creates `usm_ndarray` from USM allocation initialized with values
+    specified by the `fill_value`.
+
+    This is an overloaded function implementation for dpnp.full_like().
+
+    Args:
+        x1 (numba.core.types.npytypes.Array): Input array from which to
+            derive the output array shape.
+        fill_value (numba.core.types.scalars): One of the
+            numba.core.types.scalar types for the value to
+            be filled.
+        dtype (numba.core.types.functions.NumberClass, optional):
+            Data type of the array. Can be typestring, a `numpy.dtype`
+            object, `numpy` char string, or a numpy scalar type.
+            Default: None.
+        order (str, optional): memory layout for the array "C" or "F".
+            Default: "C".
+        subok ('numba.core.types.scalars.BooleanLiteral', optional): A
+            boolean literal type for the `subok` parameter defined in
+            NumPy. If True, then the newly created array will use the
+            sub-class type of prototype, otherwise it will be a
+            base-class array. Defaults to False.
+        shape (numba.core.types.containers.UniTuple, optional): The shape
+            to override the shape of the given array. Not supported.
+            Default: `None`
+        device (numba.core.types.misc.StringLiteral, optional): array API
+            concept of device where the output array is created. `device`
+            can be `None`, a oneAPI filter selector string, an instance of
+            :class:`dpctl.SyclDevice` corresponding to a non-partitioned
+            SYCL device, an instance of :class:`dpctl.SyclQueue`, or a
+            `Device` object returnedby`dpctl.tensor.usm_array.device`.
+            Default: `None`.
+        usm_type (numba.core.types.misc.StringLiteral or str, optional):
+            The type of SYCL USM allocation for the output array.
+            Allowed values are "device"|"shared"|"host".
+            Default: `"device"`.
+        sycl_queue (:class:`dpctl.SyclQueue`, optional): Not supported.
+
+    Raises:
+        errors.TypingError: If couldn't parse input types to dpnp.full_like().
+        errors.TypingError: If shape is provided.
+
+    Returns:
+        function: Local function `impl_dpnp_full_like()`.
+    """
+
+    if shape:
+        raise errors.TypingError(
+            "The parameter shape is not supported "
+            + "inside overloaded dpnp.full_like() function."
+        )
+    _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim is not None else 0
+    _dtype = _parse_dtype(dtype, data=x1)
+    _order = x1.layout if order is None else order
+    _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
+    _device = (
+        _parse_device_filter_string(device) if device is not None else "unknown"
+    )
+    ret_ty = build_dpnp_ndarray(
+        _ndim,
+        layout=_order,
+        dtype=_dtype,
+        usm_type=_usm_type,
+        device=_device,
+        queue=sycl_queue,
+    )
+    if ret_ty:
+
+        def impl(
+            x1,
+            fill_value,
+            dtype=None,
+            order="C",
+            subok=None,
+            shape=None,
+            device=None,
+            usm_type=None,
+            sycl_queue=None,
+        ):
+            return impl_dpnp_full_like(
+                x1,
+                fill_value,
+                _dtype,
+                _order,
+                subok,
+                shape,
+                _device,
+                _usm_type,
+                sycl_queue,
+                ret_ty,
+            )
+
+        return impl
+    else:
+        raise errors.TypingError(
+            "Cannot parse input types to "
+            + f"function dpnp.full_like({x1}, {fill_value}, {dtype}, ...)."
         )
 
 

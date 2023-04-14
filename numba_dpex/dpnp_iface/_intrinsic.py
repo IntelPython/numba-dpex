@@ -296,6 +296,71 @@ def impl_dpnp_ones(
 
 
 @intrinsic
+def impl_dpnp_full(
+    ty_context,
+    ty_shape,
+    ty_fill_value,
+    ty_dtype,
+    ty_order,
+    ty_like,
+    ty_device,
+    ty_usm_type,
+    ty_sycl_queue,
+    ty_retty_ref,
+):
+    """A numba "intrinsic" function to inject code for dpnp.full().
+
+    Args:
+        ty_context (numba.core.typing.context.Context): The typing context
+            for the codegen.
+        ty_shape (numba.core.types.scalars.Integer or
+            numba.core.types.containers.UniTuple): Numba type for the shape
+            of the array.
+        ty_fill_value (numba.core.types.scalars): One of the Numba scalar
+            types.
+        ty_dtype (numba.core.types.functions.NumberClass): Numba type for
+            dtype.
+        ty_order (numba.core.types.misc.UnicodeType): UnicodeType
+            from numba for strings.
+        ty_like (numba.core.types.npytypes.Array): Numba type for array.
+        ty_device (numba.core.types.misc.UnicodeType): UnicodeType
+            from numba for strings.
+        ty_usm_type (numba.core.types.misc.UnicodeType): UnicodeType
+            from numba for strings.
+        ty_sycl_queue (numba.core.types.misc.UnicodeType): UnicodeType
+            from numba for strings.
+        ty_retty_ref (numba.core.types.abstract.TypeRef): Reference to
+            a type from numba, used when a type is passed as a value.
+
+    Returns:
+        tuple(numba.core.typing.templates.Signature, function): A tuple of
+            numba function signature type and a function object.
+    """
+
+    ty_retty = ty_retty_ref.instance_type
+    signature = ty_retty(
+        ty_shape,
+        ty_fill_value,
+        ty_dtype,
+        ty_order,
+        ty_like,
+        ty_device,
+        ty_usm_type,
+        ty_sycl_queue,
+        ty_retty_ref,
+    )
+
+    def codegen(context, builder, sig, args):
+        fill_value = context.get_argument_value(builder, sig.args[1], args[1])
+        ary, _ = fill_arrayobj(
+            context, builder, sig, args, fill_value, is_like=False
+        )
+        return ary._getvalue()
+
+    return signature, codegen
+
+
+@intrinsic
 def impl_dpnp_empty_like(
     ty_context,
     ty_x1,
@@ -490,33 +555,36 @@ def impl_dpnp_ones_like(
 
 
 @intrinsic
-def impl_dpnp_full(
+def impl_dpnp_full_like(
     ty_context,
-    ty_shape,
+    ty_x1,
     ty_fill_value,
     ty_dtype,
     ty_order,
-    ty_like,
+    ty_subok,
+    ty_shape,
     ty_device,
     ty_usm_type,
     ty_sycl_queue,
     ty_retty_ref,
 ):
-    """A numba "intrinsic" function to inject code for dpnp.full().
+    """A numba "intrinsic" function to inject code for dpnp.full_like().
 
     Args:
         ty_context (numba.core.typing.context.Context): The typing context
             for the codegen.
-        ty_shape (numba.core.types.scalars.Integer or
-            numba.core.types.containers.UniTuple): Numba type for the shape
-            of the array.
+        ty_x1 (numba.core.types.npytypes.Array): Numba type class for ndarray.
         ty_fill_value (numba.core.types.scalars): One of the Numba scalar
             types.
         ty_dtype (numba.core.types.functions.NumberClass): Numba type for
             dtype.
         ty_order (numba.core.types.misc.UnicodeType): UnicodeType
             from numba for strings.
-        ty_like (numba.core.types.npytypes.Array): Numba type for array.
+        ty_subok (numba.core.types.scalars.Boolean): Numba type class for
+            subok.
+        ty_shape (numba.core.types.scalars.Integer or
+            numba.core.types.containers.UniTuple): Numba type for the shape
+            of the array. Not supported.
         ty_device (numba.core.types.misc.UnicodeType): UnicodeType
             from numba for strings.
         ty_usm_type (numba.core.types.misc.UnicodeType): UnicodeType
@@ -533,11 +601,12 @@ def impl_dpnp_full(
 
     ty_retty = ty_retty_ref.instance_type
     signature = ty_retty(
-        ty_shape,
+        ty_x1,
         ty_fill_value,
         ty_dtype,
         ty_order,
-        ty_like,
+        ty_subok,
+        ty_shape,
         ty_device,
         ty_usm_type,
         ty_sycl_queue,
@@ -547,7 +616,7 @@ def impl_dpnp_full(
     def codegen(context, builder, sig, args):
         fill_value = context.get_argument_value(builder, sig.args[1], args[1])
         ary, _ = fill_arrayobj(
-            context, builder, sig, args, fill_value, is_like=False
+            context, builder, sig, args, fill_value, is_like=True
         )
         return ary._getvalue()
 
