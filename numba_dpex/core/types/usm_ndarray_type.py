@@ -74,7 +74,7 @@ class USMNdArray(Array):
 
         if not dtype:
             dummy_tensor = dpctl.tensor.empty(
-                shape=1, order=layout, usm_type=usm_type, sycl_queue=self.queue
+                1, order=layout, usm_type=usm_type, sycl_queue=self.queue
             )
             # convert dpnp type to numba/numpy type
             _dtype = dummy_tensor.dtype

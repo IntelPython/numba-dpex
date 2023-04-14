@@ -34,6 +34,12 @@ static NRT_ExternalAllocator *
 NRT_ExternalAllocator_new_for_usm(DPCTLSyclQueueRef qref, size_t usm_type);
 static void *DPEXRTQueue_CreateFromFilterString(const char *device);
 static MemInfoDtorInfo *MemInfoDtorInfo_new(NRT_MemInfo *mi, PyObject *owner);
+static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
+                                        size_t itemsize,
+                                        bool dest_is_float,
+                                        bool value_is_float,
+                                        int64_t value,
+                                        const char *device);
 static NRT_MemInfo *NRT_MemInfo_new_from_usmndarray(PyObject *ndarrobj,
                                                     void *data,
                                                     npy_intp nitems,
@@ -510,25 +516,47 @@ error:
  * This function takes an allocated memory as NRT_MemInfo and fills it with
  * the value specified by `value`.
  *
- * @param mi            An NRT_MemInfo object, should be found from memory
- * allocation.
- * @param itemsize      The itemsize, the size of each item in the array.
- * @param is_float      Flag to specify if the data being float or not.
- * @param value         The value to be used to fill an array.
- * @param device        The device on which the memory was allocated.
- * @return NRT_MemInfo* A new NRT_MemInfo object, NULL if no NRT_MemInfo
- *                        object could be created.
+ * @param mi                An NRT_MemInfo object, should be found from memory
+ *                          allocation.
+ * @param itemsize          The itemsize, the size of each item in the array.
+ * @param dest_is_float     True if the destination array's dtype is float.
+ * @param value_is_float    True if the value to be filled is float.
+ * @param value             The value to be used to fill an array.
+ * @param device            The device on which the memory was allocated.
+ * @return NRT_MemInfo*     A new NRT_MemInfo object, NULL if no NRT_MemInfo
+ *                          object could be created.
  */
 static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
                                         size_t itemsize,
-                                        bool is_float,
-                                        uint8_t value,
+                                        bool dest_is_float,
+                                        bool value_is_float,
+                                        int64_t value,
                                         const char *device)
 {
     DPCTLSyclQueueRef qref = NULL;
     DPCTLSyclEventRef eref = NULL;
     size_t count = 0, size = 0, exp = 0;
 
+    /**
+     * @brief A union for bit conversion from the input int64_t value
+     * to a uintX_t bit-pattern with appropriate type conversion when the
+     * input value represents a float.
+     */
+    typedef union
+    {
+        float f_; /**< The float to be represented. */
+        double d_;
+        int8_t i8_;
+        int16_t i16_;
+        int32_t i32_;
+        int64_t i64_;
+        uint8_t ui8_;
+        uint16_t ui16_;
+        uint32_t ui32_; /**< The bit representation. */
+        uint64_t ui64_; /**< The bit representation. */
+    } bitcaster_t;
+
+    bitcaster_t bc;
     size = mi->size;
     while (itemsize >>= 1)
         exp++;
@@ -552,40 +580,86 @@ static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
     switch (exp) {
     case 3:
     {
-        uint64_t value_assign = (uint64_t)value;
-        if (is_float) {
-            double const_val = (double)value;
+        if (dest_is_float && value_is_float) {
+            double *p = (double *)(&value);
+            bc.d_ = *p;
+        }
+        else if (dest_is_float && !value_is_float) {
             // To stop warning: dereferencing type-punned pointer
             // will break strict-aliasing rules [-Wstrict-aliasing]
-            double *p = &const_val;
-            value_assign = *((uint64_t *)(p));
+            double cd = (double)value;
+            bc.d_ = *((double *)(&cd));
         }
-        if (!(eref = DPCTLQueue_Fill64(qref, mi->data, value_assign, count)))
+        else if (!dest_is_float && value_is_float) {
+            double *p = (double *)&value;
+            bc.i64_ = *p;
+        }
+        else {
+            bc.i64_ = value;
+        }
+
+        if (!(eref = DPCTLQueue_Fill64(qref, mi->data, bc.ui64_, count)))
             goto error;
         break;
     }
     case 2:
     {
-        uint32_t value_assign = (uint32_t)value;
-        if (is_float) {
-            float const_val = (float)value;
+        if (dest_is_float && value_is_float) {
+            double *p = (double *)(&value);
+            bc.f_ = *p;
+        }
+        else if (dest_is_float && !value_is_float) {
             // To stop warning: dereferencing type-punned pointer
             // will break strict-aliasing rules [-Wstrict-aliasing]
-            float *p = &const_val;
-            value_assign = *((uint32_t *)(p));
+            float cf = (float)value;
+            bc.f_ = *((float *)(&cf));
         }
-        if (!(eref = DPCTLQueue_Fill32(qref, mi->data, value_assign, count)))
+        else if (!dest_is_float && value_is_float) {
+            double *p = (double *)&value;
+            bc.i32_ = *p;
+        }
+        else {
+            bc.i32_ = (int32_t)value;
+        }
+
+        if (!(eref = DPCTLQueue_Fill32(qref, mi->data, bc.ui32_, count)))
             goto error;
         break;
     }
     case 1:
-        if (!(eref = DPCTLQueue_Fill16(qref, mi->data, value, count)))
+    {
+        if (dest_is_float)
+            goto error;
+
+        if (value_is_float) {
+            double *p = (double *)&value;
+            bc.i16_ = *p;
+        }
+        else {
+            bc.i16_ = (int16_t)value;
+        }
+
+        if (!(eref = DPCTLQueue_Fill16(qref, mi->data, bc.ui16_, count)))
             goto error;
         break;
+    }
     case 0:
-        if (!(eref = DPCTLQueue_Fill8(qref, mi->data, value, count)))
+    {
+        if (dest_is_float)
+            goto error;
+
+        if (value_is_float) {
+            double *p = (double *)&value;
+            bc.i8_ = *p;
+        }
+        else {
+            bc.i8_ = (int8_t)value;
+        }
+
+        if (!(eref = DPCTLQueue_Fill8(qref, mi->data, bc.ui8_, count)))
             goto error;
         break;
+    }
     default:
         goto error;
     }

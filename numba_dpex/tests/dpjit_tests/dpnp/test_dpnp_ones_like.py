@@ -23,10 +23,10 @@ devices = ["cpu", "unknown"]
 @pytest.mark.parametrize("dtype", dtypes)
 @pytest.mark.parametrize("usm_type", usm_types)
 @pytest.mark.parametrize("device", devices)
-def test_dpnp_ones(shape, dtype, usm_type, device):
+def test_dpnp_ones_like(shape, dtype, usm_type, device):
     @dpjit
     def func1(a):
-        c = dpnp.ones(a, dtype=dtype, usm_type=usm_type, device=device)
+        c = dpnp.ones_like(a, dtype=dtype, usm_type=usm_type, device=device)
         return c
 
     if isinstance(shape, int):
@@ -35,9 +35,9 @@ def test_dpnp_ones(shape, dtype, usm_type, device):
         NZ = numpy.random.rand(*shape)
 
     try:
-        c = func1(shape)
+        c = func1(NZ)
     except Exception:
-        pytest.fail("Calling dpnp.empty inside dpjit failed")
+        pytest.fail("Calling dpnp.ones_like inside dpjit failed")
 
     if len(c.shape) == 1:
         assert c.shape[0] == NZ.shape[0]

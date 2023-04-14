@@ -14,6 +14,7 @@ from numba_dpex.core.types import DpnpNdArray
 from ._intrinsic import (
     impl_dpnp_empty,
     impl_dpnp_empty_like,
+    impl_dpnp_full,
     impl_dpnp_ones,
     impl_dpnp_ones_like,
     impl_dpnp_zeros,
@@ -79,7 +80,7 @@ def _parse_usm_type(usm_type):
     Raises:
         errors.NumbaValueError: If an invalid usm_type is specified.
         TypeError: If the parameter is neither a 'str'
-                    nor a 'types.StringLiteral'
+                    nor a 'types.StringLiteral'.
 
     Returns:
         str: The stringized usm_type.
@@ -112,7 +113,7 @@ def _parse_device_filter_string(device):
 
     Raises:
         TypeError: If the parameter is neither a 'str'
-                    nor a 'types.StringLiteral'
+                    nor a 'types.StringLiteral'.
 
     Returns:
         str: The stringized device.
@@ -142,11 +143,11 @@ def build_dpnp_ndarray(
 
     Args:
         ndim (int): The dimension of the array.
-        layout ("C", or F"): memory layout for the array. Default: "C"
+        layout ("C", or F"): memory layout for the array. Default: "C".
         dtype (numba.core.types.functions.NumberClass, optional):
             Data type of the array. Can be typestring, a `numpy.dtype`
             object, `numpy` char string, or a numpy scalar type.
-            Default: None
+            Default: None.
         usm_type (numba.core.types.misc.StringLiteral, optional):
             The type of SYCL USM allocation for the output array.
             Allowed values are "device"|"shared"|"host".
@@ -208,6 +209,8 @@ def ol_dpnp_empty(
     shape,
     dtype=None,
     order="C",
+    # like=None, # this gets lost when dpnp.empty() is called outside dpjit,
+    # see issue https://github.com/IntelPython/numba-dpex/issues/998
     device=None,
     usm_type="device",
     sycl_queue=None,
@@ -216,13 +219,21 @@ def ol_dpnp_empty(
     a jit function.
 
     Args:
-        shape (tuple): Dimensions of the array to be created.
+        shape (numba.core.types.containers.UniTuple or
+            numba.core.types.scalars.IntegerLiteral): Dimensions
+            of the array to be created.
         dtype (numba.core.types.functions.NumberClass, optional):
             Data type of the array. Can be typestring, a `numpy.dtype`
             object, `numpy` char string, or a numpy scalar type.
-            Default: None
+            Default: None.
         order (str, optional): memory layout for the array "C" or "F".
-            Default: "C"
+            Default: "C".
+        like (numba.core.types.npytypes.Array, optional): A type for
+            reference object to allow the creation of arrays which are not
+            `NumPy` arrays. If an array-like passed in as `like` supports the
+            `__array_function__` protocol, the result will be defined by it.
+            In this case, it ensures the creation of an array object
+            compatible with that passed in via this argument.
         device (numba.core.types.misc.StringLiteral, optional): array API
             concept of device where the output array is created. `device`
             can be `None`, a oneAPI filter selector string, an instance of
@@ -241,7 +252,7 @@ def ol_dpnp_empty(
         errors.TypingError: If couldn't parse input types to dpnp.empty().
 
     Returns:
-        function: Local function `impl_dpnp_empty()`
+        function: Local function `impl_dpnp_empty()`.
     """
 
     _ndim = _ty_parse_shape(shape)
@@ -266,12 +277,20 @@ def ol_dpnp_empty(
                 shape,
                 dtype=None,
                 order="C",
+                # like=None, see issue https://github.com/IntelPython/numba-dpex/issues/998
                 device=None,
                 usm_type="device",
                 sycl_queue=None,
             ):
                 return impl_dpnp_empty(
-                    shape, _dtype, order, _device, _usm_type, sycl_queue, ret_ty
+                    shape,
+                    _dtype,
+                    order,
+                    # like, see issue https://github.com/IntelPython/numba-dpex/issues/998
+                    _device,
+                    _usm_type,
+                    sycl_queue,
+                    ret_ty,
                 )
 
             return impl
@@ -289,6 +308,7 @@ def ol_dpnp_zeros(
     shape,
     dtype=None,
     order="C",
+    like=None,
     device=None,
     usm_type="device",
     sycl_queue=None,
@@ -297,13 +317,21 @@ def ol_dpnp_zeros(
     a jit function.
 
     Args:
-        shape (tuple): Dimensions of the array to be created.
+        shape (numba.core.types.containers.UniTuple or
+            numba.core.types.scalars.IntegerLiteral): Dimensions
+            of the array to be created.
         dtype (numba.core.types.functions.NumberClass, optional):
             Data type of the array. Can be typestring, a `numpy.dtype`
             object, `numpy` char string, or a numpy scalar type.
-            Default: None
+            Default: None.
         order (str, optional): memory layout for the array "C" or "F".
-            Default: "C"
+            Default: "C".
+        like (numba.core.types.npytypes.Array, optional): A type for
+            reference object to allow the creation of arrays which are not
+            `NumPy` arrays. If an array-like passed in as `like` supports the
+            `__array_function__` protocol, the result will be defined by it.
+            In this case, it ensures the creation of an array object
+            compatible with that passed in via this argument.
         device (numba.core.types.misc.StringLiteral, optional): array API
             concept of device where the output array is created. `device`
             can be `None`, a oneAPI filter selector string, an instance of
@@ -322,7 +350,7 @@ def ol_dpnp_zeros(
         errors.TypingError: If couldn't parse input types to dpnp.zeros().
 
     Returns:
-        function: Local function `impl_dpnp_zeros()`
+        function: Local function `impl_dpnp_zeros()`.
     """
 
     _ndim = _ty_parse_shape(shape)
@@ -347,12 +375,20 @@ def ol_dpnp_zeros(
                 shape,
                 dtype=None,
                 order="C",
+                like=None,
                 device=None,
                 usm_type="device",
                 sycl_queue=None,
             ):
                 return impl_dpnp_zeros(
-                    shape, _dtype, order, _device, _usm_type, sycl_queue, ret_ty
+                    shape,
+                    _dtype,
+                    order,
+                    like,
+                    _device,
+                    _usm_type,
+                    sycl_queue,
+                    ret_ty,
                 )
 
             return impl
@@ -370,6 +406,7 @@ def ol_dpnp_ones(
     shape,
     dtype=None,
     order="C",
+    like=None,
     device=None,
     usm_type="device",
     sycl_queue=None,
@@ -378,13 +415,21 @@ def ol_dpnp_ones(
     a jit function.
 
     Args:
-        shape (tuple): Dimensions of the array to be created.
+        shape (numba.core.types.containers.UniTuple or
+            numba.core.types.scalars.IntegerLiteral): Dimensions
+            of the array to be created.
         dtype (numba.core.types.functions.NumberClass, optional):
             Data type of the array. Can be typestring, a `numpy.dtype`
             object, `numpy` char string, or a numpy scalar type.
-            Default: None
+            Default: None.
         order (str, optional): memory layout for the array "C" or "F".
-            Default: "C"
+            Default: "C".
+        like (numba.core.types.npytypes.Array, optional): A type for
+            reference object to allow the creation of arrays which are not
+            `NumPy` arrays. If an array-like passed in as `like` supports the
+            `__array_function__` protocol, the result will be defined by it.
+            In this case, it ensures the creation of an array object
+            compatible with that passed in via this argument.
         device (numba.core.types.misc.StringLiteral, optional): array API
             concept of device where the output array is created. `device`
             can be `None`, a oneAPI filter selector string, an instance of
@@ -403,7 +448,7 @@ def ol_dpnp_ones(
         errors.TypingError: If couldn't parse input types to dpnp.ones().
 
     Returns:
-        function: Local function `impl_dpnp_ones()`
+        function: Local function `impl_dpnp_ones()`.
     """
 
     _ndim = _ty_parse_shape(shape)
@@ -428,12 +473,20 @@ def ol_dpnp_ones(
                 shape,
                 dtype=None,
                 order="C",
+                like=None,
                 device=None,
                 usm_type="device",
                 sycl_queue=None,
             ):
                 return impl_dpnp_ones(
-                    shape, _dtype, order, _device, _usm_type, sycl_queue, ret_ty
+                    shape,
+                    _dtype,
+                    order,
+                    like,
+                    _device,
+                    _usm_type,
+                    sycl_queue,
+                    ret_ty,
                 )
 
             return impl
@@ -448,9 +501,10 @@ def ol_dpnp_ones(
 
 @overload(dpnp.empty_like, prefer_literal=True)
 def ol_dpnp_empty_like(
-    x,
+    x1,
     dtype=None,
     order="C",
+    subok=False,
     shape=None,
     device=None,
     usm_type=None,
@@ -461,14 +515,19 @@ def ol_dpnp_empty_like(
     This is an overloaded function implementation for dpnp.empty_like().
 
     Args:
-        x (numba.core.types.npytypes.Array): Input array from which to
+        x1 (numba.core.types.npytypes.Array): Input array from which to
             derive the output array shape.
         dtype (numba.core.types.functions.NumberClass, optional):
             Data type of the array. Can be typestring, a `numpy.dtype`
             object, `numpy` char string, or a numpy scalar type.
-            Default: None
+            Default: None.
         order (str, optional): memory layout for the array "C" or "F".
-            Default: "C"
+            Default: "C".
+        subok ('numba.core.types.scalars.BooleanLiteral', optional): A
+            boolean literal type for the `subok` parameter defined in
+            NumPy. If True, then the newly created array will use the
+            sub-class type of prototype, otherwise it will be a
+            base-class array. Defaults to False.
         shape (numba.core.types.containers.UniTuple, optional): The shape
             to override the shape of the given array. Not supported.
             Default: `None`
@@ -490,7 +549,7 @@ def ol_dpnp_empty_like(
         errors.TypingError: If shape is provided.
 
     Returns:
-        function: Local function `impl_dpnp_empty_like()`
+        function: Local function `impl_dpnp_empty_like()`.
     """
 
     if shape:
@@ -498,9 +557,9 @@ def ol_dpnp_empty_like(
             "The parameter shape is not supported "
             + "inside overloaded dpnp.empty_like() function."
         )
-    _ndim = x.ndim if hasattr(x, "ndim") and x.ndim is not None else 0
-    _dtype = _parse_dtype(dtype, data=x)
-    _order = x.layout if order is None else order
+    _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim is not None else 0
+    _dtype = _parse_dtype(dtype, data=x1)
+    _order = x1.layout if order is None else order
     _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
     _device = (
         _parse_device_filter_string(device) if device is not None else "unknown"
@@ -516,18 +575,21 @@ def ol_dpnp_empty_like(
     if ret_ty:
 
         def impl(
-            x,
+            x1,
             dtype=None,
             order="C",
+            subok=False,
             shape=None,
             device=None,
             usm_type=None,
             sycl_queue=None,
         ):
             return impl_dpnp_empty_like(
-                x,
+                x1,
                 _dtype,
                 _order,
+                subok,
+                shape,
                 _device,
                 _usm_type,
                 sycl_queue,
@@ -538,15 +600,16 @@ def ol_dpnp_empty_like(
     else:
         raise errors.TypingError(
             "Cannot parse input types to "
-            + f"function dpnp.empty_like({x}, {dtype}, ...)."
+            + f"function dpnp.empty_like({x1}, {dtype}, ...)."
         )
 
 
 @overload(dpnp.zeros_like, prefer_literal=True)
 def ol_dpnp_zeros_like(
-    x,
+    x1,
     dtype=None,
     order="C",
+    subok=None,
     shape=None,
     device=None,
     usm_type=None,
@@ -557,14 +620,19 @@ def ol_dpnp_zeros_like(
     This is an overloaded function implementation for dpnp.zeros_like().
 
     Args:
-        x (numba.core.types.npytypes.Array): Input array from which to
+        x1 (numba.core.types.npytypes.Array): Input array from which to
             derive the output array shape.
         dtype (numba.core.types.functions.NumberClass, optional):
             Data type of the array. Can be typestring, a `numpy.dtype`
             object, `numpy` char string, or a numpy scalar type.
-            Default: None
+            Default: None.
         order (str, optional): memory layout for the array "C" or "F".
-            Default: "C"
+            Default: "C".
+        subok ('numba.core.types.scalars.BooleanLiteral', optional): A
+            boolean literal type for the `subok` parameter defined in
+            NumPy. If True, then the newly created array will use the
+            sub-class type of prototype, otherwise it will be a
+            base-class array. Defaults to False.
         shape (numba.core.types.containers.UniTuple, optional): The shape
             to override the shape of the given array. Not supported.
             Default: `None`
@@ -586,7 +654,7 @@ def ol_dpnp_zeros_like(
         errors.TypingError: If shape is provided.
 
     Returns:
-        function: Local function `impl_dpnp_zeros_like()`
+        function: Local function `impl_dpnp_zeros_like()`.
     """
 
     if shape:
@@ -594,9 +662,9 @@ def ol_dpnp_zeros_like(
             "The parameter shape is not supported "
             + "inside overloaded dpnp.zeros_like() function."
         )
-    _ndim = x.ndim if hasattr(x, "ndim") and x.ndim is not None else 0
-    _dtype = _parse_dtype(dtype, data=x)
-    _order = x.layout if order is None else order
+    _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim is not None else 0
+    _dtype = _parse_dtype(dtype, data=x1)
+    _order = x1.layout if order is None else order
     _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
     _device = (
         _parse_device_filter_string(device) if device is not None else "unknown"
@@ -612,18 +680,21 @@ def ol_dpnp_zeros_like(
     if ret_ty:
 
         def impl(
-            x,
+            x1,
             dtype=None,
             order="C",
+            subok=None,
             shape=None,
             device=None,
             usm_type=None,
             sycl_queue=None,
         ):
             return impl_dpnp_zeros_like(
-                x,
+                x1,
                 _dtype,
                 _order,
+                subok,
+                shape,
                 _device,
                 _usm_type,
                 sycl_queue,
@@ -634,15 +705,16 @@ def ol_dpnp_zeros_like(
     else:
         raise errors.TypingError(
             "Cannot parse input types to "
-            + f"function dpnp.empty_like({x}, {dtype}, ...)."
+            + f"function dpnp.empty_like({x1}, {dtype}, ...)."
         )
 
 
 @overload(dpnp.ones_like, prefer_literal=True)
 def ol_dpnp_ones_like(
-    x,
+    x1,
     dtype=None,
     order="C",
+    subok=None,
     shape=None,
     device=None,
     usm_type=None,
@@ -653,14 +725,19 @@ def ol_dpnp_ones_like(
     This is an overloaded function implementation for dpnp.ones_like().
 
     Args:
-        x (numba.core.types.npytypes.Array): Input array from which to
+        x1 (numba.core.types.npytypes.Array): Input array from which to
             derive the output array shape.
         dtype (numba.core.types.functions.NumberClass, optional):
             Data type of the array. Can be typestring, a `numpy.dtype`
             object, `numpy` char string, or a numpy scalar type.
-            Default: None
+            Default: None.
         order (str, optional): memory layout for the array "C" or "F".
-            Default: "C"
+            Default: "C".
+        subok ('numba.core.types.scalars.BooleanLiteral', optional): A
+            boolean literal type for the `subok` parameter defined in
+            NumPy. If True, then the newly created array will use the
+            sub-class type of prototype, otherwise it will be a
+            base-class array. Defaults to False.
         shape (numba.core.types.containers.UniTuple, optional): The shape
             to override the shape of the given array. Not supported.
             Default: `None`
@@ -682,7 +759,7 @@ def ol_dpnp_ones_like(
         errors.TypingError: If shape is provided.
 
     Returns:
-        function: Local function `impl_dpnp_ones_like()`
+        function: Local function `impl_dpnp_ones_like()`.
     """
 
     if shape:
@@ -690,9 +767,9 @@ def ol_dpnp_ones_like(
             "The parameter shape is not supported "
             + "inside overloaded dpnp.ones_like() function."
         )
-    _ndim = x.ndim if hasattr(x, "ndim") and x.ndim is not None else 0
-    _dtype = _parse_dtype(dtype, data=x)
-    _order = x.layout if order is None else order
+    _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim is not None else 0
+    _dtype = _parse_dtype(dtype, data=x1)
+    _order = x1.layout if order is None else order
     _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
     _device = (
         _parse_device_filter_string(device) if device is not None else "unknown"
@@ -708,17 +785,21 @@ def ol_dpnp_ones_like(
     if ret_ty:
 
         def impl(
-            x,
+            x1,
             dtype=None,
             order="C",
+            subok=None,
+            shape=None,
             device=None,
             usm_type=None,
             sycl_queue=None,
         ):
             return impl_dpnp_ones_like(
-                x,
+                x1,
                 _dtype,
                 _order,
+                subok,
+                shape,
                 _device,
                 _usm_type,
                 sycl_queue,
@@ -729,5 +810,109 @@ def ol_dpnp_ones_like(
     else:
         raise errors.TypingError(
             "Cannot parse input types to "
-            + f"function dpnp.empty_like({x}, {dtype}, ...)."
+            + f"function dpnp.empty_like({x1}, {dtype}, ...)."
         )
+
+
+@overload(dpnp.full, prefer_literal=True)
+def ol_dpnp_full(
+    shape,
+    fill_value,
+    dtype=None,
+    order="C",
+    like=None,
+    device=None,
+    usm_type=None,
+    sycl_queue=None,
+):
+    """Implementation of an overload to support dpnp.full() inside
+    a jit function.
+
+    Args:
+        shape (numba.core.types.containers.UniTuple or
+            numba.core.types.scalars.IntegerLiteral): Dimensions
+            of the array to be created.
+        fill_value (numba.core.types.scalars): One of the
+            numba.core.types.scalar types for the value to
+            be filled.
+        dtype (numba.core.types.functions.NumberClass, optional):
+            Data type of the array. Can be typestring, a `numpy.dtype`
+            object, `numpy` char string, or a numpy scalar type.
+            Default: None.
+        order (str, optional): memory layout for the array "C" or "F".
+            Default: "C".
+        like (numba.core.types.npytypes.Array, optional): A type for
+            reference object to allow the creation of arrays which are not
+            `NumPy` arrays. If an array-like passed in as `like` supports the
+            `__array_function__` protocol, the result will be defined by it.
+            In this case, it ensures the creation of an array object
+            compatible with that passed in via this argument.
+        device (numba.core.types.misc.StringLiteral, optional): array API
+            concept of device where the output array is created. `device`
+            can be `None`, a oneAPI filter selector string, an instance of
+            :class:`dpctl.SyclDevice` corresponding to a non-partitioned
+            SYCL device, an instance of :class:`dpctl.SyclQueue`, or a
+            `Device` object returnedby`dpctl.tensor.usm_array.device`.
+            Default: `None`.
+        usm_type (numba.core.types.misc.StringLiteral or str, optional):
+            The type of SYCL USM allocation for the output array.
+            Allowed values are "device"|"shared"|"host".
+            Default: `"device"`.
+        sycl_queue (:class:`dpctl.SyclQueue`, optional): Not supported.
+
+    Raises:
+        errors.TypingError: If rank of the ndarray couldn't be inferred.
+        errors.TypingError: If couldn't parse input types to dpnp.full().
+
+    Returns:
+        function: Local function `impl_dpnp_full()`.
+    """
+
+    _ndim = _ty_parse_shape(shape)
+    _dtype = _parse_dtype(dtype)
+    _layout = _parse_layout(order)
+    _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
+    _device = (
+        _parse_device_filter_string(device) if device is not None else "unknown"
+    )
+    if _ndim:
+        ret_ty = build_dpnp_ndarray(
+            _ndim,
+            layout=_layout,
+            dtype=_dtype,
+            usm_type=_usm_type,
+            device=_device,
+            queue=sycl_queue,
+        )
+        if ret_ty:
+
+            def impl(
+                shape,
+                fill_value,
+                dtype=None,
+                order="C",
+                like=None,
+                device=None,
+                usm_type=None,
+                sycl_queue=None,
+            ):
+                return impl_dpnp_full(
+                    shape,
+                    fill_value,
+                    _dtype,
+                    order,
+                    like,
+                    _device,
+                    _usm_type,
+                    sycl_queue,
+                    ret_ty,
+                )
+
+            return impl
+        else:
+            raise errors.TypingError(
+                "Cannot parse input types to "
+                + f"function dpnp.full({shape}, {fill_value}, {dtype}, ...)."
+            )
+    else:
+        raise errors.TypingError("Could not infer the rank of the ndarray.")
