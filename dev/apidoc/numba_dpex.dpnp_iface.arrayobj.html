@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.dpnp_iface.arrayobj module &mdash; numba-dpex 0.20.1+7.g3ded18e4 documentation</title>
+  <title>numba_dpex.dpnp_iface.arrayobj module &mdash; numba-dpex 0.20.1+9.gf9a77a2c documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -265,6 +265,55 @@ Default: <cite>“device”</cite>.</p>
 errors.TypingError: If couldn’t parse input types to dpnp.full().</p>
 </dd>
 <dt>Returns:</dt><dd><p>function: Local function <cite>impl_dpnp_full()</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.arrayobj.ol_dpnp_full_like">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.arrayobj.</span></span><span class="sig-name descname"><span class="pre">ol_dpnp_full_like</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subok</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_full_like" title="Permalink to this definition"></a></dt>
+<dd><p>Creates <cite>usm_ndarray</cite> from USM allocation initialized with values
+specified by the <cite>fill_value</cite>.</p>
+<p>This is an overloaded function implementation for dpnp.full_like().</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>x1 (numba.core.types.npytypes.Array): Input array from which to</dt><dd><p>derive the output array shape.</p>
+</dd>
+<dt>fill_value (numba.core.types.scalars): One of the</dt><dd><p>numba.core.types.scalar types for the value to
+be filled.</p>
+</dd>
+<dt>dtype (numba.core.types.functions.NumberClass, optional):</dt><dd><p>Data type of the array. Can be typestring, a <cite>numpy.dtype</cite>
+object, <cite>numpy</cite> char string, or a numpy scalar type.
+Default: None.</p>
+</dd>
+<dt>order (str, optional): memory layout for the array “C” or “F”.</dt><dd><p>Default: “C”.</p>
+</dd>
+<dt>subok (‘numba.core.types.scalars.BooleanLiteral’, optional): A</dt><dd><p>boolean literal type for the <cite>subok</cite> parameter defined in
+NumPy. If True, then the newly created array will use the
+sub-class type of prototype, otherwise it will be a
+base-class array. Defaults to False.</p>
+</dd>
+<dt>shape (numba.core.types.containers.UniTuple, optional): The shape</dt><dd><p>to override the shape of the given array. Not supported.
+Default: <cite>None</cite></p>
+</dd>
+<dt>device (numba.core.types.misc.StringLiteral, optional): array API</dt><dd><p>concept of device where the output array is created. <cite>device</cite>
+can be <cite>None</cite>, a oneAPI filter selector string, an instance of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclDevice</span></code> corresponding to a non-partitioned
+SYCL device, an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code>, or a
+<cite>Device</cite> object returnedby`dpctl.tensor.usm_array.device`.
+Default: <cite>None</cite>.</p>
+</dd>
+<dt>usm_type (numba.core.types.misc.StringLiteral or str, optional):</dt><dd><p>The type of SYCL USM allocation for the output array.
+Allowed values are “device”|”shared”|”host”.
+Default: <cite>“device”</cite>.</p>
+</dd>
+</dl>
+<p>sycl_queue (<code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code>, optional): Not supported.</p>
+</dd>
+<dt>Raises:</dt><dd><p>errors.TypingError: If couldn’t parse input types to dpnp.full_like().
+errors.TypingError: If shape is provided.</p>
+</dd>
+<dt>Returns:</dt><dd><p>function: Local function <cite>impl_dpnp_full_like()</cite>.</p>
 </dd>
 </dl>
 </dd></dl>
