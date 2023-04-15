@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import re
+from functools import cached_property
 
 import numpy as np
 from llvmlite import binding as ll
@@ -13,7 +14,6 @@ from numba.core.base import BaseContext
 from numba.core.callconv import MinimalCallConv
 from numba.core.registry import cpu_target
 from numba.core.target_extension import GPU, target_registry
-from numba.core.utils import cached_property
 
 from numba_dpex.core.datamodel.models import _init_data_model_manager
 from numba_dpex.core.exceptions import UnsupportedKernelArgumentError

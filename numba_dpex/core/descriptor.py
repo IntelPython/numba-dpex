@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+from functools import cached_property
+
 from numba.core import typing, utils
 from numba.core.cpu import CPUTargetOptions
 from numba.core.descriptors import TargetDescriptor
@@ -21,12 +23,12 @@ class DpexKernelTarget(TargetDescriptor):
 
     options = CPUTargetOptions
 
-    @utils.cached_property
+    @cached_property
     def _toplevel_target_context(self):
         """Lazily-initialized top-level target context, for all threads."""
         return DpexKernelTargetContext(self.typing_context, self._target_name)
 
-    @utils.cached_property
+    @cached_property
     def _toplevel_typing_context(self):
         """Lazily-initialized top-level typing context, for all threads."""
         return DpexKernelTypingContext()
@@ -53,12 +55,12 @@ class DpexTarget(TargetDescriptor):
 
     options = CPUTargetOptions
 
-    @utils.cached_property
+    @cached_property
     def _toplevel_target_context(self):
         # Lazily-initialized top-level target context, for all threads
         return DpexTargetContext(self.typing_context, self._target_name)
 
-    @utils.cached_property
+    @cached_property
     def _toplevel_typing_context(self):
         # Lazily-initialized top-level typing context, for all threads
         return typing.Context()

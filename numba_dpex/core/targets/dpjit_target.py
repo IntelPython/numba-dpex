@@ -5,6 +5,8 @@
 """Defines the target and typing contexts for numba_dpex's dpjit decorator.
 """
 
+from functools import cached_property
+
 from numba.core import utils
 from numba.core.codegen import JITCPUCodegen
 from numba.core.compiler_lock import global_compiler_lock
@@ -40,7 +42,7 @@ class DpexTargetContext(CPUContext):
         # rtsys.initialize(self)
         self.refresh()
 
-    @utils.cached_property
+    @cached_property
     def dpexrt(self):
         from numba_dpex.core.runtime.context import DpexRTContext
 
