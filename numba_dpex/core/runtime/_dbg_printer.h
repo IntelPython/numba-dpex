@@ -26,3 +26,15 @@
         X;                                                                     \
     }
 #endif
+
+/*
+ * Debugging printf function used internally
+ */
+static inline void drt_debug_print(const char *fmt, ...)
+{
+    va_list args;
+
+    va_start(args, fmt);
+    vfprintf(stderr, fmt, args);
+    va_end(args);
+}

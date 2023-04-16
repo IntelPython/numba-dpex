@@ -62,18 +62,6 @@ static int DPEXRT_sycl_queue_from_python(PyObject *obj,
                                          queuestruct_t *queue_struct);
 static PyObject *DPEXRT_sycl_queue_to_python(queuestruct_t *queuestruct);
 
-/*
- * Debugging printf function used internally
- */
-void drt_debug_print(const char *fmt, ...)
-{
-    va_list args;
-
-    va_start(args, fmt);
-    vfprintf(stderr, fmt, args);
-    va_end(args);
-}
-
 /** An NRT_external_malloc_func implementation using DPCTLmalloc_device.
  *
  */
