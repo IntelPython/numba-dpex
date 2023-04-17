@@ -9,6 +9,8 @@ import glob
 import logging
 import os
 import platform as plt
+import re
+from typing import Tuple
 
 import dpctl
 import llvmlite.binding as ll
@@ -59,7 +61,22 @@ def load_dpctl_sycl_interface():
     Vectorize.target_registry.ondemand["dpex"] = lambda: DpexVectorize
 
 
-numba_version = tuple(map(int, numba.__version__.split(".")[:3]))
+def parse_sem_version(version_string: str) -> Tuple[int, int, int]:
+    """Parse sem version into tuple of three integers. If there is a suffix like
+    rc1, dev0 - it will be ignored."""
+    return tuple(
+        map(
+            int,
+            re.sub(
+                "([0-9]+\\.[0-9]+\\.[0-9]+).*",
+                "\\g<1>",
+                version_string,
+            ).split(".")[:3],
+        )
+    )
+
+
+numba_version = parse_sem_version(numba.__version__)
 if numba_version < (0, 56, 4):
     logging.warning(
         "numba_dpex needs numba 0.56.4, using "
