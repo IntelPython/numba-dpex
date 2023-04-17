@@ -8,6 +8,7 @@
  */
 
 #include "_nrt_python_helper.h"
+#include "_dbg_printer.h"
 
 static PyBufferProcs MemInfo_bufferProcs = {MemInfo_getbuffer, NULL};
 

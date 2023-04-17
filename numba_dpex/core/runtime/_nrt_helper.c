@@ -20,6 +20,8 @@ typedef intptr_t atomic_size_t;
 #include <stdatomic.h>
 #endif
 
+#include "_dbg_printer.h"
+
 /*
  * Global resources.
  */
