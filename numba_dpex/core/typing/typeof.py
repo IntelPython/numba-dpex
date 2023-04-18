@@ -42,10 +42,7 @@ def _typeof_helper(val, array_class_type):
             "The usm_type for the usm_ndarray could not be inferred"
         )
 
-    try:
-        device = val.sycl_device
-    except AttributeError:
-        raise ValueError("The device for the usm_ndarray could not be inferred")
+    assert val.sycl_queue is not None
 
     return array_class_type(
         dtype=dtype,
@@ -53,7 +50,6 @@ def _typeof_helper(val, array_class_type):
         layout=layout,
         readonly=readonly,
         usm_type=usm_type,
-        device=device,
         queue=val.sycl_queue,
         addrspace=address_space.GLOBAL,
     )

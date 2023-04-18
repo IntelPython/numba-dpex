@@ -31,9 +31,7 @@ class USMNdArray(Array):
         aligned=True,
         addrspace=address_space.GLOBAL,
     ):
-        # Creating SyclDevice from filter_string is expensive. So, USMNdArray should be able to
-        # accept and SyclDevice from usm_ndarray as device parameter
-        if not isinstance(device, (str, dpctl.SyclDevice)):
+        if not isinstance(device, str):
             raise TypeError(
                 "The device keyword arg should be a str object specifying "
                 "a SYCL filter selector"
@@ -47,35 +45,21 @@ class USMNdArray(Array):
         self.usm_type = usm_type
         self.addrspace = addrspace
 
-        def to_device(dev):
-            if isinstance(dev, dpctl.SyclDevice):
-                return dev
+        if device == "unknown":
+            device = None
 
-            return dpctl.SyclDevice(dev)
-
-        def device_as_string(dev):
-            if isinstance(dev, dpctl.SyclDevice):
-                return dev.filter_string
-
-            return dev
+        if queue is not None and device is not None:
+            raise TypeError(
+                "'queue' and 'device' keywords can not be both specified"
+            )
 
         if queue is not None:
-            if device != "unknown":
-                if queue.sycl_device != to_device(device):
-                    raise TypeError(
-                        "The queue keyword arg and the device keyword arg specify "
-                        "different SYCL devices"
-                    )
-
             self.queue = queue
         else:
-            if device == "unknown":
-                device = None
+            if device is None:
+                device = dpctl.SyclDevice()
 
-            device_str = device_as_string(device)
-            self.queue = dpctl.tensor._device.normalize_queue_device(
-                device=device_str
-            )
+            self.queue = dpctl.get_device_cached_queue(device)
 
         self.device = self.queue.sycl_device.filter_string
 
