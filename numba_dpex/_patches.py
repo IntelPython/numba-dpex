@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+from collections import namedtuple
+
 import numpy
 from llvmlite import ir as llvmir
 from llvmlite.ir import Constant
@@ -25,6 +27,11 @@ from numba.np.ufunc.dufunc import DUFunc
 
 from numba_dpex.core.runtime import context as dpexrt
 from numba_dpex.core.types import DpnpNdArray
+from numba_dpex.core.types.dpctl_types import DpctlSyclQueue
+
+# from numba_dpex import utils
+# from numba_dpex.dpctl_iface import DpctlCAPIFnBuilder
+
 
 # Numpy array constructors
 
@@ -172,8 +179,75 @@ def _mk_alloc(
     return out
 
 
+def make_queue(context, builder, arrtype):
+    """Utility function used for allocating a new queue.
+
+    This function will allocates a new queue (e.g. SYCL queue)
+    during LLVM code generation (lowering). Given a target context,
+    builder, array type, returns a LLVM value pointing at a numba-dpex
+    runtime allocated queue.
+
+    Args:
+        context (numba.core.base.BaseContext): Any of the context
+            derived from Numba's BaseContext
+            (e.g. `numba.core.cpu.CPUContext`).
+        builder (llvmlite.ir.builder.IRBuilder): The IR builder
+            from `llvmlite` for code generation.
+        arrtype (numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray):
+            Any of the array types derived from
+            `numba.core.types.nptypes.Array`,
+            e.g. `numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray`.
+            Please refer to `numba_dpex.dpnp_iface._intrinsic.alloc_empty_arrayobj()`
+            function for details on how to construct this argument.
+
+    Returns:
+        ret (namedtuple): A namedtuple containing `llvmlite.ir.instructions.ExtractValue`
+            as `queue_ref`, `llvmlite.ir.instructions.CastInstr` as `queue_address_ptr`
+            and `numba.core.pythonapi.PythonAPI` as `pyapi`.
+    """
+
+    pyapi = context.get_python_api(builder)
+    queue_struct_proxy = cgutils.create_struct_proxy(
+        DpctlSyclQueue(arrtype.queue)
+    )(context, builder)
+    queue_struct_ptr = queue_struct_proxy._getpointer()
+    queue_struct_voidptr = builder.bitcast(queue_struct_ptr, cgutils.voidptr_t)
+
+    address = context.get_constant(types.intp, id(arrtype.queue))
+    queue_address_ptr = builder.inttoptr(address, cgutils.voidptr_t)
+
+    dpexrtCtx = dpexrt.DpexRTContext(context)
+    dpexrtCtx.queuestruct_from_python(
+        pyapi, queue_address_ptr, queue_struct_voidptr
+    )
+
+    # errcode = dpexrtCtx.queuestruct_from_python(
+    #     pyapi, queue_address_ptr, queue_struct_voidptr
+    # )
+    # is_error = cgutils.is_not_null(builder, errcode)
+    # # Handle error
+    # with builder.if_then(is_error, likely=False):
+    #     pyapi.err_set_string(
+    #         "_patches.make_queue(): PyExc_TypeError",
+    #         "can't unbox dpctl.SyclQueue from PyObject into a Numba "
+    #         "native value. The object maybe of a different type",
+    #     )
+
+    queue_struct = builder.load(queue_struct_ptr)
+    queue_ref = builder.extract_value(queue_struct, 1)
+
+    return_values = namedtuple(
+        "return_values", "queue_ref queue_address_ptr pyapi"
+    )
+    ret = return_values(queue_ref, queue_address_ptr, pyapi)
+
+    return ret
+
+
 def _empty_nd_impl(context, builder, arrtype, shapes):
-    """Utility function used for allocating a new array during LLVM code
+    """Utility function used for allocating a new array.
+
+    This function is used for allocating a new array during LLVM code
     generation (lowering).  Given a target context, builder, array
     type, and a tuple or list of lowered dimension sizes, returns a
     LLVM value pointing at a Numba runtime allocated array.
@@ -230,22 +304,28 @@ def _empty_nd_impl(context, builder, arrtype, shapes):
         )
 
     if isinstance(arrtype, DpnpNdArray):
+        (queue_ref, queue_ptr, pyapi) = make_queue(context, builder, arrtype)
+        # This might fix the segfault
+        # sycl_queue_val = cgutils.alloca_once(
+        #     builder,
+        #     utils.get_llvm_type(context=context, type=types.voidptr),
+        # )
+        # fn = DpctlCAPIFnBuilder.get_dpctl_queue_copy(
+        #     builder=builder, context=context
+        # )
+        # builder.store(builder.call(fn, []), sycl_queue_val)
+
         usm_ty = arrtype.usm_type
-        usm_ty_val = 0
-        if usm_ty == "device":
-            usm_ty_val = 1
-        elif usm_ty == "shared":
-            usm_ty_val = 2
-        elif usm_ty == "host":
-            usm_ty_val = 3
-        usm_type = context.get_constant(types.uint64, usm_ty_val)
-        device = context.insert_const_string(builder.module, arrtype.device)
+        usm_ty_map = {"device": 1, "shared": 2, "host": 3}
+        usm_type = context.get_constant(
+            types.uint64, usm_ty_map[usm_ty] if usm_ty in usm_ty_map else 0
+        )
 
         args = (
             context.get_dummy_value(),
             allocsize,
             usm_type,
-            device,
+            queue_ref,
         )
         mip = types.MemInfoPointer(types.voidptr)
         arytypeclass = types.TypeRef(type(arrtype))
@@ -265,6 +345,7 @@ def _empty_nd_impl(context, builder, arrtype, shapes):
         fnop.get_call_type(context.typing_context, sig.args, {})
         eqfn = context.get_function(fnop, sig)
         meminfo = eqfn(builder, args)
+        pyapi.decref(queue_ptr)
     else:
         dtype = arrtype.dtype
         align_val = context.get_preferred_array_alignment(dtype)
@@ -294,15 +375,21 @@ def _empty_nd_impl(context, builder, arrtype, shapes):
         meminfo=meminfo,
     )
 
-    return ary
+    if isinstance(arrtype, DpnpNdArray):
+        return_values = namedtuple("return_values", "ary queue_ref")
+        ret = return_values(ary, queue_ref)
+    else:
+        ret = ary
+
+    return ret
 
 
 @overload_classmethod(DpnpNdArray, "_usm_allocate")
-def _ol_array_allocate(cls, allocsize, usm_type, device):
+def _ol_array_allocate(cls, allocsize, usm_type, queue):
     """Implements an allocator for dpnp.ndarrays."""
 
-    def impl(cls, allocsize, usm_type, device):
-        return intrin_usm_alloc(allocsize, usm_type, device)
+    def impl(cls, allocsize, usm_type, queue):
+        return intrin_usm_alloc(allocsize, usm_type, queue)
 
     return impl
 
@@ -310,24 +397,24 @@ def _ol_array_allocate(cls, allocsize, usm_type, device):
 numba_config.DISABLE_PERFORMANCE_WARNINGS = 0
 
 
-def _call_usm_allocator(arrtype, size, usm_type, device):
+def _call_usm_allocator(arrtype, size, usm_type, queue):
     """Trampoline to call the intrinsic used for allocation"""
-    return arrtype._usm_allocate(size, usm_type, device)
+    return arrtype._usm_allocate(size, usm_type, queue)
 
 
 numba_config.DISABLE_PERFORMANCE_WARNINGS = 1
 
 
 @intrinsic
-def intrin_usm_alloc(typingctx, allocsize, usm_type, device):
+def intrin_usm_alloc(typingctx, allocsize, usm_type, queue):
     """Intrinsic to call into the allocator for Array"""
 
     def codegen(context, builder, signature, args):
-        [allocsize, usm_type, device] = args
+        [allocsize, usm_type, queue] = args
         dpexrtCtx = dpexrt.DpexRTContext(context)
-        meminfo = dpexrtCtx.meminfo_alloc(builder, allocsize, usm_type, device)
+        meminfo = dpexrtCtx.meminfo_alloc(builder, allocsize, usm_type, queue)
         return meminfo
 
     mip = types.MemInfoPointer(types.voidptr)  # return untyped pointer
-    sig = signature(mip, allocsize, usm_type, device)
+    sig = signature(mip, allocsize, usm_type, queue)
     return sig, codegen
