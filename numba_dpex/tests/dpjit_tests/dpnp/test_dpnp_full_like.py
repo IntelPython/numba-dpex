@@ -18,7 +18,7 @@ from numba_dpex import dpjit
 shapes = [11, (3, 7)]
 dtypes = [dpnp.int32, dpnp.int64, dpnp.float32, dpnp.float64]
 usm_types = ["device", "shared", "host"]
-devices = ["cpu", "unknown"]
+devices = ["cpu", None]
 fill_values = [
     7,
     -7,
@@ -62,7 +62,7 @@ def test_dpnp_full_like(shape, fill_value, dtype, usm_type, device):
 
     assert c.dtype == dtype
     assert c.usm_type == usm_type
-    if device != "unknown":
+    if device is not None:
         assert (
             c.sycl_device.filter_string
             == dpctl.SyclDevice(device).filter_string
@@ -76,7 +76,7 @@ def test_dpnp_full_like(shape, fill_value, dtype, usm_type, device):
 def test_dpnp_full_like_exceptions():
     @dpjit
     def func1(a):
-        c = dpnp.full_like(a, shape=(3, 3))
+        c = dpnp.full_like(a, 7, shape=(3, 3))
         return c
 
     try:
@@ -91,15 +91,12 @@ def test_dpnp_full_like_exceptions():
     queue = dpctl.SyclQueue()
 
     @dpjit
-    def func2(a):
-        c = dpnp.full_like(a, sycl_queue=queue)
+    def func2(a, q):
+        c = dpnp.full_like(a, 7, sycl_queue=q, device="cpu")
         return c
 
     try:
-        func2(numpy.random.rand(5, 5))
+        func2(numpy.random.rand(5, 5), queue)
     except Exception as e:
         assert isinstance(e, errors.TypingError)
-        assert (
-            "No implementation of function Function(<function full_like"
-            in str(e)
-        )
+        assert "`device` and `sycl_queue` are exclusive keywords" in str(e)

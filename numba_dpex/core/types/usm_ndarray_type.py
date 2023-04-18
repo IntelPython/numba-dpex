@@ -7,8 +7,8 @@
 
 import dpctl
 import dpctl.tensor
+from numba import types
 from numba.core.typeconv import Conversion
-from numba.core.typeinfer import CallConstraint
 from numba.core.types.npytypes import Array
 from numba.np.numpy_support import from_dtype
 
@@ -24,42 +24,44 @@ class USMNdArray(Array):
         layout="C",
         dtype=None,
         usm_type="device",
-        device="unknown",
+        device=None,
         queue=None,
         readonly=False,
         name=None,
         aligned=True,
         addrspace=address_space.GLOBAL,
     ):
-        if not isinstance(device, str):
+        if queue and not isinstance(queue, types.misc.Omitted) and device:
             raise TypeError(
-                "The device keyword arg should be a str object specifying "
-                "a SYCL filter selector"
-            )
-
-        if not isinstance(queue, dpctl.SyclQueue) and queue is not None:
-            raise TypeError(
-                "The queue keyword arg should be a dpctl.SyclQueue object or None"
+                "numba_dpex.core.types.usm_ndarray_type.USMNdArray.__init__(): "
+                "`device` and `sycl_queue` are exclusive keywords, i.e. use one or other."
             )
 
         self.usm_type = usm_type
         self.addrspace = addrspace
 
-        if device == "unknown":
-            device = None
-
-        if queue is not None and device is not None:
-            raise TypeError(
-                "'queue' and 'device' keywords can not be both specified"
-            )
-
-        if queue is not None:
+        if queue and not isinstance(queue, types.misc.Omitted):
+            if not isinstance(queue, dpctl.SyclQueue):
+                raise TypeError(
+                    "numba_dpex.core.types.usm_ndarray_type.USMNdArray.__init__(): "
+                    "The queue keyword arg should be a dpctl.SyclQueue object or None."
+                )
             self.queue = queue
         else:
             if device is None:
-                device = dpctl.SyclDevice()
+                sycl_device = dpctl.SyclDevice()
+            else:
+                if not isinstance(device, str):
+                    raise TypeError(
+                        "numba_dpex.core.types.usm_ndarray_type.USMNdArray.__init__(): "
+                        "The device keyword arg should be a str object specifying "
+                        "a SYCL filter selector."
+                    )
+                sycl_device = dpctl.SyclDevice(device)
 
-            self.queue = dpctl.get_device_cached_queue(device)
+            self.queue = dpctl._sycl_queue_manager.get_device_cached_queue(
+                sycl_device
+            )
 
         self.device = self.queue.sycl_device.filter_string
 
@@ -91,7 +93,7 @@ class USMNdArray(Array):
             )
             name = (
                 "%s(dtype=%s, ndim=%s, layout=%s, address_space=%s, "
-                "usm_type=%s, device=%s, sycl_device=%s)" % name_parts
+                "usm_type=%s, device=%s, sycl_queue=%s)" % name_parts
             )
 
         super().__init__(

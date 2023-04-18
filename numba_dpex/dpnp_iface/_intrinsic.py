@@ -181,12 +181,12 @@ def alloc_empty_arrayobj(context, builder, sig, args, is_like=False):
         if is_like
         else _parse_empty_args(context, builder, sig, args)
     )
-    ary = _empty_nd_impl(context, builder, *arrtype)
+    ary, queue = _empty_nd_impl(context, builder, *arrtype)
 
-    return ary, arrtype
+    return ary, arrtype, queue
 
 
-def fill_arrayobj(context, builder, ary, arrtype, fill_value):
+def fill_arrayobj(context, builder, ary, arrtype, queue_ref, fill_value):
     """Fill a numba.np.arrayobj.make_array.<locals>.ArrayStruct
         with a specified value.
 
@@ -213,7 +213,6 @@ def fill_arrayobj(context, builder, ary, arrtype, fill_value):
     itemsize = context.get_constant(
         types.intp, get_itemsize(context, arrtype[0])
     )
-    device = context.insert_const_string(builder.module, arrtype[0].device)
 
     if isinstance(fill_value.type, DoubleType) or isinstance(
         fill_value.type, FloatType
@@ -238,23 +237,23 @@ def fill_arrayobj(context, builder, ary, arrtype, fill_value):
         dest_is_float,
         value_is_float,
         value,
-        device,
+        queue_ref,
     )
     return ary, arrtype
 
 
 @intrinsic
-def intrin_usm_alloc(typingctx, allocsize, usm_type, device):
+def intrin_usm_alloc(typingctx, allocsize, usm_type, queue):
     """Intrinsic to call into the allocator for Array"""
 
     def codegen(context, builder, signature, args):
-        [allocsize, usm_type, device] = args
+        [allocsize, usm_type, queue] = args
         dpexrtCtx = dpexrt.DpexRTContext(context)
-        meminfo = dpexrtCtx.meminfo_alloc(builder, allocsize, usm_type, device)
+        meminfo = dpexrtCtx.meminfo_alloc(builder, allocsize, usm_type, queue)
         return meminfo
 
     mip = types.MemInfoPointer(types.voidptr)  # return untyped pointer
-    sig = signature(mip, allocsize, usm_type, device)
+    sig = signature(mip, allocsize, usm_type, queue)
     return sig, codegen
 
 
@@ -307,7 +306,7 @@ def impl_dpnp_empty(
     )
 
     def codegen(context, builder, sig, args):
-        ary, _ = alloc_empty_arrayobj(context, builder, sig, args)
+        ary, _, _ = alloc_empty_arrayobj(context, builder, sig, args)
         return ary._getvalue()
 
     return sig, codegen
@@ -362,9 +361,13 @@ def impl_dpnp_zeros(
     )
 
     def codegen(context, builder, sig, args):
-        ary, arrtype = alloc_empty_arrayobj(context, builder, sig, args)
+        ary, arrtype, queue_ref = alloc_empty_arrayobj(
+            context, builder, sig, args
+        )
         fill_value = context.get_constant(types.intp, 0)
-        ary, _ = fill_arrayobj(context, builder, ary, arrtype, fill_value)
+        ary, _ = fill_arrayobj(
+            context, builder, ary, arrtype, queue_ref, fill_value
+        )
         return ary._getvalue()
 
     return sig, codegen
@@ -419,9 +422,13 @@ def impl_dpnp_ones(
     )
 
     def codegen(context, builder, sig, args):
-        ary, arrtype = alloc_empty_arrayobj(context, builder, sig, args)
+        ary, arrtype, queue_ref = alloc_empty_arrayobj(
+            context, builder, sig, args
+        )
         fill_value = context.get_constant(types.intp, 1)
-        ary, _ = fill_arrayobj(context, builder, ary, arrtype, fill_value)
+        ary, _ = fill_arrayobj(
+            context, builder, ary, arrtype, queue_ref, fill_value
+        )
         return ary._getvalue()
 
     return sig, codegen
@@ -483,9 +490,13 @@ def impl_dpnp_full(
     )
 
     def codegen(context, builder, sig, args):
-        ary, arrtype = alloc_empty_arrayobj(context, builder, sig, args)
+        ary, arrtype, queue_ref = alloc_empty_arrayobj(
+            context, builder, sig, args
+        )
         fill_value = context.get_argument_value(builder, sig.args[1], args[1])
-        ary, _ = fill_arrayobj(context, builder, ary, arrtype, fill_value)
+        ary, _ = fill_arrayobj(
+            context, builder, ary, arrtype, queue_ref, fill_value
+        )
         return ary._getvalue()
 
     return signature, codegen
@@ -547,7 +558,9 @@ def impl_dpnp_empty_like(
     )
 
     def codegen(context, builder, sig, args):
-        ary, _ = alloc_empty_arrayobj(context, builder, sig, args, is_like=True)
+        ary, _, _ = alloc_empty_arrayobj(
+            context, builder, sig, args, is_like=True
+        )
         return ary._getvalue()
 
     return sig, codegen
@@ -609,11 +622,13 @@ def impl_dpnp_zeros_like(
     )
 
     def codegen(context, builder, sig, args):
-        ary, arrtype = alloc_empty_arrayobj(
+        ary, arrtype, queue_ref = alloc_empty_arrayobj(
             context, builder, sig, args, is_like=True
         )
         fill_value = context.get_constant(types.intp, 0)
-        ary, _ = fill_arrayobj(context, builder, ary, arrtype, fill_value)
+        ary, _ = fill_arrayobj(
+            context, builder, ary, arrtype, queue_ref, fill_value
+        )
         return ary._getvalue()
 
     return sig, codegen
@@ -675,11 +690,13 @@ def impl_dpnp_ones_like(
     )
 
     def codegen(context, builder, sig, args):
-        ary, arrtype = alloc_empty_arrayobj(
+        ary, arrtype, queue_ref = alloc_empty_arrayobj(
             context, builder, sig, args, is_like=True
         )
         fill_value = context.get_constant(types.intp, 1)
-        ary, _ = fill_arrayobj(context, builder, ary, arrtype, fill_value)
+        ary, _ = fill_arrayobj(
+            context, builder, ary, arrtype, queue_ref, fill_value
+        )
         return ary._getvalue()
 
     return sig, codegen
@@ -745,11 +762,13 @@ def impl_dpnp_full_like(
     )
 
     def codegen(context, builder, sig, args):
-        ary, arrtype = alloc_empty_arrayobj(
+        ary, arrtype, queue_ref = alloc_empty_arrayobj(
             context, builder, sig, args, is_like=True
         )
         fill_value = context.get_argument_value(builder, sig.args[1], args[1])
-        ary, _ = fill_arrayobj(context, builder, ary, arrtype, fill_value)
+        ary, _ = fill_arrayobj(
+            context, builder, ary, arrtype, queue_ref, fill_value
+        )
         return ary._getvalue()
 
     return signature, codegen

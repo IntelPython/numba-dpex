@@ -31,7 +31,7 @@ static void *usm_shared_malloc(size_t size, void *opaque_data);
 static void *usm_host_malloc(size_t size, void *opaque_data);
 static void usm_free(void *data, void *opaque_data);
 static NRT_ExternalAllocator *
-NRT_ExternalAllocator_new_for_usm(DPCTLSyclQueueRef qref, size_t usm_type);
+NRT_ExternalAllocator_new_for_usm(DPCTLSyclQueueRef queue_ref, size_t usm_type);
 static void *DPEXRTQueue_CreateFromFilterString(const char *device);
 static MemInfoDtorInfo *MemInfoDtorInfo_new(NRT_MemInfo *mi, PyObject *owner);
 static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
@@ -39,12 +39,16 @@ static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
                                         bool dest_is_float,
                                         bool value_is_float,
                                         int64_t value,
-                                        const char *device);
-static NRT_MemInfo *NRT_MemInfo_new_from_usmndarray(PyObject *ndarrobj,
-                                                    void *data,
-                                                    npy_intp nitems,
-                                                    npy_intp itemsize,
-                                                    DPCTLSyclQueueRef qref);
+                                        const DPCTLSyclQueueRef queue_ref);
+static NRT_MemInfo *
+NRT_MemInfo_new_from_usmndarray(PyObject *ndarrobj,
+                                void *data,
+                                npy_intp nitems,
+                                npy_intp itemsize,
+                                DPCTLSyclQueueRef queue_ref);
+static NRT_MemInfo *DPEXRT_MemInfo_alloc(npy_intp size,
+                                         size_t usm_type,
+                                         const DPCTLSyclQueueRef queue_ref);
 static void usmndarray_meminfo_dtor(void *ptr, size_t size, void *info);
 static PyObject *box_from_arystruct_parent(arystruct_t *arystruct,
                                            int ndim,
@@ -67,10 +71,10 @@ static PyObject *DPEXRT_sycl_queue_to_python(queuestruct_t *queuestruct);
  */
 static void *usm_device_malloc(size_t size, void *opaque_data)
 {
-    DPCTLSyclQueueRef qref = NULL;
+    DPCTLSyclQueueRef queue_ref = NULL;
 
-    qref = (DPCTLSyclQueueRef)opaque_data;
-    return DPCTLmalloc_device(size, qref);
+    queue_ref = (DPCTLSyclQueueRef)opaque_data;
+    return DPCTLmalloc_device(size, queue_ref);
 }
 
 /** An NRT_external_malloc_func implementation using DPCTLmalloc_shared.
@@ -78,10 +82,10 @@ static void *usm_device_malloc(size_t size, void *opaque_data)
  */
 static void *usm_shared_malloc(size_t size, void *opaque_data)
 {
-    DPCTLSyclQueueRef qref = NULL;
+    DPCTLSyclQueueRef queue_ref = NULL;
 
-    qref = (DPCTLSyclQueueRef)opaque_data;
-    return DPCTLmalloc_shared(size, qref);
+    queue_ref = (DPCTLSyclQueueRef)opaque_data;
+    return DPCTLmalloc_shared(size, queue_ref);
 }
 
 /** An NRT_external_malloc_func implementation using DPCTLmalloc_host.
@@ -89,10 +93,10 @@ static void *usm_shared_malloc(size_t size, void *opaque_data)
  */
 static void *usm_host_malloc(size_t size, void *opaque_data)
 {
-    DPCTLSyclQueueRef qref = NULL;
+    DPCTLSyclQueueRef queue_ref = NULL;
 
-    qref = (DPCTLSyclQueueRef)opaque_data;
-    return DPCTLmalloc_host(size, qref);
+    queue_ref = (DPCTLSyclQueueRef)opaque_data;
+    return DPCTLmalloc_host(size, queue_ref);
 }
 
 /** An NRT_external_free_func implementation based on DPCTLfree_with_queue
@@ -100,10 +104,10 @@ static void *usm_host_malloc(size_t size, void *opaque_data)
  */
 static void usm_free(void *data, void *opaque_data)
 {
-    DPCTLSyclQueueRef qref = NULL;
-    qref = (DPCTLSyclQueueRef)opaque_data;
+    DPCTLSyclQueueRef queue_ref = NULL;
+    queue_ref = (DPCTLSyclQueueRef)opaque_data;
 
-    DPCTLfree_with_queue(data, qref);
+    DPCTLfree_with_queue(data, queue_ref);
 }
 
 /*----------------------------------------------------------------------------*/
@@ -119,8 +123,8 @@ static void usm_free(void *data, void *opaque_data)
 static void *DPEXRTQueue_CreateFromFilterString(const char *device)
 {
     DPCTLSyclDeviceSelectorRef dselector = NULL;
-    DPCTLSyclDeviceRef dref = NULL;
-    DPCTLSyclQueueRef qref = NULL;
+    DPCTLSyclDeviceRef device_ref = NULL;
+    DPCTLSyclQueueRef queue_ref = NULL;
 
     DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-DEBUG: Inside DPEXRT_get_sycl_queue %s, line %d\n", __FILE__,
@@ -134,24 +138,24 @@ static void *DPEXRTQueue_CreateFromFilterString(const char *device)
         goto error;
     }
 
-    if (!(dref = DPCTLDevice_CreateFromSelector(dselector)))
+    if (!(device_ref = DPCTLDevice_CreateFromSelector(dselector)))
         goto error;
 
-    if (!(qref = DPCTLQueue_CreateForDevice(dref, NULL, 0)))
+    if (!(queue_ref = DPCTLQueue_CreateForDevice(device_ref, NULL, 0)))
         goto error;
 
     DPCTLDeviceSelector_Delete(dselector);
-    DPCTLDevice_Delete(dref);
+    DPCTLDevice_Delete(device_ref);
 
     DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-DEBUG: Created sycl::queue on device %s at %s, line %d\n",
         device, __FILE__, __LINE__));
 
-    return (void *)qref;
+    return (void *)queue_ref;
 
 error:
     DPCTLDeviceSelector_Delete(dselector);
-    DPCTLDevice_Delete(dref);
+    DPCTLDevice_Delete(device_ref);
 
     return NULL;
 }
@@ -166,21 +170,22 @@ static void DpexrtQueue_SubmitRange(const void *KRef,
                                     const void *DepEvents,
                                     size_t NDepEvents)
 {
-    DPCTLSyclEventRef eref = NULL;
-    DPCTLSyclQueueRef qref = NULL;
+    DPCTLSyclEventRef event_ref = NULL;
+    DPCTLSyclQueueRef queue_ref = NULL;
 
     DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-DEBUG: Inside DpexrtQueue_SubmitRange %s, line %d\n", __FILE__,
         __LINE__));
 
-    qref = (DPCTLSyclQueueRef)QRef;
+    queue_ref = (DPCTLSyclQueueRef)QRef;
 
-    eref = DPCTLQueue_SubmitRange(
-        (DPCTLSyclKernelRef)KRef, qref, Args, (DPCTLKernelArgType *)ArgTypes,
-        NArgs, Range, NRange, (DPCTLSyclEventRef *)DepEvents, NDepEvents);
-    DPCTLQueue_Wait(qref);
-    DPCTLEvent_Wait(eref);
-    DPCTLEvent_Delete(eref);
+    event_ref = DPCTLQueue_SubmitRange(
+        (DPCTLSyclKernelRef)KRef, queue_ref, Args,
+        (DPCTLKernelArgType *)ArgTypes, NArgs, Range, NRange,
+        (DPCTLSyclEventRef *)DepEvents, NDepEvents);
+    DPCTLQueue_Wait(queue_ref);
+    DPCTLEvent_Wait(event_ref);
+    DPCTLEvent_Delete(event_ref);
 
     DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-DEBUG: Done with DpexrtQueue_SubmitRange %s, line %d\n",
@@ -236,7 +241,8 @@ static void DpexrtQueue_SubmitNDRange(const void *KRef,
  * @brief Creates a new NRT_ExternalAllocator object tied to a SYCL USM
  *        allocator.
  *
- * @param    qref           A DPCTLSyclQueueRef opaque pointer for a sycl queue.
+ * @param    queue_ref           A DPCTLSyclQueueRef opaque pointer for a sycl
+ * queue.
  * @param    usm_type       Indicates the type of usm allocator to use.
  *                          - 1: device
  *                          - 2: shared
@@ -247,7 +253,7 @@ static void DpexrtQueue_SubmitNDRange(const void *KRef,
  *                          object creation failed.
  */
 static NRT_ExternalAllocator *
-NRT_ExternalAllocator_new_for_usm(DPCTLSyclQueueRef qref, size_t usm_type)
+NRT_ExternalAllocator_new_for_usm(DPCTLSyclQueueRef queue_ref, size_t usm_type)
 {
 
     NRT_ExternalAllocator *allocator = NULL;
@@ -283,7 +289,7 @@ NRT_ExternalAllocator_new_for_usm(DPCTLSyclQueueRef qref, size_t usm_type)
 
     allocator->realloc = NULL;
     allocator->free = usm_free;
-    allocator->opaque_data = (void *)qref;
+    allocator->opaque_data = (void *)queue_ref;
 
     return allocator;
 
@@ -394,15 +400,15 @@ static MemInfoDtorInfo *MemInfoDtorInfo_new(NRT_MemInfo *mi, PyObject *owner)
  * @param    data           The data pointer of the dpnp.ndarray
  * @param    nitems         The number of elements in the dpnp.ndarray.
  * @param    itemsize       The size of each element of the dpnp.ndarray.
- * @param    qref           A SYCL queue pointer wrapper on which the memory
- *                          of the dpnp.ndarray was allocated.
+ * @param    queue_ref           A SYCL queue pointer wrapper on which the
+ * memory of the dpnp.ndarray was allocated.
  * @return   {return}       A new NRT_MemInfo object
  */
 static NRT_MemInfo *NRT_MemInfo_new_from_usmndarray(PyObject *ndarrobj,
                                                     void *data,
                                                     npy_intp nitems,
                                                     npy_intp itemsize,
-                                                    DPCTLSyclQueueRef qref)
+                                                    DPCTLSyclQueueRef queue_ref)
 {
     NRT_MemInfo *mi = NULL;
     NRT_ExternalAllocator *ext_alloca = NULL;
@@ -418,7 +424,7 @@ static NRT_MemInfo *NRT_MemInfo_new_from_usmndarray(PyObject *ndarrobj,
         goto error;
     }
 
-    if (!(cref = DPCTLQueue_GetContext(qref))) {
+    if (!(cref = DPCTLQueue_GetContext(queue_ref))) {
         DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: Could not get the DPCTLSyclContext from "
             "the queue object at %s, line %d\n",
@@ -430,7 +436,8 @@ static NRT_MemInfo *NRT_MemInfo_new_from_usmndarray(PyObject *ndarrobj,
     DPCTLContext_Delete(cref);
 
     // Allocate a new NRT_ExternalAllocator
-    if (!(ext_alloca = NRT_ExternalAllocator_new_for_usm(qref, usm_type))) {
+    if (!(ext_alloca = NRT_ExternalAllocator_new_for_usm(queue_ref, usm_type)))
+    {
         DPEXRT_DEBUG(
             drt_debug_print("DPEXRT-ERROR: Could not allocate a new "
                             "NRT_ExternalAllocator object  at %s, line %d\n",
@@ -481,17 +488,18 @@ error:
  * @return   {return}     A new NRT_MemInfo object, NULL if no NRT_MemInfo
  *                        object could be created.
  */
-static NRT_MemInfo *
-DPEXRT_MemInfo_alloc(npy_intp size, size_t usm_type, const char *device)
+static NRT_MemInfo *DPEXRT_MemInfo_alloc(npy_intp size,
+                                         size_t usm_type,
+                                         const DPCTLSyclQueueRef queue_ref)
 {
     NRT_MemInfo *mi = NULL;
     NRT_ExternalAllocator *ext_alloca = NULL;
     MemInfoDtorInfo *midtor_info = NULL;
-    DPCTLSyclQueueRef qref = NULL;
 
     DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-DEBUG: Inside DPEXRT_MemInfo_alloc  %s, line %d\n", __FILE__,
         __LINE__));
+
     // Allocate a new NRT_MemInfo object
     if (!(mi = (NRT_MemInfo *)malloc(sizeof(NRT_MemInfo)))) {
         DPEXRT_DEBUG(drt_debug_print(
@@ -499,17 +507,13 @@ DPEXRT_MemInfo_alloc(npy_intp size, size_t usm_type, const char *device)
         goto error;
     }
 
-    if (!(qref = (DPCTLSyclQueueRef)DPEXRTQueue_CreateFromFilterString(device)))
-    {
-        DPEXRT_DEBUG(
-            drt_debug_print("DPEXRT-ERROR: Could not create a sycl::queue from "
-                            "filter string: %s at %s %d.\n",
-                            device, __FILE__, __LINE__));
-        goto error;
-    }
-
     // Allocate a new NRT_ExternalAllocator
-    if (!(ext_alloca = NRT_ExternalAllocator_new_for_usm(qref, usm_type)))
+    // Making copy just to avoid the segfault on /examples/blackscholes_njit.py,
+    // this might create memory leaks. TODO: remove copy and fix segfault
+    if (!(ext_alloca = NRT_ExternalAllocator_new_for_usm(
+              DPCTLQueue_Copy(queue_ref), usm_type)))
+        // if (!(ext_alloca = NRT_ExternalAllocator_new_for_usm(queue_ref,
+        // usm_type)))
         goto error;
 
     if (!(midtor_info = MemInfoDtorInfo_new(mi, NULL)))
@@ -518,17 +522,26 @@ DPEXRT_MemInfo_alloc(npy_intp size, size_t usm_type, const char *device)
     mi->refct = 1; /* starts with 1 refct */
     mi->dtor = usmndarray_meminfo_dtor;
     mi->dtor_info = midtor_info;
-    mi->data = ext_alloca->malloc(size, qref);
+    mi->data = ext_alloca->malloc(size, queue_ref);
+
+    DPEXRT_DEBUG(
+        DPCTLSyclDeviceRef device_ref;
+        device_ref = DPCTLQueue_GetDevice(queue_ref); drt_debug_print(
+            "DPEXRT-DEBUG: DPEXRT_MemInfo_alloc, device info in %s at %d:\n%s",
+            __FILE__, __LINE__, DPCTLDeviceMgr_GetDeviceInfoStr(device_ref));
+        DPCTLDevice_Delete(device_ref););
 
     if (mi->data == NULL)
         goto error;
 
     mi->size = size;
     mi->external_allocator = ext_alloca;
+
     DPEXRT_DEBUG(drt_debug_print(
         "DPEXRT-DEBUG: DPEXRT_MemInfo_alloc mi=%p "
-        "external_allocator=%p for usm_type %zu on device %s, %s at %d\n",
-        mi, ext_alloca, usm_type, device, __FILE__, __LINE__));
+        "external_allocator=%p for usm_type=%zu on queue=%p, %s at %d\n",
+        mi, ext_alloca, usm_type, DPCTLQueue_Hash(queue_ref), __FILE__,
+        __LINE__));
 
     return mi;
 
@@ -560,10 +573,9 @@ static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
                                         bool dest_is_float,
                                         bool value_is_float,
                                         int64_t value,
-                                        const char *device)
+                                        const DPCTLSyclQueueRef queue_ref)
 {
-    DPCTLSyclQueueRef qref = NULL;
-    DPCTLSyclEventRef eref = NULL;
+    DPCTLSyclEventRef event_ref = NULL;
     size_t count = 0, size = 0, exp = 0;
 
     /**
@@ -603,9 +615,6 @@ static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
         goto error;
     }
 
-    if (!(qref = (DPCTLSyclQueueRef)DPEXRTQueue_CreateFromFilterString(device)))
-        goto error;
-
     switch (exp) {
     case 3:
     {
@@ -627,7 +636,8 @@ static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
             bc.i64_ = value;
         }
 
-        if (!(eref = DPCTLQueue_Fill64(qref, mi->data, bc.ui64_, count)))
+        if (!(event_ref =
+                  DPCTLQueue_Fill64(queue_ref, mi->data, bc.ui64_, count)))
             goto error;
         break;
     }
@@ -651,7 +661,8 @@ static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
             bc.i32_ = (int32_t)value;
         }
 
-        if (!(eref = DPCTLQueue_Fill32(qref, mi->data, bc.ui32_, count)))
+        if (!(event_ref =
+                  DPCTLQueue_Fill32(queue_ref, mi->data, bc.ui32_, count)))
             goto error;
         break;
     }
@@ -668,7 +679,8 @@ static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
             bc.i16_ = (int16_t)value;
         }
 
-        if (!(eref = DPCTLQueue_Fill16(qref, mi->data, bc.ui16_, count)))
+        if (!(event_ref =
+                  DPCTLQueue_Fill16(queue_ref, mi->data, bc.ui16_, count)))
             goto error;
         break;
     }
@@ -685,7 +697,8 @@ static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
             bc.i8_ = (int8_t)value;
         }
 
-        if (!(eref = DPCTLQueue_Fill8(qref, mi->data, bc.ui8_, count)))
+        if (!(event_ref =
+                  DPCTLQueue_Fill8(queue_ref, mi->data, bc.ui8_, count)))
             goto error;
         break;
     }
@@ -693,16 +706,14 @@ static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
         goto error;
     }
 
-    DPCTLEvent_Wait(eref);
-
-    DPCTLQueue_Delete(qref);
-    DPCTLEvent_Delete(eref);
+    DPCTLEvent_Wait(event_ref);
+    DPCTLEvent_Delete(event_ref);
 
     return mi;
 
 error:
-    DPCTLQueue_Delete(qref);
-    DPCTLEvent_Delete(eref);
+    DPCTLQueue_Delete(queue_ref);
+    DPCTLEvent_Delete(event_ref);
 
     return NULL;
 }
@@ -776,7 +787,7 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
     npy_intp *shape = NULL, *strides = NULL;
     npy_intp *p = NULL, nitems;
     void *data = NULL;
-    DPCTLSyclQueueRef qref = NULL;
+    DPCTLSyclQueueRef queue_ref = NULL;
     PyGILState_STATE gstate;
     npy_intp itemsize = 0;
 
@@ -807,7 +818,7 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
     data = (void *)UsmNDArray_GetData(arrayobj);
     nitems = product_of_shape(shape, ndim);
     itemsize = (npy_intp)UsmNDArray_GetElementSize(arrayobj);
-    if (!(qref = UsmNDArray_GetQueueRef(arrayobj))) {
+    if (!(queue_ref = UsmNDArray_GetQueueRef(arrayobj))) {
         DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: UsmNDArray_GetQueueRef returned NULL at "
             "%s, line %d.\n",
@@ -816,7 +827,7 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
     }
 
     if (!(arystruct->meminfo = NRT_MemInfo_new_from_usmndarray(
-              obj, data, nitems, itemsize, qref)))
+              obj, data, nitems, itemsize, queue_ref)))
     {
         DPEXRT_DEBUG(drt_debug_print(
             "DPEXRT-ERROR: NRT_MemInfo_new_from_usmndarray failed "
@@ -1197,6 +1208,14 @@ static int DPEXRT_sycl_queue_from_python(PyObject *obj,
             __FILE__, __LINE__));
         goto error;
     }
+
+    DPEXRT_DEBUG(DPCTLSyclDeviceRef device_ref;
+                 device_ref = DPCTLQueue_GetDevice(queue_ref);
+                 drt_debug_print("DPEXRT-DEBUG: DPEXRT_sycl_queue_from_python, "
+                                 "device info in %s at %d:\n%s",
+                                 __FILE__, __LINE__,
+                                 DPCTLDeviceMgr_GetDeviceInfoStr(device_ref));
+                 DPCTLDevice_Delete(device_ref););
 
     queue_struct->parent = obj;
     queue_struct->queue_ref = queue_ref;
