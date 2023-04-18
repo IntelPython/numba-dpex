@@ -11,10 +11,12 @@
 
 #pragma once
 
+#include <stdarg.h>
+#include <stdio.h>
+
 /* Debugging facilities - enabled at compile-time */
 /* #undef NDEBUG */
 #if 0
-#include <stdio.h>
 #define DPEXRT_DEBUG(X)                                                        \
     {                                                                          \
         X;                                                                     \

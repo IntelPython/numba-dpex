@@ -103,4 +103,4 @@ def typeof_dpctl_sycl_queue(val, c):
 
     Returns: A numba_dpex.core.types.dpctl_types.DpctlSyclQueue instance.
     """
-    return DpctlSyclQueue()
+    return DpctlSyclQueue(val)

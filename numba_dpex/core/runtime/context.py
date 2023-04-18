@@ -20,20 +20,20 @@ class DpexRTContext(object):
         @functools.wraps(func)
         def wrap(self, builder, *args, **kwargs):
             memptr = func(self, builder, *args, **kwargs)
-            msg = "USM allocation failed. Check the usm_type and filter "
-            "string values."
+            msg = "USM allocation failed. Check the usm_type and queue."
             cgutils.guard_memory_error(self._context, builder, memptr, msg=msg)
             return memptr
 
         return wrap
 
     @_check_null_result
-    def meminfo_alloc(self, builder, size, usm_type, device):
+    def meminfo_alloc(self, builder, size, usm_type, queue_ref):
         """
         Wrapper to call :func:`~context.DpexRTContext.meminfo_alloc_unchecked`
         with null checking of the returned value.
         """
-        return self.meminfo_alloc_unchecked(builder, size, usm_type, device)
+
+        return self.meminfo_alloc_unchecked(builder, size, usm_type, queue_ref)
 
     @_check_null_result
     def meminfo_fill(
@@ -44,7 +44,7 @@ class DpexRTContext(object):
         dest_is_float,
         value_is_float,
         value,
-        device,
+        queue_ref,
     ):
         """
         Wrapper to call :func:`~context.DpexRTContext.meminfo_fill_unchecked`
@@ -57,10 +57,10 @@ class DpexRTContext(object):
             dest_is_float,
             value_is_float,
             value,
-            device,
+            queue_ref,
         )
 
-    def meminfo_alloc_unchecked(self, builder, size, usm_type, device):
+    def meminfo_alloc_unchecked(self, builder, size, usm_type, queue_ref):
         """Allocate a new MemInfo with a data payload of `size` bytes.
 
         The result of the call is checked and if it is NULL, i.e. allocation
@@ -68,17 +68,23 @@ class DpexRTContext(object):
         a pointer to the MemInfo is returned.
 
         Args:
-            builder (_type_): LLVM IR builder
-            size (_type_): LLVM uint64 Value specifying the size in bytes for
-            the data payload.
-            usm_type (_type_): An LLVM Constant Value specifying the type of the
-            usm allocator. The constant value should match the values in
-            ``dpctl's`` ``libsyclinterface::DPCTLSyclUSMType`` enum.
-            device (_type_): An LLVM ArrayType storing a const string for a
-            DPC++ filter selector string.
+            builder (`llvmlite.ir.builder.IRBuilder`): LLVM IR builder.
+            size (`llvmlite.ir.values.Argument`): LLVM uint64 value specifying
+                the size in bytes for the data payload, i.e. i64 %"arg.allocsize"
+            usm_type (`llvmlite.ir.values.Argument`): An LLVM Argument object
+                specifying the type of the usm allocator. The constant value
+                should match the values in
+                ``dpctl's`` ``libsyclinterface::DPCTLSyclUSMType`` enum,
+                i.e. i64 %"arg.usm_type".
+            queue_ref (`llvmlite.ir.values.Argument`): An LLVM argument value storing
+                the pointer to the address of the queue object, the object can be
+                `dpctl.SyclQueue()`, i.e. i8* %"arg.queue".
 
-        Returns: A pointer to the MemInfo is returned.
+        Returns:
+            ret (`llvmlite.ir.instructions.CallInstr`): A pointer to the `MemInfo`
+                is returned from the `DPEXRT_MemInfo_alloc` C function call.
         """
+
         mod = builder.module
         u64 = llvmir.IntType(64)
         fnty = llvmir.FunctionType(
@@ -87,7 +93,7 @@ class DpexRTContext(object):
         fn = cgutils.get_or_insert_function(mod, fnty, "DPEXRT_MemInfo_alloc")
         fn.return_value.add_attribute("noalias")
 
-        ret = builder.call(fn, [size, usm_type, device])
+        ret = builder.call(fn, [size, usm_type, queue_ref])
 
         return ret
 
@@ -99,7 +105,7 @@ class DpexRTContext(object):
         dest_is_float,
         value_is_float,
         value,
-        device,
+        queue_ref,
     ):
         """Fills an allocated `MemInfo` with the value specified.
 
@@ -108,17 +114,29 @@ class DpexRTContext(object):
         is succeeded then a pointer to the `MemInfo` is returned.
 
         Args:
-            builder (llvmlite.ir.builder.IRBuilder): LLVM IR builder
-            meminfo (llvmlite.ir.instructions.LoadInstr): LLVM uint64 value
+            builder (`llvmlite.ir.builder.IRBuilder`): LLVM IR builder.
+            meminfo (`llvmlite.ir.instructions.LoadInstr`): LLVM uint64 value
                 specifying the size in bytes for the data payload.
-            itemsize (llvmlite.ir.values.Constant): An LLVM Constant value
+            itemsize (`llvmlite.ir.values.Constant`): An LLVM Constant value
                 specifying the size of the each data item allocated by the
                 usm allocator.
-            device (llvmlite.ir.values.FormattedConstant): An LLVM ArrayType
-                storing a const string for a DPC++ filter selector string.
+            dest_is_float (`llvmlite.ir.values.Constant`): An LLVM Constant
+                value specifying if the destination array type is floating
+                point.
+            value_is_float (`llvmlite.ir.values.Constant`): An LLVM Constant
+                value specifying if the input value is a floating point.
+            value (`llvmlite.ir.values.Constant`): An LLVM Constant value
+                specifying if the input value that will be used to fill
+                the array.
+            queue_ref (`llvmlite.ir.instructions.ExtractValue`): An LLVM ExtractValue
+                instruction object to extract the pointer to the queue from the
+                DpctlSyclQueue type, i.e. %".74" = extractvalue {i8*, i8*} %".73", 1.
 
-        Returns: A pointer to the `MemInfo` is returned.
+        Returns:
+            ret (`llvmlite.ir.instructions.CallInstr`): A pointer to the `MemInfo`
+                is returned from the `DPEXRT_MemInfo_fill` C function call.
         """
+
         mod = builder.module
         u64 = llvmir.IntType(64)
         b = llvmir.IntType(1)
@@ -131,7 +149,14 @@ class DpexRTContext(object):
 
         ret = builder.call(
             fn,
-            [meminfo, itemsize, dest_is_float, value_is_float, value, device],
+            [
+                meminfo,
+                itemsize,
+                dest_is_float,
+                value_is_float,
+                value,
+                queue_ref,
+            ],
         )
 
         return ret
@@ -154,7 +179,6 @@ class DpexRTContext(object):
 
     def queuestruct_from_python(self, pyapi, obj, ptr):
         """Calls the c function DPEXRT_sycl_queue_from_python"""
-
         fnty = llvmir.FunctionType(
             llvmir.IntType(32), [pyapi.pyobj, pyapi.voidptr]
         )
@@ -164,7 +188,6 @@ class DpexRTContext(object):
         fn.args[1].add_attribute("nocapture")
 
         self.error = pyapi.builder.call(fn, (obj, ptr))
-
         return self.error
 
     def queuestruct_to_python(self, pyapi, val):
@@ -258,7 +281,7 @@ class DpexRTContext(object):
         """Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue
         from a given filter string.
 
-        Returns: A LLVM IR call inst.
+        Returns: A DPCTLSyclQueueRef pointer.
         """
         mod = builder.module
         fnty = llvmir.FunctionType(
