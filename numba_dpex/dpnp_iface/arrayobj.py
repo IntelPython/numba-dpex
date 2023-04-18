@@ -126,10 +126,11 @@ def _parse_device_filter_string(device):
     elif isinstance(device, str):
         return device
     else:
-        raise TypeError(
-            "The parameter 'device' is neither of "
-            + "'str' nor 'types.StringLiteral'"
-        )
+        return None
+        # raise TypeError(
+        #     "The parameter 'device' is neither of "
+        #     + "'str' nor 'types.StringLiteral'"
+        # )
 
 
 def build_dpnp_ndarray(
@@ -137,8 +138,8 @@ def build_dpnp_ndarray(
     layout="C",
     dtype=None,
     usm_type="device",
-    device="unknown",
-    queue=None,
+    device=None,
+    sycl_queue=None,
 ):
     """Constructs `DpnpNdArray` from the parameters provided.
 
@@ -158,24 +159,29 @@ def build_dpnp_ndarray(
             filter selector string, an instance of :class:`dpctl.SyclDevice`
             corresponding to a non-partitioned SYCL device, an instance of
             :class:`dpctl.SyclQueue`, or a `Device` object returnedby
-            `dpctl.tensor.usm_array.device`. Default: `"unknwon"`.
-        queue (:class:`dpctl.SyclQueue`, optional): Not supported.
-            Default: `None`.
+            `dpctl.tensor.usm_array.device`. Default: `None`.
+        sycl_queue (:class:`dpctl.SyclQueue`, optional): The SYCL queue to use
+            for output array allocation and copying. sycl_queue and device
+            are exclusive keywords, i.e. use one or another. If both are
+            specified, a TypeError is raised unless both imply the same
+            underlying SYCL queue to be used. If both are None, a cached
+            queue targeting default-selected device is used for allocation
+            and copying. Default: `None`.
 
     Raises:
-        errors.TypingError: If `sycl_queue` is provided for some reason.
+        errors.TypingError: If both `device` and `sycl_queue` are provided.
 
     Returns:
         DpnpNdArray: The Numba type to represent an dpnp.ndarray.
             The type has the same structure as USMNdArray used to
             represent dpctl.tensor.usm_ndarray.
     """
-    if queue and not isinstance(queue, types.misc.Omitted):
+
+    if sycl_queue is not None and device is not None:
         raise errors.TypingError(
-            "The sycl_queue keyword is not yet supported by "
-            "dpnp.empty(), dpnp.zeros(), dpnp.ones(), dpnp.empty_like(), "
-            "dpnp.zeros_like() and dpnp.ones_like() inside "
-            "a dpjit decorated function."
+            "numba_dpex.dpnp_iface.arrayobj.build_dpnp_ndarray(): "
+            "`device` and `sycl_queue` are exclusive keywords, "
+            "i.e. use one or other."
         )
 
     # If a dtype value was passed in, then try to convert it to the
@@ -184,7 +190,12 @@ def build_dpnp_ndarray(
     # on the behavior defined in dpctl.tensor.usm_ndarray.
 
     ret_ty = DpnpNdArray(
-        ndim=ndim, layout=layout, dtype=dtype, usm_type=usm_type, device=device
+        ndim=ndim,
+        layout=layout,
+        dtype=dtype,
+        usm_type=usm_type,
+        device=device,
+        queue=sycl_queue,
     )
 
     return ret_ty
@@ -246,9 +257,16 @@ def ol_dpnp_empty(
             The type of SYCL USM allocation for the output array.
             Allowed values are "device"|"shared"|"host".
             Default: `"device"`.
-        sycl_queue (:class:`dpctl.SyclQueue`, optional): Not supported.
+        sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
+            optional): The SYCL queue to use for output array allocation and
+            copying. sycl_queue and device are exclusive keywords, i.e. use
+            one or another. If both are specified, a TypeError is raised
+            unless both imply the same underlying SYCL queue to be used.
+            If both are None, a cached queue targeting default-selected
+            device is used for allocation and copying. Default: `None`.
 
     Raises:
+        errors.TypingError: If both `device` and `sycl_queue` are provided.
         errors.TypingError: If rank of the ndarray couldn't be inferred.
         errors.TypingError: If couldn't parse input types to dpnp.empty().
 
@@ -256,13 +274,24 @@ def ol_dpnp_empty(
         function: Local function `impl_dpnp_empty()`.
     """
 
+    if sycl_queue is not None and device is not None:
+        raise errors.TypingError(
+            "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
+            "`device` and `sycl_queue` are exclusive keywords, "
+            "i.e. use one or other."
+        )
+
     _ndim = _ty_parse_shape(shape)
     _dtype = _parse_dtype(dtype)
     _layout = _parse_layout(order)
     _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
     _device = (
-        _parse_device_filter_string(device) if device is not None else "unknown"
+        _parse_device_filter_string(device) if device is not None else None
     )
+    _sycl_queue = (
+        sycl_queue.sycl_queue if sycl_queue is not None else sycl_queue
+    )
+
     if _ndim:
         ret_ty = build_dpnp_ndarray(
             _ndim,
@@ -270,7 +299,7 @@ def ol_dpnp_empty(
             dtype=_dtype,
             usm_type=_usm_type,
             device=_device,
-            queue=sycl_queue,
+            sycl_queue=_sycl_queue,
         )
         if ret_ty:
 
@@ -344,9 +373,16 @@ def ol_dpnp_zeros(
             The type of SYCL USM allocation for the output array.
             Allowed values are "device"|"shared"|"host".
             Default: `"device"`.
-        sycl_queue (:class:`dpctl.SyclQueue`, optional): Not supported.
+        sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
+            optional): The SYCL queue to use for output array allocation and
+            copying. sycl_queue and device are exclusive keywords, i.e. use
+            one or another. If both are specified, a TypeError is raised
+            unless both imply the same underlying SYCL queue to be used.
+            If both are None, a cached queue targeting default-selected
+            device is used for allocation and copying. Default: `None`.
 
     Raises:
+        errors.TypingError: If both `device` and `sycl_queue` are provided.
         errors.TypingError: If rank of the ndarray couldn't be inferred.
         errors.TypingError: If couldn't parse input types to dpnp.zeros().
 
@@ -354,13 +390,24 @@ def ol_dpnp_zeros(
         function: Local function `impl_dpnp_zeros()`.
     """
 
+    if sycl_queue is not None and device is not None:
+        raise errors.TypingError(
+            "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
+            "`device` and `sycl_queue` are exclusive keywords, "
+            "i.e. use one or other."
+        )
+
     _ndim = _ty_parse_shape(shape)
     _layout = _parse_layout(order)
     _dtype = _parse_dtype(dtype)
     _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
     _device = (
-        _parse_device_filter_string(device) if device is not None else "unknown"
+        _parse_device_filter_string(device) if device is not None else None
     )
+    _sycl_queue = (
+        sycl_queue.sycl_queue if sycl_queue is not None else sycl_queue
+    )
+
     if _ndim:
         ret_ty = build_dpnp_ndarray(
             _ndim,
@@ -368,7 +415,7 @@ def ol_dpnp_zeros(
             dtype=_dtype,
             usm_type=_usm_type,
             device=_device,
-            queue=sycl_queue,
+            sycl_queue=_sycl_queue,
         )
         if ret_ty:
 
@@ -442,9 +489,16 @@ def ol_dpnp_ones(
             The type of SYCL USM allocation for the output array.
             Allowed values are "device"|"shared"|"host".
             Default: `"device"`.
-        sycl_queue (:class:`dpctl.SyclQueue`, optional): Not supported.
+        sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
+            optional): The SYCL queue to use for output array allocation and
+            copying. sycl_queue and device are exclusive keywords, i.e. use
+            one or another. If both are specified, a TypeError is raised
+            unless both imply the same underlying SYCL queue to be used.
+            If both are None, a cached queue targeting default-selected
+            device is used for allocation and copying. Default: `None`.
 
     Raises:
+        errors.TypingError: If both `device` and `sycl_queue` are provided.
         errors.TypingError: If rank of the ndarray couldn't be inferred.
         errors.TypingError: If couldn't parse input types to dpnp.ones().
 
@@ -452,13 +506,24 @@ def ol_dpnp_ones(
         function: Local function `impl_dpnp_ones()`.
     """
 
+    if sycl_queue is not None and device is not None:
+        raise errors.TypingError(
+            "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
+            "`device` and `sycl_queue` are exclusive keywords, "
+            "i.e. use one or other."
+        )
+
     _ndim = _ty_parse_shape(shape)
     _dtype = _parse_dtype(dtype)
     _layout = _parse_layout(order)
     _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
     _device = (
-        _parse_device_filter_string(device) if device is not None else "unknown"
+        _parse_device_filter_string(device) if device is not None else None
     )
+    _sycl_queue = (
+        sycl_queue.sycl_queue if sycl_queue is not None else sycl_queue
+    )
+
     if _ndim:
         ret_ty = build_dpnp_ndarray(
             _ndim,
@@ -466,7 +531,7 @@ def ol_dpnp_ones(
             dtype=_dtype,
             usm_type=_usm_type,
             device=_device,
-            queue=sycl_queue,
+            sycl_queue=_sycl_queue,
         )
         if ret_ty:
 
@@ -495,6 +560,128 @@ def ol_dpnp_ones(
             raise errors.TypingError(
                 "Cannot parse input types to "
                 + f"function dpnp.ones({shape}, {dtype}, ...)."
+            )
+    else:
+        raise errors.TypingError("Could not infer the rank of the ndarray.")
+
+
+@overload(dpnp.full, prefer_literal=True)
+def ol_dpnp_full(
+    shape,
+    fill_value,
+    dtype=None,
+    order="C",
+    like=None,
+    device=None,
+    usm_type=None,
+    sycl_queue=None,
+):
+    """Implementation of an overload to support dpnp.full() inside
+    a jit function.
+
+    Args:
+        shape (numba.core.types.containers.UniTuple or
+            numba.core.types.scalars.IntegerLiteral): Dimensions
+            of the array to be created.
+        fill_value (numba.core.types.scalars): One of the
+            numba.core.types.scalar types for the value to
+            be filled.
+        dtype (numba.core.types.functions.NumberClass, optional):
+            Data type of the array. Can be typestring, a `numpy.dtype`
+            object, `numpy` char string, or a numpy scalar type.
+            Default: None.
+        order (str, optional): memory layout for the array "C" or "F".
+            Default: "C".
+        like (numba.core.types.npytypes.Array, optional): A type for
+            reference object to allow the creation of arrays which are not
+            `NumPy` arrays. If an array-like passed in as `like` supports the
+            `__array_function__` protocol, the result will be defined by it.
+            In this case, it ensures the creation of an array object
+            compatible with that passed in via this argument.
+        device (numba.core.types.misc.StringLiteral, optional): array API
+            concept of device where the output array is created. `device`
+            can be `None`, a oneAPI filter selector string, an instance of
+            :class:`dpctl.SyclDevice` corresponding to a non-partitioned
+            SYCL device, an instance of :class:`dpctl.SyclQueue`, or a
+            `Device` object returnedby`dpctl.tensor.usm_array.device`.
+            Default: `None`.
+        usm_type (numba.core.types.misc.StringLiteral or str, optional):
+            The type of SYCL USM allocation for the output array.
+            Allowed values are "device"|"shared"|"host".
+            Default: `"device"`.
+        sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
+            optional): The SYCL queue to use for output array allocation and
+            copying. sycl_queue and device are exclusive keywords, i.e. use
+            one or another. If both are specified, a TypeError is raised
+            unless both imply the same underlying SYCL queue to be used.
+            If both are None, a cached queue targeting default-selected
+            device is used for allocation and copying. Default: `None`.
+
+    Raises:
+        errors.TypingError: If both `device` and `sycl_queue` are provided.
+        errors.TypingError: If rank of the ndarray couldn't be inferred.
+        errors.TypingError: If couldn't parse input types to dpnp.full().
+
+    Returns:
+        function: Local function `impl_dpnp_full()`.
+    """
+
+    if sycl_queue is not None and device is not None:
+        raise errors.TypingError(
+            "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
+            "`device` and `sycl_queue` are exclusive keywords, "
+            "i.e. use one or other."
+        )
+
+    _ndim = _ty_parse_shape(shape)
+    _dtype = _parse_dtype(dtype)
+    _layout = _parse_layout(order)
+    _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
+    _device = (
+        _parse_device_filter_string(device) if device is not None else None
+    )
+    _sycl_queue = (
+        sycl_queue.sycl_queue if sycl_queue is not None else sycl_queue
+    )
+
+    if _ndim:
+        ret_ty = build_dpnp_ndarray(
+            _ndim,
+            layout=_layout,
+            dtype=_dtype,
+            usm_type=_usm_type,
+            device=_device,
+            sycl_queue=_sycl_queue,
+        )
+        if ret_ty:
+
+            def impl(
+                shape,
+                fill_value,
+                dtype=None,
+                order="C",
+                like=None,
+                device=None,
+                usm_type=None,
+                sycl_queue=None,
+            ):
+                return impl_dpnp_full(
+                    shape,
+                    fill_value,
+                    _dtype,
+                    order,
+                    like,
+                    _device,
+                    _usm_type,
+                    sycl_queue,
+                    ret_ty,
+                )
+
+            return impl
+        else:
+            raise errors.TypingError(
+                "Cannot parse input types to "
+                + f"function dpnp.full({shape}, {fill_value}, {dtype}, ...)."
             )
     else:
         raise errors.TypingError("Could not infer the rank of the ndarray.")
@@ -543,36 +730,55 @@ def ol_dpnp_empty_like(
             The type of SYCL USM allocation for the output array.
             Allowed values are "device"|"shared"|"host".
             Default: `"device"`.
-        sycl_queue (:class:`dpctl.SyclQueue`, optional): Not supported.
+        sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
+            optional): The SYCL queue to use for output array allocation and
+            copying. sycl_queue and device are exclusive keywords, i.e. use
+            one or another. If both are specified, a TypeError is raised
+            unless both imply the same underlying SYCL queue to be used.
+            If both are None, a cached queue targeting default-selected
+            device is used for allocation and copying. Default: `None`.
 
     Raises:
+        errors.TypingError: If both `device` and `sycl_queue` are provided.
         errors.TypingError: If couldn't parse input types to dpnp.empty_like().
         errors.TypingError: If shape is provided.
 
     Returns:
         function: Local function `impl_dpnp_empty_like()`.
     """
+    if sycl_queue is not None and device is not None:
+        raise errors.TypingError(
+            "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
+            "`device` and `sycl_queue` are exclusive keywords, "
+            "i.e. use one or other."
+        )
 
     if shape:
         raise errors.TypingError(
             "The parameter shape is not supported "
             + "inside overloaded dpnp.empty_like() function."
         )
+
     _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim is not None else 0
     _dtype = _parse_dtype(dtype, data=x1)
     _order = x1.layout if order is None else order
     _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
     _device = (
-        _parse_device_filter_string(device) if device is not None else "unknown"
+        _parse_device_filter_string(device) if device is not None else None
     )
+    _sycl_queue = (
+        sycl_queue.sycl_queue if sycl_queue is not None else sycl_queue
+    )
+
     ret_ty = build_dpnp_ndarray(
         _ndim,
         layout=_order,
         dtype=_dtype,
         usm_type=_usm_type,
         device=_device,
-        queue=sycl_queue,
+        sycl_queue=_sycl_queue,
     )
+
     if ret_ty:
 
         def impl(
@@ -648,35 +854,53 @@ def ol_dpnp_zeros_like(
             The type of SYCL USM allocation for the output array.
             Allowed values are "device"|"shared"|"host".
             Default: `"device"`.
-        sycl_queue (:class:`dpctl.SyclQueue`, optional): Not supported.
+        sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
+            optional): The SYCL queue to use for output array allocation and
+            copying. sycl_queue and device are exclusive keywords, i.e. use
+            one or another. If both are specified, a TypeError is raised
+            unless both imply the same underlying SYCL queue to be used.
+            If both are None, a cached queue targeting default-selected
+            device is used for allocation and copying. Default: `None`.
 
     Raises:
+        errors.TypingError: If both `device` and `sycl_queue` are provided.
         errors.TypingError: If couldn't parse input types to dpnp.zeros_like().
         errors.TypingError: If shape is provided.
 
     Returns:
         function: Local function `impl_dpnp_zeros_like()`.
     """
+    if sycl_queue is not None and device is not None:
+        raise errors.TypingError(
+            "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
+            "`device` and `sycl_queue` are exclusive keywords, "
+            "i.e. use one or other."
+        )
 
     if shape:
         raise errors.TypingError(
             "The parameter shape is not supported "
             + "inside overloaded dpnp.zeros_like() function."
         )
+
     _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim is not None else 0
     _dtype = _parse_dtype(dtype, data=x1)
     _order = x1.layout if order is None else order
     _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
     _device = (
-        _parse_device_filter_string(device) if device is not None else "unknown"
+        _parse_device_filter_string(device) if device is not None else None
     )
+    _sycl_queue = (
+        sycl_queue.sycl_queue if sycl_queue is not None else sycl_queue
+    )
+
     ret_ty = build_dpnp_ndarray(
         _ndim,
         layout=_order,
         dtype=_dtype,
         usm_type=_usm_type,
         device=_device,
-        queue=sycl_queue,
+        sycl_queue=_sycl_queue,
     )
     if ret_ty:
 
@@ -753,35 +977,53 @@ def ol_dpnp_ones_like(
             The type of SYCL USM allocation for the output array.
             Allowed values are "device"|"shared"|"host".
             Default: `"device"`.
-        sycl_queue (:class:`dpctl.SyclQueue`, optional): Not supported.
+        sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
+            optional): The SYCL queue to use for output array allocation and
+            copying. sycl_queue and device are exclusive keywords, i.e. use
+            one or another. If both are specified, a TypeError is raised
+            unless both imply the same underlying SYCL queue to be used.
+            If both are None, a cached queue targeting default-selected
+            device is used for allocation and copying. Default: `None`.
 
     Raises:
+        errors.TypingError: If both `device` and `sycl_queue` are provided.
         errors.TypingError: If couldn't parse input types to dpnp.ones_like().
         errors.TypingError: If shape is provided.
 
     Returns:
         function: Local function `impl_dpnp_ones_like()`.
     """
+    if sycl_queue is not None and device is not None:
+        raise errors.TypingError(
+            "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
+            "`device` and `sycl_queue` are exclusive keywords, "
+            "i.e. use one or other."
+        )
 
     if shape:
         raise errors.TypingError(
             "The parameter shape is not supported "
             + "inside overloaded dpnp.ones_like() function."
         )
+
     _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim is not None else 0
     _dtype = _parse_dtype(dtype, data=x1)
     _order = x1.layout if order is None else order
     _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
     _device = (
-        _parse_device_filter_string(device) if device is not None else "unknown"
+        _parse_device_filter_string(device) if device is not None else None
     )
+    _sycl_queue = (
+        sycl_queue.sycl_queue if sycl_queue is not None else sycl_queue
+    )
+
     ret_ty = build_dpnp_ndarray(
         _ndim,
         layout=_order,
         dtype=_dtype,
         usm_type=_usm_type,
         device=_device,
-        queue=sycl_queue,
+        sycl_queue=_sycl_queue,
     )
     if ret_ty:
 
@@ -863,9 +1105,16 @@ def ol_dpnp_full_like(
             The type of SYCL USM allocation for the output array.
             Allowed values are "device"|"shared"|"host".
             Default: `"device"`.
-        sycl_queue (:class:`dpctl.SyclQueue`, optional): Not supported.
+        sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
+            optional): The SYCL queue to use for output array allocation and
+            copying. sycl_queue and device are exclusive keywords, i.e. use
+            one or another. If both are specified, a TypeError is raised
+            unless both imply the same underlying SYCL queue to be used.
+            If both are None, a cached queue targeting default-selected
+            device is used for allocation and copying. Default: `None`.
 
     Raises:
+        errors.TypingError: If both `device` and `sycl_queue` are provided.
         errors.TypingError: If couldn't parse input types to dpnp.full_like().
         errors.TypingError: If shape is provided.
 
@@ -873,26 +1122,39 @@ def ol_dpnp_full_like(
         function: Local function `impl_dpnp_full_like()`.
     """
 
+    if sycl_queue is not None and device is not None:
+        raise errors.TypingError(
+            "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
+            "`device` and `sycl_queue` are exclusive keywords, "
+            "i.e. use one or other."
+        )
+
     if shape:
         raise errors.TypingError(
             "The parameter shape is not supported "
             + "inside overloaded dpnp.full_like() function."
         )
+
     _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim is not None else 0
     _dtype = _parse_dtype(dtype, data=x1)
     _order = x1.layout if order is None else order
     _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
     _device = (
-        _parse_device_filter_string(device) if device is not None else "unknown"
+        _parse_device_filter_string(device) if device is not None else None
     )
+    _sycl_queue = (
+        sycl_queue.sycl_queue if sycl_queue is not None else sycl_queue
+    )
+
     ret_ty = build_dpnp_ndarray(
         _ndim,
         layout=_order,
         dtype=_dtype,
         usm_type=_usm_type,
         device=_device,
-        queue=sycl_queue,
+        sycl_queue=_sycl_queue,
     )
+
     if ret_ty:
 
         def impl(
@@ -925,107 +1187,3 @@ def ol_dpnp_full_like(
             "Cannot parse input types to "
             + f"function dpnp.full_like({x1}, {fill_value}, {dtype}, ...)."
         )
-
-
-@overload(dpnp.full, prefer_literal=True)
-def ol_dpnp_full(
-    shape,
-    fill_value,
-    dtype=None,
-    order="C",
-    like=None,
-    device=None,
-    usm_type=None,
-    sycl_queue=None,
-):
-    """Implementation of an overload to support dpnp.full() inside
-    a jit function.
-
-    Args:
-        shape (numba.core.types.containers.UniTuple or
-            numba.core.types.scalars.IntegerLiteral): Dimensions
-            of the array to be created.
-        fill_value (numba.core.types.scalars): One of the
-            numba.core.types.scalar types for the value to
-            be filled.
-        dtype (numba.core.types.functions.NumberClass, optional):
-            Data type of the array. Can be typestring, a `numpy.dtype`
-            object, `numpy` char string, or a numpy scalar type.
-            Default: None.
-        order (str, optional): memory layout for the array "C" or "F".
-            Default: "C".
-        like (numba.core.types.npytypes.Array, optional): A type for
-            reference object to allow the creation of arrays which are not
-            `NumPy` arrays. If an array-like passed in as `like` supports the
-            `__array_function__` protocol, the result will be defined by it.
-            In this case, it ensures the creation of an array object
-            compatible with that passed in via this argument.
-        device (numba.core.types.misc.StringLiteral, optional): array API
-            concept of device where the output array is created. `device`
-            can be `None`, a oneAPI filter selector string, an instance of
-            :class:`dpctl.SyclDevice` corresponding to a non-partitioned
-            SYCL device, an instance of :class:`dpctl.SyclQueue`, or a
-            `Device` object returnedby`dpctl.tensor.usm_array.device`.
-            Default: `None`.
-        usm_type (numba.core.types.misc.StringLiteral or str, optional):
-            The type of SYCL USM allocation for the output array.
-            Allowed values are "device"|"shared"|"host".
-            Default: `"device"`.
-        sycl_queue (:class:`dpctl.SyclQueue`, optional): Not supported.
-
-    Raises:
-        errors.TypingError: If rank of the ndarray couldn't be inferred.
-        errors.TypingError: If couldn't parse input types to dpnp.full().
-
-    Returns:
-        function: Local function `impl_dpnp_full()`.
-    """
-
-    _ndim = _ty_parse_shape(shape)
-    _dtype = _parse_dtype(dtype)
-    _layout = _parse_layout(order)
-    _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
-    _device = (
-        _parse_device_filter_string(device) if device is not None else "unknown"
-    )
-    if _ndim:
-        ret_ty = build_dpnp_ndarray(
-            _ndim,
-            layout=_layout,
-            dtype=_dtype,
-            usm_type=_usm_type,
-            device=_device,
-            queue=sycl_queue,
-        )
-        if ret_ty:
-
-            def impl(
-                shape,
-                fill_value,
-                dtype=None,
-                order="C",
-                like=None,
-                device=None,
-                usm_type=None,
-                sycl_queue=None,
-            ):
-                return impl_dpnp_full(
-                    shape,
-                    fill_value,
-                    _dtype,
-                    order,
-                    like,
-                    _device,
-                    _usm_type,
-                    sycl_queue,
-                    ret_ty,
-                )
-
-            return impl
-        else:
-            raise errors.TypingError(
-                "Cannot parse input types to "
-                + f"function dpnp.full({shape}, {fill_value}, {dtype}, ...)."
-            )
-    else:
-        raise errors.TypingError("Could not infer the rank of the ndarray.")

@@ -19,8 +19,13 @@ class DpctlSyclQueue(types.Type):
     Numba.
     """
 
-    def __init__(self):
+    def __init__(self, sycl_queue):
+        self._sycl_queue = sycl_queue
         super(DpctlSyclQueue, self).__init__(name="DpctlSyclQueue")
+
+    @property
+    def sycl_queue(self):
+        return self._sycl_queue
 
     @property
     def box_type(self):

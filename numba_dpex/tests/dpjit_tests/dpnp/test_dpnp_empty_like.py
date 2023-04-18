@@ -16,7 +16,7 @@ from numba_dpex import dpjit
 shapes = [10, (2, 5)]
 dtypes = [dpnp.int32, dpnp.int64, dpnp.float32, dpnp.float64]
 usm_types = ["device", "shared", "host"]
-devices = ["cpu", "unknown"]
+devices = ["cpu", "gpu", None]
 
 
 @pytest.mark.parametrize("shape", shapes)
@@ -46,7 +46,7 @@ def test_dpnp_empty_like(shape, dtype, usm_type, device):
 
     assert c.dtype == dtype
     assert c.usm_type == usm_type
-    if device != "unknown":
+    if device is not None:
         assert (
             c.sycl_device.filter_string
             == dpctl.SyclDevice(device).filter_string
@@ -73,15 +73,12 @@ def test_dpnp_empty_like_exceptions():
     queue = dpctl.SyclQueue()
 
     @dpjit
-    def func2(a):
-        c = dpnp.empty_like(a, sycl_queue=queue)
+    def func2(a, q):
+        c = dpnp.empty_like(a, sycl_queue=q, device="cpu")
         return c
 
     try:
-        func2(numpy.random.rand(5, 5))
+        func2(numpy.random.rand(5, 5), queue)
     except Exception as e:
         assert isinstance(e, errors.TypingError)
-        assert (
-            "No implementation of function Function(<function empty_like"
-            in str(e)
-        )
+        assert "`device` and `sycl_queue` are exclusive keywords" in str(e)

@@ -15,7 +15,7 @@ from numba_dpex import dpjit
 shapes = [11, (3, 7)]
 dtypes = [dpnp.int32, dpnp.int64, dpnp.float32, dpnp.float64]
 usm_types = ["device", "shared", "host"]
-devices = ["cpu", "unknown"]
+devices = ["cpu", "gpu", None]
 
 
 @pytest.mark.parametrize("shape", shapes)
@@ -42,7 +42,7 @@ def test_dpnp_zeros(shape, dtype, usm_type, device):
 
     assert c.dtype == dtype
     assert c.usm_type == usm_type
-    if device != "unknown":
+    if device is not None:
         assert (
             c.sycl_device.filter_string
             == dpctl.SyclDevice(device).filter_string
