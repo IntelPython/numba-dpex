@@ -1,19 +1,20 @@
 name: dev
 channels:
-  - defaults
   - dppy/label/dev
   - numba
   - intel
   - numba/label/dev
+  - pkgs/main
   - nodefaults
 dependencies:
   - python=3.9
+  - defaults:libffi
   - gxx_linux-64
   - dpcpp_linux-64
   - cython
   - numba 0.56*
-  - dpctl >=0.14*
-  - dpnp >=0.10.2
+  - dppy/label/dev:dpctl
+  - dppy/label/dev:dpnp
   - spirv-tools
   - dpcpp-llvm-spirv
   - packaging
