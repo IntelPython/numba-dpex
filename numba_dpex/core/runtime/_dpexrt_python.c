@@ -731,7 +731,7 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
                                                arystruct_t *arystruct)
 {
     struct PyUSMArrayObject *arrayobj = NULL;
-    int i = 0, ndim = 0, exp = 0;
+    int i = 0, j = 0, k = 0, ndim = 0, exp = 0;
     npy_intp *shape = NULL, *strides = NULL;
     npy_intp *p = NULL, nitems;
     void *data = NULL;
@@ -812,10 +812,12 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
         }
     }
     else {
-        for (i = 1; i < ndim; ++i, ++p) {
-            *p = shape[i] << exp;
+        for (i = ndim * 2 - 1; i >= ndim; --i, ++p) {
+            *p = 1;
+            for (j = i, k = ndim - 1; j > ndim; --j, --k)
+                *p *= shape[k];
+            *p <<= exp;
         }
-        *p = 1;
     }
 
     return 0;
