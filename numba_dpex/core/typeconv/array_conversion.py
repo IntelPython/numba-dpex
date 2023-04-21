@@ -37,7 +37,6 @@ def to_usm_ndarray(suai_attrs, addrspace=address_space.GLOBAL):
         ndim=suai_attrs.dimensions,
         layout=layout,
         usm_type=suai_attrs.usm_type,
-        device=suai_attrs.device,
         queue=suai_attrs.queue,
         readonly=not suai_attrs.is_writable,
         name=None,

@@ -31,46 +31,37 @@ class USMNdArray(Array):
         aligned=True,
         addrspace=address_space.GLOBAL,
     ):
+        if not isinstance(device, str):
+            raise TypeError(
+                "The device keyword arg should be a str object specifying "
+                "a SYCL filter selector"
+            )
+
+        if not isinstance(queue, dpctl.SyclQueue) and queue is not None:
+            raise TypeError(
+                "The queue keyword arg should be a dpctl.SyclQueue object or None"
+            )
+
         self.usm_type = usm_type
         self.addrspace = addrspace
 
-        if queue is not None and device != "unknown":
-            if not isinstance(device, str):
-                raise TypeError(
-                    "The device keyword arg should be a str object specifying "
-                    "a SYCL filter selector"
-                )
-            if not isinstance(queue, dpctl.SyclQueue):
-                raise TypeError(
-                    "The queue keyword arg should be a dpctl.SyclQueue object"
-                )
-            d1 = queue.sycl_device
-            d2 = dpctl.SyclDevice(device)
-            if d1 != d2:
-                raise TypeError(
-                    "The queue keyword arg and the device keyword arg specify "
-                    "different SYCL devices"
-                )
-            self.queue = queue
-            self.device = device
-        elif queue is None and device != "unknown":
-            if not isinstance(device, str):
-                raise TypeError(
-                    "The device keyword arg should be a str object specifying "
-                    "a SYCL filter selector"
-                )
-            self.queue = dpctl.SyclQueue(device)
-            self.device = self.queue.sycl_device.filter_string
-        elif queue is not None and device == "unknown":
-            if not isinstance(queue, dpctl.SyclQueue):
-                raise TypeError(
-                    "The queue keyword arg should be a dpctl.SyclQueue object"
-                )
-            self.device = self.queue.sycl_device.filter_string
+        if device == "unknown":
+            device = None
+
+        if queue is not None and device is not None:
+            raise TypeError(
+                "'queue' and 'device' keywords can not be both specified"
+            )
+
+        if queue is not None:
             self.queue = queue
         else:
-            self.queue = dpctl.SyclQueue()
-            self.device = self.queue.sycl_device.filter_string
+            if device is None:
+                device = dpctl.SyclDevice()
+
+            self.queue = dpctl.get_device_cached_queue(device)
+
+        self.device = self.queue.sycl_device.filter_string
 
         if not dtype:
             dummy_tensor = dpctl.tensor.empty(
