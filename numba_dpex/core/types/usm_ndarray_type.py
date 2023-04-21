@@ -7,12 +7,11 @@
 
 import dpctl
 import dpctl.tensor
+from numba import types
 from numba.core.typeconv import Conversion
-from numba.core.typeinfer import CallConstraint
 from numba.core.types.npytypes import Array
 from numba.np.numpy_support import from_dtype
 
-from numba_dpex.core.types.dpctl_types import DpctlSyclQueue
 from numba_dpex.utils import address_space
 
 
@@ -32,7 +31,7 @@ class USMNdArray(Array):
         aligned=True,
         addrspace=address_space.GLOBAL,
     ):
-        if queue is not None and device is not None:
+        if queue and not isinstance(queue, types.misc.Omitted) and device:
             raise TypeError(
                 "numba_dpex.core.types.usm_ndarray_type.USMNdArray.__init__(): "
                 "`device` and `sycl_queue` are exclusive keywords, i.e. use one or other."
@@ -41,7 +40,7 @@ class USMNdArray(Array):
         self.usm_type = usm_type
         self.addrspace = addrspace
 
-        if queue is not None:
+        if queue and not isinstance(queue, types.misc.Omitted):
             if not isinstance(queue, dpctl.SyclQueue):
                 raise TypeError(
                     "numba_dpex.core.types.usm_ndarray_type.USMNdArray.__init__(): "

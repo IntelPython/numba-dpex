@@ -177,7 +177,7 @@ def build_dpnp_ndarray(
             represent dpctl.tensor.usm_ndarray.
     """
 
-    if sycl_queue is not None and device is not None:
+    if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted) and device:
         raise errors.TypingError(
             "numba_dpex.dpnp_iface.arrayobj.build_dpnp_ndarray(): "
             "`device` and `sycl_queue` are exclusive keywords, "
@@ -274,7 +274,7 @@ def ol_dpnp_empty(
         function: Local function `impl_dpnp_empty()`.
     """
 
-    if sycl_queue is not None and device is not None:
+    if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted) and device:
         raise errors.TypingError(
             "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
             "`device` and `sycl_queue` are exclusive keywords, "
@@ -284,12 +284,12 @@ def ol_dpnp_empty(
     _ndim = _ty_parse_shape(shape)
     _dtype = _parse_dtype(dtype)
     _layout = _parse_layout(order)
-    _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
-    _device = (
-        _parse_device_filter_string(device) if device is not None else None
-    )
+    _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
+    _device = _parse_device_filter_string(device) if device else None
     _sycl_queue = (
-        sycl_queue.sycl_queue if sycl_queue is not None else sycl_queue
+        sycl_queue.sycl_queue
+        if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted)
+        else sycl_queue
     )
 
     if _ndim:
@@ -390,7 +390,7 @@ def ol_dpnp_zeros(
         function: Local function `impl_dpnp_zeros()`.
     """
 
-    if sycl_queue is not None and device is not None:
+    if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted) and device:
         raise errors.TypingError(
             "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
             "`device` and `sycl_queue` are exclusive keywords, "
@@ -400,12 +400,12 @@ def ol_dpnp_zeros(
     _ndim = _ty_parse_shape(shape)
     _layout = _parse_layout(order)
     _dtype = _parse_dtype(dtype)
-    _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
-    _device = (
-        _parse_device_filter_string(device) if device is not None else None
-    )
+    _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
+    _device = _parse_device_filter_string(device) if device else None
     _sycl_queue = (
-        sycl_queue.sycl_queue if sycl_queue is not None else sycl_queue
+        sycl_queue.sycl_queue
+        if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted)
+        else sycl_queue
     )
 
     if _ndim:
@@ -506,7 +506,7 @@ def ol_dpnp_ones(
         function: Local function `impl_dpnp_ones()`.
     """
 
-    if sycl_queue is not None and device is not None:
+    if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted) and device:
         raise errors.TypingError(
             "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
             "`device` and `sycl_queue` are exclusive keywords, "
@@ -516,12 +516,12 @@ def ol_dpnp_ones(
     _ndim = _ty_parse_shape(shape)
     _dtype = _parse_dtype(dtype)
     _layout = _parse_layout(order)
-    _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
-    _device = (
-        _parse_device_filter_string(device) if device is not None else None
-    )
+    _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
+    _device = _parse_device_filter_string(device) if device else None
     _sycl_queue = (
-        sycl_queue.sycl_queue if sycl_queue is not None else sycl_queue
+        sycl_queue.sycl_queue
+        if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted)
+        else sycl_queue
     )
 
     if _ndim:
@@ -626,7 +626,7 @@ def ol_dpnp_full(
         function: Local function `impl_dpnp_full()`.
     """
 
-    if sycl_queue is not None and device is not None:
+    if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted) and device:
         raise errors.TypingError(
             "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
             "`device` and `sycl_queue` are exclusive keywords, "
@@ -636,12 +636,12 @@ def ol_dpnp_full(
     _ndim = _ty_parse_shape(shape)
     _dtype = _parse_dtype(dtype)
     _layout = _parse_layout(order)
-    _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
-    _device = (
-        _parse_device_filter_string(device) if device is not None else None
-    )
+    _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
+    _device = _parse_device_filter_string(device) if device else None
     _sycl_queue = (
-        sycl_queue.sycl_queue if sycl_queue is not None else sycl_queue
+        sycl_queue.sycl_queue
+        if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted)
+        else sycl_queue
     )
 
     if _ndim:
@@ -746,7 +746,8 @@ def ol_dpnp_empty_like(
     Returns:
         function: Local function `impl_dpnp_empty_like()`.
     """
-    if sycl_queue is not None and device is not None:
+
+    if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted) and device:
         raise errors.TypingError(
             "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
             "`device` and `sycl_queue` are exclusive keywords, "
@@ -759,15 +760,15 @@ def ol_dpnp_empty_like(
             + "inside overloaded dpnp.empty_like() function."
         )
 
-    _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim is not None else 0
+    _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim else 0
     _dtype = _parse_dtype(dtype, data=x1)
     _order = x1.layout if order is None else order
-    _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
-    _device = (
-        _parse_device_filter_string(device) if device is not None else None
-    )
+    _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
+    _device = _parse_device_filter_string(device) if device else None
     _sycl_queue = (
-        sycl_queue.sycl_queue if sycl_queue is not None else sycl_queue
+        sycl_queue.sycl_queue
+        if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted)
+        else sycl_queue
     )
 
     ret_ty = build_dpnp_ndarray(
@@ -870,7 +871,8 @@ def ol_dpnp_zeros_like(
     Returns:
         function: Local function `impl_dpnp_zeros_like()`.
     """
-    if sycl_queue is not None and device is not None:
+
+    if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted) and device:
         raise errors.TypingError(
             "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
             "`device` and `sycl_queue` are exclusive keywords, "
@@ -883,15 +885,15 @@ def ol_dpnp_zeros_like(
             + "inside overloaded dpnp.zeros_like() function."
         )
 
-    _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim is not None else 0
+    _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim else 0
     _dtype = _parse_dtype(dtype, data=x1)
     _order = x1.layout if order is None else order
-    _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
-    _device = (
-        _parse_device_filter_string(device) if device is not None else None
-    )
+    _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
+    _device = _parse_device_filter_string(device) if device else None
     _sycl_queue = (
-        sycl_queue.sycl_queue if sycl_queue is not None else sycl_queue
+        sycl_queue.sycl_queue
+        if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted)
+        else sycl_queue
     )
 
     ret_ty = build_dpnp_ndarray(
@@ -993,7 +995,7 @@ def ol_dpnp_ones_like(
     Returns:
         function: Local function `impl_dpnp_ones_like()`.
     """
-    if sycl_queue is not None and device is not None:
+    if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted) and device:
         raise errors.TypingError(
             "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
             "`device` and `sycl_queue` are exclusive keywords, "
@@ -1006,15 +1008,15 @@ def ol_dpnp_ones_like(
             + "inside overloaded dpnp.ones_like() function."
         )
 
-    _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim is not None else 0
+    _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim else 0
     _dtype = _parse_dtype(dtype, data=x1)
     _order = x1.layout if order is None else order
-    _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
-    _device = (
-        _parse_device_filter_string(device) if device is not None else None
-    )
+    _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
+    _device = _parse_device_filter_string(device) if device else None
     _sycl_queue = (
-        sycl_queue.sycl_queue if sycl_queue is not None else sycl_queue
+        sycl_queue.sycl_queue
+        if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted)
+        else sycl_queue
     )
 
     ret_ty = build_dpnp_ndarray(
@@ -1122,7 +1124,7 @@ def ol_dpnp_full_like(
         function: Local function `impl_dpnp_full_like()`.
     """
 
-    if sycl_queue is not None and device is not None:
+    if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted) and device:
         raise errors.TypingError(
             "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
             "`device` and `sycl_queue` are exclusive keywords, "
@@ -1135,15 +1137,15 @@ def ol_dpnp_full_like(
             + "inside overloaded dpnp.full_like() function."
         )
 
-    _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim is not None else 0
+    _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim else 0
     _dtype = _parse_dtype(dtype, data=x1)
     _order = x1.layout if order is None else order
-    _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
-    _device = (
-        _parse_device_filter_string(device) if device is not None else None
-    )
+    _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
+    _device = _parse_device_filter_string(device) if device else None
     _sycl_queue = (
-        sycl_queue.sycl_queue if sycl_queue is not None else sycl_queue
+        sycl_queue.sycl_queue
+        if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted)
+        else sycl_queue
     )
 
     ret_ty = build_dpnp_ndarray(
