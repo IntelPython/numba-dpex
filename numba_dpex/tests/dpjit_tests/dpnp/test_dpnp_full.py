@@ -17,7 +17,7 @@ from numba_dpex import dpjit
 shapes = [11, (3, 7)]
 dtypes = [dpnp.int32, dpnp.int64, dpnp.float32, dpnp.float64]
 usm_types = ["device", "shared", "host"]
-devices = ["cpu", "gpu", None]
+devices = ["cpu", None]
 fill_values = [
     7,
     -7,

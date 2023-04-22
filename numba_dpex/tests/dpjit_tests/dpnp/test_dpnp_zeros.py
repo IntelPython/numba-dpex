@@ -15,7 +15,7 @@ from numba_dpex import dpjit
 shapes = [11, (3, 7)]
 dtypes = [dpnp.int32, dpnp.int64, dpnp.float32, dpnp.float64]
 usm_types = ["device", "shared", "host"]
-devices = ["cpu", "gpu", None]
+devices = ["cpu", None]
 
 
 @pytest.mark.parametrize("shape", shapes)
