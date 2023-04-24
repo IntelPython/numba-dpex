@@ -125,12 +125,13 @@ def _parse_device_filter_string(device):
         return device_filter_str
     elif isinstance(device, str):
         return device
-    else:
+    elif device is None or isinstance(device, types.NoneType):
         return None
-        # raise TypeError(
-        #     "The parameter 'device' is neither of "
-        #     + "'str' nor 'types.StringLiteral'"
-        # )
+    else:
+        raise TypeError(
+            "The parameter 'device' is neither of "
+            + "'str', 'types.StringLiteral' nor 'None'"
+        )
 
 
 def build_dpnp_ndarray(
@@ -160,13 +161,12 @@ def build_dpnp_ndarray(
             corresponding to a non-partitioned SYCL device, an instance of
             :class:`dpctl.SyclQueue`, or a `Device` object returnedby
             `dpctl.tensor.usm_array.device`. Default: `None`.
-        sycl_queue (:class:`dpctl.SyclQueue`, optional): The SYCL queue to use
-            for output array allocation and copying. sycl_queue and device
-            are exclusive keywords, i.e. use one or another. If both are
-            specified, a TypeError is raised unless both imply the same
-            underlying SYCL queue to be used. If both are None, a cached
-            queue targeting default-selected device is used for allocation
-            and copying. Default: `None`.
+        sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
+            optional): The SYCL queue to use for output array allocation and
+            copying. sycl_queue and device are exclusive keywords, i.e. use
+            one or another. If both are specified, a TypeError is raised. If
+            both are None, a cached queue targeting default-selected device
+            is used for allocation and copying. Default: `None`.
 
     Raises:
         errors.TypingError: If both `device` and `sycl_queue` are provided.
@@ -176,13 +176,6 @@ def build_dpnp_ndarray(
             The type has the same structure as USMNdArray used to
             represent dpctl.tensor.usm_ndarray.
     """
-
-    if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted) and device:
-        raise errors.TypingError(
-            "numba_dpex.dpnp_iface.arrayobj.build_dpnp_ndarray(): "
-            "`device` and `sycl_queue` are exclusive keywords, "
-            "i.e. use one or other."
-        )
 
     # If a dtype value was passed in, then try to convert it to the
     # corresponding Numba type. If None was passed, the default, then pass None
@@ -228,7 +221,7 @@ def ol_dpnp_empty(
     sycl_queue=None,
 ):
     """Implementation of an overload to support dpnp.empty() inside
-    a jit function.
+    a dpjit function.
 
     Args:
         shape (numba.core.types.containers.UniTuple or
@@ -260,10 +253,9 @@ def ol_dpnp_empty(
         sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
             optional): The SYCL queue to use for output array allocation and
             copying. sycl_queue and device are exclusive keywords, i.e. use
-            one or another. If both are specified, a TypeError is raised
-            unless both imply the same underlying SYCL queue to be used.
-            If both are None, a cached queue targeting default-selected
-            device is used for allocation and copying. Default: `None`.
+            one or another. If both are specified, a TypeError is raised. If
+            both are None, a cached queue targeting default-selected device
+            is used for allocation and copying. Default: `None`.
 
     Raises:
         errors.TypingError: If both `device` and `sycl_queue` are provided.
@@ -273,13 +265,6 @@ def ol_dpnp_empty(
     Returns:
         function: Local function `impl_dpnp_empty()`.
     """
-
-    if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted) and device:
-        raise errors.TypingError(
-            "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
-            "`device` and `sycl_queue` are exclusive keywords, "
-            "i.e. use one or other."
-        )
 
     _ndim = _ty_parse_shape(shape)
     _dtype = _parse_dtype(dtype)
@@ -344,7 +329,7 @@ def ol_dpnp_zeros(
     sycl_queue=None,
 ):
     """Implementation of an overload to support dpnp.zeros() inside
-    a jit function.
+    a dpjit function.
 
     Args:
         shape (numba.core.types.containers.UniTuple or
@@ -376,10 +361,9 @@ def ol_dpnp_zeros(
         sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
             optional): The SYCL queue to use for output array allocation and
             copying. sycl_queue and device are exclusive keywords, i.e. use
-            one or another. If both are specified, a TypeError is raised
-            unless both imply the same underlying SYCL queue to be used.
-            If both are None, a cached queue targeting default-selected
-            device is used for allocation and copying. Default: `None`.
+            one or another. If both are specified, a TypeError is raised. If
+            both are None, a cached queue targeting default-selected device
+            is used for allocation and copying. Default: `None`.
 
     Raises:
         errors.TypingError: If both `device` and `sycl_queue` are provided.
@@ -389,13 +373,6 @@ def ol_dpnp_zeros(
     Returns:
         function: Local function `impl_dpnp_zeros()`.
     """
-
-    if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted) and device:
-        raise errors.TypingError(
-            "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
-            "`device` and `sycl_queue` are exclusive keywords, "
-            "i.e. use one or other."
-        )
 
     _ndim = _ty_parse_shape(shape)
     _layout = _parse_layout(order)
@@ -460,7 +437,7 @@ def ol_dpnp_ones(
     sycl_queue=None,
 ):
     """Implementation of an overload to support dpnp.ones() inside
-    a jit function.
+    a dpjit function.
 
     Args:
         shape (numba.core.types.containers.UniTuple or
@@ -492,10 +469,9 @@ def ol_dpnp_ones(
         sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
             optional): The SYCL queue to use for output array allocation and
             copying. sycl_queue and device are exclusive keywords, i.e. use
-            one or another. If both are specified, a TypeError is raised
-            unless both imply the same underlying SYCL queue to be used.
-            If both are None, a cached queue targeting default-selected
-            device is used for allocation and copying. Default: `None`.
+            one or another. If both are specified, a TypeError is raised. If
+            both are None, a cached queue targeting default-selected device
+            is used for allocation and copying. Default: `None`.
 
     Raises:
         errors.TypingError: If both `device` and `sycl_queue` are provided.
@@ -505,13 +481,6 @@ def ol_dpnp_ones(
     Returns:
         function: Local function `impl_dpnp_ones()`.
     """
-
-    if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted) and device:
-        raise errors.TypingError(
-            "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
-            "`device` and `sycl_queue` are exclusive keywords, "
-            "i.e. use one or other."
-        )
 
     _ndim = _ty_parse_shape(shape)
     _dtype = _parse_dtype(dtype)
@@ -577,7 +546,7 @@ def ol_dpnp_full(
     sycl_queue=None,
 ):
     """Implementation of an overload to support dpnp.full() inside
-    a jit function.
+    a dpjit function.
 
     Args:
         shape (numba.core.types.containers.UniTuple or
@@ -612,10 +581,9 @@ def ol_dpnp_full(
         sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
             optional): The SYCL queue to use for output array allocation and
             copying. sycl_queue and device are exclusive keywords, i.e. use
-            one or another. If both are specified, a TypeError is raised
-            unless both imply the same underlying SYCL queue to be used.
-            If both are None, a cached queue targeting default-selected
-            device is used for allocation and copying. Default: `None`.
+            one or another. If both are specified, a TypeError is raised. If
+            both are None, a cached queue targeting default-selected device
+            is used for allocation and copying. Default: `None`.
 
     Raises:
         errors.TypingError: If both `device` and `sycl_queue` are provided.
@@ -625,13 +593,6 @@ def ol_dpnp_full(
     Returns:
         function: Local function `impl_dpnp_full()`.
     """
-
-    if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted) and device:
-        raise errors.TypingError(
-            "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
-            "`device` and `sycl_queue` are exclusive keywords, "
-            "i.e. use one or other."
-        )
 
     _ndim = _ty_parse_shape(shape)
     _dtype = _parse_dtype(dtype)
@@ -733,10 +694,9 @@ def ol_dpnp_empty_like(
         sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
             optional): The SYCL queue to use for output array allocation and
             copying. sycl_queue and device are exclusive keywords, i.e. use
-            one or another. If both are specified, a TypeError is raised
-            unless both imply the same underlying SYCL queue to be used.
-            If both are None, a cached queue targeting default-selected
-            device is used for allocation and copying. Default: `None`.
+            one or another. If both are specified, a TypeError is raised. If
+            both are None, a cached queue targeting default-selected device
+            is used for allocation and copying. Default: `None`.
 
     Raises:
         errors.TypingError: If both `device` and `sycl_queue` are provided.
@@ -746,13 +706,6 @@ def ol_dpnp_empty_like(
     Returns:
         function: Local function `impl_dpnp_empty_like()`.
     """
-
-    if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted) and device:
-        raise errors.TypingError(
-            "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
-            "`device` and `sycl_queue` are exclusive keywords, "
-            "i.e. use one or other."
-        )
 
     if shape:
         raise errors.TypingError(
@@ -858,10 +811,9 @@ def ol_dpnp_zeros_like(
         sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
             optional): The SYCL queue to use for output array allocation and
             copying. sycl_queue and device are exclusive keywords, i.e. use
-            one or another. If both are specified, a TypeError is raised
-            unless both imply the same underlying SYCL queue to be used.
-            If both are None, a cached queue targeting default-selected
-            device is used for allocation and copying. Default: `None`.
+            one or another. If both are specified, a TypeError is raised. If
+            both are None, a cached queue targeting default-selected device
+            is used for allocation and copying. Default: `None`.
 
     Raises:
         errors.TypingError: If both `device` and `sycl_queue` are provided.
@@ -871,13 +823,6 @@ def ol_dpnp_zeros_like(
     Returns:
         function: Local function `impl_dpnp_zeros_like()`.
     """
-
-    if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted) and device:
-        raise errors.TypingError(
-            "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
-            "`device` and `sycl_queue` are exclusive keywords, "
-            "i.e. use one or other."
-        )
 
     if shape:
         raise errors.TypingError(
@@ -982,10 +927,9 @@ def ol_dpnp_ones_like(
         sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
             optional): The SYCL queue to use for output array allocation and
             copying. sycl_queue and device are exclusive keywords, i.e. use
-            one or another. If both are specified, a TypeError is raised
-            unless both imply the same underlying SYCL queue to be used.
-            If both are None, a cached queue targeting default-selected
-            device is used for allocation and copying. Default: `None`.
+            one or another. If both are specified, a TypeError is raised. If
+            both are None, a cached queue targeting default-selected device
+            is used for allocation and copying. Default: `None`.
 
     Raises:
         errors.TypingError: If both `device` and `sycl_queue` are provided.
@@ -995,12 +939,6 @@ def ol_dpnp_ones_like(
     Returns:
         function: Local function `impl_dpnp_ones_like()`.
     """
-    if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted) and device:
-        raise errors.TypingError(
-            "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
-            "`device` and `sycl_queue` are exclusive keywords, "
-            "i.e. use one or other."
-        )
 
     if shape:
         raise errors.TypingError(
@@ -1110,10 +1048,9 @@ def ol_dpnp_full_like(
         sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
             optional): The SYCL queue to use for output array allocation and
             copying. sycl_queue and device are exclusive keywords, i.e. use
-            one or another. If both are specified, a TypeError is raised
-            unless both imply the same underlying SYCL queue to be used.
-            If both are None, a cached queue targeting default-selected
-            device is used for allocation and copying. Default: `None`.
+            one or another. If both are specified, a TypeError is raised. If
+            both are None, a cached queue targeting default-selected device
+            is used for allocation and copying. Default: `None`.
 
     Raises:
         errors.TypingError: If both `device` and `sycl_queue` are provided.
@@ -1123,13 +1060,6 @@ def ol_dpnp_full_like(
     Returns:
         function: Local function `impl_dpnp_full_like()`.
     """
-
-    if sycl_queue and not isinstance(sycl_queue, types.misc.Omitted) and device:
-        raise errors.TypingError(
-            "numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty(): "
-            "`device` and `sycl_queue` are exclusive keywords, "
-            "i.e. use one or other."
-        )
 
     if shape:
         raise errors.TypingError(
