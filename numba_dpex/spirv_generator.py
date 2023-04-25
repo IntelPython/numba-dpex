@@ -87,13 +87,20 @@ class CmdLine:
     @staticmethod
     def _llvm_spirv():
         """Return path to llvm-spirv executable."""
+        result = None
 
-        try:
-            import dpcpp_llvm_spirv as dls
-        except ImportError:
-            raise ImportError("Cannot import dpcpp-llvm-spirv package")
+        if os.environ.get("USER_LLVM_SPIRV_PATH", None):
+            path = os.environ.get("USER_LLVM_SPIRV_PATH", None)
+            result = shutil.which("llvm-spirv", path=path)
+            if result is None:
+                raise FileNotFoundError("User defined llvm-spirv is not found.")
+        else:
+            try:
+                import dpcpp_llvm_spirv as dls
+            except ImportError:
+                raise ImportError("Cannot import dpcpp-llvm-spirv package")
 
-        result = dls.get_llvm_spirv_path()
+            result = dls.get_llvm_spirv_path()
         return result
 
     def link(self, opath, binaries):

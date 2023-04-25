@@ -16,6 +16,7 @@ import setuptools.command.install as orig_install
 from Cython.Build import cythonize
 from setuptools import Extension, find_packages, setup
 
+# import numba_dpex.config as config
 import versioneer
 
 IS_WIN = False
@@ -136,13 +137,21 @@ def spirv_compile():
 
 def _llvm_spirv():
     """Return path to llvm-spirv executable."""
+    result = None
 
-    try:
-        import dpcpp_llvm_spirv as dls
-    except ImportError:
-        raise ImportError("Cannot import dpcpp-llvm-spirv package")
+    if os.environ.get("USER_LLVM_SPIRV_PATH", None):
+        path = os.environ.get("USER_LLVM_SPIRV_PATH", None)
+        result = shutil.which("llvm-spirv", path=path)
 
-    result = dls.get_llvm_spirv_path()
+        if result is None:
+            raise FileNotFoundError("User defined llvm-spirv is not found.")
+    else:
+        try:
+            import dpcpp_llvm_spirv as dls
+        except ImportError:
+            raise ImportError("Cannot import dpcpp-llvm-spirv package")
+
+        result = dls.get_llvm_spirv_path()
 
     return result
 
