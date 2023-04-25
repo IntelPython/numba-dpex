@@ -2,8 +2,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import dpctl
-import dpctl.tensor as dpt
 import dpnp
 import numpy
 import pytest

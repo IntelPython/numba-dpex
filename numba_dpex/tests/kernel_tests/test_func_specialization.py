@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import dpctl.tensor as dpt
+import dpnp
 import numpy as np
 import pytest
 
@@ -32,12 +32,12 @@ def test_basic():
 
     k = dpex.kernel(kernel_function)
 
-    a = dpt.ones(N)
-    b = dpt.ones(N)
+    a = dpnp.ones(N)
+    b = dpnp.ones(N)
 
-    k[N](a, b)
+    k[dpex.Range(N)](a, b)
 
-    assert np.array_equal(dpt.asnumpy(b), dpt.asnumpy(a) + 1)
+    assert np.array_equal(dpnp.asnumpy(b), dpnp.asnumpy(a) + 1)
 
 
 def test_single_signature():
@@ -53,19 +53,19 @@ def test_single_signature():
     k = dpex.kernel(kernel_function)
 
     # Test with int32, should work
-    a = dpt.ones(N, dtype=dpt.int32)
-    b = dpt.ones(N, dtype=dpt.int32)
+    a = dpnp.ones(N, dtype=dpnp.int32)
+    b = dpnp.ones(N, dtype=dpnp.int32)
 
-    k[N](a, b)
+    k[dpex.Range(N)](a, b)
 
-    assert np.array_equal(dpt.asnumpy(b), dpt.asnumpy(a) + 1)
+    assert np.array_equal(dpnp.asnumpy(b), dpnp.asnumpy(a) + 1)
 
     # Test with int64, should fail
-    a = dpt.ones(N, dtype=dpt.int64)
-    b = dpt.ones(N, dtype=dpt.int64)
+    a = dpnp.ones(N, dtype=dpnp.int64)
+    b = dpnp.ones(N, dtype=dpnp.int64)
 
     with pytest.raises(Exception) as e:
-        k[N](a, b)
+        k[dpex.Range(N)](a, b)
 
     assert " >>> <unknown function>(int64)" in e.value.args[0]
 
@@ -83,26 +83,26 @@ def test_list_signature():
     k = dpex.kernel(kernel_function)
 
     # Test with int32, should work
-    a = dpt.ones(N, dtype=dpt.int32)
-    b = dpt.ones(N, dtype=dpt.int32)
+    a = dpnp.ones(N, dtype=dpnp.int32)
+    b = dpnp.ones(N, dtype=dpnp.int32)
 
-    k[N](a, b)
+    k[dpex.Range(N)](a, b)
 
-    assert np.array_equal(dpt.asnumpy(b), dpt.asnumpy(a) + 1)
+    assert np.array_equal(dpnp.asnumpy(b), dpnp.asnumpy(a) + 1)
 
     # Test with float32, should work
-    a = dpt.ones(N, dtype=dpt.float32)
-    b = dpt.ones(N, dtype=dpt.float32)
+    a = dpnp.ones(N, dtype=dpnp.float32)
+    b = dpnp.ones(N, dtype=dpnp.float32)
 
-    k[N](a, b)
+    k[dpex.Range(N)](a, b)
 
-    assert np.array_equal(dpt.asnumpy(b), dpt.asnumpy(a) + 1)
+    assert np.array_equal(dpnp.asnumpy(b), dpnp.asnumpy(a) + 1)
 
     # Test with int64, should fail
-    a = dpt.ones(N, dtype=dpt.int64)
-    b = dpt.ones(N, dtype=dpt.int64)
+    a = dpnp.ones(N, dtype=dpnp.int64)
+    b = dpnp.ones(N, dtype=dpnp.int64)
 
     with pytest.raises(Exception) as e:
-        k[N](a, b)
+        k[dpex.Range(N)](a, b)
 
     assert " >>> <unknown function>(int64)" in e.value.args[0]
