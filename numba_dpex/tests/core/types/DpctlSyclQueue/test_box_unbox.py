@@ -7,7 +7,6 @@ Tests for boxing and unboxing of types supported inside dpjit
 """
 
 import dpctl
-import pytest
 
 from numba_dpex import dpjit
 
