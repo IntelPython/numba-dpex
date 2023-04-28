@@ -3,26 +3,70 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import dpctl
-import numpy as np
+import dpnp
 import pytest
+from numba.core.errors import LoweringError
 
 import numba_dpex as dpex
-from numba_dpex.tests._helper import filter_strings_opencl_gpu
+
+list_of_dtypes = [
+    dpnp.int32,
+    dpnp.int64,
+    dpnp.float32,
+    dpnp.float64,
+]
 
 
-@pytest.mark.parametrize("filter_str", filter_strings_opencl_gpu)
-@pytest.mark.xfail
-def test_print_only_str(filter_str):
-    try:
-        device = dpctl.SyclDevice(filter_str)
-        with dpctl.device_context(device):
-            pass
-    except Exception:
-        pytest.skip()
+@pytest.fixture(params=list_of_dtypes)
+def input_arrays(request):
+    a = dpnp.array([0], dtype=request.param)
+    a[0] = 10
+    return a
+
+
+def test_print_scalar_with_string(input_arrays, capfd):
+    """Tests if we can print a scalar value with a string."""
+
+    if dpctl.SyclDevice().device_type == dpctl.device_type.cpu:
+        pytest.xfail("Printing scalars on OpenCL CPU devices is unsupported.")
 
     @dpex.kernel
-    def f():
-        print("test", "test2")
+    def print_scalar_val(s):
+        print("printing ...", s[0])
+
+    a = input_arrays
+
+    print_scalar_val[dpex.Range(1)](a)
+    captured = capfd.readouterr()
+    assert "printing ... 10" in captured.out
+
+
+def test_print_scalar(input_arrays, capfd):
+    """Tests if we can print a scalar value."""
+
+    if dpctl.SyclDevice().device_type == dpctl.device_type.cpu:
+        pytest.xfail("Printing scalars on OpenCL CPU devices is unsupported.")
+
+    @dpex.kernel
+    def print_scalar_val(s):
+        print(s[0])
+
+    a = input_arrays
+
+    print_scalar_val[dpex.Range(1)](a)
+    captured = capfd.readouterr()
+
+    assert "10" in captured.out
+
+
+def test_print_only_str(input_arrays):
+    """Negative test to capture LoweringError as printing strings is
+    unsupported.
+    """
+
+    @dpex.kernel
+    def print_string(a):
+        print("cannot print only a string inside a kernel")
 
     # This test will fail, we currently can not print only string.
     # The LLVM generated for printf() function with only string gets
@@ -30,36 +74,22 @@ def test_print_only_str(filter_str):
     # puts function signature right now, and would fail in general due
     # to lack of support for puts() in OpenCL.
 
-    with dpctl.device_context(filter_str):
-        f[3, dpex.DEFAULT_LOCAL_SIZE]()
+    a = input_arrays
+
+    with pytest.raises(LoweringError):
+        print_string[dpex.Range(1)](a)
 
 
-list_of_dtypes = [
-    np.int32,
-    np.int64,
-    np.float32,
-    np.float64,
-]
+def test_print_array(input_arrays):
+    """Negative test to capture LoweringError as printing arrays
+    is unsupported.
+    """
 
-
-@pytest.fixture(params=list_of_dtypes)
-def input_arrays(request):
-    a = np.array([0], request.param)
-    a[0] = 6
-    return a
-
-
-@pytest.mark.parametrize("filter_str", filter_strings_opencl_gpu)
-def test_print(filter_str, input_arrays, capfd):
     @dpex.kernel
-    def f(a):
-        print("test", a[0])
+    def print_string(a):
+        print(a)
 
     a = input_arrays
-    global_size = 3
 
-    device = dpctl.SyclDevice(filter_str)
-    with dpctl.device_context(device):
-        f[global_size, dpex.DEFAULT_LOCAL_SIZE](a)
-        captured = capfd.readouterr()
-        assert "test" in captured.out
+    with pytest.raises(LoweringError):
+        print_string[dpex.Range(1)](a)

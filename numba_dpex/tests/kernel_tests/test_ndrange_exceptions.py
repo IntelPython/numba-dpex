@@ -24,8 +24,8 @@ def kernel_vector_sum(a, b, c):
     ],
 )
 def test_ndrange_config_error(error, ranges):
-    """Test if a exception is raised when calling a
-    ndrange kernel with unspported arguments.
+    """Test if a exception is raised when calling a ndrange kernel with
+    unsupported arguments.
     """
 
     a = dpt.ones(1024, dtype=dpt.int32)
