@@ -1,0 +1,7 @@
+numba\_dpex.dpnp\_iface.stubs module
+====================================
+
+.. automodule:: numba_dpex.dpnp_iface.stubs
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+numba\_dpex.dpnp\_iface.dpnp\_randomimpl module
+===============================================
+
+.. automodule:: numba_dpex.dpnp_iface.dpnp_randomimpl
+   :members:
+   :undoc-members:
+   :show-inheritance:
