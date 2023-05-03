@@ -70,12 +70,6 @@ class dpnp(Stub):
     class exponential(Stub):
         pass
 
-    class full_like(Stub):
-        pass
-
-    class full(Stub):
-        pass
-
     class gamma(Stub):
         pass
 
@@ -136,9 +130,6 @@ class dpnp(Stub):
     class normal(Stub):
         pass
 
-    class ones_like(Stub):
-        pass
-
     class partition(Stub):
         pass
 
@@ -196,9 +187,6 @@ class dpnp(Stub):
     class take(Stub):
         pass
 
-    class trace(Stub):
-        pass
-
     class uniform(Stub):
         pass
 
@@ -206,7 +194,4 @@ class dpnp(Stub):
         pass
 
     class weibull(Stub):
-        pass
-
-    class zeros_like(Stub):
         pass

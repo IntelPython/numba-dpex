@@ -76,11 +76,6 @@ rewrite_function_name_map = {
     "nansum": (["numpy"], "nansum"),
     "prod": (["numpy"], "prod"),
     "sum": (["numpy"], "sum"),
-    # array creations
-    "full": (["numpy"], "full"),
-    "ones_like": (["numpy"], "ones_like"),
-    "zeros_like": (["numpy"], "zeros_like"),
-    "full_like": (["numpy"], "full_like"),
     # array ops
     "copy": (["numpy"], "copy"),
     "cumsum": (["numpy"], "cumsum"),
@@ -205,7 +200,6 @@ class RewriteOverloadedNumPyFunctionsPass(FunctionPass):
     def __init__(self):
         FunctionPass.__init__(self)
 
-        import numba_dpex.dpnp_iface.dpnp_array_creations_impl
         import numba_dpex.dpnp_iface.dpnp_array_ops_impl
         import numba_dpex.dpnp_iface.dpnp_indexing
         import numba_dpex.dpnp_iface.dpnp_linalgimpl

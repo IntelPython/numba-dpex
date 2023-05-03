@@ -53,7 +53,6 @@ cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncName":  # need this na
         DPNP_FN_FLOOR
         DPNP_FN_FLOOR_DIVIDE
         DPNP_FN_FMOD
-        DPNP_FN_FULL
         DPNP_FN_HYPOT
         DPNP_FN_INITVAL
         DPNP_FN_INVERT
@@ -115,7 +114,6 @@ cdef extern from "dpnp_iface_fptr.hpp" namespace "DPNPFuncName":  # need this na
         DPNP_FN_TAKE
         DPNP_FN_TAN
         DPNP_FN_TANH
-        DPNP_FN_TRACE
         DPNP_FN_TRANSPOSE
         DPNP_FN_TRUNC
         DPNP_FN_VAR
@@ -174,10 +172,6 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_EIG
     if name == "dpnp_exponential":
         return DPNPFuncName.DPNP_FN_RNG_EXPONENTIAL
-    if name == "dpnp_full_like":
-        return DPNPFuncName.DPNP_FN_INITVAL
-    if name == "dpnp_full":
-        return DPNPFuncName.DPNP_FN_FULL
     if name == "dpnp_gamma":
         return DPNPFuncName.DPNP_FN_RNG_GAMMA
     if name == "dpnp_geometric":
@@ -210,8 +204,6 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_RNG_NEGATIVE_BINOMIAL
     if name == "dpnp_normal":
         return DPNPFuncName.DPNP_FN_RNG_NORMAL
-    if name == "dpnp_ones_like":
-        return DPNPFuncName.DPNP_FN_INITVAL
     if name == "dpnp_partition":
         return DPNPFuncName.DPNP_FN_PARTITION
     if name == "dpnp_poisson":
@@ -236,16 +228,12 @@ cdef DPNPFuncName get_DPNPFuncName_from_str(name):
         return DPNPFuncName.DPNP_FN_SUM
     if name == "dpnp_take":
         return DPNPFuncName.DPNP_FN_TAKE
-    if name == "dpnp_trace":
-        return DPNPFuncName.DPNP_FN_TRACE
     if name == "dpnp_uniform":
         return DPNPFuncName.DPNP_FN_RNG_UNIFORM
     if name == "dpnp_vdot":
         return DPNPFuncName.DPNP_FN_DOT
     if name == "dpnp_weibull":
         return DPNPFuncName.DPNP_FN_RNG_WEIBULL
-    if name == "dpnp_zeros_like":
-        return DPNPFuncName.DPNP_FN_INITVAL
 
     raise ValueError("Unknown dpnp function requested: " + name.split("_")[1])
 
