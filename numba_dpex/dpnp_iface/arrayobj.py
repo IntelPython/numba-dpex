@@ -6,7 +6,7 @@ import dpnp
 from numba import errors, types
 from numba.core.typing.npydecl import parse_dtype as _ty_parse_dtype
 from numba.core.typing.npydecl import parse_shape as _ty_parse_shape
-from numba.extending import overload, overload_classmethod
+from numba.extending import overload
 from numba.np.numpy_support import is_nonelike
 
 from numba_dpex.core.types import DpnpNdArray
@@ -20,7 +20,6 @@ from ._intrinsic import (
     impl_dpnp_ones_like,
     impl_dpnp_zeros,
     impl_dpnp_zeros_like,
-    intrin_usm_alloc,
 )
 
 # =========================================================================
@@ -193,19 +192,7 @@ def build_dpnp_ndarray(
 # =========================================================================
 #                       Dpnp array constructor overloads
 # =========================================================================
-
-
-@overload_classmethod(DpnpNdArray, "_usm_allocate")
-def _ol_array_allocate(cls, allocsize, usm_type, device):
-    """Implements an allocator for dpnp.ndarrays."""
-
-    def impl(cls, allocsize, usm_type, device):
-        return intrin_usm_alloc(allocsize, usm_type, device)
-
-    return impl
-
-
-@overload(dpnp.empty, prefer_literal=True)
+@overload(dpnp.empty, prefer_literal=True, target="dpex")
 def ol_dpnp_empty(
     shape,
     dtype=None,
@@ -294,7 +281,7 @@ def ol_dpnp_empty(
         raise errors.TypingError("Could not infer the rank of the ndarray.")
 
 
-@overload(dpnp.zeros, prefer_literal=True)
+@overload(dpnp.zeros, prefer_literal=True, target="dpex")
 def ol_dpnp_zeros(
     shape,
     dtype=None,
@@ -383,7 +370,7 @@ def ol_dpnp_zeros(
         raise errors.TypingError("Could not infer the rank of the ndarray.")
 
 
-@overload(dpnp.ones, prefer_literal=True)
+@overload(dpnp.ones, prefer_literal=True, target="dpex")
 def ol_dpnp_ones(
     shape,
     dtype=None,
@@ -472,7 +459,7 @@ def ol_dpnp_ones(
         raise errors.TypingError("Could not infer the rank of the ndarray.")
 
 
-@overload(dpnp.empty_like, prefer_literal=True)
+@overload(dpnp.empty_like, prefer_literal=True, target="dpex")
 def ol_dpnp_empty_like(
     x1,
     dtype=None,
@@ -577,7 +564,7 @@ def ol_dpnp_empty_like(
         )
 
 
-@overload(dpnp.zeros_like, prefer_literal=True)
+@overload(dpnp.zeros_like, prefer_literal=True, target="dpex")
 def ol_dpnp_zeros_like(
     x1,
     dtype=None,
@@ -682,7 +669,7 @@ def ol_dpnp_zeros_like(
         )
 
 
-@overload(dpnp.ones_like, prefer_literal=True)
+@overload(dpnp.ones_like, prefer_literal=True, target="dpex")
 def ol_dpnp_ones_like(
     x1,
     dtype=None,
@@ -787,7 +774,7 @@ def ol_dpnp_ones_like(
         )
 
 
-@overload(dpnp.full_like, prefer_literal=True)
+@overload(dpnp.full_like, prefer_literal=True, target="dpex")
 def ol_dpnp_full_like(
     x1,
     fill_value,
@@ -899,7 +886,7 @@ def ol_dpnp_full_like(
         )
 
 
-@overload(dpnp.full, prefer_literal=True)
+@overload(dpnp.full, prefer_literal=True, target="dpex")
 def ol_dpnp_full(
     shape,
     fill_value,

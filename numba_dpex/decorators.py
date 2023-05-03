@@ -156,10 +156,7 @@ def dpjit(*args, **kws):
     kws.update({"parallel": True})
     kws.update({"pipeline_class": DpjitCompiler})
 
-    # FIXME: When trying to use dpex's target context, overloads do not work
-    # properly. We will turn on dpex target once the issue is fixed.
-
-    # kws.update({"_target": "dpex"})
+    kws.update({"_target": "dpex"})
 
     return decorators.jit(*args, **kws)
 

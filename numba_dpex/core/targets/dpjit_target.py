@@ -38,8 +38,6 @@ class DpexTargetContext(CPUContext):
         self.is32bit = utils.MACHINE_BITS == 32
         self._internal_codegen = JITCPUCodegen("numba.exec")
         self.lower_extensions = {}
-        # Initialize NRT runtime
-        # rtsys.initialize(self)
         self.refresh()
 
     @cached_property
