@@ -4,7 +4,7 @@
 
 from functools import cached_property
 
-from numba.core import typing, utils
+from numba.core import typing
 from numba.core.cpu import CPUTargetOptions
 from numba.core.descriptors import TargetDescriptor
 
