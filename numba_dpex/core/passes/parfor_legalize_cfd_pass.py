@@ -316,7 +316,7 @@ class ParforLegalizeCFDPass(FunctionPass):
         """
         # Ensure we have an IR and type information.
         assert state.func_ir
-        cfd_legalizer = ParforLegalizeCFDPassImpl(state)
-        cfd_legalizer.run()
+        # cfd_legalizer = ParforLegalizeCFDPassImpl(state)
+        # cfd_legalizer.run()
 
         return True
