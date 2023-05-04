@@ -14,7 +14,6 @@ from numba_dpex.core.exceptions import (
     UnreachableError,
 )
 from numba_dpex.core.pipelines.kernel_compiler import KernelCompiler
-from numba_dpex.core.pipelines.offload_compiler import OffloadCompiler
 
 
 @global_compiler_lock

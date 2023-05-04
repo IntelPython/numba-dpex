@@ -141,23 +141,6 @@ def _id(obj):
     return obj
 
 
-def _ensure_dpnp():
-    try:
-        from numba_dpex.dpnp_iface import dpnp_fptr_interface as dpnp_iface
-
-        return True
-    except ImportError:
-        if config.TESTING_SKIP_NO_DPNP:
-            return False
-        else:
-            pytest.fail("DPNP is not available")
-
-
-skip_no_dpnp = pytest.mark.skipif(
-    not _ensure_dpnp(), reason="DPNP is not available"
-)
-
-
 @contextlib.contextmanager
 def dpnp_debug():
     import numba_dpex.dpnp_iface as dpnp_lowering
