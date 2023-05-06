@@ -14,9 +14,12 @@ from typing import Tuple
 
 import dpctl
 import llvmlite.binding as ll
-from numba import __version__ as numba_version
+import numba
+from numba.core import ir_utils
+from numba.np.ufunc import array_exprs
 from numba.np.ufunc.decorators import Vectorize
 
+from numba_dpex._patches import _is_ufunc, _mk_alloc
 from numba_dpex.vectorizers import Vectorize as DpexVectorize
 
 from .numba_patches import (
@@ -26,9 +29,8 @@ from .numba_patches import (
 )
 
 # Monkey patches
-patch_is_ufunc.patch()
-patch_mk_alloc.patch()
-patch_arrayexpr_tree_to_ir.patch()
+array_exprs._is_ufunc = _is_ufunc
+ir_utils.mk_alloc = _mk_alloc
 
 
 def load_dpctl_sycl_interface():

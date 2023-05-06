@@ -6,7 +6,7 @@ import dpnp
 from numba import errors, types
 from numba.core.typing.npydecl import parse_dtype as _ty_parse_dtype
 from numba.core.typing.npydecl import parse_shape as _ty_parse_shape
-from numba.extending import overload, overload_classmethod
+from numba.extending import overload
 from numba.np.numpy_support import is_nonelike
 
 from numba_dpex.core.types import DpnpNdArray
@@ -209,16 +209,6 @@ def build_dpnp_ndarray(
 # =========================================================================
 #                       Dpnp array constructor overloads
 # =========================================================================
-
-
-@overload_classmethod(DpnpNdArray, "_usm_allocate")
-def _ol_array_allocate(cls, allocsize, usm_type, queue):
-    """Implements an allocator for dpnp.ndarrays."""
-
-    def impl(cls, allocsize, usm_type, queue):
-        return intrin_usm_alloc(allocsize, usm_type, queue)
-
-    return impl
 
 
 @overload(dpnp.empty, prefer_literal=True)
