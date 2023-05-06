@@ -16,17 +16,15 @@ import dpctl
 import llvmlite.binding as ll
 import numba
 from numba.core import ir_utils
-from numba.np import arrayobj
 from numba.np.ufunc import array_exprs
 from numba.np.ufunc.decorators import Vectorize
 
-from numba_dpex._patches import _empty_nd_impl, _is_ufunc, _mk_alloc
+from numba_dpex._patches import _is_ufunc, _mk_alloc
 from numba_dpex.vectorizers import Vectorize as DpexVectorize
 
 # Monkey patches
 array_exprs._is_ufunc = _is_ufunc
 ir_utils.mk_alloc = _mk_alloc
-arrayobj._empty_nd_impl = _empty_nd_impl
 
 
 def load_dpctl_sycl_interface():
