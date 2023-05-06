@@ -305,15 +305,17 @@ def _empty_nd_impl(context, builder, arrtype, shapes):
 
     if isinstance(arrtype, DpnpNdArray):
         (queue_ref, queue_ptr, pyapi) = make_queue(context, builder, arrtype)
-        # This might fix the segfault
-        # sycl_queue_val = cgutils.alloca_once(
-        #     builder,
-        #     utils.get_llvm_type(context=context, type=types.voidptr),
-        # )
-        # fn = DpctlCAPIFnBuilder.get_dpctl_queue_copy(
-        #     builder=builder, context=context
-        # )
-        # builder.store(builder.call(fn, []), sycl_queue_val)
+
+        # The queue_ref returned by make_queue if used to allocate a MemInfo
+        # object needs to be copied first. The reason for the copy is to
+        # properly manage the lifetime of the queue_ref object. The original
+        # object is owned by the parent dpctl.SyclQueue object and is deleted
+        # when the dpctl.SyclQueue is garbage collected. Whereas, the copied
+        # queue_ref is to be owned by the NRT_External_Allocator object of
+        # MemInfo, and its lifetime is tied to the MemInfo object.
+
+        dpexrtCtx = dpexrt.DpexRTContext(context)
+        queue_ref_copy = dpexrtCtx.copy_queue(builder, queue_ref)
 
         usm_ty = arrtype.usm_type
         usm_ty_map = {"device": 1, "shared": 2, "host": 3}
@@ -325,7 +327,7 @@ def _empty_nd_impl(context, builder, arrtype, shapes):
             context.get_dummy_value(),
             allocsize,
             usm_type,
-            queue_ref,
+            queue_ref_copy,
         )
         mip = types.MemInfoPointer(types.voidptr)
         arytypeclass = types.TypeRef(type(arrtype))
