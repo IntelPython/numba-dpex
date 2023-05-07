@@ -4,6 +4,8 @@
 
 import dpnp
 from numba import errors, types
+from numba.core.types import scalars
+from numba.core.types.containers import UniTuple
 from numba.core.typing.npydecl import parse_dtype as _ty_parse_dtype
 from numba.core.typing.npydecl import parse_shape as _ty_parse_shape
 from numba.extending import overload
@@ -20,7 +22,6 @@ from ._intrinsic import (
     impl_dpnp_ones_like,
     impl_dpnp_zeros,
     impl_dpnp_zeros_like,
-    intrin_usm_alloc,
 )
 
 # =========================================================================
@@ -28,7 +29,20 @@ from ._intrinsic import (
 # =========================================================================
 
 
-def _parse_dtype(dtype, data=None):
+def _parse_dim(x1):
+    if hasattr(x1, "ndim") and x1.ndim:
+        return x1.ndim
+    elif isinstance(x1, scalars.Integer):
+        r = 1
+        return r
+    elif isinstance(x1, UniTuple):
+        r = len(x1)
+        return r
+    else:
+        return 0
+
+
+def _parse_dtype(dtype):
     """Resolve dtype parameter.
 
     Resolves the dtype parameter based on the given value
@@ -44,9 +58,8 @@ def _parse_dtype(dtype, data=None):
         numba.core.types.functions.NumberClass: Resolved numba type
             class for number classes.
     """
+
     _dtype = None
-    if data and isinstance(data, types.Array):
-        _dtype = data.dtype
     if not is_nonelike(dtype):
         _dtype = _ty_parse_dtype(dtype)
     return _dtype
@@ -60,6 +73,9 @@ def _parse_layout(layout):
             raise errors.NumbaValueError(msg)
         return layout_type_str
     elif isinstance(layout, str):
+        if layout not in ["C", "F", "A"]:
+            msg = f"Invalid layout specified: '{layout}'"
+            raise errors.NumbaValueError(msg)
         return layout
     else:
         raise TypeError(
@@ -94,6 +110,9 @@ def _parse_usm_type(usm_type):
             raise errors.NumbaValueError(msg)
         return usm_type_str
     elif isinstance(usm_type, str):
+        if usm_type not in ["shared", "device", "host"]:
+            msg = f"Invalid usm_type specified: '{usm_type}'"
+            raise errors.NumbaValueError(msg)
         return usm_type
     else:
         raise TypeError(
@@ -150,6 +169,7 @@ def build_dpnp_ndarray(
     ndim,
     layout="C",
     dtype=None,
+    is_fill_value_float=False,
     usm_type="device",
     device=None,
     sycl_queue=None,
@@ -163,6 +183,8 @@ def build_dpnp_ndarray(
             Data type of the array. Can be typestring, a `numpy.dtype`
             object, `numpy` char string, or a numpy scalar type.
             Default: None.
+        is_fill_value_float (bool): Specify if the fill value is floating
+            point.
         usm_type (numba.core.types.misc.StringLiteral, optional):
             The type of SYCL USM allocation for the output array.
             Allowed values are "device"|"shared"|"host".
@@ -198,6 +220,7 @@ def build_dpnp_ndarray(
         ndim=ndim,
         layout=layout,
         dtype=dtype,
+        is_fill_value_float=is_fill_value_float,
         usm_type=usm_type,
         device=device,
         queue=sycl_queue,
@@ -272,6 +295,7 @@ def ol_dpnp_empty(
             _ndim,
             layout=_layout,
             dtype=_dtype,
+            is_fill_value_float=True,
             usm_type=_usm_type,
             device=_device,
             sycl_queue=_sycl_queue,
@@ -369,6 +393,7 @@ def ol_dpnp_zeros(
             _ndim,
             layout=_layout,
             dtype=_dtype,
+            is_fill_value_float=True,
             usm_type=_usm_type,
             device=_device,
             sycl_queue=_sycl_queue,
@@ -464,6 +489,7 @@ def ol_dpnp_ones(
             _ndim,
             layout=_layout,
             dtype=_dtype,
+            is_fill_value_float=True,
             usm_type=_usm_type,
             device=_device,
             sycl_queue=_sycl_queue,
@@ -560,6 +586,7 @@ def ol_dpnp_full(
 
     _ndim = _ty_parse_shape(shape)
     _dtype = _parse_dtype(dtype)
+    _is_fill_value_float = isinstance(fill_value, scalars.Float)
     _layout = _parse_layout(order)
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
@@ -570,6 +597,7 @@ def ol_dpnp_full(
             _ndim,
             layout=_layout,
             dtype=_dtype,
+            is_fill_value_float=_is_fill_value_float,
             usm_type=_usm_type,
             device=_device,
             sycl_queue=_sycl_queue,
@@ -673,8 +701,8 @@ def ol_dpnp_empty_like(
             + "inside overloaded dpnp.empty_like() function."
         )
 
-    _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim else 0
-    _dtype = _parse_dtype(dtype, data=x1)
+    _ndim = _parse_dim(x1)
+    _dtype = x1.dtype if isinstance(x1, types.Array) else _parse_dtype(dtype)
     _order = x1.layout if order is None else order
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
@@ -786,8 +814,8 @@ def ol_dpnp_zeros_like(
             + "inside overloaded dpnp.zeros_like() function."
         )
 
-    _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim else 0
-    _dtype = _parse_dtype(dtype, data=x1)
+    _ndim = _parse_dim(x1)
+    _dtype = x1.dtype if isinstance(x1, types.Array) else _parse_dtype(dtype)
     _order = x1.layout if order is None else order
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
@@ -898,8 +926,8 @@ def ol_dpnp_ones_like(
             + "inside overloaded dpnp.ones_like() function."
         )
 
-    _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim else 0
-    _dtype = _parse_dtype(dtype, data=x1)
+    _ndim = _parse_dim(x1)
+    _dtype = x1.dtype if isinstance(x1, types.Array) else _parse_dtype(dtype)
     _order = x1.layout if order is None else order
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
@@ -1015,8 +1043,9 @@ def ol_dpnp_full_like(
             + "inside overloaded dpnp.full_like() function."
         )
 
-    _ndim = x1.ndim if hasattr(x1, "ndim") and x1.ndim else 0
-    _dtype = _parse_dtype(dtype, data=x1)
+    _ndim = _parse_dim(x1)
+    _dtype = x1.dtype if isinstance(x1, types.Array) else _parse_dtype(dtype)
+    _is_fill_value_float = isinstance(fill_value, scalars.Float)
     _order = x1.layout if order is None else order
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
@@ -1026,6 +1055,7 @@ def ol_dpnp_full_like(
         _ndim,
         layout=_order,
         dtype=_dtype,
+        is_fill_value_float=_is_fill_value_float,
         usm_type=_usm_type,
         device=_device,
         sycl_queue=_sycl_queue,
