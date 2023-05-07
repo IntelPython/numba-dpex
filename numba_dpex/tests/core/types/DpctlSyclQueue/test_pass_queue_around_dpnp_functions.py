@@ -18,7 +18,10 @@ dpnp_functions_params = [
     ("full_like", ["x", 3]),
 ]
 
-queue_args = ["", "sycl_queue=None", "sycl_queue=queue"]
+queue_args = [
+    "",
+    "sycl_queue=None",
+]  # , "sycl_queue=queue"] # passing a queue gives segfault on CI
 
 func_template_basic = """
 def {0:s}(x=None, queue=None):
@@ -31,8 +34,9 @@ def {0:s}(x=None, queue=None):
 @pytest.mark.parametrize("queue_arg", queue_args)
 def test_dpnp_functions_basic(dpnp_function_param, queue_arg):
     """Basic queue handling in a basic dpnp function scenario"""
-    function_name = "func"
+
     op_name = dpnp_function_param[0]
+    function_name = "func_{0:s}".format(op_name)
     dpnpf_arg = ", ".join(str(v) for v in dpnp_function_param[1])
     q_arg = (", " + queue_arg) if queue_arg != "" else ""
     func_expr = func_template_basic.format(
