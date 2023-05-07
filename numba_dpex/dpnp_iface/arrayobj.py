@@ -20,7 +20,6 @@ from ._intrinsic import (
     impl_dpnp_ones_like,
     impl_dpnp_zeros,
     impl_dpnp_zeros_like,
-    intrin_usm_alloc,
 )
 
 # =========================================================================
