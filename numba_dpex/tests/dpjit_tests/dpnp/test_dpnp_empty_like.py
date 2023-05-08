@@ -7,6 +7,7 @@
 
 import dpctl
 import dpnp
+import numpy
 import pytest
 from numba import errors
 
