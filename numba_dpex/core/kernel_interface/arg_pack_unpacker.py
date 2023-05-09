@@ -193,9 +193,9 @@ class Packer:
         elif ty == types.boolean:
             return ctypes.c_uint8(int(val))
         elif ty == types.complex64:
-            raise UnsupportedKernelArgumentError(ty, val, self._pyfunc_name)
+            return [ctypes.c_float(val.real), ctypes.c_float(val.imag)]
         elif ty == types.complex128:
-            raise UnsupportedKernelArgumentError(ty, val, self._pyfunc_name)
+            return [ctypes.c_double(val.real), ctypes.c_double(val.imag)]
         else:
             raise UnsupportedKernelArgumentError(ty, val, self._pyfunc_name)
 
