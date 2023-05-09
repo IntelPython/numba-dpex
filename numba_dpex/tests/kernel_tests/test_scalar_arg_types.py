@@ -31,6 +31,8 @@ list_of_dtypes = [
     dpnp.int64,
     dpnp.float32,
     dpnp.float64,
+    dpnp.complex64,
+    dpnp.complex128,
 ]
 
 list_of_usm_types = ["shared", "device", "host"]
@@ -43,8 +45,8 @@ def input_arrays(request):
     return a, b
 
 
-def test_numeric_kernel_arg_types(input_arrays):
-    """Tests passing float and int type scalar arguments to a kernel function.
+def test_numeric_kernel_arg_types1(input_arrays):
+    """Tests passing float, int and complex type dpnp arrays to a kernel function.
 
     Args:
         input_arrays (dpnp.ndarray): Array arguments to be passed to a kernel.
