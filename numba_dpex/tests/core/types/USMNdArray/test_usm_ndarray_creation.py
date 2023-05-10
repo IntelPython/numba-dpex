@@ -18,7 +18,9 @@ def test_default_type_construction():
     assert usma.usm_type == "device"
 
     default_device = dpctl.SyclDevice()
-    cached_queue = dpctl.get_device_cached_queue(default_device)
+    cached_queue = dpctl._sycl_queue_manager.get_device_cached_queue(
+        default_device
+    )
 
     assert usma.device == default_device.filter_string
     assert usma.queue == cached_queue
@@ -38,7 +40,9 @@ def test_type_creation_with_device():
 
     assert usma.device == default_device_str
 
-    cached_queue = dpctl.get_device_cached_queue(default_device_str)
+    cached_queue = dpctl._sycl_queue_manager.get_device_cached_queue(
+        default_device_str
+    )
 
     assert usma.queue == cached_queue
 
