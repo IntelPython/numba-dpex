@@ -12,7 +12,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; numba-dpex 0.20.1+57.g68d12217 documentation</title>
+  <title>Index &mdash; numba-dpex 0.21.0dev0+6.g88163d99 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -256,6 +256,8 @@
 </li>
       <li><a href="apidoc/numba_dpex.core.utils.kernel_launcher.html#numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.build_array_arg">build_array_arg() (numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder method)</a>
 </li>
+      <li><a href="apidoc/numba_dpex.core.utils.kernel_launcher.html#numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.build_complex_arg">build_complex_arg() (numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder method)</a>
+</li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.arrayobj.html#numba_dpex.dpnp_iface.arrayobj.build_dpnp_ndarray">build_dpnp_ndarray() (in module numba_dpex.dpnp_iface.arrayobj)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.utils.html#numba_dpex.core.utils.build_key">build_key() (in module numba_dpex.core.utils)</a>
@@ -388,11 +390,9 @@
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_linalgimpl.html#numba_dpex.dpnp_iface.dpnp_linalgimpl.common_dot_impl">common_dot_impl() (in module numba_dpex.dpnp_iface.dpnp_linalgimpl)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_array_creations_impl.html#numba_dpex.dpnp_iface.dpnp_array_creations_impl.common_impl">common_impl() (in module numba_dpex.dpnp_iface.dpnp_array_creations_impl)</a>
+      <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_array_ops_impl.html#numba_dpex.dpnp_iface.dpnp_array_ops_impl.common_impl">common_impl() (in module numba_dpex.dpnp_iface.dpnp_array_ops_impl)</a>
 
       <ul>
-        <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_array_ops_impl.html#numba_dpex.dpnp_iface.dpnp_array_ops_impl.common_impl">(in module numba_dpex.dpnp_iface.dpnp_array_ops_impl)</a>
-</li>
         <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_randomimpl.html#numba_dpex.dpnp_iface.dpnp_randomimpl.common_impl">(in module numba_dpex.dpnp_iface.dpnp_randomimpl)</a>
 </li>
         <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.html#numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.common_impl">(in module numba_dpex.dpnp_iface.dpnp_transcendentalsimpl)</a>
@@ -413,8 +413,6 @@
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_randomimpl.html#numba_dpex.dpnp_iface.dpnp_randomimpl.common_impl_multivariate_normal">common_impl_multivariate_normal() (in module numba_dpex.dpnp_iface.dpnp_randomimpl)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_linalgimpl.html#numba_dpex.dpnp_iface.dpnp_linalgimpl.common_matmul_impl">common_matmul_impl() (in module numba_dpex.dpnp_iface.dpnp_linalgimpl)</a>
-</li>
-      <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_array_creations_impl.html#numba_dpex.dpnp_iface.dpnp_array_creations_impl.common_shape_impl">common_shape_impl() (in module numba_dpex.dpnp_iface.dpnp_array_creations_impl)</a>
 </li>
       <li><a href="apidoc/numba_dpex.core.kernel_interface.func.html#numba_dpex.core.kernel_interface.func.DpexFunction.compile">compile() (numba_dpex.core.kernel_interface.func.DpexFunction method)</a>
 
@@ -676,10 +674,6 @@
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.exponential">dpnp.exponential (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.full">dpnp.full (class in numba_dpex.dpnp_iface.stubs)</a>
-</li>
-      <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.full_like">dpnp.full_like (class in numba_dpex.dpnp_iface.stubs)</a>
-</li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.gamma">dpnp.gamma (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.geometric">dpnp.geometric (class in numba_dpex.dpnp_iface.stubs)</a>
@@ -700,14 +694,14 @@
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.max">dpnp.max (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.mean">dpnp.mean (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.median">dpnp.median (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.min">dpnp.min (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.multi_dot">dpnp.multi_dot (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.multinomial">dpnp.multinomial (class in numba_dpex.dpnp_iface.stubs)</a>
@@ -721,8 +715,6 @@
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.negative_binomial">dpnp.negative_binomial (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.normal">dpnp.normal (class in numba_dpex.dpnp_iface.stubs)</a>
-</li>
-      <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.ones_like">dpnp.ones_like (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.partition">dpnp.partition (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
@@ -762,15 +754,11 @@
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.take">dpnp.take (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.trace">dpnp.trace (class in numba_dpex.dpnp_iface.stubs)</a>
-</li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.uniform">dpnp.uniform (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.vdot">dpnp.vdot (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.weibull">dpnp.weibull (class in numba_dpex.dpnp_iface.stubs)</a>
-</li>
-      <li><a href="apidoc/numba_dpex.dpnp_iface.stubs.html#numba_dpex.dpnp_iface.stubs.dpnp.zeros_like">dpnp.zeros_like (class in numba_dpex.dpnp_iface.stubs)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_logic.html#numba_dpex.dpnp_iface.dpnp_logic.dpnp_all_impl">dpnp_all_impl() (in module numba_dpex.dpnp_iface.dpnp_logic)</a>
 </li>
@@ -804,10 +792,6 @@
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_linalgimpl.html#numba_dpex.dpnp_iface.dpnp_linalgimpl.dpnp_eigvals_impl">dpnp_eigvals_impl() (in module numba_dpex.dpnp_iface.dpnp_linalgimpl)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_array_creations_impl.html#numba_dpex.dpnp_iface.dpnp_array_creations_impl.dpnp_full_impl">dpnp_full_impl() (in module numba_dpex.dpnp_iface.dpnp_array_creations_impl)</a>
-</li>
-      <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_array_creations_impl.html#numba_dpex.dpnp_iface.dpnp_array_creations_impl.dpnp_full_like_impl">dpnp_full_like_impl() (in module numba_dpex.dpnp_iface.dpnp_array_creations_impl)</a>
-</li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_stubs_impl.html#numba_dpex.dpnp_iface.dpnp_stubs_impl.dpnp_func">dpnp_func() (in module numba_dpex.dpnp_iface.dpnp_stubs_impl)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_linalgimpl.html#numba_dpex.dpnp_iface.dpnp_linalgimpl.dpnp_matrix_power_impl">dpnp_matrix_power_impl() (in module numba_dpex.dpnp_iface.dpnp_linalgimpl)</a>
@@ -824,8 +808,6 @@
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.html#numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.dpnp_nansum_impl">dpnp_nansum_impl() (in module numba_dpex.dpnp_iface.dpnp_transcendentalsimpl)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_array_creations_impl.html#numba_dpex.dpnp_iface.dpnp_array_creations_impl.dpnp_ones_like_impl">dpnp_ones_like_impl() (in module numba_dpex.dpnp_iface.dpnp_array_creations_impl)</a>
-</li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_sort_search_countimpl.html#numba_dpex.dpnp_iface.dpnp_sort_search_countimpl.dpnp_partition_impl">dpnp_partition_impl() (in module numba_dpex.dpnp_iface.dpnp_sort_search_countimpl)</a>
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.html#numba_dpex.dpnp_iface.dpnp_transcendentalsimpl.dpnp_prod_impl">dpnp_prod_impl() (in module numba_dpex.dpnp_iface.dpnp_transcendentalsimpl)</a>
@@ -840,11 +822,7 @@
 </li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_array_ops_impl.html#numba_dpex.dpnp_iface.dpnp_array_ops_impl.dpnp_take_impl">dpnp_take_impl() (in module numba_dpex.dpnp_iface.dpnp_array_ops_impl)</a>
 </li>
-      <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_array_creations_impl.html#numba_dpex.dpnp_iface.dpnp_array_creations_impl.dpnp_trace_impl">dpnp_trace_impl() (in module numba_dpex.dpnp_iface.dpnp_array_creations_impl)</a>
-</li>
       <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_linalgimpl.html#numba_dpex.dpnp_iface.dpnp_linalgimpl.dpnp_vdot_impl">dpnp_vdot_impl() (in module numba_dpex.dpnp_iface.dpnp_linalgimpl)</a>
-</li>
-      <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_array_creations_impl.html#numba_dpex.dpnp_iface.dpnp_array_creations_impl.dpnp_zeros_like_impl">dpnp_zeros_like_impl() (in module numba_dpex.dpnp_iface.dpnp_array_creations_impl)</a>
 </li>
       <li><a href="apidoc/numba_dpex.html#numba_dpex.DpnpNdArray">DpnpNdArray (class in numba_dpex)</a>
 
@@ -1831,8 +1809,6 @@
 </li>
         <li><a href="apidoc/numba_dpex.dpnp_iface.arrayobj.html#module-numba_dpex.dpnp_iface.arrayobj">numba_dpex.dpnp_iface.arrayobj</a>
 </li>
-        <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_array_creations_impl.html#module-numba_dpex.dpnp_iface.dpnp_array_creations_impl">numba_dpex.dpnp_iface.dpnp_array_creations_impl</a>
-</li>
         <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_array_ops_impl.html#module-numba_dpex.dpnp_iface.dpnp_array_ops_impl">numba_dpex.dpnp_iface.dpnp_array_ops_impl</a>
 </li>
         <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_fptr_interface.html#module-numba_dpex.dpnp_iface.dpnp_fptr_interface">numba_dpex.dpnp_iface.dpnp_fptr_interface</a>
@@ -2264,6 +2240,8 @@
         <li><a href="apidoc/numba_dpex.core.types.usm_ndarray_type.html#module-numba_dpex.core.types.usm_ndarray_type">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     numba_dpex.core.typing
 
@@ -2271,8 +2249,6 @@
         <li><a href="apidoc/numba_dpex.core.typing.html#module-numba_dpex.core.typing">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     numba_dpex.core.typing.dpnpdecl
 
@@ -2383,13 +2359,6 @@
 
       <ul>
         <li><a href="apidoc/numba_dpex.dpnp_iface.arrayobj.html#module-numba_dpex.dpnp_iface.arrayobj">module</a>
-</li>
-      </ul></li>
-      <li>
-    numba_dpex.dpnp_iface.dpnp_array_creations_impl
-
-      <ul>
-        <li><a href="apidoc/numba_dpex.dpnp_iface.dpnp_array_creations_impl.html#module-numba_dpex.dpnp_iface.dpnp_array_creations_impl">module</a>
 </li>
       </ul></li>
       <li>
