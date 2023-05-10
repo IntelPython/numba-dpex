@@ -127,6 +127,29 @@ class KernelLaunchIRBuilder:
             numba_type_to_dpctl_typenum(self.context, ty), kernel_arg_ty_dst
         )
 
+    def build_complex_arg(self, val, ty, arg_list, args_ty_list, arg_num):
+        """Creates a list of LLVM Values for an unpacked complex kernel
+        argument.
+        """
+        self._build_array_attr_arg(
+            array_val=val,
+            array_attr_pos=0,
+            array_attr_ty=ty,
+            arg_list=arg_list,
+            args_ty_list=args_ty_list,
+            arg_num=arg_num,
+        )
+        arg_num += 1
+        self._build_array_attr_arg(
+            array_val=val,
+            array_attr_pos=1,
+            array_attr_ty=ty,
+            arg_list=arg_list,
+            args_ty_list=args_ty_list,
+            arg_num=arg_num,
+        )
+        arg_num += 1
+
     def build_array_arg(
         self, array_val, array_rank, arg_list, args_ty_list, arg_num
     ):

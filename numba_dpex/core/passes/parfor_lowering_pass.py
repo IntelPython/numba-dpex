@@ -70,6 +70,8 @@ class ParforLowerImpl:
             if isinstance(arg_type, DpnpNdArray):
                 # FIXME: Remove magic constants
                 num_flattened_args += 5 + (2 * arg_type.ndim)
+            elif arg_type == types.complex64 or arg_type == types.complex128:
+                num_flattened_args += 2
             else:
                 num_flattened_args += 1
 
@@ -97,10 +99,33 @@ class ParforLowerImpl:
                 # FIXME: Get rid of magic constants
                 kernel_arg_num += 5 + (2 * argtype.ndim)
             else:
-                ir_builder.build_arg(
-                    llvm_val, argtype, args_list, args_ty_list, kernel_arg_num
-                )
-                kernel_arg_num += 1
+                if argtype == types.complex64:
+                    ir_builder.build_complex_arg(
+                        llvm_val,
+                        types.float32,
+                        args_list,
+                        args_ty_list,
+                        kernel_arg_num,
+                    )
+                    kernel_arg_num += 2
+                elif argtype == types.complex128:
+                    ir_builder.build_complex_arg(
+                        llvm_val,
+                        types.float64,
+                        args_list,
+                        args_ty_list,
+                        kernel_arg_num,
+                    )
+                    kernel_arg_num += 2
+                else:
+                    ir_builder.build_arg(
+                        llvm_val,
+                        argtype,
+                        args_list,
+                        args_ty_list,
+                        kernel_arg_num,
+                    )
+                    kernel_arg_num += 1
 
         # Create a global range over which to submit the kernel based on the
         # loop_ranges of the parfor
