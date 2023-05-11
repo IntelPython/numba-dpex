@@ -59,7 +59,9 @@ class USMNdArray(Array):
             if device is None:
                 device = dpctl.SyclDevice()
 
-            self.queue = dpctl.get_device_cached_queue(device)
+            self.queue = dpctl._sycl_queue_manager.get_device_cached_queue(
+                device
+            )
 
         self.device = self.queue.sycl_device.filter_string
 
