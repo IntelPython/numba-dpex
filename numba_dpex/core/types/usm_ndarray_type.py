@@ -193,7 +193,13 @@ class USMNdArray(Array):
 
     @property
     def key(self):
-        return (*super().key, self.addrspace, self.usm_type, self.device)
+        return (
+            *super().key,
+            self.addrspace,
+            self.usm_type,
+            self.device,
+            self.queue,
+        )
 
     @property
     def as_array(self):
