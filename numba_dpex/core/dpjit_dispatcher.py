@@ -42,6 +42,7 @@ class DpjitDispatcher(dispatcher.Dispatcher):
         from numba.core.target_extension import target_override
 
         with target_override("dpex"):
+            self._cache_enabled = False
             dispatcher.Dispatcher.__init__(
                 self,
                 py_func,
