@@ -287,7 +287,6 @@ class WrapperDefaultLower(Lower):
 
 
 def lower_parfor_dpex(lowerer, parfor):
-    parfor.lowerer = ParforLowerImpl()._lower_parfor_as_kernel
     if parfor.lowerer is None:
         _lower_parfor_parallel_std(lowerer, parfor)
     else:
