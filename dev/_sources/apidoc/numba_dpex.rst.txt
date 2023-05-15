@@ -24,7 +24,6 @@ Submodules
    numba_dpex.decorators
    numba_dpex.parfor_diagnostics
    numba_dpex.printimpl
-   numba_dpex.retarget
    numba_dpex.spirv_generator
    numba_dpex.vectorizers
 

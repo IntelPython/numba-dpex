@@ -13,7 +13,6 @@ Submodules
    numba_dpex.core.passes.parfor_legalize_cfd_pass
    numba_dpex.core.passes.parfor_lowering_pass
    numba_dpex.core.passes.passes
-   numba_dpex.core.passes.rename_numpy_functions_pass
 
 Module contents
 ---------------

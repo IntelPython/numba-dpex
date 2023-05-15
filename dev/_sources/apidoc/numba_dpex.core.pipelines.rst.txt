@@ -9,7 +9,6 @@ Submodules
 
    numba_dpex.core.pipelines.dpjit_compiler
    numba_dpex.core.pipelines.kernel_compiler
-   numba_dpex.core.pipelines.offload_compiler
 
 Module contents
 ---------------
