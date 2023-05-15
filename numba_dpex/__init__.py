@@ -117,10 +117,6 @@ if config.HAS_NON_HOST_DEVICE:
     # Re export
     from .core.targets import dpjit_target, kernel_target
     from .decorators import dpjit, func, kernel
-
-    # We are importing dpnp stub module to make Numba recognize the
-    # module when we rename Numpy functions.
-    from .dpnp_iface.stubs import dpnp
     from .ocl.stubs import (
         GLOBAL_MEM_FENCE,
         LOCAL_MEM_FENCE,
