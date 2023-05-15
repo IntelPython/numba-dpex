@@ -14,7 +14,6 @@ from numba_dpex.core.exceptions import (
     UnreachableError,
 )
 from numba_dpex.core.pipelines.kernel_compiler import KernelCompiler
-from numba_dpex.core.pipelines.offload_compiler import OffloadCompiler
 
 
 @global_compiler_lock
@@ -73,10 +72,6 @@ def compile_with_dpex(
             pipeline_class=KernelCompiler,
         )
     elif isinstance(pyfunc, ir.FunctionIR):
-        # FIXME: Kernels in the form of Numba IR need to be compiled
-        # using the offload compiler due to them retaining parfor
-        # nodes due to the use of gufuncs. Once the kernel builder is
-        # ready we should be able to switch to the KernelCompiler.
         cres = compiler.compile_ir(
             typingctx=typingctx,
             targetctx=targetctx,
