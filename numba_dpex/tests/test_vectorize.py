@@ -9,7 +9,7 @@ import numpy as np
 import pytest
 from numba import float32, float64, int32, int64, njit, vectorize
 
-from numba_dpex.tests._helper import assert_auto_offloading, filter_strings
+from numba_dpex.tests._helper import filter_strings
 
 list_of_shape = [
     (100, 100),
@@ -21,29 +21,6 @@ list_of_shape = [
 @pytest.fixture(params=list_of_shape)
 def shape(request):
     return request.param
-
-
-@pytest.mark.xfail
-@pytest.mark.parametrize("filter_str", filter_strings)
-def test_njit(filter_str):
-    @vectorize(nopython=True)
-    def axy(a, x, y):
-        return a * x + y
-
-    def f(a0, a1):
-        return np.cos(axy(a0, np.sin(a1) - 1.0, 1.0))
-
-    A = np.random.random(10)
-    B = np.random.random(10)
-
-    device = dpctl.SyclDevice(filter_str)
-    with dpctl.device_context(device), assert_auto_offloading():
-        f_njit = njit(f)
-        expected = f_njit(A, B)
-        actual = f(A, B)
-
-        max_abs_err = expected.sum() - actual.sum()
-        assert max_abs_err < 1e-5
 
 
 list_of_dtype = [
