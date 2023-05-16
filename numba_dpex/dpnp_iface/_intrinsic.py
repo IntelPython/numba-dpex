@@ -127,7 +127,6 @@ def impl_dpnp_empty(
     ty_shape,
     ty_dtype,
     ty_order,
-    # ty_like, # see issue https://github.com/IntelPython/numba-dpex/issues/998
     ty_device,
     ty_usm_type,
     ty_sycl_queue,
@@ -145,7 +144,6 @@ def impl_dpnp_empty(
             dtype.
         ty_order (numba.core.types.misc.UnicodeType): UnicodeType
             from numba for strings.
-        ty_like (numba.core.types.npytypes.Array): Numba type for array.
         ty_device (numba.core.types.misc.UnicodeType): UnicodeType
             from numba for strings.
         ty_usm_type (numba.core.types.misc.UnicodeType): UnicodeType
@@ -165,7 +163,6 @@ def impl_dpnp_empty(
         ty_shape,
         ty_dtype,
         ty_order,
-        # ty_like, # see issue https://github.com/IntelPython/numba-dpex/issues/998
         ty_device,
         ty_usm_type,
         ty_sycl_queue,
@@ -185,7 +182,6 @@ def impl_dpnp_zeros(
     ty_shape,
     ty_dtype,
     ty_order,
-    ty_like,
     ty_device,
     ty_usm_type,
     ty_sycl_queue,
@@ -203,7 +199,6 @@ def impl_dpnp_zeros(
             dtype.
         ty_order (numba.core.types.misc.UnicodeType): UnicodeType
             from numba for strings.
-        ty_like (numba.core.types.npytypes.Array): Numba type for array.
         ty_device (numba.core.types.misc.UnicodeType): UnicodeType
             from numba for strings.
         ty_usm_type (numba.core.types.misc.UnicodeType): UnicodeType
@@ -223,7 +218,6 @@ def impl_dpnp_zeros(
         ty_shape,
         ty_dtype,
         ty_order,
-        ty_like,
         ty_device,
         ty_usm_type,
         ty_sycl_queue,
@@ -245,7 +239,6 @@ def impl_dpnp_ones(
     ty_shape,
     ty_dtype,
     ty_order,
-    ty_like,
     ty_device,
     ty_usm_type,
     ty_sycl_queue,
@@ -263,7 +256,6 @@ def impl_dpnp_ones(
             dtype.
         ty_order (numba.core.types.misc.UnicodeType): UnicodeType
             from numba for strings.
-        ty_like (numba.core.types.npytypes.Array): Numba type for array.
         ty_device (numba.core.types.misc.UnicodeType): UnicodeType
             from numba for strings.
         ty_usm_type (numba.core.types.misc.UnicodeType): UnicodeType
@@ -283,7 +275,6 @@ def impl_dpnp_ones(
         ty_shape,
         ty_dtype,
         ty_order,
-        ty_like,
         ty_device,
         ty_usm_type,
         ty_sycl_queue,
