@@ -43,7 +43,7 @@ def test_dpnp_empty_default(shape):
     assert c.sycl_queue == dummy.sycl_queue
     if c.sycl_queue != dummy.sycl_queue:
         pytest.xfail(
-            "Returned queue does not have the queue in the dummy array."
+            "Returned queue does not have the same queue as in the dummy array."
         )
     assert c.sycl_queue == dpctl._sycl_queue_manager.get_device_cached_queue(
         dummy.sycl_device
@@ -79,7 +79,7 @@ def test_dpnp_empty_from_device(shape, dtype, usm_type):
         device
     ):
         pytest.xfail(
-            "Returned queue does not have the queue cached against the device."
+            "Returned queue does not have the same queue as cached against the device."
         )
 
 
@@ -112,7 +112,7 @@ def test_dpnp_empty_from_queue(shape, dtype, usm_type):
 
     if c.sycl_queue != queue:
         pytest.xfail(
-            "Returned queue does not have the queue passed to the dpnp function."
+            "Returned queue does not have the same queue as the one passed to the dpnp function."
         )
 
 
