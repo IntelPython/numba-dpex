@@ -187,6 +187,47 @@ static void DpexrtQueue_SubmitRange(const void *KRef,
         __FILE__, __LINE__));
 }
 
+static void DpexrtQueue_SubmitNDRange(const void *KRef,
+                                      const void *QRef,
+                                      void **Args,
+                                      const DPCTLKernelArgType *ArgTypes,
+                                      size_t NArgs,
+                                      const size_t gRange[3],
+                                      const size_t lRange[3],
+                                      size_t Ndims,
+                                      const void *DepEvents,
+                                      size_t NDepEvents)
+{
+    DPCTLSyclEventRef eref = NULL;
+    DPCTLSyclQueueRef qref = NULL;
+
+    DPEXRT_DEBUG(drt_debug_print(
+        "DPEXRT-DEBUG: Inside DpexrtQueue_SubmitNDRange %s, line %d\n",
+        __FILE__, __LINE__));
+
+    qref = (DPCTLSyclQueueRef)QRef;
+
+    eref = DPCTLQueue_SubmitNDRange((DPCTLSyclKernelRef)KRef, qref, Args,
+                                    (DPCTLKernelArgType *)ArgTypes, NArgs,
+                                    gRange, lRange, Ndims,
+                                    (DPCTLSyclEventRef *)DepEvents, NDepEvents);
+    if (eref == NULL) {
+        DPEXRT_DEBUG(
+            drt_debug_print("DPEXRT-ERROR: Kernel submission using "
+                            "DpexrtQueue_SubmitNDRange failed! %s, line %d\n",
+                            __FILE__, __LINE__));
+    }
+    else {
+        DPCTLQueue_Wait(qref);
+        DPCTLEvent_Wait(eref);
+        DPCTLEvent_Delete(eref);
+    }
+
+    DPEXRT_DEBUG(drt_debug_print(
+        "DPEXRT-DEBUG: Done with DpexrtQueue_SubmitNDRange %s, line %d\n",
+        __FILE__, __LINE__));
+}
+
 /*----------------------------------------------------------------------------*/
 /*---------------------- Functions for NRT_MemInfo allocation ----------------*/
 /*----------------------------------------------------------------------------*/
@@ -1246,6 +1287,7 @@ static PyObject *build_c_helpers_dict(void)
     _declpointer("DPEXRTQueue_CreateFromFilterString",
                  &DPEXRTQueue_CreateFromFilterString);
     _declpointer("DpexrtQueue_SubmitRange", &DpexrtQueue_SubmitRange);
+    _declpointer("DpexrtQueue_SubmitNDRange", &DpexrtQueue_SubmitNDRange);
     _declpointer("DPEXRT_MemInfo_alloc", &DPEXRT_MemInfo_alloc);
     _declpointer("DPEXRT_MemInfo_fill", &DPEXRT_MemInfo_fill);
     _declpointer("NRT_ExternalAllocator_new_for_usm",
@@ -1309,6 +1351,8 @@ MOD_INIT(_dpexrt_python)
                        PyLong_FromVoidPtr(&DPEXRTQueue_CreateFromFilterString));
     PyModule_AddObject(m, "DpexrtQueue_SubmitRange",
                        PyLong_FromVoidPtr(&DpexrtQueue_SubmitRange));
+    PyModule_AddObject(m, "DpexrtQueue_SubmitNDRange",
+                       PyLong_FromVoidPtr(&DpexrtQueue_SubmitNDRange));
     PyModule_AddObject(m, "DPEXRT_MemInfo_alloc",
                        PyLong_FromVoidPtr(&DPEXRT_MemInfo_alloc));
     PyModule_AddObject(m, "DPEXRT_MemInfo_fill",

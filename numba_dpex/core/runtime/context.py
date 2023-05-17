@@ -258,11 +258,7 @@ class DpexRTContext(object):
         """Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue
         from a given filter string.
 
-        Args:
-            device (llvmlite.ir.values.FormattedConstant): An LLVM ArrayType
-                storing a const string for a DPC++ filter selector string.
-
-        Returns: A DPCTLSyclQueueRef pointer.
+        Returns: A LLVM IR call inst.
         """
         mod = builder.module
         fnty = llvmir.FunctionType(
@@ -293,6 +289,64 @@ class DpexRTContext(object):
                 nargs,
                 range,
                 nrange,
+                depevents,
+                ndepevents,
+            ],
+        )
+
+        return ret
+
+    def submit_ndrange(
+        self,
+        builder,
+        kref,
+        qref,
+        args,
+        argtys,
+        nargs,
+        grange,
+        lrange,
+        ndims,
+        depevents,
+        ndepevents,
+    ):
+        """Calls DPEXRTQueue_CreateFromFilterString to create a new sycl::queue
+        from a given filter string.
+
+        Returns: A LLVM IR call inst.
+        """
+
+        mod = builder.module
+        fnty = llvmir.FunctionType(
+            llvmir.types.VoidType(),
+            [
+                cgutils.voidptr_t,
+                cgutils.voidptr_t,
+                cgutils.voidptr_t.as_pointer(),
+                cgutils.int32_t.as_pointer(),
+                llvmir.IntType(64),
+                llvmir.IntType(64).as_pointer(),
+                llvmir.IntType(64).as_pointer(),
+                llvmir.IntType(64),
+                cgutils.voidptr_t,
+                llvmir.IntType(64),
+            ],
+        )
+        fn = cgutils.get_or_insert_function(
+            mod, fnty, "DpexrtQueue_SubmitNDRange"
+        )
+
+        ret = builder.call(
+            fn,
+            [
+                kref,
+                qref,
+                args,
+                argtys,
+                nargs,
+                grange,
+                lrange,
+                ndims,
                 depevents,
                 ndepevents,
             ],

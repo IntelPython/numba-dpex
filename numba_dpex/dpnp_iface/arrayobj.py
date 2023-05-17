@@ -338,8 +338,8 @@ def ol_dpnp_zeros(
     """
 
     _ndim = _ty_parse_shape(shape)
-    _layout = _parse_layout(order)
     _dtype = _parse_dtype(dtype)
+    _layout = _parse_layout(order)
     _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
     _device = (
         _parse_device_filter_string(device) if device is not None else "unknown"
