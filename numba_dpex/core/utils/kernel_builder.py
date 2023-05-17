@@ -7,9 +7,7 @@ import sys
 import warnings
 
 import dpctl.program as dpctl_prog
-import dpnp
-import numba
-from numba.core import compiler, ir, types
+from numba.core import ir, types
 from numba.core.errors import NumbaParallelSafetyWarning
 from numba.core.ir_utils import (
     add_offset_to_labels,
@@ -456,3 +454,63 @@ def create_kernel_for_parfor(
         kernel_arg_types=func_arg_types,
         queue=exec_queue,
     )
+
+
+def update_sentinel(kernel_ir, sentinel_name, kernel_body, new_label):
+    """Searched all the blocks in the IR generated from a kernel template and
+    replaces the __sentinel__ instruction with the actual op for the parfor.
+
+    Args:
+        kernel_ir : Numba FunctionIR that was generated from a kernel template
+        sentinel_name : The name of the sentinel instruction that is to be
+        replaced.
+        kernel_body : The function body of the kernel template generated
+        numba_dpex.kernel function
+        new_label: The new label to be used for the basic block created to store
+        the instructions that replaced the sentinel
+    """
+    for label, block in kernel_ir.blocks.items():
+        for i, inst in enumerate(block.body):
+            if (
+                isinstance(inst, ir.Assign)
+                and inst.target.name == sentinel_name
+            ):
+                # We found the sentinel assignment.
+                loc = inst.loc
+                scope = block.scope
+                # split block across __sentinel__
+                # A new block is allocated for the statements prior to the
+                # sentinel but the new block maintains the current block label.
+                prev_block = ir.Block(scope, loc)
+                prev_block.body = block.body[:i]
+
+                # The current block is used for statements after the sentinel.
+                block.body = block.body[i + 1 :]  # noqa: E203
+                # But the current block gets a new label.
+                body_first_label = min(kernel_body.keys())
+
+                # The previous block jumps to the minimum labelled block of the
+                # parfor body.
+                prev_block.append(ir.Jump(body_first_label, loc))
+
+                # Add all the parfor loop body blocks to the gufunc function's
+                # IR.
+                for loop, b in kernel_body.items():
+                    kernel_ir.blocks[loop] = copy.copy(b)
+                    kernel_ir.blocks[loop].body = copy.copy(
+                        kernel_ir.blocks[loop].body
+                    )
+
+                body_last_label = max(kernel_body.keys())
+                kernel_ir.blocks[new_label] = block
+                kernel_ir.blocks[label] = prev_block
+                # Add a jump from the last parfor body block to the block
+                # containing statements after the sentinel.
+                kernel_ir.blocks[body_last_label].append(
+                    ir.Jump(new_label, loc)
+                )
+
+                break
+        else:
+            continue
+        break
