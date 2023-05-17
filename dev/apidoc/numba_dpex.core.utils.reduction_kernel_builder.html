@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.codegen module &mdash; numba-dpex 0.21.0dev0+23.gee08e9b0 documentation</title>
+  <title>numba_dpex.core.utils.reduction_kernel_builder module &mdash; numba-dpex 0.21.0dev0+23.gee08e9b0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -82,9 +82,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">numba_dpex.core.codegen module</li>
+      <li class="breadcrumb-item active">numba_dpex.core.utils.reduction_kernel_builder module</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/apidoc/numba_dpex.core.codegen.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/apidoc/numba_dpex.core.utils.reduction_kernel_builder.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -92,25 +92,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-numba_dpex.core.codegen">
-<span id="numba-dpex-core-codegen-module"></span><h1>numba_dpex.core.codegen module<a class="headerlink" href="#module-numba_dpex.core.codegen" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.codegen.JITSPIRVCodegen">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.codegen.</span></span><span class="sig-name descname"><span class="pre">JITSPIRVCodegen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.codegen.JITSPIRVCodegen" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">CPUCodegen</span></code></p>
-<p>This codegen implementation generates optimized SPIR 2.0</p>
+  <section id="module-numba_dpex.core.utils.reduction_kernel_builder">
+<span id="numba-dpex-core-utils-reduction-kernel-builder-module"></span><h1>numba_dpex.core.utils.reduction_kernel_builder module<a class="headerlink" href="#module-numba_dpex.core.utils.reduction_kernel_builder" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.reduction_kernel_builder.create_reduction_main_kernel_for_parfor">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.utils.reduction_kernel_builder.</span></span><span class="sig-name descname"><span class="pre">create_reduction_main_kernel_for_parfor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">loop_ranges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_aliases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reductionKernelVar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_reddict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.reduction_kernel_builder.create_reduction_main_kernel_for_parfor" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a numba_dpex.kernel function for reduction main kernel.</p>
 </dd></dl>
 
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.codegen.SPIRVCodeLibrary">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.codegen.</span></span><span class="sig-name descname"><span class="pre">SPIRVCodeLibrary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">codegen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.codegen.SPIRVCodeLibrary" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">CPUCodeLibrary</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.codegen.SPIRVCodeLibrary.get_asm_str">
-<span class="sig-name descname"><span class="pre">get_asm_str</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.codegen.SPIRVCodeLibrary.get_asm_str" title="Permalink to this definition"></a></dt>
-<dd><p>Get the human-readable assembly.</p>
-</dd></dl>
-
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.reduction_kernel_builder.create_reduction_remainder_kernel_for_parfor">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.utils.reduction_kernel_builder.</span></span><span class="sig-name descname"><span class="pre">create_reduction_remainder_kernel_for_parfor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parfor_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_aliases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reductionKernelVar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_reddict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reductionHelperList</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.reduction_kernel_builder.create_reduction_remainder_kernel_for_parfor" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a numba_dpex.kernel function for a reduction remainder kernel.</p>
 </dd></dl>
 
 </section>

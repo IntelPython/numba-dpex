@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.utils package &mdash; numba-dpex 0.21.0dev0+20.gc0dd04f6 documentation</title>
+  <title>numba_dpex.core.utils package &mdash; numba-dpex 0.21.0dev0+23.gee08e9b0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -100,8 +100,17 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.utils.kernel_templates.html">numba_dpex.core.utils.kernel_templates package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.utils.kernel_templates.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.kernel_templates.kernel_template_iface.html">numba_dpex.core.utils.kernel_templates.kernel_template_iface module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.utils.kernel_templates.kernel_template_iface.html#numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface"><code class="docutils literal notranslate"><span class="pre">KernelTemplateInterface</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.kernel_templates.range_kernel_template.html">numba_dpex.core.utils.kernel_templates.range_kernel_template module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.utils.kernel_templates.range_kernel_template.html#numba_dpex.core.utils.kernel_templates.range_kernel_template.RangeKernelTemplate"><code class="docutils literal notranslate"><span class="pre">RangeKernelTemplate</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.kernel_templates.reduction_template.html">numba_dpex.core.utils.kernel_templates.reduction_template module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.utils.kernel_templates.reduction_template.html#numba_dpex.core.utils.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate"><code class="docutils literal notranslate"><span class="pre">RemainderReduceIntermediateKernelTemplate</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="numba_dpex.core.utils.kernel_templates.reduction_template.html#numba_dpex.core.utils.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate"><code class="docutils literal notranslate"><span class="pre">TreeReduceIntermediateKernelTemplate</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -134,6 +143,7 @@
 <li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.utils.kernel_builder.html">numba_dpex.core.utils.kernel_builder module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.utils.kernel_builder.html#numba_dpex.core.utils.kernel_builder.ParforKernel"><code class="docutils literal notranslate"><span class="pre">ParforKernel</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.utils.kernel_builder.html#numba_dpex.core.utils.kernel_builder.create_kernel_for_parfor"><code class="docutils literal notranslate"><span class="pre">create_kernel_for_parfor()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.utils.kernel_builder.html#numba_dpex.core.utils.kernel_builder.update_sentinel"><code class="docutils literal notranslate"><span class="pre">update_sentinel()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.utils.kernel_launcher.html">numba_dpex.core.utils.kernel_launcher module</a><ul>
@@ -145,9 +155,37 @@
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.kernel_launcher.html#numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.build_complex_arg"><code class="docutils literal notranslate"><span class="pre">KernelLaunchIRBuilder.build_complex_arg()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.kernel_launcher.html#numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.free_queue"><code class="docutils literal notranslate"><span class="pre">KernelLaunchIRBuilder.free_queue()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.kernel_launcher.html#numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.get_queue"><code class="docutils literal notranslate"><span class="pre">KernelLaunchIRBuilder.get_queue()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.kernel_launcher.html#numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.submit_sync_ranged_kernel"><code class="docutils literal notranslate"><span class="pre">KernelLaunchIRBuilder.submit_sync_ranged_kernel()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.kernel_launcher.html#numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.submit_sync_kernel"><code class="docutils literal notranslate"><span class="pre">KernelLaunchIRBuilder.submit_sync_kernel()</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.utils.reduction_helper.html">numba_dpex.core.utils.reduction_helper module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.utils.reduction_helper.html#numba_dpex.core.utils.reduction_helper.ReductionHelper"><code class="docutils literal notranslate"><span class="pre">ReductionHelper</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.utils.reduction_helper.html#numba_dpex.core.utils.reduction_helper.ReductionKernelVariables"><code class="docutils literal notranslate"><span class="pre">ReductionKernelVariables</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.reduction_helper.html#numba_dpex.core.utils.reduction_helper.ReductionKernelVariables.copy_final_sum_to_host"><code class="docutils literal notranslate"><span class="pre">ReductionKernelVariables.copy_final_sum_to_host()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.reduction_helper.html#numba_dpex.core.utils.reduction_helper.ReductionKernelVariables.final_sum_names"><code class="docutils literal notranslate"><span class="pre">ReductionKernelVariables.final_sum_names</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.reduction_helper.html#numba_dpex.core.utils.reduction_helper.ReductionKernelVariables.func_arg_types"><code class="docutils literal notranslate"><span class="pre">ReductionKernelVariables.func_arg_types</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.reduction_helper.html#numba_dpex.core.utils.reduction_helper.ReductionKernelVariables.ind_dict"><code class="docutils literal notranslate"><span class="pre">ReductionKernelVariables.ind_dict</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.reduction_helper.html#numba_dpex.core.utils.reduction_helper.ReductionKernelVariables.legal_loop_indices"><code class="docutils literal notranslate"><span class="pre">ReductionKernelVariables.legal_loop_indices</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.reduction_helper.html#numba_dpex.core.utils.reduction_helper.ReductionKernelVariables.loop_body"><code class="docutils literal notranslate"><span class="pre">ReductionKernelVariables.loop_body</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.reduction_helper.html#numba_dpex.core.utils.reduction_helper.ReductionKernelVariables.lowerer"><code class="docutils literal notranslate"><span class="pre">ReductionKernelVariables.lowerer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.reduction_helper.html#numba_dpex.core.utils.reduction_helper.ReductionKernelVariables.param_dict"><code class="docutils literal notranslate"><span class="pre">ReductionKernelVariables.param_dict</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.reduction_helper.html#numba_dpex.core.utils.reduction_helper.ReductionKernelVariables.param_types"><code class="docutils literal notranslate"><span class="pre">ReductionKernelVariables.param_types</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.reduction_helper.html#numba_dpex.core.utils.reduction_helper.ReductionKernelVariables.parfor_legalized_params"><code class="docutils literal notranslate"><span class="pre">ReductionKernelVariables.parfor_legalized_params</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.reduction_helper.html#numba_dpex.core.utils.reduction_helper.ReductionKernelVariables.parfor_redarrs_legal_dict"><code class="docutils literal notranslate"><span class="pre">ReductionKernelVariables.parfor_redarrs_legal_dict</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.reduction_helper.html#numba_dpex.core.utils.reduction_helper.ReductionKernelVariables.parfor_reddict"><code class="docutils literal notranslate"><span class="pre">ReductionKernelVariables.parfor_reddict</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.reduction_helper.html#numba_dpex.core.utils.reduction_helper.ReductionKernelVariables.parfor_redvars"><code class="docutils literal notranslate"><span class="pre">ReductionKernelVariables.parfor_redvars</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.reduction_helper.html#numba_dpex.core.utils.reduction_helper.ReductionKernelVariables.parfor_redvars_to_redarrs"><code class="docutils literal notranslate"><span class="pre">ReductionKernelVariables.parfor_redvars_to_redarrs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.reduction_helper.html#numba_dpex.core.utils.reduction_helper.ReductionKernelVariables.redvars_legal_dict"><code class="docutils literal notranslate"><span class="pre">ReductionKernelVariables.redvars_legal_dict</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.utils.reduction_helper.html#numba_dpex.core.utils.reduction_helper.ReductionKernelVariables.work_group_size"><code class="docutils literal notranslate"><span class="pre">ReductionKernelVariables.work_group_size</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.utils.reduction_kernel_builder.html">numba_dpex.core.utils.reduction_kernel_builder module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.utils.reduction_kernel_builder.html#numba_dpex.core.utils.reduction_kernel_builder.create_reduction_main_kernel_for_parfor"><code class="docutils literal notranslate"><span class="pre">create_reduction_main_kernel_for_parfor()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.utils.reduction_kernel_builder.html#numba_dpex.core.utils.reduction_kernel_builder.create_reduction_remainder_kernel_for_parfor"><code class="docutils literal notranslate"><span class="pre">create_reduction_remainder_kernel_for_parfor()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.utils.suai_helper.html">numba_dpex.core.utils.suai_helper module</a><ul>

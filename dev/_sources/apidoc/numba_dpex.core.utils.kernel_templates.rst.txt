@@ -7,7 +7,9 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   numba_dpex.core.utils.kernel_templates.kernel_template_iface
    numba_dpex.core.utils.kernel_templates.range_kernel_template
+   numba_dpex.core.utils.kernel_templates.reduction_template
 
 Module contents
 ---------------

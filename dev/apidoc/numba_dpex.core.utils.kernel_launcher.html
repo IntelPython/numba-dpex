@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.utils.kernel_launcher module &mdash; numba-dpex 0.21.0dev0+20.gc0dd04f6 documentation</title>
+  <title>numba_dpex.core.utils.kernel_launcher module &mdash; numba-dpex 0.21.0dev0+23.gee08e9b0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -182,19 +182,9 @@ using the filter string for the Python exec_queue (dpctl.SyclQueue).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.submit_sync_ranged_kernel">
-<span class="sig-name descname"><span class="pre">submit_sync_ranged_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim_bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue_val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.submit_sync_ranged_kernel" title="Permalink to this definition"></a></dt>
-<dd><p>Submits the kernel to the specified queue, waits and then copies
-back any results to the host.</p>
-<dl>
-<dt>Args:</dt><dd><p>idx_range: Tuple specifying the range over which the kernel is
-to be submitted.
-sycl_queue_val : The SYCL queue on which the kernel is</p>
-<blockquote>
-<div><p>submitted.</p>
-</div></blockquote>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.submit_sync_kernel">
+<span class="sig-name descname"><span class="pre">submit_sync_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sycl_queue_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_kernel_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg_ty_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_launcher.KernelLaunchIRBuilder.submit_sync_kernel" title="Permalink to this definition"></a></dt>
+<dd><p>Submits the kernel to the specified queue, waits.</p>
 </dd></dl>
 
 </dd></dl>

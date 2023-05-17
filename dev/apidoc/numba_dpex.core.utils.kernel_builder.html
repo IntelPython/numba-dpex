@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.utils.kernel_builder module &mdash; numba-dpex 0.21.0dev0+20.gc0dd04f6 documentation</title>
+  <title>numba_dpex.core.utils.kernel_builder module &mdash; numba-dpex 0.21.0dev0+23.gee08e9b0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -119,6 +119,23 @@ should be added. This Python text is ‘exec’ed into existence and its
 IR retrieved with run_frontend. The IR is scanned for the sentinel
 assignment where that basic block is split and the IR for the parfor
 body inserted.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_builder.update_sentinel">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.utils.kernel_builder.</span></span><span class="sig-name descname"><span class="pre">update_sentinel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_ir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sentinel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_body</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_builder.update_sentinel" title="Permalink to this definition"></a></dt>
+<dd><p>Searched all the blocks in the IR generated from a kernel template and
+replaces the __sentinel__ instruction with the actual op for the parfor.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>kernel_ir : Numba FunctionIR that was generated from a kernel template
+sentinel_name : The name of the sentinel instruction that is to be
+replaced.
+kernel_body : The function body of the kernel template generated
+numba_dpex.kernel function
+new_label: The new label to be used for the basic block created to store
+the instructions that replaced the sentinel</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
