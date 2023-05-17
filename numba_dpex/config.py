@@ -89,3 +89,6 @@ TESTING_SKIP_NO_DEBUGGING = _readenv(
     "NUMBA_DPEX_TESTING_SKIP_NO_DEBUGGING", int, 1
 )
 TESTING_LOG_DEBUGGING = _readenv("NUMBA_DPEX_TESTING_LOG_DEBUGGING", int, DEBUG)
+# Flag to turn on the ConstantSizeStaticLocalMemoryPass in the kernel pipeline.
+# The pass is turned off by default.
+STATIC_LOCAL_MEM_PASS = _readenv("NUMBA_DPEX_STATIC_LOCAL_MEM_PASS", int, 0)

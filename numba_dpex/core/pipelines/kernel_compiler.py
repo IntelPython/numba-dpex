@@ -29,6 +29,7 @@ from numba.core.untyped_passes import (
     WithLifting,
 )
 
+from numba_dpex import config
 from numba_dpex.core.exceptions import UnsupportedCompilationModeError
 from numba_dpex.core.passes.passes import (
     ConstantSizeStaticLocalMemoryPass,
@@ -65,10 +66,11 @@ class _KernelPassBuilder(object):
         # Add pass to ensure when users allocate static constant memory the
         # size of the allocation is a constant and not specified by a closure
         # variable.
-        pm.add_pass(
-            ConstantSizeStaticLocalMemoryPass,
-            "dpex constant size for static local memory",
-        )
+        if config.STATIC_LOCAL_MEM_PASS:
+            pm.add_pass(
+                ConstantSizeStaticLocalMemoryPass,
+                "dpex constant size for static local memory",
+            )
 
         # --- End of dpex passes added to the untyped pipeline               --#
 
