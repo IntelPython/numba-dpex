@@ -99,7 +99,9 @@ class TreeReduceIntermediateKernelTemplate(KernelTemplateInterface):
         for redvar in self._redvars:
             legal_redvar = self._redvars_dict[redvar]
             gufunc_txt += "    "
-            gufunc_txt += legal_redvar + " = 0\n"
+            gufunc_txt += legal_redvar + " = "
+            gufunc_txt += f"{self._parfor_reddict[redvar].init_val} \n"
+
         gufunc_txt += "    "
         gufunc_txt += self._sentinel_name + " = 0\n"
 
@@ -265,8 +267,15 @@ class RemainderReduceIntermediateKernelTemplate(KernelTemplateInterface):
         )
 
         for i, redvar in enumerate(self._redvars):
-            gufunc_txt += f"        {self._final_sum_var_name[i]}[0] += \
-                {self._partial_sum_var_name[i]}[j]\n"
+            redop = self._parfor_reddict[redvar].redop
+            if redop == operator.iadd:
+                gufunc_txt += f"        {self._final_sum_var_name[i]}[0] += \
+                    {self._partial_sum_var_name[i]}[j]\n"
+            elif redop == operator.imul:
+                gufunc_txt += f"        {self._final_sum_var_name[i]}[0] *= \
+                    {self._partial_sum_var_name[i]}[j]\n"
+            else:
+                raise NotImplementedError
 
         gufunc_txt += (
             f"    for j in range ({self._global_size_mod_var_name[0]}) :\n"
@@ -275,7 +284,8 @@ class RemainderReduceIntermediateKernelTemplate(KernelTemplateInterface):
         for redvar in self._redvars:
             legal_redvar = self._redvars_dict[redvar]
             gufunc_txt += "        "
-            gufunc_txt += legal_redvar + " = 0\n"
+            gufunc_txt += legal_redvar + " = "
+            gufunc_txt += f"{self._parfor_reddict[redvar].init_val}\n"
 
         gufunc_txt += (
             "        "
