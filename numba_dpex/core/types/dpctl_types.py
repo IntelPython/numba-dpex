@@ -28,6 +28,21 @@ class DpctlSyclQueue(types.Type):
         return self._sycl_queue
 
     @property
+    def key(self):
+        """Returns a Python object used as the key to cache an instance of
+        DpctlSyclQueue.
+
+        The key is constructed by hashing the actual dpctl.SyclQueue object
+        encapsulated by an instance of DpctlSyclQueue. Doing so ensures, that
+        different dpctl.SyclQueue instances are inferred as separate instances
+        of the DpctlSyclQueue type.
+
+        Returns:
+            int: hash of the self._sycl_queue Python object.
+        """
+        return hash(self._sycl_queue)
+
+    @property
     def box_type(self):
         return SyclQueue
 
