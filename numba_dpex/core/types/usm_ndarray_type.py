@@ -46,6 +46,8 @@ class USMNdArray(Array):
                 raise TypeError(
                     "numba_dpex.core.types.usm_ndarray_type.USMNdArray.__init__(): "
                     "The queue keyword arg should be a dpctl.SyclQueue object or None."
+                    "Found type(queue) ="
+                    + str(type(queue) + " and queue =" + queue)
                 )
             self.queue = queue
         else:
@@ -207,7 +209,13 @@ class USMNdArray(Array):
 
     @property
     def key(self):
-        return (*super().key, self.addrspace, self.usm_type, self.device)
+        return (
+            *super().key,
+            self.addrspace,
+            self.usm_type,
+            self.device,
+            self.queue,
+        )
 
     @property
     def as_array(self):
