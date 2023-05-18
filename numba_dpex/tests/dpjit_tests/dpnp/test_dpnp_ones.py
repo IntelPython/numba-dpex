@@ -95,9 +95,8 @@ def test_dpnp_ones_from_queue(shape, dtype, usm_type):
         c = dpnp.ones(shape, dtype=dtype, usm_type=usm_type, sycl_queue=queue)
         return c
 
-    queue = dpctl.SyclQueue()
-
     try:
+        queue = dpctl.SyclQueue()
         c = func(shape, queue)
     except Exception:
         pytest.fail("Calling dpnp.ones() inside dpjit failed.")
@@ -127,9 +126,8 @@ def test_dpnp_ones_exceptions():
         c = dpnp.ones(shape, sycl_queue=queue, device=device)
         return c
 
-    queue = dpctl.SyclQueue()
-
     try:
+        queue = dpctl.SyclQueue()
         func(10, queue)
     except Exception as e:
         assert isinstance(e, errors.TypingError)

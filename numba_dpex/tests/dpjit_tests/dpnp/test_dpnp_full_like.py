@@ -123,9 +123,8 @@ def test_dpnp_full_like_from_queue(shape, fill_value, dtype, usm_type):
         )
         return y
 
-    queue = dpctl.SyclQueue()
-
     try:
+        queue = dpctl.SyclQueue()
         a = dpnp.zeros(shape, dtype=dtype, usm_type=usm_type, sycl_queue=queue)
         c = func(a, fill_value, queue)
     except Exception:
@@ -162,9 +161,8 @@ def test_dpnp_full_like_exceptions():
         y = dpnp.full_like(x, 7, sycl_queue=queue, device=device)
         return y
 
-    queue = dpctl.SyclQueue()
-
     try:
+        queue = dpctl.SyclQueue()
         a = dpnp.zeros(10)
         func1(a, 7, queue)
     except Exception as e:

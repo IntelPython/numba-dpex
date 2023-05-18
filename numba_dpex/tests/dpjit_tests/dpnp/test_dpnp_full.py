@@ -121,9 +121,8 @@ def test_dpnp_full_from_queue(shape, fill_value, dtype, usm_type):
         )
         return c
 
-    queue = dpctl.SyclQueue()
-
     try:
+        queue = dpctl.SyclQueue()
         c = func(shape, fill_value, queue)
     except Exception:
         pytest.fail("Calling dpnp.full() inside dpjit failed.")
@@ -158,9 +157,8 @@ def test_dpnp_full_exceptions():
         c = dpnp.ones(shape, fill_value, sycl_queue=queue, device=device)
         return c
 
-    queue = dpctl.SyclQueue()
-
     try:
+        queue = dpctl.SyclQueue()
         func(10, 7, queue)
     except Exception as e:
         assert isinstance(e, errors.TypingError)

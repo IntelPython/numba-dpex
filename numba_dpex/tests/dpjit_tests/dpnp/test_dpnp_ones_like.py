@@ -100,9 +100,8 @@ def test_dpnp_ones_like_from_queue(shape, dtype, usm_type):
         y = dpnp.ones_like(x, dtype=dtype, usm_type=usm_type, sycl_queue=queue)
         return y
 
-    queue = dpctl.SyclQueue()
-
     try:
+        queue = dpctl.SyclQueue()
         a = dpnp.zeros(shape, dtype=dtype, usm_type=usm_type, sycl_queue=queue)
         c = func(a, queue)
     except Exception:
@@ -134,9 +133,8 @@ def test_dpnp_ones_like_exceptions():
         y = dpnp.ones_like(x, sycl_queue=queue, device=device)
         return y
 
-    queue = dpctl.SyclQueue()
-
     try:
+        queue = dpctl.SyclQueue()
         a = dpnp.zeros(10)
         func1(a, queue)
     except Exception as e:
