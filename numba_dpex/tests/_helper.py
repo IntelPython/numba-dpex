@@ -10,7 +10,7 @@ import shutil
 import dpctl
 import pytest
 
-from numba_dpex import config, numba_version
+from numba_dpex import config, numba_sem_version
 
 
 def has_opencl_gpu():
@@ -113,7 +113,7 @@ filter_strings_level_zero_gpu = [
 ]
 
 skip_no_numba056 = pytest.mark.skipif(
-    numba_version < (0, 56), reason="Need Numba 0.56 or higher"
+    numba_sem_version < (0, 56), reason="Need Numba 0.56 or higher"
 )
 
 skip_no_gdb = pytest.mark.skipif(
