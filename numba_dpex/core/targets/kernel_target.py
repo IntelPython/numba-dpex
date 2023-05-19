@@ -5,7 +5,7 @@
 import re
 from functools import cached_property
 
-import numpy as np
+import dpnp
 from llvmlite import binding as ll
 from llvmlite import ir as llvmir
 from numba import typeof
@@ -298,37 +298,36 @@ class DpexKernelTargetContext(BaseContext):
     def create_module(self, name):
         return self._internal_codegen._create_empty_module(name)
 
-    def replace_numpy_ufunc_with_opencl_supported_functions(self):
+    def replace_dpnp_ufunc_with_ocl_intrinsics(self):
         from numba_dpex.ocl.mathimpl import lower_ocl_impl, sig_mapper
 
         ufuncs = [
-            ("fabs", np.fabs),
-            ("exp", np.exp),
-            ("log", np.log),
-            ("log10", np.log10),
-            ("expm1", np.expm1),
-            ("log1p", np.log1p),
-            ("sqrt", np.sqrt),
-            ("sin", np.sin),
-            ("cos", np.cos),
-            ("tan", np.tan),
-            ("asin", np.arcsin),
-            ("acos", np.arccos),
-            ("atan", np.arctan),
-            ("atan2", np.arctan2),
-            ("sinh", np.sinh),
-            ("cosh", np.cosh),
-            ("tanh", np.tanh),
-            ("asinh", np.arcsinh),
-            ("acosh", np.arccosh),
-            ("atanh", np.arctanh),
-            ("ldexp", np.ldexp),
-            ("floor", np.floor),
-            ("ceil", np.ceil),
-            ("trunc", np.trunc),
-            ("hypot", np.hypot),
-            ("exp2", np.exp2),
-            ("log2", np.log2),
+            ("fabs", dpnp.fabs),
+            ("exp", dpnp.exp),
+            ("log", dpnp.log),
+            ("log10", dpnp.log10),
+            ("expm1", dpnp.expm1),
+            ("log1p", dpnp.log1p),
+            ("sqrt", dpnp.sqrt),
+            ("sin", dpnp.sin),
+            ("cos", dpnp.cos),
+            ("tan", dpnp.tan),
+            ("asin", dpnp.arcsin),
+            ("acos", dpnp.arccos),
+            ("atan", dpnp.arctan),
+            ("atan2", dpnp.arctan2),
+            ("sinh", dpnp.sinh),
+            ("cosh", dpnp.cosh),
+            ("tanh", dpnp.tanh),
+            ("asinh", dpnp.arcsinh),
+            ("acosh", dpnp.arccosh),
+            ("atanh", dpnp.arctanh),
+            ("floor", dpnp.floor),
+            ("ceil", dpnp.ceil),
+            ("trunc", dpnp.trunc),
+            ("hypot", dpnp.hypot),
+            ("exp2", dpnp.exp2),
+            ("log2", dpnp.log2),
         ]
 
         for name, ufunc in ufuncs:
@@ -344,23 +343,24 @@ class DpexKernelTargetContext(BaseContext):
     def load_additional_registries(self):
         """Register OpenCL functions into numba_depx's target context.
 
-        To make sure we are calling supported OpenCL math functions, we
-        replace some of NUMBA's NumPy ufunc with OpenCL versions of those
-        functions. The replacement is done after the OpenCL functions have
-        been registered into the target context.
+        To make sure we are calling supported OpenCL math functions, we replace
+        the dpnp functions that default to NUMBA's NumPy ufunc with OpenCL
+        intrinsics that are equivalent to those functions. The replacement is
+        done after the OpenCL functions have been registered into the
+        target context.
 
         """
-        from numba.np import npyimpl
+        from numba_dpex.dpnp_iface import dpnpimpl
 
         from ... import printimpl
         from ...ocl import mathimpl, oclimpl
 
         self.insert_func_defn(oclimpl.registry.functions)
         self.insert_func_defn(mathimpl.registry.functions)
-        self.insert_func_defn(npyimpl.registry.functions)
+        self.insert_func_defn(dpnpimpl.registry.functions)
         self.install_registry(printimpl.registry)
-        # Replace NumPy functions with their OpenCL versions.
-        self.replace_numpy_ufunc_with_opencl_supported_functions()
+        # Replace dpnp math functions with their OpenCL versions.
+        self.replace_dpnp_ufunc_with_ocl_intrinsics()
 
     @cached_property
     def call_conv(self):
