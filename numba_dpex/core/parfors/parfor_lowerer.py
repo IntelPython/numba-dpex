@@ -13,15 +13,15 @@ from numba.parfors.parfor import (
 
 from numba_dpex import config
 from numba_dpex.core.utils.kernel_launcher import KernelLaunchIRBuilder
-from numba_dpex.core.utils.reduction_helper import (
+from numba_dpex.core.parfors.reduction_helper import (
     ReductionHelper,
     ReductionKernelVariables,
 )
 
 from ..exceptions import UnsupportedParforError
 from ..types.dpnp_ndarray_type import DpnpNdArray
-from ..utils.kernel_builder import create_kernel_for_parfor
-from ..utils.reduction_kernel_builder import (
+from .kernel_builder import create_kernel_for_parfor
+from .reduction_kernel_builder import (
     create_reduction_main_kernel_for_parfor,
     create_reduction_remainder_kernel_for_parfor,
 )

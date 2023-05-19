@@ -13,7 +13,7 @@ from numba.parfors.parfor import (
 )
 
 from numba_dpex.core.exceptions import ComputeFollowsDataInferenceError
-from numba_dpex.core.passes.parfor_lowering_pass import ParforLowerFactory
+from numba_dpex.core.parfors.parfor_lowerer import ParforLowerFactory
 from numba_dpex.core.types.dpnp_ndarray_type import DpnpNdArray
 
 
