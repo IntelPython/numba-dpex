@@ -13,13 +13,13 @@ from numba.core.ir_utils import (
     remove_dels,
     replace_var_names,
 )
+from numba.parfors import parfor
 from numba.parfors.parfor_lowering_utils import ParforLoweringBuilder
 
 from numba_dpex import utils
 from numba_dpex.core.utils.kernel_launcher import KernelLaunchIRBuilder
 from numba_dpex.dpctl_iface import DpctlCAPIFnBuilder
 
-from ..passes import parfor
 from ..types.dpnp_ndarray_type import DpnpNdArray
 
 

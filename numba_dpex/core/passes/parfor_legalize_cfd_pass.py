@@ -5,17 +5,16 @@
 from numba.core import ir, types
 from numba.core.compiler_machinery import FunctionPass, register_pass
 from numba.core.ir_utils import find_topo_order
-
-from numba_dpex.core.exceptions import ComputeFollowsDataInferenceError
-from numba_dpex.core.passes.parfor_lowering_pass import ParforLowerFactory
-from numba_dpex.core.types.dpnp_ndarray_type import DpnpNdArray
-
-from .parfor import (
+from numba.parfors.parfor import (
     Parfor,
     ParforDiagnostics,
     get_parfor_outputs,
     get_parfor_params,
 )
+
+from numba_dpex.core.exceptions import ComputeFollowsDataInferenceError
+from numba_dpex.core.passes.parfor_lowering_pass import ParforLowerFactory
+from numba_dpex.core.types.dpnp_ndarray_type import DpnpNdArray
 
 
 class ParforLegalizeCFDPassImpl:

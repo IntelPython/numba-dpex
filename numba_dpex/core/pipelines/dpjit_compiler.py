@@ -8,9 +8,13 @@ from numba.core.typed_passes import (
     AnnotateTypes,
     InlineOverloads,
     IRLegalization,
+    NativeParforLowering,
     NopythonRewrites,
     NoPythonSupportedFeatureValidation,
     NopythonTypeInference,
+    ParforFusionPass,
+    ParforPass,
+    ParforPreLoweringPass,
     PreLowerStripPhis,
     PreParforPass,
 )
@@ -19,11 +23,7 @@ from numba_dpex.core.exceptions import UnsupportedCompilationModeError
 from numba_dpex.core.passes import (
     DumpParforDiagnostics,
     NoPythonBackend,
-    ParforFusionPass,
     ParforLegalizeCFDPass,
-    ParforLoweringPass,
-    ParforPreLoweringPass,
-    SplitParforPass,
 )
 from numba_dpex.parfor_diagnostics import ExtendedParforDiagnostics
 
@@ -53,7 +53,7 @@ class _DpjitPassBuilder(object):
         pm.add_pass(PreParforPass, "Preprocessing for parfors")
         if not state.flags.no_rewrites:
             pm.add_pass(NopythonRewrites, "nopython rewrites")
-        pm.add_pass(SplitParforPass, "convert to parfors")
+        pm.add_pass(ParforPass, "convert to parfors")
         pm.add_pass(
             ParforLegalizeCFDPass, "Legalize parfors for compute follows data"
         )
@@ -76,7 +76,9 @@ class _DpjitPassBuilder(object):
         pm.add_pass(IRLegalization, "ensure IR is legal prior to lowering")
 
         # lower
-        pm.add_pass(ParforLoweringPass, "Custom lowerer for dpex parfor nodes")
+        pm.add_pass(
+            NativeParforLowering, "lowerer with support for parfor nodes"
+        )
         pm.add_pass(NoPythonBackend, "nopython mode backend")
         pm.add_pass(DumpParforDiagnostics, "dump parfor diagnostics")
 

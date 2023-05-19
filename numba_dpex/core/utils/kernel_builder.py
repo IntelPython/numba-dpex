@@ -21,12 +21,12 @@ from numba.core.ir_utils import (
     replace_var_names,
 )
 from numba.core.typing import signature
+from numba.parfors import parfor
 
 import numba_dpex as dpex
 from numba_dpex import config
 
 from ..descriptor import dpex_kernel_target
-from ..passes import parfor
 from ..types.dpnp_ndarray_type import DpnpNdArray
 from .kernel_templates import RangeKernelTemplate
 
