@@ -1,0 +1,7 @@
+numba\_dpex.core.kernel\_interface.indexers module
+==================================================
+
+.. automodule:: numba_dpex.core.kernel_interface.indexers
+   :members:
+   :undoc-members:
+   :show-inheritance:

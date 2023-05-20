@@ -1,0 +1,7 @@
+numba\_dpex.core.types.array\_type module
+=========================================
+
+.. automodule:: numba_dpex.core.types.array_type
+   :members:
+   :undoc-members:
+   :show-inheritance:
