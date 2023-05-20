@@ -63,8 +63,8 @@ def _getvar(lowerer, x):
         if not isinstance(var_val.type, llvmir.PointerType):
             with lowerer.builder.goto_entry_block():
                 var_val_ptr = lowerer.builder.alloca(var_val.type)
-                lowerer.builder.store(var_val, var_val_ptr)
-                return var_val_ptr
+            lowerer.builder.store(var_val, var_val_ptr)
+            return var_val_ptr
         else:
             return var_val
     else:
