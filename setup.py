@@ -152,7 +152,7 @@ packages = find_packages(
 )
 build_requires = ["cython"]
 install_requires = [
-    "numba >={}".format("0.56"),
+    "numba >={}".format("0.57"),
     "dpctl",
     "packaging",
 ]
