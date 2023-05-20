@@ -6,11 +6,11 @@ from collections.abc import Iterable
 
 
 class Range(tuple):
-    """A data structure to encapsulate a single kernel lauch parameter.
+    """A data structure to encapsulate a single kernel launch parameter.
 
     The range is an abstraction that describes the number of elements
     in each dimension of buffers and index spaces. It can contain
-    1, 2, or 3 numbers, dependending on the dimensionality of the
+    1, 2, or 3 numbers, depending on the dimensionality of the
     object it describes.
 
     This is just a wrapper class on top of a 3-tuple. The kernel launch
