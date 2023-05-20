@@ -320,7 +320,7 @@ class JitKernel:
                 return self
 
             warn(
-                "The current syntax for specification of kernel lauch "
+                "The current syntax for specification of kernel launch "
                 + "parameters is deprecated. Users should set the kernel "
                 + "parameters through Range/NdRange classes.\n"
                 + "Example:\n"
@@ -478,7 +478,7 @@ class JitKernel:
             queue=exec_queue,
         )
 
-        # Make sure the kernel lauch range/nd_range are sane
+        # Make sure the kernel launch range/nd_range are sane
         self._check_ranges(exec_queue.sycl_device)
 
         exec_queue.submit(
@@ -489,6 +489,3 @@ class JitKernel:
         )
 
         exec_queue.wait()
-
-        # TODO remove once NumPy support is removed
-        packer.repacked_args
