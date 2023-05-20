@@ -13,7 +13,7 @@ import numba as nb
 import pytest
 
 from numba_dpex import dpjit
-from numba_dpex.core.exceptions import ComputeFollowsDataInferenceError
+from numba_dpex.core.exceptions import ExecutionQueueInferenceError
 from numba_dpex.tests._helper import skip_no_opencl_gpu
 
 shapes = [10, (2, 5)]
@@ -62,7 +62,7 @@ def test_parfor_legalize_cfd_pass_raise():
     a = dpnp.zeros(shape=10, device="cpu")
     b = dpnp.ones(shape=10, device="gpu")
 
-    with pytest.raises(ComputeFollowsDataInferenceError):
+    with pytest.raises(ExecutionQueueInferenceError):
         func1(a, b)
 
 
@@ -78,5 +78,5 @@ def test_cfd_error_due_to_lhs():
             c[idx] = a[idx] + b[idx]
         return c
 
-    with pytest.raises(ComputeFollowsDataInferenceError):
+    with pytest.raises(ExecutionQueueInferenceError):
         vecadd_prange(a, b)
