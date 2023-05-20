@@ -10,10 +10,7 @@ import numpy as np
 from numba.core import types
 
 import numba_dpex.utils as utils
-from numba_dpex.core.exceptions import (
-    UnsupportedAccessQualifierError,
-    UnsupportedKernelArgumentError,
-)
+from numba_dpex.core.exceptions import UnsupportedKernelArgumentError
 from numba_dpex.core.types import USMNdArray
 from numba_dpex.core.utils import get_info_from_suai
 
@@ -28,20 +25,8 @@ class _NumPyArrayPackerPayload:
 
 class Packer:
     """Implements the functionality to unpack a Python object passed as an
-    argument to a numba_dpex kernel fucntion into corresponding ctype object.
+    argument to a numba_dpex kernel function into corresponding ctype object.
     """
-
-    # TODO: Remove after NumPy support is removed
-    _access_types = ("read_only", "write_only", "read_write")
-
-    def _check_for_invalid_access_type(self, array_val, access_type):
-        if access_type and access_type not in Packer._access_types:
-            raise UnsupportedAccessQualifierError(
-                self._pyfunc_name,
-                array_val,
-                access_type,
-                ",".join(Packer._access_types),
-            )
 
     def _unpack_array_helper(self, size, itemsize, buf, shape, strides, ndim):
         """
@@ -96,7 +81,7 @@ class Packer:
             ndim=suai_attrs.dimensions,
         )
 
-    def _unpack_array(self, val, access_type):
+    def _unpack_array(self, val):
         """Deprecated to be removed once NumPy array support in kernels is
         removed.
         """
@@ -108,7 +93,6 @@ class Packer:
         # object. Add an entry to the repack_map so that on exit from kernel
         # the data from the USM object can be copied back into the NumPy array.
         if usm_mem is None:
-            self._check_for_invalid_access_type(val, access_type)
             usm_mem = utils.as_usm_obj(val, queue=self._queue, copy=False)
 
             orig_val = val
@@ -125,29 +109,11 @@ class Packer:
                 packed_val = val.flatten(order="C")
                 packed = True
 
-            if access_type == "read_only":
-                utils.copy_from_numpy_to_usm_obj(usm_mem, packed_val)
-            elif access_type == "read_write":
-                utils.copy_from_numpy_to_usm_obj(usm_mem, packed_val)
-                # Store to the repack map
-                self._repack_list.append(
-                    _NumPyArrayPackerPayload(
-                        usm_mem, orig_val, packed_val, packed
-                    )
-                )
-            elif access_type == "write_only":
-                self._repack_list.append(
-                    _NumPyArrayPackerPayload(
-                        usm_mem, orig_val, packed_val, packed
-                    )
-                )
-            else:
-                utils.copy_from_numpy_to_usm_obj(usm_mem, packed_val)
-                self._repack_list.append(
-                    _NumPyArrayPackerPayload(
-                        usm_mem, orig_val, packed_val, packed
-                    )
-                )
+            utils.copy_from_numpy_to_usm_obj(usm_mem, packed_val)
+            # Store to the repack map
+            self._repack_list.append(
+                _NumPyArrayPackerPayload(usm_mem, orig_val, packed_val, packed)
+            )
 
         return self._unpack_array_helper(
             packed_val.size,
@@ -158,7 +124,7 @@ class Packer:
             packed_val.ndim,
         )
 
-    def _unpack_argument(self, ty, val, access_specifier):
+    def _unpack_argument(self, ty, val):
         """
         Unpack a Python object into one or more ctype values using Numba's
         type-inference machinery.
@@ -177,7 +143,7 @@ class Packer:
         if isinstance(ty, USMNdArray):
             return self._unpack_usm_array(val)
         elif isinstance(ty, types.Array):
-            return self._unpack_array(val, access_specifier)
+            return self._unpack_array(val)
         elif ty == types.int64:
             return ctypes.c_longlong(val)
         elif ty == types.uint64:
@@ -209,17 +175,12 @@ class Packer:
             if obj._packed:
                 np.copyto(obj._orig_val, obj._packed_val)
 
-    def __init__(
-        self, kernel_name, arg_list, argty_list, access_specifiers_list, queue
-    ) -> None:
+    def __init__(self, kernel_name, arg_list, argty_list, queue) -> None:
         """Initializes new Packer object and unpacks the input argument list.
 
         Args:
             arg_list (list): A list of arguments to be unpacked
             argty_list (list): A list of Numba inferred types for each argument.
-            access_specifiers_list(list): A list of access specifiers for
-            NumPy arrays to optimize host to device memory copy.
-            [Deprecated: can be removed along with NumPy array support]
             queue (dpctl.SyclQueue): The SYCL queue where the kernel is to be
             executed. The queue is required to allocate USM memory for NumPy
             arrays.
@@ -236,11 +197,7 @@ class Packer:
         # loop over the arg_list and generate the kernelargs list
         self._unpacked_args = []
         for i, val in enumerate(arg_list):
-            arg = self._unpack_argument(
-                ty=argty_list[i],
-                val=val,
-                access_specifier=access_specifiers_list[i],
-            )
+            arg = self._unpack_argument(ty=argty_list[i], val=val)
             if type(arg) == list:
                 self._unpacked_args.extend(arg)
             else:

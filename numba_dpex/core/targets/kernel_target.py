@@ -156,13 +156,6 @@ class DpexKernelTargetContext(BaseContext):
         name = llvmir.MetaDataString(mod, "kernel_arg_addr_space")
         return mod.add_metadata([name] + consts)
 
-    def _gen_arg_access_qual_md(self, fn):
-        """Generate kernel_arg_access_qual metadata."""
-        mod = fn.module
-        consts = [llvmir.MetaDataString(mod, "none")] * len(fn.args)
-        name = llvmir.MetaDataString(mod, "kernel_arg_access_qual")
-        return mod.add_metadata([name] + consts)
-
     def _gen_arg_type(self, fn):
         """Generate kernel_arg_type metadata."""
         mod = fn.module
@@ -214,7 +207,6 @@ class DpexKernelTargetContext(BaseContext):
                 [
                     fn,
                     self._gen_arg_addrspace_md(fn),
-                    self._gen_arg_access_qual_md(fn),
                     self._gen_arg_type(fn),
                     self._gen_arg_type_qual(fn),
                     self._gen_arg_base_type(fn),

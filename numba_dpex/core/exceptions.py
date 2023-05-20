@@ -357,29 +357,6 @@ class SUAIProtocolError(Exception):
         super().__init__(self.message)
 
 
-class UnsupportedAccessQualifierError(Exception):
-    """Exception raised when an illegal access specifier value is specified for
-    a NumPy array argument passed to a kernel.
-
-    Args:
-        kernel_name (str): Name of kernel where the error was raised.
-        array_val: name of the array argument with the illegal access specifier.
-        illegal_access_type (str): The illegal access specifier string.
-        legal_access_list (str): Joined string for the legal access specifiers.
-    """
-
-    def __init__(
-        self, kernel_name, array_val, illegal_access_type, legal_access_list
-    ) -> None:
-        self.message = (
-            f"Invalid access type {illegal_access_type} applied to "
-            f'array {array_val} argument passed to kernel "{kernel_name}". '
-            f"Legal access specifiers are {legal_access_list}."
-        )
-
-        super().__init__(self.message)
-
-
 class UnsupportedCompilationModeError(Exception):
     def __init__(self) -> None:
         self.message = (
