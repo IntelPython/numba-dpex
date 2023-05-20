@@ -22,8 +22,20 @@ class DpctlSyclQueue(types.Type):
     """
 
     def __init__(self, sycl_queue):
+        if not isinstance(sycl_queue, SyclQueue):
+            raise TypeError("The argument sycl_queue is not of type SyclQueue.")
+
         self._sycl_queue = sycl_queue
+        try:
+            self._unique_id = hash(self._sycl_queue)
+        except Exception:
+            self._unique_id = self.rand_digit_str(16)
         super(DpctlSyclQueue, self).__init__(name="DpctlSyclQueue")
+
+    def rand_digit_str(self, n):
+        return "".join(
+            ["{}".format(random.randint(0, 9)) for num in range(0, n)]
+        )
 
     @property
     def sycl_queue(self):
@@ -40,7 +52,7 @@ class DpctlSyclQueue(types.Type):
         Returns:
             int: hash of the self._sycl_queue Python object.
         """
-        return hash(self._sycl_queue)
+        return self._unique_id
 
     @property
     def box_type(self):
