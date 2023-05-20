@@ -14,17 +14,14 @@ from numba.core.base import BaseContext
 from numba.core.callconv import MinimalCallConv
 from numba.core.registry import cpu_target
 from numba.core.target_extension import GPU, target_registry
+from numba.core.types import Array as NpArrayType
 
 from numba_dpex.core.datamodel.models import _init_data_model_manager
 from numba_dpex.core.exceptions import UnsupportedKernelArgumentError
 from numba_dpex.core.typeconv import to_usm_ndarray
-from numba_dpex.core.types import DpnpNdArray
+from numba_dpex.core.types import DpnpNdArray, USMNdArray
 from numba_dpex.core.utils import get_info_from_suai
-from numba_dpex.utils import (
-    address_space,
-    calling_conv,
-    npytypes_array_to_dpex_array,
-)
+from numba_dpex.utils import address_space, calling_conv
 
 from .. import codegen
 
@@ -66,7 +63,15 @@ class DpexKernelTypingContext(typing.BaseContext):
 
         """
         try:
-            _type = type(typeof(val))
+            numba_type = typeof(val)
+            py_type = type(numba_type)
+
+            if isinstance(numba_type, NpArrayType) and not isinstance(
+                numba_type, USMNdArray
+            ):
+                raise UnsupportedKernelArgumentError(
+                    type=str(type(val)), value=val
+                )
 
             # XXX A kernel function has the spir_kernel ABI and requires
             # pointers to have an address space attribute. For this reason, the
@@ -78,7 +83,7 @@ class DpexKernelTypingContext(typing.BaseContext):
             # function to convert it into a UsmNdArray type rather than passing
             # it to the kernel as a DpnpNdArray. Thus, from a Numba typing
             # perspective dpnp.ndarrays cannot be directly passed to a kernel.
-            if _type is DpnpNdArray:
+            if py_type is DpnpNdArray:
                 suai_attrs = get_info_from_suai(val)
                 return to_usm_ndarray(suai_attrs)
         except ValueError:
@@ -94,13 +99,7 @@ class DpexKernelTypingContext(typing.BaseContext):
                     type=str(type(val)), value=val
                 )
 
-        # FIXME: Remove once NumPy arrays are no longer supported as kernel
-        # args.
-        if _type is types.npytypes.Array:
-            # Convert npytypes.Array to numba_dpex.core.types.Array
-            return npytypes_array_to_dpex_array(typeof(val))
-        else:
-            return super().resolve_argument_type(val)
+        return super().resolve_argument_type(val)
 
     def load_additional_registries(self):
         """Register the OpenCL API and math and other functions."""
