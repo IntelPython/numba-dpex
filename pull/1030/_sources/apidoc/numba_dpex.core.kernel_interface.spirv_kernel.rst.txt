@@ -1,0 +1,7 @@
+numba\_dpex.core.kernel\_interface.spirv\_kernel module
+=======================================================
+
+.. automodule:: numba_dpex.core.kernel_interface.spirv_kernel
+   :members:
+   :undoc-members:
+   :show-inheritance:
