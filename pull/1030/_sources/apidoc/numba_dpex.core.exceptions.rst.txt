@@ -1,7 +1,0 @@
-numba\_dpex.core.exceptions module
-==================================
-
-.. automodule:: numba_dpex.core.exceptions
-   :members:
-   :undoc-members:
-   :show-inheritance:

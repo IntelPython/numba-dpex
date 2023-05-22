@@ -1,7 +1,0 @@
-numba\_dpex.dpnp\_iface.dpnp\_ufunc\_db module
-==============================================
-
-.. automodule:: numba_dpex.dpnp_iface.dpnp_ufunc_db
-   :members:
-   :undoc-members:
-   :show-inheritance:
