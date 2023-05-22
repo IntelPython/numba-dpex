@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.utils.kernel_builder module &mdash; numba-dpex 0.21.0dev0+25.gf4898581 documentation</title>
+  <title>numba_dpex.core.parfors.parfor_lowerer module &mdash; numba-dpex 0.21.0dev0+35.g6aca7c31 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -82,9 +82,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">numba_dpex.core.utils.kernel_builder module</li>
+      <li class="breadcrumb-item active">numba_dpex.core.parfors.parfor_lowerer module</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/apidoc/numba_dpex.core.utils.kernel_builder.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/apidoc/numba_dpex.core.parfors.parfor_lowerer.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -92,50 +92,43 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-numba_dpex.core.utils.kernel_builder">
-<span id="numba-dpex-core-utils-kernel-builder-module"></span><h1>numba_dpex.core.utils.kernel_builder module<a class="headerlink" href="#module-numba_dpex.core.utils.kernel_builder" title="Permalink to this heading"></a></h1>
+  <section id="module-numba_dpex.core.parfors.parfor_lowerer">
+<span id="numba-dpex-core-parfors-parfor-lowerer-module"></span><h1>numba_dpex.core.parfors.parfor_lowerer module<a class="headerlink" href="#module-numba_dpex.core.parfors.parfor_lowerer" title="Permalink to this heading"></a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_builder.ParforKernel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.utils.kernel_builder.</span></span><span class="sig-name descname"><span class="pre">ParforKernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_arg_types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_builder.ParforKernel" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.parfor_lowerer.ParforLowerFactory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.parfors.parfor_lowerer.</span></span><span class="sig-name descname"><span class="pre">ParforLowerFactory</span></span><a class="headerlink" href="#numba_dpex.core.parfors.parfor_lowerer.ParforLowerFactory" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A pseudo-factory class that maps a device filter string to a lowering
+function.</p>
+<p>Each Parfor instruction can have an optional “lowerer” attribute. The
+lowerer attribute determines how the parfor instruction should be lowered
+to LLVM IR. In addition, the lower attribute decides which parfor
+instructions can be fused together.</p>
+<p>The factory class maintains a dictionary mapping every device
+type (filter string) encountered so far to a lowerer function for that
+device type. At this point numba-dpex does not generate device-specific code
+and the lowerer used is same for all device types. However, as a different
+ParforLowerImpl instance is returned for every parfor instruction that has
+a distinct compute-follows-data inferred device it prevents illegal
+parfor fusion.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.parfor_lowerer.ParforLowerFactory.device_to_lowerer_map">
+<span class="sig-name descname"><span class="pre">device_to_lowerer_map</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#numba_dpex.core.parfors.parfor_lowerer.ParforLowerFactory.device_to_lowerer_map" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.parfor_lowerer.ParforLowerFactory.get_lowerer">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_lowerer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.parfor_lowerer.ParforLowerFactory.get_lowerer" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_builder.create_kernel_for_parfor">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.utils.kernel_builder.</span></span><span class="sig-name descname"><span class="pre">create_kernel_for_parfor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lowerer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop_ranges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_aliases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">races</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_outputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_builder.create_kernel_for_parfor" title="Permalink to this definition"></a></dt>
-<dd><p>Creates a numba_dpex.kernel function for a parfor node.</p>
-<p>There are two parts to this function:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li><p>Code to iterate across the iteration space as defined by
-the schedule.</p></li>
-<li><p>The parfor body that does the work for a single point in
-the iteration space.</p></li>
-</ol>
-</div></blockquote>
-<p>Part 1 is created as Python text for simplicity with a sentinel
-assignment to mark the point in the IR where the parfor body
-should be added. This Python text is ‘exec’ed into existence and its
-IR retrieved with run_frontend. The IR is scanned for the sentinel
-assignment where that basic block is split and the IR for the parfor
-body inserted.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_builder.update_sentinel">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.utils.kernel_builder.</span></span><span class="sig-name descname"><span class="pre">update_sentinel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_ir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sentinel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_body</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_builder.update_sentinel" title="Permalink to this definition"></a></dt>
-<dd><p>Searched all the blocks in the IR generated from a kernel template and
-replaces the __sentinel__ instruction with the actual op for the parfor.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>kernel_ir : Numba FunctionIR that was generated from a kernel template
-sentinel_name : The name of the sentinel instruction that is to be
-replaced.
-kernel_body : The function body of the kernel template generated
-numba_dpex.kernel function
-new_label: The new label to be used for the basic block created to store
-the instructions that replaced the sentinel</p>
-</dd>
-</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.core.parfors.parfor_lowerer.ParforLowerImpl">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.parfors.parfor_lowerer.</span></span><span class="sig-name descname"><span class="pre">ParforLowerImpl</span></span><a class="headerlink" href="#numba_dpex.core.parfors.parfor_lowerer.ParforLowerImpl" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provides a custom lowerer for parfor nodes that generates a SYCL kernel
+for a parfor and submits it to a queue.</p>
 </dd></dl>
 
 </section>
