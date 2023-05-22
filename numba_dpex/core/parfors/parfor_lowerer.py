@@ -4,38 +4,71 @@
 
 import copy
 
-from numba.core import funcdesc, ir, types
-from numba.core.compiler_machinery import LoweringPass, register_pass
-from numba.core.lowering import Lower
-from numba.parfors.parfor_lowering import (
-    _lower_parfor_parallel as _lower_parfor_parallel_std,
+from llvmlite import ir as llvmir
+from numba.core import cgutils, ir, types
+from numba.parfors.parfor import (
+    find_potential_aliases_parfor,
+    get_parfor_outputs,
 )
 
 from numba_dpex import config
 from numba_dpex.core.utils.kernel_launcher import KernelLaunchIRBuilder
-from numba_dpex.core.utils.reduction_helper import (
+from numba_dpex.core.parfors.reduction_helper import (
     ReductionHelper,
     ReductionKernelVariables,
 )
 
 from ..exceptions import UnsupportedParforError
 from ..types.dpnp_ndarray_type import DpnpNdArray
-from ..utils.kernel_builder import create_kernel_for_parfor
-from ..utils.reduction_kernel_builder import (
+from .kernel_builder import create_kernel_for_parfor
+from .reduction_kernel_builder import (
     create_reduction_main_kernel_for_parfor,
     create_reduction_remainder_kernel_for_parfor,
 )
-from .parfor import Parfor, find_potential_aliases_parfor, get_parfor_outputs
 
 # A global list of kernels to keep the objects alive indefinitely.
 keep_alive_kernels = []
 
 
-def _getvar_or_none(lowerer, x):
-    try:
-        return lowerer.getvar(x)
-    except:
-        return None
+def _getvar(lowerer, x):
+    """Returns the LLVM Value corresponding to a Numba IR variable.
+
+    Depending on if Numba's sroa-like optimization is enabled or not, the
+    LLVM value for an Numba IR variable is found in either the ``varmap``
+    or the ``blk_local_varmap`` of the ``lowerer``. If the LLVM Value is not a
+    pointer, e.g., in case of function args with sroa optimization enabled, then
+    creates an alloca and stores the Value into the new alloca Value and returns
+    it. The extra alloca is needed as all inputs to a kernel function need to
+    be passed by reference and not value.
+
+    Args:
+        lowerer: The Numba Lower instance used to lower the function.
+        x: Numba IR variable name used to lookup the corresponding
+           LLVM Value.
+
+    Raises:
+        AssertionError: If the LLVM Value for ``x`` does not exist in either
+            the ``varmap`` or the ``blk_local_varmap``.
+
+    Returns: An LLVM Value object
+
+    """
+    var_val = None
+    if x in lowerer._blk_local_varmap:
+        var_val = lowerer._blk_local_varmap[x]
+    elif x in lowerer.varmap:
+        var_val = lowerer.varmap[x]
+
+    if var_val:
+        if not isinstance(var_val.type, llvmir.PointerType):
+            with lowerer.builder.goto_entry_block():
+                var_val_ptr = lowerer.builder.alloca(var_val.type)
+            lowerer.builder.store(var_val, var_val_ptr)
+            return var_val_ptr
+        else:
+            return var_val
+    else:
+        raise AssertionError("No llvm Value found for kernel arg")
 
 
 def _load_range(lowerer, value):
@@ -95,14 +128,11 @@ class ParforLowerImpl:
         self.args_ty_list = self.kernel_builder.allocate_kernel_arg_ty_array(
             num_flattened_args
         )
-
         # Populate the args_list and the args_ty_list LLVM arrays
         self.kernel_arg_num = 0
         for arg_num, arg in enumerate(kernel_fn.kernel_args):
             argtype = kernel_fn.kernel_arg_types[arg_num]
-            llvm_val = _getvar_or_none(lowerer, arg)
-            if not llvm_val:
-                raise AssertionError
+            llvm_val = _getvar(lowerer, arg)
             if isinstance(argtype, DpnpNdArray):
                 self.kernel_builder.build_array_arg(
                     array_val=llvm_val,
@@ -476,14 +506,18 @@ class ParforLowerFactory:
     """A pseudo-factory class that maps a device filter string to a lowering
     function.
 
-    Each parfor can have a "lowerer" attribute that determines how the parfor
-    node is to be lowered to LLVM IR. The factory class maintains a static map
-    that for every device type (filter string) encountered so far to a lowerer
-    function for that device type. At this point numba-dpex does not generate
-    device-specific code and there lowerer is always same for all devices.
-    By generating different instances we make sure prfors that will execute on
-    distinct devices as determined by compute-follows-data programming model are
-    never fused together.
+    Each Parfor instruction can have an optional "lowerer" attribute. The
+    lowerer attribute determines how the parfor instruction should be lowered
+    to LLVM IR. In addition, the lower attribute decides which parfor
+    instructions can be fused together.
+
+    The factory class maintains a dictionary mapping every device
+    type (filter string) encountered so far to a lowerer function for that
+    device type. At this point numba-dpex does not generate device-specific code
+    and the lowerer used is same for all device types. However, as a different
+    ParforLowerImpl instance is returned for every parfor instruction that has
+    a distinct compute-follows-data inferred device it prevents illegal
+    parfor fusion.
     """
 
     device_to_lowerer_map = {}
@@ -497,143 +531,3 @@ class ParforLowerFactory:
             ParforLowerFactory.device_to_lowerer_map[device] = lowerer
 
         return lowerer
-
-
-class WrapperDefaultLower(Lower):
-    @property
-    def _disable_sroa_like_opt(self):
-        """We always return True."""
-        return True
-
-
-def lower_parfor_dpex(lowerer, parfor):
-    parfor.lowerer = ParforLowerImpl()._lower_parfor_as_kernel
-    if parfor.lowerer is None:
-        _lower_parfor_parallel_std(lowerer, parfor)
-    else:
-        parfor.lowerer(lowerer, parfor)
-
-
-class _ParforLower(Lower):
-    """Extends standard lowering to accommodate parfor.Parfor nodes that may
-    have the ``lowerer`` attribute set.
-    """
-
-    def __init__(self, context, library, fndesc, func_ir, metadata=None):
-        Lower.__init__(self, context, library, fndesc, func_ir, metadata)
-        self.dpex_lower = self._lower(
-            context, library, fndesc, func_ir, metadata
-        )
-
-    def _lower(self, context, library, fndesc, func_ir, metadata):
-        """Create Lower with changed linkageName in debug info"""
-        lower = WrapperDefaultLower(context, library, fndesc, func_ir, metadata)
-
-        # Debuginfo
-        if context.enable_debuginfo:
-            from numba.core.funcdesc import default_mangler, qualifying_prefix
-
-            from numba_dpex.debuginfo import DpexDIBuilder
-
-            qualprefix = qualifying_prefix(fndesc.modname, fndesc.qualname)
-            mangled_qualname = default_mangler(qualprefix, fndesc.argtypes)
-
-            lower.debuginfo = DpexDIBuilder(
-                module=lower.module,
-                filepath=func_ir.loc.filename,
-                linkage_name=mangled_qualname,
-                cgctx=context,
-            )
-
-        return lower
-
-    def lower(self):
-        context = self.dpex_lower.context
-
-        # Only Numba's CPUContext has the `lower_extension` attribute
-        context.lower_extensions[Parfor] = lower_parfor_dpex
-        self.dpex_lower.lower()
-        self.base_lower = self.dpex_lower
-
-        self.env = self.base_lower.env
-        self.call_helper = self.base_lower.call_helper
-
-    def create_cpython_wrapper(self, release_gil=False):
-        return self.base_lower.create_cpython_wrapper(release_gil)
-
-
-@register_pass(mutates_CFG=True, analysis_only=False)
-class ParforLoweringPass(LoweringPass):
-    """A custom lowering pass that does dpex-specific lowering of parfor
-    nodes.
-
-    FIXME: Redesign once numba-dpex supports Numba 0.57
-    """
-
-    _name = "dpjit_lowering"
-
-    def __init__(self):
-        LoweringPass.__init__(self)
-
-    def run_pass(self, state):
-        if state.library is None:
-            codegen = state.targetctx.codegen()
-            state.library = codegen.create_library(state.func_id.func_qualname)
-            # Enable object caching upfront, so that the library can
-            # be later serialized.
-            state.library.enable_object_caching()
-
-        targetctx = state.targetctx
-
-        library = state.library
-        interp = state.func_ir
-        typemap = state.typemap
-        restype = state.return_type
-        calltypes = state.calltypes
-        flags = state.flags
-        metadata = state.metadata
-
-        kwargs = {}
-
-        # for support numba 0.54 and <=0.55.0dev0=*_469
-        if hasattr(flags, "get_mangle_string"):
-            kwargs["abi_tags"] = flags.get_mangle_string()
-        # Lowering
-        fndesc = funcdesc.PythonFunctionDescriptor.from_specialized_function(
-            interp,
-            typemap,
-            restype,
-            calltypes,
-            mangler=targetctx.mangler,
-            inline=flags.forceinline,
-            noalias=flags.noalias,
-            **kwargs,
-        )
-
-        with targetctx.push_code_library(library):
-            lower = _ParforLower(
-                targetctx, library, fndesc, interp, metadata=metadata
-            )
-            lower.lower()
-            if not flags.no_cpython_wrapper:
-                lower.create_cpython_wrapper(flags.release_gil)
-
-            env = lower.env
-            call_helper = lower.call_helper
-            del lower
-
-        from numba.core.compiler import _LowerResult  # TODO: move this
-
-        if flags.no_compile:
-            state["cr"] = _LowerResult(fndesc, call_helper, cfunc=None, env=env)
-        else:
-            # Prepare for execution
-            cfunc = targetctx.get_executable(library, fndesc, env)
-            # Insert native function for use by other jitted-functions.
-            # We also register its library to allow for inlining.
-            targetctx.insert_user_function(cfunc, fndesc, [library])
-            state["cr"] = _LowerResult(
-                fndesc, call_helper, cfunc=cfunc, env=env
-            )
-
-        return True

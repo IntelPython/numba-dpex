@@ -18,16 +18,16 @@ from numba.core.ir_utils import (
 )
 from numba.core.typing import signature
 
+from ..utils.kernel_templates.reduction_template import (
+    RemainderReduceIntermediateKernelTemplate,
+    TreeReduceIntermediateKernelTemplate,
+)
 from .kernel_builder import _print_body  # saved for debug
 from .kernel_builder import (
     ParforKernel,
     _compile_kernel_parfor,
     _to_scalar_from_0d,
     update_sentinel,
-)
-from .kernel_templates.reduction_template import (
-    RemainderReduceIntermediateKernelTemplate,
-    TreeReduceIntermediateKernelTemplate,
 )
 
 
@@ -57,8 +57,8 @@ def create_reduction_main_kernel_for_parfor(
     loop_body_var_table = get_name_var_table(reductionKernelVar.loop_body)
     sentinel_name = get_unused_var_name("__sentinel__", loop_body_var_table)
 
-    # Determine the unique names of the scheduling and gufunc functions.
-    kernel_name = "__numba_parfor_gufunc_%s" % (parfor_node.id)
+    # Determine the unique names of the scheduling and kernel functions.
+    kernel_name = "__dpex_reduction_parfor_%s" % (parfor_node.id)
 
     # swap s.2 (redvar) with partial_sum
     for i, name in enumerate(reductionKernelVar.parfor_params):
@@ -112,11 +112,11 @@ def create_reduction_main_kernel_for_parfor(
 
     replace_var_names(kernel_ir.blocks, new_var_dict)
     kernel_param_types = reductionKernelVar.param_types
-    gufunc_stub_last_label = max(kernel_ir.blocks.keys()) + 1
-    # Add gufunc stub last label to each parfor.loop_body label to prevent
+    kernel_stub_last_label = max(kernel_ir.blocks.keys()) + 1
+    # Add kernel stub last label to each parfor.loop_body label to prevent
     # label conflicts.
     loop_body = add_offset_to_labels(
-        reductionKernelVar.loop_body, gufunc_stub_last_label
+        reductionKernelVar.loop_body, kernel_stub_last_label
     )
     # new label for splitting sentinel block
     new_label = max(loop_body.keys()) + 1
@@ -205,7 +205,7 @@ def create_reduction_remainder_kernel_for_parfor(
         name = reductionHelper.final_sum_var.name
         final_sum_var_name.append(name)
 
-    kernel_name = "__numba_parfor_gufunc_%s_sum2" % (parfor_node.id)
+    kernel_name = "__dpex_redection_parfor_%s_remainder" % (parfor_node.id)
 
     partial_sum_var_dict = legalize_names(partial_sum_var_name)
     global_size_var_dict = legalize_names(global_size_var_name)
@@ -313,12 +313,12 @@ def create_reduction_remainder_kernel_for_parfor(
 
     kernel_param_types = reductionKernelVar.param_types
 
-    gufunc_stub_last_label = max(kernel_ir.blocks.keys()) + 1
+    kernel_stub_last_label = max(kernel_ir.blocks.keys()) + 1
 
-    # Add gufunc stub last label to each parfor.loop_body label to prevent
+    # Add kernel stub last label to each parfor.loop_body label to prevent
     # label conflicts.
     loop_body = add_offset_to_labels(
-        reductionKernelVar.loop_body, gufunc_stub_last_label
+        reductionKernelVar.loop_body, kernel_stub_last_label
     )
     # new label for splitting sentinel block
     new_label = max(loop_body.keys()) + 1

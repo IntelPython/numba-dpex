@@ -21,14 +21,14 @@ from numba.core.ir_utils import (
     replace_var_names,
 )
 from numba.core.typing import signature
+from numba.parfors import parfor
 
 import numba_dpex as dpex
 from numba_dpex import config
 
 from ..descriptor import dpex_kernel_target
-from ..passes import parfor
 from ..types.dpnp_ndarray_type import DpnpNdArray
-from .kernel_templates import RangeKernelTemplate
+from ..utils.kernel_templates import RangeKernelTemplate
 
 
 class ParforKernel:
@@ -338,7 +338,7 @@ def create_kernel_for_parfor(
         print("legal parfor_params = ", parfor_params, type(parfor_params))
 
     # Determine the unique names of the kernel functions.
-    kernel_name = "__numba_parfor_kernel_%s" % (parfor_node.id)
+    kernel_name = "__dpex_parfor_kernel_%s" % (parfor_node.id)
 
     kernel_template = RangeKernelTemplate(
         kernel_name=kernel_name,
@@ -493,8 +493,7 @@ def update_sentinel(kernel_ir, sentinel_name, kernel_body, new_label):
                 # parfor body.
                 prev_block.append(ir.Jump(body_first_label, loc))
 
-                # Add all the parfor loop body blocks to the gufunc function's
-                # IR.
+                # Add all the parfor loop body blocks to the kernel IR
                 for loop, b in kernel_body.items():
                     kernel_ir.blocks[loop] = copy.copy(b)
                     kernel_ir.blocks[loop].body = copy.copy(

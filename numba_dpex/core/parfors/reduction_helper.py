@@ -13,13 +13,13 @@ from numba.core.ir_utils import (
     remove_dels,
     replace_var_names,
 )
+from numba.parfors import parfor
 from numba.parfors.parfor_lowering_utils import ParforLoweringBuilder
 
 from numba_dpex import utils
 from numba_dpex.core.utils.kernel_launcher import KernelLaunchIRBuilder
 from numba_dpex.dpctl_iface import DpctlCAPIFnBuilder
 
-from ..passes import parfor
 from ..types.dpnp_ndarray_type import DpnpNdArray
 
 
@@ -296,7 +296,7 @@ class ReductionKernelVariables:
 
         param_types = [_to_scalar_from_0d(typemap[v]) for v in parfor_params]
 
-        # Calculate types of args passed to gufunc.
+        # Calculate types of args passed to the kernel function.
         func_arg_types = [typemap[v] for v in (parfor_inputs + parfor_outputs)]
 
         # Replace illegal parameter names in the loop body with legal ones.
