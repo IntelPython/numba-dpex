@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.exceptions module &mdash; numba-dpex 0.21.0dev0+35.g6aca7c31 documentation</title>
+  <title>numba_dpex.core.exceptions module &mdash; numba-dpex 0.21.0dev0+43.ge7a44206 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -96,8 +96,8 @@
 <span id="numba-dpex-core-exceptions-module"></span><h1>numba_dpex.core.exceptions module<a class="headerlink" href="#module-numba_dpex.core.exceptions" title="Permalink to this heading"></a></h1>
 <p>The module defines the custom error classes used in numba_dpex.</p>
 <dl class="py exception">
-<dt class="sig sig-object py" id="numba_dpex.core.exceptions.ComputeFollowsDataInferenceError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">ComputeFollowsDataInferenceError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndarray_argnum_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usmarray_argnum_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.exceptions.ComputeFollowsDataInferenceError" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dpex.core.exceptions.ExecutionQueueInferenceError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">ExecutionQueueInferenceError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usmarray_argnum_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.exceptions.ExecutionQueueInferenceError" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>Exception raised when an execution queue for a given array expression or
 a kernel function could not be deduced using the compute-follows-data
@@ -108,34 +108,17 @@ are on the right hand side of the expression or are the arguments to the
 kernel function. The execution queue is deduced based on the device on
 which the array operands were allocated. Computation is required to occur
 on the same device where the arrays currently reside.</p>
-<p>A ComputeFollowsDataInferenceError is raised when the execution queue using
+<p>A ExecutionQueueInferenceError is raised when the execution queue using
 compute-follows-data rules could not be deduced. It may happen when arrays
 that have a device attribute such as <code class="docutils literal notranslate"><span class="pre">dpctl.tensor.usm_ndarray</span></code> are mixed
 with host arrays such as <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>. The error may also be raised if
 the array operands are allocated on different devices.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>kernel_name : Name of the kernel function for which the error occurred.
-ndarray_argnum_list: The list of <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> arguments identified
-by the argument position that caused the error.
 usmarray_argnum_list: The list of <code class="docutils literal notranslate"><span class="pre">dpctl.tensor.usm_ndarray</span></code> arguments
 identified by the argument position that caused the error.</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="numba_dpex.core.exceptions.ExecutionQueueInferenceError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">ExecutionQueueInferenceError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.exceptions.ExecutionQueueInferenceError" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>Exception raised when an execution queue could not be deduced for NumPy
-ndarray kernel arguments.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>kernel_name (str): Name of kernel where the error was raised.</p>
-</dd>
-</dl>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 0.19.</span></p>
-</div>
 </dd></dl>
 
 <dl class="py exception">
@@ -274,21 +257,6 @@ local_ndims (int): Rank of the local range.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>Internal compiler error when an unreachable branch is taken somewhere in
 the compiler code.</p>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="numba_dpex.core.exceptions.UnsupportedAccessQualifierError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedAccessQualifierError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">illegal_access_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legal_access_list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.exceptions.UnsupportedAccessQualifierError" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>Exception raised when an illegal access specifier value is specified for
-a NumPy array argument passed to a kernel.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>kernel_name (str): Name of kernel where the error was raised.
-array_val: name of the array argument with the illegal access specifier.
-illegal_access_type (str): The illegal access specifier string.
-legal_access_list (str): Joined string for the legal access specifiers.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py exception">

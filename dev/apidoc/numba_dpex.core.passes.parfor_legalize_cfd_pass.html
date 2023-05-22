@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.passes.parfor_legalize_cfd_pass module &mdash; numba-dpex 0.21.0dev0+35.g6aca7c31 documentation</title>
+  <title>numba_dpex.core.passes.parfor_legalize_cfd_pass module &mdash; numba-dpex 0.21.0dev0+43.ge7a44206 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -122,7 +122,7 @@ of each expression as a default DpnpNdArray instance derived from the
 __array_ufunc__ method of DpnpNdArray class. The pass fixes the LHS type by
 properly applying compute follows data programming model. The pass first
 checks if the right-hand-side (RHS) DpnpNdArray arguments are on the same
-device, else raising a ComputeFollowsDataInferenceError. Once the RHS has
+device, else raising a ExecutionQueueInferenceError. Once the RHS has
 been validated, the LHS type is updated.</p>
 <p>The pass also updated the usm_type of the LHS based on a USM type
 propagation rule: device &gt; shared &gt; host. Thus, if the usm_type attribute of

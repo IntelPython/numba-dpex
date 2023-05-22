@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.kernel_interface.utils module &mdash; numba-dpex 0.21.0dev0+35.g6aca7c31 documentation</title>
+  <title>numba_dpex.core.kernel_interface.utils module &mdash; numba-dpex 0.21.0dev0+43.ge7a44206 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -118,78 +118,16 @@ else None is returned.</p>
 <dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.utils.determine_kernel_launch_queue">
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.core.kernel_interface.utils.</span></span><span class="sig-name descname"><span class="pre">determine_kernel_launch_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.utils.determine_kernel_launch_queue" title="Permalink to this definition"></a></dt>
 <dd><p>Determines the queue where the kernel is to be launched.</p>
-<p>The execution queue is derived using the following algorithm. In future,
-support for <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> and <code class="docutils literal notranslate"><span class="pre">dpctl.device_context</span></code> is to be
-removed and queue derivation will follows Python Array API’s
-“compute follows data” logic.</p>
-<p>Check if there are array arguments.
-True:</p>
-<blockquote>
-<div><p>Check if all array arguments are of type numpy.ndarray
-(numba.types.Array)</p>
-<blockquote>
-<div><dl>
-<dt>True:</dt><dd><p>Check if the kernel was invoked from within a
-dpctl.device_context.
-True:</p>
-<blockquote>
-<div><p>Provide a deprecation warning for device_context use and
-point to using dpctl.tensor.usm_ndarray or dpnp.ndarray</p>
-<p>return dpctl.get_current_queue</p>
-</div></blockquote>
+<p>The execution queue is derived following Python Array API’s
+“compute follows data” programming model.</p>
 <dl class="simple">
-<dt>False:</dt><dd><p>Raise ExecutionQueueInferenceError</p>
-</dd>
-</dl>
-</dd>
-<dt>False:</dt><dd><dl>
-<dt>Check if all of the arrays are USMNdarray</dt><dd><dl>
-<dt>True:</dt><dd><p>Check if execution queue could be inferred using
-compute follows data rules
-True:</p>
-<blockquote>
-<div><p>return the compute follows data inferred queue</p>
-</div></blockquote>
-<dl class="simple">
-<dt>False:</dt><dd><p>Raise ComputeFollowsDataInferenceError</p>
-</dd>
-</dl>
-</dd>
-<dt>False:</dt><dd><p>Raise ComputeFollowsDataInferenceError</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd>
-</dl>
-</div></blockquote>
-</div></blockquote>
-<dl>
-<dt>False:</dt><dd><p>Check if the kernel was invoked from within a dpctl.device_context.
-True:</p>
-<blockquote>
-<div><p>Provide a deprecation warning for device_context use and
-point to using dpctl.tensor.usm_ndarray of dpnp.ndarray</p>
-<p>return dpctl.get_current_queue</p>
-</div></blockquote>
-<dl class="simple">
-<dt>False:</dt><dd><p>Raise ExecutionQueueInferenceError</p>
-</dd>
-</dl>
-</dd>
-<dt>Args:</dt><dd><p>args : A list of arguments passed to the kernel stored in the
-launcher.
-argtypes : The Numba inferred type for each argument.</p>
+<dt>Args:</dt><dd><p>argtypes : The Numba inferred type for each argument.
+kernel_name : The name of the kernel function</p>
 </dd>
 <dt>Returns:</dt><dd><p>A queue the common queue used to allocate the arrays. If no such
 queue exists, then raises an Exception.</p>
 </dd>
-<dt>Raises:</dt><dd><dl class="simple">
-<dt>ComputeFollowsDataInferenceError: If the queue could not be inferred</dt><dd><p>using compute follows data rules.</p>
-</dd>
-<dt>ExecutionQueueInferenceError: If the queue could not be inferred</dt><dd><p>using the dpctl queue manager.</p>
-</dd>
-</dl>
+<dt>Raises:</dt><dd><p>ExecutionQueueInferenceError: If the queue could not be inferred.</p>
 </dd>
 </dl>
 </dd></dl>

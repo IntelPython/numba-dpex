@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.kernel_interface.func module &mdash; numba-dpex 0.21.0dev0+35.g6aca7c31 documentation</title>
+  <title>numba_dpex.core.kernel_interface.func module &mdash; numba-dpex 0.21.0dev0+43.ge7a44206 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -170,15 +170,18 @@ the compiled function inside this object.</p>
 <dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.func.compile_func">
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.core.kernel_interface.func.</span></span><span class="sig-name descname"><span class="pre">compile_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.func.compile_func" title="Permalink to this definition"></a></dt>
 <dd><p>Compiles a specialized <cite>numba_dpex.func</cite></p>
-<p>Compiles a specialized <cite>numba_dpex.func</cite> decorated function to native
-binary library function and returns the library wrapped inside a
+<p>Compiles a specialized <cite>numba_dpex.func</cite> decorated function to native binary
+library function and returns the library wrapped inside a
 <cite>numba_dpex.core.kernel_interface.func.DpexFunction</cite> object.</p>
 <dl class="simple">
 <dt>Args:</dt><dd><p>pyfunc (<cite>function</cite>): A python function to be compiled.
 signature (<cite>list</cite>): A list of <cite>numba.core.typing.templates.Signature</cite>’s
 debug (<cite>bool</cite>, optional): Debug options. Defaults to <cite>False</cite>.</p>
 </dd>
-<dt>Returns:</dt><dd><p><cite>numba_dpex.core.kernel_interface.func.DpexFunction</cite>: A <cite>DpexFunction</cite> object</p>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt><cite>numba_dpex.core.kernel_interface.func.DpexFunction</cite>: A <cite>DpexFunction</cite></dt><dd><p>object</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
