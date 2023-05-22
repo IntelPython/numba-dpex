@@ -10,10 +10,7 @@ import pytest
 
 import numba_dpex as dpex
 from numba_dpex.core.caching import LRUCache
-from numba_dpex.core.kernel_interface.dispatcher import (
-    JitKernel,
-    get_ordered_arg_access_types,
-)
+from numba_dpex.core.kernel_interface.dispatcher import JitKernel
 from numba_dpex.tests._helper import filter_strings
 
 
@@ -135,12 +132,7 @@ def test_caching_hit_counts(filter_str):
 
     expected = dpt.asnumpy(a) + dpt.asnumpy(b)
 
-    d = JitKernel(
-        data_parallel_sum,
-        array_access_specifiers=get_ordered_arg_access_types(
-            data_parallel_sum, None
-        ),
-    )
+    d = JitKernel(data_parallel_sum)
 
     d_launcher = d[100]
 

@@ -17,7 +17,6 @@ from numba_dpex.core.utils import (
     create_func_hash,
     strip_usm_metadata,
 )
-from numba_dpex.utils import npytypes_array_to_dpex_array
 
 
 class DpexFunction(object):
@@ -171,8 +170,8 @@ class DpexFunctionTemplate(object):
 def compile_func(pyfunc, signature, debug=False):
     """Compiles a specialized `numba_dpex.func`
 
-    Compiles a specialized `numba_dpex.func` decorated function to native
-    binary library function and returns the library wrapped inside a
+    Compiles a specialized `numba_dpex.func` decorated function to native binary
+    library function and returns the library wrapped inside a
     `numba_dpex.core.kernel_interface.func.DpexFunction` object.
 
     Args:
@@ -181,7 +180,8 @@ def compile_func(pyfunc, signature, debug=False):
         debug (`bool`, optional): Debug options. Defaults to `False`.
 
     Returns:
-        `numba_dpex.core.kernel_interface.func.DpexFunction`: A `DpexFunction` object
+        `numba_dpex.core.kernel_interface.func.DpexFunction`: A `DpexFunction`
+         object
     """
 
     devfn = DpexFunction(pyfunc, debug=debug)
@@ -189,14 +189,6 @@ def compile_func(pyfunc, signature, debug=False):
     cres = []
     for sig in signature:
         arg_types, return_types = sigutils.normalize_signature(sig)
-        arg_types = tuple(
-            [
-                npytypes_array_to_dpex_array(ty)
-                if isinstance(ty, types.npytypes.Array)
-                else ty
-                for ty in arg_types
-            ]
-        )
         c = devfn.compile(arg_types, return_types)
         cres.append(c)
 

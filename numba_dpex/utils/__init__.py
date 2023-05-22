@@ -21,7 +21,6 @@ from numba_dpex.utils.llvm_codegen_helpers import (
     get_one,
     get_zero,
 )
-from numba_dpex.utils.type_conversion_fns import npytypes_array_to_dpex_array
 
 __all__ = [
     "LLVMTypes",
@@ -30,8 +29,6 @@ __all__ = [
     "create_null_ptr",
     "get_zero",
     "get_one",
-    "npytypes_array_to_dpex_array",
-    "npytypes_array_to_dpex_array",
     "address_space",
     "calling_conv",
     "has_usm_memory",

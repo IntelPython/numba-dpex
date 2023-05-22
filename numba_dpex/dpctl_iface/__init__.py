@@ -9,7 +9,7 @@ includes:
 
 - LLVM IR builders for dpctl C API functions to be called directly from a Numba
   generated LLVM module.
-- Functions to lauch kernels on the dpctl "current queue".
+- Functions to launch kernels on the dpctl "current queue".
 
 """
 import numba_dpex.dpctl_iface.dpctl_function_types as dpctl_fn_ty

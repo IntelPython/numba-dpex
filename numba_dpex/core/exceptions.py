@@ -182,7 +182,7 @@ class UnsupportedGroupWorkItemSizeError(Exception):
         super().__init__(self.message)
 
 
-class ComputeFollowsDataInferenceError(Exception):
+class ExecutionQueueInferenceError(Exception):
     """Exception raised when an execution queue for a given array expression or
     a kernel function could not be deduced using the compute-follows-data
     programming model.
@@ -194,7 +194,7 @@ class ComputeFollowsDataInferenceError(Exception):
     which the array operands were allocated. Computation is required to occur
     on the same device where the arrays currently reside.
 
-    A ComputeFollowsDataInferenceError is raised when the execution queue using
+    A ExecutionQueueInferenceError is raised when the execution queue using
     compute-follows-data rules could not be deduced. It may happen when arrays
     that have a device attribute such as ``dpctl.tensor.usm_ndarray`` are mixed
     with host arrays such as ``numpy.ndarray``. The error may also be raised if
@@ -202,26 +202,12 @@ class ComputeFollowsDataInferenceError(Exception):
 
     Args:
         kernel_name : Name of the kernel function for which the error occurred.
-        ndarray_argnum_list: The list of ``numpy.ndarray`` arguments identified
-        by the argument position that caused the error.
         usmarray_argnum_list: The list of ``dpctl.tensor.usm_ndarray`` arguments
         identified by the argument position that caused the error.
     """
 
-    def __init__(
-        self, kernel_name, ndarray_argnum_list=None, *, usmarray_argnum_list
-    ) -> None:
-        if ndarray_argnum_list and usmarray_argnum_list:
-            ndarray_args = ",".join([str(i) for i in ndarray_argnum_list])
-            usmarray_args = ",".join([str(i) for i in usmarray_argnum_list])
-            self.message = (
-                f'Kernel "{kernel_name}" has arguments of both usm_ndarray and '
-                "non-usm_ndarray types. Mixing of arguments of different "
-                "array types is disallowed. "
-                f"Arguments {ndarray_args} are non-usm arrays, "
-                f"and arguments {usmarray_args} are usm arrays."
-            )
-        elif usmarray_argnum_list is not None:
+    def __init__(self, kernel_name, *, usmarray_argnum_list) -> None:
+        if usmarray_argnum_list is not None:
             usmarray_args = ",".join([str(i) for i in usmarray_argnum_list])
             self.message = (
                 f'Execution queue for kernel "{kernel_name}" could '
@@ -229,32 +215,6 @@ class ComputeFollowsDataInferenceError(Exception):
                 f"usm_ndarray arguments {usmarray_args} were not allocated "
                 "on the same queue."
             )
-        super().__init__(self.message)
-
-
-class ExecutionQueueInferenceError(Exception):
-    """Exception raised when an execution queue could not be deduced for NumPy
-    ndarray kernel arguments.
-
-    Args:
-        kernel_name (str): Name of kernel where the error was raised.
-
-    .. deprecated:: 0.19
-    """
-
-    def __init__(self, kernel_name) -> None:
-        warn(
-            "The ExecutionQueueInferenceError class is deprecated, and will "
-            + "be removed once support for NumPy ndarrays as kernel arguments "
-            + "is removed.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        self.message = (
-            f'Kernel "{kernel_name}" was called with NumPy ndarray arguments '
-            "outside a dpctl.device_context. The execution queue to be used "
-            "could not be deduced."
-        )
         super().__init__(self.message)
 
 
@@ -354,29 +314,6 @@ class SUAIProtocolError(Exception):
             "is neither a NumPy array nor implement the "
             "__sycl_usm_array_interface__."
         )
-        super().__init__(self.message)
-
-
-class UnsupportedAccessQualifierError(Exception):
-    """Exception raised when an illegal access specifier value is specified for
-    a NumPy array argument passed to a kernel.
-
-    Args:
-        kernel_name (str): Name of kernel where the error was raised.
-        array_val: name of the array argument with the illegal access specifier.
-        illegal_access_type (str): The illegal access specifier string.
-        legal_access_list (str): Joined string for the legal access specifiers.
-    """
-
-    def __init__(
-        self, kernel_name, array_val, illegal_access_type, legal_access_list
-    ) -> None:
-        self.message = (
-            f"Invalid access type {illegal_access_type} applied to "
-            f'array {array_val} argument passed to kernel "{kernel_name}". '
-            f"Legal access specifiers are {legal_access_list}."
-        )
-
         super().__init__(self.message)
 
 

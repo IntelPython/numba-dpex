@@ -46,12 +46,7 @@ def initialize():
     return price, strike, t, rate, volatility, call, put
 
 
-@ndpx.kernel(
-    access_types={
-        "read_only": ["price", "strike", "t"],
-        "write_only": ["call", "put"],
-    }
-)
+@ndpx.kernel
 def kernel_black_scholes(price, strike, t, rate, volatility, call, put):
     # Scalars
     mr = -rate
