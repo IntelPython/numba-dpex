@@ -48,9 +48,6 @@ def are_queues_equal(typingctx, ty_queue1, ty_queue2):
     return sig, codegen
 
 
-@pytest.mark.skip(
-    reason="Gives segfault, the intrinsic function might not be correct."
-)
 def test_queue_ref_access_in_dpjit():
     """Tests if we can access the queue_ref attribute of a dpctl.SyclQueue
     PyObject inside dpjit and pass it to a native C function, in this case
