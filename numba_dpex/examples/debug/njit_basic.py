@@ -2,10 +2,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from numba import njit
+from numba_dpex import dpjit
 
 
-@njit(debug=True)
+@dpjit(debug=True)
 def foo(arg):
     l1 = arg + 6
     l2 = arg * 5.43
@@ -14,8 +14,7 @@ def foo(arg):
 
 
 def main():
-    result = foo(987)
-    print(result)
+    foo(987)
 
 
 if __name__ == "__main__":
