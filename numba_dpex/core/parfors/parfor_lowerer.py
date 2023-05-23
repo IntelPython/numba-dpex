@@ -12,11 +12,11 @@ from numba.parfors.parfor import (
 )
 
 from numba_dpex import config
-from numba_dpex.core.utils.kernel_launcher import KernelLaunchIRBuilder
 from numba_dpex.core.parfors.reduction_helper import (
     ReductionHelper,
     ReductionKernelVariables,
 )
+from numba_dpex.core.utils.kernel_launcher import KernelLaunchIRBuilder
 
 from ..exceptions import UnsupportedParforError
 from ..types.dpnp_ndarray_type import DpnpNdArray

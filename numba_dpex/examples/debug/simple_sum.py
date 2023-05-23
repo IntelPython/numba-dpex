@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import dpctl
-import numpy as np
+import dpnp as np
 
 import numba_dpex as ndpx
 
@@ -21,8 +21,6 @@ a = np.array(np.random.random(N), dtype=np.float32)
 b = np.array(np.random.random(N), dtype=np.float32)
 c = np.ones_like(a)
 
-device = dpctl.select_default_device()
-with dpctl.device_context(device):
-    data_parallel_sum[ndpx.Range(global_size)](a, b, c)
+data_parallel_sum[ndpx.Range(global_size)](a, b, c)
 
 print("Done...")

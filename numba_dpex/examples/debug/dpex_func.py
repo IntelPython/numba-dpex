@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import dpctl
-import numpy as np
+import dpnp as np
 
 import numba_dpex as ndpx
 
@@ -37,14 +37,7 @@ def main():
     b = np.arange(N, dtype=np.float32)
     c = np.empty_like(a)
 
-    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
-    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
-    device = dpctl.select_default_device()
-    print("Using device ...")
-    device.print_device_info()
-
-    with dpctl.device_context(device):
-        driver(a, b, c, global_size)
+    driver(a, b, c, global_size)
 
     print("Done...")
 
