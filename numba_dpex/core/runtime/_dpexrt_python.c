@@ -624,7 +624,7 @@ static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
         }
         else if (!dest_is_float && value_is_float) {
             double *p = (double *)&value;
-            bc.i64_ = *p;
+            bc.i64_ = (int64_t)*p;
         }
         else {
             bc.i64_ = value;
@@ -638,7 +638,7 @@ static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
     {
         if (dest_is_float && value_is_float) {
             double *p = (double *)(&value);
-            bc.f_ = *p;
+            bc.f_ = (float)*p;
         }
         else if (dest_is_float && !value_is_float) {
             // To stop warning: dereferencing type-punned pointer
@@ -648,7 +648,7 @@ static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
         }
         else if (!dest_is_float && value_is_float) {
             double *p = (double *)&value;
-            bc.i32_ = *p;
+            bc.i32_ = (int32_t)*p;
         }
         else {
             bc.i32_ = (int32_t)value;
@@ -665,7 +665,7 @@ static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
 
         if (value_is_float) {
             double *p = (double *)&value;
-            bc.i16_ = *p;
+            bc.i16_ = (int16_t)*p;
         }
         else {
             bc.i16_ = (int16_t)value;
@@ -682,7 +682,7 @@ static NRT_MemInfo *DPEXRT_MemInfo_fill(NRT_MemInfo *mi,
 
         if (value_is_float) {
             double *p = (double *)&value;
-            bc.i8_ = *p;
+            bc.i8_ = (int8_t)*p;
         }
         else {
             bc.i8_ = (int8_t)value;
