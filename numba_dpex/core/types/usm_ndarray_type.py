@@ -23,7 +23,6 @@ class USMNdArray(Array):
         ndim,
         layout="C",
         dtype=None,
-        is_fill_value_float=False,
         usm_type="device",
         device=None,
         queue=None,
@@ -69,22 +68,12 @@ class USMNdArray(Array):
         self.device = self.queue.sycl_device.filter_string
 
         if not dtype:
-            if is_fill_value_float:
-                dummy_tensor = dpctl.tensor.empty(
-                    1,
-                    dtype=dpctl.tensor.float64,
-                    order=layout,
-                    usm_type=usm_type,
-                    sycl_queue=self.queue,
-                )
-            else:
-                dummy_tensor = dpctl.tensor.empty(
-                    1,
-                    dtype=dpctl.tensor.int64,
-                    order=layout,
-                    usm_type=usm_type,
-                    sycl_queue=self.queue,
-                )
+            dummy_tensor = dpctl.tensor.empty(
+                1,
+                order=layout,
+                usm_type=usm_type,
+                sycl_queue=self.queue,
+            )
             # convert dpnp type to numba/numpy type
             _dtype = dummy_tensor.dtype
             self.dtype = from_dtype(_dtype)
