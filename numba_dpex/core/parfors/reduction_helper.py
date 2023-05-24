@@ -16,7 +16,7 @@ from numba.core.ir_utils import (
 from numba.parfors import parfor
 from numba.parfors.parfor_lowering_utils import ParforLoweringBuilder
 
-from numba_dpex import utils
+from numba_dpex import config, utils
 from numba_dpex.core.utils.kernel_launcher import KernelLaunchIRBuilder
 from numba_dpex.dpctl_iface import DpctlCAPIFnBuilder
 
@@ -48,6 +48,8 @@ class ReductionHelper:
 
         # allocate partial sum
         work_group_size = 8
+        if config.REDUCTION_WORK_GROUP_SIZE:
+            work_group_size = config.REDUCTION_WORK_GROUP_SIZE
         # writing work_group_size inot IR
         work_group_size_var = pfbdr.assign(
             rhs=ir.Const(work_group_size, loc),

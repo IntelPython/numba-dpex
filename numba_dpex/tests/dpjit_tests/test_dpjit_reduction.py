@@ -8,6 +8,7 @@ import numpy
 import pytest
 
 import numba_dpex as dpex
+from numba_dpex import config
 
 N = 10
 
@@ -121,5 +122,25 @@ def test_dpjit_array_arg_float32_types(input_arrays):
     b = dpnp.arange(100, dtype=dpnp.float32)
 
     c = vecadd_prange_float(a, b)
+
+    assert s == c
+
+
+def test_dpjit_reduction_work_group_size(input_arrays):
+    """Tests passing work_group_size to a dpjit
+    prange reduciton kernel.
+
+    Args:
+        input_arrays (dpnp.ndarray): Array arguments to be passed to a kernel.
+    """
+    a, b = input_arrays
+
+    config.REDUCTION_WORK_GROUP_SIZE = 2
+
+    c = vecadd_prange1(a, b)
+
+    config.REDUCTION_WORK_GROUP_SIZE = 4
+
+    s = vecadd_prange1(a, b)
 
     assert s == c
