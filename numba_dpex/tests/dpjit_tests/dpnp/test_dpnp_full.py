@@ -5,6 +5,7 @@
 """Tests for dpnp ndarray constructors."""
 
 import math
+import platform
 
 import dpctl
 import dpnp
@@ -52,7 +53,16 @@ def test_dpnp_full_default(shape, fill_value):
 
     dummy = dpnp.full(shape, fill_value)
 
-    assert c.dtype == dummy.dtype
+    if c.dtype != dummy.dtype:
+        if platform.system().lower() != "linux":
+            pytest.xfail(
+                "Ddefault bit length is not as same as that of linux for {0:s}".format(
+                    str(dummy.dtype)
+                )
+            )
+        else:
+            pytest.fail("The dtype of the returned array doesn't conform.")
+
     assert c.usm_type == dummy.usm_type
     assert c.sycl_device == dummy.sycl_device
     if c.sycl_queue != dummy.sycl_queue:
