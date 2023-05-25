@@ -76,7 +76,7 @@ class CmdLine:
             llvm_spirv_flags.append("--spirv-debug-info-version=ocl-100")
 
         if not config.NATIVE_FP_ATOMICS:
-            llvm_spirv_args = ["--spirv-max-version", "1.1"] + llvm_spirv_args
+            llvm_spirv_args = ["--spirv-max-version", "1.4"] + llvm_spirv_args
         llvm_spirv_tool = self._llvm_spirv()
 
         if config.DEBUG:
