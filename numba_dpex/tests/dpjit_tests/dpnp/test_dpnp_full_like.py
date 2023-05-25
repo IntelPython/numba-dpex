@@ -5,7 +5,7 @@
 """Tests for dpnp ndarray constructors."""
 
 import math
-import platform
+import sys
 
 import dpctl
 import dpctl.tensor as dpt
@@ -56,7 +56,7 @@ def test_dpnp_full_like_default(shape, fill_value):
     dummy = dpnp.full_like(a, fill_value)
 
     if c.dtype != dummy.dtype:
-        if platform.system().lower() != "linux":
+        if sys.platform != "linux":
             pytest.xfail(
                 "Ddefault bit length is not as same as that of linux for {0:s}".format(
                     str(dummy.dtype)

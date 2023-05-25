@@ -5,7 +5,7 @@
 """Tests for dpnp ndarray constructors."""
 
 import math
-import platform
+import sys
 
 import dpctl
 import dpnp
@@ -36,6 +36,9 @@ fill_values = [
 def test_dpnp_full_default(shape, fill_value):
     """Test dpnp.full() with default parameters inside dpjit."""
 
+    if sys.platform == "win32" and fill_value == 4294967295:
+        pytest.skip("dpnp.full() doesn't work with large integers on windows.")
+
     @dpjit
     def func(shape, fill_value):
         c = dpnp.full(shape, fill_value)
@@ -54,7 +57,7 @@ def test_dpnp_full_default(shape, fill_value):
     dummy = dpnp.full(shape, fill_value)
 
     if c.dtype != dummy.dtype:
-        if platform.system().lower() != "linux":
+        if sys.platform != "linux":
             pytest.xfail(
                 "Ddefault bit length is not as same as that of linux for {0:s}".format(
                     str(dummy.dtype)
