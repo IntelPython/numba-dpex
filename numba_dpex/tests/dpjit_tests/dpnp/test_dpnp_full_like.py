@@ -58,7 +58,7 @@ def test_dpnp_full_like_default(shape, fill_value):
     if c.dtype != dummy.dtype:
         if sys.platform != "linux":
             pytest.xfail(
-                "Ddefault bit length is not as same as that of linux for {0:s}".format(
+                "Default bit length is not as same as that of linux for {0:s}".format(
                     str(dummy.dtype)
                 )
             )

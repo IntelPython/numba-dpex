@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import dpctl
-import pytest
 from llvmlite import ir as llvmir
 from numba.core import cgutils, types
 from numba.extending import intrinsic
