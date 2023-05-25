@@ -34,6 +34,11 @@ jobs:
           conda list
           python -c "import numba_dpex; print(numba_dpex.__file__)"
 
+      - name: Dump coverage test environment
+        run: |
+          conda env export > /tmp/env-cov.yml
+          cat /tmp/env-cov.yml
+
       - name: Run tests with coverage
         run: |
           pytest -q -ra --disable-warnings --cov --cov-report term-missing --pyargs numba_dpex -vv
