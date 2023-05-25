@@ -6,24 +6,23 @@
 Tests for checking enforcing CFD in parfor pass.
 """
 
-import dpctl
 import dpnp
-import numba as nb
 
 import numba_dpex as dpex
 
 
 @dpex.dpjit
-def vecadd_prange(a, b):
-    c = dpnp.empty(a.shape, dtype=a.dtype)
-    # for idx in nb.prange(a.size):
-    #     c[idx] = a[idx] + b[idx]
-    return c
+def f(a, b):
+    for i in dpex.prange(4):
+        b[i, 0] = a[i, 0] * 10
+    return
 
 
-a = dpnp.ones(10)
-b = dpnp.ones(10)
+m = 8
+n = 8
+a = dpnp.ones((m, n))
+b = dpnp.ones((m, n))
 
+f(a, b)
 
-c = vecadd_prange(a, b)
-print(c)
+print(b)

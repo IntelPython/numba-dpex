@@ -16,7 +16,6 @@ from numba.core.typed_passes import (
     ParforPass,
     ParforPreLoweringPass,
     PreLowerStripPhis,
-    PreParforPass,
 )
 
 from numba_dpex.core.exceptions import UnsupportedCompilationModeError
@@ -24,6 +23,7 @@ from numba_dpex.core.passes import (
     DumpParforDiagnostics,
     NoPythonBackend,
     ParforLegalizeCFDPass,
+    PreParforPass,
 )
 from numba_dpex.parfor_diagnostics import ExtendedParforDiagnostics
 

@@ -142,6 +142,7 @@ def dpjit(*args, **kws):
         warnings.warn(
             "nopython is set for dpjit and is ignored", RuntimeWarning
         )
+        del kws["nopython"]
     if "forceobj" in kws:
         warnings.warn(
             "forceobj is set for dpjit and is ignored", RuntimeWarning
@@ -151,7 +152,7 @@ def dpjit(*args, **kws):
         warnings.warn(
             "pipeline class is set for dpjit and is ignored", RuntimeWarning
         )
-        del kws["forceobj"]
+        del kws["pipeline_class"]
     kws.update({"nopython": True})
     kws.update({"parallel": True})
     kws.update({"pipeline_class": DpjitCompiler})
