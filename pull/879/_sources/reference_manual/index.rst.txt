@@ -6,5 +6,5 @@
     :align: center
     :alt: Data Parallel Extensions for Python
 
-Data Parallel Extension for Numba Reference Manual
-==================================================
+Programmer's Guide
+==================

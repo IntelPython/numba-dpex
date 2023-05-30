@@ -1,5 +1,5 @@
 .. _getting_started:
-.. include:: ./../ext_links.txt
+.. include:: ./ext_links.txt
 
 .. |copy| unicode:: U+000A9
 
@@ -14,26 +14,19 @@ Installation
 
 Numba-dpex depends on following components:
 
-* numba 0.54.* or 0.55.* (`Numba`_)
-* dpctl 0.13.* (`Intel Python dpctl`_)
-* dpnp 0.10.1 (`Intel Python DPNP`_)
-* `llvm-spirv`_ (SPIRV generation from LLVM IR)
-* `llvmdev`_ (LLVM IR generation)
-* `spirv-tools`_
-* `packaging`_
-* `cython`_ (for building)
-* `scipy`_ (for testing)
-* `pytest`_ (for testing)
+* numba 0.57.*
+* dpctl 0.14.*
+* dpnp 0.11.*
+* dpcpp-cpp-rt
+* dpcpp-llvm-spirv
+* spirv-tools
 
-It is recommended to use conda packages from `Intel Distribution for Python`_
-channel or `anaconda.org/intel`_ channel.
-`Intel Distribution for Python`_ is available from `Intel oneAPI`_.
+It is recommended to use conda packages from the ``anaconda.org/intel`` channel.
 
 Create conda environment:
 
 .. code-block:: bash
 
-    export ONEAPI_ROOT=/opt/intel/oneapi
     conda create -n numba-dpex-env numba-dpex dpnp -c ${ONEAPI_ROOT}/conda_channel
 
 Build and Install Conda Package
@@ -46,12 +39,9 @@ Create and activate conda build environment:
     conda create -n build-env conda-build
     conda activate build-env
 
-Set environment variable ``ONEAPI_ROOT`` and build conda package:
-
 .. code-block:: bash
 
-    export ONEAPI_ROOT=/opt/intel/oneapi
-    conda build conda-recipe -c ${ONEAPI_ROOT}/conda_channel
+    conda build conda-recipe -c intel -c conda-forge
 
 Install conda package:
 
@@ -62,32 +52,11 @@ Install conda package:
 Build and Install with setuptools
 ---------------------------------
 
-``setup.py`` requires environment variable ``ONEAPI_ROOT`` and following packages
-installed in conda environment:
-
 .. code-block:: bash
 
-    export ONEAPI_ROOT=/opt/intel/oneapi
-    conda create -n numba-dpex-env -c ${ONEAPI_ROOT}/conda_channel python=3.7 dpctl dpnp numba spirv-tools llvm-spirv llvmdev cython pytest
+    conda create -n numba-dpex-env dpctl dpnp numba spirv-tools dpcpp-llvm-spirv llvmdev cython pytest -c intel -c conda-forge
     conda activate numba-dpex-env
 
-Activate DPC++ compiler:
-
-.. code-block:: bash
-
-    source ${ONEAPI_ROOT}/compiler/latest/env/vars.sh
-
-For installing:
-
-.. code-block:: bash
-
-    python setup.py install
-
-For development:
-
-.. code-block:: bash
-
-    python setup.py develop
 
 Testing
 -------

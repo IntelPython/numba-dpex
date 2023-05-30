@@ -5,10 +5,10 @@ Overview
 ========
 
 Data-Parallel Extensions for Numba* (`numba-dpex`_) is a standalone extension to
-the `Numba`_ JIT compiler. The extension adds two new features to Numba: an
-architecture-agnostic kernel programming API, and a backend extension that can
-parallelize NumPy-style array expressions and function calls on different types
-of data-parallel architectures.
+the `Numba*`_ Python JIT compiler. The extension adds two new features to Numba:
+an architecture-agnostic kernel programming API, and a backend extension that
+can parallelize NumPy-style array expressions and function calls on different
+types of data-parallel hardware.
 
 Numba-dpex is part of `Intel AI Analytics Toolkit`_ and distributed with the
 `Intel Distribution for Python*`_. The extension is also available on Anaconda
@@ -20,68 +20,65 @@ Main Features
 
 - :doc:`user_manual/kernel_programming/index`
 
-    The kernel API has a design and API similar to what is provided by Numba's
-    ``cuda.jit`` module. However, the API uses the `SYCL`_ language runtime and
-    as such is extensible to several hardware categories. Presently, the API
-    supports only SPIR-V-based OpenCL and `oneAPI Level Zero`_ devices that are
-    supported by the Intel® `DPC++`_ SYCL compiler runtime.
+The kernel API has a design and API similar to what is provided by Numba's
+``cuda.jit`` module. However, the API uses the `SYCL*`_ language runtime and as
+such is extensible to several hardware categories. Presently, the API supports
+only SPIR-V-based OpenCL and `oneAPI Level Zero`_ devices that are supported by
+the Intel® `DPC++`_ SYCL compiler runtime.
 
-    A simple vector addition kernel can be expressed using the API as follows:
+A simple vector addition kernel can be expressed using the API as follows:
 
-    .. code-block:: python
+.. code-block:: python
 
-        import dpnp
-        import numba_dpex as dpex
-
-
-        @dpex.kernel
-        def sum(a, b, c):
-            i = dpex.get_global_id(0)
-            c[i] = a[i] + b[i]
+    import dpnp
+    import numba_dpex as dpex
 
 
-        a = dpnp.ones(1024, device="gpu")
-        b = dpnp.ones(1024, device="gpu")
-        c = dpnp.empty_like(a)
-
-        sum[dpex.Range(1024)](a, b, c)
-        print(c)
-
-    In the above example, as the programmer allocated the dpnp arrays on a
-    default ``gpu`` device, numba-dpex will compile and then execute the kernel
-    for that device. To change the execution target to a CPU, the device only
-    the device keyword needs to be changed to ``cpu`` when allocating the dpnp
-    arrays.
-
-- :doc: `user_manual/auto-offload`
-
-    The new backend extension to add automatic parallelization support has a
-    similar user-interface to Numba's existing loop-parallelizer. The feature
-    enables a programmer to "offload" NumPy-style vector expressions, library
-    calls, and ``prange`` loops to different hardware and execute them in
-    parallel. A key difference from Numba's loop-parallelizer is the ability to
-    parallelize on non-multicore CPU hardware.
-
-    requires the
-    `dpnp <https://github.com/IntelPython/dpnp>`_ library, a data-parallel
-    drop-in replacement for `NumPy*`_.
+    @dpex.kernel
+    def sum(a, b, c):
+        i = dpex.get_global_id(0)
+        c[i] = a[i] + b[i]
 
 
-    A programmer only needs to swap NumPy*
-    function calls, array expressions, and loops with the corresponding API and
-    array type from dpnp and  use numba-dpex's decorator in place of the default
-    Numba decorator to parallelize the expressions on different types of
-    hardware.
+    a = dpnp.ones(1024, device="gpu")
+    b = dpnp.ones(1024, device="gpu")
+    c = dpnp.empty_like(a)
+
+    sum[dpex.Range(1024)](a, b, c)
+    print(c)
+
+In the above example, as the programmer allocated arrays on a ``gpu`` device
+using the dpnp library, numba-dpex will compile and then execute the kernel for
+that specific device. To change the execution target to a CPU, the device
+keyword needs to be changed to ``cpu`` when allocating the dpnp arrays. It is
+also possible to leave the ``device`` keyword undefined and let the dpnp library
+select a default device based on environment flag settings.
+
+- :doc:`user_manual/dpnp_offload/index`
+
+`Dpnp`_ is a NumPy-replacement library being developed using SYCL and oneAPI.
+The library has an API similar to NumPy, but using SYCL and oneAPI is able to
+execute in parallel on different types of hardware.
+
+Numba-dpex extends Numba's type system and compilation pipeline to compile dpnp
+functions and expressions in the same manner as Numba compiles NumPy. Unlike
+Numba's NumPy compilation that is serial by default, numba-dpex always compiles
+dpnp expressions into offloadable kernels and executes them in parallel. The
+functionality is similar to what Numba users achieve by using the ``parallel``
+option in ``numba.jit``. However, offloading by numba-dpex is not just
+restricted to CPUs and supports all devices that are presently supported by the
+kernel API.
+
 
 Contributing
-============
+------------
 
 Refer the `contributing guide
 <https://github.com/IntelPython/numba-dpex/blob/main/CONTRIBUTING>`_ for
 information on coding style and standards used in numba-dpex.
 
 License
-=======
+-------
 
 Numba-dpex is Licensed under Apache License 2.0 that can be found in `LICENSE
 <https://github.com/IntelPython/numba-dpex/blob/main/LICENSE>`_. All usage and

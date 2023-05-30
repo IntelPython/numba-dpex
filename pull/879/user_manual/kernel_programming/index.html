@@ -18,7 +18,7 @@
         gtag('config', 'G-LGGL0NJK6P');
     </script>
     
-    <title>Data Parallel Kernel Programming &#8212; numba-dpex  documentation</title>
+    <title>Kernel Programming API &#8212; numba-dpex  documentation</title>
   
   
   
@@ -50,6 +50,8 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'user_manual/kernel_programming/index';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Writing Data Parallel Kernels" href="writing_kernels.html" />
+    <link rel="prev" title="Programmer’s Guide" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -145,9 +147,9 @@
                     </li>
                 
 
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../reference_manual/index.html">
-                        Data Parallel Extension for Numba Reference Manual
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../index.html">
+                        Programmer’s Guide
                       </a>
                     </li>
                 
@@ -280,9 +282,9 @@ document.write(`
                     </li>
                 
 
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../reference_manual/index.html">
-                        Data Parallel Extension for Numba Reference Manual
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="../index.html">
+                        Programmer’s Guide
                       </a>
                     </li>
                 
@@ -356,19 +358,25 @@ document.write(`
         <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">This document will cover the following chapters:</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="writing_kernels.html">Writing Data Parallel Kernels</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memory-management.html">Memory Management</a></li>
-<li class="toctree-l1"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selecting_device.html">Defining the execution queue for a kernel function</a></li>
-<li class="toctree-l1"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="random.html">Random Number Generation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Kernel Programming API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html">Writing Data Parallel Kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory-management.html">Memory Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="selecting_device.html">Defining the execution queue for a kernel function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random.html">Random Number Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../performance_tips.html">Performance Tips</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../useful_links.html">Useful links</a></li>
+
 </ul>
 </div>
 </nav></div>
@@ -406,7 +414,10 @@ document.write(`
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page">Data Parallel Kernel Programming</li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Programmer’s Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Kernel Programming API</li>
   </ul>
 </nav>
 </div>
@@ -423,8 +434,8 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <span class="target" id="index"></span><section id="data-parallel-kernel-programming">
-<h1>Data Parallel Kernel Programming<a class="headerlink" href="#data-parallel-kernel-programming" title="Permalink to this heading">#</a></h1>
+  <span class="target" id="index"></span><section id="kernel-programming-api">
+<h1>Kernel Programming API<a class="headerlink" href="#kernel-programming-api" title="Permalink to this heading">#</a></h1>
 <p><a class="reference external" href="https://intelpython.github.io/DPEP/main/">Data Parallel Extensions for Python*</a> introduce a concept of an <em>offload kernel</em>, defined as
 a part of a Python program being submitted for execution to the device queue.</p>
 <a class="reference internal image-reference" href="../../_images/kernel-queue-device.png"><img alt="Offload Kernel" class="align-center" src="../../_images/kernel-queue-device.png" style="width: 520.0px; height: 351.0px;" /></a>
@@ -516,6 +527,24 @@ hardware vendors.</p>
   
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="../index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Programmer’s Guide</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="writing_kernels.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Writing Data Parallel Kernels</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div></div>
   
 </div>

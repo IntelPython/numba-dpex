@@ -50,7 +50,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'getting_started';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Data Parallel Extension for Numba Reference Manual" href="reference_manual/index.html" />
+    <link rel="next" title="Programmer’s Guide" href="user_manual/index.html" />
     <link rel="prev" title="Overview" href="overview.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -148,8 +148,8 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="reference_manual/index.html">
-                        Data Parallel Extension for Numba Reference Manual
+                      <a class="nav-link nav-internal" href="user_manual/index.html">
+                        Programmer’s Guide
                       </a>
                     </li>
                 
@@ -287,8 +287,8 @@ document.write(`
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="reference_manual/index.html">
-                        Data Parallel Extension for Numba Reference Manual
+                      <a class="nav-link nav-internal" href="user_manual/index.html">
+                        Programmer’s Guide
                       </a>
                     </li>
                 
@@ -407,29 +407,22 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <span class="target" id="getting-started"></span><section id="id1">
-<h1>Getting Started<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
+  <span class="target" id="getting-started"></span><section id="id2">
+<h1>Getting Started<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h1>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">#</a></h2>
 <p>Numba-dpex depends on following components:</p>
 <ul class="simple">
-<li><p>numba 0.54.* or 0.55.* (<a href="#id2"><span class="problematic" id="id3">`Numba`_</span></a>)</p></li>
-<li><p>dpctl 0.13.* (<a href="#id4"><span class="problematic" id="id5">`Intel Python dpctl`_</span></a>)</p></li>
-<li><p>dpnp 0.10.1 (<a href="#id6"><span class="problematic" id="id7">`Intel Python DPNP`_</span></a>)</p></li>
-<li><p><a href="#id8"><span class="problematic" id="id9">`llvm-spirv`_</span></a> (SPIRV generation from LLVM IR)</p></li>
-<li><p><a href="#id10"><span class="problematic" id="id11">`llvmdev`_</span></a> (LLVM IR generation)</p></li>
-<li><p><a href="#id12"><span class="problematic" id="id13">`spirv-tools`_</span></a></p></li>
-<li><p><a href="#id14"><span class="problematic" id="id15">`packaging`_</span></a></p></li>
-<li><p><a href="#id16"><span class="problematic" id="id17">`cython`_</span></a> (for building)</p></li>
-<li><p><a href="#id18"><span class="problematic" id="id19">`scipy`_</span></a> (for testing)</p></li>
-<li><p><a href="#id20"><span class="problematic" id="id21">`pytest`_</span></a> (for testing)</p></li>
+<li><p>numba 0.57.*</p></li>
+<li><p>dpctl 0.14.*</p></li>
+<li><p>dpnp 0.11.*</p></li>
+<li><p>dpcpp-cpp-rt</p></li>
+<li><p>dpcpp-llvm-spirv</p></li>
+<li><p>spirv-tools</p></li>
 </ul>
-<p>It is recommended to use conda packages from <a href="#id22"><span class="problematic" id="id23">`Intel Distribution for Python`_</span></a>
-channel or <a href="#id24"><span class="problematic" id="id25">`anaconda.org/intel`_</span></a> channel.
-<a href="#id26"><span class="problematic" id="id27">`Intel Distribution for Python`_</span></a> is available from <a href="#id28"><span class="problematic" id="id29">`Intel oneAPI`_</span></a>.</p>
+<p>It is recommended to use conda packages from the <code class="docutils literal notranslate"><span class="pre">anaconda.org/intel</span></code> channel.</p>
 <p>Create conda environment:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ONEAPI_ROOT</span><span class="o">=</span>/opt/intel/oneapi
-conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w"> </span>numba-dpex<span class="w"> </span>dpnp<span class="w"> </span>-c<span class="w"> </span><span class="si">${</span><span class="nv">ONEAPI_ROOT</span><span class="si">}</span>/conda_channel
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w"> </span>numba-dpex<span class="w"> </span>dpnp<span class="w"> </span>-c<span class="w"> </span><span class="si">${</span><span class="nv">ONEAPI_ROOT</span><span class="si">}</span>/conda_channel
 </pre></div>
 </div>
 </section>
@@ -440,9 +433,7 @@ conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </
 conda<span class="w"> </span>activate<span class="w"> </span>build-env
 </pre></div>
 </div>
-<p>Set environment variable <code class="docutils literal notranslate"><span class="pre">ONEAPI_ROOT</span></code> and build conda package:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ONEAPI_ROOT</span><span class="o">=</span>/opt/intel/oneapi
-conda<span class="w"> </span>build<span class="w"> </span>conda-recipe<span class="w"> </span>-c<span class="w"> </span><span class="si">${</span><span class="nv">ONEAPI_ROOT</span><span class="si">}</span>/conda_channel
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>build<span class="w"> </span>conda-recipe<span class="w"> </span>-c<span class="w"> </span>intel<span class="w"> </span>-c<span class="w"> </span>conda-forge
 </pre></div>
 </div>
 <p>Install conda package:</p>
@@ -452,23 +443,8 @@ conda<span class="w"> </span>build<span class="w"> </span>conda-recipe<span clas
 </section>
 <section id="build-and-install-with-setuptools">
 <h2>Build and Install with setuptools<a class="headerlink" href="#build-and-install-with-setuptools" title="Permalink to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">setup.py</span></code> requires environment variable <code class="docutils literal notranslate"><span class="pre">ONEAPI_ROOT</span></code> and following packages
-installed in conda environment:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">ONEAPI_ROOT</span><span class="o">=</span>/opt/intel/oneapi
-conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w"> </span>-c<span class="w"> </span><span class="si">${</span><span class="nv">ONEAPI_ROOT</span><span class="si">}</span>/conda_channel<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7<span class="w"> </span>dpctl<span class="w"> </span>dpnp<span class="w"> </span>numba<span class="w"> </span>spirv-tools<span class="w"> </span>llvm-spirv<span class="w"> </span>llvmdev<span class="w"> </span>cython<span class="w"> </span>pytest
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w"> </span>dpctl<span class="w"> </span>dpnp<span class="w"> </span>numba<span class="w"> </span>spirv-tools<span class="w"> </span>dpcpp-llvm-spirv<span class="w"> </span>llvmdev<span class="w"> </span>cython<span class="w"> </span>pytest<span class="w"> </span>-c<span class="w"> </span>intel<span class="w"> </span>-c<span class="w"> </span>conda-forge
 conda<span class="w"> </span>activate<span class="w"> </span>numba-dpex-env
-</pre></div>
-</div>
-<p>Activate DPC++ compiler:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span><span class="si">${</span><span class="nv">ONEAPI_ROOT</span><span class="si">}</span>/compiler/latest/env/vars.sh
-</pre></div>
-</div>
-<p>For installing:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>setup.py<span class="w"> </span>install
-</pre></div>
-</div>
-<p>For development:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>setup.py<span class="w"> </span>develop
 </pre></div>
 </div>
 </section>
@@ -511,11 +487,11 @@ conda<span class="w"> </span>activate<span class="w"> </span>numba-dpex-env
       </div>
     </a>
     <a class="right-next"
-       href="reference_manual/index.html"
+       href="user_manual/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Data Parallel Extension for Numba Reference Manual</p>
+        <p class="prev-next-title">Programmer’s Guide</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

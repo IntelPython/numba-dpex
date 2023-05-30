@@ -148,8 +148,8 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="reference_manual/index.html">
-                        Data Parallel Extension for Numba Reference Manual
+                      <a class="nav-link nav-internal" href="user_manual/index.html">
+                        Programmer’s Guide
                       </a>
                     </li>
                 
@@ -287,8 +287,8 @@ document.write(`
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="reference_manual/index.html">
-                        Data Parallel Extension for Numba Reference Manual
+                      <a class="nav-link nav-internal" href="user_manual/index.html">
+                        Programmer’s Guide
                       </a>
                     </li>
                 
@@ -410,24 +410,24 @@ document.write(`
   <section id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">#</a></h1>
 <p>Data-Parallel Extensions for Numba* (<a class="reference external" href="https://github.com/IntelPython/numba-dpex">numba-dpex</a>) is a standalone extension to
-the <a href="#id2"><span class="problematic" id="id3">`Numba`_</span></a> JIT compiler. The extension adds two new features to Numba: an
-architecture-agnostic kernel programming API, and a backend extension that can
-parallelize NumPy-style array expressions and function calls on different types
-of data-parallel architectures.</p>
+the <a class="reference external" href="https://numba.pydata.org/">Numba*</a> Python JIT compiler. The extension adds two new features to Numba:
+an architecture-agnostic kernel programming API, and a backend extension that
+can parallelize NumPy-style array expressions and function calls on different
+types of data-parallel hardware.</p>
 <p>Numba-dpex is part of <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/ai-analytics-toolkit.html">Intel AI Analytics Toolkit</a> and distributed with the
 <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/distribution-for-python.html">Intel Distribution for Python*</a>. The extension is also available on Anaconda
 cloud and as a Docker image on GitHub. Please refer the <a class="reference internal" href="getting_started.html"><span class="doc">Getting Started</span></a>
 page to learn more.</p>
 <section id="main-features">
 <h2>Main Features<a class="headerlink" href="#main-features" title="Permalink to this heading">#</a></h2>
-<ul>
-<li><p><a class="reference internal" href="user_manual/kernel_programming/index.html"><span class="doc">Data Parallel Kernel Programming</span></a></p>
-<blockquote>
-<div><p>The kernel API has a design and API similar to what is provided by Numba’s
-<code class="docutils literal notranslate"><span class="pre">cuda.jit</span></code> module. However, the API uses the <a href="#id4"><span class="problematic" id="id5">`SYCL`_</span></a> language runtime and
-as such is extensible to several hardware categories. Presently, the API
-supports only SPIR-V-based OpenCL and <a class="reference external" href="https://spec.oneapi.io/level-zero/latest/index.html">oneAPI Level Zero</a> devices that are
-supported by the Intel® <a class="reference external" href="https://www.apress.com/gp/book/9781484255735">DPC++</a> SYCL compiler runtime.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="user_manual/kernel_programming/index.html"><span class="doc">Kernel Programming API</span></a></p></li>
+</ul>
+<p>The kernel API has a design and API similar to what is provided by Numba’s
+<code class="docutils literal notranslate"><span class="pre">cuda.jit</span></code> module. However, the API uses the <a class="reference external" href="https://www.khronos.org/sycl/">SYCL*</a> language runtime and as
+such is extensible to several hardware categories. Presently, the API supports
+only SPIR-V-based OpenCL and <a class="reference external" href="https://spec.oneapi.io/level-zero/latest/index.html">oneAPI Level Zero</a> devices that are supported by
+the Intel® <a class="reference external" href="https://www.apress.com/gp/book/9781484255735">DPC++</a> SYCL compiler runtime.</p>
 <p>A simple vector addition kernel can be expressed using the API as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpnp</span>
 <span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">dpex</span>
@@ -447,43 +447,34 @@ supported by the Intel® <a class="reference external" href="https://www.apress.
 <span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>In the above example, as the programmer allocated the dpnp arrays on a
-default <code class="docutils literal notranslate"><span class="pre">gpu</span></code> device, numba-dpex will compile and then execute the kernel
-for that device. To change the execution target to a CPU, the device only
-the device keyword needs to be changed to <code class="docutils literal notranslate"><span class="pre">cpu</span></code> when allocating the dpnp
-arrays.</p>
-</div></blockquote>
-</li>
-<li><dl class="field-list">
-<dt class="field-odd">doc<span class="colon">:</span></dt>
-<dd class="field-odd"><p><cite>user_manual/auto-offload</cite></p>
-<p>The new backend extension to add automatic parallelization support has a
-similar user-interface to Numba’s existing loop-parallelizer. The feature
-enables a programmer to “offload” NumPy-style vector expressions, library
-calls, and <code class="docutils literal notranslate"><span class="pre">prange</span></code> loops to different hardware and execute them in
-parallel. A key difference from Numba’s loop-parallelizer is the ability to
-parallelize on non-multicore CPU hardware.</p>
-<p>requires the
-<a class="reference external" href="https://github.com/IntelPython/dpnp">dpnp</a> library, a data-parallel
-drop-in replacement for <a class="reference external" href="https://numpy.org/">NumPy*</a>.</p>
-<p>A programmer only needs to swap NumPy*
-function calls, array expressions, and loops with the corresponding API and
-array type from dpnp and  use numba-dpex’s decorator in place of the default
-Numba decorator to parallelize the expressions on different types of
-hardware.</p>
-</dd>
-</dl>
-</li>
+<p>In the above example, as the programmer allocated arrays on a <code class="docutils literal notranslate"><span class="pre">gpu</span></code> device
+using the dpnp library, numba-dpex will compile and then execute the kernel for
+that specific device. To change the execution target to a CPU, the device
+keyword needs to be changed to <code class="docutils literal notranslate"><span class="pre">cpu</span></code> when allocating the dpnp arrays. It is
+also possible to leave the <code class="docutils literal notranslate"><span class="pre">device</span></code> keyword undefined and let the dpnp library
+select a default device based on environment flag settings.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="user_manual/dpnp_offload/index.html"><span class="doc">Compiling and Offloading dpnp</span></a></p></li>
 </ul>
-</section>
+<p><a class="reference external" href="https://intelpython.github.io/dpnp/">Dpnp</a> is a NumPy-replacement library being developed using SYCL and oneAPI.
+The library has an API similar to NumPy, but using SYCL and oneAPI is able to
+execute in parallel on different types of hardware.</p>
+<p>Numba-dpex extends Numba’s type system and compilation pipeline to compile dpnp
+functions and expressions in the same manner as Numba compiles NumPy. Unlike
+Numba’s NumPy compilation that is serial by default, numba-dpex always compiles
+dpnp expressions into offloadable kernels and executes them in parallel. The
+functionality is similar to what Numba users achieve by using the <code class="docutils literal notranslate"><span class="pre">parallel</span></code>
+option in <code class="docutils literal notranslate"><span class="pre">numba.jit</span></code>. However, offloading by numba-dpex is not just
+restricted to CPUs and supports all devices that are presently supported by the
+kernel API.</p>
 </section>
 <section id="contributing">
-<h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this heading">#</a></h1>
+<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this heading">#</a></h2>
 <p>Refer the <a class="reference external" href="https://github.com/IntelPython/numba-dpex/blob/main/CONTRIBUTING">contributing guide</a> for
 information on coding style and standards used in numba-dpex.</p>
 </section>
 <section id="license">
-<h1>License<a class="headerlink" href="#license" title="Permalink to this heading">#</a></h1>
+<h2>License<a class="headerlink" href="#license" title="Permalink to this heading">#</a></h2>
 <p>Numba-dpex is Licensed under Apache License 2.0 that can be found in <a class="reference external" href="https://github.com/IntelPython/numba-dpex/blob/main/LICENSE">LICENSE</a>. All usage and
 contributions to the project are subject to the terms and conditions of this
 license.</p>
@@ -493,6 +484,7 @@ library calls and array expressions, Numba <code class="docutils literal notrans
 “data-parallel by construction” expressions</a> that Numba is
 able to parallelize. Following two examples demonstrate the two ways in which
 kernels may be written using numba-dpex.</p>
+</section>
 </section>
 
 
@@ -542,14 +534,10 @@ kernels may be written using numba-dpex.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Overview</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#main-features">Main Features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing">Contributing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#license">License</a></li>
 </ul>
-</li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing">Contributing</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#license">License</a></li>
-</ul>
-
   </nav></div>
 
 </div></div>
