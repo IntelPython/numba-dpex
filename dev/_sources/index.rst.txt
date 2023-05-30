@@ -105,7 +105,7 @@ Contributing
 ============
 
 Refer the `contributing guide
-<https://github.com/IntelPython/numba-dpex/blob/main/CONTRIBUTING>`_ for
+<https://github.com/IntelPython/numba-dpex/blob/main/CONTRIBUTING.md>`_ for
 information on coding style and standards used in numba-dpex.
 
 License
