@@ -115,7 +115,7 @@ def spirv_compile():
     spirv_args = [
         _llvm_spirv(),
         "--spirv-max-version",
-        "1.1",
+        "1.4",
         "numba_dpex/ocl/atomics/atomic_ops.bc",
         "-o",
         "numba_dpex/ocl/atomics/atomic_ops.spir",
