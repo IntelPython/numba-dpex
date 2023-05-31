@@ -33,3 +33,4 @@ numba_dpex/dpnp_iface/*.h
 .coverage
 coverage.xml
 htmlcov/
+.numba_config.yaml
