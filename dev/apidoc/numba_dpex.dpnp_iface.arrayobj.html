@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.dpnp_iface.arrayobj module &mdash; numba-dpex 0.21.0dev1+13.gc359fa49 documentation</title>
+  <title>numba_dpex.dpnp_iface.arrayobj module &mdash; numba-dpex 0.21.0dev1+39.gf54cdc10 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -96,7 +96,7 @@
 <span id="numba-dpex-dpnp-iface-arrayobj-module"></span><h1>numba_dpex.dpnp_iface.arrayobj module<a class="headerlink" href="#module-numba_dpex.dpnp_iface.arrayobj" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.dpnp_iface.arrayobj.build_dpnp_ndarray">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.arrayobj.</span></span><span class="sig-name descname"><span class="pre">build_dpnp_ndarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'device'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unknown'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.arrayobj.build_dpnp_ndarray" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.arrayobj.</span></span><span class="sig-name descname"><span class="pre">build_dpnp_ndarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'device'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.arrayobj.build_dpnp_ndarray" title="Permalink to this definition"></a></dt>
 <dd><p>Constructs <cite>DpnpNdArray</cite> from the parameters provided.</p>
 <dl>
 <dt>Args:</dt><dd><p>ndim (int): The dimension of the array.
@@ -116,13 +116,17 @@ Default: <cite>“device”</cite>.</p>
 filter selector string, an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclDevice</span></code>
 corresponding to a non-partitioned SYCL device, an instance of
 <code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code>, or a <cite>Device</cite> object returnedby
-<cite>dpctl.tensor.usm_array.device</cite>. Default: <cite>“unknwon”</cite>.</p>
+<cite>dpctl.tensor.usm_array.device</cite>. Default: <cite>None</cite>.</p>
 </dd>
-<dt>queue (<code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code>, optional): Not supported.</dt><dd><p>Default: <cite>None</cite>.</p>
+<dt>sycl_queue (<a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue" title="numba_dpex.core.types.dpctl_types.DpctlSyclQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.core.types.dpctl_types.DpctlSyclQueue</span></code></a>,</dt><dd><p>optional): The SYCL queue to use for output array allocation and
+copying. sycl_queue and device are exclusive keywords, i.e. use
+one or another. If both are specified, a TypeError is raised. If
+both are None, a cached queue targeting default-selected device
+is used for allocation and copying. Default: <cite>None</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt>Raises:</dt><dd><p>errors.TypingError: If <cite>sycl_queue</cite> is provided for some reason.</p>
+<dt>Raises:</dt><dd><p>errors.TypingError: If both <cite>device</cite> and <cite>sycl_queue</cite> are provided.</p>
 </dd>
 <dt>Returns:</dt><dd><dl class="simple">
 <dt>DpnpNdArray: The Numba type to represent an dpnp.ndarray.</dt><dd><p>The type has the same structure as USMNdArray used to
@@ -137,8 +141,8 @@ represent dpctl.tensor.usm_ndarray.</p>
 <dt class="sig sig-object py" id="numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty">
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.arrayobj.</span></span><span class="sig-name descname"><span class="pre">ol_dpnp_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'device'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty" title="Permalink to this definition"></a></dt>
 <dd><p>Implementation of an overload to support dpnp.empty() inside
-a jit function.</p>
-<dl>
+a dpjit function.</p>
+<dl class="simple">
 <dt>Args:</dt><dd><dl class="simple">
 <dt>shape (numba.core.types.containers.UniTuple or</dt><dd><p>numba.core.types.scalars.IntegerLiteral): Dimensions
 of the array to be created.</p>
@@ -160,10 +164,16 @@ Default: <cite>None</cite>.</p>
 Allowed values are “device”|”shared”|”host”.
 Default: <cite>“device”</cite>.</p>
 </dd>
-</dl>
-<p>sycl_queue (<code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code>, optional): Not supported.</p>
+<dt>sycl_queue (<a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue" title="numba_dpex.core.types.dpctl_types.DpctlSyclQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.core.types.dpctl_types.DpctlSyclQueue</span></code></a>,</dt><dd><p>optional): The SYCL queue to use for output array allocation and
+copying. sycl_queue and device are exclusive keywords, i.e. use
+one or another. If both are specified, a TypeError is raised. If
+both are None, a cached queue targeting default-selected device
+is used for allocation and copying. Default: <cite>None</cite>.</p>
 </dd>
-<dt>Raises:</dt><dd><p>errors.TypingError: If rank of the ndarray couldn’t be inferred.
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>errors.TypingError: If both <cite>device</cite> and <cite>sycl_queue</cite> are provided.
+errors.TypingError: If rank of the ndarray couldn’t be inferred.
 errors.TypingError: If couldn’t parse input types to dpnp.empty().</p>
 </dd>
 <dt>Returns:</dt><dd><p>function: Local function <cite>impl_dpnp_empty()</cite>.</p>
@@ -176,7 +186,7 @@ errors.TypingError: If couldn’t parse input types to dpnp.empty().</p>
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.arrayobj.</span></span><span class="sig-name descname"><span class="pre">ol_dpnp_empty_like</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subok</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty_like" title="Permalink to this definition"></a></dt>
 <dd><p>Creates <cite>usm_ndarray</cite> from uninitialized USM allocation.</p>
 <p>This is an overloaded function implementation for dpnp.empty_like().</p>
-<dl>
+<dl class="simple">
 <dt>Args:</dt><dd><dl class="simple">
 <dt>x1 (numba.core.types.npytypes.Array): Input array from which to</dt><dd><p>derive the output array shape.</p>
 </dd>
@@ -205,10 +215,16 @@ Default: <cite>None</cite>.</p>
 Allowed values are “device”|”shared”|”host”.
 Default: <cite>“device”</cite>.</p>
 </dd>
-</dl>
-<p>sycl_queue (<code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code>, optional): Not supported.</p>
+<dt>sycl_queue (<a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue" title="numba_dpex.core.types.dpctl_types.DpctlSyclQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.core.types.dpctl_types.DpctlSyclQueue</span></code></a>,</dt><dd><p>optional): The SYCL queue to use for output array allocation and
+copying. sycl_queue and device are exclusive keywords, i.e. use
+one or another. If both are specified, a TypeError is raised. If
+both are None, a cached queue targeting default-selected device
+is used for allocation and copying. Default: <cite>None</cite>.</p>
 </dd>
-<dt>Raises:</dt><dd><p>errors.TypingError: If couldn’t parse input types to dpnp.empty_like().
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>errors.TypingError: If both <cite>device</cite> and <cite>sycl_queue</cite> are provided.
+errors.TypingError: If couldn’t parse input types to dpnp.empty_like().
 errors.TypingError: If shape is provided.</p>
 </dd>
 <dt>Returns:</dt><dd><p>function: Local function <cite>impl_dpnp_empty_like()</cite>.</p>
@@ -220,8 +236,8 @@ errors.TypingError: If shape is provided.</p>
 <dt class="sig sig-object py" id="numba_dpex.dpnp_iface.arrayobj.ol_dpnp_full">
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.arrayobj.</span></span><span class="sig-name descname"><span class="pre">ol_dpnp_full</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">like</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_full" title="Permalink to this definition"></a></dt>
 <dd><p>Implementation of an overload to support dpnp.full() inside
-a jit function.</p>
-<dl>
+a dpjit function.</p>
+<dl class="simple">
 <dt>Args:</dt><dd><dl class="simple">
 <dt>shape (numba.core.types.containers.UniTuple or</dt><dd><p>numba.core.types.scalars.IntegerLiteral): Dimensions
 of the array to be created.</p>
@@ -252,10 +268,16 @@ Default: <cite>None</cite>.</p>
 Allowed values are “device”|”shared”|”host”.
 Default: <cite>“device”</cite>.</p>
 </dd>
-</dl>
-<p>sycl_queue (<code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code>, optional): Not supported.</p>
+<dt>sycl_queue (<a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue" title="numba_dpex.core.types.dpctl_types.DpctlSyclQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.core.types.dpctl_types.DpctlSyclQueue</span></code></a>,</dt><dd><p>optional): The SYCL queue to use for output array allocation and
+copying. sycl_queue and device are exclusive keywords, i.e. use
+one or another. If both are specified, a TypeError is raised. If
+both are None, a cached queue targeting default-selected device
+is used for allocation and copying. Default: <cite>None</cite>.</p>
 </dd>
-<dt>Raises:</dt><dd><p>errors.TypingError: If rank of the ndarray couldn’t be inferred.
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>errors.TypingError: If both <cite>device</cite> and <cite>sycl_queue</cite> are provided.
+errors.TypingError: If rank of the ndarray couldn’t be inferred.
 errors.TypingError: If couldn’t parse input types to dpnp.full().</p>
 </dd>
 <dt>Returns:</dt><dd><p>function: Local function <cite>impl_dpnp_full()</cite>.</p>
@@ -269,7 +291,7 @@ errors.TypingError: If couldn’t parse input types to dpnp.full().</p>
 <dd><p>Creates <cite>usm_ndarray</cite> from USM allocation initialized with values
 specified by the <cite>fill_value</cite>.</p>
 <p>This is an overloaded function implementation for dpnp.full_like().</p>
-<dl>
+<dl class="simple">
 <dt>Args:</dt><dd><dl class="simple">
 <dt>x1 (numba.core.types.npytypes.Array): Input array from which to</dt><dd><p>derive the output array shape.</p>
 </dd>
@@ -301,10 +323,16 @@ Default: <cite>None</cite>.</p>
 Allowed values are “device”|”shared”|”host”.
 Default: <cite>“device”</cite>.</p>
 </dd>
-</dl>
-<p>sycl_queue (<code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code>, optional): Not supported.</p>
+<dt>sycl_queue (<a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue" title="numba_dpex.core.types.dpctl_types.DpctlSyclQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.core.types.dpctl_types.DpctlSyclQueue</span></code></a>,</dt><dd><p>optional): The SYCL queue to use for output array allocation and
+copying. sycl_queue and device are exclusive keywords, i.e. use
+one or another. If both are specified, a TypeError is raised. If
+both are None, a cached queue targeting default-selected device
+is used for allocation and copying. Default: <cite>None</cite>.</p>
 </dd>
-<dt>Raises:</dt><dd><p>errors.TypingError: If couldn’t parse input types to dpnp.full_like().
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>errors.TypingError: If both <cite>device</cite> and <cite>sycl_queue</cite> are provided.
+errors.TypingError: If couldn’t parse input types to dpnp.full_like().
 errors.TypingError: If shape is provided.</p>
 </dd>
 <dt>Returns:</dt><dd><p>function: Local function <cite>impl_dpnp_full_like()</cite>.</p>
@@ -316,8 +344,8 @@ errors.TypingError: If shape is provided.</p>
 <dt class="sig sig-object py" id="numba_dpex.dpnp_iface.arrayobj.ol_dpnp_ones">
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.arrayobj.</span></span><span class="sig-name descname"><span class="pre">ol_dpnp_ones</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'device'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_ones" title="Permalink to this definition"></a></dt>
 <dd><p>Implementation of an overload to support dpnp.ones() inside
-a jit function.</p>
-<dl>
+a dpjit function.</p>
+<dl class="simple">
 <dt>Args:</dt><dd><dl class="simple">
 <dt>shape (numba.core.types.containers.UniTuple or</dt><dd><p>numba.core.types.scalars.IntegerLiteral): Dimensions
 of the array to be created.</p>
@@ -339,10 +367,16 @@ Default: <cite>None</cite>.</p>
 Allowed values are “device”|”shared”|”host”.
 Default: <cite>“device”</cite>.</p>
 </dd>
-</dl>
-<p>sycl_queue (<code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code>, optional): Not supported.</p>
+<dt>sycl_queue (<a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue" title="numba_dpex.core.types.dpctl_types.DpctlSyclQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.core.types.dpctl_types.DpctlSyclQueue</span></code></a>,</dt><dd><p>optional): The SYCL queue to use for output array allocation and
+copying. sycl_queue and device are exclusive keywords, i.e. use
+one or another. If both are specified, a TypeError is raised. If
+both are None, a cached queue targeting default-selected device
+is used for allocation and copying. Default: <cite>None</cite>.</p>
 </dd>
-<dt>Raises:</dt><dd><p>errors.TypingError: If rank of the ndarray couldn’t be inferred.
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>errors.TypingError: If both <cite>device</cite> and <cite>sycl_queue</cite> are provided.
+errors.TypingError: If rank of the ndarray couldn’t be inferred.
 errors.TypingError: If couldn’t parse input types to dpnp.ones().</p>
 </dd>
 <dt>Returns:</dt><dd><p>function: Local function <cite>impl_dpnp_ones()</cite>.</p>
@@ -355,7 +389,7 @@ errors.TypingError: If couldn’t parse input types to dpnp.ones().</p>
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.arrayobj.</span></span><span class="sig-name descname"><span class="pre">ol_dpnp_ones_like</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subok</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_ones_like" title="Permalink to this definition"></a></dt>
 <dd><p>Creates <cite>usm_ndarray</cite> from USM allocation initialized with ones.</p>
 <p>This is an overloaded function implementation for dpnp.ones_like().</p>
-<dl>
+<dl class="simple">
 <dt>Args:</dt><dd><dl class="simple">
 <dt>x1 (numba.core.types.npytypes.Array): Input array from which to</dt><dd><p>derive the output array shape.</p>
 </dd>
@@ -384,10 +418,16 @@ Default: <cite>None</cite>.</p>
 Allowed values are “device”|”shared”|”host”.
 Default: <cite>“device”</cite>.</p>
 </dd>
-</dl>
-<p>sycl_queue (<code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code>, optional): Not supported.</p>
+<dt>sycl_queue (<a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue" title="numba_dpex.core.types.dpctl_types.DpctlSyclQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.core.types.dpctl_types.DpctlSyclQueue</span></code></a>,</dt><dd><p>optional): The SYCL queue to use for output array allocation and
+copying. sycl_queue and device are exclusive keywords, i.e. use
+one or another. If both are specified, a TypeError is raised. If
+both are None, a cached queue targeting default-selected device
+is used for allocation and copying. Default: <cite>None</cite>.</p>
 </dd>
-<dt>Raises:</dt><dd><p>errors.TypingError: If couldn’t parse input types to dpnp.ones_like().
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>errors.TypingError: If both <cite>device</cite> and <cite>sycl_queue</cite> are provided.
+errors.TypingError: If couldn’t parse input types to dpnp.ones_like().
 errors.TypingError: If shape is provided.</p>
 </dd>
 <dt>Returns:</dt><dd><p>function: Local function <cite>impl_dpnp_ones_like()</cite>.</p>
@@ -399,8 +439,8 @@ errors.TypingError: If shape is provided.</p>
 <dt class="sig sig-object py" id="numba_dpex.dpnp_iface.arrayobj.ol_dpnp_zeros">
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.arrayobj.</span></span><span class="sig-name descname"><span class="pre">ol_dpnp_zeros</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'device'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_zeros" title="Permalink to this definition"></a></dt>
 <dd><p>Implementation of an overload to support dpnp.zeros() inside
-a jit function.</p>
-<dl>
+a dpjit function.</p>
+<dl class="simple">
 <dt>Args:</dt><dd><dl class="simple">
 <dt>shape (numba.core.types.containers.UniTuple or</dt><dd><p>numba.core.types.scalars.IntegerLiteral): Dimensions
 of the array to be created.</p>
@@ -422,10 +462,16 @@ Default: <cite>None</cite>.</p>
 Allowed values are “device”|”shared”|”host”.
 Default: <cite>“device”</cite>.</p>
 </dd>
-</dl>
-<p>sycl_queue (<code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code>, optional): Not supported.</p>
+<dt>sycl_queue (<a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue" title="numba_dpex.core.types.dpctl_types.DpctlSyclQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.core.types.dpctl_types.DpctlSyclQueue</span></code></a>,</dt><dd><p>optional): The SYCL queue to use for output array allocation and
+copying. sycl_queue and device are exclusive keywords, i.e. use
+one or another. If both are specified, a TypeError is raised. If
+both are None, a cached queue targeting default-selected device
+is used for allocation and copying. Default: <cite>None</cite>.</p>
 </dd>
-<dt>Raises:</dt><dd><p>errors.TypingError: If rank of the ndarray couldn’t be inferred.
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>errors.TypingError: If both <cite>device</cite> and <cite>sycl_queue</cite> are provided.
+errors.TypingError: If rank of the ndarray couldn’t be inferred.
 errors.TypingError: If couldn’t parse input types to dpnp.zeros().</p>
 </dd>
 <dt>Returns:</dt><dd><p>function: Local function <cite>impl_dpnp_zeros()</cite>.</p>
@@ -438,7 +484,7 @@ errors.TypingError: If couldn’t parse input types to dpnp.zeros().</p>
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.arrayobj.</span></span><span class="sig-name descname"><span class="pre">ol_dpnp_zeros_like</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subok</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_zeros_like" title="Permalink to this definition"></a></dt>
 <dd><p>Creates <cite>usm_ndarray</cite> from USM allocation initialized with zeros.</p>
 <p>This is an overloaded function implementation for dpnp.zeros_like().</p>
-<dl>
+<dl class="simple">
 <dt>Args:</dt><dd><dl class="simple">
 <dt>x1 (numba.core.types.npytypes.Array): Input array from which to</dt><dd><p>derive the output array shape.</p>
 </dd>
@@ -467,10 +513,16 @@ Default: <cite>None</cite>.</p>
 Allowed values are “device”|”shared”|”host”.
 Default: <cite>“device”</cite>.</p>
 </dd>
-</dl>
-<p>sycl_queue (<code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code>, optional): Not supported.</p>
+<dt>sycl_queue (<a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue" title="numba_dpex.core.types.dpctl_types.DpctlSyclQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.core.types.dpctl_types.DpctlSyclQueue</span></code></a>,</dt><dd><p>optional): The SYCL queue to use for output array allocation and
+copying. sycl_queue and device are exclusive keywords, i.e. use
+one or another. If both are specified, a TypeError is raised. If
+both are None, a cached queue targeting default-selected device
+is used for allocation and copying. Default: <cite>None</cite>.</p>
 </dd>
-<dt>Raises:</dt><dd><p>errors.TypingError: If couldn’t parse input types to dpnp.zeros_like().
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>errors.TypingError: If both <cite>device</cite> and <cite>sycl_queue</cite> are provided.
+errors.TypingError: If couldn’t parse input types to dpnp.zeros_like().
 errors.TypingError: If shape is provided.</p>
 </dd>
 <dt>Returns:</dt><dd><p>function: Local function <cite>impl_dpnp_zeros_like()</cite>.</p>

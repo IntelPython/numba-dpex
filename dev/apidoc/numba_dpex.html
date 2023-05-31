@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex package &mdash; numba-dpex 0.21.0dev1+13.gc359fa49 documentation</title>
+  <title>numba_dpex package &mdash; numba-dpex 0.21.0dev1+39.gf54cdc10 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -601,6 +601,31 @@ Numba.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="numba_dpex.DpctlSyclQueue.box_type">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">box_type</span></span><a class="headerlink" href="#numba_dpex.DpctlSyclQueue.box_type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.DpctlSyclQueue.key">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">key</span></span><a class="headerlink" href="#numba_dpex.DpctlSyclQueue.key" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a Python object used as the key to cache an instance of
+DpctlSyclQueue.
+The key is constructed by hashing the actual dpctl.SyclQueue object
+encapsulated by an instance of DpctlSyclQueue. Doing so ensures, that
+different dpctl.SyclQueue instances are inferred as separate instances
+of the DpctlSyclQueue type.
+Returns:</p>
+<blockquote>
+<div><p>int: hash of the self._sycl_queue Python object.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.DpctlSyclQueue.rand_digit_str">
+<span class="sig-name descname"><span class="pre">rand_digit_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.DpctlSyclQueue.rand_digit_str" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.DpctlSyclQueue.sycl_queue">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sycl_queue</span></span><a class="headerlink" href="#numba_dpex.DpctlSyclQueue.sycl_queue" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
