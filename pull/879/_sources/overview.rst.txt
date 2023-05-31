@@ -6,13 +6,13 @@ Overview
 
 Data-Parallel Extensions for Numba* (`numba-dpex`_) is a standalone extension
 for the `Numba*`_ Python JIT compiler. Numba-dpex adds two new features to
-Numba: an architecture-agnostic kernel programming API, and a new target that
-adds typing and compilation for the `dpnp`_ library. Dpnp is a numerical
-computation Python library that has an API similar to NumPy and provides
-data-parallel implementations of all its library functions and other operations.
-By being able to compile dpnp, numba-dpex offers a way for programmers to
-execute NumPy-like "universal function" calls and other array-based expressions
-on different types of data-parallel hardware.
+Numba: an architecture-agnostic kernel programming API, and a new compilation
+target that adds typing and compilation support for the `dpnp`_ library. Dpnp is
+a Python library for numerical computing that provides a data-parallel
+reimplementation of `NumPy*`_'s API. Numba-dpex's support for dpnp compilation
+is a new way for Numba users to write code in a NumPy-like API that is
+already supported by Numba, while at the same time automatically running such code
+parallelly on various types of architecture.
 
 Numba-dpex is being developed as part of `Intel AI Analytics Toolkit`_ and is
 distributed with the `Intel Distribution for Python*`_. The extension is also

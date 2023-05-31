@@ -411,13 +411,13 @@ document.write(`
 <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">#</a></h1>
 <p>Data-Parallel Extensions for Numba* (<a class="reference external" href="https://github.com/IntelPython/numba-dpex">numba-dpex</a>) is a standalone extension
 for the <a class="reference external" href="https://numba.pydata.org/">Numba*</a> Python JIT compiler. Numba-dpex adds two new features to
-Numba: an architecture-agnostic kernel programming API, and a new target that
-adds typing and compilation for the <a class="reference external" href="https://intelpython.github.io/dpnp/">dpnp</a> library. Dpnp is a numerical
-computation Python library that has an API similar to NumPy and provides
-data-parallel implementations of all its library functions and other operations.
-By being able to compile dpnp, numba-dpex offers a way for programmers to
-execute NumPy-like “universal function” calls and other array-based expressions
-on different types of data-parallel hardware.</p>
+Numba: an architecture-agnostic kernel programming API, and a new compilation
+target that adds typing and compilation support for the <a class="reference external" href="https://intelpython.github.io/dpnp/">dpnp</a> library. Dpnp is
+a Python library for numerical computing that provides a data-parallel
+reimplementation of <a class="reference external" href="https://numpy.org/">NumPy*</a>’s API. Numba-dpex’s support for dpnp compilation
+is a new way for Numba users to write code in a NumPy-like API that is
+already supported by Numba, while at the same time automatically running such code
+parallelly on various types of architecture.</p>
 <p>Numba-dpex is being developed as part of <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/ai-analytics-toolkit.html">Intel AI Analytics Toolkit</a> and is
 distributed with the <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/distribution-for-python.html">Intel Distribution for Python*</a>. The extension is also
 available on Anaconda cloud and as a Docker image on GitHub. Please refer the
