@@ -2,13 +2,11 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import dpctl
 import dpctl.tensor as dpt
+import dpnp
 import numpy as np
-import pytest
 
 import numba_dpex as ndpx
-from numba_dpex.tests._helper import filter_strings
 
 
 def make_write_values_kernel(n_rows):
@@ -80,8 +78,7 @@ def make_write_values_kernel_func_inner(n_cols):
     return write_values_inner
 
 
-@pytest.mark.parametrize("offload_device", filter_strings)
-def test_qualname_basic(offload_device):
+def test_qualname_basic():
     """A basic test function to test
     qualified name disambiguation.
     """
@@ -92,32 +89,9 @@ def test_qualname_basic(offload_device):
         else:
             ans[i, 0] = 1
 
-    a = np.zeros((10, 10), dtype=dpt.int64)
-
-    device = dpctl.SyclDevice(offload_device)
-    queue = dpctl.SyclQueue(device)
-
-    da = dpt.usm_ndarray(
-        a.shape,
-        dtype=a.dtype,
-        buffer="device",
-        buffer_ctor_kwargs={"queue": queue},
-    )
-    da.usm_data.copy_from_host(a.reshape((-1)).view("|u1"))
+    a = dpnp.zeros((10, 10), dtype=dpt.int64)
 
     kernel = make_write_values_kernel(10)
-    kernel(da)
+    kernel(a)
 
-    result = np.zeros_like(a)
-    da.usm_data.copy_to_host(result.reshape((-1)).view("|u1"))
-
-    print(ans)
-    print(result)
-
-    assert np.array_equal(result, ans)
-
-
-if __name__ == "__main__":
-    test_qualname_basic("level_zero:gpu:0")
-    test_qualname_basic("opencl:gpu:0")
-    test_qualname_basic("opencl:cpu:0")
+    assert np.array_equal(dpnp.asnumpy(a), ans)

@@ -11,7 +11,7 @@ from numba.np import numpy_support
 
 from numba_dpex.utils import address_space
 
-from ..types.dpctl_types import sycl_queue_ty
+from ..types.dpctl_types import DpctlSyclQueue
 from ..types.dpnp_ndarray_type import DpnpNdArray
 from ..types.usm_ndarray_type import USMNdArray
 
@@ -42,10 +42,7 @@ def _typeof_helper(val, array_class_type):
             "The usm_type for the usm_ndarray could not be inferred"
         )
 
-    try:
-        device = val.sycl_device.filter_string
-    except AttributeError:
-        raise ValueError("The device for the usm_ndarray could not be inferred")
+    assert val.sycl_queue is not None
 
     return array_class_type(
         dtype=dtype,
@@ -53,7 +50,6 @@ def _typeof_helper(val, array_class_type):
         layout=layout,
         readonly=readonly,
         usm_type=usm_type,
-        device=device,
         queue=val.sycl_queue,
         addrspace=address_space.GLOBAL,
     )
@@ -107,4 +103,4 @@ def typeof_dpctl_sycl_queue(val, c):
 
     Returns: A numba_dpex.core.types.dpctl_types.DpctlSyclQueue instance.
     """
-    return sycl_queue_ty
+    return DpctlSyclQueue()

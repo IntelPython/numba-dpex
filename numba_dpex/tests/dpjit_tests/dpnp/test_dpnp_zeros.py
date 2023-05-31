@@ -24,18 +24,16 @@ devices = ["cpu", "unknown"]
 @pytest.mark.parametrize("device", devices)
 def test_dpnp_zeros(shape, dtype, usm_type, device):
     @dpjit
-    def func1(shape):
-        c = dpnp.zeros(
-            shape=shape, dtype=dtype, usm_type=usm_type, device=device
-        )
+    def func(shape):
+        c = dpnp.zeros(shape, dtype=dtype, usm_type=usm_type, device=device)
         return c
 
     a = numpy.zeros(shape, dtype=dtype)
 
     try:
-        c = func1(shape)
+        c = func(shape)
     except Exception:
-        pytest.fail("Calling dpnp.empty inside dpjit failed")
+        pytest.fail("Calling dpnp.zeros inside dpjit failed")
 
     if len(c.shape) == 1:
         assert c.shape[0] == shape

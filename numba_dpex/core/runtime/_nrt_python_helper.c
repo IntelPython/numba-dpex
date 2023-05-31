@@ -8,6 +8,7 @@
  */
 
 #include "_nrt_python_helper.h"
+#include "_dbg_printer.h"
 
 static PyBufferProcs MemInfo_bufferProcs = {MemInfo_getbuffer, NULL};
 
@@ -28,7 +29,7 @@ int MemInfo_init(MemInfoObject *self, PyObject *args, PyObject *kwds)
     }
     raw_ptr = PyLong_AsVoidPtr(raw_ptr_obj);
     NRT_Debug(
-        nrt_debug_print("MemInfo_init self=%p raw_ptr=%p\n", self, raw_ptr));
+        drt_debug_print("MemInfo_init self=%p raw_ptr=%p\n", self, raw_ptr));
 
     if (PyErr_Occurred())
         return -1;

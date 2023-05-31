@@ -2,8 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import dpctl.tensor as dpt
-import numpy as np
+import dpnp
 import pytest
 
 import numba_dpex as dpex
@@ -28,8 +27,8 @@ def sig(request):
 
 
 def test_return(sig):
-    a = dpt.arange(1024, dtype=dpt.int32, device="0")
+    a = dpnp.arange(1024, dtype=dpnp.int32)
 
     with pytest.raises(dpex.core.exceptions.KernelHasReturnValueError):
-        kernel = dpex.kernel(sig)(f)
-        kernel[a.size, dpex.DEFAULT_LOCAL_SIZE](a)
+        kernel_fn = dpex.kernel(sig)(f)
+        kernel_fn[dpex.Range(a.size)](a)

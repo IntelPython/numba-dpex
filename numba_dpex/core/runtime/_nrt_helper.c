@@ -20,6 +20,8 @@ typedef intptr_t atomic_size_t;
 #include <stdatomic.h>
 #endif
 
+#include "_dbg_printer.h"
+
 /*
  * Global resources.
  */
@@ -51,7 +53,7 @@ static struct NRT_MemSys TheMSys;
 // following funcs are copied from numba/core/runtime/nrt.cpp
 void *NRT_MemInfo_external_allocator(NRT_MemInfo *mi)
 {
-    NRT_Debug(nrt_debug_print(
+    NRT_Debug(drt_debug_print(
         "NRT_MemInfo_external_allocator meminfo: %p external_allocator: %p\n",
         mi, mi->external_allocator));
     return mi->external_allocator;
@@ -70,7 +72,7 @@ void NRT_MemInfo_release(NRT_MemInfo *mi)
 
 void NRT_MemInfo_call_dtor(NRT_MemInfo *mi)
 {
-    NRT_Debug(nrt_debug_print("NRT_MemInfo_call_dtor %p\n", mi));
+    NRT_Debug(drt_debug_print("NRT_MemInfo_call_dtor %p\n", mi));
     if (mi->dtor && !TheMSys.shutting)
         /* We have a destructor and the system is not shutting down */
         mi->dtor(mi->data, mi->size, mi->dtor_info);
@@ -80,7 +82,7 @@ void NRT_MemInfo_call_dtor(NRT_MemInfo *mi)
 
 void NRT_MemInfo_acquire(NRT_MemInfo *mi)
 {
-    // NRT_Debug(nrt_debug_print("NRT_MemInfo_acquire %p refct=%zu\n", mi,
+    // NRT_Debug(drt_debug_print("NRT_MemInfo_acquire %p refct=%zu\n", mi,
     // mi->refct.load()));
     assert(mi->refct > 0 && "RefCt cannot be zero");
     mi->refct++;
@@ -102,7 +104,7 @@ size_t NRT_MemInfo_refcount(NRT_MemInfo *mi)
 
 void NRT_Free(void *ptr)
 {
-    NRT_Debug(nrt_debug_print("NRT_Free %p\n", ptr));
+    NRT_Debug(drt_debug_print("NRT_Free %p\n", ptr));
     TheMSys.allocator.free(ptr);
     if (TheMSys.stats.enabled) {
         TheMSys.stats.free++;
@@ -112,7 +114,7 @@ void NRT_Free(void *ptr)
 void NRT_dealloc(NRT_MemInfo *mi)
 {
     NRT_Debug(
-        nrt_debug_print("NRT_dealloc meminfo: %p external_allocator: %p\n", mi,
+        drt_debug_print("NRT_dealloc meminfo: %p external_allocator: %p\n", mi,
                         mi->external_allocator));
     if (mi->external_allocator) {
         mi->external_allocator->free(mi, mi->external_allocator->opaque_data);

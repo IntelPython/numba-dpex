@@ -30,8 +30,9 @@ def _get_kernel_llvm(fn, sig, debug=False):
 
 def test_dump_file_on_dump_kernel_llvm_flag_on():
     """
-    Test functionality of DUMP_KERNEL_LLVM config variable.
-    Check llvm source is dumped in .ll file in current directory
+    Tests functionality of DUMP_KERNEL_LLVM config variable.
+
+    Check llvm source is dumped into a .ll file in current directory
     and compare with llvm source stored in SprivKernel.
     """
 

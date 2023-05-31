@@ -4,6 +4,8 @@
 
 """Tests for dpnp ndarray constructors."""
 
+import math
+
 import dpctl
 import dpctl.tensor as dpt
 import dpnp
@@ -17,16 +19,28 @@ shapes = [11, (3, 7)]
 dtypes = [dpnp.int32, dpnp.int64, dpnp.float32, dpnp.float64]
 usm_types = ["device", "shared", "host"]
 devices = ["cpu", "unknown"]
+fill_values = [
+    7,
+    -7,
+    7.1,
+    -7.1,
+    math.pi,
+    math.e,
+    4294967295,
+    4294967295.0,
+    3.4028237e38,
+]
 
 
 @pytest.mark.parametrize("shape", shapes)
+@pytest.mark.parametrize("fill_value", fill_values)
 @pytest.mark.parametrize("dtype", dtypes)
 @pytest.mark.parametrize("usm_type", usm_types)
 @pytest.mark.parametrize("device", devices)
-def test_dpnp_zeros_like(shape, dtype, usm_type, device):
+def test_dpnp_full_like(shape, fill_value, dtype, usm_type, device):
     @dpjit
-    def func(a):
-        c = dpnp.zeros_like(a, dtype=dtype, usm_type=usm_type, device=device)
+    def func(a, v):
+        c = dpnp.full_like(a, v, dtype=dtype, usm_type=usm_type, device=device)
         return c
 
     if isinstance(shape, int):
@@ -35,9 +49,11 @@ def test_dpnp_zeros_like(shape, dtype, usm_type, device):
         NZ = numpy.random.rand(*shape)
 
     try:
-        c = func(NZ)
+        c = func(NZ, fill_value)
     except Exception:
-        pytest.fail("Calling dpnp.zeros_like inside dpjit failed")
+        pytest.fail("Calling dpnp.full_like inside dpjit failed")
+
+    C = numpy.full_like(NZ, fill_value, dtype=dtype)
 
     if len(c.shape) == 1:
         assert c.shape[0] == NZ.shape[0]
@@ -54,15 +70,13 @@ def test_dpnp_zeros_like(shape, dtype, usm_type, device):
     else:
         c.sycl_device.filter_string == dpctl.SyclDevice().filter_string
 
-    assert numpy.array_equal(
-        dpt.asnumpy(c._array_obj), numpy.zeros_like(c._array_obj)
-    )
+    assert numpy.array_equal(dpt.asnumpy(c._array_obj), C)
 
 
-def test_dpnp_zeros_like_exceptions():
+def test_dpnp_full_like_exceptions():
     @dpjit
     def func1(a):
-        c = dpnp.zeros_like(a, shape=(3, 3))
+        c = dpnp.full_like(a, shape=(3, 3))
         return c
 
     try:
@@ -70,7 +84,7 @@ def test_dpnp_zeros_like_exceptions():
     except Exception as e:
         assert isinstance(e, errors.TypingError)
         assert (
-            "No implementation of function Function(<function zeros_like"
+            "No implementation of function Function(<function full_like"
             in str(e)
         )
 
@@ -78,7 +92,7 @@ def test_dpnp_zeros_like_exceptions():
 
     @dpjit
     def func2(a):
-        c = dpnp.zeros_like(a, sycl_queue=queue)
+        c = dpnp.full_like(a, sycl_queue=queue)
         return c
 
     try:
@@ -86,6 +100,6 @@ def test_dpnp_zeros_like_exceptions():
     except Exception as e:
         assert isinstance(e, errors.TypingError)
         assert (
-            "No implementation of function Function(<function zeros_like"
+            "No implementation of function Function(<function full_like"
             in str(e)
         )
