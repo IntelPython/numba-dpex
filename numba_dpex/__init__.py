@@ -14,18 +14,23 @@ from typing import Tuple
 
 import dpctl
 import llvmlite.binding as ll
-import numba
-from numba.core import ir_utils
+from numba import __version__ as numba_version
 from numba.np import arrayobj
-from numba.np.ufunc import array_exprs
 from numba.np.ufunc.decorators import Vectorize
 
-from numba_dpex._patches import _empty_nd_impl, _is_ufunc, _mk_alloc
+from numba_dpex._patches import _empty_nd_impl
 from numba_dpex.vectorizers import Vectorize as DpexVectorize
 
+from .numba_patches import (
+    patch_arrayexpr_tree_to_ir,
+    patch_is_ufunc,
+    patch_mk_alloc,
+)
+
 # Monkey patches
-array_exprs._is_ufunc = _is_ufunc
-ir_utils.mk_alloc = _mk_alloc
+patch_is_ufunc.patch()
+patch_mk_alloc.patch()
+patch_arrayexpr_tree_to_ir.patch()
 arrayobj._empty_nd_impl = _empty_nd_impl
 
 
@@ -58,8 +63,6 @@ def load_dpctl_sycl_interface():
     else:
         raise ImportError
 
-    Vectorize.target_registry.ondemand["dpex"] = lambda: DpexVectorize
-
 
 def parse_sem_version(version_string: str) -> Tuple[int, int, int]:
     """Parse sem version into tuple of three integers. If there is a suffix like
@@ -76,25 +79,24 @@ def parse_sem_version(version_string: str) -> Tuple[int, int, int]:
     )
 
 
-numba_version = parse_sem_version(numba.__version__)
-if numba_version < (0, 56, 4):
+numba_sem_version = parse_sem_version(numba_version)
+if numba_sem_version < (0, 57, 0):
     logging.warning(
-        "numba_dpex needs numba 0.56.4, using "
+        "numba_dpex needs numba 0.57.0, using "
         f"numba={numba_version} may cause unexpected behavior"
     )
 
 
-dpctl_version = tuple(map(int, dpctl.__version__.split(".")[:2]))
-if dpctl_version < (0, 14):
+dpctl_sem_version = parse_sem_version(dpctl.__version__)
+if dpctl_sem_version < (0, 14):
     logging.warning(
         "numba_dpex needs dpctl 0.14 or greater, using "
-        f"dpctl={dpctl_version} may cause unexpected behavior"
+        f"dpctl={dpctl_sem_version} may cause unexpected behavior"
     )
 
 from numba import prange  # noqa E402
 
 import numba_dpex.core.dpjit_dispatcher  # noqa E402
-import numba_dpex.core.offload_dispatcher  # noqa E402
 
 # Initialize the _dpexrt_python extension
 import numba_dpex.core.runtime  # noqa E402
@@ -111,16 +113,11 @@ from numba_dpex.core.kernel_interface.indexers import (  # noqa E402
 # Re-export all type names
 from numba_dpex.core.types import *  # noqa E402
 from numba_dpex.dpnp_iface import dpnpimpl  # noqa E402
-from numba_dpex.retarget import offload_to_sycl_device  # noqa E402
 
 if config.HAS_NON_HOST_DEVICE:
     # Re export
     from .core.targets import dpjit_target, kernel_target
     from .decorators import dpjit, func, kernel
-
-    # We are importing dpnp stub module to make Numba recognize the
-    # module when we rename Numpy functions.
-    from .dpnp_iface.stubs import dpnp
     from .ocl.stubs import (
         GLOBAL_MEM_FENCE,
         LOCAL_MEM_FENCE,
@@ -145,9 +142,11 @@ if config.HAS_NON_HOST_DEVICE:
 else:
     raise ImportError("No non-host SYCL device found to execute kernels.")
 
+Vectorize.target_registry.ondemand["dpex"] = lambda: DpexVectorize
+
 from numba_dpex._version import get_versions  # noqa E402
 
 __version__ = get_versions()["version"]
 del get_versions
 
-__all__ = types.__all__ + ["offload_to_sycl_device"] + ["Range", "NdRange"]
+__all__ = types.__all__ + ["Range", "NdRange"]

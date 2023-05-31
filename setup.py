@@ -45,20 +45,6 @@ def get_ext_modules():
     if IS_LIN:
         dpctl_runtime_library_dirs.append(os.path.dirname(dpctl.__file__))
 
-    if dpnp_present:
-        dpnp_lib_path = []
-        dpnp_lib_path += [os.path.dirname(dpnp.__file__)]
-        ext_dpnp_iface = Extension(
-            name="numba_dpex.dpnp_iface.dpnp_fptr_interface",
-            sources=["numba_dpex/dpnp_iface/dpnp_fptr_interface.pyx"],
-            include_dirs=[dpnp.get_include(), dpctl.get_include()],
-            libraries=["dpnp_backend_c"],
-            library_dirs=dpnp_lib_path,
-            runtime_library_dirs=(dpnp_lib_path if IS_LIN else []),
-            language="c++",
-        )
-        ext_modules += [ext_dpnp_iface]
-
     ext_dpexrt_python = Extension(
         name="numba_dpex.core.runtime._dpexrt_python",
         sources=[
@@ -166,7 +152,7 @@ packages = find_packages(
 )
 build_requires = ["cython"]
 install_requires = [
-    "numba >={}".format("0.56"),
+    "numba >={}".format("0.57"),
     "dpctl",
     "packaging",
 ]

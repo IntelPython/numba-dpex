@@ -5,7 +5,7 @@
 import re
 from functools import cached_property
 
-import numpy as np
+import dpnp
 from llvmlite import binding as ll
 from llvmlite import ir as llvmir
 from numba import typeof
@@ -14,17 +14,14 @@ from numba.core.base import BaseContext
 from numba.core.callconv import MinimalCallConv
 from numba.core.registry import cpu_target
 from numba.core.target_extension import GPU, target_registry
+from numba.core.types import Array as NpArrayType
 
 from numba_dpex.core.datamodel.models import _init_data_model_manager
 from numba_dpex.core.exceptions import UnsupportedKernelArgumentError
 from numba_dpex.core.typeconv import to_usm_ndarray
-from numba_dpex.core.types import DpnpNdArray
+from numba_dpex.core.types import DpnpNdArray, USMNdArray
 from numba_dpex.core.utils import get_info_from_suai
-from numba_dpex.utils import (
-    address_space,
-    calling_conv,
-    npytypes_array_to_dpex_array,
-)
+from numba_dpex.utils import address_space, calling_conv
 
 from .. import codegen
 
@@ -66,7 +63,15 @@ class DpexKernelTypingContext(typing.BaseContext):
 
         """
         try:
-            _type = type(typeof(val))
+            numba_type = typeof(val)
+            py_type = type(numba_type)
+
+            if isinstance(numba_type, NpArrayType) and not isinstance(
+                numba_type, USMNdArray
+            ):
+                raise UnsupportedKernelArgumentError(
+                    type=str(type(val)), value=val
+                )
 
             # XXX A kernel function has the spir_kernel ABI and requires
             # pointers to have an address space attribute. For this reason, the
@@ -78,7 +83,7 @@ class DpexKernelTypingContext(typing.BaseContext):
             # function to convert it into a UsmNdArray type rather than passing
             # it to the kernel as a DpnpNdArray. Thus, from a Numba typing
             # perspective dpnp.ndarrays cannot be directly passed to a kernel.
-            if _type is DpnpNdArray:
+            if py_type is DpnpNdArray:
                 suai_attrs = get_info_from_suai(val)
                 return to_usm_ndarray(suai_attrs)
         except ValueError:
@@ -94,13 +99,7 @@ class DpexKernelTypingContext(typing.BaseContext):
                     type=str(type(val)), value=val
                 )
 
-        # FIXME: Remove once NumPy arrays are no longer supported as kernel
-        # args.
-        if _type is types.npytypes.Array:
-            # Convert npytypes.Array to numba_dpex.core.types.Array
-            return npytypes_array_to_dpex_array(typeof(val))
-        else:
-            return super().resolve_argument_type(val)
+        return super().resolve_argument_type(val)
 
     def load_additional_registries(self):
         """Register the OpenCL API and math and other functions."""
@@ -156,13 +155,6 @@ class DpexKernelTargetContext(BaseContext):
         name = llvmir.MetaDataString(mod, "kernel_arg_addr_space")
         return mod.add_metadata([name] + consts)
 
-    def _gen_arg_access_qual_md(self, fn):
-        """Generate kernel_arg_access_qual metadata."""
-        mod = fn.module
-        consts = [llvmir.MetaDataString(mod, "none")] * len(fn.args)
-        name = llvmir.MetaDataString(mod, "kernel_arg_access_qual")
-        return mod.add_metadata([name] + consts)
-
     def _gen_arg_type(self, fn):
         """Generate kernel_arg_type metadata."""
         mod = fn.module
@@ -214,7 +206,6 @@ class DpexKernelTargetContext(BaseContext):
                 [
                     fn,
                     self._gen_arg_addrspace_md(fn),
-                    self._gen_arg_access_qual_md(fn),
                     self._gen_arg_type(fn),
                     self._gen_arg_type_qual(fn),
                     self._gen_arg_base_type(fn),
@@ -298,37 +289,36 @@ class DpexKernelTargetContext(BaseContext):
     def create_module(self, name):
         return self._internal_codegen._create_empty_module(name)
 
-    def replace_numpy_ufunc_with_opencl_supported_functions(self):
+    def replace_dpnp_ufunc_with_ocl_intrinsics(self):
         from numba_dpex.ocl.mathimpl import lower_ocl_impl, sig_mapper
 
         ufuncs = [
-            ("fabs", np.fabs),
-            ("exp", np.exp),
-            ("log", np.log),
-            ("log10", np.log10),
-            ("expm1", np.expm1),
-            ("log1p", np.log1p),
-            ("sqrt", np.sqrt),
-            ("sin", np.sin),
-            ("cos", np.cos),
-            ("tan", np.tan),
-            ("asin", np.arcsin),
-            ("acos", np.arccos),
-            ("atan", np.arctan),
-            ("atan2", np.arctan2),
-            ("sinh", np.sinh),
-            ("cosh", np.cosh),
-            ("tanh", np.tanh),
-            ("asinh", np.arcsinh),
-            ("acosh", np.arccosh),
-            ("atanh", np.arctanh),
-            ("ldexp", np.ldexp),
-            ("floor", np.floor),
-            ("ceil", np.ceil),
-            ("trunc", np.trunc),
-            ("hypot", np.hypot),
-            ("exp2", np.exp2),
-            ("log2", np.log2),
+            ("fabs", dpnp.fabs),
+            ("exp", dpnp.exp),
+            ("log", dpnp.log),
+            ("log10", dpnp.log10),
+            ("expm1", dpnp.expm1),
+            ("log1p", dpnp.log1p),
+            ("sqrt", dpnp.sqrt),
+            ("sin", dpnp.sin),
+            ("cos", dpnp.cos),
+            ("tan", dpnp.tan),
+            ("asin", dpnp.arcsin),
+            ("acos", dpnp.arccos),
+            ("atan", dpnp.arctan),
+            ("atan2", dpnp.arctan2),
+            ("sinh", dpnp.sinh),
+            ("cosh", dpnp.cosh),
+            ("tanh", dpnp.tanh),
+            ("asinh", dpnp.arcsinh),
+            ("acosh", dpnp.arccosh),
+            ("atanh", dpnp.arctanh),
+            ("floor", dpnp.floor),
+            ("ceil", dpnp.ceil),
+            ("trunc", dpnp.trunc),
+            ("hypot", dpnp.hypot),
+            ("exp2", dpnp.exp2),
+            ("log2", dpnp.log2),
         ]
 
         for name, ufunc in ufuncs:
@@ -344,23 +334,24 @@ class DpexKernelTargetContext(BaseContext):
     def load_additional_registries(self):
         """Register OpenCL functions into numba_depx's target context.
 
-        To make sure we are calling supported OpenCL math functions, we
-        replace some of NUMBA's NumPy ufunc with OpenCL versions of those
-        functions. The replacement is done after the OpenCL functions have
-        been registered into the target context.
+        To make sure we are calling supported OpenCL math functions, we replace
+        the dpnp functions that default to NUMBA's NumPy ufunc with OpenCL
+        intrinsics that are equivalent to those functions. The replacement is
+        done after the OpenCL functions have been registered into the
+        target context.
 
         """
-        from numba.np import npyimpl
+        from numba_dpex.dpnp_iface import dpnpimpl
 
         from ... import printimpl
         from ...ocl import mathimpl, oclimpl
 
         self.insert_func_defn(oclimpl.registry.functions)
         self.insert_func_defn(mathimpl.registry.functions)
-        self.insert_func_defn(npyimpl.registry.functions)
+        self.insert_func_defn(dpnpimpl.registry.functions)
         self.install_registry(printimpl.registry)
-        # Replace NumPy functions with their OpenCL versions.
-        self.replace_numpy_ufunc_with_opencl_supported_functions()
+        # Replace dpnp math functions with their OpenCL versions.
+        self.replace_dpnp_ufunc_with_ocl_intrinsics()
 
     @cached_property
     def call_conv(self):

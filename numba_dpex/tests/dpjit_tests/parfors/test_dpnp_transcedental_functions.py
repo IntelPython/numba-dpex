@@ -9,11 +9,7 @@ import numpy as np
 import pytest
 
 from numba_dpex import dpjit
-from numba_dpex.tests._helper import (
-    assert_auto_offloading,
-    filter_strings,
-    is_gen12,
-)
+from numba_dpex.tests._helper import filter_strings, is_gen12
 
 """dpnp raise error on : mod, abs and remainder(float32)"""
 list_of_binary_ops = [

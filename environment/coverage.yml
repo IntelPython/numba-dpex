@@ -12,7 +12,7 @@ dependencies:
   - gxx_linux-64
   - dpcpp_linux-64
   - cython
-  - numba 0.56*
+  - numba 0.57*
   - dppy/label/dev:dpctl
   - dppy/label/dev:dpnp
   - spirv-tools

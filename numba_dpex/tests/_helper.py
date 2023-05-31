@@ -9,9 +9,8 @@ import shutil
 
 import dpctl
 import pytest
-from numba.tests.support import captured_stdout
 
-from numba_dpex import config, numba_version
+from numba_dpex import config, numba_sem_version
 
 
 def has_opencl_gpu():
@@ -114,7 +113,7 @@ filter_strings_level_zero_gpu = [
 ]
 
 skip_no_numba056 = pytest.mark.skipif(
-    numba_version < (0, 56), reason="Need Numba 0.56 or higher"
+    numba_sem_version < (0, 56), reason="Need Numba 0.56 or higher"
 )
 
 skip_no_gdb = pytest.mark.skipif(
@@ -139,76 +138,3 @@ def override_config(name, value, config=config):
 
 def _id(obj):
     return obj
-
-
-def _ensure_dpnp():
-    try:
-        from numba_dpex.dpnp_iface import dpnp_fptr_interface as dpnp_iface
-
-        return True
-    except ImportError:
-        if config.TESTING_SKIP_NO_DPNP:
-            return False
-        else:
-            pytest.fail("DPNP is not available")
-
-
-skip_no_dpnp = pytest.mark.skipif(
-    not _ensure_dpnp(), reason="DPNP is not available"
-)
-
-
-@contextlib.contextmanager
-def dpnp_debug():
-    import numba_dpex.dpnp_iface as dpnp_lowering
-
-    old, dpnp_lowering.DEBUG = dpnp_lowering.DEBUG, 1
-    yield
-    dpnp_lowering.DEBUG = old
-
-
-@contextlib.contextmanager
-def assert_dpnp_implementaion():
-    from numba.tests.support import captured_stdout
-
-    with captured_stdout() as stdout, dpnp_debug():
-        yield
-
-    assert (
-        "dpnp implementation" in stdout.getvalue()
-    ), "dpnp implementation is not used"
-
-
-@contextlib.contextmanager
-def assert_auto_offloading(parfor_offloaded=1, parfor_offloaded_failure=0):
-    """
-    If ``parfor_offloaded`` is not provided this context_manager
-    will check for 1 occurrance of success message. Developers
-    can always specify how many parfor offload success message
-    is expected.
-    If ``parfor_offloaded_failure`` is not provided the default
-    behavior is to expect 0 failure message, in other words, we
-    expect all parfors present in the code to be successfully
-    offloaded to GPU.
-    """
-    old_debug = config.DEBUG
-    config.DEBUG = 1
-
-    with captured_stdout() as stdout:
-        yield
-
-    config.DEBUG = old_debug
-
-    got_parfor_offloaded = stdout.getvalue().count("Parfor offloaded to")
-    assert parfor_offloaded == got_parfor_offloaded, (
-        "Expected %d parfor(s) to be auto offloaded, instead got %d parfor(s) auto offloaded"
-        % (parfor_offloaded, got_parfor_offloaded)
-    )
-
-    got_parfor_offloaded_failure = stdout.getvalue().count(
-        "Failed to offload parfor to"
-    )
-    assert parfor_offloaded_failure == got_parfor_offloaded_failure, (
-        "Expected %d parfor(s) to be not auto offloaded, instead got %d parfor(s) not auto offloaded"
-        % (parfor_offloaded_failure, got_parfor_offloaded_failure)
-    )

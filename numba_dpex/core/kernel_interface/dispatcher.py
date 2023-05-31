@@ -40,22 +40,6 @@ from numba_dpex.core.utils import (
 from .utils import determine_kernel_launch_queue
 
 
-def get_ordered_arg_access_types(pyfunc, access_types):
-    """Deprecated and to be removed in next release."""
-    # Construct a list of access type of each arg according to their position
-    ordered_arg_access_types = []
-    sig = signature(pyfunc, follow_wrapped=False)
-    for idx, arg_name in enumerate(sig.parameters):
-        if access_types:
-            for key in access_types:
-                if arg_name in access_types[key]:
-                    ordered_arg_access_types.append(key)
-        if len(ordered_arg_access_types) <= idx:
-            ordered_arg_access_types.append(None)
-
-    return ordered_arg_access_types
-
-
 class JitKernel:
     """Functor to wrap a kernel function and JIT compile and dispatch it to a
     specified SYCL queue.
@@ -76,7 +60,6 @@ class JitKernel:
         pyfunc,
         debug_flags=None,
         compile_flags=None,
-        array_access_specifiers=None,
         specialization_sigs=None,
         enable_cache=True,
     ):
@@ -110,17 +93,6 @@ class JitKernel:
             self._cache = NullCache()
             self._kernel_bundle_cache = NullCache()
         self._cache_hits = 0
-
-        if array_access_specifiers:
-            warn(
-                "Access specifiers apply only to NumPy ndarrays. "
-                + "Support for NumPy ndarray objects as kernel arguments "
-                + "and access specifiers flags is deprecated. "
-                + "Use dpctl.tensor.usm_ndarray based arrays instead.",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-        self.array_access_specifiers = array_access_specifiers
 
         if debug_flags or config.OPT == 0:
             # if debug is ON we need to pass additional
@@ -348,7 +320,7 @@ class JitKernel:
                 return self
 
             warn(
-                "The current syntax for specification of kernel lauch "
+                "The current syntax for specification of kernel launch "
                 + "parameters is deprecated. Users should set the kernel "
                 + "parameters through Range/NdRange classes.\n"
                 + "Example:\n"
@@ -504,10 +476,9 @@ class JitKernel:
             arg_list=args,
             argty_list=argtypes,
             queue=exec_queue,
-            access_specifiers_list=self.array_access_specifiers,
         )
 
-        # Make sure the kernel lauch range/nd_range are sane
+        # Make sure the kernel launch range/nd_range are sane
         self._check_ranges(exec_queue.sycl_device)
 
         exec_queue.submit(
@@ -518,6 +489,3 @@ class JitKernel:
         )
 
         exec_queue.wait()
-
-        # TODO remove once NumPy support is removed
-        packer.repacked_args

@@ -210,8 +210,6 @@ def ol_dpnp_empty(
     shape,
     dtype=None,
     order="C",
-    # like=None, # this gets lost when dpnp.empty() is called outside dpjit,
-    # see issue https://github.com/IntelPython/numba-dpex/issues/998
     device=None,
     usm_type="device",
     sycl_queue=None,
@@ -229,12 +227,6 @@ def ol_dpnp_empty(
             Default: None.
         order (str, optional): memory layout for the array "C" or "F".
             Default: "C".
-        like (numba.core.types.npytypes.Array, optional): A type for
-            reference object to allow the creation of arrays which are not
-            `NumPy` arrays. If an array-like passed in as `like` supports the
-            `__array_function__` protocol, the result will be defined by it.
-            In this case, it ensures the creation of an array object
-            compatible with that passed in via this argument.
         device (numba.core.types.misc.StringLiteral, optional): array API
             concept of device where the output array is created. `device`
             can be `None`, a oneAPI filter selector string, an instance of
@@ -278,7 +270,6 @@ def ol_dpnp_empty(
                 shape,
                 dtype=None,
                 order="C",
-                # like=None, see issue https://github.com/IntelPython/numba-dpex/issues/998
                 device=None,
                 usm_type="device",
                 sycl_queue=None,
@@ -287,7 +278,6 @@ def ol_dpnp_empty(
                     shape,
                     _dtype,
                     order,
-                    # like, see issue https://github.com/IntelPython/numba-dpex/issues/998
                     _device,
                     _usm_type,
                     sycl_queue,
@@ -309,7 +299,6 @@ def ol_dpnp_zeros(
     shape,
     dtype=None,
     order="C",
-    like=None,
     device=None,
     usm_type="device",
     sycl_queue=None,
@@ -327,12 +316,6 @@ def ol_dpnp_zeros(
             Default: None.
         order (str, optional): memory layout for the array "C" or "F".
             Default: "C".
-        like (numba.core.types.npytypes.Array, optional): A type for
-            reference object to allow the creation of arrays which are not
-            `NumPy` arrays. If an array-like passed in as `like` supports the
-            `__array_function__` protocol, the result will be defined by it.
-            In this case, it ensures the creation of an array object
-            compatible with that passed in via this argument.
         device (numba.core.types.misc.StringLiteral, optional): array API
             concept of device where the output array is created. `device`
             can be `None`, a oneAPI filter selector string, an instance of
@@ -355,8 +338,8 @@ def ol_dpnp_zeros(
     """
 
     _ndim = _ty_parse_shape(shape)
-    _layout = _parse_layout(order)
     _dtype = _parse_dtype(dtype)
+    _layout = _parse_layout(order)
     _usm_type = _parse_usm_type(usm_type) if usm_type is not None else "device"
     _device = (
         _parse_device_filter_string(device) if device is not None else "unknown"
@@ -376,7 +359,6 @@ def ol_dpnp_zeros(
                 shape,
                 dtype=None,
                 order="C",
-                like=None,
                 device=None,
                 usm_type="device",
                 sycl_queue=None,
@@ -385,7 +367,6 @@ def ol_dpnp_zeros(
                     shape,
                     _dtype,
                     order,
-                    like,
                     _device,
                     _usm_type,
                     sycl_queue,
@@ -407,7 +388,6 @@ def ol_dpnp_ones(
     shape,
     dtype=None,
     order="C",
-    like=None,
     device=None,
     usm_type="device",
     sycl_queue=None,
@@ -425,12 +405,6 @@ def ol_dpnp_ones(
             Default: None.
         order (str, optional): memory layout for the array "C" or "F".
             Default: "C".
-        like (numba.core.types.npytypes.Array, optional): A type for
-            reference object to allow the creation of arrays which are not
-            `NumPy` arrays. If an array-like passed in as `like` supports the
-            `__array_function__` protocol, the result will be defined by it.
-            In this case, it ensures the creation of an array object
-            compatible with that passed in via this argument.
         device (numba.core.types.misc.StringLiteral, optional): array API
             concept of device where the output array is created. `device`
             can be `None`, a oneAPI filter selector string, an instance of
@@ -474,7 +448,6 @@ def ol_dpnp_ones(
                 shape,
                 dtype=None,
                 order="C",
-                like=None,
                 device=None,
                 usm_type="device",
                 sycl_queue=None,
@@ -483,7 +456,6 @@ def ol_dpnp_ones(
                     shape,
                     _dtype,
                     order,
-                    like,
                     _device,
                     _usm_type,
                     sycl_queue,

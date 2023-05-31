@@ -9,7 +9,7 @@ import numpy as np
 import pytest
 
 from numba_dpex import dpjit
-from numba_dpex.tests._helper import assert_auto_offloading, filter_strings
+from numba_dpex.tests._helper import filter_strings
 
 """ Following cases, dpnp raises NotImplementedError"""
 

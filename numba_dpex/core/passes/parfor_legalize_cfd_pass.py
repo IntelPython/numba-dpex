@@ -5,17 +5,16 @@
 from numba.core import ir, types
 from numba.core.compiler_machinery import FunctionPass, register_pass
 from numba.core.ir_utils import find_topo_order
-
-from numba_dpex.core.exceptions import ComputeFollowsDataInferenceError
-from numba_dpex.core.passes.parfor_lowering_pass import ParforLowerFactory
-from numba_dpex.core.types.dpnp_ndarray_type import DpnpNdArray
-
-from .parfor import (
+from numba.parfors.parfor import (
     Parfor,
     ParforDiagnostics,
     get_parfor_outputs,
     get_parfor_params,
 )
+
+from numba_dpex.core.exceptions import ExecutionQueueInferenceError
+from numba_dpex.core.parfors.parfor_lowerer import ParforLowerFactory
+from numba_dpex.core.types.dpnp_ndarray_type import DpnpNdArray
 
 
 class ParforLegalizeCFDPassImpl:
@@ -28,7 +27,7 @@ class ParforLegalizeCFDPassImpl:
     __array_ufunc__ method of DpnpNdArray class. The pass fixes the LHS type by
     properly applying compute follows data programming model. The pass first
     checks if the right-hand-side (RHS) DpnpNdArray arguments are on the same
-    device, else raising a ComputeFollowsDataInferenceError. Once the RHS has
+    device, else raising a ExecutionQueueInferenceError. Once the RHS has
     been validated, the LHS type is updated.
 
     The pass also updated the usm_type of the LHS based on a USM type
@@ -93,7 +92,7 @@ class ParforLegalizeCFDPassImpl:
                 )
         # Check compute follows data on the dpnp arrays in checklist
         if len(deviceTypes) > 1:
-            raise ComputeFollowsDataInferenceError(
+            raise ExecutionQueueInferenceError(
                 kernel_name=parfor.loc.short(),
                 usmarray_argnum_list=[],
             )

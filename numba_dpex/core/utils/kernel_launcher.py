@@ -127,6 +127,29 @@ class KernelLaunchIRBuilder:
             numba_type_to_dpctl_typenum(self.context, ty), kernel_arg_ty_dst
         )
 
+    def build_complex_arg(self, val, ty, arg_list, args_ty_list, arg_num):
+        """Creates a list of LLVM Values for an unpacked complex kernel
+        argument.
+        """
+        self._build_array_attr_arg(
+            array_val=val,
+            array_attr_pos=0,
+            array_attr_ty=ty,
+            arg_list=arg_list,
+            args_ty_list=args_ty_list,
+            arg_num=arg_num,
+        )
+        arg_num += 1
+        self._build_array_attr_arg(
+            array_val=val,
+            array_attr_pos=1,
+            array_attr_ty=ty,
+            arg_list=arg_list,
+            args_ty_list=args_ty_list,
+            arg_num=arg_num,
+        )
+        arg_num += 1
+
     def build_array_arg(
         self, array_val, array_rank, arg_list, args_ty_list, arg_num
     ):
@@ -288,7 +311,6 @@ class KernelLaunchIRBuilder:
 
         Args:
             idx_range (_type_): _description_
-            kernel_name_tag (_type_): _description_
         """
         intp_t = utils.get_llvm_type(context=self.context, type=types.intp)
         intp_ptr_t = utils.get_llvm_ptr_type(intp_t)
@@ -318,27 +340,20 @@ class KernelLaunchIRBuilder:
 
         return self.builder.bitcast(global_range, intp_ptr_t)
 
-    def submit_sync_ranged_kernel(
+    def submit_sync_kernel(
         self,
-        idx_range,
         sycl_queue_val,
         total_kernel_args,
         arg_list,
         arg_ty_list,
+        global_range,
+        local_range=None,
     ):
         """
-        submit_sync_ranged_kernel(dim_bounds, sycl_queue_val)
-        Submits the kernel to the specified queue, waits and then copies
-        back any results to the host.
-
-        Args:
-            idx_range: Tuple specifying the range over which the kernel is
-            to be submitted.
-            sycl_queue_val : The SYCL queue on which the kernel is
-                             submitted.
+        Submits the kernel to the specified queue, waits.
         """
-        gr = self._create_sycl_range(idx_range)
-        args = [
+        gr = self._create_sycl_range(global_range)
+        args1 = [
             self.builder.inttoptr(
                 self.context.get_constant(types.uintp, self.kernel_addr),
                 utils.get_llvm_type(context=self.context, type=types.voidptr),
@@ -348,7 +363,9 @@ class KernelLaunchIRBuilder:
             arg_ty_list,
             self.context.get_constant(types.uintp, total_kernel_args),
             gr,
-            self.context.get_constant(types.uintp, len(idx_range)),
+        ]
+        args2 = [
+            self.context.get_constant(types.uintp, len(global_range)),
             self.builder.bitcast(
                 utils.create_null_ptr(
                     builder=self.builder, context=self.context
@@ -357,5 +374,11 @@ class KernelLaunchIRBuilder:
             ),
             self.context.get_constant(types.uintp, 0),
         ]
-
-        self.rtctx.submit_range(self.builder, *args)
+        args = []
+        if len(local_range) == 0:
+            args = args1 + args2
+            self.rtctx.submit_range(self.builder, *args)
+        else:
+            lr = self._create_sycl_range(local_range)
+            args = args1 + [lr] + args2
+            self.rtctx.submit_ndrange(self.builder, *args)
