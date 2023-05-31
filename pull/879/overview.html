@@ -409,15 +409,19 @@ document.write(`
                   
   <section id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">#</a></h1>
-<p>Data-Parallel Extensions for Numba* (<a class="reference external" href="https://github.com/IntelPython/numba-dpex">numba-dpex</a>) is a standalone extension to
-the <a class="reference external" href="https://numba.pydata.org/">Numba*</a> Python JIT compiler. The extension adds two new features to Numba:
-an architecture-agnostic kernel programming API, and a backend extension that
-can parallelize NumPy-style array expressions and function calls on different
-types of data-parallel hardware.</p>
-<p>Numba-dpex is part of <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/ai-analytics-toolkit.html">Intel AI Analytics Toolkit</a> and distributed with the
-<a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/distribution-for-python.html">Intel Distribution for Python*</a>. The extension is also available on Anaconda
-cloud and as a Docker image on GitHub. Please refer the <a class="reference internal" href="getting_started.html"><span class="doc">Getting Started</span></a>
-page to learn more.</p>
+<p>Data-Parallel Extensions for Numba* (<a class="reference external" href="https://github.com/IntelPython/numba-dpex">numba-dpex</a>) is a standalone extension
+for the <a class="reference external" href="https://numba.pydata.org/">Numba*</a> Python JIT compiler. Numba-dpex adds two new features to
+Numba: an architecture-agnostic kernel programming API, and a new target that
+adds typing and compilation for the <a class="reference external" href="https://intelpython.github.io/dpnp/">dpnp</a> library. Dpnp is a numerical
+computation Python library that has an API similar to NumPy and provides
+data-parallel implementations of all its library functions and other operations.
+By being able to compile dpnp, numba-dpex offers a way for programmers to
+execute NumPy-like “universal function” calls and other array-based expressions
+on different types of data-parallel hardware.</p>
+<p>Numba-dpex is being developed as part of <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/ai-analytics-toolkit.html">Intel AI Analytics Toolkit</a> and is
+distributed with the <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/distribution-for-python.html">Intel Distribution for Python*</a>. The extension is also
+available on Anaconda cloud and as a Docker image on GitHub. Please refer the
+<a class="reference internal" href="getting_started.html"><span class="doc">Getting Started</span></a> page to learn more.</p>
 <section id="main-features">
 <h2>Main Features<a class="headerlink" href="#main-features" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
@@ -456,9 +460,6 @@ select a default device based on environment flag settings.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="user_manual/dpnp_offload/index.html"><span class="doc">Compiling and Offloading dpnp</span></a></p></li>
 </ul>
-<p><a class="reference external" href="https://intelpython.github.io/dpnp/">Dpnp</a> is a NumPy-replacement library being developed using SYCL and oneAPI.
-The library has an API similar to NumPy, but using SYCL and oneAPI is able to
-execute its functions in parallel on different types of hardware.</p>
 <p>Numba-dpex extends Numba’s type system and compilation pipeline to compile dpnp
 functions and expressions in the same manner as Numba compiles NumPy. Unlike
 Numba’s NumPy compilation that is serial by default, numba-dpex always compiles

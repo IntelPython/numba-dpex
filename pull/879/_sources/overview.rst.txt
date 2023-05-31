@@ -4,16 +4,20 @@
 Overview
 ========
 
-Data-Parallel Extensions for Numba* (`numba-dpex`_) is a standalone extension to
-the `Numba*`_ Python JIT compiler. The extension adds two new features to Numba:
-an architecture-agnostic kernel programming API, and a backend extension that
-can parallelize NumPy-style array expressions and function calls on different
-types of data-parallel hardware.
+Data-Parallel Extensions for Numba* (`numba-dpex`_) is a standalone extension
+for the `Numba*`_ Python JIT compiler. Numba-dpex adds two new features to
+Numba: an architecture-agnostic kernel programming API, and a new target that
+adds typing and compilation for the `dpnp`_ library. Dpnp is a numerical
+computation Python library that has an API similar to NumPy and provides
+data-parallel implementations of all its library functions and other operations.
+By being able to compile dpnp, numba-dpex offers a way for programmers to
+execute NumPy-like "universal function" calls and other array-based expressions
+on different types of data-parallel hardware.
 
-Numba-dpex is part of `Intel AI Analytics Toolkit`_ and distributed with the
-`Intel Distribution for Python*`_. The extension is also available on Anaconda
-cloud and as a Docker image on GitHub. Please refer the :doc:`getting_started`
-page to learn more.
+Numba-dpex is being developed as part of `Intel AI Analytics Toolkit`_ and is
+distributed with the `Intel Distribution for Python*`_. The extension is also
+available on Anaconda cloud and as a Docker image on GitHub. Please refer the
+:doc:`getting_started` page to learn more.
 
 Main Features
 -------------
@@ -56,9 +60,7 @@ select a default device based on environment flag settings.
 
 - :doc:`user_manual/dpnp_offload/index`
 
-`Dpnp`_ is a NumPy-replacement library being developed using SYCL and oneAPI.
-The library has an API similar to NumPy, but using SYCL and oneAPI is able to
-execute its functions in parallel on different types of hardware.
+
 
 Numba-dpex extends Numba's type system and compilation pipeline to compile dpnp
 functions and expressions in the same manner as Numba compiles NumPy. Unlike
