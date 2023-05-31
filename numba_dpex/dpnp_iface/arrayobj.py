@@ -161,9 +161,7 @@ def _parse_device_filter_string(device):
 # =========================================================================
 #                       Dpnp array constructor overloads
 # =========================================================================
-
-
-@overload(dpnp.empty, prefer_literal=True)
+@overload(dpnp.empty, prefer_literal=True, target="dpex")
 def ol_dpnp_empty(
     shape,
     dtype=None,
@@ -260,7 +258,7 @@ def ol_dpnp_empty(
         raise errors.TypingError("Could not infer the rank of the ndarray.")
 
 
-@overload(dpnp.zeros, prefer_literal=True)
+@overload(dpnp.zeros, prefer_literal=True, target="dpex")
 def ol_dpnp_zeros(
     shape,
     dtype=None,
@@ -354,7 +352,7 @@ def ol_dpnp_zeros(
         raise errors.TypingError("Could not infer the rank of the ndarray.")
 
 
-@overload(dpnp.ones, prefer_literal=True)
+@overload(dpnp.ones, prefer_literal=True, target="dpex")
 def ol_dpnp_ones(
     shape,
     dtype=None,
@@ -448,7 +446,7 @@ def ol_dpnp_ones(
         raise errors.TypingError("Could not infer the rank of the ndarray.")
 
 
-@overload(dpnp.full, prefer_literal=True)
+@overload(dpnp.full, prefer_literal=True, target="dpex")
 def ol_dpnp_full(
     shape,
     fill_value,
@@ -557,7 +555,7 @@ def ol_dpnp_full(
         raise errors.TypingError("Could not infer the rank of the ndarray.")
 
 
-@overload(dpnp.empty_like, prefer_literal=True)
+@overload(dpnp.empty_like, prefer_literal=True, target="dpex")
 def ol_dpnp_empty_like(
     x1,
     dtype=None,
@@ -682,7 +680,7 @@ def ol_dpnp_empty_like(
         )
 
 
-@overload(dpnp.zeros_like, prefer_literal=True)
+@overload(dpnp.zeros_like, prefer_literal=True, target="dpex")
 def ol_dpnp_zeros_like(
     x1,
     dtype=None,
@@ -806,7 +804,7 @@ def ol_dpnp_zeros_like(
         )
 
 
-@overload(dpnp.ones_like, prefer_literal=True)
+@overload(dpnp.ones_like, prefer_literal=True, target="dpex")
 def ol_dpnp_ones_like(
     x1,
     dtype=None,
@@ -931,7 +929,7 @@ def ol_dpnp_ones_like(
         )
 
 
-@overload(dpnp.full_like, prefer_literal=True)
+@overload(dpnp.full_like, prefer_literal=True, target="dpex")
 def ol_dpnp_full_like(
     x1,
     fill_value,

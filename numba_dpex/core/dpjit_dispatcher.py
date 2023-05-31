@@ -17,6 +17,9 @@ class DpjitDispatcher(dispatcher.Dispatcher):
     Dispatcher can lookup the global target_registry with that string and
     correctly use the DpexTarget context.
 
+    In addition, the dispatcher uses the `target_override` feature to set the
+    target to dpex for every use of dpjit.
+
     """
 
     targetdescr = dpex_target
@@ -29,14 +32,17 @@ class DpjitDispatcher(dispatcher.Dispatcher):
         impl_kind="direct",
         pipeline_class=compiler.Compiler,
     ):
-        dispatcher.Dispatcher.__init__(
-            self,
-            py_func,
-            locals=locals,
-            targetoptions=targetoptions,
-            impl_kind=impl_kind,
-            pipeline_class=pipeline_class,
-        )
+        from numba.core.target_extension import target_override
+
+        with target_override("dpex"):
+            dispatcher.Dispatcher.__init__(
+                self,
+                py_func,
+                locals=locals,
+                targetoptions=targetoptions,
+                impl_kind=impl_kind,
+                pipeline_class=pipeline_class,
+            )
 
 
 dispatcher_registry[target_registry[DPEX_TARGET_NAME]] = DpjitDispatcher

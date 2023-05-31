@@ -142,6 +142,7 @@ def dpjit(*args, **kws):
         warnings.warn(
             "nopython is set for dpjit and is ignored", RuntimeWarning
         )
+        del kws["nopython"]
     if "forceobj" in kws:
         warnings.warn(
             "forceobj is set for dpjit and is ignored", RuntimeWarning
@@ -151,15 +152,12 @@ def dpjit(*args, **kws):
         warnings.warn(
             "pipeline class is set for dpjit and is ignored", RuntimeWarning
         )
-        del kws["forceobj"]
+        del kws["pipeline_class"]
     kws.update({"nopython": True})
     kws.update({"parallel": True})
     kws.update({"pipeline_class": DpjitCompiler})
 
-    # FIXME: When trying to use dpex's target context, overloads do not work
-    # properly. We will turn on dpex target once the issue is fixed.
-
-    # kws.update({"_target": "dpex"})
+    kws.update({"_target": "dpex"})
 
     return decorators.jit(*args, **kws)
 

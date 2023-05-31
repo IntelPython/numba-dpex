@@ -321,7 +321,7 @@ def _call_usm_allocator(arrtype, size, usm_type, queue):
 numba_config.DISABLE_PERFORMANCE_WARNINGS = 1
 
 
-@intrinsic
+@intrinsic(target="dpex")
 def intrin_usm_alloc(typingctx, allocsize, usm_type, queue):
     """Intrinsic to call into the allocator for Array"""
 
@@ -420,7 +420,7 @@ def fill_arrayobj(context, builder, ary, arrtype, queue_ref, fill_value):
     return ary, arrtype
 
 
-@intrinsic
+@intrinsic(target="dpex")
 def impl_dpnp_empty(
     ty_context,
     ty_shape,
@@ -493,7 +493,7 @@ def impl_dpnp_empty(
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target="dpex")
 def impl_dpnp_zeros(
     ty_context,
     ty_shape,
@@ -572,7 +572,7 @@ def impl_dpnp_zeros(
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target="dpex")
 def impl_dpnp_ones(
     ty_context,
     ty_shape,
@@ -652,7 +652,7 @@ def impl_dpnp_ones(
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target="dpex")
 def impl_dpnp_full(
     ty_context,
     ty_shape,
@@ -738,7 +738,7 @@ def impl_dpnp_full(
     return signature, codegen
 
 
-@intrinsic
+@intrinsic(target="dpex")
 def impl_dpnp_empty_like(
     ty_context,
     ty_x1,
@@ -820,7 +820,7 @@ def impl_dpnp_empty_like(
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target="dpex")
 def impl_dpnp_zeros_like(
     ty_context,
     ty_x1,
@@ -910,7 +910,7 @@ def impl_dpnp_zeros_like(
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target="dpex")
 def impl_dpnp_ones_like(
     ty_context,
     ty_x1,
@@ -999,7 +999,7 @@ def impl_dpnp_ones_like(
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target="dpex")
 def impl_dpnp_full_like(
     ty_context,
     ty_x1,
