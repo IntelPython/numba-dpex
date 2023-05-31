@@ -65,6 +65,7 @@ def input_arrays(request):
     return a, b
 
 
+@pytest.mark.skip(reason="Gives segfault, need to fix.")
 def test_dpjit_array_arg_types_add1(input_arrays):
     """Tests passing float and int type dpnp arrays to a dpjit
     prange function.

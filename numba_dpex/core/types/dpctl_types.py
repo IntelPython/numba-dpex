@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import random
+
 from dpctl import SyclQueue
 from numba import types
 from numba.core import cgutils
@@ -19,8 +21,38 @@ class DpctlSyclQueue(types.Type):
     Numba.
     """
 
-    def __init__(self):
+    def __init__(self, sycl_queue):
+        if not isinstance(sycl_queue, SyclQueue):
+            raise TypeError("The argument sycl_queue is not of type SyclQueue.")
+
+        self._sycl_queue = sycl_queue
+        try:
+            self._unique_id = hash(self._sycl_queue)
+        except Exception:
+            self._unique_id = self.rand_digit_str(16)
         super(DpctlSyclQueue, self).__init__(name="DpctlSyclQueue")
+
+    def rand_digit_str(self, n):
+        return "".join(
+            ["{}".format(random.randint(0, 9)) for num in range(0, n)]
+        )
+
+    @property
+    def sycl_queue(self):
+        return self._sycl_queue
+
+    @property
+    def key(self):
+        """Returns a Python object used as the key to cache an instance of
+        DpctlSyclQueue.
+        The key is constructed by hashing the actual dpctl.SyclQueue object
+        encapsulated by an instance of DpctlSyclQueue. Doing so ensures, that
+        different dpctl.SyclQueue instances are inferred as separate instances
+        of the DpctlSyclQueue type.
+        Returns:
+            int: hash of the self._sycl_queue Python object.
+        """
+        return self._unique_id
 
     @property
     def box_type(self):
@@ -32,15 +64,18 @@ def unbox_sycl_queue(typ, obj, c):
     """
     Convert a SyclQueue object to a native structure.
     """
+
     qstruct = cgutils.create_struct_proxy(typ)(c.context, c.builder)
     qptr = qstruct._getpointer()
     ptr = c.builder.bitcast(qptr, c.pyapi.voidptr)
+
     if c.context.enable_nrt:
         dpexrtCtx = dpexrt.DpexRTContext(c.context)
         errcode = dpexrtCtx.queuestruct_from_python(c.pyapi, obj, ptr)
     else:
         raise UnreachableError
     is_error = cgutils.is_not_null(c.builder, errcode)
+
     # Handle error
     with c.builder.if_then(is_error, likely=False):
         c.pyapi.err_set_string(

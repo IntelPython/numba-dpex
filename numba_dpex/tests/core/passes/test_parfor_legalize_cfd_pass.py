@@ -48,7 +48,7 @@ def test_parfor_legalize_cfd_pass(shape, dtype, usm_type, device):
 
     assert c.dtype == dtype
     assert c.usm_type == usm_type
-    if device != "unknown":
+    if device is not None:
         assert (
             c.sycl_device.filter_string
             == dpctl.SyclDevice(device).filter_string
