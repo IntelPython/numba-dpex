@@ -9,13 +9,11 @@ import pytest
 
 import numba_dpex as dpex
 from numba_dpex import float32, usm_ndarray, void
-from numba_dpex.tests._helper import filter_strings
 
 f32arrty = usm_ndarray(ndim=1, dtype=float32, layout="C")
 
 
-@pytest.mark.parametrize("filter_str", filter_strings)
-def test_proper_lowering(filter_str):
+def test_proper_lowering():
     # This will trigger eager compilation
     @dpex.kernel(void(f32arrty))
     def twice(A):
@@ -35,8 +33,7 @@ def test_proper_lowering(filter_str):
     np.testing.assert_allclose(orig * 2, after)
 
 
-@pytest.mark.parametrize("filter_str", filter_strings)
-def test_no_arg_barrier_support(filter_str):
+def test_no_arg_barrier_support():
     @dpex.kernel(void(f32arrty))
     def twice(A):
         i = dpex.get_global_id(0)
@@ -54,8 +51,7 @@ def test_no_arg_barrier_support(filter_str):
     np.testing.assert_allclose(orig * 2, after)
 
 
-@pytest.mark.parametrize("filter_str", filter_strings)
-def test_local_memory(filter_str):
+def test_local_memory():
     blocksize = 10
 
     @dpex.kernel(void(f32arrty))

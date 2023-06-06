@@ -4,12 +4,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import dpctl
 import numpy as np
 import pytest
-from numba import float32, float64, int32, int64, njit, vectorize
-
-from numba_dpex.tests._helper import filter_strings
+from numba import float32, float64, int32, int64, vectorize
 
 list_of_shape = [
     (100, 100),
@@ -45,8 +42,7 @@ def input_type(request):
 
 
 @pytest.mark.xfail
-@pytest.mark.parametrize("filter_str", filter_strings)
-def test_vectorize(filter_str, shape, dtypes, input_type):
+def test_vectorize(shape, dtypes, input_type):
     def vector_add(a, b):
         return a + b
 
@@ -61,10 +57,9 @@ def test_vectorize(filter_str, shape, dtypes, input_type):
         A = dtype(1.2)
         B = dtype(2.3)
 
-    with dpctl.device_context(filter_str):
-        f = vectorize(sig, target="dpex")(vector_add)
-        expected = f(A, B)
-        actual = vector_add(A, B)
+    f = vectorize(sig, target="dpex")(vector_add)
+    expected = f(A, B)
+    actual = vector_add(A, B)
 
-        max_abs_err = np.sum(expected) - np.sum(actual)
-        assert max_abs_err < 1e-5
+    max_abs_err = np.sum(expected) - np.sum(actual)
+    assert max_abs_err < 1e-5

@@ -1,5 +1,4 @@
 import dpctl
-from numba.core.types.scalars import Float
 
 from numba_dpex.core.types import USMNdArray
 
