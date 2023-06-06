@@ -99,6 +99,7 @@ def spirv_compile():
     clang_args = [
         compiler,
         "-flto",
+        "-fveclib=none",
         "-target",
         "spir64-unknown-unknown",
         "-c",
