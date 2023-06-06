@@ -47,6 +47,8 @@ class KernelLaunchIRBuilder:
 
     def _build_array_attr_arg(
         self,
+        kernel_name,
+        numba_val,
         array_val,
         array_attr_pos,
         array_attr_ty,
@@ -68,7 +70,9 @@ class KernelLaunchIRBuilder:
             array_attr = self.builder.load(array_attr)
 
         self.build_arg(
-            val=array_attr,
+            kernel_name=kernel_name,
+            numba_val=numba_val,
+            llvm_val=array_attr,
             ty=array_attr_ty,
             arg_list=arg_list,
             args_ty_list=args_ty_list,
@@ -76,7 +80,15 @@ class KernelLaunchIRBuilder:
         )
 
     def _build_flattened_array_args(
-        self, array_val, array_attr_pos, ndims, arg_list, args_ty_list, arg_num
+        self,
+        kernel_name,
+        numba_val,
+        array_val,
+        array_attr_pos,
+        ndims,
+        arg_list,
+        args_ty_list,
+        arg_num,
     ):
         array_attr = self.builder.gep(
             array_val,
@@ -88,6 +100,8 @@ class KernelLaunchIRBuilder:
 
         for ndim in range(ndims):
             self._build_array_attr_arg(
+                kernel_name=kernel_name,
+                numba_val=numba_val,
                 array_val=array_attr,
                 array_attr_pos=ndim,
                 array_attr_ty=types.int64,
@@ -96,12 +110,25 @@ class KernelLaunchIRBuilder:
                 arg_num=arg_num + ndim,
             )
 
-    def build_arg(self, val, ty, arg_list, args_ty_list, arg_num):
+    def build_arg(
+        self,
+        kernel_name,
+        numba_val,
+        llvm_val,
+        ty,
+        arg_list,
+        args_ty_list,
+        arg_num,
+    ):
         """Stores the kernel arguments and the kernel argument types into
         arrays that will be passed to DPCTLQueue_SubmitRange.
 
         Args:
-            val: An LLVM IR Value that will be stored into the arguments array
+            kernel_name (str): The Numba IR function name for to the kernel
+                function
+            numba_val: The Numba IR value corresponding to a kernel argument
+            llvm_val: An LLVM IR Value that will be stored into the arguments
+                array
             ty: A Numba type that will be converted to a DPCTLKernelArgType
             enum and stored into the argument types list array
             arg_list: An LLVM IR Value array that stores the kernel arguments
@@ -119,20 +146,34 @@ class KernelLaunchIRBuilder:
             [self.context.get_constant(types.int32, arg_num)],
         )
         val = self.builder.bitcast(
-            val,
+            llvm_val,
             utils.get_llvm_type(context=self.context, type=types.voidptr),
         )
         self.builder.store(val, kernel_arg_dst)
         self.builder.store(
-            numba_type_to_dpctl_typenum(self.context, ty), kernel_arg_ty_dst
+            numba_type_to_dpctl_typenum(
+                self.context, kernel_name, numba_val, ty
+            ),
+            kernel_arg_ty_dst,
         )
 
-    def build_complex_arg(self, val, ty, arg_list, args_ty_list, arg_num):
+    def build_complex_arg(
+        self,
+        kernel_name,
+        numba_val,
+        llvm_val,
+        ty,
+        arg_list,
+        args_ty_list,
+        arg_num,
+    ):
         """Creates a list of LLVM Values for an unpacked complex kernel
         argument.
         """
         self._build_array_attr_arg(
-            array_val=val,
+            kernel_name=kernel_name,
+            numba_val=numba_val,
+            array_val=llvm_val,
             array_attr_pos=0,
             array_attr_ty=ty,
             arg_list=arg_list,
@@ -141,7 +182,9 @@ class KernelLaunchIRBuilder:
         )
         arg_num += 1
         self._build_array_attr_arg(
-            array_val=val,
+            kernel_name=kernel_name,
+            numba_val=numba_val,
+            array_val=llvm_val,
             array_attr_pos=1,
             array_attr_ty=ty,
             arg_list=arg_list,
@@ -151,7 +194,14 @@ class KernelLaunchIRBuilder:
         arg_num += 1
 
     def build_array_arg(
-        self, array_val, array_rank, arg_list, args_ty_list, arg_num
+        self,
+        kernel_name,
+        numba_val,
+        array_val,
+        array_rank,
+        arg_list,
+        args_ty_list,
+        arg_num,
     ):
         """Creates a list of LLVM Values for an unpacked DpnpNdArray kernel
         argument.
@@ -162,7 +212,9 @@ class KernelLaunchIRBuilder:
         # Argument 1: Null pointer for the NRT_MemInfo attribute of the array
         nullptr = self._build_nullptr()
         self.build_arg(
-            val=nullptr,
+            kernel_name=kernel_name,
+            numba_val=numba_val,
+            llvm_val=nullptr,
             ty=types.int64,
             arg_list=arg_list,
             args_ty_list=args_ty_list,
@@ -172,7 +224,9 @@ class KernelLaunchIRBuilder:
         # Argument 2: Null pointer for the Parent attribute of the array
         nullptr = self._build_nullptr()
         self.build_arg(
-            val=nullptr,
+            kernel_name=kernel_name,
+            numba_val=numba_val,
+            llvm_val=nullptr,
             ty=types.int64,
             arg_list=arg_list,
             args_ty_list=args_ty_list,
@@ -181,6 +235,8 @@ class KernelLaunchIRBuilder:
         arg_num += 1
         # Argument 3: Array size
         self._build_array_attr_arg(
+            kernel_name=kernel_name,
+            numba_val=numba_val,
             array_val=array_val,
             array_attr_pos=2,
             array_attr_ty=types.int64,
@@ -191,6 +247,8 @@ class KernelLaunchIRBuilder:
         arg_num += 1
         # Argument 4: itemsize
         self._build_array_attr_arg(
+            kernel_name=kernel_name,
+            numba_val=numba_val,
             array_val=array_val,
             array_attr_pos=3,
             array_attr_ty=types.int64,
@@ -201,6 +259,8 @@ class KernelLaunchIRBuilder:
         arg_num += 1
         # Argument 5: data pointer
         self._build_array_attr_arg(
+            kernel_name=kernel_name,
+            numba_val=numba_val,
             array_val=array_val,
             array_attr_pos=4,
             array_attr_ty=types.voidptr,
@@ -211,6 +271,8 @@ class KernelLaunchIRBuilder:
         arg_num += 1
         # Arguments for flattened shape
         self._build_flattened_array_args(
+            kernel_name=kernel_name,
+            numba_val=numba_val,
             array_val=array_val,
             array_attr_pos=5,
             ndims=array_rank,
@@ -221,6 +283,8 @@ class KernelLaunchIRBuilder:
         arg_num += array_rank
         # Arguments for flattened stride
         self._build_flattened_array_args(
+            kernel_name=kernel_name,
+            numba_val=numba_val,
             array_val=array_val,
             array_attr_pos=6,
             ndims=array_rank,

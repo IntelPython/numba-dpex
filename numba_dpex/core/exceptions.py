@@ -293,7 +293,9 @@ class UnsupportedKernelArgumentError(Exception):
     def __init__(self, type, value, kernel_name="") -> None:
         self.message = (
             f"Argument {value} passed to kernel {kernel_name} is of an "
-            f"unsupported type ({type})."
+            f"unsupported type ({type}). Allowed kernel arguments must be "
+            "sub-types of numba.types.Number or sub-types of "
+            "numba_dpex.USMNdArray"
         )
         super().__init__(self.message)
 

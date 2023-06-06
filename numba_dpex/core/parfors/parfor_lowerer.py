@@ -135,6 +135,8 @@ class ParforLowerImpl:
             llvm_val = _getvar(lowerer, arg)
             if isinstance(argtype, DpnpNdArray):
                 self.kernel_builder.build_array_arg(
+                    kernel_name=kernel_fn.name,
+                    numba_val=arg,
                     array_val=llvm_val,
                     array_rank=argtype.ndim,
                     arg_list=self.args_list,
@@ -146,29 +148,35 @@ class ParforLowerImpl:
             else:
                 if argtype == types.complex64:
                     self.kernel_builder.build_complex_arg(
-                        llvm_val,
-                        types.float32,
-                        self.args_list,
-                        self.args_ty_list,
-                        self.kernel_arg_num,
+                        kernel_name=kernel_fn.name,
+                        numba_val=arg,
+                        llvm_val=llvm_val,
+                        ty=types.float32,
+                        arg_list=self.args_list,
+                        args_ty_list=self.args_ty_list,
+                        arg_num=self.kernel_arg_num,
                     )
                     self.kernel_arg_num += 2
                 elif argtype == types.complex128:
                     self.kernel_builder.build_complex_arg(
-                        llvm_val,
-                        types.float64,
-                        self.args_list,
-                        self.args_ty_list,
-                        self.kernel_arg_num,
+                        kernel_name=kernel_fn.name,
+                        numba_val=arg,
+                        llvm_val=llvm_val,
+                        ty=types.float64,
+                        arg_list=self.args_list,
+                        args_ty_list=self.args_ty_list,
+                        arg_num=self.kernel_arg_num,
                     )
                     self.kernel_arg_num += 2
                 else:
                     self.kernel_builder.build_arg(
-                        llvm_val,
-                        argtype,
-                        self.args_list,
-                        self.args_ty_list,
-                        self.kernel_arg_num,
+                        kernel_name=kernel_fn.name,
+                        numba_val=arg,
+                        llvm_val=llvm_val,
+                        ty=argtype,
+                        arg_list=self.args_list,
+                        args_ty_list=self.args_ty_list,
+                        arg_num=self.kernel_arg_num,
                     )
                     self.kernel_arg_num += 1
 
