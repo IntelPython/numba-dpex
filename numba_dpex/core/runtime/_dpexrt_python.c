@@ -1180,7 +1180,7 @@ static int DPEXRT_sycl_queue_from_python(PyObject *obj,
     PyGILState_STATE gstate;
 
     // Increment the ref count on obj to prevent CPython from garbage
-    // collecting the array.
+    // collecting the dpctl.SyclQueue object
     Py_IncRef(obj);
 
     // We are unconditionally casting obj to a struct PySyclQueueObject*. If

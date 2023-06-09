@@ -153,78 +153,6 @@ def _parse_device_filter_string(device):
         )
 
 
-def _parse_sycl_queue(sycl_queue):
-    return (
-        (
-            None
-            if isinstance(sycl_queue, types.misc.NoneType)
-            else sycl_queue.sycl_queue
-        )
-        if not isinstance(sycl_queue, types.misc.Omitted)
-        else sycl_queue
-    )
-
-
-def build_dpnp_ndarray(
-    ndim,
-    layout="C",
-    dtype=None,
-    usm_type="device",
-    device=None,
-    sycl_queue=None,
-):
-    """Constructs `DpnpNdArray` from the parameters provided.
-
-    Args:
-        ndim (int): The dimension of the array.
-        layout ("C", or F"): memory layout for the array. Default: "C".
-        dtype (numba.core.types.functions.NumberClass, optional):
-            Data type of the array. Can be typestring, a `numpy.dtype`
-            object, `numpy` char string, or a numpy scalar type.
-            Default: None.
-        usm_type (numba.core.types.misc.StringLiteral, optional):
-            The type of SYCL USM allocation for the output array.
-            Allowed values are "device"|"shared"|"host".
-            Default: `"device"`.
-        device (optional): array API concept of device where the
-            output array is created. `device` can be `None`, a oneAPI
-            filter selector string, an instance of :class:`dpctl.SyclDevice`
-            corresponding to a non-partitioned SYCL device, an instance of
-            :class:`dpctl.SyclQueue`, or a `Device` object returnedby
-            `dpctl.tensor.usm_array.device`. Default: `None`.
-        sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
-            optional): The SYCL queue to use for output array allocation and
-            copying. sycl_queue and device are exclusive keywords, i.e. use
-            one or another. If both are specified, a TypeError is raised. If
-            both are None, a cached queue targeting default-selected device
-            is used for allocation and copying. Default: `None`.
-
-    Raises:
-        errors.TypingError: If both `device` and `sycl_queue` are provided.
-
-    Returns:
-        DpnpNdArray: The Numba type to represent an dpnp.ndarray.
-            The type has the same structure as USMNdArray used to
-            represent dpctl.tensor.usm_ndarray.
-    """
-
-    # If a dtype value was passed in, then try to convert it to the
-    # corresponding Numba type. If None was passed, the default, then pass None
-    # to the DpnpNdArray constructor. The default dtype will be derived based
-    # on the behavior defined in dpctl.tensor.usm_ndarray.
-
-    ret_ty = DpnpNdArray(
-        ndim=ndim,
-        layout=layout,
-        dtype=dtype,
-        usm_type=usm_type,
-        device=device,
-        queue=sycl_queue,
-    )
-
-    return ret_ty
-
-
 # =========================================================================
 #                       Dpnp array constructor overloads
 # =========================================================================
@@ -284,17 +212,17 @@ def ol_dpnp_empty(
     _layout = _parse_layout(order)
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
-    _sycl_queue = _parse_sycl_queue(sycl_queue) if sycl_queue else None
 
     if _ndim:
-        ret_ty = build_dpnp_ndarray(
-            _ndim,
+        ret_ty = DpnpNdArray(
+            ndim=_ndim,
             layout=_layout,
             dtype=_dtype,
             usm_type=_usm_type,
             device=_device,
-            sycl_queue=_sycl_queue,
+            queue=sycl_queue,
         )
+
         if ret_ty:
 
             def impl(
@@ -381,16 +309,15 @@ def ol_dpnp_zeros(
     _layout = _parse_layout(order)
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
-    _sycl_queue = _parse_sycl_queue(sycl_queue) if sycl_queue else None
 
     if _ndim:
-        ret_ty = build_dpnp_ndarray(
-            _ndim,
+        ret_ty = DpnpNdArray(
+            ndim=_ndim,
             layout=_layout,
             dtype=_dtype,
             usm_type=_usm_type,
             device=_device,
-            sycl_queue=_sycl_queue,
+            queue=sycl_queue,
         )
         if ret_ty:
 
@@ -476,16 +403,15 @@ def ol_dpnp_ones(
     _layout = _parse_layout(order)
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
-    _sycl_queue = _parse_sycl_queue(sycl_queue) if sycl_queue else None
 
     if _ndim:
-        ret_ty = build_dpnp_ndarray(
-            _ndim,
+        ret_ty = DpnpNdArray(
+            ndim=_ndim,
             layout=_layout,
             dtype=_dtype,
             usm_type=_usm_type,
             device=_device,
-            sycl_queue=_sycl_queue,
+            queue=sycl_queue,
         )
         if ret_ty:
 
@@ -582,16 +508,15 @@ def ol_dpnp_full(
     _layout = _parse_layout(order)
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
-    _sycl_queue = _parse_sycl_queue(sycl_queue) if sycl_queue else None
 
     if _ndim:
-        ret_ty = build_dpnp_ndarray(
-            _ndim,
+        ret_ty = DpnpNdArray(
+            ndim=_ndim,
             layout=_layout,
             dtype=_dtype,
             usm_type=_usm_type,
             device=_device,
-            sycl_queue=_sycl_queue,
+            queue=sycl_queue,
         )
         if ret_ty:
 
@@ -694,18 +619,17 @@ def ol_dpnp_empty_like(
 
     _ndim = _parse_dim(x1)
     _dtype = x1.dtype if isinstance(x1, types.Array) else _parse_dtype(dtype)
-    _order = x1.layout if order is None else order
+    _layout = x1.layout if order is None else order
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
-    _sycl_queue = _parse_sycl_queue(sycl_queue) if sycl_queue else None
 
-    ret_ty = build_dpnp_ndarray(
-        _ndim,
-        layout=_order,
+    ret_ty = DpnpNdArray(
+        ndim=_ndim,
+        layout=_layout,
         dtype=_dtype,
         usm_type=_usm_type,
         device=_device,
-        sycl_queue=_sycl_queue,
+        queue=sycl_queue,
     )
 
     if ret_ty:
@@ -723,7 +647,7 @@ def ol_dpnp_empty_like(
             return impl_dpnp_empty_like(
                 x1,
                 _dtype,
-                _order,
+                _layout,
                 subok,
                 shape,
                 _device,
@@ -807,18 +731,17 @@ def ol_dpnp_zeros_like(
 
     _ndim = _parse_dim(x1)
     _dtype = x1.dtype if isinstance(x1, types.Array) else _parse_dtype(dtype)
-    _order = x1.layout if order is None else order
+    _layout = x1.layout if order is None else order
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
-    _sycl_queue = _parse_sycl_queue(sycl_queue) if sycl_queue else None
 
-    ret_ty = build_dpnp_ndarray(
-        _ndim,
-        layout=_order,
+    ret_ty = DpnpNdArray(
+        ndim=_ndim,
+        layout=_layout,
         dtype=_dtype,
         usm_type=_usm_type,
         device=_device,
-        sycl_queue=_sycl_queue,
+        queue=sycl_queue,
     )
     if ret_ty:
 
@@ -835,7 +758,7 @@ def ol_dpnp_zeros_like(
             return impl_dpnp_zeros_like(
                 x1,
                 _dtype,
-                _order,
+                _layout,
                 subok,
                 shape,
                 _device,
@@ -919,19 +842,19 @@ def ol_dpnp_ones_like(
 
     _ndim = _parse_dim(x1)
     _dtype = x1.dtype if isinstance(x1, types.Array) else _parse_dtype(dtype)
-    _order = x1.layout if order is None else order
+    _layout = x1.layout if order is None else order
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
-    _sycl_queue = _parse_sycl_queue(sycl_queue) if sycl_queue else None
 
-    ret_ty = build_dpnp_ndarray(
-        _ndim,
-        layout=_order,
+    ret_ty = DpnpNdArray(
+        ndim=_ndim,
+        layout=_layout,
         dtype=_dtype,
         usm_type=_usm_type,
         device=_device,
-        sycl_queue=_sycl_queue,
+        queue=sycl_queue,
     )
+
     if ret_ty:
 
         def impl(
@@ -947,7 +870,7 @@ def ol_dpnp_ones_like(
             return impl_dpnp_ones_like(
                 x1,
                 _dtype,
-                _order,
+                _layout,
                 subok,
                 shape,
                 _device,
@@ -1040,18 +963,17 @@ def ol_dpnp_full_like(
         if isinstance(x1, types.Array)
         else (_parse_dtype(dtype) if dtype is not None else fill_value)
     )
-    _order = x1.layout if order is None else order
+    _layout = x1.layout if order is None else order
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
-    _sycl_queue = _parse_sycl_queue(sycl_queue) if sycl_queue else None
 
-    ret_ty = build_dpnp_ndarray(
-        _ndim,
-        layout=_order,
+    ret_ty = DpnpNdArray(
+        ndim=_ndim,
+        layout=_layout,
         dtype=_dtype,
         usm_type=_usm_type,
         device=_device,
-        sycl_queue=_sycl_queue,
+        queue=sycl_queue,
     )
 
     if ret_ty:
@@ -1071,7 +993,7 @@ def ol_dpnp_full_like(
                 x1,
                 fill_value,
                 _dtype,
-                _order,
+                _layout,
                 subok,
                 shape,
                 _device,

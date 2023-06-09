@@ -6,6 +6,7 @@ import copy
 import sys
 import warnings
 
+import dpctl
 import dpctl.program as dpctl_prog
 from numba.core import ir, types
 from numba.core.errors import NumbaParallelSafetyWarning
@@ -426,7 +427,10 @@ def create_kernel_for_parfor(
     for arg in parfor_args:
         obj = typemap[arg]
         if isinstance(obj, DpnpNdArray):
-            exec_queue = obj.queue
+            filter_string = obj.queue.sycl_device
+            # FIXME: A better design is required so that we do not have to
+            # create a queue every time.
+            exec_queue = dpctl.get_device_cached_queue(filter_string)
 
     if not exec_queue:
         raise AssertionError(
