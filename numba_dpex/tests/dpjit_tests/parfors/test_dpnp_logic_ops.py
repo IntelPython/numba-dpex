@@ -59,7 +59,6 @@ def input_arrays(request):
     return a, b
 
 
-@pytest.mark.xfail
 def test_binary_ops(binary_op, input_arrays):
     a, b = input_arrays
     binop = getattr(dpnp, binary_op)
