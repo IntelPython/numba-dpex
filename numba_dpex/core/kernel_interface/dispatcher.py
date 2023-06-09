@@ -409,9 +409,14 @@ class JitKernel:
         # FIXME: For specialized and ahead of time compiled and cached kernels,
         # the CFD check was already done statically. The run-time check is
         # redundant. We should avoid these checks for the specialized case.
-        exec_queue = determine_kernel_launch_queue(
+        ty_queue = determine_kernel_launch_queue(
             args, argtypes, self.kernel_name
         )
+
+        # FIXME: We need a better way than having to create a queue every time.
+        device = ty_queue.sycl_device
+        exec_queue = dpctl.get_device_cached_queue(device)
+
         backend = exec_queue.backend
 
         if exec_queue.backend not in [

@@ -11,7 +11,6 @@ import pytest
 import numba_dpex as dpex
 from numba_dpex.core.caching import LRUCache
 from numba_dpex.core.kernel_interface.dispatcher import JitKernel
-from numba_dpex.tests._helper import filter_strings
 
 
 def test_LRUcache_operations():
@@ -106,17 +105,14 @@ def test_LRUcache_operations():
     assert str(cache.evicted) == "{5: 'f', 7: 'h', 8: 'i', 9: 'j', 2: 'c'}"
 
 
-@pytest.mark.parametrize("filter_str", filter_strings)
-def test_caching_hit_counts(filter_str):
+def test_caching_hit_counts():
     """Tests the correct number of cache hits.
+
     If a Dispatcher is invoked 10 times and if the caching is enabled,
     then the total number of cache hits will be 9. Given the fact that
     the first time the kernel will be compiled and it will be loaded
     off the cache for the next time on.
 
-    Args:
-        filter_str (str): The device name coming from filter_strings in
-        ._helper.py
     """
 
     def data_parallel_sum(x, y, z):
@@ -126,9 +122,9 @@ def test_caching_hit_counts(filter_str):
         i = dpex.get_global_id(0)
         z[i] = x[i] + y[i]
 
-    a = dpt.arange(0, 100, device=filter_str)
-    b = dpt.arange(0, 100, device=filter_str)
-    c = dpt.zeros_like(a, device=filter_str)
+    a = dpt.arange(0, 100)
+    b = dpt.arange(0, 100)
+    c = dpt.zeros_like(a)
 
     expected = dpt.asnumpy(a) + dpt.asnumpy(b)
 

@@ -1,7 +1,7 @@
 import dpctl
 import pytest
 
-from numba_dpex.core.types import USMNdArray
+from numba_dpex.core.types import DpctlSyclQueue, USMNdArray
 
 """Negative tests for expected exceptions raised during USMNdArray creation.
 
@@ -49,24 +49,26 @@ def test_type_creation_with_device():
 
     if usma.queue != cached_queue:
         pytest.xfail(
-            "Returned queue does not have the same queue as cached against the device."
+            "Returned queue does not have the same queue as cached "
+            "against the device."
         )
 
 
 def test_type_creation_with_queue():
     """Tests creating a USMNdArray with a queue arg and no device"""
-    queue = dpctl.SyclQueue()
-    usma = USMNdArray(1, queue=queue)
+    ty_queue = DpctlSyclQueue(dpctl.SyclQueue())
+    usma = USMNdArray(1, queue=ty_queue)
 
     assert usma.ndim == 1
     assert usma.layout == "C"
     assert usma.addrspace == 1
     assert usma.usm_type == "device"
 
-    assert usma.device == queue.sycl_device.filter_string
-    if usma.queue != queue:
+    assert usma.device == ty_queue.sycl_device
+    if usma.queue != ty_queue:
         pytest.xfail(
-            "Returned queue does not have the same queue as the one passed to the dpnp function."
+            "Returned queue does not have the same queue as the one passed "
+            "to the dpnp function."
         )
 
 

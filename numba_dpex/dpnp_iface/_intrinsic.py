@@ -4,6 +4,7 @@
 
 from collections import namedtuple
 
+from dpctl import get_device_cached_queue
 from llvmlite import ir as llvmir
 from llvmlite.ir import Constant
 from llvmlite.ir.types import DoubleType, FloatType
@@ -24,9 +25,13 @@ from numba_dpex.core.runtime import context as dpexrt
 from numba_dpex.core.types import DpnpNdArray
 from numba_dpex.core.types.dpctl_types import DpctlSyclQueue
 
+_QueueRefPayload = namedtuple(
+    "QueueRefPayload", ["queue_ref", "py_dpctl_sycl_queue_addr", "pyapi"]
+)
+
 
 # XXX: The function should be moved into DpexTargetContext
-def make_queue(context, builder, arrtype):
+def make_queue(context, builder, py_dpctl_sycl_queue):
     """Utility function used for allocating a new queue.
 
     This function will allocates a new queue (e.g. SYCL queue)
@@ -40,12 +45,7 @@ def make_queue(context, builder, arrtype):
             (e.g. `numba.core.cpu.CPUContext`).
         builder (llvmlite.ir.builder.IRBuilder): The IR builder
             from `llvmlite` for code generation.
-        arrtype (numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray):
-            Any of the array types derived from
-            `numba.core.types.nptypes.Array`,
-            e.g. `numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray`.
-            Refer to `numba_dpex.dpnp_iface._intrinsic.alloc_empty_arrayobj()`
-            function for details on how to construct this argument.
+        py_dpctl_sycl_queue (dpctl.SyclQueue): A Python dpctl.SyclQueue object.
 
     Returns:
         ret (namedtuple): A namedtuple containing
@@ -56,17 +56,17 @@ def make_queue(context, builder, arrtype):
 
     pyapi = context.get_python_api(builder)
     queue_struct_proxy = cgutils.create_struct_proxy(
-        DpctlSyclQueue(arrtype.queue)
+        DpctlSyclQueue(py_dpctl_sycl_queue)
     )(context, builder)
     queue_struct_ptr = queue_struct_proxy._getpointer()
     queue_struct_voidptr = builder.bitcast(queue_struct_ptr, cgutils.voidptr_t)
 
-    address = context.get_constant(types.intp, id(arrtype.queue))
-    queue_address_ptr = builder.inttoptr(address, cgutils.voidptr_t)
+    address = context.get_constant(types.intp, id(py_dpctl_sycl_queue))
+    py_dpctl_sycl_queue_addr = builder.inttoptr(address, cgutils.voidptr_t)
 
     dpexrtCtx = dpexrt.DpexRTContext(context)
     dpexrtCtx.queuestruct_from_python(
-        pyapi, queue_address_ptr, queue_struct_voidptr
+        pyapi, py_dpctl_sycl_queue_addr, queue_struct_voidptr
     )
 
     queue_struct = builder.load(queue_struct_ptr)
@@ -75,12 +75,79 @@ def make_queue(context, builder, arrtype):
     return_values = namedtuple(
         "return_values", "queue_ref queue_address_ptr pyapi"
     )
-    ret = return_values(queue_ref, queue_address_ptr, pyapi)
+    ret = return_values(queue_ref, py_dpctl_sycl_queue_addr, pyapi)
 
     return ret
 
 
-def _empty_nd_impl(context, builder, arrtype, shapes):
+def _get_queue_ref(context, builder, sig, args):
+    """Returns an LLVM IR Value pointer to a DpctlSyclQueueRef
+
+    The _get_queue_ref function is used by the intinsic functions that implement
+    the overloads for dpnp array constructors: ``empty``, ``empty_like``,
+    ``zeros``, ``zeros_like``, ``ones``, ``ones_like``, ``full``, ``full_like``.
+
+    The args contains the list of LLVM IR values passed in to the dpnp
+    overloads. The convention we follow is that the queue arg is always the
+    penultimate arg passed to the intrinsic. For that reason, we can extract the
+    queue argument as args[-2] and the type of the argument from the signature
+    as sig.args[-2].
+
+    Depending on whether the ``sycl_queue`` argument was explicitly specified,
+    or was omitted, the queue_arg will be either a DpctlSyclQueue type or a
+    numba NoneType/Omitted type. If a DpctlSyclQueue, then we directly extract
+    the queue_ref from the unboxed native struct representation of a
+    dpctl.SyclQueue. If a queue was not explicitly provided and the type is
+    NoneType/Omitted, we get a cached dpctl.SyclQueue from dpctl and unbox it
+    on the fly and return the queue_ref.
+
+    Args:
+        context (numba.core.base.BaseContext): Any of the context
+            derived from Numba's BaseContext
+            (e.g. `numba.core.cpu.CPUContext`).
+        builder (llvmlite.ir.builder.IRBuilder): The IR builder
+            from `llvmlite` for code generation.
+        sig: Signature of the overload function
+        args (list): LLVM IR values corresponding to the args passed to the LLVM
+            function created for a dpnp overload.
+
+    Return:
+        A namedtuple wrapping the queue_ref pointer, an optional address to
+        a dpctl.SyclQueue Python object, and an option instance of the python
+        api wrapper in the CPUContext.
+
+    """
+
+    queue_arg = args[-2]
+    queue_arg_ty = sig.args[-2]
+
+    queue_ref = None
+    py_dpctl_sycl_queue_addr = None
+    pyapi = None
+
+    if isinstance(queue_arg_ty, DpctlSyclQueue):
+        if not isinstance(queue_arg.type, llvmir.LiteralStructType):
+            raise AssertionError
+        queue_ref = builder.extract_value(queue_arg, 1)
+
+    elif isinstance(queue_arg_ty, types.misc.NoneType) or isinstance(
+        queue_arg_ty, types.misc.Omitted
+    ):
+        if not isinstance(queue_arg.type, llvmir.PointerType):
+            # TODO: check if the pointer is null
+            raise AssertionError
+
+        ty_sycl_queue = sig.return_type.queue
+        py_dpctl_sycl_queue = get_device_cached_queue(ty_sycl_queue.sycl_device)
+        (queue_ref, py_dpctl_sycl_queue_addr, pyapi) = make_queue(
+            context, builder, py_dpctl_sycl_queue
+        )
+
+    ret = _QueueRefPayload(queue_ref, py_dpctl_sycl_queue_addr, pyapi)
+    return ret
+
+
+def _empty_nd_impl(context, builder, arrtype, shapes, queue_ref):
     """Utility function used for allocating a new array.
 
     This function is used for allocating a new array during LLVM code
@@ -139,16 +206,13 @@ def _empty_nd_impl(context, builder, arrtype, shapes):
             ),
         )
 
-    (queue_ref, queue_ptr, pyapi) = make_queue(context, builder, arrtype)
-
-    # The queue_ref returned by make_queue if used to allocate a MemInfo
-    # object needs to be copied first. The reason for the copy is to
-    # properly manage the lifetime of the queue_ref object. The original
-    # object is owned by the parent dpctl.SyclQueue object and is deleted
-    # when the dpctl.SyclQueue is garbage collected. Whereas, the copied
-    # queue_ref is to be owned by the NRT_External_Allocator object of
-    # MemInfo, and its lifetime is tied to the MemInfo object.
-
+    # The passed in queue_ref if used to allocate a MemInfo object needs to be
+    # copied first. The reason for the copy is to properly manage the lifetime
+    # of the queue_ref object. The original object is owned by the parent
+    # dpctl.SyclQueue object and is deleted when the dpctl.SyclQueue is garbage
+    # collected. Whereas, the copied queue_ref is to be owned by the
+    # NRT_External_Allocator object of MemInfo, and its lifetime is tied to the
+    # MemInfo object.
     dpexrtCtx = dpexrt.DpexRTContext(context)
     queue_ref_copy = dpexrtCtx.copy_queue(builder, queue_ref)
 
@@ -182,7 +246,6 @@ def _empty_nd_impl(context, builder, arrtype, shapes):
     fnop.get_call_type(context.typing_context, sig.args, {})
     eqfn = context.get_function(fnop, sig)
     meminfo = eqfn(builder, args)
-    pyapi.decref(queue_ptr)
     data = context.nrt.meminfo_data(builder, meminfo)
 
     intp_t = context.get_value_type(types.intp)
@@ -198,10 +261,7 @@ def _empty_nd_impl(context, builder, arrtype, shapes):
         meminfo=meminfo,
     )
 
-    return_values = namedtuple("return_values", "ary queue_ref")
-    ret = return_values(ary, queue_ref)
-
-    return ret
+    return ary
 
 
 @overload_classmethod(DpnpNdArray, "_usm_allocate")
@@ -240,7 +300,7 @@ def intrin_usm_alloc(typingctx, allocsize, usm_type, queue):
     return sig, codegen
 
 
-def alloc_empty_arrayobj(context, builder, sig, args, is_like=False):
+def alloc_empty_arrayobj(context, builder, sig, queue_ref, args, is_like=False):
     """Construct an empty numba.np.arrayobj.make_array.<locals>.ArrayStruct
 
     Args:
@@ -250,26 +310,24 @@ def alloc_empty_arrayobj(context, builder, sig, args, is_like=False):
             llvmlite.
         sig (numba.core.typing.templates.Signature): A numba's function
             signature object.
+        queue_ref (llvmlite.ir.PointerType): Pointer to a DpctlSyclQueueRef
+            object cast to i8*
         args (tuple): A tuple of args to be parsed as the arguments of
             an np.empty(), np.zeros() or np.ones() call.
         is_like (bool, optional): Decides on how to parse the args.
             Defaults to False.
 
-    Returns:
-        tuple(numba.np.arrayobj.make_array.<locals>.ArrayStruct,
-            numba_dpex.core.types.dpnp_ndarray_type.DpnpNdArray):
-                A tuple of allocated array and constructed array type info
-                in DpnpNdArray.
+    Returns: The LLVM IR value that stores the empty array
     """
 
-    arrtype = (
+    arrtype, shape = (
         _parse_empty_like_args(context, builder, sig, args)
         if is_like
         else _parse_empty_args(context, builder, sig, args)
     )
-    ary, queue = _empty_nd_impl(context, builder, *arrtype)
+    ary = _empty_nd_impl(context, builder, arrtype, shape, queue_ref)
 
-    return ary, arrtype, queue
+    return ary
 
 
 def fill_arrayobj(context, builder, ary, arrtype, queue_ref, fill_value):
@@ -296,9 +354,7 @@ def fill_arrayobj(context, builder, ary, arrtype, queue_ref, fill_value):
                 in DpnpNdArray.
     """
 
-    itemsize = context.get_constant(
-        types.intp, get_itemsize(context, arrtype[0])
-    )
+    itemsize = context.get_constant(types.intp, get_itemsize(context, arrtype))
 
     if isinstance(fill_value.type, DoubleType) or isinstance(
         fill_value.type, FloatType
@@ -307,7 +363,7 @@ def fill_arrayobj(context, builder, ary, arrtype, queue_ref, fill_value):
     else:
         value_is_float = context.get_constant(types.boolean, 0)
 
-    if isinstance(arrtype[0].dtype, types.scalars.Float):
+    if isinstance(arrtype.dtype, types.scalars.Float):
         dest_is_float = context.get_constant(types.boolean, 1)
     else:
         dest_is_float = context.get_constant(types.boolean, 0)
@@ -377,7 +433,17 @@ def impl_dpnp_empty(
     )
 
     def codegen(context, builder, sig, args):
-        ary, _, _ = alloc_empty_arrayobj(context, builder, sig, args)
+        qref_payload: _QueueRefPayload = _get_queue_ref(
+            context, builder, sig, args
+        )
+
+        ary = alloc_empty_arrayobj(
+            context, builder, sig, qref_payload.queue_ref, args
+        )
+
+        if qref_payload.py_dpctl_sycl_queue_addr:
+            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
+
         return ary._getvalue()
 
     return sig, codegen
@@ -432,13 +498,24 @@ def impl_dpnp_zeros(
     )
 
     def codegen(context, builder, sig, args):
-        ary, arrtype, queue_ref = alloc_empty_arrayobj(
+        qref_payload: _QueueRefPayload = _get_queue_ref(
             context, builder, sig, args
+        )
+        ary = alloc_empty_arrayobj(
+            context, builder, sig, qref_payload.queue_ref, args
         )
         fill_value = context.get_constant(types.intp, 0)
         ary, _ = fill_arrayobj(
-            context, builder, ary, arrtype, queue_ref, fill_value
+            context,
+            builder,
+            ary,
+            sig.return_type,
+            qref_payload.queue_ref,
+            fill_value,
         )
+        if qref_payload.py_dpctl_sycl_queue_addr:
+            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
+
         return ary._getvalue()
 
     return sig, codegen
@@ -493,13 +570,24 @@ def impl_dpnp_ones(
     )
 
     def codegen(context, builder, sig, args):
-        ary, arrtype, queue_ref = alloc_empty_arrayobj(
+        qref_payload: _QueueRefPayload = _get_queue_ref(
             context, builder, sig, args
+        )
+        ary = alloc_empty_arrayobj(
+            context, builder, sig, qref_payload.queue_ref, args
         )
         fill_value = context.get_constant(types.intp, 1)
         ary, _ = fill_arrayobj(
-            context, builder, ary, arrtype, queue_ref, fill_value
+            context,
+            builder,
+            ary,
+            sig.return_type,
+            qref_payload.queue_ref,
+            fill_value,
         )
+        if qref_payload.py_dpctl_sycl_queue_addr:
+            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
+
         return ary._getvalue()
 
     return sig, codegen
@@ -561,13 +649,24 @@ def impl_dpnp_full(
     )
 
     def codegen(context, builder, sig, args):
-        ary, arrtype, queue_ref = alloc_empty_arrayobj(
+        qref_payload: _QueueRefPayload = _get_queue_ref(
             context, builder, sig, args
+        )
+        ary = alloc_empty_arrayobj(
+            context, builder, sig, qref_payload.queue_ref, args
         )
         fill_value = context.get_argument_value(builder, sig.args[1], args[1])
         ary, _ = fill_arrayobj(
-            context, builder, ary, arrtype, queue_ref, fill_value
+            context,
+            builder,
+            ary,
+            sig.return_type,
+            qref_payload.queue_ref,
+            fill_value,
         )
+        if qref_payload.py_dpctl_sycl_queue_addr:
+            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
+
         return ary._getvalue()
 
     return signature, codegen
@@ -629,9 +728,17 @@ def impl_dpnp_empty_like(
     )
 
     def codegen(context, builder, sig, args):
-        ary, _, _ = alloc_empty_arrayobj(
-            context, builder, sig, args, is_like=True
+        qref_payload: _QueueRefPayload = _get_queue_ref(
+            context, builder, sig, args
         )
+
+        ary = alloc_empty_arrayobj(
+            context, builder, sig, qref_payload.queue_ref, args, is_like=True
+        )
+
+        if qref_payload.py_dpctl_sycl_queue_addr:
+            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
+
         return ary._getvalue()
 
     return sig, codegen
@@ -693,13 +800,24 @@ def impl_dpnp_zeros_like(
     )
 
     def codegen(context, builder, sig, args):
-        ary, arrtype, queue_ref = alloc_empty_arrayobj(
-            context, builder, sig, args, is_like=True
+        qref_payload: _QueueRefPayload = _get_queue_ref(
+            context, builder, sig, args
+        )
+        ary = alloc_empty_arrayobj(
+            context, builder, sig, qref_payload.queue_ref, args, is_like=True
         )
         fill_value = context.get_constant(types.intp, 0)
         ary, _ = fill_arrayobj(
-            context, builder, ary, arrtype, queue_ref, fill_value
+            context,
+            builder,
+            ary,
+            sig.return_type,
+            qref_payload.queue_ref,
+            fill_value,
         )
+        if qref_payload.py_dpctl_sycl_queue_addr:
+            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
+
         return ary._getvalue()
 
     return sig, codegen
@@ -761,13 +879,24 @@ def impl_dpnp_ones_like(
     )
 
     def codegen(context, builder, sig, args):
-        ary, arrtype, queue_ref = alloc_empty_arrayobj(
-            context, builder, sig, args, is_like=True
+        qref_payload: _QueueRefPayload = _get_queue_ref(
+            context, builder, sig, args
+        )
+        ary = alloc_empty_arrayobj(
+            context, builder, sig, qref_payload.queue_ref, args, is_like=True
         )
         fill_value = context.get_constant(types.intp, 1)
         ary, _ = fill_arrayobj(
-            context, builder, ary, arrtype, queue_ref, fill_value
+            context,
+            builder,
+            ary,
+            sig.return_type,
+            qref_payload.queue_ref,
+            fill_value,
         )
+        if qref_payload.py_dpctl_sycl_queue_addr:
+            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
+
         return ary._getvalue()
 
     return sig, codegen
@@ -833,13 +962,24 @@ def impl_dpnp_full_like(
     )
 
     def codegen(context, builder, sig, args):
-        ary, arrtype, queue_ref = alloc_empty_arrayobj(
-            context, builder, sig, args, is_like=True
+        qref_payload: _QueueRefPayload = _get_queue_ref(
+            context, builder, sig, args
+        )
+        ary = alloc_empty_arrayobj(
+            context, builder, sig, qref_payload.queue_ref, args, is_like=True
         )
         fill_value = context.get_argument_value(builder, sig.args[1], args[1])
         ary, _ = fill_arrayobj(
-            context, builder, ary, arrtype, queue_ref, fill_value
+            context,
+            builder,
+            ary,
+            sig.return_type,
+            qref_payload.queue_ref,
+            fill_value,
         )
+        if qref_payload.py_dpctl_sycl_queue_addr:
+            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
+
         return ary._getvalue()
 
     return signature, codegen

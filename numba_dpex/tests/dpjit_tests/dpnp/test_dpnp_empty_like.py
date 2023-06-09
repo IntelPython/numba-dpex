@@ -176,11 +176,5 @@ def test_dpnp_empty_like_from_scalar(shape):
         x = dpnp.empty_like(shape)
         return x
 
-    try:
+    with pytest.raises(errors.TypingError):
         func(shape)
-    except Exception as e:
-        assert isinstance(e, errors.TypingError)
-        assert (
-            "No implementation of function Function(<function empty_like"
-            in str(e)
-        )

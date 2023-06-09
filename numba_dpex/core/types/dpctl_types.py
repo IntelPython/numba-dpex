@@ -14,20 +14,18 @@ from numba_dpex.core.runtime import context as dpexrt
 
 
 class DpctlSyclQueue(types.Type):
-    """A Numba type to represent a dpctl.SyclQueue PyObject.
-
-    For now, a dpctl.SyclQueue is represented as a Numba opaque type that allows
-    passing in and using a SyclQueue object as an opaque pointer type inside
-    Numba.
-    """
+    """A Numba type to represent a dpctl.SyclQueue PyObject."""
 
     def __init__(self, sycl_queue):
         if not isinstance(sycl_queue, SyclQueue):
             raise TypeError("The argument sycl_queue is not of type SyclQueue.")
 
-        self._sycl_queue = sycl_queue
+        # XXX: Storing the device filter string is a temporary workaround till
+        # the compute follows data inference pass is fixed to use SyclQueue
+        self._device = sycl_queue.sycl_device.filter_string
+
         try:
-            self._unique_id = hash(self._sycl_queue)
+            self._unique_id = hash(sycl_queue)
         except Exception:
             self._unique_id = self.rand_digit_str(16)
         super(DpctlSyclQueue, self).__init__(name="DpctlSyclQueue")
@@ -38,8 +36,14 @@ class DpctlSyclQueue(types.Type):
         )
 
     @property
-    def sycl_queue(self):
-        return self._sycl_queue
+    def sycl_device(self):
+        """Returns the SYCL oneAPI extension filter string associated with the
+        queue.
+
+        Returns:
+            str: A SYCL oneAPI extension filter string
+        """
+        return self._device
 
     @property
     def key(self):
@@ -69,11 +73,8 @@ def unbox_sycl_queue(typ, obj, c):
     qptr = qstruct._getpointer()
     ptr = c.builder.bitcast(qptr, c.pyapi.voidptr)
 
-    if c.context.enable_nrt:
-        dpexrtCtx = dpexrt.DpexRTContext(c.context)
-        errcode = dpexrtCtx.queuestruct_from_python(c.pyapi, obj, ptr)
-    else:
-        raise UnreachableError
+    dpexrtCtx = dpexrt.DpexRTContext(c.context)
+    errcode = dpexrtCtx.queuestruct_from_python(c.pyapi, obj, ptr)
     is_error = cgutils.is_not_null(c.builder, errcode)
 
     # Handle error

@@ -1,62 +1,43 @@
 import dpctl
-from numba.core.types.scalars import Float
+import pytest
 
-from numba_dpex.core.types import USMNdArray
+from numba_dpex.core.types import USMNdArray, dpctl_types
 
 
-def test_init():
-    usma = USMNdArray(1, device=None, queue=None)
-    assert usma.dtype.name == "float64"
-    assert usma.ndim == 1
-    assert usma.layout == "C"
-    assert usma.addrspace == 1
-    assert usma.usm_type == "device"
-    assert (
-        str(usma.queue.sycl_device.device_type) == "device_type.cpu"
-        or str(usma.queue.sycl_device.device_type) == "device_type.gpu"
-    )
+def test_usmndarray_negative_tests():
+    default_device = dpctl.SyclDevice().filter_string
 
-    device = dpctl.SyclDevice().filter_string
+    usmarr1 = USMNdArray(1, device=None, queue=None)
+    assert usmarr1.dtype.name == "float64"
+    assert usmarr1.ndim == 1
+    assert usmarr1.layout == "C"
+    assert usmarr1.addrspace == 1
+    assert usmarr1.usm_type == "device"
 
-    usma = USMNdArray(1, device=device, queue=None)
-    assert usma.dtype.name == "float64"
-    assert usma.ndim == 1
-    assert usma.layout == "C"
-    assert usma.addrspace == 1
-    assert usma.usm_type == "device"
-    assert (
-        str(usma.queue.sycl_device.device_type) == "device_type.cpu"
-        or str(usma.queue.sycl_device.device_type) == "device_type.gpu"
-    )
+    assert usmarr1.queue.sycl_device == default_device
 
-    # usma = USMNdArray(1, device="gpu", queue=None)
-    # assert usma.dtype.name == "int64"
-    # assert usma.ndim == 1
-    # assert usma.layout == "C"
-    # assert usma.addrspace == 1
-    # assert usma.usm_type == "device"
-    # assert str(usma.queue.sycl_device.device_type) == "device_type.gpu"
+    usmarr2 = USMNdArray(1, device=default_device, queue=None)
+    assert usmarr2.dtype.name == "float64"
+    assert usmarr2.ndim == 1
+    assert usmarr2.layout == "C"
+    assert usmarr2.addrspace == 1
+    assert usmarr2.usm_type == "device"
+    assert usmarr2.queue.sycl_device == default_device
 
-    queue = dpctl.SyclQueue()
-    usma = USMNdArray(1, device=None, queue=queue)
-    assert usma.dtype.name == "float64"
-    assert usma.ndim == 1
-    assert usma.layout == "C"
-    assert usma.addrspace == 1
-    assert usma.usm_type == "device"
-    assert usma.queue.addressof_ref() > 0
+    queue = dpctl_types.DpctlSyclQueue(dpctl.SyclQueue())
 
-    try:
-        usma = USMNdArray(1, device=device, queue=queue)
-    except Exception as e:
-        assert "exclusive keywords" in str(e)
+    usmarr3 = USMNdArray(1, device=None, queue=queue)
+    assert usmarr3.dtype.name == "float64"
+    assert usmarr3.ndim == 1
+    assert usmarr3.layout == "C"
+    assert usmarr3.addrspace == 1
+    assert usmarr3.usm_type == "device"
 
-    try:
-        usma = USMNdArray(1, queue=0)
-    except Exception as e:
-        assert "queue keyword arg" in str(e)
+    with pytest.raises(TypeError):
+        USMNdArray(1, device=default_device, queue=queue)
 
-    try:
-        usma = USMNdArray(1, device=0)
-    except Exception as e:
-        assert "SYCL filter selector" in str(e)
+    with pytest.raises(TypeError):
+        USMNdArray(1, queue=0)
+
+    with pytest.raises(TypeError):
+        USMNdArray(1, device=0)

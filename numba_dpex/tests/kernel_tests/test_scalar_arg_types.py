@@ -46,7 +46,8 @@ def input_arrays(request):
 
 
 def test_numeric_kernel_arg_types1(input_arrays):
-    """Tests passing float, int and complex type dpnp arrays to a kernel function.
+    """Tests passing float, int and complex type dpnp arrays to a kernel
+    function.
 
     Args:
         input_arrays (dpnp.ndarray): Array arguments to be passed to a kernel.
