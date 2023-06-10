@@ -2,4 +2,4 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from . import arrayobj
+from . import arrayobj, dpnp_linalg_overloads

@@ -631,7 +631,7 @@ def ol_dpnp_empty_like(
 
     _ndim = _parse_dim(x1)
     _dtype = x1.dtype if isinstance(x1, types.Array) else _parse_dtype(dtype)
-    _layout = x1.layout if order is None else order
+    _layout = x1.layout if not order else _parse_layout(order)
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
 
@@ -756,7 +756,7 @@ def ol_dpnp_zeros_like(
 
     _ndim = _parse_dim(x1)
     _dtype = x1.dtype if isinstance(x1, types.Array) else _parse_dtype(dtype)
-    _layout = x1.layout if order is None else order
+    _layout = x1.layout if not order else _parse_layout(order)
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
 
@@ -880,7 +880,7 @@ def ol_dpnp_ones_like(
 
     _ndim = _parse_dim(x1)
     _dtype = x1.dtype if isinstance(x1, types.Array) else _parse_dtype(dtype)
-    _layout = x1.layout if order is None else order
+    _layout = x1.layout if not order else _parse_layout(order)
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
 
@@ -1008,7 +1008,7 @@ def ol_dpnp_full_like(
         if isinstance(x1, types.Array)
         else (_parse_dtype(dtype) if dtype is not None else fill_value)
     )
-    _layout = x1.layout if order is None else order
+    _layout = x1.layout if not order else _parse_layout(order)
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
 
