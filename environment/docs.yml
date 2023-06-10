@@ -10,7 +10,6 @@ dependencies:
   - python=3.9
   - gxx_linux-64
   - dpcpp_linux-64
-  - cython
   - numba 0.57*
   - dpctl 0.14*
   - dpnp >=0.10.2
