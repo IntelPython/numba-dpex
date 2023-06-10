@@ -13,7 +13,6 @@ import numba
 import numpy
 import setuptools.command.develop as orig_develop
 import setuptools.command.install as orig_install
-from Cython.Build import cythonize
 from setuptools import Extension, find_packages, setup
 
 import versioneer
@@ -32,13 +31,8 @@ def get_ext_modules():
 
     try:
         import dpnp
-
-        dpnp_present = True
     except ImportError:
-        if int(os.environ.get("NUMBA_DPEX_BUILD_SKIP_NO_DPNP", 0)):
-            dpnp_present = False
-        else:
-            raise ImportError("DPNP is not available")
+        raise ImportError("dpnp should be installed to build numba-dpex")
 
     dpctl_runtime_library_dirs = []
 
@@ -65,10 +59,7 @@ def get_ext_modules():
 
     ext_modules += [ext_dpexrt_python]
 
-    if dpnp_present:
-        return cythonize(ext_modules)
-    else:
-        return ext_modules
+    return ext_modules
 
 
 class install(orig_install.install):
@@ -151,7 +142,6 @@ def _llvm_spirv():
 packages = find_packages(
     include=["numba_dpex", "numba_dpex.*", "_dpexrt_python"]
 )
-build_requires = ["cython"]
 install_requires = [
     "numba >={}".format("0.57"),
     "dpctl",
@@ -165,7 +155,6 @@ metadata = dict(
     description="An extension for Numba to add data-parallel offload capability",
     url="https://github.com/IntelPython/numba-dpex",
     packages=packages,
-    setup_requires=build_requires,
     install_requires=install_requires,
     include_package_data=True,
     zip_safe=False,
@@ -178,7 +167,6 @@ metadata = dict(
         "Intended Audience :: Developers",
         "License :: OSI Approved :: Apache 2.0",
         "Operating System :: OS Independent",
-        "Programming Language :: Cython",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Software Development :: Compilers",
