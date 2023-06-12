@@ -72,7 +72,7 @@ def test_queue_ref_access_in_dpjit():
     cq1 = dpctl._sycl_queue_manager.get_device_cached_queue(d)
     cq2 = dpctl._sycl_queue_manager.get_device_cached_queue(d)
 
-    expected = cq1 == cq2
     actual = test_queue_equality(cq1, cq2)
+    expected = cq1 == cq2
 
     assert expected == actual

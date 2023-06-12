@@ -32,16 +32,4 @@ PyObject *MemInfo_get_refcount(MemInfoObject *self, void *closure);
 PyObject *MemInfo_get_external_allocator(MemInfoObject *self, void *closure);
 PyObject *MemInfo_get_parent(MemInfoObject *self, void *closure);
 
-/* WARNING: Do not remove this, only modify it! It is a version guard to
- * act as a reminder to update this struct on Python version update! */
-#if (PY_MAJOR_VERSION == 3)
-#if !((PY_MINOR_VERSION == 8) || (PY_MINOR_VERSION == 9) ||                    \
-      (PY_MINOR_VERSION == 10))
-#error "Python minor version is not supported."
-#endif
-#else
-#error "Python major version is not supported."
-#endif
-/* END WARNING*/
-
 #endif /* _NRT_PYTHON_HELPER_H_ */

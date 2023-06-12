@@ -23,7 +23,8 @@ jobs:
         python: ["3.8", "3.9", "3.10"]
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -34,6 +35,11 @@ jobs:
         env:
           CHANNELS: -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev --override-channels
         run: ./scripts/build_conda_package.sh ${{ matrix.python }}
+
+      - name: Dump build linux conda environment
+        run: |
+          conda env export > /tmp/env-build-linux.yml
+          cat /tmp/env-build-linux.yml
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -55,10 +61,13 @@ jobs:
       conda-bld: C:\Miniconda\conda-bld\win-64\
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: conda-incubator/setup-miniconda@v2
+
+      - name: Setup miniconda
+        uses: conda-incubator/setup-miniconda@v2
         with:
           auto-activate-base: true
           activate-environment: ""
@@ -74,10 +83,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
+
       - name: Install conda-build
         run: conda install conda-build
+
       - name: Build conda package
         run: conda build --no-test --python ${{ matrix.python }} ${{ env.CHANNELS }} conda-recipe
+
+      - name: Dump build windows conda environment
+        run: |
+          conda env export > env-build-win.yml
+          type env-build-win.yml
+
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
@@ -100,7 +117,8 @@ jobs:
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
         with:
           path: numba-dpex
 
@@ -124,22 +142,31 @@ jobs:
           conda create -n numba_dpex_env $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl dpnp=${{ matrix.dpnp }} dpcpp-llvm-spirv $CHANNELS
           # Test installed packages
           conda list
+
       - name: Check DPNP
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate numba_dpex_env
           python -c "import dpnp"
+
       - name: Check dpcpp-llvm-spirv
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate numba_dpex_env
           python -c "import dpcpp_llvm_spirv as p; print(p.get_llvm_spirv_path())"
+
+      - name: Dump test linux conda environment
+        run: |
+          conda env export > /tmp/env-test-linux.yml
+          cat /tmp/env-test-linux.yml
+
       - name: Run tests
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate numba_dpex_env
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
           pytest -q -ra --disable-warnings --pyargs $MODULE_NAME -vv
+
       - name: Run examples
         run: |
           ls
@@ -148,7 +175,7 @@ jobs:
           source $CONDA/etc/profile.d/conda.sh
           conda activate numba_dpex_env
           # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
-          for script in $(find . \( -not -name "_*" -not -name "vector_sum2D.py" -not -name "vectorize.py" -not -name "scan.py" -and -name "*.py" \))
+          for script in $(find . \( -not -name "_*" -not -name "side-by-side*" -not -name "vectorize.py" -not -name "scan.py" -and -name "*.py" \))
           do
             echo "Executing ${script}"
             python ${script} || exit 1
@@ -172,21 +199,27 @@ jobs:
       - name: Create dir for numba-dpex repo
         run: |
           mkdir -p ${{ github.workspace }}/dpex-repo
-      - uses: actions/checkout@v3
+
+      - name: Checout repo
+        uses: actions/checkout@v3
         with:
           path: dpex-repo
           fetch-depth: 0
+
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
-      - uses: conda-incubator/setup-miniconda@v2
+
+      - name: Setup miniconda
+        uses: conda-incubator/setup-miniconda@v2
         with:
           use-only-tar-bz2: true
           auto-update-conda: true
           conda-build-version: '*'
           miniconda-version: 'latest'
           activate-environment: "numba_dpex_wintest"
+
       - name: Create conda channel
         run: |
           mkdir -p $env:GITHUB_WORKSPACE/channel/win-64
@@ -194,8 +227,10 @@ jobs:
           conda index $env:GITHUB_WORKSPACE/channel
           # Test channel
           conda search ${{ env.PACKAGE_NAME }} -c $env:GITHUB_WORKSPACE/channel --override-channels
+
       - name: Collect dependencies
-        run: conda install ${{ env.PACKAGE_NAME }} python=${{ matrix.python }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }} --only-deps --dry-run > lockfile
+        run: conda install ${{ env.PACKAGE_NAME }} python=${{ matrix.bpython }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }} --only-deps --dry-run > lockfile
+
       - name: Cache conda packages
         uses: actions/cache@v3
         env:
@@ -207,11 +242,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
+
       - name: Install numba-dpex
         run: |
           conda install ${{ env.PACKAGE_NAME }} pytest dpcpp_win-64 dpcpp-llvm-spirv python=${{ matrix.python }} dpctl -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
           # Test installed packages
           conda list
+
       - name: Install opencl_rt
         run: conda install opencl_rt -c intel --override-channels
 
@@ -226,10 +263,18 @@ jobs:
 
       - name: Add dpnp skip variable
         run: echo "NUMBA_DPEX_TESTING_SKIP_NO_DPNP=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
       - name: Smoke test
         run: python -c "import numba_dpex.core.runtime._dpexrt_python"
+
       - name: Smoke test for dpcpp-llvm-spirv
         run: python -c "import dpcpp_llvm_spirv as p; print(p.get_llvm_spirv_path())"
+
+      - name: Dump test windows conda environment
+        run: |
+          conda env export > env-test-win.yml
+          type env-test-win.yml
+
       - name: Run tests
         run: |
           pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }} -vv
@@ -247,10 +292,12 @@ jobs:
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 
-      - uses: conda-incubator/setup-miniconda@v2
+      - name: Setup miniconda
+        uses: conda-incubator/setup-miniconda@v2
         with:
           auto-activate-base: true
           activate-environment: ""
+
       - name: Install anaconda-client
         run: conda install anaconda-client
 
@@ -275,10 +322,12 @@ jobs:
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 
-      - uses: conda-incubator/setup-miniconda@v2
+      - name: Setup miniconda
+        uses: conda-incubator/setup-miniconda@v2
         with:
           auto-activate-base: true
           activate-environment: ""
+
       - name: Install anaconda-client
         run: conda install anaconda-client
 

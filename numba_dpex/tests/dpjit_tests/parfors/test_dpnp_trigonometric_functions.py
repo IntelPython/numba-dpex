@@ -9,19 +9,7 @@ import numpy as np
 import pytest
 
 from numba_dpex import dpjit
-from numba_dpex.tests._helper import filter_strings, is_gen12
-
-list_of_filter_strs = [
-    "opencl:gpu:0",
-    "level_zero:gpu:0",
-    "opencl:cpu:0",
-]
-
-
-@pytest.fixture(params=list_of_filter_strs)
-def filter_str(request):
-    return request.param
-
+from numba_dpex.tests._helper import is_gen12
 
 list_of_trig_ops = [
     "sin",
@@ -70,8 +58,8 @@ def input_arrays(request):
     return a, b
 
 
-@pytest.mark.parametrize("filter_str", filter_strings)
-def test_trigonometric_fn(filter_str, trig_op, input_arrays):
+def test_trigonometric_fn(trig_op, input_arrays):
+    filter_str = dpctl.SyclDevice().filter_string
     # FIXME: Why does archcosh fail on Gen12 discrete graphics card?
     if trig_op == "arccosh" and is_gen12(filter_str):
         pytest.skip()

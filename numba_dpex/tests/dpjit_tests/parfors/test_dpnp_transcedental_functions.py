@@ -9,7 +9,7 @@ import numpy as np
 import pytest
 
 from numba_dpex import dpjit
-from numba_dpex.tests._helper import filter_strings, is_gen12
+from numba_dpex.tests._helper import is_gen12
 
 """dpnp raise error on : mod, abs and remainder(float32)"""
 list_of_binary_ops = [
@@ -78,8 +78,7 @@ def input_arrays(request):
     return a, b
 
 
-@pytest.mark.parametrize("filter_str", filter_strings)
-def test_binary_ops(filter_str, binary_op, input_arrays):
+def test_binary_ops(binary_op, input_arrays):
     a, b = input_arrays
     binop = getattr(dpnp, binary_op)
     actual = dpnp.empty(shape=a.shape, dtype=a.dtype)
@@ -101,10 +100,10 @@ def test_binary_ops(filter_str, binary_op, input_arrays):
     )
 
 
-@pytest.mark.parametrize("filter_str", filter_strings)
-def test_unary_ops(filter_str, unary_op, input_arrays):
+def test_unary_ops(unary_op, input_arrays):
     skip_ops = ["abs", "sign", "log", "log2", "log10", "expm1"]
-    if unary_op in skip_ops and is_gen12(filter_str):
+    device = dpctl.SyclDevice()
+    if unary_op in skip_ops and is_gen12(device.filter_string):
         pytest.skip()
 
     a = input_arrays[0]

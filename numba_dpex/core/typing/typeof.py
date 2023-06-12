@@ -42,7 +42,10 @@ def _typeof_helper(val, array_class_type):
             "The usm_type for the usm_ndarray could not be inferred"
         )
 
-    assert val.sycl_queue is not None
+    if not val.sycl_queue:
+        raise AssertionError
+
+    ty_queue = DpctlSyclQueue(sycl_queue=val.sycl_queue)
 
     return array_class_type(
         dtype=dtype,
@@ -50,7 +53,7 @@ def _typeof_helper(val, array_class_type):
         layout=layout,
         readonly=readonly,
         usm_type=usm_type,
-        queue=val.sycl_queue,
+        queue=ty_queue,
         addrspace=address_space.GLOBAL,
     )
 
@@ -103,4 +106,4 @@ def typeof_dpctl_sycl_queue(val, c):
 
     Returns: A numba_dpex.core.types.dpctl_types.DpctlSyclQueue instance.
     """
-    return DpctlSyclQueue()
+    return DpctlSyclQueue(val)

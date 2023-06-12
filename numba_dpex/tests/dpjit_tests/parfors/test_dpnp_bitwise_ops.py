@@ -9,7 +9,6 @@ import numpy as np
 import pytest
 
 from numba_dpex import dpjit
-from numba_dpex.tests._helper import filter_strings
 
 list_of_binary_ops = [
     "bitwise_and",
@@ -51,8 +50,7 @@ def input_arrays(request):
     return a, b
 
 
-@pytest.mark.parametrize("filter_str", filter_strings)
-def test_binary_ops(filter_str, binary_op, input_arrays):
+def test_binary_ops(binary_op, input_arrays):
     a, b = input_arrays
     binop = getattr(dpnp, binary_op)
     actual = dpnp.empty(shape=a.shape, dtype=a.dtype)
@@ -73,8 +71,7 @@ def test_binary_ops(filter_str, binary_op, input_arrays):
     )
 
 
-@pytest.mark.parametrize("filter_str", filter_strings)
-def test_unary_ops(filter_str, unary_op, input_arrays):
+def test_unary_ops(unary_op, input_arrays):
     a = input_arrays[0]
     uop = getattr(dpnp, unary_op)
     actual = np.empty(shape=a.shape, dtype=a.dtype)

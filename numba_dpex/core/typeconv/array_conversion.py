@@ -4,8 +4,7 @@
 
 from numba.np import numpy_support
 
-from numba_dpex.core.types import USMNdArray
-from numba_dpex.core.utils import get_info_from_suai
+from numba_dpex.core.types import DpctlSyclQueue, USMNdArray
 from numba_dpex.utils.constants import address_space
 
 
@@ -37,7 +36,7 @@ def to_usm_ndarray(suai_attrs, addrspace=address_space.GLOBAL):
         ndim=suai_attrs.dimensions,
         layout=layout,
         usm_type=suai_attrs.usm_type,
-        queue=suai_attrs.queue,
+        queue=DpctlSyclQueue(suai_attrs.queue),
         readonly=not suai_attrs.is_writable,
         name=None,
         aligned=True,

@@ -4,8 +4,7 @@
 
 import math
 
-import dpctl
-import numpy as np
+import dpnp as np
 
 import numba_dpex as ndpx
 
@@ -25,17 +24,10 @@ def sum_reduce(A):
     # max size will require half the size of A to store sum
     R = np.array(np.random.random(math.ceil(total / 2)), dtype=A.dtype)
 
-    # Use the environment variable SYCL_DEVICE_FILTER to change the default device.
-    # See https://github.com/intel/llvm/blob/sycl/sycl/doc/EnvironmentVariables.md#sycl_device_filter.
-    device = dpctl.select_default_device()
-    print("Using device ...")
-    device.print_device_info()
-
-    with dpctl.device_context(device):
-        while total > 1:
-            global_size = total // 2
-            sum_reduction_kernel[ndpx.Range(global_size)](A, R, global_size)
-            total = total // 2
+    while total > 1:
+        global_size = total // 2
+        sum_reduction_kernel[ndpx.Range(global_size)](A, R, global_size)
+        total = total // 2
 
     return R[0]
 
@@ -45,8 +37,8 @@ def test_sum_reduce():
     N = 2048
     assert N % 2 == 0
 
-    A = np.array(np.random.random(N), dtype=np.float32)
-    A_copy = A.copy()
+    A = np.arange(N, dtype=np.float32)
+    A_copy = np.arange(N, dtype=np.float32)
 
     actual = sum_reduce(A)
     expected = A_copy.sum()

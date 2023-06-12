@@ -16,6 +16,11 @@ list_of_dtypes = [
     dpnp.float64,
 ]
 
+skip_on_gpu = pytest.mark.skipif(
+    dpctl.SyclDevice().device_type == dpctl.device_type.gpu,
+    reason="skip print on gpu",
+)
+
 
 @pytest.fixture(params=list_of_dtypes)
 def input_arrays(request):
@@ -24,6 +29,7 @@ def input_arrays(request):
     return a
 
 
+@skip_on_gpu
 def test_print_scalar_with_string(input_arrays, capfd):
     """Tests if we can print a scalar value with a string."""
 
@@ -41,6 +47,7 @@ def test_print_scalar_with_string(input_arrays, capfd):
     assert "printing ... 10" in captured.out
 
 
+@skip_on_gpu
 def test_print_scalar(input_arrays, capfd):
     """Tests if we can print a scalar value."""
 
@@ -59,6 +66,7 @@ def test_print_scalar(input_arrays, capfd):
     assert "10" in captured.out
 
 
+@skip_on_gpu
 def test_print_only_str(input_arrays):
     """Negative test to capture LoweringError as printing strings is
     unsupported.
@@ -80,6 +88,7 @@ def test_print_only_str(input_arrays):
         print_string[dpex.Range(1)](a)
 
 
+@skip_on_gpu
 def test_print_array(input_arrays):
     """Negative test to capture LoweringError as printing arrays
     is unsupported.

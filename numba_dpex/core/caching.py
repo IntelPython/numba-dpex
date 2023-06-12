@@ -31,7 +31,7 @@ class _CacheImpl(CacheImpl):
     def rebuild(self, target_context, reduced_data):
         """Deserialize after unpickling from the cache.
         Args:
-            target_context (numba_dpex.core.target.DpexTargetContext):
+            target_context (numba_dpex.core.target.DpexKernelTargetContext):
                 The target context for the kernel.
             reduced_data (object): The data to be deserialzed after unpickling.
         """

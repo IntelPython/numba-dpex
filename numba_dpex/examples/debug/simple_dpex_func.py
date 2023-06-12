@@ -2,8 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import dpctl
-import numpy as np
+import dpnp as np
 
 import numba_dpex as ndpx
 
@@ -25,8 +24,6 @@ a = np.arange(global_size, dtype=np.float32)
 b = np.arange(global_size, dtype=np.float32)
 c = np.empty_like(a)
 
-device = dpctl.select_default_device()
-with dpctl.device_context(device):
-    kernel_sum[ndpx.Range(global_size)](a, b, c)
+kernel_sum[ndpx.Range(global_size)](a, b, c)
 
 print("Done...")

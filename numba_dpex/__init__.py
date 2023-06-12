@@ -15,10 +15,8 @@ from typing import Tuple
 import dpctl
 import llvmlite.binding as ll
 from numba import __version__ as numba_version
-from numba.np import arrayobj
 from numba.np.ufunc.decorators import Vectorize
 
-from numba_dpex._patches import _empty_nd_impl
 from numba_dpex.vectorizers import Vectorize as DpexVectorize
 
 from .numba_patches import (
@@ -31,7 +29,6 @@ from .numba_patches import (
 patch_is_ufunc.patch()
 patch_mk_alloc.patch()
 patch_arrayexpr_tree_to_ir.patch()
-arrayobj._empty_nd_impl = _empty_nd_impl
 
 
 def load_dpctl_sycl_interface():

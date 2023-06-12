@@ -7,11 +7,12 @@
 
 import dpctl
 import dpctl.tensor
+from numba import types
 from numba.core.typeconv import Conversion
-from numba.core.typeinfer import CallConstraint
 from numba.core.types.npytypes import Array
 from numba.np.numpy_support import from_dtype
 
+from numba_dpex.core.types.dpctl_types import DpctlSyclQueue
 from numba_dpex.utils import address_space
 
 
@@ -24,48 +25,60 @@ class USMNdArray(Array):
         layout="C",
         dtype=None,
         usm_type="device",
-        device="unknown",
+        device=None,
         queue=None,
         readonly=False,
         name=None,
         aligned=True,
         addrspace=address_space.GLOBAL,
     ):
-        if not isinstance(device, str):
+        if (
+            queue is not None
+            and not (
+                isinstance(queue, types.misc.Omitted)
+                or isinstance(queue, types.misc.NoneType)
+            )
+            and device is not None
+        ):
             raise TypeError(
-                "The device keyword arg should be a str object specifying "
-                "a SYCL filter selector"
+                "numba_dpex.core.types.usm_ndarray_type.USMNdArray.__init__(): "
+                "`device` and `sycl_queue` are exclusive keywords, "
+                "i.e. use one or other."
             )
 
-        if not isinstance(queue, dpctl.SyclQueue) and queue is not None:
-            raise TypeError(
-                "The queue keyword arg should be a dpctl.SyclQueue object or None"
-            )
-
-        self.usm_type = usm_type
-        self.addrspace = addrspace
-
-        if device == "unknown":
-            device = None
-
-        if queue is not None and device is not None:
-            raise TypeError(
-                "'queue' and 'device' keywords can not be both specified"
-            )
-
-        if queue is not None:
+        if queue is not None and not (
+            isinstance(queue, types.misc.Omitted)
+            or isinstance(queue, types.misc.NoneType)
+        ):
+            if not isinstance(queue, DpctlSyclQueue):
+                raise TypeError(
+                    "The queue keyword arg should be either DpctlSyclQueue or "
+                    "NoneType. Found type(queue) = " + str(type(queue))
+                )
             self.queue = queue
         else:
             if device is None:
-                device = dpctl.SyclDevice()
+                sycl_device = dpctl.SyclDevice()
+            else:
+                if not isinstance(device, str):
+                    raise TypeError(
+                        "The device keyword arg should be a str object "
+                        "specifying a SYCL filter selector."
+                    )
+                sycl_device = dpctl.SyclDevice(device)
 
-            self.queue = dpctl.get_device_cached_queue(device)
+            sycl_queue = dpctl._sycl_queue_manager.get_device_cached_queue(
+                sycl_device
+            )
+            self.queue = DpctlSyclQueue(sycl_queue=sycl_queue)
 
-        self.device = self.queue.sycl_device.filter_string
+        self.device = self.queue.sycl_device
+        self.usm_type = usm_type
+        self.addrspace = addrspace
 
         if not dtype:
             dummy_tensor = dpctl.tensor.empty(
-                1, order=layout, usm_type=usm_type, sycl_queue=self.queue
+                1, order=layout, usm_type=usm_type, device=self.device
             )
             # convert dpnp type to numba/numpy type
             _dtype = dummy_tensor.dtype
@@ -91,7 +104,7 @@ class USMNdArray(Array):
             )
             name = (
                 "%s(dtype=%s, ndim=%s, layout=%s, address_space=%s, "
-                "usm_type=%s, device=%s, sycl_device=%s)" % name_parts
+                "usm_type=%s, device=%s, sycl_queue=%s)" % name_parts
             )
 
         super().__init__(
@@ -191,7 +204,13 @@ class USMNdArray(Array):
 
     @property
     def key(self):
-        return (*super().key, self.addrspace, self.usm_type, self.device)
+        return (
+            *super().key,
+            self.addrspace,
+            self.usm_type,
+            self.device,
+            self.queue,
+        )
 
     @property
     def as_array(self):

@@ -4,6 +4,7 @@
 
 import warnings
 
+import dpctl
 from numba.core import types
 from numba.core.errors import NumbaParallelSafetyWarning
 from numba.core.ir_utils import (
@@ -17,6 +18,8 @@ from numba.core.ir_utils import (
     replace_var_names,
 )
 from numba.core.typing import signature
+
+from numba_dpex.core.types import DpctlSyclQueue
 
 from ..utils.kernel_templates.reduction_template import (
     RemainderReduceIntermediateKernelTemplate,
@@ -134,7 +137,13 @@ def create_reduction_main_kernel_for_parfor(
         flags.noalias = True
 
     kernel_sig = signature(types.none, *kernel_param_types)
-    exec_queue = typemap[reductionKernelVar.parfor_params[0]].queue
+
+    # FIXME: A better design is required so that we do not have to create a
+    # queue every time.
+    ty_queue: DpctlSyclQueue = typemap[
+        reductionKernelVar.parfor_params[0]
+    ].queue
+    exec_queue = dpctl.get_device_cached_queue(ty_queue.sycl_device)
 
     sycl_kernel = _compile_kernel_parfor(
         exec_queue,
@@ -331,11 +340,12 @@ def create_reduction_remainder_kernel_for_parfor(
 
     kernel_sig = signature(types.none, *kernel_param_types)
 
-    # FIXME: Enable check after CFD pass has been added
-    # exec_queue = determine_kernel_launch_queue(
-    #     args=parfor_args, argtypes=kernel_param_types, kernel_name=kernel_name
-    # )
-    exec_queue = typemap[reductionKernelVar.parfor_params[0]].queue
+    # FIXME: A better design is required so that we do not have to create a
+    # queue every time.
+    ty_queue: DpctlSyclQueue = typemap[
+        reductionKernelVar.parfor_params[0]
+    ].queue
+    exec_queue = dpctl.get_device_cached_queue(ty_queue.sycl_device)
 
     sycl_kernel = _compile_kernel_parfor(
         exec_queue,
