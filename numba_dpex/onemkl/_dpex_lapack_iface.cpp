@@ -8,8 +8,8 @@
 #include <numpy/arrayscalars.h>
 #include <numpy/ndarrayobject.h>
 
-#include <CL/sycl.hpp>
 #include <oneapi/mkl.hpp>
+#include <sycl/sycl.hpp>
 
 #include "numba/_arraystruct.h"
 #include "numba/_numba_common.h"
@@ -25,15 +25,17 @@ namespace onemkl = oneapi::mkl;
 
 extern "C"
 {
-    static void DPEX_LAPACK_eigh(arystruct_t *arystruct);
+    // static void DPEX_LAPACK_eigh(arystruct_t *arystruct);
+    static void DPEX_LAPACK_eigh(void *b);
 }
 
-static void DPEX_LAPACK_eigh(arystruct_t *arystruct)
+// static void DPEX_LAPACK_eigh(arystruct_t *arystruct)
+static void DPEX_LAPACK_eigh(void *b)
 {
-    std::cout << "arystruct->nitems = " << (int)(arystruct->nitems)
-              << std::endl;
-    std::cout << "arystruct->itemsize = " << (int)(arystruct->itemsize)
-              << std::endl;
+    // std::cout << "arystruct->nitems = " << (int)(arystruct->nitems)
+    //           << std::endl;
+    // std::cout << "arystruct->itemsize = " << (int)(arystruct->itemsize)
+    //           << std::endl;
 
     for (auto platform : sycl::platform::get_platforms()) {
         std::cout << "Platform: "
@@ -45,8 +47,7 @@ static void DPEX_LAPACK_eigh(arystruct_t *arystruct)
         }
     }
 
-    sycl::default_selector device_selector;
-    sycl::queue queue(device_selector);
+    sycl::queue queue(sycl::default_selector_v);
     std::cout << "Default device: "
               << queue.get_device().get_info<sycl::info::device::name>()
               << "\n";
@@ -61,25 +62,6 @@ static void DPEX_LAPACK_eigh(arystruct_t *arystruct)
     std::copy(a.begin(), a.end(), a_arr);
     std::copy(w.begin(), w.end(), w_arr);
     std::copy(v.begin(), v.end(), v_arr);
-
-    /*
-    float *a_sh = sycl::malloc_device<float>(a.size(), queue);
-    float *w_sh = sycl::malloc_device<float>(w.size(), queue);
-    float *v_sh = sycl::malloc_device<float>(v.size(), queue);
-    queue.submit([&](sycl::handler &cgh) {
-        // untyped API
-        cgh.memcpy(a_sh, a.data(), a.size() * sizeof(float));
-        cgh.memcpy(w_sh, w.data(), w.size() * sizeof(float));
-        cgh.memcpy(v_sh, v.data(), v.size() * sizeof(float));
-        // or typed API
-        // cgh.copy(x_d, x_h.data(), N);
-    });
-    queue.wait();
-    */
-
-    sycl::buffer<float, 1> a_buf(a.data(), a.size());
-    sycl::buffer<float, 1> w_buf(w.data(), w.size());
-    sycl::buffer<float, 1> v_buf(v.data(), v.size());
 
     const onemkl::job jobz = oneapi::mkl::job::V;
     const onemkl::uplo upper_lower = oneapi::mkl::uplo::U;

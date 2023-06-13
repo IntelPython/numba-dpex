@@ -12,21 +12,26 @@ from ..decorators import dpjit
 
 
 @intrinsic
+# def insert_lapack_eigh(context, a):
 def insert_lapack_eigh(context, a):
-    v = dpnp.empty(10, sycl_queue=a.queue)  # noqa: F841
+    # v = dpnp.empty(10, sycl_queue=a.queue)  # noqa: F841
 
     def codegen(context, builder, sig, args):
         mod = builder.module
+        print("type(builder) =", type(builder))
         with builder.goto_entry_block():
             ptr = cgutils.alloca_once(builder, args[0].type)
         builder.store(args[0], ptr)
         _ptr = builder.bitcast(ptr, cgutils.voidptr_t)
+        # fnty = llvmir.FunctionType(utils.LLVMTypes.void_t, [cgutils.voidptr_t])
         fnty = llvmir.FunctionType(utils.LLVMTypes.void_t, [cgutils.voidptr_t])
         fn = cgutils.get_or_insert_function(mod, fnty, "DPEX_LAPACK_eigh")
+        # ret = builder.call(fn, [_ptr])  # noqa: F841
         ret = builder.call(fn, [_ptr])  # noqa: F841
         return
 
-    sig = signature(types.void, a)
+    # sig = signature(types.void, a)
+    sig = signature(types.void, types.int32)
     return sig, codegen
 
 
@@ -47,77 +52,91 @@ def insert_lapack_eigh(context, a):
 """
 
 
-@overload(dpnp.linalg.eigh, prefer_literal=True)
-def ol_dpnp_linalg_eigh(a, UPLO="L"):
-    _jobz = {"N": 0, "V": 1}
-    _upper_lower = {"U": 0, "L": 1}
-
-    print("a =", a, ", type(a) =", type(a), ", dir(a) =", dir(a))
-    print("a.is_c_contig =", a.is_c_contig, ", a.is_f_contig =", a.is_f_contig)
-    a_usm_type = a.usm_type
-    a_sycl_queue = a.queue
-    a_order = "C" if a.is_c_contig else "F"
-    # a_usm_arr = dpnp.get_usm_ndarray(a)
-
-    # 'V' means both eigenvectors and eigenvalues will be calculated
-    jobz = _jobz["V"]  # noqa: F841
-    uplo = _upper_lower[UPLO]  # noqa: F841
-
-    # get resulting type of arrays with eigenvalues and eigenvectors
-    a_dtype = a.dtype
-    print("a_dtype =", a_dtype, ", type(a_dtype) =", a_dtype)
-    lapack_func = "_syevd"  # noqa: F841
+def _parse_dtypes(a):
     # if dpnp.issubdtype(a_dtype, dpnp.complexfloating):
-    if "complex" in str(a_dtype):
-        lapack_func = "_heevd"  # noqa: F841
-        v_type = a_dtype
-        w_type = dpnp.float64 if a_dtype == dpnp.complex128 else dpnp.float32
+    if "complex" in str(a.dtype):
+        v_type = a.dtype
+        w_type = dpnp.float64 if a.dtype == dpnp.complex128 else dpnp.float32
     # elif dpnp.issubdtype(a_dtype, dpnp.floating):
-    elif "float" in str(a_dtype):
-        v_type = w_type = a_dtype
-    elif a_sycl_queue.sycl_device.has_aspect_fp64:
+    elif "float" in str(a.dtype):
+        v_type = w_type = a.dtype
+    elif a.queue.sycl_device.has_aspect_fp64:
         v_type = w_type = dpnp.float64
     else:
         v_type = w_type = dpnp.float32
+    return (v_type, w_type)
+
+
+def _get_lapack_func(a):
+    if "complex" in str(a.dtype):
+        return "_heevd"
+    else:
+        return "_syevd"
+
+
+@overload(dpnp.linalg.eigh, prefer_literal=True)
+def ol_dpnp_linalg_eigh(a, UPLO="L"):
+    # _jobz = {"N": 0, "V": 1}
+    _upper_lower = {"U": 0, "L": 1}
+
+    print("a =", a, "type(a) =", type(a))
+    # a_usm_type = a.usm_type
+    # a_sycl_queue = a.queue
+    # a_order = "C" if a.is_c_contig else "F"
+    _layout = "C" if a.is_c_contig else "F"  # noqa: F841
+    # a_usm_arr = dpnp.get_usm_ndarray(a)
+
+    # 'V' means both eigenvectors and eigenvalues will be calculated
+    # jobz = _jobz["V"]  # noqa: F841
+    jobz = 1  # noqa: F841
+    uplo = _upper_lower[UPLO]  # noqa: F841
+
+    # get resulting type of arrays with eigenvalues and eigenvectors
+    # a_dtype = a.dtype
+    # lapack_func = "_syevd"  # noqa: F841
+    lapack_func = _get_lapack_func(a)  # noqa: F841
+    v_type, w_type = _parse_dtypes(a)  # noqa: F841
 
     def impl(
         a,
         UPLO="L",
     ):
-        if a.ndim > 2:
-            pass
-        else:
-            # oneMKL LAPACK assumes fortran-like array as input, so
-            # allocate a memory with 'F' order for dpnp array of eigenvectors
-            v = dpnp.empty_like(a, order="F", dtype=v_type)
+        # if a.ndim > 2:
+        #     pass
+        # else:
+        #     # oneMKL LAPACK assumes fortran-like array as input, so
+        #     # allocate a memory with 'F' order for dpnp array of eigenvectors
+        #     v = dpnp.empty_like(a, order="F", dtype=v_type)
 
-            # # use DPCTL tensor function to fill the array of eigenvectors with content of input array
-            # ht_copy_ev, copy_ev = ti._copy_usm_ndarray_into_usm_ndarray(src=a_usm_arr, dst=v.get_array(), sycl_queue=a_sycl_queue)
+        #     # # use DPCTL tensor function to fill the array of eigenvectors with content of input array
+        #     # ht_copy_ev, copy_ev = ti._copy_usm_ndarray_into_usm_ndarray(src=a_usm_arr, dst=v.get_array(), sycl_queue=a_sycl_queue)
 
-            # # allocate a memory for dpnp array of eigenvalues
-            w = dpnp.empty(
-                a.shape[:-1], dtype=w_type, usm_type=a_usm_type
-            )  # sycl_queue=a.queue)
+        #     # # allocate a memory for dpnp array of eigenvalues
+        #     w = dpnp.empty(
+        #         a.shape[:-1], dtype=w_type, usm_type=a.usm_type
+        #     )  # sycl_queue=a.queue)
 
-            insert_lapack_eigh(a)
+        #     # insert_lapack_eigh(a)
+        insert_lapack_eigh(7)
 
-            # # call LAPACK extension function to get eigenvalues and eigenvectors of matrix A
-            # ht_lapack_ev, lapack_ev = getattr(li, lapack_func)(a_sycl_queue, jobz, uplo, v.get_array(), w.get_array(), depends=[copy_ev])
+        #     # # call LAPACK extension function to get eigenvalues and eigenvectors of matrix A
+        #     # ht_lapack_ev, lapack_ev = getattr(li, lapack_func)(a_sycl_queue, jobz, uplo, v.get_array(), w.get_array(), depends=[copy_ev])
 
-            if a_order != "F":
-                # need to align order of eigenvectors with one of input matrix A
-                out_v = dpnp.empty_like(v, order=a_order)
-                # ht_copy_out_ev, _ = ti._copy_usm_ndarray_into_usm_ndarray(src=v.get_array(), dst=out_v.get_array(), sycl_queue=a_sycl_queue, depends=[lapack_ev])
-                # ht_copy_out_ev.wait()
-            else:
-                out_v = v
+        #     if a.order != "F":
+        #         # need to align order of eigenvectors with one of input matrix A
+        #         out_v = dpnp.empty_like(v, order=a.order)
+        #         # ht_copy_out_ev, _ = ti._copy_usm_ndarray_into_usm_ndarray(src=v.get_array(), dst=out_v.get_array(), sycl_queue=a_sycl_queue, depends=[lapack_ev])
+        #         # ht_copy_out_ev.wait()
+        #     else:
+        #         out_v = v
 
-            # ht_lapack_ev.wait()
-            # ht_copy_ev.wait()
+        #     # ht_lapack_ev.wait()
+        #     # ht_copy_ev.wait()
 
-            # w = dpnp.ones((3,3))
+        #     # w = dpnp.ones((3,3))
 
-        return (w, out_v)
+        # return (w, out_v)
+        return (None, None)
 
     return impl
 
