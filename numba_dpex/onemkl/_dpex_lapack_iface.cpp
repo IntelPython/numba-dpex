@@ -1,8 +1,13 @@
+// SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 
-#include <iostream>
-
 #include <Python.h>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
 
 #include <numpy/arrayobject.h>
 #include <numpy/arrayscalars.h>
@@ -26,61 +31,82 @@ namespace onemkl = oneapi::mkl;
 extern "C"
 {
     // static void DPEX_LAPACK_eigh(arystruct_t *arystruct);
-    static void DPEX_LAPACK_eigh(void *b);
+    static void DPEX_LAPACK_eigh();
 }
 
-// static void DPEX_LAPACK_eigh(arystruct_t *arystruct)
-static void DPEX_LAPACK_eigh(void *b)
+template <typename T>
+std::ostream &operator<<(std::ostream &os, std::vector<T> &v)
 {
-    // std::cout << "arystruct->nitems = " << (int)(arystruct->nitems)
-    //           << std::endl;
-    // std::cout << "arystruct->itemsize = " << (int)(arystruct->itemsize)
-    //           << std::endl;
+    auto n = v.size();
+    os << "[";
+    for (auto i = 0; i < n - 1; i++)
+        os << v[i] << ", ";
+    os << v[n - 1] << "]";
+    return os;
+}
 
+template <typename T>
+std::string format(std::vector<T> &a, int m, int n, int lda)
+{
+    std::stringstream ss;
+    ss << std::fixed << std::setprecision(2);
+
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++)
+            ss << " " << std::setw(6) << a[i * lda + j];
+        if (i < m - 1)
+            ss << '\n';
+    }
+    return ss.str();
+}
+
+void list_platforms()
+{
     for (auto platform : sycl::platform::get_platforms()) {
         std::cout << "Platform: "
                   << platform.get_info<sycl::info::platform::name>() << ": ";
 
-        for (auto device : platform.get_devices()) {
+        for (auto device : platform.get_devices())
             std::cout << device.get_info<sycl::info::device::name>()
                       << std::endl;
-        }
     }
+}
 
+void list_default_device()
+{
     sycl::queue queue(sycl::default_selector_v);
     std::cout << "Default device: "
               << queue.get_device().get_info<sycl::info::device::name>()
               << "\n";
+    return;
+}
 
-    std::vector<float> a = {0.37, 0.91, 0.53, 0.23};
-    std::vector<float> w = {0, 0};
-    std::vector<float> v = {0, 0, 0, 0};
-    std::cout << "a.size() = " << a.size() << ", w.size() = " << w.size()
-              << ", v.size() = " << v.size() << std::endl;
+template <typename T>
+std::pair<std::vector<T>, std::vector<T>>
+syevd(std::vector<T> &a,
+      const std::int64_t LDA,
+      const std::int64_t N,
+      const onemkl::job jobz = onemkl::job::V,
+      const onemkl::uplo upper_lower = onemkl::uplo::U)
+{
+    sycl::queue queue(sycl::default_selector_v);
 
-    float a_arr[a.size()], w_arr[w.size()], v_arr[v.size()];
-    std::copy(a.begin(), a.end(), a_arr);
-    std::copy(w.begin(), w.end(), w_arr);
-    std::copy(v.begin(), v.end(), v_arr);
+    T *a_ = sycl::malloc_device<T>(LDA * N, queue);
+    T *w_ = sycl::malloc_device<T>(N, queue);
 
-    const onemkl::job jobz = oneapi::mkl::job::V;
-    const onemkl::uplo upper_lower = oneapi::mkl::uplo::U;
-    const std::int64_t n = a.size();
-    const std::int64_t lda = std::max<size_t>(1UL, n);
+    queue.copy(a.data(), a_, LDA * N).wait();
+
+    const std::int64_t lda = std::max<size_t>(1UL, LDA);
     const std::int64_t scratchpad_size =
-        onemkl::lapack::syevd_scratchpad_size<float>(queue, jobz, upper_lower,
-                                                     n, lda);
-    float *scratchpad = nullptr;
+        onemkl::lapack::syevd_scratchpad_size<T>(queue, jobz, upper_lower, N,
+                                                 lda);
+    T *scratchpad = nullptr;
     std::stringstream error_msg;
     std::int64_t info = 0;
     sycl::event syevd_event;
 
-    std::cout << "w_arr[0] = " << w_arr[0] << std::endl;
-
     try {
-        std::cout << "here.1" << std::endl;
-        scratchpad = sycl::malloc_device<float>(scratchpad_size, queue);
-        std::cout << "here.2" << std::endl;
+        scratchpad = sycl::malloc_device<T>(scratchpad_size, queue);
         syevd_event = onemkl::lapack::syevd(
             queue,
             jobz, // 'jobz == job::vec' means eigenvalues and eigenvectors are
@@ -88,17 +114,16 @@ static void DPEX_LAPACK_eigh(void *b)
             upper_lower, // 'upper_lower == job::upper' means the upper
                          // triangular part of A, or the lower triangular
                          // otherwise
-            n,           // The order of the matrix A (0 <= n)
-            a_arr, // Pointer to A, size (lda, *), where the 2nd dimension,
-                   // must be at least max(1, n) If 'jobz == job::vec', then
-                   // on exit it will contain the eigenvectors of A
-            lda,   // The leading dimension of a, must be at least max(1, n)
-            w_arr, // Pointer to array of size at least n, it will contain
-                   // the eigenvalues of A in ascending order
+            N,           // The order of the matrix A (0 <= n)
+            a_,  // Pointer to A, size (lda, *), where the 2nd dimension,
+                 // must be at least max(1, n) If 'jobz == job::vec', then
+                 // on exit it will contain the eigenvectors of A
+            lda, // The leading dimension of a, must be at least max(1, n)
+            w_,  // Pointer to array of size at least n, it will contain
+                 // the eigenvalues of A in ascending order
             scratchpad, // Pointer to scratchpad memory to be used by MKL
                         // routine for storing intermediate results
             scratchpad_size, {});
-        std::cout << "here.3" << std::endl;
     } catch (onemkl::lapack::exception const &e) {
         error_msg
             << "Unexpected MKL exception caught during syevd() call:\nreason: "
@@ -108,27 +133,60 @@ static void DPEX_LAPACK_eigh(void *b)
         error_msg << "Unexpected SYCL exception caught during syevd() call:\n"
                   << e.what();
         info = -1;
-    } catch (...) {
-        std::cout << "Something went wrong" << std::endl;
     }
-    std::cout << "here.4" << std::endl;
+
     if (info != 0) // an unexected error occurs
     {
-        if (scratchpad != nullptr) {
+        if (scratchpad != nullptr)
             sycl::free(scratchpad, queue);
-        }
         throw std::runtime_error(error_msg.str());
     }
-    std::cout << "here.5" << std::endl;
     syevd_event.wait();
 
-    // sycl::event clean_up_event = queue.submit([&](sycl::handler &cgh) {
-    //     cgh.depends_on(syevd_event);
-    //     auto ctx = queue.get_context();
-    //     cgh.host_task([ctx, scratchpad]() { sycl::free(scratchpad, ctx); });
-    // });
-    std::cout << "here.6" << std::endl;
-    // host_task_events.push_back(clean_up_event);
+    T a_temp[LDA * N];
+    T w_temp[N];
+
+    queue.copy(a_, a_temp, LDA * N).wait();
+    queue.copy(w_, w_temp, N).wait();
+
+    sycl::free(a_, queue);
+    sycl::free(w_, queue);
+
+    std::vector<T> _a(a_temp, a_temp + (LDA * N));
+    std::vector<T> w(w_temp, w_temp + N);
+
+    return std::pair<std::vector<T>, std::vector<T>>(_a, w);
+}
+
+// static void DPEX_LAPACK_eigh(arystruct_t *arystruct)
+static void DPEX_LAPACK_eigh()
+{
+    // std::cout << "arystruct->nitems = " << (int)(arystruct->nitems)
+    //           << std::endl;
+    // std::cout << "arystruct->itemsize = " << (int)(arystruct->itemsize)
+    //           << std::endl;
+
+    list_platforms();
+    list_default_device();
+
+    const std::int64_t LDA = 5;
+    const std::int64_t N = LDA;
+
+    std::vector<double> a = {6.39, 0.00,  0.00,  0.00,  0.00,  0.13,  8.37,
+                             0.00, 0.00,  0.00,  -8.23, -4.46, -9.58, 0.00,
+                             0.00, 5.71,  -6.10, -9.25, 3.72,  0.00,  -3.18,
+                             7.21, -7.42, 8.54,  2.51};
+
+    std::cout << "a:\n" << format(a, N, N, LDA) << std::endl << std::endl;
+
+    std::pair<std::vector<double>, std::vector<double>> res =
+        syevd<double>(a, LDA, N);
+    std::vector<double> v = res.first;
+    std::vector<double> w = res.second;
+
+    std::cout << "v:\n" << format(v, N, N, LDA) << std::endl << std::endl;
+    std::cout << "w:\n" << format(w, 1, N, 1) << std::endl;
+
     return;
 }
 

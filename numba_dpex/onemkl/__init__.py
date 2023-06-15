@@ -1,3 +1,8 @@
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+
+
 import llvmlite.binding as ll
 
 from ._dpex_lapack_iface import c_helpers

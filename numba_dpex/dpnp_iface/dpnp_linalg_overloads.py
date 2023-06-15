@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+
 import dpnp
 from llvmlite import ir as llvmir
 from numba import types
@@ -13,25 +17,26 @@ from ..decorators import dpjit
 
 @intrinsic
 # def insert_lapack_eigh(context, a):
-def insert_lapack_eigh(context, a):
+def insert_lapack_eigh(context):
     # v = dpnp.empty(10, sycl_queue=a.queue)  # noqa: F841
 
     def codegen(context, builder, sig, args):
         mod = builder.module
+        # breakpoint()
         print("type(builder) =", type(builder))
-        with builder.goto_entry_block():
-            ptr = cgutils.alloca_once(builder, args[0].type)
-        builder.store(args[0], ptr)
-        _ptr = builder.bitcast(ptr, cgutils.voidptr_t)
+        # with builder.goto_entry_block():
+        #     ptr = cgutils.alloca_once(builder, args[0].type)
+        # builder.store(args[0], ptr)
+        # _ptr = builder.bitcast(ptr, cgutils.voidptr_t)
         # fnty = llvmir.FunctionType(utils.LLVMTypes.void_t, [cgutils.voidptr_t])
-        fnty = llvmir.FunctionType(utils.LLVMTypes.void_t, [cgutils.voidptr_t])
+        fnty = llvmir.FunctionType(utils.LLVMTypes.void_t, [])
         fn = cgutils.get_or_insert_function(mod, fnty, "DPEX_LAPACK_eigh")
         # ret = builder.call(fn, [_ptr])  # noqa: F841
-        ret = builder.call(fn, [_ptr])  # noqa: F841
-        return
+        ret = builder.call(fn, [])  # noqa: F841
+        return ret
 
     # sig = signature(types.void, a)
-    sig = signature(types.void, types.int32)
+    sig = signature(types.void, types.void)
     return sig, codegen
 
 
@@ -67,7 +72,7 @@ def _parse_dtypes(a):
     return (v_type, w_type)
 
 
-def _get_lapack_func(a):
+def _parse_lapack_func(a):
     if "complex" in str(a.dtype):
         return "_heevd"
     else:
@@ -94,7 +99,7 @@ def ol_dpnp_linalg_eigh(a, UPLO="L"):
     # get resulting type of arrays with eigenvalues and eigenvectors
     # a_dtype = a.dtype
     # lapack_func = "_syevd"  # noqa: F841
-    lapack_func = _get_lapack_func(a)  # noqa: F841
+    lapack_func = _parse_lapack_func(a)  # noqa: F841
     v_type, w_type = _parse_dtypes(a)  # noqa: F841
 
     def impl(
@@ -117,7 +122,7 @@ def ol_dpnp_linalg_eigh(a, UPLO="L"):
         #     )  # sycl_queue=a.queue)
 
         #     # insert_lapack_eigh(a)
-        insert_lapack_eigh(7)
+        insert_lapack_eigh()
 
         #     # # call LAPACK extension function to get eigenvalues and eigenvectors of matrix A
         #     # ht_lapack_ev, lapack_ev = getattr(li, lapack_func)(a_sycl_queue, jobz, uplo, v.get_array(), w.get_array(), depends=[copy_ev])
