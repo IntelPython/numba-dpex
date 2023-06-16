@@ -25,7 +25,7 @@ work.
 `Intel® Distribution for GDB*` is part of `Intel oneAPI`. For relevant
 documentation, refer to the `Intel® Distribution for GDB* product page`_.
 
-.. _`Intel® Distribution for GDB* product page`: https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-gdb.html
+.. _`Intel® Distribution for GDB* product page`: https://www.intel.com/content/www/us/en/developer/tools/oneapi/distribution-for-gdb.html
 
 .. toctree::
     :maxdepth: 2
