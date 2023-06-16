@@ -10,11 +10,13 @@ from numba import types
 from numba.core import cgutils
 from numba.core.typing import signature
 from numba.extending import intrinsic, overload
+from numba.np.arrayobj import _parse_shape, make_array
 
 import numba_dpex.onemkl
 import numba_dpex.utils as utils
 from numba_dpex.core.types import DpnpNdArray
 from numba_dpex.dpnp_iface._intrinsic import (
+    _empty_nd_impl,
     _get_queue_ref,
     alloc_empty_arrayobj,
     fill_arrayobj,
@@ -78,25 +80,41 @@ def impl_dpnp_lapack_eigh(ty_context, ty_a, ty_UPLO, ty_sycl_queue, ty_w):
     # print("type(ty_retty_ref) =", type(ty_retty_ref))
     # print("ty_retty_ref.instance_type =", ty_retty_ref.instance_type)
     # print("type(ty_retty_ref.instance_type) =", type(ty_retty_ref.instance_type))
-    # ty_retty = ty_w.instance_type
-    # signature = ty_retty(
-    #     ty_a,
-    #     ty_UPLO,
-    #     ty_w
-    # )
+    ty_retty = ty_w.instance_type
+    signature = ty_retty(ty_a, ty_UPLO, ty_sycl_queue, ty_w)
 
     def codegen(context, builder, sig, args):
         # print("ty_retty =", ty_retty)
         # print("type(ty_retty) =", type(ty_retty))
         # breakpoint()
         qref_payload: _QueueRefPayload = _get_queue_ref(  # noqa: F841
-            context, builder, args[-2], sig.args[-2]
+            context, builder, args[-2], sig.args[-2], sig.return_type.queue
         )
-        mod = builder.module  # noqa: F841
-        fnty = llvmir.FunctionType(utils.LLVMTypes.void_t, [])
-        fn = cgutils.get_or_insert_function(mod, fnty, "DPEX_LAPACK_eigh")
-        ret = builder.call(fn, [])  # noqa: F841
-        return ret
+
+        print("qref_payload.queue_ref =", qref_payload.queue_ref)
+        ary = alloc_empty_arrayobj(
+            context, builder, sig, qref_payload.queue_ref, args, is_like=True
+        )
+
+        fill_value = context.get_constant(types.intp, 1)
+        ary, _ = fill_arrayobj(
+            context,
+            builder,
+            ary,
+            sig.return_type,
+            qref_payload.queue_ref,
+            fill_value,
+        )
+
+        if qref_payload.py_dpctl_sycl_queue_addr:
+            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
+
+        return ary._getvalue()
+        # mod = builder.module  # noqa: F841
+        # fnty = llvmir.FunctionType(utils.LLVMTypes.void_t, [])
+        # fn = cgutils.get_or_insert_function(mod, fnty, "DPEX_LAPACK_eigh")
+        # ret = builder.call(fn, [])  # noqa: F841
+        # return ret
         # ary = alloc_empty_arrayobj(
         #     context, builder, sig, qref_payload.queue_ref, args, is_like=True
         # )
@@ -141,6 +159,7 @@ def ol_dpnp_linalg_eigh(a, UPLO="L"):
     _ndim = a.ndim
     _usm_type = a.usm_type
     _sycl_queue = a.queue
+    print("_sycl_queue =", _sycl_queue)
     # a_order = "C" if a.is_c_contig else "F"
     _layout = "C" if a.is_c_contig else "F"  # noqa: F841
     # a_usm_arr = dpnp.get_usm_ndarray(a)

@@ -219,7 +219,8 @@ def _empty_nd_impl(context, builder, arrtype, shapes, queue_ref):
         strides = tuple(strides)
     else:
         raise NotImplementedError(
-            "Don't know how to allocate array with layout '{0}'.".format(
+            "numba_dpex.dpnp_iface._intrinsic._empty_nd_impl(): "
+            + "Don't know how to allocate array with layout '{0}'.".format(
                 arrtype.layout
             )
         )
@@ -236,6 +237,7 @@ def _empty_nd_impl(context, builder, arrtype, shapes, queue_ref):
             builder,
             ValueError,
             (
+                "numba_dpex.dpnp_iface._intrinsic._empty_nd_impl(): "
                 "array is too big; `arr.size * arr.dtype.itemsize` is larger "
                 "than the maximum possible size.",
             ),
@@ -361,6 +363,10 @@ def alloc_empty_arrayobj(context, builder, sig, queue_ref, args, is_like=False):
         if is_like
         else _parse_empty_args(context, builder, sig, args)
     )
+    print("arrtype =", arrtype)
+    print("type(arrtype) =", type(arrtype))
+    print("shape =", shape)
+    print("type(shape) =", type(shape))
     ary = _empty_nd_impl(context, builder, arrtype, shape, queue_ref)
 
     return ary
