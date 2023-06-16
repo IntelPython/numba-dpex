@@ -1027,6 +1027,9 @@ def ol_dpnp_full_like(
         queue=_queue,
     )
 
+    print("ret_ty =", ret_ty)
+    print("type(ret_ty) =", type(ret_ty))
+
     if ret_ty:
 
         def impl(

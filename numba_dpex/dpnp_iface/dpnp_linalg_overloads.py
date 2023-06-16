@@ -2,17 +2,49 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+from collections import namedtuple
+
 import dpnp
 from llvmlite import ir as llvmir
 from numba import types
 from numba.core import cgutils
 from numba.core.typing import signature
-from numba.extending import intrinsic, overload, register_jitable
+from numba.extending import intrinsic, overload
 
 import numba_dpex.onemkl
 import numba_dpex.utils as utils
+from numba_dpex.core.types import DpnpNdArray
+from numba_dpex.dpnp_iface._intrinsic import (
+    _get_queue_ref,
+    alloc_empty_arrayobj,
+    fill_arrayobj,
+)
 
-from ..decorators import dpjit
+_QueueRefPayload = namedtuple(
+    "QueueRefPayload", ["queue_ref", "py_dpctl_sycl_queue_addr", "pyapi"]
+)
+
+
+def _parse_dtypes(a):
+    # if dpnp.issubdtype(a_dtype, dpnp.complexfloating):
+    if "complex" in str(a.dtype):
+        v_type = a.dtype
+        w_type = dpnp.float64 if a.dtype == dpnp.complex128 else dpnp.float32
+    # elif dpnp.issubdtype(a_dtype, dpnp.floating):
+    elif "float" in str(a.dtype):
+        v_type = w_type = a.dtype
+    elif a.queue.sycl_device.has_aspect_fp64:
+        v_type = w_type = dpnp.float64
+    else:
+        v_type = w_type = dpnp.float32
+    return (v_type, w_type)
+
+
+def _parse_lapack_func(a):
+    if "complex" in str(a.dtype):
+        return "_heevd"
+    else:
+        return "_syevd"
 
 
 @intrinsic
@@ -40,6 +72,49 @@ def insert_lapack_eigh(context):
     return sig, codegen
 
 
+@intrinsic
+def impl_dpnp_lapack_eigh(ty_context, ty_a, ty_UPLO, ty_sycl_queue, ty_w):
+    # print("ty_retty_ref =", ty_retty_ref)
+    # print("type(ty_retty_ref) =", type(ty_retty_ref))
+    # print("ty_retty_ref.instance_type =", ty_retty_ref.instance_type)
+    # print("type(ty_retty_ref.instance_type) =", type(ty_retty_ref.instance_type))
+    # ty_retty = ty_w.instance_type
+    # signature = ty_retty(
+    #     ty_a,
+    #     ty_UPLO,
+    #     ty_w
+    # )
+
+    def codegen(context, builder, sig, args):
+        # print("ty_retty =", ty_retty)
+        # print("type(ty_retty) =", type(ty_retty))
+        # breakpoint()
+        qref_payload: _QueueRefPayload = _get_queue_ref(  # noqa: F841
+            context, builder, args[-2], sig.args[-2]
+        )
+        mod = builder.module  # noqa: F841
+        fnty = llvmir.FunctionType(utils.LLVMTypes.void_t, [])
+        fn = cgutils.get_or_insert_function(mod, fnty, "DPEX_LAPACK_eigh")
+        ret = builder.call(fn, [])  # noqa: F841
+        return ret
+        # ary = alloc_empty_arrayobj(
+        #     context, builder, sig, qref_payload.queue_ref, args, is_like=True
+        # )
+        # fill_value = context.get_argument_value(builder, sig.args[1], args[1])
+        # ary, _ = fill_arrayobj(
+        #     context,
+        #     builder,
+        #     ary,
+        #     sig.return_type,
+        #     qref_payload.queue_ref,
+        #     fill_value,
+        # )
+        # if qref_payload.py_dpctl_sycl_queue_addr:
+        #     qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
+
+    return signature, codegen
+
+
 """
 1. type_w (vector), type_v(matrix) using DpnpNdArray type before impl (overload typing section)
     ndim = 1 for vector, ndim = 2 matrix
@@ -57,36 +132,15 @@ def insert_lapack_eigh(context):
 """
 
 
-def _parse_dtypes(a):
-    # if dpnp.issubdtype(a_dtype, dpnp.complexfloating):
-    if "complex" in str(a.dtype):
-        v_type = a.dtype
-        w_type = dpnp.float64 if a.dtype == dpnp.complex128 else dpnp.float32
-    # elif dpnp.issubdtype(a_dtype, dpnp.floating):
-    elif "float" in str(a.dtype):
-        v_type = w_type = a.dtype
-    elif a.queue.sycl_device.has_aspect_fp64:
-        v_type = w_type = dpnp.float64
-    else:
-        v_type = w_type = dpnp.float32
-    return (v_type, w_type)
-
-
-def _parse_lapack_func(a):
-    if "complex" in str(a.dtype):
-        return "_heevd"
-    else:
-        return "_syevd"
-
-
 @overload(dpnp.linalg.eigh, prefer_literal=True)
 def ol_dpnp_linalg_eigh(a, UPLO="L"):
     # _jobz = {"N": 0, "V": 1}
     _upper_lower = {"U": 0, "L": 1}
 
     print("a =", a, "type(a) =", type(a))
-    # a_usm_type = a.usm_type
-    # a_sycl_queue = a.queue
+    _ndim = a.ndim
+    _usm_type = a.usm_type
+    _sycl_queue = a.queue
     # a_order = "C" if a.is_c_contig else "F"
     _layout = "C" if a.is_c_contig else "F"  # noqa: F841
     # a_usm_arr = dpnp.get_usm_ndarray(a)
@@ -101,6 +155,31 @@ def ol_dpnp_linalg_eigh(a, UPLO="L"):
     # lapack_func = "_syevd"  # noqa: F841
     lapack_func = _parse_lapack_func(a)  # noqa: F841
     v_type, w_type = _parse_dtypes(a)  # noqa: F841
+
+    type_w = DpnpNdArray(
+        ndim=1,
+        layout=_layout,
+        dtype=w_type,
+        usm_type=_usm_type,
+        # device=a.queue.sycl_device,
+        queue=_sycl_queue,
+    )
+
+    type_v = DpnpNdArray(
+        ndim=_ndim,
+        layout=_layout,
+        dtype=v_type,
+        usm_type=_usm_type,
+        # device=a.queue.sycl_device,
+        queue=_sycl_queue,
+    )
+
+    print("type_w =", type_w)
+    print("type(type_w) =", type(type_w))
+    print("type_v =", type_v)
+    print("type(type_v) =", type_v)
+
+    ret_ty = types.Tuple((type_w, type_v))  # noqa: F841
 
     def impl(
         a,
@@ -122,7 +201,7 @@ def ol_dpnp_linalg_eigh(a, UPLO="L"):
         #     )  # sycl_queue=a.queue)
 
         #     # insert_lapack_eigh(a)
-        insert_lapack_eigh()
+        #     insert_lapack_eigh()
 
         #     # # call LAPACK extension function to get eigenvalues and eigenvectors of matrix A
         #     # ht_lapack_ev, lapack_ev = getattr(li, lapack_func)(a_sycl_queue, jobz, uplo, v.get_array(), w.get_array(), depends=[copy_ev])
@@ -141,7 +220,7 @@ def ol_dpnp_linalg_eigh(a, UPLO="L"):
         #     # w = dpnp.ones((3,3))
 
         # return (w, out_v)
-        return (None, None)
+        return impl_dpnp_lapack_eigh(a, UPLO, _sycl_queue, type_w)
 
     return impl
 
