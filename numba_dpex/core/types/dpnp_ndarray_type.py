@@ -58,6 +58,12 @@ class DpnpNdArray(USMNdArray):
         else:
             return
 
+    def __str__(self):
+        return self.name.replace("USMNdArray", "DpnpNdarray")
+
+    def __repr__(self):
+        return self.__str__()
+
     def __allocate__(
         self,
         typingctx,
