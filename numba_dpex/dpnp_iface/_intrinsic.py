@@ -1106,6 +1106,7 @@ def impl_dpnp_full_like(
         print("type(ary) =", type(ary))
         print("ary._getvalue() =", ary._getvalue())
         print("type(ary._getvalue()) =", type(ary._getvalue()))
+
         return ary._getvalue()
 
     return signature, codegen

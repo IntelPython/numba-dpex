@@ -30,8 +30,8 @@ namespace onemkl = oneapi::mkl;
 
 extern "C"
 {
-    // static void DPEX_LAPACK_eigh(arystruct_t *arystruct);
-    static void DPEX_LAPACK_eigh();
+    static void DPEX_LAPACK_eigh(arystruct_t *arystruct);
+    // static void DPEX_LAPACK_eigh();
 }
 
 template <typename T>
@@ -158,13 +158,16 @@ syevd(std::vector<T> &a,
     return std::pair<std::vector<T>, std::vector<T>>(_a, w);
 }
 
-// static void DPEX_LAPACK_eigh(arystruct_t *arystruct)
-static void DPEX_LAPACK_eigh()
+static void DPEX_LAPACK_eigh(arystruct_t *arystruct)
+// static void DPEX_LAPACK_eigh()
 {
-    // std::cout << "arystruct->nitems = " << (int)(arystruct->nitems)
-    //           << std::endl;
-    // std::cout << "arystruct->itemsize = " << (int)(arystruct->itemsize)
-    //           << std::endl;
+    std::cout << "arystruct->nitems = " << (int)(arystruct->nitems)
+              << std::endl;
+    std::cout << "arystruct->itemsize = " << (int)(arystruct->itemsize)
+              << std::endl;
+
+    // double *data = (double *)(arystruct->data);
+    // std::cout << "arystruct->data[0] = " << data[0] << std::endl;
 
     list_platforms();
     list_default_device();
