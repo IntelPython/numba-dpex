@@ -61,14 +61,20 @@ class ParforLegalizeCFDPassImpl:
         ):
             raise AssertionError
 
-        module_name = block.find_variable_assignment(
+        assign_op = block.find_variable_assignment(
             func_def.value.list_vars()[0].name
-        ).value.value.__name__
-
-        if func_def.value.attr == "empty" and module_name == "dpnp":
-            return True
-        else:
+        )
+        if (
+            hasattr(assign_op.value, "attr")
+            and assign_op.value.attr == "linalg"
+        ):
             return False
+        else:
+            module_name = assign_op.value.value.__name__
+            if func_def.value.attr == "empty" and module_name == "dpnp":
+                return True
+            else:
+                return False
 
     def _check_cfd_parfor_params(self, parfor, checklist):
         deviceTypes = set()
