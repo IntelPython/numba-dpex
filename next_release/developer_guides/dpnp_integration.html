@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>dpnp integration &mdash; numba-dpex 0.20.1 documentation</title>
+  <title>dpnp integration &mdash; numba-dpex 0.21.0dev2+14.ga33c03fd documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -150,7 +150,7 @@ numba-dpex.</p>
 <span id="dpnp-integration-architecture"></span><h2>Design<a class="headerlink" href="#design" title="Permalink to this heading"></a></h2>
 <p>The rewrite logic to substitute NumPy functions with dpnp function calls in the
 Numba IR is implemented by the <code class="xref py py-class docutils literal notranslate"><span class="pre">RewriteOverloadedNumPyFunctionsPass</span></code>
-pass. The <a class="reference internal" href="../apidoc/numba_dpex.dpnp_iface.stubs.html#module-numba_dpex.dpnp_iface.stubs" title="numba_dpex.dpnp_iface.stubs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.dpnp_iface.stubs</span></code></a> module defines a set of <cite>stub</cite>
+pass. The <code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.dpnp_iface.stubs</span></code> module defines a set of <cite>stub</cite>
 classes for each of the NumPy functions calls that are currently substituted
 out. The outline of a stub class is as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># numba_dpex/dpnp_iface/stubs.py - imported in numba_dpex.__init__.py</span>

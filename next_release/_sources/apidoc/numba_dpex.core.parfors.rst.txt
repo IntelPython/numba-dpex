@@ -1,0 +1,21 @@
+numba\_dpex.core.parfors package
+================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.core.parfors.kernel_builder
+   numba_dpex.core.parfors.parfor_lowerer
+   numba_dpex.core.parfors.reduction_helper
+   numba_dpex.core.parfors.reduction_kernel_builder
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex.core.parfors
+   :members:
+   :undoc-members:
+   :show-inheritance:

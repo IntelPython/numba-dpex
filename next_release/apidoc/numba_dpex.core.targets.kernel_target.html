@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.targets.kernel_target module &mdash; numba-dpex 0.20.1 documentation</title>
+  <title>numba_dpex.core.targets.kernel_target module &mdash; numba-dpex 0.21.0dev2+14.ga33c03fd documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -220,10 +220,11 @@ into the module.</p>
 <dt class="sig sig-object py" id="numba_dpex.core.targets.kernel_target.DpexKernelTargetContext.load_additional_registries">
 <span class="sig-name descname"><span class="pre">load_additional_registries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.targets.kernel_target.DpexKernelTargetContext.load_additional_registries" title="Permalink to this definition"></a></dt>
 <dd><p>Register OpenCL functions into numba_depx’s target context.</p>
-<p>To make sure we are calling supported OpenCL math functions, we
-replace some of NUMBA’s NumPy ufunc with OpenCL versions of those
-functions. The replacement is done after the OpenCL functions have
-been registered into the target context.</p>
+<p>To make sure we are calling supported OpenCL math functions, we replace
+the dpnp functions that default to NUMBA’s NumPy ufunc with OpenCL
+intrinsics that are equivalent to those functions. The replacement is
+done after the OpenCL functions have been registered into the
+target context.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -243,8 +244,8 @@ been registered into the target context.</p>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.targets.kernel_target.DpexKernelTargetContext.replace_numpy_ufunc_with_opencl_supported_functions">
-<span class="sig-name descname"><span class="pre">replace_numpy_ufunc_with_opencl_supported_functions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.targets.kernel_target.DpexKernelTargetContext.replace_numpy_ufunc_with_opencl_supported_functions" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="numba_dpex.core.targets.kernel_target.DpexKernelTargetContext.replace_dpnp_ufunc_with_ocl_intrinsics">
+<span class="sig-name descname"><span class="pre">replace_dpnp_ufunc_with_ocl_intrinsics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.targets.kernel_target.DpexKernelTargetContext.replace_dpnp_ufunc_with_ocl_intrinsics" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">

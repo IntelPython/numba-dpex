@@ -1,7 +1,0 @@
-numba\_dpex.core.pipelines.offload\_compiler module
-===================================================
-
-.. automodule:: numba_dpex.core.pipelines.offload_compiler
-   :members:
-   :undoc-members:
-   :show-inheritance:

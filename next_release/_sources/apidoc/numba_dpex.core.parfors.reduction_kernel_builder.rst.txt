@@ -1,0 +1,7 @@
+numba\_dpex.core.parfors.reduction\_kernel\_builder module
+==========================================================
+
+.. automodule:: numba_dpex.core.parfors.reduction_kernel_builder
+   :members:
+   :undoc-members:
+   :show-inheritance:

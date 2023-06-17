@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Debugging the compilation pipeline &mdash; numba-dpex 0.20.1 documentation</title>
+  <title>Debugging the compilation pipeline &mdash; numba-dpex 0.21.0dev2+14.ga33c03fd documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -110,23 +110,20 @@
 <span class="linenos">21</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 <span class="linenos">22</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 <span class="linenos">23</span>
-<span class="linenos">24</span><span class="n">device</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">select_default_device</span><span class="p">()</span>
-<span class="linenos">25</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
-<span class="linenos">26</span>    <span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">global_size</span><span class="p">)](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
-<span class="linenos">27</span>
-<span class="linenos">28</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
+<span class="linenos">24</span><span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">global_size</span><span class="p">)](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+<span class="linenos">25</span>
+<span class="linenos">26</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Example of default Numba execution on a CPU:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span>
 <span class="linenos">16</span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-<span class="linenos">17</span>    <span class="n">result</span> <span class="o">=</span> <span class="n">foo</span><span class="p">(</span><span class="mi">987</span><span class="p">)</span>
-<span class="linenos">18</span>    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="linenos">17</span>    <span class="n">foo</span><span class="p">(</span><span class="mi">987</span><span class="p">)</span>
+<span class="linenos">18</span>
 <span class="linenos">19</span>
-<span class="linenos">20</span>
-<span class="linenos">21</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-<span class="linenos">22</span>    <span class="n">main</span><span class="p">()</span>
-<span class="linenos">23</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done ...&quot;</span><span class="p">)</span>
+<span class="linenos">20</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="linenos">21</span>    <span class="n">main</span><span class="p">()</span>
+<span class="linenos">22</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done ...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="getting-the-dwarf-from-binary-file">
@@ -140,7 +137,7 @@
 <p>To read the DWARF of a kernel, a copy of the IGC generated kernel binary is
 needed. Run the Python script in a GDB debugger mode, and set a breakpoint in
 the kernel:</p>
-<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>$<span class="w"> </span>gdb-oneapi<span class="w"> </span>-q<span class="w"> </span>--args<span class="w"> </span>python<span class="w"> </span>simple_sum.py<span class="w"> </span><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span><span class="nb">break</span>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>$<span class="w"> </span>gdb-oneapi<span class="w"> </span>-q<span class="w"> </span>--args<span class="w"> </span>python<span class="w"> </span>simple_sum.py<span class="w"> </span><span class="o">(</span>gdb<span class="o">)</span><span class="w"> </span><span class="k">break</span>
 <span class="go">simple_sum.py:22 (gdb) run</span>
 </pre></div>
 </div>

@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Backtrace &mdash; numba-dpex 0.20.1 documentation</title>
+  <title>Backtrace &mdash; numba-dpex 0.21.0dev2+14.ga33c03fd documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -123,23 +123,20 @@
 is. Consider the following example
 <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/simple_dpex_func.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">15</span>
-<span class="linenos">16</span>
-<span class="linenos">17</span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="linenos">18</span><span class="k">def</span> <span class="nf">kernel_sum</span><span class="p">(</span><span class="n">a_in_kernel</span><span class="p">,</span> <span class="n">b_in_kernel</span><span class="p">,</span> <span class="n">c_in_kernel</span><span class="p">):</span>
-<span class="linenos">19</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="linenos">20</span>    <span class="n">c_in_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">func_sum</span><span class="p">(</span><span class="n">a_in_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">b_in_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<span class="linenos">16</span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">17</span><span class="k">def</span> <span class="nf">kernel_sum</span><span class="p">(</span><span class="n">a_in_kernel</span><span class="p">,</span> <span class="n">b_in_kernel</span><span class="p">,</span> <span class="n">c_in_kernel</span><span class="p">):</span>
+<span class="linenos">18</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">19</span>    <span class="n">c_in_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">func_sum</span><span class="p">(</span><span class="n">a_in_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">b_in_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<span class="linenos">20</span>
 <span class="linenos">21</span>
-<span class="linenos">22</span>
-<span class="linenos">23</span><span class="n">global_size</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="linenos">24</span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-<span class="linenos">25</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-<span class="linenos">26</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="linenos">27</span>
-<span class="linenos">28</span><span class="n">device</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">select_default_device</span><span class="p">()</span>
-<span class="linenos">29</span><span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
-<span class="linenos">30</span>    <span class="n">kernel_sum</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">global_size</span><span class="p">)](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
-<span class="linenos">31</span>
-<span class="linenos">32</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
+<span class="linenos">22</span><span class="n">global_size</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="linenos">23</span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">24</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">25</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="linenos">26</span>
+<span class="linenos">27</span><span class="n">kernel_sum</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">global_size</span><span class="p">)](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+<span class="linenos">28</span>
+<span class="linenos">29</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The section presents two examples of using Intel Distribution for GDB* to

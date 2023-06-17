@@ -10,6 +10,7 @@ Subpackages
    numba_dpex.core
    numba_dpex.dpctl_iface
    numba_dpex.dpnp_iface
+   numba_dpex.numba_patches
    numba_dpex.ocl
    numba_dpex.utils
 
@@ -24,7 +25,6 @@ Submodules
    numba_dpex.decorators
    numba_dpex.parfor_diagnostics
    numba_dpex.printimpl
-   numba_dpex.retarget
    numba_dpex.spirv_generator
    numba_dpex.vectorizers
 

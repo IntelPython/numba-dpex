@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.kernel_interface.indexers module &mdash; numba-dpex 0.20.1 documentation</title>
+  <title>numba_dpex.core.kernel_interface.indexers module &mdash; numba-dpex 0.21.0dev2+14.ga33c03fd documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -153,10 +153,10 @@ class.</p>
 <dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.indexers.Range">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.kernel_interface.indexers.</span></span><span class="sig-name descname"><span class="pre">Range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.indexers.Range" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
-<p>A data structure to encapsulate a single kernel lauch parameter.</p>
+<p>A data structure to encapsulate a single kernel launch parameter.</p>
 <p>The range is an abstraction that describes the number of elements
 in each dimension of buffers and index spaces. It can contain
-1, 2, or 3 numbers, dependending on the dimensionality of the
+1, 2, or 3 numbers, depending on the dimensionality of the
 object it describes.</p>
 <p>This is just a wrapper class on top of a 3-tuple. The kernel launch
 parameter is consisted of three int’s. This class basically mimics

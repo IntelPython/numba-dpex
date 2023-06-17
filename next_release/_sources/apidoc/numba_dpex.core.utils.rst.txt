@@ -16,7 +16,6 @@ Submodules
    :maxdepth: 4
 
    numba_dpex.core.utils.caching_utils
-   numba_dpex.core.utils.kernel_builder
    numba_dpex.core.utils.kernel_launcher
    numba_dpex.core.utils.suai_helper
 

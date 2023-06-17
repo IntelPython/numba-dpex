@@ -1,7 +1,0 @@
-numba\_dpex.dpnp\_iface.dpnp\_sort\_search\_countimpl module
-============================================================
-
-.. automodule:: numba_dpex.dpnp_iface.dpnp_sort_search_countimpl
-   :members:
-   :undoc-members:
-   :show-inheritance:
