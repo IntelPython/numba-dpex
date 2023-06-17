@@ -16,6 +16,10 @@ runs:
       run: conda env update -n base -f ${{ inputs.environment }} --prune
       shell: bash
 
+    - name: Test conda environment
+      run: conda list
+      shell: bash
+
     - name: Build numba-dpex
       run: |
         export PATH=$CONDA/bin-llvm:$PATH
