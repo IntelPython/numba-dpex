@@ -1,7 +1,0 @@
-numba\_dpex.core.types.dpctl\_types module
-==========================================
-
-.. automodule:: numba_dpex.core.types.dpctl_types
-   :members:
-   :undoc-members:
-   :show-inheritance:

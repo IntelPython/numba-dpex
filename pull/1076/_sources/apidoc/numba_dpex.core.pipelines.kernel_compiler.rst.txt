@@ -1,7 +1,0 @@
-numba\_dpex.core.pipelines.kernel\_compiler module
-==================================================
-
-.. automodule:: numba_dpex.core.pipelines.kernel_compiler
-   :members:
-   :undoc-members:
-   :show-inheritance:
