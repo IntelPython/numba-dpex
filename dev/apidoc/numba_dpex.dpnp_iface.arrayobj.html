@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.dpnp_iface.arrayobj module &mdash; numba-dpex 0.21.0dev1+41.ga1ee24ee documentation</title>
+  <title>numba_dpex.dpnp_iface.arrayobj module &mdash; numba-dpex 0.21.0dev2+7.g65576fa4 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -94,49 +94,6 @@
              
   <section id="module-numba_dpex.dpnp_iface.arrayobj">
 <span id="numba-dpex-dpnp-iface-arrayobj-module"></span><h1>numba_dpex.dpnp_iface.arrayobj module<a class="headerlink" href="#module-numba_dpex.dpnp_iface.arrayobj" title="Permalink to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.arrayobj.build_dpnp_ndarray">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.arrayobj.</span></span><span class="sig-name descname"><span class="pre">build_dpnp_ndarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ndim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'device'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.arrayobj.build_dpnp_ndarray" title="Permalink to this definition"></a></dt>
-<dd><p>Constructs <cite>DpnpNdArray</cite> from the parameters provided.</p>
-<dl>
-<dt>Args:</dt><dd><p>ndim (int): The dimension of the array.
-layout (“C”, or F”): memory layout for the array. Default: “C”.
-dtype (numba.core.types.functions.NumberClass, optional):</p>
-<blockquote>
-<div><p>Data type of the array. Can be typestring, a <cite>numpy.dtype</cite>
-object, <cite>numpy</cite> char string, or a numpy scalar type.
-Default: None.</p>
-</div></blockquote>
-<dl class="simple">
-<dt>usm_type (numba.core.types.misc.StringLiteral, optional):</dt><dd><p>The type of SYCL USM allocation for the output array.
-Allowed values are “device”|”shared”|”host”.
-Default: <cite>“device”</cite>.</p>
-</dd>
-<dt>device (optional): array API concept of device where the</dt><dd><p>output array is created. <cite>device</cite> can be <cite>None</cite>, a oneAPI
-filter selector string, an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclDevice</span></code>
-corresponding to a non-partitioned SYCL device, an instance of
-<code class="xref py py-class docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code>, or a <cite>Device</cite> object returnedby
-<cite>dpctl.tensor.usm_array.device</cite>. Default: <cite>None</cite>.</p>
-</dd>
-<dt>sycl_queue (<a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue" title="numba_dpex.core.types.dpctl_types.DpctlSyclQueue"><code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.core.types.dpctl_types.DpctlSyclQueue</span></code></a>,</dt><dd><p>optional): The SYCL queue to use for output array allocation and
-copying. sycl_queue and device are exclusive keywords, i.e. use
-one or another. If both are specified, a TypeError is raised. If
-both are None, a cached queue targeting default-selected device
-is used for allocation and copying. Default: <cite>None</cite>.</p>
-</dd>
-</dl>
-</dd>
-<dt>Raises:</dt><dd><p>errors.TypingError: If both <cite>device</cite> and <cite>sycl_queue</cite> are provided.</p>
-</dd>
-<dt>Returns:</dt><dd><dl class="simple">
-<dt>DpnpNdArray: The Numba type to represent an dpnp.ndarray.</dt><dd><p>The type has the same structure as USMNdArray used to
-represent dpctl.tensor.usm_ndarray.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty">
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.arrayobj.</span></span><span class="sig-name descname"><span class="pre">ol_dpnp_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'device'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty" title="Permalink to this definition"></a></dt>

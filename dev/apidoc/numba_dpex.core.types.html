@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.types package &mdash; numba-dpex 0.21.0dev1+41.ga1ee24ee documentation</title>
+  <title>numba_dpex.core.types package &mdash; numba-dpex 0.21.0dev2+7.g65576fa4 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -113,7 +113,7 @@
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue.box_type"><code class="docutils literal notranslate"><span class="pre">DpctlSyclQueue.box_type</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue.key"><code class="docutils literal notranslate"><span class="pre">DpctlSyclQueue.key</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue.rand_digit_str"><code class="docutils literal notranslate"><span class="pre">DpctlSyclQueue.rand_digit_str()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue.sycl_queue"><code class="docutils literal notranslate"><span class="pre">DpctlSyclQueue.sycl_queue</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.DpctlSyclQueue.sycl_device"><code class="docutils literal notranslate"><span class="pre">DpctlSyclQueue.sycl_device</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.types.dpctl_types.html#numba_dpex.core.types.dpctl_types.box_sycl_queue"><code class="docutils literal notranslate"><span class="pre">box_sycl_queue()</span></code></a></li>
@@ -184,9 +184,6 @@ in subclasses.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.types.</span></span><span class="sig-name descname"><span class="pre">DpctlSyclQueue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.types.DpctlSyclQueue" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></p>
 <p>A Numba type to represent a dpctl.SyclQueue PyObject.</p>
-<p>For now, a dpctl.SyclQueue is represented as a Numba opaque type that allows
-passing in and using a SyclQueue object as an opaque pointer type inside
-Numba.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="numba_dpex.core.types.DpctlSyclQueue.box_type">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">box_type</span></span><a class="headerlink" href="#numba_dpex.core.types.DpctlSyclQueue.box_type" title="Permalink to this definition"></a></dt>
@@ -213,9 +210,15 @@ Returns:</p>
 <dd></dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.types.DpctlSyclQueue.sycl_queue">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sycl_queue</span></span><a class="headerlink" href="#numba_dpex.core.types.DpctlSyclQueue.sycl_queue" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="numba_dpex.core.types.DpctlSyclQueue.sycl_device">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sycl_device</span></span><a class="headerlink" href="#numba_dpex.core.types.DpctlSyclQueue.sycl_device" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the SYCL oneAPI extension filter string associated with the
+queue.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>str: A SYCL oneAPI extension filter string</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 

@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex package &mdash; numba-dpex 0.21.0dev1+41.ga1ee24ee documentation</title>
+  <title>numba_dpex package &mdash; numba-dpex 0.21.0dev2+7.g65576fa4 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -255,7 +255,6 @@
 <li class="toctree-l1"><a class="reference internal" href="numba_dpex.dpnp_iface.html">numba_dpex.dpnp_iface package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="numba_dpex.dpnp_iface.html#submodules">Submodules</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="numba_dpex.dpnp_iface.arrayobj.html">numba_dpex.dpnp_iface.arrayobj module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="numba_dpex.dpnp_iface.arrayobj.html#numba_dpex.dpnp_iface.arrayobj.build_dpnp_ndarray"><code class="docutils literal notranslate"><span class="pre">build_dpnp_ndarray()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="numba_dpex.dpnp_iface.arrayobj.html#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty"><code class="docutils literal notranslate"><span class="pre">ol_dpnp_empty()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="numba_dpex.dpnp_iface.arrayobj.html#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty_like"><code class="docutils literal notranslate"><span class="pre">ol_dpnp_empty_like()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="numba_dpex.dpnp_iface.arrayobj.html#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_full"><code class="docutils literal notranslate"><span class="pre">ol_dpnp_full()</span></code></a></li>
@@ -595,9 +594,6 @@ in subclasses.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.</span></span><span class="sig-name descname"><span class="pre">DpctlSyclQueue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.DpctlSyclQueue" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Type</span></code></p>
 <p>A Numba type to represent a dpctl.SyclQueue PyObject.</p>
-<p>For now, a dpctl.SyclQueue is represented as a Numba opaque type that allows
-passing in and using a SyclQueue object as an opaque pointer type inside
-Numba.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="numba_dpex.DpctlSyclQueue.box_type">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">box_type</span></span><a class="headerlink" href="#numba_dpex.DpctlSyclQueue.box_type" title="Permalink to this definition"></a></dt>
@@ -624,9 +620,15 @@ Returns:</p>
 <dd></dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.DpctlSyclQueue.sycl_queue">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sycl_queue</span></span><a class="headerlink" href="#numba_dpex.DpctlSyclQueue.sycl_queue" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="numba_dpex.DpctlSyclQueue.sycl_device">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sycl_device</span></span><a class="headerlink" href="#numba_dpex.DpctlSyclQueue.sycl_device" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the SYCL oneAPI extension filter string associated with the
+queue.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>str: A SYCL oneAPI extension filter string</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
