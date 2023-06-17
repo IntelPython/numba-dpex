@@ -1,0 +1,20 @@
+numba\_dpex.dpctl\_iface package
+================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.dpctl_iface.dpctl_capi_fn_builder
+   numba_dpex.dpctl_iface.dpctl_function_types
+   numba_dpex.dpctl_iface.legacy_kernel_launch_ops
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex.dpctl_iface
+   :members:
+   :undoc-members:
+   :show-inheritance:

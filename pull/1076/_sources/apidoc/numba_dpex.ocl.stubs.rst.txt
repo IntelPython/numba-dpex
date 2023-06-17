@@ -1,0 +1,7 @@
+numba\_dpex.ocl.stubs module
+============================
+
+.. automodule:: numba_dpex.ocl.stubs
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,42 @@
+numba\_dpex.core package
+========================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.core.datamodel
+   numba_dpex.core.kernel_interface
+   numba_dpex.core.parfors
+   numba_dpex.core.passes
+   numba_dpex.core.pipelines
+   numba_dpex.core.runtime
+   numba_dpex.core.targets
+   numba_dpex.core.typeconv
+   numba_dpex.core.types
+   numba_dpex.core.typing
+   numba_dpex.core.utils
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.core.caching
+   numba_dpex.core.codegen
+   numba_dpex.core.compiler
+   numba_dpex.core.descriptor
+   numba_dpex.core.dpjit_dispatcher
+   numba_dpex.core.exceptions
+   numba_dpex.core.itanium_mangler
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex.core
+   :members:
+   :undoc-members:
+   :show-inheritance:
