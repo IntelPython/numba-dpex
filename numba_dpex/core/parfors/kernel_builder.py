@@ -28,7 +28,7 @@ import numba_dpex as dpex
 from numba_dpex import config
 
 from ..descriptor import dpex_kernel_target
-from ..types.dpnp_ndarray_type import DpnpNdArray
+from ..types import DpnpNdArray, USMNdArray
 from ..utils.kernel_templates import RangeKernelTemplate
 
 
@@ -69,6 +69,30 @@ def _compile_kernel_parfor(
     kernel = dpex.core.kernel_interface.spirv_kernel.SpirvKernel(
         func_ir, kernel_name
     )
+
+    # A cast from DpnpNdArray type to USMNdArray is needed for all arguments of
+    # DpnpNdArray type. Although, DpnpNdArray derives from USMNdArray the two
+    # types use different data models. USMNdArray uses the
+    # numba_dpex.core.datamodel.models.ArrayModel data model that defines all
+    # CPointer type members in the GLOBAL address space. The DpnpNdArray uses
+    # Numba's default ArrayModel that does not define pointers in any specific
+    # address space. For OpenCL HD Graphics devices, defining a kernel function
+    # (spir_kernel calling convention) with pointer arguments that have no
+    # address space qualifier causes a run time crash. By casting the argument
+    # type for parfor arguments from DpnpNdArray type to the USMNdArray type the
+    # generated kernel always has an address space qualifier, avoiding the issue
+    # on OpenCL HD graphics devices.
+
+    for i, argty in enumerate(argtypes):
+        if isinstance(argty, DpnpNdArray):
+            new_argty = USMNdArray(
+                ndim=argty.ndim,
+                layout=argty.layout,
+                dtype=argty.dtype,
+                usm_type=argty.usm_type,
+                queue=argty.queue,
+            )
+            argtypes[i] = new_argty
 
     # compile the kernel
     kernel.compile(
