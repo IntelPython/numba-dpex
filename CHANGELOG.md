@@ -4,6 +4,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.21.0] - 2023-06-17
+
+### Added
+* Support addition and multiplication-based prange reduction loops (#999)
+* Proper boxing, unboxing of dpctl.SyclQueue objects inside dpjit decorated functions (#963, #1064)
+* Support for `queue` keyword arguments inside dpnp array constructors in dpjit (#1032)
+* Overloads for dpnp array constructors: dpnp.full (#991), dpnp.full_like (#997)
+* Support for complex64 and complex128 types as kernel arguments and in parfors (#1033, #1035)
+* New config to run the ConstantSizeStaticLocalMemoryPass optionally (#999)
+* Support for Numba 0.57 (#1030, #1003, #1002)
+* Support for Python 3.11 (#1054)
+* Support for SPIRV 1.4 (#1056, #1060)
+
+### Changed
+* Parfor lowering happens using the kernel pipeline (#996)
+* Minimum required Numba version is now 0.57 (#1030)
+* Numba monkey patches are moved to numba_dpex.numba_patches (#1030)
+* Redesigned unit test suite (#1018, #1017, #1015, #1036, #1037, #1072)
+
+### Fixed
+* Fix stride computation when unboxing a dpnp array (#1023)
+* Using cached queue instead of creating new one on type inference (#946)
+* Fixed bug in reduction mul operation for dpjit (#1048)
+* Offload of parfor nodes to OpenCL UHD GPU devices (#1074)
+
+### Removed
+* Support for offloading NumPy-based parfor nodes to SYCL devices (#1041)
+* Removed rename_numpy_functions_pass (#1041)
+* Dpnp overloads using stubs (#1041, #1025)
+* Support for `like` keyword argument in dpnp array constructor overloads (#1043)
+* Support for NumPy arrays as kernel arguments (#1049)
+* Kernel argument access specifiers (#1049)
+* Support for dpctl.device_context to launch kernels and njit offloading (#1041)
+
 ## [0.20.1] - 2023-04-07
 
 ### Added

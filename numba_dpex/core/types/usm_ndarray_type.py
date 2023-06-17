@@ -87,7 +87,7 @@ class USMNdArray(Array):
             self.dtype = dtype
 
         if name is None:
-            type_name = "usm_ndarray"
+            type_name = "USMNdArray"
             if readonly:
                 type_name = "readonly " + type_name
             if not aligned:
@@ -115,6 +115,9 @@ class USMNdArray(Array):
             name=name,
             aligned=aligned,
         )
+
+    def __repr__(self):
+        return self.name
 
     def copy(
         self,

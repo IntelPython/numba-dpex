@@ -154,6 +154,6 @@ Refer to :ref:`Docker <docker>` section for more options.
 .. _`packaging`: https://packaging.pypa.io/
 .. _`scipy`: https://anaconda.org/intel/scipy
 .. _`pytest`: https://docs.pytest.org
-.. _`Intel Distribution for Python`: https://software.intel.com/content/www/us/en/develop/tools/oneapi/components/distribution-for-python.html
+.. _`Intel Distribution for Python`: https://www.intel.com/content/www/us/en/developer/tools/oneapi/distribution-for-python.html
 .. _`anaconda.org/intel`: https://anaconda.org/intel
-.. _`Intel oneAPI`: https://software.intel.com/content/www/us/en/develop/tools/oneapi.html
+.. _`Intel oneAPI`: https://www.intel.com/content/www/us/en/developer/tools/oneapi/overview.html

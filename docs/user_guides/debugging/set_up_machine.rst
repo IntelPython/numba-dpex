@@ -11,7 +11,7 @@ Install drivers using the following guides:
 
 .. _Intel® GPGPU driver installation guide: https://dgpu-docs.intel.com/installation-guides/index.html
 .. _Intel® oneAPI GPU driver installation guide:
-    https://software.intel.com/content/www/us/en/develop/documentation/installation-guide-for-intel-oneapi-toolkits-linux/top/prerequisites/install-intel-gpu-drivers.html
+    https://www.intel.com/content/www/us/en/docs/oneapi/installation-guide-linux/current/install-intel-gpu-drivers.html
 
 The user should be in the "video" group (on Ubuntu* 18, Fedora* 30, and SLES* 15
 SP1) or "render" group (on Ubuntu* 19 and higher, CentOS* 8, and Fedora* 31). An
@@ -93,5 +93,5 @@ If you are installing DCD for the first time, create keys. For details, see the 
 
 See also:
 
-  - `Get Started with Intel® Distribution for GDB* on Linux* OS Host <https://software.intel.com/content/www/us/en/develop/documentation/get-started-with-debugging-dpcpp-linux/top.html>`_
-  - `Public signature key <https://software.intel.com/content/www/us/en/develop/documentation/get-started-with-debugging-dpcpp-linux/top.html#:~:text=sudo%20modprobe%20igfxdcd-,The%20host%20system%20does%20not%20recognize%20the%20igfxdcd%20signature%20if,gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB,-If%20you%20have>`_
+  - `Get Started with Intel® Distribution for GDB* on Linux* OS Host <https://www.intel.com/content/www/us/en/docs/distribution-for-gdb/get-started-guide-linux/current/overview.html>`_
+  - `Public signature key <https://www.intel.com/content/www/us/en/docs/distribution-for-gdb/get-started-guide-linux/current/overview.html#:~:text=sudo%20modprobe%20igfxdcd-,The%20host%20system%20does%20not%20recognize%20the%20igfxdcd%20signature%20if,gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB,-If%20you%20have>`_
