@@ -1,0 +1,7 @@
+numba\_dpex.utils.llvm\_codegen\_helpers module
+===============================================
+
+.. automodule:: numba_dpex.utils.llvm_codegen_helpers
+   :members:
+   :undoc-members:
+   :show-inheritance:
