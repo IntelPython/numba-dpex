@@ -1,0 +1,7 @@
+numba\_dpex.core.datamodel.models module
+========================================
+
+.. automodule:: numba_dpex.core.datamodel.models
+   :members:
+   :undoc-members:
+   :show-inheritance:

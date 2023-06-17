@@ -1,0 +1,37 @@
+numba\_dpex package
+===================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.core
+   numba_dpex.dpctl_iface
+   numba_dpex.dpnp_iface
+   numba_dpex.numba_patches
+   numba_dpex.ocl
+   numba_dpex.utils
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.config
+   numba_dpex.debuginfo
+   numba_dpex.decorators
+   numba_dpex.parfor_diagnostics
+   numba_dpex.printimpl
+   numba_dpex.spirv_generator
+   numba_dpex.vectorizers
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex
+   :members:
+   :undoc-members:
+   :show-inheritance:
