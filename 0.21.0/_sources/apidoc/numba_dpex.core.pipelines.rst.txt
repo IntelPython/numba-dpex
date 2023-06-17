@@ -1,0 +1,19 @@
+numba\_dpex.core.pipelines package
+==================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.core.pipelines.dpjit_compiler
+   numba_dpex.core.pipelines.kernel_compiler
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex.core.pipelines
+   :members:
+   :undoc-members:
+   :show-inheritance:

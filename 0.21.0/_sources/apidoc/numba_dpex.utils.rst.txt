@@ -1,0 +1,20 @@
+numba\_dpex.utils package
+=========================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.utils.array_utils
+   numba_dpex.utils.constants
+   numba_dpex.utils.llvm_codegen_helpers
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

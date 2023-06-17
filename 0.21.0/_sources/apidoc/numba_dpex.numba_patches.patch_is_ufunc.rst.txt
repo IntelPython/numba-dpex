@@ -1,0 +1,7 @@
+numba\_dpex.numba\_patches.patch\_is\_ufunc module
+==================================================
+
+.. automodule:: numba_dpex.numba_patches.patch_is_ufunc
+   :members:
+   :undoc-members:
+   :show-inheritance:
