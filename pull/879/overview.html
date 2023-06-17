@@ -424,15 +424,15 @@ available on Anaconda cloud and as a Docker image on GitHub. Please refer the
 <a class="reference internal" href="getting_started.html"><span class="doc">Getting Started</span></a> page to learn more.</p>
 <section id="main-features">
 <h2>Main Features<a class="headerlink" href="#main-features" title="Permalink to this heading">#</a></h2>
-<ul class="simple">
-<li><p><a class="reference internal" href="user_manual/kernel_programming/index.html"><span class="doc">Kernel Programming API</span></a></p></li>
-</ul>
-<p>The kernel API has a design and API similar to what is provided by Numba’s
-<code class="docutils literal notranslate"><span class="pre">cuda.jit</span></code> module. However, the API uses the <a class="reference external" href="https://www.khronos.org/sycl/">SYCL*</a> language runtime and as
-such is extensible to several hardware categories. Presently, the API supports
-only SPIR-V-based OpenCL and <a class="reference external" href="https://spec.oneapi.io/level-zero/latest/index.html">oneAPI Level Zero</a> devices that are supported by
-the Intel® <a class="reference external" href="https://www.apress.com/gp/book/9781484255735">DPC++</a> SYCL compiler runtime.</p>
-<p>A simple vector addition kernel can be expressed using the API as follows:</p>
+<section id="portable-kernel-programming">
+<h3>Portable kernel programming<a class="headerlink" href="#portable-kernel-programming" title="Permalink to this heading">#</a></h3>
+<p>The kernel API has a design and API similar to Numba’s <code class="docutils literal notranslate"><span class="pre">cuda.jit</span></code> module.
+However, the API uses the <a class="reference external" href="https://www.khronos.org/sycl/">SYCL*</a> language runtime and as such is extensible to
+various hardware types supported by a SYCL runtime. Presently, numba-dpex uses
+the <a class="reference external" href="https://www.apress.com/gp/book/9781484255735">DPC++</a> SYCL runtime and only supports SPIR-V-based OpenCL and <a class="reference external" href="https://spec.oneapi.io/level-zero/latest/index.html">oneAPI
+Level Zero</a> devices CPU and GPU devices.</p>
+<p>The following vector addition example illustrates the basic features of the
+interface.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpnp</span>
 <span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">dpex</span>
 
@@ -451,29 +451,30 @@ the Intel® <a class="reference external" href="https://www.apress.com/gp/book/9
 <span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>In the above example, as the programmer allocated arrays on a <code class="docutils literal notranslate"><span class="pre">gpu</span></code> device
-using the dpnp library, numba-dpex will compile and then execute the kernel for
-that specific device. To change the execution target to a CPU, the device
-keyword needs to be changed to <code class="docutils literal notranslate"><span class="pre">cpu</span></code> when allocating the dpnp arrays. It is
-also possible to leave the <code class="docutils literal notranslate"><span class="pre">device</span></code> keyword undefined and let the dpnp library
-select a default device based on environment flag settings.</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="user_manual/dpnp_offload/index.html"><span class="doc">Compiling and Offloading dpnp</span></a></p></li>
-</ul>
+<p>In the above example, we allocated three arrays on a default <code class="docutils literal notranslate"><span class="pre">gpu</span></code> device
+using the dpnp library. These arrays are then passed as input arguments to the
+kernel function. The compilation target and the subsequent execution of the
+kernel is determined completely by the input arguments and follow the
+“compute-follows-data” programming model as specified in the <a class="reference external" href="https://data-apis.org/array-api/">Python* Array API
+Standard</a>. To change the execution target to a CPU, the device keyword needs to
+be changed to <code class="docutils literal notranslate"><span class="pre">cpu</span></code> when allocating the dpnp arrays. It is also possible to
+leave the <code class="docutils literal notranslate"><span class="pre">device</span></code> keyword undefined and let the dpnp library select a default
+device based on environment flag settings. Refer the
+<a class="reference internal" href="user_manual/kernel_programming/index.html"><span class="doc">Kernel Programming API</span></a> for further details.</p>
+</section>
+<section id="dpnp-compilation-and-offload">
+<h3>dpnp compilation and offload<a class="headerlink" href="#dpnp-compilation-and-offload" title="Permalink to this heading">#</a></h3>
 <p>Numba-dpex extends Numba’s type system and compilation pipeline to compile dpnp
-functions and expressions in the same manner as Numba compiles NumPy. Unlike
-Numba’s NumPy compilation that is serial by default, numba-dpex always compiles
-dpnp expressions into offloadable kernels and executes them in parallel. The
-functionality is similar to what Numba users achieve by using the <code class="docutils literal notranslate"><span class="pre">parallel</span></code>
-option in <code class="docutils literal notranslate"><span class="pre">numba.jit</span></code>. However, offloading by numba-dpex is not just
-restricted to CPUs and supports all devices that are presently supported by the
-kernel API.</p>
-<p>Numba-dpex provides a decorator <code class="docutils literal notranslate"><span class="pre">dpjit</span></code> that behaves identically to
-<code class="docutils literal notranslate"><span class="pre">numba.njit(parallel=True)</span></code> and additionally supports dpnp compilation and
-offload. Note that <code class="docutils literal notranslate"><span class="pre">dpjit</span></code> is able to handle NumPy and dpnp expressions in the
-same function. All NumPy compilation and parallelization is done via the default
-Numba code-generation pipeline, whereas dpnp expressions are compiled using the
-numba-dpex pipeline.</p>
+functions and expressions in the same way as NumPy. Unlike Numba’s NumPy
+compilation that is serial by default, numba-dpex always compiles dpnp
+expressions into offloadable kernels and executes them in parallel. The feature
+is provided using a decorator <code class="docutils literal notranslate"><span class="pre">dpjit</span></code> that behaves identically to
+<code class="docutils literal notranslate"><span class="pre">numba.njit(parallel=True)</span></code> with the addition of dpnp compilation and offload.
+Offloading by numba-dpex is not just restricted to CPUs and supports all devices
+that are presently supported by the kernel API. <code class="docutils literal notranslate"><span class="pre">dpjit</span></code> allows using NumPy and
+dpnp expressions in the same function. All NumPy compilation and parallelization
+is done via the default Numba code-generation pipeline, whereas dpnp expressions
+are compiled using the numba-dpex pipeline.</p>
 <p>The vector addition example depicted using the kernel API can be easily
 expressed in several different ways using <code class="docutils literal notranslate"><span class="pre">dpjit</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpnp</span>
@@ -498,6 +499,13 @@ expressed in several different ways using <code class="docutils literal notransl
     <span class="k">return</span> <span class="n">c</span>
 </pre></div>
 </div>
+<p>As with the kernel API example, a <code class="docutils literal notranslate"><span class="pre">dpjit</span></code> function if invoked with dpnp
+input arguments follows the compute-follows-data programming model. Refer
+<a class="reference internal" href="user_manual/dpnp_offload/index.html"><span class="doc">Compiling and Offloading dpnp</span></a> for further details.</p>
+</section>
+<section id="zero-copy-interoperability">
+<h3>Zero-copy interoperability<a class="headerlink" href="#zero-copy-interoperability" title="Permalink to this heading">#</a></h3>
+</section>
 </section>
 <section id="contributing">
 <h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this heading">#</a></h2>
@@ -565,7 +573,12 @@ kernels may be written using numba-dpex.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#main-features">Main Features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#main-features">Main Features</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#portable-kernel-programming">Portable kernel programming</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dpnp-compilation-and-offload">dpnp compilation and offload</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zero-copy-interoperability">Zero-copy interoperability</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing">Contributing</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#license">License</a></li>
 </ul>
