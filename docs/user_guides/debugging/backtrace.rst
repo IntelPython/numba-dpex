@@ -32,4 +32,4 @@ Example 2:
 See also:
 
     - `Backtraces in GDB*
-      <https://sourceware.org/gdb/current/onlinedocs/gdb/Backtrace.html#Backtrace>`_
+      <https://sourceware.org/gdb/onlinedocs/gdb/Backtrace.html#Backtrace>`_
