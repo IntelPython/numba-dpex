@@ -17,7 +17,7 @@ You have several ways to set breakpoints:
 See also:
   - `Breakpoints in GDB*`_.
 
-.. _Breakpoints in GDB*: https://sourceware.org/gdb/current/onlinedocs/gdb/Set-Breaks.html#Set-Breaks
+.. _Breakpoints in GDB*: https://sourceware.org/gdb/onlinedocs/gdb/Set-Breaks.html#Set-Breaks
 
 Consider the following numba-dpex kernel code (refer
 ``numba_dpex/examples/debug/simple_sum.py`` for full example):
