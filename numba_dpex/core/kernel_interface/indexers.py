@@ -104,7 +104,7 @@ class NdRange:
             self._global_range = Range(*global_size)
         else:
             raise TypeError(
-                "Unknwon argument type for NdRange global_size, "
+                "Unknown argument type for NdRange global_size, "
                 + "must be of either type Range or Iterable of int's."
             )
 
@@ -114,7 +114,7 @@ class NdRange:
             self._local_range = Range(*local_size)
         else:
             raise TypeError(
-                "Unknwon argument type for NdRange local_size, "
+                "Unknown argument type for NdRange local_size, "
                 + "must be of either type Range or Iterable of int's."
             )
 
