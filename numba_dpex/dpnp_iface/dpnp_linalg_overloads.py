@@ -51,18 +51,19 @@ def _parse_lapack_func(a):
 
 
 @intrinsic
-def impl_dpnp_lapack_eigh(
+def impl_dpnp_linalg_eigh(
     ty_context, ty_a, ty_v, ty_w, ty_lda, ty_n, ty_uplo, ty_sycl_queue
 ):
     ty_retty_ = types.none
     signature = ty_retty_(
         ty_a, ty_v, ty_w, ty_lda, ty_n, ty_uplo, ty_sycl_queue
     )
+    breakpoint()
 
     def codegen(context, builder, sig, args):
         mod = builder.module
 
-        qref_payload: _QueueRefPayload = _get_queue_ref(  # noqa: F841
+        qref_payload: _QueueRefPayload = _get_queue_ref(
             context, builder, args[-1], sig.args[-1], sig.args[-1].instance_type
         )
 
@@ -98,10 +99,11 @@ def impl_dpnp_lapack_eigh(
                 u64,
             ],
         )
-        fn = cgutils.get_or_insert_function(mod, fnty, "DPEX_LAPACK_eigh")
-        builder.call(
-            fn, [_a_ptr, _v_ptr, _w_ptr, _lda, _n, _uplo]
-        )  # noqa: F841
+
+        fn = cgutils.get_or_insert_function(
+            mod, fnty, "DPEX_ONEMKL_LAPACK_syevd"
+        )
+        builder.call(fn, [_a_ptr, _v_ptr, _w_ptr, _lda, _n, _uplo])
 
         if qref_payload.py_dpctl_sycl_queue_addr:
             qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
@@ -130,47 +132,15 @@ def impl_dpnp_lapack_eigh(
 
 @overload(dpnp.linalg.eigh, prefer_literal=True)
 def ol_dpnp_linalg_eigh(a, UPLO="L"):
-    # _jobz = {"N": 0, "V": 1}
     _upper_lower = {"U": 0, "L": 1}
 
-    # _ndim = a.ndim
     _usm_type = a.usm_type
     _sycl_queue = a.queue
+    _order = "C" if a.is_c_contig else "F"
+    _uplo = _upper_lower[UPLO]
 
-    # a_order = "C" if a.is_c_contig else "F"
-    _order = "C" if a.is_c_contig else "F"  # noqa: F841
-    # a_usm_arr = dpnp.get_usm_ndarray(a)
-
-    # 'V' means both eigenvectors and eigenvalues will be calculated
-    # jobz = _jobz["V"]  # noqa: F841
-    # _jz = _jobz["V"]  # noqa: F841
-    _uplo = _upper_lower[UPLO]  # noqa: F841
-
-    # get resulting type of arrays with eigenvalues and eigenvectors
-    # a_dtype = a.dtype
-    # lapack_func = "_syevd"  # noqa: F841
     _lapack_func = _parse_lapack_func(a)  # noqa: F841
-    _v_type, _w_type = _parse_dtypes(a)  # noqa: F841
-
-    # _v = DpnpNdArray(
-    #     ndim=_ndim,
-    #     layout=_layout,
-    #     dtype=v_type,
-    #     usm_type=_usm_type,
-    #     # device=a.queue.sycl_device,
-    #     queue=_sycl_queue,
-    # )
-
-    # _w = DpnpNdArray(  # noqa: F841
-    #     ndim=1,
-    #     layout=_layout,
-    #     dtype=w_type,
-    #     usm_type=_usm_type,
-    #     # device=a.queue.sycl_device,
-    #     queue=_sycl_queue,
-    # )
-
-    # print("a.shape =", a.shape)
+    _v_type, _w_type = _parse_dtypes(a)
 
     def impl(
         a,
@@ -216,15 +186,12 @@ def ol_dpnp_linalg_eigh(a, UPLO="L"):
         if lda != n:
             raise ValueError("Last 2 dimensions of the array must be square.")
 
-        _v_shape, _w_shape = (lda, n), (1, n)
         v = dpnp.empty(
-            _v_shape, dtype=_v_type, order=_order, usm_type=_usm_type
+            (lda, n), dtype=_v_type, order=_order, usm_type=_usm_type
         )
-        w = dpnp.empty(
-            _w_shape, dtype=_w_type, order=_order, usm_type=_usm_type
-        )
+        w = dpnp.empty((1, n), dtype=_w_type, order=_order, usm_type=_usm_type)
 
-        impl_dpnp_lapack_eigh(a, v, w, lda, n, _uplo, _sycl_queue)
+        impl_dpnp_linalg_eigh(a, v, w, lda, n, _uplo, _sycl_queue)
         return (w, v.T)
 
     return impl

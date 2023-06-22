@@ -30,12 +30,12 @@ namespace onemkl = oneapi::mkl;
 
 extern "C"
 {
-    static void DPEX_LAPACK_eigh(arystruct_t *as_a,
-                                 arystruct_t *as_v,
-                                 arystruct_t *as_w,
-                                 std::int64_t lda,
-                                 std::int64_t n,
-                                 std::int64_t uplo);
+    static void DPEX_ONEMKL_LAPACK_syevd(arystruct_t *as_a,
+                                         arystruct_t *as_v,
+                                         arystruct_t *as_w,
+                                         std::int64_t lda,
+                                         std::int64_t n,
+                                         std::int64_t uplo);
 }
 
 template <typename T>
@@ -100,12 +100,12 @@ void list_default_device()
 }
 
 template <typename T>
-void syevd(sycl::queue queue,
-           T *a,
-           T *w,
-           const std::int64_t LDA,
-           const std::int64_t N,
-           const onemkl::uplo upper_lower = onemkl::uplo::U)
+void _syevd(sycl::queue queue,
+            T *a,
+            T *w,
+            const std::int64_t LDA,
+            const std::int64_t N,
+            const onemkl::uplo upper_lower = onemkl::uplo::U)
 {
     const onemkl::job jobz = onemkl::job::V;
     const std::int64_t lda = std::max<size_t>(1UL, LDA);
@@ -157,12 +157,12 @@ void syevd(sycl::queue queue,
     queue.wait();
 }
 
-static void DPEX_LAPACK_eigh(arystruct_t *as_a,
-                             arystruct_t *as_v,
-                             arystruct_t *as_w,
-                             std::int64_t lda,
-                             std::int64_t n,
-                             std::int64_t uplo)
+static void DPEX_ONEMKL_LAPACK_syevd(arystruct_t *as_a,
+                                     arystruct_t *as_v,
+                                     arystruct_t *as_w,
+                                     std::int64_t lda,
+                                     std::int64_t n,
+                                     std::int64_t uplo)
 {
     list_platforms();
     list_default_device();
@@ -187,7 +187,7 @@ static void DPEX_LAPACK_eigh(arystruct_t *as_a,
     // N).wait(); queue.memcpy(v_, (double*)(as_v->data), sizeof(double) * LDA *
     // N).wait();
 
-    syevd<double>(queue, a_, w_, LDA, N, upper_lower);
+    _syevd<double>(queue, a_, w_, LDA, N, upper_lower);
 
     queue.copy(a_, v_, LDA * N).wait();
     // queue.memcpy((double *)(as_v->data), a_, sizeof(double) * LDA *
@@ -223,7 +223,8 @@ static PyObject *build_c_helpers_dict(void)
         Py_DECREF(o);                                                          \
     } while (0)
 
-    _declpointer("DPEX_LAPACK_eigh", (void *)(&DPEX_LAPACK_eigh));
+    _declpointer("DPEX_ONEMKL_LAPACK_syevd",
+                 (void *)(&DPEX_ONEMKL_LAPACK_syevd));
 
 #undef _declpointer
     return dct;
@@ -262,8 +263,8 @@ MOD_INIT(_dpex_lapack_iface)
     PyModule_AddObject(m, "dpnp_array_type", dpnp_array_type);
     Py_DECREF(dpnp_array_mod);
 
-    PyModule_AddObject(m, "DPEX_LAPACK_eigh",
-                       PyLong_FromVoidPtr((void *)(&DPEX_LAPACK_eigh)));
+    PyModule_AddObject(m, "DPEX_ONEMKL_LAPACK_syevd",
+                       PyLong_FromVoidPtr((void *)(&DPEX_ONEMKL_LAPACK_syevd)));
     PyModule_AddObject(m, "c_helpers", build_c_helpers_dict());
     return MOD_SUCCESS_VAL(m);
 }
