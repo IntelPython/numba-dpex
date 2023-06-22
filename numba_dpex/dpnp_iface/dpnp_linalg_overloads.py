@@ -51,53 +51,43 @@ def _parse_lapack_func(a):
 
 
 @intrinsic
-def impl_dpnp_lapack_eigh(ty_context, ty_a, ty_v, ty_w, ty_uplo, ty_sycl_queue):
-    ty_retty = ty_v.instance_type
-    print("ty_retty =", ty_retty)
-    print("type(ty_retty) =", type(ty_retty))
-
-    ty_retty_ = types.Tuple((ty_v.instance_type, ty_w.instance_type))
-    print("ty_retty_ =", ty_retty_)
-    print("type(ty_retty_) =", type(ty_retty_))
-
-    signature = ty_retty(ty_a, ty_v, ty_w, ty_uplo, ty_sycl_queue)
-    print("signature =", signature)
-    print("type(signature) =", type(signature))
+def impl_dpnp_lapack_eigh(
+    ty_context, ty_a, ty_v, ty_w, ty_jz, ty_uplo, ty_sycl_queue
+):
+    ty_retty_ = types.none
+    signature = ty_retty_(ty_a, ty_v, ty_w, ty_jz, ty_uplo, ty_sycl_queue)
 
     def codegen(context, builder, sig, args):
         mod = builder.module
-
-        print("sig =", sig)
-        print("type(sig) =", type(sig))
-
-        print("args =", args)
-        print("type(args) =", type(args))
 
         qref_payload: _QueueRefPayload = _get_queue_ref(  # noqa: F841
             context, builder, args[-1], sig.args[-1], sig.args[-1].instance_type
         )
 
         with builder.goto_entry_block():
-            ptr = cgutils.alloca_once(builder, args[0].type)
-        _ptr = builder.bitcast(ptr, cgutils.voidptr_t)
-        fnty = llvmir.FunctionType(utils.LLVMTypes.void_t, [cgutils.voidptr_t])
-        fn = cgutils.get_or_insert_function(mod, fnty, "DPEX_LAPACK_eigh")
-        ret = builder.call(fn, [_ptr])  # noqa: F841
+            a_ptr = cgutils.alloca_once(builder, args[0].type)
+            v_ptr = cgutils.alloca_once(builder, args[1].type)
+            w_ptr = cgutils.alloca_once(builder, args[2].type)
 
-        print("qref_payload.queue_ref =", qref_payload.queue_ref)
-        ary = alloc_empty_arrayobj(
-            context, builder, sig, qref_payload.queue_ref, args, is_like=True
+        builder.store(args[0], a_ptr)
+        builder.store(args[1], v_ptr)
+        builder.store(args[2], w_ptr)
+
+        _a_ptr = builder.bitcast(a_ptr, cgutils.voidptr_t)
+        _v_ptr = builder.bitcast(v_ptr, cgutils.voidptr_t)
+        _w_ptr = builder.bitcast(w_ptr, cgutils.voidptr_t)
+
+        fnty = llvmir.FunctionType(
+            utils.LLVMTypes.void_t,
+            [cgutils.voidptr_t, cgutils.voidptr_t, cgutils.voidptr_t],
         )
+        fn = cgutils.get_or_insert_function(mod, fnty, "DPEX_LAPACK_eigh")
+        builder.call(fn, [_a_ptr, _v_ptr, _w_ptr])  # noqa: F841
 
         if qref_payload.py_dpctl_sycl_queue_addr:
             qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
 
-        print("ary =", ary)
-        print("type(ary) =", type(ary))
-        print("ary._getvalue() =", ary._getvalue())
-        print("type(ary._getvalue()) =", type(ary._getvalue()))
-
-        return ary._getvalue()
+        return None
 
     return signature, codegen
 
@@ -121,46 +111,47 @@ def impl_dpnp_lapack_eigh(ty_context, ty_a, ty_v, ty_w, ty_uplo, ty_sycl_queue):
 
 @overload(dpnp.linalg.eigh, prefer_literal=True)
 def ol_dpnp_linalg_eigh(a, UPLO="L"):
-    # _jobz = {"N": 0, "V": 1}
+    _jobz = {"N": 0, "V": 1}
     _upper_lower = {"U": 0, "L": 1}
 
-    print("a =", a, "type(a) =", type(a))
-    _ndim = a.ndim
+    # _ndim = a.ndim
     _usm_type = a.usm_type
     _sycl_queue = a.queue
-    print("_sycl_queue =", _sycl_queue)
+
     # a_order = "C" if a.is_c_contig else "F"
-    _layout = "C" if a.is_c_contig else "F"  # noqa: F841
+    _order = "C" if a.is_c_contig else "F"  # noqa: F841
     # a_usm_arr = dpnp.get_usm_ndarray(a)
 
     # 'V' means both eigenvectors and eigenvalues will be calculated
     # jobz = _jobz["V"]  # noqa: F841
-    _jobz = 1  # noqa: F841
+    _jz = _jobz["V"]  # noqa: F841
     _uplo = _upper_lower[UPLO]  # noqa: F841
 
     # get resulting type of arrays with eigenvalues and eigenvectors
     # a_dtype = a.dtype
     # lapack_func = "_syevd"  # noqa: F841
     _lapack_func = _parse_lapack_func(a)  # noqa: F841
-    v_type, w_type = _parse_dtypes(a)  # noqa: F841
+    _v_type, _w_type = _parse_dtypes(a)  # noqa: F841
 
-    _v = DpnpNdArray(
-        ndim=_ndim,
-        layout=_layout,
-        dtype=v_type,
-        usm_type=_usm_type,
-        # device=a.queue.sycl_device,
-        queue=_sycl_queue,
-    )
+    # _v = DpnpNdArray(
+    #     ndim=_ndim,
+    #     layout=_layout,
+    #     dtype=v_type,
+    #     usm_type=_usm_type,
+    #     # device=a.queue.sycl_device,
+    #     queue=_sycl_queue,
+    # )
 
-    _w = DpnpNdArray(  # noqa: F841
-        ndim=1,
-        layout=_layout,
-        dtype=w_type,
-        usm_type=_usm_type,
-        # device=a.queue.sycl_device,
-        queue=_sycl_queue,
-    )
+    # _w = DpnpNdArray(  # noqa: F841
+    #     ndim=1,
+    #     layout=_layout,
+    #     dtype=w_type,
+    #     usm_type=_usm_type,
+    #     # device=a.queue.sycl_device,
+    #     queue=_sycl_queue,
+    # )
+
+    # print("a.shape =", a.shape)
 
     def impl(
         a,
@@ -201,7 +192,17 @@ def ol_dpnp_linalg_eigh(a, UPLO="L"):
         #     # w = dpnp.ones((3,3))
 
         # return (w, out_v)
-        return impl_dpnp_lapack_eigh(a, _v, _v, _uplo, _sycl_queue)
+
+        _v_shape, _w_shape = a.shape, (1, a.shape[1])
+        v = dpnp.empty(
+            _v_shape, dtype=_v_type, order=_order, usm_type=_usm_type
+        )
+        w = dpnp.empty(
+            _w_shape, dtype=_w_type, order=_order, usm_type=_usm_type
+        )
+
+        impl_dpnp_lapack_eigh(a, v, w, _jz, _uplo, _sycl_queue)
+        return (w, v.T)
 
     return impl
 

@@ -30,8 +30,8 @@ namespace onemkl = oneapi::mkl;
 
 extern "C"
 {
-    static void DPEX_LAPACK_eigh(arystruct_t *arystruct);
-    // static void DPEX_LAPACK_eigh();
+    static void
+    DPEX_LAPACK_eigh(arystruct_t *as_a, arystruct_t *as_v, arystruct_t *as_w);
 }
 
 template <typename T>
@@ -46,7 +46,21 @@ std::ostream &operator<<(std::ostream &os, std::vector<T> &v)
 }
 
 template <typename T>
-std::string format(std::vector<T> &a, int m, int n, int lda)
+std::string fmtcgvec(std::vector<T> &a, int m, int n, int lda)
+{
+    std::stringstream ss;
+    ss << std::fixed << std::setprecision(2);
+
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++)
+            ss << " " << std::setw(6) << a[i * lda + j];
+        if (i < m - 1)
+            ss << '\n';
+    }
+    return ss.str();
+}
+
+template <typename T> std::string fmtcgarr(T *a, int m, int n, int lda)
 {
     std::stringstream ss;
     ss << std::fixed << std::setprecision(2);
@@ -82,20 +96,14 @@ void list_default_device()
 }
 
 template <typename T>
-std::pair<std::vector<T>, std::vector<T>>
-syevd(std::vector<T> &a,
-      const std::int64_t LDA,
-      const std::int64_t N,
-      const onemkl::job jobz = onemkl::job::V,
-      const onemkl::uplo upper_lower = onemkl::uplo::U)
+void syevd(T *a,
+           T *w,
+           const std::int64_t LDA,
+           const std::int64_t N,
+           sycl::queue &queue,
+           const onemkl::job jobz = onemkl::job::V,
+           const onemkl::uplo upper_lower = onemkl::uplo::U)
 {
-    sycl::queue queue(sycl::default_selector_v);
-
-    T *a_ = sycl::malloc_device<T>(LDA * N, queue);
-    T *w_ = sycl::malloc_device<T>(N, queue);
-
-    queue.copy(a.data(), a_, LDA * N).wait();
-
     const std::int64_t lda = std::max<size_t>(1UL, LDA);
     const std::int64_t scratchpad_size =
         onemkl::lapack::syevd_scratchpad_size<T>(queue, jobz, upper_lower, N,
@@ -115,11 +123,11 @@ syevd(std::vector<T> &a,
                          // triangular part of A, or the lower triangular
                          // otherwise
             N,           // The order of the matrix A (0 <= n)
-            a_,  // Pointer to A, size (lda, *), where the 2nd dimension,
+            a,   // Pointer to A, size (lda, *), where the 2nd dimension,
                  // must be at least max(1, n) If 'jobz == job::vec', then
                  // on exit it will contain the eigenvectors of A
             lda, // The leading dimension of a, must be at least max(1, n)
-            w_,  // Pointer to array of size at least n, it will contain
+            w,   // Pointer to array of size at least n, it will contain
                  // the eigenvalues of A in ascending order
             scratchpad, // Pointer to scratchpad memory to be used by MKL
                         // routine for storing intermediate results
@@ -142,53 +150,43 @@ syevd(std::vector<T> &a,
         throw std::runtime_error(error_msg.str());
     }
     syevd_event.wait();
-
-    T a_temp[LDA * N];
-    T w_temp[N];
-
-    queue.copy(a_, a_temp, LDA * N).wait();
-    queue.copy(w_, w_temp, N).wait();
-
-    sycl::free(a_, queue);
-    sycl::free(w_, queue);
-
-    std::vector<T> _a(a_temp, a_temp + (LDA * N));
-    std::vector<T> w(w_temp, w_temp + N);
-
-    return std::pair<std::vector<T>, std::vector<T>>(_a, w);
+    queue.wait();
 }
 
-static void DPEX_LAPACK_eigh(arystruct_t *arystruct)
-// static void DPEX_LAPACK_eigh()
+static void
+DPEX_LAPACK_eigh(arystruct_t *as_a, arystruct_t *as_v, arystruct_t *as_w)
 {
-    std::cout << "arystruct->nitems = " << (int)(arystruct->nitems)
-              << std::endl;
-    std::cout << "arystruct->itemsize = " << (int)(arystruct->itemsize)
-              << std::endl;
-
-    // double *data = (double *)(arystruct->data);
-    // std::cout << "arystruct->data[0] = " << data[0] << std::endl;
-
     list_platforms();
     list_default_device();
+
+    sycl::queue queue(sycl::default_selector_v);
 
     const std::int64_t LDA = 5;
     const std::int64_t N = LDA;
 
-    std::vector<double> a = {6.39, 0.00,  0.00,  0.00,  0.00,  0.13,  8.37,
-                             0.00, 0.00,  0.00,  -8.23, -4.46, -9.58, 0.00,
-                             0.00, 5.71,  -6.10, -9.25, 3.72,  0.00,  -3.18,
-                             7.21, -7.42, 8.54,  2.51};
+    double *a_ = (double *)(as_a->data);
+    double *w_ = (double *)(as_w->data);
+    double *v_ = (double *)(as_v->data);
 
-    std::cout << "a:\n" << format(a, N, N, LDA) << std::endl << std::endl;
+    // double *a_ = (double *)sycl::malloc_device(LDA * N, queue);
+    // double *w_ = (double *)sycl::malloc_device(N, queue);
+    // double *v_ = (double*)sycl::malloc_device(LDA * N, queue);
 
-    std::pair<std::vector<double>, std::vector<double>> res =
-        syevd<double>(a, LDA, N);
-    std::vector<double> v = res.first;
-    std::vector<double> w = res.second;
+    // queue.memcpy(a_, (double *)(as_a->data), sizeof(double) * LDA *
+    // N).wait(); queue.memcpy(w_, (double *)(as_w->data), sizeof(double) *
+    // N).wait(); queue.memcpy(v_, (double*)(as_v->data), sizeof(double) * LDA *
+    // N).wait();
 
-    std::cout << "v:\n" << format(v, N, N, LDA) << std::endl << std::endl;
-    std::cout << "w:\n" << format(w, 1, N, 1) << std::endl;
+    syevd<double>(a_, w_, LDA, N, queue);
+
+    queue.copy(a_, v_, LDA * N).wait();
+    // queue.memcpy((double *)(as_v->data), a_, sizeof(double) * LDA *
+    // N).wait(); queue.memcpy((double *)(as_w->data), w_, sizeof(double) *
+    // N).wait();
+
+    // sycl::free(a_, queue);
+    // sycl::free(w_, queue);
+    // sycl::free(v_, queue);
 
     return;
 }

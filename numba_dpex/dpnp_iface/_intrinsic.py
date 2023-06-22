@@ -363,10 +363,6 @@ def alloc_empty_arrayobj(context, builder, sig, queue_ref, args, is_like=False):
         if is_like
         else _parse_empty_args(context, builder, sig, args)
     )
-    print("arrtype =", arrtype)
-    print("type(arrtype) =", type(arrtype))
-    print("shape =", shape)
-    print("type(shape) =", type(shape))
     ary = _empty_nd_impl(context, builder, arrtype, shape, queue_ref)
 
     return ary
@@ -1050,16 +1046,7 @@ def impl_dpnp_full_like(
             numba function signature type and a function object.
     """
 
-    print("ty_retty_ref =", ty_retty_ref)
-    print("type(ty_retty_ref) =", type(ty_retty_ref))
-    print("ty_retty_ref.instance_type =", ty_retty_ref.instance_type)
-    print(
-        "type(ty_retty_ref.instance_type) =", type(ty_retty_ref.instance_type)
-    )
-
     ty_retty = ty_retty_ref.instance_type
-    print("ty_retty =", ty_retty)
-    print("type(ty_retty) =", type(ty_retty))
     signature = ty_retty(
         ty_x1,
         ty_fill_value,
@@ -1101,11 +1088,6 @@ def impl_dpnp_full_like(
         )
         if qref_payload.py_dpctl_sycl_queue_addr:
             qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
-
-        print("ary =", ary)
-        print("type(ary) =", type(ary))
-        print("ary._getvalue() =", ary._getvalue())
-        print("type(ary._getvalue()) =", type(ary._getvalue()))
 
         return ary._getvalue()
 
