@@ -454,9 +454,7 @@ class KernelLaunchOps:
             self.builder.bitcast(global_range, intp_ptr_t),
             self.context.get_constant(types.uintp, num_dim),
             self.builder.bitcast(
-                utils.create_null_ptr(
-                    builder=self.builder, context=self.context
-                ),
+                utils.get_nullptr(builder=self.builder, context=self.context),
                 utils.get_llvm_type(context=self.context, type=types.voidptr),
             ),
             self.context.get_constant(types.uintp, 0),

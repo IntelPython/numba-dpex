@@ -164,8 +164,8 @@ static void DPEX_ONEMKL_LAPACK_syevd(arystruct_t *as_a,
                                      std::int64_t n,
                                      std::int64_t uplo)
 {
-    list_platforms();
-    list_default_device();
+    // list_platforms();
+    // list_default_device();
 
     sycl::queue queue(sycl::default_selector_v);
 

@@ -198,7 +198,7 @@ def _empty_nd_impl(context, builder, arrtype, shapes, queue_ref):
     itemsize = context.get_constant(types.intp, get_itemsize(context, arrtype))
 
     # compute array length
-    arrlen = context.get_constant(types.intp, 1)
+    arrlen = utils.get_one(context)
     overflow = Constant(llvmir.IntType(1), 0)
     for s in shapes:
         arrlen_mult = builder.smul_with_overflow(arrlen, s)
@@ -557,7 +557,7 @@ def impl_dpnp_zeros(
         ary = alloc_empty_arrayobj(
             context, builder, sig, qref_payload.queue_ref, args
         )
-        fill_value = context.get_constant(types.intp, 0)
+        fill_value = utils.get_zero(context)
         ary, _ = fill_arrayobj(
             context,
             builder,
@@ -637,7 +637,7 @@ def impl_dpnp_ones(
         ary = alloc_empty_arrayobj(
             context, builder, sig, qref_payload.queue_ref, args
         )
-        fill_value = context.get_constant(types.intp, 1)
+        fill_value = utils.get_one(context)
         ary, _ = fill_arrayobj(
             context,
             builder,
@@ -895,7 +895,7 @@ def impl_dpnp_zeros_like(
         ary = alloc_empty_arrayobj(
             context, builder, sig, qref_payload.queue_ref, args, is_like=True
         )
-        fill_value = context.get_constant(types.intp, 0)
+        fill_value = utils.get_zero(context)
         ary, _ = fill_arrayobj(
             context,
             builder,
@@ -984,7 +984,7 @@ def impl_dpnp_ones_like(
         ary = alloc_empty_arrayobj(
             context, builder, sig, qref_payload.queue_ref, args, is_like=True
         )
-        fill_value = context.get_constant(types.intp, 1)
+        fill_value = utils.get_one(context)
         ary, _ = fill_arrayobj(
             context,
             builder,

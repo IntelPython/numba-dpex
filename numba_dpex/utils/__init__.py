@@ -15,9 +15,9 @@ from numba_dpex.utils.array_utils import (
 from numba_dpex.utils.constants import address_space, calling_conv
 from numba_dpex.utils.llvm_codegen_helpers import (
     LLVMTypes,
-    create_null_ptr,
     get_llvm_ptr_type,
     get_llvm_type,
+    get_nullptr,
     get_one,
     get_zero,
 )
@@ -26,7 +26,7 @@ __all__ = [
     "LLVMTypes",
     "get_llvm_type",
     "get_llvm_ptr_type",
-    "create_null_ptr",
+    "get_nullptr",
     "get_zero",
     "get_one",
     "address_space",

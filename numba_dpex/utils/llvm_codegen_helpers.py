@@ -48,7 +48,7 @@ def get_llvm_ptr_type(type):
     return type.as_pointer()
 
 
-def create_null_ptr(builder, context):
+def get_nullptr(builder, context):
     """
     Allocates a new LLVM Value storing a ``void*`` and returns the Value to
     caller.
@@ -60,7 +60,7 @@ def create_null_ptr(builder, context):
     Returns: An LLVM value storing a null pointer
 
     """
-    null_ptr = cgutils.alloca_once(
+    nullptr = cgutils.alloca_once(
         builder=builder,
         ty=context.get_value_type(types.voidptr),
         size=context.get_constant(types.uintp, 1),
@@ -70,9 +70,9 @@ def create_null_ptr(builder, context):
             context.get_constant(types.uintp, 0),
             get_llvm_type(context=context, type=types.voidptr),
         ),
-        null_ptr,
+        nullptr,
     )
-    return null_ptr
+    return nullptr
 
 
 def get_zero(context):

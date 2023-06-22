@@ -58,7 +58,6 @@ def impl_dpnp_linalg_eigh(
     signature = ty_retty_(
         ty_a, ty_v, ty_w, ty_lda, ty_n, ty_uplo, ty_sycl_queue
     )
-    breakpoint()
 
     def codegen(context, builder, sig, args):
         mod = builder.module
