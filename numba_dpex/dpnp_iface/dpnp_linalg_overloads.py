@@ -52,10 +52,12 @@ def _parse_lapack_func(a):
 
 @intrinsic
 def impl_dpnp_lapack_eigh(
-    ty_context, ty_a, ty_v, ty_w, ty_jz, ty_uplo, ty_sycl_queue
+    ty_context, ty_a, ty_v, ty_w, ty_lda, ty_n, ty_uplo, ty_sycl_queue
 ):
     ty_retty_ = types.none
-    signature = ty_retty_(ty_a, ty_v, ty_w, ty_jz, ty_uplo, ty_sycl_queue)
+    signature = ty_retty_(
+        ty_a, ty_v, ty_w, ty_lda, ty_n, ty_uplo, ty_sycl_queue
+    )
 
     def codegen(context, builder, sig, args):
         mod = builder.module
@@ -63,6 +65,13 @@ def impl_dpnp_lapack_eigh(
         qref_payload: _QueueRefPayload = _get_queue_ref(  # noqa: F841
             context, builder, args[-1], sig.args[-1], sig.args[-1].instance_type
         )
+
+        lda = context.get_argument_value(builder, sig.args[3], args[3])
+        n = context.get_argument_value(builder, sig.args[4], args[4])
+        uplo = context.get_argument_value(builder, sig.args[5], args[5])
+        _lda = builder.bitcast(lda, llvmir.IntType(64))
+        _n = builder.bitcast(n, llvmir.IntType(64))
+        _uplo = builder.bitcast(uplo, llvmir.IntType(64))
 
         with builder.goto_entry_block():
             a_ptr = cgutils.alloca_once(builder, args[0].type)
@@ -77,12 +86,22 @@ def impl_dpnp_lapack_eigh(
         _v_ptr = builder.bitcast(v_ptr, cgutils.voidptr_t)
         _w_ptr = builder.bitcast(w_ptr, cgutils.voidptr_t)
 
+        u64 = llvmir.IntType(64)
         fnty = llvmir.FunctionType(
             utils.LLVMTypes.void_t,
-            [cgutils.voidptr_t, cgutils.voidptr_t, cgutils.voidptr_t],
+            [
+                cgutils.voidptr_t,
+                cgutils.voidptr_t,
+                cgutils.voidptr_t,
+                u64,
+                u64,
+                u64,
+            ],
         )
         fn = cgutils.get_or_insert_function(mod, fnty, "DPEX_LAPACK_eigh")
-        builder.call(fn, [_a_ptr, _v_ptr, _w_ptr])  # noqa: F841
+        builder.call(
+            fn, [_a_ptr, _v_ptr, _w_ptr, _lda, _n, _uplo]
+        )  # noqa: F841
 
         if qref_payload.py_dpctl_sycl_queue_addr:
             qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
@@ -111,7 +130,7 @@ def impl_dpnp_lapack_eigh(
 
 @overload(dpnp.linalg.eigh, prefer_literal=True)
 def ol_dpnp_linalg_eigh(a, UPLO="L"):
-    _jobz = {"N": 0, "V": 1}
+    # _jobz = {"N": 0, "V": 1}
     _upper_lower = {"U": 0, "L": 1}
 
     # _ndim = a.ndim
@@ -124,7 +143,7 @@ def ol_dpnp_linalg_eigh(a, UPLO="L"):
 
     # 'V' means both eigenvectors and eigenvalues will be calculated
     # jobz = _jobz["V"]  # noqa: F841
-    _jz = _jobz["V"]  # noqa: F841
+    # _jz = _jobz["V"]  # noqa: F841
     _uplo = _upper_lower[UPLO]  # noqa: F841
 
     # get resulting type of arrays with eigenvalues and eigenvectors
@@ -193,7 +212,11 @@ def ol_dpnp_linalg_eigh(a, UPLO="L"):
 
         # return (w, out_v)
 
-        _v_shape, _w_shape = a.shape, (1, a.shape[1])
+        lda, n = a.shape
+        if lda != n:
+            raise ValueError("Last 2 dimensions of the array must be square.")
+
+        _v_shape, _w_shape = (lda, n), (1, n)
         v = dpnp.empty(
             _v_shape, dtype=_v_type, order=_order, usm_type=_usm_type
         )
@@ -201,60 +224,7 @@ def ol_dpnp_linalg_eigh(a, UPLO="L"):
             _w_shape, dtype=_w_type, order=_order, usm_type=_usm_type
         )
 
-        impl_dpnp_lapack_eigh(a, v, w, _jz, _uplo, _sycl_queue)
+        impl_dpnp_lapack_eigh(a, v, w, lda, n, _uplo, _sycl_queue)
         return (w, v.T)
 
     return impl
-
-
-# from numba.np import numpy_support as np_support
-
-# @overload(dpnp.linalg.eigh)
-# def eigh_impl(a):
-#     # ensure_lapack()
-
-#     # _check_linalg_matrix(a, "eigh")
-
-#     # convert typing floats to numpy floats for use in the impl
-#     w_type = getattr(a.dtype, "underlying_float", a.dtype)
-#     w_dtype = np_support.as_dtype(w_type)
-
-#     # numba_ez_xxxevd = _LAPACK().numba_ez_xxxevd(a.dtype)
-
-#     # kind = ord(get_blas_kind(a.dtype, "eigh"))
-
-#     JOBZ = ord('V')
-#     UPLO = ord('L')
-
-#     def eigh_impl(a):
-#         n = a.shape[-1]
-
-#         # if a.shape[-2] != n:
-#         #     msg = "Last 2 dimensions of the array must be square."
-#         #     raise np.linalg.LinAlgError(msg)
-
-#         # _check_finite_matrix(a)
-
-#         acpy = a # _copy_to_fortran_order(a) # write an intrinsic
-
-#         w = dpnp.ones((3,3), dtype=w_dtype)
-#         insert_lapack_eigh(w)
-
-#         # if n == 0:
-#         #     return (w, acpy)
-
-#         # r = numba_ez_xxxevd(kind,  # kind
-#         #                     JOBZ,  # jobz
-#         #                     UPLO,  # uplo
-#         #                     n,  # n
-#         #                     acpy.ctypes,  # a
-#         #                     n,  # lda
-#         #                     w.ctypes  # w
-#         #                     )
-#         # _handle_err_maybe_convergence_problem(r)
-
-#         # help liveness analysis
-#         # _dummy_liveness_func([acpy.size, w.size])
-#         return (w, acpy)
-
-#     return eigh_impl

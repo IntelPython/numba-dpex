@@ -30,8 +30,12 @@ namespace onemkl = oneapi::mkl;
 
 extern "C"
 {
-    static void
-    DPEX_LAPACK_eigh(arystruct_t *as_a, arystruct_t *as_v, arystruct_t *as_w);
+    static void DPEX_LAPACK_eigh(arystruct_t *as_a,
+                                 arystruct_t *as_v,
+                                 arystruct_t *as_w,
+                                 std::int64_t lda,
+                                 std::int64_t n,
+                                 std::int64_t uplo);
 }
 
 template <typename T>
@@ -96,14 +100,14 @@ void list_default_device()
 }
 
 template <typename T>
-void syevd(T *a,
+void syevd(sycl::queue queue,
+           T *a,
            T *w,
            const std::int64_t LDA,
            const std::int64_t N,
-           sycl::queue &queue,
-           const onemkl::job jobz = onemkl::job::V,
            const onemkl::uplo upper_lower = onemkl::uplo::U)
 {
+    const onemkl::job jobz = onemkl::job::V;
     const std::int64_t lda = std::max<size_t>(1UL, LDA);
     const std::int64_t scratchpad_size =
         onemkl::lapack::syevd_scratchpad_size<T>(queue, jobz, upper_lower, N,
@@ -153,16 +157,22 @@ void syevd(T *a,
     queue.wait();
 }
 
-static void
-DPEX_LAPACK_eigh(arystruct_t *as_a, arystruct_t *as_v, arystruct_t *as_w)
+static void DPEX_LAPACK_eigh(arystruct_t *as_a,
+                             arystruct_t *as_v,
+                             arystruct_t *as_w,
+                             std::int64_t lda,
+                             std::int64_t n,
+                             std::int64_t uplo)
 {
     list_platforms();
     list_default_device();
 
     sycl::queue queue(sycl::default_selector_v);
 
-    const std::int64_t LDA = 5;
-    const std::int64_t N = LDA;
+    const std::int64_t LDA = lda;
+    const std::int64_t N = n;
+    const onemkl::uplo upper_lower =
+        (uplo == 1) ? onemkl::uplo::U : onemkl::uplo::L;
 
     double *a_ = (double *)(as_a->data);
     double *w_ = (double *)(as_w->data);
@@ -177,7 +187,7 @@ DPEX_LAPACK_eigh(arystruct_t *as_a, arystruct_t *as_v, arystruct_t *as_w)
     // N).wait(); queue.memcpy(v_, (double*)(as_v->data), sizeof(double) * LDA *
     // N).wait();
 
-    syevd<double>(a_, w_, LDA, N, queue);
+    syevd<double>(queue, a_, w_, LDA, N, upper_lower);
 
     queue.copy(a_, v_, LDA * N).wait();
     // queue.memcpy((double *)(as_v->data), a_, sizeof(double) * LDA *
