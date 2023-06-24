@@ -9,7 +9,7 @@ import numpy as np
 from llvmlite import ir as llvmir
 from numba import types
 from numba.core import cgutils
-from numba.core.types.scalars import Complex, Float
+from numba.core.types.scalars import Complex, Float, Integer
 from numba.extending import intrinsic, overload
 
 import numba_dpex.onemkl
@@ -25,15 +25,17 @@ _QueueRefPayload = namedtuple(
 def _parse_dtypes(a):
     if isinstance(a.dtype, Complex):
         v_type = a.dtype
-        w_type = (
-            dpnp.float64
-        )  # if isinstance(a.dtype, Complex) else dpnp.float32
+        w_type = dpnp.float64 if a.dtype.bitwidth == 128 else dpnp.float32
     elif isinstance(a.dtype, Float):
         v_type = w_type = a.dtype
+    elif isinstance(a.dtype, Integer):
+        v_type = w_type = (
+            dpnp.float32 if a.dtype.bitwidth == 32 else dpnp.float64
+        )
     # elif a.queue.sycl_device.has_aspect_fp64:
     #     v_type = w_type = dpnp.float64
     else:
-        v_type = w_type = dpnp.float32
+        v_type = w_type = dpnp.float64
     return (v_type, w_type)
 
 
@@ -44,7 +46,6 @@ def impl_dpnp_linalg_eigh(
     lapack_func_name = "DPEX_ONEMKL_LAPACK_syevd"
     if isinstance(ty_a.dtype, Complex):
         lapack_func_name = "DPEX_ONEMKL_LAPACK_heevd"
-        raise ValueError("Complex matrix is not supported yet.")
 
     ty_retty_ = types.none
     signature = ty_retty_(
@@ -108,10 +109,24 @@ def impl_dpnp_linalg_eigh(
 
 @overload(dpnp.linalg.eigh, prefer_literal=True)
 def ol_dpnp_linalg_eigh(a, UPLO="L"):
-    if isinstance(a.dtype, Complex):
+    _a_dtype = a.dtype
+
+    # if isinstance(_a_dtype, Complex):
+    #     raise ValueError(
+    #         "dpnp.linalg.eigh() overload doesn't "
+    #         + "support complex values yet."
+    #     )
+
+    if isinstance(_a_dtype, Integer):
         raise ValueError(
             "dpnp.linalg.eigh() overload doesn't "
-            + "support complex values yet."
+            + "support integer values yet."
+        )
+
+    if _a_dtype.bitwidth < 32:
+        raise ValueError(
+            "Less than 32 bit array type is "
+            + "unsupported in dpnp.linalg.eigh()."
         )
 
     _upper_lower = {"U": 1, "L": -1}
@@ -157,7 +172,9 @@ def ol_dpnp_linalg_eigh(a, UPLO="L"):
             v = dpnp.empty(
                 (lda, n), dtype=_v_dtype, order="F", usm_type=_usm_type
             )
-            w = dpnp.empty((1, n), dtype=_w_dtype, usm_type=_usm_type)
+            w = dpnp.empty(
+                (1, n), dtype=_w_dtype, order="F", usm_type=_usm_type
+            )
 
             impl_dpnp_linalg_eigh(_a, v, w, lda, n, _uplo, _sycl_queue)
 
