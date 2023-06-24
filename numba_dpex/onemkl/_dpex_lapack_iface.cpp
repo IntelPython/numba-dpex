@@ -21,6 +21,7 @@
 #include "numba/_pymodule.h"
 #include "numba/core/runtime/nrt.h"
 
+#include "../core/runtime/_queuestruct.h"
 #include "dpctl_capi.h"
 #include "dpctl_sycl_interface.h"
 
@@ -30,12 +31,13 @@ namespace onemkl = oneapi::mkl;
 
 extern "C"
 {
-    static void DPEX_ONEMKL_LAPACK_syevd(arystruct_t *as_a,
+    static void DPEX_ONEMKL_LAPACK_syevd(const arystruct_t *as_a,
                                          arystruct_t *as_v,
                                          arystruct_t *as_w,
-                                         std::int64_t lda,
-                                         std::int64_t n,
-                                         std::int64_t uplo);
+                                         const std::int64_t lda,
+                                         const std::int64_t n,
+                                         const std::int64_t uplo,
+                                         const DPCTLSyclQueueRef queue_ref);
 }
 
 template <typename T>
@@ -50,28 +52,35 @@ std::ostream &operator<<(std::ostream &os, std::vector<T> &v)
 }
 
 template <typename T>
-std::string fmtcgvec(std::vector<T> &a, int m, int n, int lda)
+std::string fmtcgvec(std::vector<T> &a,
+                     std::int64_t m,
+                     std::int64_t n,
+                     bool transpose = true)
 {
     std::stringstream ss;
     ss << std::fixed << std::setprecision(2);
 
-    for (int i = 0; i < m; i++) {
-        for (int j = 0; j < n; j++)
-            ss << " " << std::setw(6) << a[i * lda + j];
+    for (auto i = 0; i < m; i++) {
+        for (auto j = 0; j < n; j++)
+            ss << " " << std::setw(6)
+               << (transpose ? a[i + j * n] : a[i * m + j]);
         if (i < m - 1)
             ss << '\n';
     }
     return ss.str();
 }
 
-template <typename T> std::string fmtcgarr(T *a, int m, int n, int lda)
+template <typename T>
+std::string
+fmtcgarr(T *a, std::int64_t m, std::int64_t n, bool transpose = true)
 {
     std::stringstream ss;
     ss << std::fixed << std::setprecision(2);
 
-    for (int i = 0; i < m; i++) {
-        for (int j = 0; j < n; j++)
-            ss << " " << std::setw(6) << a[i * lda + j];
+    for (auto i = 0; i < m; i++) {
+        for (auto j = 0; j < n; j++)
+            ss << " " << std::setw(6)
+               << (transpose ? a[i + j * n] : a[i * m + j]);
         if (i < m - 1)
             ss << '\n';
     }
@@ -100,17 +109,20 @@ void list_default_device()
 }
 
 template <typename T>
-void _syevd(sycl::queue queue,
-            T *a,
+void _syevd(T *a,
             T *w,
             const std::int64_t LDA,
             const std::int64_t N,
-            const onemkl::uplo upper_lower = onemkl::uplo::U)
+            const onemkl::uplo upper_lower = onemkl::uplo::L,
+            sycl::queue *queue = nullptr)
 {
+    if (queue == nullptr)
+        throw std::runtime_error("Parameter \'queue\' can't be nullptr.");
+
     const onemkl::job jobz = onemkl::job::V;
     const std::int64_t lda = std::max<size_t>(1UL, LDA);
     const std::int64_t scratchpad_size =
-        onemkl::lapack::syevd_scratchpad_size<T>(queue, jobz, upper_lower, N,
+        onemkl::lapack::syevd_scratchpad_size<T>(*queue, jobz, upper_lower, N,
                                                  lda);
     T *scratchpad = nullptr;
     std::stringstream error_msg;
@@ -118,12 +130,12 @@ void _syevd(sycl::queue queue,
     sycl::event syevd_event;
 
     try {
-        scratchpad = sycl::malloc_device<T>(scratchpad_size, queue);
+        scratchpad = sycl::malloc_device<T>(scratchpad_size, *queue);
         syevd_event = onemkl::lapack::syevd(
-            queue,
+            *queue,
             jobz, // 'jobz == job::vec' means eigenvalues and eigenvectors are
                   // computed.
-            upper_lower, // 'upper_lower == job::upper' means the upper
+            upper_lower, // 'upper_lower == uplo::upper' means the upper
                          // triangular part of A, or the lower triangular
                          // otherwise
             N,           // The order of the matrix A (0 <= n)
@@ -150,53 +162,54 @@ void _syevd(sycl::queue queue,
     if (info != 0) // an unexected error occurs
     {
         if (scratchpad != nullptr)
-            sycl::free(scratchpad, queue);
+            sycl::free(scratchpad, *queue);
         throw std::runtime_error(error_msg.str());
     }
     syevd_event.wait();
-    queue.wait();
+    queue->wait();
 }
 
-static void DPEX_ONEMKL_LAPACK_syevd(arystruct_t *as_a,
+static void DPEX_ONEMKL_LAPACK_syevd(const arystruct_t *as_a,
                                      arystruct_t *as_v,
                                      arystruct_t *as_w,
-                                     std::int64_t lda,
-                                     std::int64_t n,
-                                     std::int64_t uplo)
+                                     const std::int64_t lda,
+                                     const std::int64_t n,
+                                     const std::int64_t uplo,
+                                     const DPCTLSyclQueueRef queue_ref)
 {
-    // list_platforms();
-    // list_default_device();
-
-    sycl::queue queue(sycl::default_selector_v);
-
     const std::int64_t LDA = lda;
     const std::int64_t N = n;
     const onemkl::uplo upper_lower =
         (uplo == 1) ? onemkl::uplo::U : onemkl::uplo::L;
+    sycl::queue *queue = (sycl::queue *)(queue_ref);
+    const unsigned a_itemsize = (unsigned)as_a->itemsize;
 
-    double *a_ = (double *)(as_a->data);
-    double *w_ = (double *)(as_w->data);
-    double *v_ = (double *)(as_v->data);
+    if (a_itemsize == 8) {
+        double *a_ptr = (double *)(as_a->data);
+        double *w_ptr = (double *)(as_w->data);
+        double *v_ptr = (double *)(as_v->data);
 
-    // double *a_ = (double *)sycl::malloc_device(LDA * N, queue);
-    // double *w_ = (double *)sycl::malloc_device(N, queue);
-    // double *v_ = (double*)sycl::malloc_device(LDA * N, queue);
+        // Make a copy of 'a', since syevd() computes the eigenvectors in-place
+        double *a_ =
+            (double *)sycl::malloc_device(sizeof(double) * LDA * N, *queue);
+        queue->memcpy(a_, a_ptr, sizeof(double) * LDA * N).wait();
+        _syevd<double>(a_, w_ptr, LDA, N, upper_lower, queue);
+        queue->memcpy(v_ptr, a_, sizeof(double) * LDA * N).wait();
+        sycl::free(a_, *queue);
+    }
+    else if (a_itemsize == 4) {
+        float *a_ptr = (float *)(as_a->data);
+        float *w_ptr = (float *)(as_w->data);
+        float *v_ptr = (float *)(as_v->data);
 
-    // queue.memcpy(a_, (double *)(as_a->data), sizeof(double) * LDA *
-    // N).wait(); queue.memcpy(w_, (double *)(as_w->data), sizeof(double) *
-    // N).wait(); queue.memcpy(v_, (double*)(as_v->data), sizeof(double) * LDA *
-    // N).wait();
-
-    _syevd<double>(queue, a_, w_, LDA, N, upper_lower);
-
-    queue.copy(a_, v_, LDA * N).wait();
-    // queue.memcpy((double *)(as_v->data), a_, sizeof(double) * LDA *
-    // N).wait(); queue.memcpy((double *)(as_w->data), w_, sizeof(double) *
-    // N).wait();
-
-    // sycl::free(a_, queue);
-    // sycl::free(w_, queue);
-    // sycl::free(v_, queue);
+        // Make a copy of 'a', since syevd() computes the eigenvectors in-place
+        float *a_ =
+            (float *)sycl::malloc_device(sizeof(float) * LDA * N, *queue);
+        queue->memcpy(a_, a_ptr, sizeof(float) * LDA * N).wait();
+        _syevd<float>(a_, w_ptr, LDA, N, upper_lower, queue);
+        queue->memcpy(v_ptr, a_, sizeof(float) * LDA * N).wait();
+        sycl::free(a_, *queue);
+    }
 
     return;
 }
@@ -238,30 +251,10 @@ error:
 MOD_INIT(_dpex_lapack_iface)
 {
     PyObject *m = NULL;
-    PyObject *dpnp_array_type = NULL;
-    PyObject *dpnp_array_mod = NULL;
 
     MOD_DEF(m, "_dpex_lapack_iface", "No docs", NULL)
     if (m == NULL)
         return MOD_ERROR_VAL;
-
-    import_array();
-    import_dpctl();
-
-    dpnp_array_mod = PyImport_ImportModule("dpnp.dpnp_array");
-    if (!dpnp_array_mod) {
-        Py_DECREF(m);
-        return MOD_ERROR_VAL;
-    }
-    dpnp_array_type = PyObject_GetAttrString(dpnp_array_mod, "dpnp_array");
-    if (!PyType_Check(dpnp_array_type)) {
-        Py_DECREF(m);
-        Py_DECREF(dpnp_array_mod);
-        Py_XDECREF(dpnp_array_type);
-        return MOD_ERROR_VAL;
-    }
-    PyModule_AddObject(m, "dpnp_array_type", dpnp_array_type);
-    Py_DECREF(dpnp_array_mod);
 
     PyModule_AddObject(m, "DPEX_ONEMKL_LAPACK_syevd",
                        PyLong_FromVoidPtr((void *)(&DPEX_ONEMKL_LAPACK_syevd)));
