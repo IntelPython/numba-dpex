@@ -1,38 +1,50 @@
 # syntax=docker/dockerfile:1.3
 # NB: at least 1.3 is needed to benefit from ARG expansion in bind mount arguments
-ARG PYTHON_VERSION=3.9.16
+ARG PYTHON_VERSION=3.9.17
 
 # Driver args
-# print on gpu is broken for 22.43.24595.30 + igc-1.0.12812.26
-ARG CR_TAG=22.43.24595.30
-ARG IGC_TAG=igc-1.0.12504.5
+# print on gpu is broken for 22.43.24595.30 + igc-1.0.12812.26 refer to these
+# versions for testing (all tests pass on them):
+# ARG CR_TAG=22.43.24595.30
+# ARG IGC_TAG=igc-1.0.12504.5
+# ARG CR_TAG=latest
+# ARG IGC_TAG=latest
+ARG CR_TAG=23.13.26032.30
+ARG IGC_TAG=igc-1.0.13700.14
 ARG CM_TAG=latest
+# level-zero v1.10.0+ depends on libstdc++6 (>= 11); however bullseye is based
+# on gcc 10
+# ARG L0_TAG=v1.9.9
 ARG L0_TAG=latest
 
 # ONEAPI
-ARG ONEAPI_INSTALLER_URL=https://registrationcenter-download.intel.com/akdlm/irc_nas/19079
-ARG ONEAPI_VERSION=2023.0.0
-ARG ONEAPI_INSTALL_BINARY_NAME=l_BaseKit_p_$ONEAPI_VERSION.25537.sh
+ARG ONEAPI_INSTALLER_URL=https://registrationcenter-download.intel.com/akdlm/IRC_NAS/7deeaac4-f605-4bcf-a81b-ea7531577c61
+ARG ONEAPI_VERSION=2023.1.0.46401
+ARG ONEAPI_INSTALL_BINARY_NAME=l_BaseKit_p_$ONEAPI_VERSION.sh
 ARG ONEAPI_INSTALL_DIR=/opt/intel/oneapi
 
 # Versions of the intel python packages
-ARG DPCTL_GIT_BRANCH=0.14.2
+ARG DPCTL_GIT_BRANCH=0.14.4
 ARG DPCTL_GIT_URL=https://github.com/IntelPython/dpctl.git
 
-ARG DPNP_GIT_BRANCH=0.11.1
+ARG DPNP_GIT_BRANCH=0.12.0
 ARG DPNP_GIT_URL=https://github.com/IntelPython/dpnp.git
 
-ARG NUMBA_DPEX_GIT_BRANCH=0.20.0
+ARG DPCPP_LLVM_SPIRV_GIT_BRANCH=main
+ARG DPCPP_LLVM_SPIRV_GIT_URL=https://github.com/IntelPython/dpcpp-llvm-spirv.git
+
+ARG NUMBA_DPEX_GIT_BRANCH=0.22.0
 ARG NUMBA_DPEX_GIT_URL=https://github.com/IntelPython/numba-dpex.git
 
 # CMAKE
-ARG CMAKE_VERSION=3.25
-ARG CMAKE_VERSION_BUILD=3
+ARG CMAKE_VERSION=3.26
+ARG CMAKE_VERSION_BUILD=4
 
 # Python
-ARG INTEL_NUMPY_VERSION="==1.22.3"
-ARG INTEL_NUMBA_VERSION="==0.56.4"
-ARG SCIKIT_BUILD_VERSION="==0.16.7"
+ARG INTEL_NUMPY_VERSION="==1.24.3"
+ARG INTEL_NUMBA_VERSION="==0.57.0"
+ARG CYTHON_VERSION="==0.29.35"
+ARG SCIKIT_BUILD_VERSION="==0.17.6"
 
 # If you are have access to the internet via proxy.
 # It is required for loading packages.
@@ -45,11 +57,12 @@ ARG GITHUB_USER=''
 ARG GITHUB_PASSWORD=''
 
 # Image names used in multistage build
-ARG BASE_IMAGE=python:$PYTHON_VERSION-slim-bullseye
+ARG BASE_IMAGE=python:$PYTHON_VERSION-slim-bookworm
 ARG RUNTIME_BASE_IMAGE=runtime-base
 ARG BUILDER_IMAGE=builder
 ARG DPCTL_BUILDER_IMAGE=dpctl-builder
 ARG DPNP_BUILDER_IMAGE=dpnp-builder
+ARG DPCPP_LLVM_SPIRV_BUILDER_IMAGE=dpcpp-llvm-spirv-builder
 ARG NUMBA_DPEX_BUILDER_IMAGE=numba-dpex-builder
 ARG TOOLKIT_IMAGE=toolkit
 ARG NUMBA_DPEX_BUILDER_RUNTIME_IMAGE=numba-dpex-builder-runtime
@@ -283,37 +296,33 @@ RUN \
     && pip install -U \
     numba${INTEL_NUMBA_VERSION} \
     numpy${INTEL_NUMPY_VERSION} \
+    cython${CYTHON_VERSION} \
     scikit-build${SCIKIT_BUILD_VERSION}
 
 
 FROM $BUILDER_IMAGE AS dpctl-builder
-ARG ONEAPI_INSTALL_DIR
 ARG DPCTL_GIT_BRANCH
 ARG DPCTL_GIT_URL
 ARG DPCTL_BUILD_DIR=/build
 ARG DPCTL_DIST_DIR=/dist
 ARG SKBUILD_ARGS="-- -DCMAKE_C_COMPILER:PATH=icx -DCMAKE_CXX_COMPILER:PATH=icpx"
-ARG SKBUILD_CACHE=/root/.cache/_skbuild/
 ARG http_proxy
 ARG https_proxy
 
 RUN \
-    export http_proxy=$http_proxy https_proxy=$https_proxy \
-    && mkdir -p $DPCTL_BUILD_DIR \
-    && mkdir $DPCTL_DIST_DIR \
-    && cd $DPCTL_BUILD_DIR \
-    && cd $DPCTL_BUILD_DIR \
-    && git clone --recursive -b $DPCTL_GIT_BRANCH --depth 1 $DPCTL_GIT_URL . \
-    && find $DPCTL_BUILD_DIR -type f -exec sed -i 's/inserter/_inserter/g' {} + `TODO: remove once fixed` \
-    && python setup.py bdist_wheel ${SKBUILD_ARGS} \
-    && cp dist/dpctl*.whl $DPCTL_DIST_DIR
+  export http_proxy=$http_proxy https_proxy=$https_proxy \
+  && mkdir -p $DPCTL_BUILD_DIR \
+  && mkdir $DPCTL_DIST_DIR \
+  && cd $DPCTL_BUILD_DIR \
+  && git clone --recursive -b $DPCTL_GIT_BRANCH --depth 1 $DPCTL_GIT_URL . \
+  && python setup.py bdist_wheel ${SKBUILD_ARGS} \
+  && cp dist/dpctl*.whl $DPCTL_DIST_DIR
 
 
 FROM $DPCTL_BUILDER_IMAGE AS dpctl-builder-dist
 
 
 FROM $BUILDER_IMAGE AS dpnp-builder
-ARG ONEAPI_INSTALL_DIR
 ARG DPNP_BUILD_DIR=/build
 ARG DPNP_DIST_DIR=/dist
 ARG DPNP_GIT_BRANCH
@@ -331,15 +340,40 @@ RUN \
     && mkdir -p $DPNP_DIST_DIR \
     && cd $DPNP_BUILD_DIR \
     && git clone --recursive -b $DPNP_GIT_BRANCH --depth 1 $DPNP_GIT_URL . \
-    && export DPLROOT=$ONEAPI_ROOT/dpl/latest \
-    && python setup.py build_clib \
-    && export CC=dpcpp \
-    && python setup.py build_ext \
-    && python setup.py bdist_wheel \
+    && export DPCTL_MODULE_PATH=$(python -m dpctl --cmakedir) \
+    && export CMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH:$DPCTL_MODULE_PATH \
+    # && python setup.py build_clib ${SKBUILD_ARGS} \
+    # # && python setup.py build_ext ${SKBUILD_ARGS} \
+    && python setup.py bdist_wheel ${SKBUILD_ARGS} \
     && cp dist/dpnp*.whl $DPNP_DIST_DIR
 
 
 FROM $DPNP_BUILDER_IMAGE AS dpnp-builder-dist
+
+
+FROM $BUILDER_IMAGE AS dpcpp-llvm-spirv-builder
+
+ARG ONEAPI_INSTALL_DIR
+ARG DPCPP_LLVM_SPIRV_GIT_BRANCH
+ARG DPCPP_LLVM_SPIRV_GIT_URL
+ARG DPCPP_LLVM_SPIRV_BUILD_DIR=/build
+ARG DPCPP_LLVM_SPIRV_DIST_DIR=/dist
+ARG http_proxy
+ARG https_proxy
+
+RUN \
+  export http_proxy=$http_proxy https_proxy=$https_proxy \
+  && mkdir -p $DPCPP_LLVM_SPIRV_BUILD_DIR \
+  && mkdir $DPCPP_LLVM_SPIRV_DIST_DIR \
+  && cd $DPCPP_LLVM_SPIRV_BUILD_DIR \
+  && cd $DPCPP_LLVM_SPIRV_BUILD_DIR \
+  && git clone --recursive -b $DPCPP_LLVM_SPIRV_GIT_BRANCH --depth 1 $DPCPP_LLVM_SPIRV_GIT_URL . \
+  && cd pkg \
+  && python setup.py bdist_wheel \
+  && cp dist/dpcpp_llvm_spirv*.whl $DPCPP_LLVM_SPIRV_DIST_DIR
+
+
+FROM $DPCPP_LLVM_SPIRV_BUILDER_IMAGE AS dpcpp-llvm-spirv-dist
 
 
 FROM $BUILDER_IMAGE AS numba-dpex-builder-runtime
@@ -354,17 +388,19 @@ ARG http_proxy
 ARG https_proxy
 
 RUN \
-    --mount=type=bind,target=/mnt/dpctl,source=/dist,from=dpctl-builder-dist \
-    --mount=type=bind,target=/mnt/dpnp,source=/dist,from=dpnp-builder-dist \
-    --mount=type=cache,target=/root/.cache/pip/ \
-    export http_proxy=$http_proxy https_proxy=$https_proxy \
-    && pip install -U \
-    /mnt/dpctl/dpctl*.whl /mnt/dpnp/dpnp*.whl \
-    && mkdir -p $NUMBA_DPEX_BUILD_DIR \
-    && mkdir $NUMBA_DPEX_DIST_DIR \
-    && cd $NUMBA_DPEX_BUILD_DIR \
-    && git clone --recursive -b $NUMBA_DPEX_GIT_BRANCH --depth 1 $NUMBA_DPEX_GIT_URL .
-
+  --mount=type=bind,target=/mnt/dpctl,source=/dist,from=dpctl-builder-dist \
+  --mount=type=bind,target=/mnt/dpnp,source=/dist,from=dpnp-builder-dist \
+  --mount=type=bind,target=/mnt/dpcpp_llvm_spirv,source=/dist,from=dpcpp-llvm-spirv-dist \
+  --mount=type=cache,target=/root/.cache/pip/ \
+  export http_proxy=$http_proxy https_proxy=$https_proxy \
+  && pip install -U \
+  /mnt/dpctl/dpctl*.whl /mnt/dpnp/dpnp*.whl \
+  /mnt/dpcpp_llvm_spirv/dpcpp_llvm_spirv*.whl \
+  && ln -s /usr/local/bin/llvm-spirv /usr/local/lib/python*/site-packages/dpcpp_llvm_spirv/ \
+  && mkdir -p $NUMBA_DPEX_BUILD_DIR \
+  && mkdir $NUMBA_DPEX_DIST_DIR \
+  && cd $NUMBA_DPEX_BUILD_DIR \
+  && git clone --recursive -b $NUMBA_DPEX_GIT_BRANCH --depth 1 $NUMBA_DPEX_GIT_URL .
 
 FROM $NUMBA_DPEX_BUILDER_RUNTIME_IMAGE AS numba-dpex-builder
 ARG NUMBA_DPEX_DIST_DIR=/dist
@@ -407,19 +443,23 @@ COPY --from=dpnp-builder-dist /build/tests /opt/dpnp/tests
 
 # runtime python packages
 RUN \
-    --mount=type=bind,target=/mnt/dpctl,source=/dist,from=dpctl-builder-dist \
-    --mount=type=bind,target=/mnt/dpnp,source=/dist,from=dpnp-builder-dist \
-    --mount=type=bind,target=/mnt/numba_dpex,source=/dist,from=numba-dpex-builder \
-    --mount=type=cache,target=/root/.cache/pip/ \
-    export http_proxy=$http_proxy https_proxy=$https_proxy \
-    && pip install -U \
-    numpy${INTEL_NUMPY_VERSION} \
-    numba${INTEL_NUMBA_VERSION} \
-    /mnt/dpctl/dpctl*.whl \
-    /mnt/dpnp/dpnp*.whl \
-    /mnt/numba_dpex/numba_dpex*.whl \
-    && fdupes -qio name /usr/local/lib/python*/site-packages/dpctl/ | \
-    awk '{if ($0=="") ln=""; else if (ln=="") ln = $0; else system("rm " $0 ";\tln -s " ln " " $0) }'
+  --mount=type=bind,target=/mnt/dpctl,source=/dist,from=dpctl-builder-dist \
+  --mount=type=bind,target=/mnt/dpnp,source=/dist,from=dpnp-builder-dist \
+  --mount=type=bind,target=/mnt/dpcpp_llvm_spirv,source=/dist,from=dpcpp-llvm-spirv-dist \
+  --mount=type=bind,target=/mnt/numba_dpex,source=/dist,from=numba-dpex-builder \
+  --mount=type=cache,target=/root/.cache/pip/ \
+  export http_proxy=$http_proxy https_proxy=$https_proxy \
+  && pip install -U \
+  numpy${INTEL_NUMPY_VERSION} \
+  cython${CYTHON_VERSION} \
+  numba${INTEL_NUMBA_VERSION} \
+  /mnt/dpctl/dpctl*.whl \
+  /mnt/dpnp/dpnp*.whl \
+  /mnt/dpcpp_llvm_spirv/dpcpp_llvm_spirv*.whl \
+  /mnt/numba_dpex/numba_dpex*.whl \
+  && ln -s /usr/local/bin/llvm-spirv /usr/local/lib/python*/site-packages/dpcpp_llvm_spirv/ \
+  && fdupes -qio name /usr/local/lib/python*/site-packages/dpctl/ | \
+  awk '{if ($0=="") ln=""; else if (ln=="") ln = $0; else system("rm " $0 ";\tln -s " ln " " $0) }'
 
 # Create an user
 # TODO: there is no access to gpu with non root user. Same issue on intel/llvm docker.
