@@ -21,7 +21,7 @@
 
 #include "_dbg_printer.h"
 #include "_queuestruct.h"
-#include "numba/_arraystruct.h"
+#include "_usmarraystruct.h"
 
 // forward declarations
 static struct PyUSMArrayObject *PyUSMNdArray_ARRAYOBJ(PyObject *obj);
@@ -49,14 +49,14 @@ static NRT_MemInfo *DPEXRT_MemInfo_alloc(npy_intp size,
                                          size_t usm_type,
                                          const DPCTLSyclQueueRef qref);
 static void usmndarray_meminfo_dtor(void *ptr, size_t size, void *info);
-static PyObject *box_from_arystruct_parent(arystruct_t *arystruct,
+static PyObject *box_from_arystruct_parent(usmarystruct_t *arystruct,
                                            int ndim,
                                            PyArray_Descr *descr);
 
 static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
-                                               arystruct_t *arystruct);
+                                               usmarystruct_t *arystruct);
 static PyObject *
-DPEXRT_sycl_usm_ndarray_to_python_acqref(arystruct_t *arystruct,
+DPEXRT_sycl_usm_ndarray_to_python_acqref(usmarystruct_t *arystruct,
                                          PyTypeObject *retty,
                                          int ndim,
                                          int writeable,
@@ -770,7 +770,7 @@ static npy_intp product_of_shape(npy_intp *shape, npy_intp ndim)
  * @return   {return}       Error code representing success (0) or failure (-1).
  */
 static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
-                                               arystruct_t *arystruct)
+                                               usmarystruct_t *arystruct)
 {
     struct PyUSMArrayObject *arrayobj = NULL;
     int i = 0, j = 0, k = 0, ndim = 0, exp = 0;
@@ -827,6 +827,7 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
     }
 
     arystruct->data = data;
+    arystruct->sycl_queue = qref;
     arystruct->nitems = nitems;
     arystruct->itemsize = itemsize;
     arystruct->parent = obj;
@@ -892,7 +893,7 @@ error:
  * @return   {return}       A PyObject created from the arystruct_t->parent, if
  *                          the PyObject could not be created return NULL.
  */
-static PyObject *box_from_arystruct_parent(arystruct_t *arystruct,
+static PyObject *box_from_arystruct_parent(usmarystruct_t *arystruct,
                                            int ndim,
                                            PyArray_Descr *descr)
 {
@@ -914,8 +915,10 @@ static PyObject *box_from_arystruct_parent(arystruct_t *arystruct,
     }
 
     if ((void *)UsmNDArray_GetData(arrayobj) != arystruct->data) {
-        DPEXRT_DEBUG(drt_debug_print("DPEXRT-DEBUG: Arrayobj cannot be boxed "
-                                     "from parent as data pointer is NULL.\n"));
+        DPEXRT_DEBUG(drt_debug_print(
+            "DPEXRT-DEBUG: Arrayobj cannot be boxed "
+            "from parent as data pointer in the arystruct is not the same as "
+            "the data pointer in the parent object.\n"));
         return NULL;
     }
 
@@ -978,7 +981,7 @@ static PyObject *box_from_arystruct_parent(arystruct_t *arystruct,
  *
  */
 static PyObject *
-DPEXRT_sycl_usm_ndarray_to_python_acqref(arystruct_t *arystruct,
+DPEXRT_sycl_usm_ndarray_to_python_acqref(usmarystruct_t *arystruct,
                                          PyTypeObject *retty,
                                          int ndim,
                                          int writeable,
@@ -1094,8 +1097,7 @@ DPEXRT_sycl_usm_ndarray_to_python_acqref(arystruct_t *arystruct,
     typenum = descr->type_num;
     usm_ndarr_obj = UsmNDArray_MakeFromPtr(
         ndim, shape, typenum, strides, (DPCTLSyclUSMRef)arystruct->data,
-        (DPCTLSyclQueueRef)miobj->meminfo->external_allocator->opaque_data, 0,
-        (PyObject *)miobj);
+        (DPCTLSyclQueueRef)arystruct->sycl_queue, 0, (PyObject *)miobj);
 
     if (usm_ndarr_obj == NULL ||
         !PyObject_TypeCheck(usm_ndarr_obj, &PyUSMArrayType))

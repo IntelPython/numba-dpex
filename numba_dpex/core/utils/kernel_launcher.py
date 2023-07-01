@@ -64,7 +64,9 @@ class KernelLaunchIRBuilder:
 
         # FIXME: If pointer arg then load it to some value and pass that value.
         # We also most likely need an address space cast
-        if isinstance(array_attr_ty, types.misc.RawPointer):
+        if isinstance(
+            array_attr_ty, (types.misc.RawPointer, types.misc.CPointer)
+        ):
             array_attr = self.builder.load(array_attr)
 
         self.build_arg(
@@ -75,7 +77,7 @@ class KernelLaunchIRBuilder:
             arg_num=arg_num,
         )
 
-    def _build_flattened_array_args(
+    def _build_unituple_member_arg(
         self, array_val, array_attr_pos, ndims, arg_list, args_ty_list, arg_num
     ):
         array_attr = self.builder.gep(
@@ -151,7 +153,13 @@ class KernelLaunchIRBuilder:
         arg_num += 1
 
     def build_array_arg(
-        self, array_val, array_rank, arg_list, args_ty_list, arg_num
+        self,
+        array_val,
+        array_data_model,
+        array_rank,
+        arg_list,
+        args_ty_list,
+        arg_num,
     ):
         """Creates a list of LLVM Values for an unpacked DpnpNdArray kernel
         argument.
@@ -179,56 +187,68 @@ class KernelLaunchIRBuilder:
             arg_num=arg_num,
         )
         arg_num += 1
-        # Argument 3: Array size
+        # Argument nitems
         self._build_array_attr_arg(
             array_val=array_val,
-            array_attr_pos=2,
-            array_attr_ty=types.int64,
+            array_attr_pos=array_data_model.get_field_position("nitems"),
+            array_attr_ty=array_data_model.get_member_fe_type("nitems"),
             arg_list=arg_list,
             args_ty_list=args_ty_list,
             arg_num=arg_num,
         )
         arg_num += 1
-        # Argument 4: itemsize
+        # Argument itemsize
         self._build_array_attr_arg(
             array_val=array_val,
-            array_attr_pos=3,
-            array_attr_ty=types.int64,
+            array_attr_pos=array_data_model.get_field_position("itemsize"),
+            array_attr_ty=array_data_model.get_member_fe_type("itemsize"),
             arg_list=arg_list,
             args_ty_list=args_ty_list,
             arg_num=arg_num,
         )
         arg_num += 1
-        # Argument 5: data pointer
+        # Argument data
         self._build_array_attr_arg(
             array_val=array_val,
-            array_attr_pos=4,
-            array_attr_ty=types.voidptr,
+            array_attr_pos=array_data_model.get_field_position("data"),
+            array_attr_ty=array_data_model.get_member_fe_type("data"),
             arg_list=arg_list,
             args_ty_list=args_ty_list,
             arg_num=arg_num,
         )
         arg_num += 1
-        # Arguments for flattened shape
-        self._build_flattened_array_args(
+        # Argument sycl_queue
+        self._build_array_attr_arg(
             array_val=array_val,
-            array_attr_pos=5,
-            ndims=array_rank,
+            array_attr_pos=array_data_model.get_field_position("sycl_queue"),
+            array_attr_ty=array_data_model.get_member_fe_type("sycl_queue"),
             arg_list=arg_list,
             args_ty_list=args_ty_list,
             arg_num=arg_num,
         )
-        arg_num += array_rank
-        # Arguments for flattened stride
-        self._build_flattened_array_args(
+        arg_num += 1
+        # Arguments for shape
+        shape_member = array_data_model.get_member_fe_type("shape")
+        self._build_unituple_member_arg(
             array_val=array_val,
-            array_attr_pos=6,
-            ndims=array_rank,
+            array_attr_pos=array_data_model.get_field_position("shape"),
+            ndims=shape_member.count,
             arg_list=arg_list,
             args_ty_list=args_ty_list,
             arg_num=arg_num,
         )
-        arg_num += array_rank
+        arg_num += shape_member.count
+        # Arguments for strides
+        stride_member = array_data_model.get_member_fe_type("strides")
+        self._build_unituple_member_arg(
+            array_val=array_val,
+            array_attr_pos=array_data_model.get_field_position("strides"),
+            ndims=stride_member.count,
+            arg_list=arg_list,
+            args_ty_list=args_ty_list,
+            arg_num=arg_num,
+        )
+        arg_num += stride_member.count
 
     def get_queue(self, exec_queue):
         """Allocates memory on the stack to store a DPCTLSyclQueueRef.

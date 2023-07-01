@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from numba.core import datamodel, types
-from numba.core.datamodel.models import ArrayModel as DpnpNdArrayModel
 from numba.core.datamodel.models import PrimitiveModel, StructModel
 from numba.core.extending import register_model
 
+from numba_dpex.core.exceptions import UnreachableError
 from numba_dpex.utils import address_space
 
 from ..types import Array, DpctlSyclQueue, DpnpNdArray, USMNdArray
@@ -23,7 +23,7 @@ class GenericPointerModel(PrimitiveModel):
         super(GenericPointerModel, self).__init__(dmm, fe_type, be_type)
 
 
-class ArrayModel(StructModel):
+class USMArrayModel(StructModel):
     """A data model to represent a Dpex's array types in LLVM IR.
 
     Dpex's ArrayModel is based on Numba's ArrayModel for NumPy arrays. The
@@ -40,7 +40,7 @@ class ArrayModel(StructModel):
             ),
             (
                 "parent",
-                types.CPointer(fe_type.dtype, addrspace=fe_type.addrspace),
+                types.CPointer(types.pyobject, addrspace=fe_type.addrspace),
             ),
             ("nitems", types.intp),
             ("itemsize", types.intp),
@@ -48,10 +48,61 @@ class ArrayModel(StructModel):
                 "data",
                 types.CPointer(fe_type.dtype, addrspace=fe_type.addrspace),
             ),
+            ("sycl_queue", types.voidptr),
             ("shape", types.UniTuple(types.intp, ndim)),
             ("strides", types.UniTuple(types.intp, ndim)),
         ]
-        super(ArrayModel, self).__init__(dmm, fe_type, members)
+        super(USMArrayModel, self).__init__(dmm, fe_type, members)
+
+
+class DpnpNdArrayModel(StructModel):
+    """Data model for the DpnpNdArray type.
+
+    The data model for DpnpNdArray is similar to numb's ArrayModel used for
+    the numba.types.Array type, with the additional field ``sycl_queue`. The
+    `sycl_queue` attribute stores the pointer to the C++ sycl::queue object
+    that was used to allocate memory for numba-dpex's native representation
+    for an Python object inferred as a DpnpNdArray.
+    """
+
+    def __init__(self, dmm, fe_type):
+        ndim = fe_type.ndim
+        members = [
+            ("meminfo", types.MemInfoPointer(fe_type.dtype)),
+            ("parent", types.pyobject),
+            ("nitems", types.intp),
+            ("itemsize", types.intp),
+            ("data", types.CPointer(fe_type.dtype)),
+            ("sycl_queue", types.voidptr),
+            ("shape", types.UniTuple(types.intp, ndim)),
+            ("strides", types.UniTuple(types.intp, ndim)),
+        ]
+        super(DpnpNdArrayModel, self).__init__(dmm, fe_type, members)
+
+    @property
+    def flattened_field_count(self):
+        """Return the number of fields in an instance of a DpnpNdArrayModel."""
+        flattened_member_count = 0
+        members = self._members
+        for member in members:
+            if isinstance(member, types.UniTuple):
+                flattened_member_count += member.count
+            elif isinstance(
+                member,
+                (
+                    types.scalars.Integer,
+                    types.misc.PyObject,
+                    types.misc.RawPointer,
+                    types.misc.CPointer,
+                    types.misc.MemInfoPointer,
+                ),
+            ):
+                flattened_member_count += 1
+            else:
+                print(member, type(member))
+                raise UnreachableError
+
+        return flattened_member_count
 
 
 class SyclQueueModel(StructModel):
@@ -84,7 +135,7 @@ class SyclQueueModel(StructModel):
 def _init_data_model_manager():
     dmm = datamodel.default_manager.copy()
     dmm.register(types.CPointer, GenericPointerModel)
-    dmm.register(Array, ArrayModel)
+    dmm.register(Array, USMArrayModel)
     return dmm
 
 
@@ -103,8 +154,8 @@ dpex_data_model_manager = _init_data_model_manager()
 # object.
 
 # Register the USMNdArray type with the dpex ArrayModel
-register_model(USMNdArray)(ArrayModel)
-dpex_data_model_manager.register(USMNdArray, ArrayModel)
+register_model(USMNdArray)(USMArrayModel)
+dpex_data_model_manager.register(USMNdArray, USMArrayModel)
 
 # Register the DpnpNdArray type with the Numba ArrayModel
 register_model(DpnpNdArray)(DpnpNdArrayModel)
