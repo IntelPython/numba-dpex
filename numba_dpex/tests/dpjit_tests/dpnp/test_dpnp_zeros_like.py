@@ -173,7 +173,6 @@ def test_dpnp_zeros_like_exceptions():
         )
 
 
-@pytest.mark.xfail
 def test_dpnp_zeros_like_from_numpy():
     """Test if dpnp works with numpy array (it shouldn't)"""
 
