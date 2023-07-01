@@ -116,11 +116,27 @@ def test_dpnp_ones_like_from_queue(shape, dtype, usm_type):
     assert c.usm_type == a.usm_type
     assert c.sycl_device == queue.sycl_device
     assert (c.asnumpy() == 1).all()
+    assert c.sycl_queue == queue
+    assert c.sycl_queue == a.sycl_queue
 
-    if c.sycl_queue != queue:
-        pytest.xfail(
-            "Returned queue does not have the same queue as the one passed to the dpnp function."
-        )
+    try:
+        queue = dpctl.SyclQueue()
+        a1 = dpnp.zeros(shape, dtype=dtype, usm_type=usm_type)
+        c1 = func(a1, queue)
+    except Exception:
+        pytest.fail("Calling dpnp.ones_like() inside dpjit failed.")
+
+    if len(c1.shape) == 1:
+        assert c1.shape[0] == a1.shape[0]
+    else:
+        assert c1.shape == a1.shape
+
+    assert c1.dtype == a1.dtype
+    assert c1.usm_type == a1.usm_type
+    assert c1.sycl_device == queue.sycl_device
+    assert (c1.asnumpy() == 1).all()
+    assert c1.sycl_queue == queue
+    assert c1.sycl_queue != a1.sycl_queue
 
 
 def test_dpnp_ones_like_exceptions():
