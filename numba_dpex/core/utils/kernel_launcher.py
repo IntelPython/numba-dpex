@@ -217,11 +217,11 @@ class KernelLaunchIRBuilder:
             arg_num=arg_num,
         )
         arg_num += 1
-        # Argument sycl_queue
-        self._build_array_attr_arg(
-            array_val=array_val,
-            array_attr_pos=array_data_model.get_field_position("sycl_queue"),
-            array_attr_ty=array_data_model.get_member_fe_type("sycl_queue"),
+        # Argument sycl_queue: as the queue pointer is not to be used in a
+        # kernel we always pass in a nullptr
+        self.build_arg(
+            val=nullptr,
+            ty=types.int64,
             arg_list=arg_list,
             args_ty_list=args_ty_list,
             arg_num=arg_num,

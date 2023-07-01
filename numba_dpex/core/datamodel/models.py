@@ -48,7 +48,10 @@ class USMArrayModel(StructModel):
                 "data",
                 types.CPointer(fe_type.dtype, addrspace=fe_type.addrspace),
             ),
-            ("sycl_queue", types.voidptr),
+            (
+                "sycl_queue",
+                types.CPointer(types.void, addrspace=fe_type.addrspace),
+            ),
             ("shape", types.UniTuple(types.intp, ndim)),
             ("strides", types.UniTuple(types.intp, ndim)),
         ]
