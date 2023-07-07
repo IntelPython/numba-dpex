@@ -132,7 +132,9 @@ def _get_queue_ref(
         queue_arg_ty, (types.misc.NoneType, types.misc.Omitted)
     ) and isinstance(queue_arg_ty, DpctlSyclQueue):
         if not isinstance(queue_arg.type, llvmir.LiteralStructType):
-            raise AssertionError
+            raise AssertionError(
+                "Expected the queue_arg to be an llvmir.LiteralStructType"
+            )
         sycl_queue_dm = dpex_dmm.lookup(queue_arg_ty)
         queue_ref = builder.extract_value(
             queue_arg, sycl_queue_dm.get_field_position("queue_ref")
@@ -147,7 +149,9 @@ def _get_queue_ref(
     else:
         if not isinstance(queue_arg.type, llvmir.PointerType):
             # TODO: check if the pointer is null
-            raise AssertionError
+            raise AssertionError(
+                "Expected the queue_arg to be an llvmir.PointerType"
+            )
         ty_sycl_queue = sig.return_type.queue
         py_dpctl_sycl_queue = get_device_cached_queue(ty_sycl_queue.sycl_device)
         (queue_ref, py_dpctl_sycl_queue_addr, pyapi) = make_queue(
@@ -159,7 +163,15 @@ def _get_queue_ref(
 
 
 def _update_queue_attr(array, queue):
-    """Sets the sycl_queue member of an ArrayStruct."""
+    """Assigns the sycl_queue member of an usmarystruct_t instance.
+
+    After creating a new usmarystruct_t struct (e.g. in _empty_nd_impl) the
+    members of the struct are populated by calling
+    numba.np.arrayobj.populate_array. The populate_array function does not
+    update the sycl_queue member as populate_array is written specifically for
+    numba's arystruct_t type that does not have a sycl_queue member. The
+    _update_queue_attr is a helper function to update the sycl_queue field.
+    """
 
     attr = dict(sycl_queue=queue)
     for k, v in attr.items():

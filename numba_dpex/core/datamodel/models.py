@@ -61,11 +61,15 @@ class USMArrayModel(StructModel):
 class DpnpNdArrayModel(StructModel):
     """Data model for the DpnpNdArray type.
 
-    The data model for DpnpNdArray is similar to numb's ArrayModel used for
-    the numba.types.Array type, with the additional field ``sycl_queue`. The
-    `sycl_queue` attribute stores the pointer to the C++ sycl::queue object
-    that was used to allocate memory for numba-dpex's native representation
-    for an Python object inferred as a DpnpNdArray.
+    DpnpNdArrayModel is used by the numba_dpex.types.DpnpNdArray type and
+    abstracts the usmarystruct_t C type defined in
+    numba_dpex.core.runtime._usmarraystruct.h.
+
+    The DpnpNdArrayModel differs from numba's ArrayModel by including an extra
+    member sycl_queue that maps to _usmarraystruct.sycl_queue pointer. The
+    _usmarraystruct.sycl_queue pointer stores the C++ sycl::queue pointer that
+    was used to allocate the data for the dpnp.ndarray represented by an
+    instance of _usmarraystruct.
     """
 
     def __init__(self, dmm, fe_type):
@@ -102,7 +106,6 @@ class DpnpNdArrayModel(StructModel):
             ):
                 flattened_member_count += 1
             else:
-                print(member, type(member))
                 raise UnreachableError
 
         return flattened_member_count
