@@ -22,20 +22,18 @@ def sum_reduce(A):
     """Size of A should be power of two."""
     total = len(A)
     # max size will require half the size of A to store sum
-    R = np.array(np.random.random(math.ceil(total / 2)), dtype=A.dtype)
+    R = np.array(np.random.random(math.floor(total / 2)), dtype=A.dtype)
 
     while total > 1:
-        global_size = total // 2
-        sum_reduction_kernel[ndpx.Range(global_size)](A, R, global_size)
-        total = total // 2
+        global_size = math.floor(total // 2)
+        total = total - global_size
+        sum_reduction_kernel[ndpx.Range(global_size)](A, R, total)
 
     return R[0]
 
 
 def test_sum_reduce():
-    # This test will only work for size = power of two
     N = 2048
-    assert N % 2 == 0
 
     A = np.arange(N, dtype=np.float32)
     A_copy = np.arange(N, dtype=np.float32)
