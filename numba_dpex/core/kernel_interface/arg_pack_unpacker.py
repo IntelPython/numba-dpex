@@ -54,6 +54,8 @@ class Packer:
         unpacked_array_attrs.append(ctypes.c_longlong(size))
         unpacked_array_attrs.append(ctypes.c_longlong(itemsize))
         unpacked_array_attrs.append(buf)
+        # queue: unused and passed as void*
+        unpacked_array_attrs.append(ctypes.c_size_t(0))
         for ax in range(ndim):
             unpacked_array_attrs.append(ctypes.c_longlong(shape[ax]))
         for ax in range(ndim):

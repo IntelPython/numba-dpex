@@ -5,16 +5,23 @@
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// Defines the numba-dpex native representation for a dpctl.SyclQueue
+/// Defines the numba-dpex native representation for a dpctl.tensor.usm_ndarray
 ///
 //===----------------------------------------------------------------------===//
 
 #pragma once
 
 #include <Python.h>
+#include <numpy/npy_common.h>
 
 typedef struct
 {
+    void *meminfo;
     PyObject *parent;
-    void *queue_ref;
-} queuestruct_t;
+    npy_intp nitems;
+    npy_intp itemsize;
+    void *data;
+    void *sycl_queue;
+
+    npy_intp shape_and_strides[];
+} usmarystruct_t;
