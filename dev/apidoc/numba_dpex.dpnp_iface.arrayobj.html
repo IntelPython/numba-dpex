@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.dpnp_iface.arrayobj module &mdash; numba-dpex 0.21.0+9.gcd81ca3d documentation</title>
+  <title>numba_dpex.dpnp_iface.arrayobj module &mdash; numba-dpex 0.21.0+18.g81af300c documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -94,6 +94,17 @@
              
   <section id="module-numba_dpex.dpnp_iface.arrayobj">
 <span id="numba-dpex-dpnp-iface-arrayobj-module"></span><h1>numba_dpex.dpnp_iface.arrayobj module<a class="headerlink" href="#module-numba_dpex.dpnp_iface.arrayobj" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.dpnp_iface.arrayobj.getitem_arraynd_intp">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.arrayobj.</span></span><span class="sig-name descname"><span class="pre">getitem_arraynd_intp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.arrayobj.getitem_arraynd_intp" title="Permalink to this definition"></a></dt>
+<dd><p>Overrding the numba.np.arrayobj.getitem_arraynd_intp to support dpnp.ndarray</p>
+<p>The data model for numba.types.Array and numba_dpex.types.DpnpNdArray
+are different. DpnpNdArray has an extra attribute to store a sycl::queue
+pointer. For that reason, np_getitem_arraynd_intp needs to be overriden so
+that when returning a view of a dpnp.ndarray the sycl::queue pointer
+member in the LLVM IR struct gets properly updated.</p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty">
 <span class="sig-prename descclassname"><span class="pre">numba_dpex.dpnp_iface.arrayobj.</span></span><span class="sig-name descname"><span class="pre">ol_dpnp_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usm_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'device'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sycl_queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.dpnp_iface.arrayobj.ol_dpnp_empty" title="Permalink to this definition"></a></dt>
@@ -182,7 +193,8 @@ is used for allocation and copying. Default: <cite>None</cite>.</p>
 </dd>
 <dt>Raises:</dt><dd><p>errors.TypingError: If both <cite>device</cite> and <cite>sycl_queue</cite> are provided.
 errors.TypingError: If couldn’t parse input types to dpnp.empty_like().
-errors.TypingError: If shape is provided.</p>
+errors.TypingError: If shape is provided.
+errors.TypingError: If <cite>x1</cite> is not an instance of DpnpNdArray</p>
 </dd>
 <dt>Returns:</dt><dd><p>function: Local function <cite>impl_dpnp_empty_like()</cite>.</p>
 </dd>
@@ -290,7 +302,8 @@ is used for allocation and copying. Default: <cite>None</cite>.</p>
 </dd>
 <dt>Raises:</dt><dd><p>errors.TypingError: If both <cite>device</cite> and <cite>sycl_queue</cite> are provided.
 errors.TypingError: If couldn’t parse input types to dpnp.full_like().
-errors.TypingError: If shape is provided.</p>
+errors.TypingError: If shape is provided.
+errors.TypingError: If <cite>x1</cite> is not an instance of DpnpNdArray</p>
 </dd>
 <dt>Returns:</dt><dd><p>function: Local function <cite>impl_dpnp_full_like()</cite>.</p>
 </dd>
@@ -385,7 +398,8 @@ is used for allocation and copying. Default: <cite>None</cite>.</p>
 </dd>
 <dt>Raises:</dt><dd><p>errors.TypingError: If both <cite>device</cite> and <cite>sycl_queue</cite> are provided.
 errors.TypingError: If couldn’t parse input types to dpnp.ones_like().
-errors.TypingError: If shape is provided.</p>
+errors.TypingError: If shape is provided.
+errors.TypingError: If <cite>x1</cite> is not an instance of DpnpNdArray</p>
 </dd>
 <dt>Returns:</dt><dd><p>function: Local function <cite>impl_dpnp_ones_like()</cite>.</p>
 </dd>
@@ -480,7 +494,8 @@ is used for allocation and copying. Default: <cite>None</cite>.</p>
 </dd>
 <dt>Raises:</dt><dd><p>errors.TypingError: If both <cite>device</cite> and <cite>sycl_queue</cite> are provided.
 errors.TypingError: If couldn’t parse input types to dpnp.zeros_like().
-errors.TypingError: If shape is provided.</p>
+errors.TypingError: If shape is provided.
+errors.TypingError: If <cite>x1</cite> is not an instance of DpnpNdArray</p>
 </dd>
 <dt>Returns:</dt><dd><p>function: Local function <cite>impl_dpnp_zeros_like()</cite>.</p>
 </dd>
