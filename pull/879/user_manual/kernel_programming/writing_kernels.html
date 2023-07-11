@@ -483,8 +483,11 @@ default value. Arguments are two input vectors <code class="docutils literal not
 result of vector summation:</p>
 <div class="literal-block-wrapper docutils container" id="ex-kernel-invocation-vector-sum">
 <div class="code-block-caption"><span class="caption-text"><strong>EXAMPLE:</strong> Invocation of the vector sum kernel</span><a class="headerlink" href="#ex-kernel-invocation-vector-sum" title="Permalink to this code">#</a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Main function</span>
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Data parallel kernel implementing vector sum</span>
+<span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span>
+<span class="k">def</span> <span class="nf">kernel_vector_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
