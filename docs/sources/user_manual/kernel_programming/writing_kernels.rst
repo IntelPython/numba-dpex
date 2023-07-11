@@ -54,17 +54,25 @@ result of vector summation:
 Kernel invocation (New Syntax)
 ------------------------------
 
-Since the release 0.20.0 (Phoenix), we have introduced new kernel launch parameter
-syntax for specifying ``global_size`` and ``local_size`` that similar to ``SYCL``'s
-``range`` and ``ndrange`` classes. The ``global_size`` and ``local_size`` can now
-be specified with ``numba_dpex``'s ``Range`` and ``NdRange`` classes.
+Since the release 0.20.0 (Phoenix), we have introduced new kernel launch
+parameter syntax for specifying ``global_size`` and ``local_size`` that similar
+to ``SYCL``'s ``range`` and ``ndrange`` classes. The ``global_size`` and
+``local_size`` can now be specified with ``numba_dpex``'s ``Range`` and
+``NdRange`` classes.
 
-.. literalinclude:: ./../../../../numba_dpex/examples/kernel/vector_sum.py
+For example, if we need to specify a ``global_range``, we can do it like this:
+
+.. literalinclude:: ./../../../../numba_dpex/examples/kernel/black_scholes.py
    :language: python
-   :lines: 11-15
-   :caption: **EXAMPLE:** Invocation of the vector sum kernel
-   :name: ex_kernel_invocation_vector_sum
+   :lines: 49-53
+   :caption: **EXAMPLE:** Black Scholes Kernel
+   :name: black_scholes_kernel
 
+.. literalinclude:: ./../../../../numba_dpex/examples/kernel/black_scholes.py
+   :language: python
+   :lines: 29-30, 91-93
+   :caption: **EXAMPLE:** Black Scholes Kernel with a ``global_range``
+   :name: black_scholes_kernel
 
 
 Kernel indexing functions
