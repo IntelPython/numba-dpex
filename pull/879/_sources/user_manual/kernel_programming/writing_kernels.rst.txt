@@ -51,6 +51,22 @@ result of vector summation:
   Each kernel is compiled once, but it can be called multiple times with different global and local sizes settings.
 
 
+Kernel invocation (New Syntax)
+------------------------------
+
+Since the release 0.20.0 (Phoenix), we have introduced new kernel launch parameter
+syntax for specifying ``global_size`` and ``local_size`` that similar to ``SYCL``'s
+``range`` and ``ndrange`` classes. The ``global_size`` and ``local_size`` can now
+be specified with ``numba_dpex``'s ``Range`` and ``NdRange`` classes.
+
+.. literalinclude:: ./../../../../numba_dpex/examples/kernel/vector_sum.py
+   :language: python
+   :lines: 11-15
+   :caption: **EXAMPLE:** Invocation of the vector sum kernel
+   :name: ex_kernel_invocation_vector_sum
+
+
+
 Kernel indexing functions
 -------------------------
 

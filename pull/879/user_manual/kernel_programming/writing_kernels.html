@@ -496,6 +496,23 @@ result of vector summation:</p>
 <p>Each kernel is compiled once, but it can be called multiple times with different global and local sizes settings.</p>
 </div>
 </section>
+<section id="kernel-invocation-new-syntax">
+<h2>Kernel invocation (New Syntax)<a class="headerlink" href="#kernel-invocation-new-syntax" title="Permalink to this heading">#</a></h2>
+<p>Since the release 0.20.0 (Phoenix), we have introduced new kernel launch parameter
+syntax for specifying <code class="docutils literal notranslate"><span class="pre">global_size</span></code> and <code class="docutils literal notranslate"><span class="pre">local_size</span></code> that similar to <code class="docutils literal notranslate"><span class="pre">SYCL</span></code>’s
+<code class="docutils literal notranslate"><span class="pre">range</span></code> and <code class="docutils literal notranslate"><span class="pre">ndrange</span></code> classes. The <code class="docutils literal notranslate"><span class="pre">global_size</span></code> and <code class="docutils literal notranslate"><span class="pre">local_size</span></code> can now
+be specified with <code class="docutils literal notranslate"><span class="pre">numba_dpex</span></code>’s <code class="docutils literal notranslate"><span class="pre">Range</span></code> and <code class="docutils literal notranslate"><span class="pre">NdRange</span></code> classes.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text"><strong>EXAMPLE:</strong> Invocation of the vector sum kernel</span><a class="headerlink" href="#id2" title="Permalink to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Data parallel kernel implementing vector sum</span>
+<span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span>
+<span class="k">def</span> <span class="nf">kernel_vector_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</section>
 <section id="kernel-indexing-functions">
 <h2>Kernel indexing functions<a class="headerlink" href="#kernel-indexing-functions" title="Permalink to this heading">#</a></h2>
 <p>In <em>data parallel kernel programming</em> all work items are enumerated and accessed by their index.
@@ -557,6 +574,7 @@ The current work group index is obtained by calling <code class="docutils litera
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kernel-declaration">Kernel declaration</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kernel-invocation">Kernel invocation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kernel-invocation-new-syntax">Kernel invocation (New Syntax)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kernel-indexing-functions">Kernel indexing functions</a></li>
 </ul>
   </nav></div>
