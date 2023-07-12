@@ -5,6 +5,7 @@
 import re
 from functools import cached_property
 
+import dpctl.tensor as dpt
 import dpnp
 from llvmlite import binding as ll
 from llvmlite import ir as llvmir
@@ -63,6 +64,15 @@ class DpexKernelTypingContext(typing.BaseContext):
 
         """
         try:
+            # We do check here, because IPEX has slow device memory access, so
+            # we want to cast it to SUAI before any method call.
+            if hasattr(val, "__dlpack__") and not hasattr(
+                val, "__sycl_usm_array_interface__"
+            ):
+                val = dpt.from_dlpack(val)
+                suai_attrs = get_info_from_suai(val)
+                return to_usm_ndarray(suai_attrs)
+
             numba_type = typeof(val)
             py_type = type(numba_type)
 

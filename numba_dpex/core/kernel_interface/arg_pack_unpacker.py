@@ -6,6 +6,7 @@ import ctypes
 import logging
 
 import dpctl.memory as dpctl_mem
+import dpctl.tensor as dpt
 import numpy as np
 from numba.core import types
 
@@ -78,6 +79,13 @@ class Packer:
         """
 
         if isinstance(ty, USMNdArray):
+            # TODO: find better way to pack without calling to __dlpack__ and
+            #  __sycl_usm_array_interface__. Maybe store pointer shifters to
+            # USMNdArray?
+            if hasattr(val, "__dlpack__") and not hasattr(
+                val, "__sycl_usm_array_interface__"
+            ):
+                val = dpt.from_dlpack(val)
             return self._unpack_usm_array(val)
         elif ty == types.int64:
             return ctypes.c_longlong(val)
