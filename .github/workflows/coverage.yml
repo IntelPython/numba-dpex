@@ -12,6 +12,9 @@ jobs:
   main:
     name: Generate coverage and push to Coveralls.io
     runs-on: ubuntu-20.04
+    defaults:
+      run:
+        shell: bash -l {0}
 
     steps:
       - name: Cancel Previous Runs
@@ -28,6 +31,7 @@ jobs:
         uses: ./.github/actions/setup-numba-dpex
         with:
           environment: environment/coverage.yml
+          environment-name: "dpex-coverage"
 
       - name: Test installation
         run: |
