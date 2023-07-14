@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main
+      - release*
+    tags:
+      - '[0-9]+.[0-9]+*'
   pull_request:
     types: [opened, synchronize, reopened, closed]
     paths:
@@ -13,16 +16,29 @@ jobs:
   main:
     if: ${{ !(github.event.pull_request && github.event.action == 'closed') }}
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
 
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Setup numba-dpex
-        uses: ./.github/actions/setup-numba-dpex
+      - uses: conda-incubator/setup-miniconda@v2
         with:
-          environment: environment/docs.yml
+          python-version: '3.10'
+          miniforge-variant: Mambaforge
+          miniforge-version: latest
+          activate-environment: "docs"
+          channels: conda-forge,nodefaults
+          channel-priority: "disabled"
+          environment-file: "environment/docs.yml"
+
+      - name: Build numba-dpex
+        run: |
+          export PATH=$CONDA/bin-llvm:$PATH
+          python setup.py develop
 
       - name: Make documentation
         working-directory: docs
@@ -58,13 +74,37 @@ jobs:
         if: ${{ github.event.pull_request && github.event.action != 'closed' }}
         env:
           PR_NUM: ${{ github.event.number }}
-        uses: mshick/add-pr-comment@v1
+        uses: mshick/add-pr-comment@v2
         with:
           message: |
             Documentation preview: [show](https://intelpython.github.io/numba-dpex/pull/${{ env.PR_NUM }}).
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]'
-          allow-repeats: true
+          # repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/heads/release')
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          destination_dir : next_release
+          publish_dir: docs/_build/html/
+          allow_empty_commit : true
+          commit_message: ${{ github.event.head_commit.message }}
+
+      - name: Capture tag
+        id: capture_tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          echo ::set-output name=tag_number::${GITHUB_REF#refs/tags/}
+
+      - name: Publish tag
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          destination_dir : ${{ steps.capture_tag.outputs.tag_number }}
+          publish_dir: docs/_build/html/
+          allow_empty_commit : true
+          commit_message: ${{ github.event.head_commit.message }}
 
   clean:
     if: ${{ github.event.pull_request && github.event.action == 'closed' }}

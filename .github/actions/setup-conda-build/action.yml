@@ -1,9 +1,0 @@
-name: Setup conda-build
-description: 'Activate conda and install conda-build'
-runs:
-  using: "composite"
-  steps:
-    - run: echo $CONDA/bin >> $GITHUB_PATH
-      shell: bash
-    - run: conda install conda-build
-      shell: bash

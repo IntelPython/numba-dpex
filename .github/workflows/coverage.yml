@@ -12,7 +12,9 @@ jobs:
   main:
     name: Generate coverage and push to Coveralls.io
     runs-on: ubuntu-20.04
-
+    defaults:
+      run:
+        shell: bash -l {0}
     steps:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
@@ -24,10 +26,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup numba-dpex
-        uses: ./.github/actions/setup-numba-dpex
+      - uses: conda-incubator/setup-miniconda@v2
         with:
-          environment: environment/coverage.yml
+          python-version: '3.10'
+          miniforge-variant: Mambaforge
+          miniforge-version: latest
+          activate-environment: "coverage"
+          channel-priority: "disabled"
+          environment-file: environment/coverage.yml
+
+      - name: Build numba-dpex
+        run: |
+          export PATH=$CONDA/bin-llvm:$PATH
+          python setup.py develop
 
       - name: Test installation
         run: |
