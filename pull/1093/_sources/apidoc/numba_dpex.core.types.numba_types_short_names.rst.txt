@@ -1,0 +1,7 @@
+numba\_dpex.core.types.numba\_types\_short\_names module
+========================================================
+
+.. automodule:: numba_dpex.core.types.numba_types_short_names
+   :members:
+   :undoc-members:
+   :show-inheritance:
