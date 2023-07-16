@@ -28,13 +28,13 @@ Example 2
 Full example can be found at
 ``numba_dpex/examples/sum_reduction_recursive_ocl.py``.
 
-.. literalinclude:: ./../../../../numba_dpex/examples/sum_reduction_recursive_ocl.py
+.. literalinclude:: ./../../../../numba_dpex/examples/kernel/sum_reduction_recursive_ocl.py
    :pyobject: sum_reduction_kernel
 
-.. literalinclude:: ./../../../../numba_dpex/examples/sum_reduction_recursive_ocl.py
+.. literalinclude:: ./../../../../numba_dpex/examples/kernel/sum_reduction_recursive_ocl.py
    :pyobject: sum_recursive_reduction
 
-.. literalinclude:: ./../../../../numba_dpex/examples/sum_reduction_recursive_ocl.py
+.. literalinclude:: ./../../../../numba_dpex/examples/kernel/sum_reduction_recursive_ocl.py
    :pyobject: sum_reduce
 
 .. note::

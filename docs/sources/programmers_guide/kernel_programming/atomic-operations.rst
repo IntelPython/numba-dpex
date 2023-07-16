@@ -13,7 +13,7 @@ Example
 
 Example usage of atomic operations
 
-.. literalinclude:: ./../../../../numba_dpex/examples/atomic_op.py
+.. literalinclude:: ./../../../../numba_dpex/examples/kernel/atomic_op.py
    :pyobject: main
 
 .. note::

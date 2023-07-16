@@ -33,4 +33,4 @@ Numba-dpex supports three disjoint named address spaces:
     `numba_dpex.private.array(shape, dtype)` is the API used to allocate a
     static array in the private address space:
 
-    .. literalinclude:: ./../../../../numba_dpex/examples/kernel_private_memory.py
+    .. literalinclude:: ./../../../../numba_dpex/examples/kernel/kernel_private_memory.py
