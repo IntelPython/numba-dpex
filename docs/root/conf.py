@@ -84,7 +84,7 @@ html_theme_options = {
             "icon": "fab fa-brands fa-gitter",
         },
     ],
-    "logo_only": True,
+    # "logo_only": True,
 }
 
 googleanalytics_id = "G-LGGL0NJK6P"
