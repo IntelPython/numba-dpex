@@ -59,4 +59,4 @@ The following are how users can specify in which device they want to offload the
 Example
 ~~~~~~~
 
-.. literalinclude:: ./../../../../numba_dpex/examples/select_device_for_kernel.py
+.. literalinclude:: ./../../../../numba_dpex/tests/kernel_tests/test_sycl_usm_array_iface_interop.py
