@@ -13,6 +13,7 @@ Programmer's Guide
     :maxdepth: 2
 
     kernel_programming/index
+    dpnp_offload/index
     performance_tips
     troubleshooting
     useful_links
