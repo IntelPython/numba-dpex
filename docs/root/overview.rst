@@ -22,7 +22,7 @@ available on Anaconda cloud and as a Docker image on GitHub. Please refer the
 Main Features
 -------------
 
-Portable kernel programming
+Portable Kernel Programming
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The kernel API has a design and API similar to Numba's ``cuda.jit`` module.
