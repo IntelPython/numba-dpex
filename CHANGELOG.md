@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.21.1] - 2023-07-17
+
+### Changed
+* Improved support for `queue` keyword in dpnp array constructor overloads (#1083)
+* Improved reduction kernel example (#1089)
+
+### Fixed
+* Update Itanium CXX ABI Mangler reference (#1080)
+* Update sourceware references in docstrings (#1081)
+* Typo in error messages of kernel interface (#1082)
+
 ## [0.21.0] - 2023-06-17
 
 ### Added
