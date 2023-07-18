@@ -51,7 +51,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Writing Device Functions" href="device-functions.html" />
-    <link rel="prev" title="Memory Management" href="memory-management.html" />
+    <link rel="prev" title="Writing Data Parallel Kernels" href="writing_kernels.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -431,13 +431,12 @@ document.write(`
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../programming_model.html">Programming Model</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Kernel Programming Basics</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="writing_kernels.html">Writing Data Parallel Kernels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory-management.html">Memory Management</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Synchronization Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="selecting_device.html">Defining the execution queue for a kernel function</a></li>
 <li class="toctree-l2"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
@@ -530,7 +529,7 @@ document.write(`
                   
   <section id="synchronization-functions">
 <h1>Synchronization Functions<a class="headerlink" href="#synchronization-functions" title="Permalink to this heading">#</a></h1>
-<p>Numba-dpex only supports some of the SYCL synchronization operations. For
+<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> only supports some of the SYCL synchronization operations. For
 synchronization of all threads in the same thread block, numba-dpex provides
 a helper function called <code class="docutils literal notranslate"><span class="pre">numba_dpex.barrier()</span></code>. This function implements the
 same pattern as barriers in traditional multi-threaded programming: invoking the
@@ -538,15 +537,16 @@ function forces a thread to wait until all threads in the block reach the
 barrier, at which point it returns control to all its callers.</p>
 <p><code class="docutils literal notranslate"><span class="pre">numba_dpex.barrier()</span></code> supports two memory fence options:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex.CLK_GLOBAL_MEM_FENCE</span></code>: The barrier function will queue a memory
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex.GLOBAL_MEM_FENCE</span></code>: The barrier function will queue a memory
 fence to ensure correct ordering of memory operations to global memory. Using
 the option can be useful when work-items, for example, write to buffer or
 image objects and then want to read the updated data. Passing no arguments to
 <code class="docutils literal notranslate"><span class="pre">numba_dpex.barrier()</span></code> is equivalent to setting the global memory fence
-option. For example,</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex.CLK_LOCAL_MEM_FENCE</span></code>: The barrier function will either flush
+option.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex.LOCAL_MEM_FENCE</span></code>: The barrier function will either flush
 any variables stored in local memory or queue a memory fence to ensure
-correct ordering of memory operations to local memory. For example,</p></li>
+correct ordering of memory operations to local memory.</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -567,12 +567,12 @@ correct ordering of memory operations to local memory. For example,</p></li>
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="memory-management.html"
+       href="writing_kernels.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Memory Management</p>
+        <p class="prev-next-title">Writing Data Parallel Kernels</p>
       </div>
     </a>
     <a class="right-next"

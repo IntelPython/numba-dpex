@@ -4,4 +4,5 @@
 Compiling and Offloading DPNP
 ==============================
 
-TODO
+- prange, reduction prange
+- blackscholes, math example

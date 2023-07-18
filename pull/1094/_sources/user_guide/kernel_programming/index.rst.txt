@@ -44,11 +44,9 @@ hardware vendors.
    :maxdepth: 2
 
    writing_kernels
-   memory-management
    synchronization
    device-functions
    atomic-operations
-   selecting_device
    memory_allocation_address_space
    reduction
    ufunc

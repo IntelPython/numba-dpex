@@ -50,7 +50,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/kernel_programming/writing_kernels';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Memory Management" href="memory-management.html" />
+    <link rel="next" title="Synchronization Functions" href="synchronization.html" />
     <link rel="prev" title="Kernel Programming Basics" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -435,13 +435,12 @@ document.write(`
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../programming_model.html">Programming Model</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Kernel Programming Basics</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Writing Data Parallel Kernels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory-management.html">Memory Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="selecting_device.html">Defining the execution queue for a kernel function</a></li>
 <li class="toctree-l2"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
@@ -569,32 +568,9 @@ storing the result of vector summation:</p>
 </section>
 <section id="kernel-invocation">
 <h2>Kernel Invocation<a class="headerlink" href="#kernel-invocation" title="Permalink to this heading">#</a></h2>
-<p>When a kernel is launched you must specify the <em>global size</em> and the <em>local size</em>,
-which determine the hierarchy of threads, that is the order in which kernels
-will be invoked.</p>
-<p>The following syntax is used in <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> for kernel invocation with
-specified global and local sizes:</p>
-<p><code class="docutils literal notranslate"><span class="pre">kernel_function_name[global_size,</span> <span class="pre">local_size](kernel</span> <span class="pre">arguments)</span></code></p>
-<p>In the following example we invoke kernel <code class="docutils literal notranslate"><span class="pre">kernel_vector_sum</span></code> with global size
-specified via variable <code class="docutils literal notranslate"><span class="pre">global_size</span></code>, and use <code class="docutils literal notranslate"><span class="pre">numba_dpex.DEFAULT_LOCAL_SIZE</span></code>
-constant for setting local size to some default value:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">ndpx</span>
-
-<span class="n">global_size</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">kernel_vector_sum</span><span class="p">[</span><span class="n">global_size</span><span class="p">,</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Each kernel is compiled once, but it can be called multiple times with different global and local sizes settings.</p>
-</div>
-</section>
-<section id="kernel-invocation-new-syntax">
-<h2>Kernel Invocation (New Syntax)<a class="headerlink" href="#kernel-invocation-new-syntax" title="Permalink to this heading">#</a></h2>
-<p>Since the release 0.20.0 (Phoenix), we have introduced new kernel launch
-parameter syntax for specifying global and local sizes that are similar to
-<code class="docutils literal notranslate"><span class="pre">SYCL</span></code>’s <code class="docutils literal notranslate"><span class="pre">range</span></code> and <code class="docutils literal notranslate"><span class="pre">ndrange</span></code> classes. The global and local sizes can
-now be specified with <code class="docutils literal notranslate"><span class="pre">numba_dpex</span></code>’s <code class="docutils literal notranslate"><span class="pre">Range</span></code> and <code class="docutils literal notranslate"><span class="pre">NdRange</span></code> classes.</p>
+<p>The kernel launch parameter syntax for specifying global and local sizes are
+similar to <code class="docutils literal notranslate"><span class="pre">SYCL</span></code>’s <code class="docutils literal notranslate"><span class="pre">range</span></code> and <code class="docutils literal notranslate"><span class="pre">ndrange</span></code> classes. The global and local
+sizes need to be specified with <code class="docutils literal notranslate"><span class="pre">numba_dpex</span></code>’s <code class="docutils literal notranslate"><span class="pre">Range</span></code> and <code class="docutils literal notranslate"><span class="pre">NdRange</span></code> classes.</p>
 <p>For example, we have a following kernel that computes a sum of two vectors:</p>
 <div class="literal-block-wrapper docutils container" id="vector-sum-kernel">
 <div class="code-block-caption"><span class="caption-text"><strong>EXAMPLE:</strong> A vector sum kernel</span><a class="headerlink" href="#vector-sum-kernel" title="Permalink to this code">#</a></div>
@@ -614,10 +590,10 @@ it like this (where <code class="docutils literal notranslate"><span class="pre"
 <div class="code-block-caption"><span class="caption-text"><strong>EXAMPLE:</strong> A vector sum kernel with a global size/range</span><a class="headerlink" href="#vector-sum-kernel-with-launch-param" title="Permalink to this code">#</a></div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">ndpx</span>
 
-<span class="hll"><span class="c1"># Utility function for printing and testing</span>
-</span><span class="k">def</span> <span class="nf">driver</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">global_size</span><span class="p">):</span>
-    <span class="n">kernel_vector_sum</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">global_size</span><span class="p">)](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
-    <span class="n">a_np</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">asnumpy</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>  <span class="c1"># Copy dpnp array a to NumPy array a_np</span>
+<span class="c1"># Utility function for printing and testing</span>
+<span class="k">def</span> <span class="nf">driver</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">global_size</span><span class="p">):</span>
+<span class="hll">    <span class="n">kernel_vector_sum</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">global_size</span><span class="p">)](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+</span>    <span class="n">a_np</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">asnumpy</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>  <span class="c1"># Copy dpnp array a to NumPy array a_np</span>
     <span class="n">b_np</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">asnumpy</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>  <span class="c1"># Copy dpnp array b to NumPy array b_np</span>
     <span class="n">c_np</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">asnumpy</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>  <span class="c1"># Copy dpnp array c to NumPy array c_np</span>
     <span class="n">testing</span><span class="o">.</span><span class="n">assert_equal</span><span class="p">(</span><span class="n">c_np</span><span class="p">,</span> <span class="n">a_np</span> <span class="o">+</span> <span class="n">b_np</span><span class="p">)</span>
@@ -713,11 +689,11 @@ The current work group index is obtained by calling <code class="docutils litera
       </div>
     </a>
     <a class="right-next"
-       href="memory-management.html"
+       href="synchronization.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Memory Management</p>
+        <p class="prev-next-title">Synchronization Functions</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -741,7 +717,6 @@ The current work group index is obtained by calling <code class="docutils litera
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kernel-declaration">Kernel Declaration</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kernel-invocation">Kernel Invocation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kernel-invocation-new-syntax">Kernel Invocation (New Syntax)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kernel-indexing-functions">Kernel Indexing Functions</a></li>
 </ul>
   </nav></div>
