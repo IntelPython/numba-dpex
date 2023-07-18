@@ -1,0 +1,20 @@
+numba\_dpex.core.passes package
+===============================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.core.passes.dufunc_inliner
+   numba_dpex.core.passes.parfor_legalize_cfd_pass
+   numba_dpex.core.passes.passes
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex.core.passes
+   :members:
+   :undoc-members:
+   :show-inheritance:
