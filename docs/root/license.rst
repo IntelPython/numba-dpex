@@ -4,6 +4,7 @@
 License
 =======
 
-Apache License, Version 2.0, January 2004
-
-http://www.apache.org/licenses/
+Numba-dpex is Licensed under Apache License 2.0 that can be found in `LICENSE
+<https://github.com/IntelPython/numba-dpex/blob/main/LICENSE>`_. All usage and
+contributions to the project are subject to the terms and conditions of this
+license.

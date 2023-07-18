@@ -31,3 +31,4 @@ dependencies:
     - sphinxcontrib-googleanalytics
     - sphinxcontrib.programoutput
     - pydata-sphinx-theme
+    - myst-parser
