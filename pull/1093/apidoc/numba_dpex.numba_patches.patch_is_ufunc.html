@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.numba_patches.patch_is_ufunc module &mdash; numba-dpex  documentation</title>
+  <title>numba_dpex.numba_patches.patch_is_ufunc module &mdash; numba-dpex 0.21.1+3.g5230251b documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -92,8 +92,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="numba-dpex-numba-patches-patch-is-ufunc-module">
-<h1>numba_dpex.numba_patches.patch_is_ufunc module<a class="headerlink" href="#numba-dpex-numba-patches-patch-is-ufunc-module" title="Permalink to this heading"></a></h1>
+  <section id="module-numba_dpex.numba_patches.patch_is_ufunc">
+<span id="numba-dpex-numba-patches-patch-is-ufunc-module"></span><h1>numba_dpex.numba_patches.patch_is_ufunc module<a class="headerlink" href="#module-numba_dpex.numba_patches.patch_is_ufunc" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.numba_patches.patch_is_ufunc.patch">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.numba_patches.patch_is_ufunc.</span></span><span class="sig-name descname"><span class="pre">patch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.numba_patches.patch_is_ufunc.patch" title="Permalink to this definition"></a></dt>
+<dd><p>Patches the numba.np.ufunc.array_exprs._is_ufunc function to make it
+possible to support dpnp universal functions (ufuncs).</p>
+<p>The extra condition is the check for the “is_dpnp_ufunc” attribute to
+identify a non-NumPy ufunc.</p>
+</dd></dl>
+
 </section>
 
 

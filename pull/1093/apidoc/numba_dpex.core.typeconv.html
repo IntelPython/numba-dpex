@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.typeconv package &mdash; numba-dpex  documentation</title>
+  <title>numba_dpex.core.typeconv package &mdash; numba-dpex 0.21.1+3.g5230251b documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -98,12 +98,32 @@
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.typeconv.array_conversion.html">numba_dpex.core.typeconv.array_conversion module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.core.typeconv.array_conversion.html">numba_dpex.core.typeconv.array_conversion module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.core.typeconv.array_conversion.html#numba_dpex.core.typeconv.array_conversion.to_usm_ndarray"><code class="docutils literal notranslate"><span class="pre">to_usm_ndarray()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="module-numba_dpex.core.typeconv">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-numba_dpex.core.typeconv" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.typeconv.to_usm_ndarray">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.typeconv.</span></span><span class="sig-name descname"><span class="pre">to_usm_ndarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">suai_attrs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addrspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.typeconv.to_usm_ndarray" title="Permalink to this definition"></a></dt>
+<dd><p>Converts an array-like object that has the _sycl_usm_array_interface__
+attribute to numba_dpex.types.UsmNdArray.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>suai_attrs: The extracted SUAI information for an array-like object.
+addrspace: Address space this array is allocated in.</p>
+</dd>
+</dl>
+<p>Returns: The Numba type for SUAI array.</p>
+<dl class="simple">
+<dt>Raises:</dt><dd><p>NotImplementedError: If the dtype of the passed array is not supported.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 

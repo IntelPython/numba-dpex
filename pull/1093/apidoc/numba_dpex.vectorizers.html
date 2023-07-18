@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.vectorizers module &mdash; numba-dpex  documentation</title>
+  <title>numba_dpex.vectorizers module &mdash; numba-dpex 0.21.1+3.g5230251b documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -92,8 +92,104 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="numba-dpex-vectorizers-module">
-<h1>numba_dpex.vectorizers module<a class="headerlink" href="#numba-dpex-vectorizers-module" title="Permalink to this heading"></a></h1>
+  <section id="module-numba_dpex.vectorizers">
+<span id="numba-dpex-vectorizers-module"></span><h1>numba_dpex.vectorizers module<a class="headerlink" href="#module-numba_dpex.vectorizers" title="Permalink to this heading"></a></h1>
+<p>Provide a Dpex target for Numba’s <code class="docutils literal notranslate"><span class="pre">vectorize</span></code> decorator.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.vectorizers.UFuncDispatcher">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.vectorizers.</span></span><span class="sig-name descname"><span class="pre">UFuncDispatcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types_to_retty_kernels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.vectorizers.UFuncDispatcher" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Invoke the Dpex ufunc specialization for the given inputs.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.vectorizers.UFuncDispatcher.reduce">
+<span class="sig-name descname"><span class="pre">reduce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.vectorizers.UFuncDispatcher.reduce" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.vectorizers.UFuncMechanism">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.vectorizers.</span></span><span class="sig-name descname"><span class="pre">UFuncMechanism</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.vectorizers.UFuncMechanism" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">UFuncMechanism</span></code></p>
+<p>Mechanism to process Input to a SYCL kernel and launch that kernel</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.vectorizers.UFuncMechanism.as_device_array">
+<span class="sig-name descname"><span class="pre">as_device_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.vectorizers.UFuncMechanism.as_device_array" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the <cite>obj</cite> to a device array
+Override in subclass</p>
+<p>Default implementation is an identity function</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.vectorizers.UFuncMechanism.broadcast_device">
+<span class="sig-name descname"><span class="pre">broadcast_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.vectorizers.UFuncMechanism.broadcast_device" title="Permalink to this definition"></a></dt>
+<dd><p>Handles ondevice broadcasting</p>
+<p>Override in subclass to add support.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.vectorizers.UFuncMechanism.call">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kws</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.vectorizers.UFuncMechanism.call" title="Permalink to this definition"></a></dt>
+<dd><p>Perform the entire ufunc call mechanism.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>typemap (dict): Signature mapped to kernel.
+args: Arguments to the &#64;vectorize function.
+kws (optional): Optional keywords. Not supported.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.vectorizers.UFuncMechanism.device_array">
+<span class="sig-name descname"><span class="pre">device_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.vectorizers.UFuncMechanism.device_array" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.vectorizers.UFuncMechanism.is_device_array">
+<span class="sig-name descname"><span class="pre">is_device_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.vectorizers.UFuncMechanism.is_device_array" title="Permalink to this definition"></a></dt>
+<dd><p>Is the <cite>obj</cite> a device array?
+Override in subclass</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.vectorizers.UFuncMechanism.is_host_array">
+<span class="sig-name descname"><span class="pre">is_host_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.vectorizers.UFuncMechanism.is_host_array" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.vectorizers.UFuncMechanism.launch">
+<span class="sig-name descname"><span class="pre">launch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.vectorizers.UFuncMechanism.launch" title="Permalink to this definition"></a></dt>
+<dd><p>Implements device function invocation
+Override in subclass</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.vectorizers.UFuncMechanism.to_device">
+<span class="sig-name descname"><span class="pre">to_device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hostary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.vectorizers.UFuncMechanism.to_device" title="Permalink to this definition"></a></dt>
+<dd><p>Implement to device transfer
+Override in subclass</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.vectorizers.UFuncMechanism.to_host">
+<span class="sig-name descname"><span class="pre">to_host</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">devary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.vectorizers.UFuncMechanism.to_host" title="Permalink to this definition"></a></dt>
+<dd><p>Implement to host transfer
+Override in subclass</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.vectorizers.Vectorize">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.vectorizers.</span></span><span class="sig-name descname"><span class="pre">Vectorize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetoptions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.vectorizers.Vectorize" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceVectorize</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.vectorizers.Vectorize.build_ufunc">
+<span class="sig-name descname"><span class="pre">build_ufunc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.vectorizers.Vectorize.build_ufunc" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 

@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.ocl.atomics package &mdash; numba-dpex  documentation</title>
+  <title>numba_dpex.ocl.atomics package &mdash; numba-dpex 0.21.1+3.g5230251b documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -98,12 +98,47 @@
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="numba_dpex.ocl.atomics.atomic_helper.html">numba_dpex.ocl.atomics.atomic_helper module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="numba_dpex.ocl.atomics.atomic_helper.html">numba_dpex.ocl.atomics.atomic_helper module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.get_memory_semantics_mask"><code class="docutils literal notranslate"><span class="pre">get_memory_semantics_mask()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.get_scope"><code class="docutils literal notranslate"><span class="pre">get_scope()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_order"><code class="docutils literal notranslate"><span class="pre">sycl_memory_order</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_order.acq_rel"><code class="docutils literal notranslate"><span class="pre">sycl_memory_order.acq_rel</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_order.acquire"><code class="docutils literal notranslate"><span class="pre">sycl_memory_order.acquire</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_order.relaxed"><code class="docutils literal notranslate"><span class="pre">sycl_memory_order.relaxed</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_order.release"><code class="docutils literal notranslate"><span class="pre">sycl_memory_order.release</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_order.seq_cst"><code class="docutils literal notranslate"><span class="pre">sycl_memory_order.seq_cst</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_scope"><code class="docutils literal notranslate"><span class="pre">sycl_memory_scope</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_scope.device"><code class="docutils literal notranslate"><span class="pre">sycl_memory_scope.device</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_scope.sub_group"><code class="docutils literal notranslate"><span class="pre">sycl_memory_scope.sub_group</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_scope.system"><code class="docutils literal notranslate"><span class="pre">sycl_memory_scope.system</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_scope.work_group"><code class="docutils literal notranslate"><span class="pre">sycl_memory_scope.work_group</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba_dpex.ocl.atomics.atomic_helper.html#numba_dpex.ocl.atomics.atomic_helper.sycl_memory_scope.work_item"><code class="docutils literal notranslate"><span class="pre">sycl_memory_scope.work_item</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
-<section id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this heading"></a></h2>
+<section id="module-numba_dpex.ocl.atomics">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-numba_dpex.ocl.atomics" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.atomics.atomic_support_present">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.atomics.</span></span><span class="sig-name descname"><span class="pre">atomic_support_present</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.atomics.atomic_support_present" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.atomics.get_atomic_spirv_path">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.atomics.</span></span><span class="sig-name descname"><span class="pre">get_atomic_spirv_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.atomics.get_atomic_spirv_path" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.atomics.read_atomic_spirv_file">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.atomics.</span></span><span class="sig-name descname"><span class="pre">read_atomic_spirv_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.atomics.read_atomic_spirv_file" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
 </section>
 

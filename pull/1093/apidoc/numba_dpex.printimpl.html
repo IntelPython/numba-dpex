@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.printimpl module &mdash; numba-dpex  documentation</title>
+  <title>numba_dpex.printimpl module &mdash; numba-dpex 0.21.1+3.g5230251b documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -92,8 +92,52 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="numba-dpex-printimpl-module">
-<h1>numba_dpex.printimpl module<a class="headerlink" href="#numba-dpex-printimpl-module" title="Permalink to this heading"></a></h1>
+  <section id="module-numba_dpex.printimpl">
+<span id="numba-dpex-printimpl-module"></span><h1>numba_dpex.printimpl module<a class="headerlink" href="#module-numba_dpex.printimpl" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.printimpl.const_print_impl">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.printimpl.</span></span><span class="sig-name descname"><span class="pre">const_print_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigval</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.printimpl.const_print_impl" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.printimpl.declare_print">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.printimpl.</span></span><span class="sig-name descname"><span class="pre">declare_print</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lmod</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.printimpl.declare_print" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.printimpl.int_print_impl">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.printimpl.</span></span><span class="sig-name descname"><span class="pre">int_print_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.printimpl.int_print_impl" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.printimpl.print_item">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.printimpl.</span></span><span class="sig-name descname"><span class="pre">print_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.printimpl.print_item" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.printimpl.</span></span><span class="sig-name descname"><span class="pre">print_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">IntegerLiteral</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span></dt>
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.printimpl.</span></span><span class="sig-name descname"><span class="pre">print_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Integer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span></dt>
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.printimpl.</span></span><span class="sig-name descname"><span class="pre">print_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span></dt>
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.printimpl.</span></span><span class="sig-name descname"><span class="pre">print_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ty</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StringLiteral</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigval</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Handle printing of a single value of the given Numba type.
+A (format string, [list of arguments]) is returned that will allow
+forming the final printf()-like call.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.printimpl.print_varargs">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.printimpl.</span></span><span class="sig-name descname"><span class="pre">print_varargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.printimpl.print_varargs" title="Permalink to this definition"></a></dt>
+<dd><p>This function is a generic ‘print’ wrapper for arbitrary types.
+It dispatches to the appropriate ‘print’ implementations above
+depending on the detected real types in the signature.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.printimpl.real_print_impl">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.printimpl.</span></span><span class="sig-name descname"><span class="pre">real_print_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.printimpl.real_print_impl" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
 
 

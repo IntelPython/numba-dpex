@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.kernel_interface.dispatcher module &mdash; numba-dpex  documentation</title>
+  <title>numba_dpex.core.kernel_interface.dispatcher module &mdash; numba-dpex 0.21.1+3.g5230251b documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -92,8 +92,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="numba-dpex-core-kernel-interface-dispatcher-module">
-<h1>numba_dpex.core.kernel_interface.dispatcher module<a class="headerlink" href="#numba-dpex-core-kernel-interface-dispatcher-module" title="Permalink to this heading"></a></h1>
+  <section id="module-numba_dpex.core.kernel_interface.dispatcher">
+<span id="numba-dpex-core-kernel-interface-dispatcher-module"></span><h1>numba_dpex.core.kernel_interface.dispatcher module<a class="headerlink" href="#module-numba_dpex.core.kernel_interface.dispatcher" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.dispatcher.JitKernel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.kernel_interface.dispatcher.</span></span><span class="sig-name descname"><span class="pre">JitKernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyfunc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compile_flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specialization_sigs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.dispatcher.JitKernel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Functor to wrap a kernel function and JIT compile and dispatch it to a
+specified SYCL queue.</p>
+<p>A JitKernel is returned by the kernel decorator and wraps an instance of a
+device kernel function. A device kernel function is specialized for a
+backend may represent a binary object in a lower-level IR. Currently, only
+SPIR-V binary format device functions for level-zero and opencl backends
+are supported.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.dispatcher.JitKernel.cache">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cache</span></span><a class="headerlink" href="#numba_dpex.core.kernel_interface.dispatcher.JitKernel.cache" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.dispatcher.JitKernel.cache_hits">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cache_hits</span></span><a class="headerlink" href="#numba_dpex.core.kernel_interface.dispatcher.JitKernel.cache_hits" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
 
 

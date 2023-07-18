@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.ocl.oclimpl module &mdash; numba-dpex  documentation</title>
+  <title>numba_dpex.ocl.oclimpl module &mdash; numba-dpex 0.21.1+3.g5230251b documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -92,8 +92,113 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="numba-dpex-ocl-oclimpl-module">
-<h1>numba_dpex.ocl.oclimpl module<a class="headerlink" href="#numba-dpex-ocl-oclimpl-module" title="Permalink to this heading"></a></h1>
+  <section id="module-numba_dpex.ocl.oclimpl">
+<span id="numba-dpex-ocl-oclimpl-module"></span><h1>numba_dpex.ocl.oclimpl module<a class="headerlink" href="#module-numba_dpex.ocl.oclimpl" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.atomic_add">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">atomic_add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.atomic_add" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.atomic_add_tuple">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">atomic_add_tuple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.atomic_add_tuple" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.atomic_sub_tuple">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">atomic_sub_tuple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.atomic_sub_tuple" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.atomic_sub_wrapper">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">atomic_sub_wrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.atomic_sub_wrapper" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.barrier_no_arg_impl">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">barrier_no_arg_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.barrier_no_arg_impl" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.barrier_one_arg_impl">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">barrier_one_arg_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.barrier_one_arg_impl" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.dpex_local_array_integer">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">dpex_local_array_integer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.dpex_local_array_integer" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.dpex_local_array_tuple">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">dpex_local_array_tuple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.dpex_local_array_tuple" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.dpex_private_array_integer">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">dpex_private_array_integer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.dpex_private_array_integer" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.dpex_private_array_tuple">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">dpex_private_array_tuple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.dpex_private_array_tuple" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.get_global_id_impl">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">get_global_id_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.get_global_id_impl" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.get_global_size_impl">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">get_global_size_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.get_global_size_impl" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.get_group_id_impl">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">get_group_id_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.get_group_id_impl" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.get_local_id_impl">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">get_local_id_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.get_local_id_impl" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.get_local_size_impl">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">get_local_size_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.get_local_size_impl" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.get_num_groups_impl">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">get_num_groups_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.get_num_groups_impl" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.get_work_dim_impl">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">get_work_dim_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.get_work_dim_impl" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.insert_and_call_atomic_fn">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">insert_and_call_atomic_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fn_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ptr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">addrspace</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.insert_and_call_atomic_fn" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.mem_fence_impl">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">mem_fence_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.mem_fence_impl" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.native_atomic_add">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">native_atomic_add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.native_atomic_add" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.ocl.oclimpl.sub_group_barrier_impl">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.ocl.oclimpl.</span></span><span class="sig-name descname"><span class="pre">sub_group_barrier_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.ocl.oclimpl.sub_group_barrier_impl" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
 
 

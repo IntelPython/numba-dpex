@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.pipelines.dpjit_compiler module &mdash; numba-dpex  documentation</title>
+  <title>numba_dpex.core.pipelines.dpjit_compiler module &mdash; numba-dpex 0.21.1+3.g5230251b documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -92,8 +92,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="numba-dpex-core-pipelines-dpjit-compiler-module">
-<h1>numba_dpex.core.pipelines.dpjit_compiler module<a class="headerlink" href="#numba-dpex-core-pipelines-dpjit-compiler-module" title="Permalink to this heading"></a></h1>
+  <section id="module-numba_dpex.core.pipelines.dpjit_compiler">
+<span id="numba-dpex-core-pipelines-dpjit-compiler-module"></span><h1>numba_dpex.core.pipelines.dpjit_compiler module<a class="headerlink" href="#module-numba_dpex.core.pipelines.dpjit_compiler" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="numba_dpex.core.pipelines.dpjit_compiler.DpjitCompiler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.pipelines.dpjit_compiler.</span></span><span class="sig-name descname"><span class="pre">DpjitCompiler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typingctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetctx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locals</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.pipelines.dpjit_compiler.DpjitCompiler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">CompilerBase</span></code></p>
+<p>Dpex’s compiler pipeline to offload parfor nodes into SYCL kernels.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="numba_dpex.core.pipelines.dpjit_compiler.DpjitCompiler.define_pipelines">
+<span class="sig-name descname"><span class="pre">define_pipelines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.pipelines.dpjit_compiler.DpjitCompiler.define_pipelines" title="Permalink to this definition"></a></dt>
+<dd><p>Child classes override this to customize the pipelines in use.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

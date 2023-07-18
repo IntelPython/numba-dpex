@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.kernel_interface.utils module &mdash; numba-dpex  documentation</title>
+  <title>numba_dpex.core.kernel_interface.utils module &mdash; numba-dpex 0.21.1+3.g5230251b documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -92,8 +92,46 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="numba-dpex-core-kernel-interface-utils-module">
-<h1>numba_dpex.core.kernel_interface.utils module<a class="headerlink" href="#numba-dpex-core-kernel-interface-utils-module" title="Permalink to this heading"></a></h1>
+  <section id="module-numba_dpex.core.kernel_interface.utils">
+<span id="numba-dpex-core-kernel-interface-utils-module"></span><h1>numba_dpex.core.kernel_interface.utils module<a class="headerlink" href="#module-numba_dpex.core.kernel_interface.utils" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.utils.chk_compute_follows_data_compliance">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.kernel_interface.utils.</span></span><span class="sig-name descname"><span class="pre">chk_compute_follows_data_compliance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">usm_array_arglist</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.utils.chk_compute_follows_data_compliance" title="Permalink to this definition"></a></dt>
+<dd><p>Check if all the usm ndarray’s have the same device.</p>
+<p>Extracts the device filter string from the Numba inferred USMNdArray
+type. Check if the devices corresponding to the filter string are
+equivalent and return a <code class="docutils literal notranslate"><span class="pre">dpctl.SyclDevice</span></code> object corresponding to the
+common filter string.</p>
+<p>If an exception occurred in creating a <code class="docutils literal notranslate"><span class="pre">dpctl.SyclDevice</span></code>, or the
+devices are not equivalent then returns None.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>usm_array_arglist : A list of usm_ndarray types specified as
+arguments to the kernel.</p>
+</dd>
+<dt>Returns:</dt><dd><p>A <code class="docutils literal notranslate"><span class="pre">dpctl.SyclDevice</span></code> object if all USMNdArray have same device, or
+else None is returned.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_dpex.core.kernel_interface.utils.determine_kernel_launch_queue">
+<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.kernel_interface.utils.</span></span><span class="sig-name descname"><span class="pre">determine_kernel_launch_queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argtypes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.kernel_interface.utils.determine_kernel_launch_queue" title="Permalink to this definition"></a></dt>
+<dd><p>Determines the queue where the kernel is to be launched.</p>
+<p>The execution queue is derived following Python Array API’s
+“compute follows data” programming model.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>argtypes : The Numba inferred type for each argument.
+kernel_name : The name of the kernel function</p>
+</dd>
+<dt>Returns:</dt><dd><p>A queue the common queue used to allocate the arrays. If no such
+queue exists, then raises an Exception.</p>
+</dd>
+<dt>Raises:</dt><dd><p>ExecutionQueueInferenceError: If the queue could not be inferred.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
