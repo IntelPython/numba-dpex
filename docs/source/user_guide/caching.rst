@@ -1,4 +1,6 @@
 .. _caching:
+.. include:: ./../ext_links.txt
+
 
 Caching Mechanism in Numba-dpex
 ================================
@@ -13,7 +15,7 @@ evicted, we utilize numba's file-based caching mechanism described
 `here <https://numba.pydata.org/numba-doc/latest/developer/caching.html>`_.
 
 Algorithm
-==========
+---------
 
 The caching mechanism for Numba-dpex works as follows: The cache is an LRU cache
 backed by an ordered dictionary mapped onto a doubly linked list. The tail of
@@ -29,7 +31,7 @@ However, if the program is seeking for a kernel that has been evicted, the
 algorithm will load it from the file and enqueue in the cache.
 
 Settings
-========
+--------
 
 Therefore, we employ similar environment variables as used in Numba,
 i.e. ``NUMBA_CACHE_DIR`` etc. However we add three more environment variables to

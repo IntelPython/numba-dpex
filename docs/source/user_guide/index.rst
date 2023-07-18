@@ -15,4 +15,5 @@ User Guide
     kernel_programming/index
     dpnp_offload/index
     debugging/index
+    caching
     useful_links
