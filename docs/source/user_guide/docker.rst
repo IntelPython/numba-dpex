@@ -1,4 +1,5 @@
 .. _docker:
+.. include:: ./../ext_links.txt
 
 Docker Support
 ==============
