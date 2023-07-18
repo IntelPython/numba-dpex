@@ -7,7 +7,7 @@ Kernel Programming Basics
 `Data Parallel Extensions for Python*`_ introduce a concept of an *offload kernel*, defined as
 a part of a Python program being submitted for execution to the device queue.
 
-.. image:: ./../../_images/kernel-queue-device.png
+.. image:: ./../../../asset/images/kernel-queue-device.png
     :scale: 50%
     :align: center
     :alt: Offload Kernel
@@ -18,7 +18,7 @@ You split data into small pieces, and each piece will be a unit of work, or a *w
 work items is called *global size*. You can also group work items into bigger chunks called *work groups*.
 The number of work items in the work group is called the *local size*.
 
-.. image:: ./../../_images/kernel_prog_model.png
+.. image:: ./../../../asset/images/kernel_prog_model.png
     :scale: 50%
     :align: center
     :alt: Offload Kernel
