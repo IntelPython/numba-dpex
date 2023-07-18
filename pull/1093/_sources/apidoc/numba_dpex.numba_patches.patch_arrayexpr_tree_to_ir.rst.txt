@@ -1,7 +1,0 @@
-numba\_dpex.numba\_patches.patch\_arrayexpr\_tree\_to\_ir module
-================================================================
-
-.. automodule:: numba_dpex.numba_patches.patch_arrayexpr_tree_to_ir
-   :members:
-   :undoc-members:
-   :show-inheritance:

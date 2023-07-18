@@ -1,7 +1,0 @@
-numba\_dpex.core.types.usm\_ndarray\_type module
-================================================
-
-.. automodule:: numba_dpex.core.types.usm_ndarray_type
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -1,7 +1,0 @@
-numba\_dpex.utils.constants module
-==================================
-
-.. automodule:: numba_dpex.utils.constants
-   :members:
-   :undoc-members:
-   :show-inheritance:
