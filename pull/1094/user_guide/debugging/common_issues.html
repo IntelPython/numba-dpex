@@ -18,7 +18,7 @@
         gtag('config', 'G-LGGL0NJK6P');
     </script>
     
-    <title>Kernel Programming Basics &#8212; numba-dpex  documentation</title>
+    <title>Common issues and tips &#8212; numba-dpex  documentation</title>
   
   
   
@@ -47,11 +47,11 @@
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/kernel_programming/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/debugging/common_issues';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Writing Data Parallel Kernels" href="writing_kernels.html" />
-    <link rel="prev" title="User Guide" href="../index.html" />
+    <link rel="next" title="Useful links" href="../useful_links.html" />
+    <link rel="prev" title="Limitations" href="limitations.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -279,6 +279,10 @@ document.write(`
   
 
   
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
 </div>
 
     </nav>
@@ -431,38 +435,38 @@ document.write(`
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Kernel Programming Basics</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html">Writing Data Parallel Kernels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory-management.html">Memory Management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="selecting_device.html">Defining the execution queue for a kernel function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="random.html">Random Number Generation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../kernel_programming/index.html">Kernel Programming Basics</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/writing_kernels.html">Writing Data Parallel Kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/memory-management.html">Memory Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/synchronization.html">Synchronization Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/device-functions.html">Writing Device Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/atomic-operations.html">Supported Atomic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/selecting_device.html">Defining the execution queue for a kernel function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/reduction.html">Reduction on SYCL-supported Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/ufunc.html">Universal Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/random.html">Random Number Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../dpnp_offload/index.html">Compiling and Offloading DPNP</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../debugging/index.html">Debugging with Intel® Distribution for GDB*</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../debugging/set_up_machine.html">Set up the machine for debugging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../debugging/debugging_environment.html">Configure debugging environment</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../debugging/features.html">Supported Features</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../debugging/breakpoints.html">Breakpoints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../debugging/stepping.html">Stepping</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../debugging/frame_info.html">Information About a Frame</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../debugging/backtrace.html">Backtrace</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../debugging/data.html">Examining Data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../debugging/symbols.html">Examining the Symbol Table</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../debugging/altering.html">Altering Execution</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../debugging/local_variables.html">Debugging Local Variables</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../debugging/numba-0.55.html">Debugging Features in Numba 0.55</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Debugging with Intel® Distribution for GDB*</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="set_up_machine.html">Set up the machine for debugging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debugging_environment.html">Configure debugging environment</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="features.html">Supported Features</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="breakpoints.html">Breakpoints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stepping.html">Stepping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="frame_info.html">Information About a Frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="backtrace.html">Backtrace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html">Examining Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="symbols.html">Examining the Symbol Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="altering.html">Altering Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="local_variables.html">Debugging Local Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba-0.55.html">Debugging Features in Numba 0.55</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../debugging/limitations.html">Limitations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../debugging/common_issues.html">Common issues and tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="limitations.html">Limitations</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Common issues and tips</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../useful_links.html">Useful links</a></li>
@@ -506,7 +510,10 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">User Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">Kernel Programming Basics</li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Debugging with Intel® Distribution for GDB*</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Common issues and tips</li>
   </ul>
 </nav>
 </div>
@@ -523,87 +530,51 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <span class="target" id="index"></span><section id="kernel-programming-basics">
-<h1>Kernel Programming Basics<a class="headerlink" href="#kernel-programming-basics" title="Permalink to this heading">#</a></h1>
-<p><a class="reference external" href="https://intelpython.github.io/DPEP/main/">Data Parallel Extensions for Python*</a> introduce a concept of an <em>offload kernel</em>, defined as
-a part of a Python program being submitted for execution to the device queue.</p>
-<a class="reference internal image-reference" href="../../_images/kernel-queue-device.png"><img alt="Offload Kernel" class="align-center" src="../../_images/kernel-queue-device.png" style="width: 520.0px; height: 351.0px;" /></a>
-<p>There are multiple ways how to write offload kernels. CUDA*, OpenCl*, and SYCL* offer similar programming model
-known as the <em>data parallel kernel programming</em>. In this model you express the work in terms of <em>work items</em>.
-You split data into small pieces, and each piece will be a unit of work, or a <em>work item</em>. The total number of
-work items is called <em>global size</em>. You can also group work items into bigger chunks called <em>work groups</em>.
-The number of work items in the work group is called the <em>local size</em>.</p>
-<a class="reference internal image-reference" href="../../_images/kernel_prog_model.png"><img alt="Offload Kernel" class="align-center" src="../../_images/kernel_prog_model.png" style="width: 344.0px; height: 223.0px;" /></a>
-<p>In this example there are 48 <em>work items</em> (8 in dimension 0, and 6 in dimension 1), that is the <em>global size</em> is 48.
-Work items are grouped in <em>work groups</em> with the <em>local size</em> 8 (4 in dimension 0, and 2 in dimension 1). There are
-total 48/8 = 6 work groups.</p>
-<p>In the <em>data parallel kernel programming</em> model you write a function that processes a given work item.
-Such a function is called the <em>data parallel kernel</em>.</p>
-<p><strong>Data Parallel Extension for Numba</strong> offers a way to write data parallel kernels directly using Python using
-<code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code>. It bears similarities with <code class="docutils literal notranslate"><span class="pre">numba.cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">numba.roc</span></code>, but unlike these proprietary
-programming models <code class="docutils literal notranslate"><span class="pre">numba_dpex</span></code> is built on top of <a class="reference external" href="https://www.khronos.org/sycl/">SYCL*</a> , which is hardware agnostic, meaning
-that with <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code> programming model you will be able to write a portable code targeting different
-hardware vendors.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The current version of <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> supports Intel SYCL devices only</p>
+  <section id="common-issues-and-tips">
+<h1>Common issues and tips<a class="headerlink" href="#common-issues-and-tips" title="Permalink to this heading">#</a></h1>
+<section id="breakpoints-are-not-hit">
+<h2>Breakpoints are not hit<a class="headerlink" href="#breakpoints-are-not-hit" title="Permalink to this heading">#</a></h2>
+<p>If the breakpoint is not hit, you will see the following output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>...<span class="w"> </span>intelgt:<span class="w"> </span>gdbserver-gt<span class="w"> </span>failed<span class="w"> </span>to<span class="w"> </span>start.<span class="w">  </span>Check<span class="w"> </span><span class="k">if</span><span class="w"> </span>igfxdcd<span class="w"> </span>is<span class="w"> </span>installed,
+or<span class="w"> </span>use<span class="w"> </span>env<span class="w"> </span>variable<span class="w"> </span><span class="nv">INTELGT_AUTO_ATTACH_DISABLE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>to<span class="w"> </span>disable<span class="w"> </span>auto-attach.
+...
+</pre></div>
 </div>
-<div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">This document will cover the following chapters:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="writing_kernels.html">Writing Data Parallel Kernels</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html#kernel-declaration">Kernel Declaration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html#kernel-invocation">Kernel Invocation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html#kernel-invocation-new-syntax">Kernel Invocation (New Syntax)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html#kernel-indexing-functions">Kernel Indexing Functions</a></li>
+<p>To install the debug companion driver (igfxdcd), refer to the
+<a class="reference internal" href="set_up_machine.html#debugging-machine-dcd-driver"><span class="std std-ref">Debug companion driver (DCD)</span></a> section.</p>
+</section>
+<section id="debugging-is-not-stable">
+<h2>Debugging is not stable<a class="headerlink" href="#debugging-is-not-stable" title="Permalink to this heading">#</a></h2>
+<p>Debug features depend heavily on optimization level. At full optimization
+(equivalent to O3), most of the variables are optimized out. It is recommended
+to debug at “no optimization” level via <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">NUMBA_OPT</span></code> (e.g. <code class="samp docutils literal notranslate"><span class="pre">export</span>
+<span class="pre">NUMBA_OPT=0</span></code>). For more information, refer to the Numba documentation <a class="reference external" href="http://numba.pydata.org/numba-doc/latest/user/troubleshoot.html#debugging-jit-compiled-code-with-gdb">Debugging
+JIT compiled code with GDB*</a>.</p>
+<p>It is possible to enable debug mode for the full application by setting the
+environment variable <code class="docutils literal notranslate"><span class="pre">NUMBA_DPEX_DEBUGINFO=1</span></code> instead of <code class="docutils literal notranslate"><span class="pre">debug</span></code> option
+inside the <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code> decorator. This sets the default value of the
+debug option in <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code>. If <code class="docutils literal notranslate"><span class="pre">NUMBA_DPEX_DEBUGINFO</span></code> is set to a
+non-zero value, the debug data is emitted for the full application. Debug mode
+can be turned off on individual functions by setting <code class="docutils literal notranslate"><span class="pre">debug=False</span></code> in
+<code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code>.</p>
+<p>See also:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="http://numba.pydata.org/numba-doc/latest/user/troubleshoot.html#debugging-jit-compiled-code-with-gdb">Debugging JIT compiled code with GDB*</a></p></li>
+<li><p><a class="reference external" href="https://numba.pydata.org/numba-doc/dev/reference/envvars.html#envvar-NUMBA_DEBUGINFO">NUMBA_DEBUGINFO</a></p></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="memory-management.html">Memory Management</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="memory-management.html#sycl-usm-array-interface">SYCL USM Array Interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory-management.html#device-only-memory-and-explicit-data-transfer">Device-only memory and explicit data transfer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory-management.html#local-memory">Local memory</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory-management.html#private-and-constant-memory">Private and Constant memory</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html#example">Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html#generating-native-fp-atomics">Generating Native FP Atomics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html#full-examples">Full examples</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="selecting_device.html">Defining the execution queue for a kernel function</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="selecting_device.html#example">Example</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="reduction.html#example-1">Example 1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reduction.html#example-2">Example 2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reduction.html#full-examples">Full examples</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="ufunc.html">Universal Functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ufunc.html#example-1-basic-usage">Example 1: Basic Usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufunc.html#example-2-calling-numba-vectorize-inside-a-numba-dpex-kernel">Example 2: Calling <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> inside a <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufunc.html#full-examples">Full Examples</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="random.html">Random Number Generation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="random.html#supported-functions">Supported functions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#built-in-types">Built-in types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#built-in-functions">Built-in functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#standard-library-modules">Standard library modules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#unsupported-constructs">Unsupported Constructs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#numpy-support">NumPy support</a></li>
-</ul>
-</li>
-</ul>
-</div>
+</div></blockquote>
+</section>
+<section id="breakpoint-is-hit-twice">
+<h2>Breakpoint is hit twice<a class="headerlink" href="#breakpoint-is-hit-twice" title="Permalink to this heading">#</a></h2>
+<p>The first line of the kernel and functions is hit twice. This happens because
+you are debugging a multi-threaded program, so multiple events may be received
+from different threads. This is the default behavior, but you can configure it
+for more efficient debugging. To ensure that the current thread executes a
+single line without interference, activate the scheduler-locking setting.</p>
+<p>To activate the scheduler-locking setting, refer to the <a class="reference internal" href="stepping.html#single-stepping"><span class="std std-ref">set scheduler-locking step</span></a>
+section.</p>
+</section>
 </section>
 
 
@@ -618,20 +589,20 @@ hardware vendors.</p>
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../index.html"
+       href="limitations.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">User Guide</p>
+        <p class="prev-next-title">Limitations</p>
       </div>
     </a>
     <a class="right-next"
-       href="writing_kernels.html"
+       href="../useful_links.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Writing Data Parallel Kernels</p>
+        <p class="prev-next-title">Useful links</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -644,6 +615,22 @@ hardware vendors.</p>
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#breakpoints-are-not-hit">Breakpoints are not hit</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#debugging-is-not-stable">Debugging is not stable</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#breakpoint-is-hit-twice">Breakpoint is hit twice</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

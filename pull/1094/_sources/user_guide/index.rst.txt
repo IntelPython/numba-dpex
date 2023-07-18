@@ -14,6 +14,5 @@ User Guide
 
     kernel_programming/index
     dpnp_offload/index
-    performance_tips
-    troubleshooting
+    debugging/index
     useful_links

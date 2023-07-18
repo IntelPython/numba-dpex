@@ -50,7 +50,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/dpnp_offload/index';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Performance Tips" href="../performance_tips.html" />
+    <link rel="next" title="Debugging with Intel® Distribution for GDB*" href="../debugging/index.html" />
     <link rel="prev" title="Supported Python Features inside numba_dpex.kernel" href="../kernel_programming/supported-python-features.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -446,10 +446,26 @@ document.write(`
 </ul>
 </li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Compiling and Offloading DPNP</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../performance_tips.html">Performance Tips</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../debugging/index.html">Debugging with Intel® Distribution for GDB*</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../debugging/set_up_machine.html">Set up the machine for debugging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../debugging/debugging_environment.html">Configure debugging environment</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../debugging/features.html">Supported Features</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../debugging/breakpoints.html">Breakpoints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../debugging/stepping.html">Stepping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../debugging/frame_info.html">Information About a Frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../debugging/backtrace.html">Backtrace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../debugging/data.html">Examining Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../debugging/symbols.html">Examining the Symbol Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../debugging/altering.html">Altering Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../debugging/local_variables.html">Debugging Local Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../debugging/numba-0.55.html">Debugging Features in Numba 0.55</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../debugging/limitations.html">Limitations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../debugging/common_issues.html">Common issues and tips</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../useful_links.html">Useful links</a></li>
-
 </ul>
 </div>
 </nav></div>
@@ -533,11 +549,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="../performance_tips.html"
+       href="../debugging/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Performance Tips</p>
+        <p class="prev-next-title">Debugging with Intel® Distribution for GDB*</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

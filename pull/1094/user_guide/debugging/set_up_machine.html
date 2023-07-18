@@ -18,7 +18,7 @@
         gtag('config', 'G-LGGL0NJK6P');
     </script>
     
-    <title>Kernel Programming Basics &#8212; numba-dpex  documentation</title>
+    <title>Set up the machine for debugging &#8212; numba-dpex  documentation</title>
   
   
   
@@ -47,11 +47,11 @@
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/kernel_programming/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/debugging/set_up_machine';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Writing Data Parallel Kernels" href="writing_kernels.html" />
-    <link rel="prev" title="User Guide" href="../index.html" />
+    <link rel="next" title="Configure debugging environment" href="debugging_environment.html" />
+    <link rel="prev" title="Debugging with Intel® Distribution for GDB*" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -279,6 +279,10 @@ document.write(`
   
 
   
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
 </div>
 
     </nav>
@@ -431,38 +435,38 @@ document.write(`
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Kernel Programming Basics</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html">Writing Data Parallel Kernels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory-management.html">Memory Management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="selecting_device.html">Defining the execution queue for a kernel function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="random.html">Random Number Generation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../kernel_programming/index.html">Kernel Programming Basics</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/writing_kernels.html">Writing Data Parallel Kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/memory-management.html">Memory Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/synchronization.html">Synchronization Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/device-functions.html">Writing Device Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/atomic-operations.html">Supported Atomic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/selecting_device.html">Defining the execution queue for a kernel function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/reduction.html">Reduction on SYCL-supported Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/ufunc.html">Universal Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/random.html">Random Number Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../dpnp_offload/index.html">Compiling and Offloading DPNP</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../debugging/index.html">Debugging with Intel® Distribution for GDB*</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../debugging/set_up_machine.html">Set up the machine for debugging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../debugging/debugging_environment.html">Configure debugging environment</a></li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../debugging/features.html">Supported Features</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../debugging/breakpoints.html">Breakpoints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../debugging/stepping.html">Stepping</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../debugging/frame_info.html">Information About a Frame</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../debugging/backtrace.html">Backtrace</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../debugging/data.html">Examining Data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../debugging/symbols.html">Examining the Symbol Table</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../debugging/altering.html">Altering Execution</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../debugging/local_variables.html">Debugging Local Variables</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../debugging/numba-0.55.html">Debugging Features in Numba 0.55</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Debugging with Intel® Distribution for GDB*</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Set up the machine for debugging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debugging_environment.html">Configure debugging environment</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="features.html">Supported Features</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="breakpoints.html">Breakpoints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="stepping.html">Stepping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="frame_info.html">Information About a Frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="backtrace.html">Backtrace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="data.html">Examining Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="symbols.html">Examining the Symbol Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="altering.html">Altering Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="local_variables.html">Debugging Local Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="numba-0.55.html">Debugging Features in Numba 0.55</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../debugging/limitations.html">Limitations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../debugging/common_issues.html">Common issues and tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="limitations.html">Limitations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common_issues.html">Common issues and tips</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../useful_links.html">Useful links</a></li>
@@ -506,7 +510,10 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">User Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">Kernel Programming Basics</li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Debugging with Intel® Distribution for GDB*</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Set up the machine for debugging</li>
   </ul>
 </nav>
 </div>
@@ -523,87 +530,110 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <span class="target" id="index"></span><section id="kernel-programming-basics">
-<h1>Kernel Programming Basics<a class="headerlink" href="#kernel-programming-basics" title="Permalink to this heading">#</a></h1>
-<p><a class="reference external" href="https://intelpython.github.io/DPEP/main/">Data Parallel Extensions for Python*</a> introduce a concept of an <em>offload kernel</em>, defined as
-a part of a Python program being submitted for execution to the device queue.</p>
-<a class="reference internal image-reference" href="../../_images/kernel-queue-device.png"><img alt="Offload Kernel" class="align-center" src="../../_images/kernel-queue-device.png" style="width: 520.0px; height: 351.0px;" /></a>
-<p>There are multiple ways how to write offload kernels. CUDA*, OpenCl*, and SYCL* offer similar programming model
-known as the <em>data parallel kernel programming</em>. In this model you express the work in terms of <em>work items</em>.
-You split data into small pieces, and each piece will be a unit of work, or a <em>work item</em>. The total number of
-work items is called <em>global size</em>. You can also group work items into bigger chunks called <em>work groups</em>.
-The number of work items in the work group is called the <em>local size</em>.</p>
-<a class="reference internal image-reference" href="../../_images/kernel_prog_model.png"><img alt="Offload Kernel" class="align-center" src="../../_images/kernel_prog_model.png" style="width: 344.0px; height: 223.0px;" /></a>
-<p>In this example there are 48 <em>work items</em> (8 in dimension 0, and 6 in dimension 1), that is the <em>global size</em> is 48.
-Work items are grouped in <em>work groups</em> with the <em>local size</em> 8 (4 in dimension 0, and 2 in dimension 1). There are
-total 48/8 = 6 work groups.</p>
-<p>In the <em>data parallel kernel programming</em> model you write a function that processes a given work item.
-Such a function is called the <em>data parallel kernel</em>.</p>
-<p><strong>Data Parallel Extension for Numba</strong> offers a way to write data parallel kernels directly using Python using
-<code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code>. It bears similarities with <code class="docutils literal notranslate"><span class="pre">numba.cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">numba.roc</span></code>, but unlike these proprietary
-programming models <code class="docutils literal notranslate"><span class="pre">numba_dpex</span></code> is built on top of <a class="reference external" href="https://www.khronos.org/sycl/">SYCL*</a> , which is hardware agnostic, meaning
-that with <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code> programming model you will be able to write a portable code targeting different
-hardware vendors.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The current version of <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> supports Intel SYCL devices only</p>
+  <section id="set-up-the-machine-for-debugging">
+<h1>Set up the machine for debugging<a class="headerlink" href="#set-up-the-machine-for-debugging" title="Permalink to this heading">#</a></h1>
+<section id="graphics-driver">
+<h2>Graphics driver<a class="headerlink" href="#graphics-driver" title="Permalink to this heading">#</a></h2>
+<p>Install drivers using the following guides:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://dgpu-docs.intel.com/installation-guides/index.html">Intel® GPGPU driver installation guide</a></p></li>
+<li><p><a class="reference external" href="https://www.intel.com/content/www/us/en/docs/oneapi/installation-guide-linux/current/install-intel-gpu-drivers.html">Intel® oneAPI GPU driver installation guide</a></p></li>
+</ul>
+</div></blockquote>
+<p>The user should be in the “video” group (on Ubuntu* 18, Fedora* 30, and SLES* 15
+SP1) or “render” group (on Ubuntu* 19 and higher, CentOS* 8, and Fedora* 31). An
+administrator with sudo or root privileges can change the group owner of
+<cite>/dev/dri/renderD*</cite> and <cite>/dev/dri/card*</cite> to a group ID used by your user base:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>usermod<span class="w"> </span>-a<span class="w"> </span>-G<span class="w"> </span>video<span class="w"> </span>&lt;username&gt;
+</pre></div>
 </div>
-<div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">This document will cover the following chapters:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="writing_kernels.html">Writing Data Parallel Kernels</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html#kernel-declaration">Kernel Declaration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html#kernel-invocation">Kernel Invocation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html#kernel-invocation-new-syntax">Kernel Invocation (New Syntax)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html#kernel-indexing-functions">Kernel Indexing Functions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="memory-management.html">Memory Management</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="memory-management.html#sycl-usm-array-interface">SYCL USM Array Interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory-management.html#device-only-memory-and-explicit-data-transfer">Device-only memory and explicit data transfer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory-management.html#local-memory">Local memory</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory-management.html#private-and-constant-memory">Private and Constant memory</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html#example">Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html#generating-native-fp-atomics">Generating Native FP Atomics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html#full-examples">Full examples</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="selecting_device.html">Defining the execution queue for a kernel function</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="selecting_device.html#example">Example</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="reduction.html#example-1">Example 1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reduction.html#example-2">Example 2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reduction.html#full-examples">Full examples</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="ufunc.html">Universal Functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ufunc.html#example-1-basic-usage">Example 1: Basic Usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufunc.html#example-2-calling-numba-vectorize-inside-a-numba-dpex-kernel">Example 2: Calling <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> inside a <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufunc.html#full-examples">Full Examples</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="random.html">Random Number Generation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="random.html#supported-functions">Supported functions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#built-in-types">Built-in types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#built-in-functions">Built-in functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#standard-library-modules">Standard library modules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#unsupported-constructs">Unsupported Constructs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#numpy-support">NumPy support</a></li>
-</ul>
-</li>
-</ul>
+</section>
+<section id="neo-driver">
+<span id="id1"></span><h2>NEO driver<a class="headerlink" href="#neo-driver" title="Permalink to this heading">#</a></h2>
+<p>NEO driver <cite>21.15.19533</cite> or higher is required to make the debugger work correctly.</p>
+<ol class="arabic">
+<li><p>Download the driver from <a class="reference external" href="https://github.com/intel/compute-runtime/releases/tag/21.15.19533">GitHub</a>.</p></li>
+<li><p>Install the NEO driver on the system or locally.</p>
+<blockquote>
+<div><ul>
+<li><p>To install the driver on the system, use the command:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>dpkg<span class="w"> </span>-i<span class="w"> </span>*.deb
+</pre></div>
 </div>
+</div></blockquote>
+</li>
+<li><p>To install the driver locally:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>Add the path to NEO files in <cite>LD_LIBRARY_PATH</cite>:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/path/to/my/neo
+<span class="k">for</span><span class="w"> </span>file<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="sb">`</span>ls<span class="w"> </span>*.deb<span class="sb">`</span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span>dpkg<span class="w"> </span>-x<span class="w"> </span><span class="nv">$file</span><span class="w"> </span>.<span class="p">;</span><span class="w"> </span><span class="k">done</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">MY_ACTIVE_NEO</span><span class="o">=</span>/path/to/my/neo/usr/local/lib
+<span class="nb">export</span><span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">MY_ACTIVE_NEO</span><span class="si">}</span>:<span class="si">${</span><span class="nv">MY_ACTIVE_NEO</span><span class="si">}</span>/intel-opencl:<span class="nv">$LD_LIBRARY_PATH</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><dl>
+<dt>Add environment variables to change the behavior of the Installable Client Driver (ICD).</dt><dd><p>ICD uses the system implementation for OpenCL™ by default. To install the driver locally, add all needed from “/etc/OpenCL/vendors/” and custom to <cite>OCL_ICD_FILENAMES</cite>.
+To overwrite the default behavior, use <code class="samp docutils literal notranslate"><span class="pre">export</span> <span class="pre">OCL_ICD_VENDORS=</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">OCL_ICD_FILENAMES</span><span class="o">=</span>/path/to/my/neo/usr/local/lib/intel-opencl/libigdrcl.so:/optional/from/vendors/libintelocl.so
+<span class="nb">export</span><span class="w"> </span><span class="nv">OCL_ICD_VENDORS</span><span class="o">=</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+<p>See also:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/intel/compute-runtime">Intel(R) Graphics Compute Runtime for oneAPI Level Zero and OpenCL(TM) Driver</a></p></li>
+<li><p><a class="reference external" href="https://github.com/intel/compute-runtime/releases">Intel(R) Graphics Compute Runtime Releases</a></p></li>
+<li><p><a class="reference external" href="https://github.com/KhronosGroup/OpenCL-ICD-Loader">OpenCL ICD Loader</a></p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="debug-companion-driver-dcd">
+<span id="debugging-machine-dcd-driver"></span><h2>Debug companion driver (DCD)<a class="headerlink" href="#debug-companion-driver-dcd" title="Permalink to this heading">#</a></h2>
+<ol class="arabic">
+<li><p>To install the DCD from oneAPI into the system, use the following command:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>dpkg<span class="w"> </span>-i<span class="w"> </span>/path/to/oneapi/debugger/latest/igfxdcd-*-Linux.deb
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Activate the driver:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>modinfo<span class="w"> </span>igfxdcd
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+<p>Remove the driver from the system if you want to install a different version:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>dpkg<span class="w"> </span>-r<span class="w"> </span>igfxdcd
+</pre></div>
+</div>
+<p>If you are installing DCD for the first time, create keys. For details, see the link at the end of this page.</p>
+<p>See also:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://www.intel.com/content/www/us/en/docs/distribution-for-gdb/get-started-guide-linux/current/overview.html">Get Started with Intel® Distribution for GDB* on Linux* OS Host</a></p></li>
+<li><p><a class="reference external" href="https://www.intel.com/content/www/us/en/docs/distribution-for-gdb/get-started-guide-linux/current/overview.html#:~:text=sudo%20modprobe%20igfxdcd-,The%20host%20system%20does%20not%20recognize%20the%20igfxdcd%20signature%20if,gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB,-If%20you%20have">Public signature key</a></p></li>
+</ul>
+</div></blockquote>
+</section>
 </section>
 
 
@@ -618,20 +648,20 @@ hardware vendors.</p>
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../index.html"
+       href="index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">User Guide</p>
+        <p class="prev-next-title">Debugging with Intel® Distribution for GDB*</p>
       </div>
     </a>
     <a class="right-next"
-       href="writing_kernels.html"
+       href="debugging_environment.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Writing Data Parallel Kernels</p>
+        <p class="prev-next-title">Configure debugging environment</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -644,6 +674,22 @@ hardware vendors.</p>
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#graphics-driver">Graphics driver</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#neo-driver">NEO driver</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#debug-companion-driver-dcd">Debug companion driver (DCD)</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

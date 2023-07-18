@@ -51,7 +51,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="API Reference" href="../api_reference/index.html" />
-    <link rel="prev" title="Troubleshooting" href="troubleshooting.html" />
+    <link rel="prev" title="Common issues and tips" href="debugging/common_issues.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -279,10 +279,6 @@ document.write(`
   
 
   
-    <label class="sidebar-toggle secondary-toggle" for="__secondary">
-      <span class="fa-solid fa-outdent"></span>
-    </label>
-  
 </div>
 
     </nav>
@@ -450,10 +446,26 @@ document.write(`
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="dpnp_offload/index.html">Compiling and Offloading DPNP</a></li>
-<li class="toctree-l1"><a class="reference internal" href="performance_tips.html">Performance Tips</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="debugging/index.html">Debugging with Intel® Distribution for GDB*</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="debugging/set_up_machine.html">Set up the machine for debugging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debugging/debugging_environment.html">Configure debugging environment</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="debugging/features.html">Supported Features</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="debugging/breakpoints.html">Breakpoints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debugging/stepping.html">Stepping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debugging/frame_info.html">Information About a Frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debugging/backtrace.html">Backtrace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debugging/data.html">Examining Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debugging/symbols.html">Examining the Symbol Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debugging/altering.html">Altering Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debugging/local_variables.html">Debugging Local Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debugging/numba-0.55.html">Debugging Features in Numba 0.55</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="debugging/limitations.html">Limitations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="debugging/common_issues.html">Common issues and tips</a></li>
+</ul>
+</li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Useful links</a></li>
-
 </ul>
 </div>
 </nav></div>
@@ -569,35 +581,6 @@ operating with tensor data</p></td>
 </tbody>
 </table>
 </section>
-<section id="to-do">
-<h1>To-Do<a class="headerlink" href="#to-do" title="Permalink to this heading">#</a></h1>
-<div class="admonition-todo admonition">
-<p class="admonition-title">Todo</p>
-<p>Provide list of examples for numba-dpex</p>
-</div>
-<p class="todo-source"><a class="reference internal" href="../examples.html#id2"><em>original entry</em></a></p>
-<div class="admonition-todo admonition">
-<p class="admonition-title">Todo</p>
-<p>Provide instructions for dpbench</p>
-</div>
-<p class="todo-source"><a class="reference internal" href="../examples.html#id3"><em>original entry</em></a></p>
-<div class="admonition-todo admonition">
-<p class="admonition-title">Todo</p>
-<p>Provide instructions for Jupyter Notebook samples</p>
-</div>
-<p class="todo-source"><a class="reference internal" href="../examples.html#id4"><em>original entry</em></a></p>
-<div class="admonition-todo admonition">
-<p class="admonition-title">Todo</p>
-<p>Specific capabilities and limitations for device functions need to be added.</p>
-</div>
-<p class="todo-source"><a class="reference internal" href="kernel_programming/device-functions.html#id1"><em>original entry</em></a></p>
-<div class="admonition-todo admonition">
-<p class="admonition-title">Todo</p>
-<p>Add details about current limitations for local memory allocation in
-<code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code>.</p>
-</div>
-<p class="todo-source"><a class="reference internal" href="kernel_programming/memory-management.html#id3"><em>original entry</em></a></p>
-</section>
 
 
                 </article>
@@ -611,12 +594,12 @@ operating with tensor data</p></td>
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="troubleshooting.html"
+       href="debugging/common_issues.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Troubleshooting</p>
+        <p class="prev-next-title">Common issues and tips</p>
       </div>
     </a>
     <a class="right-next"
@@ -637,22 +620,6 @@ operating with tensor data</p></td>
             </div>
             
             
-              
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Useful links</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#to-do">To-Do</a></li>
-</ul>
-
-  </nav></div>
-
-</div></div>
               
             
           </div>
