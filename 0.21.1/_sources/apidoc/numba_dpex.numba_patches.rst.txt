@@ -1,0 +1,20 @@
+numba\_dpex.numba\_patches package
+==================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   numba_dpex.numba_patches.patch_arrayexpr_tree_to_ir
+   numba_dpex.numba_patches.patch_is_ufunc
+   numba_dpex.numba_patches.patch_mk_alloc
+
+Module contents
+---------------
+
+.. automodule:: numba_dpex.numba_patches
+   :members:
+   :undoc-members:
+   :show-inheritance:

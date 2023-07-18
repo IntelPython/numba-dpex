@@ -1,0 +1,7 @@
+numba\_dpex.core.utils.kernel\_templates.kernel\_template\_iface module
+=======================================================================
+
+.. automodule:: numba_dpex.core.utils.kernel_templates.kernel_template_iface
+   :members:
+   :undoc-members:
+   :show-inheritance:

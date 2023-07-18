@@ -1,0 +1,7 @@
+numba\_dpex.core.dpjit\_dispatcher module
+=========================================
+
+.. automodule:: numba_dpex.core.dpjit_dispatcher
+   :members:
+   :undoc-members:
+   :show-inheritance:
