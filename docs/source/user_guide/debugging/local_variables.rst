@@ -25,7 +25,7 @@ Example
 
 Source code :file:`numba_dpex/examples/debug/sum_local_vars.py`:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/sum_local_vars.py
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/sum_local_vars.py
     :pyobject: data_parallel_sum
     :linenos:
     :lineno-match:
@@ -97,7 +97,7 @@ Example 1 - Using ``NUMBA_EXTEND_VARIABLE_LIFETIMES``
 
 Source code :file:`numba_dpex/tests/debugging/test_info.py`:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/side-by-side.py
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/side-by-side.py
    :pyobject: common_loop_body
    :linenos:
    :lineno-match:
@@ -150,7 +150,7 @@ Example 2 - Using ``NUMBA_DUMP_ANNOTATION``
 
 Source code :file:`numba_dpex/examples/debug/sum_local_vars.py`:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/sum_local_vars.py
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/sum_local_vars.py
     :pyobject: data_parallel_sum
     :linenos:
     :lineno-match:
@@ -230,8 +230,8 @@ As a workaround you can expand lifetime of the variable by using it (i.e.
 passing to dummy function `revive()`) at the end of the function. So numba will
 not insert `del a` until the end of the function.
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/sum_local_vars_revive.py
-    :lines: 20-31
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/sum_local_vars_revive.py
+    :lines: 5-
     :linenos:
     :lineno-match:
 
@@ -350,27 +350,27 @@ Example 3 - Using ``info locals``
 
 Source code :file:`sum_local_vars.py`:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/sum_local_vars.py
-    :lines: 15-
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/sum_local_vars.py
+    :lines: 5-
     :linenos:
     :lineno-match:
 
 Run the debugger with ``NUMBA_OPT=0``:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/local_variables_0
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/commands/docs/local_variables_0
     :language: shell-session
     :lines: 1-6
 
 Run the ``info locals`` command. The sample output on "no optimization" level ``NUMBA_OPT=0`` is as follows:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/local_variables_0
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/commands/docs/local_variables_0
     :language: shell-session
     :lines: 8-48
     :emphasize-lines: 1-16, 24-39
 
 Since the debugger does not hit a line with the target variable ``l1``, the value equals 0. The true value of the variable ``l1`` is shown after stepping to line 22.
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/local_variables_0
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/commands/docs/local_variables_0
     :language: shell-session
     :lines: 49-66
     :emphasize-lines: 1-16
