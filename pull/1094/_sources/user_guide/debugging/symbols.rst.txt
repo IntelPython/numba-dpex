@@ -23,14 +23,14 @@ Example
 
 Source file ``numba_dpex/examples/debug/simple_sum.py``:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/simple_sum.py
-    :lines: 15-
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/simple_sum.py
+    :lines: 5-
     :linenos:
     :lineno-match:
 
 Output of the debug session:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/info_func
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/commands/docs/info_func
     :language: shell-session
     :emphasize-lines: 5-9
 
@@ -41,7 +41,7 @@ Output of the debug session:
 
 To print the type of a variable, run the ``ptype <variable>`` or ``whatis <variable>`` commands:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/local_variables_0
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/commands/docs/local_variables_0
     :language: shell-session
     :lines: 73-81
     :emphasize-lines: 1-6
@@ -51,7 +51,7 @@ Example - Complex Data Types
 
 Source code :file:`numba_dpex/examples/debug/side-by-side-2.py`:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/side-by-side-2.py
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/side-by-side-2.py
    :pyobject: common_loop_body
    :linenos:
    :lineno-match:

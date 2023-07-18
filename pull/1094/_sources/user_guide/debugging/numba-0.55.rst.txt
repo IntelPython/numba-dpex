@@ -28,7 +28,7 @@ Example
 
 Source code :file:`numba_dpex/examples/debug/side-by-side.py`:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/side-by-side.py
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/side-by-side.py
     :pyobject: common_loop_body
     :linenos:
     :lineno-match:

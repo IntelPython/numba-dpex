@@ -558,27 +558,152 @@ function names.</p>
 </dl>
 <p>Consider the following numba-dpex kernel code (refer
 <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/simple_sum.py</span></code> for full example):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 5</span><span class="kn">import</span> <span class="nn">dpctl</span>
+<span class="linenos"> 6</span><span class="kn">import</span> <span class="nn">dpnp</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span><span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">ndpx</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">12</span><span class="k">def</span> <span class="nf">data_parallel_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+<span class="linenos">13</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">14</span>    <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>  <span class="c1"># Condition breakpoint location</span>
+<span class="linenos">15</span>
+<span class="linenos">16</span>
+<span class="linenos">17</span><span class="n">global_size</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="linenos">18</span><span class="n">N</span> <span class="o">=</span> <span class="n">global_size</span>
+<span class="linenos">19</span>
+<span class="linenos">20</span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">21</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">22</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="linenos">23</span>
+<span class="linenos">24</span><span class="n">data_parallel_sum</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">global_size</span><span class="p">)](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+<span class="linenos">25</span>
+<span class="linenos">26</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 <section id="break-function">
 <h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">function</span></code><a class="headerlink" href="#break-function" title="Permalink to this heading">#</a></h2>
 <p>The debugger output:</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>gdb-oneapi<span class="w"> </span>-q<span class="w"> </span>python
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
+<span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break data_parallel_sum</span>
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_sum.py</span>
+<span class="go">...</span>
+<span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:20</span>
+<span class="go">20          @dpex.kernel(debug=True)</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at simple_sum.py:20</span>
+<span class="go">20          @dpex.kernel(debug=True)</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="go">...</span>
+<span class="go">Done...</span>
+</pre></div>
+</div>
 </section>
 <section id="break-filename-linenumber">
 <h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">filename:linenumber</span></code><a class="headerlink" href="#break-filename-linenumber" title="Permalink to this heading">#</a></h2>
 <p>The debugger output:</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>gdb-oneapi<span class="w"> </span>-q<span class="w"> </span>python
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
+<span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_sum.py:20</span>
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_sum.py</span>
+<span class="go">...</span>
+<span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:20</span>
+<span class="go">20          @dpex.kernel(debug=True)</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at simple_sum.py:20</span>
+<span class="go">20          @dpex.kernel(debug=True)</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="go">...</span>
+<span class="go">Done...</span>
+</pre></div>
+</div>
 </section>
 <section id="break-filename-function">
 <h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">filename:function</span></code><a class="headerlink" href="#break-filename-function" title="Permalink to this heading">#</a></h2>
 <p>The debugger output:</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>gdb-oneapi<span class="w"> </span>-q<span class="w"> </span>python
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
+<span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_sum.py:data_parallel_sum</span>
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_sum.py</span>
+<span class="go">...</span>
+<span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::data_parallel_sum () at simple_sum.py:20</span>
+<span class="go">20          @dpex.kernel(debug=True)</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::data_parallel_sum () at simple_sum.py:20</span>
+<span class="go">20          @dpex.kernel(debug=True)</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="go">...</span>
+<span class="go">Done...</span>
+</pre></div>
+</div>
 </section>
 <section id="break-if-cond">
 <h2><code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">…</span> <span class="pre">if</span> <span class="pre">cond</span></code><a class="headerlink" href="#break-if-cond" title="Permalink to this heading">#</a></h2>
 <p>The debugger output:</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>gdb-oneapi<span class="w"> </span>-q<span class="w"> </span>python
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
+<span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_sum.py:23 if i == 1</span>
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_sum.py</span>
+<span class="go">...</span>
+<span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lane 1, __main__::data_parallel_sum () at simple_sum.py:23</span>
+<span class="go">23          c[i] = a[i] + b[i]</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">print i</span>
+<span class="gp">$</span><span class="nv">1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="go">...</span>
+<span class="go">Done...</span>
+</pre></div>
+</div>
 </section>
 <section id="breakpoints-with-nested-functions">
 <h2>Breakpoints with nested functions<a class="headerlink" href="#breakpoints-with-nested-functions" title="Permalink to this heading">#</a></h2>
 <p>Consider numba-dpex kernel code. See the source file
 <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/simple_dpex_func.py</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 5</span><span class="kn">import</span> <span class="nn">dpnp</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">ndpx</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">11</span><span class="k">def</span> <span class="nf">func_sum</span><span class="p">(</span><span class="n">a_in_func</span><span class="p">,</span> <span class="n">b_in_func</span><span class="p">):</span>
+<span class="linenos">12</span>    <span class="n">result</span> <span class="o">=</span> <span class="n">a_in_func</span> <span class="o">+</span> <span class="n">b_in_func</span>  <span class="c1"># breakpoint location</span>
+<span class="linenos">13</span>    <span class="k">return</span> <span class="n">result</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span>
+<span class="linenos">16</span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">17</span><span class="k">def</span> <span class="nf">kernel_sum</span><span class="p">(</span><span class="n">a_in_kernel</span><span class="p">,</span> <span class="n">b_in_kernel</span><span class="p">,</span> <span class="n">c_in_kernel</span><span class="p">):</span>
+<span class="linenos">18</span>    <span class="n">i</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">19</span>    <span class="n">c_in_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">func_sum</span><span class="p">(</span><span class="n">a_in_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">b_in_kernel</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<span class="linenos">20</span>
+<span class="linenos">21</span>
+<span class="linenos">22</span><span class="n">global_size</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="linenos">23</span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">24</span><span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">global_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="linenos">25</span><span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="linenos">26</span>
+<span class="linenos">27</span><span class="n">kernel_sum</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">global_size</span><span class="p">)](</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+<span class="linenos">28</span>
+<span class="linenos">29</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>The debugger output:</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nv">NUMBA_OPT</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>gdb-oneapi<span class="w"> </span>-q<span class="w"> </span>python
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">set breakpoint pending on</span>
+<span class="hll"><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">break simple_dpex_func.py:func_sum</span>
+</span><span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">run simple_dpex_func.py</span>
+<span class="go">...</span>
+<span class="go">Thread 2.2 hit Breakpoint 1, with SIMD lanes [0-7], __main__::func_sum () at simple_dpex_func.py:22</span>
+<span class="go">22          result = a_in_func + b_in_func</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="go">Thread 2.3 hit Breakpoint 1, with SIMD lanes [0-1], __main__::func_sum () at simple_dpex_func.py:22</span>
+<span class="go">22          result = a_in_func + b_in_func</span>
+<span class="gp gp-VirtualEnv">(gdb)</span> <span class="go">continue</span>
+<span class="go">...</span>
+<span class="go">Done...</span>
+</pre></div>
+</div>
 </section>
 </section>
 
