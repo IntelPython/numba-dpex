@@ -2,5 +2,5 @@
 .. include:: ./../ext_links.txt
 
 
-Reference Manual
-================
+API Reference
+=============

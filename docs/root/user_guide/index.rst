@@ -6,8 +6,8 @@
 ..     :align: center
 ..     :alt: Data Parallel Extensions for Python
 
-Programmer's Guide
-==================
+User Guide
+==========
 
 .. toctree::
     :maxdepth: 2

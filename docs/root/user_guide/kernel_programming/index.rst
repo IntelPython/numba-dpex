@@ -1,8 +1,9 @@
 .. _index:
 .. include:: ./../../ext_links.txt
 
-Kernel Programming API
-======================
+Kernel Programming Basics
+=========================
+
 `Data Parallel Extensions for Python*`_ introduce a concept of an *offload kernel*, defined as
 a part of a Python program being submitted for execution to the device queue.
 
