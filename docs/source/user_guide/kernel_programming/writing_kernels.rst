@@ -30,40 +30,39 @@ storing the result of vector summation:
    :name: ex_kernel_declaration_vector_sum
 
 
+.. Kernel Invocation
+.. ------------------
+
+.. When a kernel is launched you must specify the *global size* and the *local size*,
+.. which determine the hierarchy of threads, that is the order in which kernels
+.. will be invoked.
+
+.. The following syntax is used in ``numba-dpex`` for kernel invocation with
+.. specified global and local sizes:
+
+.. ``kernel_function_name[global_size, local_size](kernel arguments)``
+
+.. In the following example we invoke kernel ``kernel_vector_sum`` with global size
+.. specified via variable ``global_size``, and use ``numba_dpex.DEFAULT_LOCAL_SIZE``
+.. constant for setting local size to some default value:
+
+.. .. code-block:: python
+
+..    import numba_dpex as ndpx
+
+..    global_size = 10
+..    kernel_vector_sum[global_size, ndpx.DEFAULT_LOCAL_SIZE](a, b, c)
+
+.. .. note::
+..   Each kernel is compiled once, but it can be called multiple times with different global and local sizes settings.
+
+
 Kernel Invocation
 ------------------
 
-When a kernel is launched you must specify the *global size* and the *local size*,
-which determine the hierarchy of threads, that is the order in which kernels
-will be invoked.
-
-The following syntax is used in ``numba-dpex`` for kernel invocation with
-specified global and local sizes:
-
-``kernel_function_name[global_size, local_size](kernel arguments)``
-
-In the following example we invoke kernel ``kernel_vector_sum`` with global size
-specified via variable ``global_size``, and use ``numba_dpex.DEFAULT_LOCAL_SIZE``
-constant for setting local size to some default value:
-
-.. code-block:: python
-
-   import numba_dpex as ndpx
-
-   global_size = 10
-   kernel_vector_sum[global_size, ndpx.DEFAULT_LOCAL_SIZE](a, b, c)
-
-.. note::
-  Each kernel is compiled once, but it can be called multiple times with different global and local sizes settings.
-
-
-Kernel Invocation (New Syntax)
-------------------------------
-
-Since the release 0.20.0 (Phoenix), we have introduced new kernel launch
-parameter syntax for specifying global and local sizes that are similar to
-``SYCL``'s ``range`` and ``ndrange`` classes. The global and local sizes can
-now be specified with ``numba_dpex``'s ``Range`` and ``NdRange`` classes.
+The kernel launch parameter syntax for specifying global and local sizes are
+similar to ``SYCL``'s ``range`` and ``ndrange`` classes. The global and local
+sizes need to be specified with ``numba_dpex``'s ``Range`` and ``NdRange`` classes.
 
 For example, we have a following kernel that computes a sum of two vectors:
 
@@ -79,7 +78,7 @@ it like this (where ``global_size`` is an ``int``):
 .. literalinclude:: ./../../../../numba_dpex/examples/kernel/vector_sum.py
    :language: python
    :lines: 8-9, 18-24
-   :emphasize-lines: 3
+   :emphasize-lines: 5
    :caption: **EXAMPLE:** A vector sum kernel with a global size/range
    :name: vector_sum_kernel_with_launch_param
 
@@ -103,6 +102,8 @@ and ``args.l`` are ``int``):
    :caption: **EXAMPLE:** A kernel to compute pair-wise Euclidean distances with
                a global and a local size/range
    :name: pairwise_distance_kernel_with_launch_param
+
+
 
 
 Kernel Indexing Functions
