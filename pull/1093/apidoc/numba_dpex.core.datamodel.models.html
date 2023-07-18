@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.datamodel.models module &mdash; numba-dpex 0.21.0+23.g76eea726 documentation</title>
+  <title>numba_dpex.core.datamodel.models module &mdash; numba-dpex  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -92,66 +92,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-numba_dpex.core.datamodel.models">
-<span id="numba-dpex-core-datamodel-models-module"></span><h1>numba_dpex.core.datamodel.models module<a class="headerlink" href="#module-numba_dpex.core.datamodel.models" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.datamodel.models.DpnpNdArrayModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.datamodel.models.</span></span><span class="sig-name descname"><span class="pre">DpnpNdArrayModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dmm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fe_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.datamodel.models.DpnpNdArrayModel" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StructModel</span></code></p>
-<p>Data model for the DpnpNdArray type.</p>
-<p>DpnpNdArrayModel is used by the numba_dpex.types.DpnpNdArray type and
-abstracts the usmarystruct_t C type defined in
-numba_dpex.core.runtime._usmarraystruct.h.</p>
-<p>The DpnpNdArrayModel differs from numba’s ArrayModel by including an extra
-member sycl_queue that maps to _usmarraystruct.sycl_queue pointer. The
-_usmarraystruct.sycl_queue pointer stores the C++ sycl::queue pointer that
-was used to allocate the data for the dpnp.ndarray represented by an
-instance of _usmarraystruct.</p>
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.datamodel.models.DpnpNdArrayModel.flattened_field_count">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">flattened_field_count</span></span><a class="headerlink" href="#numba_dpex.core.datamodel.models.DpnpNdArrayModel.flattened_field_count" title="Permalink to this definition"></a></dt>
-<dd><p>Return the number of fields in an instance of a DpnpNdArrayModel.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.datamodel.models.GenericPointerModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.datamodel.models.</span></span><span class="sig-name descname"><span class="pre">GenericPointerModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dmm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fe_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.datamodel.models.GenericPointerModel" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PrimitiveModel</span></code></p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.datamodel.models.SyclQueueModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.datamodel.models.</span></span><span class="sig-name descname"><span class="pre">SyclQueueModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dmm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fe_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.datamodel.models.SyclQueueModel" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StructModel</span></code></p>
-<p>Represents the native data model for a dpctl.SyclQueue PyObject.</p>
-<p>Numba-dpex uses a C struct as defined in
-numba_dpex/core/runtime._queuestruct.h to store the required attributes for
-a <code class="docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code> Python object.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">queue_ref</span></code>: An opaque C pointer to an actual SYCL queue C++ object.</p></li>
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">parent</span></code>: A PyObject* that stores a reference back to the original</dt><dd><p><code class="docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code> PyObject if the native struct is
-created by unboxing the PyObject.</p>
-</dd>
-</dl>
-</li>
-</ul>
-</div></blockquote>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.datamodel.models.USMArrayModel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.datamodel.models.</span></span><span class="sig-name descname"><span class="pre">USMArrayModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dmm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fe_type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.datamodel.models.USMArrayModel" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StructModel</span></code></p>
-<p>A data model to represent a Dpex’s array types in LLVM IR.</p>
-<p>Dpex’s ArrayModel is based on Numba’s ArrayModel for NumPy arrays. The
-dpex model adds an extra address space attribute to all pointer members
-in the array.</p>
-</dd></dl>
-
+  <section id="numba-dpex-core-datamodel-models-module">
+<h1>numba_dpex.core.datamodel.models module<a class="headerlink" href="#numba-dpex-core-datamodel-models-module" title="Permalink to this heading"></a></h1>
 </section>
 
 

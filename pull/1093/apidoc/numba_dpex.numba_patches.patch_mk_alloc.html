@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.numba_patches.patch_mk_alloc module &mdash; numba-dpex 0.21.0+23.g76eea726 documentation</title>
+  <title>numba_dpex.numba_patches.patch_mk_alloc module &mdash; numba-dpex  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -92,23 +92,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-numba_dpex.numba_patches.patch_mk_alloc">
-<span id="numba-dpex-numba-patches-patch-mk-alloc-module"></span><h1>numba_dpex.numba_patches.patch_mk_alloc module<a class="headerlink" href="#module-numba_dpex.numba_patches.patch_mk_alloc" title="Permalink to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.numba_patches.patch_mk_alloc.patch">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.numba_patches.patch_mk_alloc.</span></span><span class="sig-name descname"><span class="pre">patch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.numba_patches.patch_mk_alloc.patch" title="Permalink to this definition"></a></dt>
-<dd><p>Patches the numba.core.ir_utils.mk_alloc function to support non-NumPy array
-types.</p>
-<p>The patch extends the ir_utils.mk_alloc function that is used by
-numba.parfors.parfor to allocate an empty temp array inside a parfor
-section. Without the patch Numba always allocates the temp using
-numpy.empty, with the patch the function checks if the array type to be
-allocated has a __allocate__ method, and if so uses that method to allocate
-the temporary array.</p>
-<p>TODO: Already merged into Numba main and should be removed when numba-dpex
-is ported to Numba 0.58</p>
-</dd></dl>
-
+  <section id="numba-dpex-numba-patches-patch-mk-alloc-module">
+<h1>numba_dpex.numba_patches.patch_mk_alloc module<a class="headerlink" href="#numba-dpex-numba-patches-patch-mk-alloc-module" title="Permalink to this heading"></a></h1>
 </section>
 
 

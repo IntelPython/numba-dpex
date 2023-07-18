@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.parfors.reduction_helper module &mdash; numba-dpex 0.21.0+23.g76eea726 documentation</title>
+  <title>numba_dpex.core.parfors.reduction_helper module &mdash; numba-dpex  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -92,105 +92,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-numba_dpex.core.parfors.reduction_helper">
-<span id="numba-dpex-core-parfors-reduction-helper-module"></span><h1>numba_dpex.core.parfors.reduction_helper module<a class="headerlink" href="#module-numba_dpex.core.parfors.reduction_helper" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_helper.ReductionHelper">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.parfors.reduction_helper.</span></span><span class="sig-name descname"><span class="pre">ReductionHelper</span></span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_helper.ReductionHelper" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>The class to define and allocate reduction intermediate variables.</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.parfors.reduction_helper.</span></span><span class="sig-name descname"><span class="pre">ReductionKernelVariables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lowerer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_outputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reductionHelperList</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>The parfor body and the main function body share ir.Var nodes.
-We have to do some replacements of Var names in the parfor body
-to make them legal parameter names. If we don’t copy then the
-Vars in the main function also would incorrectly change their name.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.copy_final_sum_to_host">
-<span class="sig-name descname"><span class="pre">copy_final_sum_to_host</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psrfor_kernel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.copy_final_sum_to_host" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.final_sum_names">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">final_sum_names</span></span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.final_sum_names" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.func_arg_types">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">func_arg_types</span></span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.func_arg_types" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.ind_dict">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ind_dict</span></span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.ind_dict" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.legal_loop_indices">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">legal_loop_indices</span></span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.legal_loop_indices" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.loop_body">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">loop_body</span></span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.loop_body" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.lowerer">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lowerer</span></span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.lowerer" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.param_dict">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">param_dict</span></span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.param_dict" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.param_types">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">param_types</span></span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.param_types" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.parfor_legalized_params">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parfor_legalized_params</span></span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.parfor_legalized_params" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.parfor_redarrs_legal_dict">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parfor_redarrs_legal_dict</span></span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.parfor_redarrs_legal_dict" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.parfor_reddict">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parfor_reddict</span></span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.parfor_reddict" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.parfor_redvars">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parfor_redvars</span></span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.parfor_redvars" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.parfor_redvars_to_redarrs">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parfor_redvars_to_redarrs</span></span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.parfor_redvars_to_redarrs" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.redvars_legal_dict">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">redvars_legal_dict</span></span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.redvars_legal_dict" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.work_group_size">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">work_group_size</span></span><a class="headerlink" href="#numba_dpex.core.parfors.reduction_helper.ReductionKernelVariables.work_group_size" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+  <section id="numba-dpex-core-parfors-reduction-helper-module">
+<h1>numba_dpex.core.parfors.reduction_helper module<a class="headerlink" href="#numba-dpex-core-parfors-reduction-helper-module" title="Permalink to this heading"></a></h1>
 </section>
 
 

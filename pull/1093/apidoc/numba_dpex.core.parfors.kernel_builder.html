@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.parfors.kernel_builder module &mdash; numba-dpex 0.21.0+23.g76eea726 documentation</title>
+  <title>numba_dpex.core.parfors.kernel_builder module &mdash; numba-dpex  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -92,52 +92,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-numba_dpex.core.parfors.kernel_builder">
-<span id="numba-dpex-core-parfors-kernel-builder-module"></span><h1>numba_dpex.core.parfors.kernel_builder module<a class="headerlink" href="#module-numba_dpex.core.parfors.kernel_builder" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.kernel_builder.ParforKernel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.parfors.kernel_builder.</span></span><span class="sig-name descname"><span class="pre">ParforKernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_arg_types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.kernel_builder.ParforKernel" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.kernel_builder.create_kernel_for_parfor">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.parfors.kernel_builder.</span></span><span class="sig-name descname"><span class="pre">create_kernel_for_parfor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lowerer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop_ranges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_aliases</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">races</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_outputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.kernel_builder.create_kernel_for_parfor" title="Permalink to this definition"></a></dt>
-<dd><p>Creates a numba_dpex.kernel function for a parfor node.</p>
-<p>There are two parts to this function:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li><p>Code to iterate across the iteration space as defined by
-the schedule.</p></li>
-<li><p>The parfor body that does the work for a single point in
-the iteration space.</p></li>
-</ol>
-</div></blockquote>
-<p>Part 1 is created as Python text for simplicity with a sentinel
-assignment to mark the point in the IR where the parfor body
-should be added. This Python text is ‘exec’ed into existence and its
-IR retrieved with run_frontend. The IR is scanned for the sentinel
-assignment where that basic block is split and the IR for the parfor
-body inserted.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.core.parfors.kernel_builder.update_sentinel">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.core.parfors.kernel_builder.</span></span><span class="sig-name descname"><span class="pre">update_sentinel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_ir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sentinel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_body</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.parfors.kernel_builder.update_sentinel" title="Permalink to this definition"></a></dt>
-<dd><p>Searched all the blocks in the IR generated from a kernel template and
-replaces the __sentinel__ instruction with the actual op for the parfor.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>kernel_ir : Numba FunctionIR that was generated from a kernel template
-sentinel_name : The name of the sentinel instruction that is to be
-replaced.
-kernel_body : The function body of the kernel template generated
-numba_dpex.kernel function
-new_label: The new label to be used for the basic block created to store
-the instructions that replaced the sentinel</p>
-</dd>
-</dl>
-</dd></dl>
-
+  <section id="numba-dpex-core-parfors-kernel-builder-module">
+<h1>numba_dpex.core.parfors.kernel_builder module<a class="headerlink" href="#numba-dpex-core-parfors-kernel-builder-module" title="Permalink to this heading"></a></h1>
 </section>
 
 

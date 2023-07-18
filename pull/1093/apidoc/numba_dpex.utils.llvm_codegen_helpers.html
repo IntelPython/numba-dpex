@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.utils.llvm_codegen_helpers module &mdash; numba-dpex 0.21.0+23.g76eea726 documentation</title>
+  <title>numba_dpex.utils.llvm_codegen_helpers module &mdash; numba-dpex  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -92,115 +92,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-numba_dpex.utils.llvm_codegen_helpers">
-<span id="numba-dpex-utils-llvm-codegen-helpers-module"></span><h1>numba_dpex.utils.llvm_codegen_helpers module<a class="headerlink" href="#module-numba_dpex.utils.llvm_codegen_helpers" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.utils.llvm_codegen_helpers.LLVMTypes">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.llvm_codegen_helpers.</span></span><span class="sig-name descname"><span class="pre">LLVMTypes</span></span><a class="headerlink" href="#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A helper class to get LLVM Values for integer C types.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.byte_ptr_ptr_t">
-<span class="sig-name descname"><span class="pre">byte_ptr_ptr_t</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.PointerType'&gt;</span> <span class="pre">i8**&gt;</span></em><a class="headerlink" href="#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.byte_ptr_ptr_t" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.byte_ptr_t">
-<span class="sig-name descname"><span class="pre">byte_ptr_t</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.PointerType'&gt;</span> <span class="pre">i8*&gt;</span></em><a class="headerlink" href="#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.byte_ptr_t" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.byte_t">
-<span class="sig-name descname"><span class="pre">byte_t</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.IntType'&gt;</span> <span class="pre">i8&gt;</span></em><a class="headerlink" href="#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.byte_t" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.int32_ptr_t">
-<span class="sig-name descname"><span class="pre">int32_ptr_t</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.PointerType'&gt;</span> <span class="pre">i32*&gt;</span></em><a class="headerlink" href="#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.int32_ptr_t" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.int32_t">
-<span class="sig-name descname"><span class="pre">int32_t</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.IntType'&gt;</span> <span class="pre">i32&gt;</span></em><a class="headerlink" href="#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.int32_t" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.int64_ptr_t">
-<span class="sig-name descname"><span class="pre">int64_ptr_t</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.PointerType'&gt;</span> <span class="pre">i64*&gt;</span></em><a class="headerlink" href="#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.int64_ptr_t" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.int64_t">
-<span class="sig-name descname"><span class="pre">int64_t</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.IntType'&gt;</span> <span class="pre">i64&gt;</span></em><a class="headerlink" href="#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.int64_t" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.void_t">
-<span class="sig-name descname"><span class="pre">void_t</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;&lt;class</span> <span class="pre">'llvmlite.ir.types.VoidType'&gt;</span> <span class="pre">void&gt;</span></em><a class="headerlink" href="#numba_dpex.utils.llvm_codegen_helpers.LLVMTypes.void_t" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.utils.llvm_codegen_helpers.create_null_ptr">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.llvm_codegen_helpers.</span></span><span class="sig-name descname"><span class="pre">create_null_ptr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">builder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.llvm_codegen_helpers.create_null_ptr" title="Permalink to this definition"></a></dt>
-<dd><p>Allocates a new LLVM Value storing a <code class="docutils literal notranslate"><span class="pre">void*</span></code> and returns the Value to
-caller.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>builder: The LLVM IR builder to be used for code generation.
-context: The LLVM IR builder context.</p>
-</dd>
-</dl>
-<p>Returns: An LLVM value storing a null pointer</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.utils.llvm_codegen_helpers.get_llvm_ptr_type">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.llvm_codegen_helpers.</span></span><span class="sig-name descname"><span class="pre">get_llvm_ptr_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.llvm_codegen_helpers.get_llvm_ptr_type" title="Permalink to this definition"></a></dt>
-<dd><p>Returns an LLVM pointer type for a give LLVM type object.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>type: An LLVM type for which we need the corresponding pointer type.</p>
-</dd>
-</dl>
-<p>Returns: An LLVM pointer type object corresponding to the input LLVM type.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.utils.llvm_codegen_helpers.get_llvm_type">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.llvm_codegen_helpers.</span></span><span class="sig-name descname"><span class="pre">get_llvm_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.llvm_codegen_helpers.get_llvm_type" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the LLVM Value corresponding to a Numba type.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>context: The LLVM context or the execution state of the current IR
-generator.
-type: A Numba type object.</p>
-</dd>
-<dt>Returns: An Python object wrapping an LLVM Value corresponding to the</dt><dd><p>specified Numba type.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.utils.llvm_codegen_helpers.get_one">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.llvm_codegen_helpers.</span></span><span class="sig-name descname"><span class="pre">get_one</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.llvm_codegen_helpers.get_one" title="Permalink to this definition"></a></dt>
-<dd><p>Returns an LLVM Constant storing a 64 bit representation for one.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>context: The LLVM IR builder context.</p>
-</dd>
-</dl>
-<p>Returns: An LLVM Constant Value storing one.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_dpex.utils.llvm_codegen_helpers.get_zero">
-<span class="sig-prename descclassname"><span class="pre">numba_dpex.utils.llvm_codegen_helpers.</span></span><span class="sig-name descname"><span class="pre">get_zero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.utils.llvm_codegen_helpers.get_zero" title="Permalink to this definition"></a></dt>
-<dd><p>Returns an LLVM Constant storing a 64 bit representation for zero.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>context: The LLVM IR builder context.</p>
-</dd>
-</dl>
-<p>Returns: An LLVM Constant Value storing zero.</p>
-</dd></dl>
-
+  <section id="numba-dpex-utils-llvm-codegen-helpers-module">
+<h1>numba_dpex.utils.llvm_codegen_helpers module<a class="headerlink" href="#numba-dpex-utils-llvm-codegen-helpers-module" title="Permalink to this heading"></a></h1>
 </section>
 
 

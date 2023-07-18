@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.passes.passes module &mdash; numba-dpex 0.21.0+23.g76eea726 documentation</title>
+  <title>numba_dpex.core.passes.passes module &mdash; numba-dpex  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -92,90 +92,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-numba_dpex.core.passes.passes">
-<span id="numba-dpex-core-passes-passes-module"></span><h1>numba_dpex.core.passes.passes module<a class="headerlink" href="#module-numba_dpex.core.passes.passes" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.passes.passes.</span></span><span class="sig-name descname"><span class="pre">ConstantSizeStaticLocalMemoryPass</span></span><a class="headerlink" href="#numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionPass</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass.pass_id">
-<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">45</span></em><a class="headerlink" href="#numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass.pass_id" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass.run_pass">
-<span class="sig-name descname"><span class="pre">run_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.passes.passes.ConstantSizeStaticLocalMemoryPass.run_pass" title="Permalink to this definition"></a></dt>
-<dd><p>Preprocessing for data-parallel computations.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.DumpParforDiagnostics">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.passes.passes.</span></span><span class="sig-name descname"><span class="pre">DumpParforDiagnostics</span></span><a class="headerlink" href="#numba_dpex.core.passes.passes.DumpParforDiagnostics" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisPass</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.DumpParforDiagnostics.pass_id">
-<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">47</span></em><a class="headerlink" href="#numba_dpex.core.passes.passes.DumpParforDiagnostics.pass_id" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.DumpParforDiagnostics.run_pass">
-<span class="sig-name descname"><span class="pre">run_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.passes.passes.DumpParforDiagnostics.run_pass" title="Permalink to this definition"></a></dt>
-<dd><p>Runs the pass itself. Must return True/False depending on whether
-statement level modification took place.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.NoPythonBackend">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.passes.passes.</span></span><span class="sig-name descname"><span class="pre">NoPythonBackend</span></span><a class="headerlink" href="#numba_dpex.core.passes.passes.NoPythonBackend" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">FunctionPass</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.NoPythonBackend.pass_id">
-<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">46</span></em><a class="headerlink" href="#numba_dpex.core.passes.passes.NoPythonBackend.pass_id" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.NoPythonBackend.run_pass">
-<span class="sig-name descname"><span class="pre">run_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.passes.passes.NoPythonBackend.run_pass" title="Permalink to this definition"></a></dt>
-<dd><p>Back-end: Generate LLVM IR from Numba IR, compile to machine code</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.QualNameDisambiguationLowering">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.passes.passes.</span></span><span class="sig-name descname"><span class="pre">QualNameDisambiguationLowering</span></span><a class="headerlink" href="#numba_dpex.core.passes.passes.QualNameDisambiguationLowering" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeLowering</span></code></p>
-<p>Qualified name disambiguation lowering pass</p>
-<p>If there are multiple &#64;func decorated functions exist inside
-another &#64;func decorated block, the numba compiler machinery
-creates same qualified names for different compiled function.
-Therefore, we utilize <cite>unique_name</cite> to resolve the ambiguity.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>NativeLowering (CompilerPass): Superclass from which this
-class has been inherited.</p>
-</dd>
-<dt>Returns:</dt><dd><p>bool: True if <cite>run_pass()</cite> of the superclass is successful.</p>
-</dd>
-</dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.QualNameDisambiguationLowering.pass_id">
-<span class="sig-name descname"><span class="pre">pass_id</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">48</span></em><a class="headerlink" href="#numba_dpex.core.passes.passes.QualNameDisambiguationLowering.pass_id" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.passes.passes.QualNameDisambiguationLowering.run_pass">
-<span class="sig-name descname"><span class="pre">run_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.passes.passes.QualNameDisambiguationLowering.run_pass" title="Permalink to this definition"></a></dt>
-<dd><p>Runs the pass itself. Must return True/False depending on whether
-statement level modification took place.</p>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="numba-dpex-core-passes-passes-module">
+<h1>numba_dpex.core.passes.passes module<a class="headerlink" href="#numba-dpex-core-passes-passes-module" title="Permalink to this heading"></a></h1>
 </section>
 
 

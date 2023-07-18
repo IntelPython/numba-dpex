@@ -13,7 +13,7 @@
     </script>
     
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>numba_dpex.core.utils.kernel_templates.reduction_template module &mdash; numba-dpex 0.21.0+23.g76eea726 documentation</title>
+  <title>numba_dpex.core.utils.kernel_templates.reduction_template module &mdash; numba-dpex  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -92,94 +92,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-numba_dpex.core.utils.kernel_templates.reduction_template">
-<span id="numba-dpex-core-utils-kernel-templates-reduction-template-module"></span><h1>numba_dpex.core.utils.kernel_templates.reduction_template module<a class="headerlink" href="#module-numba_dpex.core.utils.kernel_templates.reduction_template" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.utils.kernel_templates.reduction_template.</span></span><span class="sig-name descname"><span class="pre">RemainderReduceIntermediateKernelTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sentinel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redvars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_reddict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redvars_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legal_loop_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_size_var_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_size_mod_var_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial_sum_size_var_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial_sum_var_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">final_sum_var_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reductionKernelVar</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="numba_dpex.core.utils.kernel_templates.kernel_template_iface.html#numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface" title="numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">KernelTemplateInterface</span></code></a></p>
-<p>The class to build reduction remainder kernel_txt template and
-compiled Numba functionIR.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.dump_kernel_ir">
-<span class="sig-name descname"><span class="pre">dump_kernel_ir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.dump_kernel_ir" title="Permalink to this definition"></a></dt>
-<dd><p>Helper to dump the Numba IR for the
-RemainderReduceIntermediateKernelTemplate.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.dump_kernel_string">
-<span class="sig-name descname"><span class="pre">dump_kernel_string</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.dump_kernel_string" title="Permalink to this definition"></a></dt>
-<dd><p>Helper to print the kernel function string.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.kernel_ir">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kernel_ir</span></span><a class="headerlink" href="#numba_dpex.core.utils.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.kernel_ir" title="Permalink to this definition"></a></dt>
-<dd><dl class="simple">
-<dt>Returns the Numba IR generated for a</dt><dd><p>RemainderReduceIntermediateKernelTemplate.</p>
-</dd>
-</dl>
-<p>Returns: The Numba functionIR object for the compiled kernel_txt string.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.kernel_string">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kernel_string</span></span><a class="headerlink" href="#numba_dpex.core.utils.kernel_templates.reduction_template.RemainderReduceIntermediateKernelTemplate.kernel_string" title="Permalink to this definition"></a></dt>
-<dd><dl class="simple">
-<dt>Returns the function string generated for a</dt><dd><p>RemainderReduceIntermediateKernelTemplate.</p>
-</dd>
-<dt>Returns:</dt><dd><p>str: A string representing a stub reduction kernel function
-for the parfor.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">numba_dpex.core.utils.kernel_templates.reduction_template.</span></span><span class="sig-name descname"><span class="pre">TreeReduceIntermediateKernelTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ivar_names</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sentinel_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop_ranges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redvars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parfor_reddict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redvars_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typemap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">work_group_size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="numba_dpex.core.utils.kernel_templates.kernel_template_iface.html#numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface" title="numba_dpex.core.utils.kernel_templates.kernel_template_iface.KernelTemplateInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">KernelTemplateInterface</span></code></a></p>
-<p>The class to build reduction main kernel_txt template and
-compiled Numba functionIR.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.dump_kernel_ir">
-<span class="sig-name descname"><span class="pre">dump_kernel_ir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.dump_kernel_ir" title="Permalink to this definition"></a></dt>
-<dd><p>Helper to dump the Numba IR for a
-TreeReduceIntermediateKernelTemplate.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.dump_kernel_string">
-<span class="sig-name descname"><span class="pre">dump_kernel_string</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.core.utils.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.dump_kernel_string" title="Permalink to this definition"></a></dt>
-<dd><p>Helper to print the kernel function string.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.kernel_ir">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kernel_ir</span></span><a class="headerlink" href="#numba_dpex.core.utils.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.kernel_ir" title="Permalink to this definition"></a></dt>
-<dd><dl class="simple">
-<dt>Returns the Numba IR generated for a</dt><dd><p>TreeReduceIntermediateKernelTemplate.</p>
-</dd>
-</dl>
-<p>Returns: The Numba functionIR object for the compiled kernel_txt string.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.core.utils.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.kernel_string">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kernel_string</span></span><a class="headerlink" href="#numba_dpex.core.utils.kernel_templates.reduction_template.TreeReduceIntermediateKernelTemplate.kernel_string" title="Permalink to this definition"></a></dt>
-<dd><dl class="simple">
-<dt>Returns the function string generated for a</dt><dd><p>TreeReduceIntermediateKernelTemplate.</p>
-</dd>
-<dt>Returns:</dt><dd><p>str: A string representing a stub reduction kernel function
-for the parfor.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="numba-dpex-core-utils-kernel-templates-reduction-template-module">
+<h1>numba_dpex.core.utils.kernel_templates.reduction_template module<a class="headerlink" href="#numba-dpex-core-utils-kernel-templates-reduction-template-module" title="Permalink to this heading"></a></h1>
 </section>
 
 
