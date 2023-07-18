@@ -1,3 +1,6 @@
+.. _index:
+.. include:: ./../../ext_links.txt
+
 Debugging with Intel® Distribution for GDB*
 ===========================================
 
