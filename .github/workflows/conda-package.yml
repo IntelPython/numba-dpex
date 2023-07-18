@@ -13,55 +13,37 @@ on:
 env:
   PACKAGE_NAME: numba-dpex
   MODULE_NAME: numba_dpex
+  # There is a separate action that removes defaults.
+  CHANNELS: 'dppy/label/dev,conda-forge,intel'
+  VER_JSON_NAME: 'version.json'
+  VER_SCRIPT1: "import json; f = open('version.json', 'r'); j = json.load(f); f.close(); "
+  VER_SCRIPT2: "d = j['numba-dpex'][0]; print('='.join((d[s] for s in ('version', 'build'))))"
 
 jobs:
-  build_linux:
-    runs-on: ubuntu-20.04
+  build:
+    name: Build ['${{ matrix.os }}', python='${{ matrix.python }}']
 
     strategy:
+      fail-fast: false
       matrix:
-        python: ["3.8", "3.9", "3.10"]
+        python: ['3.8', '3.9', '3.10']
+        os: [ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    continue-on-error: false
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.11.0
         with:
-          fetch-depth: 0
+          access_token: ${{ github.token }}
 
-      - name: Setup conda-build
-        uses: ./.github/actions/setup-conda-build
-
-      - name: Build conda package
-        env:
-          CHANNELS: -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev --override-channels
-        run: ./scripts/build_conda_package.sh ${{ matrix.python }}
-
-      - name: Dump build linux conda environment
-        run: |
-          conda env export > /tmp/env-build-linux.yml
-          cat /tmp/env-build-linux.yml
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
-          path: /usr/share/miniconda/conda-bld/linux-64/${{ env.PACKAGE_NAME }}-*.tar.bz2
-
-  build_windows:
-    runs-on: windows-latest
-
-    strategy:
-      matrix:
-        python: ["3.8", "3.9", "3.10"]
-        experimental: [false]
-        artifact_name: [""]
-    continue-on-error: ${{ matrix.experimental }}
-    env:
-      CHANNELS: -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev --override-channels
-      conda-bld: C:\Miniconda\conda-bld\win-64\
-
-    steps:
-      - name: Checkout repo
+      - name: Checkout ${{ env.PACKAGE_NAME }} repo
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -69,223 +51,165 @@ jobs:
       - name: Setup miniconda
         uses: conda-incubator/setup-miniconda@v2
         with:
-          auto-activate-base: true
-          activate-environment: ""
+          python-version: ${{ inputs.python-version }}
+          miniforge-variant: Mambaforge
+          miniforge-version: latest
+          activate-environment: "build"
+          channels: ${{ env.CHANNELS }}
+          channel-priority: "disabled"
+          run-post: false
 
-      - name: Cache conda packages
-        uses: actions/cache@v3
-        env:
-          CACHE_NUMBER: 0  # Increase to reset cache
-        with:
-          path: /home/runner/conda_pkgs_dir
-          key:
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-${{hashFiles('**/meta.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
+      - name: Disable defautls
+        run: conda config --remove channels defaults
 
+      - name: Store conda paths as envs
+        run: echo "CONDA_BLD=$CONDA_PREFIX/conda-bld/${{ runner.os == 'Linux' && 'linux' || 'win' }}-64/" | tr "\\" '/' >> $GITHUB_ENV
+
+      # boa is an extention to conda so we can use mamba resolver in conda build
       - name: Install conda-build
-        run: conda install conda-build
+        run: mamba install boa
 
       - name: Build conda package
-        run: conda build --no-test --python ${{ matrix.python }} ${{ env.CHANNELS }} conda-recipe
-
-      - name: Dump build windows conda environment
-        run: |
-          conda env export > env-build-win.yml
-          type env-build-win.yml
+        run: conda mambabuild --no-test --python ${{ matrix.python }} conda-recipe
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }} ${{ matrix.artifact_name }}
-          path: ${{ env.conda-bld }}${{ env.PACKAGE_NAME }}-*.tar.bz2
+          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
+          path: ${{ env.CONDA_BLD }}${{ env.PACKAGE_NAME }}-*.tar.bz2
 
-  test_linux:
-    needs: build_linux
-    runs-on: ubuntu-20.04
+
+  test:
+    name: Test ['${{ matrix.os }}', python='${{ matrix.python }}']
+
+    needs: build
+
+    runs-on: ${{ matrix.os }}
+
+    defaults:
+      run:
+        shell: ${{ matrix.os == 'windows-latest' && 'cmd /C CALL {0}' || 'bash -l {0}' }}
 
     strategy:
+      fail-fast: false
       matrix:
-        python: ["3.8", "3.9", "3.10"]
-        numba: ["0.57"]
-        dpnp: ["0.11"]
+        python: ['3.8', '3.9', '3.10']
+        os: [ubuntu-20.04, ubuntu-latest, windows-latest]
+        experimental: [false]
+
+    continue-on-error: ${{ matrix.experimental }}
 
     steps:
+      - name: Setup miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: ${{ matrix.python }}
+          miniforge-variant: Mambaforge
+          miniforge-version: latest
+          activate-environment: "test"
+          channels: ${{ env.CHANNELS }}
+          channel-priority: "disabled"
+          run-post: false
+
+      - name: Disable defautls
+        run: conda config --remove channels defaults
+
+      - name: Store conda paths as envs
+        shell: bash -l {0}
+        run: |
+          echo "CHANNEL_PATH=${{ github.workspace }}/channel/" | tr "\\" "/" >> $GITHUB_ENV
+          echo "EXTRACTED_PKG_PATH=${{ github.workspace }}/pkg/" | tr "\\" "/" >> $GITHUB_ENV
+          echo "VER_JSON_PATH=${{ github.workspace }}/version.json" | tr "\\" "/" >> $GITHUB_ENV
+          echo "PKG_PATH_IN_CHANNEL=${{ github.workspace }}/channel/${{ runner.os == 'Linux' && 'linux' || 'win' }}-64/" | tr "\\" "/" >> $GITHUB_ENV
+          echo "EXAMPLES_PATH=$CONDA_PREFIX/${{ runner.os == 'Linux' && format('lib/python{0}',matrix.python) || 'Lib' }}/site-packages/numba_dpex/examples/" | tr "\\" "/" >> $GITHUB_ENV
+
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
+          path: ${{ env.PKG_PATH_IN_CHANNEL }}
 
-      - name: Checkout repo
-        uses: actions/checkout@v3
-        with:
-          path: numba-dpex
+      # We need --force-local because on windows path looks like C:/foo/bar
+      # and tar interprits semicolons as remote device.
+      - name: Extract package archive
+        shell: bash -l {0}
+        run: |
+          mkdir -p ${EXTRACTED_PKG_PATH}
+          tar -xvf ${PKG_PATH_IN_CHANNEL}${PACKAGE_NAME}-*.tar.bz2 -C ${EXTRACTED_PKG_PATH} --force-local
 
-      - name: Setup conda-build
-        uses: ./numba-dpex/.github/actions/setup-conda-build
+      - name: Install conda build
+        run: |
+          mamba install conda-build
 
       - name: Create conda channel
         run: |
-          mkdir -p $GITHUB_WORKSPACE/channel/linux-64
-          mv ${PACKAGE_NAME}-*.tar.bz2 $GITHUB_WORKSPACE/channel/linux-64
-          conda index $GITHUB_WORKSPACE/channel
-          # Test channel
-          conda search $PACKAGE_NAME -c $GITHUB_WORKSPACE/channel --override-channels --info
+          conda index ${{ env.CHANNEL_PATH }}
 
-      - name: Install numba-dpex
-        env:
-          CHANNELS: -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev --override-channels
+      - name: Test conda channel
         run: |
-          CHANNELS="-c $GITHUB_WORKSPACE/channel $CHANNELS"
-          conda list
-          conda create -n numba_dpex_env $PACKAGE_NAME pytest dpcpp_linux-64 python=${{ matrix.python }} numba=${{ matrix.numba }} dpctl dpnp=${{ matrix.dpnp }} dpcpp-llvm-spirv $CHANNELS
-          # Test installed packages
-          conda list
+          mamba search ${{ env.PACKAGE_NAME }} -c ${{ env.CHANNEL_PATH }} --override-channels --info --json > ${{ env.VER_JSON_PATH }}
+          cat ${{ env.VER_JSON_PATH }}
 
-      - name: Check DPNP
+      - name: Collect dependencies
+        shell: bash -l {0}
         run: |
-          source $CONDA/etc/profile.d/conda.sh
-          conda activate numba_dpex_env
-          python -c "import dpnp"
+          export PACKAGE_VERSION=$(python -c "${{ env.VER_SCRIPT1 }} ${{ env.VER_SCRIPT2 }}")
+          echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
+
+      # We want to make sure that all dependecies install automatically.
+      - name: Install builded package
+        run: mamba install ${{ env.PACKAGE_NAME }}=${{ env.PACKAGE_VERSION }} opencl_rt pytest -c ${{ env.CHANNEL_PATH }}
+
+      - name: Setup OpenCL CPU device
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $script_path="$env:CONDA_PREFIX\Scripts\set-intel-ocl-icd-registry.ps1"
+          &$script_path
+
+      - name: List installed packages
+        run: conda list
 
       - name: Check dpcpp-llvm-spirv
         run: |
-          source $CONDA/etc/profile.d/conda.sh
-          conda activate numba_dpex_env
           python -c "import dpcpp_llvm_spirv as p; print(p.get_llvm_spirv_path())"
 
-      - name: Dump test linux conda environment
-        run: |
-          conda env export > /tmp/env-test-linux.yml
-          cat /tmp/env-test-linux.yml
+      - name: Smoke test
+        run: python -c "import dpnp, dpctl, numba_dpex; dpctl.lsplatform()"
 
       - name: Run tests
         run: |
-          source $CONDA/etc/profile.d/conda.sh
-          conda activate numba_dpex_env
-          # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
-          pytest -q -ra --disable-warnings --pyargs $MODULE_NAME -vv
+          pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }} -vv
 
       - name: Run examples
+        shell: bash -l {0}
         run: |
-          ls
-          pwd
-          cd ./numba-dpex/numba_dpex/examples/
-          source $CONDA/etc/profile.d/conda.sh
-          conda activate numba_dpex_env
-          # echo "libintelocl.so" | tee /etc/OpenCL/vendors/intel-cpu.icd
+          cd ${{ env.EXAMPLES_PATH }}
           for script in $(find . \( -not -name "_*" -not -name "side-by-side*" -not -name "vectorize.py" -not -name "scan.py" -and -name "*.py" \))
           do
             echo "Executing ${script}"
             python ${script} || exit 1
           done
 
-  test_windows:
-    needs: build_windows
-    runs-on: windows-latest
-
-    strategy:
-      matrix:
-        python: ["3.8", "3.9", "3.10"]
-        integration_channels: [""]
-        experimental: [false]  # packages are not available on -c intel yet
-    continue-on-error: ${{ matrix.experimental }}
-    env:
-      # conda-forge: llvm-spirv 11 not on intel channel yet
-      CHANNELS: -c dppy/label/dev -c intel -c defaults -c numba -c numba/label/dev --override-channels
-
-    steps:
-      - name: Create dir for numba-dpex repo
-        run: |
-          mkdir -p ${{ github.workspace }}/dpex-repo
-
-      - name: Checout repo
-        uses: actions/checkout@v3
-        with:
-          path: dpex-repo
-          fetch-depth: 0
-
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
-
-      - name: Setup miniconda
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          use-only-tar-bz2: true
-          auto-update-conda: true
-          conda-build-version: '*'
-          miniconda-version: 'latest'
-          activate-environment: "numba_dpex_wintest"
-
-      - name: Create conda channel
-        run: |
-          mkdir -p $env:GITHUB_WORKSPACE/channel/win-64
-          mv ${{ env.PACKAGE_NAME }}-*.tar.bz2 $env:GITHUB_WORKSPACE/channel/win-64
-          conda index $env:GITHUB_WORKSPACE/channel
-          # Test channel
-          conda search ${{ env.PACKAGE_NAME }} -c $env:GITHUB_WORKSPACE/channel --override-channels
-
-      - name: Collect dependencies
-        run: conda install ${{ env.PACKAGE_NAME }} python=${{ matrix.bpython }} -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }} --only-deps --dry-run > lockfile
-
-      - name: Cache conda packages
-        uses: actions/cache@v3
-        env:
-          CACHE_NUMBER: 1  # Increase to reset cache
-        with:
-          path: /home/runner/conda_pkgs_dir
-          key:
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-${{hashFiles('lockfile') }}
-          restore-keys: |
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
-            ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
-
-      - name: Install numba-dpex
-        run: |
-          conda install ${{ env.PACKAGE_NAME }} pytest dpcpp_win-64 dpcpp-llvm-spirv python=${{ matrix.python }} dpctl -c $env:GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}
-          # Test installed packages
-          conda list
-
-      - name: Install opencl_rt
-        run: conda install opencl_rt -c intel --override-channels
-
-      - name: Add library
-        shell: pwsh
-        run: |
-          $script_path="$env:CONDA_PREFIX\Scripts\set-intel-ocl-icd-registry.ps1"
-          &$script_path
-          # Check the variable assisting OpenCL CPU driver to find TBB DLLs which are not located where it expects them by default
-          $cl_cfg="$env:CONDA_PREFIX\Library\lib\cl.cfg"
-          Get-Content -Tail 5 -Path $cl_cfg
-
-      - name: Add dpnp skip variable
-        run: echo "NUMBA_DPEX_TESTING_SKIP_NO_DPNP=1" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-
-      - name: Smoke test
-        run: python -c "import numba_dpex.core.runtime._dpexrt_python"
-
-      - name: Smoke test for dpcpp-llvm-spirv
-        run: python -c "import dpcpp_llvm_spirv as p; print(p.get_llvm_spirv_path())"
-
-      - name: Dump test windows conda environment
-        run: |
-          conda env export > env-test-win.yml
-          type env-test-win.yml
-
-      - name: Run tests
-        run: |
-          pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }} -vv
-
-  upload_linux:
-    needs: test_linux
+  upload_anaconda:
+    name: Upload dppy/label/dev ['${{ matrix.os }}', python='${{ matrix.python }}']
     if: ${{github.ref == 'refs/heads/main' || (startsWith(github.ref, 'refs/heads/release') == true)}}
-    runs-on: ubuntu-20.04
+
+    needs: [test]
+
     strategy:
       matrix:
-        python: ["3.8", "3.9", "3.10"]
+        python: ['3.8', '3.9', '3.10']
+        os: [ubuntu-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    continue-on-error: false
+
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v3
@@ -295,44 +219,16 @@ jobs:
       - name: Setup miniconda
         uses: conda-incubator/setup-miniconda@v2
         with:
-          auto-activate-base: true
-          activate-environment: ""
+          python-version: ${{ matrix.python }}
+          miniforge-variant: Mambaforge
+          miniforge-version: latest
+          activate-environment: "anaconda"
+          channels: ${{ env.CHANNELS }}
+          channel-priority: "disabled"
+          run-post: false
 
       - name: Install anaconda-client
-        run: conda install anaconda-client
+        run: mamba install anaconda-client
 
       - name: Upload
-        env:
-          ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
-        run: |
-          source /usr/share/miniconda/etc/profile.d/conda.sh
-          conda activate
-          anaconda --token $ANACONDA_TOKEN upload --user dppy --label dev ${PACKAGE_NAME}-*.tar.bz2
-
-  upload_windows:
-    needs: test_windows
-    if: ${{github.ref == 'refs/heads/main' || (startsWith(github.ref, 'refs/heads/release') == true)}}
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        python: ["3.8", "3.9", "3.10"]
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
-
-      - name: Setup miniconda
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          auto-activate-base: true
-          activate-environment: ""
-
-      - name: Install anaconda-client
-        run: conda install anaconda-client
-
-      - name: Upload
-        env:
-          ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
-        run: |
-          anaconda --token ${{ env.ANACONDA_TOKEN }} upload --user dppy --label dev ${{ env.PACKAGE_NAME }}-*.tar.bz2
+        run: anaconda --token ${{ secrets.ANACONDA_TOKEN }} upload --user dppy --label dev ${{ env.PACKAGE_NAME }}-*.tar.bz2

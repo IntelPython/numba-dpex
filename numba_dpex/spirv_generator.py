@@ -76,7 +76,13 @@ class CmdLine:
             llvm_spirv_flags.append("--spirv-debug-info-version=ocl-100")
 
         if not config.NATIVE_FP_ATOMICS:
-            llvm_spirv_args = ["--spirv-max-version", "1.4"] + llvm_spirv_args
+            # Do NOT upgrade version unless you are 100% confident. Not all
+            # kernel outputs can be converted to higher version of spirv.
+            # That results in different spirv file versions. As next step
+            # requires linking of the result file and
+            # numba_dpex/ocl/atomics/atomic_ops.spir it will raise an error
+            # that two spirv files have different version and can't be linked
+            llvm_spirv_args = ["--spirv-max-version", "1.0"] + llvm_spirv_args
         llvm_spirv_tool = self._llvm_spirv()
 
         if config.DEBUG:
