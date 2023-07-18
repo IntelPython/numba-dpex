@@ -39,8 +39,3 @@ Useful links
    * - `Numba*`_
      - Documentation for Numba - Just-In-Time compiler for Numpy-like codes. Used in conjunction with
        `Data Parallel Extension for Numba*`_.
-
-
-To-Do
-=====
-.. todolist::
