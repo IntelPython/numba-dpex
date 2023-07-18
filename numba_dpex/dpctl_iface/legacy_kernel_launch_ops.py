@@ -143,7 +143,7 @@ class KernelLaunchOps:
                 self.context.get_constant(types.int64, 0), storage
             )
             ty = numba_type_to_dpctl_typenum(
-                context=self.context, type=types.int64
+                context=self.context, ty=types.int64
             )
             self._form_kernel_arg_and_arg_ty(
                 self.builder.bitcast(
@@ -160,7 +160,7 @@ class KernelLaunchOps:
                 self.context.get_constant(types.int64, 0), storage
             )
             ty = numba_type_to_dpctl_typenum(
-                context=self.context, type=types.int64
+                context=self.context, ty=types.int64
             )
             self._form_kernel_arg_and_arg_ty(
                 self.builder.bitcast(
@@ -182,7 +182,7 @@ class KernelLaunchOps:
             )
 
             ty = numba_type_to_dpctl_typenum(
-                context=self.context, type=types.int64
+                context=self.context, ty=types.int64
             )
             self._form_kernel_arg_and_arg_ty(
                 self.builder.bitcast(
@@ -204,7 +204,7 @@ class KernelLaunchOps:
             )
 
             ty = numba_type_to_dpctl_typenum(
-                context=self.context, type=types.int64
+                context=self.context, ty=types.int64
             )
             self._form_kernel_arg_and_arg_ty(
                 self.builder.bitcast(
@@ -247,7 +247,7 @@ class KernelLaunchOps:
             # here for them to match.
             legal_names = legalize_names([var])
             ty = numba_type_to_dpctl_typenum(
-                context=self.context, type=types.voidptr
+                context=self.context, ty=types.voidptr
             )
 
             malloc_fn = DpctlCAPIFnBuilder.get_dpctl_malloc_shared(
@@ -323,7 +323,7 @@ class KernelLaunchOps:
                     ],
                 )
                 ty = numba_type_to_dpctl_typenum(
-                    context=self.context, type=types.int64
+                    context=self.context, ty=types.int64
                 )
                 self._form_kernel_arg_and_arg_ty(
                     self.builder.bitcast(
@@ -354,7 +354,7 @@ class KernelLaunchOps:
                 )
 
                 ty = numba_type_to_dpctl_typenum(
-                    context=self.context, type=types.int64
+                    context=self.context, ty=types.int64
                 )
                 self._form_kernel_arg_and_arg_ty(
                     self.builder.bitcast(
@@ -367,9 +367,7 @@ class KernelLaunchOps:
                 )
 
         else:
-            ty = numba_type_to_dpctl_typenum(
-                context=self.context, type=arg_type
-            )
+            ty = numba_type_to_dpctl_typenum(context=self.context, ty=arg_type)
             self._form_kernel_arg_and_arg_ty(
                 self.builder.bitcast(
                     llvm_arg,

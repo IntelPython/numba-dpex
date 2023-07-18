@@ -72,4 +72,4 @@ a single line without interference, set the scheduler-locking setting to `on` or
 
 See also:
 
-- `Continuing and Stepping in GDB* <https://sourceware.org/gdb/current/onlinedocs/gdb/Continuing-and-Stepping.html#Continuing-and-Stepping>`_
+- `Continuing and Stepping in GDB* <https://sourceware.org/gdb/onlinedocs/gdb/Continuing-and-Stepping.html#Continuing-and-Stepping>`_

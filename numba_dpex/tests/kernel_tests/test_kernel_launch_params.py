@@ -22,9 +22,10 @@ def vecadd(a, b, c):
 
 
 def test_1D_global_range_as_int():
-    k = vecadd[10]
-    assert k._global_range == [10]
-    assert k._local_range is None
+    with pytest.deprecated_call():
+        k = vecadd[10]
+        assert k._global_range == [10]
+        assert k._local_range is None
 
 
 def test_1D_global_range_as_one_tuple():
@@ -34,43 +35,49 @@ def test_1D_global_range_as_one_tuple():
 
 
 def test_1D_global_range_as_list():
-    k = vecadd[[10]]
-    assert k._global_range == [10]
-    assert k._local_range is None
+    with pytest.deprecated_call():
+        k = vecadd[[10]]
+        assert k._global_range == [10]
+        assert k._local_range is None
 
 
 def test_1D_global_range_and_1D_local_range1():
-    k = vecadd[[10, 10]]
-    assert k._global_range == [10]
-    assert k._local_range == [10]
+    with pytest.deprecated_call():
+        k = vecadd[[10, 10]]
+        assert k._global_range == [10]
+        assert k._local_range == [10]
 
 
 def test_1D_global_range_and_1D_local_range2():
-    k = vecadd[(10,), (10,)]
-    assert k._global_range == [10]
-    assert k._local_range == [10]
+    with pytest.deprecated_call():
+        k = vecadd[(10,), (10,)]
+        assert k._global_range == [10]
+        assert k._local_range == [10]
 
 
 def test_2D_global_range_and_2D_local_range1():
-    k = vecadd[(10, 10), (10, 10)]
-    assert k._global_range == [10, 10]
-    assert k._local_range == [10, 10]
+    with pytest.deprecated_call():
+        k = vecadd[(10, 10), (10, 10)]
+        assert k._global_range == [10, 10]
+        assert k._local_range == [10, 10]
 
 
 def test_2D_global_range_and_2D_local_range2():
-    k = vecadd[[10, 10], (10, 10)]
-    assert k._global_range == [10, 10]
-    assert k._local_range == [10, 10]
+    with pytest.deprecated_call():
+        k = vecadd[[10, 10], (10, 10)]
+        assert k._global_range == [10, 10]
+        assert k._local_range == [10, 10]
 
 
 def test_2D_global_range_and_2D_local_range3():
-    k = vecadd[(10, 10), [10, 10]]
-    assert k._global_range == [10, 10]
-    assert k._local_range == [10, 10]
+    with pytest.deprecated_call():
+        k = vecadd[(10, 10), [10, 10]]
+        assert k._global_range == [10, 10]
+        assert k._local_range == [10, 10]
 
 
 def test_2D_global_range_and_2D_local_range4():
-    k = vecadd[[10, 10], [10, 10]]
+    k = vecadd[dpex.NdRange((10, 10), (10, 10))]
     assert k._global_range == [10, 10]
     assert k._local_range == [10, 10]
 
@@ -119,27 +126,32 @@ def test_unknown_global_range_error():
 
 def test_illegal_kernel_launch_arg1():
     with pytest.raises(InvalidKernelLaunchArgsError):
-        vecadd[()]
+        with pytest.deprecated_call():
+            vecadd[()]
 
 
 def test_illegal_kernel_launch_arg2():
     with pytest.raises(InvalidKernelLaunchArgsError):
-        vecadd[10, 10, []]
+        with pytest.deprecated_call():
+            vecadd[10, 10, []]
 
 
 def test_illegal_range_error1():
     with pytest.raises(IllegalRangeValueError):
-        vecadd[[], []]
+        with pytest.deprecated_call():
+            vecadd[[], []]
 
 
 def test_illegal_range_error2():
     with pytest.raises(IllegalRangeValueError):
-        vecadd[[], 10]
+        with pytest.deprecated_call():
+            vecadd[[], 10]
 
 
 def test_illegal_range_error3():
     with pytest.raises(IllegalRangeValueError):
-        vecadd[(), 10]
+        with pytest.deprecated_call():
+            vecadd[(), 10]
 
 
 if __name__ == "__main__":

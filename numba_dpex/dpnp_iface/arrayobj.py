@@ -2,15 +2,20 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import operator
+
 import dpnp
 from numba import errors, types
+from numba.core.imputils import lower_builtin
 from numba.core.types import scalars
 from numba.core.types.containers import UniTuple
 from numba.core.typing.npydecl import parse_dtype as _ty_parse_dtype
 from numba.core.typing.npydecl import parse_shape as _ty_parse_shape
 from numba.extending import overload
+from numba.np.arrayobj import getitem_arraynd_intp as np_getitem_arraynd_intp
 from numba.np.numpy_support import is_nonelike
 
+from numba_dpex.core.datamodel.models import dpex_data_model_manager as dpex_dmm
 from numba_dpex.core.types import DpnpNdArray
 
 from ._intrinsic import (
@@ -606,6 +611,7 @@ def ol_dpnp_empty_like(
         errors.TypingError: If both `device` and `sycl_queue` are provided.
         errors.TypingError: If couldn't parse input types to dpnp.empty_like().
         errors.TypingError: If shape is provided.
+        errors.TypingError: If `x1` is not an instance of DpnpNdArray
 
     Returns:
         function: Local function `impl_dpnp_empty_like()`.
@@ -617,11 +623,23 @@ def ol_dpnp_empty_like(
             + "inside overloaded dpnp.empty_like() function."
         )
 
+    if not isinstance(x1, DpnpNdArray):
+        raise errors.TypingError(
+            "Only objects of dpnp.dpnp_array type are supported as "
+            "input array ``x1``."
+        )
+
     _ndim = _parse_dim(x1)
     _dtype = x1.dtype if isinstance(x1, types.Array) else _parse_dtype(dtype)
     _layout = x1.layout if order is None else order
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
+
+    # If a sycl_queue or device argument was not explicitly provided get the
+    # queue from the array (x1) argument.
+    _queue = sycl_queue
+    if _queue is None and _device is None:
+        _queue = x1.queue
 
     ret_ty = DpnpNdArray(
         ndim=_ndim,
@@ -629,7 +647,7 @@ def ol_dpnp_empty_like(
         dtype=_dtype,
         usm_type=_usm_type,
         device=_device,
-        queue=sycl_queue,
+        queue=_queue,
     )
 
     if ret_ty:
@@ -718,6 +736,7 @@ def ol_dpnp_zeros_like(
         errors.TypingError: If both `device` and `sycl_queue` are provided.
         errors.TypingError: If couldn't parse input types to dpnp.zeros_like().
         errors.TypingError: If shape is provided.
+        errors.TypingError: If `x1` is not an instance of DpnpNdArray
 
     Returns:
         function: Local function `impl_dpnp_zeros_like()`.
@@ -729,11 +748,23 @@ def ol_dpnp_zeros_like(
             + "inside overloaded dpnp.zeros_like() function."
         )
 
+    if not isinstance(x1, DpnpNdArray):
+        raise errors.TypingError(
+            "Only objects of dpnp.dpnp_array type are supported as "
+            "input array ``x1``."
+        )
+
     _ndim = _parse_dim(x1)
     _dtype = x1.dtype if isinstance(x1, types.Array) else _parse_dtype(dtype)
     _layout = x1.layout if order is None else order
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
+
+    # If a sycl_queue or device argument was not explicitly provided get the
+    # queue from the array (x1) argument.
+    _queue = sycl_queue
+    if _queue is None and _device is None:
+        _queue = x1.queue
 
     ret_ty = DpnpNdArray(
         ndim=_ndim,
@@ -741,7 +772,7 @@ def ol_dpnp_zeros_like(
         dtype=_dtype,
         usm_type=_usm_type,
         device=_device,
-        queue=sycl_queue,
+        queue=_queue,
     )
     if ret_ty:
 
@@ -829,6 +860,7 @@ def ol_dpnp_ones_like(
         errors.TypingError: If both `device` and `sycl_queue` are provided.
         errors.TypingError: If couldn't parse input types to dpnp.ones_like().
         errors.TypingError: If shape is provided.
+        errors.TypingError: If `x1` is not an instance of DpnpNdArray
 
     Returns:
         function: Local function `impl_dpnp_ones_like()`.
@@ -840,11 +872,23 @@ def ol_dpnp_ones_like(
             + "inside overloaded dpnp.ones_like() function."
         )
 
+    if not isinstance(x1, DpnpNdArray):
+        raise errors.TypingError(
+            "Only objects of dpnp.dpnp_array type are supported as "
+            "input array ``x1``."
+        )
+
     _ndim = _parse_dim(x1)
     _dtype = x1.dtype if isinstance(x1, types.Array) else _parse_dtype(dtype)
     _layout = x1.layout if order is None else order
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
+
+    # If a sycl_queue or device argument was not explicitly provided get the
+    # queue from the array (x1) argument.
+    _queue = sycl_queue
+    if _queue is None and _device is None:
+        _queue = x1.queue
 
     ret_ty = DpnpNdArray(
         ndim=_ndim,
@@ -852,7 +896,7 @@ def ol_dpnp_ones_like(
         dtype=_dtype,
         usm_type=_usm_type,
         device=_device,
-        queue=sycl_queue,
+        queue=_queue,
     )
 
     if ret_ty:
@@ -946,6 +990,7 @@ def ol_dpnp_full_like(
         errors.TypingError: If both `device` and `sycl_queue` are provided.
         errors.TypingError: If couldn't parse input types to dpnp.full_like().
         errors.TypingError: If shape is provided.
+        errors.TypingError: If `x1` is not an instance of DpnpNdArray
 
     Returns:
         function: Local function `impl_dpnp_full_like()`.
@@ -967,13 +1012,19 @@ def ol_dpnp_full_like(
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
     _device = _parse_device_filter_string(device) if device else None
 
+    # If a sycl_queue or device argument was not explicitly provided get the
+    # queue from the array (x1) argument.
+    _queue = sycl_queue
+    if _queue is None and _device is None:
+        _queue = x1.queue
+
     ret_ty = DpnpNdArray(
         ndim=_ndim,
         layout=_layout,
         dtype=_dtype,
         usm_type=_usm_type,
         device=_device,
-        queue=sycl_queue,
+        queue=_queue,
     )
 
     if ret_ty:
@@ -1008,3 +1059,28 @@ def ol_dpnp_full_like(
             "Cannot parse input types to "
             + f"function dpnp.full_like({x1}, {fill_value}, {dtype}, ...)."
         )
+
+
+@lower_builtin(operator.getitem, DpnpNdArray, types.Integer)
+@lower_builtin(operator.getitem, DpnpNdArray, types.SliceType)
+def getitem_arraynd_intp(context, builder, sig, args):
+    """
+    Overrding the numba.np.arrayobj.getitem_arraynd_intp to support dpnp.ndarray
+
+    The data model for numba.types.Array and numba_dpex.types.DpnpNdArray
+    are different. DpnpNdArray has an extra attribute to store a sycl::queue
+    pointer. For that reason, np_getitem_arraynd_intp needs to be overriden so
+    that when returning a view of a dpnp.ndarray the sycl::queue pointer
+    member in the LLVM IR struct gets properly updated.
+    """
+    ret = np_getitem_arraynd_intp(context, builder, sig, args)
+
+    array_val = args[0]
+    array_ty = sig.args[0]
+    sycl_queue_attr_pos = dpex_dmm.lookup(array_ty).get_field_position(
+        "sycl_queue"
+    )
+    sycl_queue_attr = builder.extract_value(array_val, sycl_queue_attr_pos)
+    ret = builder.insert_value(ret, sycl_queue_attr, sycl_queue_attr_pos)
+
+    return ret

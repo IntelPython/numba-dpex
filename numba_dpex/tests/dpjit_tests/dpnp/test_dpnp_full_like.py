@@ -148,17 +148,33 @@ def test_dpnp_full_like_from_queue(shape, fill_value, dtype, usm_type):
     assert c.dtype == dtype
     assert c.usm_type == usm_type
     assert c.sycl_device == queue.sycl_device
-
-    if c.sycl_queue != queue:
-        pytest.xfail(
-            "Returned queue does not have the same queue as the one passed to the dpnp function."
-        )
+    assert c.sycl_queue == a.sycl_queue
+    assert c.sycl_queue == queue
 
     # dummy = dpnp.full_like(a, fill_value, dtype=dtype)
     # dpnp can't cast 4294967295 into int32 and so on,
     # but we can, also numpy can, so we are using numpy here
     dummy = numpy.full_like(a.asnumpy(), fill_value, dtype=dtype)
     assert numpy.array_equal(c.asnumpy(), dummy)
+
+    try:
+        queue = dpctl.SyclQueue()
+        a1 = dpnp.zeros(shape, dtype=dtype, usm_type=usm_type)
+        c1 = func(a1, fill_value, queue)
+
+        if len(c1.shape) == 1:
+            assert c1.shape[0] == shape
+        else:
+            assert c1.shape == shape
+
+        assert c1.dtype == dtype
+        assert c1.usm_type == usm_type
+        assert c1.sycl_device == queue.sycl_device
+        assert c1.sycl_queue == queue
+        assert c1.sycl_queue != a1.sycl_queue
+
+    except Exception:
+        pytest.fail("Calling dpnp.full_like() inside dpjit failed.")
 
 
 def test_dpnp_full_like_exceptions():
@@ -194,7 +210,6 @@ def test_dpnp_full_like_exceptions():
         )
 
 
-@pytest.mark.xfail
 def test_dpnp_full_like_from_numpy():
     """Test if dpnp works with numpy array (it shouldn't)"""
 

@@ -5,7 +5,7 @@
 import copy
 
 from llvmlite import ir as llvmir
-from numba.core import cgutils, ir, types
+from numba.core import ir, types
 from numba.parfors.parfor import (
     find_potential_aliases_parfor,
     get_parfor_outputs,
@@ -25,6 +25,8 @@ from .reduction_kernel_builder import (
     create_reduction_main_kernel_for_parfor,
     create_reduction_remainder_kernel_for_parfor,
 )
+
+from numba_dpex.core.datamodel.models import dpex_data_model_manager as dpex_dmm
 
 # A global list of kernels to keep the objects alive indefinitely.
 keep_alive_kernels = []
@@ -114,8 +116,8 @@ class ParforLowerImpl:
         # kernel_fn.kernel_args as arrays get flattened.
         for arg_type in kernel_fn.kernel_arg_types:
             if isinstance(arg_type, DpnpNdArray):
-                # FIXME: Remove magic constants
-                num_flattened_args += 5 + (2 * arg_type.ndim)
+                datamodel = dpex_dmm.lookup(arg_type)
+                num_flattened_args += datamodel.flattened_field_count
             elif arg_type == types.complex64 or arg_type == types.complex128:
                 num_flattened_args += 2
             else:
@@ -134,15 +136,16 @@ class ParforLowerImpl:
             argtype = kernel_fn.kernel_arg_types[arg_num]
             llvm_val = _getvar(lowerer, arg)
             if isinstance(argtype, DpnpNdArray):
+                datamodel = dpex_dmm.lookup(arg_type)
                 self.kernel_builder.build_array_arg(
                     array_val=llvm_val,
+                    array_data_model=datamodel,
                     array_rank=argtype.ndim,
                     arg_list=self.args_list,
                     args_ty_list=self.args_ty_list,
                     arg_num=self.kernel_arg_num,
                 )
-                # FIXME: Get rid of magic constants
-                self.kernel_arg_num += 5 + (2 * argtype.ndim)
+                self.kernel_arg_num += datamodel.flattened_field_count
             else:
                 if argtype == types.complex64:
                     self.kernel_builder.build_complex_arg(
