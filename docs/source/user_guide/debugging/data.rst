@@ -10,7 +10,7 @@ See `GDB* documentation <https://www.sourceware.org/gdb/onlinedocs/gdb/Data.html
 
 To print the value of a variable, run the ``print <variable>`` command.
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/local_variables_0
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/commands/docs/local_variables_0
     :language: shell-session
     :lines: 67-72
     :emphasize-lines: 1-6
@@ -24,7 +24,7 @@ Example - Complex Data Types
 
 Source code :file:`numba_dpex/examples/debug/side-by-side-2.py`:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/side-by-side-2.py
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/side-by-side-2.py
    :pyobject: common_loop_body
    :linenos:
    :lineno-match:

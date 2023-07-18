@@ -1,3 +1,5 @@
+.. _backtrace:
+
 Backtrace
 ==========
 
@@ -5,8 +7,8 @@ The ``backtrace`` command displays a summary of how your program got where it
 is. Consider the following example
 ``numba_dpex/examples/debug/simple_dpex_func.py``:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/simple_dpex_func.py
-    :lines: 15-
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/simple_dpex_func.py
+    :lines: 5-
     :linenos:
     :lineno-match:
 
@@ -19,13 +21,13 @@ numba_dpex.func.
 
 Example 1:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/backtrace_kernel
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/commands/docs/backtrace_kernel
     :language: shell-session
     :emphasize-lines: 8,9
 
 Example 2:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/backtrace
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/commands/docs/backtrace
     :language: shell-session
     :emphasize-lines: 8-10
 

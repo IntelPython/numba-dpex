@@ -1,3 +1,5 @@
+.. _altering:
+
 Altering Execution
 ==================
 
@@ -22,7 +24,7 @@ Example
 
 Source code :file:`numba_dpex/examples/debug/side-by-side-2.py`:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/side-by-side-2.py
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/side-by-side-2.py
    :pyobject: common_loop_body
    :linenos:
    :lineno-match:

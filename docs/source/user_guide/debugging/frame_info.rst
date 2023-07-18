@@ -20,7 +20,7 @@ Example
 
 Source code :file:`numba_dpex/examples/debug/side-by-side.py`:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/side-by-side.py
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/side-by-side.py
    :pyobject: common_loop_body
    :linenos:
    :lineno-match:
@@ -59,21 +59,21 @@ Example
 
 Source code :file:`sum_local_vars.py`:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/sum_local_vars.py
-    :lines: 15-
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/sum_local_vars.py
+    :lines: 5-
     :linenos:
     :lineno-match:
 
 Run the debugger with ``NUMBA_OPT=0``:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/local_variables_0
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/commands/docs/local_variables_0
     :language: shell-session
     :lines: 1-6
 
 Use ``info locals``.
 Note that uninitialized variables are zeros:
 
-.. literalinclude:: ../../../numba_dpex/examples/debug/commands/docs/local_variables_0
+.. literalinclude:: ./../../../../numba_dpex/examples/debug/commands/docs/local_variables_0
     :language: shell-session
     :lines: 8-48
     :emphasize-lines: 1-16, 24-39
