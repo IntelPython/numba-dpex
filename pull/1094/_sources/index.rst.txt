@@ -52,7 +52,7 @@ Data Parallel Extension for Numba*
    :maxdepth: 2
    :caption: Development
 
-   contributions
+   contribution_guide
 
 .. toctree::
    :maxdepth: 2
@@ -62,23 +62,3 @@ Data Parallel Extension for Numba*
    glossary
    license
    release-notes
-
-
-.. Table of Contents
-.. *****************
-.. .. toctree::
-..     :maxdepth: 3
-
-..     user_manual/index
-
-.. .. toctree::
-..    :maxdepth: 3
-
-..    reference_manual/index
-
-.. .. toctree::
-..    :maxdepth: 3
-
-..    examples
-..    glossary
-..    release-notes

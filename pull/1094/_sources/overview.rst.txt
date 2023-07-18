@@ -109,30 +109,37 @@ As with the kernel API example, a ``dpjit`` function if invoked with dpnp
 input arguments follows the compute-follows-data programming model. Refer
 :doc:`user_manual/dpnp_offload/index` for further details.
 
-Zero-copy interoperability
-~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-Contributing
+Project Goal
 ------------
 
-Refer the `contributing guide
-<https://github.com/IntelPython/numba-dpex/blob/main/CONTRIBUTING>`_ for
-information on coding style and standards used in numba-dpex.
+If C++ is not your language, you can skip writing data-parallel kernels in SYCL
+and directly write them in Python.
 
-License
--------
-
-Numba-dpex is Licensed under Apache License 2.0 that can be found in `LICENSE
-<https://github.com/IntelPython/numba-dpex/blob/main/LICENSE>`_. All usage and
-contributions to the project are subject to the terms and conditions of this
-license.
+Our package numba-dpex extends the Numba compiler to allow kernel creation
+directly in Python via a custom compute API
 
 
-Along with the kernel programming API an auto-offload feature is also provided.
-The feature enables automatic generation of kernels from data-parallel NumPy
-library calls and array expressions, Numba ``prange`` loops, and `other
-"data-parallel by construction" expressions
-<https://numba.pydata.org/numba-doc/latest/user/parallel.html>`_ that Numba is
-able to parallelize. Following two examples demonstrate the two ways in which
-kernels may be written using numba-dpex.
+.. Contributing
+.. ------------
+
+.. Refer the `contributing guide
+.. <https://github.com/IntelPython/numba-dpex/blob/main/CONTRIBUTING>`_ for
+.. information on coding style and standards used in numba-dpex.
+
+.. License
+.. -------
+
+.. Numba-dpex is Licensed under Apache License 2.0 that can be found in `LICENSE
+.. <https://github.com/IntelPython/numba-dpex/blob/main/LICENSE>`_. All usage and
+.. contributions to the project are subject to the terms and conditions of this
+.. license.
+
+
+.. Along with the kernel programming API an auto-offload feature is also provided.
+.. The feature enables automatic generation of kernels from data-parallel NumPy
+.. library calls and array expressions, Numba ``prange`` loops, and `other
+.. "data-parallel by construction" expressions
+.. <https://numba.pydata.org/numba-doc/latest/user/parallel.html>`_ that Numba is
+.. able to parallelize. Following two examples demonstrate the two ways in which
+.. kernels may be written using numba-dpex.
