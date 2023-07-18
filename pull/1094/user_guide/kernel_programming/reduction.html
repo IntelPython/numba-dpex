@@ -18,7 +18,7 @@
         gtag('config', 'G-LGGL0NJK6P');
     </script>
     
-    <title>Kernel Programming API &#8212; numba-dpex  documentation</title>
+    <title>Reduction on SYCL-supported Devices &#8212; numba-dpex  documentation</title>
   
   
   
@@ -47,11 +47,11 @@
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'programmers_guide/kernel_programming/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/kernel_programming/reduction';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Writing Data Parallel Kernels" href="writing_kernels.html" />
-    <link rel="prev" title="Programmer’s Guide" href="../index.html" />
+    <link rel="next" title="Universal Functions" href="ufunc.html" />
+    <link rel="prev" title="Supported Address Space Qualifiers" href="memory_allocation_address_space.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -149,14 +149,14 @@
 
                     <li class="nav-item current active">
                       <a class="nav-link nav-internal" href="../index.html">
-                        Programmer’s Guide
+                        User Guide
                       </a>
                     </li>
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../reference_manual/index.html">
-                        Reference Manual
+                      <a class="nav-link nav-internal" href="../../api_reference/index.html">
+                        API Reference
                       </a>
                     </li>
                 
@@ -279,6 +279,10 @@ document.write(`
   
 
   
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
 </div>
 
     </nav>
@@ -320,14 +324,14 @@ document.write(`
 
                     <li class="nav-item current active">
                       <a class="nav-link nav-internal" href="../index.html">
-                        Programmer’s Guide
+                        User Guide
                       </a>
                     </li>
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../reference_manual/index.html">
-                        Reference Manual
+                      <a class="nav-link nav-internal" href="../../api_reference/index.html">
+                        API Reference
                       </a>
                     </li>
                 
@@ -431,7 +435,7 @@ document.write(`
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Kernel Programming API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Kernel Programming API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="writing_kernels.html">Writing Data Parallel Kernels</a></li>
 <li class="toctree-l2"><a class="reference internal" href="memory-management.html">Memory Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
@@ -439,7 +443,7 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="selecting_device.html">Defining the execution queue for a kernel function</a></li>
 <li class="toctree-l2"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Reduction on SYCL-supported Devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="random.html">Random Number Generation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
@@ -488,9 +492,12 @@ document.write(`
       </a>
     </li>
     
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Programmer’s Guide</a></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">User Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">Kernel Programming API</li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Kernel Programming API</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Reduction on SYCL-supported Devices</li>
   </ul>
 </nav>
 </div>
@@ -507,87 +514,136 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <span class="target" id="index"></span><section id="kernel-programming-api">
-<h1>Kernel Programming API<a class="headerlink" href="#kernel-programming-api" title="Permalink to this heading">#</a></h1>
-<p><a class="reference external" href="https://intelpython.github.io/DPEP/main/">Data Parallel Extensions for Python*</a> introduce a concept of an <em>offload kernel</em>, defined as
-a part of a Python program being submitted for execution to the device queue.</p>
-<a class="reference internal image-reference" href="../../_images/kernel-queue-device.png"><img alt="Offload Kernel" class="align-center" src="../../_images/kernel-queue-device.png" style="width: 520.0px; height: 351.0px;" /></a>
-<p>There are multiple ways how to write offload kernels. CUDA*, OpenCl*, and SYCL* offer similar programming model
-known as the <em>data parallel kernel programming</em>. In this model you express the work in terms of <em>work items</em>.
-You split data into small pieces, and each piece will be a unit of work, or a <em>work item</em>. The total number of
-work items is called <em>global size</em>. You can also group work items into bigger chunks called <em>work groups</em>.
-The number of work items in the work group is called the <em>local size</em>.</p>
-<a class="reference internal image-reference" href="../../_images/kernel_prog_model.png"><img alt="Offload Kernel" class="align-center" src="../../_images/kernel_prog_model.png" style="width: 344.0px; height: 223.0px;" /></a>
-<p>In this example there are 48 <em>work items</em> (8 in dimension 0, and 6 in dimension 1), that is the <em>global size</em> is 48.
-Work items are grouped in <em>work groups</em> with the <em>local size</em> 8 (4 in dimension 0, and 2 in dimension 1). There are
-total 48/8 = 6 work groups.</p>
-<p>In the <em>data parallel kernel programming</em> model you write a function that processes a given work item.
-Such a function is called the <em>data parallel kernel</em>.</p>
-<p><strong>Data Parallel Extension for Numba</strong> offers a way to write data parallel kernels directly using Python using
-<code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code>. It bears similarities with <code class="docutils literal notranslate"><span class="pre">numba.cuda</span></code> and <code class="docutils literal notranslate"><span class="pre">numba.roc</span></code>, but unlike these proprietary
-programming models <code class="docutils literal notranslate"><span class="pre">numba_dpex</span></code> is built on top of <a class="reference external" href="https://www.khronos.org/sycl/">SYCL*</a> , which is hardware agnostic, meaning
-that with <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code> programming model you will be able to write a portable code targeting different
-hardware vendors.</p>
+  <section id="reduction-on-sycl-supported-devices">
+<h1>Reduction on SYCL-supported Devices<a class="headerlink" href="#reduction-on-sycl-supported-devices" title="Permalink to this heading">#</a></h1>
+<p>Numba-dpex does not yet provide any specific decorator to implement
+reduction kernels. However, a kernel reduction can be written explicitly. This
+section provides two approaches for writing a reduction kernel as a
+<code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code> function.</p>
+<section id="example-1">
+<h2>Example 1<a class="headerlink" href="#example-1" title="Permalink to this heading">#</a></h2>
+<p>This example demonstrates a summation reduction on a one-dimensional array.</p>
+<p>Full example can be found at <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction.py</span></code>.</p>
+<p>In this example, to reduce the array we invoke the kernel multiple times.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span>
+<span class="k">def</span> <span class="nf">sum_reduction_kernel</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">stride</span><span class="p">):</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># sum two element</span>
+    <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">stride</span><span class="p">]</span>
+    <span class="c1"># store the sum to be used in nex iteration</span>
+    <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sum_reduce</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Size of A should be power of two.&quot;&quot;&quot;</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="c1"># max size will require half the size of A to store sum</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">total</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">global_size</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">total</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">-</span> <span class="n">global_size</span>
+        <span class="n">sum_reduction_kernel</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">global_size</span><span class="p">)](</span><span class="n">A</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">total</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="example-2">
+<h2>Example 2<a class="headerlink" href="#example-2" title="Permalink to this heading">#</a></h2>
+<p>Full example can be found at
+<code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction_recursive_ocl.py</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span>
+<span class="k">def</span> <span class="nf">sum_reduction_kernel</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">partial_sums</span><span class="p">):</span>
+    <span class="n">local_id</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_local_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">global_id</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">group_size</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_local_size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">group_id</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_group_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">local_sums</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">local</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">int32</span><span class="p">)</span>
+
+    <span class="n">local_sums</span><span class="p">[</span><span class="n">local_id</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="n">global_id</span> <span class="o">&lt;</span> <span class="n">input_size</span><span class="p">:</span>
+        <span class="n">local_sums</span><span class="p">[</span><span class="n">local_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">global_id</span><span class="p">]</span>
+
+    <span class="c1"># Loop for computing local_sums : divide workgroup into 2 parts</span>
+    <span class="n">stride</span> <span class="o">=</span> <span class="n">group_size</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="k">while</span> <span class="n">stride</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># Waiting for each 2x2 addition into given workgroup</span>
+        <span class="n">ndpx</span><span class="o">.</span><span class="n">barrier</span><span class="p">(</span><span class="n">ndpx</span><span class="o">.</span><span class="n">LOCAL_MEM_FENCE</span><span class="p">)</span>
+
+        <span class="c1"># Add elements 2 by 2 between local_id and local_id + stride</span>
+        <span class="k">if</span> <span class="n">local_id</span> <span class="o">&lt;</span> <span class="n">stride</span><span class="p">:</span>
+            <span class="n">local_sums</span><span class="p">[</span><span class="n">local_id</span><span class="p">]</span> <span class="o">+=</span> <span class="n">local_sums</span><span class="p">[</span><span class="n">local_id</span> <span class="o">+</span> <span class="n">stride</span><span class="p">]</span>
+
+        <span class="n">stride</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">local_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">partial_sums</span><span class="p">[</span><span class="n">group_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">local_sums</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sum_recursive_reduction</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">group_size</span><span class="p">,</span> <span class="n">Dinp</span><span class="p">,</span> <span class="n">Dpartial_sums</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">nb_work_groups</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">passed_size</span> <span class="o">=</span> <span class="n">size</span>
+
+    <span class="k">if</span> <span class="n">size</span> <span class="o">&lt;=</span> <span class="n">group_size</span><span class="p">:</span>
+        <span class="n">nb_work_groups</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">nb_work_groups</span> <span class="o">=</span> <span class="n">size</span> <span class="o">//</span> <span class="n">group_size</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="o">%</span> <span class="n">group_size</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">nb_work_groups</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">passed_size</span> <span class="o">=</span> <span class="n">nb_work_groups</span> <span class="o">*</span> <span class="n">group_size</span>
+
+    <span class="n">gr</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">passed_size</span><span class="p">)</span>
+    <span class="n">lr</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">group_size</span><span class="p">)</span>
+
+    <span class="n">sum_reduction_kernel</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">NdRange</span><span class="p">(</span><span class="n">gr</span><span class="p">,</span> <span class="n">lr</span><span class="p">)](</span><span class="n">Dinp</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">Dpartial_sums</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">nb_work_groups</span> <span class="o">&lt;=</span> <span class="n">group_size</span><span class="p">:</span>
+        <span class="n">sum_reduction_kernel</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">NdRange</span><span class="p">(</span><span class="n">lr</span><span class="p">,</span> <span class="n">lr</span><span class="p">)](</span>
+            <span class="n">Dpartial_sums</span><span class="p">,</span> <span class="n">nb_work_groups</span><span class="p">,</span> <span class="n">Dinp</span>
+        <span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Dinp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">sum_recursive_reduction</span><span class="p">(</span>
+            <span class="n">nb_work_groups</span><span class="p">,</span> <span class="n">group_size</span><span class="p">,</span> <span class="n">Dpartial_sums</span><span class="p">,</span> <span class="n">Dinp</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sum_reduce</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+    <span class="n">global_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="n">work_group_size</span> <span class="o">=</span> <span class="mi">64</span>
+    <span class="n">nb_work_groups</span> <span class="o">=</span> <span class="n">global_size</span> <span class="o">//</span> <span class="n">work_group_size</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">global_size</span> <span class="o">%</span> <span class="n">work_group_size</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">nb_work_groups</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">partial_sums</span> <span class="o">=</span> <span class="n">dpt</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nb_work_groups</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">sum_recursive_reduction</span><span class="p">(</span>
+        <span class="n">global_size</span><span class="p">,</span> <span class="n">work_group_size</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">partial_sums</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The current version of <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> supports Intel SYCL devices only</p>
+<p>Numba-dpex does not yet provide any analogue to the <code class="docutils literal notranslate"><span class="pre">numba.cuda.reduce</span></code>
+decorator for writing reductions kernel. Such a decorator will be added in
+future releases.</p>
 </div>
-<div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">This document will cover the following chapters:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="writing_kernels.html">Writing Data Parallel Kernels</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html#kernel-declaration">Kernel Declaration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html#kernel-invocation">Kernel Invocation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html#kernel-invocation-new-syntax">Kernel Invocation (New Syntax)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html#kernel-indexing-functions">Kernel Indexing Functions</a></li>
+</section>
+<section id="full-examples">
+<h2>Full examples<a class="headerlink" href="#full-examples" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction_recursive_ocl.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction_ocl.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction.py</span></code></p></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="memory-management.html">Memory Management</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="memory-management.html#sycl-usm-array-interface">SYCL USM Array Interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory-management.html#device-only-memory-and-explicit-data-transfer">Device-only memory and explicit data transfer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory-management.html#local-memory">Local memory</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory-management.html#private-and-constant-memory">Private and Constant memory</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html#example">Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html#generating-native-fp-atomics">Generating Native FP Atomics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html#full-examples">Full examples</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="selecting_device.html">Defining the execution queue for a kernel function</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="selecting_device.html#example">Example</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="reduction.html#example-1">Example 1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reduction.html#example-2">Example 2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reduction.html#full-examples">Full examples</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="ufunc.html">Universal Functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ufunc.html#example-1-basic-usage">Example 1: Basic Usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufunc.html#example-2-calling-numba-vectorize-inside-a-numba-dpex-kernel">Example 2: Calling <code class="docutils literal notranslate"><span class="pre">numba.vectorize</span></code> inside a <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufunc.html#full-examples">Full Examples</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="random.html">Random Number Generation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="random.html#supported-functions">Supported functions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#built-in-types">Built-in types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#built-in-functions">Built-in functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#standard-library-modules">Standard library modules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#unsupported-constructs">Unsupported Constructs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html#numpy-support">NumPy support</a></li>
-</ul>
-</li>
-</ul>
-</div>
+</section>
 </section>
 
 
@@ -602,20 +658,20 @@ hardware vendors.</p>
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../index.html"
+       href="memory_allocation_address_space.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Programmer’s Guide</p>
+        <p class="prev-next-title">Supported Address Space Qualifiers</p>
       </div>
     </a>
     <a class="right-next"
-       href="writing_kernels.html"
+       href="ufunc.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Writing Data Parallel Kernels</p>
+        <p class="prev-next-title">Universal Functions</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -628,6 +684,22 @@ hardware vendors.</p>
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1">Example 1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2">Example 2</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#full-examples">Full examples</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

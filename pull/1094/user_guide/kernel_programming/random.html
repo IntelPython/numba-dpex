@@ -18,7 +18,7 @@
         gtag('config', 'G-LGGL0NJK6P');
     </script>
     
-    <title>Reduction on SYCL-supported Devices &#8212; numba-dpex  documentation</title>
+    <title>Random Number Generation &#8212; numba-dpex  documentation</title>
   
   
   
@@ -47,11 +47,11 @@
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'programmers_guide/kernel_programming/reduction';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/kernel_programming/random';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Universal Functions" href="ufunc.html" />
-    <link rel="prev" title="Supported Address Space Qualifiers" href="memory_allocation_address_space.html" />
+    <link rel="next" title="Supported Python Features inside numba_dpex.kernel" href="supported-python-features.html" />
+    <link rel="prev" title="Universal Functions" href="ufunc.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -149,14 +149,14 @@
 
                     <li class="nav-item current active">
                       <a class="nav-link nav-internal" href="../index.html">
-                        Programmer’s Guide
+                        User Guide
                       </a>
                     </li>
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../reference_manual/index.html">
-                        Reference Manual
+                      <a class="nav-link nav-internal" href="../../api_reference/index.html">
+                        API Reference
                       </a>
                     </li>
                 
@@ -324,14 +324,14 @@ document.write(`
 
                     <li class="nav-item current active">
                       <a class="nav-link nav-internal" href="../index.html">
-                        Programmer’s Guide
+                        User Guide
                       </a>
                     </li>
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../reference_manual/index.html">
-                        Reference Manual
+                      <a class="nav-link nav-internal" href="../../api_reference/index.html">
+                        API Reference
                       </a>
                     </li>
                 
@@ -443,9 +443,9 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="selecting_device.html">Defining the execution queue for a kernel function</a></li>
 <li class="toctree-l2"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Reduction on SYCL-supported Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="random.html">Random Number Generation</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Random Number Generation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
 </ul>
 </li>
@@ -492,12 +492,12 @@ document.write(`
       </a>
     </li>
     
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Programmer’s Guide</a></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">User Guide</a></li>
     
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Kernel Programming API</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">Reduction on SYCL-supported Devices</li>
+    <li class="breadcrumb-item active" aria-current="page">Random Number Generation</li>
   </ul>
 </nav>
 </div>
@@ -514,135 +514,58 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="reduction-on-sycl-supported-devices">
-<h1>Reduction on SYCL-supported Devices<a class="headerlink" href="#reduction-on-sycl-supported-devices" title="Permalink to this heading">#</a></h1>
-<p>Numba-dpex does not yet provide any specific decorator to implement
-reduction kernels. However, a kernel reduction can be written explicitly. This
-section provides two approaches for writing a reduction kernel as a
-<code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code> function.</p>
-<section id="example-1">
-<h2>Example 1<a class="headerlink" href="#example-1" title="Permalink to this heading">#</a></h2>
-<p>This example demonstrates a summation reduction on a one-dimensional array.</p>
-<p>Full example can be found at <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction.py</span></code>.</p>
-<p>In this example, to reduce the array we invoke the kernel multiple times.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span>
-<span class="k">def</span> <span class="nf">sum_reduction_kernel</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">stride</span><span class="p">):</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="c1"># sum two element</span>
-    <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">stride</span><span class="p">]</span>
-    <span class="c1"># store the sum to be used in nex iteration</span>
-    <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sum_reduce</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Size of A should be power of two.&quot;&quot;&quot;</span>
-    <span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-    <span class="c1"># max size will require half the size of A to store sum</span>
-    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">total</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-
-    <span class="k">while</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">global_size</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">total</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">-</span> <span class="n">global_size</span>
-        <span class="n">sum_reduction_kernel</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">global_size</span><span class="p">)](</span><span class="n">A</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">total</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">R</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-</div>
+  <section id="random-number-generation">
+<h1>Random Number Generation<a class="headerlink" href="#random-number-generation" title="Permalink to this heading">#</a></h1>
+<p>Numba-dpex does not provide a random number generation algorithm that can be
+executed on the SYCL-supported Device.</p>
+<p>Numba-dpex provides access to NumPy random algorithms that can be executed on the
+SYCL-supported device via integration with <a class="reference external" href="https://intelpython.github.io/dpnp/reference/comparison.html#random-sampling">dpnp Random</a>.</p>
+<section id="supported-functions">
+<h2>Supported functions<a class="headerlink" href="#supported-functions" title="Permalink to this heading">#</a></h2>
+<section id="simple-random">
+<h3>Simple random<a class="headerlink" href="#simple-random" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.random.html#numpy.random.random">random</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.sample.html#numpy.random.sample">sample</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.ranf.html#numpy.random.ranf">ranf</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.random_sample.html#numpy.random.random_sample">random_sample</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.rand.html#numpy.random.rand">rand</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.randint.html#numpy.random.randint">randint</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.random_integers.html#numpy.random.random_integers">random_integers</a></p></li>
+</ul>
 </section>
-<section id="example-2">
-<h2>Example 2<a class="headerlink" href="#example-2" title="Permalink to this heading">#</a></h2>
-<p>Full example can be found at
-<code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction_recursive_ocl.py</span></code>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@ndpx</span><span class="o">.</span><span class="n">kernel</span>
-<span class="k">def</span> <span class="nf">sum_reduction_kernel</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">partial_sums</span><span class="p">):</span>
-    <span class="n">local_id</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_local_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">global_id</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_global_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">group_size</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_local_size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">group_id</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">get_group_id</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-    <span class="n">local_sums</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">local</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">int32</span><span class="p">)</span>
-
-    <span class="n">local_sums</span><span class="p">[</span><span class="n">local_id</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="k">if</span> <span class="n">global_id</span> <span class="o">&lt;</span> <span class="n">input_size</span><span class="p">:</span>
-        <span class="n">local_sums</span><span class="p">[</span><span class="n">local_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">global_id</span><span class="p">]</span>
-
-    <span class="c1"># Loop for computing local_sums : divide workgroup into 2 parts</span>
-    <span class="n">stride</span> <span class="o">=</span> <span class="n">group_size</span> <span class="o">//</span> <span class="mi">2</span>
-    <span class="k">while</span> <span class="n">stride</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="c1"># Waiting for each 2x2 addition into given workgroup</span>
-        <span class="n">ndpx</span><span class="o">.</span><span class="n">barrier</span><span class="p">(</span><span class="n">ndpx</span><span class="o">.</span><span class="n">LOCAL_MEM_FENCE</span><span class="p">)</span>
-
-        <span class="c1"># Add elements 2 by 2 between local_id and local_id + stride</span>
-        <span class="k">if</span> <span class="n">local_id</span> <span class="o">&lt;</span> <span class="n">stride</span><span class="p">:</span>
-            <span class="n">local_sums</span><span class="p">[</span><span class="n">local_id</span><span class="p">]</span> <span class="o">+=</span> <span class="n">local_sums</span><span class="p">[</span><span class="n">local_id</span> <span class="o">+</span> <span class="n">stride</span><span class="p">]</span>
-
-        <span class="n">stride</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
-
-    <span class="k">if</span> <span class="n">local_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">partial_sums</span><span class="p">[</span><span class="n">group_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">local_sums</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sum_recursive_reduction</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">group_size</span><span class="p">,</span> <span class="n">Dinp</span><span class="p">,</span> <span class="n">Dpartial_sums</span><span class="p">):</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">nb_work_groups</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">passed_size</span> <span class="o">=</span> <span class="n">size</span>
-
-    <span class="k">if</span> <span class="n">size</span> <span class="o">&lt;=</span> <span class="n">group_size</span><span class="p">:</span>
-        <span class="n">nb_work_groups</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">nb_work_groups</span> <span class="o">=</span> <span class="n">size</span> <span class="o">//</span> <span class="n">group_size</span>
-        <span class="k">if</span> <span class="n">size</span> <span class="o">%</span> <span class="n">group_size</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">nb_work_groups</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">passed_size</span> <span class="o">=</span> <span class="n">nb_work_groups</span> <span class="o">*</span> <span class="n">group_size</span>
-
-    <span class="n">gr</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">passed_size</span><span class="p">)</span>
-    <span class="n">lr</span> <span class="o">=</span> <span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">group_size</span><span class="p">)</span>
-
-    <span class="n">sum_reduction_kernel</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">NdRange</span><span class="p">(</span><span class="n">gr</span><span class="p">,</span> <span class="n">lr</span><span class="p">)](</span><span class="n">Dinp</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">Dpartial_sums</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">nb_work_groups</span> <span class="o">&lt;=</span> <span class="n">group_size</span><span class="p">:</span>
-        <span class="n">sum_reduction_kernel</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">NdRange</span><span class="p">(</span><span class="n">lr</span><span class="p">,</span> <span class="n">lr</span><span class="p">)](</span>
-            <span class="n">Dpartial_sums</span><span class="p">,</span> <span class="n">nb_work_groups</span><span class="p">,</span> <span class="n">Dinp</span>
-        <span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">Dinp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">sum_recursive_reduction</span><span class="p">(</span>
-            <span class="n">nb_work_groups</span><span class="p">,</span> <span class="n">group_size</span><span class="p">,</span> <span class="n">Dpartial_sums</span><span class="p">,</span> <span class="n">Dinp</span>
-        <span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">result</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">sum_reduce</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
-    <span class="n">global_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-    <span class="n">work_group_size</span> <span class="o">=</span> <span class="mi">64</span>
-    <span class="n">nb_work_groups</span> <span class="o">=</span> <span class="n">global_size</span> <span class="o">//</span> <span class="n">work_group_size</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">global_size</span> <span class="o">%</span> <span class="n">work_group_size</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">nb_work_groups</span> <span class="o">+=</span> <span class="mi">1</span>
-
-    <span class="n">partial_sums</span> <span class="o">=</span> <span class="n">dpt</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nb_work_groups</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">sum_recursive_reduction</span><span class="p">(</span>
-        <span class="n">global_size</span><span class="p">,</span> <span class="n">work_group_size</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">partial_sums</span>
-    <span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">result</span>
-</pre></div>
-</div>
+<section id="distribution">
+<h3>Distribution<a class="headerlink" href="#distribution" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.beta.html#numpy.random.beta">beta</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.binomial.html#numpy.random.binomial">binomial</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.chisquare.html#numpy.random.chisquare">chisquare</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.exponential.html#numpy.random.exponential">exponential</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.gamma.html#numpy.random.gamma">gamma</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.geometric.html#numpy.random.geometric">geometric</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.gumbel.html#numpy.random.gumbel">gumbel</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.hypergeometric.html#numpy.random.hypergeometric">hypergeometric</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.laplace.html#numpy.random.laplace">laplace</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.lognormal.html#numpy.random.lognormal">lognormal</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.multinomial.html#numpy.random.multinomial">multinomial</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.multivariate_normal.html#numpy.random.multivariate_normal">multivariate_normal</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.negative_binomial.html#numpy.random.negative_binomial">negative_binomial</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.normal.html#numpy.random.normal">normal</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.poisson.html#numpy.random.poisson">poisson</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.rayleigh.html#numpy.random.rayleigh">rayleigh</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.standard_cauchy.html#numpy.random.standard_cauchy">standard_cauchy</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.standard_exponential.html#numpy.random.standard_exponential">standard_exponential</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.standard_gamma.html#numpy.random.standard_gamma">standard_gamma</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.standard_normal.html#numpy.random.standard_normal">standard_normal</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.uniform.html#numpy.random.uniform">uniform</a></p></li>
+<li><p><a class="reference external" href="https://numpy.org/doc/1.16/reference/generated/numpy.random.weibull.html#numpy.random.weibull">weibull</a></p></li>
+</ul>
+<p>Example:</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Numba-dpex does not yet provide any analogue to the <code class="docutils literal notranslate"><span class="pre">numba.cuda.reduce</span></code>
-decorator for writing reductions kernel. Such a decorator will be added in
-future releases.</p>
+<p>To ensure the code is executed on GPU set <cite>DEBUG=1</cite> (or <cite>NUMBA_DPEX_DEBUG=1</cite>) and look to stdout</p>
 </div>
 </section>
-<section id="full-examples">
-<h2>Full examples<a class="headerlink" href="#full-examples" title="Permalink to this heading">#</a></h2>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction_recursive_ocl.py</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction_ocl.py</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/sum_reduction.py</span></code></p></li>
-</ul>
 </section>
 </section>
 
@@ -658,20 +581,20 @@ future releases.</p>
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="memory_allocation_address_space.html"
+       href="ufunc.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Supported Address Space Qualifiers</p>
+        <p class="prev-next-title">Universal Functions</p>
       </div>
     </a>
     <a class="right-next"
-       href="ufunc.html"
+       href="supported-python-features.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Universal Functions</p>
+        <p class="prev-next-title">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -693,9 +616,11 @@ future releases.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-1">Example 1</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-2">Example 2</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#full-examples">Full examples</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#supported-functions">Supported functions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-random">Simple random</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#distribution">Distribution</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

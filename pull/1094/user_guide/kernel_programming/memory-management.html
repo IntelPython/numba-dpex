@@ -18,7 +18,7 @@
         gtag('config', 'G-LGGL0NJK6P');
     </script>
     
-    <title>Compiling and Offloading DPNP &#8212; numba-dpex  documentation</title>
+    <title>Memory Management &#8212; numba-dpex  documentation</title>
   
   
   
@@ -47,11 +47,11 @@
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'programmers_guide/dpnp_offload/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/kernel_programming/memory-management';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Performance Tips" href="../performance_tips.html" />
-    <link rel="prev" title="Supported Python Features inside numba_dpex.kernel" href="../kernel_programming/supported-python-features.html" />
+    <link rel="next" title="Synchronization Functions" href="synchronization.html" />
+    <link rel="prev" title="Writing Data Parallel Kernels" href="writing_kernels.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -149,14 +149,14 @@
 
                     <li class="nav-item current active">
                       <a class="nav-link nav-internal" href="../index.html">
-                        Programmer’s Guide
+                        User Guide
                       </a>
                     </li>
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../reference_manual/index.html">
-                        Reference Manual
+                      <a class="nav-link nav-internal" href="../../api_reference/index.html">
+                        API Reference
                       </a>
                     </li>
                 
@@ -279,6 +279,10 @@ document.write(`
   
 
   
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
 </div>
 
     </nav>
@@ -320,14 +324,14 @@ document.write(`
 
                     <li class="nav-item current active">
                       <a class="nav-link nav-internal" href="../index.html">
-                        Programmer’s Guide
+                        User Guide
                       </a>
                     </li>
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../reference_manual/index.html">
-                        Reference Manual
+                      <a class="nav-link nav-internal" href="../../api_reference/index.html">
+                        API Reference
                       </a>
                     </li>
                 
@@ -431,21 +435,21 @@ document.write(`
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 has-children"><a class="reference internal" href="../kernel_programming/index.html">Kernel Programming API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/writing_kernels.html">Writing Data Parallel Kernels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/memory-management.html">Memory Management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/synchronization.html">Synchronization Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/device-functions.html">Writing Device Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/atomic-operations.html">Supported Atomic Operations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/selecting_device.html">Defining the execution queue for a kernel function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/reduction.html">Reduction on SYCL-supported Devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/ufunc.html">Universal Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/random.html">Random Number Generation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Kernel Programming API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html">Writing Data Parallel Kernels</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Memory Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atomic-operations.html">Supported Atomic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="selecting_device.html">Defining the execution queue for a kernel function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random.html">Random Number Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Compiling and Offloading DPNP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dpnp_offload/index.html">Compiling and Offloading DPNP</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance_tips.html">Performance Tips</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../useful_links.html">Useful links</a></li>
@@ -488,9 +492,12 @@ document.write(`
       </a>
     </li>
     
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Programmer’s Guide</a></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">User Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">Compiling and Offloading DPNP</li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Kernel Programming API</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page">Memory Management</li>
   </ul>
 </nav>
 </div>
@@ -507,9 +514,87 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <span class="target" id="dpnp-offload"></span><section id="compiling-and-offloading-dpnp">
-<h1>Compiling and Offloading DPNP<a class="headerlink" href="#compiling-and-offloading-dpnp" title="Permalink to this heading">#</a></h1>
-<p>TODO</p>
+  <span class="target" id="memory-management"></span><section id="id2">
+<h1>Memory Management<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h1>
+<p>Numba-dpex uses DPC++’s USM shared memory allocator (<code class="docutils literal notranslate"><span class="pre">memory_alloc</span></code>) to
+enable host to device and <em>vice versa</em> data transfer. By using USM shared
+memory allocator, numba-dpex allows seamless interoperability between
+numba-dpex and other SYCL-based Python extensions and across multiple
+kernels written using <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code> decorator.</p>
+<p>Numba-dpex uses the USM memory manager provided by dpctl and supports
+the <strong>SYCL USM Array Interface</strong> protocol to enable zero-copy data
+exchange across USM memory-backed Python objects.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>USM pointers make sense within a SYCL context and can be of four allocation
+types: <code class="docutils literal notranslate"><span class="pre">host</span></code>, <code class="docutils literal notranslate"><span class="pre">device</span></code>, <code class="docutils literal notranslate"><span class="pre">shared</span></code>, or <code class="docutils literal notranslate"><span class="pre">unknown</span></code>. Host applications,
+including CPython interpreter, can work with USM pointers of type <code class="docutils literal notranslate"><span class="pre">host</span></code>
+and <code class="docutils literal notranslate"><span class="pre">shared</span></code> as if they were ordinary host pointers. Accessing <code class="docutils literal notranslate"><span class="pre">device</span></code>
+USM pointers by host applications is not allowed.</p>
+</div>
+<section id="sycl-usm-array-interface">
+<h2>SYCL USM Array Interface<a class="headerlink" href="#sycl-usm-array-interface" title="Permalink to this heading">#</a></h2>
+<p>A SYCL library may allocate USM memory for the result that needs to be passed to
+Python. A native Python extension that makes use of such a library may expose
+this memory as an instance of Python class that will implement memory management
+logic (ensures that memory is freed when the instance is no longer needed).
+The need to manage memory arises whenever a library uses a custom allocator.
+For example, <a class="reference external" href="https://intelpython.github.io/daal4py/"><code class="docutils literal notranslate"><span class="pre">daal4py</span></code></a> uses Python capsule to ensure that a native
+library-allocated memory is freed using the appropriate deallocator.</p>
+<p>To enable native extensions to pass the memory allocated by a native SYCL
+library to Numba, or another SYCL-aware Python extension without making a copy,
+the class must provide <code class="docutils literal notranslate"><span class="pre">__sycl_usm_array_interface__</span></code> attribute which
+returns a Python dictionary with the following fields:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">shape</span></code>: tuple of <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">typestr</span></code>: <code class="docutils literal notranslate"><span class="pre">string</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">typedescr</span></code>: a list of tuples</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: (<code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">bool</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">strides</span></code>: tuple of <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">offset</span></code>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">version</span></code>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">syclobj</span></code>: <code class="docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code> or <code class="docutils literal notranslate"><span class="pre">dpctl.SyclContext</span></code> object</p></li>
+</ul>
+<p>The dictionary keys align with those of <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.interface.html"><code class="docutils literal notranslate"><span class="pre">numpy.ndarray.__array_interface__</span></code></a> and <a class="reference external" href="http://numba.pydata.org/numba-doc/latest/cuda/cuda_array_interface.html"><code class="docutils literal notranslate"><span class="pre">__cuda_array_interface__</span></code></a>. For host accessible
+USM pointers, the object may also implement CPython
+<a class="reference external" href="https://www.python.org/dev/peps/pep-3118/">PEP-3118</a>
+compliant buffer interface which will be used if a <code class="docutils literal notranslate"><span class="pre">data</span></code> key is not present
+in the dictionary. Use of a buffer interface extends the interoperability to
+other Python objects, such as <code class="docutils literal notranslate"><span class="pre">bytes</span></code>, <code class="docutils literal notranslate"><span class="pre">bytearray</span></code>, <code class="docutils literal notranslate"><span class="pre">array.array</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">memoryview</span></code>. The type of the USM pointer stored in the object can be queried
+using methods of the dpctl.</p>
+</section>
+<section id="device-only-memory-and-explicit-data-transfer">
+<h2>Device-only memory and explicit data transfer<a class="headerlink" href="#device-only-memory-and-explicit-data-transfer" title="Permalink to this heading">#</a></h2>
+<p>At the moment, there is no mechanism for the explicit transfer of arrays to
+the device and back. Please use usm arrays.</p>
+</section>
+<section id="local-memory">
+<h2>Local memory<a class="headerlink" href="#local-memory" title="Permalink to this heading">#</a></h2>
+<p>In SYCL’s memory model, local memory is a contiguous region of memory allocated
+per work group and is visible to all the work items in that group. Local memory
+is device-only and cannot be accessed from the host. From the perspective offers
+the device, the local memory is exposed as a contiguous array of a specific
+types. The maximum available local memory is hardware-specific. The SYCL local
+memory concept is analogous to CUDA’s shared memory concept.</p>
+<p>Numba-dpex provides a special function <code class="docutils literal notranslate"><span class="pre">numba_dpex.local.array</span></code> to
+allocate local memory for a kernel.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To go convert from <code class="docutils literal notranslate"><span class="pre">numba.cuda</span></code> to <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code>, replace
+<code class="docutils literal notranslate"><span class="pre">numba.cuda.shared.array</span></code> with
+<code class="docutils literal notranslate"><span class="pre">numba_dpex.local.array(shape=blocksize,</span> <span class="pre">dtype=float32)</span></code>.</p>
+</div>
+<div class="admonition-todo admonition" id="id3">
+<p class="admonition-title">Todo</p>
+<p>Add details about current limitations for local memory allocation in
+<code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code>.</p>
+</div>
+</section>
+<section id="private-and-constant-memory">
+<h2>Private and Constant memory<a class="headerlink" href="#private-and-constant-memory" title="Permalink to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> does not yet support SYCL private and constant memory.</p>
+</section>
 </section>
 
 
@@ -524,20 +609,20 @@ document.write(`
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../kernel_programming/supported-python-features.html"
+       href="writing_kernels.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></p>
+        <p class="prev-next-title">Writing Data Parallel Kernels</p>
       </div>
     </a>
     <a class="right-next"
-       href="../performance_tips.html"
+       href="synchronization.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Performance Tips</p>
+        <p class="prev-next-title">Synchronization Functions</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -550,6 +635,23 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sycl-usm-array-interface">SYCL USM Array Interface</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#device-only-memory-and-explicit-data-transfer">Device-only memory and explicit data transfer</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#local-memory">Local memory</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#private-and-constant-memory">Private and Constant memory</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

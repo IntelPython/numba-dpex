@@ -18,7 +18,7 @@
         gtag('config', 'G-LGGL0NJK6P');
     </script>
     
-    <title>Supported Atomic Operations &#8212; numba-dpex  documentation</title>
+    <title>Compiling and Offloading DPNP &#8212; numba-dpex  documentation</title>
   
   
   
@@ -47,11 +47,11 @@
     <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'programmers_guide/kernel_programming/atomic-operations';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/dpnp_offload/index';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Defining the execution queue for a kernel function" href="selecting_device.html" />
-    <link rel="prev" title="Writing Device Functions" href="device-functions.html" />
+    <link rel="next" title="Performance Tips" href="../performance_tips.html" />
+    <link rel="prev" title="Supported Python Features inside numba_dpex.kernel" href="../kernel_programming/supported-python-features.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -149,14 +149,14 @@
 
                     <li class="nav-item current active">
                       <a class="nav-link nav-internal" href="../index.html">
-                        Programmer’s Guide
+                        User Guide
                       </a>
                     </li>
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../reference_manual/index.html">
-                        Reference Manual
+                      <a class="nav-link nav-internal" href="../../api_reference/index.html">
+                        API Reference
                       </a>
                     </li>
                 
@@ -279,10 +279,6 @@ document.write(`
   
 
   
-    <label class="sidebar-toggle secondary-toggle" for="__secondary">
-      <span class="fa-solid fa-outdent"></span>
-    </label>
-  
 </div>
 
     </nav>
@@ -324,14 +320,14 @@ document.write(`
 
                     <li class="nav-item current active">
                       <a class="nav-link nav-internal" href="../index.html">
-                        Programmer’s Guide
+                        User Guide
                       </a>
                     </li>
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="../../reference_manual/index.html">
-                        Reference Manual
+                      <a class="nav-link nav-internal" href="../../api_reference/index.html">
+                        API Reference
                       </a>
                     </li>
                 
@@ -435,21 +431,21 @@ document.write(`
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Kernel Programming API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="writing_kernels.html">Writing Data Parallel Kernels</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory-management.html">Memory Management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="synchronization.html">Synchronization Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="device-functions.html">Writing Device Functions</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Supported Atomic Operations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="selecting_device.html">Defining the execution queue for a kernel function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reduction.html">Reduction on SYCL-supported Devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ufunc.html">Universal Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="random.html">Random Number Generation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../kernel_programming/index.html">Kernel Programming API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/writing_kernels.html">Writing Data Parallel Kernels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/memory-management.html">Memory Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/synchronization.html">Synchronization Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/device-functions.html">Writing Device Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/atomic-operations.html">Supported Atomic Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/selecting_device.html">Defining the execution queue for a kernel function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/memory_allocation_address_space.html">Supported Address Space Qualifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/reduction.html">Reduction on SYCL-supported Devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/ufunc.html">Universal Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/random.html">Random Number Generation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kernel_programming/supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../dpnp_offload/index.html">Compiling and Offloading DPNP</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Compiling and Offloading DPNP</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../performance_tips.html">Performance Tips</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../useful_links.html">Useful links</a></li>
@@ -492,12 +488,9 @@ document.write(`
       </a>
     </li>
     
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Programmer’s Guide</a></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">User Guide</a></li>
     
-    
-    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Kernel Programming API</a></li>
-    
-    <li class="breadcrumb-item active" aria-current="page">Supported Atomic Operations</li>
+    <li class="breadcrumb-item active" aria-current="page">Compiling and Offloading DPNP</li>
   </ul>
 </nav>
 </div>
@@ -514,105 +507,9 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="supported-atomic-operations">
-<h1>Supported Atomic Operations<a class="headerlink" href="#supported-atomic-operations" title="Permalink to this heading">#</a></h1>
-<p>Numba-dpex supports some of the atomic operations supported in DPC++.
-Those that are presently implemented are as follows:</p>
-<dl class="py class">
-<dt class="sig sig-object py">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">atomic</span></span></dt>
-<dd><dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span></dt>
-<dd><p>Performs atomic addition ary[idx] += val.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ary</strong> – An array on which the atomic operation is performed.
-Allowed types: int32, int64, float32, or float64</p></li>
-<li><p><strong>idx</strong> (<em>int</em>) – Index of the array element, on which atomic operation is performed</p></li>
-<li><p><strong>val</strong> – The value of an increment.
-Its type must match the type of array elements, ary[]</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The old value at the index location ary[idx] as if it is loaded atomically.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>None</strong> – </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">sub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span></dt>
-<dd><p>Performs atomic subtraction ary[idx] -= val.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ary</strong> – An array on which the atomic operation is performed.
-Allowed types: int32, int64, float32, or float64</p></li>
-<li><p><strong>idx</strong> (<em>int</em>) – Index of the array element, on which atomic operation is performed</p></li>
-<li><p><strong>val</strong> – The value of a decrement.
-Its type must match the type of array elements, ary[]</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The old value at the index location ary[idx] as if it is loaded atomically.</p>
-</dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>None</strong> – </p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<section id="example">
-<h2>Example<a class="headerlink" href="#example" title="Permalink to this heading">#</a></h2>
-<p>Example usage of atomic operations</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    <span class="n">N</span> <span class="o">=</span> <span class="mi">10</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using device ...&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
-
-    <span class="n">atomic_reduction</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">N</span><span class="p">)](</span><span class="n">a</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reduction sum =&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">numba_dpex.atomic.add</span></code> function is analogous to The
-<code class="docutils literal notranslate"><span class="pre">numba.cuda.atomic.add</span></code> provided by the <code class="docutils literal notranslate"><span class="pre">numba.cuda</span></code> backend.</p>
-</div>
-</section>
-<section id="generating-native-fp-atomics">
-<h2>Generating Native FP Atomics<a class="headerlink" href="#generating-native-fp-atomics" title="Permalink to this heading">#</a></h2>
-<p>Numba-dpex supports generating native floating-point atomics.
-This feature is experimental. Users will need to provide
-the following environment variables to activate it.</p>
-<blockquote>
-<div><p>NUMBA_DPEX_ACTIVATE_ATOMICS_FP_NATIVE=1
-NUMBA_DPEX_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv</p>
-</div></blockquote>
-<p>Example command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NUMBA_DPEX_ACTIVATE_ATOMICS_FP_NATIVE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
-<span class="nv">NUMBA_DPEX_LLVM_SPIRV_ROOT</span><span class="o">=</span>/path/to/dpcpp/provided/llvm_spirv<span class="w"> </span><span class="se">\</span>
-python<span class="w"> </span>program.py
-</pre></div>
-</div>
-</section>
-<section id="full-examples">
-<h2>Full examples<a class="headerlink" href="#full-examples" title="Permalink to this heading">#</a></h2>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">numba_dpex/examples/atomic_op.py</span></code></p></li>
-</ul>
-</section>
+  <span class="target" id="dpnp-offload"></span><section id="compiling-and-offloading-dpnp">
+<h1>Compiling and Offloading DPNP<a class="headerlink" href="#compiling-and-offloading-dpnp" title="Permalink to this heading">#</a></h1>
+<p>TODO</p>
 </section>
 
 
@@ -627,20 +524,20 @@ python<span class="w"> </span>program.py
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="device-functions.html"
+       href="../kernel_programming/supported-python-features.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Writing Device Functions</p>
+        <p class="prev-next-title">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></p>
       </div>
     </a>
     <a class="right-next"
-       href="selecting_device.html"
+       href="../performance_tips.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Defining the execution queue for a kernel function</p>
+        <p class="prev-next-title">Performance Tips</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -653,22 +550,6 @@ python<span class="w"> </span>program.py
             </div>
             
             
-              
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav class="bd-toc-nav page-toc">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example">Example</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generating-native-fp-atomics">Generating Native FP Atomics</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#full-examples">Full examples</a></li>
-</ul>
-  </nav></div>
-
-</div></div>
               
             
           </div>
