@@ -14,7 +14,7 @@ User Guide
 
     programming_model.rst
     kernel_programming/index
-    dpnp_offload/index
+    dpnp_offload
     debugging/index
     caching
     docker
