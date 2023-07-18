@@ -9,10 +9,10 @@ your program should stop in the kernel. Define breakpoints by line numbers or
 function names.
 
 You have several ways to set breakpoints:
-  - break <function>
-  - break <filename>:<linenumber>
-  - break <filename>:<function>
-  - break … if <condition>
+  - ``break <function>``
+  - ``break <filename>:<linenumber>``
+  - ``break <filename>:<function>``
+  - ``break … if <condition>``
 
 See also:
   - `Breakpoints in GDB*`_.

@@ -16,4 +16,5 @@ User Guide
     dpnp_offload/index
     debugging/index
     caching
+    docker
     useful_links
