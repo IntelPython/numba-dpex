@@ -1,7 +1,7 @@
 .. _docker:
 
-Docker
-======
+Docker Support
+==============
 
 Numba dpex now delivers docker support.
 Dockerfile is capable of building numba-dpex as well as direct dependencies for it:
@@ -60,29 +60,29 @@ base image should be debian based, like debian or ubuntu.
 
 Build arguments that could be useful:
 
-- PYTHON_VERSION
-- CR_TAG
-- IGC_TAG
-- CM_TAG
-- L0_TAG
-- ONEAPI_VERSION
-- DPCTL_GIT_BRANCH
-- DPCTL_GIT_URL
-- DPNP_GIT_BRANCH
-- DPNP_GIT_URL
-- NUMBA_DPEX_GIT_BRANCH
-- NUMBA_DPEX_GIT_URL
-- CMAKE_VERSION
-- CMAKE_VERSION_BUILD
-- INTEL_NUMPY_VERSION
-- INTEL_NUMBA_VERSION
-- CYTHON_VERSION
-- SCIKIT_BUILD_VERSION
-- http_proxy
-- https_proxy
-- GITHUB_USER
-- GITHUB_PASSWORD
-- BASE_IMAGE
+- ``PYTHON_VERSION``
+- ``CR_TAG``
+- ``IGC_TAG``
+- ``CM_TAG``
+- ``L0_TAG``
+- ``ONEAPI_VERSION``
+- ``DPCTL_GIT_BRANCH``
+- ``DPCTL_GIT_URL``
+- ``DPNP_GIT_BRANCH``
+- ``DPNP_GIT_URL``
+- ``NUMBA_DPEX_GIT_BRANCH``
+- ``NUMBA_DPEX_GIT_URL``
+- ``CMAKE_VERSION``
+- ``CMAKE_VERSION_BUILD``
+- ``INTEL_NUMPY_VERSION``
+- ``INTEL_NUMBA_VERSION``
+- ``CYTHON_VERSION``
+- ``SCIKIT_BUILD_VERSION``
+- ``http_proxy``
+- ``https_proxy``
+- ``GITHUB_USER``
+- ``GITHUB_PASSWORD``
+- ``BASE_IMAGE``
 
 Refer to Dockerfile to see all available
 
