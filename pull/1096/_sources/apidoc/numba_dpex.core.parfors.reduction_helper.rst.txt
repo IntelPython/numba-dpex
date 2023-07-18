@@ -1,7 +1,0 @@
-numba\_dpex.core.parfors.reduction\_helper module
-=================================================
-
-.. automodule:: numba_dpex.core.parfors.reduction_helper
-   :members:
-   :undoc-members:
-   :show-inheritance:

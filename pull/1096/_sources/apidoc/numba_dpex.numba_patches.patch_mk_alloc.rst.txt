@@ -1,7 +1,0 @@
-numba\_dpex.numba\_patches.patch\_mk\_alloc module
-==================================================
-
-.. automodule:: numba_dpex.numba_patches.patch_mk_alloc
-   :members:
-   :undoc-members:
-   :show-inheritance:

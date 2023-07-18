@@ -1,7 +1,0 @@
-numba\_dpex.core.utils.kernel\_templates.reduction\_template module
-===================================================================
-
-.. automodule:: numba_dpex.core.utils.kernel_templates.reduction_template
-   :members:
-   :undoc-members:
-   :show-inheritance:
