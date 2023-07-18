@@ -147,25 +147,61 @@
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="user_manual/index.html">
-                        Programmer’s Guide
+                      <a class="nav-link nav-internal" href="user_guide/index.html">
+                        User Guide
                       </a>
                     </li>
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="contribution.html">
-                        <no title>
+                      <a class="nav-link nav-internal" href="api_reference/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="contribution_guide.html">
+                        Contribution Guide
+                      </a>
+                    </li>
+                
+            <div class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More
+                </button>
+                <div class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="examples.html">
+                        List of examples
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="glossary.html">
+                        Glossary
                       </a>
                     </li>
                 
 
                     <li class="nav-item">
                       <a class="nav-link nav-internal" href="license.html">
-                        <no title>
+                        License
                       </a>
                     </li>
                 
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="release-notes.html">
+                        Release Notes
+                      </a>
+                    </li>
+                
+                </div>
+            </div>
+            
   </ul>
 </nav></div>
       
@@ -282,25 +318,61 @@ document.write(`
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="user_manual/index.html">
-                        Programmer’s Guide
+                      <a class="nav-link nav-internal" href="user_guide/index.html">
+                        User Guide
                       </a>
                     </li>
                 
 
                     <li class="nav-item">
-                      <a class="nav-link nav-internal" href="contribution.html">
-                        <no title>
+                      <a class="nav-link nav-internal" href="api_reference/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="contribution_guide.html">
+                        Contribution Guide
+                      </a>
+                    </li>
+                
+            <div class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More
+                </button>
+                <div class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="examples.html">
+                        List of examples
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="glossary.html">
+                        Glossary
                       </a>
                     </li>
                 
 
                     <li class="nav-item">
                       <a class="nav-link nav-internal" href="license.html">
-                        <no title>
+                        License
                       </a>
                     </li>
                 
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="release-notes.html">
+                        Release Notes
+                      </a>
+                    </li>
+                
+                </div>
+            </div>
+            
   </ul>
 </nav></div>
         
@@ -382,8 +454,6 @@ document.write(`
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="overview.html#main-features">Main Features</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#contributing">Contributing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#license">License</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a><ul>
@@ -394,19 +464,49 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="getting_started.html#examples">Examples</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="user_manual/index.html">Programmer’s Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="user_manual/kernel_programming/index.html">Kernel Programming API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user_manual/performance_tips.html">Performance Tips</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user_manual/troubleshooting.html">Troubleshooting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user_manual/useful_links.html">Useful links</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user_manual/useful_links.html#to-do">To-Do</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/index.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/programming_model.html">Programming Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/kernel_programming/index.html">Kernel Programming Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/dpnp_offload.html">Compiling and Offloading DPNP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/debugging/index.html">Debugging with Intel® Distribution for GDB*</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/caching.html">Caching Mechanism in Numba-dpex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/docker.html">Docker Support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/useful_links.html">Useful links</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference/index.html">API Reference</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contribution_guide.html">Contribution Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contribution_guide.html#classification-of-contributions">Classification of Contributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contribution_guide.html#development-cycle">Development Cycle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contribution_guide.html#issues-and-pull-requests">Issues and Pull Requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contribution_guide.html#coding-guidelines">Coding Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contribution_guide.html#unit-testing">Unit Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contribution_guide.html#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contribution_guide.html#tips-for-developers">Tips for Developers</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Misc Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">List of examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#benchmarks">Benchmarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#jupyter-notebooks">Jupyter* Notebooks</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="glossary.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release-notes.html">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="release-notes.html#changelog">Changelog</a></li>
+</ul>
+</li>
+</ul>
 </div>
 </section>
 
