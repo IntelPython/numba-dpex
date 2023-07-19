@@ -69,10 +69,10 @@ Numba dpex ships with multistage Dockerfile, which means there are
 different `targets <https://docs.docker.com/build/building/multi-stage/#stop-at-a-specific-build-stage>`_
 available for build. The most useful ones:
 
-- runtime
-- runtime-gpu
-- numba-dpex-builder-runtime
-- numba-dpex-builder-runtime-gpu
+- ``runtime``
+- ``runtime-gpu``
+- ``numba-dpex-builder-runtime``
+- ``numba-dpex-builder-runtime-gpu``
 
 To build docker image
 
@@ -96,7 +96,7 @@ To run docker image
     ``GITHUB_USER`` and ``GITHUB_PASSWORD``
     `build args <https://docs.docker.com/engine/reference/commandline/build/#build-arg>`_
     to increase the call limit. A GitHub
-    `access token <https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token>`
+    `access token <https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token>`_
     can also be used instead of the password.
 
 .. note::

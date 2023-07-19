@@ -50,5 +50,4 @@ hardware vendors.
    memory_allocation_address_space
    reduction
    ufunc
-   random
    supported-python-features
