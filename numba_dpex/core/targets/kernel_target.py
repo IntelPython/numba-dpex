@@ -64,7 +64,6 @@ class DpexKernelTypingContext(typing.BaseContext):
         """
         try:
             numba_type = typeof(val)
-            py_type = type(numba_type)
 
             if isinstance(numba_type, NpArrayType) and not isinstance(
                 numba_type, USMNdArray
@@ -73,19 +72,28 @@ class DpexKernelTypingContext(typing.BaseContext):
                     type=str(type(val)), value=val
                 )
 
-            # XXX A kernel function has the spir_kernel ABI and requires
-            # pointers to have an address space attribute. For this reason, the
-            # UsmNdArray type uses a custom data model where the pointers are
-            # address space casted to have a SYCL-specific address space value.
-            # The DpnpNdArray type on the other hand is meant to be used inside
-            # host functions and has Numba's array model as its data model.
-            # If the value is a DpnpNdArray then use the ``to_usm_ndarray``
-            # function to convert it into a UsmNdArray type rather than passing
-            # it to the kernel as a DpnpNdArray. Thus, from a Numba typing
-            # perspective dpnp.ndarrays cannot be directly passed to a kernel.
-            if py_type is DpnpNdArray:
-                suai_attrs = get_info_from_suai(val)
-                return to_usm_ndarray(suai_attrs)
+            # A cast from DpnpNdArray type to USMNdArray is needed for all
+            # arguments of DpnpNdArray type. Although, DpnpNdArray derives from
+            # USMNdArray the two types use different data models. USMNdArray
+            # uses the numba_dpex.core.datamodel.models.ArrayModel data model
+            # that defines all CPointer type members in the GLOBAL address
+            # space. The DpnpNdArray uses Numba's default ArrayModel that does
+            # not define pointers in any specific address space. For OpenCL HD
+            # Graphics devices, defining a kernel function (spir_kernel calling
+            # convention) with pointer arguments that have no address space
+            # qualifier causes a run time crash. By casting the argument type
+            # for parfor arguments from DpnpNdArray type to the USMNdArray type
+            # the generated kernel always has an address space qualifier,
+            # avoiding the issue on OpenCL HD graphics devices.
+            if isinstance(numba_type, DpnpNdArray):
+                return USMNdArray(
+                    ndim=numba_type.ndim,
+                    layout=numba_type.layout,
+                    dtype=numba_type.dtype,
+                    usm_type=numba_type.usm_type,
+                    queue=numba_type.queue,
+                )
+
         except ValueError:
             # When an array-like kernel argument is not recognized by
             # numba-dpex, this additional check sees if the array-like object
