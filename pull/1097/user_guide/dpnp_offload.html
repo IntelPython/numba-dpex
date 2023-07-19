@@ -528,12 +528,11 @@ document.write(`
                   
   <section id="compiling-and-offloading-dpnp-functions">
 <h1>Compiling and Offloading <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> Functions<a class="headerlink" href="#compiling-and-offloading-dpnp-functions" title="Permalink to this heading">#</a></h1>
-<p>Data Parallel Extension for NumPy* (<code class="docutils literal notranslate"><span class="pre">dpnp</span></code>) is a drop-in <code class="docutils literal notranslate"><span class="pre">NumPy*</span></code>
-replacement library built on top of oneMKL.</p>
-<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> relies on <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> to
-support offloading <code class="docutils literal notranslate"><span class="pre">NumPy</span></code> library functions to SYCL devices. For <code class="docutils literal notranslate"><span class="pre">NumPy</span></code>
-functions that are offloaded using <code class="docutils literal notranslate"><span class="pre">dpnp</span></code>, <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> generates library
-calls directly to <code class="docutils literal notranslate"><span class="pre">dpnp</span></code>’s <a class="reference external" href="https://github.com/IntelPython/dpnp/tree/master/dpnp/backend">low-level API</a> inside the generated LLVM IR.</p>
+<p>Data-Parallel Numeric Python (<code class="docutils literal notranslate"><span class="pre">dpnp</span></code>) is a drop-in <code class="docutils literal notranslate"><span class="pre">NumPy*</span></code> replacement library. The
+library is developed using SYCL and oneMKL. <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> relies on <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> to
+support offloading <code class="docutils literal notranslate"><span class="pre">NumPy</span></code> library functions to SYCL devices. For <code class="docutils literal notranslate"><span class="pre">NumPy</span></code> functions
+that are offloaded using <code class="docutils literal notranslate"><span class="pre">dpnp</span></code>, <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> generates library calls directly to
+<code class="docutils literal notranslate"><span class="pre">dpnp</span></code>’s <a class="reference external" href="https://github.com/IntelPython/dpnp/tree/master/dpnp/backend">low-level API</a> inside the generated LLVM IR.</p>
 <p id="integration-dpnp-backend">During compiling a Python function decorated with the <code class="docutils literal notranslate"><span class="pre">numba.njit</span></code>
 decorator, <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> substitutes <code class="docutils literal notranslate"><span class="pre">NumPy</span></code> function calls with corresponding <code class="docutils literal notranslate"><span class="pre">dpnp</span></code>
 low-level API function calls. The substitution happens transparent to an

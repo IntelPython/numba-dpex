@@ -12,7 +12,7 @@ User Guide
 .. toctree::
     :maxdepth: 2
 
-    programming_model.rst
+    programming_model
     kernel_programming/index
     dpnp_offload
     debugging/index

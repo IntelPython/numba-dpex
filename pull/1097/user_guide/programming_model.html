@@ -528,30 +528,24 @@ document.write(`
                   
   <span class="target" id="programming-model"></span><section id="id2">
 <h1>Programming Model<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h1>
-<!-- ---
-title: "Programming model"
-date: 2022-06-14
-type: docs
-weight: 10
-description: >
-  Get started with oneAPI Python-extensions
---- -->
-<p>In a heterogeneous system there may be <strong>multiple</strong> devices a Python user may want to engage.
-For example, it is common for a consumer-grade laptop to feature an integrated or a discrete
-GPU alongside a CPU.</p>
-<p>To harness their power one needs to know how to answer the following 3 key questions:</p>
+<p>In a heterogeneous system there may be <strong>multiple</strong> devices a Python user may
+want to engage. For example, it is common for a consumer-grade laptop to feature
+an integrated or a discrete GPU alongside a CPU.</p>
+<p>To harness their power one needs to know how to answer the following 3 key
+questions:</p>
 <ol class="arabic simple">
 <li><p>How does a Python program recognize available computational devices?</p></li>
-<li><p>How does a Python workload specify computations to be offloaded to selected devices?</p></li>
+<li><p>How does a Python workload specify computations to be offloaded to selected
+devices?</p></li>
 <li><p>How does a Python application manage data sharing?</p></li>
 </ol>
 <section id="recognizing-available-devices">
 <h2>Recognizing available devices<a class="headerlink" href="#recognizing-available-devices" title="Permalink to this heading">#</a></h2>
-<p>Python package <code class="docutils literal notranslate"><span class="pre">dpctl</span></code> answers these questions. All the computational devices known to the
-underlying DPC++ runtime can be accessed using <code class="docutils literal notranslate"><span class="pre">dpctl.get_devices()</span></code>. A specific device of
-interest <a class="reference external" href="https://intelpython.github.io/dpctl/latest/docfiles/user_guides/manual/dpctl/device_selection.html">can be selected</a> either using a helper function,
-e.g. <code class="docutils literal notranslate"><span class="pre">dpctl.select_gpu_device()</span></code>,  or by passing a filter selector string
-to <code class="docutils literal notranslate"><span class="pre">dpctl.SyclDevice</span></code> constructor.</p>
+<p>Python package <code class="docutils literal notranslate"><span class="pre">dpctl</span></code> answers these questions. All the computational devices
+known to the underlying DPC++ runtime can be accessed using
+<code class="docutils literal notranslate"><span class="pre">dpctl.get_devices()</span></code>. A specific device of interest <a class="reference external" href="https://intelpython.github.io/dpctl/latest/docfiles/user_guides/manual/dpctl/device_selection.html">can be selected</a>
+either using a helper function, e.g. <code class="docutils literal notranslate"><span class="pre">dpctl.select_gpu_device()</span></code>, or by
+passing a filter selector string to <code class="docutils literal notranslate"><span class="pre">dpctl.SyclDevice</span></code> constructor.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpctl</span>
 
 <span class="c1"># select a GPU device. If multiple devices present,</span>
@@ -568,38 +562,60 @@ to <code class="docutils literal notranslate"><span class="pre">dpctl.SyclDevice
 <span class="n">dev_cpu_alt</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">select_cpu_device</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>A <a class="reference external" href="https://intelpython.github.io/dpctl/latest/docfiles/user_guides/manual/dpctl/devices.html">device object</a> can be used to query properies of the device, such as its name, vendor, maximal number of computational units, memory size, etc.</p>
+<p>A <a class="reference external" href="https://intelpython.github.io/dpctl/latest/docfiles/user_guides/manual/dpctl/devices.html">device object</a>
+can be used to query properies of the device, such as its name, vendor, maximal
+number of computational units, memory size, etc.</p>
 </section>
 <section id="specifying-offload-target">
 <h2>Specifying offload target<a class="headerlink" href="#specifying-offload-target" title="Permalink to this heading">#</a></h2>
-<p>To answer the second question on the list we need a digression to explain offloading in oneAPI DPC++ first.</p>
-<!-- {{% alert title="Offloading in oneAPI DPC++" color="secondary" %}} -->
-<p>In DPC++, a computation kernel can be specified using generic C++ programming and then the kernel can be offloaded to any device that is supported by an underlying SYCL runtime. The device to which the kernel is offloaded is specified using an <strong>execution queue</strong> when <em>launching the kernel</em>.</p>
-<p>The oneAPI unified programming model brings portability across heterogeneous architectures. Another important aspect of the programming model is its inherent flexibility that makes it possible to go beyond portability and even strive for performance portability. An oneAPI library may be implemented using C++ techniques such as template metaprogramming or dynamic polymorphism to implement specializations for a generic kernel. If a kernel is implemented polymorphically, the specialized implementation will be dispatched based on the execution queue specified during kernel launch. The oneMKL library is an example of a performance portable oneAPI library.</p>
-<!-- {{% /alert %}} -->
-<p>A computational task is offloaded for execution on a device by submitting it to DPC++ runtime which inserts the task in a computational graph.
-Once the device becomes available the runtime selects a task whose dependencies are met for execution. The computational graph as well as the device targeted by its tasks are stored in a <a class="reference external" href="https://intelpython.github.io/dpctl/latest/docfiles/user_guides/manual/dpctl/queues.html">SYCL queue</a> object. The task submission is therefore always
-associated with a queue.</p>
-<p>Queues can be constructed directly from a device object, or by using a filter selector string to indicate the device to construct:</p>
+<p>To answer the second question on the list we need a digression to explain
+offloading in oneAPI DPC++ first.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In DPC++, a computation kernel can be specified using generic C++
+programming and then the kernel can be offloaded to any device that is
+supported by an underlying SYCL runtime. The device to which the kernel
+is offloaded is specified using an <strong>execution queue</strong> when <em>launching
+the kernel</em>.</p>
+<p>The oneAPI unified programming model brings portability across heterogeneous
+architectures. Another important aspect of the programming model is its
+inherent flexibility that makes it possible to go beyond portability and even
+strive for performance portability. An oneAPI library may be implemented
+using C++ techniques such as template metaprogramming or dynamic polymorphism
+to implement specializations for a generic kernel. If a kernel is implemented
+polymorphically, the specialized implementation will be dispatched based on
+the execution queue specified during kernel launch. The oneMKL library is an
+example of a performance portable oneAPI library.</p>
+</div>
+<p>A computational task is offloaded for execution on a device by submitting it to
+DPC++ runtime which inserts the task in a computational graph. Once the device
+becomes available the runtime selects a task whose dependencies are met for
+execution. The computational graph as well as the device targeted by its tasks
+are stored in a <a class="reference external" href="https://intelpython.github.io/dpctl/latest/docfiles/user_guides/manual/dpctl/queues.html">SYCL queue</a>
+object. The task submission is therefore always associated with a queue.</p>
+<p>Queues can be constructed directly from a device object, or by using a filter
+selector string to indicate the device to construct:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># construct queue from device object</span>
 <span class="n">q1</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">SyclQueue</span><span class="p">(</span><span class="n">dev_gpu</span><span class="p">)</span>
 <span class="c1"># construct queue using filter selector</span>
 <span class="n">q2</span> <span class="o">=</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">SyclQueue</span><span class="p">(</span><span class="s2">&quot;gpu&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The computational tasks can be stored in an oneAPI native extension in which case their submission is orchestrated
-during Python API calls. Let’s consider a function that offloads an evaluation of a polynomial for every point of a
-NumPy array <code class="docutils literal notranslate"><span class="pre">X</span></code>. Such a function needs to receive a queue object to indicate which device the computation must be
-offloaded to:</p>
+<p>The computational tasks can be stored in an oneAPI native extension in which
+case their submission is orchestrated during Python API calls. Let’s consider a
+function that offloads an evaluation of a polynomial for every point of a NumPy
+array <code class="docutils literal notranslate"><span class="pre">X</span></code>. Such a function needs to receive a queue object to indicate which
+device the computation must be offloaded to:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># allocate space for the result</span>
 <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 <span class="c1"># evaluate polynomial on the device targeted by the queue, Y[i] = p(X[i])</span>
 <span class="n">onapi_ext</span><span class="o">.</span><span class="n">offloaded_poly_evaluate</span><span class="p">(</span><span class="n">exec_q</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Python call to <code class="docutils literal notranslate"><span class="pre">onapi_ext.offloaded_poly_evaluate</span></code> applied to NumPy arrays of double precision floating pointer numbers gets
-translated to the following sample C++ code:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
+<p>Python call to <code class="docutils literal notranslate"><span class="pre">onapi_ext.offloaded_poly_evaluate</span></code> applied to NumPy arrays of
+double precision floating pointer numbers gets translated to the following
+sample C++ code:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
 <span class="nf">cpp_offloaded_poly_evaluate</span><span class="p">(</span>
 <span class="w">  </span><span class="n">sycl</span><span class="o">::</span><span class="n">queue</span><span class="w"> </span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="o">*</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="o">*</span><span class="n">Y</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// create buffers from malloc allocations to make data accessible from device</span>
@@ -624,8 +640,9 @@ translated to the following sample C++ code:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>We refer an interested reader to an excellent and freely available “<a class="reference external" href="https://link.springer.com/book/10.1007%2F978-1-4842-5574-2">Data Parallel C++</a>” book for
-details of this data parallel C++.</p>
+<p>We refer an interested reader to an excellent and freely available “<a class="reference external" href="https://link.springer.com/book/10.1007%2F978-1-4842-5574-2">Data
+Parallel C++</a>”
+book for details of this data parallel C++.</p>
 <p>Our package <code class="docutils literal notranslate"><span class="pre">numba_dpex</span></code> allows one to write kernels directly in Python.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numba_dpex</span>
 
@@ -649,20 +666,25 @@ details of this data parallel C++.</p>
     <span class="n">numba_dpex_poly</span><span class="p">[</span><span class="n">X</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">numba_dpex</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The argument to <code class="docutils literal notranslate"><span class="pre">device_context</span></code> can be a queue object, a device object for which a temporary queue will be created,
-or a filter selector string. Thus we could have equally used <code class="docutils literal notranslate"><span class="pre">dpctl.device_context(gpu_dev)</span></code> or <code class="docutils literal notranslate"><span class="pre">dpctl.device_context(&quot;gpu&quot;)</span></code>.</p>
-<p>Note that in this examples data sharing was implicitly managed for us: in the case of calling a function from a precompiled
-oneAPI native extension data sharing was managed by DPC++ runtime, while in the case of using <code class="docutils literal notranslate"><span class="pre">numba_dpex</span></code> kernel it was managed
-during execution of <code class="docutils literal notranslate"><span class="pre">__call__</span></code> method.</p>
+<p>The argument to <code class="docutils literal notranslate"><span class="pre">device_context</span></code> can be a queue object, a device object for
+which a temporary queue will be created, or a filter selector string. Thus we
+could have equally used <code class="docutils literal notranslate"><span class="pre">dpctl.device_context(gpu_dev)</span></code> or
+<code class="docutils literal notranslate"><span class="pre">dpctl.device_context(&quot;gpu&quot;)</span></code>.</p>
+<p>Note that in this examples data sharing was implicitly managed for us: in the
+case of calling a function from a precompiled oneAPI native extension data
+sharing was managed by DPC++ runtime, while in the case of using <code class="docutils literal notranslate"><span class="pre">numba_dpex</span></code>
+kernel it was managed during execution of <code class="docutils literal notranslate"><span class="pre">__call__</span></code> method.</p>
 </section>
 <section id="data-sharing">
 <h2>Data sharing<a class="headerlink" href="#data-sharing" title="Permalink to this heading">#</a></h2>
-<p>Implicit management of data is surely convenient, but its use in an interpreted code comes at a performance cost. A runtime must
-implicitly copy data from host to the device before the kernel execution commences and then copy some (or all) of it back
-after the execution completes for every Python API call.</p>
-<p><code class="docutils literal notranslate"><span class="pre">dpctl</span></code> provides for allocating memory directly accessible to kernels executing on a device using SYCL’s
-Unified Shared Memory (<a class="reference external" href="https://www.khronos.org/registry/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:usm">USM</a>) feature. It also implements USM-based ND-array
-object <code class="docutils literal notranslate"><span class="pre">dpctl.tensor.usm_ndarray</span></code> that conforms <a class="reference external" href="https://data-apis.org/array-api/latest/">array-API standard</a>.</p>
+<p>Implicit management of data is surely convenient, but its use in an interpreted
+code comes at a performance cost. A runtime must implicitly copy data from host
+to the device before the kernel execution commences and then copy some (or all)
+of it back after the execution completes for every Python API call.</p>
+<p><code class="docutils literal notranslate"><span class="pre">dpctl</span></code> provides for allocating memory directly accessible to kernels
+executing on a device using SYCL’s Unified Shared Memory (<a class="reference external" href="https://www.khronos.org/registry/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:usm">USM</a>)
+feature. It also implements USM-based ND-array object
+<code class="docutils literal notranslate"><span class="pre">dpctl.tensor.usm_ndarray</span></code> that conforms <a class="reference external" href="https://data-apis.org/array-api/latest/">array-API standard</a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpctl.tensor</span> <span class="k">as</span> <span class="nn">dpt</span>
 
 <span class="c1"># allocate array of doubles using USM-device allocation on GPU device</span>
@@ -675,52 +697,68 @@ object <code class="docutils literal notranslate"><span class="pre">dpctl.tensor
 <span class="n">numba_dpex_poly</span><span class="p">[</span><span class="n">X</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">numba_dpex</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The execution queue can be unambiguously determined in this case since both arguments are
-USM arrays with the same allocation queues and <code class="docutils literal notranslate"><span class="pre">X.sycl_queue</span> <span class="pre">==</span> <span class="pre">Y.sycl_queue</span></code> evaluates to <code class="docutils literal notranslate"><span class="pre">True</span></code>.
-Should allocation queues be different, such an inference becomes ambiguous and <code class="docutils literal notranslate"><span class="pre">numba_dpex</span></code> raises
-<code class="docutils literal notranslate"><span class="pre">IndeterminateExecutionQueueError</span></code> advising user to explicitly migrate the data.</p>
-<p>Migration can be accomplished either by using <code class="docutils literal notranslate"><span class="pre">dpctl.tensor.asarray(X,</span> <span class="pre">device=target_device)</span></code>
-to create a copy, or by using <code class="docutils literal notranslate"><span class="pre">X.to_device(target_device)</span></code> method.</p>
-<p>A USM array can be copied back into a NumPy array using <code class="docutils literal notranslate"><span class="pre">dpt.asnumpy(Y)</span></code> if needed.</p>
+<p>The execution queue can be unambiguously determined in this case since both
+arguments are USM arrays with the same allocation queues and <code class="docutils literal notranslate"><span class="pre">X.sycl_queue</span> <span class="pre">==</span>
+<span class="pre">Y.sycl_queue</span></code> evaluates to <code class="docutils literal notranslate"><span class="pre">True</span></code>. Should allocation queues be different,
+such an inference becomes ambiguous and <code class="docutils literal notranslate"><span class="pre">numba_dpex</span></code> raises
+<code class="docutils literal notranslate"><span class="pre">IndeterminateExecutionQueueError</span></code> advising user to explicitly migrate the
+data.</p>
+<p>Migration can be accomplished either by using <code class="docutils literal notranslate"><span class="pre">dpctl.tensor.asarray(X,</span>
+<span class="pre">device=target_device)</span></code> to create a copy, or by using
+<code class="docutils literal notranslate"><span class="pre">X.to_device(target_device)</span></code> method.</p>
+<p>A USM array can be copied back into a NumPy array using <code class="docutils literal notranslate"><span class="pre">dpt.asnumpy(Y)</span></code> if
+needed.</p>
 </section>
 <section id="compute-follows-data">
 <h2>Compute follows data<a class="headerlink" href="#compute-follows-data" title="Permalink to this heading">#</a></h2>
-<p>Automatic deduction of the execution queue from allocation queues is consitent with “<a class="reference external" href="https://data-apis.org/array-api/latest/design_topics/device_support.html">local control for data allocation target</a>”
-in the array API standard. User has full control over memory allocation through three keyword arguments present in all <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/creation_functions.html">array creation functions</a>.
+<p>Automatic deduction of the execution queue from allocation queues is consitent
+with “<a class="reference external" href="https://data-apis.org/array-api/latest/design_topics/device_support.html">local control for data allocation target</a>”
+in the array API standard. User has full control over memory allocation through
+three keyword arguments present in all <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/creation_functions.html">array creation functions</a>.
 For example, consider</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use usm_type = &#39;device&#39; to get USM-device allocation (default),</span>
-<span class="c1">#     usm_type = &#39;shared&#39; to get USM-shared allocation,</span>
-<span class="c1">#     usm_type = &#39;host&#39;   to get USM-host allocation</span>
-<span class="c1"># def dpctl.tensor.empty(..., device=None, usm_type=None, sycl_queue=None) -&gt; dpctl.tensor.usm_ndarray: ...</span>
-</pre></div>
-</div>
-<p>The keyword <code class="docutils literal notranslate"><span class="pre">device</span></code> is <a class="reference external" href="https://data-apis.org/array-api/latest/design_topics/device_support.html#syntax-for-device-assignment">mandated by the array API</a>. In <code class="docutils literal notranslate"><span class="pre">dpctl.tensor</span></code> the allowed values of the keyword are</p>
+<p>The keyword <code class="docutils literal notranslate"><span class="pre">device</span></code> is <a class="reference external" href="https://data-apis.org/array-api/latest/design_topics/device_support.html#syntax-for-device-assignment">mandated by the array API</a>.
+In <code class="docutils literal notranslate"><span class="pre">dpctl.tensor</span></code> the allowed values of the keyword are</p>
 <ul class="simple">
 <li><p>Filter selector string, e.g. <code class="docutils literal notranslate"><span class="pre">device=&quot;gpu:0&quot;</span></code></p></li>
 <li><p>Existing <code class="docutils literal notranslate"><span class="pre">dpctl.SyclDevice</span></code> object, e.g. <code class="docutils literal notranslate"><span class="pre">device=dev_gpu</span></code></p></li>
 <li><p>Existing <code class="docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code> object</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">dpctl.tensor.Device</span></code> object instance obtained from an existing USM array, e.g. <code class="docutils literal notranslate"><span class="pre">device=X.device</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dpctl.tensor.Device</span></code> object instance obtained from an existing USM array,
+e.g. <code class="docutils literal notranslate"><span class="pre">device=X.device</span></code></p></li>
 </ul>
-<p>In all cases, an allocation queue object will be constructed as described <a class="reference external" href="#specifying-offload-target">earlier</a> and
-stored in the array instance, accessible with <code class="docutils literal notranslate"><span class="pre">X.sycl_queue</span></code>. Instead of using <code class="docutils literal notranslate"><span class="pre">device</span></code> keyword, one can alternatively
-use <code class="docutils literal notranslate"><span class="pre">sycl_queue</span></code> keyword for readability to directly specify a <code class="docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code> object to be used as the allocation queue.</p>
-<p>The rationale for storing the allocation queue in the array is that kernels submitted to this queue are guaranteed to be able to
-correctly dereference (i.e. access) the USM pointer. Array operations that only involve this single USM array can thus execute
-on the allocation queue, and the output array can be allocated on this same allocation queue with the same usm type as the input array.</p>
-<!-- {{% alert title="Note" %}} -->
-<p>Reusing the allocation queue of the input array ensures the computational tasks behind the API call can access the array without making
-implicit copies and the output array is allocated on the same device as the input.</p>
-<!-- {{% /alert %}} -->
-<p>Compute follows data is the rule prescribing deduction of the execution and the allocation queue as well as the USM type for the result
-when multiple USM arrays are combined. It stipulates that arrays can be combined if and only if their allocation <em>queues are the same</em> as measured
-by <code class="docutils literal notranslate"><span class="pre">==</span></code> operator (i.e. <code class="docutils literal notranslate"><span class="pre">X.sycl_queue</span> <span class="pre">==</span> <span class="pre">Y.sycl_queue</span></code> must evaluate to <code class="docutils literal notranslate"><span class="pre">True</span></code>). Same queues refer to the same underlying task graphs and DPC++ schedulers.</p>
-<p>An attempt to combine USM arrays with unsame allocation queues raises an exception advising the user to migrate the data.
-Migration can be accomplished either by using <code class="docutils literal notranslate"><span class="pre">dpctl.tensor.asarray(X,</span> <span class="pre">device=Y.device)</span></code> to create a copy, or by
-using <code class="docutils literal notranslate"><span class="pre">X.to_device(Y.device)</span></code> method which can sometime do the migration more efficiently.</p>
-<!-- {{% alert title="Advisory" color="warning" %}} -->
-<p><code class="docutils literal notranslate"><span class="pre">dpctl</span></code> and <code class="docutils literal notranslate"><span class="pre">numba_dpex</span></code> are both under heavy development. Feel free to file an issue on GitHub or
-reach out on Gitter should you encounter any issues.</p>
-<!-- {{% /alert %}} -->
+<p>In all cases, an allocation queue object will be constructed as described
+<a class="reference external" href="#specifying-offload-target">earlier</a> and stored in the array instance,
+accessible with <code class="docutils literal notranslate"><span class="pre">X.sycl_queue</span></code>. Instead of using <code class="docutils literal notranslate"><span class="pre">device</span></code> keyword, one can
+alternatively use <code class="docutils literal notranslate"><span class="pre">sycl_queue</span></code> keyword for readability to directly specify a
+<code class="docutils literal notranslate"><span class="pre">dpctl.SyclQueue</span></code> object to be used as the allocation queue.</p>
+<p>The rationale for storing the allocation queue in the array is that kernels
+submitted to this queue are guaranteed to be able to correctly dereference (i.e.
+access) the USM pointer. Array operations that only involve this single USM
+array can thus execute on the allocation queue, and the output array can be
+allocated on this same allocation queue with the same usm type as the input
+array.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reusing the allocation queue of the input
+array ensures the computational tasks behind the API call can access the
+array without making implicit copies and the output array is allocated
+on the same device as the input.</p>
+</div>
+<p>Compute follows data is the rule prescribing deduction of the execution and the
+allocation queue as well as the USM type for the result when multiple USM arrays
+are combined. It stipulates that arrays can be combined if and only if their
+allocation <em>queues are the same</em> as measured by <code class="docutils literal notranslate"><span class="pre">==</span></code> operator (i.e.
+<code class="docutils literal notranslate"><span class="pre">X.sycl_queue</span> <span class="pre">==</span> <span class="pre">Y.sycl_queue</span></code> must evaluate to <code class="docutils literal notranslate"><span class="pre">True</span></code>). Same queues refer
+to the same underlying task graphs and DPC++ schedulers.</p>
+<p>An attempt to combine USM arrays with unsame allocation queues raises an
+exception advising the user to migrate the data. Migration can be accomplished
+either by using <code class="docutils literal notranslate"><span class="pre">dpctl.tensor.asarray(X,</span> <span class="pre">device=Y.device)</span></code> to create a copy,
+or by using <code class="docutils literal notranslate"><span class="pre">X.to_device(Y.device)</span></code> method which can sometime do the migration
+more efficiently.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code class="docutils literal notranslate"><span class="pre">dpctl</span></code> and <code class="docutils literal notranslate"><span class="pre">numba_dpex</span></code> are both under heavy development. Feel free to file an
+issue on GitHub or reach out on Gitter should you encounter any issues.</p>
+</div>
 </section>
 </section>
 
