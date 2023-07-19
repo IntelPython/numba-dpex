@@ -52,10 +52,7 @@ extensions = [
     "sphinx.ext.autosectionlabel",
     "sphinxcontrib.programoutput",
     "sphinxcontrib.googleanalytics",
-<<<<<<< HEAD:docs/source/conf.py
     "myst_parser",
-=======
->>>>>>> Restructured the overview section and other minor fixes.:docs/sources/conf.py
 ]
 
 # Add any paths that contain templates here, relative to this directory.
