@@ -18,7 +18,7 @@ numba-dpex ufunc kernels cannot invoke a ``numba_dpex.kernel`` function.
 Example 1: Basic Usage
 ----------------------
 
-Full example can be found at ``numba_dpex/examples/vectorize.py``.
+Full example can be found at :file:`numba_dpex/examples/vectorize.py`.
 
 .. literalinclude:: ./../../../../numba_dpex/examples/vectorize.py
    :pyobject: ufunc_kernel
@@ -29,7 +29,7 @@ Full example can be found at ``numba_dpex/examples/vectorize.py``.
 Example 2: Calling ``numba.vectorize`` inside a ``numba_dpex.kernel``
 ---------------------------------------------------------------------
 
-Full example can be found at ``numba_dpex/examples/blacksholes_njit.py``.
+Full example can be found at :file:`numba_dpex/examples/blacksholes_njit.py`.
 
 .. literalinclude:: ./../../../../numba_dpex/examples/blacksholes_njit.py
    :pyobject: cndf2
@@ -45,8 +45,8 @@ Full example can be found at ``numba_dpex/examples/blacksholes_njit.py``.
 Full Examples
 -------------
 
-- ``numba_dpex/examples/vectorize.py``
-- ``numba_dpex/examples/blacksholes_njit.py``
+- :file:`numba_dpex/examples/vectorize.py`
+- :file:`numba_dpex/examples/blacksholes_njit.py`
 
 .. _`Universal functions (ufunc)`: http://docs.scipy.org/doc/numpy/reference/ufuncs.html
 .. _`Creating NumPy universal functions`: https://numba.pydata.org/numba-doc/latest/user/vectorize.html
