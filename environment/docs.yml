@@ -23,4 +23,7 @@ dependencies:
     - recommonmark
     - sphinx-rtd-theme
     - sphinxcontrib-apidoc
-    - sphinxcontrib-googleanalytics # there is no conda package
+    - sphinxcontrib-googleanalytics
+    - sphinxcontrib.programoutput
+    - pydata-sphinx-theme
+    - myst-parser
