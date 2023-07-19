@@ -1,23 +1,24 @@
-.. _dpnp_offload:
 .. include:: ./../ext_links.txt
 
-Compiling and Offloading DPNP
-==============================
+Compiling and Offloading ``dpnp`` Functions
+===========================================
 
-Data-Parallel Numeric Python (``dpnp``) is a drop-in ``NumPy*`` replacement library. The
-library is developed using SYCL and oneMKL. ``numba-dpex`` relies on ``dpnp`` to
-support offloading ``NumPy`` library functions to SYCL devices. For ``NumPy`` functions
-that are offloaded using ``dpnp``, ``numba-dpex`` generates library calls directly to
-``dpnp``'s `low-level API`_ inside the generated LLVM IR.
+Data Parallel Extension for NumPy* (``dpnp``) is a drop-in ``NumPy*``
+replacement library. The library is developed using SYCL and oneMKL.
+``numba-dpex`` relies on ``dpnp`` to support offloading ``NumPy`` library
+functions to SYCL devices. For ``NumPy`` functions that are offloaded using
+``dpnp``, ``numba-dpex`` generates library calls directly to ``dpnp``'s
+`low-level API`_ inside the generated LLVM IR.
 
 .. _low-level API: https://github.com/IntelPython/dpnp/tree/master/dpnp/backend
 
 .. _integration-dpnp-backend:
 
-During compiling a Python function decorated with the ``numba.njit``
-decorator, ``numba-dpex`` substitutes ``NumPy`` function calls with corresponding ``dpnp``
+During compiling a Python function decorated with the ``numba.njit`` decorator,
+``numba-dpex`` substitutes ``NumPy`` function calls with corresponding ``dpnp``
 low-level API function calls. The substitution happens transparent to an
-end-user and is implemented as a renaming pass in ``numba-dpex``'s pass pipeline.
+end-user and is implemented as a renaming pass in ``numba-dpex``'s pass
+pipeline.
 
 .. code-block:: python
 
