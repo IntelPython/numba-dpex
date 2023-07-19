@@ -17,4 +17,5 @@ User Guide
     dpnp_offload
     debugging/index
     caching
+    config
     useful_links
