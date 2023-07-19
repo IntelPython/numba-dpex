@@ -1,4 +1,4 @@
-.. _debugging-environment:
+.. include:: ./../../ext_links.txt
 
 Configure debugging environment
 =================================

@@ -1,9 +1,7 @@
-.. _caching:
 .. include:: ./../ext_links.txt
 
-
-Caching Mechanism in Numba-dpex
-================================
+Caching Mechanism in ``numba-dpex``
+===================================
 
 Caching is done by saving the compiled kernel code, the ELF object of the
 executable code. By using the kernel code, cached kernels have minimal overhead
