@@ -9,7 +9,7 @@ import sys
 
 import pytest
 
-from numba_dpex import config
+from numba_dpex.core import config
 
 from .common import script_path
 

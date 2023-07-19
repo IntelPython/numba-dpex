@@ -8,7 +8,7 @@ from dpnp import ndarray
 from numba.extending import typeof_impl
 from numba.np import numpy_support
 
-from numba_dpex.utils import address_space
+from numba_dpex.utils.constants import address_space
 
 from ..kernel_interface.indexers import NdRange, Range
 from ..types.dpctl_types import DpctlSyclEvent, DpctlSyclQueue

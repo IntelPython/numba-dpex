@@ -13,7 +13,7 @@ from numba.core.types.npytypes import Array
 from numba.np.numpy_support import from_dtype
 
 from numba_dpex.core.types.dpctl_types import DpctlSyclQueue
-from numba_dpex.utils import address_space
+from numba_dpex.utils.constants import address_space
 
 
 class USMNdArray(Array):

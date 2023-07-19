@@ -77,11 +77,11 @@ DUMP_KERNEL_LAUNCHER = _readenv("NUMBA_DPEX_DUMP_KERNEL_LAUNCHER", int, 0)
 # a kernel decorated function
 DEBUG_KERNEL_LAUNCHER = _readenv("NUMBA_DPEX_DEBUG_KERNEL_LAUNCHER", int, 0)
 
-# Flag to enable caching, set NUMBA_DPEX_ENABLE_CACHE=0 to turn off.
+# Flag to enable caching, set NUMBA_DPEX_ENABLE_CACHE=0 to turn it off.
 ENABLE_CACHE = _readenv("NUMBA_DPEX_ENABLE_CACHE", int, 1)
 # To specify the default cache size, 20 by default.
 CACHE_SIZE = _readenv("NUMBA_DPEX_CACHE_SIZE", int, 20)
-# Enable debugging of cahcing mechanism, set 1 to turn it off.
+# Enable debugging of cahcing mechanism, set 1 to turn it on.
 DEBUG_CACHE = _readenv("NUMBA_DPEX_DEBUG_CACHE", int, 0)
 
 # Flag to turn on the ConstantSizeStaticLocalMemoryPass in the kernel pipeline.

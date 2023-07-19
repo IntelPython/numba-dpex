@@ -7,7 +7,7 @@ from abc import ABCMeta, abstractmethod
 
 from numba.core.caching import CacheImpl, IndexDataCacheFile
 
-from numba_dpex import config
+from numba_dpex.core import config
 
 
 class _CacheImpl(CacheImpl):

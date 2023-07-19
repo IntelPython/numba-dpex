@@ -8,7 +8,7 @@ from numba.core import compiler, ir
 from numba.core import types as numba_types
 from numba.core.compiler_lock import global_compiler_lock
 
-from numba_dpex import config
+from numba_dpex.core import config
 from numba_dpex.core.exceptions import (
     KernelHasReturnValueError,
     UnreachableError,

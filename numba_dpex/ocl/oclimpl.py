@@ -12,7 +12,8 @@ from numba.core import cgutils, types
 from numba.core.imputils import Registry
 from numba.core.typing.npydecl import parse_dtype
 
-from numba_dpex import config, kernel_target
+from numba_dpex import kernel_target
+from numba_dpex.core import config
 from numba_dpex.core.codegen import SPIR_DATA_LAYOUT
 from numba_dpex.core.types import Array
 from numba_dpex.ocl.atomics import atomic_helper

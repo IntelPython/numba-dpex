@@ -12,7 +12,7 @@ from numba.parfors.parfor import (
     get_parfor_outputs,
 )
 
-from numba_dpex import config
+from numba_dpex.core import config
 from numba_dpex.core.datamodel.models import (
     dpex_data_model_manager as kernel_dmm,
 )

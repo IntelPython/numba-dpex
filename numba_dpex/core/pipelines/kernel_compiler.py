@@ -29,7 +29,7 @@ from numba.core.untyped_passes import (
     WithLifting,
 )
 
-from numba_dpex import config
+from numba_dpex.core import config
 from numba_dpex.core.exceptions import UnsupportedCompilationModeError
 from numba_dpex.core.passes.passes import (
     ConstantSizeStaticLocalMemoryPass,

@@ -5,7 +5,7 @@
 from numba.core import sigutils, types
 from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
-from numba_dpex import config
+from numba_dpex.core import config
 from numba_dpex.core.caching import LRUCache, NullCache
 from numba_dpex.core.compiler import compile_with_dpex
 from numba_dpex.core.descriptor import dpex_kernel_target
