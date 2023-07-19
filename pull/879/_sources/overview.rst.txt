@@ -64,7 +64,7 @@ Standard`_. To change the execution target to a CPU, the device keyword needs to
 be changed to ``cpu`` when allocating the ``dpnp`` arrays. It is also possible
 to leave the ``device`` keyword undefined and let the ``dpnp`` library select a
 default device based on environment flag settings. Refer the
-:doc:`user_manual/kernel_programming/index` for further details.
+:doc:`user_guide/kernel_programming/index` for further details.
 
 ``dpnp`` compilation support
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
