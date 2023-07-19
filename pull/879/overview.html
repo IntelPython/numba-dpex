@@ -481,31 +481,27 @@ document.write(`
                   
   <span class="target" id="overview"></span><section id="id2">
 <h1>Overview<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h1>
-<p>Data Parallel Extension for Numba* (<a class="reference external" href="https://github.com/IntelPython/numba-dpex">numba-dpex</a>) is a standalone extension for
-the <a class="reference external" href="https://numba.pydata.org/">Numba*</a> Python JIT compiler. <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> adds two new features to
-Numba*: an architecture-agnostic kernel programming API, and a new compilation
-target that adds typing and compilation support for the Data Parallel Extension
-for Numpy* (<a class="reference external" href="https://intelpython.github.io/dpnp/">dpnp</a>) library. <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> is a Python package for numerical
-computing that provides a data-parallel reimplementation of <a class="reference external" href="https://numpy.org/">NumPy*</a>’s API.
-<code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code>’s support for <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> compilation is a new way for Numba* users to write
-code in a NumPy-like API that is already supported by Numba*, while at the same
-time automatically running such code parallelly on various types of
-architecture.</p>
-<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> is being developed as part of <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/ai-analytics-toolkit.html">Intel AI Analytics Toolkit</a> and is
-distributed with the <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/distribution-for-python.html">Intel Distribution for Python*</a>. The extension is also
+<p>Data Parallel Extension for Numba* (<a class="reference external" href="https://github.com/IntelPython/numba-dpex">numba-dpex</a>) is an extension to
+the <a class="reference external" href="https://numba.pydata.org/">Numba*</a> Python JIT compiler adding an architecture-agnostic kernel
+programming API, and a new front-end to compile the Data Parallel Extension
+for Numpy* (<a class="reference external" href="https://intelpython.github.io/dpnp/">dpnp</a>) library. The <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> Python library is a data-parallel
+implementation of <a class="reference external" href="https://numpy.org/">NumPy*</a>’s API using the <a class="reference external" href="https://www.khronos.org/sycl/">SYCL*</a> language.</p>
+<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> is developed as part of <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/ai-analytics-toolkit.html">Intel AI Analytics Toolkit</a> and
+is distributed with the <a class="reference external" href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/distribution-for-python.html">Intel Distribution for Python*</a>. The extension is
 available on Anaconda cloud and as a Docker image on GitHub. Please refer the
 <a class="reference internal" href="getting_started.html"><span class="doc">Getting Started</span></a> page to learn more.</p>
 <section id="main-features">
 <h2>Main Features<a class="headerlink" href="#main-features" title="Permalink to this heading">#</a></h2>
 <section id="portable-kernel-programming">
 <h3>Portable Kernel Programming<a class="headerlink" href="#portable-kernel-programming" title="Permalink to this heading">#</a></h3>
-<p>The kernel API has a design and API similar to Numba’s <code class="docutils literal notranslate"><span class="pre">cuda.jit</span></code> module.
-However, the API uses the <a class="reference external" href="https://www.khronos.org/sycl/">SYCL*</a> language runtime and as such is extensible to
-various hardware types supported by a SYCL runtime. Presently, <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> uses
-the <a class="reference external" href="https://www.apress.com/gp/book/9781484255735">DPC++</a> SYCL runtime and only supports SPIR-V-based OpenCL and <a class="reference external" href="https://spec.oneapi.io/level-zero/latest/index.html">oneAPI
-Level Zero</a> devices CPU and GPU devices.</p>
-<p>The following vector addition example illustrates the basic features of the
-interface.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> kernel API has a design and API similar to Numba’s
+<code class="docutils literal notranslate"><span class="pre">cuda.jit</span></code> sub-module. The API is modeled after the <a class="reference external" href="https://www.khronos.org/sycl/">SYCL*</a> language and uses
+the <a class="reference external" href="https://www.apress.com/gp/book/9781484255735">DPC++</a> SYCL runtime. Currently, compilation of kernels is supported for
+SPIR-V-based OpenCL and <a class="reference external" href="https://spec.oneapi.io/level-zero/latest/index.html">oneAPI Level Zero</a> devices CPU and GPU devices. In the
+future, the API can be extended to other architectures that are supported by
+DPC++.</p>
+<p>The following example illustrates a vector addition kernel written with
+<code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> kernel API.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpnp</span>
 <span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">dpex</span>
 
@@ -524,31 +520,32 @@ interface.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>In the above example, we allocated three arrays on a default <code class="docutils literal notranslate"><span class="pre">gpu</span></code> device
-using the <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> library. These arrays are then passed as input arguments to the
-kernel function. The compilation target and the subsequent execution of the
+<p>In the above example, three arrays are allocated on a default <code class="docutils literal notranslate"><span class="pre">gpu</span></code> device
+using the <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> library. These arrays are then passed as input arguments to
+the kernel function. The compilation target and the subsequent execution of the
 kernel is determined completely by the input arguments and follow the
 “compute-follows-data” programming model as specified in the <a class="reference external" href="https://data-apis.org/array-api/">Python* Array API
 Standard</a>. To change the execution target to a CPU, the device keyword needs to
-be changed to <code class="docutils literal notranslate"><span class="pre">cpu</span></code> when allocating the <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> arrays. It is also possible to
-leave the <code class="docutils literal notranslate"><span class="pre">device</span></code> keyword undefined and let the <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> library select a default
-device based on environment flag settings. Refer the
+be changed to <code class="docutils literal notranslate"><span class="pre">cpu</span></code> when allocating the <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> arrays. It is also possible
+to leave the <code class="docutils literal notranslate"><span class="pre">device</span></code> keyword undefined and let the <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> library select a
+default device based on environment flag settings. Refer the
 <span class="xref std std-doc">user_manual/kernel_programming/index</span> for further details.</p>
 </section>
-<section id="dpnp-compilation-and-offload">
-<h3><code class="docutils literal notranslate"><span class="pre">dpnp</span></code> compilation and offload<a class="headerlink" href="#dpnp-compilation-and-offload" title="Permalink to this heading">#</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> extends Numba’s type system and compilation pipeline to compile <code class="docutils literal notranslate"><span class="pre">dpnp</span></code>
-functions and expressions in the same way as NumPy. Unlike Numba’s NumPy
-compilation that is serial by default, <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> always compiles <code class="docutils literal notranslate"><span class="pre">dpnp</span></code>
-expressions into offloadable kernels and executes them in parallel. The feature
-is provided using a decorator <code class="docutils literal notranslate"><span class="pre">dpjit</span></code> that behaves identically to
-<code class="docutils literal notranslate"><span class="pre">numba.njit(parallel=True)</span></code> with the addition of <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> compilation and offload.
-Offloading by <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> is not just restricted to CPUs and supports all devices
-that are presently supported by the kernel API. <code class="docutils literal notranslate"><span class="pre">dpjit</span></code> allows using NumPy and
-<code class="docutils literal notranslate"><span class="pre">dpnp</span></code> expressions in the same function. All NumPy compilation and parallelization
-is done via the default Numba code-generation pipeline, whereas <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> expressions
-are compiled using the <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> pipeline.</p>
-<p>The vector addition example depicted using the kernel API can be easily
+<section id="dpnp-compilation-support">
+<h3><code class="docutils literal notranslate"><span class="pre">dpnp</span></code> compilation support<a class="headerlink" href="#dpnp-compilation-support" title="Permalink to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> extends Numba’s type system and compilation pipeline to compile
+<code class="docutils literal notranslate"><span class="pre">dpnp</span></code> functions and expressions in the same way as NumPy. Unlike Numba’s
+NumPy compilation that is serial by default, <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> always compiles
+<code class="docutils literal notranslate"><span class="pre">dpnp</span></code> expressions into data-parallel kernels and executes them in parallel.
+The <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> compilation feature is provided using a decorator <code class="docutils literal notranslate"><span class="pre">dpjit</span></code> that
+behaves identically to <code class="docutils literal notranslate"><span class="pre">numba.njit(parallel=True)</span></code> with the addition of
+<code class="docutils literal notranslate"><span class="pre">dpnp</span></code> compilation and kernel offloading. Offloading by <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> is not
+just restricted to CPUs and supports all devices that are presently supported by
+the kernel API. <code class="docutils literal notranslate"><span class="pre">dpjit</span></code> allows using NumPy and <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> expressions in the
+same function. All NumPy compilation and parallelization is done via the default
+Numba code-generation pipeline, whereas <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> expressions are compiled using
+the <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> pipeline.</p>
+<p>The vector addition example depicted using the kernel API can also be
 expressed in several different ways using <code class="docutils literal notranslate"><span class="pre">dpjit</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpnp</span>
 <span class="kn">import</span> <span class="nn">numba_dpex</span> <span class="k">as</span> <span class="nn">dpex</span>
@@ -628,7 +625,7 @@ input arguments follows the compute-follows-data programming model. Refer
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#main-features">Main Features</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#portable-kernel-programming">Portable Kernel Programming</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dpnp-compilation-and-offload"><code class="docutils literal notranslate"><span class="pre">dpnp</span></code> compilation and offload</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dpnp-compilation-support"><code class="docutils literal notranslate"><span class="pre">dpnp</span></code> compilation support</a></li>
 </ul>
 </li>
 </ul>

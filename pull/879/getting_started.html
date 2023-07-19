@@ -481,60 +481,196 @@ document.write(`
                   
   <span class="target" id="getting-started"></span><section id="id2">
 <h1>Getting Started<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h1>
-<section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">#</a></h2>
-<p>Numba-dpex depends on following components:</p>
-<ul class="simple">
-<li><p>numba 0.57.*</p></li>
-<li><p>dpctl 0.14.*</p></li>
-<li><p>dpnp 0.11.*</p></li>
-<li><p>dpcpp-cpp-rt</p></li>
-<li><p>dpcpp-llvm-spirv</p></li>
-<li><p>spirv-tools</p></li>
-</ul>
-<p>It is recommended to use conda packages from the <code class="docutils literal notranslate"><span class="pre">anaconda.org/intel</span></code> channel.</p>
-<p>Create conda environment:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w"> </span>numba-dpex<span class="w"> </span>dpnp<span class="w"> </span>-c<span class="w"> </span><span class="si">${</span><span class="nv">ONEAPI_ROOT</span><span class="si">}</span>/conda_channel
+<section id="installing-pre-built-packages">
+<h2>Installing pre-built packages<a class="headerlink" href="#installing-pre-built-packages" title="Permalink to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> along with its dependencies can be installed using <code class="docutils literal notranslate"><span class="pre">conda</span></code>.
+It is recommended to use conda packages from the <code class="docutils literal notranslate"><span class="pre">anaconda.org/intel</span></code> channel
+to get the latest production releases. Nighly builds of <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> are
+available on the <code class="docutils literal notranslate"><span class="pre">dppy/label/dev</span></code> conda channel.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w"> </span>numba-dpex<span class="w"> </span>dpnp<span class="w"> </span>dpctl<span class="w"> </span>dpcpp-llvm-spirv<span class="w"> </span>spirv-tools<span class="w"> </span>-c<span class="w"> </span>intel<span class="w"> </span>-c<span class="w"> </span>conda-forge
 </pre></div>
 </div>
 </section>
-<section id="build-and-install-conda-package">
-<h2>Build and Install Conda Package<a class="headerlink" href="#build-and-install-conda-package" title="Permalink to this heading">#</a></h2>
-<p>Create and activate conda build environment:</p>
+<section id="building-from-source">
+<h2>Building from source<a class="headerlink" href="#building-from-source" title="Permalink to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> can be built from source using either <code class="docutils literal notranslate"><span class="pre">conda-build</span></code> or <code class="docutils literal notranslate"><span class="pre">setuptools</span></code>.</p>
+<p>Steps to build using <code class="docutils literal notranslate"><span class="pre">conda-build</span></code>:</p>
+<ol class="arabic simple">
+<li><p>Create a conda environment</p></li>
+</ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>build-env<span class="w"> </span>conda-build
 conda<span class="w"> </span>activate<span class="w"> </span>build-env
 </pre></div>
 </div>
+<ol class="arabic simple" start="2">
+<li><p>Build using the vendored conda recipe</p></li>
+</ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>build<span class="w"> </span>conda-recipe<span class="w"> </span>-c<span class="w"> </span>intel<span class="w"> </span>-c<span class="w"> </span>conda-forge
 </pre></div>
 </div>
-<p>Install conda package:</p>
+<ol class="arabic simple" start="3">
+<li><p>Install the conda package</p></li>
+</ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>numba-dpex
 </pre></div>
 </div>
-</section>
-<section id="build-and-install-with-setuptools">
-<h2>Build and Install with setuptools<a class="headerlink" href="#build-and-install-with-setuptools" title="Permalink to this heading">#</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w"> </span>dpctl<span class="w"> </span>dpnp<span class="w"> </span>numba<span class="w"> </span>spirv-tools<span class="w"> </span>dpcpp-llvm-spirv<span class="w"> </span>llvmdev<span class="w"> </span>cython<span class="w"> </span>pytest<span class="w"> </span>-c<span class="w"> </span>intel<span class="w"> </span>-c<span class="w"> </span>conda-forge
+<p>Steps to build using <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w"> </span>dpctl<span class="w"> </span>dpnp<span class="w"> </span>numba<span class="w"> </span>spirv-tools<span class="w"> </span>dpcpp-llvm-spirv<span class="w"> </span>llvmdev<span class="w"> </span>pytest<span class="w"> </span>-c<span class="w"> </span>intel<span class="w"> </span>-c<span class="w"> </span>conda-forge
 conda<span class="w"> </span>activate<span class="w"> </span>numba-dpex-env
 </pre></div>
 </div>
 </section>
+<section id="building-inside-docker">
+<h2>Building inside Docker<a class="headerlink" href="#building-inside-docker" title="Permalink to this heading">#</a></h2>
+<p>A Dockerfile is provided on the GitHub repository to easily build <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code>
+as well as its direct dependencies: <code class="docutils literal notranslate"><span class="pre">dpctl</span></code> and <code class="docutils literal notranslate"><span class="pre">dpnp</span></code>. Users can either use
+one of the pre-built images on the <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> GitHub page or use the
+bundled Dockerfile to build <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> from source.</p>
+<section id="building">
+<h3>Building<a class="headerlink" href="#building" title="Permalink to this heading">#</a></h3>
+<p>Numba dpex ships with multistage Dockerfile, which means there are
+different <a class="reference external" href="https://docs.docker.com/build/building/multi-stage/#stop-at-a-specific-build-stage">targets</a>
+available for build. The most useful ones:</p>
+<ul class="simple">
+<li><p>runtime</p></li>
+<li><p>runtime-gpu</p></li>
+<li><p>numba-dpex-builder-runtime</p></li>
+<li><p>numba-dpex-builder-runtime-gpu</p></li>
+</ul>
+<p>To build docker image</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>--target<span class="w"> </span>runtime<span class="w"> </span>-t<span class="w"> </span>numba-dpex:runtime<span class="w"> </span>./
+</pre></div>
+</div>
+<p>To run docker image</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>--rm<span class="w"> </span>numba-dpex:runtime
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When trying to build a docker image with Intel GPU support, the Dockerfile
+will attempt to use the GitHub API to get the latest Intel GPU drivers.
+Users may run into an issue related to  Github API call limits. The issue
+can be bypassed by providing valid GitHub credentials using the
+<code class="docutils literal notranslate"><span class="pre">GITHUB_USER</span></code> and <code class="docutils literal notranslate"><span class="pre">GITHUB_PASSWORD</span></code>
+<a class="reference external" href="https://docs.docker.com/engine/reference/commandline/build/#build-arg">build args</a>
+to increase the call limit. A GitHub
+<cite>access token &lt;https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token&gt;</cite>
+can also be used instead of the password.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When building the docker image behind a firewall the proxy server settings
+should be provided using the <code class="docutils literal notranslate"><span class="pre">http_proxy</span></code> and <code class="docutils literal notranslate"><span class="pre">https_proxy</span></code> build args.
+These build args must be specified in lowercase.</p>
+</div>
+<p>The bundled Dockerfile supports different python versions that can be specified
+via the <code class="docutils literal notranslate"><span class="pre">PYTHON_VERSION</span></code> build arg. By default, the docker image is based on
+the official python image based on slim debian. The requested python version
+must be from the available python docker images.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">BASE_IMAGE</span></code> build arg can be used to build the docker image from a
+custom image. Note that as the Dockerfile is based on debian any custom base
+image should be debian-based, like debian or ubuntu.</p>
+<p>The list of other build args are as follows. Please refer the Dockerfile to
+see currently all available build args.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PYTHON_VERSION</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CR_TAG</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">IGC_TAG</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CM_TAG</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">L0_TAG</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ONEAPI_VERSION</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DPCTL_GIT_BRANCH</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DPCTL_GIT_URL</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DPNP_GIT_BRANCH</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DPNP_GIT_URL</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NUMBA_DPEX_GIT_BRANCH</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NUMBA_DPEX_GIT_URL</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CMAKE_VERSION</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CMAKE_VERSION_BUILD</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">INTEL_NUMPY_VERSION</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">INTEL_NUMBA_VERSION</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CYTHON_VERSION</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SCIKIT_BUILD_VERSION</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">http_proxy</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">https_proxy</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GITHUB_USER</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GITHUB_PASSWORD</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BASE_IMAGE</span></code></p></li>
+</ul>
+</section>
+<section id="using-the-pre-built-images">
+<h3>Using the pre-built images<a class="headerlink" href="#using-the-pre-built-images" title="Permalink to this heading">#</a></h3>
+<p>There are several pre-built docker images available:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">runtime</span></code> package that provides a pre-built environment with <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code></dt><dd><p>already installed. It is ideal to quickly setup and try
+<code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code>.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ghcr.io/intelpython/numba-dpex/runtime:&lt;numba_dpex_version&gt;-py&lt;python_version&gt;[-gpu]
+</pre></div>
+</div>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">builder</span></code> package that has all required dependencies pre-installed and is</dt><dd><p>ideal for building <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> from source.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ghcr.io/intelpython/numba-dpex/builder:&lt;numba_dpex_version&gt;-py&lt;python_version&gt;[-gpu]
+</pre></div>
+</div>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">stages</span></code> package primarily meant for creating a new docker image that is</dt><dd><p>built on top of one of the pre-built images.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>After setting up the docker image, to run <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> the following snippet
+can be used.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-it<span class="w"> </span>ghcr.io/intelpython/numba-dpex/runtime:0.20.0-py3.10<span class="w"> </span>bash
+</pre></div>
+</div>
+<p>It is advisable to verify the SYCL runtime and driver installation within the
+container by either running,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sycl-ls
+</pre></div>
+</div>
+<p>or,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>dpctl<span class="w"> </span>-f
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To enable GPU device, the <code class="docutils literal notranslate"><span class="pre">device</span></code> argument should be used and one of the
+<code class="docutils literal notranslate"><span class="pre">*-gpu</span></code> images should be used.</p>
+<p>For passing GPU into container on linux use arguments <code class="docutils literal notranslate"><span class="pre">--device=/dev/dri</span></code>.
+However if you are using WSL you need to pass
+<code class="docutils literal notranslate"><span class="pre">--device=/dev/dxg</span> <span class="pre">-v</span> <span class="pre">/usr/lib/wsl:/usr/lib/wsl</span></code> instead.</p>
+</div>
+<p>For example, to run <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> with GPU support on WSL:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>-it<span class="w"> </span><span class="se">\</span>
+--device<span class="o">=</span>/dev/dxg<span class="w"> </span>-v<span class="w"> </span>/usr/lib/wsl:/usr/lib/wsl<span class="w"> </span><span class="se">\</span>
+ghcr.io/intelpython/numba-dpex/runtime:0.20.0-py3.10-gpu
+</pre></div>
+</div>
+</section>
+</section>
 <section id="testing">
 <h2>Testing<a class="headerlink" href="#testing" title="Permalink to this heading">#</a></h2>
-<p>See folder <code class="docutils literal notranslate"><span class="pre">numba_dpex/tests</span></code>.</p>
-<p>To run the tests:</p>
+<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> uses pytest for unit testing and the following example
+shows a way to run the unit tests.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>--pyargs<span class="w"> </span>numba_dpex.tests
 </pre></div>
 </div>
 </section>
 <section id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">#</a></h2>
-<p>See folder <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples</span></code>.</p>
-<p>To run the examples:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>numba_dpex/examples/sum.py
-</pre></div>
-</div>
+<p>A set of examples on how to use <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> can be found in
+<code class="docutils literal notranslate"><span class="pre">numba_dpex/examples</span></code>.</p>
 </section>
 </section>
 
@@ -585,9 +721,13 @@ conda<span class="w"> </span>activate<span class="w"> </span>numba-dpex-env
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-and-install-conda-package">Build and Install Conda Package</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-and-install-with-setuptools">Build and Install with setuptools</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installing-pre-built-packages">Installing pre-built packages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-from-source">Building from source</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-inside-docker">Building inside Docker</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building">Building</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-pre-built-images">Using the pre-built images</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing">Testing</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
 </ul>
