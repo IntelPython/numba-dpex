@@ -1,8 +1,7 @@
-.. _dpnp_offload:
 .. include:: ./../ext_links.txt
 
-Compiling and Offloading ``dpnp``
-=================================
+Compiling and Offloading ``dpnp`` Functions
+===========================================
 
 Data-Parallel Numeric Python (``dpnp``) is a drop-in ``NumPy*`` replacement library. The
 library is developed using SYCL and oneMKL. ``numba-dpex`` relies on ``dpnp`` to

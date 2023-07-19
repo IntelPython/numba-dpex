@@ -1,3 +1,5 @@
+.. include:: ./../../ext_links.txt
+
 Information About a Frame
 =========================
 

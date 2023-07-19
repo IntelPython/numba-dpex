@@ -1,4 +1,4 @@
-.. _altering:
+.. include:: ./../../ext_links.txt
 
 Altering Execution
 ==================

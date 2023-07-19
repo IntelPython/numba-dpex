@@ -1,3 +1,5 @@
+.. include:: ./../../ext_links.txt
+
 Supported Features
 ==================
 
