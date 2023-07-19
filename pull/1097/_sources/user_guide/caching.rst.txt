@@ -1,6 +1,4 @@
-.. _caching:
 .. include:: ./../ext_links.txt
-
 
 Caching Mechanism in ``numba-dpex``
 ===================================

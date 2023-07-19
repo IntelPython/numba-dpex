@@ -1,4 +1,3 @@
-.. _writing_kernels:
 .. include:: ./../../ext_links.txt
 
 Writing Data Parallel Kernels

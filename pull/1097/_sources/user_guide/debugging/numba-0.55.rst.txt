@@ -1,3 +1,5 @@
+.. include:: ./../../ext_links.txt
+
 Debugging Features in Numba 0.55
 ================================
 
