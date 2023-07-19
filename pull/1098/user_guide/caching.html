@@ -544,7 +544,7 @@ contains the least recently used (LRU) kernel. The list  has a fixed size. If a
 new kernel arrives to be cached and if the size is already on the maximum limit,
 the algorithm evicts the LRU kernel to make room for the MRU kernel. The evicted
 item will be serialized and pickled into a file using Numba’s caching mechanism.</p>
-<p>Everytime whenever a kernel needs to be retrieved from the cache, the mechanism
+<p>Every time whenever a kernel needs to be retrieved from the cache, the mechanism
 will look for the kernel in the cache and will be loaded if it’s already present.
 However, if the program is seeking for a kernel that has been evicted, the
 algorithm will load it from the file and enqueue in the cache.</p>
@@ -555,18 +555,23 @@ algorithm will load it from the file and enqueue in the cache.</p>
 i.e. <code class="docutils literal notranslate"><span class="pre">NUMBA_CACHE_DIR</span></code> etc. However we add three more environment variables to
 control the caching mechanism.</p>
 <ul class="simple">
-<li><p>In order to specify cache capacity, one can use <code class="docutils literal notranslate"><span class="pre">NUMBA_DPEX_CACHE_SIZE</span></code>.</p></li>
-</ul>
-<p>By default, it’s set to 10.</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">NUMBA_DPEX_ENABLE_CACHE</span></code> can be used to enable/disable the caching mechanism.</p></li>
-</ul>
-<p>By default it’s enabled, i.e. set to 1.</p>
-<ul class="simple">
-<li><p>In order to enable the debugging messages related to caching, one can set</p></li>
-</ul>
-<p><code class="docutils literal notranslate"><span class="pre">NUMBA_DPEX_DEBUG_CACHE</span></code> to 1. All environment variables are defined in
+<li><dl class="simple">
+<dt>In order to specify cache capacity, one can use <code class="docutils literal notranslate"><span class="pre">NUMBA_DPEX_CACHE_SIZE</span></code>.</dt><dd><p>By default, it’s set to 10.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">NUMBA_DPEX_ENABLE_CACHE</span></code> can be used to enable/disable the caching</dt><dd><p>mechanism. By default it’s enabled, i.e. set to 1.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>In order to enable the debugging messages related to caching, one can set</dt><dd><p><code class="docutils literal notranslate"><span class="pre">NUMBA_DPEX_DEBUG_CACHE</span></code> to 1. All environment variables are defined in
 <code class="file docutils literal notranslate"><span class="pre">numba_dpex/config.py</span></code>.</p>
+</dd>
+</dl>
+</li>
+</ul>
 </section>
 </section>
 
