@@ -1,7 +1,0 @@
-numba\_dpex.spirv\_generator module
-===================================
-
-.. automodule:: numba_dpex.spirv_generator
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -1,7 +1,0 @@
-numba\_dpex.ocl.ocldecl module
-==============================
-
-.. automodule:: numba_dpex.ocl.ocldecl
-   :members:
-   :undoc-members:
-   :show-inheritance:

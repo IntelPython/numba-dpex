@@ -1,7 +1,0 @@
-numba\_dpex.vectorizers module
-==============================
-
-.. automodule:: numba_dpex.vectorizers
-   :members:
-   :undoc-members:
-   :show-inheritance:

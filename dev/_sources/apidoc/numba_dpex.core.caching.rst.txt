@@ -1,7 +1,0 @@
-numba\_dpex.core.caching module
-===============================
-
-.. automodule:: numba_dpex.core.caching
-   :members:
-   :undoc-members:
-   :show-inheritance:

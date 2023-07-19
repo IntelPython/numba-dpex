@@ -1,7 +1,0 @@
-numba\_dpex.core.typing.dpnpdecl module
-=======================================
-
-.. automodule:: numba_dpex.core.typing.dpnpdecl
-   :members:
-   :undoc-members:
-   :show-inheritance:

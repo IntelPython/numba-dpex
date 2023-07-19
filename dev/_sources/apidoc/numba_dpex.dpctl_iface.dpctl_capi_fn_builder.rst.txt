@@ -1,7 +1,0 @@
-numba\_dpex.dpctl\_iface.dpctl\_capi\_fn\_builder module
-========================================================
-
-.. automodule:: numba_dpex.dpctl_iface.dpctl_capi_fn_builder
-   :members:
-   :undoc-members:
-   :show-inheritance:

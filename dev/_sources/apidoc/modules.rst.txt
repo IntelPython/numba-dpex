@@ -1,7 +1,0 @@
-numba_dpex
-==========
-
-.. toctree::
-   :maxdepth: 4
-
-   numba_dpex

@@ -1,7 +1,0 @@
-numba\_dpex.core.parfors.parfor\_lowerer module
-===============================================
-
-.. automodule:: numba_dpex.core.parfors.parfor_lowerer
-   :members:
-   :undoc-members:
-   :show-inheritance:
