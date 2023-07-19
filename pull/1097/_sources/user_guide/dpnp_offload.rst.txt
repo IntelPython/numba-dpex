@@ -3,11 +3,14 @@
 Compiling and Offloading ``dpnp`` Functions
 ===========================================
 
-Data-Parallel Numeric Python (``dpnp``) is a drop-in ``NumPy*`` replacement library. The
-library is developed using SYCL and oneMKL. ``numba-dpex`` relies on ``dpnp`` to
-support offloading ``NumPy`` library functions to SYCL devices. For ``NumPy`` functions
-that are offloaded using ``dpnp``, ``numba-dpex`` generates library calls directly to
-``dpnp``'s `low-level API`_ inside the generated LLVM IR.
+Data Parallel Extension for NumPy* (``dpnp``) is a drop-in ``NumPy*``
+replacement library built on top of oneMKL.
+
+
+``numba-dpex`` relies on ``dpnp`` to
+support offloading ``NumPy`` library functions to SYCL devices. For ``NumPy``
+functions that are offloaded using ``dpnp``, ``numba-dpex`` generates library
+calls directly to ``dpnp``'s `low-level API`_ inside the generated LLVM IR.
 
 .. _low-level API: https://github.com/IntelPython/dpnp/tree/master/dpnp/backend
 

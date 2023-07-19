@@ -15,10 +15,10 @@ implementation of `NumPy*`_'s API using the `SYCL*`_ language.
 .. the same time automatically running such code parallelly on various types of
 .. architecture.
 
-``numba-dpex`` is developed as part of `Intel AI Analytics Toolkit`_ and
-is distributed with the `Intel Distribution for Python*`_. The extension is
-available on Anaconda cloud and as a Docker image on GitHub. Please refer the
-:doc:`getting_started` page to learn more.
+``numba-dpex`` is an open-source project and can be installed as part of `Intel
+AI Analytics Toolkit`_ or the `Intel Distribution for Python*`_. The package is
+also available on Anaconda cloud and as a Docker image on GitHub. Please refer
+the :doc:`getting_started` page to learn more.
 
 Main Features
 -------------
@@ -26,12 +26,12 @@ Main Features
 Portable Kernel Programming
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``numba-dpex`` kernel API has a design and API similar to Numba's
+The ``numba-dpex`` kernel programming API has a design similar to Numba's
 ``cuda.jit`` sub-module. The API is modeled after the `SYCL*`_ language and uses
 the `DPC++`_ SYCL runtime. Currently, compilation of kernels is supported for
 SPIR-V-based OpenCL and `oneAPI Level Zero`_ devices CPU and GPU devices. In the
-future, the API can be extended to other architectures that are supported by
-DPC++.
+future, compilation support for other types of hardware that are supported by
+DPC++ will be added.
 
 The following example illustrates a vector addition kernel written with
 ``numba-dpex`` kernel API.
@@ -56,9 +56,9 @@ The following example illustrates a vector addition kernel written with
     print(c)
 
 In the above example, three arrays are allocated on a default ``gpu`` device
-using the ``dpnp`` library. These arrays are then passed as input arguments to
-the kernel function. The compilation target and the subsequent execution of the
-kernel is determined completely by the input arguments and follow the
+using the ``dpnp`` library. The arrays are then passed as input arguments to the
+kernel function. The compilation target and the subsequent execution of the
+kernel is determined by the input arguments and follow the
 "compute-follows-data" programming model as specified in the `Python* Array API
 Standard`_. To change the execution target to a CPU, the device keyword needs to
 be changed to ``cpu`` when allocating the ``dpnp`` arrays. It is also possible
@@ -66,21 +66,23 @@ to leave the ``device`` keyword undefined and let the ``dpnp`` library select a
 default device based on environment flag settings. Refer the
 :doc:`user_guide/kernel_programming/index` for further details.
 
-``dpnp`` compilation support
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``dpjit`` decorator
+~~~~~~~~~~~~~~~~~~~
 
-``numba-dpex`` extends Numba's type system and compilation pipeline to compile
-``dpnp`` functions and expressions in the same way as NumPy. Unlike Numba's
-NumPy compilation that is serial by default, ``numba-dpex`` always compiles
-``dpnp`` expressions into data-parallel kernels and executes them in parallel.
-The ``dpnp`` compilation feature is provided using a decorator ``dpjit`` that
-behaves identically to ``numba.njit(parallel=True)`` with the addition of
-``dpnp`` compilation and kernel offloading. Offloading by ``numba-dpex`` is not
-just restricted to CPUs and supports all devices that are presently supported by
-the kernel API. ``dpjit`` allows using NumPy and ``dpnp`` expressions in the
-same function. All NumPy compilation and parallelization is done via the default
-Numba code-generation pipeline, whereas ``dpnp`` expressions are compiled using
-the ``numba-dpex`` pipeline.
+The ``numba-dpex`` package provides a new decorator ``dpjit`` that extends
+Numba's ``njit`` decorator. The new decorator is equivalent to
+``numba.njit(parallel=True)``, but additionally supports compiling ``dpnp``
+functions, ``prange`` loops, and array expressions that use ``dpnp.ndarray``
+objects.
+
+Unlike Numba's NumPy parallelization that only supports CPUs, ``dpnp``
+expressions are first converted to data-parallel kernels and can then be
+`offloaded` to different types of devices. As ``dpnp`` implements the same API
+as NumPy*, an existing ``numba.njit`` decorated function that uses
+``numpy.ndarray`` may be refactored to use ``dpnp.ndarray`` and decorated with
+``dpjit``. Such a refactoring can allow the parallel regions to be offloaded
+to a supported GPU device, providing users an additional option to execute their
+code parallelly.
 
 The vector addition example depicted using the kernel API can also be
 expressed in several different ways using ``dpjit``.
