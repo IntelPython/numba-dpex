@@ -136,7 +136,7 @@ class ParforLowerImpl:
             argtype = kernel_fn.kernel_arg_types[arg_num]
             llvm_val = _getvar(lowerer, arg)
             if isinstance(argtype, DpnpNdArray):
-                datamodel = dpex_dmm.lookup(arg_type)
+                datamodel = dpex_dmm.lookup(argtype)
                 self.kernel_builder.build_array_arg(
                     array_val=llvm_val,
                     array_data_model=datamodel,
