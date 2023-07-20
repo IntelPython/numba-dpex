@@ -481,22 +481,32 @@ document.write(`
                   
   <span class="target" id="getting-started"></span><section id="id2">
 <h1>Getting Started<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h1>
-<section id="installing-pre-built-packages">
-<h2>Installing pre-built packages<a class="headerlink" href="#installing-pre-built-packages" title="Permalink to this heading">#</a></h2>
+<section id="installing-pre-built-conda-packages">
+<h2>Installing pre-built conda packages<a class="headerlink" href="#installing-pre-built-conda-packages" title="Permalink to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> along with its dependencies can be installed using <code class="docutils literal notranslate"><span class="pre">conda</span></code>.
 It is recommended to use conda packages from the <code class="docutils literal notranslate"><span class="pre">anaconda.org/intel</span></code> channel
-to get the latest production releases. Nighly builds of <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> are
-available on the <code class="docutils literal notranslate"><span class="pre">dppy/label/dev</span></code> conda channel.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w"> </span>numba-dpex<span class="w"> </span>dpnp<span class="w"> </span>dpctl<span class="w"> </span>dpcpp-llvm-spirv<span class="w"> </span>spirv-tools<span class="w"> </span>-c<span class="w"> </span>intel<span class="w"> </span>-c<span class="w"> </span>conda-forge
+to get the latest production releases.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w">                                             </span><span class="se">\</span>
+<span class="w">    </span>numba-dpex<span class="w"> </span>dpnp<span class="w"> </span>dpctl<span class="w"> </span>dpcpp-llvm-spirv<span class="w"> </span>spirv-tools<span class="w">                     </span><span class="se">\</span>
+<span class="w">    </span>-c<span class="w"> </span>intel<span class="w"> </span>-c<span class="w"> </span>conda-forge
+</pre></div>
+</div>
+<p>To try out the bleeding edge, the latest packages built from tip of the main
+source trunk can be installed from the <code class="docutils literal notranslate"><span class="pre">dppy/label/dev</span></code> conda channel.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w">                                             </span><span class="se">\</span>
+<span class="w">    </span>numba-dpex<span class="w"> </span>dpnp<span class="w"> </span>dpctl<span class="w"> </span>dpcpp-llvm-spirv<span class="w"> </span>spirv-tools<span class="w">                     </span><span class="se">\</span>
+<span class="w">    </span>-c<span class="w"> </span>dppy/label/dev<span class="w"> </span>-c<span class="w"> </span>intel<span class="w"> </span>-c<span class="w"> </span>conda-forge
 </pre></div>
 </div>
 </section>
 <section id="building-from-source">
 <h2>Building from source<a class="headerlink" href="#building-from-source" title="Permalink to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> can be built from source using either <code class="docutils literal notranslate"><span class="pre">conda-build</span></code> or <code class="docutils literal notranslate"><span class="pre">setuptools</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> can be built from source using either <code class="docutils literal notranslate"><span class="pre">conda-build</span></code> or
+<code class="docutils literal notranslate"><span class="pre">setuptools</span></code>.</p>
 <p>Steps to build using <code class="docutils literal notranslate"><span class="pre">conda-build</span></code>:</p>
 <ol class="arabic simple">
-<li><p>Create a conda environment</p></li>
+<li><p>Ensure <code class="docutils literal notranslate"><span class="pre">conda-build</span></code> is installed in the <code class="docutils literal notranslate"><span class="pre">base</span></code> conda environment or
+create a new conda environment with <code class="docutils literal notranslate"><span class="pre">conda-build</span></code> installed.</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>build-env<span class="w"> </span>conda-build
 conda<span class="w"> </span>activate<span class="w"> </span>build-env
@@ -511,21 +521,32 @@ conda<span class="w"> </span>activate<span class="w"> </span>build-env
 <ol class="arabic simple" start="3">
 <li><p>Install the conda package</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>numba-dpex
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span><span class="nb">local</span><span class="w"> </span>numba-dpex
 </pre></div>
 </div>
 <p>Steps to build using <code class="docutils literal notranslate"><span class="pre">setup.py</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w"> </span>dpctl<span class="w"> </span>dpnp<span class="w"> </span>numba<span class="w"> </span>spirv-tools<span class="w"> </span>dpcpp-llvm-spirv<span class="w"> </span>llvmdev<span class="w"> </span>pytest<span class="w"> </span>-c<span class="w"> </span>intel<span class="w"> </span>-c<span class="w"> </span>conda-forge
+<p>As before, a conda environment with all necessary dependencies is the suggested
+first step.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a conda environment that hass needed dependencies installed</span>
+conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w">                                             </span><span class="se">\</span>
+dpctl<span class="w"> </span>dpnp<span class="w"> </span>numba<span class="w"> </span>spirv-tools<span class="w"> </span>dpcpp-llvm-spirv<span class="w"> </span>llvmdev<span class="w"> </span>pytest<span class="w">               </span><span class="se">\</span>
+-c<span class="w"> </span>intel<span class="w"> </span>-c<span class="w"> </span>conda-forge
+<span class="c1"># Activate the environment</span>
 conda<span class="w"> </span>activate<span class="w"> </span>numba-dpex-env
+<span class="c1"># Clone the numba-dpex repository</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/IntelPython/numba-dpex.git
+<span class="nb">cd</span><span class="w"> </span>numba-dpex
+python<span class="w"> </span>setup.py<span class="w"> </span>develop
 </pre></div>
 </div>
 </section>
 <section id="building-inside-docker">
 <h2>Building inside Docker<a class="headerlink" href="#building-inside-docker" title="Permalink to this heading">#</a></h2>
-<p>A Dockerfile is provided on the GitHub repository to easily build <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code>
+<p>A Dockerfile is provided on the GitHub repository to build <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code>
 as well as its direct dependencies: <code class="docutils literal notranslate"><span class="pre">dpctl</span></code> and <code class="docutils literal notranslate"><span class="pre">dpnp</span></code>. Users can either use
 one of the pre-built images on the <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> GitHub page or use the
-bundled Dockerfile to build <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> from source.</p>
+bundled Dockerfile to build <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> from source. Using the Dockerfile
+also ensures that all device drivers and runtime libraries are pre-installed.</p>
 <section id="building">
 <h3>Building<a class="headerlink" href="#building" title="Permalink to this heading">#</a></h3>
 <p>Numba dpex ships with multistage Dockerfile, which means there are
@@ -721,7 +742,7 @@ shows a way to run the unit tests.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installing-pre-built-packages">Installing pre-built packages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installing-pre-built-conda-packages">Installing pre-built conda packages</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-from-source">Building from source</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-inside-docker">Building inside Docker</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building">Building</a></li>
