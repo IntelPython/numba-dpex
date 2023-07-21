@@ -32,13 +32,13 @@ The list of available configuration flags are listed as follows:
     A flag to activate the native floating point (FP) atomcis support for supported devices. Requires ``llvm-spirv`` supporting the FP atomics extension. Set to ``0`` by default.
 
 ``DEBUG``:
-    A flag to emit the debug info, inherited from `numba.core.config.DEBUG <https://github.com/numba/numba/blob/main/numba/core/config.py#L202>`__.
+    A flag to emit the debug info, inherited from |numba.core.config.DEBUG|_.
 
 ``DEBUGINFO_DEFAULT``:
-    The default value for the `debug` flag. Inherited from `numba.core.config.DEBUGINFO_DEFAULT <https://github.com/numba/numba/blob/main/numba/core/config.py#L488>`__
+    The default value for the `debug` flag. Inherited from |numba.core.config.DEBUGINFO_DEFAULT|_.
 
 ``DUMP_KERNEL_LLVM``:
-    A flag to emit LLVM assembly language format (``.ll``). Inherited from `numba.core.config.DUMP_OPTIMIZED <https://github.com/numba/numba/blob/main/numba/core/config.py#L301>`__
+    A flag to emit LLVM assembly language format (``.ll``). Inherited from |numba.core.config.DUMP_OPTIMIZED|_.
 
 ``ENABLE_CACHE``:
     A flag to enable caching, set ``NUMBA_DPEX_ENABLE_CACHE=0`` to turn off. Set to ``1`` by default.
@@ -51,3 +51,12 @@ The list of available configuration flags are listed as follows:
 
 ``STATIC_LOCAL_MEM_PASS``:
     A flag to turn on the ``ConstantSizeStaticLocalMemoryPass`` in the kernel pipeline. The pass is turned off by default.
+
+
+.. |numba.core.config.DEBUG| replace:: ``numba.core.config.DEBUG``
+.. |numba.core.config.DEBUGINFO_DEFAULT| replace:: ``numba.core.config.DEBUGINFO_DEFAULT``
+.. |numba.core.config.DUMP_OPTIMIZED| replace:: ``numba.core.config.DUMP_OPTIMIZED``
+
+.. _`numba.core.config.DEBUG`: https://github.com/numba/numba/blob/main/numba/core/config.py#L202
+.. _`numba.core.config.DEBUGINFO_DEFAULT`: https://github.com/numba/numba/blob/main/numba/core/config.py#L488
+.. _`numba.core.config.DUMP_OPTIMIZED`: https://github.com/numba/numba/blob/main/numba/core/config.py#L301
