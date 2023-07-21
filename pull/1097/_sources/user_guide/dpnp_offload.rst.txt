@@ -5,17 +5,13 @@ Compiling and Offloading ``dpnp`` Functions
 
 Data Parallel Extension for NumPy* (``dpnp``) is a drop-in ``NumPy*``
 replacement library built on top of oneMKL. ``numba-dpex`` allows various
-``dpnp`` library functions to be jit-compiled thorugh its ``dpjit`` decorator.
+``dpnp`` library function calls to be jit-compiled thorugh its
+``numba_dpex.dpjit`` decorator.
 
 ``numba-dpex`` implements its own runtime library to support offloading ``dpnp``
-library functions to SYCL devices. For ``dpnp`` function signatures that are
-offloaded, ``numba-dpex`` implements their corresponding function calls through
-Numba*'s |numba.extending.overload|_ and |numba.extending.intrinsic|_
-constructs.
-
-During compiling a Python function decorated with the ``numba_dpex.dpjit``
-decorator, ``numba-dpex`` generates ``dpnp`` function calls through its runtime
-library and injects them into the LLVM IR through |numba.extending.intrinsic|_.
+library functions to SYCL devices. For each ``dpnp`` function signature to be
+offloaded, ``numba-dpex`` implements the corresponding direct SYCL function call
+in the runtime and the function call is inlined in the generated LLVM IR.
 
 .. code-block:: python
 
@@ -42,41 +38,62 @@ numba-dpex.
 Repository map
 --------------
 
-- The code for numba-dpex's dpnp integration runtime resides in the
+- The code for numba-dpex's ``dpnp`` integration runtime resides in the
   :file:`numba_dpex/core/runtime` sub-module.
-- All the |numba.extending.overload|_ for ``dpnp`` function signatures are
-  implemented in :file:`numba_dpex/dpnp_iface/arrayobj.py`
+- All the |numba.extending.overload|_ for ``dpnp`` array creation/initialization
+  function signatures are implemented in
+  :file:`numba_dpex/dpnp_iface/arrayobj.py`
+- Each overload's corresponding |numba.extending.intrinsic|_ is implemented in
+  :file:`numba_dpex/dpnp_iface/_intrinsic.py`
 - Tests resides in :file:`numba_dpex/tests/dpjit_tests/dpnp`.
 
 Design
 ------
 
-The rewrite logic to substitute NumPy functions with dpnp function calls in the
-Numba IR is implemented by the :class:`RewriteOverloadedNumPyFunctionsPass`
-pass. The :mod:`numba_dpex.dpnp_iface.stubs` module defines a set of `stub`
-classes for each of the NumPy functions calls that are currently substituted
-out. The outline of a stub class is as follows:
+``numba_dpex`` uses the |numba.extending.overload| decorator to create a Numba*
+implementation of a function that can be used in `nopython mode`_ functions.
+This is done through translation of ``dpnp`` function signature so that they can
+be called in ``numba_dpex.dpjit`` decorated code.
+
+The specific SYCL operation for a certain ``dpnp`` function is performed by the
+runtime interface. During compiling a function decorated with the ``@dpjit``
+decorator, ``numba-dpex`` generates the corresponding SYCL function call through
+its runtime library and injects it into the LLVM IR through
+|numba.extending.intrinsic|_. The ``@intrinsic`` decorator is used for marking a
+``dpnp`` function as typing and implementing the function in nopython mode using
+the `llvmlite IRBuilder API`_. This is an escape hatch to build custom LLVM IR
+that will be inlined into the caller.
+
+The code injection logic to enable ``dpnp`` functions calls in the Numba IR is
+implemented by :mod:`numba_dpex.core.dpnp_iface.arrayobj` module which replaces
+Numba*'s :mod:`numba.np.arrayobj`. Each ``dpnp`` function signature is provided
+with a concrete implementation to generates the actual code using Numba's
+``overload`` function API. e.g.:
 
 .. code-block:: python
 
-    # numba_dpex/dpnp_iface/stubs.py - imported in numba_dpex.__init__.py
-
-
-    class dpnp(Stub):
-        class sum(Stub):  # stub function
-            pass
-
-Each stub is provided with a concrete implementation to generates the actual
-code using Numba's ``overload`` function API. E.g.,
-
-.. code-block:: python
-
-    @overload(stubs.dpnp.sum)
-    def dpnp_sum_impl(a):
+    @overload(dpnp.ones, prefer_literal=True)
+    def ol_dpnp_ones(
+        shape, dtype=None, order="C", device=None, usm_type="device", sycl_queue=None
+    ):
         ...
 
-The complete implementation is in
-:file:`numba_dpex/dpnp_iface/dpnp_transcendentalsimpl.py`.
+The corresponding intrinsic implementation is in :file:`numba_dpex/dpnp_iface/_intrinsic.py`.
+
+.. code-block:: python
+
+   @intrinsic
+   def impl_dpnp_ones(
+       ty_context,
+       ty_shape,
+       ty_dtype,
+       ty_order,
+       ty_device,
+       ty_usm_type,
+       ty_sycl_queue,
+       ty_retty_ref,
+   ):
+       ...
 
 Parallel Range
 --------------
@@ -94,8 +111,12 @@ context. ``prange`` automatically takes care of data privatization:
 .. |numba.extending.overload| replace:: ``numba.extending.overload``
 .. |numba.extending.intrinsic| replace:: ``numba.extending.intrinsic``
 .. |ol_dpnp_ones(...)| replace:: ``ol_dpnp_ones(...)``
+.. |numba.np.arrayobj| replace:: ``numba.np.arrayobj``
 
 .. _low-level API: https://github.com/IntelPython/dpnp/tree/master/dpnp/backend
 .. _`ol_dpnp_ones(...)`: https://github.com/IntelPython/numba-dpex/blob/main/numba_dpex/dpnp_iface/arrayobj.py#L358
 .. _`numba.extending.overload`: https://numba.pydata.org/numba-doc/latest/extending/high-level.html#implementing-functions
 .. _`numba.extending.intrinsic`: https://numba.pydata.org/numba-doc/latest/extending/high-level.html#implementing-intrinsics
+.. _nopython mode: https://numba.pydata.org/numba-doc/latest/glossary.html#term-nopython-mode
+.. _`numba.np.arrayobj`: https://github.com/numba/numba/blob/main/numba/np/arrayobj.py
+.. _`llvmlite IRBuilder API`: http://llvmlite.pydata.org/en/latest/user-guide/ir/ir-builder.html
