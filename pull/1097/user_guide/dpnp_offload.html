@@ -530,47 +530,47 @@ document.write(`
   <section id="compiling-and-offloading-dpnp-functions">
 <h1>Compiling and Offloading <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> Functions<a class="headerlink" href="#compiling-and-offloading-dpnp-functions" title="Permalink to this heading">#</a></h1>
 <p>Data Parallel Extension for NumPy* (<code class="docutils literal notranslate"><span class="pre">dpnp</span></code>) is a drop-in <code class="docutils literal notranslate"><span class="pre">NumPy*</span></code>
-replacement library built on top of oneMKL.</p>
-<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> relies on <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> to
-support offloading <code class="docutils literal notranslate"><span class="pre">NumPy</span></code> library functions to SYCL devices. For <code class="docutils literal notranslate"><span class="pre">NumPy</span></code>
-functions that are offloaded using <code class="docutils literal notranslate"><span class="pre">dpnp</span></code>, <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> generates library
-calls directly to <code class="docutils literal notranslate"><span class="pre">dpnp</span></code>’s <a class="reference external" href="https://github.com/IntelPython/dpnp/tree/master/dpnp/backend">low-level API</a> inside the generated LLVM IR.</p>
-<p id="integration-dpnp-backend">During compiling a Python function decorated with the <code class="docutils literal notranslate"><span class="pre">numba.njit</span></code>
-decorator, <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> substitutes <code class="docutils literal notranslate"><span class="pre">NumPy</span></code> function calls with corresponding <code class="docutils literal notranslate"><span class="pre">dpnp</span></code>
-low-level API function calls. The substitution happens transparent to an
-end-user and is implemented as a renaming pass in <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code>’s pass pipeline.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">njit</span>
-<span class="kn">import</span> <span class="nn">dpctl</span>
+replacement library built on top of oneMKL. <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> allows various
+<code class="docutils literal notranslate"><span class="pre">dpnp</span></code> library functions to be jit-compiled thorugh its <code class="docutils literal notranslate"><span class="pre">dpjit</span></code> decorator.</p>
+<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> implements its own runtime library to support offloading <code class="docutils literal notranslate"><span class="pre">dpnp</span></code>
+library functions to SYCL devices. For <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> function signatures that are
+offloaded, <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> implements their corresponding function calls through
+Numba*’s <a class="reference external" href="https://numba.pydata.org/numba-doc/latest/extending/high-level.html#implementing-functions"><code class="docutils literal notranslate"><span class="pre">numba.extending.overload</span></code></a> and <a class="reference external" href="https://numba.pydata.org/numba-doc/latest/extending/high-level.html#implementing-intrinsics"><code class="docutils literal notranslate"><span class="pre">numba.extending.intrinsic</span></code></a>
+constructs.</p>
+<p>During compiling a Python function decorated with the <code class="docutils literal notranslate"><span class="pre">numba_dpex.dpjit</span></code>
+decorator, <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> generates <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> function calls through its runtime
+library and injects them into the LLVM IR through <a class="reference external" href="https://numba.pydata.org/numba-doc/latest/extending/high-level.html#implementing-intrinsics"><code class="docutils literal notranslate"><span class="pre">numba.extending.intrinsic</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">dpnp</span>
+<span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">dpjit</span>
 
 
-<span class="nd">@njit</span>
-<span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>  <span class="c1"># this call will be replaced with the dpnp.sum function</span>
+<span class="nd">@dpjit</span>
+<span class="k">def</span> <span class="nf">foo</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># the function call for this signature</span>
+    <span class="c1"># will be generated through the runtime</span>
+    <span class="c1"># library and inlined into the LLVM IR</span>
 
 
-<span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
-
-<span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">():</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">foo</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">foo</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
 </pre></div>
 </div>
-<p><code class="samp docutils literal notranslate"><span class="pre">np.sum(a)</span></code> will be replaced with <a class="reference external" href="https://github.com/IntelPython/dpnp/blob/ef404c0f284b0c508ed1e556e140f02f76ae5551/dpnp/backend/kernels/dpnp_krnl_reduction.cpp#L58">dpnp_sum_c&lt;int, int&gt;(…)</a>.</p>
+<p><code class="samp docutils literal notranslate"><span class="pre">dpnp.ones(10)</span></code> will be called through <a class="reference external" href="https://github.com/IntelPython/numba-dpex/blob/main/numba_dpex/dpnp_iface/arrayobj.py#L358"><code class="docutils literal notranslate"><span class="pre">ol_dpnp_ones(...)</span></code></a>.</p>
 <p>The following sections go over as aspects of the dpnp integration inside
 numba-dpex.</p>
 <section id="repository-map">
-<span id="dpnp-integration-repository-map"></span><h2>Repository map<a class="headerlink" href="#repository-map" title="Permalink to this heading">#</a></h2>
+<h2>Repository map<a class="headerlink" href="#repository-map" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
-<li><p>The code for numba-dpex’s dpnp integration resides in the
-<code class="file docutils literal notranslate"><span class="pre">numba_dpex/dpnp_iface</span></code> sub-module.</p></li>
-<li><p>Tests resides in <code class="file docutils literal notranslate"><span class="pre">numba_dpex/tests/njit_tests/dpnp</span></code>.</p></li>
-<li><p>Helper pass resides in <code class="file docutils literal notranslate"><span class="pre">numba_dpex/rename_numpy_functions_pass.py</span></code>.</p></li>
+<li><p>The code for numba-dpex’s dpnp integration runtime resides in the
+<code class="file docutils literal notranslate"><span class="pre">numba_dpex/core/runtime</span></code> sub-module.</p></li>
+<li><p>All the <a class="reference external" href="https://numba.pydata.org/numba-doc/latest/extending/high-level.html#implementing-functions"><code class="docutils literal notranslate"><span class="pre">numba.extending.overload</span></code></a> for <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> function signatures are
+implemented in <code class="file docutils literal notranslate"><span class="pre">numba_dpex/dpnp_iface/arrayobj.py</span></code></p></li>
+<li><p>Tests resides in <code class="file docutils literal notranslate"><span class="pre">numba_dpex/tests/dpjit_tests/dpnp</span></code>.</p></li>
 </ul>
 </section>
 <section id="design">
-<span id="dpnp-integration-architecture"></span><h2>Design<a class="headerlink" href="#design" title="Permalink to this heading">#</a></h2>
+<h2>Design<a class="headerlink" href="#design" title="Permalink to this heading">#</a></h2>
 <p>The rewrite logic to substitute NumPy functions with dpnp function calls in the
 Numba IR is implemented by the <code class="xref py py-class docutils literal notranslate"><span class="pre">RewriteOverloadedNumPyFunctionsPass</span></code>
 pass. The <code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.dpnp_iface.stubs</span></code> module defines a set of <cite>stub</cite>

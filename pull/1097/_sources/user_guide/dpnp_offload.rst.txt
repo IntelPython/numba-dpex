@@ -4,60 +4,49 @@ Compiling and Offloading ``dpnp`` Functions
 ===========================================
 
 Data Parallel Extension for NumPy* (``dpnp``) is a drop-in ``NumPy*``
-replacement library built on top of oneMKL.
+replacement library built on top of oneMKL. ``numba-dpex`` allows various
+``dpnp`` library functions to be jit-compiled thorugh its ``dpjit`` decorator.
 
+``numba-dpex`` implements its own runtime library to support offloading ``dpnp``
+library functions to SYCL devices. For ``dpnp`` function signatures that are
+offloaded, ``numba-dpex`` implements their corresponding function calls through
+Numba*'s |numba.extending.overload|_ and |numba.extending.intrinsic|_
+constructs.
 
-``numba-dpex`` relies on ``dpnp`` to
-support offloading ``NumPy`` library functions to SYCL devices. For ``NumPy``
-functions that are offloaded using ``dpnp``, ``numba-dpex`` generates library
-calls directly to ``dpnp``'s `low-level API`_ inside the generated LLVM IR.
-
-.. _low-level API: https://github.com/IntelPython/dpnp/tree/master/dpnp/backend
-
-.. _integration-dpnp-backend:
-
-During compiling a Python function decorated with the ``numba.njit``
-decorator, ``numba-dpex`` substitutes ``NumPy`` function calls with corresponding ``dpnp``
-low-level API function calls. The substitution happens transparent to an
-end-user and is implemented as a renaming pass in ``numba-dpex``'s pass pipeline.
+During compiling a Python function decorated with the ``numba_dpex.dpjit``
+decorator, ``numba-dpex`` generates ``dpnp`` function calls through its runtime
+library and injects them into the LLVM IR through |numba.extending.intrinsic|_.
 
 .. code-block:: python
 
-    import numpy as np
-    from numba import njit
-    import dpctl
+    import dpnp
+    from numba_dpex import dpjit
 
 
-    @njit
-    def foo(a):
-        return np.sum(a)  # this call will be replaced with the dpnp.sum function
+    @dpjit
+    def foo():
+        return dpnp.ones(10)  # the function call for this signature
+        # will be generated through the runtime
+        # library and inlined into the LLVM IR
 
 
-    a = np.arange(42)
+    a = foo()
+    print(a)
+    print(type(a))
 
-    with dpctl.device_context():
-        result = foo(a)
-
-    print(result)
-
-:samp:`np.sum(a)` will be replaced with `dpnp_sum_c<int, int>(...)`_.
-
-.. _`dpnp_sum_c<int, int>(...)`: https://github.com/IntelPython/dpnp/blob/ef404c0f284b0c508ed1e556e140f02f76ae5551/dpnp/backend/kernels/dpnp_krnl_reduction.cpp#L58
+:samp:`dpnp.ones(10)` will be called through |ol_dpnp_ones(...)|_.
 
 The following sections go over as aspects of the dpnp integration inside
 numba-dpex.
 
-.. _dpnp-integration-repository-map:
-
 Repository map
 --------------
 
-- The code for numba-dpex's dpnp integration resides in the
-  :file:`numba_dpex/dpnp_iface` sub-module.
-- Tests resides in :file:`numba_dpex/tests/njit_tests/dpnp`.
-- Helper pass resides in :file:`numba_dpex/rename_numpy_functions_pass.py`.
-
-.. _dpnp-integration-architecture:
+- The code for numba-dpex's dpnp integration runtime resides in the
+  :file:`numba_dpex/core/runtime` sub-module.
+- All the |numba.extending.overload|_ for ``dpnp`` function signatures are
+  implemented in :file:`numba_dpex/dpnp_iface/arrayobj.py`
+- Tests resides in :file:`numba_dpex/tests/dpjit_tests/dpnp`.
 
 Design
 ------
@@ -101,3 +90,12 @@ context. ``prange`` automatically takes care of data privatization:
 
 - prange, reduction prange
 - blackscholes, math example
+
+.. |numba.extending.overload| replace:: ``numba.extending.overload``
+.. |numba.extending.intrinsic| replace:: ``numba.extending.intrinsic``
+.. |ol_dpnp_ones(...)| replace:: ``ol_dpnp_ones(...)``
+
+.. _low-level API: https://github.com/IntelPython/dpnp/tree/master/dpnp/backend
+.. _`ol_dpnp_ones(...)`: https://github.com/IntelPython/numba-dpex/blob/main/numba_dpex/dpnp_iface/arrayobj.py#L358
+.. _`numba.extending.overload`: https://numba.pydata.org/numba-doc/latest/extending/high-level.html#implementing-functions
+.. _`numba.extending.intrinsic`: https://numba.pydata.org/numba-doc/latest/extending/high-level.html#implementing-intrinsics
