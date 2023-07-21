@@ -529,8 +529,8 @@ conda<span class="w"> </span>activate<span class="w"> </span>build-env
 first step.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a conda environment that hass needed dependencies installed</span>
 conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w">                                             </span><span class="se">\</span>
-dpctl<span class="w"> </span>dpnp<span class="w"> </span>numba<span class="w"> </span>spirv-tools<span class="w"> </span>dpcpp-llvm-spirv<span class="w"> </span>llvmdev<span class="w"> </span>pytest<span class="w">               </span><span class="se">\</span>
--c<span class="w"> </span>intel<span class="w"> </span>-c<span class="w"> </span>conda-forge
+<span class="w">    </span>dpctl<span class="w"> </span>dpnp<span class="w"> </span>numba<span class="w"> </span>spirv-tools<span class="w"> </span>dpcpp-llvm-spirv<span class="w"> </span>llvmdev<span class="w"> </span>pytest<span class="w">           </span><span class="se">\</span>
+<span class="w">    </span>-c<span class="w"> </span>intel<span class="w"> </span>-c<span class="w"> </span>conda-forge
 <span class="c1"># Activate the environment</span>
 conda<span class="w"> </span>activate<span class="w"> </span>numba-dpex-env
 <span class="c1"># Clone the numba-dpex repository</span>

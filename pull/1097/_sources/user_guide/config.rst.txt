@@ -10,11 +10,11 @@ Configuration Options for ``numba-dpex``
     prefix needs to be appended before each variable. For example, in order to
     turn ``SAVE_IR_FILES`` flag on, it needs to be passed as ``NUMBA_DPEX_SAVE_IR_FILES=1``
 
-For example:
+    For example:
 
-.. code-block:: bash
+    .. code-block:: bash
 
-    user@host:~/NUMBA_DPEX_SAVE_IR_FILES=1 python numba_dpex_program.py
+        user@host:~/NUMBA_DPEX_SAVE_IR_FILES=1 python numba_dpex_program.py
 
 
 The list of available configuration flags are listed as follows:
