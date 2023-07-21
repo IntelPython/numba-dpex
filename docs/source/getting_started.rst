@@ -70,8 +70,8 @@ first step.
 
     # Create a conda environment that hass needed dependencies installed
     conda create -n numba-dpex-env                                             \
-    dpctl dpnp numba spirv-tools dpcpp-llvm-spirv llvmdev pytest               \
-    -c intel -c conda-forge
+        dpctl dpnp numba spirv-tools dpcpp-llvm-spirv llvmdev pytest           \
+        -c intel -c conda-forge
     # Activate the environment
     conda activate numba-dpex-env
     # Clone the numba-dpex repository
