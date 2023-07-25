@@ -447,7 +447,7 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="../kernel_programming/supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../dpnp_offload.html">Compiling and Offloading DPNP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dpnp_offload.html">Compiling and Offloading <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> statements</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Debugging with Intel® Distribution for GDB*</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="set_up_machine.html">Set up the machine for debugging</a></li>
 <li class="toctree-l2"><a class="reference internal" href="debugging_environment.html">Configure debugging environment</a></li>
@@ -467,7 +467,8 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="common_issues.html">Common issues and tips</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../caching.html">Caching Mechanism in Numba-dpex</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../caching.html">Caching Mechanism in <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../config.html">Configuration Options for <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../useful_links.html">Useful links</a></li>
 </ul>
 </div>
@@ -538,7 +539,7 @@ document.write(`
 <h1>Information About a Frame<a class="headerlink" href="#information-about-a-frame" title="Permalink to this heading">#</a></h1>
 <p>See <a class="reference external" href="https://www.sourceware.org/gdb/onlinedocs/gdb/Frame-Info.html">GDB* documentation</a>.</p>
 <section id="info-args">
-<span id="id1"></span><h2><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">args</span></code><a class="headerlink" href="#info-args" title="Permalink to this heading">#</a></h2>
+<span id="id2"></span><h2><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">args</span></code><a class="headerlink" href="#info-args" title="Permalink to this heading">#</a></h2>
 <p>Test <code class="file docutils literal notranslate"><span class="pre">numba_dpex/tests/debugging/test_info.py:test_info_args</span></code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -572,14 +573,14 @@ In previous versions <code class="docutils literal notranslate"><span class="pre
 </section>
 </section>
 <section id="info-locals">
-<span id="id2"></span><h2><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code><a class="headerlink" href="#info-locals" title="Permalink to this heading">#</a></h2>
+<span id="id3"></span><h2><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code><a class="headerlink" href="#info-locals" title="Permalink to this heading">#</a></h2>
 <p>Test <code class="file docutils literal notranslate"><span class="pre">numba_dpex/tests/debugging/test_info.py:test_info_locals</span></code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Requires Numba 0.55 or higher.</p>
 </div>
-<section id="id3">
-<h3>Example<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
+<section id="id4">
+<h3>Example<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">sum_local_vars.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 5</span><span class="kn">import</span> <span class="nn">dpctl</span>
 <span class="linenos"> 6</span><span class="kn">import</span> <span class="nn">dpnp</span> <span class="k">as</span> <span class="nn">np</span>
@@ -717,7 +718,7 @@ Note that uninitialized variables are zeros:</p>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#info-locals"><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Example</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Example</a></li>
 </ul>
 </li>
 </ul>

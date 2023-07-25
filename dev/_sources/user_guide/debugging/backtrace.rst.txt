@@ -1,4 +1,4 @@
-.. _backtrace:
+.. include:: ./../../ext_links.txt
 
 Backtrace
 ==========

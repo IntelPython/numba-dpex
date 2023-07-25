@@ -46,6 +46,6 @@ Full example can be found at
 Full examples
 -------------
 
-- ``numba_dpex/examples/sum_reduction_recursive_ocl.py``
-- ``numba_dpex/examples/sum_reduction_ocl.py``
-- ``numba_dpex/examples/sum_reduction.py``
+- :file:`numba_dpex/examples/sum_reduction_recursive_ocl.py`
+- :file:`numba_dpex/examples/sum_reduction_ocl.py`
+- :file:`numba_dpex/examples/sum_reduction.py`
