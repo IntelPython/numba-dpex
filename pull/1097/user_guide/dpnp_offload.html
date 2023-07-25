@@ -18,7 +18,7 @@
         gtag('config', 'G-LGGL0NJK6P');
     </script>
     
-    <title>Compiling and Offloading dpnp Functions &#8212; numba-dpex  documentation</title>
+    <title>Compiling and Offloading Mechanisms &#8212; numba-dpex  documentation</title>
   
   
   
@@ -447,7 +447,7 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="kernel_programming/supported-python-features.html">Supported Python Features inside <code class="docutils literal notranslate"><span class="pre">numba_dpex.kernel</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Compiling and Offloading <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> Functions</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Compiling and Offloading Mechanisms</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="debugging/index.html">Debugging with Intel® Distribution for GDB*</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="debugging/set_up_machine.html">Set up the machine for debugging</a></li>
 <li class="toctree-l2"><a class="reference internal" href="debugging/debugging_environment.html">Configure debugging environment</a></li>
@@ -510,7 +510,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">User Guide</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">Compiling and Offloading <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> Functions</li>
+    <li class="breadcrumb-item active" aria-current="page">Compiling and Offloading Mechanisms</li>
   </ul>
 </nav>
 </div>
@@ -527,8 +527,12 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="compiling-and-offloading-dpnp-functions">
-<h1>Compiling and Offloading <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> Functions<a class="headerlink" href="#compiling-and-offloading-dpnp-functions" title="Permalink to this heading">#</a></h1>
+  <section id="compiling-and-offloading-mechanisms">
+<h1>Compiling and Offloading Mechanisms<a class="headerlink" href="#compiling-and-offloading-mechanisms" title="Permalink to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> can directly compile and offload different data parallel
+programming constructs and function libraries onto SYCL based devices.</p>
+<section id="dpnp-functions">
+<h2><code class="docutils literal notranslate"><span class="pre">dpnp</span></code> Functions<a class="headerlink" href="#dpnp-functions" title="Permalink to this heading">#</a></h2>
 <p>Data Parallel Extension for NumPy* (<code class="docutils literal notranslate"><span class="pre">dpnp</span></code>) is a drop-in <code class="docutils literal notranslate"><span class="pre">NumPy*</span></code>
 replacement library built on top of oneMKL. <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> allows various
 <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> library function calls to be jit-compiled thorugh its
@@ -556,8 +560,9 @@ in the runtime and the function call is inlined in the generated LLVM IR.</p>
 <p><code class="samp docutils literal notranslate"><span class="pre">dpnp.ones(10)</span></code> will be called through <a class="reference external" href="https://github.com/IntelPython/numba-dpex/blob/main/numba_dpex/dpnp_iface/arrayobj.py#L358"><code class="docutils literal notranslate"><span class="pre">ol_dpnp_ones(...)</span></code></a>.</p>
 <p>The following sections go over as aspects of the dpnp integration inside
 numba-dpex.</p>
+</section>
 <section id="repository-map">
-<h2>Repository map<a class="headerlink" href="#repository-map" title="Permalink to this heading">#</a></h2>
+<h2>Repository Map<a class="headerlink" href="#repository-map" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>The code for numba-dpex’s <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> integration runtime resides in the
 <code class="file docutils literal notranslate"><span class="pre">numba_dpex/core/runtime</span></code> sub-module.</p></li>
@@ -613,14 +618,88 @@ with a concrete implementation to generates the actual code using Numba’s
 </section>
 <section id="parallel-range">
 <h2>Parallel Range<a class="headerlink" href="#parallel-range" title="Permalink to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> implements the ability to run loops in parallel,
-similar to OpenMP parallel for loops and Numba*’s <code class="docutils literal notranslate"><span class="pre">prange</span></code>. The loop-
-body is scheduled in seperate threads, and they execute in a <code class="docutils literal notranslate"><span class="pre">nopython</span></code> numba
-context. <code class="docutils literal notranslate"><span class="pre">prange</span></code> automatically takes care of data privatization:</p>
-<ul class="simple">
-<li><p>prange, reduction prange</p></li>
-<li><p>blackscholes, math example</p></li>
-</ul>
+<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> implements the ability to run loops in parallel, the language
+construct is adapted from Numba*’s <code class="docutils literal notranslate"><span class="pre">prange</span></code> concept that was initially
+designed to run OpenMP parallel for loops. In Numba*, the loop-body is scheduled
+in seperate threads, and they execute in a <code class="docutils literal notranslate"><span class="pre">nopython</span></code> Numba* context.
+<code class="docutils literal notranslate"><span class="pre">prange</span></code> automatically takes care of data privatization. <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code>
+employs the <code class="docutils literal notranslate"><span class="pre">prange</span></code> compilation mechanism to offload parallel loop like
+programming constructs onto SYCL enabled devices.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">prange</span></code> compilation pass is delegated through Numba’s
+<code class="file docutils literal notranslate"><span class="pre">numba/parfor/parfor_lowering.py</span></code> module where <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> provides
+<code class="file docutils literal notranslate"><span class="pre">numba_dpex/core/parfors/parfor_lowerer.py</span></code> module to be used as the
+<em>lowering</em> mechanism through
+<code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.core.parfors.parfor_lowerer.ParforLowerImpl</span></code> class. This
+provides a custom lowerer for <code class="docutils literal notranslate"><span class="pre">prange</span></code> nodes that generates a SYCL kernel for
+a <code class="docutils literal notranslate"><span class="pre">prange</span></code> node and submits it to a queue. Here is an example of a <code class="docutils literal notranslate"><span class="pre">prange</span></code>
+use case in <code class="docutils literal notranslate"><span class="pre">&#64;dpjit</span></code> context:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">prange</span>
+<span class="kn">import</span> <span class="nn">dpnp</span>
+<span class="kn">from</span> <span class="nn">numba_dpex</span> <span class="kn">import</span> <span class="n">dpjit</span>
+
+
+<span class="nd">@dpjit</span>
+<span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">prange</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">x</span>
+
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">c</span> <span class="o">=</span> <span class="n">foo</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Each <code class="docutils literal notranslate"><span class="pre">prange</span></code> instruction in Numba* has an optional <em>lowerer</em> attribute. The
+lowerer attribute determines how the parfor instruction should be lowered to
+LLVM IR. In addition, the lower attribute decides which <code class="docutils literal notranslate"><span class="pre">prange</span></code> instructions
+can be fused together. At this point <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> does not generate
+device-specific code and the lowerer used is same for all device types. However,
+a different <code class="xref py py-class docutils literal notranslate"><span class="pre">numba_dpex.core.parfors.parfor_lowerer.ParforLowerImpl</span></code>
+instance is returned for every <code class="docutils literal notranslate"><span class="pre">prange</span></code> instruction for each corresponding CFD
+(Compute Follows Data) inferred device to prevent illegal <code class="docutils literal notranslate"><span class="pre">prange</span></code> fusion.</p>
+</section>
+<section id="fusion-of-kernels">
+<h2>Fusion of Kernels<a class="headerlink" href="#fusion-of-kernels" title="Permalink to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> can identify each NumPy* (or <code class="docutils literal notranslate"><span class="pre">dpnp</span></code>) array expression as a
+data-parallel kernel and fuse them together to generate a single SYCL kernel.
+The kernel is automatically offloaded to the specified device where the fusion
+operation is invoked. Here is a simple example of a Black-Scholes formula
+computation where kernel fusion occurs at different <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> math functions:</p>
+<div class="literal-block-wrapper docutils container" id="blackscholes-dpjit">
+<div class="code-block-caption"><span class="caption-text"><strong>EXAMPLE:</strong> Data parallel kernel implementing the vector sum a+b</span><a class="headerlink" href="#blackscholes-dpjit" title="Permalink to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dpex</span><span class="o">.</span><span class="n">dpjit</span>
+<span class="k">def</span> <span class="nf">blackscholes</span><span class="p">(</span><span class="n">sptprice</span><span class="p">,</span> <span class="n">strike</span><span class="p">,</span> <span class="n">timev</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">volatility</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A simple implementation of the Black-Scholes formula using the automatic</span>
+<span class="sd">    offload feature of numba_dpex. In this example, each NumPy array</span>
+<span class="sd">    expression is identified as a data-parallel kernel and fused together to</span>
+<span class="sd">    generate a single SYCL kernel. The kernel is automatically offloaded to</span>
+<span class="sd">    the device specified where the function is invoked.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">sptprice</span> <span class="o">/</span> <span class="n">strike</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">timev</span> <span class="o">*</span> <span class="o">-</span><span class="n">rate</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">timev</span> <span class="o">*</span> <span class="n">volatility</span> <span class="o">*</span> <span class="n">volatility</span> <span class="o">*</span> <span class="mi">2</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">z</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">true_divide</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+    <span class="n">w1</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span> <span class="o">+</span> <span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span>
+    <span class="n">w2</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span>
+
+    <span class="n">NofXd1</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">erf</span><span class="p">(</span><span class="n">w1</span><span class="p">)</span>
+    <span class="n">NofXd2</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">erf</span><span class="p">(</span><span class="n">w2</span><span class="p">)</span>
+
+    <span class="n">futureValue</span> <span class="o">=</span> <span class="n">strike</span> <span class="o">*</span> <span class="n">dpnp</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">call</span> <span class="o">=</span> <span class="n">sptprice</span> <span class="o">*</span> <span class="n">NofXd1</span> <span class="o">-</span> <span class="n">futureValue</span> <span class="o">*</span> <span class="n">NofXd2</span>
+    <span class="n">put</span> <span class="o">=</span> <span class="n">call</span> <span class="o">-</span> <span class="n">sptprice</span> <span class="o">+</span> <span class="n">futureValue</span>
+    <span class="k">return</span> <span class="n">put</span>
+</pre></div>
+</div>
+</div>
 </section>
 </section>
 
@@ -671,9 +750,11 @@ context. <code class="docutils literal notranslate"><span class="pre">prange</sp
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#repository-map">Repository map</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dpnp-functions"><code class="docutils literal notranslate"><span class="pre">dpnp</span></code> Functions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#repository-map">Repository Map</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#design">Design</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parallel-range">Parallel Range</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fusion-of-kernels">Fusion of Kernels</a></li>
 </ul>
   </nav></div>
 
