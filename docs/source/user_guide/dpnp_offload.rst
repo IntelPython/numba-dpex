@@ -1,7 +1,13 @@
 .. include:: ./../ext_links.txt
 
-Compiling and Offloading ``dpnp`` Functions
-===========================================
+Compiling and Offloading Mechanisms
+====================================
+
+``numba-dpex`` can directly compile and offload different data parallel
+programming constructs and function libraries onto SYCL based devices.
+
+``dpnp`` Functions
+-------------------
 
 Data Parallel Extension for NumPy* (``dpnp``) is a drop-in ``NumPy*``
 replacement library built on top of oneMKL. ``numba-dpex`` allows various
@@ -35,8 +41,8 @@ in the runtime and the function call is inlined in the generated LLVM IR.
 The following sections go over as aspects of the dpnp integration inside
 numba-dpex.
 
-Repository map
---------------
+Repository Map
+---------------
 
 - The code for numba-dpex's ``dpnp`` integration runtime resides in the
   :file:`numba_dpex/core/runtime` sub-module.
@@ -48,7 +54,7 @@ Repository map
 - Tests resides in :file:`numba_dpex/tests/dpjit_tests/dpnp`.
 
 Design
-------
+-------
 
 ``numba_dpex`` uses the |numba.extending.overload| decorator to create a Numba*
 implementation of a function that can be used in `nopython mode`_ functions.
@@ -96,17 +102,72 @@ The corresponding intrinsic implementation is in :file:`numba_dpex/dpnp_iface/_i
        ...
 
 Parallel Range
---------------
+---------------
 
-``numba-dpex`` implements the ability to run loops in parallel,
-similar to OpenMP parallel for loops and Numba*’s ``prange``. The loop-
-body is scheduled in seperate threads, and they execute in a ``nopython`` numba
-context. ``prange`` automatically takes care of data privatization:
+``numba-dpex`` implements the ability to run loops in parallel, the language
+construct is adapted from Numba*'s ``prange`` concept that was initially
+designed to run OpenMP parallel for loops. In Numba*, the loop-body is scheduled
+in seperate threads, and they execute in a ``nopython`` Numba* context.
+``prange`` automatically takes care of data privatization. ``numba-dpex``
+employs the ``prange`` compilation mechanism to offload parallel loop like
+programming constructs onto SYCL enabled devices.
+
+The ``prange`` compilation pass is delegated through Numba's
+:file:`numba/parfor/parfor_lowering.py` module where ``numba-dpex`` provides
+:file:`numba_dpex/core/parfors/parfor_lowerer.py` module to be used as the
+*lowering* mechanism through
+:py:class:`numba_dpex.core.parfors.parfor_lowerer.ParforLowerImpl` class. This
+provides a custom lowerer for ``prange`` nodes that generates a SYCL kernel for
+a ``prange`` node and submits it to a queue. Here is an example of a ``prange``
+use case in ``@dpjit`` context:
+
+.. code-block:: python
+
+    from numba import prange
+    import dpnp
+    from numba_dpex import dpjit
 
 
+    @dpjit
+    def foo(a, b):
+        x = dpnp.ones(10)
+        for i in prange(10):
+            x[i] = a[i] + b[i]
+        return x
 
-- prange, reduction prange
-- blackscholes, math example
+
+    a = dpnp.ones(10)
+    b = dpnp.ones(10)
+
+    c = foo(a, b)
+    print(c)
+    print(type(c))
+
+Each ``prange`` instruction in Numba* has an optional *lowerer* attribute. The
+lowerer attribute determines how the parfor instruction should be lowered to
+LLVM IR. In addition, the lower attribute decides which ``prange`` instructions
+can be fused together. At this point ``numba-dpex`` does not generate
+device-specific code and the lowerer used is same for all device types. However,
+a different :py:class:`numba_dpex.core.parfors.parfor_lowerer.ParforLowerImpl`
+instance is returned for every ``prange`` instruction for each corresponding CFD
+(Compute Follows Data) inferred device to prevent illegal ``prange`` fusion.
+
+
+Fusion of Kernels
+------------------
+
+``numba-dpex`` can identify each NumPy* (or ``dpnp``) array expression as a
+data-parallel kernel and fuse them together to generate a single SYCL kernel.
+The kernel is automatically offloaded to the specified device where the fusion
+operation is invoked. Here is a simple example of a Black-Scholes formula
+computation where kernel fusion occurs at different ``dpnp`` math functions:
+
+.. literalinclude:: ./../../../numba_dpex/examples/blacksholes_njit.py
+   :language: python
+   :pyobject: blackscholes
+   :caption: **EXAMPLE:** Data parallel kernel implementing the vector sum a+b
+   :name: blackscholes_dpjit
+
 
 .. |numba.extending.overload| replace:: ``numba.extending.overload``
 .. |numba.extending.intrinsic| replace:: ``numba.extending.intrinsic``
