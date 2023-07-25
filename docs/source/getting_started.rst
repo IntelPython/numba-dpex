@@ -9,26 +9,40 @@ Getting Started
 ===============
 
 
-Installing pre-built packages
------------------------------
+Installing pre-built conda packages
+-----------------------------------
 
 ``numba-dpex`` along with its dependencies can be installed using ``conda``.
 It is recommended to use conda packages from the ``anaconda.org/intel`` channel
-to get the latest production releases. Nighly builds of ``numba-dpex`` are
-available on the ``dppy/label/dev`` conda channel.
+to get the latest production releases.
 
 .. code-block:: bash
 
-    conda create -n numba-dpex-env numba-dpex dpnp dpctl dpcpp-llvm-spirv spirv-tools -c intel -c conda-forge
+    conda create -n numba-dpex-env                                             \
+        numba-dpex dpnp dpctl dpcpp-llvm-spirv spirv-tools                     \
+        -c intel -c conda-forge
+
+To try out the bleeding edge, the latest packages built from tip of the main
+source trunk can be installed from the ``dppy/label/dev`` conda channel.
+
+.. code-block:: bash
+
+    conda create -n numba-dpex-env                                             \
+        numba-dpex dpnp dpctl dpcpp-llvm-spirv spirv-tools                     \
+        -c dppy/label/dev -c intel -c conda-forge
+
+
 
 Building from source
 --------------------
 
-``numba-dpex`` can be built from source using either ``conda-build`` or ``setuptools``.
+``numba-dpex`` can be built from source using either ``conda-build`` or
+``setuptools``.
 
 Steps to build using ``conda-build``:
 
-1. Create a conda environment
+1. Ensure ``conda-build`` is installed in the ``base`` conda environment or
+   create a new conda environment with ``conda-build`` installed.
 
 .. code-block:: bash
 
@@ -45,22 +59,34 @@ Steps to build using ``conda-build``:
 
 .. code-block:: bash
 
-    conda install numba-dpex
+    conda install -c local numba-dpex
 
 Steps to build using ``setup.py``:
 
+As before, a conda environment with all necessary dependencies is the suggested
+first step.
+
 .. code-block:: bash
 
-    conda create -n numba-dpex-env dpctl dpnp numba spirv-tools dpcpp-llvm-spirv llvmdev pytest -c intel -c conda-forge
+    # Create a conda environment that hass needed dependencies installed
+    conda create -n numba-dpex-env                                             \
+        dpctl dpnp numba spirv-tools dpcpp-llvm-spirv llvmdev pytest           \
+        -c intel -c conda-forge
+    # Activate the environment
     conda activate numba-dpex-env
+    # Clone the numba-dpex repository
+    git clone https://github.com/IntelPython/numba-dpex.git
+    cd numba-dpex
+    python setup.py develop
 
 Building inside Docker
 ----------------------
 
-A Dockerfile is provided on the GitHub repository to easily build ``numba-dpex``
+A Dockerfile is provided on the GitHub repository to build ``numba-dpex``
 as well as its direct dependencies: ``dpctl`` and ``dpnp``. Users can either use
 one of the pre-built images on the ``numba-dpex`` GitHub page or use the
-bundled Dockerfile to build ``numba-dpex`` from source.
+bundled Dockerfile to build ``numba-dpex`` from source. Using the Dockerfile
+also ensures that all device drivers and runtime libraries are pre-installed.
 
 Building
 ~~~~~~~~
@@ -69,10 +95,10 @@ Numba dpex ships with multistage Dockerfile, which means there are
 different `targets <https://docs.docker.com/build/building/multi-stage/#stop-at-a-specific-build-stage>`_
 available for build. The most useful ones:
 
-- runtime
-- runtime-gpu
-- numba-dpex-builder-runtime
-- numba-dpex-builder-runtime-gpu
+- ``runtime``
+- ``runtime-gpu``
+- ``numba-dpex-builder-runtime``
+- ``numba-dpex-builder-runtime-gpu``
 
 To build docker image
 
@@ -96,7 +122,7 @@ To run docker image
     ``GITHUB_USER`` and ``GITHUB_PASSWORD``
     `build args <https://docs.docker.com/engine/reference/commandline/build/#build-arg>`_
     to increase the call limit. A GitHub
-    `access token <https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token>`
+    `access token <https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token>`_
     can also be used instead of the password.
 
 .. note::

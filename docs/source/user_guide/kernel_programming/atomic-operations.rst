@@ -41,4 +41,4 @@ Example command:
 Full examples
 -------------
 
-- ``numba_dpex/examples/atomic_op.py``
+- :file:`numba_dpex/examples/atomic_op.py`

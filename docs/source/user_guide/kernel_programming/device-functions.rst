@@ -1,5 +1,3 @@
-.. _device-functions:
-
 Writing Device Functions
 ========================
 

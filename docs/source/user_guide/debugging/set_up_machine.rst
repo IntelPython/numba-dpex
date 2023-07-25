@@ -1,3 +1,5 @@
+.. include:: ./../../ext_links.txt
+
 Set up the machine for debugging
 ====================================
 
