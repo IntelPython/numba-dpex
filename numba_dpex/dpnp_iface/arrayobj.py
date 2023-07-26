@@ -1061,6 +1061,63 @@ def ol_dpnp_full_like(
         )
 
 
+@overload(dpnp.arange, prefer_literal=True)
+def ol_dpnp_arange(
+    start,
+    stop=None,
+    step=1,
+    dtype=None,
+    # like=None,
+    device=None,
+    usm_type="device",
+    sycl_queue=None,
+):
+    _ndim = 1
+    _dtype = _parse_dtype(dtype) if dtype is not None else start
+    _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
+    _device = _parse_device_filter_string(device) if device else None
+    _layout = _parse_layout("C")
+
+    ret_ty = DpnpNdArray(
+        ndim=_ndim,
+        layout=_layout,
+        dtype=_dtype,
+        usm_type=_usm_type,
+        device=_device,
+        queue=sycl_queue,
+    )
+
+    if ret_ty:
+
+        def impl(
+            start,
+            stop=None,
+            step=1,
+            dtype=None,
+            # like=None, # see issue https://github.com/IntelPython/numba-dpex/issues/998
+            device=None,
+            usm_type="device",
+            sycl_queue=None,
+        ):
+            return impl_dpnp_empty(
+                start,
+                _dtype,
+                _layout,
+                # like, # see issue https://github.com/IntelPython/numba-dpex/issues/998
+                _device,
+                _usm_type,
+                sycl_queue,
+                ret_ty,
+            )
+
+        return impl
+    else:
+        raise errors.TypingError(
+            "Cannot parse input types to "
+            + f"function dpnp.arange({start}, {stop}, {step}, {dtype}, ...)."
+        )
+
+
 @lower_builtin(operator.getitem, DpnpNdArray, types.Integer)
 @lower_builtin(operator.getitem, DpnpNdArray, types.SliceType)
 def getitem_arraynd_intp(context, builder, sig, args):
