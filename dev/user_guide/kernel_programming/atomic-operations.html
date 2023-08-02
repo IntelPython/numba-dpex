@@ -590,13 +590,16 @@ Its type must match the type of array elements, ary[]</p></li>
 <p>Example usage of atomic operations</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="n">N</span> <span class="o">=</span> <span class="mi">10</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+
+    <span class="c1"># We are storing sum to the first element</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using device ...&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
-    <span class="n">atomic_reduction</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">N</span><span class="p">)](</span><span class="n">a</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reduction sum =&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">atomic_reduction</span><span class="p">[</span><span class="n">ndpx</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">N</span><span class="p">)](</span><span class="n">a</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Reduction sum =&quot;</span><span class="p">,</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done...&quot;</span><span class="p">)</span>
 </pre></div>
@@ -605,22 +608,6 @@ Its type must match the type of array elements, ary[]</p></li>
 <p class="admonition-title">Note</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">numba_dpex.atomic.add</span></code> function is analogous to The
 <code class="docutils literal notranslate"><span class="pre">numba.cuda.atomic.add</span></code> provided by the <code class="docutils literal notranslate"><span class="pre">numba.cuda</span></code> backend.</p>
-</div>
-</section>
-<section id="generating-native-fp-atomics">
-<h2>Generating Native FP Atomics<a class="headerlink" href="#generating-native-fp-atomics" title="Permalink to this heading">#</a></h2>
-<p>Numba-dpex supports generating native floating-point atomics.
-This feature is experimental. Users will need to provide
-the following environment variables to activate it.</p>
-<blockquote>
-<div><p>NUMBA_DPEX_ACTIVATE_ATOMICS_FP_NATIVE=1
-NUMBA_DPEX_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv</p>
-</div></blockquote>
-<p>Example command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NUMBA_DPEX_ACTIVATE_ATOMICS_FP_NATIVE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
-<span class="nv">NUMBA_DPEX_LLVM_SPIRV_ROOT</span><span class="o">=</span>/path/to/dpcpp/provided/llvm_spirv<span class="w"> </span><span class="se">\</span>
-python<span class="w"> </span>program.py
-</pre></div>
 </div>
 </section>
 <section id="full-examples">
@@ -679,7 +666,6 @@ python<span class="w"> </span>program.py
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example">Example</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#generating-native-fp-atomics">Generating Native FP Atomics</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#full-examples">Full examples</a></li>
 </ul>
   </nav></div>
