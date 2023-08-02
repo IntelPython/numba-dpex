@@ -53,9 +53,6 @@ SPIRV_VAL = _readenv("NUMBA_DPEX_SPIRV_VAL", int, 0)
 # Dump offload diagnostics
 OFFLOAD_DIAGNOSTICS = _readenv("NUMBA_DPEX_OFFLOAD_DIAGNOSTICS", int, 0)
 
-# Activate Native floating point atomcis support for supported devices.
-# Requires llvm-spirv supporting the FP atomics extension
-NATIVE_FP_ATOMICS = _readenv("NUMBA_DPEX_ACTIVATE_ATOMICS_FP_NATIVE", int, 0)
 # Emit debug info
 DEBUG = _readenv("NUMBA_DPEX_DEBUG", int, config.DEBUG)
 DEBUGINFO_DEFAULT = _readenv(
