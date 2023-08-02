@@ -11,7 +11,6 @@ Numba-dpex depends on following components:
 * dpnp 0.10.1 (`Intel Python DPNP`_)
 * `dpcpp-llvm-spirv`_ (SPIRV generation from LLVM IR)
 * `llvmdev`_ (LLVM IR generation)
-* `spirv-tools`_
 * `packaging`_
 * `scipy`_ (for testing)
 * `pytest`_ (for testing)
@@ -59,7 +58,7 @@ installed in conda environment:
 .. code-block:: bash
 
     export ONEAPI_ROOT=/opt/intel/oneapi
-    conda create -n numba-dpex-env -c ${ONEAPI_ROOT}/conda_channel python=3.7 dpctl dpnp numba spirv-tools dpcpp-llvm-spirv llvmdev pytest
+    conda create -n numba-dpex-env -c ${ONEAPI_ROOT}/conda_channel python=3.7 dpctl dpnp numba dpcpp-llvm-spirv llvmdev pytest
     conda activate numba-dpex-env
 
 Activate DPC++ compiler:
@@ -150,7 +149,6 @@ Refer to :ref:`Docker <docker>` section for more options.
 .. _`Intel Python dpnp`: https://github.com/IntelPython/dpnp
 .. _`dpcpp-llvm-spirv`: https://github.com/IntelPython/dpcpp-llvm-spirv
 .. _`llvmdev`: https://anaconda.org/intel/llvmdev
-.. _`spirv-tools`: https://anaconda.org/intel/spirv-tools
 .. _`packaging`: https://packaging.pypa.io/
 .. _`scipy`: https://anaconda.org/intel/scipy
 .. _`pytest`: https://docs.pytest.org

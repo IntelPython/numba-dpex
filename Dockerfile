@@ -199,7 +199,7 @@ RUN \
     --mount=type=bind,target=/opt/toolkit,source=/opt/toolkit,from=toolkit-dist \
     export http_proxy=$http_proxy https_proxy=$https_proxy \
     && apt-get update && apt-get install -y \
-    spirv-tools spirv-headers \
+    spirv-headers \
     rsync \
     && rm -rf /var/lib/apt/lists/* \
     && rsync -a /opt/toolkit/bin/ /usr/local/bin/ \

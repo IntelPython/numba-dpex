@@ -13,7 +13,6 @@ dependencies:
   - numba=0.57
   - dpctl
   - dpnp
-  - spirv-tools
   - dpcpp-llvm-spirv
   - opencl_rt
   - coverage

@@ -3,16 +3,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
-import shutil
-import subprocess
 import sys
 import sysconfig
 
 import dpctl
 import numba
 import numpy
-import setuptools.command.develop as orig_develop
-import setuptools.command.install as orig_install
 from setuptools import Extension, find_packages, setup
 
 import versioneer
@@ -62,83 +58,6 @@ def get_ext_modules():
     return ext_modules
 
 
-class install(orig_install.install):
-    def run(self):
-        spirv_compile()
-        super().run()
-
-
-class develop(orig_develop.develop):
-    def run(self):
-        spirv_compile()
-        super().run()
-
-
-def _get_cmdclass():
-    cmdclass = versioneer.get_cmdclass()
-    cmdclass["install"] = install
-    cmdclass["develop"] = develop
-    return cmdclass
-
-
-def spirv_compile():
-    if IS_LIN:
-        compiler = "icx"
-    if IS_WIN:
-        compiler = "clang.exe"
-
-    clang_args = [
-        compiler,
-        "-flto",
-        "-fveclib=none",
-        "-target",
-        "spir64-unknown-unknown",
-        "-c",
-        "-x",
-        "cl",
-        "-emit-llvm",
-        "-cl-std=CL2.0",
-        "-Xclang",
-        "-finclude-default-header",
-        "numba_dpex/ocl/atomics/atomic_ops.cl",
-        "-o",
-        "numba_dpex/ocl/atomics/atomic_ops.bc",
-    ]
-    spirv_args = [
-        _llvm_spirv(),
-        "--spirv-max-version",
-        "1.0",
-        "numba_dpex/ocl/atomics/atomic_ops.bc",
-        "-o",
-        "numba_dpex/ocl/atomics/atomic_ops.spir",
-    ]
-    subprocess.check_call(
-        clang_args,
-        stderr=subprocess.DEVNULL,
-        stdout=subprocess.DEVNULL,
-        shell=False,
-    )
-    subprocess.check_call(
-        spirv_args,
-        stderr=subprocess.DEVNULL,
-        stdout=subprocess.DEVNULL,
-        shell=False,
-    )
-
-
-def _llvm_spirv():
-    """Return path to llvm-spirv executable."""
-
-    try:
-        import dpcpp_llvm_spirv as dls
-    except ImportError:
-        raise ImportError("Cannot import dpcpp-llvm-spirv package")
-
-    result = dls.get_llvm_spirv_path()
-
-    return result
-
-
 packages = find_packages(
     include=["numba_dpex", "numba_dpex.*", "_dpexrt_python"]
 )
@@ -151,7 +70,6 @@ install_requires = [
 metadata = dict(
     name="numba-dpex",
     version=versioneer.get_version(),
-    cmdclass=_get_cmdclass(),
     description="An extension for Numba to add data-parallel offload capability",
     url="https://github.com/IntelPython/numba-dpex",
     packages=packages,

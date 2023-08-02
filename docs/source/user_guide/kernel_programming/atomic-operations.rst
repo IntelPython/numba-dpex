@@ -21,23 +21,6 @@ Example usage of atomic operations
     The ``numba_dpex.atomic.add`` function is analogous to The
     ``numba.cuda.atomic.add`` provided by the ``numba.cuda`` backend.
 
-Generating Native FP Atomics
-----------------------------
-Numba-dpex supports generating native floating-point atomics.
-This feature is experimental. Users will need to provide
-the following environment variables to activate it.
-
-    NUMBA_DPEX_ACTIVATE_ATOMICS_FP_NATIVE=1
-    NUMBA_DPEX_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv
-
-Example command:
-
-.. code-block:: bash
-
-    NUMBA_DPEX_ACTIVATE_ATOMICS_FP_NATIVE=1 \
-    NUMBA_DPEX_LLVM_SPIRV_ROOT=/path/to/dpcpp/provided/llvm_spirv \
-    python program.py
-
 Full examples
 -------------
 
