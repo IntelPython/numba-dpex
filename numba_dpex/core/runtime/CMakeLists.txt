@@ -122,3 +122,44 @@ endif()
 install(
     TARGETS ${PROJECT_NAME} LIBRARY DESTINATION numba_dpex/core/runtime
 )
+
+execute_process(
+    COMMAND python -m dpctl --cmakedir
+    OUTPUT_VARIABLE DPCTL_MODULE_PATH
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${DPCTL_MODULE_PATH})
+
+execute_process(
+    COMMAND python -c "import skbuild; print(skbuild.__path__[0]);"
+    OUTPUT_VARIABLE SKBUILD_PATH
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+set(SKBUILD_MODULE_PATH ${SKBUILD_PATH}/resources/cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${SKBUILD_MODULE_PATH})
+
+message(STATUS "CMAKE_MODULE_PATH=" "${CMAKE_MODULE_PATH}")
+
+find_package(PythonLibs REQUIRED)
+
+# find_package(IntelDPCPP REQUIRED)
+find_package(TBB REQUIRED)
+
+set(MKL_ARCH "intel64")
+set(MKL_LINK "dynamic")
+set(MKL_INTERFACE_FULL "intel_ilp64")
+set(MKL_THREADING "tbb_thread")
+find_package(MKL REQUIRED)
+
+set(ONEDPL_PAR_BACKEND tbb)
+find_package(oneDPL REQUIRED)
+
+find_package(PythonExtensions REQUIRED)
+find_package(NumPy REQUIRED)
+find_package(Dpctl REQUIRED)
+
+include(GNUInstallDirs)
+include_directories(.)
+file(GLOB SOURCES "*.c")
+
+add_library(_dpexrt_python.so SHARED ${SOURCES})
+
+# install(TARGETS skcdpure DESTINATION .)
