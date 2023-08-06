@@ -135,16 +135,20 @@ if(RET EQUAL "1")
     message(FATAL_ERROR "Module \'numba\' not found.")
 endif()
 
-# Get dpctl library path
-execute_process(
-    COMMAND python -c "import dpctl; import os; print(os.path.dirname(dpctl.__file__));"
-    OUTPUT_VARIABLE DPCTL_LIBRARY_PATH
-    RESULT_VARIABLE RET
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
+# endif()
 
-if(RET EQUAL "1")
-    message(FATAL_ERROR "Module \'dpctl\' not found.")
+# Get dpctl library path
+if(NOT DEFINED DPCTL_LIBRARY_PATH)
+    execute_process(
+        COMMAND python -c "import dpctl; import os; print(os.path.dirname(dpctl.__file__));"
+        OUTPUT_VARIABLE DPCTL_LIBRARY_PATH
+        RESULT_VARIABLE RET
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+
+    if(RET EQUAL "1")
+        message(FATAL_ERROR "Module \'dpctl\' not found.")
+    endif()
 endif()
 
 # Update CMAKE_MODULE_PATH
@@ -152,15 +156,17 @@ set(DPCTL_MODULE_PATH ${DPCTL_LIBRARY_PATH}/resources/cmake)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${DPCTL_MODULE_PATH})
 
 # Get scikit-build path
-execute_process(
-    COMMAND python -c "import skbuild; print(skbuild.__path__[0]);"
-    OUTPUT_VARIABLE SKBUILD_PATH
-    RESULT_VARIABLE RET
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
+if(NOT DEFINED SKBUILD_PATH)
+    execute_process(
+        e COMMAND python -c "import skbuild; print(skbuild.__path__[0]);"
+        OUTPUT_VARIABLE SKBUILD_PATH
+        RESULT_VARIABLE RET
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
 
-if(RET EQUAL "1")
-    message(FATAL_ERROR "Module \'skbuild\' not found.")
+    if(RET EQUAL "1")
+        message(FATAL_ERROR "Module \'skbuild\' not found.")
+    endif()
 endif()
 
 # Update CMAKE_MODULE_PATH
@@ -178,7 +184,7 @@ find_package(Dpctl REQUIRED)
 
 # Includes
 include(GNUInstallDirs)
-include_directories(${PYTHON_INCLUDE_DIRS})
+include_directories(${Python_INCLUDE_DIRS})
 include_directories(${NumPy_INCLUDE_DIRS})
 include_directories(${Numba_INCLUDE_DIRS})
 include_directories(${Dpctl_INCLUDE_DIRS})
@@ -194,7 +200,7 @@ link_directories(${DPCTL_LIBRARY_PATH})
 add_library(${PROJECT_NAME} MODULE ${SOURCES})
 
 # Link the static library to python libraries and DPCTLSyclInterface
-target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${Python_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} DPCTLSyclInterface)
 
 # Build python extension module
