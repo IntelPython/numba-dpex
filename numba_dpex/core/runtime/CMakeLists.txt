@@ -123,43 +123,95 @@ install(
     TARGETS ${PROJECT_NAME} LIBRARY DESTINATION numba_dpex/core/runtime
 )
 
+# Get numba include path
 execute_process(
-    COMMAND python -m dpctl --cmakedir
-    OUTPUT_VARIABLE DPCTL_MODULE_PATH
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    COMMAND python -c "import numba; print(numba.extending.include_path());"
+    OUTPUT_VARIABLE Numba_INCLUDE_DIRS
+    RESULT_VARIABLE RET
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+if(RET EQUAL "1")
+    message(FATAL_ERROR "Module \'numba\' not found.")
+endif()
+
+# Get dpctl library path
+execute_process(
+    COMMAND python -c "import dpctl; import os; print(os.path.dirname(dpctl.__file__));"
+    OUTPUT_VARIABLE DPCTL_LIBRARY_PATH
+    RESULT_VARIABLE RET
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+if(RET EQUAL "1")
+    message(FATAL_ERROR "Module \'dpctl\' not found.")
+endif()
+
+# Update CMAKE_MODULE_PATH
+set(DPCTL_MODULE_PATH ${DPCTL_LIBRARY_PATH}/resources/cmake)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${DPCTL_MODULE_PATH})
 
+# Get scikit-build path
 execute_process(
     COMMAND python -c "import skbuild; print(skbuild.__path__[0]);"
     OUTPUT_VARIABLE SKBUILD_PATH
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
+    RESULT_VARIABLE RET
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+if(RET EQUAL "1")
+    message(FATAL_ERROR "Module \'skbuild\' not found.")
+endif()
+
+# Update CMAKE_MODULE_PATH
 set(SKBUILD_MODULE_PATH ${SKBUILD_PATH}/resources/cmake)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${SKBUILD_MODULE_PATH})
 
+# Check CMAKE_MODULE_PATH
 message(STATUS "CMAKE_MODULE_PATH=" "${CMAKE_MODULE_PATH}")
 
+# Add packages
 find_package(PythonLibs REQUIRED)
-
-# find_package(IntelDPCPP REQUIRED)
-find_package(TBB REQUIRED)
-
-set(MKL_ARCH "intel64")
-set(MKL_LINK "dynamic")
-set(MKL_INTERFACE_FULL "intel_ilp64")
-set(MKL_THREADING "tbb_thread")
-find_package(MKL REQUIRED)
-
-set(ONEDPL_PAR_BACKEND tbb)
-find_package(oneDPL REQUIRED)
-
 find_package(PythonExtensions REQUIRED)
 find_package(NumPy REQUIRED)
 find_package(Dpctl REQUIRED)
 
+# Includes
 include(GNUInstallDirs)
+include_directories(${PYTHON_INCLUDE_DIRS})
+include_directories(${NumPy_INCLUDE_DIRS})
+include_directories(${Numba_INCLUDE_DIRS})
+include_directories(${Dpctl_INCLUDE_DIRS})
 include_directories(.)
+
+# Source files, *.c
 file(GLOB SOURCES "*.c")
 
-add_library(_dpexrt_python.so SHARED ${SOURCES})
+# Link dpctl library path with -L
+link_directories(${DPCTL_LIBRARY_PATH})
 
-# install(TARGETS skcdpure DESTINATION .)
+# Output static library, *.so or *.dll
+add_library(${PROJECT_NAME} MODULE ${SOURCES})
+
+# Link the static library to python libraries and DPCTLSyclInterface
+target_link_libraries(${PROJECT_NAME} ${PYTHON_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} DPCTLSyclInterface)
+
+# Build python extension module
+python_extension_module(${PROJECT_NAME})
+
+# If IS_DEVELOP, copy back the target into numba_dpex/core/runtime
+if(IS_DEVELOP)
+    add_custom_command(
+        TARGET ${PROJECT_NAME}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_BINARY_DIR}/numba_dpex/core/runtime/*.so
+        ${CMAKE_SOURCE_DIR}/numba_dpex/core/runtime/
+    )
+endif()
+
+# Install
+install(
+    TARGETS ${PROJECT_NAME} LIBRARY DESTINATION numba_dpex/core/runtime
+)

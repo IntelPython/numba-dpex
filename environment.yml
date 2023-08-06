@@ -8,6 +8,7 @@ channels:
   - nodefaults
 dependencies:
   - python=3.9
+  - scikit-build
   - gxx_linux-64
   - dpcpp_linux-64
   - numba >=0.57*
