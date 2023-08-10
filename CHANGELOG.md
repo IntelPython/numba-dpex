@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.21.2] - 2023-08-07
+
+### Fixed
+* Bugs (#1068, #774) in atomic addition caused due to imporper floating point atomic emulation. (#1103)
+
+### Changed
+* Updated documentation and user guides (#1097, #879)
+
+### Removed
+* Dependency on `spirv-tools` (#1103, #1108)
+* floating point atomic add emulation using `atomic_ops.cl` (#1103)
+* `NUMBA_DPEX_ACTIVATE_ATOMICS_FP_NATIVE` configuration option (#1103)
+
 ## [0.21.1] - 2023-07-17
 
 ### Changed
