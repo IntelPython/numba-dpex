@@ -1,7 +1,0 @@
-numba\_dpex.core.kernel\_interface.utils module
-===============================================
-
-.. automodule:: numba_dpex.core.kernel_interface.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:

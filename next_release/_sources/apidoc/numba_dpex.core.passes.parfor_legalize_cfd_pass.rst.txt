@@ -1,7 +1,0 @@
-numba\_dpex.core.passes.parfor\_legalize\_cfd\_pass module
-==========================================================
-
-.. automodule:: numba_dpex.core.passes.parfor_legalize_cfd_pass
-   :members:
-   :undoc-members:
-   :show-inheritance:

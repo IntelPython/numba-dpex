@@ -1,7 +1,0 @@
-numba\_dpex.dpnp\_iface.arrayobj module
-=======================================
-
-.. automodule:: numba_dpex.dpnp_iface.arrayobj
-   :members:
-   :undoc-members:
-   :show-inheritance:

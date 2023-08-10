@@ -1,7 +1,0 @@
-numba\_dpex.utils.array\_utils module
-=====================================
-
-.. automodule:: numba_dpex.utils.array_utils
-   :members:
-   :undoc-members:
-   :show-inheritance:

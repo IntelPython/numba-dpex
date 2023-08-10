@@ -1,7 +1,0 @@
-numba\_dpex.dpctl\_iface.dpctl\_function\_types module
-======================================================
-
-.. automodule:: numba_dpex.dpctl_iface.dpctl_function_types
-   :members:
-   :undoc-members:
-   :show-inheritance:

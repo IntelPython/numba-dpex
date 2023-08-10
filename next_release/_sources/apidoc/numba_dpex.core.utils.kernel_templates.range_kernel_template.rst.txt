@@ -1,7 +1,0 @@
-numba\_dpex.core.utils.kernel\_templates.range\_kernel\_template module
-=======================================================================
-
-.. automodule:: numba_dpex.core.utils.kernel_templates.range_kernel_template
-   :members:
-   :undoc-members:
-   :show-inheritance:
