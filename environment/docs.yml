@@ -3,29 +3,26 @@ channels:
   - dppy/label/dev
   - numba
   - intel
+  - numba/label/dev
   - conda-forge
   - nodefaults
 dependencies:
-  - python=3.10
+  - libffi
   - gxx_linux-64
   - dpcpp_linux-64
-  - numba 0.57*
-  - dpctl 0.14*
-  - dpnp >=0.12*
-  - spirv-tools
+  - numba=0.57
+  - dpctl
+  - dpnp
   - dpcpp-llvm-spirv
-  - packaging
-  - pytest
+  - opencl_rt
   - pip
   - pip:
-    - coverage
-    - pre-commit
-    - flake8
-    - black==20.8b1
-    - pexpect
     - sphinx
-    - autodoc
+    - autodoc # there is no conda package
     - recommonmark
     - sphinx-rtd-theme
     - sphinxcontrib-apidoc
     - sphinxcontrib-googleanalytics
+    - sphinxcontrib.programoutput
+    - pydata-sphinx-theme
+    - myst-parser

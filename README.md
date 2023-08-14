@@ -39,7 +39,7 @@ to learn more.
 Numba-dpex is part of the Intel&reg; Distribution of Python (IDP) and Intel&reg;
 oneAPI AIKit, and can be installed along with oneAPI. Additionally, we support
 installing it from Anaconda cloud. Please refer the instructions
-on our [documentation page](https://intelpython.github.io/numba-dpex/latest/user_guides/getting_started.html)
+on our [documentation page](https://intelpython.github.io/numba-dpex/latest/getting_started.html)
 for more details.
 
 Once the package is installed, a good starting point is to run the examples in

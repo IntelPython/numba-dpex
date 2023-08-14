@@ -5,7 +5,6 @@
 """A wrapper to connect to the SPIR-V binaries (Tools, Translator)."""
 
 import os
-import shutil
 import tempfile
 from subprocess import CalledProcessError, check_call
 
@@ -75,8 +74,6 @@ class CmdLine:
         if config.DEBUG:
             llvm_spirv_flags.append("--spirv-debug-info-version=ocl-100")
 
-        if not config.NATIVE_FP_ATOMICS:
-            llvm_spirv_args = ["--spirv-max-version", "1.4"] + llvm_spirv_args
         llvm_spirv_tool = self._llvm_spirv()
 
         if config.DEBUG:
@@ -95,17 +92,6 @@ class CmdLine:
 
         result = dls.get_llvm_spirv_path()
         return result
-
-    def link(self, opath, binaries):
-        """
-        Link spirv modules.
-
-        Args:
-            opath: Output file path of the linked final spirv.
-            binaries: Spirv modules to be linked.
-        """
-        flags = ["--allow-partial-linkage"]
-        check_call(["spirv-link", *flags, "-o", opath, *binaries])
 
 
 class Module(object):
@@ -156,15 +142,9 @@ class Module(object):
         # Generate SPIR-V from "friendly" LLVM-based SPIR 2.0
         spirv_path = self._track_temp_file("generated-spirv")
 
-        binary_paths = [spirv_path]
-
         llvm_spirv_args = []
         for key in list(self.context.extra_compile_options.keys()):
-            if key == LINK_ATOMIC:
-                from .ocl.atomics import get_atomic_spirv_path
-
-                binary_paths.append(get_atomic_spirv_path())
-            elif key == LLVM_SPIRV_ARGS:
+            if key == LLVM_SPIRV_ARGS:
                 llvm_spirv_args = self.context.extra_compile_options[key]
             del self.context.extra_compile_options[key]
 
@@ -187,10 +167,6 @@ class Module(object):
             ipath=self._llvmfile,
             opath=spirv_path,
         )
-
-        if len(binary_paths) > 1:
-            spirv_path = self._track_temp_file("linked-spirv")
-            self._cmd.link(spirv_path, binary_paths)
 
         if config.SAVE_IR_FILES != 0:
             # Dump the llvmir and llvmbc in file

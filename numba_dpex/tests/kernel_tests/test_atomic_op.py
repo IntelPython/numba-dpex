@@ -2,12 +2,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import dpctl
 import dpnp as np
 import pytest
 
 import numba_dpex as dpex
-from numba_dpex import config
 from numba_dpex.core.descriptor import dpex_kernel_target
 from numba_dpex.tests._helper import override_config
 
@@ -66,13 +64,6 @@ def kernel_result_pair(request):
     return dpex.kernel(f), request.param[1]
 
 
-skip_no_atomic_support = pytest.mark.skipif(
-    not dpex.ocl.atomic_support_present(),
-    reason="No atomic support",
-)
-
-
-@skip_no_atomic_support
 def test_kernel_atomic_simple(input_arrays, kernel_result_pair):
     a, dtype = input_arrays()
     kernel, expected = kernel_result_pair
@@ -111,7 +102,6 @@ def get_func_local(op_type, dtype):
     return f
 
 
-@skip_no_atomic_support
 def test_kernel_atomic_local(input_arrays, return_list_of_op):
     a, dtype = input_arrays()
     op_type, expected = return_list_of_op
@@ -148,7 +138,6 @@ def get_kernel_multi_dim(op_type, size):
     return dpex.kernel(f)
 
 
-@skip_no_atomic_support
 def test_kernel_atomic_multi_dim(
     return_list_of_op, return_list_of_dim, return_dtype
 ):
@@ -160,23 +149,6 @@ def test_kernel_atomic_multi_dim(
     assert a[0] == expected
 
 
-skip_NATIVE_FP_ATOMICS_0 = pytest.mark.skipif(
-    not config.NATIVE_FP_ATOMICS, reason="Native FP atomics disabled"
-)
-
-
-def skip_if_disabled(*args):
-    return pytest.param(*args, marks=skip_NATIVE_FP_ATOMICS_0)
-
-
-@skip_no_atomic_support
-@pytest.mark.parametrize(
-    "NATIVE_FP_ATOMICS, expected_native_atomic_for_device",
-    [
-        skip_if_disabled(1, lambda device: device != "opencl:cpu:0"),
-        (0, lambda device: False),
-    ],
-)
 @pytest.mark.parametrize(
     "function_generator", [get_func_global, get_func_local]
 )
@@ -189,8 +161,6 @@ def skip_if_disabled(*args):
 )
 @pytest.mark.parametrize("dtype", list_of_f_dtypes)
 def test_atomic_fp_native(
-    NATIVE_FP_ATOMICS,
-    expected_native_atomic_for_device,
     function_generator,
     operator_name,
     expected_spirv_function,
@@ -206,16 +176,13 @@ def test_atomic_fp_native(
         for arg in args
     ]
 
-    with override_config("NATIVE_FP_ATOMICS", NATIVE_FP_ATOMICS):
-        kernel.compile(
-            args=argtypes,
-            debug=False,
-            compile_flags=None,
-            target_ctx=dpex_kernel_target.target_context,
-            typing_ctx=dpex_kernel_target.typing_context,
-        )
+    kernel.compile(
+        args=argtypes,
+        debug=False,
+        compile_flags=None,
+        target_ctx=dpex_kernel_target.target_context,
+        typing_ctx=dpex_kernel_target.typing_context,
+    )
 
-        is_native_atomic = expected_spirv_function in kernel._llvm_module
-        assert is_native_atomic == expected_native_atomic_for_device(
-            dpctl.select_default_device().filter_string
-        )
+    # TODO: this may fail if code is generated for platform that emulates atomic support?
+    assert expected_spirv_function in kernel._llvm_module

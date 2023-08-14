@@ -143,63 +143,6 @@ def sub_group_barrier_impl(context, builder, sig, args):
     return _void_value
 
 
-def insert_and_call_atomic_fn(
-    context, builder, sig, fn_type, dtype, ptr, val, addrspace
-):
-    ll_p = None
-    name = ""
-    if dtype.name == "float32":
-        ll_val = llvmir.FloatType()
-        ll_p = ll_val.as_pointer()
-        if fn_type == "add":
-            name = "numba_dpex_atomic_add_f32"
-        elif fn_type == "sub":
-            name = "numba_dpex_atomic_sub_f32"
-        else:
-            raise TypeError("Operation type is not supported %s" % (fn_type))
-    elif dtype.name == "float64":
-        if True:
-            ll_val = llvmir.DoubleType()
-            ll_p = ll_val.as_pointer()
-            if fn_type == "add":
-                name = "numba_dpex_atomic_add_f64"
-            elif fn_type == "sub":
-                name = "numba_dpex_atomic_sub_f64"
-            else:
-                raise TypeError(
-                    "Operation type is not supported %s" % (fn_type)
-                )
-    else:
-        raise TypeError(
-            "Atomic operation is not supported for type %s" % (dtype.name)
-        )
-
-    if addrspace == address_space.LOCAL:
-        name = name + "_local"
-    else:
-        name = name + "_global"
-
-    assert ll_p is not None
-    assert name != ""
-    ll_p.addrspace = address_space.GENERIC
-
-    mod = builder.module
-    if sig.return_type == types.void:
-        llretty = llvmir.VoidType()
-    else:
-        llretty = context.get_value_type(sig.return_type)
-
-    llargs = [ll_p, context.get_value_type(sig.args[2])]
-    fnty = llvmir.FunctionType(llretty, llargs)
-
-    fn = cgutils.get_or_insert_function(mod, fnty, name)
-    fn.calling_convention = kernel_target.CC_SPIR_FUNC
-
-    generic_ptr = context.addrspacecast(builder, ptr, address_space.GENERIC)
-
-    return builder.call(fn, [generic_ptr, val])
-
-
 def native_atomic_add(context, builder, sig, args):
     aryty, indty, valty = sig.args
     ary, inds, val = args
@@ -282,27 +225,29 @@ def native_atomic_add(context, builder, sig, args):
     return builder.call(fn, fn_args)
 
 
+def support_atomic(dtype: types.Type) -> bool:
+    # This check should be the same as described in sycl documentation:
+    # https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:atomic-references
+    # If atomic is not supported, it will be emulated by the sycl compiler.
+    return (
+        dtype == types.int32
+        or dtype == types.uint32
+        or dtype == types.float32
+        or dtype == types.int64
+        or dtype == types.uint64
+        or dtype == types.float64
+    )
+
+
 @lower(stubs.atomic.add, types.Array, types.intp, types.Any)
 @lower(stubs.atomic.add, types.Array, types.UniTuple, types.Any)
 @lower(stubs.atomic.add, types.Array, types.Tuple, types.Any)
 def atomic_add_tuple(context, builder, sig, args):
-    device_type = dpctl.get_current_queue().sycl_device.device_type
     dtype = sig.args[0].dtype
-
-    if dtype == types.float32 or dtype == types.float64:
-        if (
-            device_type == dpctl.device_type.gpu
-            and config.NATIVE_FP_ATOMICS == 1
-        ):
-            return native_atomic_add(context, builder, sig, args)
-        else:
-            # Currently, DPCPP only supports native floating point
-            # atomics for GPUs.
-            return atomic_add(context, builder, sig, args, "add")
-    elif dtype == types.int32 or dtype == types.int64:
+    if support_atomic(dtype):
         return native_atomic_add(context, builder, sig, args)
     else:
-        raise TypeError("Atomic operation on unsupported type %s" % dtype)
+        raise TypeError(f"Atomic operation on unsupported type {dtype}")
 
 
 def atomic_sub_wrapper(context, builder, sig, args):
@@ -337,81 +282,11 @@ def atomic_sub_wrapper(context, builder, sig, args):
 @lower(stubs.atomic.sub, types.Array, types.UniTuple, types.Any)
 @lower(stubs.atomic.sub, types.Array, types.Tuple, types.Any)
 def atomic_sub_tuple(context, builder, sig, args):
-    device_type = dpctl.get_current_queue().sycl_device.device_type
     dtype = sig.args[0].dtype
-
-    if dtype == types.float32 or dtype == types.float64:
-        if (
-            device_type == dpctl.device_type.gpu
-            and config.NATIVE_FP_ATOMICS == 1
-        ):
-            return atomic_sub_wrapper(context, builder, sig, args)
-        else:
-            # Currently, DPCPP only supports native floating point
-            # atomics for GPUs.
-            return atomic_add(context, builder, sig, args, "sub")
-    elif dtype == types.int32 or dtype == types.int64:
+    if support_atomic(dtype):
         return atomic_sub_wrapper(context, builder, sig, args)
     else:
-        raise TypeError("Atomic operation on unsupported type %s" % dtype)
-
-
-def atomic_add(context, builder, sig, args, name):
-    from .atomics import atomic_support_present
-
-    if atomic_support_present():
-        context.extra_compile_options[kernel_target.LINK_ATOMIC] = True
-        aryty, indty, valty = sig.args
-        ary, inds, val = args
-        dtype = aryty.dtype
-
-        if indty == types.intp:
-            indices = [inds]  # just a single integer
-            indty = [indty]
-        else:
-            indices = cgutils.unpack_tuple(builder, inds, count=len(indty))
-            indices = [
-                context.cast(builder, i, t, types.intp)
-                for t, i in zip(indty, indices)
-            ]
-
-        if dtype != valty:
-            raise TypeError("expecting %s but got %s" % (dtype, valty))
-
-        if aryty.ndim != len(indty):
-            raise TypeError(
-                "indexing %d-D array with %d-D index" % (aryty.ndim, len(indty))
-            )
-
-        lary = context.make_array(aryty)(context, builder, ary)
-        ptr = cgutils.get_item_pointer(context, builder, aryty, lary, indices)
-
-        if isinstance(aryty, Array) and aryty.addrspace == address_space.LOCAL:
-            return insert_and_call_atomic_fn(
-                context,
-                builder,
-                sig,
-                name,
-                dtype,
-                ptr,
-                val,
-                address_space.LOCAL,
-            )
-        else:
-            return insert_and_call_atomic_fn(
-                context,
-                builder,
-                sig,
-                name,
-                dtype,
-                ptr,
-                val,
-                address_space.GLOBAL,
-            )
-    else:
-        raise ImportError(
-            "Atomic support is not present, can not perform atomic_add"
-        )
+        raise TypeError(f"Atomic operation on unsupported type {dtype}")
 
 
 @lower(stubs.private.array, types.IntegerLiteral, types.Any)
