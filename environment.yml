@@ -16,8 +16,8 @@ dependencies:
   - mkl >=2021.3.0  # for dpnp
   - dpcpp-llvm-spirv
   - packaging
-  - scikit-build
-  - cmake
+  - scikit-build >=0.15*
+  - cmake >=3.26*
   - pytest
   - pip
   - pip:
