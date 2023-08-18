@@ -136,6 +136,7 @@ class SpirvKernel(KernelInterface):
         kernel = cres.target_context.prepare_ocl_kernel(
             func, cres.signature.args
         )
+        cres.library._optimize_final_module()
         self._llvm_module = kernel.module.__str__()
         self._module_name = kernel.name
 
