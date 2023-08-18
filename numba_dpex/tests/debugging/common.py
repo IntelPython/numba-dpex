@@ -13,7 +13,7 @@ import numba_dpex
 
 def script_path(script):
     package_path = pathlib.Path(numba_dpex.__file__).parent
-    return str(package_path / "examples/debug" / script)
+    return str(package_path / "../examples/debug" / script)
 
 
 def line_number(file_path, text):
