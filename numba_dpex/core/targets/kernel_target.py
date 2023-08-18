@@ -9,7 +9,7 @@ import dpnp
 from llvmlite import binding as ll
 from llvmlite import ir as llvmir
 from numba import typeof
-from numba.core import cgutils, types, typing, utils
+from numba.core import cgutils, funcdesc, types, typing, utils
 from numba.core.base import BaseContext
 from numba.core.callconv import MinimalCallConv
 from numba.core.registry import cpu_target
@@ -240,7 +240,7 @@ class DpexKernelTargetContext(BaseContext):
             llvmir.VoidType(), arginfo.argument_types
         )
         wrapper_module = self.create_module("dpex.kernel.wrapper")
-        wrappername = "dpexPy_{name}".format(name=func.name)
+        wrappername = func.name.replace("dpex_fn", "dpex_kernel")
         argtys = list(arginfo.argument_types)
         fnty = llvmir.FunctionType(
             llvmir.IntType(32),
@@ -373,13 +373,9 @@ class DpexKernelTargetContext(BaseContext):
         return self._target_data
 
     def mangler(self, name, argtypes, abi_tags=(), uid=None):
-        def repl(m):
-            ch = m.group(0)
-            return "_%X_" % ord(ch)
-
-        qualified = name + "." + ".".join(str(a) for a in argtypes)
-        mangled = VALID_CHARS.sub(repl, qualified)
-        return "dpex_py_devfn_" + mangled
+        return funcdesc.default_mangler(
+            name + "dpex_fn", argtypes, abi_tags=abi_tags, uid=uid
+        )
 
     def prepare_ocl_kernel(self, func, argtypes):
         module = func.module

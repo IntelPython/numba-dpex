@@ -222,3 +222,17 @@ class USMNdArray(Array):
     @property
     def box_type(self):
         return dpctl.tensor.usm_ndarray
+
+    @property
+    def mangling_args(self):
+        """Returns a list of parameters used to create a mangled name for a
+        USMNdArray type.
+        """
+        filter_str_splits = self.device.split(":")
+        args = [
+            self.dtype,
+            self.ndim,
+            self.layout,
+            filter_str_splits[0] + "_" + filter_str_splits[1],
+        ]
+        return self.__class__.__name__, args
