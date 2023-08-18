@@ -1,9 +1,0 @@
-name: build
-channels:
-  - defaults
-dependencies:
-  - conda-build
-  - python=3.8
-variables:
-  CHANNELS: -c defaults -c numba -c intel -c numba/label/dev -c dppy/label/dev --override-channels
-  CHANNELS_DEV: -c dppy/label/dev -c defaults -c numba -c intel -c numba/label/dev --override-channels
