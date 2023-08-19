@@ -57,6 +57,30 @@ class USMArrayModel(StructModel):
         ]
         super(USMArrayModel, self).__init__(dmm, fe_type, members)
 
+    @property
+    def flattened_field_count(self):
+        """Return the number of fields in an instance of a USMArrayModel."""
+        flattened_member_count = 0
+        members = self._members
+        for member in members:
+            if isinstance(member, types.UniTuple):
+                flattened_member_count += member.count
+            elif isinstance(
+                member,
+                (
+                    types.scalars.Integer,
+                    types.misc.PyObject,
+                    types.misc.RawPointer,
+                    types.misc.CPointer,
+                    types.misc.MemInfoPointer,
+                ),
+            ):
+                flattened_member_count += 1
+            else:
+                raise UnreachableError
+
+        return flattened_member_count
+
 
 class DpnpNdArrayModel(StructModel):
     """Data model for the DpnpNdArray type.
@@ -138,35 +162,54 @@ class SyclQueueModel(StructModel):
         super(SyclQueueModel, self).__init__(dmm, fe_type, members)
 
 
-def _init_data_model_manager():
+def _init_data_model_manager() -> datamodel.DataModelManager:
+    """Initializes a DpexKernelTarget-specific data model manager.
+
+    SPIRV kernel functions for certain types of devices require an explicit
+    address space qualifier for pointers. For OpenCL HD Graphics
+    devices, defining a kernel function (spir_kernel calling convention) with
+    pointer arguments that have no address space qualifier causes a run time
+    crash. For this reason, numba-dpex defines two separate data
+    models: USMArrayModel and DpnpNdArrayModel. When a dpnp.ndarray object is
+    passed as an argument to a ``numba_dpex.kernel`` decorated function it uses
+    the USMArrayModel and when passed to a ``numba_dpex.dpjit`` decorated
+    function it uses the DpnpNdArrayModel. The difference is due to the fact
+    that inside a ``dpjit`` decorated function a dpnp.ndarray object can be
+    passed to any other regular function.
+
+    Returns:
+        DataModelManager: A numba-dpex DpexKernelTarget-specific data model
+        manager
+    """
     dmm = datamodel.default_manager.copy()
     dmm.register(types.CPointer, GenericPointerModel)
     dmm.register(Array, USMArrayModel)
+
+    # Register the USMNdArray type to USMArrayModel in numba_dpex's data model
+    # manager. The dpex_data_model_manager is used by the DpexKernelTarget
+    dmm.register(USMNdArray, USMArrayModel)
+
+    # Register the DpnpNdArray type to USMArrayModel in numba_dpex's data model
+    # manager. The dpex_data_model_manager is used by the DpexKernelTarget
+    dmm.register(DpnpNdArray, USMArrayModel)
+
+    # Register the DpctlSyclQueue type to SyclQueueModel in numba_dpex's data
+    # model manager. The dpex_data_model_manager is used by the DpexKernelTarget
+    dmm.register(DpctlSyclQueue, SyclQueueModel)
+
     return dmm
 
 
 dpex_data_model_manager = _init_data_model_manager()
 
-# XXX A kernel function has the spir_kernel ABI and requires pointers to have an
-# address space attribute. For this reason, the UsmNdArray type uses dpex's
-# ArrayModel where the pointers are address space casted to have a SYCL-specific
-# address space value. The DpnpNdArray type can be used inside djit functions
-# as host function calls arguments, such as dpnp library calls. The DpnpNdArray
-# needs to use Numba's array model as its data model. Thus, from a Numba typing
-# perspective dpnp.ndarrays cannot be directly passed to a kernel. To get
-# around the limitation, the DpexKernelTypingContext does not resolve the type
-# of dpnp.array args to a kernel as DpnpNdArray type objects, but uses the
-# ``to_usm_ndarray`` utility function to convert them into a UsmNdArray type
-# object.
 
-# Register the USMNdArray type with the dpex ArrayModel
+# Register the USMNdArray type to USMArrayModel in numba's default data model
+# manager
 register_model(USMNdArray)(USMArrayModel)
-dpex_data_model_manager.register(USMNdArray, USMArrayModel)
 
-# Register the DpnpNdArray type with the Numba ArrayModel
+# Register the DpnpNdArray type to DpnpNdArrayModel in numba's default data
+# model manager
 register_model(DpnpNdArray)(DpnpNdArrayModel)
-dpex_data_model_manager.register(DpnpNdArray, DpnpNdArrayModel)
 
 # Register the DpctlSyclQueue type
 register_model(DpctlSyclQueue)(SyclQueueModel)
-dpex_data_model_manager.register(DpctlSyclQueue, SyclQueueModel)
