@@ -37,7 +37,7 @@ Building from source
 --------------------
 
 ``numba-dpex`` can be built from source using either ``conda-build`` or
-``scikit-build``.
+``setuptools`` (with ``scikit-build`` backend).
 
 Steps to build using ``conda-build``:
 
