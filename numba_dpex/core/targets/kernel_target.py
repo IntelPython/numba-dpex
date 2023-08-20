@@ -72,28 +72,6 @@ class DpexKernelTypingContext(typing.BaseContext):
                     type=str(type(val)), value=val
                 )
 
-            # A cast from DpnpNdArray type to USMNdArray is needed for all
-            # arguments of DpnpNdArray type. Although, DpnpNdArray derives from
-            # USMNdArray the two types use different data models. USMNdArray
-            # uses the numba_dpex.core.datamodel.models.ArrayModel data model
-            # that defines all CPointer type members in the GLOBAL address
-            # space. The DpnpNdArray uses Numba's default ArrayModel that does
-            # not define pointers in any specific address space. For OpenCL HD
-            # Graphics devices, defining a kernel function (spir_kernel calling
-            # convention) with pointer arguments that have no address space
-            # qualifier causes a run time crash. By casting the argument type
-            # for parfor arguments from DpnpNdArray type to the USMNdArray type
-            # the generated kernel always has an address space qualifier,
-            # avoiding the issue on OpenCL HD graphics devices.
-            if isinstance(numba_type, DpnpNdArray):
-                return USMNdArray(
-                    ndim=numba_type.ndim,
-                    layout=numba_type.layout,
-                    dtype=numba_type.dtype,
-                    usm_type=numba_type.usm_type,
-                    queue=numba_type.queue,
-                )
-
         except ValueError:
             # When an array-like kernel argument is not recognized by
             # numba-dpex, this additional check sees if the array-like object
