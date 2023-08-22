@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -38,15 +37,15 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/documentation_options.js?v=8a448e45"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/debugging/numba-0.55';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -536,25 +535,25 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="debugging-features-in-numba-0-55">
-<h1>Debugging Features in Numba 0.55<a class="headerlink" href="#debugging-features-in-numba-0-55" title="Permalink to this heading">#</a></h1>
+<h1>Debugging Features in Numba 0.55<a class="headerlink" href="#debugging-features-in-numba-0-55" title="Link to this heading">#</a></h1>
 <p>Numba 0.55 enables following features:</p>
 <section id="added-info-args">
-<h2>Added <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">args</span></code><a class="headerlink" href="#added-info-args" title="Permalink to this heading">#</a></h2>
+<h2>Added <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">args</span></code><a class="headerlink" href="#added-info-args" title="Link to this heading">#</a></h2>
 <p>See <a class="reference internal" href="frame_info.html#info-args"><span class="std std-ref">info args</span></a>.
 In previous versions <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">args</span></code> always returns <code class="docutils literal notranslate"><span class="pre">No</span> <span class="pre">arguments.</span></code>.</p>
 </section>
 <section id="extended-info-locals">
-<h2>Extended <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code><a class="headerlink" href="#extended-info-locals" title="Permalink to this heading">#</a></h2>
+<h2>Extended <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code><a class="headerlink" href="#extended-info-locals" title="Link to this heading">#</a></h2>
 <p>See <a class="reference internal" href="frame_info.html#info-locals"><span class="std std-ref">info locals</span></a>.</p>
 </section>
 <section id="breakpoint-with-condition-by-function-argument">
-<h2>Breakpoint with condition by function argument<a class="headerlink" href="#breakpoint-with-condition-by-function-argument" title="Permalink to this heading">#</a></h2>
+<h2>Breakpoint with condition by function argument<a class="headerlink" href="#breakpoint-with-condition-by-function-argument" title="Link to this heading">#</a></h2>
 <p>Test <code class="file docutils literal notranslate"><span class="pre">numba_dpex/tests/debugging/test_breakpoints.py:test_breakpoint_with_condition_by_function_argument</span></code>.</p>
 <p>When set breakpoint on the function or the first line of the function
 than <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code> and <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">args</span></code> provide correct values.
 It makes it posible to use breakpoint with condition by function argument.</p>
 <section id="example">
-<h3>Example<a class="headerlink" href="#example" title="Permalink to this heading">#</a></h3>
+<h3>Example<a class="headerlink" href="#example" title="Link to this heading">#</a></h3>
 <p>Source code <code class="file docutils literal notranslate"><span class="pre">numba_dpex/examples/debug/side-by-side.py</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="linenos">14</span><span class="k">def</span> <span class="nf">common_loop_body</span><span class="p">(</span><span class="n">param_a</span><span class="p">,</span> <span class="n">param_b</span><span class="p">):</span>
 <span class="hll"><span class="linenos">15</span>    <span class="n">param_c</span> <span class="o">=</span> <span class="n">param_a</span> <span class="o">+</span> <span class="mi">10</span>  <span class="c1"># Set breakpoint here</span>
@@ -579,14 +578,14 @@ It makes it posible to use breakpoint with condition by function argument.</p>
 </section>
 </section>
 <section id="added-numba-extend-variable-lifetimes">
-<h2>Added <code class="docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES</span></code><a class="headerlink" href="#added-numba-extend-variable-lifetimes" title="Permalink to this heading">#</a></h2>
+<h2>Added <code class="docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES</span></code><a class="headerlink" href="#added-numba-extend-variable-lifetimes" title="Link to this heading">#</a></h2>
 <p>See <a class="reference internal" href="local_variables.html#local-variables-lifetime"><span class="std std-ref">Local Variables Lifetime in Numba IR</span></a>.</p>
 <p>:samp:<code class="docutils literal notranslate"><span class="pre">NUMBA_EXTEND_VARIABLE_LIFETIMES=1</span></code> works together with
 :samp:<code class="docutils literal notranslate"><span class="pre">NUMBA_DUMP_ANNOTATION=1</span></code>.</p>
 <p>See <a class="reference internal" href="local_variables.html#example-numba-dump-annotation"><span class="std std-ref">Example 2 - Using NUMBA_DUMP_ANNOTATION</span></a>.</p>
 </section>
 <section id="displaying-complex-data-types">
-<h2>Displaying Complex Data Types<a class="headerlink" href="#displaying-complex-data-types" title="Permalink to this heading">#</a></h2>
+<h2>Displaying Complex Data Types<a class="headerlink" href="#displaying-complex-data-types" title="Link to this heading">#</a></h2>
 <p>Numba 0.55 improves displaying of complex data types like arrays.
 It makes it possible to access <code class="docutils literal notranslate"><span class="pre">data</span></code> in arrays.
 It is possible to get array values by commands like :samp:<code class="docutils literal notranslate"><span class="pre">x/10f</span> <span class="pre">array.data</span></code> and
@@ -685,7 +684,7 @@ It is possible to get array values by commands like :samp:<code class="docutils 
       
         <div class="footer-item">
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
     <br/>
   </p>
 </div>

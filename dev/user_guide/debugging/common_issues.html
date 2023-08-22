@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -38,15 +37,15 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/documentation_options.js?v=8a448e45"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/debugging/common_issues';</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -531,9 +530,9 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <section id="common-issues-and-tips">
-<h1>Common issues and tips<a class="headerlink" href="#common-issues-and-tips" title="Permalink to this heading">#</a></h1>
+<h1>Common issues and tips<a class="headerlink" href="#common-issues-and-tips" title="Link to this heading">#</a></h1>
 <section id="breakpoints-are-not-hit">
-<h2>Breakpoints are not hit<a class="headerlink" href="#breakpoints-are-not-hit" title="Permalink to this heading">#</a></h2>
+<h2>Breakpoints are not hit<a class="headerlink" href="#breakpoints-are-not-hit" title="Link to this heading">#</a></h2>
 <p>If the breakpoint is not hit, you will see the following output:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>...<span class="w"> </span>intelgt:<span class="w"> </span>gdbserver-gt<span class="w"> </span>failed<span class="w"> </span>to<span class="w"> </span>start.<span class="w">  </span>Check<span class="w"> </span><span class="k">if</span><span class="w"> </span>igfxdcd<span class="w"> </span>is<span class="w"> </span>installed,
 or<span class="w"> </span>use<span class="w"> </span>env<span class="w"> </span>variable<span class="w"> </span><span class="nv">INTELGT_AUTO_ATTACH_DISABLE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>to<span class="w"> </span>disable<span class="w"> </span>auto-attach.
@@ -544,7 +543,7 @@ or<span class="w"> </span>use<span class="w"> </span>env<span class="w"> </span>
 <a class="reference internal" href="set_up_machine.html#debugging-machine-dcd-driver"><span class="std std-ref">Debug companion driver (DCD)</span></a> section.</p>
 </section>
 <section id="debugging-is-not-stable">
-<h2>Debugging is not stable<a class="headerlink" href="#debugging-is-not-stable" title="Permalink to this heading">#</a></h2>
+<h2>Debugging is not stable<a class="headerlink" href="#debugging-is-not-stable" title="Link to this heading">#</a></h2>
 <p>Debug features depend heavily on optimization level. At full optimization
 (equivalent to O3), most of the variables are optimized out. It is recommended
 to debug at “no optimization” level via <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal notranslate"><span class="pre">NUMBA_OPT</span></code> (e.g. <code class="samp docutils literal notranslate"><span class="pre">export</span>
@@ -566,7 +565,7 @@ can be turned off on individual functions by setting <code class="docutils liter
 </div></blockquote>
 </section>
 <section id="breakpoint-is-hit-twice">
-<h2>Breakpoint is hit twice<a class="headerlink" href="#breakpoint-is-hit-twice" title="Permalink to this heading">#</a></h2>
+<h2>Breakpoint is hit twice<a class="headerlink" href="#breakpoint-is-hit-twice" title="Link to this heading">#</a></h2>
 <p>The first line of the kernel and functions is hit twice. This happens because
 you are debugging a multi-threaded program, so multiple events may be received
 from different threads. This is the default behavior, but you can configure it
@@ -662,7 +661,7 @@ section.</p>
       
         <div class="footer-item">
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
     <br/>
   </p>
 </div>

@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 
 
@@ -38,15 +37,15 @@
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=8a448e45"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'getting_started';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -480,9 +479,9 @@ document.write(`
                 <article class="bd-article" role="main">
                   
   <span class="target" id="getting-started"></span><section id="id2">
-<h1>Getting Started<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h1>
+<h1>Getting Started<a class="headerlink" href="#id2" title="Link to this heading">#</a></h1>
 <section id="installing-pre-built-conda-packages">
-<h2>Installing pre-built conda packages<a class="headerlink" href="#installing-pre-built-conda-packages" title="Permalink to this heading">#</a></h2>
+<h2>Installing pre-built conda packages<a class="headerlink" href="#installing-pre-built-conda-packages" title="Link to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> along with its dependencies can be installed using <code class="docutils literal notranslate"><span class="pre">conda</span></code>.
 It is recommended to use conda packages from the <code class="docutils literal notranslate"><span class="pre">anaconda.org/intel</span></code> channel
 to get the latest production releases.</p>
@@ -500,9 +499,9 @@ source trunk can be installed from the <code class="docutils literal notranslate
 </div>
 </section>
 <section id="building-from-source">
-<h2>Building from source<a class="headerlink" href="#building-from-source" title="Permalink to this heading">#</a></h2>
+<h2>Building from source<a class="headerlink" href="#building-from-source" title="Link to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> can be built from source using either <code class="docutils literal notranslate"><span class="pre">conda-build</span></code> or
-<code class="docutils literal notranslate"><span class="pre">setuptools</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">setuptools</span></code> (with <code class="docutils literal notranslate"><span class="pre">scikit-build</span></code> backend).</p>
 <p>Steps to build using <code class="docutils literal notranslate"><span class="pre">conda-build</span></code>:</p>
 <ol class="arabic simple">
 <li><p>Ensure <code class="docutils literal notranslate"><span class="pre">conda-build</span></code> is installed in the <code class="docutils literal notranslate"><span class="pre">base</span></code> conda environment or
@@ -529,7 +528,7 @@ conda<span class="w"> </span>activate<span class="w"> </span>build-env
 first step.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a conda environment that hass needed dependencies installed</span>
 conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>numba-dpex-env<span class="w">                                             </span><span class="se">\</span>
-<span class="w">    </span>dpctl<span class="w"> </span>dpnp<span class="w"> </span>numba<span class="w"> </span>dpcpp-llvm-spirv<span class="w"> </span>llvmdev<span class="w"> </span>pytest<span class="w">           </span><span class="se">\</span>
+<span class="w">    </span>scikit-build<span class="w"> </span>cmake<span class="w"> </span>dpctl<span class="w"> </span>dpnp<span class="w"> </span>numba<span class="w"> </span>dpcpp-llvm-spirv<span class="w"> </span>llvmdev<span class="w"> </span>pytest<span class="w">    </span><span class="se">\</span>
 <span class="w">    </span>-c<span class="w"> </span>intel<span class="w"> </span>-c<span class="w"> </span>conda-forge
 <span class="c1"># Activate the environment</span>
 conda<span class="w"> </span>activate<span class="w"> </span>numba-dpex-env
@@ -541,14 +540,14 @@ python<span class="w"> </span>setup.py<span class="w"> </span>develop
 </div>
 </section>
 <section id="building-inside-docker">
-<h2>Building inside Docker<a class="headerlink" href="#building-inside-docker" title="Permalink to this heading">#</a></h2>
+<h2>Building inside Docker<a class="headerlink" href="#building-inside-docker" title="Link to this heading">#</a></h2>
 <p>A Dockerfile is provided on the GitHub repository to build <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code>
 as well as its direct dependencies: <code class="docutils literal notranslate"><span class="pre">dpctl</span></code> and <code class="docutils literal notranslate"><span class="pre">dpnp</span></code>. Users can either use
 one of the pre-built images on the <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> GitHub page or use the
 bundled Dockerfile to build <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> from source. Using the Dockerfile
 also ensures that all device drivers and runtime libraries are pre-installed.</p>
 <section id="building">
-<h3>Building<a class="headerlink" href="#building" title="Permalink to this heading">#</a></h3>
+<h3>Building<a class="headerlink" href="#building" title="Link to this heading">#</a></h3>
 <p>Numba dpex ships with multistage Dockerfile, which means there are
 different <a class="reference external" href="https://docs.docker.com/build/building/multi-stage/#stop-at-a-specific-build-stage">targets</a>
 available for build. The most useful ones:</p>
@@ -620,7 +619,7 @@ see currently all available build args.</p>
 </ul>
 </section>
 <section id="using-the-pre-built-images">
-<h3>Using the pre-built images<a class="headerlink" href="#using-the-pre-built-images" title="Permalink to this heading">#</a></h3>
+<h3>Using the pre-built images<a class="headerlink" href="#using-the-pre-built-images" title="Link to this heading">#</a></h3>
 <p>There are several pre-built docker images available:</p>
 <ul class="simple">
 <li><dl class="simple">
@@ -681,7 +680,7 @@ ghcr.io/intelpython/numba-dpex/runtime:0.20.0-py3.10-gpu
 </section>
 </section>
 <section id="testing">
-<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this heading">#</a></h2>
+<h2>Testing<a class="headerlink" href="#testing" title="Link to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> uses pytest for unit testing and the following example
 shows a way to run the unit tests.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>--pyargs<span class="w"> </span>numba_dpex.tests
@@ -689,7 +688,7 @@ shows a way to run the unit tests.</p>
 </div>
 </section>
 <section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">#</a></h2>
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h2>
 <p>A set of examples on how to use <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code> can be found in
 <code class="docutils literal notranslate"><span class="pre">numba_dpex/examples</span></code>.</p>
 </section>
@@ -786,7 +785,7 @@ shows a way to run the unit tests.</p>
       
         <div class="footer-item">
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.2.
     <br/>
   </p>
 </div>
