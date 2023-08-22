@@ -17,7 +17,9 @@ requirements:
     host:
         - python
         - setuptools >=63.*
-        - numba 0.57*
+        - scikit-build >=0.15*
+        - cmake >=3.26*
+        - numba >=0.57*
         - dpctl >=0.14*
         - dpnp >=0.11*
         - dpcpp-llvm-spirv
