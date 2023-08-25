@@ -365,11 +365,11 @@ error:
 
 /*--------- Builder for the _dpexrt_python Python extension module  -- -------*/
 
-MOD_INIT(_dpex_lapack_iface)
+MOD_INIT(_dpex_onemkl_lapack_iface)
 {
     PyObject *m = NULL;
 
-    MOD_DEF(m, "_dpex_lapack_iface", "No docs", NULL)
+    MOD_DEF(m, "_dpex_onemkl_lapack_iface", "No docs", NULL)
     if (m == NULL)
         return MOD_ERROR_VAL;
 

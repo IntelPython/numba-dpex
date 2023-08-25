@@ -5,7 +5,7 @@
 
 import llvmlite.binding as ll
 
-from ._dpex_lapack_iface import c_helpers
+from ._dpex_onemkl_lapack_iface import c_helpers
 
 # Register the helper function in _dpexrt_python so that we can insert
 # calls to them via llvmlite.
