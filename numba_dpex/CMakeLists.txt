@@ -19,11 +19,6 @@ if(IS_INSTALL)
 endif()
 
 if(IS_INSTALL)
-    install(DIRECTORY examples
-        DESTINATION numba_dpex)
-endif()
-
-if(IS_INSTALL)
     install(DIRECTORY numba_patches
         DESTINATION numba_dpex
         FILES_MATCHING PATTERN "*.py")

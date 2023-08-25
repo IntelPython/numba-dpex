@@ -12,6 +12,7 @@ from numba.parfors.parfor import (
 )
 
 from numba_dpex import config
+from numba_dpex.core.datamodel.models import dpex_data_model_manager as dpex_dmm
 from numba_dpex.core.parfors.reduction_helper import (
     ReductionHelper,
     ReductionKernelVariables,
@@ -25,8 +26,6 @@ from .reduction_kernel_builder import (
     create_reduction_main_kernel_for_parfor,
     create_reduction_remainder_kernel_for_parfor,
 )
-
-from numba_dpex.core.datamodel.models import dpex_data_model_manager as dpex_dmm
 
 # A global list of kernels to keep the objects alive indefinitely.
 keep_alive_kernels = []

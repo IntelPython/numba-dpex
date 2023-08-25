@@ -13,7 +13,7 @@ import pytest
 
 from numba_dpex.tests._helper import skip_no_gdb, skip_no_numba056
 
-from .common import setup_breakpoint
+from .examples_common import setup_breakpoint
 from .test_breakpoints import side_by_side_breakpoint
 
 pytestmark = skip_no_gdb

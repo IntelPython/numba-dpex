@@ -121,7 +121,7 @@ jobs:
           echo "EXTRACTED_PKG_PATH=${{ github.workspace }}/pkg/" | tr "\\" "/" >> $GITHUB_ENV
           echo "VER_JSON_PATH=${{ github.workspace }}/version.json" | tr "\\" "/" >> $GITHUB_ENV
           echo "PKG_PATH_IN_CHANNEL=${{ github.workspace }}/channel/${{ runner.os == 'Linux' && 'linux' || 'win' }}-64/" | tr "\\" "/" >> $GITHUB_ENV
-          echo "EXAMPLES_PATH=$CONDA_PREFIX/${{ runner.os == 'Linux' && format('lib/python{0}',matrix.python) || 'Lib' }}/site-packages/numba_dpex/examples/" | tr "\\" "/" >> $GITHUB_ENV
+          echo "EXAMPLES_PATH=${{ github.workspace }}/examples/" | tr "\\" "/" >> $GITHUB_ENV
 
       - name: Download artifact
         uses: actions/download-artifact@v3
