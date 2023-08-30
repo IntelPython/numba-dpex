@@ -21,6 +21,7 @@ from numba.np.arrayobj import (
     populate_array,
 )
 
+from numba_dpex import utils
 from numba_dpex.core.datamodel.models import dpex_data_model_manager as dpex_dmm
 from numba_dpex.core.runtime import context as dpexrt
 from numba_dpex.core.types import DpnpNdArray
