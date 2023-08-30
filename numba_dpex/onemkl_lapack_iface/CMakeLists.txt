@@ -4,14 +4,10 @@ if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.24")
     cmake_policy(SET CMP0135 NEW)
 endif()
 
+# Set the project
 project(_dpex_onemkl_lapack_iface
     DESCRIPTION "OneMKL LAPACK Python C extension for numba-dpex runtime."
 )
-
-# Set compilers, use icx/icpx
-set(CMAKE_C_COMPILER "icx")
-set(CMAKE_CXX_COMPILER "icpx")
-set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Get numba include path
 if(NOT DEFINED Numba_INCLUDE_DIRS)
@@ -27,6 +23,9 @@ if(NOT DEFINED Numba_INCLUDE_DIRS)
     endif()
 endif()
 
+# Check Numba_INCLUDE_DIRS
+message(STATUS "Numba_INCLUDE_DIRS=" "${Numba_INCLUDE_DIRS}")
+
 # Get dpctl library path
 if(NOT DEFINED DPCTL_LIBRARY_PATH)
     execute_process(
@@ -40,6 +39,9 @@ if(NOT DEFINED DPCTL_LIBRARY_PATH)
         message(FATAL_ERROR "Module \'dpctl\' not found.")
     endif()
 endif()
+
+# Check DPCTL_LIBRARY_PATH
+message(STATUS "DPCTL_LIBRARY_PATH=" "${DPCTL_LIBRARY_PATH}")
 
 # Update CMAKE_MODULE_PATH
 set(DPCTL_MODULE_PATH ${DPCTL_LIBRARY_PATH}/resources/cmake)
@@ -59,16 +61,23 @@ if(NOT DEFINED SKBUILD_PATH)
     endif()
 endif()
 
+# Check SKBUILD_PATH
+message(STATUS "SKBUILD_PATH=" "${SKBUILD_PATH}")
+
+# Update CMAKE_MODULE_PATH
+set(SKBUILD_MODULE_PATH ${SKBUILD_PATH}/resources/cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${SKBUILD_MODULE_PATH})
+
 # Check CMAKE_MODULE_PATH
 message(STATUS "CMAKE_MODULE_PATH=" "${CMAKE_MODULE_PATH}")
 
 # Add packages
-find_package(MKL CONFIG REQUIRED)
-find_package(IntelSYCL REQUIRED)
 find_package(PythonLibs REQUIRED)
 find_package(PythonExtensions REQUIRED)
 find_package(NumPy REQUIRED)
 find_package(Dpctl REQUIRED)
+find_package(MKL CONFIG REQUIRED)
+find_package(IntelSYCL REQUIRED)
 
 # Includes
 include(GNUInstallDirs)
@@ -76,9 +85,10 @@ include_directories(${Python_INCLUDE_DIRS})
 include_directories(${NumPy_INCLUDE_DIRS})
 include_directories(${Numba_INCLUDE_DIRS})
 include_directories(${Dpctl_INCLUDE_DIRS})
+include_directories(${MKL_ROOT}/include)
 
-# Source files, *.c
-file(GLOB SOURCES "*.c")
+# Source files, *.cpp
+file(GLOB SOURCES "*.cpp")
 
 # Link dpctl library path with -L
 link_directories(${DPCTL_LIBRARY_PATH})

@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import subprocess
 import sys
 
 from setuptools import find_packages
@@ -88,10 +89,13 @@ setup(
     include_package_data=True,
     zip_safe=False,
     cmake_args=[
+        "-DCMAKE_C_COMPILER=icx",
+        "-DCMAKE_CXX_COMPILER=icpx",
         "-DNUMBA_DPEX_VERSION:STRING={0:s}".format(
             to_cmake_format(str(__version__))
         ),
         "-DIS_INSTALL:BOOL={0:s}".format("TRUE" if is_install else "FALSE"),
         "-DIS_DEVELOP:BOOL={0:s}".format("TRUE" if is_develop else "FALSE"),
+        "--no-warn-unused-cli",
     ],
 )

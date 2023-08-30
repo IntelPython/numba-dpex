@@ -38,6 +38,9 @@ if(NOT DEFINED Numba_INCLUDE_DIRS)
     endif()
 endif()
 
+# Check Numba_INCLUDE_DIRS
+message(STATUS "Numba_INCLUDE_DIRS=" "${Numba_INCLUDE_DIRS}")
+
 # Get dpctl library path
 if(NOT DEFINED DPCTL_LIBRARY_PATH)
     execute_process(
@@ -51,6 +54,9 @@ if(NOT DEFINED DPCTL_LIBRARY_PATH)
         message(FATAL_ERROR "Module \'dpctl\' not found.")
     endif()
 endif()
+
+# Check DPCTL_LIBRARY_PATH
+message(STATUS "DPCTL_LIBRARY_PATH=" "${DPCTL_LIBRARY_PATH}")
 
 # Update CMAKE_MODULE_PATH
 set(DPCTL_MODULE_PATH ${DPCTL_LIBRARY_PATH}/resources/cmake)
@@ -69,6 +75,9 @@ if(NOT DEFINED SKBUILD_PATH)
         message(FATAL_ERROR "Module \'skbuild\' not found.")
     endif()
 endif()
+
+# Check SKBUILD_PATH
+message(STATUS "SKBUILD_PATH=" "${SKBUILD_PATH}")
 
 # Update CMAKE_MODULE_PATH
 set(SKBUILD_MODULE_PATH ${SKBUILD_PATH}/resources/cmake)
