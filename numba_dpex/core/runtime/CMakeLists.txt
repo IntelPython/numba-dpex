@@ -78,10 +78,10 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${SKBUILD_MODULE_PATH})
 message(STATUS "CMAKE_MODULE_PATH=" "${CMAKE_MODULE_PATH}")
 
 # Add packages
-find_package(PythonLibs REQUIRED)
-find_package(PythonExtensions REQUIRED)
-find_package(NumPy REQUIRED)
+find_package(Python 3.9 REQUIRED
+  COMPONENTS Interpreter Development.Module NumPy)
 find_package(Dpctl REQUIRED)
+find_package(NumPy REQUIRED)
 
 # Includes
 include(GNUInstallDirs)
@@ -98,14 +98,10 @@ file(GLOB SOURCES "*.c")
 link_directories(${DPCTL_LIBRARY_PATH})
 
 # Output static library, *.so or *.dll
-add_library(${PROJECT_NAME} MODULE ${SOURCES})
+python_add_library(${PROJECT_NAME} MODULE ${SOURCES})
 
-# Link the static library to python libraries and DPCTLSyclInterface
-target_link_libraries(${PROJECT_NAME} ${Python_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} DPCTLSyclInterface)
-
-# Build python extension module
-python_extension_module(${PROJECT_NAME})
+# Link the DPCTLSyclInterface library to target
+target_link_libraries(${PROJECT_NAME} PRIVATE DPCTLSyclInterface)
 
 # If IS_DEVELOP, copy back the target into numba_dpex/core/runtime
 if(IS_DEVELOP)
