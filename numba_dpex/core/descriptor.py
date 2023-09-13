@@ -27,8 +27,11 @@ def _inherit_if_not_set(flags, options, name, default=targetconfig._NotSet):
     if cstk:
         # inherit
         top = cstk.top()
-        setattr(flags, name, getattr(top, name))
-    elif default is not targetconfig._NotSet:
+        if hasattr(top, name):
+            setattr(flags, name, getattr(top, name))
+            return
+
+    if default is not targetconfig._NotSet:
         setattr(flags, name, default)
 
 
