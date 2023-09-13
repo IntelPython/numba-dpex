@@ -4,7 +4,7 @@
 
 from functools import cached_property
 
-from numba.core import typing
+from numba.core import options, targetconfig, typing
 from numba.core.cpu import CPUTargetOptions
 from numba.core.descriptors import TargetDescriptor
 
@@ -15,13 +15,37 @@ from .targets.kernel_target import (
     DpexKernelTypingContext,
 )
 
+_option_mapping = options._mapping
+
+
+def _inherit_if_not_set(flags, options, name, default=targetconfig._NotSet):
+    if name in options:
+        setattr(flags, name, options[name])
+        return
+
+    cstk = targetconfig.ConfigStack()
+    if cstk:
+        # inherit
+        top = cstk.top()
+        setattr(flags, name, getattr(top, name))
+    elif default is not targetconfig._NotSet:
+        setattr(flags, name, default)
+
+
+class NumbaDPEXTargetOptions(CPUTargetOptions):
+    use_mlir = _option_mapping("use_mlir")
+
+    def finalize(self, flags, options):
+        super().finalize(flags, options)
+        _inherit_if_not_set(flags, options, "use_mlir", False)
+
 
 class DpexKernelTarget(TargetDescriptor):
     """
     Implements a target descriptor for numba_dpex.kernel decorated functions.
     """
 
-    options = CPUTargetOptions
+    options = NumbaDPEXTargetOptions
 
     @cached_property
     def _toplevel_target_context(self):
@@ -53,7 +77,7 @@ class DpexTarget(TargetDescriptor):
     Implements a target descriptor for numba_dpex.dpjit decorated functions.
     """
 
-    options = CPUTargetOptions
+    options = NumbaDPEXTargetOptions
 
     @cached_property
     def _toplevel_target_context(self):

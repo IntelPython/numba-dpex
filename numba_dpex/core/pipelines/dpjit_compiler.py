@@ -68,6 +68,15 @@ class _DpjitPassBuilder(object):
         """Returns an nopython mode pipeline based PassManager"""
         pm = PassManager(name)
 
+        flags = state.flags
+        if hasattr(flags, "use_mlir") and flags.use_mlir:
+            from numba_mlir.mlir.passes import MlirReplaceParfors
+
+            pm.add_pass(
+                MlirReplaceParfors,
+                "Lower parfor using MLIR pipeline",
+            )
+
         # legalize
         pm.add_pass(
             NoPythonSupportedFeatureValidation,

@@ -155,6 +155,7 @@ def dpjit(*args, **kws):
     kws.update({"nopython": True})
     kws.update({"parallel": True})
     kws.update({"pipeline_class": DpjitCompiler})
+    kws.update({"_target": "dpex"})
 
     # FIXME: When trying to use dpex's target context, overloads do not work
     # properly. We will turn on dpex target once the issue is fixed.
