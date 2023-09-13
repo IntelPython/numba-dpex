@@ -12,12 +12,10 @@ from numba import njit
 
 from numba_dpex import dpjit, prange
 
-dpjit_mlir = dpjit(use_mlir=True)
+from ._helper import decorators
 
 
-@pytest.mark.parametrize(
-    "jit", [dpjit, dpjit_mlir], ids=["dpjit", "dpjit_mlir"]
-)
+@pytest.mark.parametrize("jit", decorators)
 def test_one_prange_mul(jit):
     @jit
     def f(a, b):
@@ -40,9 +38,7 @@ def test_one_prange_mul(jit):
         assert nb[i, 0] == na[i, 0] * 10
 
 
-@pytest.mark.parametrize(
-    "jit", [dpjit, dpjit_mlir], ids=["dpjit", "dpjit_mlir"]
-)
+@pytest.mark.parametrize("jit", decorators)
 def test_one_prange_mul_nested(jit):
     @jit
     def f_inner(a, b):
@@ -189,8 +185,9 @@ def test_three_prange():
     assert np.all(b.asnumpy() == 12)
 
 
-def test_two_consecutive_prange():
-    @dpjit
+@pytest.mark.parametrize("jit", decorators)
+def test_two_consecutive_prange(jit):
+    @jit
     def prange_example(a, b, c, d):
         for i in prange(n):
             c[i] = a[i] + b[i]
