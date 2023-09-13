@@ -12,9 +12,14 @@ from numba import njit
 
 from numba_dpex import dpjit, prange
 
+dpjit_mlir = dpjit(use_mlir=True)
 
-def test_one_prange_mul():
-    @dpjit
+
+@pytest.mark.parametrize(
+    "jit", [dpjit, dpjit_mlir], ids=["dpjit", "dpjit_mlir"]
+)
+def test_one_prange_mul(jit):
+    @jit
     def f(a, b):
         for i in prange(4):
             b[i, 0] = a[i, 0] * 10
