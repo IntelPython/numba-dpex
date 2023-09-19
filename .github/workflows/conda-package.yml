@@ -157,8 +157,9 @@ jobs:
           echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
 
       # We want to make sure that all dependecies install automatically.
+      # intel::intel-opencl-rt is needed for set-intel-ocl-icd-registry.ps1
       - name: Install builded package
-        run: mamba install ${{ env.PACKAGE_NAME }}=${{ env.PACKAGE_VERSION }} opencl_rt pytest -c ${{ env.CHANNEL_PATH }}
+        run: mamba install ${{ env.PACKAGE_NAME }}=${{ env.PACKAGE_VERSION }} intel::intel-opencl-rt pytest -c ${{ env.CHANNEL_PATH }}
 
       - name: Setup OpenCL CPU device
         if: runner.os == 'Windows'
