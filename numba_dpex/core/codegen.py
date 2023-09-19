@@ -35,6 +35,7 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
         pmb.opt_level = config.OPT
 
         pmb.disable_unit_at_a_time = False
+        pmb.inlining_threshold = 2
         pmb.disable_unroll_loops = True
         pmb.loop_vectorize = False
         pmb.slp_vectorize = False

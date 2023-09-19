@@ -11,6 +11,8 @@ dependencies:
   - gxx_linux-64
   - dpcpp_linux-64
   - numba=0.57
+  - scikit-build>=0.15*
+  - cmake>=3.26*
   - dpctl
   - dpnp
   - dpcpp-llvm-spirv

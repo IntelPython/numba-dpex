@@ -1075,12 +1075,13 @@ def getitem_arraynd_intp(context, builder, sig, args):
     """
     ret = np_getitem_arraynd_intp(context, builder, sig, args)
 
-    array_val = args[0]
-    array_ty = sig.args[0]
-    sycl_queue_attr_pos = dpex_dmm.lookup(array_ty).get_field_position(
-        "sycl_queue"
-    )
-    sycl_queue_attr = builder.extract_value(array_val, sycl_queue_attr_pos)
-    ret = builder.insert_value(ret, sycl_queue_attr, sycl_queue_attr_pos)
+    if isinstance(sig.return_type, DpnpNdArray):
+        array_val = args[0]
+        array_ty = sig.args[0]
+        sycl_queue_attr_pos = dpex_dmm.lookup(array_ty).get_field_position(
+            "sycl_queue"
+        )
+        sycl_queue_attr = builder.extract_value(array_val, sycl_queue_attr_pos)
+        ret = builder.insert_value(ret, sycl_queue_attr, sycl_queue_attr_pos)
 
     return ret

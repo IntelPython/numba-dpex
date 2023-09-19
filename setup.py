@@ -2,82 +2,73 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import os
-import sys
-import sysconfig
 
-import dpctl
-import numba
-import numpy
-from setuptools import Extension, find_packages, setup
+import sys
+
+from setuptools import find_packages
+from skbuild import setup
 
 import versioneer
 
-IS_WIN = False
-IS_LIN = False
+"""Top level setup.py file. Uses scikit-build.
 
-if "linux" in sys.platform:
-    IS_LIN = True
-elif sys.platform in ["win32", "cygwin"]:
-    IS_WIN = True
+    This will build the numba_dpex project. There are two ways to run this file.
+    First command line argument is `install` and the other is `develop`. The
+    argument `install` will build the _dpexrt_runtime target and install all the
+    python modules into _skbuild build directory, where `develop` will just
+    build the _dpexrt_runtime target and will not copy any python module into
+    _skbuild.
 
+    `install` command:
+        ~$ python setup.py install
 
-def get_ext_modules():
-    ext_modules = []
+    `develop` command:
+        ~$ python setup.py develop
 
-    try:
-        import dpnp
-    except ImportError:
-        raise ImportError("dpnp should be installed to build numba-dpex")
+    To uninstall:
+        ~$ pip uninstall numba-dpex
 
-    dpctl_runtime_library_dirs = []
+    NOTE: This script doesn't support pypa/build, pypa/installer or other
+    standards-based tools like pip, yet.
 
-    if IS_LIN:
-        dpctl_runtime_library_dirs.append(os.path.dirname(dpctl.__file__))
-
-    ext_dpexrt_python = Extension(
-        name="numba_dpex.core.runtime._dpexrt_python",
-        sources=[
-            "numba_dpex/core/runtime/_dpexrt_python.c",
-            "numba_dpex/core/runtime/_nrt_helper.c",
-            "numba_dpex/core/runtime/_nrt_python_helper.c",
-        ],
-        libraries=["DPCTLSyclInterface"],
-        library_dirs=[os.path.dirname(dpctl.__file__)],
-        runtime_library_dirs=dpctl_runtime_library_dirs,
-        include_dirs=[
-            sysconfig.get_paths()["include"],
-            numba.extending.include_path(),
-            numpy.get_include(),
-            dpctl.get_include(),
-        ],
-    )
-
-    ext_modules += [ext_dpexrt_python]
-
-    return ext_modules
+    TODO: Support `pip install`
+"""
 
 
-packages = find_packages(
-    include=["numba_dpex", "numba_dpex.*", "_dpexrt_python"]
-)
-install_requires = [
-    "numba >={}".format("0.57"),
-    "dpctl",
-    "packaging",
-]
+def to_cmake_format(version):
+    """Convert pep440 version string into a cmake compatible string."""
+    version = version.strip()
+    parts = version.split("+")
+    tag, dist = parts[0], parts[1].split(".")[0]
+    return tag + "." + dist
 
-metadata = dict(
+
+# Set is_install and is_develop flags
+is_install = sys.argv[1] == "install" or "bdist_wheel" in sys.argv
+is_develop = sys.argv[1] == "develop"
+
+
+# Test if system is WIN
+is_windows = sys.platform.startswith("win") or sys.platform.startswith("cyg")
+
+
+# Get the project version
+__version__ = versioneer.get_version()
+
+
+# Set project auxilary data like readme and licence files
+with open("README.md", "r") as f:
+    __readme__ = "".join(line for line in f.readlines()[12:35])
+
+
+# Main setup
+setup(
     name="numba-dpex",
-    version=versioneer.get_version(),
+    version=__version__,
     description="An extension for Numba to add data-parallel offload capability",
-    url="https://github.com/IntelPython/numba-dpex",
-    packages=packages,
-    install_requires=install_requires,
-    include_package_data=True,
-    zip_safe=False,
-    ext_modules=get_ext_modules(),
-    author="Intel Corporation",
+    long_description=__readme__,
+    long_description_content_type="text/markdown",
+    license="Apache 2.0",
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: GPU",
@@ -89,7 +80,19 @@ metadata = dict(
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Software Development :: Compilers",
     ],
-    entry_points={},
+    keywords="sycl python3 numba numpy intel mkl oneapi gpu dpcpp",
+    platforms=["Linux", "Windows"],
+    author="Intel Corporation",
+    url="https://github.com/IntelPython/numba-dpex",
+    install_requires=["numba >={0:s}".format("0.57"), "dpctl", "packaging"],
+    packages=find_packages("."),
+    include_package_data=True,
+    zip_safe=False,
+    cmake_args=[
+        "-DNUMBA_DPEX_VERSION:STRING={0:s}".format(
+            to_cmake_format(str(__version__))
+        ),
+        "-DIS_INSTALL:BOOL={0:s}".format("TRUE" if is_install else "FALSE"),
+        "-DIS_DEVELOP:BOOL={0:s}".format("TRUE" if is_develop else "FALSE"),
+    ],
 )
-
-setup(**metadata)
