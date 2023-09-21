@@ -2,6 +2,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/IntelPython/numba-dpex/badge.svg?branch=main)](https://coveralls.io/github/IntelPython/numba-dpex?branch=main)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![Join the chat at https://matrix.to/#/#Data-Parallel-Python_community:gitter.im](https://badges.gitter.im/Join%20Chat.svg)](https://app.gitter.im/#/room/#Data-Parallel-Python_community:gitter.im)
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/29068/badge.svg)](https://scan.coverity.com/projects/intelpython-numba-dpex)
 <img align="left" src="https://spec.oneapi.io/oneapi-logo-white-scaled.jpg" alt="oneAPI logo" width="75"/>
 <br/>
 <br/>
