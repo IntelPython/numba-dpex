@@ -18,12 +18,18 @@ class AtomicRefType(Type):
         address_space,
         has_aspect_atomic64,
     ):
-        super(AtomicRefType, self).__init__(name="AtomicRef")
         self._dtype = dtype
         self._memory_order = memory_order
         self._memory_scope = memory_scope
         self._address_space = address_space
         self._has_aspect_atomic64 = has_aspect_atomic64
+        name = (
+            f"AtomicRef< {self._dtype}, "
+            "memory_order= {self._memory_order}, "
+            f"memory_scope= {self._memory_scope}, "
+            f"address_space= {self._address_space}>"
+        )
+        super(AtomicRefType, self).__init__(name=name)
 
     @property
     def memory_order(self):
