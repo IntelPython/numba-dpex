@@ -8,12 +8,43 @@ from numba.core import cgutils, types
 from numba.extending import intrinsic, overload, overload_method
 
 from numba_dpex.core import itanium_mangler as ext_itanium_mangler
-from numba_dpex.core.datamodel.models import dpex_data_model_manager
-from numba_dpex.core.exceptions import UnreachableError
+from numba_dpex.core.targets.kernel_target import (
+    CC_SPIR_FUNC,
+    DPEX_KERNEL_TARGET_NAME,
+)
 from numba_dpex.core.types import USMNdArray
 
 from ..dpcpp_types import AtomicRefType
-from ._spv_atomic_helper import get_memory_semantics_mask, get_scope
+from ._spv_atomic_helper import (
+    get_atomic_inst_name,
+    get_memory_semantics_mask,
+    get_scope,
+)
+
+
+def _parse_int_literal(literal_int: types.scalars.IntegerLiteral) -> int:
+    """Parse an instance of a numba.core.types.Literal to its actual int value.
+
+    Returns the Python int value for the numba Literal type.
+
+    Args:
+        literal_int: Instance of IntegerLiteral wrapping a Python int scalar
+        value
+
+    Raises:
+        TypingError: If the literal_int is not an IntegerLiteral type.
+
+    Returns:
+        int: The Python int value extracted from the literal_int.
+    """
+
+    if isinstance(literal_int, types.IntegerLiteral):
+        return literal_int.literal_value
+    else:
+        raise errors.TypingError(
+            "The parameter 'literal_int' is not an instance of "
+            + "types.IntegerLiteral"
+        )
 
 
 class AtomicRef(object):
@@ -31,9 +62,28 @@ class AtomicRef(object):
     def fetch_add(self, val):
         pass
 
+    def fetch_sub(self, val):
+        pass
 
-@intrinsic
-def _intrinsic_fetch_add(ty_context, ty_atomic_ref, ty_val):
+    def fetch_min(self, val):
+        pass
+
+    def fetch_max(self, val):
+        pass
+
+    def fetch_and(self, val):
+        pass
+
+    def fetch_or(self, val):
+        pass
+
+    def fetch_xor(self, val):
+        pass
+
+
+def _intrinsic_helper(ty_context, ty_atomic_ref, ty_val, op_str):
+    from ..target import dpex_exp_kernel_target
+
     sig = types.void(ty_atomic_ref, ty_val)
 
     def gen(context, builder, sig, args):
@@ -41,26 +91,21 @@ def _intrinsic_fetch_add(ty_context, ty_atomic_ref, ty_val):
         atomic_ref_dtype = atomic_ref_ty.dtype
 
         ref = args[0]
-        data_attr_pos = dpex_data_model_manager.lookup(
-            sig.args[0]
-        ).get_field_position("ref")
+        dmm = dpex_exp_kernel_target.target_context.data_model_manager
+        data_attr_pos = dmm.lookup(sig.args[0]).get_field_position("ref")
 
         data_attr = builder.extract_value(ref, data_attr_pos)
 
-        if atomic_ref_dtype in (types.float32, types.float64):
-            # XXX Turn on once the overload is added to DpexKernelTarget
-            # context.extra_compile_options[context.LLVM_SPIRV_ARGS] = [
-            #     "--spirv-ext=+SPV_EXT_shader_atomic_float_add"
-            # ]
+        # if atomic_ref_dtype in (types.float32, types.float64):
+        # XXX Turn on once the overload is added to DpexKernelTarget
+        # context.extra_compile_options[context.LLVM_SPIRV_ARGS] = [
+        #     "--spirv-ext=+SPV_EXT_shader_atomic_float_add"
+        # ]
 
-            name = "__spirv_AtomicFAddEXT"
-        elif atomic_ref_dtype in (types.int32, types.int64):
-            name = "__spirv_AtomicIAdd"
-        else:
-            raise UnreachableError
+        name = get_atomic_inst_name(op_str, atomic_ref_dtype)
 
         ptr_type = context.get_value_type(atomic_ref_dtype).as_pointer()
-        ptr_type.addrspace = atomic_ref_ty.address_space.literal_value
+        ptr_type.addrspace = atomic_ref_ty.address_space
         retty = context.get_value_type(atomic_ref_dtype)
         spirv_fn_arg_types = [
             ptr_type,
@@ -84,20 +129,15 @@ def _intrinsic_fetch_add(ty_context, ty_atomic_ref, ty_val):
         fn = cgutils.get_or_insert_function(
             builder.module, fnty, mangled_fn_name
         )
-        # XXX Change to DpexKernelTarget.SPIR_FUNC once overloads are added to
-        # DpexKernelTarget
-        fn.calling_convention = "spir_func"
-        spirv_memory_semantics_mask = get_memory_semantics_mask(
-            atomic_ref_ty.memory_order.literal_value
-        )
-        spirv_scope = get_scope(atomic_ref_ty.memory_scope.literal_value)
 
-        # XXX Temporary address space cast is needed as we are using the
-        # DpnpNdArrayModel used in dpjit. Once the overload is moved to
-        # dpex_kernel we will not need the address space cast.
-        addr_sp_casted_ref = builder.addrspacecast(data_attr, ptr_type)
+        fn.calling_convention = CC_SPIR_FUNC
+        spirv_memory_semantics_mask = get_memory_semantics_mask(
+            atomic_ref_ty.memory_order
+        )
+        spirv_scope = get_scope(atomic_ref_ty.memory_scope)
+
         fn_args = [
-            addr_sp_casted_ref,
+            data_attr,
             context.get_constant(types.int32, spirv_scope),
             context.get_constant(types.int32, spirv_memory_semantics_mask),
             args[1],
@@ -108,25 +148,60 @@ def _intrinsic_fetch_add(ty_context, ty_atomic_ref, ty_val):
     return sig, gen
 
 
-@intrinsic
+@intrinsic(target=DPEX_KERNEL_TARGET_NAME)
+def _intrinsic_fetch_add(ty_context, ty_atomic_ref, ty_val):
+    return _intrinsic_helper(ty_context, ty_atomic_ref, ty_val, "fetch_add")
+
+
+@intrinsic(target=DPEX_KERNEL_TARGET_NAME)
+def _intrinsic_fetch_sub(ty_context, ty_atomic_ref, ty_val):
+    return _intrinsic_helper(ty_context, ty_atomic_ref, ty_val, "fetch_sub")
+
+
+@intrinsic(target=DPEX_KERNEL_TARGET_NAME)
+def _intrinsic_fetch_min(ty_context, ty_atomic_ref, ty_val):
+    return _intrinsic_helper(ty_context, ty_atomic_ref, ty_val, "fetch_min")
+
+
+@intrinsic(target=DPEX_KERNEL_TARGET_NAME)
+def _intrinsic_fetch_max(ty_context, ty_atomic_ref, ty_val):
+    return _intrinsic_helper(ty_context, ty_atomic_ref, ty_val, "fetch_max")
+
+
+@intrinsic(target=DPEX_KERNEL_TARGET_NAME)
+def _intrinsic_fetch_and(ty_context, ty_atomic_ref, ty_val):
+    return _intrinsic_helper(ty_context, ty_atomic_ref, ty_val, "fetch_and")
+
+
+@intrinsic(target=DPEX_KERNEL_TARGET_NAME)
+def _intrinsic_fetch_or(ty_context, ty_atomic_ref, ty_val):
+    return _intrinsic_helper(ty_context, ty_atomic_ref, ty_val, "fetch_or")
+
+
+@intrinsic(target=DPEX_KERNEL_TARGET_NAME)
+def _intrinsic_fetch_xor(ty_context, ty_atomic_ref, ty_val):
+    return _intrinsic_helper(ty_context, ty_atomic_ref, ty_val, "fetch_xor")
+
+
+@intrinsic(target=DPEX_KERNEL_TARGET_NAME)
 def _intrinsic_atomic_ref_ctor(ty_context, ref, ty_retty_ref):
+    from ..target import dpex_exp_kernel_target
+
     ty_retty = ty_retty_ref.instance_type
     sig = ty_retty(ref, ty_retty_ref)
 
     def codegen(context, builder, sig, args):
-        typ = sig.return_type
         ref = args[0]
-        data_attr_pos = dpex_data_model_manager.lookup(
-            sig.args[0]
-        ).get_field_position("data")
+        dmm = dpex_exp_kernel_target.target_context.data_model_manager
+        data_attr_pos = dmm.lookup(sig.args[0]).get_field_position("data")
 
         data_attr = builder.extract_value(ref, data_attr_pos)
-        atomic_ref_struct = cgutils.create_struct_proxy(typ)(context, builder)
+        atomic_ref_struct = cgutils.create_struct_proxy(ty_retty)(
+            context, builder
+        )
 
         # Populate the atomic ref data model
-        ref_attr_pos = dpex_data_model_manager.lookup(
-            ty_retty
-        ).get_field_position("ref")
+        ref_attr_pos = dmm.lookup(ty_retty).get_field_position("ref")
         builder.insert_value(
             atomic_ref_struct._getvalue(), data_attr, ref_attr_pos
         )
@@ -152,6 +227,7 @@ def _check_if_supported_ref(ref):
             f"Cannot create an AtomicRef from a {ref.ndim}-dimensional tensor."
         )
     elif ref.dtype not in [
+        types.int32,
         types.uint32,
         types.float32,
         types.int64,
@@ -171,25 +247,36 @@ def _check_if_supported_ref(ref):
         return supported
 
 
-@overload(AtomicRef, prefer_literal=True, inline="always")
+@overload(
+    AtomicRef,
+    prefer_literal=True,
+    inline="always",
+    target=DPEX_KERNEL_TARGET_NAME,
+)
 def ol_atomic_ref(ref, memory_order, memory_scope, address_space):
     _check_if_supported_ref(ref)
 
+    _address_space = _parse_int_literal(address_space)
+    _memory_order = _parse_int_literal(memory_order)
+    _memory_scope = _parse_int_literal(memory_scope)
+
     ty_retty = AtomicRefType(
         dtype=ref.dtype,
-        memory_order=memory_order,
-        memory_scope=memory_scope,
-        address_space=address_space,
+        memory_order=_memory_order,
+        memory_scope=_memory_scope,
+        address_space=_address_space,
         has_aspect_atomic64=ref.queue.device_has_aspect_atomic64,
     )
 
-    def impl(ref, memory_order, memory_scope, address_space):
+    def ol_atomic_ref_ctor_impl(ref, memory_order, memory_scope, address_space):
         return _intrinsic_atomic_ref_ctor(ref, ty_retty)
 
-    return impl
+    return ol_atomic_ref_ctor_impl
 
 
-@overload_method(AtomicRefType, "fetch_add", inline="always")
+@overload_method(
+    AtomicRefType, "fetch_add", inline="always", target=DPEX_KERNEL_TARGET_NAME
+)
 def ol_fetch_add(atomic_ref, val):
     if atomic_ref.dtype != val:
         raise errors.TypingError(
@@ -197,7 +284,118 @@ def ol_fetch_add(atomic_ref, val):
             f"reference: {atomic_ref.dtype} stored in the atomic ref."
         )
 
-    def impl(atomic_ref, val):
+    def ol_fetch_add_impl(atomic_ref, val):
         return _intrinsic_fetch_add(atomic_ref, val)
 
-    return impl
+    return ol_fetch_add_impl
+
+
+@overload_method(
+    AtomicRefType, "fetch_sub", inline="always", target=DPEX_KERNEL_TARGET_NAME
+)
+def ol_fetch_sub(atomic_ref, val):
+    if atomic_ref.dtype != val:
+        raise errors.TypingError(
+            f"Type of value to sub: {val} does not match the type of the "
+            f"reference: {atomic_ref.dtype} stored in the atomic ref."
+        )
+
+    def ol_fetch_sub_impl(atomic_ref, val):
+        return _intrinsic_fetch_sub(atomic_ref, val)
+
+    return ol_fetch_sub_impl
+
+
+@overload_method(
+    AtomicRefType, "fetch_min", inline="always", target=DPEX_KERNEL_TARGET_NAME
+)
+def ol_fetch_min(atomic_ref, val):
+    if atomic_ref.dtype != val:
+        raise errors.TypingError(
+            f"Type of value to find min: {val} does not match the type of the "
+            f"reference: {atomic_ref.dtype} stored in the atomic ref."
+        )
+
+    def ol_fetch_min_impl(atomic_ref, val):
+        return _intrinsic_fetch_min(atomic_ref, val)
+
+    return ol_fetch_min_impl
+
+
+@overload_method(
+    AtomicRefType, "fetch_max", inline="always", target=DPEX_KERNEL_TARGET_NAME
+)
+def ol_fetch_max(atomic_ref, val):
+    if atomic_ref.dtype != val:
+        raise errors.TypingError(
+            f"Type of value to find max: {val} does not match the type of the "
+            f"reference: {atomic_ref.dtype} stored in the atomic ref."
+        )
+
+    def ol_fetch_max_impl(atomic_ref, val):
+        return _intrinsic_fetch_max(atomic_ref, val)
+
+    return ol_fetch_max_impl
+
+
+@overload_method(
+    AtomicRefType, "fetch_and", inline="always", target=DPEX_KERNEL_TARGET_NAME
+)
+def ol_fetch_and(atomic_ref, val):
+    if atomic_ref.dtype != val:
+        raise errors.TypingError(
+            f"Type of value to and: {val} does not match the type of the "
+            f"reference: {atomic_ref.dtype} stored in the atomic ref."
+        )
+
+    if atomic_ref.dtype != types.int32 and atomic_ref.dtype != types.int64:
+        raise errors.TypingError(
+            "fetch_and operation only supported on int32 and int64 dtypes."
+        )
+
+    def ol_fetch_and_impl(atomic_ref, val):
+        return _intrinsic_fetch_and(atomic_ref, val)
+
+    return ol_fetch_and_impl
+
+
+@overload_method(
+    AtomicRefType, "fetch_or", inline="always", target=DPEX_KERNEL_TARGET_NAME
+)
+def ol_fetch_or(atomic_ref, val):
+    if atomic_ref.dtype != val:
+        raise errors.TypingError(
+            f"Type of value to or: {val} does not match the type of the "
+            f"reference: {atomic_ref.dtype} stored in the atomic ref."
+        )
+
+    if atomic_ref.dtype != types.int32 and atomic_ref.dtype != types.int64:
+        raise errors.TypingError(
+            "fetch_or operation only supported on int32 and int64 dtypes."
+        )
+
+    def ol_fetch_or_impl(atomic_ref, val):
+        return _intrinsic_fetch_or(atomic_ref, val)
+
+    return ol_fetch_or_impl
+
+
+@overload_method(
+    AtomicRefType, "fetch_xor", inline="always", target=DPEX_KERNEL_TARGET_NAME
+)
+def ol_fetch_xor(atomic_ref, val):
+    if atomic_ref.dtype != val:
+        raise errors.TypingError(
+            f"Type of value to xor: {val} does not match the type of the "
+            f"reference: {atomic_ref.dtype} stored in the atomic ref."
+        )
+
+    if atomic_ref.dtype != types.int32 and atomic_ref.dtype != types.int64:
+        raise errors.TypingError(
+            "fetch_xor operation only supported on int32 and int64 dtypes."
+        )
+
+    def ol_fetch_xor_impl(atomic_ref, val):
+        return _intrinsic_fetch_xor(atomic_ref, val)
+
+    return ol_fetch_xor_impl

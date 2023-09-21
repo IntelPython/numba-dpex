@@ -4,6 +4,8 @@
 
 from enum import IntEnum
 
+from numba.core import types
+
 from .memory_enums import MemoryOrder, MemoryScope
 
 
@@ -36,6 +38,60 @@ class _spv_memory_semantics_mask(IntEnum):
     CrossWorkgroupMemory = 0x200
     AtomicCounterMemory = 0x400
     ImageMemory = 0x800
+
+
+_spv_atomic_instructions_map = {
+    "fetch_add": {
+        types.int32: "__spirv_AtomicIAdd",
+        types.int64: "__spirv_AtomicIAdd",
+        types.float32: "__spirv_AtomicFAddEXT",
+        types.float64: "__spirv_AtomicFAddEXT",
+    },
+    "fetch_sub": {
+        types.int32: "__spirv_AtomicISub",
+        types.int64: "__spirv_AtomicISub",
+        types.float32: "__spirv_AtomicFSubEXT",
+        types.float64: "__spirv_AtomicFSubEXT",
+    },
+    "fetch_min": {
+        types.int32: "__spirv_AtomicSMin",
+        types.int64: "__spirv_AtomicSMin",
+        types.float32: "__spirv_AtomicFMinEXT",
+        types.float64: "__spirv_AtomicFMinEXT",
+    },
+    "fetch_max": {
+        types.int32: "__spirv_AtomicSMax",
+        types.int64: "__spirv_AtomicSMax",
+        types.float32: "__spirv_AtomicFMaxEXT",
+        types.float64: "__spirv_AtomicFMaxEXT",
+    },
+    "fetch_and": {
+        types.int32: "__spirv_AtomicAnd",
+        types.int64: "__spirv_AtomicAnd",
+    },
+    "fetch_or": {
+        types.int32: "__spirv_AtomicOr",
+        types.int64: "__spirv_AtomicOr",
+    },
+    "fetch_xor": {
+        types.int32: "__spirv_AtomicXor",
+        types.int64: "__spirv_AtomicXor",
+    },
+}
+
+
+def get_atomic_inst_name(atomic_inst, atomic_ref_dtype):
+    inst_ref_types_map = _spv_atomic_instructions_map.get(atomic_inst)
+    if inst_ref_types_map is None:
+        raise ValueError("Unsupported atomic instruction")
+
+    inst_name = inst_ref_types_map.get(atomic_ref_dtype)
+
+    if inst_name is None:
+        raise ValueError(
+            "Unsupported atomic reference type for instruction " + atomic_inst
+        )
+    return inst_name
 
 
 def get_memory_semantics_mask(memory_order):
