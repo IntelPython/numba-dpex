@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
+import re
 import sys
 
 from setuptools import find_packages
@@ -35,12 +36,17 @@ import versioneer
 """
 
 
-def to_cmake_format(version):
+def to_cmake_format(version: str):
     """Convert pep440 version string into a cmake compatible string."""
-    version = version.strip()
-    parts = version.split("+")
-    tag, dist = parts[0], parts[1].split(".")[0]
-    return tag + "." + dist
+    # cmake version just support up to 4 numbers separated by dot.
+    # https://peps.python.org/pep-0440/
+    # https://cmake.org/cmake/help/latest/command/project.html
+
+    match = re.search(r"^\d+(?:\.\d+(?:\.\d+(?:\.\d+)?)?)?", version)
+    if not match:
+        raise Exception("Unsupported version")
+
+    return match.group(0)
 
 
 # Set is_install and is_develop flags
