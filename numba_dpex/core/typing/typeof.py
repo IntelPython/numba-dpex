@@ -5,7 +5,6 @@
 from dpctl import SyclQueue
 from dpctl.tensor import usm_ndarray
 from dpnp import ndarray
-from numba.core import types
 from numba.extending import typeof_impl
 from numba.np import numpy_support
 
@@ -16,7 +15,7 @@ from ..types.dpnp_ndarray_type import DpnpNdArray
 from ..types.usm_ndarray_type import USMNdArray
 
 
-def _typeof_helper(val, array_class_type):
+def _array_typeof_helper(val, array_class_type):
     """Creates a Numba type of the specified ``array_class_type`` for ``val``."""
     try:
         dtype = numpy_support.from_dtype(val.dtype)
@@ -74,7 +73,7 @@ def typeof_usm_ndarray(val, c):
 
     Returns: The Numba type corresponding to dpctl.tensor.usm_ndarray
     """
-    return _typeof_helper(val, USMNdArray)
+    return _array_typeof_helper(val, USMNdArray)
 
 
 @typeof_impl.register(ndarray)
@@ -92,7 +91,7 @@ def typeof_dpnp_ndarray(val, c):
 
     Returns: The Numba type corresponding to dpnp.ndarray
     """
-    return _typeof_helper(val, DpnpNdArray)
+    return _array_typeof_helper(val, DpnpNdArray)
 
 
 @typeof_impl.register(SyclQueue)
