@@ -7,6 +7,7 @@ import pytest
 from dpctl import tensor as dpt
 
 import numba_dpex as dpex
+from numba_dpex.tests._helper import get_all_dtypes
 
 
 class DuckUSMArray:
@@ -57,12 +58,9 @@ def vecadd(a, b, c):
     c[i] = a[i] + b[i]
 
 
-dtypes = [
-    "i4",
-    "i8",
-    "f4",
-    "f8",
-]
+dtypes = get_all_dtypes(
+    no_bool=True, no_float16=True, no_none=True, no_complex=True
+)
 
 
 @pytest.fixture(params=dtypes)
