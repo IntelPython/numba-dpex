@@ -22,7 +22,7 @@ def test_boxing_unboxing():
     def func(a):
         return a
 
-    a = dpnp.empty(10)
+    a = dpnp.empty(10, dtype=dpnp.float32)
     try:
         b = func(a)
     except:
@@ -40,8 +40,8 @@ def test_stride_calc_at_unboxing():
     def _tester(a):
         return a.strides
 
-    b = dpnp.empty((4, 16, 4))
+    b = dpnp.empty((4, 16, 4), dtype=dpnp.float32)
     strides = dpjit(_tester)(b)
 
     # Numba computes strides as bytes
-    assert list(strides) == [512, 32, 8]
+    assert list(strides) == [256, 16, 4]

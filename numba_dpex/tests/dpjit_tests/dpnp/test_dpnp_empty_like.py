@@ -12,9 +12,9 @@ import pytest
 from numba import errors
 
 from numba_dpex import dpjit
+from numba_dpex.tests._helper import get_all_dtypes
 
 shapes = [10, (2, 5)]
-dtypes = [dpnp.int32, dpnp.int64, dpnp.float32, dpnp.float64]
 usm_types = ["device", "shared", "host"]
 
 
@@ -53,7 +53,12 @@ def test_dpnp_empty_like_default(shape):
 
 
 @pytest.mark.parametrize("shape", shapes)
-@pytest.mark.parametrize("dtype", dtypes)
+@pytest.mark.parametrize(
+    "dtype",
+    get_all_dtypes(
+        no_bool=True, no_float16=True, no_none=True, no_complex=True
+    ),
+)
 @pytest.mark.parametrize("usm_type", usm_types)
 def test_dpnp_empty_like_from_device(shape, dtype, usm_type):
     """ "Use device only in dpnp.emtpy)like() inside dpjit."""
@@ -87,7 +92,12 @@ def test_dpnp_empty_like_from_device(shape, dtype, usm_type):
 
 
 @pytest.mark.parametrize("shape", shapes)
-@pytest.mark.parametrize("dtype", dtypes)
+@pytest.mark.parametrize(
+    "dtype",
+    get_all_dtypes(
+        no_bool=True, no_float16=True, no_none=True, no_complex=True
+    ),
+)
 @pytest.mark.parametrize("usm_type", usm_types)
 def test_dpnp_empty_like_from_queue(shape, dtype, usm_type):
     """ "Use queue only in dpnp.emtpy_like() inside dpjit."""
@@ -146,7 +156,7 @@ def test_dpnp_empty_like_exceptions():
 
     try:
         queue = dpctl.SyclQueue()
-        a = dpnp.ones(10)
+        a = dpnp.ones(10, dtype=dpnp.float32)
         func1(a, queue)
     except Exception as e:
         assert isinstance(e, errors.TypingError)
@@ -175,7 +185,7 @@ def test_dpnp_empty_like_from_numpy():
         y = dpnp.empty_like(x)
         return y
 
-    a = numpy.empty(10)
+    a = numpy.empty(10, dtype=numpy.float32)
 
     with pytest.raises(Exception):
         func(a)

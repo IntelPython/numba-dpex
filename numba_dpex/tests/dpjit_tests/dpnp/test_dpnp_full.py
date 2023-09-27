@@ -14,9 +14,9 @@ import pytest
 from numba import errors
 
 from numba_dpex import dpjit
+from numba_dpex.tests._helper import get_all_dtypes
 
 shapes = [11, (3, 7)]
-dtypes = [dpnp.int32, dpnp.int64, dpnp.float32, dpnp.float64]
 usm_types = ["device", "shared", "host"]
 fill_values = [
     7,
@@ -41,7 +41,7 @@ def test_dpnp_full_default(shape, fill_value):
 
     @dpjit
     def func(shape, fill_value):
-        c = dpnp.full(shape, fill_value)
+        c = dpnp.full(shape, fill_value, dtype=numpy.float32)
         return c
 
     try:
@@ -54,7 +54,7 @@ def test_dpnp_full_default(shape, fill_value):
     else:
         assert c.shape == shape
 
-    dummy = dpnp.full(shape, fill_value)
+    dummy = dpnp.full(shape, fill_value, dtype=dpnp.float32)
 
     if c.dtype != dummy.dtype:
         if sys.platform != "linux":
@@ -80,7 +80,12 @@ def test_dpnp_full_default(shape, fill_value):
 
 @pytest.mark.parametrize("shape", shapes)
 @pytest.mark.parametrize("fill_value", fill_values)
-@pytest.mark.parametrize("dtype", dtypes)
+@pytest.mark.parametrize(
+    "dtype",
+    get_all_dtypes(
+        no_bool=True, no_float16=True, no_none=True, no_complex=True
+    ),
+)
 @pytest.mark.parametrize("usm_type", usm_types)
 def test_dpnp_full_from_device(shape, fill_value, dtype, usm_type):
     """ "Use device only in dpnp.full() inside dpjit."""
@@ -122,7 +127,12 @@ def test_dpnp_full_from_device(shape, fill_value, dtype, usm_type):
 
 @pytest.mark.parametrize("shape", shapes)
 @pytest.mark.parametrize("fill_value", fill_values)
-@pytest.mark.parametrize("dtype", dtypes)
+@pytest.mark.parametrize(
+    "dtype",
+    get_all_dtypes(
+        no_bool=True, no_float16=True, no_none=True, no_complex=True
+    ),
+)
 @pytest.mark.parametrize("usm_type", usm_types)
 def test_dpnp_full_from_queue(shape, fill_value, dtype, usm_type):
     """ "Use queue only in dpnp.full() inside dpjit."""
