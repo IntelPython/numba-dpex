@@ -14,6 +14,8 @@ from ..types import (
     DpctlSyclEvent,
     DpctlSyclQueue,
     DpnpNdArray,
+    NdRangeType,
+    RangeType,
     USMNdArray,
 )
 
@@ -195,6 +197,39 @@ class SyclEventModel(StructModel):
         super(SyclEventModel, self).__init__(dmm, fe_type, members)
 
 
+class RangeModel(StructModel):
+    """The native data model for a
+    numba_dpex.core.kernel_interface.indexers.Range PyObject.
+    """
+
+    def __init__(self, dmm, fe_type):
+        members = [
+            ("ndim", types.int64),
+            ("dim0", types.int64),
+            ("dim1", types.int64),
+            ("dim2", types.int64),
+        ]
+        super(RangeModel, self).__init__(dmm, fe_type, members)
+
+
+class NdRangeModel(StructModel):
+    """The native data model for a
+    numba_dpex.core.kernel_interface.indexers.NdRange PyObject.
+    """
+
+    def __init__(self, dmm, fe_type):
+        members = [
+            ("ndim", types.int64),
+            ("gdim0", types.int64),
+            ("gdim1", types.int64),
+            ("gdim2", types.int64),
+            ("ldim0", types.int64),
+            ("ldim1", types.int64),
+            ("ldim2", types.int64),
+        ]
+        super(NdRangeModel, self).__init__(dmm, fe_type, members)
+
+
 def _init_data_model_manager() -> datamodel.DataModelManager:
     """Initializes a DpexKernelTarget-specific data model manager.
 
@@ -249,3 +284,8 @@ register_model(DpctlSyclQueue)(SyclQueueModel)
 
 # Register the DpctlSyclEvent type
 register_model(DpctlSyclEvent)(SyclEventModel)
+# Register the RangeType type
+register_model(RangeType)(RangeModel)
+
+# Register the NdRangeType type
+register_model(NdRangeType)(NdRangeModel)

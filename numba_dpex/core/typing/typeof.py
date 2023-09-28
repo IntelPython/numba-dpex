@@ -10,8 +10,14 @@ from numba.np import numpy_support
 
 from numba_dpex.utils import address_space
 
+<<<<<<< HEAD
 from ..types.dpctl_types import DpctlSyclEvent, DpctlSyclQueue
+=======
+from ..kernel_interface.indexers import NdRange, Range
+from ..types.dpctl_types import DpctlSyclQueue
+>>>>>>> 1d5800cf8 (Adds Range and NdRange as supported types in numba_dpex.dpjit.)
 from ..types.dpnp_ndarray_type import DpnpNdArray
+from ..types.range_types import NdRangeType, RangeType
 from ..types.usm_ndarray_type import USMNdArray
 
 
@@ -120,3 +126,29 @@ def typeof_dpctl_sycl_event(val, c):
     Returns: A numba_dpex.core.types.dpctl_types.DpctlSyclEvent instance.
     """
     return DpctlSyclEvent(val)
+@typeof_impl.register(Range)
+def typeof_range(val, c):
+    """Registers the type inference implementation function for a
+    numba_dpex.Range PyObject.
+
+    Args:
+        val : An instance of numba_dpex.Range.
+        c : Unused argument used to be consistent with Numba API.
+
+    Returns: A numba_dpex.core.types.range_types.RangeType instance.
+    """
+    return RangeType(val.ndim)
+
+
+@typeof_impl.register(NdRange)
+def typeof_ndrange(val, c):
+    """Registers the type inference implementation function for a
+    numba_dpex.NdRange PyObject.
+
+    Args:
+        val : An instance of numba_dpex.Range.
+        c : Unused argument used to be consistent with Numba API.
+
+    Returns: A numba_dpex.core.types.range_types.RangeType instance.
+    """
+    return NdRangeType(val.global_range.ndim)
