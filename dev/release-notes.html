@@ -499,24 +499,28 @@ document.write(`
 <p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
 and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
 <section id="id1">
-<h3>[0.21.3] - 2023-09-21<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<h3>[0.21.3] - 2023-09-28<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <section id="fixed">
 <h4>Fixed<a class="headerlink" href="#fixed" title="Link to this heading">#</a></h4>
 <ul class="simple">
+<li><p>Pin CI conda channels (#1133)</p></li>
 <li><p>Mangled kernel name generation (#1112)</p></li>
 </ul>
 </section>
 <section id="added">
 <h4>Added<a class="headerlink" href="#added" title="Link to this heading">#</a></h4>
 <ul class="simple">
+<li><p>Support tests on single point precision GPUs (#1143)</p></li>
+<li><p>Initial work on Coverity scan CI (#1128)</p></li>
 <li><p>Python 3.11 support (#1123)</p></li>
 <li><p>Security policy (#1117)</p></li>
-<li><p>scikit-build to build native extensions (#1107, #1127)</p></li>
+<li><p>scikit-build to build native extensions (#1107, #1116, #1127, #1139, #1140)</p></li>
 </ul>
 </section>
 <section id="changed">
 <h4>Changed<a class="headerlink" href="#changed" title="Link to this heading">#</a></h4>
 <ul class="simple">
+<li><p>Rename helper function to clearly indicate its usage (#1145)</p></li>
 <li><p>The data model used by the DpnpNdArray type for kernel functions(#1118)</p></li>
 </ul>
 </section>
@@ -1191,7 +1195,7 @@ overload of NumPy functions. The rewrite passes is a temporary fix till Numba ga
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changelog">Changelog</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">[0.21.3] - 2023-09-21</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">[0.21.3] - 2023-09-28</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed">Fixed</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#added">Added</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#changed">Changed</a></li>
