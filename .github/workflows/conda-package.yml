@@ -14,7 +14,7 @@ env:
   PACKAGE_NAME: numba-dpex
   MODULE_NAME: numba_dpex
   # There is a separate action that removes defaults.
-  CHANNELS: 'dppy/label/dev,conda-forge,intel'
+  CHANNELS: 'dppy/label/dev,conda-forge,intel,numba,nodefaults'
   VER_JSON_NAME: 'version.json'
   VER_SCRIPT1: "import json; f = open('version.json', 'r'); j = json.load(f); f.close(); "
   VER_SCRIPT2: "d = j['numba-dpex'][0]; print('='.join((d[s] for s in ('version', 'build'))))"
