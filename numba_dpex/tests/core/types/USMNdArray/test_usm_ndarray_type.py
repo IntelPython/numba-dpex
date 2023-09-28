@@ -2,12 +2,17 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import dpctl
 import dpctl.tensor as dpt
 import numpy as np
 import pytest
 from numba.misc.special import typeof
 
 from numba_dpex.core.types import USMNdArray
+from numba_dpex.tests._helper import (
+    get_queue_or_skip,
+    skip_if_dtype_not_supported,
+)
 
 list_of_dtypes = [
     np.int32,
@@ -35,6 +40,9 @@ def usm_type(request):
 
 
 def test_usm_ndarray_type(dtype, usm_type):
+    q = get_queue_or_skip()
+    skip_if_dtype_not_supported(dtype, q)
+
     a = np.array(np.random.random(10), dtype)
     da = dpt.usm_ndarray(a.shape, dtype=a.dtype, buffer=usm_type)
 

@@ -7,6 +7,7 @@ import numpy
 import pytest
 
 import numba_dpex as dpex
+from numba_dpex.tests._helper import get_all_dtypes
 
 N = 1024
 
@@ -23,10 +24,9 @@ def kernel_array(a, b, c):
     b[i] = a[i] * c[i]
 
 
-list_of_dtypes = [
-    dpnp.complex64,
-    dpnp.complex128,
-]
+list_of_dtypes = get_all_dtypes(
+    no_bool=True, no_int=True, no_float=True, no_none=True
+)
 
 list_of_usm_types = ["shared", "device", "host"]
 
@@ -45,8 +45,8 @@ def test_numeric_kernel_arg_complex_scalar(input_arrays):
     Args:
         input_arrays (dpnp.ndarray): Array arguments to be passed to a kernel.
     """
-    s = 2 + 1j
     a, b, _ = input_arrays
+    s = a.dtype.type(2 + 1j)
 
     kernel_scalar[dpex.Range(N)](a, b, s)
 

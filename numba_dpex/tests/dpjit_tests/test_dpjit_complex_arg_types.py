@@ -8,6 +8,10 @@ import numpy
 import pytest
 
 import numba_dpex as dpex
+from numba_dpex.tests._helper import (
+    get_queue_or_skip,
+    skip_if_dtype_not_supported,
+)
 
 N = 1024
 
@@ -34,6 +38,10 @@ list_of_usm_types = ["shared", "device", "host"]
 
 @pytest.fixture(params=list_of_dtypes)
 def input_arrays(request):
+    q = get_queue_or_skip()
+    # TODO: looks like we are using float64 in complex64 lower...
+    skip_if_dtype_not_supported(request.param, q)
+
     a = dpnp.ones(N, dtype=request.param)
     c = dpnp.zeros(N, dtype=request.param)
     b = dpnp.empty_like(a)
@@ -46,8 +54,8 @@ def test_dpjit_scalar_arg_types(input_arrays):
     Args:
         input_arrays (dpnp.ndarray): Array arguments to be passed to a kernel.
     """
-    s = 2
     a, b, _ = input_arrays
+    s = a.dtype.type(2)
 
     prange_arg(a, b, s)
 
@@ -63,8 +71,8 @@ def test_dpjit_arg_complex_scalar(input_arrays):
     Args:
         input_arrays (dpnp.ndarray): Array arguments to be passed to a kernel.
     """
-    s = 2 + 1j
     a, b, _ = input_arrays
+    s = a.dtype.type(2 + 1j)
 
     prange_arg(a, b, s)
 
