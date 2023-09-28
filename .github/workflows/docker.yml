@@ -12,7 +12,7 @@ on:
       numpy_version:
         default: '1.24.3'
       numba_version:
-        default: '0.57.0'
+        default: '0.58'
       # dpcpp_llvm_spirv_version:
       #   default: 'main'
       cython_version:
