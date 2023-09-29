@@ -203,6 +203,32 @@ class DpexRTContext(object):
 
         return self.error
 
+    def eventstruct_from_python(self, pyapi, obj, ptr):
+        """Calls the c function DPEXRT_sycl_event_from_python"""
+        fnty = llvmir.FunctionType(
+            llvmir.IntType(32), [pyapi.pyobj, pyapi.voidptr]
+        )
+
+        fn = pyapi._get_function(fnty, "DPEXRT_sycl_event_from_python")
+        fn.args[0].add_attribute("nocapture")
+        fn.args[1].add_attribute("nocapture")
+
+        self.error = pyapi.builder.call(fn, (obj, ptr))
+        return self.error
+
+    def eventstruct_to_python(self, pyapi, val):
+        """Calls the c function DPEXRT_sycl_event_to_python"""
+
+        fnty = llvmir.FunctionType(pyapi.pyobj, [pyapi.voidptr])
+
+        fn = pyapi._get_function(fnty, "DPEXRT_sycl_event_to_python")
+        fn.args[0].add_attribute("nocapture")
+        qptr = cgutils.alloca_once_value(pyapi.builder, val)
+        ptr = pyapi.builder.bitcast(qptr, pyapi.voidptr)
+        self.error = pyapi.builder.call(fn, [ptr])
+
+        return self.error
+
     def usm_ndarray_to_python_acqref(self, pyapi, aryty, ary, dtypeptr):
         """Boxes a DpnpNdArray native object into a Python dpnp.ndarray.
 

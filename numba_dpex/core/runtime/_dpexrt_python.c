@@ -20,6 +20,7 @@
 #include "_nrt_python_helper.h"
 
 #include "_dbg_printer.h"
+#include "_eventstruct.h"
 #include "_queuestruct.h"
 #include "_usmarraystruct.h"
 
@@ -63,6 +64,8 @@ DPEXRT_sycl_usm_ndarray_to_python_acqref(usmarystruct_t *arystruct,
                                          PyArray_Descr *descr);
 static int DPEXRT_sycl_queue_from_python(PyObject *obj,
                                          queuestruct_t *queue_struct);
+static int DPEXRT_sycl_event_from_python(PyObject *obj,
+                                         eventstruct_t *event_struct);
 static PyObject *DPEXRT_sycl_queue_to_python(queuestruct_t *queuestruct);
 
 /** An NRT_external_malloc_func implementation using DPCTLmalloc_device.
@@ -783,6 +786,7 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
 
     // Increment the ref count on obj to prevent CPython from garbage
     // collecting the array.
+    // TODO: add extra description why do we need this
     Py_IncRef(obj);
 
     DPEXRT_DEBUG(drt_debug_print(
@@ -1270,6 +1274,97 @@ static PyObject *DPEXRT_sycl_queue_to_python(queuestruct_t *queuestruct)
 }
 
 /*----------------------------------------------------------------------------*/
+/*--------------------- Box-unbox helpers for dpctl.SyclEvent       ----------*/
+/*----------------------------------------------------------------------------*/
+
+/*!
+ * @brief Helper to unbox a Python dpctl.SyclEvent object to a Numba-native
+ * eventstruct_t instance.
+ *
+ * @param    obj            A dpctl.SyclEvent Python object
+ * @param    event_struct   An instance of the struct numba-dpex uses to
+ *                          represent a dpctl.SyclEvent inside Numba.
+ * @return   {return}       Return code indicating success (0) or failure (-1).
+ */
+static int DPEXRT_sycl_event_from_python(PyObject *obj,
+                                         eventstruct_t *event_struct)
+{
+
+    struct PySyclEventObject *event_obj = NULL;
+    DPCTLSyclEventRef event_ref = NULL;
+    PyGILState_STATE gstate;
+
+    // We are unconditionally casting obj to a struct PySyclEventObject*. If
+    // the obj is not a struct PySyclEventObject* then the SyclEvent_GetEventRef
+    // will error out.
+    event_obj = (struct PySyclEventObject *)obj;
+
+    DPEXRT_DEBUG(
+        drt_debug_print("DPEXRT-DEBUG: In DPEXRT_sycl_event_from_python.\n"););
+
+    if (!(event_ref = SyclEvent_GetEventRef(event_obj))) {
+        DPEXRT_DEBUG(drt_debug_print(
+            "DPEXRT-ERROR: SyclEvent_GetEventRef returned NULL at "
+            "%s, line %d.\n",
+            __FILE__, __LINE__));
+        goto error;
+    }
+
+    event_struct->parent = obj;
+    event_struct->event_ref = event_ref;
+
+    return 0;
+
+error:
+    // If the check failed then decrement the refcount and return an error
+    // code of -1.
+    DPEXRT_DEBUG(drt_debug_print(
+        "DPEXRT-ERROR: Failed to unbox dpctl SyclEvent into a Numba "
+        "eventstruct at %s, line %d\n",
+        __FILE__, __LINE__));
+
+    return -1;
+}
+
+/*!
+ * @brief A helper function that boxes a Numba-dpex eventstruct_t object into a
+ * dctl.SyclEvent PyObject using the eventstruct_t's parent attribute.
+ *
+ * If there is no parent pointer stored in the eventstruct, then an error will
+ * be raised.
+ *
+ * @param    eventstruct    A Numba-dpex eventstruct object.
+ * @return   {return}       A PyObject created from the eventstruct->parent, if
+ *                          the PyObject could not be created return NULL.
+ */
+static PyObject *DPEXRT_sycl_event_to_python(eventstruct_t *eventstruct)
+{
+    PyObject *orig_event = NULL;
+    PyGILState_STATE gstate;
+
+    orig_event = eventstruct->parent;
+    // FIXME: Better error checking is needed to enforce the boxing of the event
+    // object. For now, only the minimal is done as the returning of SyclEvent
+    // from a dpjit function should not be a used often and the dpctl C API for
+    // type checking etc. is not ready.
+    if (orig_event == NULL) {
+        PyErr_Format(PyExc_ValueError,
+                     "In 'box_from_eventstruct_parent', "
+                     "failed to create a new dpctl.SyclEvent object.");
+        return NULL;
+    }
+
+    DPEXRT_DEBUG(
+        drt_debug_print("DPEXRT-DEBUG: In DPEXRT_sycl_event_to_python.\n"););
+
+    // We need to increase reference count because we are returning new
+    // reference to the same event.
+    Py_INCREF(orig_event);
+
+    return orig_event;
+}
+
+/*----------------------------------------------------------------------------*/
 /*--------------------- The _dpexrt_python Python extension module  -- -------*/
 /*----------------------------------------------------------------------------*/
 
@@ -1306,6 +1401,9 @@ static PyObject *build_c_helpers_dict(void)
     _declpointer("DPEXRT_sycl_queue_from_python",
                  &DPEXRT_sycl_queue_from_python);
     _declpointer("DPEXRT_sycl_queue_to_python", &DPEXRT_sycl_queue_to_python);
+    _declpointer("DPEXRT_sycl_event_from_python",
+                 &DPEXRT_sycl_event_from_python);
+    _declpointer("DPEXRT_sycl_event_to_python", &DPEXRT_sycl_event_to_python);
 
 #undef _declpointer
     return dct;
@@ -1357,6 +1455,10 @@ MOD_INIT(_dpexrt_python)
                        PyLong_FromVoidPtr(&DPEXRT_sycl_queue_from_python));
     PyModule_AddObject(m, "DPEXRT_sycl_queue_to_python",
                        PyLong_FromVoidPtr(&DPEXRT_sycl_queue_to_python));
+    PyModule_AddObject(m, "DPEXRT_sycl_event_from_python",
+                       PyLong_FromVoidPtr(&DPEXRT_sycl_event_from_python));
+    PyModule_AddObject(m, "DPEXRT_sycl_event_to_python",
+                       PyLong_FromVoidPtr(&DPEXRT_sycl_event_to_python));
 
     PyModule_AddObject(m, "DPEXRTQueue_CreateFromFilterString",
                        PyLong_FromVoidPtr(&DPEXRTQueue_CreateFromFilterString));

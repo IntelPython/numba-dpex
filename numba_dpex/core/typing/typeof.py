@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from dpctl import SyclQueue
+from dpctl import SyclEvent, SyclQueue
 from dpctl.tensor import usm_ndarray
 from dpnp import ndarray
 from numba.extending import typeof_impl
@@ -10,7 +10,7 @@ from numba.np import numpy_support
 
 from numba_dpex.utils import address_space
 
-from ..types.dpctl_types import DpctlSyclQueue
+from ..types.dpctl_types import DpctlSyclEvent, DpctlSyclQueue
 from ..types.dpnp_ndarray_type import DpnpNdArray
 from ..types.usm_ndarray_type import USMNdArray
 
@@ -106,3 +106,17 @@ def typeof_dpctl_sycl_queue(val, c):
     Returns: A numba_dpex.core.types.dpctl_types.DpctlSyclQueue instance.
     """
     return DpctlSyclQueue(val)
+
+
+@typeof_impl.register(SyclEvent)
+def typeof_dpctl_sycl_event(val, c):
+    """Registers the type inference implementation function for a
+    dpctl.SyclEvent PyObject.
+
+    Args:
+        val : An instance of dpctl.SyclEvent.
+        c : Unused argument used to be consistent with Numba API.
+
+    Returns: A numba_dpex.core.types.dpctl_types.DpctlSyclEvent instance.
+    """
+    return DpctlSyclEvent(val)
