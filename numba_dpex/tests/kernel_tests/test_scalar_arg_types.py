@@ -7,6 +7,7 @@ import numpy
 import pytest
 
 import numba_dpex as dpex
+from numba_dpex.tests._helper import get_all_dtypes
 
 N = 1024
 
@@ -26,14 +27,7 @@ def kernel_with_bool_arg(a, b, test):
         b[i] = a[i] - a[i]
 
 
-list_of_dtypes = [
-    dpnp.int32,
-    dpnp.int64,
-    dpnp.float32,
-    dpnp.float64,
-    dpnp.complex64,
-    dpnp.complex128,
-]
+list_of_dtypes = get_all_dtypes(no_bool=True, no_float16=True, no_none=True)
 
 list_of_usm_types = ["shared", "device", "host"]
 
@@ -52,8 +46,8 @@ def test_numeric_kernel_arg_types1(input_arrays):
     Args:
         input_arrays (dpnp.ndarray): Array arguments to be passed to a kernel.
     """
-    s = 2
     a, b = input_arrays
+    s = a.dtype.type(2)
 
     scaling_kernel[dpex.Range(N)](a, b, s)
 

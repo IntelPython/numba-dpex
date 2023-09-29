@@ -8,14 +8,15 @@ import numpy
 import pytest
 
 import numba_dpex as dpex
+from numba_dpex.tests._helper import get_all_dtypes
 
 N = 10
 
 
 @dpex.dpjit
 def vecadd_prange1(a, b):
-    s = 0
-    t = 0
+    s = a.dtype.type(0)
+    t = a.dtype.type(0)
     for i in nb.prange(a.shape[0]):
         s += a[i] + b[i]
     for i in nb.prange(a.shape[0]):
@@ -25,7 +26,7 @@ def vecadd_prange1(a, b):
 
 @dpex.dpjit
 def vecadd_prange2(a, b):
-    t = 0
+    t = a.dtype.type(0)
     for i in nb.prange(a.shape[0]):
         t += a[i] * b[i]
     return t
@@ -33,7 +34,7 @@ def vecadd_prange2(a, b):
 
 @dpex.dpjit
 def vecmul_prange(a, b):
-    t = 1
+    t = a.dtype.type(1)
     for i in nb.prange(a.shape[0]):
         t *= a[i] + b[i]
     return t
@@ -50,14 +51,11 @@ def vecadd_prange_float(a, b):
     return s - t
 
 
-list_of_dtypes = [
-    dpnp.int32,
-    dpnp.int64,
-    dpnp.float64,
-]
-
-
-@pytest.fixture(params=list_of_dtypes)
+@pytest.fixture(
+    params=get_all_dtypes(
+        no_bool=True, no_float16=True, no_none=True, no_complex=True
+    )
+)
 def input_arrays(request):
     a = dpnp.arange(N, dtype=request.param)
     b = dpnp.ones(N, dtype=request.param)
@@ -105,21 +103,5 @@ def test_dpjit_array_arg_types_mul(input_arrays):
     a, b = input_arrays
 
     c = vecmul_prange(a, b)
-
-    assert s == c
-
-
-def test_dpjit_array_arg_float32_types(input_arrays):
-    """Tests passing float32 type dpnp arrays to a dpjit
-    prange function.Local variable has to be casted to float32.
-
-    Args:
-        input_arrays (dpnp.ndarray): Array arguments to be passed to a kernel.
-    """
-    s = 9900
-    a = dpnp.arange(100, dtype=dpnp.float32)
-    b = dpnp.arange(100, dtype=dpnp.float32)
-
-    c = vecadd_prange_float(a, b)
 
     assert s == c

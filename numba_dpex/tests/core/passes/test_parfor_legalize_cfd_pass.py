@@ -14,10 +14,13 @@ import pytest
 
 from numba_dpex import dpjit
 from numba_dpex.core.exceptions import ExecutionQueueInferenceError
-from numba_dpex.tests._helper import skip_no_opencl_cpu, skip_no_opencl_gpu
+from numba_dpex.tests._helper import (
+    get_all_dtypes,
+    skip_no_opencl_cpu,
+    skip_no_opencl_gpu,
+)
 
 shapes = [10, (2, 5)]
-dtypes = [dpnp.int32, dpnp.int64, dpnp.float32, dpnp.float64]
 usm_types = ["device"]
 devices = ["gpu"]
 
@@ -30,7 +33,12 @@ def func1(a, b):
 
 @skip_no_opencl_gpu
 @pytest.mark.parametrize("shape", shapes)
-@pytest.mark.parametrize("dtype", dtypes)
+@pytest.mark.parametrize(
+    "dtype",
+    get_all_dtypes(
+        no_bool=True, no_float16=True, no_none=True, no_complex=True
+    ),
+)
 @pytest.mark.parametrize("usm_type", usm_types)
 @pytest.mark.parametrize("device", devices)
 def test_parfor_legalize_cfd_pass(shape, dtype, usm_type, device):

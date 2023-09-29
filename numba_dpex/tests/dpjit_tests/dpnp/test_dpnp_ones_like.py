@@ -12,9 +12,12 @@ import pytest
 from numba import errors
 
 from numba_dpex import dpjit
+from numba_dpex.tests._helper import get_all_dtypes
 
 shapes = [11, (3, 7)]
-dtypes = [dpnp.int32, dpnp.int64, dpnp.float32, dpnp.float64]
+dtypes = get_all_dtypes(
+    no_bool=True, no_float16=True, no_none=True, no_complex=True
+)
 usm_types = ["device", "shared", "host"]
 
 
@@ -28,7 +31,7 @@ def test_dpnp_ones_like_default(shape):
         return y
 
     try:
-        a = dpnp.zeros(shape)
+        a = dpnp.zeros(shape, dtype=dpnp.float32)
         c = func(a)
     except Exception:
         pytest.fail("Calling dpnp.ones_like() inside dpjit failed.")
@@ -151,7 +154,7 @@ def test_dpnp_ones_like_exceptions():
 
     try:
         queue = dpctl.SyclQueue()
-        a = dpnp.zeros(10)
+        a = dpnp.zeros(10, dtype=dpnp.float32)
         func1(a, queue)
     except Exception as e:
         assert isinstance(e, errors.TypingError)
@@ -180,7 +183,7 @@ def test_dpnp_ones_like_from_numpy():
         y = dpnp.ones_like(x)
         return y
 
-    a = numpy.ones(10)
+    a = numpy.ones(10, dtype=dpnp.float32)
 
     with pytest.raises(Exception):
         func(a)

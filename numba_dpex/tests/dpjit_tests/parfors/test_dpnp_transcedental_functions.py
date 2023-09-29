@@ -9,7 +9,7 @@ import numpy as np
 import pytest
 
 from numba_dpex import dpjit
-from numba_dpex.tests._helper import is_gen12
+from numba_dpex.tests._helper import get_all_dtypes, is_gen12
 
 """dpnp raise error on : mod, abs and remainder(float32)"""
 list_of_binary_ops = [
@@ -63,10 +63,9 @@ def unary_op(request):
     return request.param
 
 
-list_of_dtypes = [
-    dpnp.float32,
-    dpnp.float64,
-]
+list_of_dtypes = get_all_dtypes(
+    no_bool=True, no_int=True, no_float16=True, no_none=True, no_complex=True
+)
 
 
 @pytest.fixture(params=list_of_dtypes)
