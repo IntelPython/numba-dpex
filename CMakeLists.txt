@@ -18,10 +18,6 @@ This ``CMakeLists.txt`` file will be used by ``setup.py``.
 
 cmake_minimum_required(VERSION 3.21...3.27 FATAL_ERROR)
 
-if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.24")
-    cmake_policy(SET CMP0135 NEW)
-endif()
-
 message(STATUS "NUMBA_DPEX_VERSION=" "${NUMBA_DPEX_VERSION}")
 
 project(numba-dpex

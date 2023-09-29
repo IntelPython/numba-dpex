@@ -167,15 +167,15 @@ def test_two_consecutive_prange():
     device = dpctl.select_default_device()
 
     n = 10
-    a = dpnp.ones((n), dtype=dpnp.float64, device=device)
-    b = dpnp.ones((n), dtype=dpnp.float64, device=device)
-    c = dpnp.zeros((n), dtype=dpnp.float64, device=device)
-    d = dpnp.zeros((n), dtype=dpnp.float64, device=device)
+    a = dpnp.ones((n), dtype=dpnp.float32, device=device)
+    b = dpnp.ones((n), dtype=dpnp.float32, device=device)
+    c = dpnp.zeros((n), dtype=dpnp.float32, device=device)
+    d = dpnp.zeros((n), dtype=dpnp.float32, device=device)
 
     prange_example(a, b, c, d)
 
-    np.testing.assert_equal(c.asnumpy(), np.ones((n), dtype=np.float64) * 2)
-    np.testing.assert_equal(d.asnumpy(), np.zeros((n), dtype=np.float64))
+    np.testing.assert_equal(c.asnumpy(), np.ones((n), dtype=np.float32) * 2)
+    np.testing.assert_equal(d.asnumpy(), np.zeros((n), dtype=np.float32))
 
 
 @pytest.mark.skip(reason="[i,:] like indexing is not supported yet.")

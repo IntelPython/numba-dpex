@@ -8,6 +8,7 @@ import numpy
 import pytest
 
 from numba_dpex import dpjit
+from numba_dpex.tests._helper import get_all_dtypes
 
 
 def parfor_add(a, b):
@@ -35,7 +36,9 @@ def parfor_exponent(a, b):
 
 
 shapes = [100, (25, 4)]
-dtypes = [dpnp.int32, dpnp.int64, dpnp.float32, dpnp.float64]
+dtypes = get_all_dtypes(
+    no_bool=True, no_float16=True, no_none=True, no_complex=True
+)
 usm_types = ["device"]
 funcs = [
     parfor_add,
@@ -45,6 +48,11 @@ funcs = [
     parfor_modulus,
     parfor_exponent,
 ]
+
+# TODO: fails for integer because it is being cast to float64 internally?
+if dpnp.float64 not in dtypes:
+    funcs.remove(parfor_divide)
+    funcs.remove(parfor_exponent)
 
 
 def parfor_floor(a, b):

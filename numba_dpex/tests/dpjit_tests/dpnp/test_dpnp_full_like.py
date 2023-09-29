@@ -15,9 +15,9 @@ import pytest
 from numba import errors
 
 from numba_dpex import dpjit
+from numba_dpex.tests._helper import get_all_dtypes
 
 shapes = [11, (3, 7)]
-dtypes = [dpnp.int32, dpnp.int64, dpnp.float32, dpnp.float64]
 usm_types = ["device", "shared", "host"]
 fill_values = [
     7,
@@ -43,7 +43,7 @@ def test_dpnp_full_like_default(shape, fill_value):
         return y
 
     try:
-        a = dpnp.zeros(shape)
+        a = dpnp.zeros(shape, dtype=dpnp.float32)
         c = func(a, fill_value)
     except Exception:
         pytest.fail("Calling dpnp.full_like() inside dpjit failed.")
@@ -78,7 +78,12 @@ def test_dpnp_full_like_default(shape, fill_value):
 
 @pytest.mark.parametrize("shape", shapes)
 @pytest.mark.parametrize("fill_value", fill_values)
-@pytest.mark.parametrize("dtype", dtypes)
+@pytest.mark.parametrize(
+    "dtype",
+    get_all_dtypes(
+        no_bool=True, no_float16=True, no_none=True, no_complex=True
+    ),
+)
 @pytest.mark.parametrize("usm_type", usm_types)
 def test_dpnp_full_like_from_device(shape, fill_value, dtype, usm_type):
     """ "Use device only in dpnp.full_like() inside dpjit."""
@@ -121,7 +126,12 @@ def test_dpnp_full_like_from_device(shape, fill_value, dtype, usm_type):
 
 @pytest.mark.parametrize("shape", shapes)
 @pytest.mark.parametrize("fill_value", fill_values)
-@pytest.mark.parametrize("dtype", dtypes)
+@pytest.mark.parametrize(
+    "dtype",
+    get_all_dtypes(
+        no_bool=True, no_float16=True, no_none=True, no_complex=True
+    ),
+)
 @pytest.mark.parametrize("usm_type", usm_types)
 def test_dpnp_full_like_from_queue(shape, fill_value, dtype, usm_type):
     """ "Use queue only in dpnp.full_like() inside dpjit."""

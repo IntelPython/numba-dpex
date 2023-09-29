@@ -7,34 +7,23 @@ import pytest
 
 import numba_dpex as dpex
 from numba_dpex.core.descriptor import dpex_kernel_target
-from numba_dpex.tests._helper import override_config
+from numba_dpex.tests._helper import get_all_dtypes
 
 global_size = 100
 N = global_size
 
 
-list_of_i_dtypes = [
-    np.int32,
-    np.int64,
-]
-
-list_of_f_dtypes = [
-    np.float32,
-    np.float64,
-]
+list_of_dtypes = get_all_dtypes(
+    no_bool=True, no_float16=True, no_none=True, no_complex=True
+)
 
 
-@pytest.fixture(params=list_of_i_dtypes + list_of_f_dtypes)
+@pytest.fixture(params=list_of_dtypes)
 def return_dtype(request):
     return request.param
 
 
-@pytest.fixture(params=list_of_f_dtypes)
-def fdtype(request):
-    return request.param
-
-
-@pytest.fixture(params=list_of_i_dtypes + list_of_f_dtypes)
+@pytest.fixture(params=list_of_dtypes)
 def input_arrays(request):
     def _inpute_arrays():
         a = np.array([0], request.param)
@@ -159,7 +148,16 @@ def test_kernel_atomic_multi_dim(
         ("sub", "__spirv_AtomicFAddEXT"),
     ],
 )
-@pytest.mark.parametrize("dtype", list_of_f_dtypes)
+@pytest.mark.parametrize(
+    "dtype",
+    get_all_dtypes(
+        no_bool=True,
+        no_int=True,
+        no_float16=True,
+        no_none=True,
+        no_complex=True,
+    ),
+)
 def test_atomic_fp_native(
     function_generator,
     operator_name,
