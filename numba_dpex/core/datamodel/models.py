@@ -9,7 +9,13 @@ from numba.core.extending import register_model
 from numba_dpex.core.exceptions import UnreachableError
 from numba_dpex.utils import address_space
 
-from ..types import Array, DpctlSyclQueue, DpnpNdArray, USMNdArray
+from ..types import (
+    Array,
+    DpctlSyclEvent,
+    DpctlSyclQueue,
+    DpnpNdArray,
+    USMNdArray,
+)
 
 
 class GenericPointerModel(PrimitiveModel):
@@ -162,6 +168,33 @@ class SyclQueueModel(StructModel):
         super(SyclQueueModel, self).__init__(dmm, fe_type, members)
 
 
+class SyclEventModel(StructModel):
+    """Represents the native data model for a dpctl.SyclEvent PyObject.
+
+    Numba-dpex uses a C struct as defined in
+    numba_dpex/core/runtime._eventstruct.h to store the required attributes for
+    a ``dpctl.SyclEvent`` Python object.
+
+        - ``event_ref``: An opaque C pointer to an actual SYCL event C++ object.
+        - ``parent``: A PyObject* that stores a reference back to the original
+                      ``dpctl.SyclEvent`` PyObject if the native struct is
+                      created by unboxing the PyObject.
+    """
+
+    def __init__(self, dmm, fe_type):
+        members = [
+            (
+                "parent",
+                types.CPointer(types.int8),
+            ),
+            (
+                "event_ref",
+                types.CPointer(types.int8),
+            ),
+        ]
+        super(SyclEventModel, self).__init__(dmm, fe_type, members)
+
+
 def _init_data_model_manager() -> datamodel.DataModelManager:
     """Initializes a DpexKernelTarget-specific data model manager.
 
@@ -213,3 +246,6 @@ register_model(DpnpNdArray)(DpnpNdArrayModel)
 
 # Register the DpctlSyclQueue type
 register_model(DpctlSyclQueue)(SyclQueueModel)
+
+# Register the DpctlSyclEvent type
+register_model(DpctlSyclEvent)(SyclEventModel)

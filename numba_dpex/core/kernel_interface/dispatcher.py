@@ -486,6 +486,9 @@ class JitKernel:
         # Make sure the kernel launch range/nd_range are sane
         self._check_ranges(exec_queue.sycl_device)
 
+        # TODO: return event that calls wait if no reference to the object if
+        # it is possible
+        # event = exec_queue.submit(
         exec_queue.submit(
             sycl_kernel,
             packer.unpacked_args,
