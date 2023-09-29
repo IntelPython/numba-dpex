@@ -14,12 +14,10 @@ from numba_dpex.core.types.dpctl_types import DpctlSyclEvent
 
 
 def test_model_for_DpctlSyclEvent():
-    """Test the datamodel for DpctlSyclEvent that is registered with numba's
-    default datamodel manager and numba_dpex's kernel data model manager.
+    """Test the data model for DpctlSyclEvent that is registered with numba's
+    default data model manager.
     """
     sycl_event = DpctlSyclEvent(dpctl.SyclEvent())
-    model = dpex_data_model_manager.lookup(sycl_event)
-    assert isinstance(model, SyclEventModel)
     default_model = default_manager.lookup(sycl_event)
     assert isinstance(default_model, SyclEventModel)
 
