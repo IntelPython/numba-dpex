@@ -219,6 +219,12 @@ class NdRange:
         """
         return self.__str__()
 
+    def __eq__(self, other):
+        return (
+            self.global_range == other.global_range
+            and self.local_range == other.local_range
+        )
+
 
 @intrinsic
 def _intrin_range_alloc(typingctx, ty_dim0, ty_dim1, ty_dim2, ty_range):
