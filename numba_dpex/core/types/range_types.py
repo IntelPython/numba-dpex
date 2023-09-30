@@ -169,9 +169,6 @@ def box_range(typ, val, c):
             c.context, c.builder, value=val
         )
 
-        ndim_obj = c.box(types.int64, range_struct.ndim)
-        with cgutils.early_exit_if_null(c.builder, stack, ndim_obj):
-            c.builder.store(fail_obj, ret_ptr)
         dim0_obj = c.box(types.int64, range_struct.dim0)
         with cgutils.early_exit_if_null(c.builder, stack, dim0_obj):
             c.builder.store(fail_obj, ret_ptr)
@@ -184,7 +181,6 @@ def box_range(typ, val, c):
 
         class_obj = c.pyapi.unserialize(c.pyapi.serialize_object(Range))
         with cgutils.early_exit_if_null(c.builder, stack, class_obj):
-            c.pyapi.decref(ndim_obj)
             c.pyapi.decref(dim0_obj)
             c.pyapi.decref(dim1_obj)
             c.pyapi.decref(dim2_obj)
@@ -203,7 +199,6 @@ def box_range(typ, val, c):
         else:
             raise ValueError("Cannot unbox Range instance.")
 
-        c.pyapi.decref(ndim_obj)
         c.pyapi.decref(dim0_obj)
         c.pyapi.decref(dim1_obj)
         c.pyapi.decref(dim2_obj)

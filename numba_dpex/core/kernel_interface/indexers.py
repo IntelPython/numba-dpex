@@ -23,6 +23,8 @@ class Range(tuple):
     the behavior of `sycl::range`.
     """
 
+    UNDEFINED_DIMENSION = -1
+
     def __new__(cls, dim0, dim1=None, dim2=None):
         """Constructs a 1, 2, or 3 dimensional range.
 
@@ -107,8 +109,8 @@ class Range(tuple):
         """
         try:
             return self[1]
-        except:
-            return -1
+        except IndexError:
+            return Range.UNDEFINED_DIMENSION
 
     @property
     def dim2(self) -> int:
@@ -120,8 +122,8 @@ class Range(tuple):
         """
         try:
             return self[2]
-        except:
-            return -1
+        except IndexError:
+            return Range.UNDEFINED_DIMENSION
 
 
 class NdRange:
@@ -220,10 +222,13 @@ class NdRange:
         return self.__str__()
 
     def __eq__(self, other):
-        return (
-            self.global_range == other.global_range
-            and self.local_range == other.local_range
-        )
+        if isinstance(other, NdRange):
+            return (
+                self.global_range == other.global_range
+                and self.local_range == other.local_range
+            )
+        else:
+            return False
 
 
 @intrinsic
@@ -245,12 +250,16 @@ def _intrin_range_alloc(typingctx, ty_dim0, ty_dim1, ty_dim2, ty_range):
         if not isinstance(sig.args[1], types.NoneType):
             range_struct.dim1 = dim1
         else:
-            range_struct.dim1 = llvmir.Constant(llvmir.types.IntType(64), -1)
+            range_struct.dim1 = llvmir.Constant(
+                llvmir.types.IntType(64), Range.UNDEFINED_DIMENSION
+            )
 
         if not isinstance(sig.args[2], types.NoneType):
             range_struct.dim2 = dim2
         else:
-            range_struct.dim2 = llvmir.Constant(llvmir.types.IntType(64), -1)
+            range_struct.dim2 = llvmir.Constant(
+                llvmir.types.IntType(64), Range.UNDEFINED_DIMENSION
+            )
 
         range_struct.ndim = llvmir.Constant(llvmir.types.IntType(64), typ.ndim)
 
