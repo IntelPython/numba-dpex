@@ -26,6 +26,7 @@ from .numba_types_short_names import (
     uint64,
     void,
 )
+from .range_types import NdRangeType, RangeType
 from .usm_ndarray_type import USMNdArray
 
 usm_ndarray = USMNdArray
@@ -35,6 +36,8 @@ __all__ = [
     "DpctlSyclQueue",
     "DpctlSyclEvent",
     "DpnpNdArray",
+    "RangeType",
+    "NdRangeType",
     "USMNdArray",
     "none",
     "boolean",
