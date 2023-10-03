@@ -25,4 +25,15 @@ project(numba-dpex
     VERSION ${NUMBA_DPEX_VERSION}
 )
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE BOTH)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY BOTH)
+
+if(IS_INSTALL)
+    install(DIRECTORY numba_dpex
+        DESTINATION ${CMAKE_INSTALL_PREFIX}
+        FILES_MATCHING PATTERN "*.py")
+endif()
+
 add_subdirectory(numba_dpex)
