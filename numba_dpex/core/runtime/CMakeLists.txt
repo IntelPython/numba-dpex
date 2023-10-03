@@ -83,7 +83,7 @@ message(STATUS "CMAKE_MODULE_PATH=" "${CMAKE_MODULE_PATH}")
 
 # Add packages
 find_package(Python 3.9 REQUIRED
-  COMPONENTS Interpreter Development.Module NumPy)
+    COMPONENTS Interpreter Development.Module NumPy)
 find_package(Dpctl REQUIRED)
 find_package(IntelSYCL REQUIRED)
 
@@ -93,7 +93,8 @@ include_directories(${Python_INCLUDE_DIRS})
 include_directories(${Python_NumPy_INCLUDE_DIRS})
 include_directories(${Numba_INCLUDE_DIRS})
 include_directories(${Dpctl_INCLUDE_DIRS})
-include_directories(.)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/kernels)
 
 # Source files, *.c
 file(GLOB_RECURSE DPEXRT_SOURCES CONFIGURE_DEPENDS "*.c")

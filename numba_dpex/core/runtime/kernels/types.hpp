@@ -1,5 +1,5 @@
-#ifndef __TYPE_UTILS_HPP__
-#define __TYPE_UTILS_HPP__
+#ifndef __TYPES_HPP__
+#define __TYPES_HPP__
 
 #include <CL/sycl.hpp>
 #include <complex>
@@ -10,7 +10,9 @@ namespace ndpx
 {
 namespace runtime
 {
-namespace utils
+namespace kernel
+{
+namespace types
 {
 
 template <class T> struct is_complex : public std::false_type
@@ -20,6 +22,26 @@ template <class T> struct is_complex : public std::false_type
 template <class T> struct is_complex<std::complex<T>> : public std::true_type
 {
 };
+
+enum class typenum_t : int
+{
+    BOOL = 0,
+    INT8, // 1
+    UINT8,
+    INT16,
+    UINT16,
+    INT32, // 5
+    UINT32,
+    INT64,
+    UINT64,
+    HALF,
+    FLOAT, // 10
+    DOUBLE,
+    CFLOAT,
+    CDOUBLE, // 13
+};
+
+constexpr int num_types = 14; // number of elements in typenum_t
 
 template <typename dstTy, typename srcTy> dstTy convert_impl(const srcTy &v)
 {
@@ -101,7 +123,8 @@ auto vec_cast(const sycl::vec<srcT, N> &s)
     }
 }
 
-} // namespace utils
+} // namespace types
+} // namespace kernel
 } // namespace runtime
 } // namespace ndpx
 
