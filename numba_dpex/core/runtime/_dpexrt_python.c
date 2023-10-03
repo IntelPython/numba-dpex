@@ -901,7 +901,7 @@ static PyObject *box_from_arystruct_parent(usmarystruct_t *arystruct,
                                            int ndim,
                                            PyArray_Descr *descr)
 {
-    int i = 0, exp = 0;
+    int i = 0, j = 0, k = 0, exp = 0;
     npy_intp *p = NULL;
     npy_intp *shape = NULL, *strides = NULL;
     PyObject *array = arystruct->parent;
@@ -933,6 +933,8 @@ static PyObject *box_from_arystruct_parent(usmarystruct_t *arystruct,
     shape = UsmNDArray_GetShape(arrayobj);
     strides = UsmNDArray_GetStrides(arrayobj);
 
+    // Ensure the shape of the array to be boxed matches the shape of the
+    // original parent.
     for (i = 0; i < ndim; i++, p++) {
         if (shape[i] != *p)
             return NULL;
@@ -942,20 +944,52 @@ static PyObject *box_from_arystruct_parent(usmarystruct_t *arystruct,
     itemsize = arystruct->itemsize;
     while (itemsize >>= 1)
         exp++;
-    // dpctl stores strides as number of elements and Numba stores strides as
+
+    // Ensure the strides of the array to be boxed matches the shape of the
+    // original parent. Things to note:
+    //
+    // 1. dpctl only stores stride information if the array has a non-unit
+    // stride. If the array is unit strided then dpctl does not populate the
+    // stride attribute. To verify strides, we compute the strides from the
+    // shape vector.
+    //
+    // 2. dpctl stores strides as number of elements and Numba stores strides as
     // bytes, for that reason we are multiplying stride by itemsize when
-    // unboxing the external array.
+    // unboxing the external array and dividing by itemsize when boxing the
+    // array back.
+
     if (strides) {
-        if (strides[i] << exp != *p)
-            return NULL;
+        for (i = 0; i < ndim; ++i, ++p) {
+            if (strides[i] << exp != *p) {
+                DPEXRT_DEBUG(
+                    drt_debug_print("DPEXRT-DEBUG: Arrayobj cannot be boxed "
+                                    "from parent as strides in the "
+                                    "arystruct are not the same as "
+                                    "the strides in the parent object. "
+                                    "Expected stride = %d actual stride = %d\n",
+                                    strides[i] << exp, *p));
+                return NULL;
+            }
+        }
     }
     else {
-        for (i = 1; i < ndim; ++i, ++p) {
-            if (shape[i] != *p)
+        npy_intp tmp;
+        for (i = (ndim * 2) - 1; i >= ndim; --i, ++p) {
+            tmp = 1;
+            for (j = i, k = ndim - 1; j > ndim; --j, --k)
+                tmp *= shape[k];
+            tmp <<= exp;
+            if (tmp != *p) {
+                DPEXRT_DEBUG(
+                    drt_debug_print("DPEXRT-DEBUG: Arrayobj cannot be boxed "
+                                    "from parent as strides in the "
+                                    "arystruct are not the same as "
+                                    "the strides in the parent object. "
+                                    "Expected stride = %d actual stride = %d\n",
+                                    tmp, *p));
                 return NULL;
+            }
         }
-        if (*p != 1)
-            return NULL;
     }
 
     // At the end of boxing our Meminfo destructor gets called and that will
