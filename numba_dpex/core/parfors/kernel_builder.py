@@ -80,7 +80,7 @@ def _compile_kernel_parfor(
     )
 
     dpctl_create_program_from_spirv_flags = []
-    if debug or config.OPT == 0:
+    if debug or config.DPEX_OPT == 0:
         # if debug is ON we need to pass additional flags to igc.
         dpctl_create_program_from_spirv_flags = ["-g", "-cl-opt-disable"]
 

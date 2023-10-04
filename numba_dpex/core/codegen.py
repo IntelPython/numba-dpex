@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import logging
+
 from llvmlite import binding as ll
 from llvmlite import ir as llvmir
 from numba.core import utils
@@ -31,11 +33,22 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
         # Run some lightweight optimization to simplify the module.
         pmb = ll.PassManagerBuilder()
 
-        # Make optimization level depending on config.OPT variable
-        pmb.opt_level = config.OPT
+        # Make optimization level depending on config.DPEX_OPT variable
+        pmb.opt_level = config.DPEX_OPT
+        if config.DPEX_OPT > 2:
+            logging.warning(
+                "Setting NUMBA_DPEX_OPT greater than 2 known to cause issues "
+                + "related to very aggressive optimizations that leads to "
+                + "broken code."
+            )
 
         pmb.disable_unit_at_a_time = False
-        pmb.inlining_threshold = 2
+        if config.INLINE_THRESHOLD is not None:
+            logging.warning(
+                "Setting INLINE_THRESHOLD leads to very aggressive "
+                + "optimizations that may produce incorrect binary."
+            )
+            pmb.inlining_threshold = config.INLINE_THRESHOLD
         pmb.disable_unroll_loops = True
         pmb.loop_vectorize = False
         pmb.slp_vectorize = False
