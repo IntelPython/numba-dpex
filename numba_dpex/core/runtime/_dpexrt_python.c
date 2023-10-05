@@ -23,6 +23,7 @@
 #include "_eventstruct.h"
 #include "_queuestruct.h"
 #include "_usmarraystruct.h"
+#include "kernels/api.h"
 
 #include "experimental/kernel_caching.h"
 #include "experimental/nrt_reserve_meminfo.h"
@@ -1518,6 +1519,7 @@ error:
 
 MOD_INIT(_dpexrt_python)
 {
+    printf("======================> MOD_INIT\n");
     PyObject *m = NULL;
     PyObject *dpnp_array_type = NULL;
     PyObject *dpnp_array_mod = NULL;
@@ -1582,5 +1584,9 @@ MOD_INIT(_dpexrt_python)
                        PyLong_FromVoidPtr(&DPEXRT_kernel_cache_size));
 
     PyModule_AddObject(m, "c_helpers", build_c_helpers_dict());
+
+    init_sequence_dispatch_vectors();
+    init_affine_sequence_dispatch_vectors();
+
     return MOD_SUCCESS_VAL(m);
 }
