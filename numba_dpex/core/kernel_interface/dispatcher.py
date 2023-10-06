@@ -94,7 +94,7 @@ class JitKernel:
             self._kernel_bundle_cache = NullCache()
         self._cache_hits = 0
 
-        if debug_flags or config.OPT == 0:
+        if debug_flags or config.DPEX_OPT == 0:
             # if debug is ON we need to pass additional
             # flags to igc.
             self._create_sycl_kernel_bundle_flags = ["-g", "-cl-opt-disable"]
