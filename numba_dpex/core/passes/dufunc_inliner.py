@@ -116,12 +116,7 @@ def _is_dufunc_callsite(expr, block):
 
 
 def dufunc_inliner(func_ir, calltypes, typemap, typingctx, targetctx):
-    _DEBUG = False
     modified = False
-
-    if _DEBUG:
-        print("GUFunc before inlining DUFunc".center(80, "-"))
-        print(func_ir.dump())
 
     work_list = list(func_ir.blocks.items())
     # use a work list, look for call sites via `ir.Expr.op == call` and
@@ -152,11 +147,6 @@ def dufunc_inliner(func_ir, calltypes, typemap, typingctx, targetctx):
                             break  # because block structure changed
                     else:
                         continue
-    if _DEBUG:
-        print("GUFunc after inlining DUFunc".center(80, "-"))
-        print(func_ir.dump())
-        print("".center(80, "-"))
-
     if modified:
         # clean up leftover load instructions. This step is needed or else
         # SpirvLowerer would complain
@@ -164,10 +154,5 @@ def dufunc_inliner(func_ir, calltypes, typemap, typingctx, targetctx):
         # clean up unconditional branches that appear due to inlined
         # functions introducing blocks
         func_ir.blocks = simplify_CFG(func_ir.blocks)
-
-    if _DEBUG:
-        print("GUFunc after inlining DUFunc, DCE, SimplyCFG".center(80, "-"))
-        print(func_ir.dump())
-        print("".center(80, "-"))
 
     return True
