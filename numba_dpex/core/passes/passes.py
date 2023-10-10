@@ -31,15 +31,6 @@ class ConstantSizeStaticLocalMemoryPass(FunctionPass):
         assert state.func_ir
         func_ir = state.func_ir
 
-        _DEBUG = False
-
-        if _DEBUG:
-            print(
-                "Checks if size of OpenCL local address space alloca is a "
-                + "compile-time constant.".center(80, "-")
-            )
-            print(func_ir.dump())
-
         work_list = list(func_ir.blocks.items())
         while work_list:
             label, block = work_list.pop()
