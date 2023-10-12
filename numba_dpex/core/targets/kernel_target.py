@@ -87,7 +87,7 @@ class DpexKernelTypingContext(typing.BaseContext):
 
     def load_additional_registries(self):
         """Register the OpenCL API and math and other functions."""
-        from numba.core.typing import cmathdecl, npydecl
+        from numba.core.typing import cmathdecl, enumdecl, npydecl
 
         from ...ocl import mathdecl, ocldecl
 
@@ -95,6 +95,7 @@ class DpexKernelTypingContext(typing.BaseContext):
         self.install_registry(mathdecl.registry)
         self.install_registry(cmathdecl.registry)
         self.install_registry(npydecl.registry)
+        self.install_registry(enumdecl.registry)
 
 
 class SyclDevice(GPU):
