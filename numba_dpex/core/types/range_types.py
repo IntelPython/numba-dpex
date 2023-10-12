@@ -22,7 +22,7 @@ class RangeType(types.Type):
             raise errors.TypingError(
                 "RangeType can only have 1,2, or 3 dimensions"
             )
-        super(RangeType, self).__init__(name="Range")
+        super(RangeType, self).__init__(name="Range<" + str(ndim) + ">")
 
     @property
     def ndim(self):
@@ -44,7 +44,7 @@ class NdRangeType(types.Type):
             raise errors.TypingError(
                 "RangeType can only have 1,2, or 3 dimensions"
             )
-        super(NdRangeType, self).__init__(name="NdRange")
+        super(NdRangeType, self).__init__(name="NdRange<" + str(ndim) + ">")
 
     @property
     def ndim(self):
