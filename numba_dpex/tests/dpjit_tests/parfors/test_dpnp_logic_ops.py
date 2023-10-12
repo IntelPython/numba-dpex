@@ -9,6 +9,7 @@ import numpy as np
 import pytest
 
 from numba_dpex import dpjit
+from numba_dpex.tests._helper import get_all_dtypes
 
 """ Following cases, dpnp raises NotImplementedError"""
 
@@ -42,12 +43,9 @@ def unary_op(request):
     return request.param
 
 
-list_of_dtypes = [
-    dpnp.int32,
-    dpnp.int64,
-    dpnp.float32,
-    dpnp.float64,
-]
+list_of_dtypes = get_all_dtypes(
+    no_bool=True, no_float16=True, no_none=True, no_complex=True
+)
 
 
 @pytest.fixture(params=list_of_dtypes)

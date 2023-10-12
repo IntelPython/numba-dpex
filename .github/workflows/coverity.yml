@@ -1,0 +1,49 @@
+name: Coverity
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  Coverity:
+
+    runs-on: ubuntu-latest
+
+    env:
+      CHECKERS: --concurrency --security --rule --enable-constraint-fpp --enable-fnptr --enable-virtual --webapp-security --enable-audit-checkers --enable-default
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - name: URL encode project name
+      run: echo "COV_PROJECT=${{ github.repository }}" | sed -e 's:/:%2F:g' -e 's/ /%20/g' >> $GITHUB_ENV
+
+    - name: Coverity Download
+      run: |
+        mkdir -p /tmp/cov-analysis
+        wget https://scan.coverity.com/download/linux64 --post-data "token=${{secrets.COV_TOKEN}}&project=${{env.COV_PROJECT}}" -O cov-analysis.tgz
+        tar -xzf cov-analysis.tgz --strip 1 -C /tmp/cov-analysis
+        rm cov-analysis.tgz
+
+    - name: Coverity Full Scan
+      if: ${{ github.event_name != 'pull_request' }}
+      run: |
+        export PATH=$PATH:/tmp/cov-analysis/bin
+        set -x
+        cov-build --dir cov-int --fs-capture-search $GITHUB_WORKSPACE --no-command
+        # Not available in package, maybe will be once approved?
+        # cov-analyze --dir cov-int --ticker-mode none --strip-path $GITHUB_WORKSPACE $CHECKERS
+
+        tar czvf numba-dpex.tgz cov-int
+        rm -rf cov-int
+
+        curl --form token=${{ secrets.COV_TOKEN }} \
+            --form email=${{ secrets.COV_EMAIL }} \
+            --form file=@numba-dpex.tgz \
+            --form version="${{ github.sha }}" \
+            --form description="Coverity Scan ${{ github.repository }} / ${{ github.ref }}" \
+            https://scan.coverity.com/builds?project=${{env.COV_PROJECT}}

@@ -4,17 +4,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.21.3] - 2023-09-21
+## [0.21.4] - 2023-10-12
 
 ### Fixed
+* Remove dead code to silence Coverity errors. (#1163)
+
+## [0.21.3] - 2023-09-28
+
+### Fixed
+* Pin CI conda channels (#1133)
 * Mangled kernel name generation (#1112)
 
 ### Added
+* Support tests on single point precision GPUs (#1143)
+* Initial work on Coverity scan CI (#1128)
 * Python 3.11 support (#1123)
 * Security policy (#1117)
-* scikit-build to build native extensions (#1107, #1127)
+* scikit-build to build native extensions (#1107, #1116, #1127, #1139, #1140)
 
 ### Changed
+* Rename helper function to clearly indicate its usage (#1145)
 * The data model used by the DpnpNdArray type for kernel functions(#1118)
 
 ### Removed

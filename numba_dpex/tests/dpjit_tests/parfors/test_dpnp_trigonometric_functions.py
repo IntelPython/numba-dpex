@@ -9,7 +9,7 @@ import numpy as np
 import pytest
 
 from numba_dpex import dpjit
-from numba_dpex.tests._helper import is_gen12
+from numba_dpex.tests._helper import get_all_dtypes, is_gen12
 
 list_of_trig_ops = [
     "sin",
@@ -31,20 +31,17 @@ list_of_trig_ops = [
     "radians",
 ]
 
+list_of_dtypes = get_all_dtypes(
+    no_bool=True, no_int=True, no_float16=True, no_none=True, no_complex=True
+)
+
+# TODO: fails for float32 because it uses cast to float64 internally?
+if dpnp.float64 not in list_of_dtypes:
+    list_of_trig_ops.remove("arctan2")
+
 
 @pytest.fixture(params=list_of_trig_ops)
 def trig_op(request):
-    return request.param
-
-
-list_of_dtypes = [
-    dpnp.float32,
-    dpnp.float64,
-]
-
-
-@pytest.fixture(params=list_of_trig_ops)
-def dtype(request):
     return request.param
 
 

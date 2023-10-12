@@ -10,9 +10,12 @@ import pytest
 from numba import errors
 
 from numba_dpex import dpjit
+from numba_dpex.tests._helper import get_all_dtypes
 
 shapes = [11, (3, 7)]
-dtypes = [dpnp.int32, dpnp.int64, dpnp.float32, dpnp.float64]
+dtypes = get_all_dtypes(
+    no_bool=True, no_float16=True, no_none=True, no_complex=True
+)
 usm_types = ["device", "shared", "host"]
 
 
@@ -22,7 +25,7 @@ def test_dpnp_zeros_default(shape):
 
     @dpjit
     def func(shape):
-        c = dpnp.zeros(shape)
+        c = dpnp.zeros(shape, dtype=dpnp.float32)
         return c
 
     try:
@@ -37,7 +40,7 @@ def test_dpnp_zeros_default(shape):
 
     assert not c.asnumpy().any()
 
-    dummy = dpnp.zeros(shape)
+    dummy = dpnp.zeros(shape, dtype=dpnp.float32)
 
     assert c.dtype == dummy.dtype
     assert c.usm_type == dummy.usm_type
