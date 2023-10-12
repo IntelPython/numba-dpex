@@ -247,9 +247,12 @@ jobs:
       - name: Upload
         run: anaconda --token ${{ secrets.ANACONDA_TOKEN }} upload --user dppy --label dev ${{ env.PACKAGE_NAME }}-*.tar.bz2
 
+      - name: Package version
+        run: echo "PACKAGE_VERSION=$(basename ${{ env.PACKAGE_NAME }}-*.tar.bz2 | sed 's/^${{ env.PACKAGE_NAME }}-\([^-]*\).*/\1/')" >> $GITHUB_ENV
+
       - name: Store wheels name
         run: |
           echo "WHEELS_NAME=$PACKAGE_NAME" | tr "-" "_" >> $GITHUB_ENV
 
       - name: Upload Wheels
-        run: anaconda --token ${{ secrets.ANACONDA_TOKEN }} upload --user dppy --label dev ${{ env.WHEELS_NAME }}-*.whl
+        run: anaconda --token ${{ secrets.ANACONDA_TOKEN }} upload --user dppy --label dev ${{ env.WHEELS_NAME }}-*.whl --version ${{ env.PACKAGE_VERSION }}
