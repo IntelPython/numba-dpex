@@ -1,0 +1,1394 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LGGL0NJK6P"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-LGGL0NJK6P');
+    </script>
+    
+    <title>Release Notes &#8212; numba-dpex  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+
+    <script src="_static/documentation_options.js?v=8a448e45"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'release-notes';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="License" href="license.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+<div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+    <span class="fa-solid fa-bars"></span>
+  </label>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    <p class="title logo__title">numba-dpex  documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="overview.html">
+                        Overview
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="getting_started.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="user_guide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="api_reference/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="contribution_guide.html">
+                        Contribution Guide
+                      </a>
+                    </li>
+                
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-header-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-header-nav-more-links" class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="examples.html">
+                        List of examples
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="glossary.html">
+                        Glossary
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="license.html">
+                        License
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link dropdown-item nav-internal" href="#">
+                        Release Notes
+                      </a>
+                    </li>
+                
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+        </div>
+      
+      
+        <div class="navbar-item">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/IntelPython/numba-dpex" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github-square fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://app.gitter.im/#/room/#Data-Parallel-Python_community:gitter.im" title="Gitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-brands fa-gitter fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Gitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script>
+    </div>
+  
+
+  
+    <label class="sidebar-toggle secondary-toggle" for="__secondary" tabindex="0">
+      <span class="fa-solid fa-outdent"></span>
+    </label>
+  
+</div>
+
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="overview.html">
+                        Overview
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="getting_started.html">
+                        Getting Started
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="user_guide/index.html">
+                        User Guide
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="api_reference/index.html">
+                        API Reference
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="contribution_guide.html">
+                        Contribution Guide
+                      </a>
+                    </li>
+                
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-controls="pst-header-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-header-nav-more-links" class="dropdown-menu">
+                    
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="examples.html">
+                        List of examples
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="glossary.html">
+                        Glossary
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item">
+                      <a class="nav-link dropdown-item nav-internal" href="license.html">
+                        License
+                      </a>
+                    </li>
+                
+
+                    <li class="nav-item current active">
+                      <a class="nav-link dropdown-item nav-internal" href="#">
+                        Release Notes
+                      </a>
+                    </li>
+                
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links navbar-nav"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/IntelPython/numba-dpex" title="GitHub" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-github-square fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://app.gitter.im/#/room/#Data-Parallel-Python_community:gitter.im" title="Gitter" class="nav-link" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><span><i class="fab fa-brands fa-gitter fa-lg" aria-hidden="true"></i></span>
+            <span class="sr-only">Gitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+
+
+<nav aria-label="Breadcrumb">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Release Notes</li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <span class="target" id="release-notes"></span><section id="id2">
+<h1>Release Notes<a class="headerlink" href="#id2" title="Link to this heading">#</a></h1>
+<section id="changelog">
+<h2>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">#</a></h2>
+<p>All notable changes to this project will be documented in this file.</p>
+<p>The format is based on <a class="reference external" href="https://keepachangelog.com/en/1.0.0/">Keep a Changelog</a>,
+and this project adheres to <a class="reference external" href="https://semver.org/spec/v2.0.0.html">Semantic Versioning</a>.</p>
+<section id="id1">
+<h3>[0.21.4] - 2023-10-12<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<section id="fixed">
+<h4>Fixed<a class="headerlink" href="#fixed" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Remove dead code to silence Coverity errors. (#1163)</p></li>
+</ul>
+</section>
+</section>
+<section id="id2">
+<h3>[0.21.3] - 2023-09-28<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<section id="id3">
+<h4>Fixed<a class="headerlink" href="#id3" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Pin CI conda channels (#1133)</p></li>
+<li><p>Mangled kernel name generation (#1112)</p></li>
+</ul>
+</section>
+<section id="added">
+<h4>Added<a class="headerlink" href="#added" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Support tests on single point precision GPUs (#1143)</p></li>
+<li><p>Initial work on Coverity scan CI (#1128)</p></li>
+<li><p>Python 3.11 support (#1123)</p></li>
+<li><p>Security policy (#1117)</p></li>
+<li><p>scikit-build to build native extensions (#1107, #1116, #1127, #1139, #1140)</p></li>
+</ul>
+</section>
+<section id="changed">
+<h4>Changed<a class="headerlink" href="#changed" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Rename helper function to clearly indicate its usage (#1145)</p></li>
+<li><p>The data model used by the DpnpNdArray type for kernel functions(#1118)</p></li>
+</ul>
+</section>
+<section id="removed">
+<h4>Removed<a class="headerlink" href="#removed" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Support for Python 3.8 (#1113)</p></li>
+</ul>
+</section>
+</section>
+<section id="id4">
+<h3>[0.21.2] - 2023-08-07<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id5">
+<h4>Fixed<a class="headerlink" href="#id5" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Bugs (#1068, #774) in atomic addition caused due to improper floating point atomic emulation. (#1103)</p></li>
+</ul>
+</section>
+<section id="id6">
+<h4>Changed<a class="headerlink" href="#id6" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Updated documentation and user guides (#1097, #879)</p></li>
+</ul>
+</section>
+<section id="id7">
+<h4>Removed<a class="headerlink" href="#id7" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Dependency on <code class="docutils literal notranslate"><span class="pre">spirv-tools</span></code> (#1103, #1108)</p></li>
+<li><p>floating point atomic add emulation using <code class="docutils literal notranslate"><span class="pre">atomic_ops.cl</span></code> (#1103)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NUMBA_DPEX_ACTIVATE_ATOMICS_FP_NATIVE</span></code> configuration option (#1103)</p></li>
+</ul>
+</section>
+</section>
+<section id="id8">
+<h3>[0.21.1] - 2023-07-17<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<section id="id9">
+<h4>Changed<a class="headerlink" href="#id9" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Improved support for <code class="docutils literal notranslate"><span class="pre">queue</span></code> keyword in dpnp array constructor overloads (#1083)</p></li>
+<li><p>Improved reduction kernel example (#1089)</p></li>
+</ul>
+</section>
+<section id="id10">
+<h4>Fixed<a class="headerlink" href="#id10" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Update Itanium CXX ABI Mangler reference (#1080)</p></li>
+<li><p>Update sourceware references in docstrings (#1081)</p></li>
+<li><p>Typo in error messages of kernel interface (#1082)</p></li>
+</ul>
+</section>
+</section>
+<section id="id11">
+<h3>[0.21.0] - 2023-06-17<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<section id="id12">
+<h4>Added<a class="headerlink" href="#id12" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Support addition and multiplication-based prange reduction loops (#999)</p></li>
+<li><p>Proper boxing, unboxing of dpctl.SyclQueue objects inside dpjit decorated functions (#963, #1064)</p></li>
+<li><p>Support for <code class="docutils literal notranslate"><span class="pre">queue</span></code> keyword arguments inside dpnp array constructors in dpjit (#1032)</p></li>
+<li><p>Overloads for dpnp array constructors: dpnp.full (#991), dpnp.full_like (#997)</p></li>
+<li><p>Support for complex64 and complex128 types as kernel arguments and in parfors (#1033, #1035)</p></li>
+<li><p>New config to run the ConstantSizeStaticLocalMemoryPass optionally (#999)</p></li>
+<li><p>Support for Numba 0.57 (#1030, #1003, #1002)</p></li>
+<li><p>Support for Python 3.11 (#1054)</p></li>
+<li><p>Support for SPIRV 1.4 (#1056, #1060)</p></li>
+</ul>
+</section>
+<section id="id13">
+<h4>Changed<a class="headerlink" href="#id13" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Parfor lowering happens using the kernel pipeline (#996)</p></li>
+<li><p>Minimum required Numba version is now 0.57 (#1030)</p></li>
+<li><p>Numba monkey patches are moved to numba_dpex.numba_patches (#1030)</p></li>
+<li><p>Redesigned unit test suite (#1018, #1017, #1015, #1036, #1037, #1072)</p></li>
+</ul>
+</section>
+<section id="id14">
+<h4>Fixed<a class="headerlink" href="#id14" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Fix stride computation when unboxing a dpnp array (#1023)</p></li>
+<li><p>Using cached queue instead of creating new one on type inference (#946)</p></li>
+<li><p>Fixed bug in reduction mul operation for dpjit (#1048)</p></li>
+<li><p>Offload of parfor nodes to OpenCL UHD GPU devices (#1074)</p></li>
+</ul>
+</section>
+<section id="id15">
+<h4>Removed<a class="headerlink" href="#id15" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Support for offloading NumPy-based parfor nodes to SYCL devices (#1041)</p></li>
+<li><p>Removed rename_numpy_functions_pass (#1041)</p></li>
+<li><p>Dpnp overloads using stubs (#1041, #1025)</p></li>
+<li><p>Support for <code class="docutils literal notranslate"><span class="pre">like</span></code> keyword argument in dpnp array constructor overloads (#1043)</p></li>
+<li><p>Support for NumPy arrays as kernel arguments (#1049)</p></li>
+<li><p>Kernel argument access specifiers (#1049)</p></li>
+<li><p>Support for dpctl.device_context to launch kernels and njit offloading (#1041)</p></li>
+</ul>
+</section>
+</section>
+<section id="id16">
+<h3>[0.20.1] - 2023-04-07<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+<section id="id17">
+<h4>Added<a class="headerlink" href="#id17" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Replaced llvm_spirv from oneAPI path by dpcpp-llvm-spirv package.(#979)</p></li>
+<li><p>Added Dockerfile and a manual workflow to publish pre-built packages to the repo.(#973)</p></li>
+</ul>
+</section>
+<section id="id18">
+<h4>Fixed<a class="headerlink" href="#id18" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Fixed default dtype derivation when creating a dpnp.ndarray. (#993)</p></li>
+<li><p>Adjusted test_windows step to work with intel-opencl-rt=2023.1.0. (#990)</p></li>
+<li><p>Fixed layout in dpnp overload.(#987)</p></li>
+<li><p>Handled the case when arraystruct-&gt;meminfo is null to close gh-965. (#972)</p></li>
+</ul>
+</section>
+</section>
+<section id="id19">
+<h3>[0.20.0] - 2023-03-06<a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
+<section id="id20">
+<h4>Added<a class="headerlink" href="#id20" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>New dpjit decorator supporting dpnp compilation (#887)</p></li>
+<li><p>Boxing and unboxing functionality for dpnp.ndarray to numba_dpex (#902)</p></li>
+<li><p>New DpexTarget and dispatcher for compiling dpnp using numba-dpex (#887)</p></li>
+<li><p>Overload implementation for dpnp.empty (#902)</p></li>
+<li><p>Overload implementation for dpnp.empty_like, dpnp.zeros_like and
+dpnp.ones_like inside dpjit (#928)</p></li>
+<li><p>Overload implementation for dpnp.zeros and dpnp.ones inside dpjit (#923)</p></li>
+<li><p>Compilation and offload support for dpnp vector style expressions using Numba
+parfors (#957)</p></li>
+<li><p>Compilation of over 70 ufuncs for dpnp inside dpjit (#957)</p></li>
+<li><p>Backported the split parfor pass from upstream Numba. (#949)</p></li>
+<li><p>Numba type aliases to numba_dpex. (#851)</p></li>
+<li><p>Numba prange alias inside numba_dpex. (#957)</p></li>
+<li><p>New LRU cache for kernels (#804) and funcs (#877)</p></li>
+<li><p>New Range and NdRange classes for kernel submission that follow sycl’s range
+and ndrange syntax. (#888)</p></li>
+<li><p>Monkey pacthes to Numba 0.56.4 to support dpnp ufuncs, allocating dpnp
+arrays (#954)</p></li>
+<li><p>New config flag (NUMBA_DPEX_DUMP_KERNEL_LLVM) to dump a kernel’s
+LLVM IR (#924)</p></li>
+<li><p>A badge to our gitter chatroom (#919)</p></li>
+<li><p>A small script to update copyright headers (#917)</p></li>
+<li><p>A new dpexrt_python extension to support USM allocators for Numba
+NRT_MemInfo (#902)</p></li>
+<li><p>Updated examples for kernel API demonstrating compute-follows-data programming
+model. (#826)</p></li>
+</ul>
+</section>
+<section id="id21">
+<h4>Changed<a class="headerlink" href="#id21" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CLK_GLOBAL_MEM_FENCE</span></code> and <code class="docutils literal notranslate"><span class="pre">CLK_LOCAL_MEM_FENCE</span></code> flags renamed to
+<code class="docutils literal notranslate"><span class="pre">GLOBAL_MEM_FENCE</span></code> and <code class="docutils literal notranslate"><span class="pre">LOCAL_MEM_FENCE</span></code>. (#844)</p></li>
+<li><p>Switched from Ubuntu-latest to Ubuntu-20.04 for conda package build (#836)</p></li>
+<li><p>Rename USMNdArrayType to USMNdArray (#851)</p></li>
+<li><p>Changes to the Numba type to represent dpnp ndarray typess now renamed to
+DpnpNdarray (#880)</p></li>
+<li><p>Improved exceptions and user errors (#804)</p></li>
+<li><p>Updated internal API for kernel interface with improved support for
+<code class="docutils literal notranslate"><span class="pre">__sycl_usm_array_interface__</span></code> protocol (#804)</p></li>
+<li><p>Pin generated spirv version for kernels to 1.1 (#885)</p></li>
+<li><p>Rename DpexContext and DpexTypingContext to DpexKernelTarget and
+DpexKernelTypingContext (#887)</p></li>
+<li><p>Renamed existing dpnp overloads that used stubs to dpnp_stubs_impl.py (#953)</p></li>
+<li><p>Dpctl version requirement mismatch is now a warning and not an
+ImportError (#925)</p></li>
+<li><p>Update to versioneer 0.28 (#827)</p></li>
+<li><p>Update to dpctl 0.14 (#858)</p></li>
+<li><p>Update linters: black to 23.1.0, isort to 5.12.0 (#900)</p></li>
+<li><p>License in setup.py to match actual project licensing (#904)</p></li>
+</ul>
+</section>
+<section id="id22">
+<h4>Fixed<a class="headerlink" href="#id22" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Kernel specialization, compute follows data programming model for
+kernels (#804)</p></li>
+<li><p>Dispatcher/caching rewrite to address performance regression (#912, #896)</p></li>
+<li><p>func decorator qualname ambiguation fix (#905)</p></li>
+</ul>
+</section>
+<section id="id23">
+<h4>Removed<a class="headerlink" href="#id23" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Removes the numpy_usm_shared module from numba_dpex. (#841)</p></li>
+<li><p>Removes the usage of llvmlite.llvmpy (#932)</p></li>
+</ul>
+</section>
+<section id="deprecated">
+<h4>Deprecated<a class="headerlink" href="#deprecated" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Support for NumPy arrays as kernel arguments (#804)</p></li>
+<li><p>Kernel argument access specifiers (#804)</p></li>
+<li><p>Support for dpctl.device_context to launch kernels and njit offloading (#804)</p></li>
+<li><p>Dpnp overloads using stubs. (#953)</p></li>
+</ul>
+</section>
+</section>
+<section id="id24">
+<h3>[0.19.0] - 2022-11-21<a class="headerlink" href="#id24" title="Link to this heading">#</a></h3>
+<section id="id25">
+<h4>Added<a class="headerlink" href="#id25" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Supported numba0.56. (#818)</p></li>
+<li><p>Supported dpnp0.11 and dpctl0.14.</p></li>
+<li><p>Added customized exception classes. (#798)</p></li>
+</ul>
+</section>
+<section id="id26">
+<h4>Fixed<a class="headerlink" href="#id26" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Fixed a crash when calling take() for input array with non-integer values. (#771)</p></li>
+<li><p>Fixed pairwise_distance.py to run on machine with no FP64 support in HW.  (#806)</p></li>
+</ul>
+</section>
+</section>
+<section id="id27">
+<h3>[0.18.1] - 2022-08-06<a class="headerlink" href="#id27" title="Link to this heading">#</a></h3>
+<section id="id28">
+<h4>Added<a class="headerlink" href="#id28" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Implemented support for <code class="docutils literal notranslate"><span class="pre">dpnp.empty()</span></code> (#728)</p></li>
+</ul>
+</section>
+<section id="id29">
+<h4>Changed<a class="headerlink" href="#id29" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>numba-dppy package is now renamed to numba-dpex.</p></li>
+</ul>
+</section>
+</section>
+<section id="id30">
+<h3>[0.18.0] - 2022-02-22<a class="headerlink" href="#id30" title="Link to this heading">#</a></h3>
+<section id="id31">
+<h4>Added<a class="headerlink" href="#id31" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Run coverage in GitHub Actions and upload results to coveralls.io (#621)</p></li>
+<li><p>Change black to only allow 80 char lines. Reformat sources. (#631)</p></li>
+<li><p>Ignore formatting changes from git-blame. (#632)</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">numba_support.py</span></code> with <code class="docutils literal notranslate"><span class="pre">numba_version</span></code> (#656)</p></li>
+<li><p>Add skip_no_numba055 decorator (#662)</p></li>
+<li><p>Parameterize test for atomics (#661)</p></li>
+<li><p>Reuse decorator <code class="docutils literal notranslate"><span class="pre">skip_no_opencl_Xpu</span></code> to skip tests (#663)</p></li>
+<li><p>Add decorator to skip unsupported atomics (#664)</p></li>
+<li><p>Support arrays with <code class="docutils literal notranslate"><span class="pre">__sycl_usm_array_interface__</span></code> attribute (#629)</p></li>
+<li><p>Support memory allocation in private address space (#640)</p></li>
+<li><p>Move skips for opencl to helper (#665)</p></li>
+<li><p>Support dpctl 0.12 (#669)</p></li>
+<li><p>Implement compute-follows-data programming model [kernel API] (#598)</p></li>
+<li><p>Use filter_str to skip tests on missing devices (#672)</p></li>
+<li><p>Add check for DPNP and pin MKL version in workflow and dev environment (#648)</p></li>
+<li><p>Add CODEOWNERS for distributing review process (#670)</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">skip_no_dpnp</span></code> and apply it to all tests (#668)</p></li>
+<li><p>Test skipping improvements (#675)</p></li>
+<li><p>Use Python 3.9 in dev environment and pin DPNP (#644)</p></li>
+<li><p>Add examples into package (#680)</p></li>
+<li><p>Make possible to force debugging tests (#681)</p></li>
+<li><p>Refactoring for debugging tests (#682)</p></li>
+<li><p>Adopt Numba 0.55 debugging features (#654)</p></li>
+<li><p>Run public CI on pull request (#695)</p></li>
+<li><p>Support for coverage in internal CI (#708)</p></li>
+<li><p>Update to dpnp 0.10 (#709)</p></li>
+<li><p>Update recipe with dpctl and dpnp version for build (#710)</p></li>
+</ul>
+</section>
+<section id="id32">
+<h4>Changed<a class="headerlink" href="#id32" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Move <code class="docutils literal notranslate"><span class="pre">dpcpp/llvm-spirv</span></code> from runtime to testing dependency (#659)</p></li>
+</ul>
+</section>
+<section id="id33">
+<h4>Fixed<a class="headerlink" href="#id33" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Fix building with DPNP (#674)</p></li>
+<li><p>Fix public CI: opencl driver, channel priority, dpctl version (#691)</p></li>
+<li><p>Fix codestyle black (#696)</p></li>
+<li><p>Fix documentation generation (#697)</p></li>
+<li><p>Load dpctl lib on Linux using <code class="docutils literal notranslate"><span class="pre">libDPCTLSyclInterface.so.0</span></code> (#707)</p></li>
+<li><p>Fix search llvm-spirv if dpcpp compiler package is not installed (#703)</p></li>
+<li><p>Pin dpnp version in runtime to allow dev versions of dpnp (#712)</p></li>
+</ul>
+</section>
+</section>
+<section id="id34">
+<h3>[0.17.4] - 2021-12-02<a class="headerlink" href="#id34" title="Link to this heading">#</a></h3>
+<section id="id35">
+<h4>Changed<a class="headerlink" href="#id35" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Move <code class="docutils literal notranslate"><span class="pre">dpcpp/llvm-spirv</span></code> from runtime to testing dependency by &#64;PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/659</p></li>
+</ul>
+</section>
+</section>
+<section id="id36">
+<h3>[0.17.3] - 2021-11-30<a class="headerlink" href="#id36" title="Link to this heading">#</a></h3>
+<section id="id37">
+<h4>Changed<a class="headerlink" href="#id37" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">llvm-spirv</span></code> from <code class="docutils literal notranslate"><span class="pre">dpcpp</span></code> compiler package by default [cherry picked from #649] (#651)</p></li>
+</ul>
+</section>
+<section id="id38">
+<h4>Fixed<a class="headerlink" href="#id38" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Enable offloading for <code class="docutils literal notranslate"><span class="pre">numba.njit</span></code> in <code class="docutils literal notranslate"><span class="pre">dpctl.deveice_context</span></code> (#630)</p></li>
+<li><p>Fix upload conditions for main and release branches (#610)</p></li>
+<li><p>Fix DeprecationWarning when use <code class="docutils literal notranslate"><span class="pre">version.parse()</span></code> [cherry picked from #639] (#642)</p></li>
+</ul>
+</section>
+</section>
+<section id="id39">
+<h3>[0.17.2] - 2021-11-15<a class="headerlink" href="#id39" title="Link to this heading">#</a></h3>
+<section id="id40">
+<h4>Changed<a class="headerlink" href="#id40" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Use llvm-spirv from bin-llvm during build for Linux and Windows (#626, #627)</p></li>
+</ul>
+</section>
+</section>
+<section id="id41">
+<h3>[0.17.1] - 2021-11-10<a class="headerlink" href="#id41" title="Link to this heading">#</a></h3>
+<section id="id42">
+<h4>Changed<a class="headerlink" href="#id42" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Update clang to icx (#622)</p></li>
+</ul>
+</section>
+</section>
+<section id="id43">
+<h3>[0.17.0] - 2021-11-03<a class="headerlink" href="#id43" title="Link to this heading">#</a></h3>
+<section id="id44">
+<h4>Added<a class="headerlink" href="#id44" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Use Python 3.9 [public CI] by &#64;PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/574</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">NUMBA_DPPY_DEBUG</span></code> for debugging GDB tests by &#64;PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/578</p></li>
+<li><p>Preliminary support Numba 0.55 (master branch) by &#64;PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/583</p></li>
+<li><p>Workflow for manually running tests using Numba PRs by &#64;PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/586</p></li>
+<li><p>Add public CI trigger on tags by &#64;1e-to in https://github.com/IntelPython/numba-dppy/pull/589</p></li>
+<li><p>Upload packages for <code class="docutils literal notranslate"><span class="pre">release*</span></code> branches by &#64;1e-to in https://github.com/IntelPython/numba-dppy/pull/593</p></li>
+<li><p>Update to dpctl 0.11 by &#64;PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/595</p></li>
+<li><p>Update to dpnp 0.9 by &#64;PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/599</p></li>
+<li><p>Improve the documenatation landing page by &#64;diptorupd in https://github.com/IntelPython/numba-dppy/pull/601</p></li>
+<li><p>Clean up README by &#64;diptorupd in https://github.com/IntelPython/numba-dppy/pull/604</p></li>
+</ul>
+</section>
+<section id="id45">
+<h4>Fixed<a class="headerlink" href="#id45" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Restrict dpctl to 0.10.* for release 0.16 by &#64;1e-to in https://github.com/IntelPython/numba-dppy/pull/590</p></li>
+<li><p>Fix upload from release branch by &#64;1e-to in https://github.com/IntelPython/numba-dppy/pull/596</p></li>
+<li><p>Unskip tests passing with dpnp 0.9.0rc1 by &#64;PokhodenkoSA in https://github.com/IntelPython/numba-dppy/pull/606</p></li>
+</ul>
+</section>
+</section>
+<section id="id46">
+<h3>[0.16.1] - 2021-10-20<a class="headerlink" href="#id46" title="Link to this heading">#</a></h3>
+<section id="id47">
+<h4>Changed<a class="headerlink" href="#id47" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Fix dpctl to 0.10 (#590)</p></li>
+<li><p>Add Public CI trigger for tags (#589)</p></li>
+</ul>
+</section>
+</section>
+<section id="id48">
+<h3>[0.16.0] - 2021-09-28<a class="headerlink" href="#id48" title="Link to this heading">#</a></h3>
+<section id="id49">
+<h4>Added<a class="headerlink" href="#id49" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Improve build and infra scripts (#544)</p></li>
+<li><p>Add docs about local variables lifetime (#534)</p></li>
+<li><p>Public CI for Windows (#536, #558)</p></li>
+<li><p>Add info about tags in documentation (#543)</p></li>
+<li><p>Add code coverage configurations (#561)</p></li>
+<li><p>Add support pytest-cov and pytest-xdist (#562)</p></li>
+<li><p>Add documentation workflow (#547)</p></li>
+<li><p>Test numba and numba-dppy API with GDB (#566)</p></li>
+<li><p>Transform commands scripts for GDB to tests (#568)</p></li>
+</ul>
+</section>
+<section id="id50">
+<h4>Changed<a class="headerlink" href="#id50" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Update dpnp 0.8 (#524)</p></li>
+<li><p>Fix passing strides array to DPNP dot and matmul (#565)</p></li>
+<li><p>Use older compiler for backwards compatibility (#549)</p></li>
+<li><p>Update conda recipe dependency for dpnp (#535)</p></li>
+<li><p>Update dpctl 0.10 (memcpy async) (#529)</p></li>
+<li><p>Change channels priority in public CI (#532)</p></li>
+<li><p>Added runtime dependency <code class="docutils literal notranslate"><span class="pre">llvm-spirv</span> <span class="pre">11.*</span></code> (#523)</p></li>
+<li><p>Update test matrix in README (#560)</p></li>
+<li><p>Use dpctl 0.10* and dpnp 0.8* in development configuration (environment.yml)</p></li>
+</ul>
+</section>
+<section id="id51">
+<h4>Fixed<a class="headerlink" href="#id51" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Update test and fix typo for atomics (#550)</p></li>
+<li><p>Delete unused file <code class="docutils literal notranslate"><span class="pre">run_test.sh</span></code></p></li>
+<li><p>Fix Public CI for using development packages (#522)</p></li>
+<li><p>Removed redundant import in docs (#521)</p></li>
+</ul>
+</section>
+</section>
+<section id="id52">
+<h3>[0.15.0] - 2021-08-25<a class="headerlink" href="#id52" title="Link to this heading">#</a></h3>
+<section id="id53">
+<h4>Added<a class="headerlink" href="#id53" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Introduce array ultilites to check, allocate and copy memory using SYCL USM (#489)</p></li>
+<li><p>Add packaging in run dependencies (#505)</p></li>
+<li><p>Add skipping tests for run without GPU (#508)</p></li>
+<li><p>Add CI pipeline on GitHub Actions for Linux (#507)</p></li>
+<li><p>Enable dpctl.tensor.usm_ndarray for &#64;dppy.kernel (#509)</p></li>
+<li><p>Enable &#64;vectorize for target dppy (#497)</p></li>
+<li><p>Add integration channels to GitHub Actions and make workflow consistent with dpctl (#510)</p></li>
+</ul>
+</section>
+<section id="id54">
+<h4>Changed<a class="headerlink" href="#id54" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Update to Numba 0.54.0 (#493)</p></li>
+<li><p>Update to dpctl 0.9 (#514)</p></li>
+<li><p>Update to dpnp 0.7 (#513)</p></li>
+<li><p>Use dpcpp compiler package for Linux (#502)</p></li>
+<li><p>Update go version (#515)</p></li>
+</ul>
+</section>
+<section id="id55">
+<h4>Removed<a class="headerlink" href="#id55" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Remove llvmdev from runtime dependecies (#498)</p></li>
+</ul>
+</section>
+<section id="id56">
+<h4>Fixed<a class="headerlink" href="#id56" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Fix required compiler flags for processing genreated DWARF symbols (#500)</p></li>
+</ul>
+</section>
+</section>
+<section id="id57">
+<h3>[0.14.4] - 2021-07-09<a class="headerlink" href="#id57" title="Link to this heading">#</a></h3>
+<section id="id58">
+<h4>Fixed<a class="headerlink" href="#id58" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Fix emission of debug information (#424)</p></li>
+<li><p>Fix examples demonstrating GDB usage on a numba_dppy.kernel function. (#455)</p></li>
+<li><p>Remove address space cast from global to generic inside numba_dppy.kernel (#432)</p></li>
+<li><p>Fix debugging of local variables (#432)</p></li>
+<li><p>Assert offload to SYCL devices in tests (#466)</p></li>
+<li><p>Removed calling opt to convert LLVM IR to LLVM Bitcode (#481)</p></li>
+</ul>
+</section>
+<section id="id59">
+<h4>Added<a class="headerlink" href="#id59" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Add examples for debugging (#426)</p></li>
+<li><p>Added a new NUMBA_DPPY_DEBUGINFO environment variable to control GDB usage (#460)</p></li>
+<li><p>Add debug option to dppy.kernel decorator (#424)</p></li>
+<li><p>Enable debugging of nested GPU functions (#424)</p></li>
+<li><p>Enable setting breakpoints by function names while Debugging (#434)</p></li>
+<li><p>Various fixes and improvements to documentation about debugging
+(#479, #474, #475, #480, #475, #477, #468,#450)</p></li>
+<li><p>Add automatic generation of commands for debugging (#463)</p></li>
+<li><p>Add tests on debugging local variables (#421)</p></li>
+<li><p>Enable eager compilation of numba_dppy.kernel (#291)</p></li>
+<li><p>Increase test coverage for native atomic ops (#435)</p></li>
+<li><p>Check and deter users from returning values from numba_dppy.kernel (#476)</p></li>
+</ul>
+</section>
+</section>
+<section id="id60">
+<h3>[0.14.3] - 2021-05-27<a class="headerlink" href="#id60" title="Link to this heading">#</a></h3>
+<section id="id61">
+<h4>Fixed<a class="headerlink" href="#id61" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Add check for ONEAPI_ROOT dir (#411)</p></li>
+<li><p>Fix using unquoted environment variable for clang path (#386)</p></li>
+<li><p>Fix kernel caching (#408)</p></li>
+</ul>
+</section>
+</section>
+<section id="id62">
+<h3>[0.14.2] - 2021-05-26<a class="headerlink" href="#id62" title="Link to this heading">#</a></h3>
+<section id="id63">
+<h4>Added<a class="headerlink" href="#id63" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Update documentation: version 0.14 (#378), API docs (#388),
+note about Intel Python Numba (#389),</p></li>
+<li><p>Update User Guides about Debugging (#380), recommendations (#323),
+locals (#394), stepping (#400), configure environment (#402),
+set up machine (#396), info functions (#405)</p></li>
+<li><p>Update Developer Guides about DPNP integration (#362)</p></li>
+<li><p>Update README: add link to docs (#379), add Cython and pytest in dependencies,
+add test matrix (#305)</p></li>
+<li><p>Add initial integration testing with dpnp and usm_ndarray (#403)</p></li>
+<li><p>Introduce type in Numba-dppy to represent dpctl.tensor.usm_ndarray (#391)</p></li>
+<li><p>Improve error reporting when searching for dpctl. (#368)</p></li>
+<li><p>Enable Python 3.8 in CI (#359)</p></li>
+<li><p>Adds a new utils submodule to provide LLVM IR builder helpers. (#355)</p></li>
+<li><p>Improve warning and error messages when parfor offload fails. (#353)</p></li>
+<li><p>Extend itanium mangler to support numba.types.CPointer and add test (#339)</p></li>
+<li><p>Enable optimization level setting (#62)</p></li>
+<li><p>Improve message printed during parfor lowering. (#337)</p></li>
+<li><p>Initial tests for debug info (#297)</p></li>
+<li><p>Add Bandit checks (#264)</p></li>
+</ul>
+</section>
+<section id="id64">
+<h4>Changed<a class="headerlink" href="#id64" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Update to dpctl 0.8 (#375)</p></li>
+<li><p>Update to Numba 0.53 (#279), inluding
+override get_ufunc_info in DPPYTargetContext (#367)</p></li>
+<li><p>Update to DPNP 0.6 (#359)</p></li>
+<li><p>Refactor test function generation (#374)</p></li>
+<li><p>Ignore the cython generated cpp files inside dpnp_glue. (#351)</p></li>
+<li><p>Add automerge main to gold/2021 (#349)</p></li>
+<li><p>Fix dpnp version restriction in conda recipe (#347)</p></li>
+<li><p>Change all Numba-dppy examples to work wih dpctl 0.7.0 (#309)</p></li>
+<li><p>Restrict dpnp version (#344)</p></li>
+<li><p>Feature changes related to dpctl 0.7 (#340)</p></li>
+<li><p>Rename dpNP to dpnp (#334)</p></li>
+<li><p>Ignore generated spir files (#333)</p></li>
+<li><p>Use correct names for other products dpctl, Numba, dpnp (#310)</p></li>
+<li><p>Remove dead code only if function name is replaced (#303)</p></li>
+<li><p>Update license in conda recipe (#350)</p></li>
+<li><p>Update blackscholes examples (#377)</p></li>
+</ul>
+</section>
+<section id="id65">
+<h4>Fixed<a class="headerlink" href="#id65" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Fix dppy_rt extension (#393)</p></li>
+<li><p>Update SYCL Filter String (#390)</p></li>
+<li><p>Fix atomics (#346)</p></li>
+<li><p>Fixes memory leaks in the usage of dpctl C API functions. (#369)</p></li>
+<li><p>Fix SPIR-V validation (#354)</p></li>
+<li><p>Fix run pre-commit check on main branch</p></li>
+<li><p>Fix tests to skip if device is not available (#345)</p></li>
+<li><p>Make Test Matrix table smaller in README (#308)</p></li>
+<li><p>Fix black action. (#306)</p></li>
+<li><p>Fix “subprocess.check_call” for Windows (#269)</p></li>
+</ul>
+</section>
+</section>
+<section id="id66">
+<h3>[0.13.1] - 2021-03-11<a class="headerlink" href="#id66" title="Link to this heading">#</a></h3>
+<section id="id67">
+<h4>Fixed<a class="headerlink" href="#id67" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Add spir file to package.</p></li>
+<li><p>Do not modify CC env variable during build.</p></li>
+<li><p>Use correct version in documentation.</p></li>
+</ul>
+</section>
+</section>
+<section id="id68">
+<h3>[0.13.0] - 2021-03-02<a class="headerlink" href="#id68" title="Link to this heading">#</a></h3>
+<section id="id69">
+<h4>Added<a class="headerlink" href="#id69" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Documentation.</p></li>
+<li><p>Add support for dpctl.dparray.</p></li>
+<li><p>Support NumPy functions via DPNP: random, linalg, transcendental, array ops, array creation.</p></li>
+<li><p>Wheels building.</p></li>
+<li><p>Using Bandit for finding common security issues in Python code.</p></li>
+</ul>
+</section>
+<section id="id70">
+<h4>Changed<a class="headerlink" href="#id70" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Start using black code style formatter.</p></li>
+<li><p>Build SPIRV code in setup.py.</p></li>
+<li><p>Start using pytest for running tests.</p></li>
+<li><p>Start using Apache 2.0 license.</p></li>
+<li><p>Consistency of file headers.</p></li>
+<li><p>Updated to Numba 0.52, dpCtl 0.6 and dpNP 0.5.1.</p></li>
+<li><p>Don’t create a new copy of a usm shared array data pointers for kernel call.</p></li>
+<li><p>Modify test cases and examples to use Level Zero queue.</p></li>
+</ul>
+</section>
+<section id="id71">
+<h4>Fixed<a class="headerlink" href="#id71" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Fix incorrect import in examples.</p></li>
+</ul>
+</section>
+</section>
+<section id="id72">
+<h3>[0.12.0] - 2020-12-17<a class="headerlink" href="#id72" title="Link to this heading">#</a></h3>
+<section id="id73">
+<h4>Added<a class="headerlink" href="#id73" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>numba-dppy is a standalone package now. Added setup.py and conda recipe.</p></li>
+<li><p>Offload diagnostics.</p></li>
+<li><p>Controllable fallback.</p></li>
+<li><p>Add flags to generate debug symbols.</p></li>
+<li><p>Implementation of <code class="docutils literal notranslate"><span class="pre">np.linalg.eig</span></code>, <code class="docutils literal notranslate"><span class="pre">np.ndarray.sum</span></code>, <code class="docutils literal notranslate"><span class="pre">np.ndarray.max</span></code>, <code class="docutils literal notranslate"><span class="pre">np.ndarray.min</span></code>, <code class="docutils literal notranslate"><span class="pre">np.ndarray.mean</span></code>.</p></li>
+<li><p>Two new re-write passes to convert NumPy calls into a pseudo <code class="docutils literal notranslate"><span class="pre">numba_dppy</span></code> call site to allow target-specific
+overload of NumPy functions. The rewrite passes is a temporary fix till Numba gains support for target-specific overlaods.</p></li>
+<li><p>Updated to dpCtl 0.5.* and dpNP 0.4.*</p></li>
+</ul>
+</section>
+<section id="id74">
+<h4>Changed<a class="headerlink" href="#id74" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">dpnp</span></code> interface now uses Numba’s <code class="docutils literal notranslate"><span class="pre">&#64;overload</span></code> functionality as opposed to the previous <code class="docutils literal notranslate"><span class="pre">&#64;lower_builtin</span></code> method.</p></li>
+<li><p>Rename <code class="docutils literal notranslate"><span class="pre">DPPL</span></code> to <code class="docutils literal notranslate"><span class="pre">DPPY</span></code>.</p></li>
+<li><p>Cleaned test code.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DPPLTestCase</span></code> replaced with <code class="docutils literal notranslate"><span class="pre">unittest.TestCase</span></code>.</p></li>
+<li><p>All tests and examples use <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">device_context</span></code>.</p></li>
+<li><p>Config environment variables starts with <code class="docutils literal notranslate"><span class="pre">NUMBA_DPPY_</span></code>
+(i.e. NUMBA_DPPY_SAVE_IR_FILES and NUMBA_DPPY_SPIRV_VAL)</p></li>
+<li><p>Remove nested folder <code class="docutils literal notranslate"><span class="pre">dppl</span></code> in <code class="docutils literal notranslate"><span class="pre">tests</span></code>.</p></li>
+<li><p>No dependency on <code class="docutils literal notranslate"><span class="pre">cffi</span></code>.</p></li>
+</ul>
+</section>
+<section id="id75">
+<h4>Removed<a class="headerlink" href="#id75" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>The old backup file.</p></li>
+</ul>
+</section>
+</section>
+<section id="numba-version-0-48-0-dppy-version-0-3-0-june-29-2020">
+<h3>NUMBA Version 0.48.0 + DPPY Version 0.3.0 (June 29, 2020)<a class="headerlink" href="#numba-version-0-48-0-dppy-version-0-3-0-june-29-2020" title="Link to this heading">#</a></h3>
+<p>This release includes:</p>
+<ul class="simple">
+<li><p>Caching of dppy.kernels which will improve performance.</p></li>
+<li><p>Addition of support for Intel Advisor which will help in profiling applications.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  <!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="license.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">License</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changelog">Changelog</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">[0.21.4] - 2023-10-12</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#fixed">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">[0.21.3] - 2023-09-28</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Fixed</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#added">Added</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#changed">Changed</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#removed">Removed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">[0.21.2] - 2023-08-07</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Fixed</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Changed</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">Removed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">[0.21.1] - 2023-07-17</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">Changed</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">[0.21.0] - 2023-06-17</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">Added</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">Changed</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">Fixed</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">Removed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">[0.20.1] - 2023-04-07</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">Added</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">[0.20.0] - 2023-03-06</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">Added</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">Changed</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">Fixed</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">Removed</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#deprecated">Deprecated</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id24">[0.19.0] - 2022-11-21</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id25">Added</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id26">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id27">[0.18.1] - 2022-08-06</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id28">Added</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id29">Changed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id30">[0.18.0] - 2022-02-22</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id31">Added</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id32">Changed</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id33">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id34">[0.17.4] - 2021-12-02</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id35">Changed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id36">[0.17.3] - 2021-11-30</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id37">Changed</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id38">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id39">[0.17.2] - 2021-11-15</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id40">Changed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id41">[0.17.1] - 2021-11-10</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id42">Changed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id43">[0.17.0] - 2021-11-03</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id44">Added</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id45">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id46">[0.16.1] - 2021-10-20</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id47">Changed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id48">[0.16.0] - 2021-09-28</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id49">Added</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id50">Changed</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id51">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id52">[0.15.0] - 2021-08-25</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id53">Added</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id54">Changed</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id55">Removed</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id56">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id57">[0.14.4] - 2021-07-09</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id58">Fixed</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id59">Added</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id60">[0.14.3] - 2021-05-27</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id61">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id62">[0.14.2] - 2021-05-26</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id63">Added</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id64">Changed</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id65">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id66">[0.13.1] - 2021-03-11</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id67">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id68">[0.13.0] - 2021-03-02</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id69">Added</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id70">Changed</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id71">Fixed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id72">[0.12.0] - 2020-12-17</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id73">Added</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id74">Changed</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id75">Removed</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#numba-version-0-48-0-dppy-version-0-3-0-june-29-2020">NUMBA Version 0.48.0 + DPPY Version 0.3.0 (June 29, 2020)</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+  <p class="copyright">
+    
+      © Copyright 2020-2023, Intel Corporation.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.14.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
