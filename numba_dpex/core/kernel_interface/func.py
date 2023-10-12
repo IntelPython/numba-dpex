@@ -2,8 +2,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-"""_summary_
-"""
 
 from numba.core import sigutils, types
 from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
@@ -67,7 +65,7 @@ class DpexFunction(object):
             debug=self._debug,
         )
         func = cres.library.get_function(cres.fndesc.llvm_func_name)
-        cres.target_context.mark_ocl_device(func)
+        cres.target_context.set_spir_func_calling_conv(func)
 
         return cres
 
@@ -159,7 +157,7 @@ class DpexFunctionTemplate(object):
                 debug=self._debug,
             )
             func = cres.library.get_function(cres.fndesc.llvm_func_name)
-            cres.target_context.mark_ocl_device(func)
+            cres.target_context.set_spir_func_calling_conv(func)
             libs = [cres.library]
 
             cres.target_context.insert_user_function(self, cres.fndesc, libs)
