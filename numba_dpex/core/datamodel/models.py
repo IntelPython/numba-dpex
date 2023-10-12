@@ -20,6 +20,30 @@ from ..types import (
 )
 
 
+def _get_flattened_member_count(ty):
+    """Return the number of fields in an instance of a given StructModel."""
+    flattened_member_count = 0
+    members = ty._members
+    for member in members:
+        if isinstance(member, types.UniTuple):
+            flattened_member_count += member.count
+        elif isinstance(
+            member,
+            (
+                types.scalars.Integer,
+                types.misc.PyObject,
+                types.misc.RawPointer,
+                types.misc.CPointer,
+                types.misc.MemInfoPointer,
+            ),
+        ):
+            flattened_member_count += 1
+        else:
+            raise UnreachableError
+
+    return flattened_member_count
+
+
 class GenericPointerModel(PrimitiveModel):
     def __init__(self, dmm, fe_type):
         adrsp = (
@@ -68,26 +92,7 @@ class USMArrayModel(StructModel):
     @property
     def flattened_field_count(self):
         """Return the number of fields in an instance of a USMArrayModel."""
-        flattened_member_count = 0
-        members = self._members
-        for member in members:
-            if isinstance(member, types.UniTuple):
-                flattened_member_count += member.count
-            elif isinstance(
-                member,
-                (
-                    types.scalars.Integer,
-                    types.misc.PyObject,
-                    types.misc.RawPointer,
-                    types.misc.CPointer,
-                    types.misc.MemInfoPointer,
-                ),
-            ):
-                flattened_member_count += 1
-            else:
-                raise UnreachableError
-
-        return flattened_member_count
+        return _get_flattened_member_count(self)
 
 
 class DpnpNdArrayModel(StructModel):
@@ -121,26 +126,7 @@ class DpnpNdArrayModel(StructModel):
     @property
     def flattened_field_count(self):
         """Return the number of fields in an instance of a DpnpNdArrayModel."""
-        flattened_member_count = 0
-        members = self._members
-        for member in members:
-            if isinstance(member, types.UniTuple):
-                flattened_member_count += member.count
-            elif isinstance(
-                member,
-                (
-                    types.scalars.Integer,
-                    types.misc.PyObject,
-                    types.misc.RawPointer,
-                    types.misc.CPointer,
-                    types.misc.MemInfoPointer,
-                ),
-            ):
-                flattened_member_count += 1
-            else:
-                raise UnreachableError
-
-        return flattened_member_count
+        return _get_flattened_member_count(self)
 
 
 class SyclQueueModel(StructModel):
@@ -211,6 +197,11 @@ class RangeModel(StructModel):
         ]
         super(RangeModel, self).__init__(dmm, fe_type, members)
 
+    @property
+    def flattened_field_count(self):
+        """Return the number of fields in an instance of a RangeModel."""
+        return _get_flattened_member_count(self)
+
 
 class NdRangeModel(StructModel):
     """The native data model for a
@@ -228,6 +219,11 @@ class NdRangeModel(StructModel):
             ("ldim2", types.int64),
         ]
         super(NdRangeModel, self).__init__(dmm, fe_type, members)
+
+    @property
+    def flattened_field_count(self):
+        """Return the number of fields in an instance of a NdRangeModel."""
+        return _get_flattened_member_count(self)
 
 
 def _init_data_model_manager() -> datamodel.DataModelManager:
