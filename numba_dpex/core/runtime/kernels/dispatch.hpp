@@ -1,6 +1,9 @@
 #ifndef __DISPATCH_HPP__
 #define __DISPATCH_HPP__
 
+#include <complex>
+#include <CL/sycl.hpp>
+
 namespace ndpx
 {
 namespace runtime
@@ -29,20 +32,22 @@ public:
 
     void populate_dispatch_vector(funcPtrT vector[]) const
     {
-        const auto fn_map_by_type = {func_per_type<bool>(),
-                                     func_per_type<int8_t>(),
-                                     func_per_type<uint8_t>(),
-                                     func_per_type<int16_t>(),
-                                     func_per_type<uint16_t>(),
-                                     func_per_type<int32_t>(),
-                                     func_per_type<uint32_t>(),
-                                     func_per_type<int64_t>(),
-                                     func_per_type<uint64_t>(),
-                                     func_per_type<sycl::half>(),
-                                     func_per_type<float>(),
-                                     func_per_type<double>(),
-                                     func_per_type<std::complex<float>>(),
-                                     func_per_type<std::complex<double>>()};
+        const auto fn_map_by_type = {
+            func_per_type<bool>(), // 0
+            func_per_type<int8_t>(),
+            func_per_type<u_int8_t>(),
+            func_per_type<int16_t>(),
+            func_per_type<u_int16_t>(),
+            func_per_type<int32_t>(), // 5
+            func_per_type<u_int32_t>(),
+            func_per_type<int64_t>(),
+            func_per_type<u_int64_t>(),
+            func_per_type<sycl::half>(),
+            func_per_type<float>(), // 10
+            func_per_type<double>(),
+            func_per_type<std::complex<float>>(),
+            func_per_type<std::complex<double>>() // 13
+        };
         assert(fn_map_by_type.size() == _num_types);
         int ty_id = 0;
         for (auto &fn : fn_map_by_type) {

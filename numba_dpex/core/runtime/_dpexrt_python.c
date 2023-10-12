@@ -12,6 +12,8 @@
 ///
 //===----------------------------------------------------------------------===//
 
+#include <stdint.h>
+
 #include "dpctl_capi.h"
 #include "dpctl_sycl_interface.h"
 
@@ -1584,9 +1586,13 @@ MOD_INIT(_dpexrt_python)
                        PyLong_FromVoidPtr(&DPEXRT_kernel_cache_size));
 
     PyModule_AddObject(m, "c_helpers", build_c_helpers_dict());
+    PyModule_AddObject(
+        m, "NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence",
+        PyLong_FromVoidPtr(
+            &NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence));
 
-    init_sequence_dispatch_vectors();
-    init_affine_sequence_dispatch_vectors();
+    NUMBA_DPEX_SYCL_KERNEL_init_sequence_step_dispatch_vectors();
+    NUMBA_DPEX_SYCL_KERNEL_init_affine_sequence_dispatch_vectors();
 
     return MOD_SUCCESS_VAL(m);
 }
