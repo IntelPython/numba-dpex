@@ -133,7 +133,7 @@ class SpirvKernel(KernelInterface):
         )
 
         func = cres.library.get_function(cres.fndesc.llvm_func_name)
-        kernel = cres.target_context.prepare_ocl_kernel(
+        kernel = cres.target_context.prepare_spir_kernel(
             func, cres.signature.args
         )
         cres.library._optimize_final_module()

@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import re
+
 from functools import cached_property
 
 import dpnp
@@ -19,7 +19,7 @@ from numba.core.types import Array as NpArrayType
 from numba_dpex.core.datamodel.models import _init_data_model_manager
 from numba_dpex.core.exceptions import UnsupportedKernelArgumentError
 from numba_dpex.core.typeconv import to_usm_ndarray
-from numba_dpex.core.types import DpnpNdArray, USMNdArray
+from numba_dpex.core.types import USMNdArray
 from numba_dpex.core.utils import get_info_from_suai
 from numba_dpex.utils import address_space, calling_conv
 
@@ -27,8 +27,6 @@ from .. import codegen
 
 CC_SPIR_KERNEL = "spir_kernel"
 CC_SPIR_FUNC = "spir_func"
-VALID_CHARS = re.compile(r"[^a-z0-9]", re.I)
-LINK_ATOMIC = 111
 LLVM_SPIRV_ARGS = 112
 
 
@@ -105,7 +103,7 @@ class SyclDevice(GPU):
     pass
 
 
-DPEX_KERNEL_TARGET_NAME = "SyclDevice"
+DPEX_KERNEL_TARGET_NAME = "dpex_kernel"
 
 target_registry[DPEX_KERNEL_TARGET_NAME] = SyclDevice
 
@@ -165,7 +163,7 @@ class DpexKernelTargetContext(BaseContext):
         name = llvmir.MetaDataString(mod, "kernel_arg_base_type")
         return mod.add_metadata([name] + consts)
 
-    def _finalize_wrapper_module(self, fn):
+    def _finalize_kernel_wrapper_module(self, fn):
         """Add metadata and calling convention to the wrapper function.
 
         The helper function adds function metadata to the wrapper function and
@@ -177,41 +175,12 @@ class DpexKernelTargetContext(BaseContext):
             fn: LLVM function representing the "kernel" wrapper function.
 
         """
-        mod = fn.module
         # Set norecurse
         fn.attributes.add("norecurse")
         # Set SPIR kernel calling convention
         fn.calling_convention = CC_SPIR_KERNEL
 
-        # Mark kernels
-        ocl_kernels = cgutils.get_or_insert_named_metadata(
-            mod, "opencl.kernels"
-        )
-        ocl_kernels.add(
-            mod.add_metadata(
-                [
-                    fn,
-                    self._gen_arg_addrspace_md(fn),
-                    self._gen_arg_type(fn),
-                    self._gen_arg_type_qual(fn),
-                    self._gen_arg_base_type(fn),
-                ],
-            )
-        )
-
-        # Other metadata
-        others = [
-            "opencl.used.extensions",
-            "opencl.used.optional.core.features",
-            "opencl.compiler.options",
-        ]
-
-        for name in others:
-            nmd = cgutils.get_or_insert_named_metadata(mod, name)
-            if not nmd.operands:
-                mod.add_metadata([])
-
-    def _generate_kernel_wrapper(self, func, argtypes):
+    def _generate_spir_kernel_wrapper(self, func, argtypes):
         module = func.module
         arginfo = self.get_arg_packer(argtypes)
         wrapperfnty = llvmir.FunctionType(
@@ -227,7 +196,7 @@ class DpexKernelTargetContext(BaseContext):
         func = llvmir.Function(wrapper_module, fnty, name=func.name)
         func.calling_convention = CC_SPIR_FUNC
         wrapper = llvmir.Function(wrapper_module, wrapperfnty, name=wrappername)
-        builder = llvmir.IRBuilder(wrapper.append_basic_block(""))
+        builder = llvmir.IRBuilder(wrapper.append_basic_block("entry"))
 
         callargs = arginfo.from_arguments(builder, wrapper.args)
 
@@ -237,7 +206,7 @@ class DpexKernelTargetContext(BaseContext):
         )
         builder.ret_void()
 
-        self._finalize_wrapper_module(wrapper)
+        self._finalize_kernel_wrapper_module(wrapper)
 
         # Link the spir_func module to the wrapper module
         module.link_in(ll.parse_assembly(str(wrapper_module)))
@@ -251,7 +220,10 @@ class DpexKernelTargetContext(BaseContext):
         super().__init__(typingctx, target)
 
     def init(self):
-        self._internal_codegen = codegen.JITSPIRVCodegen("numba_dpex.jit")
+        """Called by the super().__init__ constructor to initalize the child
+        class.
+        """
+        self._internal_codegen = codegen.JITSPIRVCodegen("numba_dpex.kernel")
         self._target_data = ll.create_target_data(
             codegen.SPIR_DATA_LAYOUT[utils.MACHINE_BITS]
         )
@@ -271,7 +243,6 @@ class DpexKernelTargetContext(BaseContext):
         self.ufunc_db = copy.deepcopy(ufunc_db)
         self.cpu_context = cpu_target.target_context
 
-    # Overrides
     def create_module(self, name):
         return self._internal_codegen._create_empty_module(name)
 
@@ -355,14 +326,14 @@ class DpexKernelTargetContext(BaseContext):
             name + "dpex_fn", argtypes, abi_tags=abi_tags, uid=uid
         )
 
-    def prepare_ocl_kernel(self, func, argtypes):
+    def prepare_spir_kernel(self, func, argtypes):
         module = func.module
         func.linkage = "linkonce_odr"
         module.data_layout = codegen.SPIR_DATA_LAYOUT[self.address_size]
-        wrapper = self._generate_kernel_wrapper(func, argtypes)
+        wrapper = self._generate_spir_kernel_wrapper(func, argtypes)
         return wrapper
 
-    def mark_ocl_device(self, func):
+    def set_spir_func_calling_conv(self, func):
         # Adapt to SPIR
         func.calling_convention = CC_SPIR_FUNC
         func.linkage = "linkonce_odr"
@@ -436,7 +407,6 @@ class DpexKernelTargetContext(BaseContext):
         ptras = llvmir.PointerType(src.type.pointee, addrspace=addrspace)
         return builder.addrspacecast(src, ptras)
 
-    # Overrides
     def get_ufunc_info(self, ufunc_key):
         return self.ufunc_db[ufunc_key]
 
@@ -446,7 +416,7 @@ class DpexCallConv(MinimalCallConv):
 
     numba_dpex's calling convention derives from
     :class:`numba.core.callconv import MinimalCallConv`. The
-    :class:`DpexCallConv` overriddes :func:`call_function`.
+    :class:`DpexCallConv` overrides :func:`call_function`.
 
     """
 
