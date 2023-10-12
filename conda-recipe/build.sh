@@ -9,11 +9,7 @@ export PATH=$CONDA_PREFIX/bin-llvm:$PATH
 ${PYTHON} setup.py install --single-version-externally-managed --record=record.txt
 
 # Build wheel package
-if [ "$CONDA_PY" == "36" ]; then
-    WHEELS_BUILD_ARGS=(-p manylinux1_x86_64)
-else
-    WHEELS_BUILD_ARGS=(-p manylinux2014_x86_64)
-fi
+WHEELS_BUILD_ARGS=(-p manylinux2014_x86_64 --build-number "$GIT_DESCRIBE_NUMBER")
 if [[ -v WHEELS_OUTPUT_FOLDER ]]; then
     $PYTHON setup.py bdist_wheel "${WHEELS_BUILD_ARGS[@]}"
     cp dist/numba_dpex*.whl "${WHEELS_OUTPUT_FOLDER[@]}"
