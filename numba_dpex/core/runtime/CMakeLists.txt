@@ -87,6 +87,9 @@ find_package(Python 3.9 REQUIRED
 find_package(Dpctl REQUIRED)
 find_package(IntelSYCL REQUIRED)
 
+message(STATUS "==========> NumPy_INCLUDE_DIRS =" "${NumPy_INCLUDE_DIRS}")
+message(STATUS "==========> Numba_INCLUDE_DIRS =" "${Numba_INCLUDE_DIRS}")
+
 # Includes
 include(GNUInstallDirs)
 include_directories(${Python_INCLUDE_DIRS})

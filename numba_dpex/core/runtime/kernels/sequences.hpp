@@ -1,11 +1,18 @@
 #ifndef __SEQUENCES_HPP__
 #define __SEQUENCES_HPP__
 
-#include "types.hpp"
-#include <CL/sycl.hpp>
-#include <complex>
-#include <exception>
 #include <iostream>
+#include <exception>
+#include <complex>
+
+#include <Python.h>
+#include <numpy/npy_common.h>
+#include <numba/_arraystruct.h>
+
+#include "dpctl_capi.h"
+#include "dpctl_sycl_interface.h"
+
+#include "types.hpp"
 
 namespace ndpx
 {
@@ -17,7 +24,7 @@ namespace tensor
 {
 
 template <typename T> class ndpx_sequence_step_kernel;
-template <typename T, typename wT> class ndpx_affine_sequence_step_kernel;
+template <typename T, typename wT> class ndpx_affine_sequence_kernel;
 
 template <typename T> class SequenceStepFunctor
 {
@@ -45,7 +52,7 @@ public:
     }
 };
 
-template <typename T, typename wT> class AffineSequenceStepFunctor
+template <typename T, typename wT> class AffineSequenceFunctor
 {
 private:
     T *p = nullptr;
@@ -54,7 +61,7 @@ private:
     size_t n;
 
 public:
-    AffineSequenceStepFunctor(char *dst_p, T v0, T v1, size_t den)
+    AffineSequenceFunctor(char *dst_p, T v0, T v1, size_t den)
         : p(reinterpret_cast<T *>(dst_p)), start_v(v0), end_v(v1),
           n((den == 0) ? 1 : den)
     {
@@ -116,31 +123,31 @@ sycl::event sequence_step_kernel(sycl::queue exec_q,
 }
 
 template <typename T>
-sycl::event affine_sequence_step_kernel(sycl::queue &exec_q,
-                                        size_t nelems,
-                                        T start_v,
-                                        T end_v,
-                                        bool include_endpoint,
-                                        char *array_data,
-                                        const std::vector<sycl::event> &depends)
+sycl::event affine_sequence_kernel(sycl::queue &exec_q,
+                                   size_t nelems,
+                                   T start_v,
+                                   T end_v,
+                                   bool include_endpoint,
+                                   char *array_data,
+                                   const std::vector<sycl::event> &depends)
 {
     ndpx::runtime::kernel::types::validate_type_for_device<T>(exec_q);
     bool device_supports_doubles = exec_q.get_device().has(sycl::aspect::fp64);
     sycl::event affine_seq_step_event = exec_q.submit([&](sycl::handler &cgh) {
         cgh.depends_on(depends);
         if (device_supports_doubles) {
-            cgh.parallel_for<ndpx_affine_sequence_step_kernel<T, double>>(
+            cgh.parallel_for<ndpx_affine_sequence_kernel<T, double>>(
                 sycl::range<1>{nelems},
-                AffineSequenceStepFunctor<T, double>(
-                    array_data, start_v, end_v,
-                    (include_endpoint) ? nelems - 1 : nelems));
+                AffineSequenceFunctor<T, double>(array_data, start_v, end_v,
+                                                 (include_endpoint) ? nelems - 1
+                                                                    : nelems));
         }
         else {
-            cgh.parallel_for<ndpx_affine_sequence_step_kernel<T, float>>(
+            cgh.parallel_for<ndpx_affine_sequence_kernel<T, float>>(
                 sycl::range<1>{nelems},
-                AffineSequenceStepFunctor<T, float>(
-                    array_data, start_v, end_v,
-                    (include_endpoint) ? nelems - 1 : nelems));
+                AffineSequenceFunctor<T, float>(array_data, start_v, end_v,
+                                                (include_endpoint) ? nelems - 1
+                                                                   : nelems));
         }
     });
 
@@ -170,13 +177,13 @@ sycl::event sequence_step(sycl::queue &exec_q,
 }
 
 template <typename T>
-sycl::event affine_sequence_step(sycl::queue &exec_q,
-                                 size_t nelems,
-                                 void *start,
-                                 void *end,
-                                 bool include_endpoint,
-                                 char *array_data,
-                                 const std::vector<sycl::event> &depends)
+sycl::event affine_sequence(sycl::queue &exec_q,
+                            size_t nelems,
+                            void *start,
+                            void *end,
+                            bool include_endpoint,
+                            char *array_data,
+                            const std::vector<sycl::event> &depends)
 {
     T *start_v, *end_v;
     try {
@@ -187,8 +194,8 @@ sycl::event affine_sequence_step(sycl::queue &exec_q,
     }
 
     auto affine_sequence_step_event =
-        affine_sequence_step_kernel<T>(exec_q, nelems, *start_v, *end_v,
-                                       include_endpoint, array_data, depends);
+        affine_sequence_kernel<T>(exec_q, nelems, *start_v, *end_v,
+                                  include_endpoint, array_data, depends);
 
     return affine_sequence_step_event;
 }
@@ -202,11 +209,11 @@ template <typename fnT, typename T> struct SequenceStepFactory
     }
 };
 
-template <typename fnT, typename T> struct AffineSequenceStepFactory
+template <typename fnT, typename T> struct AffineSequenceFactory
 {
     fnT get()
     {
-        fnT f = affine_sequence_step<T>;
+        fnT f = affine_sequence<T>;
         return f;
     }
 };
@@ -218,14 +225,22 @@ typedef sycl::event (*sequence_step_ptr_t)(sycl::queue &,
                                            char *, // dst_data_ptr
                                            const std::vector<sycl::event> &);
 
-typedef sycl::event (*affine_sequence_step_ptr_t)(
-    sycl::queue &,
-    size_t, // num_elements
-    void *, // start_v
-    void *, // end_v
-    bool,   // include_endpoint
-    char *, // dst_data_ptr
-    const std::vector<sycl::event> &);
+typedef sycl::event (*affine_sequence_ptr_t)(sycl::queue &,
+                                             size_t, // num_elements
+                                             void *, // start_v
+                                             void *, // end_v
+                                             bool,   // include_endpoint
+                                             char *, // dst_data_ptr
+                                             const std::vector<sycl::event> &);
+
+// uint populate_arystruct_affine_sequence(void *start,
+//                                         void *end,
+//                                         arystruct_t *dst,
+//                                         int include_endpoint,
+//                                         int ndim,
+//                                         int is_c_contiguous,
+//                                         const DPCTLSyclQueueRef exec_q,
+//                                         const DPCTLEventVectorRef depends);
 
 } // namespace tensor
 } // namespace kernel
