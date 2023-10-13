@@ -140,7 +140,6 @@ class _KernelPassBuilder(object):
         )
         pm.add_pass(IRLegalization, "ensure IR is legal prior to lowering")
 
-        # lower
         # NativeLowering has some issue with freevar ambiguity,
         # therefore, we are using QualNameDisambiguationLowering instead
         # numba-dpex github issue: https://github.com/IntelPython/numba-dpex/issues/898
@@ -173,7 +172,7 @@ class _KernelPassBuilder(object):
 
 
 class KernelCompiler(CompilerBase):
-    """Dpex's  kernel compilation pipeline."""
+    """Dpex's kernel compilation pipeline."""
 
     def define_pipelines(self):
         pms = []
@@ -181,4 +180,14 @@ class KernelCompiler(CompilerBase):
             pms.append(_KernelPassBuilder.define_nopython_pipeline(self.state))
         if self.state.status.can_fallback or self.state.flags.force_pyobject:
             raise UnsupportedCompilationModeError()
+
+        # Compile the kernel without generating a cpython or a cfunc wrapper
+        self.state.flags.no_cpython_wrapper = True
+        self.state.flags.no_cfunc_wrapper = True
+        # The pass pipeline does not generate an executable when compiling a
+        # kernel function. Instead, the
+        # kernel_dispatcher._KernelCompiler.compile generates the executable in
+        # the form of a host callable launcher function
+        self.state.flags.no_compile = True
+
         return pms

@@ -393,13 +393,17 @@ class ReductionKernelVariables:
     def work_group_size(self):
         return self._work_group_size
 
-    def copy_final_sum_to_host(self, psrfor_kernel):
+    def copy_final_sum_to_host(self, parfor_kernel):
         lowerer = self.lowerer
-        ir_builder = KernelLaunchIRBuilder(lowerer, psrfor_kernel.kernel)
+        ir_builder = KernelLaunchIRBuilder(
+            lowerer.context,
+            lowerer.builder,
+            parfor_kernel.kernel.addressof_ref(),
+        )
 
         # Create a local variable storing a pointer to a DPCTLSyclQueueRef
         # pointer.
-        curr_queue = ir_builder.get_queue(exec_queue=psrfor_kernel.queue)
+        curr_queue = ir_builder.get_queue(exec_queue=parfor_kernel.queue)
 
         builder = lowerer.builder
         context = lowerer.context

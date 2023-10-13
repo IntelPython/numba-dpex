@@ -6,6 +6,7 @@ from numba.core import cgutils, types
 
 from numba_dpex import utils
 from numba_dpex.core.runtime.context import DpexRTContext
+from numba_dpex.core.types import DpnpNdArray
 from numba_dpex.dpctl_iface import DpctlCAPIFnBuilder
 from numba_dpex.dpctl_iface._helpers import numba_type_to_dpctl_typenum
 
@@ -19,19 +20,17 @@ class KernelLaunchIRBuilder:
     for submitting kernels. The LLVM Values that
     """
 
-    def __init__(self, lowerer, kernel):
+    def __init__(self, context, builder, kernel_addr):
         """Create a KernelLauncher for the specified kernel.
 
         Args:
-            lowerer: The Numba Lowerer that will be used to generate the code.
-            kernel: The SYCL kernel for which we are generating the code.
-            num_inputs: The number of arguments to the kernels.
+            context: A Numba target context that will be used to generate the code.
+            builder: An llvmlite IRBuilder instance used to generate LLVM IR.
+            kernel_addr: The address of a SYCL kernel.
         """
-        self.lowerer = lowerer
-        self.context = self.lowerer.context
-        self.builder = self.lowerer.builder
-        self.kernel = kernel
-        self.kernel_addr = self.kernel.addressof_ref()
+        self.context = context
+        self.builder = builder
+        self.kernel_addr = kernel_addr
         self.rtctx = DpexRTContext(self.context)
 
     def _build_nullptr(self):
@@ -402,3 +401,54 @@ class KernelLaunchIRBuilder:
             lr = self._create_sycl_range(local_range)
             args = args1 + [lr] + args2
             self.rtctx.submit_ndrange(self.builder, *args)
+
+    def populate_kernel_args_and_args_ty_arrays(
+        self,
+        kernel_argtys,
+        callargs_ptrs,
+        args_list,
+        args_ty_list,
+        datamodel_mgr,
+    ):
+        kernel_arg_num = 0
+        for arg_num, argtype in enumerate(kernel_argtys):
+            llvm_val = callargs_ptrs[arg_num]
+            if isinstance(argtype, DpnpNdArray):
+                datamodel = datamodel_mgr.lookup(argtype)
+                self.build_array_arg(
+                    array_val=llvm_val,
+                    array_data_model=datamodel,
+                    array_rank=argtype.ndim,
+                    arg_list=args_list,
+                    args_ty_list=args_ty_list,
+                    arg_num=kernel_arg_num,
+                )
+                kernel_arg_num += datamodel.flattened_field_count
+            else:
+                if argtype == types.complex64:
+                    self.build_complex_arg(
+                        llvm_val,
+                        types.float32,
+                        args_list,
+                        args_ty_list,
+                        kernel_arg_num,
+                    )
+                    kernel_arg_num += 2
+                elif argtype == types.complex128:
+                    self.build_complex_arg(
+                        llvm_val,
+                        types.float64,
+                        args_list,
+                        args_ty_list,
+                        kernel_arg_num,
+                    )
+                    kernel_arg_num += 2
+                else:
+                    self.build_arg(
+                        llvm_val,
+                        argtype,
+                        args_list,
+                        args_ty_list,
+                        kernel_arg_num,
+                    )
+                    kernel_arg_num += 1

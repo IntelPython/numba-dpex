@@ -12,6 +12,7 @@ from numba.parfors.parfor import (
 )
 
 from numba_dpex import config
+from numba_dpex.core.datamodel.models import dpex_data_model_manager as dpex_dmm
 from numba_dpex.core.parfors.reduction_helper import (
     ReductionHelper,
     ReductionKernelVariables,
@@ -25,8 +26,6 @@ from .reduction_kernel_builder import (
     create_reduction_main_kernel_for_parfor,
     create_reduction_remainder_kernel_for_parfor,
 )
-
-from numba_dpex.core.datamodel.models import dpex_data_model_manager as dpex_dmm
 
 # A global list of kernels to keep the objects alive indefinitely.
 keep_alive_kernels = []
@@ -89,7 +88,9 @@ class ParforLowerImpl:
         """Creates a stack variable storing the sycl queue pointer used to
         launch the kernel function.
         """
-        self.kernel_builder = KernelLaunchIRBuilder(lowerer, kernel_fn.kernel)
+        self.kernel_builder = KernelLaunchIRBuilder(
+            lowerer.context, lowerer.builder, kernel_fn.kernel.addressof_ref()
+        )
 
         # Create a local variable storing a pointer to a DPCTLSyclQueueRef
         # pointer.
@@ -109,7 +110,7 @@ class ParforLowerImpl:
             AssertionError: If the LLVM IR Value for an argument defined in
             Numba IR is not found.
         """
-        num_flattened_args = 0
+        self.num_flattened_args = 0
 
         # Compute number of args to be passed to the kernel. Note that the
         # actual number of kernel arguments is greater than the count of
@@ -117,63 +118,30 @@ class ParforLowerImpl:
         for arg_type in kernel_fn.kernel_arg_types:
             if isinstance(arg_type, DpnpNdArray):
                 datamodel = dpex_dmm.lookup(arg_type)
-                num_flattened_args += datamodel.flattened_field_count
+                self.num_flattened_args += datamodel.flattened_field_count
             elif arg_type == types.complex64 or arg_type == types.complex128:
-                num_flattened_args += 2
+                self.num_flattened_args += 2
             else:
-                num_flattened_args += 1
+                self.num_flattened_args += 1
 
         # Create LLVM values for the kernel args list and kernel arg types list
         self.args_list = self.kernel_builder.allocate_kernel_arg_array(
-            num_flattened_args
+            self.num_flattened_args
         )
         self.args_ty_list = self.kernel_builder.allocate_kernel_arg_ty_array(
-            num_flattened_args
+            self.num_flattened_args
         )
-        # Populate the args_list and the args_ty_list LLVM arrays
-        self.kernel_arg_num = 0
-        for arg_num, arg in enumerate(kernel_fn.kernel_args):
-            argtype = kernel_fn.kernel_arg_types[arg_num]
-            llvm_val = _getvar(lowerer, arg)
-            if isinstance(argtype, DpnpNdArray):
-                datamodel = dpex_dmm.lookup(argtype)
-                self.kernel_builder.build_array_arg(
-                    array_val=llvm_val,
-                    array_data_model=datamodel,
-                    array_rank=argtype.ndim,
-                    arg_list=self.args_list,
-                    args_ty_list=self.args_ty_list,
-                    arg_num=self.kernel_arg_num,
-                )
-                self.kernel_arg_num += datamodel.flattened_field_count
-            else:
-                if argtype == types.complex64:
-                    self.kernel_builder.build_complex_arg(
-                        llvm_val,
-                        types.float32,
-                        self.args_list,
-                        self.args_ty_list,
-                        self.kernel_arg_num,
-                    )
-                    self.kernel_arg_num += 2
-                elif argtype == types.complex128:
-                    self.kernel_builder.build_complex_arg(
-                        llvm_val,
-                        types.float64,
-                        self.args_list,
-                        self.args_ty_list,
-                        self.kernel_arg_num,
-                    )
-                    self.kernel_arg_num += 2
-                else:
-                    self.kernel_builder.build_arg(
-                        llvm_val,
-                        argtype,
-                        self.args_list,
-                        self.args_ty_list,
-                        self.kernel_arg_num,
-                    )
-                    self.kernel_arg_num += 1
+        callargs_ptrs = []
+        for arg in kernel_fn.kernel_args:
+            callargs_ptrs.append(_getvar(lowerer, arg))
+
+        self.kernel_builder.populate_kernel_args_and_args_ty_arrays(
+            kernel_argtys=kernel_fn.kernel_arg_types,
+            callargs_ptrs=callargs_ptrs,
+            args_list=self.args_list,
+            args_ty_list=self.args_ty_list,
+            datamodel_mgr=dpex_dmm,
+        )
 
     def _submit_parfor_kernel(
         self,
@@ -213,7 +181,7 @@ class ParforLowerImpl:
         # Submit a synchronous kernel
         self.kernel_builder.submit_sync_kernel(
             self.curr_queue,
-            self.kernel_arg_num,
+            self.num_flattened_args,
             self.args_list,
             self.args_ty_list,
             global_range,
@@ -255,7 +223,7 @@ class ParforLowerImpl:
         # Submit a synchronous kernel
         self.kernel_builder.submit_sync_kernel(
             self.curr_queue,
-            self.kernel_arg_num,
+            self.num_flattened_args,
             self.args_list,
             self.args_ty_list,
             global_range,
@@ -290,7 +258,7 @@ class ParforLowerImpl:
         # Submit a synchronous kernel
         self.kernel_builder.submit_sync_kernel(
             self.curr_queue,
-            self.kernel_arg_num,
+            self.num_flattened_args,
             self.args_list,
             self.args_ty_list,
             global_range,
