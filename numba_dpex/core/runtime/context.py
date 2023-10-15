@@ -402,27 +402,3 @@ class DpexRTContext(object):
         )
 
         return ret
-
-    def copy_queue(self, builder, queue_ref):
-        """Calls DPCTLQueue_Copy to create a copy of the DpctlSyclQueueRef
-        pointer passed in to the function.
-
-        Args:
-            builder: The llvmlite.IRBuilder used to generate the LLVM IR for the
-            call.
-            queue_ref: An LLVM value for a DpctlSyclQueueRef pointer that will
-            be passed to the DPCTLQueue_Copy function.
-
-        Returns: A DPCTLSyclQueueRef pointer.
-        """
-        mod = builder.module
-        fnty = llvmir.FunctionType(
-            cgutils.voidptr_t,
-            [cgutils.voidptr_t],
-        )
-        fn = cgutils.get_or_insert_function(mod, fnty, "DPCTLQueue_Copy")
-        fn.return_value.add_attribute("noalias")
-
-        ret = builder.call(fn, [queue_ref])
-
-        return ret

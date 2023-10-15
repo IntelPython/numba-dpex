@@ -18,7 +18,7 @@ from numba.parfors.parfor_lowering_utils import ParforLoweringBuilder
 
 from numba_dpex import utils
 from numba_dpex.core.utils.kernel_launcher import KernelLaunchIRBuilder
-from numba_dpex.dpctl_iface import DpctlCAPIFnBuilder
+from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
 
 from ..types.dpnp_ndarray_type import DpnpNdArray
 
@@ -408,16 +408,6 @@ class ReductionKernelVariables:
         builder = lowerer.builder
         context = lowerer.context
 
-        memcpy_fn = DpctlCAPIFnBuilder.get_dpctl_queue_memcpy(
-            builder=builder, context=context
-        )
-        event_del_fn = DpctlCAPIFnBuilder.get_dpctl_event_delete(
-            builder=builder, context=context
-        )
-        event_wait_fn = DpctlCAPIFnBuilder.get_dpctl_event_wait(
-            builder=builder, context=context
-        )
-
         for i, redvar in enumerate(self.parfor_redvars):
             srcVar = self.final_sum_names[i]
 
@@ -453,9 +443,8 @@ class ReductionKernelVariables:
                 builder.load(item_size),
             ]
 
-            event_ref = builder.call(memcpy_fn, args)
-
-            builder.call(event_wait_fn, [event_ref])
-            builder.call(event_del_fn, [event_ref])
+            event_ref = sycl.dpctl_queue_memcpy(builder, *args)
+            sycl.dpctl_event_wait(builder, event_ref)
+            sycl.dpctl_event_delete(builder, event_ref)
 
         ir_builder.free_queue(sycl_queue_val=curr_queue)

@@ -25,6 +25,7 @@ from numba_dpex.core.datamodel.models import dpex_data_model_manager as dpex_dmm
 from numba_dpex.core.runtime import context as dpexrt
 from numba_dpex.core.types import DpnpNdArray
 from numba_dpex.core.types.dpctl_types import DpctlSyclQueue
+from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
 
 _QueueRefPayload = namedtuple(
     "QueueRefPayload", ["queue_ref", "py_dpctl_sycl_queue_addr", "pyapi"]
@@ -248,8 +249,7 @@ def _empty_nd_impl(context, builder, arrtype, shapes, queue_ref):
     # collected. Whereas, the copied queue_ref is to be owned by the
     # NRT_External_Allocator object of MemInfo, and its lifetime is tied to the
     # MemInfo object.
-    dpexrtCtx = dpexrt.DpexRTContext(context)
-    queue_ref_copy = dpexrtCtx.copy_queue(builder, queue_ref)
+    queue_ref_copy = sycl.dpctl_queue_copy(builder, queue_ref)
 
     usm_ty = arrtype.usm_type
     usm_ty_map = {"device": 1, "shared": 2, "host": 3}

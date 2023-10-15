@@ -7,7 +7,7 @@ from numba.core import cgutils, types
 from numba_dpex import utils
 from numba_dpex.core.runtime.context import DpexRTContext
 from numba_dpex.core.types import DpnpNdArray
-from numba_dpex.dpctl_iface import DpctlCAPIFnBuilder
+from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
 from numba_dpex.dpctl_iface._helpers import numba_type_to_dpctl_typenum
 
 
@@ -283,10 +283,8 @@ class KernelLaunchIRBuilder:
         Args:
             sycl_queue_val: The SYCL queue pointer to be freed.
         """
-        fn = DpctlCAPIFnBuilder.get_dpctl_queue_delete(
-            builder=self.builder, context=self.context
-        )
-        self.builder.call(fn, [self.builder.load(sycl_queue_val)])
+        qref = self.builder.load(sycl_queue_val)
+        sycl.dpctl_queue_delete(self.builder, qref)
 
     def allocate_kernel_arg_array(self, num_kernel_args):
         """Allocates an array to store the LLVM Value for every kernel argument.
