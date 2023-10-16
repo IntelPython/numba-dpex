@@ -1214,14 +1214,8 @@ DPEXRT_sycl_usm_ndarray_to_python_acqref(usmarystruct_t *arystruct,
 static int DPEXRT_sycl_queue_from_python(PyObject *obj,
                                          queuestruct_t *queue_struct)
 {
-
     struct PySyclQueueObject *queue_obj = NULL;
     DPCTLSyclQueueRef queue_ref = NULL;
-    PyGILState_STATE gstate;
-
-    // Increment the ref count on obj to prevent CPython from garbage
-    // collecting the dpctl.SyclQueue object
-    Py_IncRef(obj);
 
     // We are unconditionally casting obj to a struct PySyclQueueObject*. If
     // the obj is not a struct PySyclQueueObject* then the SyclQueue_GetQueueRef
@@ -1261,11 +1255,6 @@ error:
         "DPEXRT-ERROR: Failed to unbox dpctl SyclQueue into a Numba "
         "queuestruct at %s, line %d\n",
         __FILE__, __LINE__));
-    gstate = PyGILState_Ensure();
-    // decref the python object
-    Py_DECREF(obj);
-    // release the GIL
-    PyGILState_Release(gstate);
 
     return -1;
 }
@@ -1284,7 +1273,6 @@ error:
 static PyObject *DPEXRT_sycl_queue_to_python(queuestruct_t *queuestruct)
 {
     PyObject *orig_queue = NULL;
-    PyGILState_STATE gstate;
 
     orig_queue = queuestruct->parent;
     // FIXME: Better error checking is needed to enforce the boxing of the queue
@@ -1298,11 +1286,9 @@ static PyObject *DPEXRT_sycl_queue_to_python(queuestruct_t *queuestruct)
         return NULL;
     }
 
-    gstate = PyGILState_Ensure();
-    // decref the parent python object as we did an incref when unboxing it
-    Py_DECREF(orig_queue);
-    // release the GIL
-    PyGILState_Release(gstate);
+    // We need to increase reference count because we are returning new
+    // reference to the same queue.
+    Py_INCREF(orig_queue);
 
     return orig_queue;
 }
@@ -1323,10 +1309,8 @@ static PyObject *DPEXRT_sycl_queue_to_python(queuestruct_t *queuestruct)
 static int DPEXRT_sycl_event_from_python(PyObject *obj,
                                          eventstruct_t *event_struct)
 {
-
     struct PySyclEventObject *event_obj = NULL;
     DPCTLSyclEventRef event_ref = NULL;
-    PyGILState_STATE gstate;
 
     // We are unconditionally casting obj to a struct PySyclEventObject*. If
     // the obj is not a struct PySyclEventObject* then the SyclEvent_GetEventRef
