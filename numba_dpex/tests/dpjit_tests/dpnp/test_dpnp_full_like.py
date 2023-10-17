@@ -117,7 +117,6 @@ def test_dpnp_full_like_from_device(shape, fill_value, dtype, usm_type):
             "Returned queue does not have the same queue as cached against the device."
         )
 
-    # dummy = dpnp.full_like(a, fill_value, dtype=dtype)
     # dpnp can't cast 4294967295 into int32 and so on,
     # but we can, also numpy can, so we are using numpy here
     dummy = numpy.full_like(a.asnumpy(), fill_value, dtype=dtype)
@@ -161,7 +160,6 @@ def test_dpnp_full_like_from_queue(shape, fill_value, dtype, usm_type):
     assert c.sycl_queue == a.sycl_queue
     assert c.sycl_queue == queue
 
-    # dummy = dpnp.full_like(a, fill_value, dtype=dtype)
     # dpnp can't cast 4294967295 into int32 and so on,
     # but we can, also numpy can, so we are using numpy here
     dummy = numpy.full_like(a.asnumpy(), fill_value, dtype=dtype)

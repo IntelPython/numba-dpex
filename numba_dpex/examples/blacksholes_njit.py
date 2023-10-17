@@ -12,11 +12,6 @@ import numba
 
 import numba_dpex as dpex
 
-# @numba.vectorize(nopython=True)
-# def cndf2(inp):
-#     out = 0.5 + 0.5 * math.erf((math.sqrt(2.0) / 2.0) * inp)
-#     return out
-
 
 @dpex.dpjit
 def blackscholes(sptprice, strike, timev, rate, volatility):
@@ -68,7 +63,6 @@ def run(iterations):
     t1 = time.time()
     put = blackscholes(sptprice, initStrike, rate, volatility, timev)
     t = time.time() - t1
-    #  print("checksum: ", sum(put))
     print(put)
     print("SELFTIMED ", t)
 

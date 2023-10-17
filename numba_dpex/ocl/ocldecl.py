@@ -22,8 +22,6 @@ intrinsic = registry.register
 intrinsic_attr = registry.register_attr
 intrinsic_global = registry.register_global
 
-# register_number_classes(intrinsic_global)
-
 
 @intrinsic
 class Ocl_get_global_id(ConcreteTemplate):

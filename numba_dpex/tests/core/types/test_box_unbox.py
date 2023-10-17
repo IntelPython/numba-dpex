@@ -24,7 +24,7 @@ constructors_with_parent = [
     lambda: numpy.empty(10, dtype=numpy.float32),
     lambda: dpnp.empty(10, dtype=dpnp.float32),
     # TODO: is it possible to test USMNd array same way?
-    # lambda: dpx.USMNdArray(1, queue=None, dtype=dpx.float32),
+    # lambda: dpx.USMNdArray(1, queue=None, dtype=dpx.float32), # noqa: E800
 ]
 
 ranges = [(10,), (10, 10), (10, 10, 10)]
@@ -56,7 +56,6 @@ def unbox_box(a):
     return a
 
 
-# @numba.njit
 @dpx.dpjit
 def unbox(a):
     return None
