@@ -38,8 +38,11 @@ class DpexTargetContext(CPUContext):
         self.is32bit = utils.MACHINE_BITS == 32
         self._internal_codegen = JITCPUCodegen("numba.exec")
         self.lower_extensions = {}
+        # TODO: initialize nrt once switched to nrt from drt. Most likely we
+        # call it somewhere. Double check.
+        # https://github.com/IntelPython/numba-dpex/issues/1175
         # Initialize NRT runtime
-        # rtsys.initialize(self)
+        # rtsys.initialize(self) # noqa: E800
         self.refresh()
 
     @cached_property

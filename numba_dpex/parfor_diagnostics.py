@@ -41,7 +41,6 @@ class ExtendedParforDiagnostics(ParforDiagnostics):
             tmp.append([])
 
         summary = dict()
-        # region : {fused, serialized}
 
         def print_nest(fadj_, nadj_, theroot, reported, region_id):
             def print_g(fadj_, nadj_, nroot, depth):

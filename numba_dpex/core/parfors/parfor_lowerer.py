@@ -414,7 +414,7 @@ class ParforLowerImpl:
         flags.error_model = "numpy"
 
         # Can't get here unless
-        # flags.set('auto_parallel', ParallelOptions(True))
+        # flags.set('auto_parallel', ParallelOptions(True)) # noqa: E800
         index_var_typ = typemap[parfor.loop_nests[0].index_variable.name]
 
         # index variables should have the same type, check rest of indices

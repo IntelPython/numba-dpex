@@ -13,9 +13,12 @@ per-file-ignores =
     __init__.py: F403
     # module level import not at top of file
     target.py: E402
+    # config should containe code lines examples in comment
+    docs/source/conf.py: E800
 exclude =
     .git,
     __pycache__,
     _version.py,
+    versioneer.py,
     lowerer.py,
     parfor.py

@@ -488,7 +488,7 @@ class JitKernel:
 
         # TODO: return event that calls wait if no reference to the object if
         # it is possible
-        # event = exec_queue.submit(
+        # event = exec_queue.submit( # noqa: E800
         exec_queue.submit(
             sycl_kernel,
             packer.unpacked_args,

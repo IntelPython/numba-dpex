@@ -118,7 +118,6 @@ def test_dpnp_full_from_device(shape, fill_value, dtype, usm_type):
             "Returned queue does not have the same queue as cached against the device."
         )
 
-    # dummy = dpnp.full(shape, fill_value, dtype=dtype)
     # dpnp can't cast 4294967295 into int32 and so on,
     # but we can, also numpy can, so we are using numpy here
     dummy = numpy.full(shape, fill_value, dtype=dtype)
@@ -164,7 +163,6 @@ def test_dpnp_full_from_queue(shape, fill_value, dtype, usm_type):
             "Returned queue does not have the same queue as the one passed to the dpnp function."
         )
 
-    # dummy = dpnp.full(shape, fill_value, dtype=dtype)
     # dpnp can't cast 4294967295 into int32 and so on,
     # but we can, also numpy can, so we are using numpy here
     dummy = numpy.full(shape, fill_value, dtype=dtype)

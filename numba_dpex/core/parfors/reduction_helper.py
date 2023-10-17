@@ -41,7 +41,7 @@ class ReductionHelper:
         # Get the type of the reduction variable.
         redvar_typ = lowerer.fndesc.typemap[red_name]
 
-        # redarrvar_typ is type(partial_sum)
+        # redarrvar_typ is type(partial_sum) # noqa: E800 help understanding
         redarrvar_typ = self._redtyp_to_redarraytype(redvar_typ, inputArrayType)
         reddtype = redarrvar_typ.dtype
         redarrdim = redarrvar_typ.ndim
@@ -63,7 +63,7 @@ class ReductionHelper:
             name="tot_work",
         )
 
-        # global_size_mod = tot_work%work_group_size
+        # global_size_mod = tot_work%work_group_size # noqa: E800 help understanding
         ir_expr = ir.Expr.binop(
             operator.mod, total_work_var, work_group_size_var, loc
         )
@@ -232,7 +232,7 @@ class ReductionKernelVariables:
         loop_body = copy.copy(parfor_node.loop_body)
         remove_dels(loop_body)
 
-        # parfor_dim = len(parfor_node.loop_nests)
+        # parfor_dim = len(parfor_node.loop_nests) # noqa: E800 help understanding
         loop_indices = [
             loop_nest.index_variable.name
             for loop_nest in parfor_node.loop_nests

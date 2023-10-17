@@ -234,7 +234,7 @@ def ol_dpnp_empty(
                 shape,
                 dtype=None,
                 order="C",
-                # like=None, # see issue https://github.com/IntelPython/numba-dpex/issues/998
+                # like=None, # noqa: E800 see issue https://github.com/IntelPython/numba-dpex/issues/998
                 device=None,
                 usm_type="device",
                 sycl_queue=None,
@@ -243,7 +243,7 @@ def ol_dpnp_empty(
                     shape,
                     _dtype,
                     order,
-                    # like, # see issue https://github.com/IntelPython/numba-dpex/issues/998
+                    # like, # noqa: E800 see issue https://github.com/IntelPython/numba-dpex/issues/998
                     _device,
                     _usm_type,
                     sycl_queue,

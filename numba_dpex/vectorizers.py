@@ -148,7 +148,6 @@ class UFuncMechanism(deviceufunc.UFuncMechanism):
                 return devout.reshape(outshape)
             else:
                 # Otherwise, transfer output back to host
-                # return devout.copy_to_host().reshape(outshape)
                 raise ValueError("copy_to_host() is not yet supported")
 
         elif cr.is_device_array(out):

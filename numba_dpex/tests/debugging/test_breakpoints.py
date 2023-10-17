@@ -77,13 +77,13 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
     "breakpoint, script",
     [
         # location specified by file name and function name
-        # commands/break_file_func
+        # commands/break_file_func # noqa: E800
         ("simple_sum.py:data_parallel_sum", None),
         # location specified by function name
-        # commands/break_func
+        # commands/break_func # noqa: E800
         ("data_parallel_sum", "simple_sum.py"),
         # location specified by file name and nested function name
-        # commands/break_nested_func
+        # commands/break_nested_func # noqa: E800
         ("simple_dpex_func.py:func_sum", None),
     ],
 )
@@ -95,7 +95,7 @@ def test_breakpoint_common(app, breakpoint, script):
 @pytest.mark.parametrize(
     "breakpoint, variable_name, variable_value",
     [
-        # commands/break_conditional
+        # commands/break_conditional # noqa: E800
         (f"{simple_sum_condition_breakpoint} if i == 1", "i", "1"),
     ],
 )

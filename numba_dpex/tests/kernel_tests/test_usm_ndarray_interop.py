@@ -9,12 +9,6 @@ import pytest
 import numba_dpex as dpex
 from numba_dpex.tests._helper import get_all_dtypes
 
-# list_of_dtype = [
-#     numpy.int32,
-#     numpy.int64,
-#     numpy.float32,
-#     numpy.float64,
-# ]
 list_of_dtype = get_all_dtypes(
     no_bool=True, no_float16=True, no_none=True, no_complex=True
 )

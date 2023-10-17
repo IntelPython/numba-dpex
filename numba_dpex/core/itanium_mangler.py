@@ -184,9 +184,6 @@ def mangle_identifier(ident, template_params="", *, abi_tags=(), uid=None):
 
     This treats '.' as '::' in C++.
     """
-    # if uid is not None:
-    # Add uid to abi-tags
-    #    abi_tags = (f"v{uid}", *abi_tags)
     parts = [_len_encoded(_escape_string(x)) for x in ident.split(".")]
     enc_abi_tags = list(map(mangle_abi_tag, abi_tags))
     extras = template_params + "".join(enc_abi_tags)
