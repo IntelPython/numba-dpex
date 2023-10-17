@@ -156,9 +156,14 @@ def _get_queue_ref(
             raise AssertionError(
                 "Expected the queue_arg to be an llvmir.PointerType"
             )
+        # We are emulating queue boxing here to pass it as an argument.
+        # TODO: do we have a better way?
         py_dpctl_sycl_queue = get_device_cached_queue(
             returned_sycl_queue_ty.sycl_device
         )
+        # TODO: make sure that queue is not getting garbage collected between
+        # lowering and executing.
+        # cache prevent it from happening but it is not clean way
         (queue_ref, py_dpctl_sycl_queue_addr, pyapi) = make_queue(
             context, builder, py_dpctl_sycl_queue
         )
@@ -485,9 +490,6 @@ def impl_dpnp_empty(
             context, builder, sig, qref_payload.queue_ref, args
         )
 
-        if qref_payload.py_dpctl_sycl_queue_addr:
-            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
-
         return ary._getvalue()
 
     return sig, codegen
@@ -564,8 +566,6 @@ def impl_dpnp_zeros(
             qref_payload.queue_ref,
             fill_value,
         )
-        if qref_payload.py_dpctl_sycl_queue_addr:
-            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
 
         return ary._getvalue()
 
@@ -644,8 +644,6 @@ def impl_dpnp_ones(
             qref_payload.queue_ref,
             fill_value,
         )
-        if qref_payload.py_dpctl_sycl_queue_addr:
-            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
 
         return ary._getvalue()
 
@@ -730,8 +728,6 @@ def impl_dpnp_full(
             qref_payload.queue_ref,
             fill_value,
         )
-        if qref_payload.py_dpctl_sycl_queue_addr:
-            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
 
         return ary._getvalue()
 
@@ -811,9 +807,6 @@ def impl_dpnp_empty_like(
         ary = alloc_empty_arrayobj(
             context, builder, sig, qref_payload.queue_ref, args, is_like=True
         )
-
-        if qref_payload.py_dpctl_sycl_queue_addr:
-            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
 
         return ary._getvalue()
 
@@ -902,8 +895,6 @@ def impl_dpnp_zeros_like(
             qref_payload.queue_ref,
             fill_value,
         )
-        if qref_payload.py_dpctl_sycl_queue_addr:
-            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
 
         return ary._getvalue()
 
@@ -991,8 +982,6 @@ def impl_dpnp_ones_like(
             qref_payload.queue_ref,
             fill_value,
         )
-        if qref_payload.py_dpctl_sycl_queue_addr:
-            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
 
         return ary._getvalue()
 
@@ -1084,8 +1073,6 @@ def impl_dpnp_full_like(
             qref_payload.queue_ref,
             fill_value,
         )
-        if qref_payload.py_dpctl_sycl_queue_addr:
-            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
 
         return ary._getvalue()
 
