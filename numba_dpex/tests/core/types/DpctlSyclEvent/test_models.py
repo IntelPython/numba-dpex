@@ -17,7 +17,7 @@ def test_model_for_DpctlSyclEvent():
     """Test the data model for DpctlSyclEvent that is registered with numba's
     default data model manager.
     """
-    sycl_event = DpctlSyclEvent(dpctl.SyclEvent())
+    sycl_event = DpctlSyclEvent()
     default_model = default_manager.lookup(sycl_event)
     assert isinstance(default_model, SyclEventModel)
 
