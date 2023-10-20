@@ -123,10 +123,7 @@ def box_sycl_queue(typ, val, c):
 class DpctlSyclEvent(types.Type):
     """A Numba type to represent a dpctl.SyclEvent PyObject."""
 
-    def __init__(self, sycl_event):
-        if not isinstance(sycl_event, SyclEvent):
-            raise TypeError("The argument sycl_event is not of type SyclEvent.")
-
+    def __init__(self):
         super(DpctlSyclEvent, self).__init__(name="DpctlSyclEvent")
 
     @property

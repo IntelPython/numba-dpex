@@ -280,6 +280,7 @@ register_model(DpctlSyclQueue)(SyclQueueModel)
 
 # Register the DpctlSyclEvent type
 register_model(DpctlSyclEvent)(SyclEventModel)
+
 # Register the RangeType type
 register_model(RangeType)(RangeModel)
 

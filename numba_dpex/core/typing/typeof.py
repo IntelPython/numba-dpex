@@ -121,7 +121,7 @@ def typeof_dpctl_sycl_event(val, c):
 
     Returns: A numba_dpex.core.types.dpctl_types.DpctlSyclEvent instance.
     """
-    return DpctlSyclEvent(val)
+    return DpctlSyclEvent()
 
 
 @typeof_impl.register(Range)
