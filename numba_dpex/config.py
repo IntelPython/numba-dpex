@@ -59,10 +59,15 @@ DEBUGINFO_DEFAULT = _readenv(
     "NUMBA_DPEX_DEBUGINFO", int, config.DEBUGINFO_DEFAULT
 )
 
-# Emit LLVM assembly language format(.ll)
-DUMP_KERNEL_LLVM = _readenv(
-    "NUMBA_DPEX_DUMP_KERNEL_LLVM", int, config.DUMP_OPTIMIZED
-)
+# Emit LLVM IR generated for kernel decorated function
+DUMP_KERNEL_LLVM = _readenv("NUMBA_DPEX_DUMP_KERNEL_LLVM", int, 0)
+
+# Emit LLVM module generated to launch a kernel decorated function
+DUMP_KERNEL_LAUNCHER = _readenv("NUMBA_DPEX_DUMP_KERNEL_LAUNCHER", int, 0)
+
+# Enables debug printf messages inside the kernel launcher module generated for
+# a kernel decorated function
+DEBUG_KERNEL_LAUNCHER = _readenv("NUMBA_DPEX_DEBUG_KERNEL_LAUNCHER", int, 0)
 
 # configs for caching
 # To see the debug messages for the caching.
