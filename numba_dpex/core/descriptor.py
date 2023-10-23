@@ -38,11 +38,13 @@ def _inherit_if_not_set(flags, options, name, default=targetconfig._NotSet):
 class DpexTargetOptions(CPUTargetOptions):
     experimental = _option_mapping("experimental")
     release_gil = _option_mapping("release_gil")
+    no_compile = _option_mapping("no_compile")
 
     def finalize(self, flags, options):
         super().finalize(flags, options)
         _inherit_if_not_set(flags, options, "experimental", False)
         _inherit_if_not_set(flags, options, "release_gil", False)
+        _inherit_if_not_set(flags, options, "no_compile", True)
 
 
 class DpexKernelTarget(TargetDescriptor):
