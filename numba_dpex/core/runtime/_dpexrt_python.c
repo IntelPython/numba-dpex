@@ -467,9 +467,9 @@ static NRT_MemInfo *NRT_MemInfo_new_from_usmndarray(PyObject *ndarrobj,
     mi->size = nitems * itemsize;
     mi->external_allocator = ext_alloca;
 
-    DPEXRT_DEBUG(drt_debug_print(
-        "DPEXRT-DEBUG: NRT_MemInfo_init mi=%p external_allocator=%p\n", mi,
-        ext_alloca));
+    DPEXRT_DEBUG(drt_debug_print("DPEXRT-DEBUG: NRT_MemInfo_init mi=%p "
+                                 "external_allocator=%p at %s, line %d\n",
+                                 mi, ext_alloca, __FILE__, __LINE__));
 
     return mi;
 
@@ -797,14 +797,15 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
     Py_IncRef(obj);
 
     DPEXRT_DEBUG(drt_debug_print(
-        "DPEXRT-DEBUG: In DPEXRT_sycl_usm_ndarray_from_python.\n"));
+        "DPEXRT-DEBUG: In DPEXRT_sycl_usm_ndarray_from_python at %s, line %d\n",
+        __FILE__, __LINE__));
 
     // Check if the PyObject obj has an _array_obj attribute that is of
     // dpctl.tensor.usm_ndarray type.
     if (!(arrayobj = PyUSMNdArray_ARRAYOBJ(obj))) {
         DPEXRT_DEBUG(drt_debug_print(
-            "DPEXRT-ERROR: PyUSMNdArray_ARRAYOBJ check failed %d\n", __FILE__,
-            __LINE__));
+            "DPEXRT-ERROR: PyUSMNdArray_ARRAYOBJ check failed at %s, line %d\n",
+            __FILE__, __LINE__));
         goto error;
     }
 
@@ -873,6 +874,11 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
             *p <<= exp;
         }
     }
+
+    DPEXRT_DEBUG(
+        drt_debug_print("DPEXRT-DEBUG: Done with unboxing call to "
+                        "DPEXRT_sycl_usm_ndarray_from_python at %s, line %d\n",
+                        __FILE__, __LINE__));
 
     return 0;
 
