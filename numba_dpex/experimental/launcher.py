@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+from typing import Union
+
 from llvmlite import ir as llvmir
 from numba.core import cgutils, cpu, types
 from numba.extending import intrinsic, overload
@@ -86,7 +88,7 @@ def _create_kernel_launcher_body(
     codegen_targetctx: cpu.CPUContext,
     kernel_targetctx: DpexKernelTargetContext,
     builder: llvmir.IRBuilder,
-    indexer_argty: RangeType | NdRangeType,
+    indexer_argty: Union[RangeType, NdRangeType],
     kernel_argtys: tuple[types.Type, ...],
     kernel_module: _KernelModule,
     index_space_arg: llvmir.BaseStructType,
