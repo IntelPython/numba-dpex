@@ -4,6 +4,7 @@
 
 import functools
 
+import numba.core.unsafe.nrt
 from llvmlite import ir as llvmir
 from numba.core import cgutils, types
 
@@ -206,26 +207,32 @@ class DpexRTContext(object):
     def eventstruct_from_python(self, pyapi, obj, ptr):
         """Calls the c function DPEXRT_sycl_event_from_python"""
         fnty = llvmir.FunctionType(
-            llvmir.IntType(32), [pyapi.pyobj, pyapi.voidptr]
+            llvmir.IntType(32), [pyapi.voidptr, pyapi.pyobj, pyapi.voidptr]
         )
+        nrt_api = self._context.nrt.get_nrt_api(pyapi.builder)
 
         fn = pyapi._get_function(fnty, "DPEXRT_sycl_event_from_python")
         fn.args[0].add_attribute("nocapture")
         fn.args[1].add_attribute("nocapture")
+        fn.args[2].add_attribute("nocapture")
 
-        self.error = pyapi.builder.call(fn, (obj, ptr))
+        self.error = pyapi.builder.call(fn, (nrt_api, obj, ptr))
         return self.error
 
     def eventstruct_to_python(self, pyapi, val):
         """Calls the c function DPEXRT_sycl_event_to_python"""
 
-        fnty = llvmir.FunctionType(pyapi.pyobj, [pyapi.voidptr])
+        fnty = llvmir.FunctionType(pyapi.pyobj, [pyapi.voidptr, pyapi.voidptr])
+        nrt_api = self._context.nrt.get_nrt_api(pyapi.builder)
 
         fn = pyapi._get_function(fnty, "DPEXRT_sycl_event_to_python")
         fn.args[0].add_attribute("nocapture")
+        fn.args[1].add_attribute("nocapture")
+
         qptr = cgutils.alloca_once_value(pyapi.builder, val)
         ptr = pyapi.builder.bitcast(qptr, pyapi.voidptr)
-        self.error = pyapi.builder.call(fn, [ptr])
+
+        self.error = pyapi.builder.call(fn, [nrt_api, ptr])
 
         return self.error
 

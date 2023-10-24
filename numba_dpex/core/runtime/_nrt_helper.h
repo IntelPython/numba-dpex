@@ -19,5 +19,6 @@ size_t NRT_MemInfo_refcount(NRT_MemInfo *mi);
 void NRT_Free(void *ptr);
 void NRT_dealloc(NRT_MemInfo *mi);
 void NRT_MemInfo_destroy(NRT_MemInfo *mi);
+void NRT_MemInfo_pyobject_dtor(void *data);
 
 #endif /* _NRT_HELPER_H_ */

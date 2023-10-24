@@ -24,6 +24,8 @@
 #include "_queuestruct.h"
 #include "_usmarraystruct.h"
 
+#include "numba/core/runtime/nrt_external.h"
+
 // forward declarations
 static struct PyUSMArrayObject *PyUSMNdArray_ARRAYOBJ(PyObject *obj);
 static npy_intp product_of_shape(npy_intp *shape, npy_intp ndim);
@@ -64,9 +66,12 @@ DPEXRT_sycl_usm_ndarray_to_python_acqref(usmarystruct_t *arystruct,
                                          PyArray_Descr *descr);
 static int DPEXRT_sycl_queue_from_python(PyObject *obj,
                                          queuestruct_t *queue_struct);
-static int DPEXRT_sycl_event_from_python(PyObject *obj,
+static int DPEXRT_sycl_event_from_python(NRT_api_functions *nrt,
+                                         PyObject *obj,
                                          eventstruct_t *event_struct);
 static PyObject *DPEXRT_sycl_queue_to_python(queuestruct_t *queuestruct);
+static PyObject *DPEXRT_sycl_event_to_python(NRT_api_functions *nrt,
+                                             eventstruct_t *eventstruct);
 
 /** An NRT_external_malloc_func implementation using DPCTLmalloc_device.
  *
@@ -1306,7 +1311,8 @@ static PyObject *DPEXRT_sycl_queue_to_python(queuestruct_t *queuestruct)
  *                          represent a dpctl.SyclEvent inside Numba.
  * @return   {return}       Return code indicating success (0) or failure (-1).
  */
-static int DPEXRT_sycl_event_from_python(PyObject *obj,
+static int DPEXRT_sycl_event_from_python(NRT_api_functions *nrt,
+                                         PyObject *obj,
                                          eventstruct_t *event_struct)
 {
     struct PySyclEventObject *event_obj = NULL;
@@ -1328,7 +1334,13 @@ static int DPEXRT_sycl_event_from_python(PyObject *obj,
         goto error;
     }
 
-    event_struct->parent = obj;
+    // We are doing incref here to ensure python does not release the object
+    // while NRT references it. Coresponding decref is called by NRT in
+    // NRT_MemInfo_pyobject_dtor once there is no reference to this object by
+    // the code managed by NRT.
+    Py_INCREF(event_obj);
+    event_struct->meminfo =
+        nrt->manage_memory(event_obj, NRT_MemInfo_pyobject_dtor);
     event_struct->event_ref = event_ref;
 
     return 0;
@@ -1355,12 +1367,13 @@ error:
  * @return   {return}       A PyObject created from the eventstruct->parent, if
  *                          the PyObject could not be created return NULL.
  */
-static PyObject *DPEXRT_sycl_event_to_python(eventstruct_t *eventstruct)
+static PyObject *DPEXRT_sycl_event_to_python(NRT_api_functions *nrt,
+                                             eventstruct_t *eventstruct)
 {
     PyObject *orig_event = NULL;
     PyGILState_STATE gstate;
 
-    orig_event = eventstruct->parent;
+    orig_event = nrt->get_data(eventstruct->meminfo);
     // FIXME: Better error checking is needed to enforce the boxing of the event
     // object. For now, only the minimal is done as the returning of SyclEvent
     // from a dpjit function should not be a used often and the dpctl C API for
@@ -1375,9 +1388,13 @@ static PyObject *DPEXRT_sycl_event_to_python(eventstruct_t *eventstruct)
     DPEXRT_DEBUG(
         drt_debug_print("DPEXRT-DEBUG: In DPEXRT_sycl_event_to_python.\n"););
 
+    // TODO: is there any way to release meminfo without calling dtor so we dont
+    //  call incref, decref one after another.
     // We need to increase reference count because we are returning new
     // reference to the same event.
     Py_INCREF(orig_event);
+    // We need to release meminfo since we are taking ownership back.
+    nrt->release(eventstruct->meminfo);
 
     return orig_event;
 }
