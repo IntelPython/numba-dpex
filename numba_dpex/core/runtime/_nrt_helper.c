@@ -134,3 +134,15 @@ void NRT_MemInfo_destroy(NRT_MemInfo *mi)
         TheMSys.stats.mi_free++;
     }
 }
+
+void NRT_MemInfo_pyobject_dtor(void *data)
+{
+    PyGILState_STATE gstate;
+    PyObject *ownerobj = data;
+
+    gstate = PyGILState_Ensure(); /* ensure the GIL */
+    Py_DECREF(data);              /* release the python object */
+    PyGILState_Release(gstate);   /* release the GIL */
+
+    DPEXRT_DEBUG(drt_debug_print("DPEXRT-DEBUG: pyobject destructor\n"););
+}

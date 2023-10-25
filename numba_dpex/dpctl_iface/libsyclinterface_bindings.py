@@ -71,7 +71,7 @@ def dpctl_event_wait(builder: llvmir.IRBuilder, *args):
     mod = builder.module
     fn = _build_dpctl_function(
         llvm_module=mod,
-        return_ty=cgutils.voidptr_t,
+        return_ty=llvmir.VoidType(),
         arg_list=[cgutils.voidptr_t],
         func_name="DPCTLEvent_Wait",
     )
@@ -85,7 +85,7 @@ def dpctl_event_delete(builder: llvmir.IRBuilder, *args):
     mod = builder.module
     fn = _build_dpctl_function(
         llvm_module=mod,
-        return_ty=cgutils.voidptr_t,
+        return_ty=llvmir.VoidType(),
         arg_list=[cgutils.voidptr_t],
         func_name="DPCTLEvent_Delete",
     )
@@ -99,7 +99,7 @@ def dpctl_queue_delete(builder: llvmir.IRBuilder, *args):
     mod = builder.module
     fn = _build_dpctl_function(
         llvm_module=mod,
-        return_ty=cgutils.voidptr_t,
+        return_ty=llvmir.VoidType(),
         arg_list=[cgutils.voidptr_t],
         func_name="DPCTLQueue_Delete",
     )
