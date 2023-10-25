@@ -11,10 +11,10 @@
 
 #pragma once
 
-#include <Python.h>
+#include "numba/core/runtime/nrt_external.h"
 
 typedef struct
 {
-    PyObject *parent;
+    NRT_MemInfo *meminfo;
     void *queue_ref;
 } queuestruct_t;

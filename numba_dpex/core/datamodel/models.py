@@ -145,8 +145,8 @@ class SyclQueueModel(StructModel):
     def __init__(self, dmm, fe_type):
         members = [
             (
-                "parent",
-                types.CPointer(types.int8),
+                "meminfo",
+                types.MemInfoPointer(types.pyobject),
             ),
             (
                 "queue_ref",
