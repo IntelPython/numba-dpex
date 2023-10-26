@@ -17,17 +17,11 @@ from numba.core.typing.typeof import Purpose, typeof
 from numba_dpex import config, spirv_generator
 from numba_dpex.core.descriptor import dpex_kernel_target
 from numba_dpex.core.exceptions import (
-    InvalidKernelLaunchArgsError,
+    ExecutionQueueInferenceError,
     UnsupportedKernelArgumentError,
 )
-from numba_dpex.core.kernel_interface.indexers import NdRange, Range
 from numba_dpex.core.pipelines import kernel_compiler
 from numba_dpex.core.types import DpnpNdArray
-
-_KernelLauncherLowerResult = namedtuple(
-    "_KernelLauncherLowerResult",
-    ["sig", "fndesc", "library", "call_helper"],
-)
 
 _KernelModule = namedtuple("_KernelModule", ["kernel_name", "kernel_bitcode"])
 
@@ -38,6 +32,43 @@ _KernelCompileResult = namedtuple(
 
 
 class _KernelCompiler(_FunctionCompiler):
+    """A special compiler class used to compile numba_dpex.kernel decorated
+    functions.
+    """
+
+    def _check_queue_equivalence_of_args(
+        self, py_func_name: str, args: [types.Type, ...]
+    ):
+        """Evaluates if all DpnpNdArray arguments passed to a kernel function
+        has the same DpctlSyclQueue type.
+
+        Args:
+            py_func_name (str): Name of the kernel that is being evaluated
+            args (types.Type, ...]): List of numba inferred types for each
+            argument passed to the kernel
+
+        Raises:
+            ExecutionQueueInferenceError: If all DpnpNdArray were not allocated
+            on the same dpctl.SyclQueue
+            ExecutionQueueInferenceError: If there were not DpnpNdArray
+            arguments passed to the kernel.
+        """
+        common_queue = None
+
+        for arg in args:
+            if isinstance(arg, DpnpNdArray):
+                if common_queue is None:
+                    common_queue = arg.queue
+                elif common_queue != arg.queue:
+                    raise ExecutionQueueInferenceError(
+                        kernel_name=py_func_name, usmarray_argnum_list=[]
+                    )
+
+        if common_queue is None:
+            raise ExecutionQueueInferenceError(
+                kernel_name=py_func_name, usmarray_argnum_list=None
+            )
+
     def _compile_to_spirv(
         self, kernel_library, kernel_fndesc, kernel_targetctx
     ):
@@ -156,9 +187,6 @@ class KernelDispatcher(Dispatcher):
         targetoptions["experimental"] = True
 
         self._kernel_name = pyfunc.__name__
-        self._range = None
-        self._ndrange = None
-
         self.typingctx = self.targetdescr.typing_context
         self.targetctx = self.targetdescr.target_context
 
@@ -185,7 +213,7 @@ class KernelDispatcher(Dispatcher):
         self._cache = NullCache()
         compiler_class = self._impl_kinds[impl_kind]
         self._impl_kind = impl_kind
-        self._compiler = compiler_class(
+        self._compiler: _KernelCompiler = compiler_class(
             pyfunc, self.targetdescr, targetoptions, locals, pipeline_class
         )
         self._cache_hits = Counter()
@@ -250,6 +278,14 @@ class KernelDispatcher(Dispatcher):
             # Use counter to track recursion compilation depth
             with self._compiling_counter:
                 args, return_type = sigutils.normalize_signature(sig)
+
+                try:
+                    self._compiler._check_queue_equivalence_of_args(
+                        self._kernel_name, args
+                    )
+                except ExecutionQueueInferenceError as eqie:
+                    raise eqie
+
                 # Don't recompile if signature already exists
                 existing = self.overloads.get(tuple(args))
                 if existing is not None:
@@ -283,40 +319,11 @@ class KernelDispatcher(Dispatcher):
                 return kcres.kernel_module
 
     def __getitem__(self, args):
-        """Square-bracket notation for configuring the global_range and
-        local_range settings when launching a kernel on a SYCL queue.
-
-        When a Python function decorated with the @kernel decorator,
-        is invoked it creates a KernelLauncher object. Calling the
-        KernelLauncher objects ``__getitem__`` function inturn clones the object
-        and sets the ``global_range`` and optionally the ``local_range``
-        attributes with the arguments passed to ``__getitem__``.
-
-        Args:
-            args (tuple): A tuple of tuples that specify the global and
-            optionally the local range for the kernel execution. If the
-            argument is a two-tuple of tuple, then it is assumed that both
-            global and local range options are specified. The first entry is
-            considered to be the global range and the second the local range.
-
-            If only a single tuple value is provided, then the kernel is
-            launched with only a global range and the local range configuration
-            is decided by the SYCL runtime.
-
-        Returns:
-            KernelLauncher: A clone of the KernelLauncher object, but with the
-            global_range and local_range attributes initialized.
+        """Square-bracket notation for configuring launch arguments is not
+        supported.
         """
 
-        if isinstance(args, Range):
-            self._range = args
-        elif isinstance(args, NdRange):
-            self._ndrange = args
-        else:
-            # FIXME: Improve error message
-            raise InvalidKernelLaunchArgsError(kernel_name=self._kernel_name)
-
-        return self
+        raise NotImplementedError
 
     def __call__(self, *args, **kw_args):
         """Functor to launch a kernel."""

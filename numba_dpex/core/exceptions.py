@@ -215,6 +215,12 @@ class ExecutionQueueInferenceError(Exception):
                 f"usm_ndarray arguments {usmarray_args} were not allocated "
                 "on the same queue."
             )
+        else:
+            self.message = (
+                f'Execution queue for kernel "{kernel_name}" could '
+                "be deduced using compute follows data programming model. The "
+                "kernel has no USMNdArray argument."
+            )
         super().__init__(self.message)
 
 
