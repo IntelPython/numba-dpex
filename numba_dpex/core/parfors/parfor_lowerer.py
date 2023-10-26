@@ -3,10 +3,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
-
 from collections import namedtuple
+
 from llvmlite import ir as llvmir
-from numba.core import ir, types, cgutils
+from numba.core import cgutils, ir, types
 from numba.parfors.parfor import (
     find_potential_aliases_parfor,
     get_parfor_outputs,
