@@ -4,6 +4,7 @@
 #include <iostream>
 #include <exception>
 #include <complex>
+#include <typeinfo>
 
 #include <Python.h>
 #include <numpy/npy_common.h>
@@ -111,7 +112,17 @@ sycl::event sequence_step_kernel(sycl::queue exec_q,
                                  char *array_data,
                                  const std::vector<sycl::event> &depends)
 {
+    std::cout << "sequqnce_step_kernel<"
+              << ndpx::runtime::kernel::types::demangle<T>()
+              << ">(): nelems = " << nelems << ", start_v = " << start_v
+              << ", step_v = " << step_v << std::endl;
+
     ndpx::runtime::kernel::types::validate_type_for_device<T>(exec_q);
+
+    std::cout << "sequqnce_step_kernel<"
+              << ndpx::runtime::kernel::types::demangle<T>()
+              << ">(): validate_type_for_device<T>(exec_q) = done" << std::endl;
+
     sycl::event seq_step_event = exec_q.submit([&](sycl::handler &cgh) {
         cgh.depends_on(depends);
         cgh.parallel_for<ndpx_sequence_step_kernel<T>>(
@@ -169,6 +180,11 @@ sycl::event sequence_step(sycl::queue &exec_q,
     } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;
     }
+
+    std::cout << "sequqnce_step()<"
+              << ndpx::runtime::kernel::types::demangle<T>()
+              << ">: nelems = " << nelems << ", *start_v = " << (*start_v)
+              << ", *step_v = " << (*step_v) << std::endl;
 
     auto sequence_step_event = sequence_step_kernel<T>(
         exec_q, nelems, *start_v, *step_v, array_data, depends);
@@ -232,16 +248,6 @@ typedef sycl::event (*affine_sequence_ptr_t)(sycl::queue &,
                                              bool,   // include_endpoint
                                              char *, // dst_data_ptr
                                              const std::vector<sycl::event> &);
-
-// uint populate_arystruct_affine_sequence(void *start,
-//                                         void *end,
-//                                         arystruct_t *dst,
-//                                         int include_endpoint,
-//                                         int ndim,
-//                                         int is_c_contiguous,
-//                                         const DPCTLSyclQueueRef exec_q,
-//                                         const DPCTLEventVectorRef depends);
-
 } // namespace tensor
 } // namespace kernel
 } // namespace runtime

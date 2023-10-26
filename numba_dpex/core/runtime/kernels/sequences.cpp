@@ -42,14 +42,20 @@ extern "C" uint NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence(
     arystruct_t *dst,
     int ndim,
     u_int8_t is_c_contiguous,
+    int dst_typeid,
     const DPCTLSyclQueueRef exec_q)
-// const DPCTLEventVectorRef depends = std::vector<DPCTLSyclEventRef>())
 {
     std::cout << "NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence:"
-              << " start = " << *(reinterpret_cast<int *>(start)) << std::endl;
+              << " start = "
+              << ndpx::runtime::kernel::types::caste_using_typeid(start,
+                                                                  dst_typeid)
+              << std::endl;
 
     std::cout << "NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence:"
-              << " dt = " << *(reinterpret_cast<int *>(dt)) << std::endl;
+              << " dt = "
+              << ndpx::runtime::kernel::types::caste_using_typeid(dt,
+                                                                  dst_typeid)
+              << std::endl;
 
     if (ndim != 1) {
         throw std::logic_error(
@@ -60,26 +66,15 @@ extern "C" uint NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence(
             "populate_arystruct_linseq(): array must be c-contiguous.");
     }
 
-    /**
-    auto array_types = td_ns::usm_ndarray_types();
-    int dst_typenum = dst.get_typenum();
-    int dst_typeid = array_types.typenum_to_lookup_id(dst_typenum);
-    */
-
-    size_t len = static_cast<size_t>(dst->nitems); // dst.get_shape(0);
-    if (len == 0) {
-        // nothing to do
-        // return std::make_pair(sycl::event{}, sycl::event{});
+    size_t len = static_cast<size_t>(dst->nitems);
+    if (len == 0)
         return 0;
-    }
     std::cout << "NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence:"
               << " len = " << len << std::endl;
 
     char *dst_data = reinterpret_cast<char *>(dst->data);
 
-    const int dst_typeid = 7; // 7 = int64_t, 10 = float, 11 = double
-    // int64_t *_start = reinterpret_cast<int64_t *>(start);
-    // int64_t *_dt = reinterpret_cast<int64_t *>(dt);
+    // int dst_typeid = 7; // 7 = int64_t, 10 = float, 11 = double
     auto fn = sequence_step_dispatch_vector[dst_typeid];
 
     sycl::queue *queue = reinterpret_cast<sycl::queue *>(exec_q);
@@ -87,10 +82,14 @@ extern "C" uint NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence(
     sycl::event linspace_step_event =
         fn(*queue, len, start, dt, dst_data, depends);
 
-    /*return std::make_pair(keep_args_alive(exec_q, {dst},
-       {linspace_step_event}), linspace_step_event);*/
+    linspace_step_event.wait_and_throw();
 
-    return 1;
+    if (linspace_step_event
+            .get_info<sycl::info::event::command_execution_status>() ==
+        sycl::info::event_command_status::complete)
+        return 0;
+    else
+        return 1;
 }
 
 // uint ndpx::runtime::kernel::tensor::populate_arystruct_affine_sequence(
