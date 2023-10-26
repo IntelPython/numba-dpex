@@ -1,9 +1,12 @@
 #ifndef __TYPES_HPP__
 #define __TYPES_HPP__
 
+#include <cstdlib>
 #include <complex>
 #include <exception>
 #include <utility>
+#include <string>
+#include <cxxabi.h>
 #include <CL/sycl.hpp>
 
 namespace ndpx
@@ -43,6 +46,58 @@ enum class typenum_t : int
 
 constexpr int num_types = 14; // number of elements in typenum_t
 
+template <typename T> std::string demangle()
+{
+    char const *mangled = typeid(T).name();
+    char *c_demangled;
+    int status = 0;
+    c_demangled = abi::__cxa_demangle(mangled, nullptr, nullptr, &status);
+
+    std::string res;
+    if (c_demangled) {
+        res = c_demangled;
+        free(c_demangled);
+    }
+    else {
+        res = mangled;
+        free(c_demangled);
+    }
+    return res;
+}
+
+std::string caste_using_typeid(void *value, int _typeid)
+{
+    switch (_typeid) {
+    case 0:
+        return std::to_string(*(reinterpret_cast<bool *>(value)));
+    case 1:
+        return std::to_string(*(reinterpret_cast<int8_t *>(value)));
+    case 2:
+        return std::to_string(*(reinterpret_cast<u_int8_t *>(value)));
+    case 3:
+        return std::to_string(*(reinterpret_cast<int16_t *>(value)));
+    case 4:
+        return std::to_string(*(reinterpret_cast<u_int16_t *>(value)));
+    case 5:
+        return std::to_string(*(reinterpret_cast<int32_t *>(value)));
+    case 6:
+        return std::to_string(*(reinterpret_cast<u_int32_t *>(value)));
+    case 7:
+        return std::to_string(*(reinterpret_cast<int64_t *>(value)));
+    case 8:
+        return std::to_string(*(reinterpret_cast<u_int64_t *>(value)));
+    case 9:
+        return std::to_string(*(reinterpret_cast<sycl::half *>(value)));
+    case 10:
+        return std::to_string(*(reinterpret_cast<float *>(value)));
+    case 11:
+        return std::to_string(*(reinterpret_cast<double *>(value)));
+    default:
+        throw std::runtime_error(std::to_string(_typeid) +
+                                 " could't be mapped to valid data type.");
+    }
+}
+
 template <typename dstTy, typename srcTy> dstTy convert_impl(const srcTy &v)
 {
     if constexpr (std::is_same<dstTy, srcTy>::value) {
@@ -75,6 +130,9 @@ template <typename dstTy, typename srcTy> dstTy convert_impl(const srcTy &v)
 template <typename T> void validate_type_for_device(const sycl::device &d)
 {
     if constexpr (std::is_same_v<T, double>) {
+        std::cout
+            << "ndpx::runtime::kernel::types::validate_type_for_device(): here0"
+            << std::endl;
         if (!d.has(sycl::aspect::fp64)) {
             throw std::runtime_error("Device " +
                                      d.get_info<sycl::info::device::name>() +
@@ -82,6 +140,9 @@ template <typename T> void validate_type_for_device(const sycl::device &d)
         }
     }
     else if constexpr (std::is_same_v<T, std::complex<double>>) {
+        std::cout
+            << "ndpx::runtime::kernel::types::validate_type_for_device(): here1"
+            << std::endl;
         if (!d.has(sycl::aspect::fp64)) {
             throw std::runtime_error("Device " +
                                      d.get_info<sycl::info::device::name>() +
@@ -89,6 +150,9 @@ template <typename T> void validate_type_for_device(const sycl::device &d)
         }
     }
     else if constexpr (std::is_same_v<T, sycl::half>) {
+        std::cout
+            << "ndpx::runtime::kernel::types::validate_type_for_device(): here2"
+            << std::endl;
         if (!d.has(sycl::aspect::fp16)) {
             throw std::runtime_error("Device " +
                                      d.get_info<sycl::info::device::name>() +

@@ -365,13 +365,25 @@ def alloc_empty_arrayobj(context, builder, sig, queue_ref, args, is_like=False):
     Returns: The LLVM IR value that stores the empty array
     """
 
+    print("alloc_empty_arrayobj: sig =", sig)
+    print("alloc_empty_arrayobj: args =", args)
+
     arrtype, shape = (
         _parse_empty_like_args(context, builder, sig, args)
         if is_like
         else _parse_empty_args(context, builder, sig, args)
     )
+    print(
+        "alloc_empty_arrayobj(): arrtype =",
+        arrtype,
+        "type(arrtype) =",
+        type(arrtype),
+    )
+    print(
+        "alloc_empty_arrayobj(): shape =", shape, ", type(shape) =", type(shape)
+    )
     ary = _empty_nd_impl(context, builder, arrtype, shape, queue_ref)
-
+    print("alloc_empty_arrayobj(): ary =", ary, ", type(ary) =", type(ary))
     return ary
 
 
@@ -477,6 +489,8 @@ def impl_dpnp_empty(
         ty_retty_ref,
     )
 
+    print("--- impl_dpnp_empty()")
+
     sycl_queue_arg_pos = -2
 
     def codegen(context, builder, sig, args):
@@ -489,6 +503,9 @@ def impl_dpnp_empty(
             returned_sycl_queue_ty=sig.return_type.queue,
             sycl_queue_arg=sycl_queue_arg,
         )
+
+        print("impl_dpnp_empty(): sig =", sig, type(sig))
+        print("impl_dpnp_empty(): args =", args, type(args))
 
         ary = alloc_empty_arrayobj(
             context, builder, sig, qref_payload.queue_ref, args
