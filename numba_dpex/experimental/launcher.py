@@ -2,6 +2,11 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+"""Provides a helper function to call a numba_dpex.kernel decorated function
+from either CPython or a numba_dpex.dpjit decorated function.
+"""
+
+from collections import namedtuple
 from typing import Union
 
 from llvmlite import ir as llvmir
@@ -16,6 +21,23 @@ from numba_dpex.core.utils import kernel_launcher as kl
 from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
 from numba_dpex.experimental.kernel_dispatcher import _KernelModule
 from numba_dpex.utils import create_null_ptr
+
+_KernelSubmissionArgs = namedtuple(
+    "_KernelSubmissionArgs",
+    [
+        "kernel_ref",
+        "queue_ref",
+        "flattened_args_count",
+        "array_of_kernel_args",
+        "array_of_kernel_arg_types",
+        "global_range_extents",
+        "local_range_extents",
+    ],
+)
+
+_LLVMIRValuesForIndexSpace = namedtuple(
+    "_LLVMIRValuesForNdRange", ["global_range_extents", "local_range_extents"]
+)
 
 
 def _get_queue_ref_val(
@@ -76,12 +98,50 @@ def _get_num_flattened_kernel_args(
         if isinstance(arg_type, DpnpNdArray):
             datamodel = kernel_targetctx.data_model_manager.lookup(arg_type)
             num_flattened_kernel_args += datamodel.flattened_field_count
-        elif arg_type == types.complex64 or arg_type == types.complex128:
+        elif arg_type in [types.complex64, types.complex128]:
             num_flattened_kernel_args += 2
         else:
             num_flattened_kernel_args += 1
 
     return num_flattened_kernel_args
+
+
+def _create_llvm_values_for_index_space(
+    builder: llvmir.IRBuilder,
+    kernel_targetctx: DpexKernelTargetContext,
+    indexer_argty: NdRangeType,
+    index_space_arg: llvmir.BaseStructType,
+) -> _LLVMIRValuesForIndexSpace:
+    """Returns a list of LLVM IR Values that hold the unboxed extents of a
+    Python Range or NdRange object.
+    """
+    ndim = indexer_argty.ndim
+    grange_extents = []
+    lrange_extents = []
+    datamodel = kernel_targetctx.data_model_manager.lookup(indexer_argty)
+
+    if isinstance(indexer_argty, RangeType):
+        for dim_num in range(ndim):
+            dim_pos = datamodel.get_field_position("dim" + str(dim_num))
+            grange_extents.append(
+                builder.extract_value(index_space_arg, dim_pos)
+            )
+    elif isinstance(indexer_argty, NdRangeType):
+        for dim_num in range(ndim):
+            gdim_pos = datamodel.get_field_position("gdim" + str(dim_num))
+            grange_extents.append(
+                builder.extract_value(index_space_arg, gdim_pos)
+            )
+            ldim_pos = datamodel.get_field_position("ldim" + str(dim_num))
+            lrange_extents.append(
+                builder.extract_value(index_space_arg, ldim_pos)
+            )
+    else:
+        raise UnreachableError
+
+    return _LLVMIRValuesForIndexSpace(
+        global_range_extents=grange_extents, local_range_extents=lrange_extents
+    )
 
 
 def _create_kernel_launcher_body(
@@ -168,80 +228,55 @@ def _create_kernel_launcher_body(
     kref = sycl.dpctl_kernel_bundle_get_kernel(builder, kbref, kernel_name)
 
     # Submit synchronous kernel
-    # FIXME: Needs to change once we support returning a SyclEvent back to
+    # TODO: Needs to change once we support returning a SyclEvent back to
     # caller.
-    if isinstance(indexer_argty, RangeType):
-        range_ndim = indexer_argty.ndim
-        range_extents = []
-        datamodel = kernel_targetctx.data_model_manager.lookup(indexer_argty)
-        for dim_num in range(range_ndim):
-            dim_pos = datamodel.get_field_position("dim" + str(dim_num))
-            range_extents.append(
-                builder.extract_value(index_space_arg, dim_pos)
-            )
 
-        if config.DEBUG_KERNEL_LAUNCHER:
-            cgutils.printf(builder, "DPEX-DEBUG: Submit sync range kernel.\n")
+    index_space_values = _create_llvm_values_for_index_space(
+        builder=builder,
+        kernel_targetctx=kernel_targetctx,
+        indexer_argty=indexer_argty,
+        index_space_arg=index_space_arg,
+    )
 
-        eref = klbuilder.submit_sycl_kernel(
-            sycl_kernel_ref=kref,
-            sycl_queue_ref=qref,
-            total_kernel_args=num_flattened_kernel_args,
-            arg_list=args_list,
-            arg_ty_list=args_ty_list,
-            global_range=range_extents,
-            local_range=[],
-            wait_before_return=False,
-        )
+    submit_call_args = _KernelSubmissionArgs(
+        kernel_ref=kref,
+        queue_ref=qref,
+        flattened_args_count=num_flattened_kernel_args,
+        array_of_kernel_args=args_list,
+        array_of_kernel_arg_types=args_ty_list,
+        global_range_extents=index_space_values.global_range_extents,
+        local_range_extents=index_space_values.local_range_extents,
+    )
 
-        if config.DEBUG_KERNEL_LAUNCHER:
-            cgutils.printf(builder, "DPEX-DEBUG: Wait on event.\n")
+    if config.DEBUG_KERNEL_LAUNCHER:
+        cgutils.printf(builder, "DPEX-DEBUG: Submit sync range kernel.\n")
 
-        sycl.dpctl_event_wait(builder, eref)
-        sycl.dpctl_event_delete(builder, eref)
+    eref = klbuilder.submit_sycl_kernel(
+        sycl_kernel_ref=submit_call_args.kernel_ref,
+        sycl_queue_ref=submit_call_args.queue_ref,
+        total_kernel_args=submit_call_args.flattened_args_count,
+        arg_list=submit_call_args.array_of_kernel_args,
+        arg_ty_list=submit_call_args.array_of_kernel_arg_types,
+        global_range=submit_call_args.global_range_extents,
+        local_range=submit_call_args.local_range_extents,
+        wait_before_return=False,
+    )
+    if config.DEBUG_KERNEL_LAUNCHER:
+        cgutils.printf(builder, "DPEX-DEBUG: Wait on event.\n")
 
-    elif isinstance(indexer_argty, NdRangeType):
-        ndrange_ndim = indexer_argty.ndim
-        grange_extents = []
-        lrange_extents = []
-        datamodel = kernel_targetctx.data_model_manager.lookup(indexer_argty)
-        for dim_num in range(ndrange_ndim):
-            gdim_pos = datamodel.get_field_position("gdim" + str(dim_num))
-            grange_extents.append(
-                builder.extract_value(index_space_arg, gdim_pos)
-            )
-            ldim_pos = datamodel.get_field_position("ldim" + str(dim_num))
-            lrange_extents.append(
-                builder.extract_value(index_space_arg, ldim_pos)
-            )
-
-        eref = klbuilder.submit_sycl_kernel(
-            sycl_kernel_ref=kref,
-            sycl_queue_ref=qref,
-            total_kernel_args=num_flattened_kernel_args,
-            arg_list=args_list,
-            arg_ty_list=args_ty_list,
-            global_range=grange_extents,
-            local_range=lrange_extents,
-            wait_before_return=False,
-        )
-        if config.DEBUG_KERNEL_LAUNCHER:
-            cgutils.printf(builder, "DPEX-DEBUG: Wait on event.\n")
-
-        sycl.dpctl_event_wait(builder, eref)
-        sycl.dpctl_event_delete(builder, eref)
-    else:
-        raise UnreachableError
-
+    sycl.dpctl_event_wait(builder, eref)
+    sycl.dpctl_event_delete(builder, eref)
     # Delete the kernel ref
     sycl.dpctl_kernel_delete(builder, kref)
     # Delete the kernel bundle pointer
     sycl.dpctl_kernel_bundle_delete(builder, kbref)
 
 
-@intrinsic
-def intrin_launch_trampoline(typingctx, kernel_fn, index_space, kernel_args):
-    kernel_args_list = [arg for arg in kernel_args]
+@intrinsic(target="cpu")
+def intrin_launch_trampoline(
+    typingctx, kernel_fn, index_space, kernel_args  # pylint: disable=W0613
+):
+    kernel_args_list = list(kernel_args)
     # signature of this intrinsic
     sig = types.void(kernel_fn, index_space, kernel_args)
     # signature of the kernel_fn
@@ -268,14 +303,17 @@ def intrin_launch_trampoline(typingctx, kernel_fn, index_space, kernel_args):
     return sig, codegen
 
 
-def _launch_trampoline():
+# pylint: disable=W0613
+def _launch_trampoline(kernel_fn, index_space, *kernel_args):
     pass
 
 
-@overload(_launch_trampoline)
+@overload(_launch_trampoline, target="cpu")
 def _ol_launch_trampoline(kernel_fn, index_space, *kernel_args):
     def impl(kernel_fn, index_space, *kernel_args):
-        intrin_launch_trampoline(kernel_fn, index_space, kernel_args)
+        intrin_launch_trampoline(  # pylint: disable=E1120
+            kernel_fn, index_space, kernel_args
+        )
 
     return impl
 

@@ -34,11 +34,13 @@ def kernel(func_or_sig=None, debug=False, cache=False, **options):
 
     if func_or_sig is None:
         return _kernel_dispatcher
-    elif isinstance(func_or_sig, str):
+
+    if isinstance(func_or_sig, str):
         raise NotImplementedError(
             "Specifying signatures as string is not yet supported by numba-dpex"
         )
-    elif isinstance(func_or_sig, list) or sigutils.is_signature(func_or_sig):
+
+    if isinstance(func_or_sig, list) or sigutils.is_signature(func_or_sig):
         # String signatures are not supported as passing usm_ndarray type as
         # a string is not possible. Numba's sigutils relies on the type being
         # available in Numba's `types.__dict__` and dpex types are not
@@ -64,13 +66,12 @@ def kernel(func_or_sig=None, debug=False, cache=False, **options):
             )
 
         return _specialized_kernel_dispatcher
-    else:
-        func = func_or_sig
-        if not inspect.isfunction(func):
-            raise ValueError(
-                "Argument passed to the kernel decorator is neither a "
-                "function object, nor a signature. If you are trying to "
-                "specialize the kernel that takes a single argument, specify "
-                "the return type as void explicitly."
-            )
-        return _kernel_dispatcher(func)
+    func = func_or_sig
+    if not inspect.isfunction(func):
+        raise ValueError(
+            "Argument passed to the kernel decorator is neither a "
+            "function object, nor a signature. If you are trying to "
+            "specialize the kernel that takes a single argument, specify "
+            "the return type as void explicitly."
+        )
+    return _kernel_dispatcher(func)

@@ -2,6 +2,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+"""Contains experimental features that are meant as engineering preview and not
+yet production ready.
+"""
+
 from numba.core.imputils import Registry
 
 from .decorators import kernel
@@ -15,7 +19,10 @@ lower_constant = registry.lower_constant
 
 
 @lower_constant(KernelDispatcherType)
-def dpex_dispatcher_const(context, builder, ty, pyval):
+def dpex_dispatcher_const(context):
+    """Dummy lowerer for a KernelDispatcherType object. It is added so that a
+    KernelDispatcher can be passed as an argument to dpjit.
+    """
     return context.get_dummy_value()
 
 

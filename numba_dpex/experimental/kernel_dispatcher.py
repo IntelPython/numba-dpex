@@ -36,7 +36,7 @@ class _KernelCompiler(_FunctionCompiler):
     functions.
     """
 
-    def _check_queue_equivalence_of_args(
+    def check_queue_equivalence_of_args(
         self, py_func_name: str, args: [types.Type, ...]
     ):
         """Evaluates if all DpnpNdArray arguments passed to a kernel function
@@ -96,11 +96,11 @@ class _KernelCompiler(_FunctionCompiler):
         kcres = self._compile_cached(args, return_type)
         if kcres.status:
             return kcres
-        else:
-            raise kcres.cres_or_error
+
+        raise kcres.cres_or_error
 
     def _compile_cached(
-        self, kernel_args, return_type: types.Type
+        self, args, return_type: types.Type
     ) -> _KernelCompileResult:
         """Compiles the kernel function to bitcode and generates a host-callable
         wrapper to submit the kernel to a SYCL queue.
@@ -132,16 +132,14 @@ class _KernelCompiler(_FunctionCompiler):
             CompileResult: A CompileResult object storing the LLVM library for
             the host-callable wrapper function.
         """
-        key = tuple(kernel_args), return_type
+        key = tuple(args), return_type
         try:
             return _KernelCompileResult(False, self._failed_cache[key], None)
         except KeyError:
             pass
 
         try:
-            kernel_cres: CompileResult = self._compile_core(
-                kernel_args, return_type
-            )
+            kernel_cres: CompileResult = self._compile_core(args, return_type)
 
             kernel_library = kernel_cres.library
             kernel_fndesc = kernel_cres.fndesc
@@ -155,14 +153,15 @@ class _KernelCompiler(_FunctionCompiler):
                 with open(
                     kernel_cres.fndesc.llvm_func_name + ".ll",
                     "w",
+                    encoding="UTF-8",
                 ) as f:
                     f.write(kernel_cres.library._final_module.__str__())
 
         except errors.TypingError as e:
             self._failed_cache[key] = e
             return _KernelCompileResult(False, e, None)
-        else:
-            return _KernelCompileResult(True, kernel_cres, kernel_module)
+
+        return _KernelCompileResult(True, kernel_cres, kernel_module)
 
 
 class KernelDispatcher(Dispatcher):
@@ -205,7 +204,7 @@ class KernelDispatcher(Dispatcher):
             can_fallback,
             exact_match_required=False,
         )
-        # XXX: What does this function do exactly?
+
         functools.update_wrapper(self, pyfunc)
 
         self.targetoptions = targetoptions
@@ -247,7 +246,7 @@ class KernelDispatcher(Dispatcher):
         self._types_active_call.append(tp)
         return tp
 
-    def add_overload(self, cres, kernel_module):
+    def add_bitcode_overload(self, cres, kernel_module):
         args = tuple(cres.signature.args)
         self.overloads[args] = kernel_module
 
@@ -280,7 +279,7 @@ class KernelDispatcher(Dispatcher):
                 args, return_type = sigutils.normalize_signature(sig)
 
                 try:
-                    self._compiler._check_queue_equivalence_of_args(
+                    self._compiler.check_queue_equivalence_of_args(
                         self._kernel_name, args
                     )
                 except ExecutionQueueInferenceError as eqie:
@@ -294,11 +293,11 @@ class KernelDispatcher(Dispatcher):
                 # FIXME: Enable caching
                 # Add code to enable on disk caching of a binary spirv kernel
                 self._cache_misses[sig] += 1
-                ev_details = dict(
-                    dispatcher=self,
-                    args=args,
-                    return_type=return_type,
-                )
+                ev_details = {
+                    "dispatcher": self,
+                    "args": args,
+                    "return_type": return_type,
+                }
                 with ev.trigger_event("numba_dpex:compile", data=ev_details):
                     try:
                         kcres: _KernelCompileResult = self._compiler.compile(
@@ -312,7 +311,9 @@ class KernelDispatcher(Dispatcher):
                             )[1]
 
                         raise e.bind_fold_arguments(folded)
-                    self.add_overload(kcres.cres_or_error, kcres.kernel_module)
+                    self.add_bitcode_overload(
+                        kcres.cres_or_error, kcres.kernel_module
+                    )
 
                 # FIXME: enable caching
 
