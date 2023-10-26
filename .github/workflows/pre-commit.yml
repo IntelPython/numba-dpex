@@ -8,9 +8,19 @@ on:
 jobs:
   pre-commit:
     runs-on: ubuntu-20.04
+    defaults:
+      run:
+        shell: bash -el {0}
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/setup-python@v3
+    - uses: conda-incubator/setup-miniconda@v2
       with:
         python-version: '3.11'
-    - uses: pre-commit/action@v3.0.0
+        activate-environment: "coverage"
+        channel-priority: "disabled"
+        environment-file: environment/pre-commit.yml
+    - uses: actions/cache@v3
+      with:
+        path: ~/.cache/pre-commit
+        key: pre-commit-3|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
+    - run: pre-commit run --show-diff-on-failure --color=always --all-files
