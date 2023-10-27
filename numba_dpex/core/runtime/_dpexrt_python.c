@@ -1384,33 +1384,32 @@ error:
 static PyObject *DPEXRT_sycl_event_to_python(NRT_api_functions *nrt,
                                              eventstruct_t *eventstruct)
 {
-    PyObject *orig_event = NULL;
+    PyObject *event_obj = NULL;
     PyGILState_STATE gstate;
 
-    orig_event = nrt->get_data(eventstruct->meminfo);
-    // FIXME: Better error checking is needed to enforce the boxing of the event
-    // object. For now, only the minimal is done as the returning of SyclEvent
-    // from a dpjit function should not be a used often and the dpctl C API for
-    // type checking etc. is not ready.
-    if (orig_event == NULL) {
-        PyErr_Format(PyExc_ValueError,
-                     "In 'box_from_eventstruct_parent', "
-                     "failed to create a new dpctl.SyclEvent object.");
-        return NULL;
-    }
+    event_obj = nrt->get_data(eventstruct->meminfo);
 
     DPEXRT_DEBUG(
         drt_debug_print("DPEXRT-DEBUG: In DPEXRT_sycl_event_to_python.\n"););
 
-    // TODO: is there any way to release meminfo without calling dtor so we dont
-    //  call incref, decref one after another.
-    // We need to increase reference count because we are returning new
-    // reference to the same event.
-    Py_INCREF(orig_event);
+    if (event_obj == NULL) {
+        // Make create copy of event_ref so we don't need to manage nrt lifetime
+        // from python object.
+        event_obj = SyclEvent_Make(eventstruct->event_ref);
+    }
+    else {
+        // Unfortunately we can not optimize (nrt->release that triggers
+        // Py_DECREF() from the destructor) and Py_INCREF() because nrt may need
+        // the object even if we return it to python.
+        // We need to increase reference count because we are returning new
+        // reference to the same event.
+        Py_INCREF(event_obj);
+    }
+
     // We need to release meminfo since we are taking ownership back.
     nrt->release(eventstruct->meminfo);
 
-    return orig_event;
+    return event_obj;
 }
 
 /*----------------------------------------------------------------------------*/
