@@ -1256,6 +1256,7 @@ static int DPEXRT_sycl_queue_from_python(NRT_api_functions *nrt,
     Py_INCREF(queue_obj);
     queue_struct->meminfo =
         nrt->manage_memory(queue_obj, NRT_MemInfo_pyobject_dtor);
+    queue_struct->parent = queue_obj;
     queue_struct->queue_ref = queue_ref;
 
     return 0;
@@ -1287,9 +1288,7 @@ error:
 static PyObject *DPEXRT_sycl_queue_to_python(NRT_api_functions *nrt,
                                              queuestruct_t *queuestruct)
 {
-    PyObject *queue_obj = NULL;
-
-    queue_obj = nrt->get_data(queuestruct->meminfo);
+    PyObject *queue_obj = queuestruct->parent;
 
     if (queue_obj == NULL) {
         // Make create copy of queue_ref so we don't need to manage nrt lifetime

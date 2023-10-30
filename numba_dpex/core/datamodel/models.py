@@ -149,6 +149,10 @@ class SyclQueueModel(StructModel):
                 types.MemInfoPointer(types.pyobject),
             ),
             (
+                "parent",
+                types.pyobject,
+            ),
+            (
                 "queue_ref",
                 types.CPointer(types.int8),
             ),
