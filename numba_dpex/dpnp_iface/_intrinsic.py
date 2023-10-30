@@ -73,8 +73,7 @@ def make_queue(context, builder, py_dpctl_sycl_queue):
         pyapi, py_dpctl_sycl_queue_addr, queue_struct_voidptr
     )
 
-    queue_struct = builder.load(queue_struct_ptr)
-    queue_ref = builder.extract_value(queue_struct, 1)
+    queue_ref = queue_struct_proxy.queue_ref
 
     return_values = namedtuple(
         "return_values", "queue_ref queue_address_ptr pyapi"

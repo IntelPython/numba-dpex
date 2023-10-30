@@ -31,16 +31,21 @@ def are_queues_equal(typingctx, ty_queue1, ty_queue2):
 
     # defines the custom code generation
     def codegen(context, builder, sig, args):
+        q1 = cgutils.create_struct_proxy(ty_queue1)(
+            context, builder, value=args[0]
+        )
+        q2 = cgutils.create_struct_proxy(ty_queue2)(
+            context, builder, value=args[1]
+        )
+
         fnty = llvmir.FunctionType(
             cgutils.bool_t, [cgutils.voidptr_t, cgutils.voidptr_t]
         )
         fn = cgutils.get_or_insert_function(
             builder.module, fnty, "DPCTLQueue_AreEq"
         )
-        qref1 = builder.extract_value(args[0], 1)
-        qref2 = builder.extract_value(args[1], 1)
 
-        ret = builder.call(fn, [qref1, qref2])
+        ret = builder.call(fn, [q1.queue_ref, q2.queue_ref])
 
         return ret
 
