@@ -27,7 +27,7 @@ _KernelModule = namedtuple("_KernelModule", ["kernel_name", "kernel_bitcode"])
 
 _KernelCompileResult = namedtuple(
     "_KernelCompileResult",
-    ["status", "cres_or_error", "kernel_module"],
+    ["status", "cres_or_error", "entry_point"],
 )
 
 
@@ -155,7 +155,7 @@ class _KernelCompiler(_FunctionCompiler):
                     "w",
                     encoding="UTF-8",
                 ) as f:
-                    f.write(kernel_cres.library._final_module.__str__())
+                    f.write(kernel_cres.library._final_module)
 
         except errors.TypingError as e:
             self._failed_cache[key] = e
@@ -246,9 +246,9 @@ class KernelDispatcher(Dispatcher):
         self._types_active_call.append(tp)
         return tp
 
-    def add_bitcode_overload(self, cres, kernel_module):
+    def add_overload(self, cres):
         args = tuple(cres.signature.args)
-        self.overloads[args] = kernel_module
+        self.overloads[args] = cres.entry_point
 
     def compile(self, sig) -> _KernelCompileResult:
         disp = self._get_dispatcher_for_current_target()
@@ -311,13 +311,11 @@ class KernelDispatcher(Dispatcher):
                             )[1]
 
                         raise e.bind_fold_arguments(folded)
-                    self.add_bitcode_overload(
-                        kcres.cres_or_error, kcres.kernel_module
-                    )
+                    self.add_overload(kcres.cres_or_error)
 
-                # FIXME: enable caching
+                # TODO: enable caching of kernel_module
 
-                return kcres.kernel_module
+                return kcres.entry_point
 
     def __getitem__(self, args):
         """Square-bracket notation for configuring launch arguments is not
