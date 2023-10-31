@@ -45,6 +45,11 @@ style = "pep440"
 versionfile_source = "numba_dpex/_version.py"
 parentdir_prefix = ""
 
+[tool.pylint]
+disable = [
+    "fixme"
+]
+
 [build-system]
 requires = [
     "setuptools>=42",
