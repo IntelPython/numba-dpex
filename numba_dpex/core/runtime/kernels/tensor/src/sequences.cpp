@@ -1,39 +1,42 @@
+// SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #include <iostream>
 #include <stdexcept>
 
 #include <numpy/npy_common.h>
 
-#include "sequences.hpp"
-#include "dispatch.hpp"
-#include "types.hpp"
-#include "api.h"
+#include "../include/sequences.hpp"
+#include "../include/dispatch.hpp"
+#include "../include/typeutils.hpp"
+#include "../include/api.h"
 
-static ndpx::runtime::kernel::tensor::sequence_step_ptr_t
-    sequence_step_dispatch_vector[ndpx::runtime::kernel::types::num_types];
+namespace dpexrt_tensor = dpex::rt::kernel::tensor;
 
-static ndpx::runtime::kernel::tensor::affine_sequence_ptr_t
-    affine_sequence_dispatch_vector[ndpx::runtime::kernel::types::num_types];
+static dpexrt_tensor::sequence_step_ptr_t
+    sequence_step_dispatch_vector[dpexrt_tensor::typeutils::num_types];
+
+static dpexrt_tensor::affine_sequence_ptr_t
+    affine_sequence_dispatch_vector[dpexrt_tensor::typeutils::num_types];
 
 extern "C" void NUMBA_DPEX_SYCL_KERNEL_init_sequence_step_dispatch_vectors()
 {
-    ndpx::runtime::kernel::dispatch::DispatchVectorBuilder<
-        ndpx::runtime::kernel::tensor::sequence_step_ptr_t,
-        ndpx::runtime::kernel::tensor::SequenceStepFactory,
-        ndpx::runtime::kernel::types::num_types>
+    dpexrt_tensor::dispatch::DispatchVectorBuilder<
+        dpexrt_tensor::sequence_step_ptr_t, dpexrt_tensor::SequenceStepFactory,
+        dpexrt_tensor::typeutils::num_types>
         dvb;
     dvb.populate_dispatch_vector(sequence_step_dispatch_vector);
-    std::cout << "-----> init_sequence_dispatch_vectors()" << std::endl;
 }
 
 extern "C" void NUMBA_DPEX_SYCL_KERNEL_init_affine_sequence_dispatch_vectors()
 {
-    ndpx::runtime::kernel::dispatch::DispatchVectorBuilder<
-        ndpx::runtime::kernel::tensor::affine_sequence_ptr_t,
-        ndpx::runtime::kernel::tensor::AffineSequenceFactory,
-        ndpx::runtime::kernel::types::num_types>
+    dpexrt_tensor::dispatch::DispatchVectorBuilder<
+        dpexrt_tensor::affine_sequence_ptr_t,
+        dpexrt_tensor::AffineSequenceFactory,
+        dpexrt_tensor::typeutils::num_types>
         dvb;
     dvb.populate_dispatch_vector(affine_sequence_dispatch_vector);
-    std::cout << "-----> init_affine_sequence_dispatch_vectors()" << std::endl;
 }
 
 extern "C" uint NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence(
@@ -47,14 +50,12 @@ extern "C" uint NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence(
 {
     std::cout << "NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence:"
               << " start = "
-              << ndpx::runtime::kernel::types::caste_using_typeid(start,
-                                                                  dst_typeid)
+              << dpexrt_tensor::typeutils::caste_using_typeid(start, dst_typeid)
               << std::endl;
 
     std::cout << "NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence:"
               << " dt = "
-              << ndpx::runtime::kernel::types::caste_using_typeid(dt,
-                                                                  dst_typeid)
+              << dpexrt_tensor::typeutils::caste_using_typeid(dt, dst_typeid)
               << std::endl;
 
     if (ndim != 1) {
@@ -92,7 +93,7 @@ extern "C" uint NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence(
         return 1;
 }
 
-// uint ndpx::runtime::kernel::tensor::populate_arystruct_affine_sequence(
+// uint dpexrt_tensor::tensor::populate_arystruct_affine_sequence(
 //     void *start,
 //     void *end,
 //     arystruct_t *dst,

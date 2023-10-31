@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #ifndef __SEQUENCES_HPP__
 #define __SEQUENCES_HPP__
 
@@ -13,11 +17,13 @@
 #include "dpctl_capi.h"
 #include "dpctl_sycl_interface.h"
 
-#include "types.hpp"
+#include "typeutils.hpp"
 
-namespace ndpx
+namespace dpexrt_tensor = dpex::rt::kernel::tensor;
+
+namespace dpex
 {
-namespace runtime
+namespace rt
 {
 namespace kernel
 {
@@ -43,7 +49,7 @@ public:
     void operator()(sycl::id<1> wiid) const
     {
         auto i = wiid.get(0);
-        if constexpr (ndpx::runtime::kernel::types::is_complex<T>::value) {
+        if constexpr (dpexrt_tensor::typeutils::is_complex<T>::value) {
             p[i] = T{start_v.real() + i * step_v.real(),
                      start_v.imag() + i * step_v.imag()};
         }
@@ -73,7 +79,7 @@ public:
         auto i = wiid.get(0);
         wT wc = wT(i) / n;
         wT w = wT(n - i) / n;
-        if constexpr (ndpx::runtime::kernel::types::is_complex<T>::value) {
+        if constexpr (dpexrt_tensor::typeutils::is_complex<T>::value) {
             using reT = typename T::value_type;
             auto _w = static_cast<reT>(w);
             auto _wc = static_cast<reT>(wc);
@@ -98,7 +104,7 @@ public:
         }
         else {
             auto affine_comb = start_v * w + end_v * wc;
-            p[i] = ndpx::runtime::kernel::types::convert_impl<
+            p[i] = dpexrt_tensor::typeutils::convert_impl<
                 T, decltype(affine_comb)>(affine_comb);
         }
     }
@@ -113,14 +119,14 @@ sycl::event sequence_step_kernel(sycl::queue exec_q,
                                  const std::vector<sycl::event> &depends)
 {
     std::cout << "sequqnce_step_kernel<"
-              << ndpx::runtime::kernel::types::demangle<T>()
+              << dpexrt_tensor::typeutils::demangle<T>()
               << ">(): nelems = " << nelems << ", start_v = " << start_v
               << ", step_v = " << step_v << std::endl;
 
-    ndpx::runtime::kernel::types::validate_type_for_device<T>(exec_q);
+    dpexrt_tensor::typeutils::validate_type_for_device<T>(exec_q);
 
     std::cout << "sequqnce_step_kernel<"
-              << ndpx::runtime::kernel::types::demangle<T>()
+              << dpexrt_tensor::typeutils::demangle<T>()
               << ">(): validate_type_for_device<T>(exec_q) = done" << std::endl;
 
     sycl::event seq_step_event = exec_q.submit([&](sycl::handler &cgh) {
@@ -142,7 +148,7 @@ sycl::event affine_sequence_kernel(sycl::queue &exec_q,
                                    char *array_data,
                                    const std::vector<sycl::event> &depends)
 {
-    ndpx::runtime::kernel::types::validate_type_for_device<T>(exec_q);
+    dpexrt_tensor::typeutils::validate_type_for_device<T>(exec_q);
     bool device_supports_doubles = exec_q.get_device().has(sycl::aspect::fp64);
     sycl::event affine_seq_step_event = exec_q.submit([&](sycl::handler &cgh) {
         cgh.depends_on(depends);
@@ -181,8 +187,7 @@ sycl::event sequence_step(sycl::queue &exec_q,
         std::cerr << e.what() << std::endl;
     }
 
-    std::cout << "sequqnce_step()<"
-              << ndpx::runtime::kernel::types::demangle<T>()
+    std::cout << "sequqnce_step()<" << dpexrt_tensor::typeutils::demangle<T>()
               << ">: nelems = " << nelems << ", *start_v = " << (*start_v)
               << ", *step_v = " << (*step_v) << std::endl;
 
@@ -250,7 +255,7 @@ typedef sycl::event (*affine_sequence_ptr_t)(sycl::queue &,
                                              const std::vector<sycl::event> &);
 } // namespace tensor
 } // namespace kernel
-} // namespace runtime
-} // namespace ndpx
+} // namespace rt
+} // namespace dpex
 
 #endif

@@ -1,14 +1,20 @@
+// SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #ifndef __DISPATCH_HPP__
 #define __DISPATCH_HPP__
 
 #include <complex>
 #include <CL/sycl.hpp>
 
-namespace ndpx
+namespace dpex
 {
-namespace runtime
+namespace rt
 {
 namespace kernel
+{
+namespace tensor
 {
 namespace dispatch
 {
@@ -58,8 +64,9 @@ public:
 };
 
 } // namespace dispatch
+} // namespace tensor
 } // namespace kernel
-} // namespace runtime
-} // namespace ndpx
+} // namespace rt
+} // namespace dpex
 
 #endif
