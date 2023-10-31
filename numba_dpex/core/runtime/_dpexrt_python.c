@@ -25,7 +25,7 @@
 #include "_eventstruct.h"
 #include "_queuestruct.h"
 #include "_usmarraystruct.h"
-#include "kernels/api.h"
+#include "kernels/tensor/include/api.h"
 
 #include "experimental/kernel_caching.h"
 #include "experimental/nrt_reserve_meminfo.h"
@@ -1521,7 +1521,6 @@ error:
 
 MOD_INIT(_dpexrt_python)
 {
-    printf("======================> MOD_INIT\n");
     PyObject *m = NULL;
     PyObject *dpnp_array_type = NULL;
     PyObject *dpnp_array_mod = NULL;

@@ -87,9 +87,6 @@ find_package(Python 3.9 REQUIRED
 find_package(Dpctl REQUIRED)
 find_package(IntelSYCL REQUIRED)
 
-message(STATUS "==========> NumPy_INCLUDE_DIRS =" "${NumPy_INCLUDE_DIRS}")
-message(STATUS "==========> Numba_INCLUDE_DIRS =" "${Numba_INCLUDE_DIRS}")
-
 # Includes
 include(GNUInstallDirs)
 include_directories(${Python_INCLUDE_DIRS})
@@ -97,7 +94,7 @@ include_directories(${Python_NumPy_INCLUDE_DIRS})
 include_directories(${Numba_INCLUDE_DIRS})
 include_directories(${Dpctl_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/kernels)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/kernels/tensor/include)
 
 # Source files, *.c
 file(GLOB_RECURSE DPEXRT_SOURCES CONFIGURE_DEPENDS "*.c")
