@@ -6,11 +6,12 @@ from collections import namedtuple
 
 from dpctl import get_device_cached_queue
 from llvmlite import ir as llvmir
-from llvmlite.ir import Constant
+from llvmlite.ir import Constant, IRBuilder
 from llvmlite.ir.types import DoubleType, FloatType
 from numba import types
 from numba.core import cgutils
 from numba.core import config as numba_config
+from numba.core import errors, imputils
 from numba.core.typing import signature
 from numba.extending import intrinsic, overload_classmethod
 from numba.np.arrayobj import (
@@ -73,8 +74,7 @@ def make_queue(context, builder, py_dpctl_sycl_queue):
         pyapi, py_dpctl_sycl_queue_addr, queue_struct_voidptr
     )
 
-    queue_struct = builder.load(queue_struct_ptr)
-    queue_ref = builder.extract_value(queue_struct, 1)
+    queue_ref = queue_struct_proxy.queue_ref
 
     return_values = namedtuple(
         "return_values", "queue_ref queue_address_ptr pyapi"
@@ -1077,3 +1077,61 @@ def impl_dpnp_full_like(
         return ary._getvalue()
 
     return signature, codegen
+
+
+@intrinsic
+def ol_dpnp_nd_array_sycl_queue(
+    ty_context,
+    ty_dpnp_nd_array: DpnpNdArray,
+):
+    if not isinstance(ty_dpnp_nd_array, DpnpNdArray):
+        raise errors.TypingError("Argument must be DpnpNdArray")
+
+    ty_queue: DpctlSyclQueue = ty_dpnp_nd_array.queue
+
+    sig = ty_queue(ty_dpnp_nd_array)
+
+    def codegen(context, builder: IRBuilder, sig, args: list):
+        array_proxy = cgutils.create_struct_proxy(ty_dpnp_nd_array)(
+            context,
+            builder,
+            value=args[0],
+        )
+
+        queue_ref = array_proxy.sycl_queue
+
+        queue_struct_proxy = cgutils.create_struct_proxy(ty_queue)(
+            context, builder
+        )
+
+        queue_struct_proxy.queue_ref = queue_ref
+        queue_struct_proxy.meminfo = array_proxy.meminfo
+
+        # Warning: current implementation prevents whole object from being
+        # destroyed as long as sycl_queue attribute is being used. It should be
+        # okay since anywere we use it as an argument callee creates a copy
+        # so it does not steel reference.
+        #
+        # We can avoid it by:
+        #  queue_ref_copy = sycl.dpctl_queue_copy(builder, queue_ref) #noqa E800
+        #  queue_struct_proxy.queue_ref = queue_ref_copy #noqa E800
+        #  queue_struct->meminfo =
+        #     nrt->manage_memory(queue_ref_copy, DPCTLEvent_Delete);
+        # but it will allocate new meminfo object which can negatively affect
+        # performance.
+        # Speaking philosophically attribute is a part of the object and as long
+        # as nobody can still the reference it is a part of the owner object
+        # and lifetime is tied to it.
+        # TODO: we want to have queue: queuestruct_t instead of
+        #   queue_ref: QueueRef as an attribute for DPNPNdArray.
+
+        queue_value = queue_struct_proxy._getvalue()
+
+        # We need to incref meminfo so that queue model is preventing parent
+        # ndarray from being destroyed, that can destroy queue that we are
+        # using.
+        return imputils.impl_ret_borrowed(
+            context, builder, ty_queue, queue_value
+        )
+
+    return sig, codegen

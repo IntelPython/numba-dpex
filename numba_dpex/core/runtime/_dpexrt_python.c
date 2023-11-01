@@ -1256,6 +1256,7 @@ static int DPEXRT_sycl_queue_from_python(NRT_api_functions *nrt,
     Py_INCREF(queue_obj);
     queue_struct->meminfo =
         nrt->manage_memory(queue_obj, NRT_MemInfo_pyobject_dtor);
+    queue_struct->parent = queue_obj;
     queue_struct->queue_ref = queue_ref;
 
     return 0;
@@ -1287,29 +1288,26 @@ error:
 static PyObject *DPEXRT_sycl_queue_to_python(NRT_api_functions *nrt,
                                              queuestruct_t *queuestruct)
 {
-    PyObject *orig_queue = NULL;
+    PyObject *queue_obj = queuestruct->parent;
 
-    orig_queue = nrt->get_data(queuestruct->meminfo);
-    // FIXME: Better error checking is needed to enforce the boxing of the queue
-    // object. For now, only the minimal is done as the returning of SyclQueue
-    // from a dpjit function should not be a used often and the dpctl C API for
-    // type checking etc. is not ready.
-    if (orig_queue == NULL) {
-        PyErr_Format(PyExc_ValueError,
-                     "In 'box_from_queuestruct_parent', "
-                     "failed to create a new dpctl.SyclQueue object.");
-        return NULL;
+    if (queue_obj == NULL) {
+        // Make create copy of queue_ref so we don't need to manage nrt lifetime
+        // from python object.
+        queue_obj = SyclQueue_Make(queuestruct->queue_ref);
+    }
+    else {
+        // Unfortunately we can not optimize (nrt->release that triggers
+        // Py_DECREF() from the destructor) and Py_INCREF() because nrt may need
+        // the object even if we return it to python.
+        // We need to increase reference count because we are returning new
+        // reference to the same queue.
+        Py_INCREF(queue_obj);
     }
 
-    // TODO: is there any way to release meminfo without calling dtor so we dont
-    //  call incref, decref one after another.
-    // We need to increase reference count because we are returning new
-    // reference to the same queue.
-    Py_INCREF(orig_queue);
     // We need to release meminfo since we are taking ownership back.
     nrt->release(queuestruct->meminfo);
 
-    return orig_queue;
+    return queue_obj;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -1384,33 +1382,32 @@ error:
 static PyObject *DPEXRT_sycl_event_to_python(NRT_api_functions *nrt,
                                              eventstruct_t *eventstruct)
 {
-    PyObject *orig_event = NULL;
+    PyObject *event_obj = NULL;
     PyGILState_STATE gstate;
 
-    orig_event = nrt->get_data(eventstruct->meminfo);
-    // FIXME: Better error checking is needed to enforce the boxing of the event
-    // object. For now, only the minimal is done as the returning of SyclEvent
-    // from a dpjit function should not be a used often and the dpctl C API for
-    // type checking etc. is not ready.
-    if (orig_event == NULL) {
-        PyErr_Format(PyExc_ValueError,
-                     "In 'box_from_eventstruct_parent', "
-                     "failed to create a new dpctl.SyclEvent object.");
-        return NULL;
-    }
+    event_obj = nrt->get_data(eventstruct->meminfo);
 
     DPEXRT_DEBUG(
         drt_debug_print("DPEXRT-DEBUG: In DPEXRT_sycl_event_to_python.\n"););
 
-    // TODO: is there any way to release meminfo without calling dtor so we dont
-    //  call incref, decref one after another.
-    // We need to increase reference count because we are returning new
-    // reference to the same event.
-    Py_INCREF(orig_event);
+    if (event_obj == NULL) {
+        // Make create copy of event_ref so we don't need to manage nrt lifetime
+        // from python object.
+        event_obj = SyclEvent_Make(eventstruct->event_ref);
+    }
+    else {
+        // Unfortunately we can not optimize (nrt->release that triggers
+        // Py_DECREF() from the destructor) and Py_INCREF() because nrt may need
+        // the object even if we return it to python.
+        // We need to increase reference count because we are returning new
+        // reference to the same event.
+        Py_INCREF(event_obj);
+    }
+
     // We need to release meminfo since we are taking ownership back.
     nrt->release(eventstruct->meminfo);
 
-    return orig_event;
+    return event_obj;
 }
 
 /*----------------------------------------------------------------------------*/

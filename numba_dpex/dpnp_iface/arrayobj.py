@@ -11,7 +11,7 @@ from numba.core.types import scalars
 from numba.core.types.containers import UniTuple
 from numba.core.typing.npydecl import parse_dtype as _ty_parse_dtype
 from numba.core.typing.npydecl import parse_shape as _ty_parse_shape
-from numba.extending import overload
+from numba.extending import overload, overload_attribute
 from numba.np.arrayobj import getitem_arraynd_intp as np_getitem_arraynd_intp
 from numba.np.numpy_support import is_nonelike
 
@@ -27,6 +27,7 @@ from ._intrinsic import (
     impl_dpnp_ones_like,
     impl_dpnp_zeros,
     impl_dpnp_zeros_like,
+    ol_dpnp_nd_array_sycl_queue,
 )
 
 # =========================================================================
@@ -1085,3 +1086,23 @@ def getitem_arraynd_intp(context, builder, sig, args):
         ret = builder.insert_value(ret, sycl_queue_attr, sycl_queue_attr_pos)
 
     return ret
+
+
+@overload_attribute(DpnpNdArray, "sycl_queue")
+def dpnp_nd_array_sycl_queue(arr):
+    """Returns :class:`dpctl.SyclQueue` object associated with USM data.
+
+    This is an overloaded attribute implementation for dpnp.sycl_queue.
+
+    Args:
+        arr (numba_dpex.core.types.DpnpNdArray): Input array from which to
+            take sycl_queue.
+
+    Returns:
+        function: Local function `ol_dpnp_nd_array_sycl_queue()`.
+    """
+
+    def get(arr):
+        return ol_dpnp_nd_array_sycl_queue(arr)
+
+    return get
