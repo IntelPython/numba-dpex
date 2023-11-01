@@ -8,11 +8,13 @@ import dpnp
 import numba
 import numpy as np
 from llvmlite import ir as llvmir
+from llvmlite.ir import types as llvmirtypes
 from numba import errors, types
 from numba.core import cgutils
 from numba.core.types.misc import NoneType
 from numba.core.types.scalars import Boolean, Complex, Float, Integer
 from numba.extending import intrinsic, overload
+from numba.np.numpy_support import is_nonelike
 
 import numba_dpex.utils as utils
 from numba_dpex.core.types import DpnpNdArray
@@ -168,7 +170,20 @@ def _normalize(builder, src, src_type, dest_type):
         else:
             return builder.uitofp(src, dest_llvm_type)
     elif isinstance(src_type, Float) and isinstance(dest_type, Integer):
-        if src_type.signed:
+        # src_gtz = builder.fcmp_ordered(">", src, src.type(0.0))   # noqa: E800
+        # with builder.if_then(src_gtz):
+        return_type = (
+            llvmirtypes.DoubleType()
+            if src_type.bitwidth == 64
+            else (
+                llvmirtypes.FloatType()
+                if src_type.bitwidth == 32
+                else llvmirtypes.HalfType()
+            )
+        )
+        rint = builder.module.declare_intrinsic("llvm.round", [return_type])
+        src = builder.call(rint, [src])
+        if dest_type.signed:
             return builder.fptosi(src, dest_llvm_type)
         else:
             return builder.fptoui(src, dest_llvm_type)
@@ -189,7 +204,6 @@ def _normalize(builder, src, src_type, dest_type):
 
 
 def _compute_array_length_ir(
-    context,
     builder,
     start_ir,
     stop_ir,
@@ -198,22 +212,25 @@ def _compute_array_length_ir(
     stop_arg_type,
     step_arg_type,
 ):
-    u64 = llvmir.IntType(64)
-    one = context.get_constant(types.float64, 1)
+    lb = _normalize(builder, start_ir, start_arg_type, types.float64)
+    ub = _normalize(builder, stop_ir, stop_arg_type, types.float64)
+    n = _normalize(builder, step_ir, step_arg_type, types.float64)
 
-    ll = _normalize(builder, start_ir, start_arg_type, types.float64)
-    ul = _normalize(builder, stop_ir, stop_arg_type, types.float64)
-    d = _normalize(builder, step_ir, step_arg_type, types.float64)
-
-    # Doing ceil(a,b) = (a-1)/b + 1 to avoid overflow
-    array_length = builder.fptosi(
-        builder.fadd(
-            builder.fdiv(builder.fsub(builder.fsub(ul, ll), one), d),
-            one,
-        ),
-        u64,
+    ceil = builder.module.declare_intrinsic(
+        "llvm.ceil", [llvmirtypes.DoubleType()]
     )
-    return array_length
+    fabs = builder.module.declare_intrinsic(
+        "llvm.fabs", [llvmirtypes.DoubleType()]
+    )
+
+    array_length_ir = builder.fptosi(
+        builder.call(
+            ceil, [builder.fdiv(builder.call(fabs, [builder.fsub(ub, lb)]), n)]
+        ),
+        llvmir.IntType(64),
+    )
+
+    return array_length_ir
 
 
 @intrinsic
@@ -243,7 +260,6 @@ def impl_dpnp_arange(
     sycl_queue_arg_pos = -2
 
     def codegen(context, builder, sig, args):
-        mod = builder.module
         # Rename variables for easy coding
         start_ir, stop_ir, step_ir, queue_ir = (
             args[0],
@@ -288,23 +304,8 @@ def impl_dpnp_arange(
             step_ir = context.get_constant(start_arg_type, 1)
             step_arg_type = start_arg_type
 
-        # Extend or truncate input values w.r.t. destination array type
-        start_ir = _normalize(
-            builder, start_ir, start_arg_type, dtype_arg_type.dtype
-        )
-        start_arg_type = dtype_arg_type.dtype
-        stop_ir = _normalize(
-            builder, stop_ir, stop_arg_type, dtype_arg_type.dtype
-        )
-        stop_arg_type = dtype_arg_type.dtype
-        step_ir = _normalize(
-            builder, step_ir, step_arg_type, dtype_arg_type.dtype
-        )
-        step_arg_type = dtype_arg_type.dtype
-
         # Allocate an empty array
         t = _compute_array_length_ir(
-            context,
             builder,
             start_ir,
             stop_ir,
@@ -318,6 +319,20 @@ def impl_dpnp_arange(
         )
         # Convert into void*
         arrystruct_vptr = builder.bitcast(ary._getpointer(), cgutils.voidptr_t)
+
+        # Extend or truncate input values w.r.t. destination array type
+        start_ir = _normalize(
+            builder, start_ir, start_arg_type, dtype_arg_type.dtype
+        )
+        start_arg_type = dtype_arg_type.dtype
+        stop_ir = _normalize(
+            builder, stop_ir, stop_arg_type, dtype_arg_type.dtype
+        )
+        stop_arg_type = dtype_arg_type.dtype
+        step_ir = _normalize(
+            builder, step_ir, step_arg_type, dtype_arg_type.dtype
+        )
+        step_arg_type = dtype_arg_type.dtype
 
         # Construct function parameters
         with builder.goto_entry_block():
@@ -348,7 +363,9 @@ def impl_dpnp_arange(
 
         # Kernel call
         fn = cgutils.get_or_insert_function(
-            mod, fnty, "NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence"
+            builder.module,
+            fnty,
+            "NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence",
         )
         builder.call(
             fn,
@@ -379,30 +396,29 @@ def ol_dpnp_arange(
     sycl_queue=None,
 ):
     if isinstance(start, Complex) or (
-        dtype is not None and isinstance(dtype.dtype, Complex)
+        not is_nonelike(dtype) and isinstance(dtype.dtype, Complex)
     ):
         raise errors.NumbaNotImplementedError(
             "Complex type is not supported yet."
         )
     if isinstance(start, Boolean) or (
-        dtype is not None and isinstance(dtype.dtype, Boolean)
+        not is_nonelike(dtype) and isinstance(dtype.dtype, Boolean)
     ):
         raise errors.NumbaTypeError(
             "Boolean is not supported by dpnp.arange()."
         )
 
-    if stop is None:
+    if is_nonelike(stop):
         start = 0
         stop = 1
-    if step is None:
+    if is_nonelike(step):
         step = 1
 
     _dtype = (
         _parse_dtype(dtype)
-        if dtype is not None
+        if not is_nonelike(dtype)
         else _parse_dtype_from_range(start, stop, step)
     )
-
     _device = _parse_device_filter_string(device) if device else None
     _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
 
