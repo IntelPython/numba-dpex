@@ -168,6 +168,17 @@ class _KernelCompiler(_FunctionCompiler):
 
 
 class KernelDispatcher(Dispatcher):
+    """Dispatcher class designed to compile kernel decorated functions. The
+    dispatcher inherits the Numba Dispatcher class, but has a different
+    compilation strategy. Instead of compiling a kernel decorated function to
+    an executable binary, the dispatcher compiles it to SPIR-V and then caches
+    that SPIR-V bitcode.
+
+    FIXME: Fix issues identified by pylint with this class.
+    https://github.com/IntelPython/numba-dpex/issues/1196
+
+    """
+
     targetdescr = dpex_kernel_target
     _fold_args = False
 
@@ -293,8 +304,9 @@ class KernelDispatcher(Dispatcher):
                 if existing is not None:
                     return existing
 
-                # FIXME: Enable caching
-                # Add code to enable on disk caching of a binary spirv kernel
+                # TODO: Enable caching
+                # Add code to enable on disk caching of a binary spirv kernel.
+                # Refer: https://github.com/IntelPython/numba-dpex/issues/1197
                 self._cache_misses[sig] += 1
                 ev_details = {
                     "dispatcher": self,
@@ -317,6 +329,7 @@ class KernelDispatcher(Dispatcher):
                     self.add_overload(kcres.cres_or_error)
 
                 # TODO: enable caching of kernel_module
+                # https://github.com/IntelPython/numba-dpex/issues/1197
 
                 return kcres.entry_point
 

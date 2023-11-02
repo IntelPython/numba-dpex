@@ -35,7 +35,8 @@ def test_successful_execution_queue_inference():
     r = Range(100)
 
     # FIXME: This test fails unexpectedly if the NUMBA_CAPTURED_ERRORS is set
-    # to "new_style"
+    # to "new_style".
+    # Refer: https://github.com/IntelPython/numba-dpex/issues/1195
     try:
         exp_dpex.call_kernel(add, r, a, b, c)
     except:

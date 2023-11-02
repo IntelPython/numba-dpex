@@ -2,6 +2,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+""" The set of experimental decorators provided by numba_dpex that are not yet
+ready to move to numba_dpex.core.
+"""
 import inspect
 
 from numba.core import sigutils
