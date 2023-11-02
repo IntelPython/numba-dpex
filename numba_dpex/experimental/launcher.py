@@ -301,7 +301,7 @@ def intrin_launch_trampoline(
     sycl kernel bundle. The arguments to the kernel are also packed into
     flattened arrays and the sycl queue to which the kernel will be submitted
     extracted from the args. Finally, the actual kernel is extracted from the
-    kernel bundle and submited wot the sycl queue.
+    kernel bundle and submitted to the sycl queue.
     """
     kernel_args_list = list(kernel_args)
     # signature of this intrinsic
