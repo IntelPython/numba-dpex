@@ -2,6 +2,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+"""Implements a new numba dispatcher class and a compiler class to compile and
+call numba_dpex.kernel decorated function.
+"""
 import functools
 from collections import Counter, OrderedDict, namedtuple
 from contextlib import ExitStack
