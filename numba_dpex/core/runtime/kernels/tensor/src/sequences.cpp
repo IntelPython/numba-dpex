@@ -75,9 +75,7 @@ extern "C" uint NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence(
 
     char *dst_data = reinterpret_cast<char *>(dst->data);
 
-    // int dst_typeid = 7; // 7 = int64_t, 10 = float, 11 = double
     auto fn = sequence_step_dispatch_vector[dst_typeid];
-
     sycl::queue *queue = reinterpret_cast<sycl::queue *>(exec_q);
     std::vector<sycl::event> depends = std::vector<sycl::event>();
     sycl::event linspace_step_event =
@@ -93,46 +91,44 @@ extern "C" uint NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence(
         return 1;
 }
 
-// uint dpexrt_tensor::tensor::populate_arystruct_affine_sequence(
-//     void *start,
-//     void *end,
-//     arystruct_t *dst,
-//     int include_endpoint,
-//     int ndim,
-//     int is_c_contiguous,
-//     const DPCTLSyclQueueRef exec_q,
-//     const DPCTLEventVectorRef depends)
-// {
-//     if (ndim != 1) {
-//         throw std::logic_error(
-//             "populate_arystruct_linseq(): array must be 1D.");
-//     }
-//     if (!is_c_contiguous) {
-//         throw std::logic_error(
-//             "populate_arystruct_linseq(): array must be c-contiguous.");
-//     }
-//     /**
-//     auto array_types = td_ns::usm_ndarray_types();
-//     int dst_typenum = dst.get_typenum();
-//     int dst_typeid = array_types.typenum_to_lookup_id(dst_typenum);
+extern "C" uint NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_affine_sequence(
+    void *start,
+    void *end,
+    arystruct_t *dst,
+    u_int8_t include_endpoint,
+    int ndim,
+    u_int8_t is_c_contiguous,
+    int dst_typeid,
+    const DPCTLSyclQueueRef exec_q)
+{
+    if (ndim != 1) {
+        throw std::logic_error(
+            "populate_arystruct_linseq(): array must be 1D.");
+    }
+    if (!is_c_contiguous) {
+        throw std::logic_error(
+            "populate_arystruct_linseq(): array must be c-contiguous.");
+    }
 
-//     py::ssize_t len = dst.get_shape(0);
-//     if (len == 0) {
-//         // nothing to do
-//         return std::make_pair(sycl::event{}, sycl::event{});
-//     }
+    size_t len = static_cast<size_t>(dst->nitems);
+    if (len == 0)
+        return 0;
 
-//     char *dst_data = dst.get_data();
-//     sycl::event linspace_affine_event;
+    char *dst_data = reinterpret_cast<char *>(dst->data);
+    sycl::queue *queue = reinterpret_cast<sycl::queue *>(exec_q);
+    std::vector<sycl::event> depends = std::vector<sycl::event>();
 
-//     auto fn = lin_space_affine_dispatch_vector[dst_typeid];
+    auto fn = affine_sequence_dispatch_vector[dst_typeid];
 
-//     linspace_affine_event = fn(exec_q, static_cast<size_t>(len), start, end,
-//                                include_endpoint, dst_data, depends);
+    sycl::event linspace_affine_event =
+        fn(*queue, len, start, end, include_endpoint, dst_data, depends);
 
-//     return std::make_pair(
-//         keep_args_alive(exec_q, {dst}, {linspace_affine_event}),
-//         linspace_affine_event);
-//     */
-//     return 0;
-// }
+    linspace_affine_event.wait_and_throw();
+
+    if (linspace_affine_event
+            .get_info<sycl::info::event::command_execution_status>() ==
+        sycl::info::event_command_status::complete)
+        return 0;
+    else
+        return 1;
+}
