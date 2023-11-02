@@ -30,8 +30,8 @@ namespace kernel
 namespace tensor
 {
 
-template <typename T> class ndpx_sequence_step_kernel;
-template <typename T, typename wT> class ndpx_affine_sequence_kernel;
+template <typename T> class dpex_sequence_step_kernel;
+template <typename T, typename wT> class dpex_affine_sequence_kernel;
 
 template <typename T> class SequenceStepFunctor
 {
@@ -54,7 +54,7 @@ public:
                      start_v.imag() + i * step_v.imag()};
         }
         else {
-            p[i] = start_v + i * step_v;
+            p[i] = start_v + (i * step_v);
         }
     }
 };
@@ -125,13 +125,9 @@ sycl::event sequence_step_kernel(sycl::queue exec_q,
 
     dpexrt_tensor::typeutils::validate_type_for_device<T>(exec_q);
 
-    std::cout << "sequqnce_step_kernel<"
-              << dpexrt_tensor::typeutils::demangle<T>()
-              << ">(): validate_type_for_device<T>(exec_q) = done" << std::endl;
-
     sycl::event seq_step_event = exec_q.submit([&](sycl::handler &cgh) {
         cgh.depends_on(depends);
-        cgh.parallel_for<ndpx_sequence_step_kernel<T>>(
+        cgh.parallel_for<dpex_sequence_step_kernel<T>>(
             sycl::range<1>{nelems},
             SequenceStepFunctor<T>(array_data, start_v, step_v));
     });
@@ -153,14 +149,14 @@ sycl::event affine_sequence_kernel(sycl::queue &exec_q,
     sycl::event affine_seq_step_event = exec_q.submit([&](sycl::handler &cgh) {
         cgh.depends_on(depends);
         if (device_supports_doubles) {
-            cgh.parallel_for<ndpx_affine_sequence_kernel<T, double>>(
+            cgh.parallel_for<dpex_affine_sequence_kernel<T, double>>(
                 sycl::range<1>{nelems},
                 AffineSequenceFunctor<T, double>(array_data, start_v, end_v,
                                                  (include_endpoint) ? nelems - 1
                                                                     : nelems));
         }
         else {
-            cgh.parallel_for<ndpx_affine_sequence_kernel<T, float>>(
+            cgh.parallel_for<dpex_affine_sequence_kernel<T, float>>(
                 sycl::range<1>{nelems},
                 AffineSequenceFunctor<T, float>(array_data, start_v, end_v,
                                                 (include_endpoint) ? nelems - 1

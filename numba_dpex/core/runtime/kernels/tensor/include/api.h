@@ -37,6 +37,7 @@ extern "C"
         u_int8_t include_endpoint,
         int ndim,
         u_int8_t is_c_contiguous,
+        int dst_typeid,
         const DPCTLSyclQueueRef exec_q);
 
 #ifdef __cplusplus

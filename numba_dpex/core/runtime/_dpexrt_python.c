@@ -1589,6 +1589,10 @@ MOD_INIT(_dpexrt_python)
         m, "NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence",
         PyLong_FromVoidPtr(
             &NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence));
+    PyModule_AddObject(
+        m, "NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_affine_sequence",
+        PyLong_FromVoidPtr(
+            &NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_affine_sequence));
 
     NUMBA_DPEX_SYCL_KERNEL_init_sequence_step_dispatch_vectors();
     NUMBA_DPEX_SYCL_KERNEL_init_affine_sequence_dispatch_vectors();
