@@ -25,7 +25,6 @@ DPEX_TARGET_NAME = "dpex"
 # permits lookup and reference in user space by the string "dpex"
 target_registry[DPEX_TARGET_NAME] = Dpex
 
-# This is the function registry for the dpu, it just has one registry, this one!
 dpex_function_registry = Registry()
 
 
