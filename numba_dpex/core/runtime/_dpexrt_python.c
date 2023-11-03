@@ -1262,7 +1262,7 @@ static int DPEXRT_sycl_queue_from_python(NRT_api_functions *nrt,
     Py_INCREF(queue_obj);
     queue_struct->meminfo =
         nrt->manage_memory(queue_obj, NRT_MemInfo_pyobject_dtor);
-    queue_struct->parent = queue_obj;
+    queue_struct->parent = (PyObject *)queue_obj;
     queue_struct->queue_ref = queue_ref;
 
     return 0;
@@ -1299,7 +1299,7 @@ static PyObject *DPEXRT_sycl_queue_to_python(NRT_api_functions *nrt,
     if (queue_obj == NULL) {
         // Make create copy of queue_ref so we don't need to manage nrt lifetime
         // from python object.
-        queue_obj = SyclQueue_Make(queuestruct->queue_ref);
+        queue_obj = (PyObject *)SyclQueue_Make(queuestruct->queue_ref);
     }
     else {
         // Unfortunately we can not optimize (nrt->release that triggers
@@ -1399,7 +1399,7 @@ static PyObject *DPEXRT_sycl_event_to_python(NRT_api_functions *nrt,
     if (event_obj == NULL) {
         // Make create copy of event_ref so we don't need to manage nrt lifetime
         // from python object.
-        event_obj = SyclEvent_Make(eventstruct->event_ref);
+        event_obj = (PyObject *)SyclEvent_Make(eventstruct->event_ref);
     }
     else {
         // Unfortunately we can not optimize (nrt->release that triggers
