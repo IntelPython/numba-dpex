@@ -395,11 +395,7 @@ class ReductionKernelVariables:
 
     def copy_final_sum_to_host(self, parfor_kernel):
         lowerer = self.lowerer
-        ir_builder = KernelLaunchIRBuilder(
-            lowerer.context,
-            lowerer.builder,
-            parfor_kernel.kernel.addressof_ref(),
-        )
+        ir_builder = KernelLaunchIRBuilder(lowerer.context, lowerer.builder)
 
         # Create a local variable storing a pointer to a DPCTLSyclQueueRef
         # pointer.
@@ -447,4 +443,4 @@ class ReductionKernelVariables:
             sycl.dpctl_event_wait(builder, event_ref)
             sycl.dpctl_event_delete(builder, event_ref)
 
-        ir_builder.free_queue(sycl_queue_val=curr_queue)
+        ir_builder.free_queue(ptr_to_sycl_queue_ref=curr_queue)

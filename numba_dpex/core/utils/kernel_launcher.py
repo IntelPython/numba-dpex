@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+from llvmlite import ir as llvmir
 from numba.core import cgutils, types
 
 from numba_dpex import utils
@@ -20,17 +21,16 @@ class KernelLaunchIRBuilder:
     for submitting kernels. The LLVM Values that
     """
 
-    def __init__(self, context, builder, kernel_addr):
+    def __init__(self, context, builder):
         """Create a KernelLauncher for the specified kernel.
 
         Args:
-            context: A Numba target context that will be used to generate the code.
+            context: A Numba target context that will be used to generate the
+                     code.
             builder: An llvmlite IRBuilder instance used to generate LLVM IR.
-            kernel_addr: The address of a SYCL kernel.
         """
         self.context = context
         self.builder = builder
-        self.kernel_addr = kernel_addr
         self.rtctx = DpexRTContext(self.context)
 
     def _build_nullptr(self):
@@ -275,7 +275,7 @@ class KernelLaunchIRBuilder:
         )
         return sycl_queue_val
 
-    def free_queue(self, sycl_queue_val):
+    def free_queue(self, ptr_to_sycl_queue_ref):
         """
         Frees the ``DPCTLSyclQueueRef`` pointer that was used to launch the
         kernels.
@@ -283,7 +283,7 @@ class KernelLaunchIRBuilder:
         Args:
             sycl_queue_val: The SYCL queue pointer to be freed.
         """
-        qref = self.builder.load(sycl_queue_val)
+        qref = self.builder.load(ptr_to_sycl_queue_ref)
         sycl.dpctl_queue_delete(self.builder, qref)
 
     def allocate_kernel_arg_array(self, num_kernel_args):
@@ -324,20 +324,24 @@ class KernelLaunchIRBuilder:
         return args_ty_list
 
     def _create_sycl_range(self, idx_range):
-        """_summary_
+        """Allocate a size_t[3] array to store the extents of a sycl::range.
 
-        Args:
-            idx_range (_type_): _description_
+        Sycl supports upto 3-dimensional ranges and a such the array is
+        statically sized to length three. Only the elements that store an actual
+        range value are populated based on the size of the idx_range argument.
+
         """
         intp_t = utils.get_llvm_type(context=self.context, type=types.intp)
         intp_ptr_t = utils.get_llvm_ptr_type(intp_t)
         num_dim = len(idx_range)
 
+        MAX_SIZE_OF_SYCL_RANGE = 3
+
         # form the global range
-        global_range = cgutils.alloca_once(
+        range_list = cgutils.alloca_once(
             self.builder,
             utils.get_llvm_type(context=self.context, type=types.uintp),
-            size=self.context.get_constant(types.uintp, num_dim),
+            size=self.context.get_constant(types.uintp, MAX_SIZE_OF_SYCL_RANGE),
         )
 
         for i in range(num_dim):
@@ -350,32 +354,32 @@ class KernelLaunchIRBuilder:
             self.builder.store(
                 rext,
                 self.builder.gep(
-                    global_range,
+                    range_list,
                     [self.context.get_constant(types.uintp, (num_dim - 1) - i)],
                 ),
             )
 
-        return self.builder.bitcast(global_range, intp_ptr_t)
+        return self.builder.bitcast(range_list, intp_ptr_t)
 
-    def submit_sync_kernel(
+    def submit_sycl_kernel(
         self,
-        sycl_queue_val,
+        sycl_kernel_ref,
+        sycl_queue_ref,
         total_kernel_args,
         arg_list,
         arg_ty_list,
         global_range,
-        local_range=None,
-    ):
+        local_range=[],
+        wait_before_return=True,
+    ) -> llvmir.PointerType(llvmir.IntType(8)):
         """
         Submits the kernel to the specified queue, waits.
         """
+        eref = None
         gr = self._create_sycl_range(global_range)
         args1 = [
-            self.builder.inttoptr(
-                self.context.get_constant(types.uintp, self.kernel_addr),
-                utils.get_llvm_type(context=self.context, type=types.voidptr),
-            ),
-            self.builder.load(sycl_queue_val),
+            sycl_kernel_ref,
+            sycl_queue_ref,
             arg_list,
             arg_ty_list,
             self.context.get_constant(types.uintp, total_kernel_args),
@@ -394,11 +398,18 @@ class KernelLaunchIRBuilder:
         args = []
         if len(local_range) == 0:
             args = args1 + args2
-            self.rtctx.submit_range(self.builder, *args)
+            eref = sycl.dpctl_queue_submit_range(self.builder, *args)
         else:
             lr = self._create_sycl_range(local_range)
             args = args1 + [lr] + args2
-            self.rtctx.submit_ndrange(self.builder, *args)
+            eref = sycl.dpctl_queue_submit_ndrange(self.builder, *args)
+
+        if wait_before_return:
+            sycl.dpctl_event_wait(self.builder, eref)
+            sycl.dpctl_event_delete(self.builder, eref)
+            return None
+        else:
+            return eref
 
     def populate_kernel_args_and_args_ty_arrays(
         self,

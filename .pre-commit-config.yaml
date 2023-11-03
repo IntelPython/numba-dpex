@@ -47,3 +47,17 @@ repos:
         args: ["-i"]
         exclude: "numba_dpex/dpnp_iface"
         types_or: [c++, c]
+-   repo: local
+    hooks:
+    - id: pylint
+      name: pylint
+      entry: pylint
+      files: ^numba_dpex/experimental
+      language: system
+      types: [python]
+      require_serial: true
+      args:
+        [
+          "-rn", # Only display messages
+          "-sn", # Don't display the score
+        ]

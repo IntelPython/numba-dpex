@@ -3,9 +3,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import copy
+from collections import namedtuple
 
 from llvmlite import ir as llvmir
-from numba.core import ir, types
+from numba.core import cgutils, ir, types
 from numba.parfors.parfor import (
     find_potential_aliases_parfor,
     get_parfor_outputs,
@@ -26,6 +27,12 @@ from .reduction_kernel_builder import (
     create_reduction_main_kernel_for_parfor,
     create_reduction_remainder_kernel_for_parfor,
 )
+
+_KernelArgs = namedtuple(
+    "_KernelArgs",
+    ["num_flattened_args", "arg_vals", "arg_types"],
+)
+
 
 # A global list of kernels to keep the objects alive indefinitely.
 keep_alive_kernels = []
@@ -84,21 +91,7 @@ class ParforLowerImpl:
     for a parfor and submits it to a queue.
     """
 
-    def _get_exec_queue(self, kernel_fn, lowerer):
-        """Creates a stack variable storing the sycl queue pointer used to
-        launch the kernel function.
-        """
-        self.kernel_builder = KernelLaunchIRBuilder(
-            lowerer.context, lowerer.builder, kernel_fn.kernel.addressof_ref()
-        )
-
-        # Create a local variable storing a pointer to a DPCTLSyclQueueRef
-        # pointer.
-        self.curr_queue = self.kernel_builder.get_queue(
-            exec_queue=kernel_fn.queue
-        )
-
-    def _build_kernel_arglist(self, kernel_fn, lowerer):
+    def _build_kernel_arglist(self, kernel_fn, lowerer, kernel_builder):
         """Creates local variables for all the arguments and the argument types
         that are passes to the kernel function.
 
@@ -110,7 +103,7 @@ class ParforLowerImpl:
             AssertionError: If the LLVM IR Value for an argument defined in
             Numba IR is not found.
         """
-        self.num_flattened_args = 0
+        num_flattened_args = 0
 
         # Compute number of args to be passed to the kernel. Note that the
         # actual number of kernel arguments is greater than the count of
@@ -118,29 +111,33 @@ class ParforLowerImpl:
         for arg_type in kernel_fn.kernel_arg_types:
             if isinstance(arg_type, DpnpNdArray):
                 datamodel = dpex_dmm.lookup(arg_type)
-                self.num_flattened_args += datamodel.flattened_field_count
+                num_flattened_args += datamodel.flattened_field_count
             elif arg_type == types.complex64 or arg_type == types.complex128:
-                self.num_flattened_args += 2
+                num_flattened_args += 2
             else:
-                self.num_flattened_args += 1
+                num_flattened_args += 1
 
         # Create LLVM values for the kernel args list and kernel arg types list
-        self.args_list = self.kernel_builder.allocate_kernel_arg_array(
-            self.num_flattened_args
-        )
-        self.args_ty_list = self.kernel_builder.allocate_kernel_arg_ty_array(
-            self.num_flattened_args
+        args_list = kernel_builder.allocate_kernel_arg_array(num_flattened_args)
+        args_ty_list = kernel_builder.allocate_kernel_arg_ty_array(
+            num_flattened_args
         )
         callargs_ptrs = []
         for arg in kernel_fn.kernel_args:
             callargs_ptrs.append(_getvar(lowerer, arg))
 
-        self.kernel_builder.populate_kernel_args_and_args_ty_arrays(
+        kernel_builder.populate_kernel_args_and_args_ty_arrays(
             kernel_argtys=kernel_fn.kernel_arg_types,
             callargs_ptrs=callargs_ptrs,
-            args_list=self.args_list,
-            args_ty_list=self.args_ty_list,
+            args_list=args_list,
+            args_ty_list=args_ty_list,
             datamodel_mgr=dpex_dmm,
+        )
+
+        return _KernelArgs(
+            num_flattened_args=num_flattened_args,
+            arg_vals=args_list,
+            arg_types=args_ty_list,
         )
 
     def _submit_parfor_kernel(
@@ -156,9 +153,11 @@ class ParforLowerImpl:
         # Ensure that the Python arguments are kept alive for the duration of
         # the kernel execution
         keep_alive_kernels.append(kernel_fn.kernel)
+        kernel_builder = KernelLaunchIRBuilder(lowerer.context, lowerer.builder)
 
-        self._get_exec_queue(kernel_fn, lowerer)
-        self._build_kernel_arglist(kernel_fn, lowerer)
+        ptr_to_queue_ref = kernel_builder.get_queue(exec_queue=kernel_fn.queue)
+        args = self._build_kernel_arglist(kernel_fn, lowerer, kernel_builder)
+
         # Create a global range over which to submit the kernel based on the
         # loop_ranges of the parfor
         global_range = []
@@ -178,18 +177,26 @@ class ParforLowerImpl:
 
         local_range = []
 
+        kernel_ref_addr = kernel_fn.kernel.addressof_ref()
+        kernel_ref = lowerer.builder.inttoptr(
+            lowerer.context.get_constant(types.uintp, kernel_ref_addr),
+            cgutils.voidptr_t,
+        )
+        curr_queue_ref = lowerer.builder.load(ptr_to_queue_ref)
+
         # Submit a synchronous kernel
-        self.kernel_builder.submit_sync_kernel(
-            self.curr_queue,
-            self.num_flattened_args,
-            self.args_list,
-            self.args_ty_list,
-            global_range,
-            local_range,
+        kernel_builder.submit_sycl_kernel(
+            sycl_kernel_ref=kernel_ref,
+            sycl_queue_ref=curr_queue_ref,
+            total_kernel_args=args.num_flattened_args,
+            arg_list=args.arg_vals,
+            arg_ty_list=args.arg_types,
+            global_range=global_range,
+            local_range=local_range,
         )
 
         # At this point we can free the DPCTLSyclQueueRef (curr_queue)
-        self.kernel_builder.free_queue(sycl_queue_val=self.curr_queue)
+        kernel_builder.free_queue(ptr_to_sycl_queue_ref=ptr_to_queue_ref)
 
     def _submit_reduction_main_parfor_kernel(
         self,
@@ -204,9 +211,11 @@ class ParforLowerImpl:
         # Ensure that the Python arguments are kept alive for the duration of
         # the kernel execution
         keep_alive_kernels.append(kernel_fn.kernel)
+        kernel_builder = KernelLaunchIRBuilder(lowerer.context, lowerer.builder)
 
-        self._get_exec_queue(kernel_fn, lowerer)
-        self._build_kernel_arglist(kernel_fn, lowerer)
+        ptr_to_queue_ref = kernel_builder.get_queue(exec_queue=kernel_fn.queue)
+
+        args = self._build_kernel_arglist(kernel_fn, lowerer, kernel_builder)
         # Create a global range over which to submit the kernel based on the
         # loop_ranges of the parfor
         global_range = []
@@ -220,15 +229,26 @@ class ParforLowerImpl:
             _load_range(lowerer, reductionHelper.work_group_size)
         )
 
-        # Submit a synchronous kernel
-        self.kernel_builder.submit_sync_kernel(
-            self.curr_queue,
-            self.num_flattened_args,
-            self.args_list,
-            self.args_ty_list,
-            global_range,
-            local_range,
+        kernel_ref_addr = kernel_fn.kernel.addressof_ref()
+        kernel_ref = lowerer.builder.inttoptr(
+            lowerer.context.get_constant(types.uintp, kernel_ref_addr),
+            cgutils.voidptr_t,
         )
+        curr_queue_ref = lowerer.builder.load(ptr_to_queue_ref)
+
+        # Submit a synchronous kernel
+        kernel_builder.submit_sycl_kernel(
+            sycl_kernel_ref=kernel_ref,
+            sycl_queue_ref=curr_queue_ref,
+            total_kernel_args=args.num_flattened_args,
+            arg_list=args.arg_vals,
+            arg_ty_list=args.arg_types,
+            global_range=global_range,
+            local_range=local_range,
+        )
+
+        # At this point we can free the DPCTLSyclQueueRef (curr_queue)
+        kernel_builder.free_queue(ptr_to_sycl_queue_ref=ptr_to_queue_ref)
 
     def _submit_reduction_remainder_parfor_kernel(
         self,
@@ -243,8 +263,11 @@ class ParforLowerImpl:
         # the kernel execution
         keep_alive_kernels.append(kernel_fn.kernel)
 
-        self._get_exec_queue(kernel_fn, lowerer)
-        self._build_kernel_arglist(kernel_fn, lowerer)
+        kernel_builder = KernelLaunchIRBuilder(lowerer.context, lowerer.builder)
+
+        ptr_to_queue_ref = kernel_builder.get_queue(exec_queue=kernel_fn.queue)
+
+        args = self._build_kernel_arglist(kernel_fn, lowerer, kernel_builder)
         # Create a global range over which to submit the kernel based on the
         # loop_ranges of the parfor
         global_range = []
@@ -255,15 +278,26 @@ class ParforLowerImpl:
 
         local_range = []
 
-        # Submit a synchronous kernel
-        self.kernel_builder.submit_sync_kernel(
-            self.curr_queue,
-            self.num_flattened_args,
-            self.args_list,
-            self.args_ty_list,
-            global_range,
-            local_range,
+        kernel_ref_addr = kernel_fn.kernel.addressof_ref()
+        kernel_ref = lowerer.builder.inttoptr(
+            lowerer.context.get_constant(types.uintp, kernel_ref_addr),
+            cgutils.voidptr_t,
         )
+        curr_queue_ref = lowerer.builder.load(ptr_to_queue_ref)
+
+        # Submit a synchronous kernel
+        kernel_builder.submit_sycl_kernel(
+            sycl_kernel_ref=kernel_ref,
+            sycl_queue_ref=curr_queue_ref,
+            total_kernel_args=args.num_flattened_args,
+            arg_list=args.arg_vals,
+            arg_ty_list=args.arg_types,
+            global_range=global_range,
+            local_range=local_range,
+        )
+
+        # At this point we can free the DPCTLSyclQueueRef (curr_queue)
+        kernel_builder.free_queue(ptr_to_sycl_queue_ref=ptr_to_queue_ref)
 
     def _reduction_codegen(
         self,
