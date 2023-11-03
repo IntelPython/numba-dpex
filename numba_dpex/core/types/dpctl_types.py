@@ -24,6 +24,10 @@ class DpctlSyclQueue(types.Type):
         # the compute follows data inference pass is fixed to use SyclQueue
         self._device = sycl_queue.sycl_device.filter_string
 
+        self._device_has_aspect_atomic64 = (
+            sycl_queue.sycl_device.has_aspect_atomic64
+        )
+
         try:
             self._unique_id = hash(sycl_queue)
         except Exception:
@@ -44,6 +48,10 @@ class DpctlSyclQueue(types.Type):
             str: A SYCL oneAPI extension filter string
         """
         return self._device
+
+    @property
+    def device_has_aspect_atomic64(self):
+        return self._device_has_aspect_atomic64
 
     @property
     def key(self):
