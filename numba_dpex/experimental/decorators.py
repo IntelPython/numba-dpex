@@ -8,6 +8,7 @@ ready to move to numba_dpex.core.
 import inspect
 
 from numba.core import sigutils
+from numba.core.target_extension import jit_registry, target_registry
 
 from .kernel_dispatcher import KernelDispatcher
 
@@ -78,3 +79,6 @@ def kernel(func_or_sig=None, debug=False, cache=False, **options):
             "the return type as void explicitly."
         )
     return _kernel_dispatcher(func)
+
+
+jit_registry[target_registry["dpex_kernel"]] = kernel
