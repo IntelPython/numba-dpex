@@ -6,6 +6,7 @@
 import dpctl
 import dpnp
 import pytest
+from numba.core import config
 
 import numba_dpex.experimental as exp_dpex
 from numba_dpex import Range
@@ -34,13 +35,15 @@ def test_successful_execution_queue_inference():
     c = dpnp.zeros_like(a, sycl_queue=q)
     r = Range(100)
 
-    # FIXME: This test fails unexpectedly if the NUMBA_CAPTURED_ERRORS is set
-    # to "new_style".
-    # Refer: https://github.com/IntelPython/numba-dpex/issues/1195
+    current_captured_error_style = config.CAPTURED_ERRORS
+    config.CAPTURED_ERRORS = "new_style"
+
     try:
         exp_dpex.call_kernel(add, r, a, b, c)
     except:
         pytest.fail("Unexpected error when calling kernel")
+
+    config.CAPTURED_ERRORS = current_captured_error_style
 
     assert c[0] == b[0] + a[0]
 
@@ -58,8 +61,6 @@ def test_execution_queue_inference_error():
     b = dpnp.ones_like(a, sycl_queue=q2)
     c = dpnp.zeros_like(a, sycl_queue=q1)
     r = Range(100)
-
-    from numba.core import config
 
     current_captured_error_style = config.CAPTURED_ERRORS
     config.CAPTURED_ERRORS = "new_style"
