@@ -13,7 +13,7 @@ from numba.core.target_extension import jit_registry, target_registry
 from .kernel_dispatcher import KernelDispatcher
 
 
-def kernel(func_or_sig=None, debug=False, cache=False, **options):
+def kernel(func_or_sig=None, **options):
     """A decorator to define a kernel function.
 
     A kernel function is conceptually equivalent to a SYCL kernel function, and
@@ -27,12 +27,9 @@ def kernel(func_or_sig=None, debug=False, cache=False, **options):
     # FIXME: The options need to be evaluated and checked here like it is
     # done in numba.core.decorators.jit
 
-    def _kernel_dispatcher(pyfunc, sigs=None):
+    def _kernel_dispatcher(pyfunc):
         return KernelDispatcher(
             pyfunc=pyfunc,
-            debug_flags=debug,
-            enable_cache=cache,
-            specialization_sigs=sigs,
             targetoptions=options,
         )
 
@@ -64,9 +61,6 @@ def kernel(func_or_sig=None, debug=False, cache=False, **options):
         def _specialized_kernel_dispatcher(pyfunc):
             return KernelDispatcher(
                 pyfunc=pyfunc,
-                debug_flags=debug,
-                enable_cache=cache,
-                specialization_sigs=func_or_sig,
             )
 
         return _specialized_kernel_dispatcher
