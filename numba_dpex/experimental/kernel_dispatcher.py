@@ -5,16 +5,14 @@
 """Implements a new numba dispatcher class and a compiler class to compile and
 call numba_dpex.kernel decorated function.
 """
-import functools
-from collections import Counter, OrderedDict, namedtuple
+from collections import namedtuple
 from contextlib import ExitStack
 
 import numba.core.event as ev
-from numba.core import errors, sigutils, types, utils
-from numba.core.caching import NullCache
+from numba.core import errors, sigutils, types
 from numba.core.compiler import CompileResult
 from numba.core.compiler_lock import global_compiler_lock
-from numba.core.dispatcher import Dispatcher, _DispatcherBase, _FunctionCompiler
+from numba.core.dispatcher import Dispatcher, _FunctionCompiler
 from numba.core.typing.typeof import Purpose, typeof
 
 from numba_dpex import config, spirv_generator
@@ -84,12 +82,12 @@ class _KernelCompiler(_FunctionCompiler):
 
         # makes sure that the spir_func is completely inlined into the
         # spir_kernel wrapper
-        kernel_library._optimize_final_module()
+        kernel_library.optimize_final_module()
         # Compiled the LLVM IR to SPIR-V
         kernel_spirv_module = spirv_generator.llvm_to_spirv(
             kernel_targetctx,
-            kernel_library._final_module,
-            kernel_library._final_module.as_bitcode(),
+            kernel_library.final_module,
+            kernel_library.final_module.as_bitcode(),
         )
         return _KernelModule(
             kernel_name=kernel_fn.name, kernel_bitcode=kernel_spirv_module
@@ -158,7 +156,7 @@ class _KernelCompiler(_FunctionCompiler):
                     "w",
                     encoding="UTF-8",
                 ) as f:
-                    f.write(kernel_cres.library._final_module)
+                    f.write(kernel_cres.library.final_module)
 
         except errors.TypingError as e:
             self._failed_cache[key] = e
@@ -187,56 +185,28 @@ class KernelDispatcher(Dispatcher):
     def __init__(
         self,
         pyfunc,
-        debug_flags=None,
-        compile_flags=None,
-        specialization_sigs=None,
-        enable_cache=True,
-        locals={},
-        targetoptions={},
-        impl_kind="kernel",
+        local_vars_to_numba_types=None,
+        targetoptions=None,
         pipeline_class=kernel_compiler.KernelCompiler,
     ):
+        if targetoptions is None:
+            targetoptions = {}
+
+        if local_vars_to_numba_types is None:
+            local_vars_to_numba_types = {}
+
         targetoptions["nopython"] = True
         targetoptions["experimental"] = True
 
         self._kernel_name = pyfunc.__name__
-        self.typingctx = self.targetdescr.typing_context
-        self.targetctx = self.targetdescr.target_context
 
-        pysig = utils.pysignature(pyfunc)
-        arg_count = len(pysig.parameters)
-
-        self.overloads = OrderedDict()
-
-        can_fallback = not targetoptions.get("nopython", False)
-
-        _DispatcherBase.__init__(
-            self,
-            arg_count,
-            pyfunc,
-            pysig,
-            can_fallback,
-            exact_match_required=False,
+        super().__init__(
+            py_func=pyfunc,
+            locals=local_vars_to_numba_types,
+            impl_kind="kernel",
+            targetoptions=targetoptions,
+            pipeline_class=pipeline_class,
         )
-
-        functools.update_wrapper(self, pyfunc)
-
-        self.targetoptions = targetoptions
-        self.locals = locals
-        self._cache = NullCache()
-        compiler_class = self._impl_kinds[impl_kind]
-        self._impl_kind = impl_kind
-        self._compiler: _KernelCompiler = compiler_class(
-            pyfunc, self.targetdescr, targetoptions, locals, pipeline_class
-        )
-        self._cache_hits = Counter()
-        self._cache_misses = Counter()
-
-        self._type = types.Dispatcher(self)
-        self.typingctx.insert_global(self, self._type)
-
-        # Remember target restriction
-        self._required_target_backend = targetoptions.get("target_backend")
 
     def typeof_pyval(self, val):
         """

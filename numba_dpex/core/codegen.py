@@ -57,6 +57,12 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
         pmb.populate(pm)
         pm.run(self._final_module)
 
+    def optimize_final_module(self):
+        """Public member function to optimize the final LLVM module in the
+        library. The function calls the protected overridden function.
+        """
+        self._optimize_final_module()
+
     def _finalize_specific(self):
         # Fix global naming
         for gv in self._final_module.global_variables:
@@ -67,6 +73,10 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
         # Return nothing: we can only dump assembler code when it is later
         # generated (in numba_dpex.compiler).
         return None
+
+    @property
+    def final_module(self):
+        return self._final_module
 
 
 class JITSPIRVCodegen(CPUCodegen):
