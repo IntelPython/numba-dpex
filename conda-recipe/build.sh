@@ -2,6 +2,19 @@
 
 set -euxo pipefail
 
+# Intel LLVM must cooperate with compiler and sysroot from conda
+export LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}:${BUILD_PREFIX}/lib"
+
+echo "--gcc-toolchain=${BUILD_PREFIX} --sysroot=${BUILD_PREFIX}/${HOST}/sysroot -target ${HOST}" > icpx_for_conda.cfg
+ICPXCFG="$(pwd)/icpx_for_conda.cfg"
+ICXCFG="$(pwd)/icpx_for_conda.cfg"
+
+export ICXCFG
+export ICPXCFG
+
+export CC=icx
+export CXX=icpx
+
 # new llvm-spirv location
 # starting from dpcpp_impl_linux-64=2022.0.0=intel_3610
 export PATH=$CONDA_PREFIX/bin-llvm:$PATH

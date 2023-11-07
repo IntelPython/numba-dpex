@@ -38,7 +38,7 @@ jobs:
       - name: Build numba-dpex
         run: |
           export PATH=$CONDA/bin-llvm:$PATH
-          python setup.py develop
+          CC=icx CXX=icpx python setup.py develop
 
       - name: Test installation
         run: |
