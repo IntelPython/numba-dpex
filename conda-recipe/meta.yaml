@@ -18,6 +18,7 @@ requirements:
         - python
         - setuptools >=63.*
         - scikit-build >=0.15*
+        - ninja # [not win]
         - cmake >=3.26*
         - numba >=0.57*
         - dpctl >=0.14*
