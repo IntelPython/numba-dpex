@@ -118,11 +118,6 @@ sycl::event sequence_step_kernel(sycl::queue exec_q,
                                  char *array_data,
                                  const std::vector<sycl::event> &depends)
 {
-    std::cout << "sequqnce_step_kernel<"
-              << dpexrt_tensor::typeutils::demangle<T>()
-              << ">(): nelems = " << nelems << ", start_v = " << start_v
-              << ", step_v = " << step_v << std::endl;
-
     dpexrt_tensor::typeutils::validate_type_for_device<T>(exec_q);
 
     sycl::event seq_step_event = exec_q.submit([&](sycl::handler &cgh) {
@@ -182,10 +177,6 @@ sycl::event sequence_step(sycl::queue &exec_q,
     } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;
     }
-
-    std::cout << "sequqnce_step()<" << dpexrt_tensor::typeutils::demangle<T>()
-              << ">: nelems = " << nelems << ", *start_v = " << (*start_v)
-              << ", *step_v = " << (*step_v) << std::endl;
 
     auto sequence_step_event = sequence_step_kernel<T>(
         exec_q, nelems, *start_v, *step_v, array_data, depends);

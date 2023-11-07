@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <iostream>
+#include <cstdint>
 #include <stdexcept>
 
 #include <numpy/npy_common.h>
@@ -39,25 +40,15 @@ extern "C" void NUMBA_DPEX_SYCL_KERNEL_init_affine_sequence_dispatch_vectors()
     dvb.populate_dispatch_vector(affine_sequence_dispatch_vector);
 }
 
-extern "C" uint NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence(
+extern "C" unsigned int NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence(
     void *start,
     void *dt,
     arystruct_t *dst,
     int ndim,
-    u_int8_t is_c_contiguous,
+    uint8_t is_c_contiguous,
     int dst_typeid,
     const DPCTLSyclQueueRef exec_q)
 {
-    std::cout << "NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence:"
-              << " start = "
-              << dpexrt_tensor::typeutils::caste_using_typeid(start, dst_typeid)
-              << std::endl;
-
-    std::cout << "NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence:"
-              << " dt = "
-              << dpexrt_tensor::typeutils::caste_using_typeid(dt, dst_typeid)
-              << std::endl;
-
     if (ndim != 1) {
         throw std::logic_error(
             "populate_arystruct_linseq(): array must be 1D.");
@@ -70,8 +61,6 @@ extern "C" uint NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence(
     size_t len = static_cast<size_t>(dst->nitems);
     if (len == 0)
         return 0;
-    std::cout << "NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence:"
-              << " len = " << len << std::endl;
 
     char *dst_data = reinterpret_cast<char *>(dst->data);
 
@@ -91,13 +80,14 @@ extern "C" uint NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence(
         return 1;
 }
 
-extern "C" uint NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_affine_sequence(
+extern "C" unsigned int
+NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_affine_sequence(
     void *start,
     void *end,
     arystruct_t *dst,
-    u_int8_t include_endpoint,
+    uint8_t include_endpoint,
     int ndim,
-    u_int8_t is_c_contiguous,
+    uint8_t is_c_contiguous,
     int dst_typeid,
     const DPCTLSyclQueueRef exec_q)
 {
