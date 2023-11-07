@@ -10,7 +10,8 @@
 #include <exception>
 #include <utility>
 #include <string>
-#include <cxxabi.h>
+#include <cstdint>
+// #include <cxxabi.h> // this is gcc specific, not supported on windows
 #include <CL/sycl.hpp>
 
 namespace dpex
@@ -52,24 +53,25 @@ enum class typenum_t : int
 
 constexpr int num_types = 14; // number of elements in typenum_t
 
-template <typename T> std::string demangle()
-{
-    char const *mangled = typeid(T).name();
-    char *c_demangled;
-    int status = 0;
-    c_demangled = abi::__cxa_demangle(mangled, nullptr, nullptr, &status);
+// TODO: Exclude for now
+// template <typename T> std::string demangle()
+// {
+//     char const *mangled = typeid(T).name();
+//     char *c_demangled;
+//     int status = 0;
+//     c_demangled = abi::__cxa_demangle(mangled, nullptr, nullptr, &status);
 
-    std::string res;
-    if (c_demangled) {
-        res = c_demangled;
-        free(c_demangled);
-    }
-    else {
-        res = mangled;
-        free(c_demangled);
-    }
-    return res;
-}
+//     std::string res;
+//     if (c_demangled) {
+//         res = c_demangled;
+//         free(c_demangled);
+//     }
+//     else {
+//         res = mangled;
+//         free(c_demangled);
+//     }
+//     return res;
+// }
 
 std::string caste_using_typeid(void *value, int _typeid)
 {
@@ -79,19 +81,19 @@ std::string caste_using_typeid(void *value, int _typeid)
     case 1:
         return std::to_string(*(reinterpret_cast<int8_t *>(value)));
     case 2:
-        return std::to_string(*(reinterpret_cast<u_int8_t *>(value)));
+        return std::to_string(*(reinterpret_cast<uint8_t *>(value)));
     case 3:
         return std::to_string(*(reinterpret_cast<int16_t *>(value)));
     case 4:
-        return std::to_string(*(reinterpret_cast<u_int16_t *>(value)));
+        return std::to_string(*(reinterpret_cast<uint16_t *>(value)));
     case 5:
         return std::to_string(*(reinterpret_cast<int32_t *>(value)));
     case 6:
-        return std::to_string(*(reinterpret_cast<u_int32_t *>(value)));
+        return std::to_string(*(reinterpret_cast<uint32_t *>(value)));
     case 7:
         return std::to_string(*(reinterpret_cast<int64_t *>(value)));
     case 8:
-        return std::to_string(*(reinterpret_cast<u_int64_t *>(value)));
+        return std::to_string(*(reinterpret_cast<uint64_t *>(value)));
     case 9:
         return std::to_string(*(reinterpret_cast<sycl::half *>(value)));
     case 10:
@@ -136,9 +138,6 @@ template <typename dstTy, typename srcTy> dstTy convert_impl(const srcTy &v)
 template <typename T> void validate_type_for_device(const sycl::device &d)
 {
     if constexpr (std::is_same_v<T, double>) {
-        std::cout << "dpex::rt::kernel::tensor::typeutils::validate_type_for_"
-                     "device(): here0"
-                  << std::endl;
         if (!d.has(sycl::aspect::fp64)) {
             throw std::runtime_error("Device " +
                                      d.get_info<sycl::info::device::name>() +
@@ -146,9 +145,6 @@ template <typename T> void validate_type_for_device(const sycl::device &d)
         }
     }
     else if constexpr (std::is_same_v<T, std::complex<double>>) {
-        std::cout << "dpex::rt::kernel::tensor::typeutils::validate_type_for_"
-                     "device(): here1"
-                  << std::endl;
         if (!d.has(sycl::aspect::fp64)) {
             throw std::runtime_error("Device " +
                                      d.get_info<sycl::info::device::name>() +
@@ -156,9 +152,6 @@ template <typename T> void validate_type_for_device(const sycl::device &d)
         }
     }
     else if constexpr (std::is_same_v<T, sycl::half>) {
-        std::cout << "dpex::rt::kernel::tensor::typeutils::validate_type_for_"
-                     "device(): here2"
-                  << std::endl;
         if (!d.has(sycl::aspect::fp16)) {
             throw std::runtime_error("Device " +
                                      d.get_info<sycl::info::device::name>() +

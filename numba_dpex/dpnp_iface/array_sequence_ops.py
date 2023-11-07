@@ -65,11 +65,11 @@ def _is_complex_type(start, stop, step):
 
 def _parse_dtype_from_range(start, stop, step):
     if _is_complex_type(start, stop, step):
-        return numba.from_dtype(dpnp.complex128)
+        return numba.from_dtype(dpnp.complex_)
     elif _is_float_type(start, stop, step):
-        return numba.from_dtype(dpnp.float64)
+        return numba.from_dtype(dpnp.float)
     elif _is_int_type(start, stop, step):
-        return numba.from_dtype(dpnp.int64)
+        return numba.from_dtype(dpnp.int)
     else:
         msg = (
             "dpnp_iface.array_sequence_ops._parse_dtype_from_range(): "
