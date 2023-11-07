@@ -6,7 +6,6 @@ from collections import namedtuple
 
 import dpnp
 import numba
-import numpy as np
 from llvmlite import ir as llvmir
 from llvmlite.ir import types as llvmirtypes
 from numba import errors, types
@@ -34,44 +33,42 @@ _QueueRefPayload = namedtuple(
 )
 
 
-def _is_any_float_type(value):
+def _is_float_type(start, stop, step):
     return (
-        type(value) == float
-        or isinstance(value, np.floating)
-        or isinstance(value, Float)
+        type(start) == float
+        or type(stop) == float
+        or type(step) == float
+        or isinstance(start, Float)
+        or isinstance(stop, Float)
+        or isinstance(step, Float)
     )
 
 
-def _is_any_int_type(value):
+def _is_int_type(start, stop, step):
     return (
-        type(value) == int
-        or isinstance(value, np.integer)
-        or isinstance(value, Integer)
+        type(start) == int
+        or type(stop) == int
+        or type(step) == int
+        or isinstance(start, Integer)
+        or isinstance(stop, Integer)
+        or isinstance(step, Integer)
     )
 
 
-def _is_any_complex_type(value):
-    return np.iscomplex(value) or isinstance(value, Complex)
+def _is_complex_type(start, stop, step):
+    return (
+        isinstance(start, Complex)
+        or isinstance(stop, Complex)
+        or isinstance(step, Complex)
+    )
 
 
 def _parse_dtype_from_range(start, stop, step):
-    if (
-        _is_any_complex_type(start)
-        or _is_any_complex_type(stop)
-        or _is_any_complex_type(step)
-    ):
-        numba.from_dtype(dpnp.complex128)
-    elif (
-        _is_any_float_type(start)
-        or _is_any_float_type(stop)
-        or _is_any_float_type(step)
-    ):
+    if _is_complex_type(start, stop, step):
+        return numba.from_dtype(dpnp.complex128)
+    elif _is_float_type(start, stop, step):
         return numba.from_dtype(dpnp.float64)
-    elif (
-        _is_any_int_type(start)
-        or _is_any_int_type(stop)
-        or _is_any_int_type(step)
-    ):
+    elif _is_int_type(start, stop, step):
         return numba.from_dtype(dpnp.int64)
     else:
         msg = (
@@ -155,7 +152,42 @@ def _get_dst_typeid(dtype):
         raise errors.NumbaTypeError(msg)
 
 
-def _normalize(builder, src, src_type, dest_type):
+def _round(builder, src, src_type):
+    return_type = (
+        llvmirtypes.DoubleType()
+        if src_type.bitwidth == 64
+        else (
+            llvmirtypes.FloatType()
+            if src_type.bitwidth == 32
+            else llvmirtypes.HalfType()
+        )
+    )
+    round = builder.module.declare_intrinsic("llvm.round", [return_type])
+    src = builder.call(round, [src])
+    return src
+
+
+def _is_fraction(builder, src, src_type):
+    if isinstance(src_type, Float):
+        return_type = (
+            llvmirtypes.DoubleType()
+            if src_type.bitwidth == 64
+            else (
+                llvmirtypes.FloatType()
+                if src_type.bitwidth == 32
+                else llvmirtypes.HalfType()
+            )
+        )
+        llvm_fabs = builder.module.declare_intrinsic("llvm.fabs", [return_type])
+        src_abs = builder.call(llvm_fabs, [src])
+        ret = True
+        is_lto = builder.fcmp_ordered(">=", src_abs, src.type(1.0))
+        with builder.if_then(is_lto):
+            ret = False
+        return ret
+
+
+def _normalize(builder, src, src_type, dest_type, rounding=False):
     dest_llvm_type = _get_llvm_type(dest_type)
     if isinstance(src_type, Integer) and isinstance(dest_type, Integer):
         if src_type.bitwidth < dest_type.bitwidth:
@@ -170,19 +202,8 @@ def _normalize(builder, src, src_type, dest_type):
         else:
             return builder.uitofp(src, dest_llvm_type)
     elif isinstance(src_type, Float) and isinstance(dest_type, Integer):
-        # src_gtz = builder.fcmp_ordered(">", src, src.type(0.0))   # noqa: E800
-        # with builder.if_then(src_gtz):
-        return_type = (
-            llvmirtypes.DoubleType()
-            if src_type.bitwidth == 64
-            else (
-                llvmirtypes.FloatType()
-                if src_type.bitwidth == 32
-                else llvmirtypes.HalfType()
-            )
-        )
-        rint = builder.module.declare_intrinsic("llvm.round", [return_type])
-        src = builder.call(rint, [src])
+        if rounding:
+            src = _round(builder, src, src_type)
         if dest_type.signed:
             return builder.fptosi(src, dest_llvm_type)
         else:
@@ -196,7 +217,8 @@ def _normalize(builder, src, src_type, dest_type):
             return src
     else:
         msg = (
-            f"{src}[{src_type}] is neither a "
+            "dpnp_iface.array_sequence_ops._normalize(): "
+            + f"{src}[{src_type}] is neither a "
             + "'numba.core.types.scalars.Float' "
             + "nor an 'numba.core.types.scalars.Integer'."
         )
@@ -216,16 +238,14 @@ def _compute_array_length_ir(
     ub = _normalize(builder, stop_ir, stop_arg_type, types.float64)
     n = _normalize(builder, step_ir, step_arg_type, types.float64)
 
-    ceil = builder.module.declare_intrinsic(
+    llvm_ceil = builder.module.declare_intrinsic(
         "llvm.ceil", [llvmirtypes.DoubleType()]
-    )
-    fabs = builder.module.declare_intrinsic(
-        "llvm.fabs", [llvmirtypes.DoubleType()]
     )
 
     array_length_ir = builder.fptosi(
         builder.call(
-            ceil, [builder.fdiv(builder.call(fabs, [builder.fsub(ub, lb)]), n)]
+            llvm_ceil,
+            [builder.fdiv(builder.fsub(ub, lb), n)],
         ),
         llvmir.IntType(64),
     )
@@ -304,8 +324,14 @@ def impl_dpnp_arange(
             step_ir = context.get_constant(start_arg_type, 1)
             step_arg_type = start_arg_type
 
+        # Keep note if either start or stop is in (-1.0, 0.0] or [0.0, 1.0)
+        round_step = not (
+            _is_fraction(builder, start_ir, start_arg_type)
+            and _is_fraction(builder, stop_ir, stop_arg_type)
+        )
+
         # Allocate an empty array
-        t = _compute_array_length_ir(
+        len = _compute_array_length_ir(
             builder,
             start_ir,
             stop_ir,
@@ -315,7 +341,7 @@ def impl_dpnp_arange(
             step_arg_type,
         )
         ary = _empty_nd_impl(
-            context, builder, sig.return_type, [t], qref_payload.queue_ref
+            context, builder, sig.return_type, [len], qref_payload.queue_ref
         )
         # Convert into void*
         arrystruct_vptr = builder.bitcast(ary._getpointer(), cgutils.voidptr_t)
@@ -324,14 +350,20 @@ def impl_dpnp_arange(
         start_ir = _normalize(
             builder, start_ir, start_arg_type, dtype_arg_type.dtype
         )
-        start_arg_type = dtype_arg_type.dtype
         stop_ir = _normalize(
             builder, stop_ir, stop_arg_type, dtype_arg_type.dtype
         )
-        stop_arg_type = dtype_arg_type.dtype
         step_ir = _normalize(
-            builder, step_ir, step_arg_type, dtype_arg_type.dtype
+            builder,
+            step_ir,
+            step_arg_type,
+            dtype_arg_type.dtype,
+            rounding=round_step,
         )
+
+        # After normalization, their arg_types will change
+        start_arg_type = dtype_arg_type.dtype
+        stop_arg_type = dtype_arg_type.dtype
         step_arg_type = dtype_arg_type.dtype
 
         # Construct function parameters
@@ -409,10 +441,10 @@ def ol_dpnp_arange(
         )
 
     if is_nonelike(stop):
-        start = 0
-        stop = 1
+        start = 0 if type(start) == int or isinstance(start, Integer) else 0.0
+        stop = 1 if type(start) == int or isinstance(start, Integer) else 1.0
     if is_nonelike(step):
-        step = 1
+        step = 1 if type(start) == int or isinstance(start, Integer) else 1.0
 
     _dtype = (
         _parse_dtype(dtype)
