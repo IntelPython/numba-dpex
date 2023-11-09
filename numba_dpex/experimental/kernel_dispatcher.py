@@ -148,9 +148,12 @@ class _KernelCompiler(_FunctionCompiler):
             kernel_fndesc = kernel_cres.fndesc
             kernel_targetctx = kernel_cres.target_context
 
-            kernel_module = self._compile_to_spirv(
-                kernel_library, kernel_fndesc, kernel_targetctx
-            )
+            if self.targetoptions["generate_device_ir"] is True:
+                kernel_module: _KernelModule = self._compile_to_spirv(
+                    kernel_library, kernel_fndesc, kernel_targetctx
+                )
+            else:
+                kernel_module = kernel_library
 
             if config.DUMP_KERNEL_LLVM:
                 with open(
