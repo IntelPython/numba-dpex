@@ -75,4 +75,35 @@ def kernel(func_or_sig=None, **options):
     return _kernel_dispatcher(func)
 
 
-jit_registry[target_registry["dpex_kernel"]] = kernel
+def device_func(func_or_sig=None, **options):
+    """Generates a function with a device-only calling convention, e.g.,
+    spir_func for SPIR-V based devices.
+
+    The decorator is used to compile overloads in the DpexKernelTarget and
+    users should use the decorator to define functions that are only callable
+    from inside another device_func or a kernel.
+
+    A device_func is not compiled down to device binary IR and instead left as
+    LLVM IR. It is done so that the function can be inlined fully into the
+    kernel module from where it is used at the LLVM level, leading to more
+    optimization opportunities.
+
+    Returns:
+        KernelDispatcher: A KernelDispatcher instance with the
+        generate_device_ir flag set to False.
+    """
+    options["generate_device_ir"] = False
+
+    def _kernel_dispatcher(pyfunc):
+        return KernelDispatcher(
+            pyfunc=pyfunc,
+            targetoptions=options,
+        )
+
+    if func_or_sig is None:
+        return _kernel_dispatcher
+
+    return _kernel_dispatcher(func_or_sig)
+
+
+jit_registry[target_registry["dpex_kernel"]] = device_func
