@@ -15,21 +15,21 @@ class MemoryOrder(FlagEnum):
     =====================   ============
     Order                   Enum value
     =====================   ============
-    relaxed                 0
-    acquire                 1
-    consume_unsupported     2
-    release                 3
-    acq_rel                 4
-    seq_cst                 5
+    RELAXED                 0
+    ACQUIRE                 1
+    CONSUME_UNSUPPORTED     2
+    RELEASE                 3
+    ACQ_REL                 4
+    SEQ_CST                 5
     =====================   ============
     """
 
-    relaxed = 0
-    acquire = 1
-    consume_unsupported = 2
-    release = 3
-    acq_rel = 4
-    seq_cst = 5
+    RELAXED = 0
+    ACQUIRE = 1
+    CONSUME_UNSUPPORTED = 2
+    RELEASE = 3
+    ACQ_REL = 4
+    SEQ_CST = 5
 
 
 class MemoryScope(FlagEnum):
@@ -40,19 +40,19 @@ class MemoryScope(FlagEnum):
     ===============  ============
     Memory Scope     Enum value
     ===============  ============
-    work_item        0
-    sub_group        1
-    work_group       2
-    device           3
-    system           4
+    WORK_ITEM        0
+    SUB_GROUP        1
+    WORK_GROUP       2
+    DEVICE           3
+    SYSTEM           4
     ===============  ============
     """
 
-    work_item = 0
-    sub_group = 1
-    work_group = 2
-    device = 3
-    system = 4
+    WORK_ITEM = 0
+    SUB_GROUP = 1
+    WORK_GROUP = 2
+    DEVICE = 3
+    SYSTEM = 4
 
 
 class AddressSpace(FlagEnum):
