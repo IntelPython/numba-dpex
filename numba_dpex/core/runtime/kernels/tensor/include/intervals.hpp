@@ -16,14 +16,14 @@
 #ifndef __INTERVALS_HPP__
 #define __INTERVALS_HPP__
 
-#include <iostream>
-#include <exception>
 #include <complex>
+#include <exception>
+#include <iostream>
 #include <typeinfo>
 
 #include <Python.h>
-#include <numpy/npy_common.h>
 #include <numba/_arraystruct.h>
+#include <numpy/npy_common.h>
 
 #include "dpctl_capi.h"
 #include "dpctl_sycl_interface.h"
