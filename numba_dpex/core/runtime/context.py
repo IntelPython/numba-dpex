@@ -21,8 +21,9 @@ class DpexRTContext(object):
         @functools.wraps(func)
         def wrap(self, builder, *args, **kwargs):
             memptr = func(self, builder, *args, **kwargs)
-            msg = "In {0:s}.wrap(). USM allocation failed at {1:s}(). Check the usm_type and queue.".format(
-                self.__class__.__name__, func.__name__
+            msg = (
+                f"In {self.__class__.__name__}.wrap(). USM allocation failed at {func.__name__}()."
+                + " Check the usm_type and queue."
             )
             cgutils.guard_memory_error(self._context, builder, memptr, msg=msg)
             return memptr

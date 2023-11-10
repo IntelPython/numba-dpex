@@ -5,7 +5,6 @@ AlignEscapedNewlines: Right
 AllowAllParametersOfDeclarationOnNextLine: false
 BinPackParameters: false
 BreakBeforeBraces: Custom
-SortIncludes: false
 BraceWrapping:
   AfterCaseLabel:  true
   AfterClass:      true

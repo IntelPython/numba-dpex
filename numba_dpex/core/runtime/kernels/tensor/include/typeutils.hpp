@@ -2,8 +2,19 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-#ifndef __TYPES_HPP__
-#define __TYPES_HPP__
+//===----------------------------------------------------------------------===//
+///
+/// \file typeutils.hpp
+/// \brief Provides different utility functions to handle type mechansim.
+///
+/// This file contains different utility functions for type handling mechanism.
+/// The routines would range from handling types pertaining to SYCL, ``numba``,
+/// and python.
+///
+//===----------------------------------------------------------------------===//
+
+#ifndef __TYPEUTILS_HPP__
+#define __TYPEUTILS_HPP__
 
 #include <cstdlib>
 #include <complex>
@@ -11,7 +22,9 @@
 #include <utility>
 #include <string>
 #include <cstdint>
-// #include <cxxabi.h> // this is gcc specific, not supported on windows
+#if defined(__linux__) || defined(__unix__) || defined(_POSIX_VERSION)
+#include <cxxabi.h> // this is gcc specific, not supported on windows
+#endif
 #include <CL/sycl.hpp>
 
 namespace dpex
@@ -25,14 +38,29 @@ namespace tensor
 namespace typeutils
 {
 
+/**
+ * \brief A template to return false when the type is not ``std::complex``
+ *
+ * \tparam T The template parameter, type to be checked.
+ */
 template <class T> struct is_complex : public std::false_type
 {
 };
 
+/**
+ * \brief A template function to check if a type is ``std::complex``.
+ *
+ * \tparam T The template parameter, type to be checked.
+ */
 template <class T> struct is_complex<std::complex<T>> : public std::true_type
 {
 };
 
+/**
+ * \brief An enum class to store different type ids.
+ *
+ * This is used to index different functions in the dispatch vector.
+ */
 enum class typenum_t : int
 {
     BOOL = 0,
@@ -53,26 +81,48 @@ enum class typenum_t : int
 
 constexpr int num_types = 14; // number of elements in typenum_t
 
-// TODO: Exclude for now
-// template <typename T> std::string demangle()
-// {
-//     char const *mangled = typeid(T).name();
-//     char *c_demangled;
-//     int status = 0;
-//     c_demangled = abi::__cxa_demangle(mangled, nullptr, nullptr, &status);
+#if defined(__linux__) || defined(__unix__) || defined(_POSIX_VERSION)
+/**
+ * \brief Demangling a template parameter.
+ *
+ * This function is for debugging purposes.
+ *
+ * \tparam T            The template parameter to be demangled.
+ * \return std::string  The ``std::string`` representation of the instantiated
+ *                      template parameter.
+ */
+template <typename T> std::string demangle()
+{
+    char const *mangled = typeid(T).name();
+    char *c_demangled;
+    int status = 0;
+    c_demangled = abi::__cxa_demangle(mangled, nullptr, nullptr, &status);
 
-//     std::string res;
-//     if (c_demangled) {
-//         res = c_demangled;
-//         free(c_demangled);
-//     }
-//     else {
-//         res = mangled;
-//         free(c_demangled);
-//     }
-//     return res;
-// }
+    std::string res;
+    if (c_demangled) {
+        res = c_demangled;
+        free(c_demangled);
+    }
+    else {
+        res = mangled;
+        free(c_demangled);
+    }
+    return res;
+}
+#endif
 
+/**
+ * \brief Caste a value to the type in ``typenum_t`` using an ``int`` index
+ *
+ * This function can caste a value to the type in ``typenum_t``
+ * using an integer index. E.g. ``caste_using_typeid(x,7)`` will caste ``x``
+ * into ``int64_t``.
+ *
+ * \param value         The value to be casted.
+ * \param _typeid       The index to the type specified in ``typenum_t``.
+ * \return std::string  The value will be casted and then returned as an
+ *                      ``std::string``.
+ */
 std::string caste_using_typeid(void *value, int _typeid)
 {
     switch (_typeid) {
@@ -106,6 +156,16 @@ std::string caste_using_typeid(void *value, int _typeid)
     }
 }
 
+/**
+ * \brief Converts a non non-complex data type into ``std::complex``
+ *
+ * It also does the reverse conversion.
+ *
+ * \tparam dstTy    The template paramter for the destination type.
+ * \tparam srcTy    The template paramter for the source type.
+ * \param v         The value to be converted.
+ * \return dstTy    The value `v` casted to `dstTy`.
+ */
 template <typename dstTy, typename srcTy> dstTy convert_impl(const srcTy &v)
 {
     if constexpr (std::is_same<dstTy, srcTy>::value) {
@@ -135,6 +195,12 @@ template <typename dstTy, typename srcTy> dstTy convert_impl(const srcTy &v)
     }
 }
 
+/**
+ * \brief Checks if a type ``T`` is supported on a device.
+ *
+ * \tparam T    The template parameter for the type.
+ * \param d     The ``sycl::device`` to be checked on.
+ */
 template <typename T> void validate_type_for_device(const sycl::device &d)
 {
     if constexpr (std::is_same_v<T, double>) {
@@ -160,6 +226,12 @@ template <typename T> void validate_type_for_device(const sycl::device &d)
     }
 }
 
+/**
+ * \brief Checks if a type `T` is supported by a SYCL queue.
+ *
+ * \tparam T    The template parameter for the type.
+ * \param q     The ``sycl::queue`` to be checked on.
+ */
 template <typename T> void validate_type_for_device(const sycl::queue &q)
 {
     validate_type_for_device<T>(q.get_device());
