@@ -11,6 +11,7 @@ from numba.core.descriptors import TargetDescriptor
 from .targets.dpjit_target import DPEX_TARGET_NAME, DpexTargetContext
 from .targets.kernel_target import (
     DPEX_KERNEL_TARGET_NAME,
+    CompilationMode,
     DpexKernelTargetContext,
     DpexKernelTypingContext,
 )
@@ -40,6 +41,7 @@ class DpexTargetOptions(CPUTargetOptions):
     release_gil = _option_mapping("release_gil")
     no_compile = _option_mapping("no_compile")
     use_mlir = _option_mapping("use_mlir")
+    _compilation_mode = _option_mapping("_compilation_mode")
 
     def finalize(self, flags, options):
         super().finalize(flags, options)
@@ -47,6 +49,9 @@ class DpexTargetOptions(CPUTargetOptions):
         _inherit_if_not_set(flags, options, "release_gil", False)
         _inherit_if_not_set(flags, options, "no_compile", True)
         _inherit_if_not_set(flags, options, "use_mlir", False)
+        _inherit_if_not_set(
+            flags, options, "_compilation_mode", CompilationMode.KERNEL
+        )
 
 
 class DpexKernelTarget(TargetDescriptor):
