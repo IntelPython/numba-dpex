@@ -2,4 +2,4 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-from . import array_sequence_ops, arrayobj
+from . import array_interval_ops, arrayobj

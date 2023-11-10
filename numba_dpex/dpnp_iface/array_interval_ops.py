@@ -34,6 +34,20 @@ _QueueRefPayload = namedtuple(
 
 
 def _is_float_type(start, stop, step):
+    """Checks if one of the paramteres is `numba.core.types.scalars.Float` type.
+
+    Args:
+        start ('numba.core.types.scalars.*): The `numba` type of the `start` of
+            the interval.
+        stop ('numba.core.types.scalars.*): The `numba` type of the end of the
+            interval.
+        step ('numba.core.types.scalars.*): The `numba` type of the `step` of
+            the interval.
+
+    Returns:
+        bool: True if one of `start`, `stop` or `step` is
+            `numba.core.types.scalars.Float` type.
+    """
     return (
         type(start) == float
         or type(stop) == float
@@ -45,6 +59,21 @@ def _is_float_type(start, stop, step):
 
 
 def _is_int_type(start, stop, step):
+    """Checks if one of the paramteres is `numba.core.types.scalars.Integer`
+        type.
+
+    Args:
+        start ('numba.core.types.scalars.*): The `numba` type of the `start` of
+            the interval.
+        stop ('numba.core.types.scalars.*): The `numba` type of the end of the
+            interval.
+        step ('numba.core.types.scalars.*): The `numba` type of the `step` of
+            the interval.
+
+    Returns:
+        bool: True if one of `start`, `stop` or `step` is
+            `numba.core.types.scalars.Integer` type.
+    """
     return (
         type(start) == int
         or type(stop) == int
@@ -56,6 +85,21 @@ def _is_int_type(start, stop, step):
 
 
 def _is_complex_type(start, stop, step):
+    """Checks if one of the paramteres is `numba.core.types.scalars.Complex`
+        type.
+
+    Args:
+        start ('numba.core.types.scalars.*): The `numba` type of the `start` of
+            the interval.
+        stop ('numba.core.types.scalars.*): The `numba` type of the end of the
+            interval.
+        step ('numba.core.types.scalars.*): The `numba` type of the `step` of
+            the interval.
+
+    Returns:
+        bool: True if one of `start`, `stop` or `step` is
+            `numba.core.types.scalars.Complex` type.
+    """
     return (
         isinstance(start, Complex)
         or isinstance(stop, Complex)
@@ -64,6 +108,23 @@ def _is_complex_type(start, stop, step):
 
 
 def _parse_dtype_from_range(start, stop, step):
+    """Infer `dtype` of the output tensor from input `numba` types
+
+    Args:
+        start ('numba.core.types.scalars.*): The `numba` type of the `start` of
+            the interval.
+        stop ('numba.core.types.scalars.*): The `numba` type of the end of the
+            interval.
+        step ('numba.core.types.scalars.*): The `numba` type of the `step` of
+            the interval.
+
+    Raises:
+        errors.NumbaTypeError: If types couldn't be inferred for `start`,
+            `stop`, and/or `step`.
+
+    Returns:
+        numba.core.types.scalars.: Infered `dtype` for the output tensor.
+    """
     if _is_complex_type(start, stop, step):
         return numba.from_dtype(dpnp.complex_)
     elif _is_float_type(start, stop, step):
@@ -75,10 +136,26 @@ def _parse_dtype_from_range(start, stop, step):
             "dpnp_iface.array_sequence_ops._parse_dtype_from_range(): "
             + "Types couldn't be inferred for (start, stop, step)."
         )
-        raise errors.NumbaValueError(msg)
+        raise errors.NumbaTypeError(msg)
 
 
 def _get_llvm_type(numba_type):
+    """Returns `llvmlite.ir.types` from a corresponding
+        `numba.core.types.scalars.*` `numba` type
+
+    Args:
+        numba_type (numba.core.types.scalars.*): The input `numba` type.
+
+    Raises:
+        errors.NumbaTypeError: If `numba_type` is
+            `numba.core.types.scalars.Integer` and incompatible bitwidth.
+        errors.NumbaTypeError: If `numba_type` is neither
+            `numba.core.types.scalars.Integer` nor
+            `numba.core.types.scalars.Float`
+
+    Returns:
+        llvmlite.ir.types: The LLVM IR type of the corresponding `numba` type.
+    """
     if isinstance(numba_type, Integer):
         return llvmir.IntType(numba_type.bitwidth)
     elif isinstance(numba_type, Float):
@@ -103,6 +180,26 @@ def _get_llvm_type(numba_type):
 
 
 def _get_dst_typeid(dtype):
+    """Get the corresponding index for `interval_step_dispatch_vector` from
+        `numba` type
+
+    Args:
+        dtype (numba.core.types.scalars.*): The `numba` type to index the
+            function in `interval_step_dispatch_vector` in `intervals.cpp`.
+
+    Raises:
+        errors.NumbaValueError: If `dtype` is `numba.core.types.scalars.Integer`
+            with an incompatible bitwidth.
+        errors.NumbaValueError: If `dtype` is `numba.core.types.scalars.Float`
+            with an incompatible bitwidth.
+        errors.NumbaValueError: If `dtype` is `numba.core.types.scalars.Complex`
+            with an incompatible bitwidth.
+        errors.NumbaTypeError: If `dtype` is an unknown `numba.core.types`.
+
+    Returns:
+        int: Returns the type-id specified in the
+            `dpx::rt::kernel::tensor::typenum_t`
+    """
     if isinstance(dtype, Boolean):
         return 0
     elif isinstance(dtype, Integer):
@@ -153,6 +250,17 @@ def _get_dst_typeid(dtype):
 
 
 def _round(builder, src, src_type):
+    """Round a value held by an LLVM IR instruction.
+
+    Args:
+        builder (llvmlite.ir.builder.IRBuilder): The LLVM IR Builder object.
+        src (llvmlite.ir.*): LLVM IR instruction to hold input (source) type.
+        src_type (numba.core.types.scalars.*): The `numba` type of the source
+        type.
+
+    Returns:
+        llvmlite.ir.*: The LLVM IR instruction to get the rounded value.
+    """
     return_type = (
         llvmirtypes.DoubleType()
         if src_type.bitwidth == 64
@@ -168,6 +276,17 @@ def _round(builder, src, src_type):
 
 
 def _is_fraction(builder, src, src_type):
+    """Tests if a value held by an LLVM IR instruction is a fraction.
+
+    Args:
+        builder (llvmlite.ir.builder.IRBuilder): The LLVM IR Builder object.
+        src (llvmlite.ir.*): LLVM IR instruction to hold input (source) type.
+        src_type (numba.core.types.scalars.*): The `numba` type of the source
+        type.
+
+    Returns:
+        bool: `True` if the input is a fraction.
+    """
     if isinstance(src_type, Float):
         return_type = (
             llvmirtypes.DoubleType()
@@ -188,6 +307,29 @@ def _is_fraction(builder, src, src_type):
 
 
 def _normalize(builder, src, src_type, dest_type, rounding=False):
+    """Converts/Normalizes two dissimilar types.
+
+    Similar to type casting but it also handles bitwidth and rounding
+
+    Args:
+        builder (llvmlite.ir.builder.IRBuilder): The LLVM IR Builder object.
+            src (llvmlite.ir.*): LLVM IR instruction to hold input (source)
+            type.
+        src_type (numba.core.types.scalars.*): The `numba` type of the source
+            type.
+        dest_type (numba.core.types.scalars.*): The `numba` type of the
+            destination type.
+        rounding (bool, optional): `True` if rounding needs to be done.
+            Defaults to False.
+
+    Raises:
+        errors.NumbaTypeError: If `src_type` is neither a
+            'numba.core.types.scalars.Float' nor an
+            'numba.core.types.scalars.Integer'."
+
+    Returns:
+        llvmlite.ir.*: The LLVM IR instruction to get the casted value.
+    """
     dest_llvm_type = _get_llvm_type(dest_type)
     if isinstance(src_type, Integer) and isinstance(dest_type, Integer):
         if src_type.bitwidth < dest_type.bitwidth:
@@ -234,6 +376,23 @@ def _compute_array_length_ir(
     stop_arg_type,
     step_arg_type,
 ):
+    """LLVM IR generator to compute the length of the array.
+
+    Args:
+        builder (llvmlite.ir.builder.IRBuilder): The LLVM IR Builder object.
+        start_ir (llvmlite.ir.*): LLVM IR to capture the `start` of the
+            interval.
+        stop_ir (llvmlite.ir.*): LLVM IR to capture the end of the interval.
+        step_ir (llvmlite.ir.*): LLVM IR to capture the `step` of the interval.
+        start_arg_type (numba.core.types.scalars.*): `numba` type for the
+            `start`
+        stop_arg_type (numba.core.types.scalars.*): `numba` type for the `stop`
+        step_arg_type (numba.core.types.scalars.*): `numba` type for the `step`
+
+    Returns:
+        llvmlite.ir.instructions.*: The LLVM IR to contain the length of the
+            array.
+    """
     lb = _normalize(builder, start_ir, start_arg_type, types.float64)
     ub = _normalize(builder, stop_ir, stop_arg_type, types.float64)
     n = _normalize(builder, step_ir, step_arg_type, types.float64)
@@ -265,6 +424,32 @@ def impl_dpnp_arange(
     ty_sycl_queue,
     ty_ret_ty,
 ):
+    """A numba "intrinsic" function to inject code for dpnp.arange().
+
+    Args:
+        ty_context (numba.core.typing.context.Context): The typing context
+            for the codegen.
+        ty_start (numba.core.types.scalars.Integer): Numba type for the start
+            of the interval.
+        ty_stop (numba.core.types.scalars.Integer): Numba type for the end
+            of the interval.
+        ty_step (numba.core.types.scalars.Integer): Numba type for the step
+            of the interval.
+        ty_dtype (numba.core.types.functions.NumberClass): Numba type for
+            dtype.
+        ty_device (numba.core.types.misc.UnicodeType): UnicodeType
+            from numba for strings.
+        ty_usm_type (numba.core.types.misc.UnicodeType): UnicodeType
+            from numba for strings.
+        ty_sycl_queue (numba.core.types.misc.UnicodeType): UnicodeType
+            from numba for strings.
+        ty_ret_ty (numba.core.types.abstract.TypeRef): Reference to
+            a type from numba, used when a type is passed as a value.
+
+    Returns:
+        tuple(numba.core.typing.templates.Signature, function): A tuple of
+            numba function signature type and a function object.
+    """
     ty_retty_ = ty_ret_ty.instance_type
     signature = ty_retty_(
         ty_start,
@@ -397,7 +582,7 @@ def impl_dpnp_arange(
         fn = cgutils.get_or_insert_function(
             builder.module,
             fnty,
-            "NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence",
+            "NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_interval",
         )
         builder.call(
             fn,
@@ -427,6 +612,56 @@ def ol_dpnp_arange(
     usm_type="device",
     sycl_queue=None,
 ):
+    """Implementation of an overload to support dpnp.arange() inside
+    a dpjit function. Returns evenly spaced values within the half-open interval
+    [start, stop) as a one-dimensional array.
+
+    Args:
+        start (numba.core.types.scalars.*): The start of the interval. If `stop`
+            is specified, the start of interval (inclusive); otherwise, the end
+            of the interval (exclusive). If `stop` is not specified, the default
+            starting value is 0.
+        stop (numba.core.types.scalars.*, optional): The end of the interval.
+            Default: `None`.
+        step (numba.core.types.scalars.*, optional): The distance between two
+            adjacent elements (`out[i+1] - out[i]`). Must not be 0; may be
+            negative, this results in an empty array if `stop >= start`.
+            Default: 1.
+        dtype (numba.core.types.scalars.*, optional): The output array data
+            type. If `dtype` is `None`, the output array data type must be
+            inferred from `start`, `stop` and `step`. If those are all integers,
+            the output array `dtype` must be the default integer `dtype`; if
+            one or more have type `float`, then the output array dtype must be
+            the default real-valued floating-point data type. Default: `None`.
+        device (numba.core.types.misc.StringLiteral, optional): array API
+            concept of device where the output array is created. `device`
+            can be `None`, a oneAPI filter selector string, an instance of
+            :class:`dpctl.SyclDevice` corresponding to a non-partitioned
+            SYCL device, an instance of :class:`dpctl.SyclQueue`, or a
+            `Device` object returnedby`dpctl.tensor.usm_array.device`.
+            Default: `None`.
+        usm_type (numba.core.types.misc.StringLiteral or str, optional):
+            The type of SYCL USM allocation for the output array.
+            Allowed values are "device"|"shared"|"host".
+            Default: `"device"`.
+        sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
+            optional): The SYCL queue to use for output array allocation and
+            copying. sycl_queue and device are exclusive keywords, i.e. use
+            one or another. If both are specified, a TypeError is raised. If
+            both are None, a cached queue targeting default-selected device
+            is used for allocation and copying. Default: `None`.
+
+    Raises:
+        errors.NumbaNotImplementedError: If `start` is
+            `numba.core.types.scalars.Complex` type
+        errors.NumbaTypeError: If `start` is `numba.core.types.scalars.Boolean`
+            type
+        errors.TypingError: If couldn't parse input types to dpnp.arange().
+
+    Returns:
+        function: Local function `impl_dpnp_arange()`.
+    """
+
     if isinstance(start, Complex) or (
         not is_nonelike(dtype) and isinstance(dtype.dtype, Complex)
     ):

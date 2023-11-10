@@ -2,6 +2,19 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
+//===----------------------------------------------------------------------===//
+///
+/// \file dispatch.hpp
+/// \brief Implements the "function dispatch vector".
+///
+/// Implements a so called "function dispatch vector". A function dispatch
+/// vector is an array of (templated) function pointers that are specialized
+/// to a given data type. Since the data type of the tensor is not known
+/// beforehand, we keep an array of functions specialized to the 14 types in
+/// ``dpex::rt::kernel::tensor::typeutils::typenum_t``.
+///
+//===----------------------------------------------------------------------===//
+
 #ifndef __DISPATCH_HPP__
 #define __DISPATCH_HPP__
 
@@ -20,6 +33,23 @@ namespace tensor
 namespace dispatch
 {
 
+/**
+ * \brief The class to implement a "dispatch vector"
+ *
+ * Implements a so called "function dispatch vector". A function dispatch
+ * vector is an array of (templated) function pointers that are specialized
+ * to a given data type. Since the data type of the tensor is not known
+ * beforehand, we keep an array of functions specialized to the 14 types in
+ * ``dpex::rt::kernel::tensor::typeutils::typenum_t``. Each function instance
+ * is accessed using a predefined indices that point to the specific data type
+ * a function was already specialized to.
+ *
+ * \tparam funcPtrT     The pointer to the function.
+ * \tparam factory      A factory function that returns a specialized function
+ *                      pointer.
+ * \tparam _num_types   A constant type to indicate the total number of data
+ *                      types in ``typenum_t``.
+ */
 template <typename funcPtrT,
           template <typename fnT, typename T>
           typename factory,
@@ -27,6 +57,14 @@ template <typename funcPtrT,
 class DispatchVectorBuilder
 {
 private:
+    /**
+     * \brief   Use the 'factory' to return a function specialized to type `Ty`
+     *
+     * The 'factories' are defined in
+     *
+     * \tparam Ty               The type the function would be specialized.
+     * \return const funcPtrT   The pointer to the function from the factory.
+     */
     template <typename Ty> const funcPtrT func_per_type() const
     {
         funcPtrT f = factory<funcPtrT, Ty>{}.get();
@@ -37,6 +75,11 @@ public:
     DispatchVectorBuilder() = default;
     ~DispatchVectorBuilder() = default;
 
+    /**
+     * \brief
+     *
+     * \param vector
+     */
     void populate_dispatch_vector(funcPtrT vector[]) const
     {
         const auto fn_map_by_type = {
