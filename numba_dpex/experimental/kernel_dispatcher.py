@@ -13,6 +13,7 @@ from numba.core import errors, sigutils, types
 from numba.core.compiler import CompileResult
 from numba.core.compiler_lock import global_compiler_lock
 from numba.core.dispatcher import Dispatcher, _FunctionCompiler
+from numba.core.target_extension import dispatcher_registry, target_registry
 from numba.core.typing.typeof import Purpose, typeof
 
 from numba_dpex import config, spirv_generator
@@ -315,3 +316,7 @@ class KernelDispatcher(Dispatcher):
         """Functor to launch a kernel."""
 
         raise NotImplementedError
+
+
+_dpex_target = target_registry["dpex_kernel"]
+dispatcher_registry[_dpex_target] = KernelDispatcher
