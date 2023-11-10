@@ -47,7 +47,7 @@ def _parse_int_literal(literal_int: types.scalars.IntegerLiteral) -> int:
         )
 
 
-class AtomicRef(object):
+class AtomicRef:
     """The class provides the ability to perform atomic operations in a
     kernel function. The class is modeled after the ``sycl::atomic_ref`` class.
 
@@ -348,7 +348,7 @@ def ol_fetch_and(atomic_ref, val):
             f"reference: {atomic_ref.dtype} stored in the atomic ref."
         )
 
-    if atomic_ref.dtype != types.int32 and atomic_ref.dtype != types.int64:
+    if atomic_ref.dtype not in (types.int32, types.int64):
         raise errors.TypingError(
             "fetch_and operation only supported on int32 and int64 dtypes."
         )
@@ -369,7 +369,7 @@ def ol_fetch_or(atomic_ref, val):
             f"reference: {atomic_ref.dtype} stored in the atomic ref."
         )
 
-    if atomic_ref.dtype != types.int32 and atomic_ref.dtype != types.int64:
+    if atomic_ref.dtype not in (types.int32, types.int64):
         raise errors.TypingError(
             "fetch_or operation only supported on int32 and int64 dtypes."
         )
@@ -390,7 +390,7 @@ def ol_fetch_xor(atomic_ref, val):
             f"reference: {atomic_ref.dtype} stored in the atomic ref."
         )
 
-    if atomic_ref.dtype != types.int32 and atomic_ref.dtype != types.int64:
+    if atomic_ref.dtype not in (types.int32, types.int64):
         raise errors.TypingError(
             "fetch_xor operation only supported on int32 and int64 dtypes."
         )
