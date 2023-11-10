@@ -134,9 +134,9 @@ def get_scope(memory_scope):
     """
     retval = None
     if memory_scope == MemoryScope.WORK_ITEM.value:
-        retval =  _SpvScope.INVOCATION.value
+        retval = _SpvScope.INVOCATION.value
     elif memory_scope == MemoryScope.SUB_GROUP.value:
-        retval =  _SpvScope.SUBGROUP.value
+        retval = _SpvScope.SUBGROUP.value
     elif memory_scope == MemoryScope.WORK_GROUP.value:
         retval = _SpvScope.WORKGROUP.value
     elif memory_scope == MemoryScope.DEVICE.value:

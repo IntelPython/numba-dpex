@@ -29,8 +29,7 @@ from .target import dpex_exp_kernel_target
 _KernelModule = namedtuple("_KernelModule", ["kernel_name", "kernel_bitcode"])
 
 _KernelCompileResult = namedtuple(
-    "_KernelCompileResult",
-    ["status", "cres_or_error", "entry_point"],
+    "_KernelCompileResult", CompileResult._fields + ("kernel_device_ir_module",)
 )
 
 
@@ -96,11 +95,11 @@ class _KernelCompiler(_FunctionCompiler):
         )
 
     def compile(self, args, return_type):
-        kcres = self._compile_cached(args, return_type)
-        if kcres.status:
+        status, kcres = self._compile_cached(args, return_type)
+        if status:
             return kcres
 
-        raise kcres.cres_or_error
+        raise kcres
 
     def _compile_cached(
         self, args, return_type: types.Type
@@ -137,37 +136,51 @@ class _KernelCompiler(_FunctionCompiler):
         """
         key = tuple(args), return_type
         try:
-            return _KernelCompileResult(False, self._failed_cache[key], None)
+            return False, self._failed_cache[key]
         except KeyError:
             pass
 
         try:
-            kernel_cres: CompileResult = self._compile_core(args, return_type)
-
-            kernel_library = kernel_cres.library
-            kernel_fndesc = kernel_cres.fndesc
-            kernel_targetctx = kernel_cres.target_context
+            cres: CompileResult = self._compile_core(args, return_type)
 
             if self.targetoptions["generate_device_ir"] is True:
-                kernel_module: _KernelModule = self._compile_to_spirv(
-                    kernel_library, kernel_fndesc, kernel_targetctx
+                kernel_device_ir_module: _KernelModule = self._compile_to_spirv(
+                    cres.library, cres.fndesc, cres.target_context
                 )
             else:
-                kernel_module = kernel_library
+                kernel_device_ir_module = None
+
+            kcres_attrs = []
+            for cres_field in cres._fields:
+                cres_attr = getattr(cres, cres_field)
+                if cres_field == "entry_point":
+                    if cres_attr is not None:
+                        raise AssertionError(
+                            "Compiled kernel and device_func should be "
+                            "compiled with compile_cfunc option turned off"
+                        )
+                    # XXX We will need to figure out what a valid entry_point
+                    # should be in our case.
+                    cres_attr = cres.library.get_function(
+                        cres.fndesc.llvm_func_name
+                    )
+                kcres_attrs.append(cres_attr)
+
+            kcres_attrs.append(kernel_device_ir_module)
 
             if config.DUMP_KERNEL_LLVM:
                 with open(
-                    kernel_cres.fndesc.llvm_func_name + ".ll",
+                    cres.fndesc.llvm_func_name + ".ll",
                     "w",
                     encoding="UTF-8",
                 ) as f:
-                    f.write(kernel_cres.library.final_module)
+                    f.write(cres.library.final_module)
 
         except errors.TypingError as e:
             self._failed_cache[key] = e
-            return _KernelCompileResult(False, e, None)
+            return False, e
 
-        return _KernelCompileResult(True, kernel_cres, kernel_module)
+        return True, _KernelCompileResult(*kcres_attrs)
 
 
 class KernelDispatcher(Dispatcher):
@@ -237,7 +250,7 @@ class KernelDispatcher(Dispatcher):
 
     def add_overload(self, cres):
         args = tuple(cres.signature.args)
-        self.overloads[args] = cres.entry_point
+        self.overloads[args] = cres
 
     def compile(self, sig) -> _KernelCompileResult:
         disp = self._get_dispatcher_for_current_target()
@@ -266,13 +279,15 @@ class KernelDispatcher(Dispatcher):
             # Use counter to track recursion compilation depth
             with self._compiling_counter:
                 args, return_type = sigutils.normalize_signature(sig)
-
-                try:
-                    self._compiler.check_queue_equivalence_of_args(
-                        self._kernel_name, args
-                    )
-                except ExecutionQueueInferenceError as eqie:
-                    raise eqie
+                # XXX Rename the flag. The flag indicates if a kernel is getting
+                # compiled or if a device_func is getting compiled.
+                if self.targetoptions["generate_device_ir"]:
+                    try:
+                        self._compiler.check_queue_equivalence_of_args(
+                            self._kernel_name, args
+                        )
+                    except ExecutionQueueInferenceError as eqie:
+                        raise eqie
 
                 # Don't recompile if signature already exists
                 existing = self.overloads.get(tuple(args))
@@ -290,9 +305,7 @@ class KernelDispatcher(Dispatcher):
                 }
                 with ev.trigger_event("numba_dpex:compile", data=ev_details):
                     try:
-                        kcres: _KernelCompileResult = self._compiler.compile(
-                            args, return_type
-                        )
+                        kcres = self._compiler.compile(args, return_type)
                     except errors.ForceLiteralArg as e:
 
                         def folded(args, kws):
@@ -301,7 +314,7 @@ class KernelDispatcher(Dispatcher):
                             )[1]
 
                         raise e.bind_fold_arguments(folded)
-                    self.add_overload(kcres.cres_or_error)
+                    self.add_overload(kcres)
 
                 # TODO: enable caching of kernel_module
                 # https://github.com/IntelPython/numba-dpex/issues/1197

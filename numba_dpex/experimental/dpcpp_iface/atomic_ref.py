@@ -216,7 +216,7 @@ def _intrinsic_atomic_ref_ctor(ty_context, ref, ty_retty_ref):
 def _check_if_supported_ref(ref):
     supported = True
 
-    if not (isinstance(ref, USMNdArray)):
+    if not isinstance(ref, USMNdArray):
         raise errors.TypingError(
             f"Cannot create an AtomicRef from {ref}. "
             "An AtomicRef can only be constructed from a 0-dimensional "

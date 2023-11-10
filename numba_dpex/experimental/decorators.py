@@ -26,6 +26,7 @@ def kernel(func_or_sig=None, **options):
     """
     # FIXME: The options need to be evaluated and checked here like it is
     # done in numba.core.decorators.jit
+    options["generate_device_ir"] = True
 
     def _kernel_dispatcher(pyfunc):
         return KernelDispatcher(
