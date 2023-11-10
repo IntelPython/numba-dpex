@@ -16,13 +16,14 @@ from numba.core.dispatcher import Dispatcher, _FunctionCompiler
 from numba.core.typing.typeof import Purpose, typeof
 
 from numba_dpex import config, spirv_generator
-from numba_dpex.core.descriptor import dpex_kernel_target
 from numba_dpex.core.exceptions import (
     ExecutionQueueInferenceError,
     UnsupportedKernelArgumentError,
 )
 from numba_dpex.core.pipelines import kernel_compiler
 from numba_dpex.core.types import DpnpNdArray
+
+from .target import dpex_exp_kernel_target
 
 _KernelModule = namedtuple("_KernelModule", ["kernel_name", "kernel_bitcode"])
 
@@ -177,7 +178,7 @@ class KernelDispatcher(Dispatcher):
 
     """
 
-    targetdescr = dpex_kernel_target
+    targetdescr = dpex_exp_kernel_target
     _fold_args = False
 
     Dispatcher._impl_kinds["kernel"] = _KernelCompiler
