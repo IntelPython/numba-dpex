@@ -14,16 +14,16 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#include <iostream>
 #include <cstdint>
+#include <iostream>
 #include <stdexcept>
 
 #include <numpy/npy_common.h>
 
-#include "../include/intervals.hpp"
-#include "../include/dispatch.hpp"
-#include "../include/typeutils.hpp"
 #include "../include/api.h"
+#include "../include/dispatch.hpp"
+#include "../include/intervals.hpp"
+#include "../include/typeutils.hpp"
 
 // Shorthand namespace for easy coding.
 namespace dpexrt_tensor = dpex::rt::kernel::tensor;
@@ -103,7 +103,7 @@ extern "C" unsigned int NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_interval(
     void *dt,
     arystruct_t *dst,
     int ndim,
-    uint8_t is_c_contiguous,
+    bool is_c_contiguous,
     int dst_typeid,
     const DPCTLSyclQueueRef exec_q)
 {
@@ -165,9 +165,9 @@ NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_affine_interval(
     void *start,
     void *end,
     arystruct_t *dst,
-    uint8_t include_endpoint,
+    bool include_endpoint,
     int ndim,
-    uint8_t is_c_contiguous,
+    bool is_c_contiguous,
     int dst_typeid,
     const DPCTLSyclQueueRef exec_q)
 {

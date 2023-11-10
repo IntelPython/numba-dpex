@@ -16,12 +16,12 @@
 #ifndef __TYPEUTILS_HPP__
 #define __TYPEUTILS_HPP__
 
-#include <cstdlib>
 #include <complex>
-#include <exception>
-#include <utility>
-#include <string>
 #include <cstdint>
+#include <cstdlib>
+#include <exception>
+#include <string>
+#include <utility>
 #if defined(__linux__) || defined(__unix__) || defined(_POSIX_VERSION)
 #include <cxxabi.h> // this is gcc specific, not supported on windows
 #endif

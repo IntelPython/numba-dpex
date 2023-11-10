@@ -1590,7 +1590,7 @@ MOD_INIT(_dpexrt_python)
 
     PyModule_AddObject(m, "c_helpers", build_c_helpers_dict());
     PyModule_AddObject(
-        m, "NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_sequence",
+        m, "NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_interval",
         PyLong_FromVoidPtr(
             &NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_interval));
     PyModule_AddObject(

@@ -77,7 +77,7 @@ extern "C"
         void *dt,
         arystruct_t *dst,
         int ndim,
-        uint8_t is_c_contiguous,
+        bool is_c_contiguous,
         int dst_typeid,
         const DPCTLSyclQueueRef exec_q);
 
@@ -107,9 +107,9 @@ extern "C"
         void *start,
         void *end,
         arystruct_t *dst,
-        uint8_t include_endpoint,
+        bool include_endpoint,
         int ndim,
-        uint8_t is_c_contiguous,
+        bool is_c_contiguous,
         int dst_typeid,
         const DPCTLSyclQueueRef exec_q);
 
