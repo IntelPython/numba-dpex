@@ -2,19 +2,37 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-"""Provides Numba datamodel for the numba_dpex types introduced in the
+"""Provides the Numba data models for the numba_dpex types introduced in the
 numba_dpex.experimental module.
 """
 
+from llvmlite import ir as llvmir
 from numba.core.datamodel import models
+from numba.core.datamodel.models import PrimitiveModel
 from numba.core.extending import register_model
 
-from numba_dpex.core.datamodel.models import dpex_data_model_manager as dmm
+from numba_dpex.experimental.target import dpex_exp_kernel_target
 
+from .literal_intenum_type import IntEnumLiteral
 from .types import KernelDispatcherType
 
+
+class LiteralIntEnumModel(PrimitiveModel):
+    """Representation of an object of LiteralIntEnum type using Numba's
+    PrimitiveModel that can be represented natively in the target in all
+    usage contexts.
+    """
+
+    def __init__(self, dmm, fe_type):
+        be_type = llvmir.IntType(fe_type.bitwidth)
+        super().__init__(dmm, fe_type, be_type)
+
+
 # Register the types and datamodel in the DpexKernelTargetContext
-dmm.register(KernelDispatcherType, models.OpaqueModel)
+exp_dmm = dpex_exp_kernel_target.target_context.data_model_manager
+
+exp_dmm.register(KernelDispatcherType, models.OpaqueModel)
+exp_dmm.register(IntEnumLiteral, LiteralIntEnumModel)
 
 # Register the types and datamodel in the DpexTargetContext
 register_model(KernelDispatcherType)(models.OpaqueModel)

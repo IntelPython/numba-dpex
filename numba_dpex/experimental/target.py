@@ -8,7 +8,9 @@ eventually move into the numba_dpex.core.
 
 from functools import cached_property
 
+from numba.core import types
 from numba.core.descriptors import TargetDescriptor
+from numba.core.types.scalars import IntEnumClass
 
 from numba_dpex.core.descriptor import DpexTargetOptions
 from numba_dpex.core.targets.kernel_target import (
@@ -16,6 +18,9 @@ from numba_dpex.core.targets.kernel_target import (
     DpexKernelTargetContext,
     DpexKernelTypingContext,
 )
+
+from .flag_enum import FlagEnum
+from .literal_intenum_type import IntEnumLiteral
 
 
 class DpexExpKernelTypingContext(DpexKernelTypingContext):
@@ -27,6 +32,37 @@ class DpexExpKernelTypingContext(DpexKernelTypingContext):
     function. All such experimental functionality should be added here till they
     are stable enough to be migrated to DpexKernelTypingContext.
     """
+
+    def resolve_value_type(self, val):
+        """
+        Return the numba type of a Python value that is being used
+        as a runtime constant.
+        ValueError is raised for unsupported types.
+        """
+
+        ty = super().resolve_value_type(val)
+
+        if isinstance(ty, IntEnumClass) and issubclass(val, FlagEnum):
+            ty = IntEnumLiteral(val)
+
+        return ty
+
+    def resolve_getattr(self, typ, attr):
+        """
+        Resolve getting the attribute *attr* (a string) on the Numba type.
+        The attribute's type is returned, or None if resolution failed.
+        """
+        ty = None
+
+        if isinstance(typ, IntEnumLiteral):
+            try:
+                attrval = getattr(typ.literal_value, attr).value
+                ty = types.IntegerLiteral(attrval)
+            except ValueError:
+                pass
+        else:
+            ty = super().resolve_getattr(typ, attr)
+        return ty
 
 
 #  pylint: disable=W0223
