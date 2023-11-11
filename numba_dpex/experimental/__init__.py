@@ -9,6 +9,8 @@ yet production ready.
 from numba.core.imputils import Registry
 
 from .decorators import kernel
+from .dpcpp_iface import AddressSpace, AtomicRef, MemoryOrder, MemoryScope
+from .dpcpp_types import AtomicRefType
 from .kernel_dispatcher import KernelDispatcher
 from .launcher import call_kernel
 from .literal_intenum_type import IntEnumLiteral
@@ -30,6 +32,11 @@ def dpex_dispatcher_const(context):
 __all__ = [
     "kernel",
     "call_kernel",
+    "AddressSpace",
+    "AtomicRef",
+    "AtomicRefType",
     "IntEnumLiteral",
     "KernelDispatcher",
+    "MemoryOrder",
+    "MemoryScope",
 ]
