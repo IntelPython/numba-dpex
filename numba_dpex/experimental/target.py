@@ -8,6 +8,7 @@ eventually move into the numba_dpex.core.
 
 from functools import cached_property
 
+from llvmlite import ir as llvmir
 from numba.core import types
 from numba.core.descriptors import TargetDescriptor
 from numba.core.types.scalars import IntEnumClass
@@ -76,6 +77,22 @@ class DpexExpKernelTargetContext(DpexKernelTargetContext):
     to LLVM IR. All such experimental functionality should be added here till
     they are stable enough to be migrated to DpexKernelTargetContext.
     """
+
+    def get_getattr(self, typ, attr):
+        """
+        Overrides the get_getattr function to provide an implementation for
+        getattr call on an IntegerEnumLiteral type.
+        """
+
+        if isinstance(typ, IntEnumLiteral):
+            #  pylint: disable=W0613
+            def enum_literal_getattr_imp(context, builder, typ, val, attr):
+                enum_attr_value = getattr(typ.literal_value, attr).value
+                return llvmir.Constant(llvmir.IntType(32), enum_attr_value)
+
+            return enum_literal_getattr_imp
+
+        return super().get_getattr(typ, attr)
 
 
 class DpexExpKernelTarget(TargetDescriptor):
