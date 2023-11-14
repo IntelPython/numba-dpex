@@ -57,6 +57,11 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
     Test for https://github.com/numba/numba/issues/7415
     SAT-4449
     """
+    if api == "numba-dpex-kernel":
+        pytest.xfail(
+            "Wrong name for kernel api."
+        )  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
+
     variable_name = "param_a"
     variable_value = "3"
     condition = f"{variable_name} == {variable_value}"
@@ -73,6 +78,7 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
     app.child.expect(rf"\$1 = {variable_value}")
 
 
+@pytest.mark.xfail  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
 @pytest.mark.parametrize(
     "breakpoint, script",
     [

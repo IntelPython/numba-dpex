@@ -18,6 +18,8 @@ env:
   VER_JSON_NAME: 'version.json'
   VER_SCRIPT1: "import json; f = open('version.json', 'r'); j = json.load(f); f.close(); "
   VER_SCRIPT2: "d = j['numba-dpex'][0]; print('='.join((d[s] for s in ('version', 'build'))))"
+  GDB_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/fcea1bcd-6a63-4849-b304-906ff71dc2c0/l_dpcpp_dbg_p_2023.2.0.49333_offline.sh
+  GDB_INSTALLER: l_dpcpp_dbg_p_2023.2.0.49333_offline.sh
 
 jobs:
   build:
@@ -44,7 +46,7 @@ jobs:
           access_token: ${{ github.token }}
 
       - name: Checkout ${{ env.PACKAGE_NAME }} repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -181,6 +183,17 @@ jobs:
           $script_path="$env:CONDA_PREFIX\Scripts\set-intel-ocl-icd-registry.ps1"
           &$script_path
 
+      - name: Install pytest-cov
+        run: |
+          mamba install pytest-cov
+
+      - name: Checkout setup config
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            pyproject.toml
+          sparse-checkout-cone-mode: false
+
       - name: List installed packages
         run: conda list
 
@@ -208,6 +221,18 @@ jobs:
             echo "Executing ${script}"
             python ${script} || exit 1
           done
+
+      - name: Run gdb tests
+        if: runner.os == 'Linux'
+        run: |
+          conda install pexpect
+          wget -nc -q ${{ env.GDB_URL }}
+          chmod +x ${{ env.GDB_INSTALLER }}
+          mkdir /tmp/gdb
+          export ONEAPI_ROOT=/tmp/gdb
+          ./${{ env.GDB_INSTALLER }} -a -s --eula accept --install-dir $ONEAPI_ROOT
+          source $ONEAPI_ROOT/debugger/latest/env/vars.sh
+          pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }}.tests.debugging -vv
 
   upload_anaconda:
     name: Upload dppy/label/dev ['${{ matrix.os }}', python='${{ matrix.python }}']
@@ -285,7 +310,7 @@ jobs:
         run: conda install anaconda-client
 
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: IntelPython/devops-tools
           fetch-depth: 0
