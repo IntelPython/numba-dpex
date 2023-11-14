@@ -80,6 +80,21 @@ class AtomicRef:
     def fetch_xor(self, val):
         pass
 
+    def load(self):
+        pass
+
+    def store(self, val):
+        pass
+
+    def exchange(self, val):
+        pass
+
+    def compare_exchange_weak(self, expected, desired):
+        pass
+
+    def compare_exchange_strong(self, expected, desired):
+        pass
+
 
 def _intrinsic_helper(ty_context, ty_atomic_ref, ty_val, op_str):
     from ..target import dpex_exp_kernel_target
@@ -181,6 +196,280 @@ def _intrinsic_fetch_or(ty_context, ty_atomic_ref, ty_val):
 @intrinsic(target=DPEX_KERNEL_TARGET_NAME)
 def _intrinsic_fetch_xor(ty_context, ty_atomic_ref, ty_val):
     return _intrinsic_helper(ty_context, ty_atomic_ref, ty_val, "fetch_xor")
+
+
+@intrinsic(target=DPEX_KERNEL_TARGET_NAME)
+def _intrinsic_load(ty_context, ty_atomic_ref):
+    from ..target import dpex_exp_kernel_target
+
+    sig = types.void(ty_atomic_ref)
+
+    def gen(context, builder, sig, args):
+        atomic_ref_ty = sig.args[0]
+        atomic_ref_dtype = atomic_ref_ty.dtype
+
+        ref = args[0]
+        dmm = dpex_exp_kernel_target.target_context.data_model_manager
+        data_attr_pos = dmm.lookup(sig.args[0]).get_field_position("ref")
+
+        data_attr = builder.extract_value(ref, data_attr_pos)
+
+        # if atomic_ref_dtype in (types.float32, types.float64):
+        # XXX Turn on once the overload is added to DpexKernelTarget
+        # context.extra_compile_options[context.LLVM_SPIRV_ARGS] = [
+        #     "--spirv-ext=+SPV_EXT_shader_atomic_float_add"
+        # ]
+
+        name = "__spirv_AtomicLoad"
+
+        ptr_type = context.get_value_type(atomic_ref_dtype).as_pointer()
+        ptr_type.addrspace = atomic_ref_ty.address_space.literal_value
+        retty = context.get_value_type(atomic_ref_dtype)
+        spirv_fn_arg_types = [
+            ptr_type,
+            llvmir.IntType(32),
+            llvmir.IntType(32),
+        ]
+        numba_ptr_ty = types.CPointer(
+            atomic_ref_dtype, addrspace=ptr_type.addrspace
+        )
+        mangled_fn_name = ext_itanium_mangler.mangle_ext(
+            name,
+            [
+                numba_ptr_ty,
+                "__spv.Scope.Flag",
+                "__spv.MemorySemanticsMask.Flag",
+            ],
+        )
+        fnty = llvmir.FunctionType(retty, spirv_fn_arg_types)
+        fn = cgutils.get_or_insert_function(
+            builder.module, fnty, mangled_fn_name
+        )
+        spirv_memory_semantics_mask = get_memory_semantics_mask(
+            atomic_ref_ty.memory_order.literal_value
+        )
+        spirv_scope = get_scope(atomic_ref_ty.memory_scope.literal_value)
+
+        fn_args = [
+            data_attr,
+            context.get_constant(types.int32, spirv_scope),
+            context.get_constant(types.int32, spirv_memory_semantics_mask),
+        ]
+
+        builder.call(fn, fn_args)
+
+    return sig, gen
+
+
+@intrinsic(target=DPEX_KERNEL_TARGET_NAME)
+def _intrinsic_store(ty_context, ty_atomic_ref, ty_val):
+    from ..target import dpex_exp_kernel_target
+
+    sig = types.void(ty_atomic_ref, ty_val)
+
+    def gen(context, builder, sig, args):
+        atomic_ref_ty = sig.args[0]
+        atomic_ref_dtype = atomic_ref_ty.dtype
+
+        ref = args[0]
+        dmm = dpex_exp_kernel_target.target_context.data_model_manager
+        data_attr_pos = dmm.lookup(sig.args[0]).get_field_position("ref")
+
+        data_attr = builder.extract_value(ref, data_attr_pos)
+
+        # if atomic_ref_dtype in (types.float32, types.float64):
+        # XXX Turn on once the overload is added to DpexKernelTarget
+        # context.extra_compile_options[context.LLVM_SPIRV_ARGS] = [
+        #     "--spirv-ext=+SPV_EXT_shader_atomic_float_add"
+        # ]
+
+        name = "__spirv_AtomicStore"
+
+        ptr_type = context.get_value_type(atomic_ref_dtype).as_pointer()
+        ptr_type.addrspace = atomic_ref_ty.address_space.literal_value
+        retty = llvmir.VoidType()
+        spirv_fn_arg_types = [
+            ptr_type,
+            llvmir.IntType(32),
+            llvmir.IntType(32),
+            context.get_value_type(atomic_ref_dtype),
+        ]
+        numba_ptr_ty = types.CPointer(
+            atomic_ref_dtype, addrspace=ptr_type.addrspace
+        )
+        mangled_fn_name = ext_itanium_mangler.mangle_ext(
+            name,
+            [
+                numba_ptr_ty,
+                "__spv.Scope.Flag",
+                "__spv.MemorySemanticsMask.Flag",
+                atomic_ref_dtype,
+            ],
+        )
+        fnty = llvmir.FunctionType(retty, spirv_fn_arg_types)
+        fn = cgutils.get_or_insert_function(
+            builder.module, fnty, mangled_fn_name
+        )
+        fn.calling_convention = CC_SPIR_FUNC
+        spirv_memory_semantics_mask = get_memory_semantics_mask(
+            atomic_ref_ty.memory_order.literal_value
+        )
+        spirv_scope = get_scope(atomic_ref_ty.memory_scope.literal_value)
+
+        fn_args = [
+            data_attr,
+            context.get_constant(types.int32, spirv_scope),
+            context.get_constant(types.int32, spirv_memory_semantics_mask),
+            args[1],
+        ]
+
+        builder.call(fn, fn_args)
+
+    return sig, gen
+
+
+@intrinsic(target=DPEX_KERNEL_TARGET_NAME)
+def _intrinsic_exchange(ty_context, ty_atomic_ref, ty_val):
+    from ..target import dpex_exp_kernel_target
+
+    sig = types.void(ty_atomic_ref, ty_val)
+
+    def gen(context, builder, sig, args):
+        atomic_ref_ty = sig.args[0]
+        atomic_ref_dtype = atomic_ref_ty.dtype
+
+        ref = args[0]
+        dmm = dpex_exp_kernel_target.target_context.data_model_manager
+        data_attr_pos = dmm.lookup(sig.args[0]).get_field_position("ref")
+
+        data_attr = builder.extract_value(ref, data_attr_pos)
+
+        # if atomic_ref_dtype in (types.float32, types.float64):
+        # XXX Turn on once the overload is added to DpexKernelTarget
+        # context.extra_compile_options[context.LLVM_SPIRV_ARGS] = [
+        #     "--spirv-ext=+SPV_EXT_shader_atomic_float_add"
+        # ]
+
+        name = "__spirv_AtomicExchange"
+
+        ptr_type = context.get_value_type(atomic_ref_dtype).as_pointer()
+        ptr_type.addrspace = atomic_ref_ty.address_space.literal_value
+        retty = context.get_value_type(atomic_ref_dtype)
+        spirv_fn_arg_types = [
+            ptr_type,
+            llvmir.IntType(32),
+            llvmir.IntType(32),
+            context.get_value_type(atomic_ref_dtype),
+        ]
+        numba_ptr_ty = types.CPointer(
+            atomic_ref_dtype, addrspace=ptr_type.addrspace
+        )
+        mangled_fn_name = ext_itanium_mangler.mangle_ext(
+            name,
+            [
+                numba_ptr_ty,
+                "__spv.Scope.Flag",
+                "__spv.MemorySemanticsMask.Flag",
+                atomic_ref_dtype,
+            ],
+        )
+        fnty = llvmir.FunctionType(retty, spirv_fn_arg_types)
+        fn = cgutils.get_or_insert_function(
+            builder.module, fnty, mangled_fn_name
+        )
+
+        fn.calling_convention = CC_SPIR_FUNC
+        spirv_memory_semantics_mask = get_memory_semantics_mask(
+            atomic_ref_ty.memory_order.literal_value
+        )
+        spirv_scope = get_scope(atomic_ref_ty.memory_scope.literal_value)
+
+        fn_args = [
+            data_attr,
+            context.get_constant(types.int32, spirv_scope),
+            context.get_constant(types.int32, spirv_memory_semantics_mask),
+            args[1],
+        ]
+
+        builder.call(fn, fn_args)
+
+    return sig, gen
+
+
+@intrinsic(target=DPEX_KERNEL_TARGET_NAME)
+def _intrinsic_compare_exchange(
+    ty_context, ty_atomic_ref, ty_expected, ty_desired
+):
+    from ..target import dpex_exp_kernel_target
+
+    sig = types.void(ty_atomic_ref, ty_expected, ty_desired)
+
+    def gen(context, builder, sig, args):
+        atomic_ref_ty = sig.args[0]
+        atomic_ref_dtype = atomic_ref_ty.dtype
+
+        ref = args[0]
+        dmm = dpex_exp_kernel_target.target_context.data_model_manager
+        data_attr_pos = dmm.lookup(sig.args[0]).get_field_position("ref")
+
+        data_attr = builder.extract_value(ref, data_attr_pos)
+
+        # if atomic_ref_dtype in (types.float32, types.float64):
+        # XXX Turn on once the overload is added to DpexKernelTarget
+        # context.extra_compile_options[context.LLVM_SPIRV_ARGS] = [
+        #     "--spirv-ext=+SPV_EXT_shader_atomic_float_add"
+        # ]
+
+        name = "__spirv_AtomicCompareExchange"
+
+        ptr_type = context.get_value_type(atomic_ref_dtype).as_pointer()
+        ptr_type.addrspace = atomic_ref_ty.address_space.literal_value
+        retty = context.get_value_type(atomic_ref_dtype)
+        spirv_fn_arg_types = [
+            ptr_type,
+            llvmir.IntType(32),
+            llvmir.IntType(32),
+            llvmir.IntType(32),
+            context.get_value_type(atomic_ref_dtype),
+            context.get_value_type(atomic_ref_dtype),
+        ]
+        numba_ptr_ty = types.CPointer(
+            atomic_ref_dtype, addrspace=ptr_type.addrspace
+        )
+        mangled_fn_name = ext_itanium_mangler.mangle_ext(
+            name,
+            [
+                numba_ptr_ty,
+                "__spv.Scope.Flag",
+                "__spv.MemorySemanticsMask.Flag",
+                atomic_ref_dtype,
+                atomic_ref_dtype,
+            ],
+        )
+        fnty = llvmir.FunctionType(retty, spirv_fn_arg_types)
+        fn = cgutils.get_or_insert_function(
+            builder.module, fnty, mangled_fn_name
+        )
+        fn.calling_convention = CC_SPIR_FUNC
+        spirv_memory_semantics_mask = get_memory_semantics_mask(
+            atomic_ref_ty.memory_order.literal_value
+        )
+        spirv_scope = get_scope(atomic_ref_ty.memory_scope.literal_value)
+
+        fn_args = [
+            data_attr,
+            context.get_constant(types.int32, spirv_scope),
+            context.get_constant(types.int32, spirv_memory_semantics_mask),
+            context.get_constant(types.int32, spirv_memory_semantics_mask),
+            args[1],
+            args[2],
+        ]
+
+        builder.call(fn, fn_args)
+
+        return
+
+    return sig, gen
 
 
 @intrinsic(target=DPEX_KERNEL_TARGET_NAME)
@@ -399,3 +688,95 @@ def ol_fetch_xor(atomic_ref, val):
         return _intrinsic_fetch_xor(atomic_ref, val)
 
     return ol_fetch_xor_impl
+
+
+@overload_method(
+    AtomicRefType, "load", inline="always", target=DPEX_KERNEL_TARGET_NAME
+)
+def ol_load(atomic_ref):
+    def ol_load_impl(atomic_ref):
+        return _intrinsic_load(atomic_ref)
+
+    return ol_load_impl
+
+
+@overload_method(
+    AtomicRefType, "store", inline="always", target=DPEX_KERNEL_TARGET_NAME
+)
+def ol_store(atomic_ref, val):
+    if atomic_ref.dtype != val:
+        raise errors.TypingError(
+            f"Type of value to store: {val} does not match the type of the "
+            f"reference: {atomic_ref.dtype} stored in the atomic ref."
+        )
+
+    def ol_store_impl(atomic_ref, val):
+        return _intrinsic_store(atomic_ref, val)
+
+    return ol_store_impl
+
+
+@overload_method(
+    AtomicRefType, "exchange", inline="always", target=DPEX_KERNEL_TARGET_NAME
+)
+def ol_exchange(atomic_ref, val):
+    if atomic_ref.dtype != val:
+        raise errors.TypingError(
+            f"Type of value to exchange: {val} does not match the type of the "
+            f"reference: {atomic_ref.dtype} stored in the atomic ref."
+        )
+
+    def ol_exchange_impl(atomic_ref, val):
+        return _intrinsic_exchange(atomic_ref, val)
+
+    return ol_exchange_impl
+
+
+@overload_method(
+    AtomicRefType,
+    "compare_exchange_weak",
+    inline="always",
+    target=DPEX_KERNEL_TARGET_NAME,
+)
+def ol_compare_exchange_weak(atomic_ref, expected_ref, desired):
+    if atomic_ref.dtype != expected_ref:
+        raise errors.TypingError(
+            f"Type of value to compare_exchange_weak: {expected_ref} does not match the "
+            f"type of the reference: {atomic_ref.dtype} stored in the atomic ref."
+        )
+
+    if atomic_ref.dtype != desired:
+        raise errors.TypingError(
+            f"Type of value to compare_exchange_strong: {desired} does not match the "
+            f"type of the reference: {atomic_ref.dtype} stored in the atomic ref."
+        )
+
+    def ol_compare_exchange_weak_impl(atomic_ref, expected_ref, desired):
+        return _intrinsic_compare_exchange(atomic_ref, expected_ref, desired)
+
+    return ol_compare_exchange_weak_impl
+
+
+@overload_method(
+    AtomicRefType,
+    "compare_exchange_strong",
+    inline="always",
+    target=DPEX_KERNEL_TARGET_NAME,
+)
+def ol_compare_exchange_strong(atomic_ref, expected_ref, desired):
+    if atomic_ref.dtype != expected_ref:
+        raise errors.TypingError(
+            f"Type of value to compare_exchange_strong: {expected_ref} does not match the "
+            f"type of the reference: {atomic_ref.dtype} stored in the atomic ref."
+        )
+
+    if atomic_ref.dtype != desired:
+        raise errors.TypingError(
+            f"Type of value to compare_exchange_strong: {desired} does not match the "
+            f"type of the reference: {atomic_ref.dtype} stored in the atomic ref."
+        )
+
+    def ol_compare_exchange_strong_impl(atomic_ref, expected_ref, desired):
+        return _intrinsic_compare_exchange(atomic_ref, expected_ref, desired)
+
+    return ol_compare_exchange_strong_impl
