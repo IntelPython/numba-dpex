@@ -104,8 +104,9 @@ jobs:
         python: ['3.9', '3.10', '3.11']
         os: [ubuntu-20.04, ubuntu-latest, windows-latest]
         experimental: [false]
+        use_mlir: [false]
 
-    continue-on-error: ${{ matrix.experimental }}
+    continue-on-error: ${{ matrix.experimental || matrix.use_mlir }}
 
     steps:
       - name: Setup miniconda
@@ -169,6 +170,10 @@ jobs:
       - name: Install builded package
         run: mamba install ${{ env.PACKAGE_NAME }}=${{ env.PACKAGE_VERSION }} intel::intel-opencl-rt pytest -c ${{ env.CHANNEL_PATH }}
 
+      - name: Install numba-mlir
+        if: matrix.use_mlir
+        run: mamba install numba-mlir -c dppy/label/dev -c conda-forge -c intel
+
       - name: Setup OpenCL CPU device
         if: runner.os == 'Windows'
         shell: pwsh
@@ -184,9 +189,13 @@ jobs:
           python -c "import dpcpp_llvm_spirv as p; print(p.get_llvm_spirv_path())"
 
       - name: Smoke test
+        env:
+          NUMBA_DPEX_USE_MLIR: ${{ matrix.use_mlir && '1' || '0'  }}
         run: python -c "import dpnp, dpctl, numba_dpex; dpctl.lsplatform()"
 
       - name: Run tests
+        env:
+          NUMBA_DPEX_USE_MLIR: ${{ matrix.use_mlir && '1' || '0'  }}
         run: |
           pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }} -vv
 

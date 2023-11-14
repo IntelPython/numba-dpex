@@ -13,7 +13,9 @@ from numba_dpex.core.kernel_interface.func import (
     compile_func,
     compile_func_template,
 )
-from numba_dpex.core.pipelines.dpjit_compiler import DpjitCompiler
+from numba_dpex.core.pipelines.dpjit_compiler import get_compiler
+
+from .config import USE_MLIR
 
 
 def kernel(
@@ -152,9 +154,12 @@ def dpjit(*args, **kws):
             "pipeline class is set for dpjit and is ignored", RuntimeWarning
         )
         del kws["forceobj"]
+
+    use_mlir = kws.pop("use_mlir", bool(USE_MLIR))
+
     kws.update({"nopython": True})
     kws.update({"parallel": True})
-    kws.update({"pipeline_class": DpjitCompiler})
+    kws.update({"pipeline_class": get_compiler(use_mlir)})
 
     # FIXME: When trying to use dpex's target context, overloads do not work
     # properly. We will turn on dpex target once the issue is fixed.
