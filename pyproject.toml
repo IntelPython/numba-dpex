@@ -43,6 +43,7 @@ exclude_lines = [
 VCS = "git"
 style = "pep440"
 versionfile_source = "numba_dpex/_version.py"
+versionfile_build = "numba_dpex/_version.py"
 parentdir_prefix = ""
 
 [tool.pylint]
@@ -60,3 +61,19 @@ requires = [
     "versioneer-518"
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+norecursedirs= [
+    ".*", "*.egg*", "build", "dist", "conda-recipe",
+]
+xfail_strict = true
+addopts = [
+    "--disable-warnings",
+    "--strict",
+    "--durations=20",
+    "-ra -vv",
+]
+testpaths = [
+    "numba_dpex/tests"
+]
