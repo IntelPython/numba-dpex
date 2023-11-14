@@ -4,9 +4,6 @@ import dpnp
 import numba_dpex.experimental as nd_exp
 from numba_dpex import Range, dpjit
 
-print(type(nd_exp.MemoryOrder))
-print(type(nd_exp.MemoryOrder.RELAXED))
-
 
 @nd_exp.kernel
 def test_atomic_ref(a, b):
