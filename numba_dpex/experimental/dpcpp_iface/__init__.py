@@ -5,7 +5,14 @@
 """Python classes that are analogous to dpcpp's SYCL API used to write kernels.
 """
 
+from .atomic_fence import AtomicFence
 from .atomic_ref import AtomicRef
 from .memory_enums import AddressSpace, MemoryOrder, MemoryScope
 
-__all__ = ["AddressSpace", "AtomicRef", "MemoryOrder", "MemoryScope"]
+__all__ = [
+    "AddressSpace",
+    "AtomicFence",
+    "AtomicRef",
+    "MemoryOrder",
+    "MemoryScope",
+]
