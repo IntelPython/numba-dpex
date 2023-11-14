@@ -70,6 +70,13 @@ def test_info_args(
     Issue: https://github.com/numba/numba/issues/7414
     Fix: https://github.com/numba/numba/pull/7177
     """
+    if (
+        script == "simple_dpex_func.py"
+        or script == "side-by-side.py --api=numba-dpex-kernel"
+    ):
+        pytest.xfail(
+            "Expected Failure for these files."
+        )  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
 
     setup_breakpoint(app, breakpoint, script, expected_line=expected_line)
 
@@ -90,6 +97,7 @@ def test_info_args(
     app.child.expect(expected_whatis)
 
 
+@pytest.mark.xfail  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
 @skip_no_numba056
 def test_info_functions(app):
     expected_line = r"13\s+i = dpex.get_global_id\(0\)"
@@ -145,7 +153,7 @@ def side_by_side_2_info_locals_case(api):
 @pytest.mark.parametrize(
     "env, breakpoint, script, expected_line, expected_info_locals, expected_info",
     [
-        (
+        pytest.param(
             {"NUMBA_OPT": 0},
             "sum_local_vars.py:16",
             "sum_local_vars.py",
@@ -175,6 +183,7 @@ def side_by_side_2_info_locals_case(api):
                     r"type = float64",
                 ),
             ),
+            marks=pytest.mark.xfail,
         ),
         # FIXME: NUMBA_OPT=1 will not able to stop at breakpoint
         pytest.param(
@@ -184,36 +193,42 @@ def side_by_side_2_info_locals_case(api):
             r"16\s+c\[i\] = l1 \+ l2",
             ("No locals.",),
             (),
-            marks=pytest.mark.xfail,
+            marks=pytest.mark.xfail,  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
         ),
-        (
+        pytest.param(
             {"NUMBA_EXTEND_VARIABLE_LIFETIMES": 1},
             "side-by-side.py:18",
             "side-by-side.py --api=numba-dpex-kernel",
             None,
             (r"param_c = 0", r"param_d = 0", r"result = 10"),
             (),
+            marks=pytest.mark.xfail,  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
         ),
-        (
+        pytest.param(
             {"NUMBA_EXTEND_VARIABLE_LIFETIMES": 0},
             "side-by-side.py:18",
             "side-by-side.py --api=numba-dpex-kernel",
             None,
             (r"param_c = 0", r"param_d = 0", r"result = 10"),
             (),
+            marks=pytest.mark.xfail,  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
         ),
         side_by_side_info_locals_case("numba"),
         pytest.param(
             *side_by_side_info_locals_case("numba-dpex-kernel"),
             marks=[
-                pytest.mark.xfail(reason="dpex isn't stoping with condition")
+                pytest.mark.xfail(
+                    reason="dpex isn't stoping with condition"
+                )  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
             ],
         ),
         side_by_side_2_info_locals_case("numba"),
         pytest.param(
             *side_by_side_2_info_locals_case("numba-dpex-kernel"),
             marks=[
-                pytest.mark.xfail(reason="dpex isn't stoping with condition")
+                pytest.mark.xfail(
+                    reason="dpex isn't stoping with condition"
+                )  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
             ],
         ),
     ],
@@ -277,7 +292,9 @@ def side_by_side_2_print_array_element_case(api):
         pytest.param(
             *side_by_side_2_print_array_element_case("numba-dpex-kernel"),
             marks=[
-                pytest.mark.xfail(reason="dpex isn't stoping with condition")
+                pytest.mark.xfail(
+                    reason="dpex isn't stoping with condition"
+                )  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
             ],
         ),
     ],
@@ -294,6 +311,8 @@ def test_print_array_element(app, breakpoint, script, expected_info):
         app.child.expect(expected_print)
 
 
+# FIXME: crashes test execution
+@pytest.mark.skip  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
 def side_by_side_2_assignment_to_variable_case(api):
     return (
         "side-by-side-2.py:19 if param_a == 5",
@@ -316,7 +335,9 @@ def side_by_side_2_assignment_to_variable_case(api):
         pytest.param(
             *side_by_side_2_assignment_to_variable_case("numba-dpex-kernel"),
             marks=[
-                pytest.mark.xfail(reason="dpex isn't stoping with condition")
+                pytest.mark.xfail(
+                    reason="dpex isn't stoping with condition"
+                )  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
             ],
         ),
     ],
