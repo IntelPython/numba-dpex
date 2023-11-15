@@ -180,6 +180,10 @@ class SyclEventModel(StructModel):
                 types.MemInfoPointer(types.pyobject),
             ),
             (
+                "parent",
+                types.pyobject,
+            ),
+            (
                 "event_ref",
                 types.CPointer(types.int8),
             ),

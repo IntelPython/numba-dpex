@@ -242,6 +242,24 @@ class DpexRTContext(object):
 
         return self.error
 
+    def eventstruct_init(self, pyapi, event, struct):
+        """Calls the c function DPEXRT_sycl_event_init"""
+
+        fnty = llvmir.FunctionType(
+            llvmir.IntType(32), [pyapi.voidptr, pyapi.voidptr, pyapi.voidptr]
+        )
+        nrt_api = self._context.nrt.get_nrt_api(pyapi.builder)
+
+        fn = pyapi._get_function(fnty, "DPEXRT_sycl_event_init")
+        fn.args[0].add_attribute("nocapture")
+        fn.args[1].add_attribute("nocapture")
+        fn.args[2].add_attribute("nocapture")
+
+        ptr = pyapi.builder.bitcast(struct, pyapi.voidptr)
+        self.error = pyapi.builder.call(fn, [nrt_api, event, ptr])
+
+        return self.error
+
     def usm_ndarray_to_python_acqref(self, pyapi, aryty, ary, dtypeptr):
         """Boxes a DpnpNdArray native object into a Python dpnp.ndarray.
 
