@@ -8,9 +8,13 @@ ready to move to numba_dpex.core.
 import inspect
 
 from numba.core import sigutils
-from numba.core.target_extension import jit_registry, target_registry
+from numba.core.target_extension import (
+    jit_registry,
+    resolve_dispatcher_from_str,
+    target_registry,
+)
 
-from .kernel_dispatcher import KernelDispatcher
+from .target import DPEX_KERNEL_EXP_TARGET_NAME
 
 
 def kernel(func_or_sig=None, **options):
@@ -24,12 +28,15 @@ def kernel(func_or_sig=None, **options):
         * All array arguments passed to a kernel should adhere to compute
           follows data programming model.
     """
+
+    dispatcher = resolve_dispatcher_from_str(DPEX_KERNEL_EXP_TARGET_NAME)
+
     # FIXME: The options need to be evaluated and checked here like it is
     # done in numba.core.decorators.jit
     options["generate_device_ir"] = True
 
     def _kernel_dispatcher(pyfunc):
-        return KernelDispatcher(
+        return dispatcher(
             pyfunc=pyfunc,
             targetoptions=options,
         )
@@ -60,9 +67,7 @@ def kernel(func_or_sig=None, **options):
             func_or_sig = [func_or_sig]
 
         def _specialized_kernel_dispatcher(pyfunc):
-            return KernelDispatcher(
-                pyfunc=pyfunc,
-            )
+            return dispatcher(pyfunc=pyfunc)
 
         return _specialized_kernel_dispatcher
     func = func_or_sig
@@ -93,10 +98,13 @@ def device_func(func_or_sig=None, **options):
         KernelDispatcher: A KernelDispatcher instance with the
         generate_device_ir flag set to False.
     """
+
+    dispatcher = resolve_dispatcher_from_str(DPEX_KERNEL_EXP_TARGET_NAME)
+
     options["generate_device_ir"] = False
 
     def _kernel_dispatcher(pyfunc):
-        return KernelDispatcher(
+        return dispatcher(
             pyfunc=pyfunc,
             targetoptions=options,
         )
@@ -107,4 +115,4 @@ def device_func(func_or_sig=None, **options):
     return _kernel_dispatcher(func_or_sig)
 
 
-jit_registry[target_registry["dpex_kernel"]] = device_func
+jit_registry[target_registry[DPEX_KERNEL_EXP_TARGET_NAME]] = device_func

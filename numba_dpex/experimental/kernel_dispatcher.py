@@ -316,6 +316,10 @@ class KernelDispatcher(Dispatcher):
                         raise e.bind_fold_arguments(folded)
                     self.add_overload(kcres)
 
+                    kcres.target_context.insert_user_function(
+                        kcres.entry_point, kcres.fndesc, [kcres.library]
+                    )
+
                 # TODO: enable caching of kernel_module
                 # https://github.com/IntelPython/numba-dpex/issues/1197
 
@@ -334,5 +338,5 @@ class KernelDispatcher(Dispatcher):
         raise NotImplementedError
 
 
-_dpex_target = target_registry["dpex_kernel"]
+_dpex_target = target_registry["dpex_kernel_exp"]
 dispatcher_registry[_dpex_target] = KernelDispatcher

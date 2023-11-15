@@ -11,17 +11,26 @@ from functools import cached_property
 from llvmlite import ir as llvmir
 from numba.core import types
 from numba.core.descriptors import TargetDescriptor
+from numba.core.target_extension import GPU, target_registry
 from numba.core.types.scalars import IntEnumClass
 
 from numba_dpex.core.descriptor import DpexTargetOptions
 from numba_dpex.core.targets.kernel_target import (
-    DPEX_KERNEL_TARGET_NAME,
     DpexKernelTargetContext,
     DpexKernelTypingContext,
 )
 
 from .flag_enum import FlagEnum
 from .literal_intenum_type import IntEnumLiteral
+
+
+class SyclDeviceExp(GPU):
+    """Mark the hardware target as SYCL Device."""
+
+
+DPEX_KERNEL_EXP_TARGET_NAME = "dpex_kernel_exp"
+
+target_registry[DPEX_KERNEL_EXP_TARGET_NAME] = SyclDeviceExp
 
 
 class DpexExpKernelTypingContext(DpexKernelTypingContext):
@@ -88,7 +97,7 @@ class DpexExpKernelTargetContext(DpexKernelTargetContext):
             #  pylint: disable=W0613
             def enum_literal_getattr_imp(context, builder, typ, val, attr):
                 enum_attr_value = getattr(typ.literal_value, attr).value
-                return llvmir.Constant(llvmir.IntType(32), enum_attr_value)
+                return llvmir.Constant(llvmir.IntType(64), enum_attr_value)
 
             return enum_literal_getattr_imp
 
@@ -130,4 +139,4 @@ class DpexExpKernelTarget(TargetDescriptor):
 
 
 # A global instance of the DpexKernelTarget with the experimental features
-dpex_exp_kernel_target = DpexExpKernelTarget(DPEX_KERNEL_TARGET_NAME)
+dpex_exp_kernel_target = DpexExpKernelTarget(DPEX_KERNEL_EXP_TARGET_NAME)
