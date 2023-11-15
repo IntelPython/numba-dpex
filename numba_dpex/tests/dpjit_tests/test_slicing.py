@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """
-Tests for boxing for dpnp.ndarray
+Tests for slicing dpnp.ndarray
 """
 
 import dpnp

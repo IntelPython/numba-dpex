@@ -74,6 +74,9 @@ static PyObject *DPEXRT_sycl_queue_to_python(NRT_api_functions *nrt,
                                              queuestruct_t *queuestruct);
 static PyObject *DPEXRT_sycl_event_to_python(NRT_api_functions *nrt,
                                              eventstruct_t *eventstruct);
+static int DPEXRT_sycl_event_init(NRT_api_functions *nrt,
+                                  DPCTLSyclEventRef event,
+                                  eventstruct_t *eventstruct);
 
 /** An NRT_external_malloc_func implementation using DPCTLmalloc_device.
  *
@@ -1359,6 +1362,7 @@ static int DPEXRT_sycl_event_from_python(NRT_api_functions *nrt,
     Py_INCREF(event_obj);
     event_struct->meminfo =
         nrt->manage_memory(event_obj, NRT_MemInfo_pyobject_dtor);
+    event_struct->parent = (PyObject *)event_obj;
     event_struct->event_ref = event_ref;
 
     return 0;
@@ -1388,17 +1392,13 @@ error:
 static PyObject *DPEXRT_sycl_event_to_python(NRT_api_functions *nrt,
                                              eventstruct_t *eventstruct)
 {
-    PyObject *event_obj = NULL;
-    PyGILState_STATE gstate;
-
-    event_obj = nrt->get_data(eventstruct->meminfo);
-
-    DPEXRT_DEBUG(
-        drt_debug_print("DPEXRT-DEBUG: In DPEXRT_sycl_event_to_python.\n"););
+    PyObject *event_obj = eventstruct->parent;
 
     if (event_obj == NULL) {
-        // Make create copy of event_ref so we don't need to manage nrt lifetime
-        // from python object.
+        DPEXRT_DEBUG(
+            drt_debug_print("DPEXRT-DEBUG: creating new event object.\n"););
+        // SyclEvent_Make creates copy of event_ref so we don't need to manage
+        // nrt lifetime from python object.
         event_obj = (PyObject *)SyclEvent_Make(eventstruct->event_ref);
     }
     else {
@@ -1410,10 +1410,43 @@ static PyObject *DPEXRT_sycl_event_to_python(NRT_api_functions *nrt,
         Py_INCREF(event_obj);
     }
 
-    // We need to release meminfo since we are taking ownership back.
+    // We need to release meminfo since we no longer need this reference in nrt.
     nrt->release(eventstruct->meminfo);
 
     return event_obj;
+}
+
+/*!
+ * @brief A helper function that initializes Numba-dpex eventstruct_t object
+ * for the DPCTLSyclEventRef allocated inside dpjit. Parent is set to NULL.
+ *
+ * @param    nrt            A Numba pointer to public api functions.
+ * @param    event          A dpctl event reference.
+ * @param    eventstruct    A Numba-dpex eventstruct object (datamodel).
+ * @return   {return}       Nothing.
+ */
+static int DPEXRT_sycl_event_init(NRT_api_functions *nrt,
+                                  DPCTLSyclEventRef event,
+                                  eventstruct_t *eventstruct)
+{
+    if (eventstruct == NULL) {
+        DPEXRT_DEBUG(drt_debug_print(
+            "DPEXRT-ERROR: Failed to initialize dpctl SyclEvent into a Numba "
+            "eventstruct at %s, line %d. eventstruct is NULL.\n",
+            __FILE__, __LINE__));
+
+        return -1;
+    }
+
+    DPEXRT_DEBUG(
+        drt_debug_print("DPEXRT-DEBUG: creating new dpctl event meminfo.\n"););
+    eventstruct->parent = NULL;
+    eventstruct->event_ref = (void *)event;
+    // manage_memory sets ref count to 1.
+    eventstruct->meminfo =
+        nrt->manage_memory(event, NRT_MemInfo_EventRef_Delete);
+
+    return 0;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -1456,6 +1489,7 @@ static PyObject *build_c_helpers_dict(void)
     _declpointer("DPEXRT_sycl_event_from_python",
                  &DPEXRT_sycl_event_from_python);
     _declpointer("DPEXRT_sycl_event_to_python", &DPEXRT_sycl_event_to_python);
+    _declpointer("DPEXRT_sycl_event_init", &DPEXRT_sycl_event_init);
 
 #undef _declpointer
     return dct;
@@ -1511,7 +1545,8 @@ MOD_INIT(_dpexrt_python)
                        PyLong_FromVoidPtr(&DPEXRT_sycl_event_from_python));
     PyModule_AddObject(m, "DPEXRT_sycl_event_to_python",
                        PyLong_FromVoidPtr(&DPEXRT_sycl_event_to_python));
-
+    PyModule_AddObject(m, "DPEXRT_sycl_event_init",
+                       PyLong_FromVoidPtr(&DPEXRT_sycl_event_init));
     PyModule_AddObject(m, "DPEXRTQueue_CreateFromFilterString",
                        PyLong_FromVoidPtr(&DPEXRTQueue_CreateFromFilterString));
     PyModule_AddObject(m, "DpexrtQueue_SubmitRange",

@@ -69,6 +69,20 @@ def dpctl_queue_memcpy(builder: llvmir.IRBuilder, *args):
     return ret
 
 
+def dpctl_event_create(builder: llvmir.IRBuilder, *args):
+    """Inserts LLVM IR to call DPCTLEvent_Create."""
+    mod = builder.module
+    fn = _build_dpctl_function(
+        llvm_module=mod,
+        return_ty=cgutils.voidptr_t,
+        arg_list=[],
+        func_name="DPCTLEvent_Create",
+    )
+    ret = builder.call(fn, args)
+
+    return ret
+
+
 def dpctl_queue_delete(builder: llvmir.IRBuilder, *args):
     """Inserts LLVM IR to call DPCTLQueue_Delete."""
     mod = builder.module

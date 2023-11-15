@@ -176,8 +176,6 @@ def box_sycl_event(typ, val, c):
     if not c.context.enable_nrt:
         raise UnreachableError
 
-    print("boxing...")
-
     dpexrtCtx = dpexrt.DpexRTContext(c.context)
     event = dpexrtCtx.eventstruct_to_python(c.pyapi, val)
 
