@@ -44,7 +44,7 @@ jobs:
           access_token: ${{ github.token }}
 
       - name: Checkout ${{ env.PACKAGE_NAME }} repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -105,6 +105,10 @@ jobs:
         os: [ubuntu-20.04, ubuntu-latest, windows-latest]
         experimental: [false]
         use_mlir: [false]
+        run_gdb: [true, false]
+        exclude:
+          - os: windows-latest
+            run_gdb: true
 
     continue-on-error: ${{ matrix.experimental || matrix.use_mlir }}
 
@@ -168,7 +172,7 @@ jobs:
       # We want to make sure that all dependecies install automatically.
       # intel::intel-opencl-rt is needed for set-intel-ocl-icd-registry.ps1
       - name: Install builded package
-        run: mamba install ${{ env.PACKAGE_NAME }}=${{ env.PACKAGE_VERSION }} intel::intel-opencl-rt pytest -c ${{ env.CHANNEL_PATH }}
+        run: mamba install ${{ env.PACKAGE_NAME }}=${{ env.PACKAGE_VERSION }} intel::intel-opencl-rt pytest-cov -c ${{ env.CHANNEL_PATH }}
 
       - name: Install numba-mlir
         if: matrix.use_mlir
@@ -180,6 +184,13 @@ jobs:
         run: |
           $script_path="$env:CONDA_PREFIX\Scripts\set-intel-ocl-icd-registry.ps1"
           &$script_path
+
+      - name: Checkout setup config
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            pyproject.toml
+          sparse-checkout-cone-mode: false
 
       - name: List installed packages
         run: conda list
@@ -194,12 +205,14 @@ jobs:
         run: python -c "import dpnp, dpctl, numba_dpex; dpctl.lsplatform()"
 
       - name: Run tests
+        if: ${{!matrix.run_gdb}}
         env:
           NUMBA_DPEX_USE_MLIR: ${{ matrix.use_mlir && '1' || '0'  }}
         run: |
           pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }} -vv
 
       - name: Run examples
+        if: ${{!matrix.run_gdb}}
         shell: bash -l {0}
         run: |
           cd ${{ env.EXAMPLES_PATH }}
@@ -208,6 +221,21 @@ jobs:
             echo "Executing ${script}"
             python ${script} || exit 1
           done
+
+      - name: Run gdb tests
+        if: ${{matrix.run_gdb}}
+        env:
+          GDB_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/fcea1bcd-6a63-4849-b304-906ff71dc2c0/l_dpcpp_dbg_p_2023.2.0.49333_offline.sh
+          GDB_INSTALLER: l_dpcpp_dbg_p_2023.2.0.49333_offline.sh
+        run: |
+          conda install pexpect
+          wget -nc -q ${{ env.GDB_URL }}
+          chmod +x ${{ env.GDB_INSTALLER }}
+          mkdir /tmp/gdb
+          export ONEAPI_ROOT=/tmp/gdb
+          ./${{ env.GDB_INSTALLER }} -a -s --eula accept --install-dir $ONEAPI_ROOT
+          source $ONEAPI_ROOT/debugger/latest/env/vars.sh
+          pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }}.tests.debugging -vv
 
   upload_anaconda:
     name: Upload dppy/label/dev ['${{ matrix.os }}', python='${{ matrix.python }}']
@@ -285,7 +313,7 @@ jobs:
         run: conda install anaconda-client
 
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: IntelPython/devops-tools
           fetch-depth: 0

@@ -9,6 +9,8 @@
 https://www.sourceware.org/gdb/onlinedocs/gdb/Continuing-and-Stepping.html
 """
 
+import pytest
+
 from numba_dpex.tests._helper import skip_no_gdb
 
 from .common import setup_breakpoint
@@ -17,6 +19,7 @@ pytestmark = skip_no_gdb
 
 
 # commands/next
+@pytest.mark.xfail  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
 def test_next(app):
     setup_breakpoint(
         app,
@@ -31,6 +34,7 @@ def test_next(app):
 
 
 # commands/step_dpex_func
+@pytest.mark.xfail  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
 def test_step(app):
     setup_breakpoint(
         app,
@@ -46,6 +50,7 @@ def test_step(app):
 
 
 # commands/stepi
+@pytest.mark.xfail  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
 def test_stepi(app):
     setup_breakpoint(
         app,

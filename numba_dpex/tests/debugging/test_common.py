@@ -50,4 +50,12 @@ def test_breakpoint_by_function(file_name, function, expected):
 def test_setup_breakpoint(
     app, breakpoint, script, expected_location, expected_line
 ):
+    if (
+        breakpoint == "simple_sum.py:data_parallel_sum"
+        or breakpoint == "data_parallel_sum"
+    ):
+        pytest.xfail(
+            "Expected failures for these files."
+        )  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
+
     setup_breakpoint(app, breakpoint, script, expected_location, expected_line)
