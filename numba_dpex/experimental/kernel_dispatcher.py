@@ -161,9 +161,7 @@ class _KernelCompiler(_FunctionCompiler):
                         )
                     # XXX We will need to figure out what a valid entry_point
                     # should be in our case.
-                    cres_attr = cres.library.get_function(
-                        cres.fndesc.llvm_func_name
-                    )
+                    cres_attr = cres.fndesc.qualname
                 kcres_attrs.append(cres_attr)
 
             kcres_attrs.append(kernel_device_ir_module)
@@ -292,7 +290,7 @@ class KernelDispatcher(Dispatcher):
                 # Don't recompile if signature already exists
                 existing = self.overloads.get(tuple(args))
                 if existing is not None:
-                    return existing
+                    return existing.entry_point
 
                 # TODO: Enable caching
                 # Add code to enable on disk caching of a binary spirv kernel.
