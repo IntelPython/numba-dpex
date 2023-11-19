@@ -251,21 +251,20 @@ class DpexKernelTargetContext(BaseContext):
         self._target_data = ll.create_target_data(
             codegen.SPIR_DATA_LAYOUT[utils.MACHINE_BITS]
         )
-        # Override data model manager to SPIR model
-        import numba.cpython.unicode
 
+        # Override data model manager to SPIR model
         self.data_model_manager = _init_data_model_manager()
         self.extra_compile_options = dict()
 
-        import copy
+        from numba_dpex.dpnp_iface.dpnp_ufunc_db import _lazy_init_dpnp_db
 
-        from numba.np.ufunc_db import _lazy_init_db
+        _lazy_init_dpnp_db()
 
-        _lazy_init_db()
-        from numba.np.ufunc_db import _ufunc_db as ufunc_db
+        # we need to import it after, because before init it is None and
+        # variable is passed by value
+        from numba_dpex.dpnp_iface.dpnp_ufunc_db import _dpnp_ufunc_db
 
-        self.ufunc_db = copy.deepcopy(ufunc_db)
-        self.cpu_context = cpu_target.target_context
+        self.ufunc_db = _dpnp_ufunc_db
 
     def create_module(self, name):
         return self._internal_codegen._create_empty_module(name)
