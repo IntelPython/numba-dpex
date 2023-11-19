@@ -8,6 +8,7 @@ from llvmlite import binding as ll
 from llvmlite import ir as llvmir
 from numba.core import utils
 from numba.core.codegen import CPUCodegen, CPUCodeLibrary
+from numba.core.runtime.nrtopt import remove_redundant_nrt_refct
 
 from numba_dpex import config
 
@@ -34,7 +35,7 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
         pmb = ll.PassManagerBuilder()
 
         # Make optimization level depending on config.DPEX_OPT variable
-        pmb.opt_level = config.DPEX_OPT
+        pmb.opt_level = 3
         if config.DPEX_OPT > 2:
             logging.warning(
                 "Setting NUMBA_DPEX_OPT greater than 2 known to cause issues "
@@ -42,20 +43,17 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
                 + "broken code."
             )
 
-        pmb.disable_unit_at_a_time = False
         if config.INLINE_THRESHOLD is not None:
             logging.warning(
                 "Setting INLINE_THRESHOLD leads to very aggressive "
                 + "optimizations that may produce incorrect binary."
             )
-            pmb.inlining_threshold = config.INLINE_THRESHOLD
-        pmb.disable_unroll_loops = True
-        pmb.loop_vectorize = False
-        pmb.slp_vectorize = False
+        pmb.inlining_threshold = 3
 
-        pm = ll.ModulePassManager()
-        pmb.populate(pm)
-        pm.run(self._final_module)
+        if not config.LLVM_REFPRUNE_PASS:
+            self._final_module = remove_redundant_nrt_refct(self._final_module)
+
+        # super()._optimize_final_module()
 
     def optimize_final_module(self):
         """Public member function to optimize the final LLVM module in the
@@ -87,12 +85,10 @@ class JITSPIRVCodegen(CPUCodegen):
     _library_class = SPIRVCodeLibrary
 
     def _init(self, llvm_module):
-        assert list(llvm_module.global_variables) == [], "Module isn't empty"
+        if list(llvm_module.global_variables):
+            raise AssertionError("Numba-dpex module isn't empty")
         self._data_layout = SPIR_DATA_LAYOUT[utils.MACHINE_BITS]
         self._target_data = ll.create_target_data(self._data_layout)
-        self._tm_features = (
-            ""  # We need this for caching, not sure about this value for now
-        )
 
     def _create_empty_module(self, name):
         ir_module = llvmir.Module(name)
@@ -102,10 +98,10 @@ class JITSPIRVCodegen(CPUCodegen):
         return ir_module
 
     def _module_pass_manager(self):
-        raise NotImplementedError
+        pass
 
     def _function_pass_manager(self, llvm_module):
-        raise NotImplementedError
+        pass
 
     def _add_module(self, module):
         pass

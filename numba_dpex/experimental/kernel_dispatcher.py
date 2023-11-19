@@ -84,6 +84,7 @@ class _KernelCompiler(_FunctionCompiler):
         # makes sure that the spir_func is completely inlined into the
         # spir_kernel wrapper
         kernel_library.optimize_final_module()
+        # kernel_library.finalize()
         # Compiled the LLVM IR to SPIR-V
         kernel_spirv_module = spirv_generator.llvm_to_spirv(
             kernel_targetctx,
@@ -159,9 +160,15 @@ class _KernelCompiler(_FunctionCompiler):
                             "Compiled kernel and device_func should be "
                             "compiled with compile_cfunc option turned off"
                         )
-                    # XXX We will need to figure out what a valid entry_point
-                    # should be in our case.
-                    cres_attr = cres.fndesc.qualname
+                    # XXX temporary super hack to continue development till
+                    # a fix is applied upstream.
+                    if "fetch_" in cres.fndesc.qualname:
+                        cres_attr = (
+                            type(cres.fndesc.argtypes[0]),
+                            cres.fndesc.qualname.split(".")[0][3:],
+                        )
+                    else:
+                        cres_attr = cres.fndesc.qualname
                 kcres_attrs.append(cres_attr)
 
             kcres_attrs.append(kernel_device_ir_module)
