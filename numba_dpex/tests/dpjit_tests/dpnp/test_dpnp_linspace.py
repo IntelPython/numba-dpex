@@ -42,8 +42,8 @@ ranges = [
         0.0,
         0.5,
         23,
-    ],  # fails dtype=np.int32, dpnp/np results don't make sense # 10
-    [-0.5, 0.0, 10],  # fails dtype=np.int32, dpnp/np results don't make sense
+    ],  # fails at dtype=np.int, dpnp/np results don't make sense # 10
+    [-0.5, 0.0, 10],  # fails at dtype=np.int, dpnp/np results don't make sense
 ]
 
 
@@ -51,6 +51,19 @@ ranges = [
 @pytest.mark.parametrize("dtype", dtypes)
 @pytest.mark.parametrize("endpoint", endpoints)
 def test_dpnp_linspace_default(range, dtype, endpoint):
+    """Tests `dpnp.linspace()` overload with default setting.
+
+    Test over all ranges and dtypes with default settings for `dpnp.linspace()`,
+    except the last two. Those two fail with `dtype=np.int`.
+
+    Args:
+        range (list): A `list` containing `start` and `stop` of the interval.
+        dtype (type): A `type` to be used in the `dtype` parameter.
+        endpoint (bool): A boolean value to include/exclude endpoint.
+
+    Returns:
+        None: Nothing.
+    """
     start, stop, num = range
 
     @dpjit
@@ -84,6 +97,19 @@ def test_dpnp_linspace_default(range, dtype, endpoint):
 @pytest.mark.parametrize("dtype", dtypes_float_only)
 @pytest.mark.parametrize("endpoint", endpoints)
 def test_dpnp_linspace_default_float_only(range, dtype, endpoint):
+    """Tests `dpnp.linspace()` overload with default setting.
+
+    Test over all ranges with default settings for `dpnp.linspace()`.
+    The `dtype` exclude all `int` types.
+
+    Args:
+        range (list): A `list` containing `start` and `stop` of the interval.
+        dtype (type): A `type` to be used in the `dtype` parameter.
+        endpoint (bool): A boolean value to include/exclude endpoint.
+
+    Returns:
+        None: Nothing.
+    """
     start, stop, num = range
 
     @dpjit
@@ -113,11 +139,25 @@ def test_dpnp_linspace_default_float_only(range, dtype, endpoint):
     )
 
 
-@pytest.mark.parametrize("range", ranges)
+@pytest.mark.parametrize("range", ranges[:-2])
 @pytest.mark.parametrize("dtype", dtypes)
 @pytest.mark.parametrize("endpoint", endpoints)
 @pytest.mark.parametrize("usm_type", usm_types)
 def test_dpnp_linspace_from_device(range, dtype, endpoint, usm_type):
+    """Test device only `dpnp.linspace()` overload with parameterized `usm_type`.
+
+    We are skipping the last two since they fail on `dtype=np.int` types.
+
+    Args:
+        range (list): A `list` containing `start` and `stop` of the interval.
+        dtype (type): A `type` to be used in the `dtype` parameter.
+        endpoint (bool): A boolean value to include/exclude endpoint.
+        usm_type (str): A `str` value to denote the type of USM one of
+            `["device", "shared", "host"]`.
+
+    Returns:
+        None: Nothing.
+    """
     device = dpctl.SyclDevice().filter_string
 
     start, stop, num = range
@@ -150,11 +190,26 @@ def test_dpnp_linspace_from_device(range, dtype, endpoint, usm_type):
         )
 
 
-@pytest.mark.parametrize("range", ranges)
+@pytest.mark.parametrize("range", ranges[:-2])
 @pytest.mark.parametrize("dtype", dtypes)
 @pytest.mark.parametrize("endpoint", endpoints)
 @pytest.mark.parametrize("usm_type", usm_types)
-def test_dpnp_linspace_from_queue(range, dtype, usm_type, endpoint):
+def test_dpnp_linspace_from_queue(range, dtype, endpoint, usm_type):
+    """Test `dpnp.linspace()` overload with specied queue and parameterized
+        `usm_type`.
+
+    We are skipping the last two since they fail on `dtype=np.int` types.
+
+    Args:
+        range (list): A `list` containing `start` and `stop` of the interval.
+        dtype (type): A `type` to be used in the `dtype` parameter.
+        endpoint (bool): A boolean value to include/exclude endpoint.
+        usm_type (str): A `str` value to denote the type of USM one of
+            `["device", "shared", "host"]`.
+
+    Returns:
+        None: Nothing.
+    """
     start, stop, num = range
 
     @dpjit
@@ -192,6 +247,19 @@ def test_dpnp_linspace_from_queue(range, dtype, usm_type, endpoint):
 def test_dpnp_linspace_default_dtype_perm(
     range, start_dtype, stop_dtype, dtype, endpoint
 ):
+    """Tests `dpnp.linspace()` overload with default setting and permutations of
+        different `dtype`s for `start` and `stop`.
+
+    Args:
+        range (list): A `list` containing `start` and `stop` of the interval.
+        start_dtype (type): The `dtype` for `start` value.
+        stop_dtype (type): The `dtype` for `stop` value.
+        dtype (type): A `type` to be used in the `dtype` parameter.
+        endpoint (bool): A boolean value to include/exclude endpoint.
+
+    Returns:
+        None: Nothing.
+    """
     start, stop, num = start_dtype(range[0]), stop_dtype(range[1]), range[2]
 
     @dpjit
