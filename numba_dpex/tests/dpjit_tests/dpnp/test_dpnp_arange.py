@@ -10,24 +10,7 @@ import numpy as np
 import pytest
 
 from numba_dpex import dpjit
-from numba_dpex.tests._helper import get_all_dtypes
-
-
-def get_xfail_test(param, reason):
-    """Generate an X-fail test `pytest` parameter.
-
-    Args:
-        param (list): A `list` of valid parameters.
-        reason (str): A `str` describing the reason for failure.
-
-    Returns:
-        pytest.param: A `pytest.param` parameter.
-    """
-    return pytest.param(
-        param,
-        marks=pytest.mark.xfail(reason=reason),
-    )
-
+from numba_dpex.tests._helper import get_all_dtypes, get_xfail_test
 
 # Get all dtypes, except bool, float16 and complex
 dtypes = get_all_dtypes(

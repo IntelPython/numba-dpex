@@ -1509,6 +1509,10 @@ static PyObject *build_c_helpers_dict(void)
                  &DPEXRT_nrt_acquire_meminfo_and_schedule_release);
     _declpointer("DPEXRT_build_or_get_kernel", &DPEXRT_build_or_get_kernel);
     _declpointer("DPEXRT_kernel_cache_size", &DPEXRT_kernel_cache_size);
+    _declpointer("NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_interval",
+                 &NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_interval);
+    _declpointer("NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_affine_interval",
+                 &NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_affine_interval);
 
 #undef _declpointer
     return dct;
