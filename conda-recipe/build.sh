@@ -19,7 +19,8 @@ export CXX=icpx
 # starting from dpcpp_impl_linux-64=2022.0.0=intel_3610
 export PATH=$CONDA_PREFIX/bin-llvm:$PATH
 
-SKBUILD_ARGS=(-G Ninja -- -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON)
+# Add CMAKE_C##_COMPILER to fix 'SYCL feature test compile failed!' problem
+SKBUILD_ARGS=(-G Ninja -- -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON)
 
 ${PYTHON} setup.py install --single-version-externally-managed --record=record.txt "${SKBUILD_ARGS[@]}"
 

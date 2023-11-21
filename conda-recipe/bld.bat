@@ -18,7 +18,8 @@ set "CC=icx"
 set "CXX=icx"
 
 set "SKBUILD_ARGS=-G Ninja --"
-set "SKBUILD_ARGS=%SKBUILD_ARGS% -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON"
+REM # Add CMAKE_C##_COMPILER to fix 'SYCL feature test compile failed!' problem
+set "SKBUILD_ARGS=%SKBUILD_ARGS% -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icx -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON"
 
 %PYTHON% setup.py install --single-version-externally-managed --record=record.txt %SKBUILD_ARGS%
 

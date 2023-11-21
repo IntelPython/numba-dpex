@@ -656,3 +656,298 @@ def ol_dpnp_arange(
             "Cannot parse input types to "
             + f"function dpnp.arange({start}, {stop}, {step}, ...)."
         )
+
+
+@intrinsic
+def impl_dpnp_linspace(
+    ty_context,
+    ty_start,
+    ty_stop,
+    ty_num,
+    ty_dtype,
+    ty_endpoint,
+    ty_device,
+    ty_usm_type,
+    ty_sycl_queue,
+    ty_ret_ty,
+):
+    """A numba "intrinsic" function to inject code for dpnp.linspace().
+
+    Args:
+        ty_context (numba.core.typing.context.Context): The typing context
+            for the codegen.
+        ty_start (numba.core.types.scalars.Integer): Numba type for the start
+            of the interval.
+        ty_stop (numba.core.types.scalars.Integer): Numba type for the end
+            of the interval.
+        ty_step (numba.core.types.scalars.Integer): Numba type for the step
+            of the interval.
+        ty_dtype (numba.core.types.functions.NumberClass): Numba type for
+            dtype.
+        ty_device (numba.core.types.misc.UnicodeType): UnicodeType
+            from numba for strings.
+        ty_usm_type (numba.core.types.misc.UnicodeType): UnicodeType
+            from numba for strings.
+        ty_sycl_queue (numba.core.types.misc.UnicodeType): UnicodeType
+            from numba for strings.
+        ty_ret_ty (numba.core.types.abstract.TypeRef): Reference to
+            a type from numba, used when a type is passed as a value.
+
+    Returns:
+        tuple(numba.core.typing.templates.Signature, function): A tuple of
+            numba function signature type and a function object.
+    """
+    ty_retty_ = ty_ret_ty.instance_type
+    signature = ty_retty_(
+        ty_start,
+        ty_stop,
+        ty_num,
+        ty_dtype,
+        ty_endpoint,
+        ty_device,
+        ty_usm_type,
+        ty_sycl_queue,
+        ty_ret_ty,
+    )
+
+    def codegen(context, builder, sig, args):
+        # Rename variables for easy coding
+        start_ir, stop_ir, num_ir, endpoint_ir, queue_ir = (
+            args[0],
+            args[1],
+            args[2],
+            args[4],
+            args[-2],
+        )
+        (
+            start_arg_type,
+            stop_arg_type,
+            dtype_arg_type,
+            queue_arg_type,
+        ) = (
+            sig.args[0],
+            sig.args[1],
+            sig.args[3],
+            sig.args[-2],
+        )
+
+        # Get SYCL Queue ref
+        sycl_queue_arg = _ArgTyAndValue(queue_arg_type, queue_ir)
+        qref_payload: _QueueRefPayload = _get_queue_ref(
+            context=context,
+            builder=builder,
+            returned_sycl_queue_ty=sig.return_type.queue,
+            sycl_queue_arg=sycl_queue_arg,
+        )
+
+        # Allocate an empty array
+        ary = _empty_nd_impl(
+            context, builder, sig.return_type, [num_ir], qref_payload.queue_ref
+        )
+        # Convert into void*
+        arrystruct_vptr = builder.bitcast(ary._getpointer(), cgutils.voidptr_t)
+
+        # Extend or truncate input values w.r.t. destination array type
+        start_ir = _normalize(
+            builder, start_ir, start_arg_type, dtype_arg_type.dtype
+        )
+        stop_ir = _normalize(
+            builder, stop_ir, stop_arg_type, dtype_arg_type.dtype
+        )
+
+        # After normalization, their arg_types will change
+        start_arg_type = dtype_arg_type.dtype
+        stop_arg_type = dtype_arg_type.dtype
+
+        # Construct function parameters
+        with builder.goto_entry_block():
+            start_ptr = cgutils.alloca_once(builder, start_ir.type)
+            stop_ptr = cgutils.alloca_once(builder, stop_ir.type)
+        builder.store(start_ir, start_ptr)
+        builder.store(stop_ir, stop_ptr)
+        start_vptr = builder.bitcast(start_ptr, cgutils.voidptr_t)
+        stop_vptr = builder.bitcast(stop_ptr, cgutils.voidptr_t)
+        ndim = context.get_constant(types.intp, 1)
+        is_c_contguous = context.get_constant(types.boolean, True)
+        typeid_index = _get_dst_typeid(dtype_arg_type.dtype)
+        dst_typeid = context.get_constant(types.intp, typeid_index)
+
+        # Function signature
+        fnty = llvmir.FunctionType(
+            utils.LLVMTypes.int64_ptr_t,
+            [
+                cgutils.voidptr_t,
+                cgutils.voidptr_t,
+                cgutils.voidptr_t,
+                _get_llvm_type(types.boolean),
+                _get_llvm_type(types.intp),
+                _get_llvm_type(types.boolean),
+                _get_llvm_type(types.intp),
+                cgutils.voidptr_t,
+            ],
+        )
+
+        # Kernel call
+        fn = cgutils.get_or_insert_function(
+            builder.module,
+            fnty,
+            "NUMBA_DPEX_SYCL_KERNEL_populate_arystruct_affine_interval",
+        )
+        builder.call(
+            fn,
+            [
+                start_vptr,
+                stop_vptr,
+                arrystruct_vptr,
+                endpoint_ir,
+                ndim,
+                is_c_contguous,
+                dst_typeid,
+                qref_payload.queue_ref,
+            ],
+        )
+
+        return ary._getvalue()
+
+    return signature, codegen
+
+
+@overload(dpnp.linspace, prefer_literal=True)
+def ol_dpnp_linspace(
+    start,
+    stop,
+    num,
+    dtype=None,
+    device=None,
+    usm_type=None,
+    sycl_queue=None,
+    endpoint=True,
+    retstep=False,
+    axis=0,
+):
+    """Implementation of an overload to support dpnp.linspace() inside
+    a dpjit function. Returns evenly spaced values within the half-open interval
+    [start, stop) as a one-dimensional array.
+
+    Args:
+        start (numba.core.types.scalars.*): The start of the interval. If `stop`
+            is specified, the start of interval (inclusive); otherwise, the end
+            of the interval (exclusive). If `stop` is not specified, the default
+            starting value is 0.
+        stop (numba.core.types.scalars.*, optional): The end of the interval.
+            Default: `None`.
+        step (numba.core.types.scalars.*, optional): The distance between two
+            adjacent elements (`out[i+1] - out[i]`). Must not be 0; may be
+            negative, this results in an empty array if `stop >= start`.
+            Default: 1.
+        dtype (numba.core.types.scalars.*, optional): The output array data
+            type. If `dtype` is `None`, the output array data type must be
+            inferred from `start`, `stop` and `step`. If those are all integers,
+            the output array `dtype` must be the default integer `dtype`; if
+            one or more have type `float`, then the output array dtype must be
+            the default real-valued floating-point data type. Default: `None`.
+        device (numba.core.types.misc.StringLiteral, optional): array API
+            concept of device where the output array is created. `device`
+            can be `None`, a oneAPI filter selector string, an instance of
+            :class:`dpctl.SyclDevice` corresponding to a non-partitioned
+            SYCL device, an instance of :class:`dpctl.SyclQueue`, or a
+            `Device` object returnedby`dpctl.tensor.usm_array.device`.
+            Default: `None`.
+        usm_type (numba.core.types.misc.StringLiteral or str, optional):
+            The type of SYCL USM allocation for the output array.
+            Allowed values are "device"|"shared"|"host".
+            Default: `"device"`.
+        sycl_queue (:class:`numba_dpex.core.types.dpctl_types.DpctlSyclQueue`,
+            optional): The SYCL queue to use for output array allocation and
+            copying. sycl_queue and device are exclusive keywords, i.e. use
+            one or another. If both are specified, a TypeError is raised. If
+            both are None, a cached queue targeting default-selected device
+            is used for allocation and copying. Default: `None`.
+
+    Raises:
+        errors.NumbaNotImplementedError: If `start` is
+            `numba.core.types.scalars.Complex` type
+        errors.NumbaTypeError: If `start` is `numba.core.types.scalars.Boolean`
+            type
+        errors.TypingError: If couldn't parse input types to dpnp.arange().
+
+    Returns:
+        function: Local function `impl_dpnp_linspace()`.
+    """
+    if not (
+        (
+            _match_type([start], Integer, int)
+            or _match_type([start], Float, float)
+        )
+        and (
+            _match_type([stop], Integer, int)
+            or _match_type([stop], Float, float)
+        )
+    ):
+        msg = (
+            "Input data type is not supported."
+            + " Please convert the input to"
+            + " a scalar data type (int or float)."
+        )
+        raise errors.NumbaTypeError(msg)
+
+    if not _match_type([num], Integer, int):
+        msg = "'num' must be an int."
+        raise errors.NumbaTypeError(msg)
+
+    if retstep:
+        msg = "'retstep=True' is not supported yet."
+        raise errors.NumbaNotImplementedError(msg)
+    if axis != 0:
+        msg = "Nonzero 'axis' is not supported yet."
+        raise errors.NumbaNotImplementedError(msg)
+
+    _dtype = (
+        _parse_dtype(dtype)
+        if not is_nonelike(dtype)
+        else numba.from_dtype(dpnp.float)
+    )
+    _device = _parse_device_filter_string(device) if device else None
+    _usm_type = _parse_usm_type(usm_type) if usm_type else "device"
+
+    ret_ty = DpnpNdArray(
+        ndim=1,
+        layout="C",
+        dtype=_dtype,
+        usm_type=_usm_type,
+        device=_device,
+        queue=sycl_queue,
+    )
+
+    if ret_ty:
+
+        def impl(
+            start,
+            stop,
+            num,
+            dtype=None,
+            device=None,
+            usm_type=None,
+            sycl_queue=None,
+            endpoint=True,
+            retstep=False,
+            axis=0,
+        ):
+            return impl_dpnp_linspace(
+                start,
+                stop,
+                num,
+                _dtype,
+                endpoint,
+                _device,
+                _usm_type,
+                sycl_queue,
+                ret_ty,
+            )
+
+        return impl
+    else:
+        raise errors.TypingError(
+            "Cannot parse input types to "
+            + f"function dpnp.linspace({start}, {stop}, {num}, ...)."
+        )
