@@ -16,6 +16,7 @@ from numba_dpex.core.targets.kernel_target import (
     DpexKernelTargetContext,
     DpexKernelTypingContext,
 )
+from numba_dpex.experimental.models import exp_dmm
 
 
 #  pylint: disable=R0903
@@ -50,6 +51,10 @@ class DpexExpKernelTargetContext(DpexKernelTargetContext):
     to LLVM IR. All such experimental functionality should be added here till
     they are stable enough to be migrated to DpexKernelTargetContext.
     """
+
+    def __init__(self, typingctx, target=DPEX_KERNEL_EXP_TARGET_NAME):
+        super().__init__(typingctx, target)
+        self.data_model_manager = exp_dmm
 
 
 class DpexExpKernelTarget(TargetDescriptor):

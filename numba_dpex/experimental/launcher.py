@@ -11,6 +11,7 @@ from typing import Union
 
 from llvmlite import ir as llvmir
 from numba.core import cgutils, cpu, types
+from numba.core.datamodel import default_manager as numba_default_dmm
 from numba.extending import intrinsic, overload
 
 from numba_dpex import config, dpjit
@@ -192,23 +193,27 @@ class _LaunchTrampolineFunctionBodyGenerator:
         ndim = indexer_argty.ndim
         grange_extents = []
         lrange_extents = []
-        datamodel = self._kernel_targetctx.data_model_manager.lookup(
-            indexer_argty
-        )
+        indexer_datamodel = numba_default_dmm.lookup(indexer_argty)
 
         if isinstance(indexer_argty, RangeType):
             for dim_num in range(ndim):
-                dim_pos = datamodel.get_field_position("dim" + str(dim_num))
+                dim_pos = indexer_datamodel.get_field_position(
+                    "dim" + str(dim_num)
+                )
                 grange_extents.append(
                     self._builder.extract_value(index_space_arg, dim_pos)
                 )
         elif isinstance(indexer_argty, NdRangeType):
             for dim_num in range(ndim):
-                gdim_pos = datamodel.get_field_position("gdim" + str(dim_num))
+                gdim_pos = indexer_datamodel.get_field_position(
+                    "gdim" + str(dim_num)
+                )
                 grange_extents.append(
                     self._builder.extract_value(index_space_arg, gdim_pos)
                 )
-                ldim_pos = datamodel.get_field_position("ldim" + str(dim_num))
+                ldim_pos = indexer_datamodel.get_field_position(
+                    "ldim" + str(dim_num)
+                )
                 lrange_extents.append(
                     self._builder.extract_value(index_space_arg, ldim_pos)
                 )
