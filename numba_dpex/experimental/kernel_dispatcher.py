@@ -24,7 +24,7 @@ from numba_dpex.core.exceptions import (
 from numba_dpex.core.pipelines import kernel_compiler
 from numba_dpex.core.types import DpnpNdArray
 
-from .target import dpex_exp_kernel_target
+from .target import DPEX_KERNEL_EXP_TARGET_NAME, dpex_exp_kernel_target
 
 _KernelModule = namedtuple("_KernelModule", ["kernel_name", "kernel_bitcode"])
 
@@ -318,5 +318,5 @@ class KernelDispatcher(Dispatcher):
         raise NotImplementedError
 
 
-_dpex_target = target_registry["dpex_kernel"]
+_dpex_target = target_registry[DPEX_KERNEL_EXP_TARGET_NAME]
 dispatcher_registry[_dpex_target] = KernelDispatcher
