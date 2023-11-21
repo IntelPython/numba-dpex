@@ -61,7 +61,7 @@ def test_dpnp_empty_like_default(shape):
 )
 @pytest.mark.parametrize("usm_type", usm_types)
 def test_dpnp_empty_like_from_device(shape, dtype, usm_type):
-    """ "Use device only in dpnp.emtpy)like() inside dpjit."""
+    """Use device only in dpnp.emtpy_like() inside dpjit."""
     device = dpctl.SyclDevice().filter_string
 
     @dpjit
