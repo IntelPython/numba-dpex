@@ -7,6 +7,7 @@ call numba_dpex.kernel decorated function.
 """
 from collections import namedtuple
 from contextlib import ExitStack
+from typing import Tuple
 
 import numba.core.event as ev
 from numba.core import errors, sigutils, types
@@ -103,7 +104,7 @@ class _KernelCompiler(_FunctionCompiler):
 
     def _compile_cached(
         self, args, return_type: types.Type
-    ) -> _KernelCompileResult:
+    ) -> Tuple[bool, _KernelCompileResult]:
         """Compiles the kernel function to bitcode and generates a host-callable
         wrapper to submit the kernel to a SYCL queue.
 
