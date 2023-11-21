@@ -313,7 +313,10 @@ def intrin_launch_trampoline(
     sig = types.void(kernel_fn, index_space, kernel_args)
     # signature of the kernel_fn
     kernel_sig = types.void(*kernel_args_list)
-    kmodule: _KernelModule = kernel_fn.dispatcher.compile(kernel_sig)
+    kernel_fn.dispatcher.compile(kernel_sig)
+    kernel_module: _KernelModule = kernel_fn.dispatcher.get_overload_device_ir(
+        kernel_sig
+    )
     kernel_targetctx = kernel_fn.dispatcher.targetctx
 
     def codegen(cgctx, builder, sig, llargs):
@@ -329,7 +332,7 @@ def intrin_launch_trampoline(
         )
 
         kernel_bc_byte_str = fn_body_gen.insert_kernel_bitcode_as_byte_str(
-            kmodule
+            kernel_module
         )
 
         populated_kernel_args = (
@@ -346,10 +349,10 @@ def intrin_launch_trampoline(
         kbref = fn_body_gen.create_kernel_bundle_from_spirv(
             queue_ref=qref,
             kernel_bc=kernel_bc_byte_str,
-            kernel_bc_size_in_bytes=len(kmodule.kernel_bitcode),
+            kernel_bc_size_in_bytes=len(kernel_module.kernel_bitcode),
         )
 
-        kref = fn_body_gen.get_kernel(kmodule, kbref)
+        kref = fn_body_gen.get_kernel(kernel_module, kbref)
 
         index_space_values = fn_body_gen.create_llvm_values_for_index_space(
             indexer_argty=sig.args[1],
