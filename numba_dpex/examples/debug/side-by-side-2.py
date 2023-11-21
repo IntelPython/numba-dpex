@@ -5,6 +5,7 @@
 import argparse
 
 import dpctl
+import dpnp
 import numba
 import numpy as np
 
@@ -24,20 +25,28 @@ def scenario(api):
     print("Using API:", api)
 
     global_size = 10
-    a, b, c = arguments(global_size)
 
     if api == "numba-ndpx-kernel":
+        a, b, c = ndpx_arguments(global_size)
         ndpx_func_driver(a, b, c)
     else:
+        a, b, c = numba_arguments(global_size)
         numba_func_driver(a, b, c)
 
     print(a, b, c, sep="\n")
 
 
-def arguments(N, dtype=np.float32):
+def numba_arguments(N, dtype=np.float32):
     a = np.arange(N, dtype=dtype)
     b = np.arange(N, dtype=dtype)
     c = np.empty_like(a)
+    return a, b, c
+
+
+def ndpx_arguments(N, dtype=dpnp.float32):
+    a = dpnp.arange(N, dtype=dtype)
+    b = dpnp.arange(N, dtype=dtype)
+    c = dpnp.empty_like(a)
     return a, b, c
 
 

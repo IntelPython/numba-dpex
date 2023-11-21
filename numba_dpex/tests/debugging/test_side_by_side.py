@@ -14,17 +14,12 @@ from numba_dpex.tests._helper import skip_no_gdb
 pytestmark = skip_no_gdb
 
 
-@pytest.mark.parametrize("api", ["numba", "numba-dpex-kernel"])
+@pytest.mark.parametrize("api", ["numba", "numba-ndpx-kernel"])
 def test_breakpoint_row_number(app, api):
     """Test for checking numba and numba-dpex debugging side-by-side."""
 
-    if api == "numba-dpex-kernel":
-        pytest.xfail(
-            "Wrong name for kernel api."
-        )  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
-
-    app.breakpoint("side-by-side.py:15")
+    app.breakpoint("side-by-side.py:16")
     app.run("side-by-side.py --api={api}".format(api=api))
 
-    app.child.expect(r"Breakpoint .* at side-by-side.py:15")
-    app.child.expect(r"15\s+param_c = param_a \+ 10")
+    app.child.expect(r"Breakpoint .* at side-by-side.py:16")
+    app.child.expect(r"16\s+param_c = param_a \+ 10")

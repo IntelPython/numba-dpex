@@ -30,6 +30,7 @@ class gdb:
     def spawn(self):
         env = os.environ.copy()
         env["NUMBA_OPT"] = "0"
+        env["NUMBA_DPEX_OPT"] = "0"
         env["NUMBA_EXTEND_VARIABLE_LIFETIMES"] = "1"
         env["NUMBA_DPEX_DEBUGINFO"] = "1"
 
@@ -94,6 +95,9 @@ class gdb:
 
     def stepi(self):
         self._command("stepi")
+
+    def set_scheduler_lock(self):
+        self._command("set scheduler-locking step")
 
     @staticmethod
     def script_path(script):

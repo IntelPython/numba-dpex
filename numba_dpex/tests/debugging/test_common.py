@@ -17,7 +17,7 @@ pytestmark = skip_no_gdb
 
 @pytest.mark.parametrize(
     "file_name, mark, expected",
-    [("side-by-side.py", "Set breakpoint here", "side-by-side.py:15")],
+    [("side-by-side.py", "Set breakpoint here", "side-by-side.py:16")],
 )
 def test_breakpoint_by_mark(file_name, mark, expected):
     assert expected == breakpoint_by_mark(file_name, mark)
@@ -25,7 +25,7 @@ def test_breakpoint_by_mark(file_name, mark, expected):
 
 @pytest.mark.parametrize(
     "file_name, function, expected",
-    [("side-by-side.py", "common_loop_body", "side-by-side.py:15")],
+    [("side-by-side.py", "common_loop_body", "side-by-side.py:16")],
 )
 def test_breakpoint_by_function(file_name, function, expected):
     assert expected == breakpoint_by_function(file_name, function)
@@ -56,6 +56,6 @@ def test_setup_breakpoint(
     ):
         pytest.xfail(
             "Expected failures for these files."
-        )  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
+        )  # TODO: https://github.com/IntelPython/numba-dpex/issues/1242
 
     setup_breakpoint(app, breakpoint, script, expected_location, expected_line)

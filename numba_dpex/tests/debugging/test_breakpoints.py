@@ -9,7 +9,6 @@
 https://www.sourceware.org/gdb/onlinedocs/gdb/Set-Breaks.html
 """
 
-
 import pytest
 
 from numba_dpex.tests._helper import skip_no_gdb
@@ -29,12 +28,12 @@ simple_sum_condition_breakpoint = breakpoint_by_mark(
 
 common_loop_body_native_function_name = {
     "numba": "common_loop_body",
-    "numba-dpex-kernel": "common_loop_body",
+    "numba-ndpx-kernel": "common_loop_body",
 }
 
 breakpoint_api_cases = [
     (side_by_side_breakpoint, "numba"),
-    (side_by_side_breakpoint, "numba-dpex-kernel"),
+    (side_by_side_breakpoint, "numba-ndpx-kernel"),
     *((fn, api) for api, fn in common_loop_body_native_function_name.items()),
     *(
         (f"side-by-side.py:{fn}", api)
@@ -50,16 +49,21 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
     Test that it is possible to set conditional breakpoint at the beginning
     of the function and use a function argument in the condition.
 
-    It is important that breakpoint by function name hits at the firts line in
+    It is important that breakpoint by function name hits at the first line in
     the function body and not at the function definition line.
 
     Test for https://github.com/numba/numba/issues/7415
     SAT-4449
     """
-    if api == "numba-dpex-kernel":
-        pytest.xfail(
-            "Wrong name for kernel api."
-        )  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
+
+    if api == "numba-ndpx-kernel":
+        if (
+            breakpoint == "side-by-side.py:common_loop_body"
+            or breakpoint == "common_loop_body"
+        ):
+            pytest.xfail(
+                "Breakpoint by function name not working for numba-dpex."
+            )  # TODO: https://github.com/IntelPython/numba-dpex/issues/1242
 
     variable_name = "param_a"
     variable_value = "3"
@@ -77,7 +81,6 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
     app.child.expect(rf"\$1 = {variable_value}")
 
 
-@pytest.mark.xfail  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
 @pytest.mark.parametrize(
     "breakpoint, script",
     [
@@ -94,6 +97,10 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
 )
 def test_breakpoint_common(app, breakpoint, script):
     """Set a breakpoint in the given script."""
+
+    pytest.xfail(
+        "Breakpoint by function name not working for numba-dpex."
+    )  # TODO: https://github.com/IntelPython/numba-dpex/issues/1242
     setup_breakpoint(app, breakpoint, script=script)
 
 
@@ -101,7 +108,11 @@ def test_breakpoint_common(app, breakpoint, script):
     "breakpoint, variable_name, variable_value",
     [
         # commands/break_conditional # noqa: E800
-        (f"{simple_sum_condition_breakpoint} if i == 1", "i", "1"),
+        (
+            f"{simple_sum_condition_breakpoint} if i == 1",
+            "i",
+            "1",
+        ),
     ],
 )
 def test_breakpoint_with_condition_common(
