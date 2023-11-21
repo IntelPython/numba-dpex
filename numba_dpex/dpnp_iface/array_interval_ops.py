@@ -32,7 +32,7 @@ _QueueRefPayload = namedtuple(
 )
 
 
-def _is_type(args, numba_type, basic_type=None):
+def _match_type(args, numba_type, basic_type=None):
     """Checks if one of the paramteres in `args` is any of the
     `numba.core.types.scalars.*` type.
 
@@ -75,11 +75,11 @@ def _parse_dtype_from_range(range):
     Returns:
         numba.core.types.scalars.*: Infered `dtype` for the output tensor.
     """
-    if _is_type(range, Complex):
+    if _match_type(range, Complex):
         return numba.from_dtype(dpnp.complex_)
-    elif _is_type(range, Float, float):
+    elif _match_type(range, Float, float):
         return numba.from_dtype(dpnp.float)
-    elif _is_type(range, Integer, int):
+    elif _match_type(range, Integer, int):
         return numba.from_dtype(dpnp.int)
     else:
         msg = (
@@ -365,10 +365,10 @@ def impl_dpnp_arange(
     Args:
         ty_context (numba.core.typing.context.Context): The typing context
             for the codegen.
-        ty_start (numba.core.types.scalars.Integer): Numba type for the start
-            of the interval.
-        ty_stop (numba.core.types.scalars.Integer): Numba type for the end
-            of the interval.
+        ty_start (numba.core.types.scalars.*): Numba type for the start of the
+            interval.
+        ty_stop (numba.core.types.scalars.*): Numba type for the end of the
+            interval.
         ty_step (numba.core.types.scalars.Integer): Numba type for the step
             of the interval.
         ty_dtype (numba.core.types.functions.NumberClass): Numba type for
@@ -606,10 +606,10 @@ def ol_dpnp_arange(
         )
 
     if is_nonelike(stop):
-        start = 0 if _is_type([start], Integer, int) else 0.0
-        stop = 1 if _is_type([start], Integer, int) else 1.0
+        start = 0 if _match_type([start], Integer, int) else 0.0
+        stop = 1 if _match_type([start], Integer, int) else 1.0
     if is_nonelike(step):
-        step = 1 if _is_type([start], Integer, int) else 1.0
+        step = 1 if _match_type([start], Integer, int) else 1.0
 
     _dtype = (
         _parse_dtype(dtype)

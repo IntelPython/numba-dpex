@@ -301,3 +301,19 @@ def num_required_arguments(func):
     ]
 
     return len(required_args)
+
+
+def get_xfail_test(param, reason):
+    """Generate an X-fail test `pytest` parameter.
+
+    Args:
+        param (list): A `list` of valid parameters.
+        reason (str): A `str` describing the reason for failure.
+
+    Returns:
+        pytest.param: A `pytest.param` parameter.
+    """
+    return pytest.param(
+        param,
+        marks=pytest.mark.xfail(reason=reason),
+    )

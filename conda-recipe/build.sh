@@ -17,8 +17,7 @@ export CXX=icpx
 
 # new llvm-spirv location
 # starting from dpcpp_impl_linux-64=2022.0.0=intel_3610
-PATH=$CONDA_PREFIX/bin-llvm:$PATH
-export PATH
+export PATH=$CONDA_PREFIX/bin-llvm:$PATH
 
 SKBUILD_ARGS=(-G Ninja -- -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON)
 

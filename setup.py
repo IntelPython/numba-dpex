@@ -90,5 +90,7 @@ setup(
         ),
         "-DIS_INSTALL:BOOL={0:s}".format("TRUE" if is_install else "FALSE"),
         "-DIS_DEVELOP:BOOL={0:s}".format("TRUE" if is_develop else "FALSE"),
+        "-DCMAKE_C_COMPILER=icx",
+        "-DCMAKE_CXX_COMPILER={0:s}".format("icx" if is_windows else "icpx"),
     ],
 )
