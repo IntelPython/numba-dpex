@@ -254,7 +254,7 @@ class KernelDispatcher(Dispatcher):
         args, _ = sigutils.normalize_signature(sig)
         return self.overloads[tuple(args)].kernel_device_ir_module
 
-    def compile(self, sig) -> _KernelCompileResult:
+    def compile(self, sig) -> any:
         disp = self._get_dispatcher_for_current_target()
         if disp is not self:
             return disp.compile(sig)

@@ -24,6 +24,7 @@
 #include "_queuestruct.h"
 #include "_usmarraystruct.h"
 
+#include "experimental/nrt_reserve_meminfo.h"
 #include "numba/core/runtime/nrt_external.h"
 
 // forward declarations
@@ -1490,6 +1491,8 @@ static PyObject *build_c_helpers_dict(void)
                  &DPEXRT_sycl_event_from_python);
     _declpointer("DPEXRT_sycl_event_to_python", &DPEXRT_sycl_event_to_python);
     _declpointer("DPEXRT_sycl_event_init", &DPEXRT_sycl_event_init);
+    _declpointer("DPEXRT_nrt_acquire_meminfo_and_schedule_release",
+                 &DPEXRT_nrt_acquire_meminfo_and_schedule_release);
 
 #undef _declpointer
     return dct;
@@ -1557,6 +1560,9 @@ MOD_INIT(_dpexrt_python)
                        PyLong_FromVoidPtr(&DPEXRT_MemInfo_alloc));
     PyModule_AddObject(m, "DPEXRT_MemInfo_fill",
                        PyLong_FromVoidPtr(&DPEXRT_MemInfo_fill));
+    PyModule_AddObject(
+        m, "DPEXRT_nrt_acquire_meminfo_and_schedule_release",
+        PyLong_FromVoidPtr(&DPEXRT_nrt_acquire_meminfo_and_schedule_release));
     PyModule_AddObject(m, "c_helpers", build_c_helpers_dict());
     return MOD_SUCCESS_VAL(m);
 }

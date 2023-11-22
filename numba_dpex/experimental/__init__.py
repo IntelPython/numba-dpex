@@ -10,7 +10,7 @@ from numba.core.imputils import Registry
 
 from .decorators import kernel
 from .kernel_dispatcher import KernelDispatcher
-from .launcher import call_kernel
+from .launcher import call_kernel, call_kernel_async
 from .models import *
 from .types import KernelDispatcherType
 
@@ -26,4 +26,4 @@ def dpex_dispatcher_const(context):
     return context.get_dummy_value()
 
 
-__all__ = ["kernel", "KernelDispatcher", "call_kernel"]
+__all__ = ["kernel", "KernelDispatcher", "call_kernel", "call_kernel_async"]

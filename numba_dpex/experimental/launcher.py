@@ -9,17 +9,25 @@ from either CPython or a numba_dpex.dpjit decorated function.
 from collections import namedtuple
 from typing import Union
 
+import dpctl
 from llvmlite import ir as llvmir
 from numba.core import cgutils, cpu, types
 from numba.core.datamodel import default_manager as numba_default_dmm
-from numba.extending import intrinsic, overload
+from numba.extending import intrinsic
 
-from numba_dpex import config, dpjit
+from numba_dpex import config, dpjit, utils
 from numba_dpex.core.exceptions import UnreachableError
+from numba_dpex.core.runtime.context import DpexRTContext
 from numba_dpex.core.targets.kernel_target import DpexKernelTargetContext
-from numba_dpex.core.types import DpnpNdArray, NdRangeType, RangeType
+from numba_dpex.core.types import (
+    DpctlSyclEvent,
+    DpnpNdArray,
+    NdRangeType,
+    RangeType,
+)
 from numba_dpex.core.utils import kernel_launcher as kl
 from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
+from numba_dpex.dpctl_iface.wrappers import wrap_event_reference
 from numba_dpex.experimental.kernel_dispatcher import _KernelModule
 from numba_dpex.utils import create_null_ptr
 
@@ -79,7 +87,10 @@ class _LaunchTrampolineFunctionBodyGenerator:
         self._cpu_codegen_targetctx = codegen_targetctx
         self._kernel_targetctx = kernel_targetctx
         self._builder = builder
-        self._klbuilder = kl.KernelLaunchIRBuilder(kernel_targetctx, builder)
+        if kernel_targetctx:
+            self._klbuilder = kl.KernelLaunchIRBuilder(
+                kernel_targetctx, builder
+            )
 
         if config.DEBUG_KERNEL_LAUNCHER:
             cgutils.printf(
@@ -97,6 +108,26 @@ class _LaunchTrampolineFunctionBodyGenerator:
             self._builder.module,
             bytes=kernel_module.kernel_bitcode,
         )
+
+    def allocate_meminfos_array(self, num_meminfos):
+        """Allocates an array to store nrt memory infos.
+
+        Args:
+            num_meminfos (int): The number of memory infos to allocate.
+
+        Returns: An LLVM IR value pointing to an array to store the memory
+        infos.
+        """
+        builder = self._builder
+        context = self._cpu_codegen_targetctx
+
+        meminfo_list = cgutils.alloca_once(
+            builder,
+            utils.get_llvm_type(context=context, type=types.voidptr),
+            size=context.get_constant(types.uintp, num_meminfos),
+        )
+
+        return meminfo_list
 
     def populate_kernel_args_and_argsty_arrays(
         self,
@@ -145,9 +176,47 @@ class _LaunchTrampolineFunctionBodyGenerator:
             array_of_kernel_arg_types=args_ty_list,
         )
 
+    def allocate_meminfo_array(
+        self,
+        kernel_argtys: tuple[types.Type, ...],
+        kernel_args: [llvmir.Instruction, ...],
+    ) -> tuple[int, list[llvmir.Instruction]]:
+        """Allocates an LLVM array value to store each memory info from all
+        kernel arguments. The array is the populated with the LLVM value for
+        every meminfo of the kernel arguments.
+        """
+        builder = self._builder
+        context = self._cpu_codegen_targetctx
+
+        meminfos = []
+        for arg_num, argtype in enumerate(kernel_argtys):
+            llvm_val = kernel_args[arg_num]
+
+            meminfos += [
+                meminfo
+                for ty, meminfo in context.nrt.get_meminfos(
+                    builder, argtype, llvm_val
+                )
+            ]
+
+        meminfo_list = self.allocate_meminfos_array(len(meminfos))
+
+        for meminfo_num, meminfo in enumerate(meminfos):
+            meminfo_arg_dst = builder.gep(
+                meminfo_list,
+                [context.get_constant(types.int32, meminfo_num)],
+            )
+            meminfo_ptr = builder.bitcast(
+                meminfo,
+                utils.get_llvm_type(context=context, type=types.voidptr),
+            )
+            builder.store(meminfo_ptr, meminfo_arg_dst)
+
+        return len(meminfos), meminfo_list
+
     def get_queue_ref_val(
         self,
-        kernel_argtys: [types.Type, ...],
+        kernel_argtys: tuple[types.Type, ...],
         kernel_args: [llvmir.Instruction, ...],
     ):
         """
@@ -160,8 +229,8 @@ class _LaunchTrampolineFunctionBodyGenerator:
         for arg_num, argty in enumerate(kernel_argtys):
             if isinstance(argty, DpnpNdArray):
                 llvm_val = kernel_args[arg_num]
-                datamodel = self._kernel_targetctx.data_model_manager.lookup(
-                    argty
+                datamodel = (
+                    self._cpu_codegen_targetctx.data_model_manager.lookup(argty)
                 )
                 sycl_queue_attr_pos = datamodel.get_field_position("sycl_queue")
                 ptr_to_queue_ref = self._builder.extract_value(
@@ -257,9 +326,11 @@ class _LaunchTrampolineFunctionBodyGenerator:
 
         return kbref
 
-    def submit_and_wait(self, submit_call_args: _KernelSubmissionArgs) -> None:
-        """Generates LLVM IR CallInst to submit a kernel to specified SYCL queue
-        and then call DPCTLEvent_Wait on the returned event.
+    def submit(
+        self, submit_call_args: _KernelSubmissionArgs
+    ) -> llvmir.PointerType(llvmir.IntType(8)):
+        """Generates LLVM IR CallInst to submit a kernel to specified SYCL
+        queue.
         """
         if config.DEBUG_KERNEL_LAUNCHER:
             cgutils.printf(
@@ -279,8 +350,42 @@ class _LaunchTrampolineFunctionBodyGenerator:
         if config.DEBUG_KERNEL_LAUNCHER:
             cgutils.printf(self._builder, "DPEX-DEBUG: Wait on event.\n")
 
-        sycl.dpctl_event_wait(self._builder, eref)
-        sycl.dpctl_event_delete(self._builder, eref)
+        return eref
+
+    def acquire_meminfo_and_schedule_release(
+        self,
+        qref,
+        eref,
+        total_meminfos,
+        meminfo_list,
+    ):
+        """Schedule sycl host task to release nrt meminfo of the arguments used
+        to run job. Use it to keep arguments alive during kernel execution."""
+        ctx = self._cpu_codegen_targetctx
+        builder = self._builder
+
+        eref_ptr = builder.alloca(eref.type)
+        builder.store(eref, eref_ptr)
+
+        status_ptr = cgutils.alloca_once(
+            builder, ctx.get_value_type(types.uint64)
+        )
+        # TODO: get dpex RT from cached property once the PR is merged
+        # https://github.com/IntelPython/numba-dpex/pull/1027
+        # host_eref = ctx.dpexrt.acquire_meminfo_and_schedule_release( # noqa: W0621
+        host_eref = DpexRTContext(ctx).acquire_meminfo_and_schedule_release(
+            builder,
+            [
+                ctx.nrt.get_nrt_api(builder),
+                qref,
+                meminfo_list,
+                ctx.get_constant(types.uintp, total_meminfos),
+                eref_ptr,
+                ctx.get_constant(types.uintp, 1),
+                status_ptr,
+            ],
+        )
+        return host_eref
 
     def cleanup(
         self,
@@ -297,10 +402,13 @@ class _LaunchTrampolineFunctionBodyGenerator:
 
 
 @intrinsic(target="cpu")
-def intrin_launch_trampoline(
-    typingctx, kernel_fn, index_space, kernel_args  # pylint: disable=W0613
+def _submit_kernel(
+    typingctx,  # pylint: disable=W0613
+    kernel_fn,
+    index_space,
+    kernel_args,
 ):
-    """Generates the body of the launch_trampoline overload.
+    """Generates IR code for call_kernel dpjit function.
 
     The intrinsic first compiles the kernel function to SPIRV, and then to a
     sycl kernel bundle. The arguments to the kernel are also packed into
@@ -310,7 +418,8 @@ def intrin_launch_trampoline(
     """
     kernel_args_list = list(kernel_args)
     # signature of this intrinsic
-    sig = types.void(kernel_fn, index_space, kernel_args)
+    ty_event = DpctlSyclEvent()
+    sig = ty_event(kernel_fn, index_space, kernel_args)
     # signature of the kernel_fn
     kernel_sig = types.void(*kernel_args_list)
     kernel_fn.dispatcher.compile(kernel_sig)
@@ -319,7 +428,8 @@ def intrin_launch_trampoline(
     )
     kernel_targetctx = kernel_fn.dispatcher.targetctx
 
-    def codegen(cgctx, builder, sig, llargs):
+    # TODO: refactor so there are no too many locals
+    def codegen(cgctx, builder, sig, llargs):  # pylint: disable=R0914
         kernel_argtys = kernel_sig.args
         kernel_args_unpacked = []
         for pos in range(len(kernel_args)):
@@ -342,7 +452,7 @@ def intrin_launch_trampoline(
         )
 
         qref = fn_body_gen.get_queue_ref_val(
-            kernel_argtys=kernel_argtys,
+            kernel_argtys=kernel_args_list,
             kernel_args=kernel_args_unpacked,
         )
 
@@ -367,32 +477,78 @@ def intrin_launch_trampoline(
             local_range_extents=index_space_values.local_range_extents,
         )
 
-        fn_body_gen.submit_and_wait(submit_call_args)
-
-        fn_body_gen.cleanup(kernel_bundle_ref=kbref, kernel_ref=kref)
+        eref = fn_body_gen.submit(submit_call_args)
+        # We could've just wait and delete event here, but we want to reuse
+        # this function in async kernel submition and unfortunately numba does
+        # not support conditional returns:
+        # https://github.com/numba/numba/issues/9314
+        device_event = wrap_event_reference(cgctx, builder, eref)
+        return device_event
 
     return sig, codegen
 
 
-# pylint: disable=W0613
-def _launch_trampoline(kernel_fn, index_space, *kernel_args):
-    pass
+@intrinsic(target="cpu")
+def _acquire_meminfo_and_schedule_release(
+    typingctx,  # pylint: disable=W0613
+    ty_device_event,  # pylint: disable=W0613
+    ty_kernel_args,
+):
+    """Generates IR code to keep arguments alive during kernel execution.
 
+    The intrinsic collects all memory infos from the kernel arguments, acquires
+    them and schecules host task to release them. Returns host task's event.
+    """
+    # signature of this intrinsic
+    ty_event = DpctlSyclEvent()
+    sig = ty_event(ty_event, ty_kernel_args)
 
-@overload(_launch_trampoline, target="cpu")
-def _ol_launch_trampoline(kernel_fn, index_space, *kernel_args):
-    def impl(kernel_fn, index_space, *kernel_args):
-        intrin_launch_trampoline(  # pylint: disable=E1120
-            kernel_fn, index_space, kernel_args
+    def codegen(cgctx, builder, sig, llargs):
+        device_event = cgutils.create_struct_proxy(sig.args[0])(
+            cgctx, builder, value=llargs[0]
         )
 
-    return impl
+        kernel_args_tuple = llargs[1]
+        ty_kernel_args = sig.args[1]
+
+        kernel_args = []
+        for pos in range(len(ty_kernel_args)):
+            kernel_args.append(builder.extract_value(kernel_args_tuple, pos))
+
+        fn_body_gen = _LaunchTrampolineFunctionBodyGenerator(
+            codegen_targetctx=cgctx,
+            kernel_targetctx=None,
+            builder=builder,
+        )
+
+        total_meminfos, meminfo_list = fn_body_gen.allocate_meminfo_array(
+            ty_kernel_args, kernel_args
+        )
+
+        qref = fn_body_gen.get_queue_ref_val(
+            kernel_argtys=ty_kernel_args,
+            kernel_args=kernel_args,
+        )
+
+        host_eref = fn_body_gen.acquire_meminfo_and_schedule_release(
+            qref=qref,
+            eref=device_event.event_ref,
+            total_meminfos=total_meminfos,
+            meminfo_list=meminfo_list,
+        )
+
+        host_event = wrap_event_reference(cgctx, builder, host_eref)
+
+        return host_event
+
+    return sig, codegen
 
 
 @dpjit
-def call_kernel(kernel_fn, index_space, *kernel_args):
+def call_kernel(kernel_fn, index_space, *kernel_args) -> None:
     """Calls a numba_dpex.kernel decorated function from CPython or from another
-    dpjit function.
+    dpjit function. Kernel execution happens in syncronous way, so the thread
+    will be blocked till the kernel done exectuion.
 
     Args:
         kernel_fn (numba_dpex.experimental.KernelDispatcher): A
@@ -403,4 +559,44 @@ def call_kernel(kernel_fn, index_space, *kernel_args):
         kernel_args : List of objects that are passed to the numba_dpex.kernel
         decorated function.
     """
-    _launch_trampoline(kernel_fn, index_space, *kernel_args)
+    device_event = _submit_kernel(  # pylint: disable=E1120
+        kernel_fn,
+        index_space,
+        kernel_args,
+    )
+    device_event.wait()  # pylint: disable=E1101
+
+
+@dpjit
+def call_kernel_async(
+    kernel_fn, index_space, *kernel_args
+) -> tuple[dpctl.SyclEvent, dpctl.SyclEvent]:
+    """Calls a numba_dpex.kernel decorated function from CPython or from another
+    dpjit function. Kernel execution happens in asyncronous way, so the thread
+    will not be blocked till the kernel done exectuion. That means that it is
+    user responsiblity to properly use any memory used by kernel until the
+    kernel execution is completed.
+
+    Args:
+        kernel_fn (numba_dpex.experimental.KernelDispatcher): A
+        numba_dpex.kernel decorated function that is compiled to a
+        KernelDispatcher by numba_dpex.
+        index_space (Range | NdRange): A numba_dpex.Range or numba_dpex.NdRange
+        type object that specifies the index space for the kernel.
+        kernel_args : List of objects that are passed to the numba_dpex.kernel
+        decorated function.
+
+    Returns:
+        pair of host event and device event. Host event represent host task
+        that releases use of any kernel argument so it can be deallocated.
+        This task may be executed only after device task is done.
+    """
+    device_event = _submit_kernel(  # pylint: disable=E1120
+        kernel_fn,
+        index_space,
+        kernel_args,
+    )
+    host_event = _acquire_meminfo_and_schedule_release(  # pylint: disable=E1120
+        device_event, kernel_args
+    )
+    return host_event, device_event
