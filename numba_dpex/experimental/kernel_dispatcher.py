@@ -7,6 +7,7 @@ call numba_dpex.kernel decorated function.
 """
 from collections import namedtuple
 from contextlib import ExitStack
+from typing import Tuple
 
 import numba.core.event as ev
 from numba.core import errors, sigutils, types
@@ -24,13 +25,12 @@ from numba_dpex.core.exceptions import (
 from numba_dpex.core.pipelines import kernel_compiler
 from numba_dpex.core.types import DpnpNdArray
 
-from .target import dpex_exp_kernel_target
+from .target import DPEX_KERNEL_EXP_TARGET_NAME, dpex_exp_kernel_target
 
 _KernelModule = namedtuple("_KernelModule", ["kernel_name", "kernel_bitcode"])
 
 _KernelCompileResult = namedtuple(
-    "_KernelCompileResult",
-    ["status", "cres_or_error", "entry_point"],
+    "_KernelCompileResult", CompileResult._fields + ("kernel_device_ir_module",)
 )
 
 
@@ -96,15 +96,15 @@ class _KernelCompiler(_FunctionCompiler):
         )
 
     def compile(self, args, return_type):
-        kcres = self._compile_cached(args, return_type)
-        if kcres.status:
+        status, kcres = self._compile_cached(args, return_type)
+        if status:
             return kcres
 
-        raise kcres.cres_or_error
+        raise kcres
 
     def _compile_cached(
         self, args, return_type: types.Type
-    ) -> _KernelCompileResult:
+    ) -> Tuple[bool, _KernelCompileResult]:
         """Compiles the kernel function to bitcode and generates a host-callable
         wrapper to submit the kernel to a SYCL queue.
 
@@ -137,34 +137,45 @@ class _KernelCompiler(_FunctionCompiler):
         """
         key = tuple(args), return_type
         try:
-            return _KernelCompileResult(False, self._failed_cache[key], None)
+            return False, self._failed_cache[key]
         except KeyError:
             pass
 
         try:
-            kernel_cres: CompileResult = self._compile_core(args, return_type)
+            cres: CompileResult = self._compile_core(args, return_type)
 
-            kernel_library = kernel_cres.library
-            kernel_fndesc = kernel_cres.fndesc
-            kernel_targetctx = kernel_cres.target_context
-
-            kernel_module = self._compile_to_spirv(
-                kernel_library, kernel_fndesc, kernel_targetctx
+            kernel_device_ir_module = self._compile_to_spirv(
+                cres.library, cres.fndesc, cres.target_context
             )
+
+            kcres_attrs = []
+
+            for cres_field in cres._fields:
+                cres_attr = getattr(cres, cres_field)
+                if cres_field == "entry_point":
+                    if cres_attr is not None:
+                        raise AssertionError(
+                            "Compiled kernel and device_func should be "
+                            "compiled with compile_cfunc option turned off"
+                        )
+                    cres_attr = cres.fndesc.qualname
+                kcres_attrs.append(cres_attr)
+
+            kcres_attrs.append(kernel_device_ir_module)
 
             if config.DUMP_KERNEL_LLVM:
                 with open(
-                    kernel_cres.fndesc.llvm_func_name + ".ll",
+                    cres.fndesc.llvm_func_name + ".ll",
                     "w",
                     encoding="UTF-8",
                 ) as f:
-                    f.write(kernel_cres.library.final_module)
+                    f.write(cres.library.final_module)
 
         except errors.TypingError as e:
             self._failed_cache[key] = e
-            return _KernelCompileResult(False, e, None)
+            return False, e
 
-        return _KernelCompileResult(True, kernel_cres, kernel_module)
+        return True, _KernelCompileResult(*kcres_attrs)
 
 
 class KernelDispatcher(Dispatcher):
@@ -234,7 +245,14 @@ class KernelDispatcher(Dispatcher):
 
     def add_overload(self, cres):
         args = tuple(cres.signature.args)
-        self.overloads[args] = cres.entry_point
+        self.overloads[args] = cres
+
+    def get_overload_device_ir(self, sig):
+        """
+        Return the compiled device bitcode for the given signature.
+        """
+        args, _ = sigutils.normalize_signature(sig)
+        return self.overloads[tuple(args)].kernel_device_ir_module
 
     def compile(self, sig) -> _KernelCompileResult:
         disp = self._get_dispatcher_for_current_target()
@@ -274,7 +292,7 @@ class KernelDispatcher(Dispatcher):
                 # Don't recompile if signature already exists
                 existing = self.overloads.get(tuple(args))
                 if existing is not None:
-                    return existing
+                    return existing.entry_point
 
                 # TODO: Enable caching
                 # Add code to enable on disk caching of a binary spirv kernel.
@@ -298,7 +316,11 @@ class KernelDispatcher(Dispatcher):
                             )[1]
 
                         raise e.bind_fold_arguments(folded)
-                    self.add_overload(kcres.cres_or_error)
+                    self.add_overload(kcres)
+
+                    kcres.target_context.insert_user_function(
+                        kcres.entry_point, kcres.fndesc, [kcres.library]
+                    )
 
                 # TODO: enable caching of kernel_module
                 # https://github.com/IntelPython/numba-dpex/issues/1197
@@ -318,5 +340,5 @@ class KernelDispatcher(Dispatcher):
         raise NotImplementedError
 
 
-_dpex_target = target_registry["dpex_kernel"]
+_dpex_target = target_registry[DPEX_KERNEL_EXP_TARGET_NAME]
 dispatcher_registry[_dpex_target] = KernelDispatcher

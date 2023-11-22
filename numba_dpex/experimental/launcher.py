@@ -11,6 +11,7 @@ from typing import Union
 
 from llvmlite import ir as llvmir
 from numba.core import cgutils, cpu, types
+from numba.core.datamodel import default_manager as numba_default_dmm
 from numba.extending import intrinsic, overload
 
 from numba_dpex import config, dpjit
@@ -192,23 +193,27 @@ class _LaunchTrampolineFunctionBodyGenerator:
         ndim = indexer_argty.ndim
         grange_extents = []
         lrange_extents = []
-        datamodel = self._kernel_targetctx.data_model_manager.lookup(
-            indexer_argty
-        )
+        indexer_datamodel = numba_default_dmm.lookup(indexer_argty)
 
         if isinstance(indexer_argty, RangeType):
             for dim_num in range(ndim):
-                dim_pos = datamodel.get_field_position("dim" + str(dim_num))
+                dim_pos = indexer_datamodel.get_field_position(
+                    "dim" + str(dim_num)
+                )
                 grange_extents.append(
                     self._builder.extract_value(index_space_arg, dim_pos)
                 )
         elif isinstance(indexer_argty, NdRangeType):
             for dim_num in range(ndim):
-                gdim_pos = datamodel.get_field_position("gdim" + str(dim_num))
+                gdim_pos = indexer_datamodel.get_field_position(
+                    "gdim" + str(dim_num)
+                )
                 grange_extents.append(
                     self._builder.extract_value(index_space_arg, gdim_pos)
                 )
-                ldim_pos = datamodel.get_field_position("ldim" + str(dim_num))
+                ldim_pos = indexer_datamodel.get_field_position(
+                    "ldim" + str(dim_num)
+                )
                 lrange_extents.append(
                     self._builder.extract_value(index_space_arg, ldim_pos)
                 )
@@ -308,7 +313,10 @@ def intrin_launch_trampoline(
     sig = types.void(kernel_fn, index_space, kernel_args)
     # signature of the kernel_fn
     kernel_sig = types.void(*kernel_args_list)
-    kmodule: _KernelModule = kernel_fn.dispatcher.compile(kernel_sig)
+    kernel_fn.dispatcher.compile(kernel_sig)
+    kernel_module: _KernelModule = kernel_fn.dispatcher.get_overload_device_ir(
+        kernel_sig
+    )
     kernel_targetctx = kernel_fn.dispatcher.targetctx
 
     def codegen(cgctx, builder, sig, llargs):
@@ -324,7 +332,7 @@ def intrin_launch_trampoline(
         )
 
         kernel_bc_byte_str = fn_body_gen.insert_kernel_bitcode_as_byte_str(
-            kmodule
+            kernel_module
         )
 
         populated_kernel_args = (
@@ -341,10 +349,10 @@ def intrin_launch_trampoline(
         kbref = fn_body_gen.create_kernel_bundle_from_spirv(
             queue_ref=qref,
             kernel_bc=kernel_bc_byte_str,
-            kernel_bc_size_in_bytes=len(kmodule.kernel_bitcode),
+            kernel_bc_size_in_bytes=len(kernel_module.kernel_bitcode),
         )
 
-        kref = fn_body_gen.get_kernel(kmodule, kbref)
+        kref = fn_body_gen.get_kernel(kernel_module, kbref)
 
         index_space_values = fn_body_gen.create_llvm_values_for_index_space(
             indexer_argty=sig.args[1],

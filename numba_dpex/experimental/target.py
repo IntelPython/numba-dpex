@@ -9,13 +9,24 @@ eventually move into the numba_dpex.core.
 from functools import cached_property
 
 from numba.core.descriptors import TargetDescriptor
+from numba.core.target_extension import GPU, target_registry
 
 from numba_dpex.core.descriptor import DpexTargetOptions
 from numba_dpex.core.targets.kernel_target import (
-    DPEX_KERNEL_TARGET_NAME,
     DpexKernelTargetContext,
     DpexKernelTypingContext,
 )
+from numba_dpex.experimental.models import exp_dmm
+
+
+#  pylint: disable=R0903
+class SyclDeviceExp(GPU):
+    """Mark the hardware target as SYCL Device."""
+
+
+DPEX_KERNEL_EXP_TARGET_NAME = "dpex_kernel_exp"
+
+target_registry[DPEX_KERNEL_EXP_TARGET_NAME] = SyclDeviceExp
 
 
 class DpexExpKernelTypingContext(DpexKernelTypingContext):
@@ -40,6 +51,10 @@ class DpexExpKernelTargetContext(DpexKernelTargetContext):
     to LLVM IR. All such experimental functionality should be added here till
     they are stable enough to be migrated to DpexKernelTargetContext.
     """
+
+    def __init__(self, typingctx, target=DPEX_KERNEL_EXP_TARGET_NAME):
+        super().__init__(typingctx, target)
+        self.data_model_manager = exp_dmm
 
 
 class DpexExpKernelTarget(TargetDescriptor):
@@ -77,4 +92,4 @@ class DpexExpKernelTarget(TargetDescriptor):
 
 
 # A global instance of the DpexKernelTarget with the experimental features
-dpex_exp_kernel_target = DpexExpKernelTarget(DPEX_KERNEL_TARGET_NAME)
+dpex_exp_kernel_target = DpexExpKernelTarget(DPEX_KERNEL_EXP_TARGET_NAME)
