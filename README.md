@@ -23,14 +23,15 @@ code-generation for the kernel API currently supports
 [OpenCL](https://www.khronos.org/opencl/) and
 [oneAPI Level Zero](https://spec.oneapi.io/level-zero/latest/index.html)
 devices that are supported by Intel&reg; DPC++ SYCL compiler runtime. Supported
-devices include Intel&reg CPUs, integrated GPUs and discrete GPUs.
+devices include Intel&reg; CPUs, integrated GPUs and discrete GPUs.
 
 The offload functionality in numba-dpex is based on Numba's `parfor`
 loop-parallelizer. Our compiler extends Numba's `parfor` feature to generate
 kernels and offload them to devices supported by DPC++ SYCL compiler runtime.
 The offload functionality is supported via a new NumPy drop-in replacement
-library: [dpnp](https://github.com/IntelPython/dpnp) and NumPy-based expressions
-and `numba.prange` loops are not offloaded.
+library: [dpnp](https://github.com/IntelPython/dpnp). Note that `dpnp` and NumPy-based
+expressions can be used together in the same function, with `dpnp` expressions getting
+offloaded by `numba-dpex` and NumPy expressions getting parallelized by Numba.
 
 Refer the [documentation](https://intelpython.github.io/numba-dpex) and examples
 to learn more.
