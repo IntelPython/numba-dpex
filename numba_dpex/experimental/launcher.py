@@ -303,9 +303,9 @@ def _submit_kernel(
     # codegen
     kernel_dispatcher: KernelDispatcher = ty_kernel_fn.dispatcher
     kernel_dispatcher.compile(kernel_sig)
-    kernel_module: _KernelModule = kernel_dispatcher.get_overload_device_ir(
+    kernel_module: _KernelModule = kernel_dispatcher.get_overload_kcres(
         kernel_sig
-    )
+    ).kernel_device_ir_module
     kernel_targetctx = kernel_dispatcher.targetctx
 
     def codegen(cgctx, builder, sig, llargs):

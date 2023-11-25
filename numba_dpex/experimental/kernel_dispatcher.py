@@ -262,12 +262,12 @@ class KernelDispatcher(Dispatcher):
         args = tuple(cres.signature.args)
         self.overloads[args] = cres
 
-    def get_overload_device_ir(self, sig):
+    def get_overload_kcres(self, sig) -> _KernelCompileResult:
         """
-        Return the compiled device bitcode for the given signature.
+        Return the compiled function for the given signature.
         """
         args, _ = sigutils.normalize_signature(sig)
-        return self.overloads[tuple(args)].kernel_device_ir_module
+        return self.overloads[tuple(args)]
 
     def compile(self, sig) -> any:
         disp = self._get_dispatcher_for_current_target()
