@@ -84,7 +84,14 @@ class _KernelCompiler(_FunctionCompiler):
         kernel_fn = kernel_targetctx.prepare_spir_kernel(
             kernel_func, kernel_fndesc.argtypes
         )
-
+        # If the inline_threshold option was set then set the property in the
+        # kernel_library to force inlining ``overload`` calls into a kernel.
+        try:
+            kernel_library.inline_threshold = self.targetoptions[
+                "inline_threshold"
+            ]
+        except KeyError:
+            pass
         # Call finalize on the LLVM module. Finalization will result in
         # all linking libraries getting linked together and final optimization
         # including inlining of functions if an inlining level is specified.
