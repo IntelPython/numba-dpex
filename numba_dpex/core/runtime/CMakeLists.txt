@@ -109,7 +109,7 @@ python_add_library(${PROJECT_NAME} MODULE ${SOURCES})
 
 # Add SYCL to target, this must come after python_add_library()
 # FIXME: sources incompatible with sycl include?
-# add_sycl_to_target(TARGET ${PROJECT_NAME} SOURCES ${KERNEL_SOURCES})
+add_sycl_to_target(TARGET ${PROJECT_NAME} SOURCES ${KERNEL_SOURCES})
 
 # Link the DPCTLSyclInterface library to target
 target_link_libraries(${PROJECT_NAME} PRIVATE DPCTLSyclInterface)

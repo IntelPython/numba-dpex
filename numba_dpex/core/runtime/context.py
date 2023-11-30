@@ -433,3 +433,41 @@ class DpexRTContext(object):
         )
 
         return ret
+
+    def acquire_meminfo_and_schedule_release(
+        self, builder: llvmir.IRBuilder, args
+    ):
+        """Inserts LLVM IR to call nrt_acquire_meminfo_and_schedule_release.
+
+        DPCTLSyclEventRef
+        DPEXRT_nrt_acquire_meminfo_and_schedule_release(
+            NRT_api_functions *nrt,
+            DPCTLSyclQueueRef QRef,
+            NRT_MemInfo **meminfo_array,
+            size_t meminfo_array_size,
+            DPCTLSyclEventRef *depERefs,
+            size_t nDepERefs,
+            int *status,
+        );
+
+        """
+        mod = builder.module
+
+        func_ty = llvmir.FunctionType(
+            cgutils.voidptr_t,
+            [
+                cgutils.voidptr_t,
+                cgutils.voidptr_t,
+                cgutils.voidptr_t.as_pointer(),
+                llvmir.IntType(64),
+                cgutils.voidptr_t.as_pointer(),
+                llvmir.IntType(64),
+                llvmir.IntType(64).as_pointer(),
+            ],
+        )
+        fn = cgutils.get_or_insert_function(
+            mod, func_ty, "DPEXRT_nrt_acquire_meminfo_and_schedule_release"
+        )
+        ret = builder.call(fn, args)
+
+        return ret
