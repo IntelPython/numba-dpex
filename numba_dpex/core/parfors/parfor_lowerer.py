@@ -131,7 +131,6 @@ class ParforLowerImpl:
             callargs_ptrs=callargs_ptrs,
             args_list=args_list,
             args_ty_list=args_ty_list,
-            datamodel_mgr=dpex_dmm,
         )
 
         return _KernelArgs(
