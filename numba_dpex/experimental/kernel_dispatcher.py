@@ -11,7 +11,7 @@ from typing import Tuple
 
 import numba.core.event as ev
 from numba.core import errors, sigutils, types
-from numba.core.compiler import CompileResult
+from numba.core.compiler import CompileResult, Flags
 from numba.core.compiler_lock import global_compiler_lock
 from numba.core.dispatcher import Dispatcher, _FunctionCompiler
 from numba.core.target_extension import dispatcher_registry, target_registry
@@ -84,14 +84,15 @@ class _KernelCompiler(_FunctionCompiler):
         kernel_fn = kernel_targetctx.prepare_spir_kernel(
             kernel_func, kernel_fndesc.argtypes
         )
+        # Get the compiler flags that were passed through the target descriptor
+        flags = Flags()
+        self.targetdescr.options.parse_as_flags(flags, self.targetoptions)
+
         # If the inline_threshold option was set then set the property in the
         # kernel_library to force inlining ``overload`` calls into a kernel.
-        try:
-            kernel_library.inline_threshold = self.targetoptions[
-                "inline_threshold"
-            ]
-        except KeyError:
-            pass
+        inline_threshold = flags.inline_threshold  # pylint: disable=E1101
+        kernel_library.inline_threshold = inline_threshold
+
         # Call finalize on the LLVM module. Finalization will result in
         # all linking libraries getting linked together and final optimization
         # including inlining of functions if an inlining level is specified.
@@ -201,9 +202,6 @@ class KernelDispatcher(Dispatcher):
     compilation strategy. Instead of compiling a kernel decorated function to
     an executable binary, the dispatcher compiles it to SPIR-V and then caches
     that SPIR-V bitcode.
-
-    FIXME: Fix issues identified by pylint with this class.
-    https://github.com/IntelPython/numba-dpex/issues/1196
 
     """
 
