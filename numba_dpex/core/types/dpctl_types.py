@@ -28,7 +28,9 @@ class DpctlSyclQueue(types.Type):
             self._unique_id = hash(sycl_queue)
         except Exception:
             self._unique_id = self.rand_digit_str(16)
-        super(DpctlSyclQueue, self).__init__(name="DpctlSyclQueue")
+        super(DpctlSyclQueue, self).__init__(
+            name=f"DpctlSyclQueue on {self._device}"
+        )
 
     def rand_digit_str(self, n):
         return "".join(
