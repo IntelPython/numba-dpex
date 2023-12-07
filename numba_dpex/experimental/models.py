@@ -17,7 +17,7 @@ from .literal_intenum_type import IntEnumLiteral
 from .types import KernelDispatcherType
 
 
-class LiteralIntEnumModel(PrimitiveModel):
+class IntEnumLiteralModel(PrimitiveModel):
     """Representation of an object of LiteralIntEnum type using Numba's
     PrimitiveModel that can be represented natively in the target in all
     usage contexts.
@@ -42,7 +42,7 @@ def _init_exp_data_model_manager() -> DataModelManager:
     dmm = dpex_core_models.dpex_data_model_manager.copy()
 
     # Register the types and data model in the DpexExpTargetContext
-    dmm.register(IntEnumLiteral, LiteralIntEnumModel)
+    dmm.register(IntEnumLiteral, IntEnumLiteralModel)
 
     return dmm
 

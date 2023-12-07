@@ -3,11 +3,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import dpnp
-from numba.core import types
-from numba.extending import intrinsic, overload
 
 import numba_dpex.experimental as exp_dpex
-from numba_dpex import Range, dpjit
+from numba_dpex import Range
 from numba_dpex.experimental.flag_enum import FlagEnum
 
 
