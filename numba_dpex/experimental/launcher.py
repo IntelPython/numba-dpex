@@ -54,6 +54,10 @@ class CallKernelBuilder:
     ):
         self.context = codegen_targetctx
         self.builder = builder
+        # TODO: get dpex RT from cached property once the PR is merged
+        # https://github.com/IntelPython/numba-dpex/pull/1027
+        # and get rid of the global variable. Use self.context.dpexrt instead.
+        self.dpexrt = DpexRTContext(self.context)
 
         if config.DEBUG_KERNEL_LAUNCHER:
             cgutils.printf(
@@ -139,7 +143,7 @@ class CallKernelBuilder:
 
         return ptr_to_queue_ref
 
-    def get_kernel(self, qref, kernel_module: _KernelModule):
+    def get_kernel(self, queue_ref, kernel_module: _KernelModule):
         """Returns the pointer to the sycl::kernel object in a passed in
         sycl::kernel_bundle wrapper object.
         """
@@ -150,23 +154,31 @@ class CallKernelBuilder:
             bytes=kernel_module.kernel_bitcode,
         )
 
-        # Create a sycl::kernel_bundle object and return it as an opaque pointer
-        # using dpctl's libsyclinterface.
-        kbref = self.create_kernel_bundle_from_spirv(
-            queue_ref=qref,
-            kernel_bc=kernel_bc_byte_str,
-            kernel_bc_size_in_bytes=len(kernel_module.kernel_bitcode),
-        )
-
         kernel_name = self.context.insert_const_string(
             self.builder.module, kernel_module.kernel_name
         )
 
-        kernel_ref = sycl.dpctl_kernel_bundle_get_kernel(
-            self.builder, kbref, kernel_name
-        )
+        context_ref = sycl.dpctl_queue_get_context(self.builder, queue_ref)
+        device_ref = sycl.dpctl_queue_get_device(self.builder, queue_ref)
 
-        sycl.dpctl_kernel_bundle_delete(self.builder, kbref)
+        # build_or_get_kernel stills reference to context and device cause it
+        # needs to keep them alive for keys.
+        kernel_ref = self.dpexrt.build_or_get_kernel(
+            self.builder,
+            [
+                context_ref,
+                device_ref,
+                llvmir.Constant(
+                    llvmir.IntType(64), hash(kernel_module.kernel_bitcode)
+                ),
+                kernel_bc_byte_str,
+                llvmir.Constant(
+                    llvmir.IntType(64), len(kernel_module.kernel_bitcode)
+                ),
+                self.builder.load(create_null_ptr(self.builder, self.context)),
+                kernel_name,
+            ],
+        )
 
         return kernel_ref
 
@@ -210,36 +222,6 @@ class CallKernelBuilder:
 
         return LLRange(global_range_extents, local_range_extents)
 
-    def create_kernel_bundle_from_spirv(
-        self,
-        queue_ref: llvmir.PointerType,
-        kernel_bc: llvmir.Constant,
-        kernel_bc_size_in_bytes: int,
-    ) -> llvmir.CallInstr:
-        """Calls DPCTLKernelBundle_CreateFromSpirv to create an opaque pointer
-        to a sycl::kernel_bundle from the SPIR-V generated for a kernel.
-        """
-        device_ref = sycl.dpctl_queue_get_device(self.builder, queue_ref)
-        context_ref = sycl.dpctl_queue_get_context(self.builder, queue_ref)
-        args = [
-            context_ref,
-            device_ref,
-            kernel_bc,
-            llvmir.Constant(llvmir.IntType(64), kernel_bc_size_in_bytes),
-            self.builder.load(create_null_ptr(self.builder, self.context)),
-        ]
-        kb_ref = sycl.dpctl_kernel_bundle_create_from_spirv(self.builder, *args)
-        sycl.dpctl_context_delete(self.builder, context_ref)
-        sycl.dpctl_device_delete(self.builder, device_ref)
-
-        if config.DEBUG_KERNEL_LAUNCHER:
-            cgutils.printf(
-                self.builder,
-                "DPEX-DEBUG: Generated kernel_bundle from SPIR-V.\n",
-            )
-
-        return kb_ref
-
     def acquire_meminfo_and_schedule_release(
         self,
         queue_ref,
@@ -259,12 +241,7 @@ class CallKernelBuilder:
         status_ptr = cgutils.alloca_once(
             self.builder, self.context.get_value_type(types.uint64)
         )
-        # TODO: get dpex RT from cached property once the PR is merged
-        # https://github.com/IntelPython/numba-dpex/pull/1027
-        # host_eref = ctx.dpexrt.acquire_meminfo_and_schedule_release( # noqa: W0621
-        host_eref = DpexRTContext(
-            self.context
-        ).acquire_meminfo_and_schedule_release(
+        host_eref = self.dpexrt.acquire_meminfo_and_schedule_release(
             self.builder,
             [
                 self.context.nrt.get_nrt_api(self.builder),
