@@ -83,15 +83,14 @@ message(STATUS "CMAKE_MODULE_PATH=" "${CMAKE_MODULE_PATH}")
 
 # Add packages
 find_package(Python 3.9 REQUIRED
-  COMPONENTS Interpreter Development.Module)
+  COMPONENTS Interpreter Development.Module NumPy)
 find_package(Dpctl REQUIRED)
-find_package(NumPy REQUIRED)
 find_package(IntelSYCL REQUIRED)
 
 # Includes
 include(GNUInstallDirs)
 include_directories(${Python_INCLUDE_DIRS})
-include_directories(${NumPy_INCLUDE_DIRS})
+include_directories(${Python_NumPy_INCLUDE_DIRS})
 include_directories(${Numba_INCLUDE_DIRS})
 include_directories(${Dpctl_INCLUDE_DIRS})
 include_directories(.)
