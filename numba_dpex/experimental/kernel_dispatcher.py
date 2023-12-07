@@ -11,18 +11,21 @@ from typing import Tuple
 
 import numba.core.event as ev
 from numba.core import errors, sigutils, types
-from numba.core.compiler import CompileResult
+from numba.core.compiler import CompileResult, Flags
 from numba.core.compiler_lock import global_compiler_lock
 from numba.core.dispatcher import Dispatcher, _FunctionCompiler
 from numba.core.target_extension import dispatcher_registry, target_registry
+from numba.core.types import void
 from numba.core.typing.typeof import Purpose, typeof
 
 from numba_dpex import config, spirv_generator
 from numba_dpex.core.exceptions import (
     ExecutionQueueInferenceError,
+    KernelHasReturnValueError,
     UnsupportedKernelArgumentError,
 )
 from numba_dpex.core.pipelines import kernel_compiler
+from numba_dpex.core.targets.kernel_target import CompilationMode
 from numba_dpex.core.types import DpnpNdArray
 
 from .target import DPEX_KERNEL_EXP_TARGET_NAME, dpex_exp_kernel_target
@@ -81,10 +84,19 @@ class _KernelCompiler(_FunctionCompiler):
         kernel_fn = kernel_targetctx.prepare_spir_kernel(
             kernel_func, kernel_fndesc.argtypes
         )
+        # Get the compiler flags that were passed through the target descriptor
+        flags = Flags()
+        self.targetdescr.options.parse_as_flags(flags, self.targetoptions)
 
-        # makes sure that the spir_func is completely inlined into the
-        # spir_kernel wrapper
-        kernel_library.optimize_final_module()
+        # If the inline_threshold option was set then set the property in the
+        # kernel_library to force inlining ``overload`` calls into a kernel.
+        inline_threshold = flags.inline_threshold  # pylint: disable=E1101
+        kernel_library.inline_threshold = inline_threshold
+
+        # Call finalize on the LLVM module. Finalization will result in
+        # all linking libraries getting linked together and final optimization
+        # including inlining of functions if an inlining level is specified.
+        kernel_library.finalize()
         # Compiled the LLVM IR to SPIR-V
         kernel_spirv_module = spirv_generator.llvm_to_spirv(
             kernel_targetctx,
@@ -144,9 +156,15 @@ class _KernelCompiler(_FunctionCompiler):
         try:
             cres: CompileResult = self._compile_core(args, return_type)
 
-            kernel_device_ir_module = self._compile_to_spirv(
-                cres.library, cres.fndesc, cres.target_context
-            )
+            if (
+                self.targetoptions["_compilation_mode"]
+                == CompilationMode.KERNEL
+            ):
+                kernel_device_ir_module: _KernelModule = self._compile_to_spirv(
+                    cres.library, cres.fndesc, cres.target_context
+                )
+            else:
+                kernel_device_ir_module = None
 
             kcres_attrs = []
 
@@ -184,9 +202,6 @@ class KernelDispatcher(Dispatcher):
     compilation strategy. Instead of compiling a kernel decorated function to
     an executable binary, the dispatcher compiles it to SPIR-V and then caches
     that SPIR-V bitcode.
-
-    FIXME: Fix issues identified by pylint with this class.
-    https://github.com/IntelPython/numba-dpex/issues/1196
 
     """
 
@@ -282,12 +297,28 @@ class KernelDispatcher(Dispatcher):
             with self._compiling_counter:
                 args, return_type = sigutils.normalize_signature(sig)
 
-                try:
-                    self._compiler.check_queue_equivalence_of_args(
-                        self._kernel_name, args
-                    )
-                except ExecutionQueueInferenceError as eqie:
-                    raise eqie
+                if (
+                    self.targetoptions["_compilation_mode"]
+                    == CompilationMode.KERNEL
+                ):
+                    # Compute follows data based queue equivalence is only
+                    # evaluated for kernel functions whose arguments are
+                    # supposed to be arrays. For device_func decorated
+                    # functions, the arguments can be scalar and we skip queue
+                    # equivalence check.
+                    try:
+                        self._compiler.check_queue_equivalence_of_args(
+                            self._kernel_name, args
+                        )
+                    except ExecutionQueueInferenceError as eqie:
+                        raise eqie
+
+                    # A function being compiled in the KERNEL compilation mode
+                    # cannot have a non-void return value
+                    if return_type and return_type != void:
+                        raise KernelHasReturnValueError(
+                            kernel_name=None, return_type=return_type, sig=sig
+                        )
 
                 # Don't recompile if signature already exists
                 existing = self.overloads.get(tuple(args))

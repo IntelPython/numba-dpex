@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
+from enum import IntEnum
 from functools import cached_property
 
 import dpnp
@@ -28,6 +29,28 @@ from .. import codegen
 CC_SPIR_KERNEL = "spir_kernel"
 CC_SPIR_FUNC = "spir_func"
 LLVM_SPIRV_ARGS = 112
+
+
+class CompilationMode(IntEnum):
+    """Flags used to determine how a function should be compiled by the
+    numba_dpex.experimental.dispatcher.KernelDispatcher. Note the functionality
+    will be merged into numba_dpex.core.kernel_interface.dispatcher in the
+    future.
+
+        KERNEL :         Indicates that the function will be compiled into an
+                         LLVM function that has ``spir_kernel`` calling
+                         convention and is compiled down to SPIR-V.
+                         Additionally, the function cannot return any value and
+                         input arguments to the function have to adhere to
+                         "compute follows data" to ensure execution queue
+                         inference.
+        DEVICE_FUNCTION: Indicates that the function will be compiled into an
+                         LLVM function that has ``spir_func`` calling convention
+                         and will be compiled only into LLVM bitcode.
+    """
+
+    KERNEL = 1
+    DEVICE_FUNC = 2
 
 
 class DpexKernelTypingContext(typing.BaseContext):

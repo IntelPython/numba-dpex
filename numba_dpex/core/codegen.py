@@ -29,6 +29,25 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
     def _optimize_functions(self, ll_module):
         pass
 
+    @property
+    def inline_threshold(self):
+        """The inlining threshold value to be used to optimize the final library"""
+        if hasattr(self, "_inline_threshold"):
+            return self._inline_threshold
+        else:
+            return 0
+
+    @inline_threshold.setter
+    def inline_threshold(self, value: int):
+        """Returns the current inlining threshold level for the library."""
+        if value < 0 or value > 3:
+            logging.warning(
+                "Unsupported inline threshold. Set a value between 0 and 3"
+            )
+            self._inline_threshold = 0
+        else:
+            self._inline_threshold = value
+
     def _optimize_final_module(self):
         # Run some lightweight optimization to simplify the module.
         pmb = ll.PassManagerBuilder()
@@ -43,12 +62,38 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
             )
 
         pmb.disable_unit_at_a_time = False
+
         if config.INLINE_THRESHOLD is not None:
-            logging.warning(
-                "Setting INLINE_THRESHOLD leads to very aggressive "
-                + "optimizations that may produce incorrect binary."
-            )
-            pmb.inlining_threshold = config.INLINE_THRESHOLD
+            # Check if a decorator-level inline threshold was set and use that
+            # instead of the global configuration.
+            if (
+                hasattr(self, "_inline_threshold")
+                and self._inline_threshold > 0
+                and self._inline_threshold <= 3
+            ):
+                logging.warning(
+                    "Setting INLINE_THRESHOLD leads to very aggressive "
+                    + "optimizations that may produce incorrect binary."
+                )
+                pmb.inlining_threshold = self._inline_threshold
+            elif not hasattr(self, "_inline_threshold"):
+                logging.warning(
+                    "Setting INLINE_THRESHOLD leads to very aggressive "
+                    + "optimizations that may produce incorrect binary."
+                )
+                pmb.inlining_threshold = config.INLINE_THRESHOLD
+        else:
+            if (
+                hasattr(self, "_inline_threshold")
+                and self._inline_threshold > 0
+                and self._inline_threshold <= 3
+            ):
+                logging.warning(
+                    "Setting INLINE_THRESHOLD leads to very aggressive "
+                    + "optimizations that may produce incorrect binary."
+                )
+                pmb.inlining_threshold = self._inline_threshold
+
         pmb.disable_unroll_loops = True
         pmb.loop_vectorize = False
         pmb.slp_vectorize = False

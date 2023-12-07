@@ -8,9 +8,12 @@ from numba.core import options, targetconfig, typing
 from numba.core.cpu import CPUTargetOptions
 from numba.core.descriptors import TargetDescriptor
 
+from numba_dpex import config
+
 from .targets.dpjit_target import DPEX_TARGET_NAME, DpexTargetContext
 from .targets.kernel_target import (
     DPEX_KERNEL_TARGET_NAME,
+    CompilationMode,
     DpexKernelTargetContext,
     DpexKernelTypingContext,
 )
@@ -40,6 +43,8 @@ class DpexTargetOptions(CPUTargetOptions):
     release_gil = _option_mapping("release_gil")
     no_compile = _option_mapping("no_compile")
     use_mlir = _option_mapping("use_mlir")
+    inline_threshold = _option_mapping("inline_threshold")
+    _compilation_mode = _option_mapping("_compilation_mode")
 
     def finalize(self, flags, options):
         super().finalize(flags, options)
@@ -47,6 +52,15 @@ class DpexTargetOptions(CPUTargetOptions):
         _inherit_if_not_set(flags, options, "release_gil", False)
         _inherit_if_not_set(flags, options, "no_compile", True)
         _inherit_if_not_set(flags, options, "use_mlir", False)
+        if config.INLINE_THRESHOLD is not None:
+            _inherit_if_not_set(
+                flags, options, "inline_threshold", config.INLINE_THRESHOLD
+            )
+        else:
+            _inherit_if_not_set(flags, options, "inline_threshold", 0)
+        _inherit_if_not_set(
+            flags, options, "_compilation_mode", CompilationMode.KERNEL
+        )
 
 
 class DpexKernelTarget(TargetDescriptor):

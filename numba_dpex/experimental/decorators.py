@@ -6,6 +6,7 @@
 ready to move to numba_dpex.core.
 """
 import inspect
+from warnings import warn
 
 from numba.core import sigutils
 from numba.core.target_extension import (
@@ -13,6 +14,8 @@ from numba.core.target_extension import (
     resolve_dispatcher_from_str,
     target_registry,
 )
+
+from numba_dpex.core.targets.kernel_target import CompilationMode
 
 from .target import DPEX_KERNEL_EXP_TARGET_NAME
 
@@ -30,6 +33,14 @@ def kernel(func_or_sig=None, **options):
     """
 
     dispatcher = resolve_dispatcher_from_str(DPEX_KERNEL_EXP_TARGET_NAME)
+    if "_compilation_mode" in options:
+        user_compilation_mode = options["_compilation_mode"]
+        warn(
+            "_compilation_mode is an internal flag that should not be set "
+            "in the decorator. The decorator defined option "
+            f"{user_compilation_mode} is going to be ignored."
+        )
+    options["_compilation_mode"] = CompilationMode.KERNEL
 
     # FIXME: The options need to be evaluated and checked here like it is
     # done in numba.core.decorators.jit
@@ -80,4 +91,44 @@ def kernel(func_or_sig=None, **options):
     return _kernel_dispatcher(func)
 
 
-jit_registry[target_registry[DPEX_KERNEL_EXP_TARGET_NAME]] = kernel
+def device_func(func_or_sig=None, **options):
+    """Generates a function with a device-only calling convention, e.g.,
+    spir_func for SPIR-V based devices.
+
+    The decorator is used to compile overloads in the DpexKernelTarget and
+    users should use the decorator to define functions that are only callable
+    from inside another device_func or a kernel.
+
+    A device_func is not compiled down to device binary IR and instead left as
+    LLVM IR. It is done so that the function can be inlined fully into the
+    kernel module from where it is used at the LLVM level, leading to more
+    optimization opportunities.
+
+    Returns:
+        KernelDispatcher: A KernelDispatcher instance with the
+        _compilation_mode option set to DEVICE_FUNC.
+    """
+    dispatcher = resolve_dispatcher_from_str(DPEX_KERNEL_EXP_TARGET_NAME)
+
+    if "_compilation_mode" in options:
+        user_compilation_mode = options["_compilation_mode"]
+        warn(
+            "_compilation_mode is an internal flag that should not be set "
+            "in the decorator. The decorator defined option "
+            f"{user_compilation_mode} is going to be ignored."
+        )
+    options["_compilation_mode"] = CompilationMode.DEVICE_FUNC
+
+    def _kernel_dispatcher(pyfunc):
+        return dispatcher(
+            pyfunc=pyfunc,
+            targetoptions=options,
+        )
+
+    if func_or_sig is None:
+        return _kernel_dispatcher
+
+    return _kernel_dispatcher(func_or_sig)
+
+
+jit_registry[target_registry[DPEX_KERNEL_EXP_TARGET_NAME]] = device_func
