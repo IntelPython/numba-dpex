@@ -89,6 +89,8 @@ class DpexExpKernelTargetContext(DpexKernelTargetContext):
     they are stable enough to be migrated to DpexKernelTargetContext.
     """
 
+    allow_dynamic_globals = True
+
     def __init__(self, typingctx, target=DPEX_KERNEL_EXP_TARGET_NAME):
         super().__init__(typingctx, target)
         self.data_model_manager = exp_dmm
