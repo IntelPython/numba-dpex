@@ -7,7 +7,7 @@ from numba_dpex import Range
 
 @nd_exp.kernel
 def test_atomic_ref(a, b):
-    nd_exp.AtomicFence(
+    nd_exp.atomic_fence(
         nd_exp.MemoryOrder.RELAXED,
         nd_exp.MemoryScope.DEVICE,
     )

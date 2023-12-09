@@ -9,7 +9,13 @@ yet production ready.
 from numba.core.imputils import Registry
 
 from .decorators import kernel
-from .dpcpp_iface import AddressSpace, AtomicRef, MemoryOrder, MemoryScope
+from .dpcpp_iface import (
+    AddressSpace,
+    AtomicRef,
+    MemoryOrder,
+    MemoryScope,
+    atomic_fence,
+)
 from .dpcpp_types import AtomicRefType
 from .kernel_dispatcher import KernelDispatcher
 from .launcher import call_kernel
@@ -30,6 +36,7 @@ def dpex_dispatcher_const(context):
 
 
 __all__ = [
+    "atomic_fence",
     "kernel",
     "call_kernel",
     "AddressSpace",

@@ -11,16 +11,18 @@ from numba_dpex.core.targets.kernel_target import (
 from ._spv_atomic_helper import get_memory_semantics_mask, get_scope
 
 
-class AtomicFence(object):
-    """The class provides the ability to perform atomic fence operations in a
-    kernel function. The class is modeled after the ``sycl::atomic_fence``.
+def atomic_fence(memory_order, memory_scope):
+    """The function for performing memory fence across all work-items.
+    Modeled after ``sycl::atomic_fence`` function.
+
+    Args:
+    memory_order: The memory synchronization order.
+
+    memory_scope: The set of work-items and devices to which
+    the memory ordering constraints of a given atomic operation apply.
 
     """
-
-    def __init__(self, ref, memory_order, memory_scope):
-        self._memory_order = memory_order
-        self._memory_scope = memory_scope
-        self._ref = ref
+    pass
 
 
 @intrinsic(target=DPEX_KERNEL_TARGET_NAME)
@@ -56,7 +58,7 @@ def _intrinsic_atomic_fence(ty_context, ty_spirv_mem_sem_mask, ty_spirv_scope):
 
 
 @overload(
-    AtomicFence,
+    atomic_fence,
     prefer_literal=True,
     inline="always",
     target=DPEX_KERNEL_TARGET_NAME,
