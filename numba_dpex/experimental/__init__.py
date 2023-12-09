@@ -15,6 +15,8 @@ from .dpcpp_iface import (
     MemoryOrder,
     MemoryScope,
     atomic_fence,
+    group_barrier,
+    sub_group_barrier,
 )
 from .dpcpp_types import AtomicRefType
 from .kernel_dispatcher import KernelDispatcher
@@ -37,6 +39,8 @@ def dpex_dispatcher_const(context):
 
 __all__ = [
     "atomic_fence",
+    "group_barrier",
+    "sub_group_barrier",
     "kernel",
     "call_kernel",
     "AddressSpace",
