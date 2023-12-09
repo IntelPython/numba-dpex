@@ -386,3 +386,15 @@ class UnsupportedParforError(Exception):
         if extra_msg:
             self.message += " due to " + extra_msg
         super().__init__(self.message)
+
+
+class IllegalIntEnumLiteralValueError(Exception):
+    """Exception raised when an IntEnumLiteral is attempted to be created from
+    a non FlagEnum attribute.
+    """
+
+    def __init__(self) -> None:
+        self.message = (
+            "An IntEnumLiteral can only be initialized from a FlagEnum member"
+        )
+        super().__init__(self.message)
