@@ -8,6 +8,7 @@ prototyping SYCL-like kernels in pure Python before compiling them using
 numba_dpex.kernel.
 """
 
+from .atomic_ref import AtomicRef
 from .memory_enums import AddressSpace, MemoryOrder, MemoryScope
 
-__all__ = ["AddressSpace", "MemoryOrder", "MemoryScope"]
+__all__ = ["AddressSpace", "AtomicRef", "MemoryOrder", "MemoryScope"]
