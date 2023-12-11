@@ -34,7 +34,9 @@ def test_inline_threshold_set_using_config():
 
 
 def test_inline_threshold_set_using_decorator_option():
-    """Test setting the inline_threshold value using the kernel decorator flag"""
+    """
+    Test setting the inline_threshold value using the kernel decorator flag
+    """
 
     disp = dpex_exp.kernel(inline_threshold=2)(kernel_func)
     flags = compiler.Flags()

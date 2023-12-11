@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import logging
+import warnings
 
 from llvmlite import binding as ll
 from llvmlite import ir as llvmir
@@ -31,7 +31,9 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
 
     @property
     def inline_threshold(self):
-        """The inlining threshold value to be used to optimize the final library"""
+        """
+        The inlining threshold value to be used to optimize the final library.
+        """
         if hasattr(self, "_inline_threshold"):
             return self._inline_threshold
         else:
@@ -41,7 +43,7 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
     def inline_threshold(self, value: int):
         """Returns the current inlining threshold level for the library."""
         if value < 0 or value > 3:
-            logging.warning(
+            warnings.warn(
                 "Unsupported inline threshold. Set a value between 0 and 3"
             )
             self._inline_threshold = 0
@@ -55,7 +57,7 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
         # Make optimization level depending on config.DPEX_OPT variable
         pmb.opt_level = config.DPEX_OPT
         if config.DPEX_OPT > 2:
-            logging.warning(
+            warnings.warn(
                 "Setting NUMBA_DPEX_OPT greater than 2 known to cause issues "
                 + "related to very aggressive optimizations that leads to "
                 + "broken code."
@@ -63,36 +65,14 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
 
         pmb.disable_unit_at_a_time = False
 
-        if config.INLINE_THRESHOLD is not None:
-            # Check if a decorator-level inline threshold was set and use that
-            # instead of the global configuration.
-            if (
-                hasattr(self, "_inline_threshold")
-                and self._inline_threshold > 0
-                and self._inline_threshold <= 3
-            ):
-                logging.warning(
-                    "Setting INLINE_THRESHOLD leads to very aggressive "
-                    + "optimizations that may produce incorrect binary."
+        if hasattr(self, "_inline_threshold") and self._inline_threshold > 0:
+            if self._inline_threshold >= 3:
+                warnings.warn(
+                    "Due to an existing compiler bug, setting INLINE_THRESHOLD "
+                    f"to {self._inline_threshold} can lead to incorrect "
+                    "code generation on certain devices."
                 )
-                pmb.inlining_threshold = self._inline_threshold
-            elif not hasattr(self, "_inline_threshold"):
-                logging.warning(
-                    "Setting INLINE_THRESHOLD leads to very aggressive "
-                    + "optimizations that may produce incorrect binary."
-                )
-                pmb.inlining_threshold = config.INLINE_THRESHOLD
-        else:
-            if (
-                hasattr(self, "_inline_threshold")
-                and self._inline_threshold > 0
-                and self._inline_threshold <= 3
-            ):
-                logging.warning(
-                    "Setting INLINE_THRESHOLD leads to very aggressive "
-                    + "optimizations that may produce incorrect binary."
-                )
-                pmb.inlining_threshold = self._inline_threshold
+            pmb.inlining_threshold = self._inline_threshold
 
         pmb.disable_unroll_loops = True
         pmb.loop_vectorize = False
