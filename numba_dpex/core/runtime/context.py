@@ -471,3 +471,56 @@ class DpexRTContext(object):
         ret = builder.call(fn, args)
 
         return ret
+
+    def build_or_get_kernel(self, builder: llvmir.IRBuilder, args):
+        """Inserts LLVM IR to call build_or_get_kernel.
+
+        DPCTLSyclKernelRef
+        DPEXRT_build_or_get_kernel(
+            const DPCTLSyclContextRef ctx,
+            const DPCTLSyclDeviceRef dev,
+            size_t il_hash,
+            const char *il,
+            size_t il_length,
+            const char *compile_opts,
+            const char *kernel_name,
+        );
+
+        """
+        mod = builder.module
+
+        func_ty = llvmir.FunctionType(
+            cgutils.voidptr_t,
+            [
+                cgutils.voidptr_t,
+                cgutils.voidptr_t,
+                llvmir.IntType(64),
+                cgutils.voidptr_t,
+                llvmir.IntType(64),
+                cgutils.voidptr_t,
+                cgutils.voidptr_t,
+            ],
+        )
+        fn = cgutils.get_or_insert_function(
+            mod, func_ty, "DPEXRT_build_or_get_kernel"
+        )
+        ret = builder.call(fn, args)
+
+        return ret
+
+    def kernel_cache_size(self, builder: llvmir.IRBuilder):
+        """Inserts LLVM IR to call kernel_cache_size.
+
+        size_t DPEXRT_kernel_cache_size();
+
+        """
+        fn = cgutils.get_or_insert_function(
+            builder.module,
+            llvmir.FunctionType(
+                llvmir.IntType(64),
+                [],
+            ),
+            "DPEXRT_kernel_cache_size",
+        )
+
+        return builder.call(fn, [])

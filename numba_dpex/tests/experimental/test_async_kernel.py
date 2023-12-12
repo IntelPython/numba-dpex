@@ -8,6 +8,7 @@ import dpnp
 import numba_dpex as dpex
 import numba_dpex.experimental as exp_dpex
 from numba_dpex import Range
+from numba_dpex.experimental import testing
 
 
 @exp_dpex.kernel(
@@ -47,3 +48,12 @@ def test_async_add():
 
     d = a + b
     assert dpnp.array_equal(c, d)
+
+
+def test_async_add_from_cache():
+    test_async_add()  # compile
+    old_size = testing.kernel_cache_size()
+    test_async_add()  # use from cache
+    new_size = testing.kernel_cache_size()
+
+    assert new_size == old_size

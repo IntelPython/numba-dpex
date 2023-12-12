@@ -5,7 +5,7 @@
 //===----------------------------------------------------------------------===//
 ///
 /// \file
-/// Defines dpctl style function(s) that interruct with nrt meminfo and sycl.
+/// Defines dpctl style function(s) that interact with nrt meminfo and sycl.
 ///
 //===----------------------------------------------------------------------===//
 
