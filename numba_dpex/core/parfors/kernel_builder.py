@@ -40,7 +40,7 @@ class ParforKernel:
         signature,
         kernel_args,
         kernel_arg_types,
-        queue,
+        queue: dpctl.SyclQueue,
     ):
         self.name = name
         self.kernel = kernel
@@ -244,7 +244,7 @@ def create_kernel_for_parfor(
     has_aliases,
     races,
     parfor_outputs,
-):
+) -> ParforKernel:
     """
     Creates a numba_dpex.kernel function for a parfor node.
 
@@ -422,7 +422,7 @@ def create_kernel_for_parfor(
     # arrays are on same device. We can take the queue from the first input
     # array and use that to compile the kernel.
 
-    exec_queue = None
+    exec_queue: dpctl.SyclQueue = None
 
     for arg in parfor_args:
         obj = typemap[arg]
