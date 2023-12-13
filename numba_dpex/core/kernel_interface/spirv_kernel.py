@@ -136,6 +136,15 @@ class SpirvKernel(KernelInterface):
         kernel = cres.target_context.prepare_spir_kernel(
             func, cres.signature.args
         )
+
+        # XXX: Setting the inline_threshold in the following way is a temporary
+        # workaround till the JitKernel dispatcher is replaced by
+        # experimental.dispatcher.KernelDispatcher.
+        if config.INLINE_THRESHOLD is not None:
+            cres.library.inline_threshold = config.INLINE_THRESHOLD
+        else:
+            cres.library.inline_threshold = 0
+
         cres.library._optimize_final_module()
         self._llvm_module = kernel.module.__str__()
         self._module_name = kernel.name
