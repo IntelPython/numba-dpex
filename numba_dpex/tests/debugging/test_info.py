@@ -11,7 +11,7 @@ https://www.sourceware.org/gdb/onlinedocs/gdb/Frame-Info.html
 
 import pytest
 
-from numba_dpex.tests._helper import skip_no_gdb, skip_no_numba056
+from numba_dpex.tests._helper import skip_no_gdb
 
 from .common import setup_breakpoint
 from .test_breakpoints import side_by_side_breakpoint
@@ -37,7 +37,6 @@ def side_by_side_case(api):
     )
 
 
-@skip_no_numba056
 @pytest.mark.parametrize(
     "breakpoint, script, expected_line, expected_args, expected_info",
     [
@@ -97,8 +96,6 @@ def test_info_args(
     app.child.expect(expected_whatis)
 
 
-@pytest.mark.xfail  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
-@skip_no_numba056
 def test_info_functions(app):
     expected_line = r"13\s+i = dpex.get_global_id\(0\)"
     setup_breakpoint(app, "simple_sum.py:13", expected_line=expected_line)
@@ -149,7 +146,6 @@ def side_by_side_2_info_locals_case(api):
     )
 
 
-@skip_no_numba056
 @pytest.mark.parametrize(
     "env, breakpoint, script, expected_line, expected_info_locals, expected_info",
     [

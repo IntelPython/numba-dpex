@@ -12,7 +12,7 @@ https://www.sourceware.org/gdb/onlinedocs/gdb/Set-Breaks.html
 
 import pytest
 
-from numba_dpex.tests._helper import skip_no_gdb, skip_no_numba056
+from numba_dpex.tests._helper import skip_no_gdb
 
 from .common import breakpoint_by_function, breakpoint_by_mark, setup_breakpoint
 
@@ -43,7 +43,6 @@ breakpoint_api_cases = [
 ]
 
 
-@skip_no_numba056
 @pytest.mark.parametrize("breakpoint, api", breakpoint_api_cases)
 def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
     """Function breakpoints and argument initializing
