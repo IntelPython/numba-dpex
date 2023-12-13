@@ -22,7 +22,7 @@ from numba_dpex.core.utils.kernel_launcher import KernelLaunchIRBuilder
 
 from ..exceptions import UnsupportedParforError
 from ..types.dpnp_ndarray_type import DpnpNdArray
-from .kernel_builder import create_kernel_for_parfor
+from .kernel_builder import ParforKernel, create_kernel_for_parfor
 from .reduction_kernel_builder import (
     create_reduction_main_kernel_for_parfor,
     create_reduction_remainder_kernel_for_parfor,
@@ -91,7 +91,9 @@ class ParforLowerImpl:
     for a parfor and submits it to a queue.
     """
 
-    def _build_kernel_arglist(self, kernel_fn, lowerer, kernel_builder):
+    def _build_kernel_arglist(
+        self, kernel_fn, lowerer, kernel_builder: KernelLaunchIRBuilder
+    ):
         """Creates local variables for all the arguments and the argument types
         that are passes to the kernel function.
 
@@ -139,27 +141,15 @@ class ParforLowerImpl:
             arg_types=args_ty_list,
         )
 
-    def _submit_parfor_kernel(
+    def _loop_ranges(
         self,
         lowerer,
-        kernel_fn,
         loop_ranges,
     ):
-        """
-        Adds a call to submit a kernel function into the function body of the
-        current Numba JIT compiled function.
-        """
-        # Ensure that the Python arguments are kept alive for the duration of
-        # the kernel execution
-        keep_alive_kernels.append(kernel_fn.kernel)
-        kernel_builder = KernelLaunchIRBuilder(lowerer.context, lowerer.builder)
-
-        ptr_to_queue_ref = kernel_builder.get_queue(exec_queue=kernel_fn.queue)
-        args = self._build_kernel_arglist(kernel_fn, lowerer, kernel_builder)
-
         # Create a global range over which to submit the kernel based on the
         # loop_ranges of the parfor
         global_range = []
+
         # SYCL ranges can have at max 3 dimension. If the parfor is of a higher
         # dimension then the indexing for the higher dimensions is done inside
         # the kernel.
@@ -176,45 +166,13 @@ class ParforLowerImpl:
 
         local_range = []
 
-        kernel_ref_addr = kernel_fn.kernel.addressof_ref()
-        kernel_ref = lowerer.builder.inttoptr(
-            lowerer.context.get_constant(types.uintp, kernel_ref_addr),
-            cgutils.voidptr_t,
-        )
-        curr_queue_ref = lowerer.builder.load(ptr_to_queue_ref)
+        return global_range, local_range
 
-        # Submit a synchronous kernel
-        kernel_builder.submit_sycl_kernel(
-            sycl_kernel_ref=kernel_ref,
-            sycl_queue_ref=curr_queue_ref,
-            total_kernel_args=args.num_flattened_args,
-            arg_list=args.arg_vals,
-            arg_ty_list=args.arg_types,
-            global_range=global_range,
-            local_range=local_range,
-        )
-
-        # At this point we can free the DPCTLSyclQueueRef (curr_queue)
-        kernel_builder.free_queue(ptr_to_sycl_queue_ref=ptr_to_queue_ref)
-
-    def _submit_reduction_main_parfor_kernel(
+    def _reduction_ranges(
         self,
         lowerer,
-        kernel_fn,
         reductionHelper=None,
     ):
-        """
-        Adds a call to submit the main kernel of a parfor reduction into the
-        function body of the current Numba JIT compiled function.
-        """
-        # Ensure that the Python arguments are kept alive for the duration of
-        # the kernel execution
-        keep_alive_kernels.append(kernel_fn.kernel)
-        kernel_builder = KernelLaunchIRBuilder(lowerer.context, lowerer.builder)
-
-        ptr_to_queue_ref = kernel_builder.get_queue(exec_queue=kernel_fn.queue)
-
-        args = self._build_kernel_arglist(kernel_fn, lowerer, kernel_builder)
         # Create a global range over which to submit the kernel based on the
         # loop_ranges of the parfor
         global_range = []
@@ -228,45 +186,9 @@ class ParforLowerImpl:
             _load_range(lowerer, reductionHelper.work_group_size)
         )
 
-        kernel_ref_addr = kernel_fn.kernel.addressof_ref()
-        kernel_ref = lowerer.builder.inttoptr(
-            lowerer.context.get_constant(types.uintp, kernel_ref_addr),
-            cgutils.voidptr_t,
-        )
-        curr_queue_ref = lowerer.builder.load(ptr_to_queue_ref)
+        return global_range, local_range
 
-        # Submit a synchronous kernel
-        kernel_builder.submit_sycl_kernel(
-            sycl_kernel_ref=kernel_ref,
-            sycl_queue_ref=curr_queue_ref,
-            total_kernel_args=args.num_flattened_args,
-            arg_list=args.arg_vals,
-            arg_ty_list=args.arg_types,
-            global_range=global_range,
-            local_range=local_range,
-        )
-
-        # At this point we can free the DPCTLSyclQueueRef (curr_queue)
-        kernel_builder.free_queue(ptr_to_sycl_queue_ref=ptr_to_queue_ref)
-
-    def _submit_reduction_remainder_parfor_kernel(
-        self,
-        lowerer,
-        kernel_fn,
-    ):
-        """
-        Adds a call to submit the remainder kernel of a parfor reduction into
-        the function body of the current Numba JIT compiled function.
-        """
-        # Ensure that the Python arguments are kept alive for the duration of
-        # the kernel execution
-        keep_alive_kernels.append(kernel_fn.kernel)
-
-        kernel_builder = KernelLaunchIRBuilder(lowerer.context, lowerer.builder)
-
-        ptr_to_queue_ref = kernel_builder.get_queue(exec_queue=kernel_fn.queue)
-
-        args = self._build_kernel_arglist(kernel_fn, lowerer, kernel_builder)
+    def _remainder_ranges(self, lowerer):
         # Create a global range over which to submit the kernel based on the
         # loop_ranges of the parfor
         global_range = []
@@ -276,6 +198,27 @@ class ParforLowerImpl:
         global_range.append(stop)
 
         local_range = []
+
+        return global_range, local_range
+
+    def _submit_parfor_kernel(
+        self,
+        lowerer,
+        kernel_fn: ParforKernel,
+        global_range,
+        local_range,
+    ):
+        """
+        Adds a call to submit a kernel function into the function body of the
+        current Numba JIT compiled function.
+        """
+        # Ensure that the Python arguments are kept alive for the duration of
+        # the kernel execution
+        keep_alive_kernels.append(kernel_fn.kernel)
+        kernel_builder = KernelLaunchIRBuilder(lowerer.context, lowerer.builder)
+
+        ptr_to_queue_ref = kernel_builder.get_queue(exec_queue=kernel_fn.queue)
+        args = self._build_kernel_arglist(kernel_fn, lowerer, kernel_builder)
 
         kernel_ref_addr = kernel_fn.kernel.addressof_ref()
         kernel_ref = lowerer.builder.inttoptr(
@@ -360,10 +303,15 @@ class ParforLowerImpl:
             parfor_reddict,
         )
 
-        self._submit_reduction_main_parfor_kernel(
+        global_range, local_range = self._reduction_ranges(
+            lowerer, reductionHelperList[0]
+        )
+
+        self._submit_parfor_kernel(
             lowerer,
             parfor_kernel,
-            reductionHelperList[0],
+            global_range,
+            local_range,
         )
 
         parfor_kernel = create_reduction_remainder_kernel_for_parfor(
@@ -376,9 +324,13 @@ class ParforLowerImpl:
             reductionHelperList,
         )
 
-        self._submit_reduction_remainder_parfor_kernel(
+        global_range, local_range = self._remainder_ranges(lowerer)
+
+        self._submit_parfor_kernel(
             lowerer,
             parfor_kernel,
+            global_range,
+            local_range,
         )
 
         reductionKernelVar.copy_final_sum_to_host(parfor_kernel)
@@ -492,11 +444,14 @@ class ParforLowerImpl:
                 # FIXME: Make the exception more informative
                 raise UnsupportedParforError
 
+            global_range, local_range = self._loop_ranges(lowerer, loop_ranges)
+
             # Finally submit the kernel
             self._submit_parfor_kernel(
                 lowerer,
                 parfor_kernel,
-                loop_ranges,
+                global_range,
+                local_range,
             )
 
         # TODO: free the kernel at this point
