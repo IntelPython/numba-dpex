@@ -12,7 +12,7 @@ def foo(a):
     a[dpex.get_global_id(0)] = 0
 
 
-def test_opt_warning(caplog):
+def test_opt_warning():
     bkp = config.DPEX_OPT
     config.DPEX_OPT = 3
 
@@ -22,7 +22,7 @@ def test_opt_warning(caplog):
     config.DPEX_OPT = bkp
 
 
-def test_inline_warning(caplog):
+def test_inline_threshold_eq_3_warning():
     bkp = config.INLINE_THRESHOLD
     config.INLINE_THRESHOLD = 3
 
@@ -32,7 +32,27 @@ def test_inline_warning(caplog):
     config.INLINE_THRESHOLD = bkp
 
 
-def test_no_warning(caplog):
+def test_inline_threshold_negative_val_warning_():
+    bkp = config.INLINE_THRESHOLD
+    config.INLINE_THRESHOLD = -1
+
+    with pytest.warns(UserWarning):
+        foo[dpex.Range(10)](dpnp.arange(10))
+
+    config.INLINE_THRESHOLD = bkp
+
+
+def test_inline_threshold_gt_3_warning():
+    bkp = config.INLINE_THRESHOLD
+    config.INLINE_THRESHOLD = 4
+
+    with pytest.warns(UserWarning):
+        foo[dpex.Range(10)](dpnp.arange(10))
+
+    config.INLINE_THRESHOLD = bkp
+
+
+def test_no_warning():
     with warnings.catch_warnings():
         warnings.simplefilter("error")
         foo[dpex.Range(10)](dpnp.arange(10))

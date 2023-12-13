@@ -48,6 +48,12 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
             )
             self._inline_threshold = 0
         else:
+            if value == 3:
+                warnings.warn(
+                    "Due to an existing compiler bug, setting INLINE_THRESHOLD "
+                    f"to {value} can lead to incorrect code generation on "
+                    "certain devices."
+                )
             self._inline_threshold = value
 
     def _optimize_final_module(self):
@@ -64,15 +70,7 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
             )
 
         pmb.disable_unit_at_a_time = False
-
-        if hasattr(self, "_inline_threshold") and self._inline_threshold > 0:
-            if self._inline_threshold >= 3:
-                warnings.warn(
-                    "Due to an existing compiler bug, setting INLINE_THRESHOLD "
-                    f"to {self._inline_threshold} can lead to incorrect "
-                    "code generation on certain devices."
-                )
-            pmb.inlining_threshold = self._inline_threshold
+        pmb.inlining_threshold = self.inline_threshold
 
         pmb.disable_unroll_loops = True
         pmb.loop_vectorize = False
