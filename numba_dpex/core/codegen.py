@@ -70,7 +70,13 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
             )
 
         pmb.disable_unit_at_a_time = False
-        pmb.inlining_threshold = self.inline_threshold
+
+        # The PassManagerBuilder's inlining_threshold property is set only when
+        # inline_threshold is g.t. 0. Doing otherwise, *i.e.*, setting the
+        # pmb.inlining_threshold to 0 will lead to at minimum `alwaysinline`
+        # pass to run.
+        if self.inline_threshold > 0:
+            pmb.inlining_threshold = self.inline_threshold
 
         pmb.disable_unroll_loops = True
         pmb.loop_vectorize = False
