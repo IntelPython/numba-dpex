@@ -12,7 +12,7 @@ from llvmlite import ir as llvmir
 from numba import typeof
 from numba.core import cgutils, funcdesc, types, typing, utils
 from numba.core.base import BaseContext
-from numba.core.callconv import MinimalCallConv
+from numba.core.callconv import MinimalCallConv, _const_int
 from numba.core.registry import cpu_target
 from numba.core.target_extension import GPU, target_registry
 from numba.core.types import Array as NpArrayType
@@ -442,6 +442,44 @@ class DpexCallConv(MinimalCallConv):
     :class:`DpexCallConv` overrides :func:`call_function`.
 
     """
+
+    def return_user_exc(
+        self, builder, exc, exc_args=None, loc=None, func_name=None
+    ):
+        # if exc is not None and not issubclass(exc, BaseException):
+        #     raise TypeError(
+        #         "exc should be None or exception class, got %r" % (exc,) # noqa: E800
+        #     ) # noqa: E800
+        # if exc_args is not None and not isinstance(exc_args, tuple):
+        #     raise TypeError(
+        #         "exc_args should be None or tuple, got %r" % (exc_args,) # noqa: E800
+        #     ) # noqa: E800
+        if issubclass(exc, AssertionError):
+            raise NotImplementedError(
+                "The 'assert' statement is not allowed in numba-dpex kernel."
+            )
+        if issubclass(exc, BaseException):
+            raise NotImplementedError(
+                "The 'raise' statement is not allowed in numba-dpex kernel."
+            )
+        print(f"exc = {exc}")
+
+        # Build excinfo struct
+        # if loc is not None:
+        #     fname = loc._raw_function_name() # noqa: E800
+        #     if fname is None:
+        #         # could be exec(<string>) or REPL, try func_name
+        #         fname = func_name # noqa: E800
+
+        #     locinfo = (fname, loc.filename, loc.line) # noqa: E800
+        #     if None in locinfo:
+        #         locinfo = None # noqa: E800
+        # else: # noqa: E800
+        #     locinfo = None # noqa: E800
+
+        # call_helper = self._get_call_helper(builder) # noqa: E800
+        # exc_id = call_helper._add_exception(exc, exc_args, locinfo) # noqa: E800
+        # self._return_errcode_raw(builder, _const_int(exc_id)) # noqa: E800
 
     def call_function(self, builder, callee, resty, argtys, args, env=None):
         """Call the Numba-compiled *callee*."""
