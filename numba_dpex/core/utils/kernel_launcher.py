@@ -5,6 +5,8 @@
 """Module that contains numba style wrapper around sycl kernel submit."""
 
 from dataclasses import dataclass
+from functools import cached_property
+from typing import NamedTuple, Union
 
 import dpctl
 from llvmlite import ir as llvmir
@@ -12,14 +14,27 @@ from llvmlite.ir.builder import IRBuilder
 from numba.core import cgutils, types
 from numba.core.cpu import CPUContext
 from numba.core.datamodel import DataModelManager
+from numba.core.types.containers import UniTuple
 
 from numba_dpex import config, utils
+from numba_dpex.core.exceptions import UnreachableError
 from numba_dpex.core.runtime.context import DpexRTContext
 from numba_dpex.core.types import DpnpNdArray
+from numba_dpex.core.types.range_types import NdRangeType, RangeType
 from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
 from numba_dpex.dpctl_iface._helpers import numba_type_to_dpctl_typenum
+from numba_dpex.utils import create_null_ptr
 
 MAX_SIZE_OF_SYCL_RANGE = 3
+
+
+# TODO: probably not best place for it. Should be in kernel_dispatcher once we
+# get merge experimental. Right now it will cause cyclic import
+class SPIRVKernelModule(NamedTuple):
+    """Represents SPIRV binary code and function name in this binary"""
+
+    kernel_name: str
+    kernel_bitcode: bytes
 
 
 @dataclass
@@ -62,6 +77,22 @@ class _KernelLaunchIRArguments:  # pylint: disable=too-many-instance-attributes
         return res
 
 
+@dataclass
+class _KernelLaunchIRCachedArguments:
+    """Arguments that are being used in KernelLaunchIRBuilder that are either
+    intermediate structure of the KernelLaunchIRBuilder like llvm IR array
+    stored as a python array of llvm IR values or llvm IR values that may be
+    used as an input for builder functions.
+
+    Main goal is to prevent passing same argument during build process several
+    times and to avoid passing output of the builder as an argument for another
+    build method."""
+
+    arg_list: list[llvmir.Instruction] = None
+    arg_ty_list: list[types.Type] = None
+    device_event_ref: llvmir.Instruction = None
+
+
 class KernelLaunchIRBuilder:
     """
     KernelLaunchIRBuilder(lowerer, cres)
@@ -86,9 +117,16 @@ class KernelLaunchIRBuilder:
         """
         self.context = context
         self.builder = builder
-        self.rtctx = DpexRTContext(self.context)
         self.arguments = _KernelLaunchIRArguments()
+        self.cached_arguments = _KernelLaunchIRCachedArguments()
         self.kernel_dmm = kernel_dmm
+        self._cleanups = []
+
+    @cached_property
+    def dpexrt(self):
+        """Dpex runtime context."""
+
+        return DpexRTContext(self.context)
 
     def _build_nullptr(self):
         """Builds the LLVM IR to represent a null pointer.
@@ -329,7 +367,7 @@ class KernelLaunchIRBuilder:
         # Store the queue returned by DPEXRTQueue_CreateFromFilterString in a
         # local variable
         self.builder.store(
-            self.rtctx.get_queue_from_filter_string(
+            self.dpexrt.get_queue_from_filter_string(
                 builder=self.builder, device=device
             ),
             sycl_queue_val,
@@ -413,9 +451,75 @@ class KernelLaunchIRBuilder:
         """Sets kernel to the argument list."""
         self.arguments.sycl_kernel_ref = sycl_kernel_ref
 
+    def set_kernel_from_spirv(self, kernel_module: SPIRVKernelModule):
+        """Sets kernel to the argument list from the SPIRV bytecode.
+
+        It pastes bytecode as a constant string and create kernel bundle from it
+        using SYCL API. It caches kernel, so it won't be sent to device second
+        time.
+        """
+        # Inserts a global constant byte string in the current LLVM module to
+        # store the passed in SPIR-V binary blob.
+        queue_ref = self.arguments.sycl_queue_ref
+
+        kernel_bc_byte_str = self.context.insert_const_bytes(
+            self.builder.module,
+            bytes=kernel_module.kernel_bitcode,
+        )
+
+        kernel_name = self.context.insert_const_string(
+            self.builder.module, kernel_module.kernel_name
+        )
+
+        context_ref = sycl.dpctl_queue_get_context(self.builder, queue_ref)
+        device_ref = sycl.dpctl_queue_get_device(self.builder, queue_ref)
+
+        # build_or_get_kernel steals reference to context and device cause it
+        # needs to keep them alive for keys.
+        kernel_ref = self.dpexrt.build_or_get_kernel(
+            self.builder,
+            [
+                context_ref,
+                device_ref,
+                llvmir.Constant(
+                    llvmir.IntType(64), hash(kernel_module.kernel_bitcode)
+                ),
+                kernel_bc_byte_str,
+                llvmir.Constant(
+                    llvmir.IntType(64), len(kernel_module.kernel_bitcode)
+                ),
+                self.builder.load(create_null_ptr(self.builder, self.context)),
+                kernel_name,
+            ],
+        )
+
+        self._cleanups.append(self._clean_kernel_ref)
+        self.set_kernel(kernel_ref)
+
+    def _clean_kernel_ref(self):
+        sycl.dpctl_kernel_delete(self.builder, self.arguments.sycl_kernel_ref)
+        self.arguments.sycl_kernel_ref = None
+
     def set_queue(self, sycl_queue_ref: llvmir.Instruction):
         """Sets queue to the argument list."""
         self.arguments.sycl_queue_ref = sycl_queue_ref
+
+    def set_queue_from_arguments(
+        self,
+    ):
+        """Sets the sycl queue from the first DpnpNdArray argument provided
+        earlier."""
+        queue_ref = get_queue_from_llvm_values(
+            self.context,
+            self.builder,
+            self.cached_arguments.arg_ty_list,
+            self.cached_arguments.arg_list,
+        )
+
+        if queue_ref is None:
+            raise ValueError("There are no arguments that contain queue")
+
+        self.set_queue(queue_ref)
 
     def set_range(
         self,
@@ -430,10 +534,52 @@ class KernelLaunchIRBuilder:
             types.uintp, len(global_range)
         )
 
+    def set_range_from_indexer(
+        self,
+        ty_indexer_arg: Union[RangeType, NdRangeType],
+        ll_index_arg: llvmir.BaseStructType,
+    ):
+        """Returns two lists of LLVM IR Values that hold the unboxed extents of
+        a Python Range or NdRange object.
+        """
+        ndim = ty_indexer_arg.ndim
+        global_range_extents = []
+        local_range_extents = []
+        indexer_datamodel = self.context.data_model_manager.lookup(
+            ty_indexer_arg
+        )
+
+        if isinstance(ty_indexer_arg, RangeType):
+            for dim_num in range(ndim):
+                dim_pos = indexer_datamodel.get_field_position(
+                    "dim" + str(dim_num)
+                )
+                global_range_extents.append(
+                    self.builder.extract_value(ll_index_arg, dim_pos)
+                )
+        elif isinstance(ty_indexer_arg, NdRangeType):
+            for dim_num in range(ndim):
+                gdim_pos = indexer_datamodel.get_field_position(
+                    "gdim" + str(dim_num)
+                )
+                global_range_extents.append(
+                    self.builder.extract_value(ll_index_arg, gdim_pos)
+                )
+                ldim_pos = indexer_datamodel.get_field_position(
+                    "ldim" + str(dim_num)
+                )
+                local_range_extents.append(
+                    self.builder.extract_value(ll_index_arg, ldim_pos)
+                )
+        else:
+            raise UnreachableError
+
+        self.set_range(global_range_extents, local_range_extents)
+
     def set_arguments(
         self,
-        ty_kernel_args: list,
-        kernel_args: list,
+        ty_kernel_args: list[types.Type],
+        kernel_args: list[llvmir.Instruction],
     ):
         """Sets flattened kernel args, kernel arg types and number of those
         arguments to the argument list."""
@@ -442,6 +588,9 @@ class KernelLaunchIRBuilder:
                 self.builder,
                 "DPEX-DEBUG: Populating kernel args and arg type arrays.\n",
             )
+
+        self.cached_arguments.arg_ty_list = ty_kernel_args
+        self.cached_arguments.arg_list = kernel_args
 
         num_flattened_kernel_args = self._get_num_flattened_kernel_args(
             kernel_argtys=ty_kernel_args,
@@ -475,6 +624,34 @@ class KernelLaunchIRBuilder:
             types.uintp, num_flattened_kernel_args
         )
 
+    def _extract_arguments_from_tuple(
+        self,
+        ty_kernel_args_tuple: UniTuple,
+        ll_kernel_args_tuple: llvmir.Instruction,
+    ) -> list[llvmir.Instruction]:
+        """Extracts LLVM IR values from llvm tuple into python array."""
+
+        kernel_args = []
+        for pos in range(len(ty_kernel_args_tuple)):
+            kernel_args.append(
+                self.builder.extract_value(ll_kernel_args_tuple, pos)
+            )
+
+        return kernel_args
+
+    def set_arguments_form_tuple(
+        self,
+        ty_kernel_args_tuple: UniTuple,
+        ll_kernel_args_tuple: llvmir.Instruction,
+    ):
+        """Sets flattened kernel args, kernel arg types and number of those
+        arguments to the argument list based on the arguments stored in tuple.
+        """
+        kernel_args = self._extract_arguments_from_tuple(
+            ty_kernel_args_tuple, ll_kernel_args_tuple
+        )
+        self.set_arguments(ty_kernel_args_tuple, kernel_args)
+
     def set_dependant_event_list(self, dep_events: list[llvmir.Instruction]):
         """Sets dependant events to the argument list."""
         if self.arguments.dep_events is not None:
@@ -499,11 +676,86 @@ class KernelLaunchIRBuilder:
         args = self.arguments.to_list()
 
         if self.arguments.local_range is None:
-            eref = sycl.dpctl_queue_submit_range(self.builder, *args)
+            event_ref = sycl.dpctl_queue_submit_range(self.builder, *args)
         else:
-            eref = sycl.dpctl_queue_submit_ndrange(self.builder, *args)
+            event_ref = sycl.dpctl_queue_submit_ndrange(self.builder, *args)
 
-        return eref
+        self.cached_arguments.device_event_ref = event_ref
+
+        for cleanup in self._cleanups:
+            cleanup()
+
+        return event_ref
+
+    def _allocate_meminfo_array(
+        self,
+    ) -> tuple[int, list[llvmir.Instruction]]:
+        """Allocates an LLVM array value to store each memory info from all
+        kernel arguments. The array is the populated with the LLVM value for
+        every meminfo of the kernel arguments.
+        """
+        kernel_args = self.cached_arguments.arg_list
+        kernel_argtys = self.cached_arguments.arg_ty_list
+
+        meminfos = []
+        for arg_num, argtype in enumerate(kernel_argtys):
+            llvm_val = kernel_args[arg_num]
+
+            meminfos += [
+                meminfo
+                for ty, meminfo in self.context.nrt.get_meminfos(
+                    self.builder, argtype, llvm_val
+                )
+            ]
+
+        meminfo_list = cgutils.alloca_once(
+            self.builder,
+            utils.get_llvm_type(context=self.context, type=types.voidptr),
+            size=self.context.get_constant(types.uintp, len(meminfos)),
+        )
+
+        for meminfo_num, meminfo in enumerate(meminfos):
+            meminfo_arg_dst = self.builder.gep(
+                meminfo_list,
+                [self.context.get_constant(types.int32, meminfo_num)],
+            )
+            meminfo_ptr = self.builder.bitcast(
+                meminfo,
+                utils.get_llvm_type(context=self.context, type=types.voidptr),
+            )
+            self.builder.store(meminfo_ptr, meminfo_arg_dst)
+
+        return len(meminfos), meminfo_list
+
+    def acquire_meminfo_and_submit_release(
+        self,
+    ) -> llvmir.Instruction:
+        """Schedule sycl host task to release nrt meminfo of the arguments used
+        to run job. Use it to keep arguments alive during kernel execution."""
+        queue_ref = self.arguments.sycl_queue_ref
+        event_ref = self.cached_arguments.device_event_ref
+
+        total_meminfos, meminfo_list = self._allocate_meminfo_array()
+
+        event_ref_ptr = self.builder.alloca(event_ref.type)
+        self.builder.store(event_ref, event_ref_ptr)
+
+        status_ptr = cgutils.alloca_once(
+            self.builder, self.context.get_value_type(types.uint64)
+        )
+        host_eref = self.dpexrt.acquire_meminfo_and_schedule_release(
+            self.builder,
+            [
+                self.context.nrt.get_nrt_api(self.builder),
+                queue_ref,
+                meminfo_list,
+                self.context.get_constant(types.uintp, total_meminfos),
+                event_ref_ptr,
+                self.context.get_constant(types.uintp, 1),
+                status_ptr,
+            ],
+        )
+        return host_eref
 
     def _get_num_flattened_kernel_args(
         self,
@@ -571,3 +823,26 @@ class KernelLaunchIRBuilder:
                         kernel_arg_num,
                     )
                     kernel_arg_num += 1
+
+
+def get_queue_from_llvm_values(
+    ctx: CPUContext,
+    builder: IRBuilder,
+    ty_kernel_args: list[types.Type],
+    ll_kernel_args: list[llvmir.Instruction],
+):
+    """
+    Get the sycl queue from the first DpnpNdArray argument. Prior passes
+    before lowering make sure that compute-follows-data is enforceable
+    for a specific call to a kernel. As such, at the stage of lowering
+    the queue from the first DpnpNdArray argument can be extracted.
+    """
+    for arg_num, argty in enumerate(ty_kernel_args):
+        if isinstance(argty, DpnpNdArray):
+            llvm_val = ll_kernel_args[arg_num]
+            datamodel = ctx.data_model_manager.lookup(argty)
+            sycl_queue_attr_pos = datamodel.get_field_position("sycl_queue")
+            queue_ref = builder.extract_value(llvm_val, sycl_queue_attr_pos)
+            break
+
+    return queue_ref
