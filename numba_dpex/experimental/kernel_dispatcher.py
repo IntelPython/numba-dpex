@@ -10,27 +10,32 @@ from contextlib import ExitStack
 from typing import Tuple
 
 import numba.core.event as ev
+from llvmlite.binding.value import ValueRef
 from numba.core import errors, sigutils, types
 from numba.core.compiler import CompileResult, Flags
 from numba.core.compiler_lock import global_compiler_lock
 from numba.core.dispatcher import Dispatcher, _FunctionCompiler
+from numba.core.funcdesc import PythonFunctionDescriptor
 from numba.core.target_extension import dispatcher_registry, target_registry
 from numba.core.types import void
 from numba.core.typing.typeof import Purpose, typeof
 
 from numba_dpex import config, spirv_generator
+from numba_dpex.core.codegen import SPIRVCodeLibrary
 from numba_dpex.core.exceptions import (
     ExecutionQueueInferenceError,
     KernelHasReturnValueError,
     UnsupportedKernelArgumentError,
 )
 from numba_dpex.core.pipelines import kernel_compiler
-from numba_dpex.core.targets.kernel_target import CompilationMode
+from numba_dpex.core.targets.kernel_target import (
+    CompilationMode,
+    DpexKernelTargetContext,
+)
 from numba_dpex.core.types import DpnpNdArray
+from numba_dpex.core.utils import kernel_launcher as kl
 
 from .target import DPEX_KERNEL_EXP_TARGET_NAME, dpex_exp_kernel_target
-
-_KernelModule = namedtuple("_KernelModule", ["kernel_name", "kernel_bitcode"])
 
 _KernelCompileResult = namedtuple(
     "_KernelCompileResult", CompileResult._fields + ("kernel_device_ir_module",)
@@ -76,9 +81,14 @@ class _KernelCompiler(_FunctionCompiler):
             )
 
     def _compile_to_spirv(
-        self, kernel_library, kernel_fndesc, kernel_targetctx
+        self,
+        kernel_library: SPIRVCodeLibrary,
+        kernel_fndesc: PythonFunctionDescriptor,
+        kernel_targetctx: DpexKernelTargetContext,
     ):
-        kernel_func = kernel_library.get_function(kernel_fndesc.llvm_func_name)
+        kernel_func: ValueRef = kernel_library.get_function(
+            kernel_fndesc.llvm_func_name
+        )
 
         # Create a spir_kernel wrapper function
         kernel_fn = kernel_targetctx.prepare_spir_kernel(
@@ -103,11 +113,11 @@ class _KernelCompiler(_FunctionCompiler):
             kernel_library.final_module,
             kernel_library.final_module.as_bitcode(),
         )
-        return _KernelModule(
+        return kl.SPIRVKernelModule(
             kernel_name=kernel_fn.name, kernel_bitcode=kernel_spirv_module
         )
 
-    def compile(self, args, return_type):
+    def compile(self, args, return_type) -> _KernelCompileResult:
         status, kcres = self._compile_cached(args, return_type)
         if status:
             return kcres
@@ -160,8 +170,10 @@ class _KernelCompiler(_FunctionCompiler):
                 self.targetoptions["_compilation_mode"]
                 == CompilationMode.KERNEL
             ):
-                kernel_device_ir_module: _KernelModule = self._compile_to_spirv(
-                    cres.library, cres.fndesc, cres.target_context
+                kernel_device_ir_module: kl.SPIRVKernelModule = (
+                    self._compile_to_spirv(
+                        cres.library, cres.fndesc, cres.target_context
+                    )
                 )
             else:
                 kernel_device_ir_module = None
@@ -329,14 +341,17 @@ class KernelDispatcher(Dispatcher):
                 # Add code to enable on disk caching of a binary spirv kernel.
                 # Refer: https://github.com/IntelPython/numba-dpex/issues/1197
                 self._cache_misses[sig] += 1
-                ev_details = {
-                    "dispatcher": self,
-                    "args": args,
-                    "return_type": return_type,
-                }
-                with ev.trigger_event("numba_dpex:compile", data=ev_details):
+                with ev.trigger_event(
+                    "numba_dpex:compile",
+                    data={
+                        "dispatcher": self,
+                        "args": args,
+                        "return_type": return_type,
+                    },
+                ):
                     try:
-                        kcres: _KernelCompileResult = self._compiler.compile(
+                        compiler: _KernelCompiler = self._compiler
+                        kcres: _KernelCompileResult = compiler.compile(
                             args, return_type
                         )
                     except errors.ForceLiteralArg as e:
