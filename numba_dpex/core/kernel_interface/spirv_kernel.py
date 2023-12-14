@@ -10,6 +10,7 @@ from numba.core import ir
 from numba_dpex import config, spirv_generator
 from numba_dpex.core.compiler import compile_with_dpex
 from numba_dpex.core.exceptions import UncompiledKernelError, UnreachableError
+from numba_dpex.core.targets.kernel_target import DpexKernelTargetContext
 
 from .kernel_base import KernelInterface
 
@@ -133,9 +134,8 @@ class SpirvKernel(KernelInterface):
         )
 
         func = cres.library.get_function(cres.fndesc.llvm_func_name)
-        kernel = cres.target_context.prepare_spir_kernel(
-            func, cres.signature.args
-        )
+        kernel_targetctx: DpexKernelTargetContext = cres.target_context
+        kernel = kernel_targetctx.prepare_spir_kernel(func, cres.signature.args)
 
         # XXX: Setting the inline_threshold in the following way is a temporary
         # workaround till the JitKernel dispatcher is replaced by
