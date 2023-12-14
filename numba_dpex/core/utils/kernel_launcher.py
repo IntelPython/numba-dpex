@@ -2,14 +2,64 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+"""Module that contains numba style wrapper around sycl kernel submit."""
+
+from dataclasses import dataclass
+
+import dpctl
 from llvmlite import ir as llvmir
+from llvmlite.ir.builder import IRBuilder
 from numba.core import cgutils, types
+from numba.core.cpu import CPUContext
+from numba.core.datamodel import DataModelManager
 
 from numba_dpex import config, utils
 from numba_dpex.core.runtime.context import DpexRTContext
 from numba_dpex.core.types import DpnpNdArray
 from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
 from numba_dpex.dpctl_iface._helpers import numba_type_to_dpctl_typenum
+
+MAX_SIZE_OF_SYCL_RANGE = 3
+
+
+@dataclass
+class _KernelLaunchIRArguments:  # pylint: disable=too-many-instance-attributes
+    """List of kernel launch arguments used in sycl.dpctl_queue_submit_range and
+    sycl.dpctl_queue_submit_ndrange."""
+
+    sycl_kernel_ref: llvmir.Instruction = None
+    sycl_queue_ref: llvmir.Instruction = None
+    arg_list: llvmir.Instruction = None
+    arg_ty_list: llvmir.Instruction = None
+    total_kernel_args: llvmir.Instruction = None
+    global_range: llvmir.Instruction = None
+    local_range: llvmir.Instruction = None
+    range_size: llvmir.Instruction = None
+    dep_events: llvmir.Instruction = None
+    dep_events_len: llvmir.Instruction = None
+
+    def to_list(self):
+        """Returns list of arguments in the right order to pass to
+        sycl.dpctl_queue_submit_range or sycl.dpctl_queue_submit_ndrange."""
+        res = [
+            self.sycl_kernel_ref,
+            self.sycl_queue_ref,
+            self.arg_list,
+            self.arg_ty_list,
+            self.total_kernel_args,
+            self.global_range,
+        ]
+
+        if self.local_range is not None:
+            res += [self.local_range]
+
+        res += [
+            self.range_size,
+            self.dep_events,
+            self.dep_events_len,
+        ]
+
+        return res
 
 
 class KernelLaunchIRBuilder:
@@ -21,7 +71,12 @@ class KernelLaunchIRBuilder:
     for submitting kernels. The LLVM Values that
     """
 
-    def __init__(self, context, builder):
+    def __init__(
+        self,
+        context: CPUContext,
+        builder: IRBuilder,
+        kernel_dmm: DataModelManager,
+    ):
         """Create a KernelLauncher for the specified kernel.
 
         Args:
@@ -32,6 +87,8 @@ class KernelLaunchIRBuilder:
         self.context = context
         self.builder = builder
         self.rtctx = DpexRTContext(self.context)
+        self.arguments = _KernelLaunchIRArguments()
+        self.kernel_dmm = kernel_dmm
 
     def _build_nullptr(self):
         """Builds the LLVM IR to represent a null pointer.
@@ -44,7 +101,7 @@ class KernelLaunchIRBuilder:
             zero, utils.get_llvm_type(context=self.context, type=types.voidptr)
         )
 
-    def _build_array_attr_arg(
+    def _build_array_attr_arg(  # pylint: disable=too-many-arguments
         self,
         array_val,
         array_attr_pos,
@@ -68,7 +125,7 @@ class KernelLaunchIRBuilder:
         ):
             array_attr = self.builder.load(array_attr)
 
-        self.build_arg(
+        self._build_arg(
             val=array_attr,
             ty=array_attr_ty,
             arg_list=arg_list,
@@ -76,7 +133,7 @@ class KernelLaunchIRBuilder:
             arg_num=arg_num,
         )
 
-    def _build_unituple_member_arg(
+    def _build_unituple_member_arg(  # pylint: disable=too-many-arguments
         self, array_val, array_attr_pos, ndims, arg_list, args_ty_list, arg_num
     ):
         array_attr = self.builder.gep(
@@ -97,7 +154,9 @@ class KernelLaunchIRBuilder:
                 arg_num=arg_num + ndim,
             )
 
-    def build_arg(self, val, ty, arg_list, args_ty_list, arg_num):
+    def _build_arg(
+        self, val, ty, arg_list, args_ty_list, arg_num
+    ):  # pylint: disable=too-many-arguments
         """Stores the kernel arguments and the kernel argument types into
         arrays that will be passed to DPCTLQueue_SubmitRange.
 
@@ -128,7 +187,9 @@ class KernelLaunchIRBuilder:
             numba_type_to_dpctl_typenum(self.context, ty), kernel_arg_ty_dst
         )
 
-    def build_complex_arg(self, val, ty, arg_list, args_ty_list, arg_num):
+    def _build_complex_arg(
+        self, val, ty, arg_list, args_ty_list, arg_num
+    ):  # pylint: disable=too-many-arguments
         """Creates a list of LLVM Values for an unpacked complex kernel
         argument.
         """
@@ -151,11 +212,10 @@ class KernelLaunchIRBuilder:
         )
         arg_num += 1
 
-    def build_array_arg(
+    def _build_array_arg(  # pylint: disable=too-many-arguments
         self,
         array_val,
         array_data_model,
-        array_rank,
         arg_list,
         args_ty_list,
         arg_num,
@@ -168,7 +228,7 @@ class KernelLaunchIRBuilder:
         """
         # Argument 1: Null pointer for the NRT_MemInfo attribute of the array
         nullptr = self._build_nullptr()
-        self.build_arg(
+        self._build_arg(
             val=nullptr,
             ty=types.int64,
             arg_list=arg_list,
@@ -178,7 +238,7 @@ class KernelLaunchIRBuilder:
         arg_num += 1
         # Argument 2: Null pointer for the Parent attribute of the array
         nullptr = self._build_nullptr()
-        self.build_arg(
+        self._build_arg(
             val=nullptr,
             ty=types.int64,
             arg_list=arg_list,
@@ -218,7 +278,7 @@ class KernelLaunchIRBuilder:
         arg_num += 1
         # Argument sycl_queue: as the queue pointer is not to be used in a
         # kernel we always pass in a nullptr
-        self.build_arg(
+        self._build_arg(
             val=nullptr,
             ty=types.int64,
             arg_list=arg_list,
@@ -249,7 +309,8 @@ class KernelLaunchIRBuilder:
         )
         arg_num += stride_member.count
 
-    def get_queue(self, exec_queue):
+    # TODO: remove, not part of the builder
+    def get_queue(self, exec_queue: dpctl.SyclQueue) -> llvmir.Instruction:
         """Allocates memory on the stack to store a DPCTLSyclQueueRef.
 
         Returns: A LLVM Value storing the pointer to the SYCL queue created
@@ -273,20 +334,9 @@ class KernelLaunchIRBuilder:
             ),
             sycl_queue_val,
         )
-        return sycl_queue_val
+        return self.builder.load(sycl_queue_val)
 
-    def free_queue(self, ptr_to_sycl_queue_ref):
-        """
-        Frees the ``DPCTLSyclQueueRef`` pointer that was used to launch the
-        kernels.
-
-        Args:
-            sycl_queue_val: The SYCL queue pointer to be freed.
-        """
-        qref = self.builder.load(ptr_to_sycl_queue_ref)
-        sycl.dpctl_queue_delete(self.builder, qref)
-
-    def allocate_kernel_arg_array(self, num_kernel_args):
+    def _allocate_kernel_arg_array(self, num_kernel_args):
         """Allocates an array to store the LLVM Value for every kernel argument.
 
         Args:
@@ -298,13 +348,13 @@ class KernelLaunchIRBuilder:
         """
         args_list = cgutils.alloca_once(
             self.builder,
-            utils.get_llvm_type(context=self.context, type=types.voidptr),
+            utils.LLVMTypes.byte_ptr_t,
             size=self.context.get_constant(types.uintp, num_kernel_args),
         )
 
         return args_list
 
-    def allocate_kernel_arg_ty_array(self, num_kernel_args):
+    def _allocate_kernel_arg_ty_array(self, num_kernel_args):
         """Allocates an array to store the LLVM Value for the typenum for
         every kernel argument.
 
@@ -335,8 +385,6 @@ class KernelLaunchIRBuilder:
         intp_ptr_t = utils.get_llvm_ptr_type(intp_t)
         num_dim = len(idx_range)
 
-        MAX_SIZE_OF_SYCL_RANGE = 3
-
         # form the global range
         range_list = cgutils.alloca_once(
             self.builder,
@@ -361,118 +409,112 @@ class KernelLaunchIRBuilder:
 
         return self.builder.bitcast(range_list, intp_ptr_t)
 
-    def submit_kernel(
+    def set_kernel(self, sycl_kernel_ref: llvmir.Instruction):
+        """Sets kernel to the argument list."""
+        self.arguments.sycl_kernel_ref = sycl_kernel_ref
+
+    def set_queue(self, sycl_queue_ref: llvmir.Instruction):
+        """Sets queue to the argument list."""
+        self.arguments.sycl_queue_ref = sycl_queue_ref
+
+    def set_range(
         self,
-        kernel_ref: llvmir.CallInstr,
-        queue_ref: llvmir.PointerType,
-        kernel_args: list,
-        ty_kernel_args: list,
-        global_range_extents: list,
-        local_range_extents: list,
+        global_range: list,
+        local_range: list = None,
     ):
+        """Sets global and local range if provided to the argument list."""
+        self.arguments.global_range = self._create_sycl_range(global_range)
+        if local_range is not None and len(local_range) > 0:
+            self.arguments.local_range = self._create_sycl_range(local_range)
+        self.arguments.range_size = self.context.get_constant(
+            types.uintp, len(global_range)
+        )
+
+    def set_arguments(
+        self,
+        ty_kernel_args: list,
+        kernel_args: list,
+    ):
+        """Sets flattened kernel args, kernel arg types and number of those
+        arguments to the argument list."""
         if config.DEBUG_KERNEL_LAUNCHER:
             cgutils.printf(
                 self.builder,
                 "DPEX-DEBUG: Populating kernel args and arg type arrays.\n",
             )
 
-        num_flattened_kernel_args = self.get_num_flattened_kernel_args(
+        num_flattened_kernel_args = self._get_num_flattened_kernel_args(
             kernel_argtys=ty_kernel_args,
         )
 
         # Create LLVM values for the kernel args list and kernel arg types list
-        args_list = self.allocate_kernel_arg_array(num_flattened_kernel_args)
+        args_list = self._allocate_kernel_arg_array(num_flattened_kernel_args)
 
-        args_ty_list = self.allocate_kernel_arg_ty_array(
+        args_ty_list = self._allocate_kernel_arg_ty_array(
             num_flattened_kernel_args
         )
 
         kernel_args_ptrs = []
         for arg in kernel_args:
-            ptr = self.builder.alloca(arg.type)
+            with self.builder.goto_entry_block():
+                ptr = self.builder.alloca(arg.type)
             self.builder.store(arg, ptr)
             kernel_args_ptrs.append(ptr)
 
         # Populate the args_list and the args_ty_list LLVM arrays
-        self.populate_kernel_args_and_args_ty_arrays(
+        self._populate_kernel_args_and_args_ty_arrays(
             callargs_ptrs=kernel_args_ptrs,
             kernel_argtys=ty_kernel_args,
             args_list=args_list,
             args_ty_list=args_ty_list,
         )
 
-        if config.DEBUG_KERNEL_LAUNCHER:
-            cgutils.printf(self._builder, "DPEX-DEBUG: Submit kernel.\n")
-
-        return self.submit_sycl_kernel(
-            sycl_kernel_ref=kernel_ref,
-            sycl_queue_ref=queue_ref,
-            total_kernel_args=num_flattened_kernel_args,
-            arg_list=args_list,
-            arg_ty_list=args_ty_list,
-            global_range=global_range_extents,
-            local_range=local_range_extents,
-            wait_before_return=False,
+        self.arguments.arg_list = args_list
+        self.arguments.arg_ty_list = args_ty_list
+        self.arguments.total_kernel_args = self.context.get_constant(
+            types.uintp, num_flattened_kernel_args
         )
 
-    def submit_sycl_kernel(
-        self,
-        sycl_kernel_ref,
-        sycl_queue_ref,
-        total_kernel_args,
-        arg_list,
-        arg_ty_list,
-        global_range,
-        local_range=[],
-        wait_before_return=True,
-    ) -> llvmir.PointerType(llvmir.IntType(8)):
-        """
-        Submits the kernel to the specified queue, waits by default.
-        """
-        eref = None
-        gr = self._create_sycl_range(global_range)
-        args1 = [
-            sycl_kernel_ref,
-            sycl_queue_ref,
-            arg_list,
-            arg_ty_list,
-            self.context.get_constant(types.uintp, total_kernel_args),
-            gr,
-        ]
-        args2 = [
-            self.context.get_constant(types.uintp, len(global_range)),
-            self.builder.bitcast(
-                utils.create_null_ptr(
-                    builder=self.builder, context=self.context
-                ),
-                utils.get_llvm_type(context=self.context, type=types.voidptr),
-            ),
-            self.context.get_constant(types.uintp, 0),
-        ]
-        args = []
-        if len(local_range) == 0:
-            args = args1 + args2
+    def set_dependant_event_list(self, dep_events: list[llvmir.Instruction]):
+        """Sets dependant events to the argument list."""
+        if self.arguments.dep_events is not None:
+            return
+
+        if len(dep_events) > 0:
+            # TODO: implement for non zero input
+            raise NotImplementedError
+
+        self.arguments.dep_events = self.builder.bitcast(
+            utils.create_null_ptr(builder=self.builder, context=self.context),
+            utils.get_llvm_type(context=self.context, type=types.voidptr),
+        )
+        self.arguments.dep_events_len = self.context.get_constant(
+            types.uintp, 0
+        )
+
+    def submit(self) -> llvmir.Instruction:
+        """Submits kernel by calling sycl.dpctl_queue_submit_range or
+        sycl.dpctl_queue_submit_ndrange. Must be called after all arguments
+        set."""
+        args = self.arguments.to_list()
+
+        if self.arguments.local_range is None:
             eref = sycl.dpctl_queue_submit_range(self.builder, *args)
         else:
-            lr = self._create_sycl_range(local_range)
-            args = args1 + [lr] + args2
             eref = sycl.dpctl_queue_submit_ndrange(self.builder, *args)
 
-        if wait_before_return:
-            sycl.dpctl_event_wait(self.builder, eref)
-            sycl.dpctl_event_delete(self.builder, eref)
-            return None
-        else:
-            return eref
+        return eref
 
-    def get_num_flattened_kernel_args(
+    def _get_num_flattened_kernel_args(
         self,
         kernel_argtys: tuple[types.Type, ...],
-    ):
+    ) -> int:
+        """Returns number of flattened arguments based on the numba types.
+        flattens dpnp arrays and complex values."""
         num_flattened_kernel_args = 0
         for arg_type in kernel_argtys:
             if isinstance(arg_type, DpnpNdArray):
-                datamodel = self.context.data_model_manager.lookup(arg_type)
+                datamodel = self.kernel_dmm.lookup(arg_type)
                 num_flattened_kernel_args += datamodel.flattened_field_count
             elif arg_type in [types.complex64, types.complex128]:
                 num_flattened_kernel_args += 2
@@ -481,7 +523,7 @@ class KernelLaunchIRBuilder:
 
         return num_flattened_kernel_args
 
-    def populate_kernel_args_and_args_ty_arrays(
+    def _populate_kernel_args_and_args_ty_arrays(
         self,
         kernel_argtys,
         callargs_ptrs,
@@ -492,11 +534,10 @@ class KernelLaunchIRBuilder:
         for arg_num, argtype in enumerate(kernel_argtys):
             llvm_val = callargs_ptrs[arg_num]
             if isinstance(argtype, DpnpNdArray):
-                datamodel = self.context.data_model_manager.lookup(argtype)
-                self.build_array_arg(
+                datamodel = self.kernel_dmm.lookup(argtype)
+                self._build_array_arg(
                     array_val=llvm_val,
                     array_data_model=datamodel,
-                    array_rank=argtype.ndim,
                     arg_list=args_list,
                     args_ty_list=args_ty_list,
                     arg_num=kernel_arg_num,
@@ -504,7 +545,7 @@ class KernelLaunchIRBuilder:
                 kernel_arg_num += datamodel.flattened_field_count
             else:
                 if argtype == types.complex64:
-                    self.build_complex_arg(
+                    self._build_complex_arg(
                         llvm_val,
                         types.float32,
                         args_list,
@@ -513,7 +554,7 @@ class KernelLaunchIRBuilder:
                     )
                     kernel_arg_num += 2
                 elif argtype == types.complex128:
-                    self.build_complex_arg(
+                    self._build_complex_arg(
                         llvm_val,
                         types.float64,
                         args_list,
@@ -522,7 +563,7 @@ class KernelLaunchIRBuilder:
                     )
                     kernel_arg_num += 2
                 else:
-                    self.build_arg(
+                    self._build_arg(
                         llvm_val,
                         argtype,
                         args_list,

@@ -17,6 +17,9 @@ from numba.parfors import parfor
 from numba.parfors.parfor_lowering_utils import ParforLoweringBuilder
 
 from numba_dpex import utils
+from numba_dpex.core.datamodel.models import (
+    dpex_data_model_manager as kernel_dmm,
+)
 from numba_dpex.core.utils.kernel_launcher import KernelLaunchIRBuilder
 from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
 
@@ -395,11 +398,13 @@ class ReductionKernelVariables:
 
     def copy_final_sum_to_host(self, parfor_kernel):
         lowerer = self.lowerer
-        ir_builder = KernelLaunchIRBuilder(lowerer.context, lowerer.builder)
+        kl_builder = KernelLaunchIRBuilder(
+            lowerer.context, lowerer.builder, kernel_dmm
+        )
 
         # Create a local variable storing a pointer to a DPCTLSyclQueueRef
         # pointer.
-        curr_queue = ir_builder.get_queue(exec_queue=parfor_kernel.queue)
+        queue_ref = kl_builder.get_queue(exec_queue=parfor_kernel.queue)
 
         builder = lowerer.builder
         context = lowerer.context
@@ -433,7 +438,7 @@ class ReductionKernelVariables:
             )
 
             args = [
-                builder.load(curr_queue),
+                queue_ref,
                 dest,
                 src,
                 builder.load(item_size),
@@ -443,4 +448,4 @@ class ReductionKernelVariables:
             sycl.dpctl_event_wait(builder, event_ref)
             sycl.dpctl_event_delete(builder, event_ref)
 
-        ir_builder.free_queue(ptr_to_sycl_queue_ref=curr_queue)
+        sycl.dpctl_queue_delete(builder, queue_ref)

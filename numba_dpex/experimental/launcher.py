@@ -19,6 +19,7 @@ from numba.extending import intrinsic
 from numba_dpex import config, dpjit, utils
 from numba_dpex.core.exceptions import UnreachableError
 from numba_dpex.core.runtime.context import DpexRTContext
+from numba_dpex.core.targets.kernel_target import DpexKernelTargetContext
 from numba_dpex.core.types import (
     DpctlSyclEvent,
     DpnpNdArray,
@@ -283,7 +284,7 @@ def _submit_kernel(
     kernel_module: _KernelModule = kernel_dispatcher.get_overload_kcres(
         kernel_sig
     ).kernel_device_ir_module
-    kernel_targetctx = kernel_dispatcher.targetctx
+    kernel_targetctx: DpexKernelTargetContext = kernel_dispatcher.targetctx
 
     def codegen(cgctx, builder, sig, llargs):
         # llargs[0] is kernel function that we don't need anymore (see above)
@@ -317,16 +318,17 @@ def _submit_kernel(
             index_arg=ll_index_space,
         )
 
-        device_event_ref = kl.KernelLaunchIRBuilder(
-            kernel_targetctx, builder
-        ).submit_kernel(
-            kernel_ref=kernel_ref,
-            queue_ref=queue_ref,
-            kernel_args=kernel_args,
-            ty_kernel_args=ty_kernel_args_tuple,
-            global_range_extents=ll_range.global_range_extents,
-            local_range_extents=ll_range.local_range_extents,
+        kl_builder = kl.KernelLaunchIRBuilder(
+            cgctx, builder, kernel_targetctx.data_model_manager
         )
+        kl_builder.set_kernel(kernel_ref)
+        kl_builder.set_queue(queue_ref)
+        kl_builder.set_range(
+            ll_range.global_range_extents, ll_range.local_range_extents
+        )
+        kl_builder.set_arguments(ty_kernel_args_tuple, kernel_args)
+        kl_builder.set_dependant_event_list(dep_events=[])
+        device_event_ref = kl_builder.submit()
 
         # Clean up
         sycl.dpctl_kernel_delete(builder, kernel_ref)
