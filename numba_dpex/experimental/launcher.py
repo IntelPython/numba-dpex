@@ -12,7 +12,7 @@ import dpctl
 from llvmlite import ir as llvmir
 from numba.core import cgutils, types
 from numba.core.cpu import CPUContext
-from numba.core.types.containers import UniTuple
+from numba.core.types.containers import Tuple, UniTuple
 from numba.core.types.functions import Dispatcher
 from numba.extending import intrinsic
 
@@ -51,6 +51,7 @@ def _submit_kernel_async(
     typingctx,
     ty_kernel_fn: Dispatcher,
     ty_index_space: Union[RangeType, NdRangeType],
+    ty_dependent_events: UniTuple,
     ty_kernel_args_tuple: UniTuple,
 ):
     """Generates IR code for call_kernel_async dpjit function."""
@@ -58,6 +59,7 @@ def _submit_kernel_async(
         typingctx,
         ty_kernel_fn,
         ty_index_space,
+        ty_dependent_events,
         ty_kernel_args_tuple,
         sync=False,
     )
@@ -75,15 +77,17 @@ def _submit_kernel_sync(
         typingctx,
         ty_kernel_fn,
         ty_index_space,
+        None,
         ty_kernel_args_tuple,
         sync=True,
     )
 
 
-def _submit_kernel(
-    typingctx,  # pylint: disable=W0613
+def _submit_kernel(  # pylint: disable=too-many-arguments
+    typingctx,  # pylint: disable=unused-argument
     ty_kernel_fn: Dispatcher,
     ty_index_space: Union[RangeType, NdRangeType],
+    ty_dependent_events: UniTuple,
     ty_kernel_args_tuple: UniTuple,
     sync: bool,
 ):
@@ -106,7 +110,21 @@ def _submit_kernel(
         ty_event = DpctlSyclEvent()
         ty_return = types.Tuple([ty_event, ty_event])
 
-    sig = ty_return(ty_kernel_fn, ty_index_space, ty_kernel_args_tuple)
+    if ty_dependent_events is not None:
+        if not isinstance(ty_dependent_events, UniTuple) and not isinstance(
+            ty_dependent_events, Tuple
+        ):
+            raise ValueError("dependent events must be passed as a tuple")
+
+        sig = ty_return(
+            ty_kernel_fn,
+            ty_index_space,
+            ty_dependent_events,
+            ty_kernel_args_tuple,
+        )
+    else:
+        sig = ty_return(ty_kernel_fn, ty_index_space, ty_kernel_args_tuple)
+
     kernel_sig = types.void(*ty_kernel_args_tuple)
     # ty_kernel_fn is type specific to exact function, so we can get function
     # directly from type and compile it. Thats why we don't need to get it in
@@ -123,8 +141,14 @@ def _submit_kernel(
     ):
         ty_index_space: Union[RangeType, NdRangeType] = sig.args[1]
         ll_index_space: llvmir.Instruction = llargs[1]
-        ty_kernel_args_tuple: UniTuple = sig.args[2]
-        ll_kernel_args_tuple: llvmir.Instruction = llargs[2]
+        ty_kernel_args_tuple: UniTuple = sig.args[-1]
+        ll_kernel_args_tuple: llvmir.Instruction = llargs[-1]
+
+        if len(llargs) == 4:
+            ty_dependent_events: UniTuple = sig.args[2]
+            ll_dependent_events: llvmir.Instruction = llargs[2]
+        else:
+            ty_dependent_events = None
 
         kl_builder = kl.KernelLaunchIRBuilder(
             cgctx,
@@ -140,7 +164,13 @@ def _submit_kernel(
         )
         kl_builder.set_queue_from_arguments()
         kl_builder.set_kernel_from_spirv(kernel_module)
-        kl_builder.set_dependant_event_list([])
+        if ty_dependent_events is None:
+            kl_builder.set_dependent_events([])
+        else:
+            kl_builder.set_dependent_events_from_tuple(
+                ty_dependent_events,
+                ll_dependent_events,
+            )
         device_event_ref = kl_builder.submit()
 
         if not sync:
@@ -185,7 +215,10 @@ def call_kernel(kernel_fn, index_space, *kernel_args) -> None:
 
 @dpjit
 def call_kernel_async(
-    kernel_fn, index_space, *kernel_args
+    kernel_fn,
+    index_space,
+    dependent_events: list[dpctl.SyclEvent],
+    *kernel_args
 ) -> tuple[dpctl.SyclEvent, dpctl.SyclEvent]:
     """Calls a numba_dpex.kernel decorated function from CPython or from another
     dpjit function. Kernel execution happens in asyncronous way, so the thread
@@ -210,5 +243,6 @@ def call_kernel_async(
     return _submit_kernel_async(  # pylint: disable=E1120
         kernel_fn,
         index_space,
+        dependent_events,
         kernel_args,
     )

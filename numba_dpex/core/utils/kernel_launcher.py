@@ -668,22 +668,42 @@ class KernelLaunchIRBuilder:
         kernel_args = self._extract_llvm_values_from_tuple(ll_kernel_args_tuple)
         self.set_arguments(ty_kernel_args_tuple, kernel_args)
 
-    def set_dependant_event_list(self, dep_events: list[llvmir.Instruction]):
-        """Sets dependant events to the argument list."""
-        if self.arguments.dep_events is not None:
+    def set_dependent_events(self, dep_events: list[llvmir.Instruction]):
+        """Sets dependent events to the argument list."""
+        ll_dep_events = self._create_ll_from_py_list(types.voidptr, dep_events)
+        self.arguments.dep_events = ll_dep_events
+        self.arguments.dep_events_len = self.context.get_constant(
+            types.uintp, len(dep_events)
+        )
+
+    def set_dependent_events_from_tuple(
+        self,
+        ty_dependent_events: UniTuple,
+        ll_dependent_events: llvmir.Instruction,
+    ):
+        """Set's dependent events from tuple represented by LLVM IR.
+
+        Args:
+            ll_dependent_events: tuple of numba's data models.
+        """
+        if len(ty_dependent_events) == 0:
+            self.set_dependent_events([])
             return
 
-        if len(dep_events) > 0:
-            # TODO: implement for non zero input
-            raise NotImplementedError
+        ty_event = ty_dependent_events[0]
+        dm_dependent_events = self._extract_llvm_values_from_tuple(
+            ll_dependent_events
+        )
+        dependent_events = []
+        for dm_dependent_event in dm_dependent_events:
+            event_struct_proxy = cgutils.create_struct_proxy(ty_event)(
+                self.context,
+                self.builder,
+                value=dm_dependent_event,
+            )
+            dependent_events.append(event_struct_proxy.event_ref)
 
-        self.arguments.dep_events = self.builder.bitcast(
-            utils.create_null_ptr(builder=self.builder, context=self.context),
-            utils.get_llvm_type(context=self.context, type=types.voidptr),
-        )
-        self.arguments.dep_events_len = self.context.get_constant(
-            types.uintp, 0
-        )
+        self.set_dependent_events(dependent_events)
 
     def submit(self) -> llvmir.Instruction:
         """Submits kernel by calling sycl.dpctl_queue_submit_range or
