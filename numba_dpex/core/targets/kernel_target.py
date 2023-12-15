@@ -351,9 +351,8 @@ class DpexKernelTargetContext(BaseContext):
         )
 
     def prepare_spir_kernel(self, func, argtypes):
-        module = func.module
         func.linkage = "linkonce_odr"
-        module.data_layout = codegen.SPIR_DATA_LAYOUT[self.address_size]
+        func.module.data_layout = codegen.SPIR_DATA_LAYOUT[self.address_size]
         wrapper = self._generate_spir_kernel_wrapper(func, argtypes)
         return wrapper
 
