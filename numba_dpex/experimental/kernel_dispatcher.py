@@ -20,7 +20,7 @@ from numba.core.target_extension import dispatcher_registry, target_registry
 from numba.core.types import void
 from numba.core.typing.typeof import Purpose, typeof
 
-from numba_dpex import config, spirv_generator
+from numba_dpex import config, numba_sem_version, spirv_generator
 from numba_dpex.core.codegen import SPIRVCodeLibrary
 from numba_dpex.core.exceptions import (
     ExecutionQueueInferenceError,
@@ -220,8 +220,6 @@ class KernelDispatcher(Dispatcher):
     targetdescr = dpex_exp_kernel_target
     _fold_args = False
 
-    Dispatcher._impl_kinds["kernel"] = _KernelCompiler
-
     def __init__(
         self,
         pyfunc,
@@ -240,12 +238,27 @@ class KernelDispatcher(Dispatcher):
 
         self._kernel_name = pyfunc.__name__
 
-        super().__init__(
-            py_func=pyfunc,
-            locals=local_vars_to_numba_types,
-            impl_kind="kernel",
-            targetoptions=targetoptions,
-            pipeline_class=pipeline_class,
+        if numba_sem_version < (0, 59, 0):
+            super().__init__(
+                py_func=pyfunc,
+                locals=local_vars_to_numba_types,
+                impl_kind="direct",
+                targetoptions=targetoptions,
+                pipeline_class=pipeline_class,
+            )
+        else:
+            super().__init__(
+                py_func=pyfunc,
+                locals=local_vars_to_numba_types,
+                targetoptions=targetoptions,
+                pipeline_class=pipeline_class,
+            )
+        self._compiler = _KernelCompiler(
+            pyfunc,
+            self.targetdescr,
+            targetoptions,
+            local_vars_to_numba_types,
+            pipeline_class,
         )
 
     def typeof_pyval(self, val):
