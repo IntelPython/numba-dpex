@@ -12,11 +12,11 @@ from llvmlite import ir as llvmir
 from numba import typeof
 from numba.core import cgutils, funcdesc, types, typing, utils
 from numba.core.base import BaseContext
-from numba.core.callconv import MinimalCallConv, _const_int
 from numba.core.registry import cpu_target
 from numba.core.target_extension import GPU, target_registry
 from numba.core.types import Array as NpArrayType
 
+from numba_dpex.core.callconv import DpexCallConv
 from numba_dpex.core.datamodel.models import _init_data_model_manager
 from numba_dpex.core.exceptions import UnsupportedKernelArgumentError
 from numba_dpex.core.typeconv import to_usm_ndarray
@@ -266,6 +266,7 @@ class DpexKernelTargetContext(BaseContext):
 
         self.ufunc_db = copy.deepcopy(ufunc_db)
         self.cpu_context = cpu_target.target_context
+        self._call_conv = DpexCallConv(self)
 
     def create_module(self, name):
         return self._internal_codegen._create_empty_module(name)
@@ -336,7 +337,11 @@ class DpexKernelTargetContext(BaseContext):
 
     @cached_property
     def call_conv(self):
-        return DpexCallConv(self)
+        return self._call_conv
+        # return DpexCallConv(self) # noqa: E800
+
+    def set_call_conv(self, _call_conv):
+        self._call_conv = _call_conv
 
     def codegen(self):
         return self._internal_codegen
@@ -432,67 +437,3 @@ class DpexKernelTargetContext(BaseContext):
 
     def get_ufunc_info(self, ufunc_key):
         return self.ufunc_db[ufunc_key]
-
-
-class DpexCallConv(MinimalCallConv):
-    """Custom calling convention class used by numba-dpex.
-
-    numba_dpex's calling convention derives from
-    :class:`numba.core.callconv import MinimalCallConv`. The
-    :class:`DpexCallConv` overrides :func:`call_function`.
-
-    """
-
-    def return_user_exc(
-        self, builder, exc, exc_args=None, loc=None, func_name=None
-    ):
-        # if exc is not None and not issubclass(exc, BaseException):
-        #     raise TypeError(
-        #         "exc should be None or exception class, got %r" % (exc,) # noqa: E800
-        #     ) # noqa: E800
-        # if exc_args is not None and not isinstance(exc_args, tuple):
-        #     raise TypeError(
-        #         "exc_args should be None or tuple, got %r" % (exc_args,) # noqa: E800
-        #     ) # noqa: E800
-        if issubclass(exc, AssertionError):
-            raise NotImplementedError(
-                "The 'assert' statement is not allowed in numba-dpex kernel."
-            )
-        if issubclass(exc, BaseException):
-            raise NotImplementedError(
-                "The 'raise' statement is not allowed in numba-dpex kernel."
-            )
-        print(f"exc = {exc}")
-
-        # Build excinfo struct
-        # if loc is not None:
-        #     fname = loc._raw_function_name() # noqa: E800
-        #     if fname is None:
-        #         # could be exec(<string>) or REPL, try func_name
-        #         fname = func_name # noqa: E800
-
-        #     locinfo = (fname, loc.filename, loc.line) # noqa: E800
-        #     if None in locinfo:
-        #         locinfo = None # noqa: E800
-        # else: # noqa: E800
-        #     locinfo = None # noqa: E800
-
-        # call_helper = self._get_call_helper(builder) # noqa: E800
-        # exc_id = call_helper._add_exception(exc, exc_args, locinfo) # noqa: E800
-        # self._return_errcode_raw(builder, _const_int(exc_id)) # noqa: E800
-
-    def call_function(self, builder, callee, resty, argtys, args, env=None):
-        """Call the Numba-compiled *callee*."""
-        assert env is None
-        retty = callee.args[0].type.pointee
-        retvaltmp = cgutils.alloca_once(builder, retty)
-        # initialize return value
-        builder.store(cgutils.get_null_value(retty), retvaltmp)
-        arginfo = self.context.get_arg_packer(argtys)
-        args = arginfo.as_arguments(builder, args)
-        realargs = [retvaltmp] + list(args)
-        code = builder.call(callee, realargs)
-        status = self._get_return_status(builder, code)
-        retval = builder.load(retvaltmp)
-        out = self.context.get_returned_value(builder, resty, retval)
-        return status, out

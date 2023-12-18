@@ -27,6 +27,7 @@ from numba.parfors import parfor
 import numba_dpex as dpex
 from numba_dpex import config
 
+from ..callconv import DpexCallConv, DpexParforCallConv
 from ..descriptor import dpex_kernel_target
 from ..types import DpnpNdArray, USMNdArray
 from ..utils.kernel_templates import RangeKernelTemplate
@@ -70,6 +71,16 @@ def _compile_kernel_parfor(
         func_ir, kernel_name
     )
 
+    print(
+        f"0.type(dpex_kernel_target.target_context.call_conv) = {type(dpex_kernel_target.target_context.call_conv)}"
+    )
+    dpex_kernel_target.target_context.set_call_conv(
+        DpexParforCallConv(dpex_kernel_target.target_context)
+    )
+    print(
+        f"1.type(dpex_kernel_target.target_context.call_conv) = {type(dpex_kernel_target.target_context.call_conv)}"
+    )
+
     # compile the kernel
     kernel.compile(
         args=argtypes,
@@ -77,6 +88,16 @@ def _compile_kernel_parfor(
         target_ctx=dpex_kernel_target.target_context,
         debug=debug,
         compile_flags=None,
+    )
+
+    print(
+        f"2.type(dpex_kernel_target.target_context.call_conv) = {type(dpex_kernel_target.target_context.call_conv)}"
+    )
+    dpex_kernel_target.target_context.set_call_conv(
+        DpexCallConv(dpex_kernel_target.target_context)
+    )
+    print(
+        f"3.type(dpex_kernel_target.target_context.call_conv) = {type(dpex_kernel_target.target_context.call_conv)}"
     )
 
     dpctl_create_program_from_spirv_flags = []

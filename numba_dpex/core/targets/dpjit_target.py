@@ -14,6 +14,8 @@ from numba.core.cpu import CPUContext
 from numba.core.imputils import Registry, RegistryLoader
 from numba.core.target_extension import CPU, target_registry
 
+from .kernel_target import DpexCallConv
+
 
 class Dpex(CPU):
     pass
@@ -31,6 +33,7 @@ dpex_function_registry = Registry()
 class DpexTargetContext(CPUContext):
     def __init__(self, typingctx, target=DPEX_TARGET_NAME):
         super().__init__(typingctx, target)
+        print(f"==============> type(self.call_conv) = {type(self.call_conv)}")
 
     @global_compiler_lock
     def init(self):
