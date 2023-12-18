@@ -374,78 +374,95 @@ class KernelLaunchIRBuilder:
         )
         return self.builder.load(sycl_queue_val)
 
-    def _allocate_kernel_arg_array(self, num_kernel_args):
-        """Allocates an array to store the LLVM Value for every kernel argument.
+    def _allocate_array(
+        self, numba_type: types.Type, size: int
+    ) -> llvmir.Instruction:
+        """Allocates an LLVM array of given type and size.
 
         Args:
-            num_kernel_args (int): The number of kernel arguments that
-            determines the size of args array to allocate.
+            numba_type: type of the array to allocate,
+            size: The size of the array to allocate.
 
-        Returns: An LLVM IR value pointing to an array to store the kernel
-        arguments.
+        Returns: An LLVM IR value pointing to the array.
         """
-        args_list = cgutils.alloca_once(
+        return cgutils.alloca_once(
             self.builder,
-            utils.LLVMTypes.byte_ptr_t,
-            size=self.context.get_constant(types.uintp, num_kernel_args),
+            self.context.get_value_type(numba_type),
+            size=self.context.get_constant(types.uintp, size),
         )
 
-        return args_list
-
-    def _allocate_kernel_arg_ty_array(self, num_kernel_args):
-        """Allocates an array to store the LLVM Value for the typenum for
-        every kernel argument.
+    def _populate_array_from_python_list(
+        self,
+        numba_type: types.Type,
+        py_array: list[llvmir.Instruction],
+        ll_array: llvmir.Instruction,
+        force_cast: bool = False,
+    ):
+        """Populates LLVM values from an input Python list into an LLVM array.
 
         Args:
-            num_kernel_args (int): The number of kernel arguments that
-            determines the size of args array to allocate.
-
-        Returns: An LLVM IR value pointing to an array to store the kernel
-        arguments typenums as defined in dpctl.
+            numba_type: type of the array to allocate,
+            py_array: array of llvm ir values to populate.
+            ll_array: llvm ir value that represents an array to populate,
+            force_cast: either force cast values to the provided type.
         """
-        args_ty_list = cgutils.alloca_once(
-            self.builder,
-            utils.LLVMTypes.int32_t,
-            size=self.context.get_constant(types.uintp, num_kernel_args),
+        for idx, ll_value in enumerate(py_array):
+            ll_array_dst = self.builder.gep(
+                ll_array,
+                [self.context.get_constant(types.int32, idx)],
+            )
+            # bitcast may be extra, but won't hurt,
+            if force_cast:
+                ll_value = self.builder.bitcast(
+                    ll_value,
+                    self.context.get_value_type(numba_type),
+                )
+            self.builder.store(ll_value, ll_array_dst)
+
+    def _create_ll_from_py_list(
+        self,
+        numba_type: types.Type,
+        list_of_ll_values: list[llvmir.Instruction],
+        force_cast: bool = False,
+    ) -> llvmir.Instruction:
+        """Allocates an LLVM IR array of the same size as the input python list
+        of LLVM IR Values and populates the array with the LLVM Values in the
+        list.
+
+        Args:
+            numba_type: type of the array to allocate,
+            list_of_ll_values: list of LLVM IR values to populate,
+            force_cast: either force cast values to the provided type.
+
+        Returns: An LLVM IR value pointing to the array.
+        """
+        ll_array = self._allocate_array(numba_type, len(list_of_ll_values))
+        self._populate_array_from_python_list(
+            numba_type, list_of_ll_values, ll_array, force_cast
         )
 
-        return args_ty_list
+        return ll_array
 
     def _create_sycl_range(self, idx_range):
-        """Allocate a size_t[3] array to store the extents of a sycl::range.
+        """Allocate an array to store the extents of a sycl::range.
 
         Sycl supports upto 3-dimensional ranges and a such the array is
         statically sized to length three. Only the elements that store an actual
         range value are populated based on the size of the idx_range argument.
 
         """
-        intp_t = utils.get_llvm_type(context=self.context, type=types.intp)
-        intp_ptr_t = utils.get_llvm_ptr_type(intp_t)
-        num_dim = len(idx_range)
+        int64_range = [
+            self.builder.sext(rext, utils.LLVMTypes.int64_t)
+            if rext.type != utils.LLVMTypes.int64_t
+            else rext
+            for rext in idx_range
+        ]
 
-        # form the global range
-        range_list = cgutils.alloca_once(
-            self.builder,
-            utils.get_llvm_type(context=self.context, type=types.uintp),
-            size=self.context.get_constant(types.uintp, MAX_SIZE_OF_SYCL_RANGE),
-        )
+        # we reverse the global range to account for how sycl and opencl
+        # range differs
+        int64_range.reverse()
 
-        for i in range(num_dim):
-            rext = idx_range[i]
-            if rext.type != utils.LLVMTypes.int64_t:
-                rext = self.builder.sext(rext, utils.LLVMTypes.int64_t)
-
-            # we reverse the global range to account for how sycl and opencl
-            # range differs
-            self.builder.store(
-                rext,
-                self.builder.gep(
-                    range_list,
-                    [self.context.get_constant(types.uintp, (num_dim - 1) - i)],
-                ),
-            )
-
-        return self.builder.bitcast(range_list, intp_ptr_t)
+        return self._create_ll_from_py_list(types.uintp, int64_range)
 
     def set_kernel(self, sycl_kernel_ref: llvmir.Instruction):
         """Sets kernel to the argument list."""
@@ -597,10 +614,14 @@ class KernelLaunchIRBuilder:
         )
 
         # Create LLVM values for the kernel args list and kernel arg types list
-        args_list = self._allocate_kernel_arg_array(num_flattened_kernel_args)
+        args_list = self._allocate_array(
+            types.voidptr,
+            num_flattened_kernel_args,
+        )
 
-        args_ty_list = self._allocate_kernel_arg_ty_array(
-            num_flattened_kernel_args
+        args_ty_list = self._allocate_array(
+            types.int32,
+            num_flattened_kernel_args,
         )
 
         kernel_args_ptrs = []
@@ -624,20 +645,17 @@ class KernelLaunchIRBuilder:
             types.uintp, num_flattened_kernel_args
         )
 
-    def _extract_arguments_from_tuple(
+    def _extract_llvm_values_from_tuple(
         self,
-        ty_kernel_args_tuple: UniTuple,
-        ll_kernel_args_tuple: llvmir.Instruction,
+        ll_tuple: llvmir.Instruction,
     ) -> list[llvmir.Instruction]:
         """Extracts LLVM IR values from llvm tuple into python array."""
 
-        kernel_args = []
-        for pos in range(len(ty_kernel_args_tuple)):
-            kernel_args.append(
-                self.builder.extract_value(ll_kernel_args_tuple, pos)
-            )
+        llvm_values = []
+        for pos in range(len(ll_tuple.type)):
+            llvm_values.append(self.builder.extract_value(ll_tuple, pos))
 
-        return kernel_args
+        return llvm_values
 
     def set_arguments_form_tuple(
         self,
@@ -647,27 +665,45 @@ class KernelLaunchIRBuilder:
         """Sets flattened kernel args, kernel arg types and number of those
         arguments to the argument list based on the arguments stored in tuple.
         """
-        kernel_args = self._extract_arguments_from_tuple(
-            ty_kernel_args_tuple, ll_kernel_args_tuple
-        )
+        kernel_args = self._extract_llvm_values_from_tuple(ll_kernel_args_tuple)
         self.set_arguments(ty_kernel_args_tuple, kernel_args)
 
-    def set_dependant_event_list(self, dep_events: list[llvmir.Instruction]):
-        """Sets dependant events to the argument list."""
-        if self.arguments.dep_events is not None:
+    def set_dependent_events(self, dep_events: list[llvmir.Instruction]):
+        """Sets dependent events to the argument list."""
+        ll_dep_events = self._create_ll_from_py_list(types.voidptr, dep_events)
+        self.arguments.dep_events = ll_dep_events
+        self.arguments.dep_events_len = self.context.get_constant(
+            types.uintp, len(dep_events)
+        )
+
+    def set_dependent_events_from_tuple(
+        self,
+        ty_dependent_events: UniTuple,
+        ll_dependent_events: llvmir.Instruction,
+    ):
+        """Set's dependent events from tuple represented by LLVM IR.
+
+        Args:
+            ll_dependent_events: tuple of numba's data models.
+        """
+        if len(ty_dependent_events) == 0:
+            self.set_dependent_events([])
             return
 
-        if len(dep_events) > 0:
-            # TODO: implement for non zero input
-            raise NotImplementedError
+        ty_event = ty_dependent_events[0]
+        dm_dependent_events = self._extract_llvm_values_from_tuple(
+            ll_dependent_events
+        )
+        dependent_events = []
+        for dm_dependent_event in dm_dependent_events:
+            event_struct_proxy = cgutils.create_struct_proxy(ty_event)(
+                self.context,
+                self.builder,
+                value=dm_dependent_event,
+            )
+            dependent_events.append(event_struct_proxy.event_ref)
 
-        self.arguments.dep_events = self.builder.bitcast(
-            utils.create_null_ptr(builder=self.builder, context=self.context),
-            utils.get_llvm_type(context=self.context, type=types.voidptr),
-        )
-        self.arguments.dep_events_len = self.context.get_constant(
-            types.uintp, 0
-        )
+        self.set_dependent_events(dependent_events)
 
     def submit(self) -> llvmir.Instruction:
         """Submits kernel by calling sycl.dpctl_queue_submit_range or
@@ -708,22 +744,7 @@ class KernelLaunchIRBuilder:
                 )
             ]
 
-        meminfo_list = cgutils.alloca_once(
-            self.builder,
-            utils.get_llvm_type(context=self.context, type=types.voidptr),
-            size=self.context.get_constant(types.uintp, len(meminfos)),
-        )
-
-        for meminfo_num, meminfo in enumerate(meminfos):
-            meminfo_arg_dst = self.builder.gep(
-                meminfo_list,
-                [self.context.get_constant(types.int32, meminfo_num)],
-            )
-            meminfo_ptr = self.builder.bitcast(
-                meminfo,
-                utils.get_llvm_type(context=self.context, type=types.voidptr),
-            )
-            self.builder.store(meminfo_ptr, meminfo_arg_dst)
+        meminfo_list = self._create_ll_from_py_list(types.voidptr, meminfos)
 
         return len(meminfos), meminfo_list
 

@@ -185,7 +185,7 @@ class ParforLowerImpl:
         kl_builder.set_arguments(
             kernel_fn.kernel_arg_types, kernel_args=kernel_args
         )
-        kl_builder.set_dependant_event_list([])
+        kl_builder.set_dependent_events([])
         event_ref = kl_builder.submit()
 
         sycl.dpctl_event_wait(lowerer.builder, event_ref)

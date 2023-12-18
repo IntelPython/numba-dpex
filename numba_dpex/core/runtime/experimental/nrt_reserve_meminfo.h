@@ -27,7 +27,7 @@ extern "C"
      * @param    QRef           Queue reference,
      * @param    meminfo_array  Array of meminfo pointers to perform actions on,
      * @param    meminfo_array_size Length of meminfo_array,
-     * @param    depERefs       Array of dependant events for the host task,
+     * @param    depERefs       Array of dependent events for the host task,
      * @param    nDepERefs      Length of depERefs,
      * @param    status         Variable to write status to. Same style as
      * dpctl,

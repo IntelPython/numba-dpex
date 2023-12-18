@@ -4,6 +4,8 @@
 
 import dpctl
 import dpnp
+import pytest
+from numba.core.errors import TypingError
 
 import numba_dpex as dpex
 import numba_dpex.experimental as exp_dpex
@@ -33,6 +35,7 @@ def test_async_add():
     host_ref, event_ref = exp_dpex.call_kernel_async(
         add,
         r,
+        (),
         a,
         b,
         c,
@@ -48,6 +51,58 @@ def test_async_add():
 
     d = a + b
     assert dpnp.array_equal(c, d)
+
+
+def test_async_dependent_add_list_exception():
+    """Checks either ValueError is triggered if list was passed instead of
+    tuple for the dependent events."""
+    size = 10
+
+    # TODO: should capture ValueError, but numba captures it and generates
+    # TypingError. ValueError is still readable there.
+    with pytest.raises(TypingError):
+        exp_dpex.call_kernel_async(
+            add,
+            Range(size),
+            [dpctl.SyclEvent()],
+            dpnp.ones(size),
+            dpnp.ones(size),
+            dpnp.ones(size),
+        )
+
+
+def test_async_dependent_add():
+    size = 10
+    a = dpnp.ones(size)
+    b = dpnp.ones(size)
+    c = dpnp.zeros(size)
+
+    r = Range(size)
+
+    host_ref, event_ref = exp_dpex.call_kernel_async(
+        add,
+        r,
+        (),
+        a,
+        b,
+        c,
+    )
+
+    host2_ref, event2_ref = exp_dpex.call_kernel_async(
+        add,
+        r,
+        (event_ref,),
+        a,
+        c,
+        b,
+    )
+
+    event2_ref.wait()
+    d = dpnp.ones(size) * 3
+    assert dpnp.array_equal(b, d)
+
+    host_ref.wait()
+    host2_ref.wait()
 
 
 def test_async_add_from_cache():
