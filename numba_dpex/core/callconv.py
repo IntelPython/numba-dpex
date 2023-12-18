@@ -6,9 +6,12 @@ class DpexParforCallConv(MinimalCallConv):
     """Custom calling convention class used by numba-dpex.
 
     numba_dpex's calling convention derives from
-    :class:`numba.core.callconv import MinimalCallConv`. The
-    :class:`DpexCallConv` overrides :func:`call_function`.
+    :class:`numba.core.callconv.MinimalCallConv`. The
+    :class:`DpexParforCallConv` overrides :func:`call_function`.
 
+    Args:
+        MinimalCallConv (numba.core.callconv.BaseCallConv): The base call
+            convention class.
     """
 
     def call_function(self, builder, callee, resty, argtys, args, env=None):
@@ -32,17 +35,18 @@ class DpexCallConv(DpexParforCallConv):
     """Custom calling convention class used by numba-dpex.
 
     numba_dpex's calling convention derives from
-    :class:`numba.core.callconv import MinimalCallConv`. The
-    :class:`DpexCallConv` overrides :func:`call_function`.
+    :class:`DpexParforCallConv`. The :class:`DpexCallConv` overrides
+    :func:`call_function` in the same way as in :class:`DpexParforCallConv`
+    Except this class raises an exception when a `raise` or an `assert`
+    statement is encountered in a `numba-dpex` kernel.
 
+    Args:
+        DpexParforCallConv (numba.core.callconv.MinimalCallConv): The minimal
+            call convention class.
     """
 
     def return_user_exc(
         self, builder, exc, exc_args=None, loc=None, func_name=None
     ):
-        msg = "Python exceptions are unsupported in the CUDA C/C++ ABI"
-        raise NotImplementedError(msg)
-
-    def return_status_propagate(self, builder, status):
-        msg = "Return status is unsupported in the CUDA C/C++ ABI"
+        msg = "Python exceptions and asserts are unsupported in numba-dpex kernel."
         raise NotImplementedError(msg)

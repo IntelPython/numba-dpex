@@ -338,10 +338,6 @@ class DpexKernelTargetContext(BaseContext):
     @cached_property
     def call_conv(self):
         return self._call_conv
-        # return DpexCallConv(self) # noqa: E800
-
-    def set_call_conv(self, _call_conv):
-        self._call_conv = _call_conv
 
     def codegen(self):
         return self._internal_codegen

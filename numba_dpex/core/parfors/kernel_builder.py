@@ -71,14 +71,9 @@ def _compile_kernel_parfor(
         func_ir, kernel_name
     )
 
-    print(
-        f"0.type(dpex_kernel_target.target_context.call_conv) = {type(dpex_kernel_target.target_context.call_conv)}"
-    )
-    dpex_kernel_target.target_context.set_call_conv(
-        DpexParforCallConv(dpex_kernel_target.target_context)
-    )
-    print(
-        f"1.type(dpex_kernel_target.target_context.call_conv) = {type(dpex_kernel_target.target_context.call_conv)}"
+    # use DpexParforCallConv when lowering parfor
+    dpex_kernel_target.target_context.call_conv = DpexParforCallConv(
+        dpex_kernel_target.target_context
     )
 
     # compile the kernel
@@ -90,14 +85,9 @@ def _compile_kernel_parfor(
         compile_flags=None,
     )
 
-    print(
-        f"2.type(dpex_kernel_target.target_context.call_conv) = {type(dpex_kernel_target.target_context.call_conv)}"
-    )
-    dpex_kernel_target.target_context.set_call_conv(
-        DpexCallConv(dpex_kernel_target.target_context)
-    )
-    print(
-        f"3.type(dpex_kernel_target.target_context.call_conv) = {type(dpex_kernel_target.target_context.call_conv)}"
+    # revert back to previous call convention
+    dpex_kernel_target.target_context.call_conv = DpexCallConv(
+        dpex_kernel_target.target_context
     )
 
     dpctl_create_program_from_spirv_flags = []
