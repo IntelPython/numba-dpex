@@ -5,6 +5,8 @@
 
 import dpnp
 import numpy
+import pytest
+from numba import errors
 
 import numba_dpex as dpex
 
@@ -149,13 +151,18 @@ def test_raise_in_kernel():
     a = dpnp.ones(10)
     b = dpnp.ones(10)
 
+    failed = False
     try:
         k_raise[dpex.Range(10)](a, b)
     except Exception as e:
+        assert isinstance(e, errors.LoweringError)
         assert (
             "Python exceptions and asserts are unsupported in numba-dpex kernel."
             in str(e)
         )
+        failed = True
+    if not failed:
+        pytest.fail("Didn't throw exception.")
 
 
 def test_assert_in_kernel():
@@ -163,13 +170,20 @@ def test_assert_in_kernel():
     a = dpnp.ones(10)
     b = dpnp.ones(10)
 
+    failed = False
     try:
         k_assert[dpex.Range(10)](a, b)
     except Exception as e:
+        assert isinstance(e, errors.LoweringError) or isinstance(
+            e, errors.UnsupportedError
+        )
         assert (
             "Python exceptions and asserts are unsupported in numba-dpex kernel."
             in str(e)
         ) or "Unsupported constraint encountered" in str(e)
+        failed = True
+    if not failed:
+        pytest.fail("Didn't throw exception.")
 
 
 def test_raise_in_kernel_function():
@@ -177,13 +191,18 @@ def test_raise_in_kernel_function():
     a = dpnp.ones(10)
     b = dpnp.ones(10)
 
+    failed = False
     try:
         kfr[dpex.Range(10)](a, b)
     except Exception as e:
+        assert isinstance(e, errors.TypingError)
         assert (
             "Python exceptions and asserts are unsupported in numba-dpex kernel."
             in str(e)
         )
+        failed = True
+    if not failed:
+        pytest.fail("Didn't throw exception.")
 
 
 def test_assert_in_kernel_function():
@@ -191,10 +210,15 @@ def test_assert_in_kernel_function():
     a = dpnp.ones(10)
     b = dpnp.ones(10)
 
+    failed = False
     try:
         kfa[dpex.Range(10)](a, b)
     except Exception as e:
+        assert isinstance(e, errors.TypingError)
         assert (
             "Python exceptions and asserts are unsupported in numba-dpex kernel."
             in str(e)
         ) or "Unsupported constraint encountered" in str(e)
+        failed = True
+    if not failed:
+        pytest.fail("Didn't throw exception.")

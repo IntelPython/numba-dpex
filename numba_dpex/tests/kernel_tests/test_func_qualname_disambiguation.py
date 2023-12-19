@@ -27,9 +27,18 @@ def make_write_values_kernel(n_rows):
 
     @ndpx.kernel
     def write_values_kernel(array_in):
-        for row_idx in range(n_rows):
-            is_even = (row_idx % 2) == 0
+        # RangeIter object raises an exception, therefore we can't use it
+        # in kernel. TODO: Monkeypatch RangeIter and turn off the raise.
+        # See https://github.com/numba/numba/blob/main/numba/cpython/rangeobj.py#L130
+        # Similar issue with divmod op (i.e. %)
+        # for row_idx in range(n_rows):
+        #     is_even = (row_idx % 2) == 0  # noqa: E800
+        #     write_values(array_in, row_idx, is_even)  # noqa: E800
+        row_idx = 0
+        while row_idx < n_rows:
+            is_even = (row_idx & 1) == 0
             write_values(array_in, row_idx, is_even)
+            row_idx += 1
 
     return write_values_kernel[ndpx.NdRange(ndpx.Range(1), ndpx.Range(1))]
 
@@ -72,8 +81,15 @@ def make_write_values_kernel_func_inner(n_cols):
 
     @ndpx.func
     def write_values_inner(array_in, row_idx):
-        for idx in range(n_cols):
+        # RangeIter object raises an exception, therefore we can't use it
+        # in kernel. TODO: Monkeypatch RangeIter and turn off the raise.
+        # See https://github.com/numba/numba/blob/main/numba/cpython/rangeobj.py#L130
+        # for idx in range(n_cols):
+        #     array_in[row_idx, idx] = 1    # noqa: E800
+        idx = 0
+        while idx < n_cols:
             array_in[row_idx, idx] = 1
+            idx += 1
 
     return write_values_inner
 
