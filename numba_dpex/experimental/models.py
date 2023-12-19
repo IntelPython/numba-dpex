@@ -7,14 +7,29 @@ numba_dpex.experimental module.
 """
 
 from llvmlite import ir as llvmir
+from numba.core import types
 from numba.core.datamodel import DataModelManager, models
-from numba.core.datamodel.models import PrimitiveModel
+from numba.core.datamodel.models import PrimitiveModel, StructModel
 from numba.core.extending import register_model
 
 import numba_dpex.core.datamodel.models as dpex_core_models
 
+from .dpcpp_types import AtomicRefType
 from .literal_intenum_type import IntEnumLiteral
 from .types import KernelDispatcherType
+
+
+class AtomicRefModel(StructModel):
+    """Data model for AtomicRefType."""
+
+    def __init__(self, dmm, fe_type):
+        members = [
+            (
+                "ref",
+                types.CPointer(fe_type.dtype, addrspace=fe_type.address_space),
+            ),
+        ]
+        super().__init__(dmm, fe_type, members)
 
 
 class IntEnumLiteralModel(PrimitiveModel):
@@ -43,6 +58,7 @@ def _init_exp_data_model_manager() -> DataModelManager:
 
     # Register the types and data model in the DpexExpTargetContext
     dmm.register(IntEnumLiteral, IntEnumLiteralModel)
+    dmm.register(AtomicRefType, AtomicRefModel)
 
     return dmm
 
