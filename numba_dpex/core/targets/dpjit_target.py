@@ -14,8 +14,6 @@ from numba.core.cpu import CPUContext
 from numba.core.imputils import Registry, RegistryLoader
 from numba.core.target_extension import CPU, target_registry
 
-from .kernel_target import DpexCallConv
-
 
 class Dpex(CPU):
     pass
