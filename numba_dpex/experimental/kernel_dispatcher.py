@@ -16,7 +16,11 @@ from numba.core.compiler import CompileResult, Flags
 from numba.core.compiler_lock import global_compiler_lock
 from numba.core.dispatcher import Dispatcher, _FunctionCompiler
 from numba.core.funcdesc import PythonFunctionDescriptor
-from numba.core.target_extension import dispatcher_registry, target_registry
+from numba.core.target_extension import (
+    dispatcher_registry,
+    target_override,
+    target_registry,
+)
 from numba.core.types import void
 from numba.core.typing.typeof import Purpose, typeof
 
@@ -164,7 +168,8 @@ class _KernelCompiler(_FunctionCompiler):
             pass
 
         try:
-            cres: CompileResult = self._compile_core(args, return_type)
+            with target_override(DPEX_KERNEL_EXP_TARGET_NAME):
+                cres: CompileResult = self._compile_core(args, return_type)
 
             if (
                 self.targetoptions["_compilation_mode"]
