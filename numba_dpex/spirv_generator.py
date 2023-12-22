@@ -6,24 +6,26 @@
 
 import os
 import tempfile
-from subprocess import CalledProcessError, check_call
+from subprocess import STDOUT, CalledProcessError, check_output
 
 from numba_dpex import config
+from numba_dpex.core.exceptions import InternalError
 from numba_dpex.core.targets.kernel_target import LLVM_SPIRV_ARGS
 
 
-def _raise_bad_env_path(msg, path, extra=None):
-    error_message = msg.format(path)
-    if extra is not None:
-        error_message += extra
-    raise ValueError(error_message)
-
-
-_real_check_call = check_call
-
-
-def check_call(*args, **kwargs):
-    return _real_check_call(*args, **kwargs)
+def run_cmd(args, error_message=None):
+    try:
+        check_output(
+            args,
+            stderr=STDOUT,
+        )
+    except CalledProcessError as err:
+        if error_message is None:
+            error_message = f"Error during call to {args[0]}"
+        raise InternalError(
+            f"{error_message}:\n\t"
+            + "\t".join(err.output.decode("utf-8").splitlines(True))
+        )
 
 
 class CmdLine:
@@ -36,7 +38,10 @@ class CmdLine:
             opath: Output file path of the disassembled spirv module.
         """
         flags = []
-        check_call(["spirv-dis", *flags, "-o", opath, ipath])
+        run_cmd(
+            ["spirv-dis", *flags, "-o", opath, ipath],
+            error_message="Error during SPIRV disassemble",
+        )
 
     def validate(self, ipath):
         """
@@ -46,7 +51,10 @@ class CmdLine:
             ipath: Input file path of the spirv module.
         """
         flags = []
-        check_call(["spirv-val", *flags, ipath])
+        run_cmd(
+            ["spirv-val", *flags, ipath],
+            error_message="Error during SPIRV validation",
+        )
 
     def optimize(self, ipath, opath):
         """
@@ -57,7 +65,10 @@ class CmdLine:
             opath: Output file path of the optimized spirv module.
         """
         flags = []
-        check_call(["spirv-opt", *flags, "-o", opath, ipath])
+        run_cmd(
+            ["spirv-opt", *flags, "-o", opath, ipath],
+            error_message="Error during SPIRV optimization",
+        )
 
     def generate(self, llvm_spirv_args, ipath, opath):
         """
@@ -79,7 +90,10 @@ class CmdLine:
         if config.DEBUG:
             print(f"Use llvm-spirv: {llvm_spirv_tool}")
 
-        check_call([llvm_spirv_tool, *llvm_spirv_args, "-o", opath, ipath])
+        run_cmd(
+            [llvm_spirv_tool, *llvm_spirv_args, "-o", opath, ipath],
+            error_message="Error during lowering LLVM IR to SPIRV",
+        )
 
     @staticmethod
     def _llvm_spirv():

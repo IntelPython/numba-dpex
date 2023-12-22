@@ -398,3 +398,17 @@ class IllegalIntEnumLiteralValueError(Exception):
             "An IntEnumLiteral can only be initialized from a FlagEnum member"
         )
         super().__init__(self.message)
+
+
+class InternalError(Exception):
+    """
+    Exception raise when something in the internal compiler machinery failed.
+    """
+
+    def __init__(self, extra_msg=None) -> None:
+        if extra_msg is None:
+            self.message = "An internal compiler error happened and the "
+            "compilation failed."
+        else:
+            self.message = extra_msg
+        super().__init__(self.message)
