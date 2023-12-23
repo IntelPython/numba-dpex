@@ -33,7 +33,7 @@ class LLRange(NamedTuple):
 
 
 def wrap_event_reference_tuple(ctx, builder, event1, event2):
-    """Creates tuple datamodel from two event datamodels, so it can be
+    """Creates tuple data model from two event data models, so it can be
     boxed to Python."""
     ty_event = DpctlSyclEvent()
     tupty = types.Tuple([ty_event, ty_event])
@@ -54,7 +54,7 @@ def _submit_kernel_async(
     ty_dependent_events: UniTuple,
     ty_kernel_args_tuple: UniTuple,
 ):
-    """Generates IR code for call_kernel_async dpjit function."""
+    """Generates IR code for call_kernel_async ``dpjit`` function."""
     return _submit_kernel(
         typingctx,
         ty_kernel_fn,
@@ -72,7 +72,7 @@ def _submit_kernel_sync(
     ty_index_space: Union[RangeType, NdRangeType],
     ty_kernel_args_tuple: UniTuple,
 ):
-    """Generates IR code for call_kernel dpjit function."""
+    """Generates IR code for call_kernel ``dpjit`` function."""
     return _submit_kernel(
         typingctx,
         ty_kernel_fn,
@@ -91,13 +91,13 @@ def _submit_kernel(  # pylint: disable=too-many-arguments
     ty_kernel_args_tuple: UniTuple,
     sync: bool,
 ):
-    """Generates IR code for call_kernel_{async|sync} dpjit function.
+    """Generates IR code for call_kernel_{async|sync} ``dpjit`` function.
 
-    The intrinsic first compiles the kernel function to SPIRV, and then to a
-    sycl kernel bundle. The arguments to the kernel are also packed into
-    flattened arrays and the sycl queue to which the kernel will be submitted
+    The intrinsic first compiles the kernel function to SPIR-V, and then to a
+    SYCL kernel bundle. The arguments to the kernel are also packed into
+    flattened arrays and the SYCL queue to which the kernel will be submitted
     extracted from the args. Finally, the actual kernel is extracted from the
-    kernel bundle and submitted to the sycl queue.
+    kernel bundle and submitted to the SYCL queue.
 
     If sync set to False, it acquires memory infos from kernel arguments to
     prevent garbage collection on them. Then it schedules host task to release
@@ -194,8 +194,8 @@ def _submit_kernel(  # pylint: disable=too-many-arguments
 @dpjit
 def call_kernel(kernel_fn, index_space, *kernel_args) -> None:
     """Calls a numba_dpex.kernel decorated function from CPython or from another
-    dpjit function. Kernel execution happens in syncronous way, so the thread
-    will be blocked till the kernel done exectuion.
+    dpjit function. Kernel execution happens in synchronous way, so the thread
+    will be blocked till the kernel done execution.
 
     Args:
         kernel_fn (numba_dpex.experimental.KernelDispatcher): A
@@ -221,9 +221,9 @@ def call_kernel_async(
     *kernel_args
 ) -> tuple[dpctl.SyclEvent, dpctl.SyclEvent]:
     """Calls a numba_dpex.kernel decorated function from CPython or from another
-    dpjit function. Kernel execution happens in asyncronous way, so the thread
-    will not be blocked till the kernel done exectuion. That means that it is
-    user responsiblity to properly use any memory used by kernel until the
+    dpjit function. Kernel execution happens in asynchronous way, so the thread
+    will not be blocked till the kernel done execution. That means that it is
+    user responsibility to properly use any memory used by kernel until the
     kernel execution is completed.
 
     Args:
