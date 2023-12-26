@@ -6,7 +6,6 @@ import string
 
 import dpctl.tensor as dpt
 import numpy as np
-import pytest
 
 import numba_dpex as dpex
 from numba_dpex.core.caching import LRUCache
@@ -130,7 +129,7 @@ def test_caching_hit_counts():
 
     d = JitKernel(data_parallel_sum)
 
-    d_launcher = d[100]
+    d_launcher = d[dpex.Range(100)]
 
     N = 10
     for i in range(N):

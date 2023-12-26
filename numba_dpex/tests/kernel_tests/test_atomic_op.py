@@ -96,7 +96,7 @@ def test_kernel_atomic_local(input_arrays, return_list_of_op):
     op_type, expected = return_list_of_op
     f = get_func_local(op_type, dtype)
     kernel = dpex.kernel(f)
-    kernel[dpex.Range(N), dpex.Range(N)](a)
+    kernel[dpex.NdRange(dpex.Range(N), dpex.Range(N))](a)
     assert a[0] == expected
 
 
