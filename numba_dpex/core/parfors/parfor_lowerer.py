@@ -13,15 +13,15 @@ from numba.parfors.parfor import (
 )
 
 from numba_dpex import config
+from numba_dpex.core.datamodel.models import (
+    dpex_data_model_manager as kernel_dmm,
+)
 from numba_dpex.core.parfors.reduction_helper import (
     ReductionHelper,
     ReductionKernelVariables,
 )
 from numba_dpex.core.utils.kernel_launcher import KernelLaunchIRBuilder
 from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
-from numba_dpex.core.datamodel.models import (
-    dpex_data_model_manager as kernel_dmm,
-)
 
 from ..exceptions import UnsupportedParforError
 from ..types.dpnp_ndarray_type import DpnpNdArray
@@ -30,7 +30,6 @@ from .reduction_kernel_builder import (
     create_reduction_main_kernel_for_parfor,
     create_reduction_remainder_kernel_for_parfor,
 )
-
 
 # A global list of kernels to keep the objects alive indefinitely.
 keep_alive_kernels = []
