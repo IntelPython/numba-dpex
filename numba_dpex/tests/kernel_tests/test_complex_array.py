@@ -48,7 +48,7 @@ def test_numeric_kernel_arg_complex_scalar(input_arrays):
     a, b, _ = input_arrays
     s = a.dtype.type(2 + 1j)
 
-    kernel_scalar[dpex.Range(N)](a, b, s)
+    dpex.call_kernel(kernel_scalar, dpex.Range(N), a, b, s)
 
     nb = dpnp.asnumpy(b)
     nexpected = numpy.full_like(nb, fill_value=2 + 1j)
@@ -65,7 +65,7 @@ def test_numeric_kernel_arg_complex_array(input_arrays):
 
     a, b, c = input_arrays
 
-    kernel_array[dpex.Range(N)](a, b, c)
+    dpex.call_kernel(kernel_array, dpex.Range(N), a, b, c)
 
     nb = dpnp.asnumpy(b)
     nexpected = numpy.full_like(nb, fill_value=0 + 0j)

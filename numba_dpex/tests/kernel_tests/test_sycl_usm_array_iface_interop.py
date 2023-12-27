@@ -88,7 +88,7 @@ def test_kernel_valid_usm_obj(dtype):
     C = DuckUSMArray(shape=buffC.shape, dtype=dtype, host_buffer=buffC)
 
     try:
-        vecadd[dpex.Range(N)](A, B, C)
+        dpex.call_kernel(vecadd, dpex.Range(N), A, B, C)
     except Exception:
         pytest.fail(
             "Could not pass Python object with sycl_usm_array_interface"
@@ -112,4 +112,4 @@ def test_kernel_invalid_usm_obj(dtype):
     C = PseudoDuckUSMArray()
 
     with pytest.raises(Exception):
-        vecadd[dpex.Range(N)](A, B, C)
+        dpex.call_kernel(vecadd, dpex.Range(N), A, B, C)

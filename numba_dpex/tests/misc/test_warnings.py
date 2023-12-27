@@ -17,7 +17,7 @@ def test_opt_warning():
     config.DPEX_OPT = 3
 
     with pytest.warns(UserWarning):
-        foo[dpex.Range(10)](dpnp.arange(10))
+        dpex.call_kernel(foo, dpex.Range(10), dpnp.arange(10))
 
     config.DPEX_OPT = bkp
 
@@ -27,7 +27,7 @@ def test_inline_threshold_eq_3_warning():
     config.INLINE_THRESHOLD = 3
 
     with pytest.warns(UserWarning):
-        foo[dpex.Range(10)](dpnp.arange(10))
+        dpex.call_kernel(foo, dpex.Range(10), dpnp.arange(10))
 
     config.INLINE_THRESHOLD = bkp
 
@@ -37,7 +37,7 @@ def test_inline_threshold_negative_val_warning_():
     config.INLINE_THRESHOLD = -1
 
     with pytest.warns(UserWarning):
-        foo[dpex.Range(10)](dpnp.arange(10))
+        dpex.call_kernel(foo, dpex.Range(10), dpnp.arange(10))
 
     config.INLINE_THRESHOLD = bkp
 
@@ -47,7 +47,7 @@ def test_inline_threshold_gt_3_warning():
     config.INLINE_THRESHOLD = 4
 
     with pytest.warns(UserWarning):
-        foo[dpex.Range(10)](dpnp.arange(10))
+        dpex.call_kernel(foo, dpex.Range(10), dpnp.arange(10))
 
     config.INLINE_THRESHOLD = bkp
 
@@ -55,4 +55,4 @@ def test_inline_threshold_gt_3_warning():
 def test_no_warning():
     with warnings.catch_warnings():
         warnings.simplefilter("error")
-        foo[dpex.Range(10)](dpnp.arange(10))
+        dpex.call_kernel(foo, dpex.Range(10), dpnp.arange(10))

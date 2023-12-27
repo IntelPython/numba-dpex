@@ -17,6 +17,7 @@ import llvmlite.binding as ll
 from numba import __version__ as numba_version
 from numba.np.ufunc.decorators import Vectorize
 
+from numba_dpex.core.kernel_interface.launcher import call_kernel
 from numba_dpex.vectorizers import Vectorize as DpexVectorize
 
 from .numba_patches import patch_arrayexpr_tree_to_ir, patch_is_ufunc
@@ -145,4 +146,4 @@ from numba_dpex._version import get_versions  # noqa E402
 __version__ = get_versions()["version"]
 del get_versions
 
-__all__ = types.__all__ + ["Range", "NdRange"]
+__all__ = types.__all__ + ["Range", "NdRange", "call_kernel"]

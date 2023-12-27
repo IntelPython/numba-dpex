@@ -24,6 +24,6 @@ def test_func_call_from_kernel():
     a = dpnp.ones(1024)
     b = dpnp.ones(1024)
 
-    f[dpex.Range(1024)](a, b)
+    dpex.call_kernel(f, dpex.Range(1024), a, b)
     nb = dpnp.asnumpy(b)
     assert numpy.all(nb == 2)
