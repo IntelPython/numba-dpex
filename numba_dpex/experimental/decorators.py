@@ -8,7 +8,7 @@ ready to move to numba_dpex.core.
 import inspect
 from warnings import warn
 
-from numba.core import sigutils
+from numba.core import sigutils, typeinfer
 from numba.core.target_extension import (
     jit_registry,
     resolve_dispatcher_from_str,
@@ -16,8 +16,31 @@ from numba.core.target_extension import (
 )
 
 from numba_dpex.core.targets.kernel_target import CompilationMode
+from numba_dpex.experimental.kernel_dispatcher import KernelDispatcher
 
 from .target import DPEX_KERNEL_EXP_TARGET_NAME
+
+
+def _parse_func_or_sig(signature_or_function):
+    # Handle signature (borrowed from numba). swapped signature and list check
+    if signature_or_function is None:
+        # No signature, no function
+        pyfunc = None
+        sigs = []
+    elif sigutils.is_signature(signature_or_function):
+        # A single signature is passed
+        pyfunc = None
+        sigs = [signature_or_function]
+    elif isinstance(signature_or_function, list):
+        # A list of signatures is passed
+        pyfunc = None
+        sigs = signature_or_function
+    else:
+        # A function is passed
+        pyfunc = signature_or_function
+        sigs = []
+
+    return pyfunc, sigs
 
 
 def kernel(func_or_sig=None, **options):
@@ -32,6 +55,8 @@ def kernel(func_or_sig=None, **options):
           follows data programming model.
     """
 
+    # dispatcher is a type:
+    # <class 'numba_dpex.experimental.kernel_dispatcher.KernelDispatcher'>
     dispatcher = resolve_dispatcher_from_str(DPEX_KERNEL_EXP_TARGET_NAME)
     if "_compilation_mode" in options:
         user_compilation_mode = options["_compilation_mode"]
@@ -45,42 +70,30 @@ def kernel(func_or_sig=None, **options):
     # FIXME: The options need to be evaluated and checked here like it is
     # done in numba.core.decorators.jit
 
+    func, sigs = _parse_func_or_sig(func_or_sig)
+    for sig in sigs:
+        if isinstance(sig, str):
+            raise NotImplementedError(
+                "Specifying signatures as string is not yet supported by numba-dpex"
+            )
+
     def _kernel_dispatcher(pyfunc):
-        return dispatcher(
+        disp: KernelDispatcher = dispatcher(
             pyfunc=pyfunc,
             targetoptions=options,
         )
 
-    if func_or_sig is None:
+        if len(sigs) > 0:
+            with typeinfer.register_dispatcher(disp):
+                for sig in sigs:
+                    disp.compile(sig)
+                disp.disable_compile()
+
+        return disp
+
+    if func is None:
         return _kernel_dispatcher
 
-    if isinstance(func_or_sig, str):
-        raise NotImplementedError(
-            "Specifying signatures as string is not yet supported by numba-dpex"
-        )
-
-    if isinstance(func_or_sig, list) or sigutils.is_signature(func_or_sig):
-        # String signatures are not supported as passing usm_ndarray type as
-        # a string is not possible. Numba's sigutils relies on the type being
-        # available in Numba's `types.__dict__` and dpex types are not
-        # registered there yet.
-        if isinstance(func_or_sig, list):
-            for sig in func_or_sig:
-                if isinstance(sig, str):
-                    raise NotImplementedError(
-                        "Specifying signatures as string is not yet supported "
-                        "by numba-dpex"
-                    )
-        # Specialized signatures can either be a single signature or a list.
-        # In case only one signature is provided convert it to a list
-        if not isinstance(func_or_sig, list):
-            func_or_sig = [func_or_sig]
-
-        def _specialized_kernel_dispatcher(pyfunc):
-            return dispatcher(pyfunc=pyfunc)
-
-        return _specialized_kernel_dispatcher
-    func = func_or_sig
     if not inspect.isfunction(func):
         raise ValueError(
             "Argument passed to the kernel decorator is neither a "
