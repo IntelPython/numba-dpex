@@ -21,6 +21,7 @@ from numba.core.target_extension import (
     target_override,
     target_registry,
 )
+from numba.core.types import Array as NpArrayType
 from numba.core.types import void
 from numba.core.typing.typeof import Purpose, typeof
 
@@ -28,6 +29,7 @@ from numba_dpex import config, numba_sem_version, spirv_generator
 from numba_dpex.core.codegen import SPIRVCodeLibrary
 from numba_dpex.core.exceptions import (
     ExecutionQueueInferenceError,
+    InvalidKernelSpecializationError,
     KernelHasReturnValueError,
     UnsupportedKernelArgumentError,
 )
@@ -36,7 +38,7 @@ from numba_dpex.core.targets.kernel_target import (
     CompilationMode,
     DpexKernelTargetContext,
 )
-from numba_dpex.core.types import DpnpNdArray
+from numba_dpex.core.types import DpnpNdArray, USMNdArray
 from numba_dpex.core.utils import kernel_launcher as kl
 
 from .target import DPEX_KERNEL_EXP_TARGET_NAME, dpex_exp_kernel_target
@@ -83,6 +85,71 @@ class _KernelCompiler(_FunctionCompiler):
             raise ExecutionQueueInferenceError(
                 kernel_name=py_func_name, usmarray_argnum_list=None
             )
+
+    def check_sig_types(self, py_func_name: str, argtypes, return_type):
+        """Checks signature type and raises error if wrong signature was
+        provided.
+
+        Args:
+            sig: The signature on which the kernel is to be specialized.
+
+        Raises:
+            KernelHasReturnValueError: non void return type.
+            InvalidKernelSpecializationError: unsupported arguments where
+                provided.
+        """
+
+        if return_type is None:
+            return_type = void
+        sig = return_type(*argtypes)
+
+        # Check if signature has a non-void return type
+        if return_type and return_type != void:
+            raise KernelHasReturnValueError(
+                kernel_name=None,
+                return_type=return_type,
+                sig=sig,
+            )
+
+        # USMNdarray check
+        usmarray_argnums = []
+        usmndarray_argtypes = []
+        unsupported_argnum_list = []
+
+        for i, argtype in enumerate(argtypes):
+            # FIXME: Add checks for other types of unsupported kernel args, e.g.
+            # complex.
+
+            # Check if a non-USMNdArray Array type is passed to the kernel
+            if isinstance(argtype, NpArrayType) and not isinstance(
+                argtype, USMNdArray
+            ):
+                unsupported_argnum_list.append(i)
+            elif isinstance(argtype, USMNdArray):
+                usmarray_argnums.append(i)
+                usmndarray_argtypes.append(argtype)
+
+        if unsupported_argnum_list:
+            raise InvalidKernelSpecializationError(
+                kernel_name=py_func_name,
+                invalid_sig=sig,
+                unsupported_argnum_list=unsupported_argnum_list,
+            )
+
+    def check_arguments(self, py_func_name: str, args: [types.Type, ...]):
+        """Checks arguments and queue of the input arguments.
+
+        Raises:
+            KernelHasReturnValueError: non void return type.
+            InvalidKernelSpecializationError: unsupported arguments where
+                provided.
+            ExecutionQueueInferenceError: If all DpnpNdArray were not allocated
+                on the same dpctl.SyclQueue
+            ExecutionQueueInferenceError: If there were not DpnpNdArray
+                arguments passed to the kernel.
+        """
+        self.check_sig_types(py_func_name, args, None)
+        self.check_queue_equivalence_of_args(py_func_name, args)
 
     def _compile_to_spirv(
         self,
@@ -292,13 +359,6 @@ class KernelDispatcher(Dispatcher):
         args = tuple(cres.signature.args)
         self.overloads[args] = cres
 
-    def get_overload_kcres(self, sig) -> _KernelCompileResult:
-        """
-        Return the compiled function for the given signature.
-        """
-        args, _ = sigutils.normalize_signature(sig)
-        return self.overloads[tuple(args)]
-
     def compile(self, sig) -> any:
         disp = self._get_dispatcher_for_current_target()
         if disp is not self:
@@ -337,9 +397,7 @@ class KernelDispatcher(Dispatcher):
                     # functions, the arguments can be scalar and we skip queue
                     # equivalence check.
                     try:
-                        self._compiler.check_queue_equivalence_of_args(
-                            self._kernel_name, args
-                        )
+                        self._compiler.check_arguments(self._kernel_name, args)
                     except ExecutionQueueInferenceError as eqie:
                         raise eqie
 

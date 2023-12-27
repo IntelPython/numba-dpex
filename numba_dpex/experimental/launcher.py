@@ -130,8 +130,7 @@ def _submit_kernel(  # pylint: disable=too-many-arguments
     # directly from type and compile it. Thats why we don't need to get it in
     # codegen
     kernel_dispatcher: KernelDispatcher = ty_kernel_fn.dispatcher
-    kernel_dispatcher.compile(kernel_sig)
-    kernel_module: kl.SPIRVKernelModule = kernel_dispatcher.get_overload_kcres(
+    kernel_module: kl.SPIRVKernelModule = kernel_dispatcher.get_compile_result(
         kernel_sig
     ).kernel_device_ir_module
     kernel_targetctx: DpexKernelTargetContext = kernel_dispatcher.targetctx
