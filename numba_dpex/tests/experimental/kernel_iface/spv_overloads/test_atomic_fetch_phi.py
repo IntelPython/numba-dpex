@@ -38,3 +38,33 @@ def test_fetch_add(input_arrays, ref_index):
 
     # Verify that `a` was accumulated at b[ref_index]
     assert b[ref_index] == 10
+
+
+@dpex_exp.kernel
+def atomic_ref_0(a):
+    i = dpex.get_global_id(0)
+    v = AtomicRef(a, index=0)
+    v.fetch_add(a[i + 2])
+
+
+@dpex_exp.kernel
+def atomic_ref_1(a):
+    i = dpex.get_global_id(0)
+    v = AtomicRef(a, index=1)
+    v.fetch_add(a[i + 2])
+
+
+def test_spirv_compiler_flags():
+    """Check if float atomic flag is being populated from intrinsic for the
+    second call.
+
+    https://github.com/IntelPython/numba-dpex/issues/1262
+    """
+    N = 10
+    a = dpnp.ones(N, dtype=dpnp.float32)
+
+    dpex_exp.call_kernel(atomic_ref_0, dpex.Range(N - 2), a)
+    dpex_exp.call_kernel(atomic_ref_1, dpex.Range(N - 2), a)
+
+    assert a[0] == N - 1
+    assert a[1] == N - 1
