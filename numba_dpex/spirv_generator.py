@@ -156,7 +156,10 @@ class Module(object):
         # Generate SPIR-V from "friendly" LLVM-based SPIR 2.0
         spirv_path = self._track_temp_file("generated-spirv")
 
-        llvm_spirv_args = []
+        # TODO: find better approach to set SPIRV compiler arguments. Workaround
+        #  against caching intrinsic that sets this argument.
+        # https://github.com/IntelPython/numba-dpex/issues/1262
+        llvm_spirv_args = ["--spirv-ext=+SPV_EXT_shader_atomic_float_add"]
         for key in list(self.context.extra_compile_options.keys()):
             if key == LLVM_SPIRV_ARGS:
                 llvm_spirv_args = self.context.extra_compile_options[key]
