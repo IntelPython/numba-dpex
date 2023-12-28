@@ -25,7 +25,7 @@ def test_proper_lowering():
     orig = dpt.asnumpy(arr)
     global_size = (N,)
     local_size = (N // 2,)
-    twice[NdRange(global_size, local_size)](arr)
+    dpex.call_kernel(twice, NdRange(global_size, local_size), arr)
     after = dpt.asnumpy(arr)
     # The computation is correct?
     np.testing.assert_allclose(orig * 2, after)
@@ -43,7 +43,7 @@ def test_no_arg_barrier_support():
     N = 256
     arr = dpt.arange(N, dtype=dpt.float32)
     orig = dpt.asnumpy(arr)
-    twice[Range(N)](arr)
+    dpex.call_kernel(twice, Range(N), arr)
     after = dpt.asnumpy(arr)
     # The computation is correct?
     np.testing.assert_allclose(orig * 2, after)
@@ -66,7 +66,9 @@ def test_local_memory():
 
     arr = dpt.arange(blocksize, dtype=dpt.float32)
     orig = dpt.asnumpy(arr)
-    reverse_array[NdRange(Range(blocksize), Range(blocksize))](arr)
+    dpex.call_kernel(
+        reverse_array, NdRange(Range(blocksize), Range(blocksize)), arr
+    )
     after = dpt.asnumpy(arr)
     expected = orig[::-1] + orig
     np.testing.assert_allclose(expected, after)

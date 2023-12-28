@@ -35,7 +35,7 @@ def test_basic():
     a = dpnp.ones(N)
     b = dpnp.ones(N)
 
-    k[dpex.Range(N)](a, b)
+    dpex.call_kernel(k, dpex.Range(N), a, b)
 
     assert np.array_equal(dpnp.asnumpy(b), dpnp.asnumpy(a) + 1)
 
@@ -56,7 +56,7 @@ def test_single_signature():
     a = dpnp.ones(N, dtype=dpnp.int32)
     b = dpnp.ones(N, dtype=dpnp.int32)
 
-    k[dpex.Range(N)](a, b)
+    dpex.call_kernel(k, dpex.Range(N), a, b)
 
     assert np.array_equal(dpnp.asnumpy(b), dpnp.asnumpy(a) + 1)
 
@@ -65,7 +65,7 @@ def test_single_signature():
     b = dpnp.ones(N, dtype=dpnp.int64)
 
     with pytest.raises(Exception) as e:
-        k[dpex.Range(N)](a, b)
+        dpex.call_kernel(k, dpex.Range(N), a, b)
 
     assert " >>> <unknown function>(int64)" in e.value.args[0]
 
@@ -86,7 +86,7 @@ def test_list_signature():
     a = dpnp.ones(N, dtype=dpnp.int32)
     b = dpnp.ones(N, dtype=dpnp.int32)
 
-    k[dpex.Range(N)](a, b)
+    dpex.call_kernel(k, dpex.Range(N), a, b)
 
     assert np.array_equal(dpnp.asnumpy(b), dpnp.asnumpy(a) + 1)
 
@@ -94,7 +94,7 @@ def test_list_signature():
     a = dpnp.ones(N, dtype=dpnp.float32)
     b = dpnp.ones(N, dtype=dpnp.float32)
 
-    k[dpex.Range(N)](a, b)
+    dpex.call_kernel(k, dpex.Range(N), a, b)
 
     assert np.array_equal(dpnp.asnumpy(b), dpnp.asnumpy(a) + 1)
 
@@ -103,6 +103,6 @@ def test_list_signature():
     b = dpnp.ones(N, dtype=dpnp.int64)
 
     with pytest.raises(Exception) as e:
-        k[dpex.Range(N)](a, b)
+        dpex.call_kernel(k, dpex.Range(N), a, b)
 
     assert " >>> <unknown function>(int64)" in e.value.args[0]

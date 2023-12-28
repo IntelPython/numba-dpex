@@ -56,7 +56,7 @@ def kernel_result_pair(request):
 def test_kernel_atomic_simple(input_arrays, kernel_result_pair):
     a, dtype = input_arrays()
     kernel, expected = kernel_result_pair
-    kernel[dpex.Range(global_size)](a)
+    dpex.call_kernel(kernel, dpex.Range(global_size), a)
     assert a[0] == expected
 
 
@@ -96,7 +96,7 @@ def test_kernel_atomic_local(input_arrays, return_list_of_op):
     op_type, expected = return_list_of_op
     f = get_func_local(op_type, dtype)
     kernel = dpex.kernel(f)
-    kernel[dpex.NdRange(dpex.Range(N), dpex.Range(N))](a)
+    dpex.call_kernel(kernel, dpex.NdRange(dpex.Range(N), dpex.Range(N)), a)
     assert a[0] == expected
 
 
@@ -134,7 +134,7 @@ def test_kernel_atomic_multi_dim(
     dim = return_list_of_dim
     kernel = get_kernel_multi_dim(op_type, len(dim))
     a = np.zeros(dim, dtype=return_dtype)
-    kernel[dpex.Range(global_size)](a)
+    dpex.call_kernel(kernel, dpex.Range(global_size), a)
     assert a[0] == expected
 
 

@@ -52,7 +52,7 @@ def test_consuming_usm_ndarray(dtype, usm_type):
 
     c = dpt.empty_like(a)
 
-    data_parallel_sum[dpex.Range(N, N)](a, b, c)
+    dpex.call_kernel(data_parallel_sum, dpex.Range(N, N), a, b, c)
 
     na = dpt.asnumpy(a)
     nb = dpt.asnumpy(b)

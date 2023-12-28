@@ -23,7 +23,7 @@ def kernel_with_private_memory_allocation(A):
 def test_private_memory_allocation():
     N = 64
     arr = dpnp.zeros(N, dtype=dpnp.float32)
-    kernel_with_private_memory_allocation[dpex.Range(N)](arr)
+    dpex.call_kernel(kernel_with_private_memory_allocation, dpex.Range(N), arr)
 
     nparr = dpnp.asnumpy(arr)
 

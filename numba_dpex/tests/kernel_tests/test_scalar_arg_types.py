@@ -49,7 +49,7 @@ def test_numeric_kernel_arg_types1(input_arrays):
     a, b = input_arrays
     s = a.dtype.type(2)
 
-    scaling_kernel[dpex.Range(N)](a, b, s)
+    dpex.call_kernel(scaling_kernel, dpex.Range(N), a, b, s)
 
     nb = dpnp.asnumpy(b)
     nexpected = numpy.full_like(nb, fill_value=2)
@@ -65,14 +65,14 @@ def test_bool_kernel_arg_type(input_arrays):
     """
     a, b = input_arrays
 
-    kernel_with_bool_arg[dpex.Range(a.size)](a, b, True)
+    dpex.call_kernel(kernel_with_bool_arg, dpex.Range(a.size), a, b, True)
 
     nb = dpnp.asnumpy(b)
     nexpected_true = numpy.full_like(nb, fill_value=2)
 
     assert numpy.allclose(nb, nexpected_true)
 
-    kernel_with_bool_arg[dpex.Range(a.size)](a, b, False)
+    dpex.call_kernel(kernel_with_bool_arg, dpex.Range(a.size), a, b, False)
 
     nb = dpnp.asnumpy(b)
     nexpected_false = numpy.zeros_like(nb)
