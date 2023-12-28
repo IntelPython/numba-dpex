@@ -22,7 +22,10 @@ from numba_dpex.core.types import DpctlSyclEvent, NdRangeType, RangeType
 from numba_dpex.core.utils import kernel_launcher as kl
 from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
 from numba_dpex.dpctl_iface.wrappers import wrap_event_reference
-from numba_dpex.experimental.kernel_dispatcher import KernelDispatcher
+from numba_dpex.experimental.kernel_dispatcher import (
+    KernelDispatcher,
+    _KernelCompileResult,
+)
 
 
 class LLRange(NamedTuple):
@@ -130,9 +133,10 @@ def _submit_kernel(  # pylint: disable=too-many-arguments
     # directly from type and compile it. Thats why we don't need to get it in
     # codegen
     kernel_dispatcher: KernelDispatcher = ty_kernel_fn.dispatcher
-    kernel_module: kl.SPIRVKernelModule = kernel_dispatcher.get_compile_result(
+    kcres: _KernelCompileResult = kernel_dispatcher.get_compile_result(
         kernel_sig
-    ).kernel_device_ir_module
+    )
+    kernel_module: kl.SPIRVKernelModule = kcres.kernel_device_ir_module
     kernel_targetctx: DpexKernelTargetContext = kernel_dispatcher.targetctx
 
     def codegen(
