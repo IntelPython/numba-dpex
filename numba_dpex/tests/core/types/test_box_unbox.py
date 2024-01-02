@@ -10,6 +10,7 @@ import functools
 import sys
 
 import dpctl
+import dpctl.tensor as dpt
 import dpnp
 import numpy
 import pytest
@@ -23,8 +24,7 @@ constructors_with_parent = [
     # doing it in the right way. Testing tests =)
     lambda: numpy.empty(10, dtype=numpy.float32),
     lambda: dpnp.empty(10, dtype=dpnp.float32),
-    # TODO: is it possible to test USMNd array same way?
-    # lambda: dpx.USMNdArray(1, queue=None, dtype=dpx.float32), # noqa: E800
+    lambda: dpt.empty(10, dtype=dpt.float32),
 ]
 
 ranges = [(10,), (10, 10), (10, 10, 10)]
