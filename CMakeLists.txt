@@ -25,10 +25,4 @@ project(numba-dpex
     VERSION ${NUMBA_DPEX_VERSION}
 )
 
-if(IS_INSTALL)
-    install(DIRECTORY numba_dpex
-        DESTINATION ${CMAKE_INSTALL_PREFIX}
-        FILES_MATCHING PATTERN "*.py")
-endif()
-
 add_subdirectory(numba_dpex)
