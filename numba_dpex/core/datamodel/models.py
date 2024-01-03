@@ -287,7 +287,7 @@ dpex_data_model_manager = _init_data_model_manager()
 
 # Register the USMNdArray type to USMArrayDeviceModel in numba's default data
 # model manager
-register_model(USMNdArray)(USMArrayDeviceModel)
+register_model(USMNdArray)(USMArrayHostModel)
 
 # Register the DpnpNdArray type to USMArrayHostModel in numba's default data
 # model manager
