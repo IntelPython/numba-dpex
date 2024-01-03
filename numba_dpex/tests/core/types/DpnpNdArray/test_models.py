@@ -7,8 +7,8 @@ from numba.core.datamodel import default_manager, models
 from numba.core.registry import cpu_target
 
 from numba_dpex.core.datamodel.models import (
-    DpnpNdArrayModel,
-    USMArrayModel,
+    USMArrayDeviceModel,
+    USMArrayHostModel,
     dpex_data_model_manager,
 )
 from numba_dpex.core.descriptor import dpex_kernel_target
@@ -21,9 +21,9 @@ def test_model_for_DpnpNdArray():
     """
     dpnp_ndarray = DpnpNdArray(ndim=1, dtype=types.float64, layout="C")
     model = dpex_data_model_manager.lookup(dpnp_ndarray)
-    assert isinstance(model, USMArrayModel)
+    assert isinstance(model, USMArrayDeviceModel)
     default_model = default_manager.lookup(dpnp_ndarray)
-    assert isinstance(default_model, DpnpNdArrayModel)
+    assert isinstance(default_model, USMArrayHostModel)
 
 
 def test_dpnp_ndarray_Model():
@@ -32,7 +32,7 @@ def test_dpnp_ndarray_Model():
     It is a subclass of models.StructModel and models.ArrayModel.
     """
 
-    assert issubclass(DpnpNdArrayModel, models.StructModel)
+    assert issubclass(USMArrayHostModel, models.StructModel)
 
 
 def test_flattened_member_count():
