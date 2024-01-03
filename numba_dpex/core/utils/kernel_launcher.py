@@ -19,7 +19,7 @@ from numba.core.types.containers import UniTuple
 from numba_dpex import config, utils
 from numba_dpex.core.exceptions import UnreachableError
 from numba_dpex.core.runtime.context import DpexRTContext
-from numba_dpex.core.types import DpnpNdArray
+from numba_dpex.core.types import USMNdArray
 from numba_dpex.core.types.range_types import NdRangeType, RangeType
 from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
 from numba_dpex.dpctl_iface._helpers import numba_type_to_dpctl_typenum
@@ -258,7 +258,7 @@ class KernelLaunchIRBuilder:
         args_ty_list,
         arg_num,
     ):
-        """Creates a list of LLVM Values for an unpacked DpnpNdArray kernel
+        """Creates a list of LLVM Values for an unpacked USMNdArray kernel
         argument.
 
         The steps performed here are the same as in
@@ -524,7 +524,7 @@ class KernelLaunchIRBuilder:
     def set_queue_from_arguments(
         self,
     ):
-        """Sets the sycl queue from the first DpnpNdArray argument provided
+        """Sets the sycl queue from the first USMNdArray argument provided
         earlier."""
         queue_ref = get_queue_from_llvm_values(
             self.context,
@@ -786,7 +786,7 @@ class KernelLaunchIRBuilder:
         flattens dpnp arrays and complex values."""
         num_flattened_kernel_args = 0
         for arg_type in kernel_argtys:
-            if isinstance(arg_type, DpnpNdArray):
+            if isinstance(arg_type, USMNdArray):
                 datamodel = self.kernel_dmm.lookup(arg_type)
                 num_flattened_kernel_args += datamodel.flattened_field_count
             elif arg_type in [types.complex64, types.complex128]:
@@ -806,7 +806,7 @@ class KernelLaunchIRBuilder:
         kernel_arg_num = 0
         for arg_num, argtype in enumerate(kernel_argtys):
             llvm_val = callargs_ptrs[arg_num]
-            if isinstance(argtype, DpnpNdArray):
+            if isinstance(argtype, USMNdArray):
                 datamodel = self.kernel_dmm.lookup(argtype)
                 self._build_array_arg(
                     array_val=llvm_val,
@@ -853,13 +853,13 @@ def get_queue_from_llvm_values(
     ll_kernel_args: list[llvmir.Instruction],
 ):
     """
-    Get the sycl queue from the first DpnpNdArray argument. Prior passes
+    Get the sycl queue from the first USMNdArray argument. Prior passes
     before lowering make sure that compute-follows-data is enforceable
     for a specific call to a kernel. As such, at the stage of lowering
-    the queue from the first DpnpNdArray argument can be extracted.
+    the queue from the first USMNdArray argument can be extracted.
     """
     for arg_num, argty in enumerate(ty_kernel_args):
-        if isinstance(argty, DpnpNdArray):
+        if isinstance(argty, USMNdArray):
             llvm_val = ll_kernel_args[arg_num]
             datamodel = ctx.data_model_manager.lookup(argty)
             sycl_queue_attr_pos = datamodel.get_field_position("sycl_queue")
