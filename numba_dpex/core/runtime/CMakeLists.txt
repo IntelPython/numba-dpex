@@ -107,22 +107,10 @@ link_directories(${DPCTL_LIBRARY_PATH})
 python_add_library(${PROJECT_NAME} MODULE ${SOURCES})
 
 # Add SYCL to target, this must come after python_add_library()
-# FIXME: sources incompatible with sycl include?
 add_sycl_to_target(TARGET ${PROJECT_NAME} SOURCES ${KERNEL_SOURCES})
 
 # Link the DPCTLSyclInterface library to target
 target_link_libraries(${PROJECT_NAME} PRIVATE DPCTLSyclInterface)
-
-# If IS_DEVELOP, copy back the target into numba_dpex/core/runtime
-if(IS_DEVELOP)
-    add_custom_command(
-        TARGET ${PROJECT_NAME}
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-        ${CMAKE_BINARY_DIR}/numba_dpex/core/runtime/*.so
-        ${CMAKE_SOURCE_DIR}/numba_dpex/core/runtime/
-    )
-endif()
 
 # Install
 install(
