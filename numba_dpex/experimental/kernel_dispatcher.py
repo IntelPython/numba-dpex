@@ -38,7 +38,7 @@ from numba_dpex.core.targets.kernel_target import (
     CompilationMode,
     DpexKernelTargetContext,
 )
-from numba_dpex.core.types import DpnpNdArray, USMNdArray
+from numba_dpex.core.types import USMNdArray
 from numba_dpex.core.utils import kernel_launcher as kl
 
 from .target import DPEX_KERNEL_EXP_TARGET_NAME, dpex_exp_kernel_target
@@ -56,7 +56,7 @@ class _KernelCompiler(_FunctionCompiler):
     def check_queue_equivalence_of_args(
         self, py_func_name: str, args: [types.Type, ...]
     ):
-        """Evaluates if all DpnpNdArray arguments passed to a kernel function
+        """Evaluates if all USMNdArray arguments passed to a kernel function
         has the same DpctlSyclQueue type.
 
         Args:
@@ -65,15 +65,15 @@ class _KernelCompiler(_FunctionCompiler):
             argument passed to the kernel
 
         Raises:
-            ExecutionQueueInferenceError: If all DpnpNdArray were not allocated
+            ExecutionQueueInferenceError: If all USMNdArray were not allocated
             on the same dpctl.SyclQueue
-            ExecutionQueueInferenceError: If there were not DpnpNdArray
+            ExecutionQueueInferenceError: If there were not USMNdArray
             arguments passed to the kernel.
         """
         common_queue = None
 
         for arg in args:
-            if isinstance(arg, DpnpNdArray):
+            if isinstance(arg, USMNdArray):
                 if common_queue is None:
                     common_queue = arg.queue
                 elif common_queue != arg.queue:
@@ -143,9 +143,9 @@ class _KernelCompiler(_FunctionCompiler):
             KernelHasReturnValueError: non void return type.
             InvalidKernelSpecializationError: unsupported arguments where
                 provided.
-            ExecutionQueueInferenceError: If all DpnpNdArray were not allocated
+            ExecutionQueueInferenceError: If all USMNdArray were not allocated
                 on the same dpctl.SyclQueue
-            ExecutionQueueInferenceError: If there were not DpnpNdArray
+            ExecutionQueueInferenceError: If there were not USMNdArray
                 arguments passed to the kernel.
         """
         self.check_sig_types(py_func_name, args, None)
@@ -343,7 +343,7 @@ class KernelDispatcher(Dispatcher):
         # can save a couple µs.
         try:
             tp = typeof(val, Purpose.argument)
-            if isinstance(tp, types.Array) and not isinstance(tp, DpnpNdArray):
+            if isinstance(tp, types.Array) and not isinstance(tp, USMNdArray):
                 raise UnsupportedKernelArgumentError(
                     type=str(type(val)), value=val
                 )

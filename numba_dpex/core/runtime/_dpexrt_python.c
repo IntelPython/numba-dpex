@@ -740,12 +740,19 @@ static struct PyUSMArrayObject *PyUSMNdArray_ARRAYOBJ(PyObject *obj)
 {
     PyObject *arrayobj = NULL;
 
-    arrayobj = PyObject_GetAttrString(obj, "_array_obj");
+    if (PyObject_TypeCheck(obj, &PyUSMArrayType)) {
+        DPEXRT_DEBUG(
+            drt_debug_print("DPEXRT-DEBUG: usm array was passed directly\n"));
+        arrayobj = obj;
+    }
+    else if (PyObject_HasAttrString(obj, "_array_obj")) {
+        arrayobj = PyObject_GetAttrString(obj, "_array_obj");
 
-    if (!arrayobj)
-        return NULL;
-    if (!PyObject_TypeCheck(arrayobj, &PyUSMArrayType))
-        return NULL;
+        if (!arrayobj)
+            return NULL;
+        if (!PyObject_TypeCheck(arrayobj, &PyUSMArrayType))
+            return NULL;
+    }
 
     struct PyUSMArrayObject *pyusmarrayobj =
         (struct PyUSMArrayObject *)(arrayobj);
@@ -1163,6 +1170,8 @@ DPEXRT_sycl_usm_ndarray_to_python_acqref(usmarystruct_t *arystruct,
                      "failed to create a new dpctl.tensor.usm_ndarray object.");
         return MOD_ERROR_VAL;
     }
+
+    // TODO: check if the object is dpctl tensor and return usm_ndarr_obj then
 
     //  call new on dpnp_array
     dpnp_array_mod = PyImport_ImportModule("dpnp.dpnp_array");
