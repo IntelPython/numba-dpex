@@ -28,6 +28,9 @@ from numba_dpex.core.types import DpnpNdArray
 from numba_dpex.core.types.dpctl_types import DpctlSyclQueue
 from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
 
+# can't import name because of the circular import
+DPEX_TARGET_NAME = "dpex"
+
 _QueueRefPayload = namedtuple(
     "QueueRefPayload", ["queue_ref", "py_dpctl_sycl_queue_addr", "pyapi"]
 )
@@ -305,7 +308,7 @@ def _empty_nd_impl(context, builder, arrtype, shapes, queue_ref):
     return ary
 
 
-@overload_classmethod(DpnpNdArray, "_usm_allocate")
+@overload_classmethod(DpnpNdArray, "_usm_allocate", target=DPEX_TARGET_NAME)
 def _ol_array_allocate(cls, allocsize, usm_type, queue):
     """Implements an allocator for dpnp.ndarrays."""
 
@@ -326,7 +329,7 @@ def _call_usm_allocator(arrtype, size, usm_type, queue):
 numba_config.DISABLE_PERFORMANCE_WARNINGS = 1
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def intrin_usm_alloc(typingctx, allocsize, usm_type, queue):
     """Intrinsic to call into the allocator for Array"""
 
@@ -425,7 +428,7 @@ def fill_arrayobj(context, builder, ary, arrtype, queue_ref, fill_value):
     return ary, arrtype
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def impl_dpnp_empty(
     ty_context,
     ty_shape,
@@ -495,7 +498,7 @@ def impl_dpnp_empty(
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def impl_dpnp_zeros(
     ty_context,
     ty_shape,
@@ -572,7 +575,7 @@ def impl_dpnp_zeros(
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def impl_dpnp_ones(
     ty_context,
     ty_shape,
@@ -650,7 +653,7 @@ def impl_dpnp_ones(
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def impl_dpnp_full(
     ty_context,
     ty_shape,
@@ -734,7 +737,7 @@ def impl_dpnp_full(
     return signature, codegen
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def impl_dpnp_empty_like(
     ty_context,
     ty_x1,
@@ -813,7 +816,7 @@ def impl_dpnp_empty_like(
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def impl_dpnp_zeros_like(
     ty_context,
     ty_x1,
@@ -901,7 +904,7 @@ def impl_dpnp_zeros_like(
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def impl_dpnp_ones_like(
     ty_context,
     ty_x1,
@@ -988,7 +991,7 @@ def impl_dpnp_ones_like(
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def impl_dpnp_full_like(
     ty_context,
     ty_x1,
@@ -1079,7 +1082,7 @@ def impl_dpnp_full_like(
     return signature, codegen
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def ol_dpnp_nd_array_sycl_queue(
     ty_context,
     ty_dpnp_nd_array: DpnpNdArray,

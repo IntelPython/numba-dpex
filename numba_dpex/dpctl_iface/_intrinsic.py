@@ -10,10 +10,11 @@ from numba.extending import intrinsic, overload, overload_method
 
 import numba_dpex.dpctl_iface.libsyclinterface_bindings as sycl
 from numba_dpex.core import types as dpex_types
+from numba_dpex.core.targets.dpjit_target import DPEX_TARGET_NAME
 from numba_dpex.dpctl_iface.wrappers import wrap_event_reference
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def sycl_event_create(
     ty_context,
 ):
@@ -38,7 +39,7 @@ def sycl_event_create(
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def sycl_event_wait(typingctx, ty_event: dpex_types.DpctlSyclEvent):
     sig = types.void(dpex_types.DpctlSyclEvent())
 
@@ -55,7 +56,7 @@ def sycl_event_wait(typingctx, ty_event: dpex_types.DpctlSyclEvent):
     return sig, codegen
 
 
-@overload(dpctl.SyclEvent)
+@overload(dpctl.SyclEvent, target=DPEX_TARGET_NAME)
 def ol_dpctl_sycl_event_create():
     """Implementation of an overload to support dpctl.SyclEvent() inside
     a dpjit function.
@@ -63,7 +64,7 @@ def ol_dpctl_sycl_event_create():
     return lambda: sycl_event_create()
 
 
-@overload_method(dpex_types.DpctlSyclEvent, "wait")
+@overload_method(dpex_types.DpctlSyclEvent, "wait", target=DPEX_TARGET_NAME)
 def ol_dpctl_sycl_event_wait(
     event,
 ):

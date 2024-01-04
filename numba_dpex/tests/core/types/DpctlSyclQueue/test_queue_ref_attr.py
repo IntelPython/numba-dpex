@@ -8,9 +8,10 @@ from numba.core import cgutils, types
 from numba.extending import intrinsic
 
 from numba_dpex import dpjit
+from numba_dpex.core.targets.dpjit_target import DPEX_TARGET_NAME
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def are_queues_equal(typingctx, ty_queue1, ty_queue2):
     """Calls dpctl's libsyclinterface's DPCTLQueue_AreEq to see if two
     dpctl.SyclQueue objects point to the same sycl queue.
