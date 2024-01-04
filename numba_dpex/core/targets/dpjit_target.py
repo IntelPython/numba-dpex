@@ -7,8 +7,6 @@
 
 from functools import cached_property
 
-from numba.core import utils
-from numba.core.codegen import JITCPUCodegen
 from numba.core.compiler_lock import global_compiler_lock
 from numba.core.cpu import CPUContext
 from numba.core.imputils import Registry
