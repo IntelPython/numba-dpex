@@ -153,7 +153,7 @@ def dpjit(*args, **kws):
         warnings.warn(
             "pipeline class is set for dpjit and is ignored", RuntimeWarning
         )
-        del kws["forceobj"]
+        del kws["pipeline_class"]
 
     use_mlir = kws.pop("use_mlir", bool(USE_MLIR))
 
