@@ -5,6 +5,8 @@ def patch():
     from numba.np.arrayobj import fix_integer_index
     from numba.np.numpy_support import is_nonelike
 
+    from numba_dpex.core.types import DpnpNdArray
+
     # -------------------------------------------------------------------------
     # Basic indexing (with integers and slices only)
 
@@ -23,6 +25,9 @@ def patch():
 
         shapes = cgutils.unpack_tuple(builder, ary.shape, aryty.ndim)
         strides = cgutils.unpack_tuple(builder, ary.strides, aryty.ndim)
+
+        if isinstance(aryty, DpnpNdArray):
+            print(f"multiply each stride value with itemsize = {ary.itemsize}")
 
         output_indices = []
         output_shapes = []
