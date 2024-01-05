@@ -14,6 +14,8 @@ from numba.core.cpu import CPUContext
 from numba.core.imputils import Registry
 from numba.core.target_extension import CPU, target_registry
 
+from numba_dpex.dpnp_iface import dpnp_ufunc_db
+
 
 class Dpex(CPU):
     pass
@@ -57,3 +59,7 @@ class DpexTargetContext(CPUContext):
 
         # loading CPU specific registries
         super().load_additional_registries()
+
+    # TODO: do we need it?
+    def get_ufunc_info(self, ufunc_key):
+        return dpnp_ufunc_db.get_ufunc_info(ufunc_key)
