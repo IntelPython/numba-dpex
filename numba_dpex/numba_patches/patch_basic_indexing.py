@@ -4,6 +4,14 @@
 
 
 def patch():
+    """Patches the basic_indexing function from numba.np.arrayobj
+
+    Raises:
+        NotImplementedError: If basic_indexing fails. Refer to the function.
+
+    Returns:
+        tuple: Whatever is returned by the inner basic_indexing function.
+    """
     from numba.core import cgutils, types
     from numba.cpython import slicing
     from numba.np import arrayobj
@@ -22,7 +30,8 @@ def patch():
         strides = cgutils.unpack_tuple(builder, ary.strides, count=aryty.ndim)
 
         if isinstance(aryty, DpnpNdArray):
-            print("==========> we are doing this get_item_pointer")
+            for i in range(len(strides)):
+                strides[i] = builder.mul(strides[i], ary.itemsize)
 
         return cgutils.get_item_pointer2(
             context,
