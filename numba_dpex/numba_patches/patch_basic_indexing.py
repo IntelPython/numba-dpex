@@ -1,3 +1,8 @@
+# SPDX-FileCopyrightText: 2023 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+
+
 def patch():
     from numba.core import cgutils, types
     from numba.cpython import slicing
@@ -28,6 +33,10 @@ def patch():
 
         if isinstance(aryty, DpnpNdArray):
             print(f"multiply each stride value with itemsize = {ary.itemsize}")
+            for i in range(len(strides)):
+                u = strides[i]
+                v = builder.mul(u, ary.itemsize)
+                strides[i] = v
 
         output_indices = []
         output_shapes = []
