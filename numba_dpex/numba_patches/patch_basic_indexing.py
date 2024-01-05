@@ -12,6 +12,30 @@ def patch():
 
     from numba_dpex.core.types import DpnpNdArray
 
+    def get_item_pointer(
+        context, builder, aryty, ary, inds, wraparound=False, boundscheck=False
+    ):
+        # Set boundscheck=True for any pointer access that should be
+        # boundschecked. do_boundscheck() will handle enabling or disabling the
+        # actual boundschecking based on the user config.
+        shapes = cgutils.unpack_tuple(builder, ary.shape, count=aryty.ndim)
+        strides = cgutils.unpack_tuple(builder, ary.strides, count=aryty.ndim)
+
+        if isinstance(aryty, DpnpNdArray):
+            print("==========> we are doing this get_item_pointer")
+
+        return cgutils.get_item_pointer2(
+            context,
+            builder,
+            data=ary.data,
+            shape=shapes,
+            strides=strides,
+            layout=aryty.layout,
+            inds=inds,
+            wraparound=wraparound,
+            boundscheck=boundscheck,
+        )
+
     # -------------------------------------------------------------------------
     # Basic indexing (with integers and slices only)
 
@@ -23,20 +47,12 @@ def patch():
         A (data pointer, shapes, strides) tuple is returned describing
         the corresponding view.
         """
-        print("============> doing this basic_indexing")
 
         zero = context.get_constant(types.intp, 0)
         one = context.get_constant(types.intp, 1)
 
         shapes = cgutils.unpack_tuple(builder, ary.shape, aryty.ndim)
         strides = cgutils.unpack_tuple(builder, ary.strides, aryty.ndim)
-
-        if isinstance(aryty, DpnpNdArray):
-            print(f"multiply each stride value with itemsize = {ary.itemsize}")
-            for i in range(len(strides)):
-                u = strides[i]
-                v = builder.mul(u, ary.itemsize)
-                strides[i] = v
 
         output_indices = []
         output_shapes = []
@@ -92,7 +108,7 @@ def patch():
 
         # No need to check wraparound, as negative indices were already
         # fixed in the loop above.
-        dataptr = cgutils.get_item_pointer(
+        dataptr = get_item_pointer(
             context,
             builder,
             aryty,
