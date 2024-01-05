@@ -9,6 +9,9 @@ from numba.core import cgutils, errors, types
 from numba.core.datamodel import default_manager
 from numba.extending import intrinsic, overload
 
+# can't import name because of the circular import
+DPEX_TARGET_NAME = "dpex"
+
 
 class Range(tuple):
     """A data structure to encapsulate a single kernel launch parameter.
@@ -231,7 +234,7 @@ class NdRange:
             return False
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def _intrin_range_alloc(typingctx, ty_dim0, ty_dim1, ty_dim2, ty_range):
     ty_retty = ty_range.instance_type
     sig = ty_retty(
@@ -268,7 +271,7 @@ def _intrin_range_alloc(typingctx, ty_dim0, ty_dim1, ty_dim2, ty_range):
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def _intrin_ndrange_alloc(
     typingctx, ty_global_range, ty_local_range, ty_ndrange
 ):
@@ -318,7 +321,7 @@ def _intrin_ndrange_alloc(
     return sig, codegen
 
 
-@overload(Range)
+@overload(Range, target=DPEX_TARGET_NAME)
 def _ol_range_init(dim0, dim1=None, dim2=None):
     """Numba overload of the Range constructor to make it usable inside an
     njit and dpjit decorated function.
@@ -353,7 +356,7 @@ def _ol_range_init(dim0, dim1=None, dim2=None):
     return impl
 
 
-@overload(NdRange)
+@overload(NdRange, target=DPEX_TARGET_NAME)
 def _ol_ndrange_init(global_range, local_range):
     """Numba overload of the NdRange constructor to make it usable inside an
     njit and dpjit decorated function.

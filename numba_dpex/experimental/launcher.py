@@ -17,6 +17,7 @@ from numba.core.types.functions import Dispatcher
 from numba.extending import intrinsic
 
 from numba_dpex import dpjit
+from numba_dpex.core.targets.dpjit_target import DPEX_TARGET_NAME
 from numba_dpex.core.targets.kernel_target import DpexKernelTargetContext
 from numba_dpex.core.types import DpctlSyclEvent, NdRangeType, RangeType
 from numba_dpex.core.utils import kernel_launcher as kl
@@ -49,7 +50,7 @@ def wrap_event_reference_tuple(ctx, builder, event1, event2):
     return tup
 
 
-@intrinsic(target="cpu")
+@intrinsic(target=DPEX_TARGET_NAME)
 def _submit_kernel_async(
     typingctx,
     ty_kernel_fn: Dispatcher,
@@ -68,7 +69,7 @@ def _submit_kernel_async(
     )
 
 
-@intrinsic(target="cpu")
+@intrinsic(target=DPEX_TARGET_NAME)
 def _submit_kernel_sync(
     typingctx,
     ty_kernel_fn: Dispatcher,

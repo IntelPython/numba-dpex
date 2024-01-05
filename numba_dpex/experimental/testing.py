@@ -10,9 +10,10 @@ from numba.extending import intrinsic
 
 from numba_dpex import dpjit
 from numba_dpex.core.runtime.context import DpexRTContext
+from numba_dpex.core.targets.dpjit_target import DPEX_TARGET_NAME
 
 
-@intrinsic(target="cpu")
+@intrinsic(target=DPEX_TARGET_NAME)
 def _kernel_cache_size(
     typingctx,  # pylint: disable=W0613
 ):
