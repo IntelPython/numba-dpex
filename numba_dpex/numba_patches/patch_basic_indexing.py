@@ -33,16 +33,16 @@ def patch():
         shapes = cgutils.unpack_tuple(builder, ary.shape, count=aryty.ndim)
         strides = cgutils.unpack_tuple(builder, ary.strides, count=aryty.ndim)
 
-        # if (
-        #     isinstance(aryty, DpnpNdArray) # noqa: E800
-        #     and isinstance(context, DpexKernelTargetContext)
-        #     and isinstance(context.typing_context, DpexKernelTypingContext)
-        # ):
-        #     print("==========> doing this")   # noqa: E800
-        #     for i in range(len(strides)):
-        #         strides[i] = builder.mul(strides[i], ary.itemsize)    # noqa: E800
-        # else: # noqa: E800
-        #     print("=========> not doing this")    # noqa: E800
+        if (
+            isinstance(aryty, DpnpNdArray)  # noqa: E800
+            and isinstance(context, DpexKernelTargetContext)
+            and isinstance(context.typing_context, DpexKernelTypingContext)
+        ):
+            print("==========> doing this")  # noqa: E800
+            for i in range(len(strides)):
+                strides[i] = builder.mul(strides[i], ary.itemsize)  # noqa: E800
+        else:  # noqa: E800
+            print("=========> not doing this")  # noqa: E800
 
         return cgutils.get_item_pointer2(
             context,
