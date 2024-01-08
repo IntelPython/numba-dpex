@@ -18,7 +18,10 @@ def patch():
     from numba.np.arrayobj import fix_integer_index
     from numba.np.numpy_support import is_nonelike
 
-    from numba_dpex.core.targets.kernel_target import DpexKernelTargetContext
+    from numba_dpex.core.targets.kernel_target import (
+        DpexKernelTargetContext,
+        DpexKernelTypingContext,
+    )
     from numba_dpex.core.types import DpnpNdArray
 
     def get_item_pointer(
@@ -30,11 +33,16 @@ def patch():
         shapes = cgutils.unpack_tuple(builder, ary.shape, count=aryty.ndim)
         strides = cgutils.unpack_tuple(builder, ary.strides, count=aryty.ndim)
 
-        if isinstance(aryty, DpnpNdArray) and isinstance(
-            context, DpexKernelTargetContext
-        ):
-            for i in range(len(strides)):
-                strides[i] = builder.mul(strides[i], ary.itemsize)
+        # if (
+        #     isinstance(aryty, DpnpNdArray) # noqa: E800
+        #     and isinstance(context, DpexKernelTargetContext)
+        #     and isinstance(context.typing_context, DpexKernelTypingContext)
+        # ):
+        #     print("==========> doing this")   # noqa: E800
+        #     for i in range(len(strides)):
+        #         strides[i] = builder.mul(strides[i], ary.itemsize)    # noqa: E800
+        # else: # noqa: E800
+        #     print("=========> not doing this")    # noqa: E800
 
         return cgutils.get_item_pointer2(
             context,
