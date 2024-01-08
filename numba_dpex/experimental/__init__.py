@@ -8,7 +8,7 @@ yet production ready.
 
 from numba.core.imputils import Registry
 
-from ._kernel_dpcpp_spirv_overloads import _atomic_ref_overloads
+from ._kernel_dpcpp_spirv_overloads import _atomic_ref_overloads, _barriers
 from .decorators import device_func, kernel
 from .kernel_dispatcher import KernelDispatcher
 from .launcher import call_kernel, call_kernel_async
