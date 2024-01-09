@@ -71,7 +71,7 @@ def parse_sem_version(version_string: str) -> Tuple[int, int, int]:
 numba_sem_version = parse_sem_version(numba_version)
 if numba_sem_version < (0, 57, 0) or numba_sem_version >= (0, 59, 0):
     logging.warning(
-        "numba_dpex needs at lease numba 0.57.0 but no more than 0.59.0, using "
+        "numba_dpex needs at least numba 0.57.0 but no more than 0.59.0, using "
         f"numba={numba_version} may cause unexpected behavior"
     )
 
@@ -111,33 +111,30 @@ from numba_dpex.core.types import *  # noqa E402
 from numba_dpex.dpctl_iface import _intrinsic  # noqa E402
 from numba_dpex.dpnp_iface import dpnpimpl  # noqa E402
 
-if config.HAS_NON_HOST_DEVICE:
-    # Re export
-    from .core.targets import dpjit_target, kernel_target
-    from .decorators import dpjit, func, kernel
-    from .ocl.stubs import (
-        GLOBAL_MEM_FENCE,
-        LOCAL_MEM_FENCE,
-        atomic,
-        barrier,
-        get_global_id,
-        get_global_size,
-        get_group_id,
-        get_local_id,
-        get_local_size,
-        get_num_groups,
-        get_work_dim,
-        local,
-        mem_fence,
-        private,
-        sub_group_barrier,
-    )
+from .core.targets import dpjit_target, kernel_target  # noqa E402
+from .decorators import dpjit, func, kernel  # noqa E402
+from .ocl.stubs import (  # noqa E402
+    GLOBAL_MEM_FENCE,
+    LOCAL_MEM_FENCE,
+    atomic,
+    barrier,
+    get_global_id,
+    get_global_size,
+    get_group_id,
+    get_local_id,
+    get_local_size,
+    get_num_groups,
+    get_work_dim,
+    local,
+    mem_fence,
+    private,
+    sub_group_barrier,
+)
 
-    DEFAULT_LOCAL_SIZE = []
-    load_dpctl_sycl_interface()
-    del load_dpctl_sycl_interface
-else:
-    raise ImportError("No non-host SYCL device found to execute kernels.")
+DEFAULT_LOCAL_SIZE = []
+load_dpctl_sycl_interface()
+del load_dpctl_sycl_interface
+
 
 Vectorize.target_registry.ondemand["dpex"] = lambda: DpexVectorize
 
