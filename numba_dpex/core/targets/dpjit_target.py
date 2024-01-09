@@ -13,6 +13,7 @@ from numba.core.cpu import CPUContext
 from numba.core.imputils import Registry
 from numba.core.target_extension import CPU, target_registry
 
+from numba_dpex.core.datamodel.models import _init_dpjit_data_model_manager
 from numba_dpex.dpnp_iface import dpnp_ufunc_db
 
 
@@ -48,6 +49,8 @@ class DpexTargetContext(CPUContext):
     def init(self):
         self.lower_extensions = {}
         super().init()
+
+        self.data_model_manager = _init_dpjit_data_model_manager()
 
         # TODO: initialize nrt once switched to nrt from drt. Most likely we
         # call it somewhere. Double check.

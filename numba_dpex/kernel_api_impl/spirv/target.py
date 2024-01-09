@@ -20,7 +20,7 @@ from numba.core.target_extension import GPU, target_registry
 from numba.core.types.scalars import IntEnumClass
 from numba.core.typing import cmathdecl, enumdecl
 
-from numba_dpex.core.datamodel.models import _init_data_model_manager
+from numba_dpex.core.datamodel.models import _init_kernel_data_model_manager
 from numba_dpex.core.types import IntEnumLiteral
 from numba_dpex.core.typing import dpnpdecl
 from numba_dpex.kernel_api.flag_enum import FlagEnum
@@ -154,7 +154,7 @@ class SPIRVTargetContext(BaseContext):
         )
 
         # Override data model manager to SPIR model
-        self.data_model_manager = _init_data_model_manager()
+        self.data_model_manager = _init_kernel_data_model_manager()
         self.extra_compile_options = {}
 
         _lazy_init_dpnp_db()
