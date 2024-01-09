@@ -13,6 +13,7 @@ from numba.core.datamodel.models import PrimitiveModel, StructModel
 from numba.core.extending import register_model
 
 import numba_dpex.core.datamodel.models as dpex_core_models
+from numba_dpex.core.datamodel.models import dpjit_data_model_manager
 
 from .dpcpp_types import AtomicRefType
 from .literal_intenum_type import IntEnumLiteral
@@ -66,4 +67,6 @@ def _init_exp_data_model_manager() -> DataModelManager:
 exp_dmm = _init_exp_data_model_manager()
 
 # Register any new type that should go into numba.core.datamodel.default_manager
-register_model(KernelDispatcherType)(models.OpaqueModel)
+# register_model(KernelDispatcherType)(models.OpaqueModel)
+dpjit_data_model_manager.register(KernelDispatcherType)(models.OpaqueModel)
+# dmm.register(KernelDispatcherType, models.OpaqueModel)

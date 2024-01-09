@@ -5,7 +5,6 @@
 from contextlib import ExitStack
 
 from numba.core import cgutils, errors, types
-from numba.core.datamodel import default_manager
 from numba.extending import NativeValue, box, unbox
 
 from ..kernel_interface.indexers import NdRange, Range
@@ -121,7 +120,9 @@ def unbox_ndrange(typ, obj, c):
         ].value
         local_range_struct = ndrange_attr_native_value_map["local_range"].value
 
-        range_datamodel = default_manager.lookup(RangeType(typ.ndim))
+        range_datamodel = c.context.data_model_manager.lookup(
+            RangeType(typ.ndim)
+        )
         ndrange_struct.ndim = c.builder.extract_value(
             global_range_struct,
             range_datamodel.get_field_position("ndim"),

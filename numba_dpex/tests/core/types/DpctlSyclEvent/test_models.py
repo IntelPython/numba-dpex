@@ -2,13 +2,11 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import dpctl
-from numba import types
-from numba.core.datamodel import default_manager, models
+from numba.core.datamodel import models
 
 from numba_dpex.core.datamodel.models import (
     SyclEventModel,
-    dpex_data_model_manager,
+    dpjit_data_model_manager,
 )
 from numba_dpex.core.types.dpctl_types import DpctlSyclEvent
 
@@ -18,7 +16,7 @@ def test_model_for_DpctlSyclEvent():
     default data model manager.
     """
     sycl_event = DpctlSyclEvent()
-    default_model = default_manager.lookup(sycl_event)
+    default_model = dpjit_data_model_manager.lookup(sycl_event)
     assert isinstance(default_model, SyclEventModel)
 
 
