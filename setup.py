@@ -4,6 +4,7 @@
 
 
 import re
+import sys
 
 from setuptools import find_packages
 from skbuild import setup
@@ -46,6 +47,15 @@ def to_cmake_format(version: str):
         raise Exception("Unsupported version")
 
     return match.group(0)
+
+
+# Set is_install and is_develop flags
+is_install = sys.argv[1] == "install" or "bdist_wheel" in sys.argv
+is_develop = sys.argv[1] == "develop"
+
+
+# Test if system is WIN
+is_windows = sys.platform.startswith("win") or sys.platform.startswith("cyg")
 
 
 # Get the project version
