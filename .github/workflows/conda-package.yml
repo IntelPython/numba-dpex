@@ -204,6 +204,11 @@ jobs:
           NUMBA_DPEX_USE_MLIR: ${{ matrix.use_mlir && '1' || '0'  }}
         run: python -c "import dpnp, dpctl, numba_dpex; dpctl.lsplatform()"
 
+      - name: Smoke test - test import with no default device
+        env:
+          ONEAPI_DEVICE_SELECTOR: unknown:unknown
+        run: python -c "import numba_dpex"
+
       - name: Run tests
         if: ${{!matrix.run_gdb}}
         env:
