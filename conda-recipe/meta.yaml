@@ -1,3 +1,6 @@
+{% set required_compiler_version = "2024.0" %}
+{% set max_compiler_version = "2024.0.1" %}
+
 package:
     name: numba-dpex
     version: {{ GIT_DESCRIBE_TAG }}
@@ -13,7 +16,7 @@ build:
 requirements:
     build:
         - {{ compiler('cxx') }}
-        - {{ compiler('dpcpp') }} <2024.0.1  # [not osx]
+        - {{ compiler('dpcpp') }} >={{ required_compiler_version }},<{{ max_compiler_version }}  # [not osx]
     host:
         - python
         - setuptools >=63.*
