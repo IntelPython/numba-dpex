@@ -159,7 +159,10 @@ class Module(object):
         # TODO: find better approach to set SPIRV compiler arguments. Workaround
         #  against caching intrinsic that sets this argument.
         # https://github.com/IntelPython/numba-dpex/issues/1262
-        llvm_spirv_args = ["--spirv-ext=+SPV_EXT_shader_atomic_float_add"]
+        llvm_spirv_args = [
+            "--spirv-ext=+SPV_EXT_shader_atomic_float_add",
+            "--spirv-ext=+SPV_EXT_shader_atomic_float_min_max",
+        ]
         for key in list(self.context.extra_compile_options.keys()):
             if key == LLVM_SPIRV_ARGS:
                 llvm_spirv_args = self.context.extra_compile_options[key]
