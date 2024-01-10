@@ -70,7 +70,7 @@ setup(
         "Environment :: GPU",
         "Environment :: Plugins",
         "Intended Audience :: Developers",
-        "License :: OSI Approved :: Apache 2.0",
+        "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: Implementation :: CPython",

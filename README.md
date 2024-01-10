@@ -36,7 +36,7 @@ offloaded by `numba-dpex` and NumPy expressions getting parallelized by Numba.
 Refer the [documentation](https://intelpython.github.io/numba-dpex) and examples
 to learn more.
 
-## Getting Started
+# Getting Started
 
 Numba-dpex is part of the Intel&reg; Distribution of Python (IDP) and Intel&reg;
 oneAPI AIKit, and can be installed along with oneAPI. Additionally, we support
@@ -52,7 +52,25 @@ follows:
 python -m pytest --pyargs numba_dpex.tests
 ```
 
-## Contributing
+## Conda
+
+To install `numba_dpex` from the Intel(R) channel on Anaconda
+cloud, use the following command:
+
+```bash
+conda install numba-dpex -c intel -c conda-forge
+```
+
+## Pip
+
+The `numba_dpex` can be installed using `pip` obtaining wheel packages either from PyPi or from Intel(R) channel on Anaconda.
+To install `numba_dpex` wheel package from Intel(R) channel on Anaconda, run the following command:
+
+```bash
+python -m pip install --index-url https://pypi.anaconda.org/intel/simple numba-dpex
+```
+
+# Contributing
 
 Please create an issue for feature requests and bug reports. You can also use
 the GitHub Discussions feature for general questions.
