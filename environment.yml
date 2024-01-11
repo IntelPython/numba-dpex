@@ -9,7 +9,7 @@ channels:
 dependencies:
   - python=3.9
   - gxx_linux-64
-  - dpcpp_linux-64
+  - dpcpp_linux-64>=2023.2,!=2024.0.1,!=2024.0.2
   - numba ==0.58*
   - dpctl >=0.14*
   - dpnp >=0.11*
