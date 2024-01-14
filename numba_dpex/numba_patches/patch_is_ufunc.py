@@ -1,7 +1,6 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
-
 
 def patch():
     """Patches the numba.np.ufunc.array_exprs._is_ufunc function to make it
