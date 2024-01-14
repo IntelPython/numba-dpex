@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+
 def patch():
     """
     Patches the numba.core.ir_utils.mk_alloc function to support non-NumPy array

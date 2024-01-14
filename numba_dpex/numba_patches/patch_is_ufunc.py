@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+
 def patch():
     """Patches the numba.np.ufunc.array_exprs._is_ufunc function to make it
     possible to support dpnp universal functions (ufuncs).
