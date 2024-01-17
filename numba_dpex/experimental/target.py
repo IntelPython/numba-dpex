@@ -52,29 +52,29 @@ class DpexExpKernelTypingContext(DpexKernelTypingContext):
         ValueError is raised for unsupported types.
         """
 
-        ty = super().resolve_value_type(val)
+        typ = super().resolve_value_type(val)
 
-        if isinstance(ty, IntEnumClass) and issubclass(val, FlagEnum):
-            ty = IntEnumLiteral(val)
+        if isinstance(typ, IntEnumClass) and issubclass(val, FlagEnum):
+            typ = IntEnumLiteral(val)
 
-        return ty
+        return typ
 
     def resolve_getattr(self, typ, attr):
         """
         Resolve getting the attribute *attr* (a string) on the Numba type.
         The attribute's type is returned, or None if resolution failed.
         """
-        ty = None
+        retty = None
 
         if isinstance(typ, IntEnumLiteral):
             try:
                 attrval = getattr(typ.literal_value, attr).value
-                ty = types.IntegerLiteral(attrval)
+                retty = types.IntegerLiteral(attrval)
             except ValueError:
                 pass
         else:
-            ty = super().resolve_getattr(typ, attr)
-        return ty
+            retty = super().resolve_getattr(typ, attr)
+        return retty
 
 
 #  pylint: disable=W0223

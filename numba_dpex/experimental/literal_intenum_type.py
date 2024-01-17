@@ -47,9 +47,9 @@ Literal.ctor_map[IntEnum] = IntEnumLiteral
 
 
 @box(IntEnumLiteral)
-def box_literal_integer(typ, val, c):
+def box_literal_integer(typ, val, ctx):
     """Defines how a Numba representation for an IntEnumLiteral object should
     be converted to a PyObject* object and returned back to Python.
     """
-    val = c.context.cast(c.builder, val, typ, typ.literal_type)
-    return c.box(typ.literal_type, val)
+    val = ctx.context.cast(ctx.builder, val, typ, typ.literal_type)
+    return ctx.box(typ.literal_type, val)

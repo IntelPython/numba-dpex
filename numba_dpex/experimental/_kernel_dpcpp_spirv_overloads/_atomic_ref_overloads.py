@@ -94,12 +94,12 @@ def _intrinsic_helper(
                 atomic_ref_dtype,
             ],
         )
-        fn = cgutils.get_or_insert_function(
+        func = cgutils.get_or_insert_function(
             builder.module,
             llvmir.FunctionType(retty, spirv_fn_arg_types),
             mangled_fn_name,
         )
-        fn.calling_convention = CC_SPIR_FUNC
+        func.calling_convention = CC_SPIR_FUNC
         spirv_memory_semantics_mask = get_memory_semantics_mask(
             atomic_ref_ty.memory_order
         )
@@ -112,7 +112,7 @@ def _intrinsic_helper(
             args[1],
         ]
 
-        builder.call(fn, fn_args)
+        builder.call(func, fn_args)
 
     return sig, gen
 
