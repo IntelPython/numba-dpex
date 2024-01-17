@@ -8,7 +8,7 @@ from numba.core import options, targetconfig, typing
 from numba.core.cpu import CPUTargetOptions
 from numba.core.descriptors import TargetDescriptor
 
-from numba_dpex import config
+from numba_dpex.core import config
 
 from .targets.dpjit_target import DPEX_TARGET_NAME, DpexTargetContext
 from .targets.kernel_target import (

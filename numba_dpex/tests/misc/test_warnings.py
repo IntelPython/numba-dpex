@@ -8,7 +8,7 @@ import dpnp
 import pytest
 
 import numba_dpex as dpex
-import numba_dpex.config as config
+from numba_dpex.core import config
 
 
 @dpex.kernel(enable_cache=False)

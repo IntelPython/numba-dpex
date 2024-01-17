@@ -12,8 +12,8 @@ import dpctl
 import dpnp
 import pytest
 
-from numba_dpex.core import config
 from numba_dpex import dpjit, numba_sem_version
+from numba_dpex.core import config
 
 
 @cache
