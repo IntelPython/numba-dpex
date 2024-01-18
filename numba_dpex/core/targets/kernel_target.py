@@ -111,12 +111,16 @@ class DpexKernelTypingContext(typing.BaseContext):
         """Register the OpenCL API and math and other functions."""
         from numba.core.typing import cmathdecl, enumdecl, npydecl
 
+        from numba_dpex.core.typing import dpnpdecl
+
         from ...ocl import mathdecl, ocldecl
 
         self.install_registry(ocldecl.registry)
         self.install_registry(mathdecl.registry)
         self.install_registry(cmathdecl.registry)
+        # TODO: https://github.com/IntelPython/numba-dpex/issues/1270
         self.install_registry(npydecl.registry)
+        self.install_registry(dpnpdecl.registry)
         self.install_registry(enumdecl.registry)
 
 

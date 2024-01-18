@@ -32,6 +32,13 @@ dpex_function_registry = Registry()
 class DpexTypingContext(typing.Context):
     """Custom typing context to support dpjit compilation."""
 
+    def load_additional_registries(self):
+        """Register dpjit specific functions like dpnp ufuncs."""
+        from numba_dpex.core.typing import dpnpdecl
+
+        self.install_registry(dpnpdecl.registry)
+        super().load_additional_registries()
+
 
 class DpexTargetContext(CPUContext):
     def __init__(self, typingctx, target=DPEX_TARGET_NAME):
