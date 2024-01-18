@@ -14,18 +14,18 @@ from .kernel_iface import AtomicRef
 
 
 @typeof_impl.register(AtomicRef)
-def typeof_atomic_ref(val: AtomicRef, c) -> AtomicRefType:
+def typeof_atomic_ref(val: AtomicRef, ctx) -> AtomicRefType:
     """Returns a ``numba_dpex.experimental.dpctpp_types.AtomicRefType``
     instance for a Python AtomicRef object.
 
     Args:
         val (AtomicRef): Instance of the AtomicRef type.
-        c : Numba typing context used for type inference.
+        ctx : Numba typing context used for type inference.
 
     Returns: AtomicRefType object corresponding to the AtomicRef object.
 
     """
-    dtype = typeof_impl(val.ref, c)
+    dtype = typeof_impl(val.ref, ctx)
 
     return AtomicRefType(
         dtype=dtype,

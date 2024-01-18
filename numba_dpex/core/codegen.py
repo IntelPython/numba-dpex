@@ -9,7 +9,7 @@ from llvmlite import ir as llvmir
 from numba.core import utils
 from numba.core.codegen import CPUCodegen, CPUCodeLibrary
 
-from numba_dpex import config
+from numba_dpex.core import config
 
 SPIR_TRIPLE = {32: " spir-unknown-unknown", 64: "spir64-unknown-unknown"}
 

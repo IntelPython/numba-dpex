@@ -100,7 +100,7 @@ import numba_dpex.core.targets.dpjit_target  # noqa E402
 
 # Re-export types itself
 import numba_dpex.core.types as types  # noqa E402
-from numba_dpex import config  # noqa E402
+from numba_dpex.core import config  # noqa E402
 from numba_dpex.core.kernel_interface.indexers import (  # noqa E402
     NdRange,
     Range,

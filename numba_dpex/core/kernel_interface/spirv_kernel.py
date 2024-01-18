@@ -7,7 +7,8 @@ from types import FunctionType
 
 from numba.core import ir
 
-from numba_dpex import config, spirv_generator
+from numba_dpex import spirv_generator
+from numba_dpex.core import config
 from numba_dpex.core.compiler import compile_with_dpex
 from numba_dpex.core.exceptions import UncompiledKernelError, UnreachableError
 from numba_dpex.core.targets.kernel_target import DpexKernelTargetContext

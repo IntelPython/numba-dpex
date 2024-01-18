@@ -8,6 +8,7 @@ import warnings
 from numba.core import decorators, sigutils
 from numba.core.target_extension import jit_registry, target_registry
 
+from numba_dpex.core import config
 from numba_dpex.core.kernel_interface.dispatcher import JitKernel
 from numba_dpex.core.kernel_interface.func import (
     compile_func,
@@ -15,8 +16,6 @@ from numba_dpex.core.kernel_interface.func import (
 )
 from numba_dpex.core.pipelines.dpjit_compiler import get_compiler
 from numba_dpex.core.targets.dpjit_target import DPEX_TARGET_NAME
-
-from .config import USE_MLIR
 
 
 def kernel(
@@ -156,7 +155,7 @@ def dpjit(*args, **kws):
         )
         del kws["pipeline_class"]
 
-    use_mlir = kws.pop("use_mlir", bool(USE_MLIR))
+    use_mlir = kws.pop("use_mlir", bool(config.USE_MLIR))
 
     kws.update({"nopython": True})
     kws.update({"parallel": True})

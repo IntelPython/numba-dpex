@@ -25,7 +25,7 @@ from numba.core.typing import signature
 from numba.parfors import parfor
 
 import numba_dpex as dpex
-from numba_dpex import config
+from numba_dpex.core import config
 
 from ..descriptor import dpex_kernel_target
 from ..types import DpnpNdArray, USMNdArray

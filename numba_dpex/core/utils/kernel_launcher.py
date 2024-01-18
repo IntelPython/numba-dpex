@@ -16,7 +16,8 @@ from numba.core.cpu import CPUContext
 from numba.core.datamodel import DataModelManager
 from numba.core.types.containers import UniTuple
 
-from numba_dpex import config, utils
+from numba_dpex import utils
+from numba_dpex.core import config
 from numba_dpex.core.exceptions import UnreachableError
 from numba_dpex.core.runtime.context import DpexRTContext
 from numba_dpex.core.types import USMNdArray
@@ -165,7 +166,7 @@ class KernelLaunchIRBuilder:
 
         self._build_arg(
             val=array_attr,
-            ty=array_attr_ty,
+            typ=array_attr_ty,
             arg_list=arg_list,
             args_ty_list=args_ty_list,
             arg_num=arg_num,
@@ -193,14 +194,14 @@ class KernelLaunchIRBuilder:
             )
 
     def _build_arg(
-        self, val, ty, arg_list, args_ty_list, arg_num
+        self, val, typ, arg_list, args_ty_list, arg_num
     ):  # pylint: disable=too-many-arguments
         """Stores the kernel arguments and the kernel argument types into
         arrays that will be passed to DPCTLQueue_SubmitRange.
 
         Args:
             val: An LLVM IR Value that will be stored into the arguments array
-            ty: A Numba type that will be converted to a DPCTLKernelArgType
+            typ: A Numba type that will be converted to a DPCTLKernelArgType
             enum and stored into the argument types list array
             arg_list: An LLVM IR Value array that stores the kernel arguments
             args_ty_list: An LLVM IR Value array that stores the
@@ -222,11 +223,11 @@ class KernelLaunchIRBuilder:
         )
         self.builder.store(val, kernel_arg_dst)
         self.builder.store(
-            numba_type_to_dpctl_typenum(self.context, ty), kernel_arg_ty_dst
+            numba_type_to_dpctl_typenum(self.context, typ), kernel_arg_ty_dst
         )
 
     def _build_complex_arg(
-        self, val, ty, arg_list, args_ty_list, arg_num
+        self, val, typ, arg_list, args_ty_list, arg_num
     ):  # pylint: disable=too-many-arguments
         """Creates a list of LLVM Values for an unpacked complex kernel
         argument.
@@ -234,7 +235,7 @@ class KernelLaunchIRBuilder:
         self._build_array_attr_arg(
             array_val=val,
             array_attr_pos=0,
-            array_attr_ty=ty,
+            array_attr_ty=typ,
             arg_list=arg_list,
             args_ty_list=args_ty_list,
             arg_num=arg_num,
@@ -243,7 +244,7 @@ class KernelLaunchIRBuilder:
         self._build_array_attr_arg(
             array_val=val,
             array_attr_pos=1,
-            array_attr_ty=ty,
+            array_attr_ty=typ,
             arg_list=arg_list,
             args_ty_list=args_ty_list,
             arg_num=arg_num,
@@ -268,7 +269,7 @@ class KernelLaunchIRBuilder:
         nullptr = self._build_nullptr()
         self._build_arg(
             val=nullptr,
-            ty=types.int64,
+            typ=types.int64,
             arg_list=arg_list,
             args_ty_list=args_ty_list,
             arg_num=arg_num,
@@ -278,7 +279,7 @@ class KernelLaunchIRBuilder:
         nullptr = self._build_nullptr()
         self._build_arg(
             val=nullptr,
-            ty=types.int64,
+            typ=types.int64,
             arg_list=arg_list,
             args_ty_list=args_ty_list,
             arg_num=arg_num,
@@ -318,7 +319,7 @@ class KernelLaunchIRBuilder:
         # kernel we always pass in a nullptr
         self._build_arg(
             val=nullptr,
-            ty=types.int64,
+            typ=types.int64,
             arg_list=arg_list,
             args_ty_list=args_ty_list,
             arg_num=arg_num,

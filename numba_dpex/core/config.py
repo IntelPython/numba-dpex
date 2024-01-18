@@ -10,12 +10,21 @@ from numba.core import config
 
 
 def _readenv(name, ctor, default):
-    """Original version from numba/core/config.py
-    class _EnvReloader():
-        ...
-        def process_environ():
-            def _readenv(): ...
+    """Read/write values from/into system environment variable list.
+
+    This function is used to read and write values from (and into) system `env`.
+    This is adapted from `process_environ()` function of `_EnvLoader` class in
+    `numba/core/config.py`.
+
+    Args:
+        name (str): The name of the env variable.
+        ctor (type): The type of the env variable.
+        default (int,float,str): The default value of the env variable.
+
+    Returns:
+        int,float,string: The environment variable value of the specified type.
     """
+
     value = os.environ.get(name)
     if value is None:
         return default() if callable(default) else default
@@ -23,13 +32,22 @@ def _readenv(name, ctor, default):
         return ctor(value)
     except Exception:
         logging.exception(
-            "environ %s defined but failed to parse '%s'" % (name, value)
+            "env variable %s defined but failed to parse '%s'" % (name, value)
         )
         return default
 
 
 def __getattr__(name):
-    """Fallback to Numba config"""
+    """__getattr__ for numba_dpex's config module.
+
+    This will be used to fallback to numba's config.
+
+    Args:
+        name (str): The name of the env variable.
+
+    Returns:
+        int,float,str: The environment variable value from numba.
+    """
     return getattr(config, name)
 
 
@@ -44,6 +62,7 @@ OFFLOAD_DIAGNOSTICS = _readenv("NUMBA_DPEX_OFFLOAD_DIAGNOSTICS", int, 0)
 
 # Emit debug info
 DEBUG = _readenv("NUMBA_DPEX_DEBUG", int, config.DEBUG)
+# The default value for the `debug` flag
 DEBUGINFO_DEFAULT = _readenv(
     "NUMBA_DPEX_DEBUGINFO", int, config.DEBUGINFO_DEFAULT
 )
@@ -58,21 +77,18 @@ DUMP_KERNEL_LAUNCHER = _readenv("NUMBA_DPEX_DUMP_KERNEL_LAUNCHER", int, 0)
 # a kernel decorated function
 DEBUG_KERNEL_LAUNCHER = _readenv("NUMBA_DPEX_DEBUG_KERNEL_LAUNCHER", int, 0)
 
-# configs for caching
-# To see the debug messages for the caching.
-# Execute like:
-#   NUMBA_DPEX_DEBUG_CACHE=1 python <code>
-DEBUG_CACHE = _readenv("NUMBA_DPEX_DEBUG_CACHE", int, 0)
-# This is a global flag to turn the caching on/off,
-# regardless of whatever has been specified in Dispatcher.
-# Useful for debugging. Execute like:
-#   NUMBA_DPEX_ENABLE_CACHE=0 python <code>
-# to turn off the caching globally.
+# Flag to enable caching, set NUMBA_DPEX_ENABLE_CACHE=0 to turn it off.
 ENABLE_CACHE = _readenv("NUMBA_DPEX_ENABLE_CACHE", int, 1)
-# Capacity of the cache, execute it like:
-#   NUMBA_DPEX_CACHE_SIZE=20 python <code>
-CACHE_SIZE = _readenv("NUMBA_DPEX_CACHE_SIZE", int, 128)
+# To specify the default cache size, 20 by default.
+CACHE_SIZE = _readenv("NUMBA_DPEX_CACHE_SIZE", int, 20)
+# Enable debugging of cahcing mechanism, set 1 to turn it on.
+DEBUG_CACHE = _readenv("NUMBA_DPEX_DEBUG_CACHE", int, 0)
 
+# Flag to turn on the ConstantSizeStaticLocalMemoryPass in the kernel pipeline.
+# The pass is turned off by default.
+STATIC_LOCAL_MEM_PASS = _readenv("NUMBA_DPEX_STATIC_LOCAL_MEM_PASS", int, 0)
+
+# Unused flags
 TESTING_SKIP_NO_DPNP = _readenv("NUMBA_DPEX_TESTING_SKIP_NO_DPNP", int, 0)
 TESTING_SKIP_NO_DEBUGGING = _readenv(
     "NUMBA_DPEX_TESTING_SKIP_NO_DEBUGGING", int, 1

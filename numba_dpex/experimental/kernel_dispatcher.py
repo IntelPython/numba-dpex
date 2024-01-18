@@ -270,12 +270,12 @@ class _KernelCompiler(_FunctionCompiler):
                     cres.fndesc.llvm_func_name + ".ll",
                     "w",
                     encoding="UTF-8",
-                ) as f:
-                    f.write(cres.library.final_module)
+                ) as fptr:
+                    fptr.write(cres.library.final_module)
 
-        except errors.TypingError as e:
-            self._failed_cache[key] = e
-            return False, e
+        except errors.TypingError as err:
+            self._failed_cache[key] = err
+            return False, err
 
         return True, _KernelCompileResult(*kcres_attrs)
 
@@ -342,18 +342,18 @@ class KernelDispatcher(Dispatcher):
         # Not going through the resolve_argument_type() indirection
         # can save a couple µs.
         try:
-            tp = typeof(val, Purpose.argument)
-            if isinstance(tp, types.Array) and not isinstance(tp, USMNdArray):
+            typ = typeof(val, Purpose.argument)
+            if isinstance(typ, types.Array) and not isinstance(typ, USMNdArray):
                 raise UnsupportedKernelArgumentError(
                     type=str(type(val)), value=val
                 )
         except ValueError:
-            tp = types.pyobject
+            typ = types.pyobject
         else:
-            if tp is None:
-                tp = types.pyobject
-        self._types_active_call.append(tp)
-        return tp
+            if typ is None:
+                typ = types.pyobject
+        self._types_active_call.append(typ)
+        return typ
 
     def add_overload(self, cres):
         args = tuple(cres.signature.args)
@@ -430,14 +430,14 @@ class KernelDispatcher(Dispatcher):
                         kcres: _KernelCompileResult = compiler.compile(
                             args, return_type
                         )
-                    except errors.ForceLiteralArg as e:
+                    except errors.ForceLiteralArg as err:
 
                         def folded(args, kws):
                             return self._compiler.fold_argument_types(
                                 args, kws
                             )[1]
 
-                        raise e.bind_fold_arguments(folded)
+                        raise err.bind_fold_arguments(folded)
                     self.add_overload(kcres)
 
                     kcres.target_context.insert_user_function(

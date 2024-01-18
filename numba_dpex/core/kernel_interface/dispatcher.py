@@ -12,7 +12,8 @@ from numba.core import sigutils
 from numba.core.types import Array as NpArrayType
 from numba.core.types import void
 
-from numba_dpex import NdRange, Range, config
+from numba_dpex import NdRange, Range
+from numba_dpex.core import config
 from numba_dpex.core.caching import LRUCache, NullCache
 from numba_dpex.core.descriptor import dpex_kernel_target
 from numba_dpex.core.exceptions import (
