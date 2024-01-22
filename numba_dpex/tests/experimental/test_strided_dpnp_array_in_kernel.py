@@ -44,9 +44,7 @@ def change_values_1d(x, v):
         v (int): Value to be assigned.
     """
     i = numba_dpex.get_global_id(0)
-    p = x[i]  # getitem
-    p = v
-    x[i] = p  # setitem
+    x[i] = v
 
 
 def change_values_1d_func(a, p):
