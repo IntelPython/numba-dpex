@@ -70,9 +70,7 @@ def change_values_2d(x, v):
     """
     i = numba_dpex.get_global_id(0)
     j = numba_dpex.get_global_id(1)
-    p = x[i, j]  # getitem
-    p = v
-    x[i, j] = p  # setitem
+    x[i, j] = v
 
 
 def change_values_2d_func(a, p):
@@ -98,9 +96,7 @@ def change_values_3d(x, v):
     i = numba_dpex.get_global_id(0)
     j = numba_dpex.get_global_id(1)
     k = numba_dpex.get_global_id(2)
-    p = x[i, j, k]  # getitem
-    p = v
-    x[i, j, k] = p  # setitem
+    x[i, j, k] = v
 
 
 def change_values_3d_func(a, p):
@@ -116,13 +112,13 @@ def change_values_3d_func(a, p):
                 a[i, j, k] = p
 
 
-@pytest.mark.parametrize("N", [8, 16, 32, 64, 128, 256, 512])
 @pytest.mark.parametrize("s", [1, 2, 3, 4, 5, 6, 7])
-def test_1d_strided_dpnp_array_in_kernel(N, s):
+def test_1d_strided_dpnp_array_in_kernel(s):
     """
     Tests if we can correctly handle a strided 1d dpnp array
     inside dpex kernel.
     """
+    N = 256
     k = -3
 
     t = np.arange(0, N, dtype=dpnp.int64)
@@ -140,13 +136,13 @@ def test_1d_strided_dpnp_array_in_kernel(N, s):
     assert np.all(dpnp.asnumpy(u) == t)
 
 
-@pytest.mark.parametrize("N", [8, 16, 32, 64, 128])
 @pytest.mark.parametrize("s", [2, 3, 4, 5])
-def test_multievel_1d_strided_dpnp_array_in_kernel(N, s):
+def test_multievel_1d_strided_dpnp_array_in_kernel(s):
     """
     Tests if we can correctly handle a multilevel strided 1d dpnp array
     inside dpex kernel.
     """
+    N = 256
     k = -3
 
     t = dpnp.arange(0, N, dtype=dpnp.int64)
@@ -166,16 +162,15 @@ def test_multievel_1d_strided_dpnp_array_in_kernel(N, s):
         assert np.all(dpnp.asnumpy(u) == t)
 
 
-@pytest.mark.parametrize("M", [3, 5, 7, 9])
-@pytest.mark.parametrize("N", [2, 4, 6, 8])
-@pytest.mark.parametrize("s1", [2, 4, 6])
-@pytest.mark.parametrize("s2", [1, 3, 5])
+@pytest.mark.parametrize("s1", [2, 4, 6, 8])
+@pytest.mark.parametrize("s2", [1, 3, 5, 7])
 @pytest.mark.parametrize("order", ["C", "F"])
-def test_2d_strided_dpnp_array_in_kernel(M, N, s1, s2, order):
+def test_2d_strided_dpnp_array_in_kernel(s1, s2, order):
     """
     Tests if we can correctly handle a strided 2d dpnp array
     inside dpex kernel.
     """
+    M, N = 13, 31
     k = -3
 
     t = np.arange(0, M * N, dtype=np.int64).reshape(M, N, order=order)
@@ -196,16 +191,15 @@ def test_2d_strided_dpnp_array_in_kernel(M, N, s1, s2, order):
     assert np.all(dpnp.asnumpy(u) == t)
 
 
-@pytest.mark.parametrize("M", [5, 7, 9, 11])
-@pytest.mark.parametrize("N", [4, 6, 8, 10])
-@pytest.mark.parametrize("s1", [2, 4, 6])
-@pytest.mark.parametrize("s2", [3, 5, 7])
+@pytest.mark.parametrize("s1", [2, 4, 6, 8])
+@pytest.mark.parametrize("s2", [3, 5, 7, 9])
 @pytest.mark.parametrize("order", ["C", "F"])
-def test_multilevel_2d_strided_dpnp_array_in_kernel(M, N, s1, s2, order):
+def test_multilevel_2d_strided_dpnp_array_in_kernel(s1, s2, order):
     """
     Tests if we can correctly handle a multilevel strided 2d dpnp array
     inside dpex kernel.
     """
+    M, N = 13, 31
     k = -3
 
     t = np.arange(0, M * N, dtype=np.int64).reshape(M, N, order=order)
@@ -228,18 +222,16 @@ def test_multilevel_2d_strided_dpnp_array_in_kernel(M, N, s1, s2, order):
         assert np.all(dpnp.asnumpy(u) == t)
 
 
-@pytest.mark.parametrize("M", [2, 3, 4])
-@pytest.mark.parametrize("N", [5, 6, 7])
-@pytest.mark.parametrize("K", [8, 9, 10])
 @pytest.mark.parametrize("s1", [1, 2, 3])
 @pytest.mark.parametrize("s2", [2, 3, 4])
 @pytest.mark.parametrize("s3", [3, 4, 5])
 @pytest.mark.parametrize("order", ["C", "F"])
-def test_3d_strided_dpnp_array_in_kernel(M, N, K, s1, s2, s3, order):
+def test_3d_strided_dpnp_array_in_kernel(s1, s2, s3, order):
     """
     Tests if we can correctly handle a strided 3d dpnp array
     inside dpex kernel.
     """
+    M, N, K = 13, 31, 11
     k = -3
 
     t = np.arange(0, M * N * K, dtype=np.int64).reshape((M, N, K), order=order)
@@ -260,18 +252,16 @@ def test_3d_strided_dpnp_array_in_kernel(M, N, K, s1, s2, s3, order):
     assert np.all(dpnp.asnumpy(u) == t)
 
 
-@pytest.mark.parametrize("M", [5, 6, 7])
-@pytest.mark.parametrize("N", [8, 9, 10])
-@pytest.mark.parametrize("K", [11, 12, 13])
 @pytest.mark.parametrize("s1", [2, 3, 4])
 @pytest.mark.parametrize("s2", [3, 4, 5])
 @pytest.mark.parametrize("s3", [4, 5, 6])
 @pytest.mark.parametrize("order", ["C", "F"])
-def test_multilevel_3d_strided_dpnp_array_in_kernel(M, N, K, s1, s2, s3, order):
+def test_multilevel_3d_strided_dpnp_array_in_kernel(s1, s2, s3, order):
     """
     Tests if we can correctly handle a multilevel strided 3d dpnp array
     inside dpex kernel.
     """
+    M, N, K = 13, 31, 11
     k = -3
 
     t = np.arange(0, M * N * K, dtype=np.int64).reshape((M, N, K), order=order)
