@@ -10,8 +10,24 @@ from numba.core.typing.npydecl import (
     NumpyRulesArrayOperator,
     NumpyRulesInplaceArrayOperator,
     NumpyRulesUnaryArrayOperator,
-    infer_global,
 )
+from numba.core.typing.templates import Registry
+
+registry = Registry()
+infer = registry.register
+infer_global = registry.register_global
+infer_getattr = registry.register_attr
+
+
+def _install_operations(cls: NumpyRulesArrayOperator):
+    for op, ufunc_name in cls._op_map.items():
+        infer_global(op)(
+            type(
+                "NumpyRulesArrayOperator_" + ufunc_name,
+                (cls,),
+                dict(key=op),
+            )
+        )
 
 
 class DpnpRulesArrayOperator(NumpyRulesArrayOperator):
@@ -29,13 +45,21 @@ class DpnpRulesArrayOperator(NumpyRulesArrayOperator):
         except:
             pass
 
+    @classmethod
+    def install_operations(cls):
+        _install_operations(cls)
+
 
 class DpnpRulesInplaceArrayOperator(NumpyRulesInplaceArrayOperator):
-    pass
+    @classmethod
+    def install_operations(cls):
+        _install_operations(cls)
 
 
 class DpnpRulesUnaryArrayOperator(NumpyRulesUnaryArrayOperator):
-    pass
+    @classmethod
+    def install_operations(cls):
+        _install_operations(cls)
 
 
 # list of unary ufuncs to register

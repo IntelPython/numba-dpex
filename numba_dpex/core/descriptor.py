@@ -10,7 +10,11 @@ from numba.core.descriptors import TargetDescriptor
 
 from numba_dpex.core import config
 
-from .targets.dpjit_target import DPEX_TARGET_NAME, DpexTargetContext
+from .targets.dpjit_target import (
+    DPEX_TARGET_NAME,
+    DpexTargetContext,
+    DpexTypingContext,
+)
 from .targets.kernel_target import (
     DPEX_KERNEL_TARGET_NAME,
     CompilationMode,
@@ -110,7 +114,7 @@ class DpexTarget(TargetDescriptor):
     @cached_property
     def _toplevel_typing_context(self):
         # Lazily-initialized top-level typing context, for all threads
-        return typing.Context()
+        return DpexTypingContext()
 
     @property
     def target_context(self):

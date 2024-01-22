@@ -7,6 +7,7 @@
 
 from functools import cached_property
 
+from numba.core import typing
 from numba.core.compiler_lock import global_compiler_lock
 from numba.core.cpu import CPUContext
 from numba.core.imputils import Registry
@@ -26,6 +27,17 @@ DPEX_TARGET_NAME = "dpex"
 target_registry[DPEX_TARGET_NAME] = Dpex
 
 dpex_function_registry = Registry()
+
+
+class DpexTypingContext(typing.Context):
+    """Custom typing context to support dpjit compilation."""
+
+    def load_additional_registries(self):
+        """Register dpjit specific functions like dpnp ufuncs."""
+        from numba_dpex.core.typing import dpnpdecl
+
+        self.install_registry(dpnpdecl.registry)
+        super().load_additional_registries()
 
 
 class DpexTargetContext(CPUContext):
