@@ -116,19 +116,36 @@ def _arrayexpr_tree_to_ir(
             if isinstance(op, T):
                 # function calls are stored in variables which are not removed
                 # op is typing_key to the variables type
-                el_typ = _ufunc_to_parfor_instr(
-                    typemap,
-                    op,
-                    avail_vars,
-                    loc,
-                    scope,
-                    func_ir,
-                    out_ir,
-                    arg_vars,
-                    typingctx,
-                    calltypes,
-                    expr_out_var,
+                func_var_name = parfor._find_func_var(
+                    typemap, op, avail_vars, loc=loc
                 )
+                func_var = ir.Var(scope, mk_unique_var(func_var_name), loc)
+                typemap[func_var.name] = typemap[func_var_name]
+                func_var_def = copy.deepcopy(
+                    func_ir.get_definition(func_var_name)
+                )
+                if (
+                    isinstance(func_var_def, ir.Expr)
+                    and func_var_def.op == "getattr"
+                    and func_var_def.attr == "sqrt"
+                ):
+                    g_math_var = ir.Var(
+                        scope, mk_unique_var("$math_g_var"), loc
+                    )
+                    typemap[g_math_var.name] = types.misc.Module(math)
+                    g_math = ir.Global("math", math, loc)
+                    g_math_assign = ir.Assign(g_math, g_math_var, loc)
+                    func_var_def = ir.Expr.getattr(g_math_var, "sqrt", loc)
+                    out_ir.append(g_math_assign)
+                ir_expr = ir.Expr.call(func_var, arg_vars, (), loc)
+                call_typ = typemap[func_var.name].get_call_type(
+                    typingctx, tuple(typemap[a.name] for a in arg_vars), {}
+                )
+                calltypes[ir_expr] = call_typ
+                el_typ = call_typ.return_type
+                out_ir.append(ir.Assign(func_var_def, func_var, loc))
+                out_ir.append(ir.Assign(ir_expr, expr_out_var, loc))
+        # NUMBA_DPEX: is_dpnp_func check was added
         if hasattr(op, "is_dpnp_ufunc"):
             el_typ = _ufunc_to_parfor_instr(
                 typemap,
