@@ -20,7 +20,7 @@ from numba.np.ufunc.decorators import Vectorize
 from numba_dpex.core.kernel_interface.launcher import call_kernel
 from numba_dpex.vectorizers import Vectorize as DpexVectorize
 
-from .numba_patches import patch_arrayexpr_tree_to_ir, patch_is_ufunc
+from .numba_patches import patch_is_ufunc
 
 
 def load_dpctl_sycl_interface():
@@ -81,7 +81,6 @@ if numba_sem_version < (0, 58, 0):
     from .numba_patches import patch_mk_alloc
 
     patch_mk_alloc.patch()
-patch_arrayexpr_tree_to_ir.patch()
 
 dpctl_sem_version = parse_sem_version(dpctl.__version__)
 if dpctl_sem_version < (0, 14):

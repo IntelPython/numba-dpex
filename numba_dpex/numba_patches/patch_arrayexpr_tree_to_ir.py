@@ -192,12 +192,3 @@ def _arrayexpr_tree_to_ir(
     typemap.pop(expr_out_var.name, None)
     typemap[expr_out_var.name] = el_typ
     return out_ir
-
-
-def patch():
-    """
-    Patches the _arrayexpr_tree_to_ir function in numba.parfor.parfor.py to
-    support array expression nodes that were generated from dpnp expressions.
-    """
-
-    parfor._arrayexpr_tree_to_ir = _arrayexpr_tree_to_ir
