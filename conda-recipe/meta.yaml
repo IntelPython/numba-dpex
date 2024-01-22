@@ -13,7 +13,7 @@ build:
 requirements:
     build:
         - {{ compiler('cxx') }}
-        - {{ compiler('dpcpp') }} <2024.0.1  # [not osx]
+        - {{ compiler('dpcpp') }}  # [not osx]
     host:
         - python
         - setuptools >=63.*
