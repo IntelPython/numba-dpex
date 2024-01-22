@@ -118,8 +118,6 @@ class DpexKernelTypingContext(typing.BaseContext):
         self.install_registry(ocldecl.registry)
         self.install_registry(mathdecl.registry)
         self.install_registry(cmathdecl.registry)
-        # TODO: https://github.com/IntelPython/numba-dpex/issues/1270
-        self.install_registry(npydecl.registry)
         self.install_registry(dpnpdecl.registry)
         self.install_registry(enumdecl.registry)
 
