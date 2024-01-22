@@ -459,8 +459,21 @@ class KernelLaunchIRBuilder:
             for rext in idx_range
         ]
 
-        # we reverse the global range to account for how sycl and opencl
-        # range differs
+        # Index inversion is done here as numba-dpex first compiles a native
+        # kernel (OpenCL or Level Zero) and then generates a SYCL
+        # interoperability kernel from it. The convention for unit stride
+        # dimensions is opposite for OpenCL and SYCL
+        # refer:
+        # https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:opencl:kernel-conventions-sycl
+        # For this reason, although numba-dpex follows SYCL like indexing in
+        # the kernel front-end while launching the kernel the indexing is
+        # reversed.
+        #
+        # TODO[1]: It needs to be investigated if we need the index reversal
+        # if we use SYCL-like LLVM IR indexing intrinsic instead of
+        # OpenCL-like LLVM IR intrinsic functions.
+        #
+        # TODO[2]: Do we need to do this when the backend is LevelZero
         int64_range.reverse()
 
         return self._create_ll_from_py_list(types.uintp, int64_range)
