@@ -866,13 +866,14 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
     for (i = 0; i < ndim; ++i, ++p)
         *p = shape[i];
 
-    // DPCTL returns a NULL pointer if the array is contiguous. dpctl stores
-    // strides as number of elements and Numba stores strides as bytes, for
-    // that reason we are multiplying stride by itemsize when unboxing the
-    // external array.
-
-    // FIXME: Stride computation should check order and adjust how strides are
-    // calculated. Right now strides are assuming that order is C contigous.
+    // dpctl returns a NULL pointer for the stride vector if the array has a
+    // C-contiguous layout. For all other cases, including strided views and
+    // F contiguous layouts, the actual stride values are returned. Also, dpctl
+    // stores strides as number of elements and Numba follows NumPy and stores
+    // strides as number of bytes. For that reason, we multiply strides by
+    // itemsize when unboxing an usm_ndarray if dpctl returned a popualted
+    // stride vector. For the default C contiguous case, strides are
+    // calculated directly as number of bytes based on itemsize.
     if (strides) {
         for (i = 0; i < ndim; ++i, ++p) {
             *p = strides[i] << exp;
