@@ -7,8 +7,6 @@ channels:
   - nodefaults
 dependencies:
   - libffi
-  - gxx_linux-64
-  - dpcpp_linux-64
   - numba==0.58*
   - dpctl
   - dpnp
