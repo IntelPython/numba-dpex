@@ -253,10 +253,11 @@ class KernelLaunchIRBuilder:
 
     def _build_array_arg(  # pylint: disable=too-many-arguments
         self,
-        array_val,
-        array_data_model,
-        arg_list,
-        args_ty_list,
+        host_array_val,  # llvm_val
+        host_array_data_model,
+        kernel_array_data_model,
+        arg_list,  # filling this val
+        args_ty_list,  # filling this val
         arg_num,
     ):
         """Creates a list of LLVM Values for an unpacked USMNdArray kernel
@@ -265,31 +266,16 @@ class KernelLaunchIRBuilder:
         The steps performed here are the same as in
         numba_dpex.core.kernel_interface.arg_pack_unpacker._unpack_array_helper
         """
-        # Argument 1: Null pointer for the NRT_MemInfo attribute of the array
-        nullptr = self._build_nullptr()
-        self._build_arg(
-            val=nullptr,
-            typ=types.int64,
-            arg_list=arg_list,
-            args_ty_list=args_ty_list,
-            arg_num=arg_num,
-        )
-        arg_num += 1
-        # Argument 2: Null pointer for the Parent attribute of the array
-        nullptr = self._build_nullptr()
-        self._build_arg(
-            val=nullptr,
-            typ=types.int64,
-            arg_list=arg_list,
-            args_ty_list=args_ty_list,
-            arg_num=arg_num,
-        )
-        arg_num += 1
+        # It might be quite confusing, but we are referring to field position
+        # on host device to cast it then to device type and send to device.vars
+        # Keeping that in mind answers when to use what data_model.
+        # Proper code structure refactoring needed to make it easier to read and
+        # maintain.
         # Argument nitems
         self._build_array_attr_arg(
-            array_val=array_val,
-            array_attr_pos=array_data_model.get_field_position("nitems"),
-            array_attr_ty=array_data_model.get_member_fe_type("nitems"),
+            array_val=host_array_val,
+            array_attr_pos=host_array_data_model.get_field_position("nitems"),
+            array_attr_ty=kernel_array_data_model.get_member_fe_type("nitems"),
             arg_list=arg_list,
             args_ty_list=args_ty_list,
             arg_num=arg_num,
@@ -297,9 +283,11 @@ class KernelLaunchIRBuilder:
         arg_num += 1
         # Argument itemsize
         self._build_array_attr_arg(
-            array_val=array_val,
-            array_attr_pos=array_data_model.get_field_position("itemsize"),
-            array_attr_ty=array_data_model.get_member_fe_type("itemsize"),
+            array_val=host_array_val,
+            array_attr_pos=host_array_data_model.get_field_position("itemsize"),
+            array_attr_ty=kernel_array_data_model.get_member_fe_type(
+                "itemsize"
+            ),
             arg_list=arg_list,
             args_ty_list=args_ty_list,
             arg_num=arg_num,
@@ -307,29 +295,19 @@ class KernelLaunchIRBuilder:
         arg_num += 1
         # Argument data
         self._build_array_attr_arg(
-            array_val=array_val,
-            array_attr_pos=array_data_model.get_field_position("data"),
-            array_attr_ty=array_data_model.get_member_fe_type("data"),
-            arg_list=arg_list,
-            args_ty_list=args_ty_list,
-            arg_num=arg_num,
-        )
-        arg_num += 1
-        # Argument sycl_queue: as the queue pointer is not to be used in a
-        # kernel we always pass in a nullptr
-        self._build_arg(
-            val=nullptr,
-            typ=types.int64,
+            array_val=host_array_val,
+            array_attr_pos=host_array_data_model.get_field_position("data"),
+            array_attr_ty=kernel_array_data_model.get_member_fe_type("data"),
             arg_list=arg_list,
             args_ty_list=args_ty_list,
             arg_num=arg_num,
         )
         arg_num += 1
         # Arguments for shape
-        shape_member = array_data_model.get_member_fe_type("shape")
+        shape_member = kernel_array_data_model.get_member_fe_type("shape")
         self._build_unituple_member_arg(
-            array_val=array_val,
-            array_attr_pos=array_data_model.get_field_position("shape"),
+            array_val=host_array_val,
+            array_attr_pos=host_array_data_model.get_field_position("shape"),
             ndims=shape_member.count,
             arg_list=arg_list,
             args_ty_list=args_ty_list,
@@ -337,10 +315,10 @@ class KernelLaunchIRBuilder:
         )
         arg_num += shape_member.count
         # Arguments for strides
-        stride_member = array_data_model.get_member_fe_type("strides")
+        stride_member = kernel_array_data_model.get_member_fe_type("strides")
         self._build_unituple_member_arg(
-            array_val=array_val,
-            array_attr_pos=array_data_model.get_field_position("strides"),
+            array_val=host_array_val,
+            array_attr_pos=host_array_data_model.get_field_position("strides"),
             ndims=stride_member.count,
             arg_list=arg_list,
             args_ty_list=args_ty_list,
@@ -647,10 +625,10 @@ class KernelLaunchIRBuilder:
 
         # Populate the args_list and the args_ty_list LLVM arrays
         self._populate_kernel_args_and_args_ty_arrays(
-            callargs_ptrs=kernel_args_ptrs,
-            kernel_argtys=ty_kernel_args,
-            args_list=args_list,
-            args_ty_list=args_ty_list,
+            host_callargs_ptrs=kernel_args_ptrs,
+            host_kernel_argtys=ty_kernel_args,
+            kernel_args_list=args_list,
+            kernel_args_ty_list=args_ty_list,
         )
 
         self.arguments.arg_list = args_list
@@ -796,8 +774,8 @@ class KernelLaunchIRBuilder:
         self,
         kernel_argtys: tuple[types.Type, ...],
     ) -> int:
-        """Returns number of flattened arguments based on the numba types.
-        flattens dpnp arrays and complex values."""
+        """Returns number of flattened arguments of kernel data model based on
+        the numba types. Flattens usm arrays and complex values."""
         num_flattened_kernel_args = 0
         for arg_type in kernel_argtys:
             if isinstance(arg_type, USMNdArray):
@@ -812,49 +790,51 @@ class KernelLaunchIRBuilder:
 
     def _populate_kernel_args_and_args_ty_arrays(
         self,
-        kernel_argtys,
-        callargs_ptrs,
-        args_list,
-        args_ty_list,
+        host_kernel_argtys,
+        host_callargs_ptrs,
+        kernel_args_list,
+        kernel_args_ty_list,
     ):
         kernel_arg_num = 0
-        for arg_num, argtype in enumerate(kernel_argtys):
-            llvm_val = callargs_ptrs[arg_num]
+        for arg_num, argtype in enumerate(host_kernel_argtys):
+            host_llvm_val = host_callargs_ptrs[arg_num]
             if isinstance(argtype, USMNdArray):
-                datamodel = self.kernel_dmm.lookup(argtype)
+                kernel_datamodel = self.kernel_dmm.lookup(argtype)
+                host_datamodel = self.context.data_model_manager.lookup(argtype)
                 self._build_array_arg(
-                    array_val=llvm_val,
-                    array_data_model=datamodel,
-                    arg_list=args_list,
-                    args_ty_list=args_ty_list,
+                    host_array_val=host_llvm_val,
+                    host_array_data_model=host_datamodel,
+                    kernel_array_data_model=kernel_datamodel,
+                    arg_list=kernel_args_list,
+                    args_ty_list=kernel_args_ty_list,
                     arg_num=kernel_arg_num,
                 )
-                kernel_arg_num += datamodel.flattened_field_count
+                kernel_arg_num += kernel_datamodel.flattened_field_count
             else:
                 if argtype == types.complex64:
                     self._build_complex_arg(
-                        llvm_val,
+                        host_llvm_val,
                         types.float32,
-                        args_list,
-                        args_ty_list,
+                        kernel_args_list,
+                        kernel_args_ty_list,
                         kernel_arg_num,
                     )
                     kernel_arg_num += 2
                 elif argtype == types.complex128:
                     self._build_complex_arg(
-                        llvm_val,
+                        host_llvm_val,
                         types.float64,
-                        args_list,
-                        args_ty_list,
+                        kernel_args_list,
+                        kernel_args_ty_list,
                         kernel_arg_num,
                     )
                     kernel_arg_num += 2
                 else:
                     self._build_arg(
-                        llvm_val,
+                        host_llvm_val,
                         argtype,
-                        args_list,
-                        args_ty_list,
+                        kernel_args_list,
+                        kernel_args_ty_list,
                         kernel_arg_num,
                     )
                     kernel_arg_num += 1
