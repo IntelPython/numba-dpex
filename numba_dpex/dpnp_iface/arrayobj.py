@@ -15,7 +15,6 @@ from numba.extending import overload, overload_attribute
 from numba.np.arrayobj import getitem_arraynd_intp as np_getitem_arraynd_intp
 from numba.np.numpy_support import is_nonelike
 
-from numba_dpex.core.datamodel.models import dpex_data_model_manager as dpex_dmm
 from numba_dpex.core.types import DpnpNdArray
 
 from ._intrinsic import (
@@ -1083,9 +1082,9 @@ def getitem_arraynd_intp(context, builder, sig, args):
     if isinstance(sig.return_type, DpnpNdArray):
         array_val = args[0]
         array_ty = sig.args[0]
-        sycl_queue_attr_pos = dpex_dmm.lookup(array_ty).get_field_position(
-            "sycl_queue"
-        )
+        sycl_queue_attr_pos = context.data_model_manager.lookup(
+            array_ty
+        ).get_field_position("sycl_queue")
         sycl_queue_attr = builder.extract_value(array_val, sycl_queue_attr_pos)
         ret = builder.insert_value(ret, sycl_queue_attr, sycl_queue_attr_pos)
 
