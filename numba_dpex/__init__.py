@@ -131,7 +131,6 @@ from .ocl.stubs import (  # noqa E402
     sub_group_barrier,
 )
 
-DEFAULT_LOCAL_SIZE = []
 load_dpctl_sycl_interface()
 del load_dpctl_sycl_interface
 

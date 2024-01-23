@@ -194,7 +194,7 @@ class UFuncMechanism(deviceufunc.UFuncMechanism):
         copy_to_numpy_from_usm_obj(devary_memview, hostary)
 
     def launch(self, func, count, queue, args):
-        func[count, dpex.DEFAULT_LOCAL_SIZE](*args)
+        func[dpex.Range(count)](*args)
 
     def device_array(self, shape, dtype, queue):
         size = np.prod(shape)
