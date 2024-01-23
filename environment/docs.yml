@@ -1,29 +1,29 @@
 name: dpex-docs-dev
 channels:
-- dppy/label/dev
-- numba
-- intel
-- conda-forge
-- nodefaults
+  - dppy/label/dev
+  - numba
+  - intel
+  - conda-forge
+  - nodefaults
 dependencies:
-- libffi
-- gxx_linux-64
-- dpcpp_linux-64==2024.0.0
-- numba==0.58*
-- scikit-build>=0.15*
-- cmake>=3.26*
-- dpctl
-- dpnp
-- dpcpp-llvm-spirv
-- opencl_rt
-- pip
-- pip:
-  - sphinx
-  - autodoc # there is no conda package
-  - recommonmark
-  - sphinx-rtd-theme
-  - sphinxcontrib-apidoc
-  - sphinxcontrib-googleanalytics
-  - sphinxcontrib.programoutput
-  - pydata-sphinx-theme
-  - myst-parser
+  - libffi
+  - gxx_linux-64
+  - dpcpp_linux-64>=2023.2,!=2024.0.1,!=2024.0.2
+  - numba==0.58*
+  - scikit-build>=0.15*
+  - cmake>=3.26*
+  - dpctl
+  - dpnp
+  - dpcpp-llvm-spirv
+  - opencl_rt
+  - pip
+  - pip:
+    - sphinx
+    - autodoc # there is no conda package
+    - recommonmark
+    - sphinx-rtd-theme
+    - sphinxcontrib-apidoc
+    - sphinxcontrib-googleanalytics
+    - sphinxcontrib.programoutput
+    - pydata-sphinx-theme
+    - myst-parser
