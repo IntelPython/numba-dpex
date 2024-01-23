@@ -2,7 +2,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-"""A wrapper to connect to the SPIR-V binaries (Tools, Translator)."""
+"""
+A wrapper to call dpcpp's llvm-spirv tool to generate a SPIR-V binary from
+a numba-dpex generated LLVM IR module.
+"""
 
 import os
 import tempfile
@@ -28,47 +31,8 @@ def run_cmd(args, error_message=None):
         )
 
 
-class CmdLine:
-    def disassemble(self, ipath, opath):
-        """
-        Disassemble a spirv module.
-
-        Args:
-            ipath: Input file path of the spirv module.
-            opath: Output file path of the disassembled spirv module.
-        """
-        flags = []
-        run_cmd(
-            ["spirv-dis", *flags, "-o", opath, ipath],
-            error_message="Error during SPIRV disassemble",
-        )
-
-    def validate(self, ipath):
-        """
-        Validate a spirv module.
-
-        Args:
-            ipath: Input file path of the spirv module.
-        """
-        flags = []
-        run_cmd(
-            ["spirv-val", *flags, ipath],
-            error_message="Error during SPIRV validation",
-        )
-
-    def optimize(self, ipath, opath):
-        """
-        Optimize a spirv module.
-
-        Args:
-            ipath: Input file path of the spirv module.
-            opath: Output file path of the optimized spirv module.
-        """
-        flags = []
-        run_cmd(
-            ["spirv-opt", *flags, "-o", opath, ipath],
-            error_message="Error during SPIRV optimization",
-        )
+class _SpirvGenerator:
+    """Generates a SPIR-V binary from supplied LLVM IR."""
 
     def generate(self, llvm_spirv_args, ipath, opath):
         """
@@ -115,7 +79,7 @@ class Module(object):
         """
         self._tmpdir = tempfile.mkdtemp()
         self._tempfiles = []
-        self._cmd = CmdLine()
+        self._generator = _SpirvGenerator()
         self._finalized = False
         self.context = context
 
@@ -182,7 +146,7 @@ class Module(object):
             print("generated_llvm.bc")
             print("".center(80, "="))
 
-        self._cmd.generate(
+        self._generator.generate(
             llvm_spirv_args=llvm_spirv_args,
             ipath=self._llvmfile,
             opath=spirv_path,
@@ -199,28 +163,7 @@ class Module(object):
             print("generated_spirv.spir")
             print("".center(80, "="))
 
-        # Validate the SPIR-V code
-        if config.SPIRV_VAL == 1:
-            try:
-                self._cmd.validate(ipath=spirv_path)
-            except CalledProcessError:
-                print("SPIR-V Validation failed...")
-                pass
-            else:
-                # Optimize SPIR-V code
-                opt_path = self._track_temp_file("optimized-spirv")
-                self._cmd.optimize(ipath=spirv_path, opath=opt_path)
-
-                if config.DUMP_ASSEMBLY:
-                    # Disassemble optimized SPIR-V code
-                    dis_path = self._track_temp_file("disassembled-spirv")
-                    self._cmd.disassemble(ipath=opt_path, opath=dis_path)
-                    with open(dis_path, "rb") as fin_opt:
-                        print("ASSEMBLY".center(80, "-"))
-                        print(fin_opt.read())
-                        print("".center(80, "="))
-
-        # Read and return final SPIR-V (not optimized!)
+        # Read and return final SPIR-V
         with open(spirv_path, "rb") as fin:
             spirv = fin.read()
 
