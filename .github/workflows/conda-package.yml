@@ -18,6 +18,7 @@ env:
   VER_JSON_NAME: 'version.json'
   VER_SCRIPT1: "import json; f = open('version.json', 'r'); j = json.load(f); f.close(); "
   VER_SCRIPT2: "d = j['numba-dpex'][0]; print('='.join((d[s] for s in ('version', 'build'))))"
+  PYTHONIOENCODING: 'utf-8'
 
 jobs:
   build:
@@ -172,7 +173,7 @@ jobs:
       # We want to make sure that all dependecies install automatically.
       # intel::intel-opencl-rt is needed for set-intel-ocl-icd-registry.ps1
       - name: Install builded package
-        run: mamba install ${{ env.PACKAGE_NAME }}=${{ env.PACKAGE_VERSION }} intel::intel-opencl-rt pytest-cov -c ${{ env.CHANNEL_PATH }}
+        run: mamba install ${{ env.PACKAGE_NAME }}=${{ env.PACKAGE_VERSION }} intel::intel-opencl-rt pytest-cov conda-tree -c ${{ env.CHANNEL_PATH }}
 
       - name: Install numba-mlir
         if: matrix.use_mlir
@@ -198,6 +199,9 @@ jobs:
       - name: Check dpcpp-llvm-spirv
         run: |
           python -c "import dpcpp_llvm_spirv as p; print(p.get_llvm_spirv_path())"
+
+      - name: Check dependency tree
+        run: conda-tree depends -t numba-dpex
 
       - name: Smoke test
         env:
