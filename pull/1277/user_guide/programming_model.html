@@ -676,7 +676,7 @@ book for details of this data parallel C++.</p>
 <span class="k">with</span> <span class="n">dpctl</span><span class="o">.</span><span class="n">device_context</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
     <span class="c1"># apply the kernel to elements of X, writing value into Y,</span>
     <span class="c1"># while executing using given queue</span>
-    <span class="n">numba_dpex_poly</span><span class="p">[</span><span class="n">X</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">numba_dpex</span><span class="o">.</span><span class="n">DEFAULT_LOCAL_SIZE</span><span class="p">](</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+    <span class="n">numba_dpex_poly</span><span class="p">[</span><span class="n">numba_dpex</span><span class="o">.</span><span class="n">Range</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">size</span><span class="p">)](</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The argument to <code class="docutils literal notranslate"><span class="pre">device_context</span></code> can be a queue object, a device object for
