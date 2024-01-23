@@ -12,6 +12,7 @@ usm array view.
 
 
 from numba.core import cgutils, types
+from numba.np import arrayobj as np_arrayobj
 
 from numba_dpex.core import types as dpex_types
 
@@ -79,3 +80,58 @@ def populate_array(array, data, shape, strides, itemsize):
         setattr(array, k, v)
 
     return array
+
+
+def make_view(context, builder, aryty, ary, return_type, data, shapes, strides):
+    """
+    Build a view over the given array with the given parameters.
+
+    This is analog of numpy.np.arrayobj.make_view without parent and
+    meminfo fields, because they don't make sense on device. This function
+    intended to be used only in kernel targets.
+    """
+    retary = np_arrayobj.make_array(return_type)(context, builder)
+    populate_array(
+        retary, data=data, shape=shapes, strides=strides, itemsize=ary.itemsize
+    )
+    return retary
+
+
+def _getitem_array_generic(
+    context, builder, return_type, aryty, ary, index_types, indices
+):
+    """
+    Return the result of indexing *ary* with the given *indices*,
+    returning either a scalar or a view.
+
+    This is analog of numpy.np.arrayobj._getitem_array_generic without parent
+    and meminfo fields, because they don't make sense on device. This function
+    intended to be used only in kernel targets.
+    """
+    dataptr, view_shapes, view_strides = np_arrayobj.basic_indexing(
+        context,
+        builder,
+        aryty,
+        ary,
+        index_types,
+        indices,
+        boundscheck=context.enable_boundscheck,
+    )
+
+    if isinstance(return_type, types.Buffer):
+        # Build array view
+        retary = make_view(
+            context,
+            builder,
+            aryty,
+            ary,
+            return_type,
+            dataptr,
+            view_shapes,
+            view_strides,
+        )
+        return retary._getvalue()
+    else:
+        # Load scalar from 0-d result
+        assert not view_shapes
+        return np_arrayobj.load_item(context, builder, aryty, dataptr)
