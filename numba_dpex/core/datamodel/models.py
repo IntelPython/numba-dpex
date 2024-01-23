@@ -80,18 +80,12 @@ class USMArrayDeviceModel(StructModel):
     def __init__(self, dmm, fe_type):
         ndim = fe_type.ndim
         members = [
-            # meminfo never used in kernel, so we don'te care about addrspace
-            ("meminfo", types.MemInfoPointer(fe_type.dtype)),
-            # parent never used in kernel, so we don'te care about addrspace
-            ("parent", types.pyobject),
             ("nitems", types.intp),
             ("itemsize", types.intp),
             (
                 "data",
                 types.CPointer(fe_type.dtype, addrspace=fe_type.addrspace),
             ),
-            # sycl_queue never used in kernel, so we don'te care about addrspace
-            ("sycl_queue", types.voidptr),
             ("shape", types.UniTuple(types.intp, ndim)),
             ("strides", types.UniTuple(types.intp, ndim)),
         ]

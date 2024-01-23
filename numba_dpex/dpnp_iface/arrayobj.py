@@ -6,16 +6,20 @@ import operator
 
 import dpnp
 from numba import errors, types
-from numba.core.imputils import lower_builtin
+from numba.core.imputils import impl_ret_borrowed, lower_builtin
 from numba.core.types import scalars
 from numba.core.types.containers import UniTuple
 from numba.core.typing.npydecl import parse_dtype as _ty_parse_dtype
 from numba.core.typing.npydecl import parse_shape as _ty_parse_shape
 from numba.extending import overload, overload_attribute
-from numba.np.arrayobj import getitem_arraynd_intp as np_getitem_arraynd_intp
+from numba.np.arrayobj import _getitem_array_generic as np_getitem_array_generic
+from numba.np.arrayobj import make_array
 from numba.np.numpy_support import is_nonelike
 
-from numba_dpex.core.datamodel.models import dpex_data_model_manager as dpex_dmm
+from numba_dpex.core.kernel_interface.arrayobj import (
+    _getitem_array_generic as kernel_getitem_array_generic,
+)
+from numba_dpex.core.targets.kernel_target import DpexKernelTargetContext
 from numba_dpex.core.types import DpnpNdArray
 
 from ._intrinsic import (
@@ -1078,14 +1082,29 @@ def getitem_arraynd_intp(context, builder, sig, args):
     that when returning a view of a dpnp.ndarray the sycl::queue pointer
     member in the LLVM IR struct gets properly updated.
     """
-    ret = np_getitem_arraynd_intp(context, builder, sig, args)
+    getitem_call_in_kernel = isinstance(context, DpexKernelTargetContext)
+    _getitem_array_generic = np_getitem_array_generic
 
-    if isinstance(sig.return_type, DpnpNdArray):
+    if getitem_call_in_kernel:
+        _getitem_array_generic = kernel_getitem_array_generic
+
+    aryty, idxty = sig.args
+    ary, idx = args
+
+    assert aryty.ndim >= 1
+    ary = make_array(aryty)(context, builder, ary)
+
+    res = _getitem_array_generic(
+        context, builder, sig.return_type, aryty, ary, (idxty,), (idx,)
+    )
+    ret = impl_ret_borrowed(context, builder, sig.return_type, res)
+
+    if isinstance(sig.return_type, DpnpNdArray) and not getitem_call_in_kernel:
         array_val = args[0]
         array_ty = sig.args[0]
-        sycl_queue_attr_pos = dpex_dmm.lookup(array_ty).get_field_position(
-            "sycl_queue"
-        )
+        sycl_queue_attr_pos = context.data_model_manager.lookup(
+            array_ty
+        ).get_field_position("sycl_queue")
         sycl_queue_attr = builder.extract_value(array_val, sycl_queue_attr_pos)
         ret = builder.insert_value(ret, sycl_queue_attr, sycl_queue_attr_pos)
 

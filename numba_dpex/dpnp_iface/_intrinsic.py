@@ -22,7 +22,6 @@ from numba.np.arrayobj import (
     populate_array,
 )
 
-from numba_dpex.core.datamodel.models import dpex_data_model_manager as dpex_dmm
 from numba_dpex.core.runtime import context as dpexrt
 from numba_dpex.core.types import DpnpNdArray
 from numba_dpex.core.types.dpctl_types import DpctlSyclQueue
@@ -142,13 +141,15 @@ def _get_queue_ref(
             raise AssertionError(
                 "Expected the queue_arg to be an llvmir.LiteralStructType"
             )
-        sycl_queue_dm = dpex_dmm.lookup(sycl_queue_arg.numba_ty)
+        sycl_queue_dm = context.data_model_manager.lookup(
+            sycl_queue_arg.numba_ty
+        )
         queue_ref = builder.extract_value(
             sycl_queue_arg.llvmir_val,
             sycl_queue_dm.get_field_position("queue_ref"),
         )
     elif array_arg is not None:
-        dpnp_ndarray_dm = dpex_dmm.lookup(array_arg.numba_ty)
+        dpnp_ndarray_dm = context.data_model_manager.lookup(array_arg.numba_ty)
         queue_ref = builder.extract_value(
             array_arg.llvmir_val,
             dpnp_ndarray_dm.get_field_position("sycl_queue"),

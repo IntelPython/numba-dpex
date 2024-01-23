@@ -10,7 +10,7 @@ import numba_dpex as dpex
 
 @dpex.func
 def g(a):
-    return a + 1
+    return a + dpnp.float32(1)
 
 
 @dpex.kernel
