@@ -13,7 +13,7 @@ dependencies:
   - numba ==0.58*
   - dpctl >=0.14*
   - dpnp >=0.11*
-  - mkl >=2021.3.0  # for dpnp
+  - mkl >=2021.3.0 # for dpnp
   - dpcpp-llvm-spirv
   - packaging
   - scikit-build >=0.15*
@@ -21,13 +21,13 @@ dependencies:
   - pytest
   - pip
   - pip:
-    - coverage
-    - pre-commit
-    - flake8
-    - black==20.8b1
-    - pytest-cov
-    - pytest-xdist
-    - pexpect
+      - coverage
+      - pre-commit
+      - flake8
+      - black==20.8b1
+      - pytest-cov
+      - pytest-xdist
+      - pexpect
 variables:
   CHANNELS: -c defaults -c numba -c intel -c numba/label/dev -c dppy/label/dev --override-channels
   CHANNELS_DEV: -c dppy/label/dev -c defaults -c numba -c intel -c numba/label/dev --override-channels
