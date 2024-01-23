@@ -17,7 +17,7 @@ N = 10
 
 
 def increment(a):
-    return a + 1
+    return a + dpnp.float32(1)
 
 
 def test_basic():
