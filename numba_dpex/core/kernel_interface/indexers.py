@@ -6,7 +6,6 @@ from collections.abc import Iterable
 
 from llvmlite import ir as llvmir
 from numba.core import cgutils, errors, types
-from numba.core.datamodel import default_manager
 from numba.extending import intrinsic, overload
 
 # can't import name because of the circular import
@@ -281,10 +280,10 @@ def _intrin_ndrange_alloc(
         ty_local_range,
         ty_ndrange,
     )
-    range_datamodel = default_manager.lookup(ty_global_range)
 
     def codegen(context, builder, sig, args):
         typ = sig.return_type
+        range_datamodel = context.data_model_manager.lookup(ty_global_range)
 
         global_range, local_range, _ = args
         ndrange_struct = cgutils.create_struct_proxy(typ)(context, builder)

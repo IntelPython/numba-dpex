@@ -12,11 +12,13 @@ from numba import typeof
 from numba.core import cgutils, funcdesc, types, typing, utils
 from numba.core.base import BaseContext
 from numba.core.callconv import MinimalCallConv
-from numba.core.registry import cpu_target
 from numba.core.target_extension import GPU, target_registry
 from numba.core.types import Array as NpArrayType
 
-from numba_dpex.core.datamodel.models import _init_data_model_manager
+from numba_dpex.core.datamodel.models import (
+    _init_kernel_data_model_manager,
+    dpex_data_model_manager,
+)
 from numba_dpex.core.exceptions import UnsupportedKernelArgumentError
 from numba_dpex.core.typeconv import to_usm_ndarray
 from numba_dpex.core.types import USMNdArray
@@ -256,7 +258,8 @@ class DpexKernelTargetContext(BaseContext):
         )
 
         # Override data model manager to SPIR model
-        self.data_model_manager = _init_data_model_manager()
+        # self.data_model_manager = _init_kernel_data_model_manager()
+        self.data_model_manager = dpex_data_model_manager
         self.extra_compile_options = dict()
 
         from numba_dpex.dpnp_iface.dpnp_ufunc_db import _lazy_init_dpnp_db

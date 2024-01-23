@@ -25,3 +25,7 @@ def test_boxing_without_parent():
     q: SyclQueue = func()
 
     assert len(q.sycl_device.filter_string) > 0
+
+
+if __name__ == "__main__":
+    test_boxing_without_parent()

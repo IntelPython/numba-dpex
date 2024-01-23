@@ -40,6 +40,10 @@ def test_basic():
     assert np.array_equal(dpnp.asnumpy(b), dpnp.asnumpy(a) + 1)
 
 
+if __name__ == "__main__":
+    test_basic()
+
+
 def test_single_signature():
     """Basic test with single signature"""
 
