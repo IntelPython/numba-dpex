@@ -421,7 +421,6 @@ def _make_array(
         shape=cgutils.pack_array(builder, kshape),
         strides=cgutils.pack_array(builder, kstrides),
         itemsize=context.get_constant(types.intp, itemsize),
-        meminfo=None,
     )
 
     return ary._getvalue()

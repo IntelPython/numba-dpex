@@ -435,6 +435,14 @@ class DpexKernelTargetContext(BaseContext):
     def get_ufunc_info(self, ufunc_key):
         return self.ufunc_db[ufunc_key]
 
+    def populate_array(self, arr, **kwargs):
+        """
+        Populate array structure.
+        """
+        from numba_dpex.core.kernel_interface import arrayobj
+
+        return arrayobj.populate_array(arr, **kwargs)
+
 
 class DpexCallConv(MinimalCallConv):
     """Custom calling convention class used by numba-dpex.
