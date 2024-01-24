@@ -179,12 +179,16 @@ _unsupported = set(
         "ldexp",
         "spacing",
         "isnat",
+        "cbrt",
     ]
 )
 
-# A list of ufuncs that are in fact aliases of other ufuncs. They need to insert
-# the resolve method, but not register the ufunc itself
-_aliases = set(["bitwise_not", "mod", "abs"])
+# TODO: A list of ufuncs that are in fact aliases of other ufuncs. They need
+# to insert the resolve method, but not register the ufunc itself.
+# In a meantime let's just register them as user functions:
+# TODO: for some reason it affects "mod", but does not affect "bitwise_not" and
+# "abs". May be mod is not an alias?
+_aliases = {"bitwise_not", "abs"}
 
 all_ufuncs = sum(
     [
