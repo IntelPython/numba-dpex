@@ -2,68 +2,349 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+from itertools import product
+
 import dpctl
 import dpnp
 import numpy
 import pytest
 
 from numba_dpex import dpjit
-from numba_dpex.tests._helper import get_all_dtypes
+from numba_dpex.tests._helper import (
+    get_float_dtypes,
+    get_int_dtypes,
+    has_opencl_gpu,
+    num_required_arguments,
+)
 
 
 def parfor_add(a, b):
+    "Same as a + b."
     return a + b
 
 
-def parfor_sub(a, b):
-    return a - b
+def parfor_and_(a, b):
+    "Same as a & b."
+    return a & b
 
 
-def parfor_mult(a, b):
-    return a * b
-
-
-def parfor_divide(a, b):
-    return a / b
-
-
-def parfor_modulus(a, b):
-    return a % b
-
-
-def parfor_exponent(a, b):
-    return a**b
-
-
-shapes = [100, (25, 4)]
-dtypes = get_all_dtypes(
-    no_bool=True, no_float16=True, no_none=True, no_complex=True
-)
-usm_types = ["device", "host", "shared"]
-funcs = [
-    parfor_add,
-    parfor_sub,
-    parfor_mult,
-    parfor_divide,
-    parfor_modulus,
-    parfor_exponent,
-]
-
-# TODO: fails for integer because it is being cast to float64 internally?
-if dpnp.float64 not in dtypes:
-    funcs.remove(parfor_divide)
-    funcs.remove(parfor_exponent)
-
-
-def parfor_floor(a, b):
+def parfor_floordiv(a, b):
+    "Same as a // b."
     return a // b
 
 
+def parfor_inv(a):
+    "Same as ~a."
+    return ~a
+
+
+def parfor_lshift(a, b):
+    "Same as a << b."
+    return a << b
+
+
+def parfor_mod(a, b):
+    "Same as a % b."
+    return a % b
+
+
+def parfor_mul(a, b):
+    "Same as a * b."
+    return a * b
+
+
+def parfor_matmul(a, b):
+    "Same as a @ b."
+    return a @ b
+
+
+def parfor_neg(a):
+    "Same as -a."
+    return -a
+
+
+def parfor_or_(a, b):
+    "Same as a | b."
+    return a | b
+
+
+def parfor_pos(a):
+    "Same as +a."
+    return +a
+
+
+def parfor_pow(a, b):
+    "Same as a ** b."
+    return a**b
+
+
+def parfor_rshift(a, b):
+    "Same as a >> b."
+    return a >> b
+
+
+def parfor_sub(a, b):
+    "Same as a - b."
+    return a - b
+
+
+def parfor_truediv(a, b):
+    "Same as a / b."
+    return a / b
+
+
+def parfor_xor(a, b):
+    "Same as a ^ b."
+    return a ^ b
+
+
+# Inplace operations
+def parfor_iadd(a, b):
+    "Same as a += b."
+    a += b
+    return a
+
+
+def parfor_iand(a, b):
+    "Same as a &= b."
+    a &= b
+    return a
+
+
+def parfor_ifloordiv(a, b):
+    "Same as a //= b."
+    a //= b
+    return a
+
+
+def parfor_ilshift(a, b):
+    "Same as a <<= b."
+    a <<= b
+    return a
+
+
+def parfor_imod(a, b):
+    "Same as a %= b."
+    a %= b
+    return a
+
+
+def parfor_imul(a, b):
+    "Same as a *= b."
+    a *= b
+    return a
+
+
+def parfor_imatmul(a, b):
+    "Same as a @= b."
+    a @= b
+    return a
+
+
+def parfor_ior(a, b):
+    "Same as a |= b."
+    a |= b
+    return a
+
+
+def parfor_ipow(a, b):
+    "Same as a **= b."
+    a **= b
+    return a
+
+
+def parfor_irshift(a, b):
+    "Same as a >>= b."
+    a >>= b
+    return a
+
+
+def parfor_isub(a, b):
+    "Same as a -= b."
+    a -= b
+    return a
+
+
+def parfor_itruediv(a, b):
+    "Same as a /= b."
+    a /= b
+    return a
+
+
+def parfor_ixor(a, b):
+    "Same as a ^= b."
+    a ^= b
+    return a
+
+
+# Comparison operations
+
+
+def parfor_lt(a, b):
+    "Same as a < b."
+    return a < b
+
+
+def parfor_le(a, b):
+    "Same as a <= b."
+    return a <= b
+
+
+def parfor_eq(a, b):
+    "Same as a == b."
+    return a == b
+
+
+def parfor_ne(a, b):
+    "Same as a != b."
+    return a != b
+
+
+def parfor_ge(a, b):
+    "Same as a >= b."
+    return a >= b
+
+
+def parfor_gt(a, b):
+    "Same as a > b."
+    return a > b
+
+
+# logical
+
+
+def parfor_not_(a):
+    "Same as not a."
+    return not a
+
+
+shapes = [100, (25, 4)]
+int_dtypes = set(get_int_dtypes())
+float_dtypes = set(get_float_dtypes())
+usm_types = ["device", "host", "shared"]
+
+funcs = {
+    parfor_add,
+    parfor_and_,
+    parfor_floordiv,
+    parfor_inv,
+    parfor_lshift,
+    parfor_mod,
+    parfor_mul,
+    parfor_matmul,
+    parfor_neg,
+    parfor_or_,
+    parfor_pos,
+    parfor_pow,
+    parfor_rshift,
+    parfor_sub,
+    parfor_truediv,
+    parfor_xor,
+}
+
+inplace_funcs = {
+    parfor_iand,
+    parfor_iadd,
+    parfor_iand,
+    parfor_ifloordiv,
+    parfor_ilshift,
+    parfor_imod,
+    parfor_imul,
+    parfor_imatmul,
+    parfor_ior,
+    parfor_ipow,
+    parfor_irshift,
+    parfor_isub,
+    parfor_itruediv,
+    parfor_ixor,
+}
+
+comparison_funcs = {
+    parfor_lt,
+    parfor_le,
+    parfor_eq,
+    parfor_ne,
+    parfor_ge,
+    parfor_gt,
+}
+
+all_funcs = funcs | inplace_funcs | comparison_funcs
+
+not_float_funcs = {
+    parfor_inv,
+    parfor_and_,
+    parfor_floordiv,
+    parfor_lshift,
+    parfor_mod,
+    parfor_or_,
+    parfor_rshift,
+    parfor_xor,
+    parfor_iand,
+    parfor_ifloordiv,
+    parfor_ilshift,
+    parfor_imod,
+    parfor_ior,
+    parfor_irshift,
+    parfor_ixor,
+}
+
+not_int_funcs = {
+    parfor_itruediv,
+}
+
+not_bool_funcs = {
+    parfor_neg,
+    parfor_pos,
+    parfor_sub,
+    parfor_lshift,
+    parfor_rshift,
+    parfor_mod,
+    parfor_pow,
+    parfor_floordiv,
+    parfor_isub,
+    parfor_ilshift,
+    parfor_irshift,
+    parfor_imod,
+    parfor_ipow,
+    parfor_ifloordiv,
+} | not_int_funcs
+
+unsupported_funcs = {
+    parfor_matmul,
+    parfor_imatmul,
+    parfor_not_,  # not supported by numpy
+}
+
+
+if has_opencl_gpu():
+    unsupported_funcs |= {parfor_ipow}
+
+
+func_dtypes = (
+    set(product(all_funcs - not_float_funcs, float_dtypes))
+    | set(product(all_funcs - not_int_funcs, int_dtypes))
+    | set(product((all_funcs | {parfor_not_}) - not_bool_funcs, {dpnp.bool}))
+)
+
+
 @pytest.mark.parametrize("shape", shapes)
-@pytest.mark.parametrize("dtype", dtypes)
 @pytest.mark.parametrize("usm_type", usm_types)
-@pytest.mark.parametrize("func", funcs)
+@pytest.mark.parametrize(
+    "func, dtype",
+    sorted(list(func_dtypes), key=lambda a: (str(a[0]), str(a[1]))),
+)
 def test_built_in_operators(shape, dtype, usm_type, func):
+    if func in unsupported_funcs:
+        pytest.xfail(reason="not supported")
+
+    if dpnp.float64 not in float_dtypes and func in [
+        parfor_truediv,
+        parfor_pow,
+    ]:
+        pytest.xfail(
+            f"{func} does not work on without double precision support"
+        )
+
     queue = dpctl.SyclQueue()
     a = dpnp.zeros(
         shape=shape, dtype=dtype, usm_type=usm_type, sycl_queue=queue
@@ -71,7 +352,10 @@ def test_built_in_operators(shape, dtype, usm_type, func):
     b = dpnp.ones(shape=shape, dtype=dtype, usm_type=usm_type, sycl_queue=queue)
     try:
         op = dpjit(func)
-        c = op(a, b)
+        if num_required_arguments(func) == 1:
+            c = op(a)
+        else:
+            c = op(a, b)
         del op
     except Exception:
         pytest.fail("Failed to compile.")
@@ -81,13 +365,16 @@ def test_built_in_operators(shape, dtype, usm_type, func):
     else:
         assert c.shape == shape
 
-    if func != parfor_divide:
+    if func not in {parfor_truediv} | comparison_funcs:
         assert c.dtype == dtype
     assert c.usm_type == usm_type
 
     assert c.sycl_device.filter_string == queue.sycl_device.filter_string
 
-    expected = dpnp.asnumpy(func(a, b))
+    if num_required_arguments(func) == 1:
+        expected = dpnp.asnumpy(func(a))
+    else:
+        expected = dpnp.asnumpy(func(a, b))
     nc = dpnp.asnumpy(c)
 
     numpy.allclose(nc, expected)
