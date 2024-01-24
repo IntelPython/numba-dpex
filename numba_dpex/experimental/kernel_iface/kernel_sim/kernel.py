@@ -90,8 +90,8 @@ _globals_to_replace = [
     (local.array, local_proxy.array),
     (private, private_proxy),
     (private.array, private_proxy.array),
-    # (group, group_proxy),
-    # (group.reduce_add, group_proxy.reduce_add),
+    # (group, group_proxy), # noqa: E800
+    # (group.reduce_add, group_proxy.reduce_add),   # noqa: E800
 ]
 
 _barrier_ops = [barrier]
