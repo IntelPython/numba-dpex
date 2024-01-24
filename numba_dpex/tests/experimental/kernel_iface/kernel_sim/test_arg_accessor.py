@@ -12,7 +12,9 @@ from numpy.testing import assert_equal
 
 import numba_dpex as dpex
 from numba_dpex import NdRange, Range
-from numba_dpex.core.kernel_sim.kernel import kernel as kernel_sim
+from numba_dpex.experimental.kernel_iface.kernel_sim.kernel import (
+    kernel as kernel_sim,
+)
 from numba_dpex.tests._helper import filter_strings
 
 
