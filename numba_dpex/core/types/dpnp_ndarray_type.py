@@ -1,7 +1,6 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
-
 
 import dpnp
 from numba.core import cgutils, ir, types
@@ -200,19 +199,22 @@ class DpnpNdArray(USMNdArray):
         return out
 
 
+# TODO: move this section to separate file
 # --------------- Boxing/Unboxing logic for dpnp.ndarray ----------------------#
 
 
-@unbox(DpnpNdArray)
+@unbox(USMNdArray)
 def unbox_dpnp_nd_array(typ, obj, c):
-    """Converts a dpnp.ndarray object to a Numba internal array structure.
+    """Converts a dpctl.tensor.usm_ndarray/dpnp.ndarray object to a Numba-dpex
+    internal array structure.
 
     Args:
         typ : The Numba type of the PyObject
         obj : The actual PyObject to be unboxed
         c : The unboxing context
 
-    Returns: A NativeValue object representing an unboxed dpnp.ndarray
+    Returns: A NativeValue object representing an unboxed
+        dpctl.tensor.usm_ndarray/dpnp.ndarray
     """
     # Reusing the numba.core.base.BaseContext's make_array function to get a
     # struct allocated. The same struct is used for numpy.ndarray
@@ -264,24 +266,26 @@ def unbox_dpnp_nd_array(typ, obj, c):
     with c.builder.if_then(failed, likely=False):
         c.pyapi.err_set_string(
             "PyExc_TypeError",
-            "can't unbox array from PyObject into "
+            "can't unbox usm array from PyObject into "
             "native value.  The object maybe of a "
             "different type",
         )
     return NativeValue(c.builder.load(aryptr), is_error=failed)
 
 
-@box(DpnpNdArray)
+@box(USMNdArray)
 def box_array(typ, val, c):
-    """Boxes a NativeValue representation of DpnpNdArray type into a
-    dpnp.ndarray PyObject
+    """Boxes a NativeValue representation of USMNdArray/DpnpNdArray type into a
+    dpctl.tensor.usm_ndarray/dpnp.ndarray PyObject
 
     Args:
-        typ: The representation of the DpnpNdArray type.
-        val: A native representation of a Numba DpnpNdArray type object.
+        typ: The representation of the USMNdArray/DpnpNdArray type.
+        val: A native representation of a Numba USMNdArray/DpnpNdArray type
+            object.
         c: The boxing context.
 
-    Returns: A Pyobject for a dpnp.ndarray boxed from the Numba native value.
+    Returns: A Pyobject for a dpctl.tensor.usm_ndarray/dpnp.ndarray boxed from
+        the Numba-dpex native value.
     """
     if c.context.enable_nrt:
         np_dtype = numpy_support.as_dtype(typ.dtype)

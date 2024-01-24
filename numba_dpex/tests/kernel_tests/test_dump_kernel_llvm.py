@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -8,7 +8,8 @@ import hashlib
 import os
 
 import numba_dpex as dpex
-from numba_dpex import config, float32, usm_ndarray
+from numba_dpex import float32, usm_ndarray
+from numba_dpex.core import config
 from numba_dpex.core.descriptor import dpex_kernel_target
 
 f32arrty = usm_ndarray(ndim=1, dtype=float32, layout="C")

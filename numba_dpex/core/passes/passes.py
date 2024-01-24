@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -13,7 +13,7 @@ from numba.core.compiler_machinery import (
 from numba.core.ir_utils import remove_dels
 from numba.core.typed_passes import NativeLowering
 
-from numba_dpex import config
+from numba_dpex.core import config
 
 
 @register_pass(mutates_CFG=True, analysis_only=False)

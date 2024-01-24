@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -42,7 +42,7 @@ def test_print_scalar_with_string(input_arrays, capfd):
 
     a = input_arrays
 
-    print_scalar_val[dpex.Range(1)](a)
+    dpex.call_kernel(print_scalar_val, dpex.Range(1), a)
     captured = capfd.readouterr()
     assert "printing ... 10" in captured.out
 
@@ -60,7 +60,7 @@ def test_print_scalar(input_arrays, capfd):
 
     a = input_arrays
 
-    print_scalar_val[dpex.Range(1)](a)
+    dpex.call_kernel(print_scalar_val, dpex.Range(1), a)
     captured = capfd.readouterr()
 
     assert "10" in captured.out
@@ -85,7 +85,7 @@ def test_print_only_str(input_arrays):
     a = input_arrays
 
     with pytest.raises(LoweringError):
-        print_string[dpex.Range(1)](a)
+        dpex.call_kernel(print_string, dpex.Range(1), a)
 
 
 @skip_on_gpu
@@ -101,4 +101,4 @@ def test_print_array(input_arrays):
     a = input_arrays
 
     with pytest.raises(LoweringError):
-        print_string[dpex.Range(1)](a)
+        dpex.call_kernel(print_string, dpex.Range(1), a)

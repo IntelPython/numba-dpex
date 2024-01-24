@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2023 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -77,7 +77,7 @@ def patch():
                 out,
             )
 
-        # g_np_var = Global(numpy)
+        # g_np_var = Global(numpy) # noqa: E800
         g_np_var = ir.Var(scope, mk_unique_var("$np_g_var"), loc)
         if typemap:
             typemap[g_np_var.name] = types.misc.Module(numpy)

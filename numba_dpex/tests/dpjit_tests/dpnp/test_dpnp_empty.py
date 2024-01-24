@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -139,3 +139,33 @@ def test_dpnp_empty_exceptions():
     with pytest.raises(errors.TypingError):
         queue = dpctl.SyclQueue()
         func(10, queue)
+
+
+@pytest.mark.xfail(reason="dpjit allocates new dpctl.SyclQueue on boxing")
+# TODO: remove test_dpnp_empty_with_dpjit_queue_temp once pass.
+def test_dpnp_empty_with_dpjit_queue():
+    """Test if dpnp array can be created with a queue from another array"""
+
+    @dpjit
+    def func(a):
+        queue = a.sycl_queue
+        return dpnp.empty(10, sycl_queue=queue)
+
+    a = dpnp.empty(10)
+    b = func(a)
+
+    assert id(a.sycl_queue) == id(b.sycl_queue)
+
+
+def test_dpnp_empty_with_dpjit_queue_temp():
+    """Test if dpnp array can be created with a queue from another array"""
+
+    @dpjit
+    def func(a):
+        queue = a.sycl_queue
+        return dpnp.empty(10, sycl_queue=queue)
+
+    a = dpnp.empty(10)
+    b = func(a)
+
+    assert a.sycl_queue == b.sycl_queue

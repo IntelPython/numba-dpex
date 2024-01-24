@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -26,4 +26,4 @@ def test_passing_numpy_arrays_as_kernel_args():
     c = numpy.zeros(N)
 
     with pytest.raises(UnsupportedKernelArgumentError):
-        vecadd_kernel[dpex.Range(N)](a, b, c)
+        dpex.call_kernel(vecadd_kernel, dpex.Range(N), a, b, c)

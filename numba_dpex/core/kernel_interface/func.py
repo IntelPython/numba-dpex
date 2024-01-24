@@ -1,14 +1,11 @@
-# SPDX-FileCopyrightText: 2022 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2022 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
-
-"""_summary_
-"""
 
 from numba.core import sigutils, types
 from numba.core.typing.templates import AbstractTemplate, ConcreteTemplate
 
-from numba_dpex import config
+from numba_dpex.core import config
 from numba_dpex.core.caching import LRUCache, NullCache
 from numba_dpex.core.compiler import compile_with_dpex
 from numba_dpex.core.descriptor import dpex_kernel_target
@@ -67,7 +64,7 @@ class DpexFunction(object):
             debug=self._debug,
         )
         func = cres.library.get_function(cres.fndesc.llvm_func_name)
-        cres.target_context.mark_ocl_device(func)
+        cres.target_context.set_spir_func_calling_conv(func)
 
         return cres
 
@@ -159,7 +156,7 @@ class DpexFunctionTemplate(object):
                 debug=self._debug,
             )
             func = cres.library.get_function(cres.fndesc.llvm_func_name)
-            cres.target_context.mark_ocl_device(func)
+            cres.target_context.set_spir_func_calling_conv(func)
             libs = [cres.library]
 
             cres.target_context.insert_user_function(self, cres.fndesc, libs)

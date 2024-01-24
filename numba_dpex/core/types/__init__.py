@@ -1,9 +1,9 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
 from .array_type import Array
-from .dpctl_types import DpctlSyclQueue
+from .dpctl_types import DpctlSyclEvent, DpctlSyclQueue
 from .dpnp_ndarray_type import DpnpNdArray
 from .numba_types_short_names import (
     b1,
@@ -26,6 +26,7 @@ from .numba_types_short_names import (
     uint64,
     void,
 )
+from .range_types import NdRangeType, RangeType
 from .usm_ndarray_type import USMNdArray
 
 usm_ndarray = USMNdArray
@@ -33,7 +34,10 @@ usm_ndarray = USMNdArray
 __all__ = [
     "Array",
     "DpctlSyclQueue",
+    "DpctlSyclEvent",
     "DpnpNdArray",
+    "RangeType",
+    "NdRangeType",
     "USMNdArray",
     "none",
     "boolean",

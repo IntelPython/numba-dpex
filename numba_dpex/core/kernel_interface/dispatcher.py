@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2022 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2022 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -12,7 +12,8 @@ from numba.core import sigutils
 from numba.core.types import Array as NpArrayType
 from numba.core.types import void
 
-from numba_dpex import NdRange, Range, config
+from numba_dpex import NdRange, Range
+from numba_dpex.core import config
 from numba_dpex.core.caching import LRUCache, NullCache
 from numba_dpex.core.descriptor import dpex_kernel_target
 from numba_dpex.core.exceptions import (
@@ -94,7 +95,7 @@ class JitKernel:
             self._kernel_bundle_cache = NullCache()
         self._cache_hits = 0
 
-        if debug_flags or config.OPT == 0:
+        if debug_flags or config.DPEX_OPT == 0:
             # if debug is ON we need to pass additional
             # flags to igc.
             self._create_sycl_kernel_bundle_flags = ["-g", "-cl-opt-disable"]
@@ -293,88 +294,27 @@ class JitKernel:
 
         """
         if isinstance(args, Range):
-            # we need inversions, see github issue #889
+            # Index inversion is done here as numba-dpex first compiles a native
+            # kernel (OpenCL or Level Zero) and then generates a SYCL
+            # interoperability kernel from it. The convention for unit stride
+            # dimensions is opposite for OpenCL and SYCL
+            # refer: https://registry.khronos.org/SYCL/specs/sycl-2020/html/sycl-2020.html#sec:opencl:kernel-conventions-sycl
+            # For this reason, although numba-dpex follows SYCL like indexing in
+            # the kernel front-end while launching the kernel the indexing is
+            # reversed.
+            #
+            # TODO[1]: It needs to be investigated if we need the index reversal
+            # if we use SYCL-like LLVM IR indexing intrinsic instead of
+            # OpenCL-like LLVM IR intrinsic functions.
+            #
+            # TODO[2]: Do we need to do this when the backend is LevelZero
             self._global_range = list(args)[::-1]
         elif isinstance(args, NdRange):
             # we need inversions, see github issue #889
             self._global_range = list(args.global_range)[::-1]
             self._local_range = list(args.local_range)[::-1]
         else:
-            if (
-                isinstance(args, tuple)
-                and len(args) == 2
-                and isinstance(args[0], int)
-                and isinstance(args[1], int)
-            ):
-                warn(
-                    "Ambiguous kernel launch paramters. If your data have "
-                    + "dimensions > 1, include a default/empty local_range:\n"
-                    + "    <function>[(X,Y), numba_dpex.DEFAULT_LOCAL_RANGE]"
-                    "(<params>)\n"
-                    + "otherwise your code might produce erroneous results.",
-                    DeprecationWarning,
-                    stacklevel=2,
-                )
-                self._global_range = [args[0]]
-                self._local_range = [args[1]]
-                return self
-
-            warn(
-                "The current syntax for specification of kernel launch "
-                + "parameters is deprecated. Users should set the kernel "
-                + "parameters through Range/NdRange classes.\n"
-                + "Example:\n"
-                + "    from numba_dpex import Range,NdRange\n\n"
-                + "    # for global range only\n"
-                + "    <function>[Range(X,Y)](<parameters>)\n"
-                + "    # or,\n"
-                + "    # for both global and local ranges\n"
-                + "    <function>[NdRange((X,Y), (P,Q))](<parameters>)",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-
-            args = [args] if not isinstance(args, Iterable) else args
-            nargs = len(args)
-
-            # Check if the kernel enquing arguments are sane
-            if nargs < 1 or nargs > 2:
-                raise InvalidKernelLaunchArgsError(kernel_name=self.kernel_name)
-
-            g_range = (
-                [args[0]] if not isinstance(args[0], Iterable) else args[0]
-            )
-            # If the optional local size argument is provided
-            l_range = None
-            if nargs == 2:
-                if args[1] != []:
-                    l_range = (
-                        [args[1]]
-                        if not isinstance(args[1], Iterable)
-                        else args[1]
-                    )
-                else:
-                    warn(
-                        "Empty local_range calls are deprecated. Please use "
-                        "Range/NdRange to specify the kernel launch parameters:"
-                        "\n"
-                        + "Example:\n"
-                        + "    from numba_dpex import Range,NdRange\n\n"
-                        + "    # for global range only\n"
-                        + "    <function>[Range(X,Y)](<parameters>)\n"
-                        + "    # or,\n"
-                        + "    # for both global and local ranges\n"
-                        + "    <function>[NdRange((X,Y), (P,Q))](<parameters>)",
-                        DeprecationWarning,
-                        stacklevel=2,
-                    )
-
-            if len(g_range) < 1:
-                raise IllegalRangeValueError(kernel_name=self.kernel_name)
-
-            # we need inversions, see github issue #889
-            self._global_range = list(g_range)[::-1]
-            self._local_range = list(l_range)[::-1] if l_range else None
+            raise InvalidKernelLaunchArgsError(self.kernel_name)
 
         return self
 
@@ -486,6 +426,9 @@ class JitKernel:
         # Make sure the kernel launch range/nd_range are sane
         self._check_ranges(exec_queue.sycl_device)
 
+        # TODO: return event that calls wait if no reference to the object if
+        # it is possible
+        # event = exec_queue.submit( # noqa: E800
         exec_queue.submit(
             sycl_kernel,
             packer.unpacked_args,

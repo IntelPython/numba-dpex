@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -21,8 +21,6 @@ registry = Registry()
 intrinsic = registry.register
 intrinsic_attr = registry.register_attr
 intrinsic_global = registry.register_global
-
-# register_number_classes(intrinsic_global)
 
 
 @intrinsic

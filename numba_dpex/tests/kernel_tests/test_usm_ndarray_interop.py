@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -9,12 +9,6 @@ import pytest
 import numba_dpex as dpex
 from numba_dpex.tests._helper import get_all_dtypes
 
-# list_of_dtype = [
-#     numpy.int32,
-#     numpy.int64,
-#     numpy.float32,
-#     numpy.float64,
-# ]
 list_of_dtype = get_all_dtypes(
     no_bool=True, no_float16=True, no_none=True, no_complex=True
 )
@@ -58,7 +52,7 @@ def test_consuming_usm_ndarray(dtype, usm_type):
 
     c = dpt.empty_like(a)
 
-    data_parallel_sum[dpex.Range(N, N)](a, b, c)
+    dpex.call_kernel(data_parallel_sum, dpex.Range(N, N), a, b, c)
 
     na = dpt.asnumpy(a)
     nb = dpt.asnumpy(b)

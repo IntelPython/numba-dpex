@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+// SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -20,8 +20,13 @@
 #include "_nrt_python_helper.h"
 
 #include "_dbg_printer.h"
+#include "_eventstruct.h"
 #include "_queuestruct.h"
 #include "_usmarraystruct.h"
+
+#include "experimental/kernel_caching.h"
+#include "experimental/nrt_reserve_meminfo.h"
+#include "numba/core/runtime/nrt_external.h"
 
 // forward declarations
 static struct PyUSMArrayObject *PyUSMNdArray_ARRAYOBJ(PyObject *obj);
@@ -61,9 +66,19 @@ DPEXRT_sycl_usm_ndarray_to_python_acqref(usmarystruct_t *arystruct,
                                          int ndim,
                                          int writeable,
                                          PyArray_Descr *descr);
-static int DPEXRT_sycl_queue_from_python(PyObject *obj,
+static int DPEXRT_sycl_queue_from_python(NRT_api_functions *nrt,
+                                         PyObject *obj,
                                          queuestruct_t *queue_struct);
-static PyObject *DPEXRT_sycl_queue_to_python(queuestruct_t *queuestruct);
+static int DPEXRT_sycl_event_from_python(NRT_api_functions *nrt,
+                                         PyObject *obj,
+                                         eventstruct_t *event_struct);
+static PyObject *DPEXRT_sycl_queue_to_python(NRT_api_functions *nrt,
+                                             queuestruct_t *queuestruct);
+static PyObject *DPEXRT_sycl_event_to_python(NRT_api_functions *nrt,
+                                             eventstruct_t *eventstruct);
+static int DPEXRT_sycl_event_init(NRT_api_functions *nrt,
+                                  DPCTLSyclEventRef event,
+                                  eventstruct_t *eventstruct);
 
 /** An NRT_external_malloc_func implementation using DPCTLmalloc_device.
  *
@@ -457,9 +472,9 @@ static NRT_MemInfo *NRT_MemInfo_new_from_usmndarray(PyObject *ndarrobj,
     mi->size = nitems * itemsize;
     mi->external_allocator = ext_alloca;
 
-    DPEXRT_DEBUG(drt_debug_print(
-        "DPEXRT-DEBUG: NRT_MemInfo_init mi=%p external_allocator=%p\n", mi,
-        ext_alloca));
+    DPEXRT_DEBUG(drt_debug_print("DPEXRT-DEBUG: NRT_MemInfo_init mi=%p "
+                                 "external_allocator=%p at %s, line %d\n",
+                                 mi, ext_alloca, __FILE__, __LINE__));
 
     return mi;
 
@@ -725,12 +740,19 @@ static struct PyUSMArrayObject *PyUSMNdArray_ARRAYOBJ(PyObject *obj)
 {
     PyObject *arrayobj = NULL;
 
-    arrayobj = PyObject_GetAttrString(obj, "_array_obj");
+    if (PyObject_TypeCheck(obj, &PyUSMArrayType)) {
+        DPEXRT_DEBUG(
+            drt_debug_print("DPEXRT-DEBUG: usm array was passed directly\n"));
+        arrayobj = obj;
+    }
+    else if (PyObject_HasAttrString(obj, "_array_obj")) {
+        arrayobj = PyObject_GetAttrString(obj, "_array_obj");
 
-    if (!arrayobj)
-        return NULL;
-    if (!PyObject_TypeCheck(arrayobj, &PyUSMArrayType))
-        return NULL;
+        if (!arrayobj)
+            return NULL;
+        if (!PyObject_TypeCheck(arrayobj, &PyUSMArrayType))
+            return NULL;
+    }
 
     struct PyUSMArrayObject *pyusmarrayobj =
         (struct PyUSMArrayObject *)(arrayobj);
@@ -783,17 +805,19 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
 
     // Increment the ref count on obj to prevent CPython from garbage
     // collecting the array.
+    // TODO: add extra description why do we need this
     Py_IncRef(obj);
 
     DPEXRT_DEBUG(drt_debug_print(
-        "DPEXRT-DEBUG: In DPEXRT_sycl_usm_ndarray_from_python.\n"));
+        "DPEXRT-DEBUG: In DPEXRT_sycl_usm_ndarray_from_python at %s, line %d\n",
+        __FILE__, __LINE__));
 
     // Check if the PyObject obj has an _array_obj attribute that is of
     // dpctl.tensor.usm_ndarray type.
     if (!(arrayobj = PyUSMNdArray_ARRAYOBJ(obj))) {
         DPEXRT_DEBUG(drt_debug_print(
-            "DPEXRT-ERROR: PyUSMNdArray_ARRAYOBJ check failed %d\n", __FILE__,
-            __LINE__));
+            "DPEXRT-ERROR: PyUSMNdArray_ARRAYOBJ check failed at %s, line %d\n",
+            __FILE__, __LINE__));
         goto error;
     }
 
@@ -842,13 +866,14 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
     for (i = 0; i < ndim; ++i, ++p)
         *p = shape[i];
 
-    // DPCTL returns a NULL pointer if the array is contiguous. dpctl stores
-    // strides as number of elements and Numba stores strides as bytes, for
-    // that reason we are multiplying stride by itemsize when unboxing the
-    // external array.
-
-    // FIXME: Stride computation should check order and adjust how strides are
-    // calculated. Right now strides are assuming that order is C contigous.
+    // dpctl returns a NULL pointer for the stride vector if the array has a
+    // C-contiguous layout. For all other cases, including strided views and
+    // F contiguous layouts, the actual stride values are returned. Also, dpctl
+    // stores strides as number of elements and Numba follows NumPy and stores
+    // strides as number of bytes. For that reason, we multiply strides by
+    // itemsize when unboxing an usm_ndarray if dpctl returned a popualted
+    // stride vector. For the default C contiguous case, strides are
+    // calculated directly as number of bytes based on itemsize.
     if (strides) {
         for (i = 0; i < ndim; ++i, ++p) {
             *p = strides[i] << exp;
@@ -862,6 +887,11 @@ static int DPEXRT_sycl_usm_ndarray_from_python(PyObject *obj,
             *p <<= exp;
         }
     }
+
+    DPEXRT_DEBUG(
+        drt_debug_print("DPEXRT-DEBUG: Done with unboxing call to "
+                        "DPEXRT_sycl_usm_ndarray_from_python at %s, line %d\n",
+                        __FILE__, __LINE__));
 
     return 0;
 
@@ -897,7 +927,7 @@ static PyObject *box_from_arystruct_parent(usmarystruct_t *arystruct,
                                            int ndim,
                                            PyArray_Descr *descr)
 {
-    int i = 0, exp = 0;
+    int i = 0, j = 0, k = 0, exp = 0;
     npy_intp *p = NULL;
     npy_intp *shape = NULL, *strides = NULL;
     PyObject *array = arystruct->parent;
@@ -929,6 +959,8 @@ static PyObject *box_from_arystruct_parent(usmarystruct_t *arystruct,
     shape = UsmNDArray_GetShape(arrayobj);
     strides = UsmNDArray_GetStrides(arrayobj);
 
+    // Ensure the shape of the array to be boxed matches the shape of the
+    // original parent.
     for (i = 0; i < ndim; i++, p++) {
         if (shape[i] != *p)
             return NULL;
@@ -938,20 +970,52 @@ static PyObject *box_from_arystruct_parent(usmarystruct_t *arystruct,
     itemsize = arystruct->itemsize;
     while (itemsize >>= 1)
         exp++;
-    // dpctl stores strides as number of elements and Numba stores strides as
+
+    // Ensure the strides of the array to be boxed matches the shape of the
+    // original parent. Things to note:
+    //
+    // 1. dpctl only stores stride information if the array has a non-unit
+    // stride. If the array is unit strided then dpctl does not populate the
+    // stride attribute. To verify strides, we compute the strides from the
+    // shape vector.
+    //
+    // 2. dpctl stores strides as number of elements and Numba stores strides as
     // bytes, for that reason we are multiplying stride by itemsize when
-    // unboxing the external array.
+    // unboxing the external array and dividing by itemsize when boxing the
+    // array back.
+
     if (strides) {
-        if (strides[i] << exp != *p)
-            return NULL;
+        for (i = 0; i < ndim; ++i, ++p) {
+            if (strides[i] << exp != *p) {
+                DPEXRT_DEBUG(
+                    drt_debug_print("DPEXRT-DEBUG: Arrayobj cannot be boxed "
+                                    "from parent as strides in the "
+                                    "arystruct are not the same as "
+                                    "the strides in the parent object. "
+                                    "Expected stride = %d actual stride = %d\n",
+                                    strides[i] << exp, *p));
+                return NULL;
+            }
+        }
     }
     else {
-        for (i = 1; i < ndim; ++i, ++p) {
-            if (shape[i] != *p)
+        npy_intp tmp;
+        for (i = (ndim * 2) - 1; i >= ndim; --i, ++p) {
+            tmp = 1;
+            for (j = i, k = ndim - 1; j > ndim; --j, --k)
+                tmp *= shape[k];
+            tmp <<= exp;
+            if (tmp != *p) {
+                DPEXRT_DEBUG(
+                    drt_debug_print("DPEXRT-DEBUG: Arrayobj cannot be boxed "
+                                    "from parent as strides in the "
+                                    "arystruct are not the same as "
+                                    "the strides in the parent object. "
+                                    "Expected stride = %d actual stride = %d\n",
+                                    tmp, *p));
                 return NULL;
+            }
         }
-        if (*p != 1)
-            return NULL;
     }
 
     // At the end of boxing our Meminfo destructor gets called and that will
@@ -1108,6 +1172,8 @@ DPEXRT_sycl_usm_ndarray_to_python_acqref(usmarystruct_t *arystruct,
         return MOD_ERROR_VAL;
     }
 
+    // TODO: check if the object is dpctl tensor and return usm_ndarr_obj then
+
     //  call new on dpnp_array
     dpnp_array_mod = PyImport_ImportModule("dpnp.dpnp_array");
     if (!dpnp_array_mod) {
@@ -1173,17 +1239,12 @@ DPEXRT_sycl_usm_ndarray_to_python_acqref(usmarystruct_t *arystruct,
  *                          represent a dpctl.SyclQueue inside Numba.
  * @return   {return}       Return code indicating success (0) or failure (-1).
  */
-static int DPEXRT_sycl_queue_from_python(PyObject *obj,
+static int DPEXRT_sycl_queue_from_python(NRT_api_functions *nrt,
+                                         PyObject *obj,
                                          queuestruct_t *queue_struct)
 {
-
     struct PySyclQueueObject *queue_obj = NULL;
     DPCTLSyclQueueRef queue_ref = NULL;
-    PyGILState_STATE gstate;
-
-    // Increment the ref count on obj to prevent CPython from garbage
-    // collecting the dpctl.SyclQueue object
-    Py_IncRef(obj);
 
     // We are unconditionally casting obj to a struct PySyclQueueObject*. If
     // the obj is not a struct PySyclQueueObject* then the SyclQueue_GetQueueRef
@@ -1209,7 +1270,14 @@ static int DPEXRT_sycl_queue_from_python(PyObject *obj,
                                  DPCTLDeviceMgr_GetDeviceInfoStr(device_ref));
                  DPCTLDevice_Delete(device_ref););
 
-    queue_struct->parent = obj;
+    // We are doing incref here to ensure python does not release the object
+    // while NRT references it. Coresponding decref is called by NRT in
+    // NRT_MemInfo_pyobject_dtor once there is no reference to this object by
+    // the code managed by NRT.
+    Py_INCREF(queue_obj);
+    queue_struct->meminfo =
+        nrt->manage_memory(queue_obj, NRT_MemInfo_pyobject_dtor);
+    queue_struct->parent = (PyObject *)queue_obj;
     queue_struct->queue_ref = queue_ref;
 
     return 0;
@@ -1223,11 +1291,6 @@ error:
         "DPEXRT-ERROR: Failed to unbox dpctl SyclQueue into a Numba "
         "queuestruct at %s, line %d\n",
         __FILE__, __LINE__));
-    gstate = PyGILState_Ensure();
-    // decref the python object
-    Py_DECREF(obj);
-    // release the GIL
-    PyGILState_Release(gstate);
 
     return -1;
 }
@@ -1243,30 +1306,159 @@ error:
  * @return   {return}       A PyObject created from the queuestruct->parent, if
  *                          the PyObject could not be created return NULL.
  */
-static PyObject *DPEXRT_sycl_queue_to_python(queuestruct_t *queuestruct)
+static PyObject *DPEXRT_sycl_queue_to_python(NRT_api_functions *nrt,
+                                             queuestruct_t *queuestruct)
 {
-    PyObject *orig_queue = NULL;
-    PyGILState_STATE gstate;
+    PyObject *queue_obj = queuestruct->parent;
 
-    orig_queue = queuestruct->parent;
-    // FIXME: Better error checking is needed to enforce the boxing of the queue
-    // object. For now, only the minimal is done as the returning of SyclQueue
-    // from a dpjit function should not be a used often and the dpctl C API for
-    // type checking etc. is not ready.
-    if (orig_queue == NULL) {
-        PyErr_Format(PyExc_ValueError,
-                     "In 'box_from_queuestruct_parent', "
-                     "failed to create a new dpctl.SyclQueue object.");
-        return NULL;
+    if (queue_obj == NULL) {
+        // Make create copy of queue_ref so we don't need to manage nrt lifetime
+        // from python object.
+        queue_obj = (PyObject *)SyclQueue_Make(queuestruct->queue_ref);
+    }
+    else {
+        // Unfortunately we can not optimize (nrt->release that triggers
+        // Py_DECREF() from the destructor) and Py_INCREF() because nrt may need
+        // the object even if we return it to python.
+        // We need to increase reference count because we are returning new
+        // reference to the same queue.
+        Py_INCREF(queue_obj);
     }
 
-    gstate = PyGILState_Ensure();
-    // decref the parent python object as we did an incref when unboxing it
-    Py_DECREF(orig_queue);
-    // release the GIL
-    PyGILState_Release(gstate);
+    // We need to release meminfo since we are taking ownership back.
+    nrt->release(queuestruct->meminfo);
 
-    return orig_queue;
+    return queue_obj;
+}
+
+/*----------------------------------------------------------------------------*/
+/*--------------------- Box-unbox helpers for dpctl.SyclEvent       ----------*/
+/*----------------------------------------------------------------------------*/
+
+/*!
+ * @brief Helper to unbox a Python dpctl.SyclEvent object to a Numba-native
+ * eventstruct_t instance.
+ *
+ * @param    obj            A dpctl.SyclEvent Python object
+ * @param    event_struct   An instance of the struct numba-dpex uses to
+ *                          represent a dpctl.SyclEvent inside Numba.
+ * @return   {return}       Return code indicating success (0) or failure (-1).
+ */
+static int DPEXRT_sycl_event_from_python(NRT_api_functions *nrt,
+                                         PyObject *obj,
+                                         eventstruct_t *event_struct)
+{
+    struct PySyclEventObject *event_obj = NULL;
+    DPCTLSyclEventRef event_ref = NULL;
+
+    // We are unconditionally casting obj to a struct PySyclEventObject*. If
+    // the obj is not a struct PySyclEventObject* then the SyclEvent_GetEventRef
+    // will error out.
+    event_obj = (struct PySyclEventObject *)obj;
+
+    DPEXRT_DEBUG(
+        drt_debug_print("DPEXRT-DEBUG: In DPEXRT_sycl_event_from_python.\n"););
+
+    if (!(event_ref = SyclEvent_GetEventRef(event_obj))) {
+        DPEXRT_DEBUG(drt_debug_print(
+            "DPEXRT-ERROR: SyclEvent_GetEventRef returned NULL at "
+            "%s, line %d.\n",
+            __FILE__, __LINE__));
+        goto error;
+    }
+
+    // We are doing incref here to ensure python does not release the object
+    // while NRT references it. Coresponding decref is called by NRT in
+    // NRT_MemInfo_pyobject_dtor once there is no reference to this object by
+    // the code managed by NRT.
+    Py_INCREF(event_obj);
+    event_struct->meminfo =
+        nrt->manage_memory(event_obj, NRT_MemInfo_pyobject_dtor);
+    event_struct->parent = (PyObject *)event_obj;
+    event_struct->event_ref = event_ref;
+
+    return 0;
+
+error:
+    // If the check failed then decrement the refcount and return an error
+    // code of -1.
+    DPEXRT_DEBUG(drt_debug_print(
+        "DPEXRT-ERROR: Failed to unbox dpctl SyclEvent into a Numba "
+        "eventstruct at %s, line %d\n",
+        __FILE__, __LINE__));
+
+    return -1;
+}
+
+/*!
+ * @brief A helper function that boxes a Numba-dpex eventstruct_t object into a
+ * dctl.SyclEvent PyObject using the eventstruct_t's parent attribute.
+ *
+ * If there is no parent pointer stored in the eventstruct, then an error will
+ * be raised.
+ *
+ * @param    eventstruct    A Numba-dpex eventstruct object.
+ * @return   {return}       A PyObject created from the eventstruct->parent, if
+ *                          the PyObject could not be created return NULL.
+ */
+static PyObject *DPEXRT_sycl_event_to_python(NRT_api_functions *nrt,
+                                             eventstruct_t *eventstruct)
+{
+    PyObject *event_obj = eventstruct->parent;
+
+    if (event_obj == NULL) {
+        DPEXRT_DEBUG(
+            drt_debug_print("DPEXRT-DEBUG: creating new event object.\n"););
+        // SyclEvent_Make creates copy of event_ref so we don't need to manage
+        // nrt lifetime from python object.
+        event_obj = (PyObject *)SyclEvent_Make(eventstruct->event_ref);
+    }
+    else {
+        // Unfortunately we can not optimize (nrt->release that triggers
+        // Py_DECREF() from the destructor) and Py_INCREF() because nrt may need
+        // the object even if we return it to python.
+        // We need to increase reference count because we are returning new
+        // reference to the same event.
+        Py_INCREF(event_obj);
+    }
+
+    // We need to release meminfo since we no longer need this reference in nrt.
+    nrt->release(eventstruct->meminfo);
+
+    return event_obj;
+}
+
+/*!
+ * @brief A helper function that initializes Numba-dpex eventstruct_t object
+ * for the DPCTLSyclEventRef allocated inside dpjit. Parent is set to NULL.
+ *
+ * @param    nrt            A Numba pointer to public api functions.
+ * @param    event          A dpctl event reference.
+ * @param    eventstruct    A Numba-dpex eventstruct object (datamodel).
+ * @return   {return}       Nothing.
+ */
+static int DPEXRT_sycl_event_init(NRT_api_functions *nrt,
+                                  DPCTLSyclEventRef event,
+                                  eventstruct_t *eventstruct)
+{
+    if (eventstruct == NULL) {
+        DPEXRT_DEBUG(drt_debug_print(
+            "DPEXRT-ERROR: Failed to initialize dpctl SyclEvent into a Numba "
+            "eventstruct at %s, line %d. eventstruct is NULL.\n",
+            __FILE__, __LINE__));
+
+        return -1;
+    }
+
+    DPEXRT_DEBUG(
+        drt_debug_print("DPEXRT-DEBUG: creating new dpctl event meminfo.\n"););
+    eventstruct->parent = NULL;
+    eventstruct->event_ref = (void *)event;
+    // manage_memory sets ref count to 1.
+    eventstruct->meminfo =
+        nrt->manage_memory(event, NRT_MemInfo_EventRef_Delete);
+
+    return 0;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -1306,6 +1498,14 @@ static PyObject *build_c_helpers_dict(void)
     _declpointer("DPEXRT_sycl_queue_from_python",
                  &DPEXRT_sycl_queue_from_python);
     _declpointer("DPEXRT_sycl_queue_to_python", &DPEXRT_sycl_queue_to_python);
+    _declpointer("DPEXRT_sycl_event_from_python",
+                 &DPEXRT_sycl_event_from_python);
+    _declpointer("DPEXRT_sycl_event_to_python", &DPEXRT_sycl_event_to_python);
+    _declpointer("DPEXRT_sycl_event_init", &DPEXRT_sycl_event_init);
+    _declpointer("DPEXRT_nrt_acquire_meminfo_and_schedule_release",
+                 &DPEXRT_nrt_acquire_meminfo_and_schedule_release);
+    _declpointer("DPEXRT_build_or_get_kernel", &DPEXRT_build_or_get_kernel);
+    _declpointer("DPEXRT_kernel_cache_size", &DPEXRT_kernel_cache_size);
 
 #undef _declpointer
     return dct;
@@ -1357,7 +1557,12 @@ MOD_INIT(_dpexrt_python)
                        PyLong_FromVoidPtr(&DPEXRT_sycl_queue_from_python));
     PyModule_AddObject(m, "DPEXRT_sycl_queue_to_python",
                        PyLong_FromVoidPtr(&DPEXRT_sycl_queue_to_python));
-
+    PyModule_AddObject(m, "DPEXRT_sycl_event_from_python",
+                       PyLong_FromVoidPtr(&DPEXRT_sycl_event_from_python));
+    PyModule_AddObject(m, "DPEXRT_sycl_event_to_python",
+                       PyLong_FromVoidPtr(&DPEXRT_sycl_event_to_python));
+    PyModule_AddObject(m, "DPEXRT_sycl_event_init",
+                       PyLong_FromVoidPtr(&DPEXRT_sycl_event_init));
     PyModule_AddObject(m, "DPEXRTQueue_CreateFromFilterString",
                        PyLong_FromVoidPtr(&DPEXRTQueue_CreateFromFilterString));
     PyModule_AddObject(m, "DpexrtQueue_SubmitRange",
@@ -1368,6 +1573,14 @@ MOD_INIT(_dpexrt_python)
                        PyLong_FromVoidPtr(&DPEXRT_MemInfo_alloc));
     PyModule_AddObject(m, "DPEXRT_MemInfo_fill",
                        PyLong_FromVoidPtr(&DPEXRT_MemInfo_fill));
+    PyModule_AddObject(
+        m, "DPEXRT_nrt_acquire_meminfo_and_schedule_release",
+        PyLong_FromVoidPtr(&DPEXRT_nrt_acquire_meminfo_and_schedule_release));
+    PyModule_AddObject(m, "DPEXRT_build_or_get_kernel",
+                       PyLong_FromVoidPtr(&DPEXRT_build_or_get_kernel));
+    PyModule_AddObject(m, "DPEXRT_kernel_cache_size",
+                       PyLong_FromVoidPtr(&DPEXRT_kernel_cache_size));
+
     PyModule_AddObject(m, "c_helpers", build_c_helpers_dict());
     return MOD_SUCCESS_VAL(m);
 }

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -160,7 +160,6 @@ def function_name_to_supported_decl(name, sig):
             return None
 
     fn = _mk_fn_decl(name, sig)
-    # lower(key, *sig.args)(fn)
     lower_ocl_impl[(name, sig)] = lower(key, *sig.args)(fn)
 
 

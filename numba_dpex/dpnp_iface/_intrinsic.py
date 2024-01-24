@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -6,11 +6,12 @@ from collections import namedtuple
 
 from dpctl import get_device_cached_queue
 from llvmlite import ir as llvmir
-from llvmlite.ir import Constant
+from llvmlite.ir import Constant, IRBuilder
 from llvmlite.ir.types import DoubleType, FloatType
 from numba import types
 from numba.core import cgutils
 from numba.core import config as numba_config
+from numba.core import errors, imputils
 from numba.core.typing import signature
 from numba.extending import intrinsic, overload_classmethod
 from numba.np.arrayobj import (
@@ -21,10 +22,13 @@ from numba.np.arrayobj import (
     populate_array,
 )
 
-from numba_dpex.core.datamodel.models import dpex_data_model_manager as dpex_dmm
 from numba_dpex.core.runtime import context as dpexrt
 from numba_dpex.core.types import DpnpNdArray
 from numba_dpex.core.types.dpctl_types import DpctlSyclQueue
+from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
+
+# can't import name because of the circular import
+DPEX_TARGET_NAME = "dpex"
 
 _QueueRefPayload = namedtuple(
     "QueueRefPayload", ["queue_ref", "py_dpctl_sycl_queue_addr", "pyapi"]
@@ -72,8 +76,7 @@ def make_queue(context, builder, py_dpctl_sycl_queue):
         pyapi, py_dpctl_sycl_queue_addr, queue_struct_voidptr
     )
 
-    queue_struct = builder.load(queue_struct_ptr)
-    queue_ref = builder.extract_value(queue_struct, 1)
+    queue_ref = queue_struct_proxy.queue_ref
 
     return_values = namedtuple(
         "return_values", "queue_ref queue_address_ptr pyapi"
@@ -138,13 +141,15 @@ def _get_queue_ref(
             raise AssertionError(
                 "Expected the queue_arg to be an llvmir.LiteralStructType"
             )
-        sycl_queue_dm = dpex_dmm.lookup(sycl_queue_arg.numba_ty)
+        sycl_queue_dm = context.data_model_manager.lookup(
+            sycl_queue_arg.numba_ty
+        )
         queue_ref = builder.extract_value(
             sycl_queue_arg.llvmir_val,
             sycl_queue_dm.get_field_position("queue_ref"),
         )
     elif array_arg is not None:
-        dpnp_ndarray_dm = dpex_dmm.lookup(array_arg.numba_ty)
+        dpnp_ndarray_dm = context.data_model_manager.lookup(array_arg.numba_ty)
         queue_ref = builder.extract_value(
             array_arg.llvmir_val,
             dpnp_ndarray_dm.get_field_position("sycl_queue"),
@@ -155,9 +160,14 @@ def _get_queue_ref(
             raise AssertionError(
                 "Expected the queue_arg to be an llvmir.PointerType"
             )
+        # We are emulating queue boxing here to pass it as an argument.
+        # TODO: do we have a better way?
         py_dpctl_sycl_queue = get_device_cached_queue(
             returned_sycl_queue_ty.sycl_device
         )
+        # TODO: make sure that queue is not getting garbage collected between
+        # lowering and executing.
+        # cache prevent it from happening but it is not clean way
         (queue_ref, py_dpctl_sycl_queue_addr, pyapi) = make_queue(
             context, builder, py_dpctl_sycl_queue
         )
@@ -248,8 +258,7 @@ def _empty_nd_impl(context, builder, arrtype, shapes, queue_ref):
     # collected. Whereas, the copied queue_ref is to be owned by the
     # NRT_External_Allocator object of MemInfo, and its lifetime is tied to the
     # MemInfo object.
-    dpexrtCtx = dpexrt.DpexRTContext(context)
-    queue_ref_copy = dpexrtCtx.copy_queue(builder, queue_ref)
+    queue_ref_copy = sycl.dpctl_queue_copy(builder, queue_ref)
 
     usm_ty = arrtype.usm_type
     usm_ty_map = {"device": 1, "shared": 2, "host": 3}
@@ -300,7 +309,7 @@ def _empty_nd_impl(context, builder, arrtype, shapes, queue_ref):
     return ary
 
 
-@overload_classmethod(DpnpNdArray, "_usm_allocate")
+@overload_classmethod(DpnpNdArray, "_usm_allocate", target=DPEX_TARGET_NAME)
 def _ol_array_allocate(cls, allocsize, usm_type, queue):
     """Implements an allocator for dpnp.ndarrays."""
 
@@ -321,7 +330,7 @@ def _call_usm_allocator(arrtype, size, usm_type, queue):
 numba_config.DISABLE_PERFORMANCE_WARNINGS = 1
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def intrin_usm_alloc(typingctx, allocsize, usm_type, queue):
     """Intrinsic to call into the allocator for Array"""
 
@@ -420,7 +429,7 @@ def fill_arrayobj(context, builder, ary, arrtype, queue_ref, fill_value):
     return ary, arrtype
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def impl_dpnp_empty(
     ty_context,
     ty_shape,
@@ -485,15 +494,12 @@ def impl_dpnp_empty(
             context, builder, sig, qref_payload.queue_ref, args
         )
 
-        if qref_payload.py_dpctl_sycl_queue_addr:
-            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
-
         return ary._getvalue()
 
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def impl_dpnp_zeros(
     ty_context,
     ty_shape,
@@ -564,15 +570,13 @@ def impl_dpnp_zeros(
             qref_payload.queue_ref,
             fill_value,
         )
-        if qref_payload.py_dpctl_sycl_queue_addr:
-            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
 
         return ary._getvalue()
 
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def impl_dpnp_ones(
     ty_context,
     ty_shape,
@@ -644,15 +648,13 @@ def impl_dpnp_ones(
             qref_payload.queue_ref,
             fill_value,
         )
-        if qref_payload.py_dpctl_sycl_queue_addr:
-            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
 
         return ary._getvalue()
 
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def impl_dpnp_full(
     ty_context,
     ty_shape,
@@ -730,15 +732,13 @@ def impl_dpnp_full(
             qref_payload.queue_ref,
             fill_value,
         )
-        if qref_payload.py_dpctl_sycl_queue_addr:
-            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
 
         return ary._getvalue()
 
     return signature, codegen
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def impl_dpnp_empty_like(
     ty_context,
     ty_x1,
@@ -812,15 +812,12 @@ def impl_dpnp_empty_like(
             context, builder, sig, qref_payload.queue_ref, args, is_like=True
         )
 
-        if qref_payload.py_dpctl_sycl_queue_addr:
-            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
-
         return ary._getvalue()
 
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def impl_dpnp_zeros_like(
     ty_context,
     ty_x1,
@@ -902,15 +899,13 @@ def impl_dpnp_zeros_like(
             qref_payload.queue_ref,
             fill_value,
         )
-        if qref_payload.py_dpctl_sycl_queue_addr:
-            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
 
         return ary._getvalue()
 
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def impl_dpnp_ones_like(
     ty_context,
     ty_x1,
@@ -991,15 +986,13 @@ def impl_dpnp_ones_like(
             qref_payload.queue_ref,
             fill_value,
         )
-        if qref_payload.py_dpctl_sycl_queue_addr:
-            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
 
         return ary._getvalue()
 
     return sig, codegen
 
 
-@intrinsic
+@intrinsic(target=DPEX_TARGET_NAME)
 def impl_dpnp_full_like(
     ty_context,
     ty_x1,
@@ -1084,9 +1077,65 @@ def impl_dpnp_full_like(
             qref_payload.queue_ref,
             fill_value,
         )
-        if qref_payload.py_dpctl_sycl_queue_addr:
-            qref_payload.pyapi.decref(qref_payload.py_dpctl_sycl_queue_addr)
 
         return ary._getvalue()
 
     return signature, codegen
+
+
+@intrinsic(target=DPEX_TARGET_NAME)
+def ol_dpnp_nd_array_sycl_queue(
+    ty_context,
+    ty_dpnp_nd_array: DpnpNdArray,
+):
+    if not isinstance(ty_dpnp_nd_array, DpnpNdArray):
+        raise errors.TypingError("Argument must be DpnpNdArray")
+
+    ty_queue: DpctlSyclQueue = ty_dpnp_nd_array.queue
+
+    sig = ty_queue(ty_dpnp_nd_array)
+
+    def codegen(context, builder: IRBuilder, sig, args: list):
+        array_proxy = cgutils.create_struct_proxy(ty_dpnp_nd_array)(
+            context,
+            builder,
+            value=args[0],
+        )
+
+        queue_ref = array_proxy.sycl_queue
+
+        queue_struct_proxy = cgutils.create_struct_proxy(ty_queue)(
+            context, builder
+        )
+
+        queue_struct_proxy.queue_ref = queue_ref
+        queue_struct_proxy.meminfo = array_proxy.meminfo
+
+        # Warning: current implementation prevents whole object from being
+        # destroyed as long as sycl_queue attribute is being used. It should be
+        # okay since anywere we use it as an argument callee creates a copy
+        # so it does not steel reference.
+        #
+        # We can avoid it by:
+        #  queue_ref_copy = sycl.dpctl_queue_copy(builder, queue_ref) #noqa E800
+        #  queue_struct_proxy.queue_ref = queue_ref_copy #noqa E800
+        #  queue_struct->meminfo =
+        #     nrt->manage_memory(queue_ref_copy, DPCTLEvent_Delete);
+        # but it will allocate new meminfo object which can negatively affect
+        # performance.
+        # Speaking philosophically attribute is a part of the object and as long
+        # as nobody can still the reference it is a part of the owner object
+        # and lifetime is tied to it.
+        # TODO: we want to have queue: queuestruct_t instead of
+        #   queue_ref: QueueRef as an attribute for DPNPNdArray.
+
+        queue_value = queue_struct_proxy._getvalue()
+
+        # We need to incref meminfo so that queue model is preventing parent
+        # ndarray from being destroyed, that can destroy queue that we are
+        # using.
+        return imputils.impl_ret_borrowed(
+            context, builder, ty_queue, queue_value
+        )
+
+    return sig, codegen

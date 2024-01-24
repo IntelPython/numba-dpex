@@ -1,9 +1,10 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
 import functools
 
+import numba.core.unsafe.nrt
 from llvmlite import ir as llvmir
 from numba.core import cgutils, types
 
@@ -180,26 +181,82 @@ class DpexRTContext(object):
     def queuestruct_from_python(self, pyapi, obj, ptr):
         """Calls the c function DPEXRT_sycl_queue_from_python"""
         fnty = llvmir.FunctionType(
-            llvmir.IntType(32), [pyapi.pyobj, pyapi.voidptr]
+            llvmir.IntType(32), [pyapi.voidptr, pyapi.pyobj, pyapi.voidptr]
         )
+        nrt_api = self._context.nrt.get_nrt_api(pyapi.builder)
 
         fn = pyapi._get_function(fnty, "DPEXRT_sycl_queue_from_python")
         fn.args[0].add_attribute("nocapture")
         fn.args[1].add_attribute("nocapture")
+        fn.args[2].add_attribute("nocapture")
 
-        self.error = pyapi.builder.call(fn, (obj, ptr))
+        self.error = pyapi.builder.call(fn, (nrt_api, obj, ptr))
         return self.error
 
     def queuestruct_to_python(self, pyapi, val):
         """Calls the c function DPEXRT_sycl_queue_to_python"""
 
-        fnty = llvmir.FunctionType(pyapi.pyobj, [pyapi.voidptr])
+        fnty = llvmir.FunctionType(pyapi.pyobj, [pyapi.voidptr, pyapi.voidptr])
+        nrt_api = self._context.nrt.get_nrt_api(pyapi.builder)
 
         fn = pyapi._get_function(fnty, "DPEXRT_sycl_queue_to_python")
         fn.args[0].add_attribute("nocapture")
+        fn.args[1].add_attribute("nocapture")
+
         qptr = cgutils.alloca_once_value(pyapi.builder, val)
         ptr = pyapi.builder.bitcast(qptr, pyapi.voidptr)
-        self.error = pyapi.builder.call(fn, [ptr])
+
+        self.error = pyapi.builder.call(fn, [nrt_api, ptr])
+
+        return self.error
+
+    def eventstruct_from_python(self, pyapi, obj, ptr):
+        """Calls the c function DPEXRT_sycl_event_from_python"""
+        fnty = llvmir.FunctionType(
+            llvmir.IntType(32), [pyapi.voidptr, pyapi.pyobj, pyapi.voidptr]
+        )
+        nrt_api = self._context.nrt.get_nrt_api(pyapi.builder)
+
+        fn = pyapi._get_function(fnty, "DPEXRT_sycl_event_from_python")
+        fn.args[0].add_attribute("nocapture")
+        fn.args[1].add_attribute("nocapture")
+        fn.args[2].add_attribute("nocapture")
+
+        self.error = pyapi.builder.call(fn, (nrt_api, obj, ptr))
+        return self.error
+
+    def eventstruct_to_python(self, pyapi, val):
+        """Calls the c function DPEXRT_sycl_event_to_python"""
+
+        fnty = llvmir.FunctionType(pyapi.pyobj, [pyapi.voidptr, pyapi.voidptr])
+        nrt_api = self._context.nrt.get_nrt_api(pyapi.builder)
+
+        fn = pyapi._get_function(fnty, "DPEXRT_sycl_event_to_python")
+        fn.args[0].add_attribute("nocapture")
+        fn.args[1].add_attribute("nocapture")
+
+        qptr = cgutils.alloca_once_value(pyapi.builder, val)
+        ptr = pyapi.builder.bitcast(qptr, pyapi.voidptr)
+
+        self.error = pyapi.builder.call(fn, [nrt_api, ptr])
+
+        return self.error
+
+    def eventstruct_init(self, pyapi, event, struct):
+        """Calls the c function DPEXRT_sycl_event_init"""
+
+        fnty = llvmir.FunctionType(
+            llvmir.IntType(32), [pyapi.voidptr, pyapi.voidptr, pyapi.voidptr]
+        )
+        nrt_api = self._context.nrt.get_nrt_api(pyapi.builder)
+
+        fn = pyapi._get_function(fnty, "DPEXRT_sycl_event_init")
+        fn.args[0].add_attribute("nocapture")
+        fn.args[1].add_attribute("nocapture")
+        fn.args[2].add_attribute("nocapture")
+
+        ptr = pyapi.builder.bitcast(struct, pyapi.voidptr)
+        self.error = pyapi.builder.call(fn, [nrt_api, event, ptr])
 
         return self.error
 
@@ -377,26 +434,93 @@ class DpexRTContext(object):
 
         return ret
 
-    def copy_queue(self, builder, queue_ref):
-        """Calls DPCTLQueue_Copy to create a copy of the DpctlSyclQueueRef
-        pointer passed in to the function.
+    def acquire_meminfo_and_schedule_release(
+        self, builder: llvmir.IRBuilder, args
+    ):
+        """Inserts LLVM IR to call nrt_acquire_meminfo_and_schedule_release.
 
-        Args:
-            builder: The llvmlite.IRBuilder used to generate the LLVM IR for the
-            call.
-            queue_ref: An LLVM value for a DpctlSyclQueueRef pointer that will
-            be passed to the DPCTLQueue_Copy function.
+        DPCTLSyclEventRef
+        DPEXRT_nrt_acquire_meminfo_and_schedule_release(
+            NRT_api_functions *nrt,
+            DPCTLSyclQueueRef QRef,
+            NRT_MemInfo **meminfo_array,
+            size_t meminfo_array_size,
+            DPCTLSyclEventRef *depERefs,
+            size_t nDepERefs,
+            int *status,
+        );
 
-        Returns: A DPCTLSyclQueueRef pointer.
         """
         mod = builder.module
-        fnty = llvmir.FunctionType(
-            cgutils.voidptr_t,
-            [cgutils.voidptr_t],
-        )
-        fn = cgutils.get_or_insert_function(mod, fnty, "DPCTLQueue_Copy")
-        fn.return_value.add_attribute("noalias")
 
-        ret = builder.call(fn, [queue_ref])
+        func_ty = llvmir.FunctionType(
+            cgutils.voidptr_t,
+            [
+                cgutils.voidptr_t,
+                cgutils.voidptr_t,
+                cgutils.voidptr_t.as_pointer(),
+                llvmir.IntType(64),
+                cgutils.voidptr_t.as_pointer(),
+                llvmir.IntType(64),
+                llvmir.IntType(64).as_pointer(),
+            ],
+        )
+        fn = cgutils.get_or_insert_function(
+            mod, func_ty, "DPEXRT_nrt_acquire_meminfo_and_schedule_release"
+        )
+        ret = builder.call(fn, args)
 
         return ret
+
+    def build_or_get_kernel(self, builder: llvmir.IRBuilder, args):
+        """Inserts LLVM IR to call build_or_get_kernel.
+
+        DPCTLSyclKernelRef
+        DPEXRT_build_or_get_kernel(
+            const DPCTLSyclContextRef ctx,
+            const DPCTLSyclDeviceRef dev,
+            size_t il_hash,
+            const char *il,
+            size_t il_length,
+            const char *compile_opts,
+            const char *kernel_name,
+        );
+
+        """
+        mod = builder.module
+
+        func_ty = llvmir.FunctionType(
+            cgutils.voidptr_t,
+            [
+                cgutils.voidptr_t,
+                cgutils.voidptr_t,
+                llvmir.IntType(64),
+                cgutils.voidptr_t,
+                llvmir.IntType(64),
+                cgutils.voidptr_t,
+                cgutils.voidptr_t,
+            ],
+        )
+        fn = cgutils.get_or_insert_function(
+            mod, func_ty, "DPEXRT_build_or_get_kernel"
+        )
+        ret = builder.call(fn, args)
+
+        return ret
+
+    def kernel_cache_size(self, builder: llvmir.IRBuilder):
+        """Inserts LLVM IR to call kernel_cache_size.
+
+        size_t DPEXRT_kernel_cache_size();
+
+        """
+        fn = cgutils.get_or_insert_function(
+            builder.module,
+            llvmir.FunctionType(
+                llvmir.IntType(64),
+                [],
+            ),
+            "DPEXRT_kernel_cache_size",
+        )
+
+        return builder.call(fn, [])

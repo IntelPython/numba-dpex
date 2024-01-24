@@ -11,6 +11,7 @@ on:
     paths:
       - 'docs/**'
       - environment/docs.yml
+      - .github/workflows/gh-pages.yml
 
 jobs:
   main:
@@ -38,7 +39,7 @@ jobs:
       - name: Build numba-dpex
         run: |
           export PATH=$CONDA/bin-llvm:$PATH
-          python setup.py develop
+          CC=icx CXX=icpx python setup.py develop
 
       - name: Make documentation
         working-directory: docs

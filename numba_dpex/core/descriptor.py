@@ -1,19 +1,70 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
 from functools import cached_property
 
-from numba.core import typing
+from numba.core import options, targetconfig, typing
 from numba.core.cpu import CPUTargetOptions
 from numba.core.descriptors import TargetDescriptor
 
-from .targets.dpjit_target import DPEX_TARGET_NAME, DpexTargetContext
+from numba_dpex.core import config
+
+from .targets.dpjit_target import (
+    DPEX_TARGET_NAME,
+    DpexTargetContext,
+    DpexTypingContext,
+)
 from .targets.kernel_target import (
     DPEX_KERNEL_TARGET_NAME,
+    CompilationMode,
     DpexKernelTargetContext,
     DpexKernelTypingContext,
 )
+
+_option_mapping = options._mapping
+
+
+def _inherit_if_not_set(flags, options, name, default=targetconfig._NotSet):
+    if name in options:
+        setattr(flags, name, options[name])
+        return
+
+    cstk = targetconfig.ConfigStack()
+    if cstk:
+        # inherit
+        top = cstk.top()
+        if hasattr(top, name):
+            setattr(flags, name, getattr(top, name))
+            return
+
+    if default is not targetconfig._NotSet:
+        setattr(flags, name, default)
+
+
+class DpexTargetOptions(CPUTargetOptions):
+    experimental = _option_mapping("experimental")
+    release_gil = _option_mapping("release_gil")
+    no_compile = _option_mapping("no_compile")
+    use_mlir = _option_mapping("use_mlir")
+    inline_threshold = _option_mapping("inline_threshold")
+    _compilation_mode = _option_mapping("_compilation_mode")
+
+    def finalize(self, flags, options):
+        super().finalize(flags, options)
+        _inherit_if_not_set(flags, options, "experimental", False)
+        _inherit_if_not_set(flags, options, "release_gil", False)
+        _inherit_if_not_set(flags, options, "no_compile", True)
+        _inherit_if_not_set(flags, options, "use_mlir", False)
+        if config.INLINE_THRESHOLD is not None:
+            _inherit_if_not_set(
+                flags, options, "inline_threshold", config.INLINE_THRESHOLD
+            )
+        else:
+            _inherit_if_not_set(flags, options, "inline_threshold", 0)
+        _inherit_if_not_set(
+            flags, options, "_compilation_mode", CompilationMode.KERNEL
+        )
 
 
 class DpexKernelTarget(TargetDescriptor):
@@ -21,7 +72,7 @@ class DpexKernelTarget(TargetDescriptor):
     Implements a target descriptor for numba_dpex.kernel decorated functions.
     """
 
-    options = CPUTargetOptions
+    options = DpexTargetOptions
 
     @cached_property
     def _toplevel_target_context(self):
@@ -63,7 +114,7 @@ class DpexTarget(TargetDescriptor):
     @cached_property
     def _toplevel_typing_context(self):
         # Lazily-initialized top-level typing context, for all threads
-        return typing.Context()
+        return DpexTypingContext()
 
     @property
     def target_context(self):

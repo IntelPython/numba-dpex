@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -8,12 +8,14 @@ import warnings
 from numba.core import decorators, sigutils
 from numba.core.target_extension import jit_registry, target_registry
 
+from numba_dpex.core import config
 from numba_dpex.core.kernel_interface.dispatcher import JitKernel
 from numba_dpex.core.kernel_interface.func import (
     compile_func,
     compile_func_template,
 )
-from numba_dpex.core.pipelines.dpjit_compiler import DpjitCompiler
+from numba_dpex.core.pipelines.dpjit_compiler import get_compiler
+from numba_dpex.core.targets.dpjit_target import DPEX_TARGET_NAME
 
 
 def kernel(
@@ -138,7 +140,7 @@ def func(func_or_sig=None, debug=False, enable_cache=True):
 
 
 def dpjit(*args, **kws):
-    if "nopython" in kws:
+    if "nopython" in kws and kws["nopython"] is not True:
         warnings.warn(
             "nopython is set for dpjit and is ignored", RuntimeWarning
         )
@@ -151,19 +153,19 @@ def dpjit(*args, **kws):
         warnings.warn(
             "pipeline class is set for dpjit and is ignored", RuntimeWarning
         )
-        del kws["forceobj"]
+        del kws["pipeline_class"]
+
+    use_mlir = kws.pop("use_mlir", bool(config.USE_MLIR))
+
     kws.update({"nopython": True})
     kws.update({"parallel": True})
-    kws.update({"pipeline_class": DpjitCompiler})
+    kws.update({"pipeline_class": get_compiler(use_mlir)})
 
-    # FIXME: When trying to use dpex's target context, overloads do not work
-    # properly. We will turn on dpex target once the issue is fixed.
-
-    # kws.update({"_target": "dpex"})
+    kws.update({"_target": DPEX_TARGET_NAME})
 
     return decorators.jit(*args, **kws)
 
 
 # add it to the decorator registry, this is so e.g. @overload can look up a
 # JIT function to do the compilation work.
-jit_registry[target_registry["dpex"]] = dpjit
+jit_registry[target_registry[DPEX_TARGET_NAME]] = dpjit

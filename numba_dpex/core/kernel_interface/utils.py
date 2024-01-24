@@ -1,7 +1,6 @@
-# SPDX-FileCopyrightText: 2022 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2022 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
-
 
 from numba_dpex.core.exceptions import ExecutionQueueInferenceError
 from numba_dpex.core.types import USMNdArray

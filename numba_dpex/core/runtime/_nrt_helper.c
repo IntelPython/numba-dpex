@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+// SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 //
 // SPDX-License-Identifier: Apache-2.0
 
@@ -133,4 +133,16 @@ void NRT_MemInfo_destroy(NRT_MemInfo *mi)
     if (TheMSys.stats.enabled) {
         TheMSys.stats.mi_free++;
     }
+}
+
+void NRT_MemInfo_pyobject_dtor(void *data)
+{
+    PyGILState_STATE gstate;
+    PyObject *ownerobj = data;
+
+    gstate = PyGILState_Ensure(); /* ensure the GIL */
+    Py_DECREF(data);              /* release the python object */
+    PyGILState_Release(gstate);   /* release the GIL */
+
+    DPEXRT_DEBUG(drt_debug_print("DPEXRT-DEBUG: pyobject destructor\n"););
 }

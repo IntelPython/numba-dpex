@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2022 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2022 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -60,7 +60,9 @@ def test_missing_specialization_error():
     c = dpt.zeros(1024, dtype=dpt.int32)
 
     with pytest.raises(MissingSpecializationError):
-        specialized_kernel1(data_parallel_sum)[Range(1024)](a, b, c)
+        dpex.call_kernel(
+            specialized_kernel1(data_parallel_sum), Range(1024), a, b, c
+        )
 
 
 def test_execution_of_specialized_kernel():
@@ -69,7 +71,9 @@ def test_execution_of_specialized_kernel():
     b = dpt.ones(1024, dtype=dpt.int64)
     c = dpt.zeros(1024, dtype=dpt.int64)
 
-    specialized_kernel1(data_parallel_sum)[Range(1024)](a, b, c)
+    dpex.call_kernel(
+        specialized_kernel1(data_parallel_sum), Range(1024), a, b, c
+    )
 
     npc = dpt.asnumpy(c)
     import numpy as np

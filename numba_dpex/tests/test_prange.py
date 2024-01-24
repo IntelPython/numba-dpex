@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# Copyright 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -12,13 +12,43 @@ from numba import njit
 
 from numba_dpex import dpjit, prange
 
+from ._helper import decorators
 
-def test_one_prange_mul():
-    @dpjit
+
+@pytest.mark.parametrize("jit", decorators)
+def test_one_prange_mul(jit):
+    @jit
     def f(a, b):
         for i in prange(4):
             b[i, 0] = a[i, 0] * 10
         return
+
+    device = dpctl.select_default_device()
+
+    m = 8
+    n = 8
+    a = dpnp.ones((m, n), device=device)
+    b = dpnp.ones((m, n), device=device)
+
+    f(a, b)
+    na = dpnp.asnumpy(a)
+    nb = dpnp.asnumpy(b)
+
+    for i in range(4):
+        assert nb[i, 0] == na[i, 0] * 10
+
+
+@pytest.mark.parametrize("jit", decorators)
+def test_one_prange_mul_nested(jit):
+    @jit
+    def f_inner(a, b):
+        for i in prange(4):
+            b[i, 0] = a[i, 0] * 10
+        return
+
+    @jit
+    def f(a, b):
+        return f_inner(a, b)
 
     device = dpctl.select_default_device()
 
@@ -155,8 +185,9 @@ def test_three_prange():
     assert np.all(b.asnumpy() == 12)
 
 
-def test_two_consecutive_prange():
-    @dpjit
+@pytest.mark.parametrize("jit", decorators)
+def test_two_consecutive_prange(jit):
+    @jit
     def prange_example(a, b, c, d):
         for i in prange(n):
             c[i] = a[i] + b[i]

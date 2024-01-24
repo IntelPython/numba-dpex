@@ -30,33 +30,6 @@ storing the result of vector summation:
    :name: ex_kernel_declaration_vector_sum
 
 
-.. Kernel Invocation
-.. ------------------
-
-.. When a kernel is launched you must specify the *global size* and the *local size*,
-.. which determine the hierarchy of threads, that is the order in which kernels
-.. will be invoked.
-
-.. The following syntax is used in ``numba-dpex`` for kernel invocation with
-.. specified global and local sizes:
-
-.. ``kernel_function_name[global_size, local_size](kernel arguments)``
-
-.. In the following example we invoke kernel ``kernel_vector_sum`` with global size
-.. specified via variable ``global_size``, and use ``numba_dpex.DEFAULT_LOCAL_SIZE``
-.. constant for setting local size to some default value:
-
-.. .. code-block:: python
-
-..    import numba_dpex as ndpx
-
-..    global_size = 10
-..    kernel_vector_sum[global_size, ndpx.DEFAULT_LOCAL_SIZE](a, b, c)
-
-.. .. note::
-..   Each kernel is compiled once, but it can be called multiple times with different global and local sizes settings.
-
-
 Kernel Invocation
 ------------------
 

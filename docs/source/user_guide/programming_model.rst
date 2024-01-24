@@ -161,7 +161,7 @@ Specifying the execution queue is done using Python context manager:
    with dpctl.device_context(q):
        # apply the kernel to elements of X, writing value into Y,
        # while executing using given queue
-       numba_dpex_poly[X.size, numba_dpex.DEFAULT_LOCAL_SIZE](X, Y)
+       numba_dpex_poly[numba_dpex.Range(X.size)](X, Y)
 
 The argument to ``device_context`` can be a queue object, a device object for
 which a temporary queue will be created, or a filter selector string. Thus we

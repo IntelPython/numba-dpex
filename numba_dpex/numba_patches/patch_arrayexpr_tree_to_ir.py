@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2023 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -46,14 +46,12 @@ def patch():
             g_math_assign = ir.Assign(g_math, g_math_var, loc)
             func_var_def = ir.Expr.getattr(g_math_var, "sqrt", loc)
             out_ir.append(g_math_assign)
-        #                     out_ir.append(func_var_def)
         ir_expr = ir.Expr.call(func_var, arg_vars, (), loc)
         call_typ = typemap[func_var.name].get_call_type(
             typingctx, tuple(typemap[a.name] for a in arg_vars), {}
         )
         calltypes[ir_expr] = call_typ
         el_typ = call_typ.return_type
-        # signature(el_typ, el_typ)
         out_ir.append(ir.Assign(func_var_def, func_var, loc))
         out_ir.append(ir.Assign(ir_expr, expr_out_var, loc))
 
@@ -122,7 +120,6 @@ def patch():
                 out_ir.append(ir.Assign(ir_expr, expr_out_var, loc))
             for T in array_analysis.MAP_TYPES:
                 if isinstance(op, T):
-                    # elif isinstance(op, (np.ufunc, DUFunc)):
                     # function calls are stored in variables which are not removed
                     # op is typing_key to the variables type
                     el_typ = _ufunc_to_parfor_instr(
@@ -169,7 +166,6 @@ def patch():
                     out_ir,
                 )
             else:
-                # assert typemap[expr.name]==el_typ
                 el_typ = var_typ
                 ir_expr = expr
             out_ir.append(ir.Assign(ir_expr, expr_out_var, loc))

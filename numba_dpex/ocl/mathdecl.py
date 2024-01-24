@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -107,9 +107,6 @@ class MathModuleAttribute(AttributeTemplate):
 
     def resolve_radians(self, mod):
         return types.Function(Math_radians)
-
-    # def resolve_hypot(self, mod):
-    # return types.Function(Math_hypot)
 
     def resolve_copysign(self, mod):
         return types.Function(Math_copysign)
@@ -248,16 +245,6 @@ class Math_degrees(Math_unary):
     key = math.degrees
 
 
-# class Math_hypot(ConcreteTemplate):
-# key = math.hypot
-#     cases = [
-#         signature(types.float64, types.int64, types.int64),
-#         signature(types.float64, types.uint64, types.uint64),
-#         signature(types.float32, types.float32, types.float32),
-#         signature(types.float64, types.float64, types.float64),
-#     ]
-
-
 class Math_erf(Math_unary):
     key = math.erf
 
@@ -340,7 +327,6 @@ infer_global(math.atan2, types.Function(Math_atan2))
 infer_global(math.asinh, types.Function(Math_asinh))
 infer_global(math.acosh, types.Function(Math_acosh))
 infer_global(math.atanh, types.Function(Math_atanh))
-# infer_global(math.hypot, types.Function(Math_hypot))
 infer_global(math.floor, types.Function(Math_floor))
 infer_global(math.ceil, types.Function(Math_ceil))
 infer_global(math.trunc, types.Function(Math_trunc))

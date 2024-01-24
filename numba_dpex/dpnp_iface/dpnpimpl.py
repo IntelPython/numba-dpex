@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -8,7 +8,7 @@ import dpnp
 from numba.core.imputils import Registry
 from numba.np import npyimpl
 
-from numba_dpex.core.typing.dpnpdecl import _unsupported
+from numba_dpex.core.typing import dpnpdecl
 from numba_dpex.dpnp_iface import dpnp_ufunc_db
 
 registry = Registry("dpnpimpl")
@@ -36,11 +36,11 @@ def _register_dpnp_ufuncs():
         )
 
     for _op_map in (
-        npyimpl.npydecl.NumpyRulesUnaryArrayOperator._op_map,
-        npyimpl.npydecl.NumpyRulesArrayOperator._op_map,
+        dpnpdecl.DpnpRulesUnaryArrayOperator._op_map,
+        dpnpdecl.DpnpRulesArrayOperator._op_map,
     ):
         for operator, ufunc_name in _op_map.items():
-            if ufunc_name in _unsupported:
+            if ufunc_name in dpnpdecl._unsupported:
                 continue
             ufunc = getattr(dpnp, ufunc_name)
             kernel = kernels[ufunc]
@@ -57,9 +57,9 @@ def _register_dpnp_ufuncs():
                     "There shouldn't be any non-unary or binary operators"
                 )
 
-    for _op_map in (npyimpl.npydecl.NumpyRulesInplaceArrayOperator._op_map,):
+    for _op_map in (dpnpdecl.DpnpRulesInplaceArrayOperator._op_map,):
         for operator, ufunc_name in _op_map.items():
-            if ufunc_name in _unsupported:
+            if ufunc_name in dpnpdecl._unsupported:
                 continue
             ufunc = getattr(dpnp, ufunc_name)
             kernel = kernels[ufunc]

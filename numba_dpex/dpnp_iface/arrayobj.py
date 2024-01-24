@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -6,16 +6,20 @@ import operator
 
 import dpnp
 from numba import errors, types
-from numba.core.imputils import lower_builtin
+from numba.core.imputils import impl_ret_borrowed, lower_builtin
 from numba.core.types import scalars
 from numba.core.types.containers import UniTuple
 from numba.core.typing.npydecl import parse_dtype as _ty_parse_dtype
 from numba.core.typing.npydecl import parse_shape as _ty_parse_shape
-from numba.extending import overload
-from numba.np.arrayobj import getitem_arraynd_intp as np_getitem_arraynd_intp
+from numba.extending import overload, overload_attribute
+from numba.np.arrayobj import _getitem_array_generic as np_getitem_array_generic
+from numba.np.arrayobj import make_array
 from numba.np.numpy_support import is_nonelike
 
-from numba_dpex.core.datamodel.models import dpex_data_model_manager as dpex_dmm
+from numba_dpex.core.kernel_interface.arrayobj import (
+    _getitem_array_generic as kernel_getitem_array_generic,
+)
+from numba_dpex.core.targets.kernel_target import DpexKernelTargetContext
 from numba_dpex.core.types import DpnpNdArray
 
 from ._intrinsic import (
@@ -27,7 +31,11 @@ from ._intrinsic import (
     impl_dpnp_ones_like,
     impl_dpnp_zeros,
     impl_dpnp_zeros_like,
+    ol_dpnp_nd_array_sycl_queue,
 )
+
+# can't import name because of the circular import
+DPEX_TARGET_NAME = "dpex"
 
 # =========================================================================
 #               Helps to parse dpnp constructor arguments
@@ -163,7 +171,7 @@ def _parse_device_filter_string(device):
 # =========================================================================
 
 
-@overload(dpnp.empty, prefer_literal=True)
+@overload(dpnp.empty, prefer_literal=True, target=DPEX_TARGET_NAME)
 def ol_dpnp_empty(
     shape,
     dtype=None,
@@ -234,7 +242,7 @@ def ol_dpnp_empty(
                 shape,
                 dtype=None,
                 order="C",
-                # like=None, # see issue https://github.com/IntelPython/numba-dpex/issues/998
+                # like=None, # noqa: E800 see issue https://github.com/IntelPython/numba-dpex/issues/998
                 device=None,
                 usm_type="device",
                 sycl_queue=None,
@@ -243,7 +251,7 @@ def ol_dpnp_empty(
                     shape,
                     _dtype,
                     order,
-                    # like, # see issue https://github.com/IntelPython/numba-dpex/issues/998
+                    # like, # noqa: E800 see issue https://github.com/IntelPython/numba-dpex/issues/998
                     _device,
                     _usm_type,
                     sycl_queue,
@@ -260,7 +268,7 @@ def ol_dpnp_empty(
         raise errors.TypingError("Could not infer the rank of the ndarray.")
 
 
-@overload(dpnp.zeros, prefer_literal=True)
+@overload(dpnp.zeros, prefer_literal=True, target=DPEX_TARGET_NAME)
 def ol_dpnp_zeros(
     shape,
     dtype=None,
@@ -354,7 +362,7 @@ def ol_dpnp_zeros(
         raise errors.TypingError("Could not infer the rank of the ndarray.")
 
 
-@overload(dpnp.ones, prefer_literal=True)
+@overload(dpnp.ones, prefer_literal=True, target=DPEX_TARGET_NAME)
 def ol_dpnp_ones(
     shape,
     dtype=None,
@@ -448,7 +456,7 @@ def ol_dpnp_ones(
         raise errors.TypingError("Could not infer the rank of the ndarray.")
 
 
-@overload(dpnp.full, prefer_literal=True)
+@overload(dpnp.full, prefer_literal=True, target=DPEX_TARGET_NAME)
 def ol_dpnp_full(
     shape,
     fill_value,
@@ -557,7 +565,7 @@ def ol_dpnp_full(
         raise errors.TypingError("Could not infer the rank of the ndarray.")
 
 
-@overload(dpnp.empty_like, prefer_literal=True)
+@overload(dpnp.empty_like, prefer_literal=True, target=DPEX_TARGET_NAME)
 def ol_dpnp_empty_like(
     x1,
     dtype=None,
@@ -682,7 +690,7 @@ def ol_dpnp_empty_like(
         )
 
 
-@overload(dpnp.zeros_like, prefer_literal=True)
+@overload(dpnp.zeros_like, prefer_literal=True, target=DPEX_TARGET_NAME)
 def ol_dpnp_zeros_like(
     x1,
     dtype=None,
@@ -806,7 +814,7 @@ def ol_dpnp_zeros_like(
         )
 
 
-@overload(dpnp.ones_like, prefer_literal=True)
+@overload(dpnp.ones_like, prefer_literal=True, target=DPEX_TARGET_NAME)
 def ol_dpnp_ones_like(
     x1,
     dtype=None,
@@ -931,7 +939,7 @@ def ol_dpnp_ones_like(
         )
 
 
-@overload(dpnp.full_like, prefer_literal=True)
+@overload(dpnp.full_like, prefer_literal=True, target=DPEX_TARGET_NAME)
 def ol_dpnp_full_like(
     x1,
     fill_value,
@@ -1061,6 +1069,7 @@ def ol_dpnp_full_like(
         )
 
 
+# TODO: target specific
 @lower_builtin(operator.getitem, DpnpNdArray, types.Integer)
 @lower_builtin(operator.getitem, DpnpNdArray, types.SliceType)
 def getitem_arraynd_intp(context, builder, sig, args):
@@ -1073,15 +1082,50 @@ def getitem_arraynd_intp(context, builder, sig, args):
     that when returning a view of a dpnp.ndarray the sycl::queue pointer
     member in the LLVM IR struct gets properly updated.
     """
-    ret = np_getitem_arraynd_intp(context, builder, sig, args)
+    getitem_call_in_kernel = isinstance(context, DpexKernelTargetContext)
+    _getitem_array_generic = np_getitem_array_generic
 
-    if isinstance(sig.return_type, DpnpNdArray):
+    if getitem_call_in_kernel:
+        _getitem_array_generic = kernel_getitem_array_generic
+
+    aryty, idxty = sig.args
+    ary, idx = args
+
+    assert aryty.ndim >= 1
+    ary = make_array(aryty)(context, builder, ary)
+
+    res = _getitem_array_generic(
+        context, builder, sig.return_type, aryty, ary, (idxty,), (idx,)
+    )
+    ret = impl_ret_borrowed(context, builder, sig.return_type, res)
+
+    if isinstance(sig.return_type, DpnpNdArray) and not getitem_call_in_kernel:
         array_val = args[0]
         array_ty = sig.args[0]
-        sycl_queue_attr_pos = dpex_dmm.lookup(array_ty).get_field_position(
-            "sycl_queue"
-        )
+        sycl_queue_attr_pos = context.data_model_manager.lookup(
+            array_ty
+        ).get_field_position("sycl_queue")
         sycl_queue_attr = builder.extract_value(array_val, sycl_queue_attr_pos)
         ret = builder.insert_value(ret, sycl_queue_attr, sycl_queue_attr_pos)
 
     return ret
+
+
+@overload_attribute(DpnpNdArray, "sycl_queue", target=DPEX_TARGET_NAME)
+def dpnp_nd_array_sycl_queue(arr):
+    """Returns :class:`dpctl.SyclQueue` object associated with USM data.
+
+    This is an overloaded attribute implementation for dpnp.sycl_queue.
+
+    Args:
+        arr (numba_dpex.core.types.DpnpNdArray): Input array from which to
+            take sycl_queue.
+
+    Returns:
+        function: Local function `ol_dpnp_nd_array_sycl_queue()`.
+    """
+
+    def get(arr):
+        return ol_dpnp_nd_array_sycl_queue(arr)
+
+    return get

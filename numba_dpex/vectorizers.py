@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -148,7 +148,6 @@ class UFuncMechanism(deviceufunc.UFuncMechanism):
                 return devout.reshape(outshape)
             else:
                 # Otherwise, transfer output back to host
-                # return devout.copy_to_host().reshape(outshape)
                 raise ValueError("copy_to_host() is not yet supported")
 
         elif cr.is_device_array(out):
@@ -195,7 +194,7 @@ class UFuncMechanism(deviceufunc.UFuncMechanism):
         copy_to_numpy_from_usm_obj(devary_memview, hostary)
 
     def launch(self, func, count, queue, args):
-        func[count, dpex.DEFAULT_LOCAL_SIZE](*args)
+        func[dpex.Range(count)](*args)
 
     def device_array(self, shape, dtype, queue):
         size = np.prod(shape)

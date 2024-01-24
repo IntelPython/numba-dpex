@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -8,6 +8,7 @@
 
 https://www.sourceware.org/gdb/onlinedocs/gdb/Backtrace.html
 """
+import pytest
 
 from numba_dpex.tests._helper import skip_no_gdb
 
@@ -16,6 +17,7 @@ from .common import setup_breakpoint
 pytestmark = skip_no_gdb
 
 
+@pytest.mark.xfail  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
 def test_backtrace(app):
     """Simple test for backtrace.
 

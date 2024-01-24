@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -57,6 +57,11 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
     Test for https://github.com/numba/numba/issues/7415
     SAT-4449
     """
+    if api == "numba-dpex-kernel":
+        pytest.xfail(
+            "Wrong name for kernel api."
+        )  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
+
     variable_name = "param_a"
     variable_value = "3"
     condition = f"{variable_name} == {variable_value}"
@@ -73,17 +78,18 @@ def test_breakpoint_with_condition_by_function_argument(app, breakpoint, api):
     app.child.expect(rf"\$1 = {variable_value}")
 
 
+@pytest.mark.xfail  # TODO: https://github.com/IntelPython/numba-dpex/issues/1216
 @pytest.mark.parametrize(
     "breakpoint, script",
     [
         # location specified by file name and function name
-        # commands/break_file_func
+        # commands/break_file_func # noqa: E800
         ("simple_sum.py:data_parallel_sum", None),
         # location specified by function name
-        # commands/break_func
+        # commands/break_func # noqa: E800
         ("data_parallel_sum", "simple_sum.py"),
         # location specified by file name and nested function name
-        # commands/break_nested_func
+        # commands/break_nested_func # noqa: E800
         ("simple_dpex_func.py:func_sum", None),
     ],
 )
@@ -95,7 +101,7 @@ def test_breakpoint_common(app, breakpoint, script):
 @pytest.mark.parametrize(
     "breakpoint, variable_name, variable_value",
     [
-        # commands/break_conditional
+        # commands/break_conditional # noqa: E800
         (f"{simple_sum_condition_breakpoint} if i == 1", "i", "1"),
     ],
 )

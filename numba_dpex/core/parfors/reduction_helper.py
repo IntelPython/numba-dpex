@@ -1,6 +1,7 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
+
 import copy
 import operator
 
@@ -17,8 +18,11 @@ from numba.parfors import parfor
 from numba.parfors.parfor_lowering_utils import ParforLoweringBuilder
 
 from numba_dpex import utils
+from numba_dpex.core.datamodel.models import (
+    dpex_data_model_manager as kernel_dmm,
+)
 from numba_dpex.core.utils.kernel_launcher import KernelLaunchIRBuilder
-from numba_dpex.dpctl_iface import DpctlCAPIFnBuilder
+from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
 
 from ..types.dpnp_ndarray_type import DpnpNdArray
 
@@ -41,7 +45,7 @@ class ReductionHelper:
         # Get the type of the reduction variable.
         redvar_typ = lowerer.fndesc.typemap[red_name]
 
-        # redarrvar_typ is type(partial_sum)
+        # redarrvar_typ is type(partial_sum) # noqa: E800 help understanding
         redarrvar_typ = self._redtyp_to_redarraytype(redvar_typ, inputArrayType)
         reddtype = redarrvar_typ.dtype
         redarrdim = redarrvar_typ.ndim
@@ -63,7 +67,7 @@ class ReductionHelper:
             name="tot_work",
         )
 
-        # global_size_mod = tot_work%work_group_size
+        # global_size_mod = tot_work%work_group_size # noqa: E800 help understanding
         ir_expr = ir.Expr.binop(
             operator.mod, total_work_var, work_group_size_var, loc
         )
@@ -232,7 +236,7 @@ class ReductionKernelVariables:
         loop_body = copy.copy(parfor_node.loop_body)
         remove_dels(loop_body)
 
-        # parfor_dim = len(parfor_node.loop_nests)
+        # parfor_dim = len(parfor_node.loop_nests) # noqa: E800 help understanding
         loop_indices = [
             loop_nest.index_variable.name
             for loop_nest in parfor_node.loop_nests
@@ -393,26 +397,18 @@ class ReductionKernelVariables:
     def work_group_size(self):
         return self._work_group_size
 
-    def copy_final_sum_to_host(self, psrfor_kernel):
+    def copy_final_sum_to_host(self, parfor_kernel):
         lowerer = self.lowerer
-        ir_builder = KernelLaunchIRBuilder(lowerer, psrfor_kernel.kernel)
+        kl_builder = KernelLaunchIRBuilder(
+            lowerer.context, lowerer.builder, kernel_dmm
+        )
 
         # Create a local variable storing a pointer to a DPCTLSyclQueueRef
         # pointer.
-        curr_queue = ir_builder.get_queue(exec_queue=psrfor_kernel.queue)
+        queue_ref = kl_builder.get_queue(exec_queue=parfor_kernel.queue)
 
         builder = lowerer.builder
         context = lowerer.context
-
-        memcpy_fn = DpctlCAPIFnBuilder.get_dpctl_queue_memcpy(
-            builder=builder, context=context
-        )
-        event_del_fn = DpctlCAPIFnBuilder.get_dpctl_event_delete(
-            builder=builder, context=context
-        )
-        event_wait_fn = DpctlCAPIFnBuilder.get_dpctl_event_wait(
-            builder=builder, context=context
-        )
 
         for i, redvar in enumerate(self.parfor_redvars):
             srcVar = self.final_sum_names[i]
@@ -443,15 +439,14 @@ class ReductionKernelVariables:
             )
 
             args = [
-                builder.load(curr_queue),
+                queue_ref,
                 dest,
                 src,
                 builder.load(item_size),
             ]
 
-            event_ref = builder.call(memcpy_fn, args)
+            event_ref = sycl.dpctl_queue_memcpy(builder, *args)
+            sycl.dpctl_event_wait(builder, event_ref)
+            sycl.dpctl_event_delete(builder, event_ref)
 
-            builder.call(event_wait_fn, [event_ref])
-            builder.call(event_del_fn, [event_ref])
-
-        ir_builder.free_queue(sycl_queue_val=curr_queue)
+        sycl.dpctl_queue_delete(builder, queue_ref)

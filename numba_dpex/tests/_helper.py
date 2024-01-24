@@ -1,17 +1,29 @@
 #! /usr/bin/env python
 
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
 import contextlib
 import shutil
+from functools import cache
 
 import dpctl
 import dpnp
 import pytest
 
-from numba_dpex import config, numba_sem_version
+from numba_dpex import dpjit, numba_sem_version
+from numba_dpex.core import config
+
+
+@cache
+def has_numba_mlir():
+    try:
+        import numba_mlir
+    except ImportError:
+        return False
+
+    return True
 
 
 def has_opencl_gpu():
@@ -89,6 +101,10 @@ skip_no_level_zero_gpu = pytest.mark.skipif(
     not has_level_zero(),
     reason="No level-zero GPU platforms available",
 )
+skip_no_numba_mlir = pytest.mark.skipif(
+    not has_numba_mlir(),
+    reason="numba-mlir package is not availabe",
+)
 
 filter_strings = [
     pytest.param("level_zero:gpu:0", marks=skip_no_level_zero_gpu),
@@ -121,6 +137,14 @@ skip_no_gdb = pytest.mark.skipif(
     config.TESTING_SKIP_NO_DEBUGGING and not shutil.which("gdb-oneapi"),
     reason="Intel® Distribution for GDB* is not available",
 )
+
+
+decorators = [
+    pytest.param(dpjit, id="dpjit"),
+    pytest.param(
+        dpjit(use_mlir=True), id="dpjit_mlir", marks=skip_no_numba_mlir
+    ),
+]
 
 
 @contextlib.contextmanager

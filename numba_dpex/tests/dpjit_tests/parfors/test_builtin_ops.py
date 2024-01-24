@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -39,7 +39,7 @@ shapes = [100, (25, 4)]
 dtypes = get_all_dtypes(
     no_bool=True, no_float16=True, no_none=True, no_complex=True
 )
-usm_types = ["device"]
+usm_types = ["device", "host", "shared"]
 funcs = [
     parfor_add,
     parfor_sub,
@@ -63,44 +63,7 @@ def parfor_floor(a, b):
 @pytest.mark.parametrize("dtype", dtypes)
 @pytest.mark.parametrize("usm_type", usm_types)
 @pytest.mark.parametrize("func", funcs)
-def test_built_in_operators1(shape, dtype, usm_type, func):
-    queue = dpctl.SyclQueue()
-    a = dpnp.zeros(
-        shape=shape, dtype=dtype, usm_type=usm_type, sycl_queue=queue
-    )
-    b = dpnp.ones(shape=shape, dtype=dtype, usm_type=usm_type, sycl_queue=queue)
-    try:
-        op = dpjit(func)
-        c = op(a, b)
-        del op
-    except Exception:
-        pytest.fail("Failed to compile.")
-
-    if len(c.shape) == 1:
-        assert c.shape[0] == shape
-    else:
-        assert c.shape == shape
-
-    if func != parfor_divide:
-        assert c.dtype == dtype
-    assert c.usm_type == usm_type
-
-    assert c.sycl_device.filter_string == queue.sycl_device.filter_string
-
-    expected = dpnp.asnumpy(func(a, b))
-    nc = dpnp.asnumpy(c)
-
-    numpy.allclose(nc, expected)
-
-
-usm_types = ["host", "shared"]
-
-
-@pytest.mark.parametrize("shape", shapes)
-@pytest.mark.parametrize("dtype", dtypes)
-@pytest.mark.parametrize("usm_type", usm_types)
-@pytest.mark.parametrize("func", funcs)
-def test_built_in_operators2(shape, dtype, usm_type, func):
+def test_built_in_operators(shape, dtype, usm_type, func):
     queue = dpctl.SyclQueue()
     a = dpnp.zeros(
         shape=shape, dtype=dtype, usm_type=usm_type, sycl_queue=queue

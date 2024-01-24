@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -85,7 +85,9 @@ def test_setting_private_from_dpnp_ndarray():
     global_range = ndpx.Range(N_POINTS // N_POINTS_PER_WORK_ITEM)
     local_range = ndpx.Range(LOCAL_SIZE)
     try:
-        _kernel[ndpx.NdRange(global_range, local_range)](COEFFICIENTS)
+        ndpx.call_kernel(
+            _kernel, ndpx.NdRange(global_range, local_range), COEFFICIENTS
+        )
     except Exception as e:
         assert (
             False

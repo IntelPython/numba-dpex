@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2022 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -37,6 +37,8 @@ class _DpjitPassBuilder(object):
     execution.
     """
 
+    _use_mlir = False
+
     @staticmethod
     def define_typed_pipeline(state, name="dpex_dpjit_typed"):
         """Returns the typed part of the nopython pipeline"""
@@ -55,7 +57,8 @@ class _DpjitPassBuilder(object):
             pm.add_pass(NopythonRewrites, "nopython rewrites")
         pm.add_pass(ParforPass, "convert to parfors")
         pm.add_pass(
-            ParforLegalizeCFDPass, "Legalize parfors for compute follows data"
+            ParforLegalizeCFDPass,
+            "Legalize parfors for compute follows data",
         )
         pm.add_pass(ParforFusionPass, "fuse parfors")
         pm.add_pass(ParforPreLoweringPass, "parfor prelowering")
@@ -63,10 +66,21 @@ class _DpjitPassBuilder(object):
         pm.finalize()
         return pm
 
-    @staticmethod
-    def define_nopython_lowering_pipeline(state, name="dpex_dpjit_lowering"):
+    @classmethod
+    def define_nopython_lowering_pipeline(
+        cls, state, name="dpex_dpjit_lowering"
+    ):
         """Returns an nopython mode pipeline based PassManager"""
         pm = PassManager(name)
+
+        flags = state.flags
+        if cls._use_mlir or hasattr(flags, "use_mlir") and flags.use_mlir:
+            from numba_mlir.mlir.passes import MlirReplaceParfors
+
+            pm.add_pass(
+                MlirReplaceParfors,
+                "Lower parfor using MLIR pipeline",
+            )
 
         # legalize
         pm.add_pass(
@@ -85,11 +99,11 @@ class _DpjitPassBuilder(object):
         pm.finalize()
         return pm
 
-    @staticmethod
-    def define_nopython_pipeline(state, name="dpex_dpjit_nopython"):
+    @classmethod
+    def define_nopython_pipeline(cls, state, name="dpex_dpjit_nopython"):
         """Returns an nopython mode pipeline based PassManager"""
         # compose pipeline from untyped, typed and lowering parts
-        dpb = _DpjitPassBuilder
+        dpb = cls
         pm = PassManager(name)
         untyped_passes = DefaultPassBuilder.define_untyped_pipeline(state)
         pm.passes.extend(untyped_passes.passes)
@@ -104,8 +118,14 @@ class _DpjitPassBuilder(object):
         return pm
 
 
+class _DpjitPassBuilderMlir(_DpjitPassBuilder):
+    _use_mlir = True
+
+
 class DpjitCompiler(CompilerBase):
     """Dpex's compiler pipeline to offload parfor nodes into SYCL kernels."""
+
+    _pass_builder = _DpjitPassBuilder
 
     def define_pipelines(self):
         pms = []
@@ -114,7 +134,15 @@ class DpjitCompiler(CompilerBase):
             "parfor_diagnostics"
         ] = self.state.parfor_diagnostics
         if not self.state.flags.force_pyobject:
-            pms.append(_DpjitPassBuilder.define_nopython_pipeline(self.state))
+            pms.append(self._pass_builder.define_nopython_pipeline(self.state))
         if self.state.status.can_fallback or self.state.flags.force_pyobject:
             raise UnsupportedCompilationModeError()
         return pms
+
+
+class DpjitCompilerMlir(DpjitCompiler):
+    _pass_builder = _DpjitPassBuilderMlir
+
+
+def get_compiler(use_mlir):
+    return DpjitCompilerMlir if use_mlir else DpjitCompiler

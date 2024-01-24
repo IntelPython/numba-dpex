@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -31,4 +31,4 @@ def test_return(sig):
 
     with pytest.raises(dpex.core.exceptions.KernelHasReturnValueError):
         kernel_fn = dpex.kernel(sig)(f)
-        kernel_fn[dpex.Range(a.size)](a)
+        dpex.call_kernel(kernel_fn, dpex.Range(a.size), a)

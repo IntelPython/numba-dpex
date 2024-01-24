@@ -1,13 +1,15 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
+
+import warnings
 
 from llvmlite import binding as ll
 from llvmlite import ir as llvmir
 from numba.core import utils
 from numba.core.codegen import CPUCodegen, CPUCodeLibrary
 
-from numba_dpex import config
+from numba_dpex.core import config
 
 SPIR_TRIPLE = {32: " spir-unknown-unknown", 64: "spir64-unknown-unknown"}
 
@@ -27,15 +29,55 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
     def _optimize_functions(self, ll_module):
         pass
 
+    @property
+    def inline_threshold(self):
+        """
+        The inlining threshold value to be used to optimize the final library.
+        """
+        if hasattr(self, "_inline_threshold"):
+            return self._inline_threshold
+        else:
+            return 0
+
+    @inline_threshold.setter
+    def inline_threshold(self, value: int):
+        """Returns the current inlining threshold level for the library."""
+        if value < 0 or value > 3:
+            warnings.warn(
+                "Unsupported inline threshold. Set a value between 0 and 3"
+            )
+            self._inline_threshold = 0
+        else:
+            if value == 3:
+                warnings.warn(
+                    "Due to an existing compiler bug, setting INLINE_THRESHOLD "
+                    f"to {value} can lead to incorrect code generation on "
+                    "certain devices."
+                )
+            self._inline_threshold = value
+
     def _optimize_final_module(self):
         # Run some lightweight optimization to simplify the module.
         pmb = ll.PassManagerBuilder()
 
-        # Make optimization level depending on config.OPT variable
-        pmb.opt_level = config.OPT
+        # Make optimization level depending on config.DPEX_OPT variable
+        pmb.opt_level = config.DPEX_OPT
+        if config.DPEX_OPT > 2:
+            warnings.warn(
+                "Setting NUMBA_DPEX_OPT greater than 2 known to cause issues "
+                + "related to very aggressive optimizations that leads to "
+                + "broken code."
+            )
 
         pmb.disable_unit_at_a_time = False
-        pmb.inlining_threshold = 2
+
+        # The PassManagerBuilder's inlining_threshold property is set only when
+        # inline_threshold is g.t. 0. Doing otherwise, *i.e.*, setting the
+        # pmb.inlining_threshold to 0 will lead to at minimum `alwaysinline`
+        # pass to run.
+        if self.inline_threshold > 0:
+            pmb.inlining_threshold = self.inline_threshold
+
         pmb.disable_unroll_loops = True
         pmb.loop_vectorize = False
         pmb.slp_vectorize = False
@@ -43,6 +85,12 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
         pm = ll.ModulePassManager()
         pmb.populate(pm)
         pm.run(self._final_module)
+
+    def optimize_final_module(self):
+        """Public member function to optimize the final LLVM module in the
+        library. The function calls the protected overridden function.
+        """
+        self._optimize_final_module()
 
     def _finalize_specific(self):
         # Fix global naming
@@ -54,6 +102,10 @@ class SPIRVCodeLibrary(CPUCodeLibrary):
         # Return nothing: we can only dump assembler code when it is later
         # generated (in numba_dpex.compiler).
         return None
+
+    @property
+    def final_module(self):
+        return self._final_module
 
 
 class JITSPIRVCodegen(CPUCodegen):
@@ -68,7 +120,7 @@ class JITSPIRVCodegen(CPUCodegen):
         self._data_layout = SPIR_DATA_LAYOUT[utils.MACHINE_BITS]
         self._target_data = ll.create_target_data(self._data_layout)
         self._tm_features = (
-            ""  # We need this for chaching, not sure about this value for now
+            ""  # We need this for caching, not sure about this value for now
         )
 
     def _create_empty_module(self, name):

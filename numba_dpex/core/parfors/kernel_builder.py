@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -25,7 +25,7 @@ from numba.core.typing import signature
 from numba.parfors import parfor
 
 import numba_dpex as dpex
-from numba_dpex import config
+from numba_dpex.core import config
 
 from ..descriptor import dpex_kernel_target
 from ..types import DpnpNdArray, USMNdArray
@@ -40,7 +40,7 @@ class ParforKernel:
         signature,
         kernel_args,
         kernel_arg_types,
-        queue,
+        queue: dpctl.SyclQueue,
     ):
         self.name = name
         self.kernel = kernel
@@ -80,7 +80,7 @@ def _compile_kernel_parfor(
     )
 
     dpctl_create_program_from_spirv_flags = []
-    if debug or config.OPT == 0:
+    if debug or config.DPEX_OPT == 0:
         # if debug is ON we need to pass additional flags to igc.
         dpctl_create_program_from_spirv_flags = ["-g", "-cl-opt-disable"]
 
@@ -244,7 +244,7 @@ def create_kernel_for_parfor(
     has_aliases,
     races,
     parfor_outputs,
-):
+) -> ParforKernel:
     """
     Creates a numba_dpex.kernel function for a parfor node.
 
@@ -422,7 +422,7 @@ def create_kernel_for_parfor(
     # arrays are on same device. We can take the queue from the first input
     # array and use that to compile the kernel.
 
-    exec_queue = None
+    exec_queue: dpctl.SyclQueue = None
 
     for arg in parfor_args:
         obj = typemap[arg]

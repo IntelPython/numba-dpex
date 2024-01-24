@@ -14,10 +14,11 @@ env:
   PACKAGE_NAME: numba-dpex
   MODULE_NAME: numba_dpex
   # There is a separate action that removes defaults.
-  CHANNELS: 'dppy/label/dev,conda-forge,intel'
+  CHANNELS: 'dppy/label/dev,conda-forge,intel,numba,nodefaults'
   VER_JSON_NAME: 'version.json'
   VER_SCRIPT1: "import json; f = open('version.json', 'r'); j = json.load(f); f.close(); "
   VER_SCRIPT2: "d = j['numba-dpex'][0]; print('='.join((d[s] for s in ('version', 'build'))))"
+  PYTHONIOENCODING: 'utf-8'
 
 jobs:
   build:
@@ -44,7 +45,7 @@ jobs:
           access_token: ${{ github.token }}
 
       - name: Checkout ${{ env.PACKAGE_NAME }} repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -63,7 +64,10 @@ jobs:
         run: conda config --remove channels defaults
 
       - name: Store conda paths as envs
-        run: echo "CONDA_BLD=$CONDA_PREFIX/conda-bld/${{ runner.os == 'Linux' && 'linux' || 'win' }}-64/" | tr "\\" '/' >> $GITHUB_ENV
+        run: |
+          echo "CONDA_BLD=$CONDA_PREFIX/conda-bld/${{ runner.os == 'Linux' && 'linux' || 'win' }}-64/" | tr "\\" '/' >> $GITHUB_ENV
+          echo "WHEELS_OUTPUT_FOLDER=$GITHUB_WORKSPACE${{ runner.os == 'Linux' && '/' || '\\' }}" >> $GITHUB_ENV
+          echo "WHEELS_NAME=$PACKAGE_NAME" | tr "-" "_" >> $GITHUB_ENV
 
       # boa is an extention to conda so we can use mamba resolver in conda build
       - name: Install conda-build
@@ -78,6 +82,11 @@ jobs:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
           path: ${{ env.CONDA_BLD }}${{ env.PACKAGE_NAME }}-*.tar.bz2
 
+      - name: Upload wheels artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Wheels Python ${{ matrix.python }}
+          path: ${{ env.WHEELS_OUTPUT_FOLDER }}${{ env.WHEELS_NAME }}-*.whl
 
   test:
     name: Test ['${{ matrix.os }}', python='${{ matrix.python }}']
@@ -96,8 +105,13 @@ jobs:
         python: ['3.9', '3.10', '3.11']
         os: [ubuntu-20.04, ubuntu-latest, windows-latest]
         experimental: [false]
+        use_mlir: [false]
+        run_gdb: [true, false]
+        exclude:
+          - os: windows-latest
+            run_gdb: true
 
-    continue-on-error: ${{ matrix.experimental }}
+    continue-on-error: ${{ matrix.experimental || matrix.use_mlir }}
 
     steps:
       - name: Setup miniconda
@@ -159,7 +173,11 @@ jobs:
       # We want to make sure that all dependecies install automatically.
       # intel::intel-opencl-rt is needed for set-intel-ocl-icd-registry.ps1
       - name: Install builded package
-        run: mamba install ${{ env.PACKAGE_NAME }}=${{ env.PACKAGE_VERSION }} intel::intel-opencl-rt pytest -c ${{ env.CHANNEL_PATH }}
+        run: mamba install ${{ env.PACKAGE_NAME }}=${{ env.PACKAGE_VERSION }} intel::intel-opencl-rt pytest-cov conda-tree -c ${{ env.CHANNEL_PATH }}
+
+      - name: Install numba-mlir
+        if: matrix.use_mlir
+        run: mamba install numba-mlir -c dppy/label/dev -c conda-forge -c intel
 
       - name: Setup OpenCL CPU device
         if: runner.os == 'Windows'
@@ -168,6 +186,13 @@ jobs:
           $script_path="$env:CONDA_PREFIX\Scripts\set-intel-ocl-icd-registry.ps1"
           &$script_path
 
+      - name: Checkout setup config
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            pyproject.toml
+          sparse-checkout-cone-mode: false
+
       - name: List installed packages
         run: conda list
 
@@ -175,14 +200,28 @@ jobs:
         run: |
           python -c "import dpcpp_llvm_spirv as p; print(p.get_llvm_spirv_path())"
 
+      - name: Check dependency tree
+        run: conda-tree depends -t numba-dpex
+
       - name: Smoke test
+        env:
+          NUMBA_DPEX_USE_MLIR: ${{ matrix.use_mlir && '1' || '0'  }}
         run: python -c "import dpnp, dpctl, numba_dpex; dpctl.lsplatform()"
 
+      - name: Smoke test - test import with no default device
+        env:
+          ONEAPI_DEVICE_SELECTOR: unknown:unknown
+        run: python -c "import numba_dpex"
+
       - name: Run tests
+        if: ${{!matrix.run_gdb}}
+        env:
+          NUMBA_DPEX_USE_MLIR: ${{ matrix.use_mlir && '1' || '0'  }}
         run: |
           pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }} -vv
 
       - name: Run examples
+        if: ${{!matrix.run_gdb}}
         shell: bash -l {0}
         run: |
           cd ${{ env.EXAMPLES_PATH }}
@@ -191,6 +230,21 @@ jobs:
             echo "Executing ${script}"
             python ${script} || exit 1
           done
+
+      - name: Run gdb tests
+        if: ${{matrix.run_gdb}}
+        env:
+          GDB_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/fcea1bcd-6a63-4849-b304-906ff71dc2c0/l_dpcpp_dbg_p_2023.2.0.49333_offline.sh
+          GDB_INSTALLER: l_dpcpp_dbg_p_2023.2.0.49333_offline.sh
+        run: |
+          conda install pexpect
+          wget -nc -q ${{ env.GDB_URL }}
+          chmod +x ${{ env.GDB_INSTALLER }}
+          mkdir /tmp/gdb
+          export ONEAPI_ROOT=/tmp/gdb
+          ./${{ env.GDB_INSTALLER }} -a -s --eula accept --install-dir $ONEAPI_ROOT
+          source $ONEAPI_ROOT/debugger/latest/env/vars.sh
+          pytest -q -ra --disable-warnings --pyargs ${{ env.MODULE_NAME }}.tests.debugging -vv
 
   upload_anaconda:
     name: Upload dppy/label/dev ['${{ matrix.os }}', python='${{ matrix.python }}']
@@ -217,6 +271,11 @@ jobs:
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 
+      - name: Download wheels artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Wheels Python ${{ matrix.python }}
+
       - name: Setup miniconda
         uses: conda-incubator/setup-miniconda@v2
         with:
@@ -233,3 +292,43 @@ jobs:
 
       - name: Upload
         run: anaconda --token ${{ secrets.ANACONDA_TOKEN }} upload --user dppy --label dev ${{ env.PACKAGE_NAME }}-*.tar.bz2
+
+      - name: Package version
+        run: echo "PACKAGE_VERSION=$(basename ${{ env.PACKAGE_NAME }}-*.tar.bz2 | sed 's/^${{ env.PACKAGE_NAME }}-\([^-]*\).*/\1/')" >> $GITHUB_ENV
+
+      - name: Store wheels name
+        run: |
+          echo "WHEELS_NAME=$PACKAGE_NAME" | tr "-" "_" >> $GITHUB_ENV
+
+      - name: Upload Wheels
+        run: anaconda --token ${{ secrets.ANACONDA_TOKEN }} upload --user dppy --label dev ${{ env.WHEELS_NAME }}-*.whl --version ${{ env.PACKAGE_VERSION }}
+
+  cleanup_packages:
+    name: Clean up anaconda packages
+    needs: [upload_anaconda]
+    runs-on: 'ubuntu-latest'
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          run-post: false
+          channel-priority: "disabled"
+          channels: conda-forge
+          python-version: '3.11'
+
+      - name: Install anaconda-client
+        run: conda install anaconda-client
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          repository: IntelPython/devops-tools
+          fetch-depth: 0
+
+      - name: Cleanup old packages
+        run: |
+          python scripts/cleanup-old-packages.py \
+          --verbose --force --token ${{ secrets.ANACONDA_TOKEN }} \
+          --package dppy/${{ env.PACKAGE_NAME }} --label dev

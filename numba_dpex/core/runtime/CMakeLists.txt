@@ -24,6 +24,10 @@ project(_dpexrt_python
     DESCRIPTION "A Python C extension for numba-dpex runtime."
 )
 
+# Help conda build find path from both host and build env.
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE BOTH)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY BOTH)
+
 # Get numba include path
 if(NOT DEFINED Numba_INCLUDE_DIRS)
     execute_process(
@@ -81,18 +85,20 @@ message(STATUS "CMAKE_MODULE_PATH=" "${CMAKE_MODULE_PATH}")
 find_package(Python 3.9 REQUIRED
   COMPONENTS Interpreter Development.Module NumPy)
 find_package(Dpctl REQUIRED)
-find_package(NumPy REQUIRED)
+find_package(IntelSYCL REQUIRED)
 
 # Includes
 include(GNUInstallDirs)
 include_directories(${Python_INCLUDE_DIRS})
-include_directories(${NumPy_INCLUDE_DIRS})
+include_directories(${Python_NumPy_INCLUDE_DIRS})
 include_directories(${Numba_INCLUDE_DIRS})
 include_directories(${Dpctl_INCLUDE_DIRS})
 include_directories(.)
 
 # Source files, *.c
-file(GLOB SOURCES "*.c")
+file(GLOB_RECURSE DPEXRT_SOURCES CONFIGURE_DEPENDS "*.c")
+file(GLOB_RECURSE KERNEL_SOURCES CONFIGURE_DEPENDS "*.cpp")
+set(SOURCES ${DPEXRT_SOURCES} ${KERNEL_SOURCES})
 
 # Link dpctl library path with -L
 link_directories(${DPCTL_LIBRARY_PATH})
@@ -100,19 +106,11 @@ link_directories(${DPCTL_LIBRARY_PATH})
 # Output static library, *.so or *.dll
 python_add_library(${PROJECT_NAME} MODULE ${SOURCES})
 
+# Add SYCL to target, this must come after python_add_library()
+add_sycl_to_target(TARGET ${PROJECT_NAME} SOURCES ${KERNEL_SOURCES})
+
 # Link the DPCTLSyclInterface library to target
 target_link_libraries(${PROJECT_NAME} PRIVATE DPCTLSyclInterface)
-
-# If IS_DEVELOP, copy back the target into numba_dpex/core/runtime
-if(IS_DEVELOP)
-    add_custom_command(
-        TARGET ${PROJECT_NAME}
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-        ${CMAKE_BINARY_DIR}/numba_dpex/core/runtime/*.so
-        ${CMAKE_SOURCE_DIR}/numba_dpex/core/runtime/
-    )
-endif()
 
 # Install
 install(

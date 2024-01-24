@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -9,7 +9,7 @@ import sys
 
 import pytest
 
-from numba_dpex import config
+from numba_dpex.core import config
 
 from .common import script_path
 

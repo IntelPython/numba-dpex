@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -32,6 +32,8 @@ def test_boxing_unboxing():
     assert a.device == b.device
     assert a.strides == b.strides
     assert a.dtype == b.dtype
+    # To ensure we are returning the original array when boxing
+    assert id(a) == id(b)
 
 
 def test_stride_calc_at_unboxing():

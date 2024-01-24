@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -41,7 +41,6 @@ class ExtendedParforDiagnostics(ParforDiagnostics):
             tmp.append([])
 
         summary = dict()
-        # region : {fused, serialized}
 
         def print_nest(fadj_, nadj_, theroot, reported, region_id):
             def print_g(fadj_, nadj_, nroot, depth):

@@ -1,10 +1,8 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
 import numpy as np
-from numba.core import types
-from numba.core.datamodel.models import StructModel
 from numba.core.types.npytypes import Array
 
 

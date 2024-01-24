@@ -1,7 +1,8 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
+import copy
 
 import dpnp
 import numpy as np
@@ -11,23 +12,50 @@ from numba_dpex.core.typing import dpnpdecl
 
 from ..ocl import mathimpl
 
+# A global instance of dpnp ufuncs that are supported by numba-dpex
+_dpnp_ufunc_db = None
+
+
+def _lazy_init_dpnp_db():
+    global _dpnp_ufunc_db
+
+    if _dpnp_ufunc_db is None:
+        _dpnp_ufunc_db = {}
+        _fill_ufunc_db_with_dpnp_ufuncs(_dpnp_ufunc_db)
+
 
 def get_ufuncs():
-    """obtain a list of supported ufuncs in the db"""
+    """Returns the list of supported dpnp ufuncs in the _dpnp_ufunc_db"""
+
+    _lazy_init_dpnp_db()
+
+    return _dpnp_ufunc_db.keys()
+
+
+def get_ufunc_info(ufunc_key):
+    """get the lowering information for the ufunc with key ufunc_key.
+
+    The lowering information is a dictionary that maps from a numpy
+    loop string (as given by the ufunc types attribute) to a function
+    that handles code generation for a scalar version of the ufunc
+    (that is, generates the "per element" operation").
+
+    raises a KeyError if the ufunc is not in the ufunc_db
+    """
+    _lazy_init_dpnp_db()
+    return _dpnp_ufunc_db[ufunc_key]
+
+
+def _fill_ufunc_db_with_dpnp_ufuncs(ufunc_db):
+    """Populates the _dpnp_ufunc_db from Numba's NumPy ufunc_db"""
 
     from numba.np.ufunc_db import _lazy_init_db
 
     _lazy_init_db()
+
+    # we need to import it after, because before init it is None and
+    # variable is passed by value
     from numba.np.ufunc_db import _ufunc_db
-
-    _fill_ufunc_db_with_dpnp_ufuncs(_ufunc_db)
-
-    return _ufunc_db.keys()
-
-
-def _fill_ufunc_db_with_dpnp_ufuncs(ufunc_db):
-    """Monkey patching dpnp for missing attributes."""
-    # FIXME: add more docstring
 
     for ufuncop in dpnpdecl.supported_ufuncs:
         if ufuncop == "erf":
@@ -52,7 +80,12 @@ def _fill_ufunc_db_with_dpnp_ufuncs(ufunc_db):
             op.nargs = npop.nargs
             op.types = npop.types
             op.is_dpnp_ufunc = True
-            ufunc_db.update({op: ufunc_db[npop]})
+            cp = copy.copy(_ufunc_db[npop])
+            if "'divide'" in str(npop):
+                # TODO: why do we need to do it only for divide?
+                # https://github.com/IntelPython/numba-dpex/issues/1270
+                ufunc_db.update({npop: cp})
+            ufunc_db.update({op: cp})
             for key in list(ufunc_db[op].keys()):
                 if (
                     "FF->" in key

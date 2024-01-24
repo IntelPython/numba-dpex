@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -7,12 +7,13 @@
 
 from functools import cached_property
 
-from numba.core import utils
-from numba.core.codegen import JITCPUCodegen
+from numba.core import typing
 from numba.core.compiler_lock import global_compiler_lock
 from numba.core.cpu import CPUContext
-from numba.core.imputils import Registry, RegistryLoader
+from numba.core.imputils import Registry
 from numba.core.target_extension import CPU, target_registry
+
+from numba_dpex.dpnp_iface import dpnp_ufunc_db
 
 
 class Dpex(CPU):
@@ -25,8 +26,18 @@ DPEX_TARGET_NAME = "dpex"
 # permits lookup and reference in user space by the string "dpex"
 target_registry[DPEX_TARGET_NAME] = Dpex
 
-# This is the function registry for the dpu, it just has one registry, this one!
 dpex_function_registry = Registry()
+
+
+class DpexTypingContext(typing.Context):
+    """Custom typing context to support dpjit compilation."""
+
+    def load_additional_registries(self):
+        """Register dpjit specific functions like dpnp ufuncs."""
+        from numba_dpex.core.typing import dpnpdecl
+
+        self.install_registry(dpnpdecl.registry)
+        super().load_additional_registries()
 
 
 class DpexTargetContext(CPUContext):
@@ -35,12 +46,14 @@ class DpexTargetContext(CPUContext):
 
     @global_compiler_lock
     def init(self):
-        self.is32bit = utils.MACHINE_BITS == 32
-        self._internal_codegen = JITCPUCodegen("numba.exec")
         self.lower_extensions = {}
+        super().init()
+
+        # TODO: initialize nrt once switched to nrt from drt. Most likely we
+        # call it somewhere. Double check.
+        # https://github.com/IntelPython/numba-dpex/issues/1175
         # Initialize NRT runtime
-        # rtsys.initialize(self)
-        self.refresh()
+        # rtsys.initialize(self) # noqa: E800
 
     @cached_property
     def dpexrt(self):
@@ -48,15 +61,15 @@ class DpexTargetContext(CPUContext):
 
         return DpexRTContext(self)
 
-    def refresh(self):
-        registry = dpex_function_registry
-        try:
-            loader = self._registries[registry]
-        except KeyError:
-            loader = RegistryLoader(registry)
-            self._registries[registry] = loader
-        self.install_registry(registry)
-        # Also refresh typing context, since @overload declarations can
-        # affect it.
-        self.typing_context.refresh()
-        super().refresh()
+    def load_additional_registries(self):
+        """
+        Load dpjit-specific registries.
+        """
+        self.install_registry(dpex_function_registry)
+
+        # loading CPU specific registries
+        super().load_additional_registries()
+
+    # TODO: do we need it?
+    def get_ufunc_info(self, ufunc_key):
+        return dpnp_ufunc_db.get_ufunc_info(ufunc_key)

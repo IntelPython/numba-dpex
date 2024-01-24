@@ -3,14 +3,13 @@ channels:
   - dppy/label/dev
   - numba
   - intel
-  - numba/label/dev
   - conda-forge
   - nodefaults
 dependencies:
   - libffi
   - gxx_linux-64
-  - dpcpp_linux-64
-  - numba=0.57
+  - dpcpp_linux-64>=2023.2,!=2024.0.1,!=2024.0.2
+  - numba==0.58*
   - dpctl
   - dpnp
   - dpcpp-llvm-spirv

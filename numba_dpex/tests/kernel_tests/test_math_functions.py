@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -43,7 +43,7 @@ def test_binary_ops(unary_op, input_arrays):
         i = dpex.get_global_id(0)
         b[i] = uop(a[i])
 
-    f[dpex.Range(a.size)](a, b)
+    dpex.call_kernel(f, dpex.Range(a.size), a, b)
 
     expected = dpnp_uop(a)
 

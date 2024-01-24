@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -34,4 +34,4 @@ def test_ndrange_config_error(error, ranges):
 
     with pytest.raises(error):
         range = NdRange(ranges[0], ranges[1])
-        kernel_vector_sum[range](a, b, c)
+        ndpx.call_kernel(kernel_vector_sum, range, a, b, c)

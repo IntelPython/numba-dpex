@@ -1,0 +1,23 @@
+name: dev
+channels:
+  - dppy/label/dev
+  - numba
+  - intel
+  - conda-forge
+  - nodefaults
+dependencies:
+  - libffi
+  - numba==0.58*
+  - dpctl
+  - dpnp
+  - dpcpp-llvm-spirv
+  - opencl_rt
+  - coverage
+  - pytest
+  - pytest-cov
+  - pytest-xdist
+  - pexpect
+  - scikit-build>=0.15*
+  - cmake>=3.26*
+  - pre-commit
+  - pylint

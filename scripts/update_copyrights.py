@@ -30,4 +30,7 @@ def update_copyrights(root_dir, year):
 path = os.path.dirname(os.path.realpath(__file__))
 source_path = os.path.dirname(path)
 
-update_copyrights(source_path + "/numba_dpex", 2023)
+if __name__ == "__main__":
+    print("Provide new copyright year:")
+    year = input()
+    update_copyrights(source_path + "/numba_dpex", year)

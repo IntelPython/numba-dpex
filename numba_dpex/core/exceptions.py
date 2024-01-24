@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020 - 2023 Intel Corporation
+# SPDX-FileCopyrightText: 2020 - 2024 Intel Corporation
 #
 # SPDX-License-Identifier: Apache-2.0
 
@@ -215,6 +215,12 @@ class ExecutionQueueInferenceError(Exception):
                 f"usm_ndarray arguments {usmarray_args} were not allocated "
                 "on the same queue."
             )
+        else:
+            self.message = (
+                f'Execution queue for kernel "{kernel_name}" could '
+                "be deduced using compute follows data programming model. The "
+                "kernel has no USMNdArray argument."
+            )
         super().__init__(self.message)
 
 
@@ -379,4 +385,30 @@ class UnsupportedParforError(Exception):
         self.message = "Expression cannot be offloaded"
         if extra_msg:
             self.message += " due to " + extra_msg
+        super().__init__(self.message)
+
+
+class IllegalIntEnumLiteralValueError(Exception):
+    """Exception raised when an IntEnumLiteral is attempted to be created from
+    a non FlagEnum attribute.
+    """
+
+    def __init__(self) -> None:
+        self.message = (
+            "An IntEnumLiteral can only be initialized from a FlagEnum member"
+        )
+        super().__init__(self.message)
+
+
+class InternalError(Exception):
+    """
+    Exception raise when something in the internal compiler machinery failed.
+    """
+
+    def __init__(self, extra_msg=None) -> None:
+        if extra_msg is None:
+            self.message = "An internal compiler error happened and the "
+            "compilation failed."
+        else:
+            self.message = extra_msg
         super().__init__(self.message)
