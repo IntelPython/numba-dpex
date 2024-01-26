@@ -225,7 +225,7 @@ jobs:
         shell: bash -l {0}
         run: |
           cd ${{ env.EXAMPLES_PATH }}
-          for script in $(find . \( -not -name "_*" -not -name "side-by-side*" -not -name "vectorize.py" -not -name "scan.py" -and -name "*.py" \))
+          for script in $(find . \( -not -name "_*" -not -name "side-by-side*" -not -name "scan.py" -and -name "*.py" \))
           do
             echo "Executing ${script}"
             python ${script} || exit 1
