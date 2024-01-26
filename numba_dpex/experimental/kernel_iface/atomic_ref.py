@@ -78,7 +78,7 @@ class AtomicRef:
         Returns the original value of the object.
 
         Args:
-            val : Value to be subtracted to the object referenced by the
+            val : Value to be subtracted from the object referenced by the
             AtomicRef.
 
         Returns: The original value of the object referenced by the AtomicRef.
@@ -94,7 +94,7 @@ class AtomicRef:
         referenced object. Returns the original value of the object.
 
         Args:
-            val : Value to be compared against to the object referenced by the
+            val : Value to be compared against the object referenced by the
             AtomicRef.
 
         Returns: The original value of the object referenced by the AtomicRef.
@@ -110,7 +110,7 @@ class AtomicRef:
         referenced object. Returns the original value of the object.
 
         Args:
-            val : Value to be compared against to the object referenced by the
+            val : Value to be compared against the object referenced by the
             AtomicRef.
 
         Returns: The original value of the object referenced by the AtomicRef.
@@ -126,7 +126,7 @@ class AtomicRef:
         referenced object. Returns the original value of the object.
 
         Args:
-            val : Value to be bitwise ANDed against to the object referenced by
+            val : Value to be bitwise ANDed against the object referenced by
             the AtomicRef.
 
         Returns: The original value of the object referenced by the AtomicRef.
@@ -142,7 +142,7 @@ class AtomicRef:
         referenced object. Returns the original value of the object.
 
         Args:
-            val : Value to be bitwise ORed against to the object referenced by
+            val : Value to be bitwise ORed against the object referenced by
             the AtomicRef.
 
         Returns: The original value of the object referenced by the AtomicRef.
@@ -158,7 +158,7 @@ class AtomicRef:
         referenced object. Returns the original value of the object.
 
         Args:
-            val : Value to be bitwise XORed against to the object referenced by
+            val : Value to be bitwise XORed against the object referenced by
             the AtomicRef.
 
         Returns: The original value of the object referenced by the AtomicRef.
@@ -166,4 +166,37 @@ class AtomicRef:
         """
         old = self._ref[self._index]
         self._ref[self._index] ^= val
+        return old
+
+    def load(self):
+        """Loads the value of the object referenced by the AtomicRef.
+
+        Returns: The value of the object referenced by the AtomicRef.
+
+        """
+        return self._ref[self._index]
+
+    def store(self, val):
+        """Stores operand ``val`` to the object referenced by the AtomicRef.
+
+        Args:
+            val : Value to be stored in the object referenced by
+            the AtomicRef.
+
+        """
+        self._ref[self._index] = val
+
+    def exchange(self, val):
+        """Replaces the value of the object referenced by the AtomicRef
+        with value of ``val``. Returns the original value of the referenced object.
+
+        Args:
+            val : Value to be exchanged against the object referenced by
+            the AtomicRef.
+
+        Returns: The original value of the object referenced by the AtomicRef.
+
+        """
+        old = self._ref[self._index]
+        self._ref[self._index] = val
         return old
