@@ -24,6 +24,11 @@ from ._spv_atomic_inst_helper import (
     get_memory_semantics_mask,
     get_scope,
 )
+from .spv_fn_generator import (
+    get_or_insert_atomic_load_fn,
+    get_or_insert_spv_atomic_exchange_fn,
+    get_or_insert_spv_atomic_store_fn,
+)
 
 
 def _parse_enum_or_int_literal_(literal_int) -> int:
@@ -217,44 +222,22 @@ def _intrinsic_load(
 
     def _intrinsic_load_gen(context, builder, sig, args):
         atomic_ref_ty = sig.args[0]
-        atomic_ref_dtype = atomic_ref_ty.dtype
-        retty = context.get_value_type(atomic_ref_dtype)
-
-        data_attr_pos = context.data_model_manager.lookup(
-            atomic_ref_ty
-        ).get_field_position("ref")
-
-        ptr_type = retty.as_pointer()
-        ptr_type.addrspace = atomic_ref_ty.address_space
-
-        spirv_fn_arg_types = [
-            ptr_type,
-            llvmir.IntType(32),
-            llvmir.IntType(32),
-        ]
-
-        mangled_fn_name = ext_itanium_mangler.mangle_ext(
-            "__spirv_AtomicLoad",
-            [
-                types.CPointer(atomic_ref_dtype, addrspace=ptr_type.addrspace),
-                "__spv.Scope.Flag",
-                "__spv.MemorySemanticsMask.Flag",
-            ],
+        fn = get_or_insert_atomic_load_fn(
+            context, builder.module, atomic_ref_ty
         )
 
-        fn = cgutils.get_or_insert_function(
-            builder.module,
-            llvmir.FunctionType(retty, spirv_fn_arg_types),
-            mangled_fn_name,
-        )
-        fn.calling_convention = CC_SPIR_FUNC
         spirv_memory_semantics_mask = get_memory_semantics_mask(
             atomic_ref_ty.memory_order
         )
         spirv_scope = get_scope(atomic_ref_ty.memory_scope)
 
         fn_args = [
-            builder.extract_value(args[0], data_attr_pos),
+            builder.extract_value(
+                args[0],
+                context.data_model_manager.lookup(
+                    atomic_ref_ty
+                ).get_field_position("ref"),
+            ),
             context.get_constant(types.int32, spirv_scope),
             context.get_constant(types.int32, spirv_memory_semantics_mask),
         ]
@@ -264,56 +247,6 @@ def _intrinsic_load(
     return sig, _intrinsic_load_gen
 
 
-def _store_exchange_intrisic_helper(context, builder, sig, ol_info: dict):
-    atomic_ref_ty = sig.args[0]
-    atomic_ref_dtype = atomic_ref_ty.dtype
-
-    ptr_type = context.get_value_type(atomic_ref_dtype).as_pointer()
-    ptr_type.addrspace = atomic_ref_ty.address_space
-
-    spirv_fn_arg_types = [
-        ptr_type,
-        llvmir.IntType(32),
-        llvmir.IntType(32),
-        context.get_value_type(atomic_ref_dtype),
-    ]
-
-    mangled_fn_name = ext_itanium_mangler.mangle_ext(
-        ol_info["name"],
-        [
-            types.CPointer(atomic_ref_dtype, addrspace=ptr_type.addrspace),
-            "__spv.Scope.Flag",
-            "__spv.MemorySemanticsMask.Flag",
-            atomic_ref_dtype,
-        ],
-    )
-
-    fn = cgutils.get_or_insert_function(
-        builder.module,
-        llvmir.FunctionType(ol_info["retty"], spirv_fn_arg_types),
-        mangled_fn_name,
-    )
-    fn.calling_convention = CC_SPIR_FUNC
-
-    fn_args = [
-        builder.extract_value(
-            ol_info["args"][0],
-            context.data_model_manager.lookup(atomic_ref_ty).get_field_position(
-                "ref"
-            ),
-        ),
-        context.get_constant(
-            types.int32, get_scope(atomic_ref_ty.memory_scope)
-        ),
-        context.get_constant(
-            types.int32, get_memory_semantics_mask(atomic_ref_ty.memory_order)
-        ),
-        ol_info["args"][1],
-    ]
-
-    return builder.call(fn, fn_args)
-
-
 @intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
 def _intrinsic_store(
     ty_context, ty_atomic_ref, ty_val
@@ -321,18 +254,29 @@ def _intrinsic_store(
     sig = types.void(ty_atomic_ref, ty_val)
 
     def _intrinsic_store_gen(context, builder, sig, args):
-        _store_exchange_intrisic_helper(
-            context,
-            builder,
-            sig,
-            # dict containing arguments, return type,
-            # spirv fn name driven by pylint too-many-args
-            {
-                "args": args,
-                "retty": llvmir.VoidType(),
-                "name": "__spirv_AtomicStore",
-            },
+        atomic_ref_ty = sig.args[0]
+        atomic_store_fn = get_or_insert_spv_atomic_store_fn(
+            context, builder.module, atomic_ref_ty
         )
+
+        atomic_store_fn_args = [
+            builder.extract_value(
+                args[0],
+                context.data_model_manager.lookup(
+                    atomic_ref_ty
+                ).get_field_position("ref"),
+            ),
+            context.get_constant(
+                types.int32, get_scope(atomic_ref_ty.memory_scope)
+            ),
+            context.get_constant(
+                types.int32,
+                get_memory_semantics_mask(atomic_ref_ty.memory_order),
+            ),
+            args[1],
+        ]
+
+        builder.call(atomic_store_fn, atomic_store_fn_args)
 
     return sig, _intrinsic_store_gen
 
@@ -344,18 +288,29 @@ def _intrinsic_exchange(
     sig = ty_atomic_ref.dtype(ty_atomic_ref, ty_val)
 
     def _intrinsic_exchange_gen(context, builder, sig, args):
-        return _store_exchange_intrisic_helper(
-            context,
-            builder,
-            sig,
-            # dict containing arguments, return type,
-            # spirv fn name driven by pylint too-many-args
-            {
-                "args": args,
-                "retty": context.get_value_type(sig.args[0].dtype),
-                "name": "__spirv_AtomicExchange",
-            },
+        atomic_ref_ty = sig.args[0]
+        atomic_exchange_fn = get_or_insert_spv_atomic_exchange_fn(
+            context, builder.module, atomic_ref_ty
         )
+
+        atomic_exchange_fn_args = [
+            builder.extract_value(
+                args[0],
+                context.data_model_manager.lookup(
+                    atomic_ref_ty
+                ).get_field_position("ref"),
+            ),
+            context.get_constant(
+                types.int32, get_scope(atomic_ref_ty.memory_scope)
+            ),
+            context.get_constant(
+                types.int32,
+                get_memory_semantics_mask(atomic_ref_ty.memory_order),
+            ),
+            args[1],
+        ]
+
+        return builder.call(atomic_exchange_fn, atomic_exchange_fn_args)
 
     return sig, _intrinsic_exchange_gen
 
