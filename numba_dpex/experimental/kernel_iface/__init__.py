@@ -9,11 +9,12 @@ numba_dpex.kernel.
 """
 
 from .atomic_ref import AtomicRef
-from .barrier import group_barrier
+from .barrier import group_barrier, sub_group_barrier
 from .memory_enums import AddressSpace, MemoryOrder, MemoryScope
 
 __all__ = [
     "group_barrier",
+    "sub_group_barrier",
     "AddressSpace",
     "AtomicRef",
     "MemoryOrder",

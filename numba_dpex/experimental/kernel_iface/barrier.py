@@ -34,3 +34,18 @@ def group_barrier(fence_scope=MemoryScope.WORK_GROUP):
 
     # TODO: A pure Python simulation of a group_barrier will be added later.
     raise NotImplementedError
+
+
+def sub_group_barrier(fence_scope=MemoryScope.SUB_GROUP):
+    """Performs a barrier operation across all work-items in a sub-group.
+
+    Modeled after ``sycl::group_barrier`` function when invoked on a
+    sub-group. Refer :func:`group_barrier` for further details.
+
+    Args:
+        fence_scope (optional): scope of any memory consistency
+        operations that are performed by the barrier.
+    """
+
+    # TODO: A pure Python simulation of a sub_group_barrier will be added later.
+    raise NotImplementedError

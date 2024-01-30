@@ -11,7 +11,10 @@ from numba.core import cgutils, types
 from numba.extending import intrinsic, overload
 
 from numba_dpex.core import itanium_mangler as ext_itanium_mangler
-from numba_dpex.experimental.kernel_iface import group_barrier
+from numba_dpex.experimental.kernel_iface import (
+    group_barrier,
+    sub_group_barrier,
+)
 from numba_dpex.experimental.kernel_iface.memory_enums import (
     MemoryOrder,
     MemoryScope,
@@ -129,3 +132,33 @@ def ol_group_barrier(fence_scope=MemoryScope.WORK_GROUP):
         )
 
     return _ol_group_barrier_impl
+
+
+@overload(
+    sub_group_barrier,
+    prefer_literal=True,
+    target=DPEX_KERNEL_EXP_TARGET_NAME,
+)
+def ol_sub_group_barrier(fence_scope=MemoryScope.SUB_GROUP):
+    """SPIR-V overload for
+    :meth:`numba_dpex.experimental.kernel_iface.sub_group_barrier`.
+
+    Generates the same LLVM IR instruction as dpcpp for the
+    `sub_group_barrier` function.
+    """
+    mem_scope = _get_memory_scope(fence_scope)
+    # exec_scope is always set to `sub_group`
+    exec_scope = get_scope(MemoryScope.SUB_GROUP.value)
+    spirv_memory_semantics_mask = get_memory_semantics_mask(
+        MemoryOrder.SEQ_CST.value
+    )
+
+    def _ol_sub_group_barrier_impl(
+        fence_scope=MemoryScope.SUB_GROUP,
+    ):  # pylint: disable=unused-argument
+        # pylint: disable=no-value-for-parameter
+        return _intrinsic_barrier(
+            exec_scope, mem_scope, spirv_memory_semantics_mask
+        )
+
+    return _ol_sub_group_barrier_impl
