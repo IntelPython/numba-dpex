@@ -24,6 +24,11 @@ from ._spv_atomic_inst_helper import (
     get_memory_semantics_mask,
     get_scope,
 )
+from .spv_fn_generator import (
+    get_or_insert_atomic_load_fn,
+    get_or_insert_spv_atomic_exchange_fn,
+    get_or_insert_spv_atomic_store_fn,
+)
 
 
 def _parse_enum_or_int_literal_(literal_int) -> int:
@@ -207,6 +212,107 @@ def _intrinsic_atomic_ref_ctor(
         sig,
         codegen,
     )
+
+
+@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+def _intrinsic_load(
+    ty_context, ty_atomic_ref  # pylint: disable=unused-argument
+):
+    sig = ty_atomic_ref.dtype(ty_atomic_ref)
+
+    def _intrinsic_load_gen(context, builder, sig, args):
+        atomic_ref_ty = sig.args[0]
+        fn = get_or_insert_atomic_load_fn(
+            context, builder.module, atomic_ref_ty
+        )
+
+        spirv_memory_semantics_mask = get_memory_semantics_mask(
+            atomic_ref_ty.memory_order
+        )
+        spirv_scope = get_scope(atomic_ref_ty.memory_scope)
+
+        fn_args = [
+            builder.extract_value(
+                args[0],
+                context.data_model_manager.lookup(
+                    atomic_ref_ty
+                ).get_field_position("ref"),
+            ),
+            context.get_constant(types.int32, spirv_scope),
+            context.get_constant(types.int32, spirv_memory_semantics_mask),
+        ]
+
+        return builder.call(fn, fn_args)
+
+    return sig, _intrinsic_load_gen
+
+
+@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+def _intrinsic_store(
+    ty_context, ty_atomic_ref, ty_val
+):  # pylint: disable=unused-argument
+    sig = types.void(ty_atomic_ref, ty_val)
+
+    def _intrinsic_store_gen(context, builder, sig, args):
+        atomic_ref_ty = sig.args[0]
+        atomic_store_fn = get_or_insert_spv_atomic_store_fn(
+            context, builder.module, atomic_ref_ty
+        )
+
+        atomic_store_fn_args = [
+            builder.extract_value(
+                args[0],
+                context.data_model_manager.lookup(
+                    atomic_ref_ty
+                ).get_field_position("ref"),
+            ),
+            context.get_constant(
+                types.int32, get_scope(atomic_ref_ty.memory_scope)
+            ),
+            context.get_constant(
+                types.int32,
+                get_memory_semantics_mask(atomic_ref_ty.memory_order),
+            ),
+            args[1],
+        ]
+
+        builder.call(atomic_store_fn, atomic_store_fn_args)
+
+    return sig, _intrinsic_store_gen
+
+
+@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+def _intrinsic_exchange(
+    ty_context, ty_atomic_ref, ty_val  # pylint: disable=unused-argument
+):
+    sig = ty_atomic_ref.dtype(ty_atomic_ref, ty_val)
+
+    def _intrinsic_exchange_gen(context, builder, sig, args):
+        atomic_ref_ty = sig.args[0]
+        atomic_exchange_fn = get_or_insert_spv_atomic_exchange_fn(
+            context, builder.module, atomic_ref_ty
+        )
+
+        atomic_exchange_fn_args = [
+            builder.extract_value(
+                args[0],
+                context.data_model_manager.lookup(
+                    atomic_ref_ty
+                ).get_field_position("ref"),
+            ),
+            context.get_constant(
+                types.int32, get_scope(atomic_ref_ty.memory_scope)
+            ),
+            context.get_constant(
+                types.int32,
+                get_memory_semantics_mask(atomic_ref_ty.memory_order),
+            ),
+            args[1],
+        ]
+
+        return builder.call(atomic_exchange_fn, atomic_exchange_fn_args)
+
+    return sig, _intrinsic_exchange_gen
 
 
 def _check_if_supported_ref(ref):
@@ -516,3 +622,72 @@ def ol_fetch_xor(atomic_ref, val):
         return _intrinsic_fetch_xor(atomic_ref, val)
 
     return ol_fetch_xor_impl
+
+
+@overload_method(AtomicRefType, "load", target=DPEX_KERNEL_EXP_TARGET_NAME)
+def ol_load(atomic_ref):  # pylint: disable=unused-argument
+    """SPIR-V overload for
+    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.load`.
+
+    Generates the same LLVM IR instruction as dpcpp for the
+    `atomic_ref::load` function.
+
+    """
+
+    def ol_load_impl(atomic_ref):
+        # pylint: disable=no-value-for-parameter
+        return _intrinsic_load(atomic_ref)
+
+    return ol_load_impl
+
+
+@overload_method(AtomicRefType, "store", target=DPEX_KERNEL_EXP_TARGET_NAME)
+def ol_store(atomic_ref, val):
+    """SPIR-V overload for
+    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.store`.
+
+    Generates the same LLVM IR instruction as dpcpp for the
+    `atomic_ref::store` function.
+
+    Raises:
+        TypingError: When the dtype of the value stored does not match the
+        dtype of the AtomicRef type.
+    """
+
+    if atomic_ref.dtype != val:
+        raise errors.TypingError(
+            f"Type of value to store: {val} does not match the type of the "
+            f"reference: {atomic_ref.dtype} stored in the atomic ref."
+        )
+
+    def ol_store_impl(atomic_ref, val):
+        # pylint: disable=no-value-for-parameter
+        return _intrinsic_store(atomic_ref, val)
+
+    return ol_store_impl
+
+
+@overload_method(AtomicRefType, "exchange", target=DPEX_KERNEL_EXP_TARGET_NAME)
+def ol_exchange(atomic_ref, val):
+    """SPIR-V overload for
+    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.exchange`.
+
+    Generates the same LLVM IR instruction as dpcpp for the
+    `atomic_ref::exchange` function.
+
+    Raises:
+        TypingError: When the dtype of the value passed to `exchange`
+        does not match the dtype of the AtomicRef type.
+    """
+
+    if atomic_ref.dtype != val:
+        raise errors.TypingError(
+            f"Type of value to exchange: {val} does not match the type of the "
+            f"reference: {atomic_ref.dtype} stored in the atomic ref."
+        )
+
+    def ol_exchange_impl(atomic_ref, val):
+        # pylint: disable=no-value-for-parameter
+        return _intrinsic_exchange(atomic_ref, val)
+
+    return ol_exchange_impl
