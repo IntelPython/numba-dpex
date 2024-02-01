@@ -24,7 +24,7 @@ from numba_dpex.core.exceptions import (
     InvalidKernelLaunchArgsError,
 )
 
-from . import kernel_sim_impl
+from . import simulator_impl
 
 
 class atomic_proxy:
@@ -48,41 +48,41 @@ def mem_fence_proxy(flags):
 class local_proxy:
     @staticmethod
     def array(shape, dtype):
-        return kernel_sim_impl.local_array(shape, dtype)
+        return simulator_impl.local_array(shape, dtype)
 
 
 class private_proxy:
     @staticmethod
     def array(shape, dtype):
-        return kernel_sim_impl.private_array(shape, dtype)
+        return simulator_impl.private_array(shape, dtype)
 
 
 class group_proxy:
     @staticmethod
     def reduce_add(value):
-        return kernel_sim_impl.group_reduce(value, lambda a, b: a + b)
+        return simulator_impl.group_reduce(value, lambda a, b: a + b)
 
 
 class dpex_proxy:
     @staticmethod
     def get_global_id(id):
-        return kernel_sim_impl.get_global_id(id)
+        return simulator_impl.get_global_id(id)
 
     def get_local_id(id):
-        return kernel_sim_impl.get_local_id(id)
+        return simulator_impl.get_local_id(id)
 
 
 def barrier_proxy(flags):
-    kernel_sim_impl.barrier()
+    simulator_impl.barrier()
 
 
 _globals_to_replace = [
     (numba_dpex, dpex_proxy),
-    (get_global_id, kernel_sim_impl.get_global_id),
-    (get_local_id, kernel_sim_impl.get_local_id),
-    (get_group_id, kernel_sim_impl.get_group_id),
-    (get_global_size, kernel_sim_impl.get_global_size),
-    (get_local_size, kernel_sim_impl.get_local_size),
+    (get_global_id, simulator_impl.get_global_id),
+    (get_local_id, simulator_impl.get_local_id),
+    (get_group_id, simulator_impl.get_group_id),
+    (get_global_size, simulator_impl.get_global_size),
+    (get_local_size, simulator_impl.get_local_size),
     (atomic, atomic_proxy),
     (barrier, barrier_proxy),
     (mem_fence, mem_fence_proxy),
@@ -168,7 +168,7 @@ class Kernel:
 
     def __call__(self, *args, **kwargs):
         need_barrier = _have_barrier_ops(self._func)
-        kernel_sim_impl.execute_kernel(
+        simulator_impl.execute_kernel(
             self._global_range[::-1],
             None if self._local_range is None else self._local_range[::-1],
             self._func,

@@ -20,7 +20,7 @@ from numba_dpex import (
     mem_fence,
     private,
 )
-from numba_dpex.experimental.kernel_iface.kernel_sim.kernel import kernel
+from numba_dpex.experimental.kernel_iface.simulator import kernel
 
 
 def test_simple1():

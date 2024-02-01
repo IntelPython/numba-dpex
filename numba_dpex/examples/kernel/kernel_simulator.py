@@ -7,7 +7,7 @@ import numpy as np
 import numpy.testing as testing
 
 import numba_dpex as ndpx
-from numba_dpex.core.kernel_sim.kernel import kernel as kernel_sim
+from numba_dpex.experimental.kernel_iface import simulator as kernel_sim
 
 
 def vector_sum(a, b, c):
