@@ -4,55 +4,12 @@
 
 from contextlib import ExitStack
 
-from numba.core import cgutils, errors, types
+from numba.core import cgutils, types
 from numba.core.datamodel import default_manager
 from numba.extending import NativeValue, box, unbox
 
-from ..kernel_interface.indexers import NdRange, Range
-
-
-class RangeType(types.Type):
-    """Numba-dpex type corresponding to
-    :class:`numba_dpex.core.kernel_interface.indexers.Range`
-    """
-
-    def __init__(self, ndim: int):
-        self._ndim = ndim
-        if ndim < 1 or ndim > 3:
-            raise errors.TypingError(
-                "RangeType can only have 1,2, or 3 dimensions"
-            )
-        super(RangeType, self).__init__(name="Range<" + str(ndim) + ">")
-
-    @property
-    def ndim(self):
-        return self._ndim
-
-    @property
-    def key(self):
-        return self._ndim
-
-
-class NdRangeType(types.Type):
-    """Numba-dpex type corresponding to
-    :class:`numba_dpex.core.kernel_interface.indexers.NdRange`
-    """
-
-    def __init__(self, ndim: int):
-        self._ndim = ndim
-        if ndim < 1 or ndim > 3:
-            raise errors.TypingError(
-                "RangeType can only have 1,2, or 3 dimensions"
-            )
-        super(NdRangeType, self).__init__(name="NdRange<" + str(ndim) + ">")
-
-    @property
-    def ndim(self):
-        return self._ndim
-
-    @property
-    def key(self):
-        return self._ndim
+from numba_dpex.core.types import NdRangeType, RangeType
+from numba_dpex.kernel_api import NdRange, Range
 
 
 @unbox(RangeType)

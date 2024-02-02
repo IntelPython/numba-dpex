@@ -11,5 +11,13 @@ numba_dpex.
 
 from .atomic_ref import AtomicRef
 from .memory_enums import AddressSpace, MemoryOrder, MemoryScope
+from .ranges import NdRange, Range
 
-__all__ = ["AddressSpace", "AtomicRef", "MemoryOrder", "MemoryScope"]
+__all__ = [
+    "AddressSpace",
+    "AtomicRef",
+    "MemoryOrder",
+    "MemoryScope",
+    "NdRange",
+    "Range",
+]
