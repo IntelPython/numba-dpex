@@ -11,7 +11,7 @@ import numba_dpex as dpex
 import numba_dpex.experimental as dpex_exp
 from numba_dpex import DpnpNdArray, float32, int64
 from numba_dpex.core.exceptions import InvalidKernelSpecializationError
-from numba_dpex.core.kernel_interface.indexers import Range
+from numba_dpex.kernel_api import Range
 
 i64arrty = DpnpNdArray(ndim=1, dtype=int64, layout="C")
 f32arrty = DpnpNdArray(ndim=1, dtype=float32, layout="C")
