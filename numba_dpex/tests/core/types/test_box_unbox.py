@@ -15,7 +15,7 @@ import dpnp
 import numpy
 import pytest
 
-import numba_dpex as dpx
+import numba_dpex as dpex
 
 constructors_with_parent = [
     dpctl.SyclEvent,
@@ -30,9 +30,10 @@ constructors_with_parent = [
 ranges = [(10,), (10, 10), (10, 10, 10)]
 
 constructors_without_parent = [
-    functools.partial(dpx.Range, *r) for r in ranges
+    functools.partial(dpex.Range, *r) for r in ranges
 ] + [
-    functools.partial(dpx.NdRange, dpx.Range(*r), dpx.Range(*r)) for r in ranges
+    functools.partial(dpex.NdRange, dpex.Range(*r), dpex.Range(*r))
+    for r in ranges
 ]
 
 
@@ -51,12 +52,12 @@ def constructor_np(request):
     return request.param
 
 
-@dpx.dpjit
+@dpex.dpjit
 def unbox_box(a):
     return a
 
 
-@dpx.dpjit
+@dpex.dpjit
 def unbox(a):
     return None
 
