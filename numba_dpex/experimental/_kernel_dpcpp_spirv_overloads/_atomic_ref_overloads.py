@@ -15,9 +15,14 @@ from numba_dpex.core import itanium_mangler as ext_itanium_mangler
 from numba_dpex.core.targets.kernel_target import CC_SPIR_FUNC, LLVM_SPIRV_ARGS
 from numba_dpex.core.types import USMNdArray
 from numba_dpex.experimental.flag_enum import FlagEnum
+from numba_dpex.kernel_iface import (
+    AddressSpace,
+    AtomicRef,
+    MemoryOrder,
+    MemoryScope,
+)
 
 from ..dpcpp_types import AtomicRefType
-from ..kernel_iface import AddressSpace, AtomicRef, MemoryOrder, MemoryScope
 from ..target import DPEX_KERNEL_EXP_TARGET_NAME
 from ._spv_atomic_inst_helper import (
     get_atomic_inst_name,
