@@ -98,16 +98,18 @@ import numba_dpex.core.targets.dpjit_target  # noqa E402
 
 # Re-export types itself
 import numba_dpex.core.types as types  # noqa E402
+from numba_dpex.core import boxing  # noqa E402
 from numba_dpex.core import config  # noqa E402
-from numba_dpex.core.kernel_interface.indexers import (  # noqa E402
-    NdRange,
-    Range,
-)
+from numba_dpex.core.kernel_interface import ranges_overloads  # noqa E402
 
 # Re-export all type names
 from numba_dpex.core.types import *  # noqa E402
 from numba_dpex.dpctl_iface import _intrinsic  # noqa E402
 from numba_dpex.dpnp_iface import dpnpimpl  # noqa E402
+
+# Importing NdRange and Range into numba_dpex for
+# backward compatibility
+from numba_dpex.kernel_api import NdRange, Range  # noqa E402
 
 from .core.targets import dpjit_target, kernel_target  # noqa E402
 from .decorators import dpjit, func, kernel  # noqa E402

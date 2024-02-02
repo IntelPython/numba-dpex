@@ -7,12 +7,8 @@ import dpctl.tensor as dpt
 import pytest
 
 import numba_dpex as dpex
-from numba_dpex.core.exceptions import (
-    IllegalRangeValueError,
-    InvalidKernelLaunchArgsError,
-    UnknownGlobalRangeError,
-)
-from numba_dpex.core.kernel_interface.indexers import Range
+from numba_dpex.core.exceptions import UnknownGlobalRangeError
+from numba_dpex.kernel_api import NdRange, Range
 
 
 @dpex.kernel
@@ -28,7 +24,7 @@ def test_1D_global_range_as_one_tuple():
 
 
 def test_2D_global_range_and_2D_local_range4():
-    k = vecadd[dpex.NdRange((10, 10), (10, 10))]
+    k = vecadd[NdRange((10, 10), (10, 10))]
     assert k._global_range == [10, 10]
     assert k._local_range == [10, 10]
 

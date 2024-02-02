@@ -12,7 +12,7 @@ from numba_dpex.core.datamodel.models import (
     dpex_data_model_manager,
 )
 from numba_dpex.core.descriptor import dpex_kernel_target
-from numba_dpex.core.types.range_types import NdRangeType, RangeType
+from numba_dpex.core.types.kernel_api.ranges import NdRangeType, RangeType
 
 rfields = ["ndim", "dim0", "dim1", "dim2"]
 ndrfields = ["ndim", "gdim0", "gdim1", "gdim2", "ldim0", "ldim1", "ldim2"]

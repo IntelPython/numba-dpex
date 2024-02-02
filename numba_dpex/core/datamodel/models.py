@@ -196,9 +196,7 @@ class SyclEventModel(StructModel):
 
 
 class RangeModel(StructModel):
-    """The native data model for a
-    numba_dpex.core.kernel_interface.indexers.Range PyObject.
-    """
+    """The numba_dpex data model for a numba_dpex.kernel_api.Range PyObject."""
 
     def __init__(self, dmm, fe_type):
         members = [
@@ -216,8 +214,8 @@ class RangeModel(StructModel):
 
 
 class NdRangeModel(StructModel):
-    """The native data model for a
-    numba_dpex.core.kernel_interface.indexers.NdRange PyObject.
+    """
+    The numba_dpex data model for a numba_dpex.kernel_api.NdRange PyObject.
     """
 
     def __init__(self, dmm, fe_type):
