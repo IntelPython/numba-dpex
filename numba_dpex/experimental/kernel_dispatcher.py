@@ -271,7 +271,7 @@ class _KernelCompiler(_FunctionCompiler):
                     "w",
                     encoding="UTF-8",
                 ) as fptr:
-                    fptr.write(cres.library.final_module)
+                    fptr.write(str(cres.library.final_module))
 
         except errors.TypingError as err:
             self._failed_cache[key] = err
