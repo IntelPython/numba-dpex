@@ -40,15 +40,17 @@ from numba_dpex.core.targets.kernel_target import (
 )
 from numba_dpex.core.types import USMNdArray
 from numba_dpex.core.utils import kernel_launcher as kl
+from numba_dpex.experimental.target import (
+    DPEX_KERNEL_EXP_TARGET_NAME,
+    dpex_exp_kernel_target,
+)
 
-from .target import DPEX_KERNEL_EXP_TARGET_NAME, dpex_exp_kernel_target
-
-_KernelCompileResult = namedtuple(
+_SPVKernelCompileResult = namedtuple(
     "_KernelCompileResult", CompileResult._fields + ("kernel_device_ir_module",)
 )
 
 
-class _KernelCompiler(_FunctionCompiler):
+class _SPVKernelCompiler(_FunctionCompiler):
     """A special compiler class used to compile numba_dpex.kernel decorated
     functions.
     """
@@ -188,7 +190,7 @@ class _KernelCompiler(_FunctionCompiler):
             kernel_name=kernel_fn.name, kernel_bitcode=kernel_spirv_module
         )
 
-    def compile(self, args, return_type) -> _KernelCompileResult:
+    def compile(self, args, return_type) -> _SPVKernelCompileResult:
         status, kcres = self._compile_cached(args, return_type)
         if status:
             return kcres
@@ -197,7 +199,7 @@ class _KernelCompiler(_FunctionCompiler):
 
     def _compile_cached(
         self, args, return_type: types.Type
-    ) -> Tuple[bool, _KernelCompileResult]:
+    ) -> Tuple[bool, _SPVKernelCompileResult]:
         """Compiles the kernel function to bitcode and generates a host-callable
         wrapper to submit the kernel to a SYCL queue.
 
@@ -277,10 +279,10 @@ class _KernelCompiler(_FunctionCompiler):
             self._failed_cache[key] = err
             return False, err
 
-        return True, _KernelCompileResult(*kcres_attrs)
+        return True, _SPVKernelCompileResult(*kcres_attrs)
 
 
-class KernelDispatcher(Dispatcher):
+class SPVKernelDispatcher(Dispatcher):
     """Dispatcher class designed to compile kernel decorated functions. The
     dispatcher inherits the Numba Dispatcher class, but has a different
     compilation strategy. Instead of compiling a kernel decorated function to
@@ -325,7 +327,7 @@ class KernelDispatcher(Dispatcher):
                 targetoptions=targetoptions,
                 pipeline_class=pipeline_class,
             )
-        self._compiler = _KernelCompiler(
+        self._compiler = _SPVKernelCompiler(
             pyfunc,
             self.targetdescr,
             targetoptions,
@@ -426,8 +428,8 @@ class KernelDispatcher(Dispatcher):
                     },
                 ):
                     try:
-                        compiler: _KernelCompiler = self._compiler
-                        kcres: _KernelCompileResult = compiler.compile(
+                        compiler: _SPVKernelCompiler = self._compiler
+                        kcres: _SPVKernelCompileResult = compiler.compile(
                             args, return_type
                         )
                     except errors.ForceLiteralArg as err:
@@ -463,4 +465,4 @@ class KernelDispatcher(Dispatcher):
 
 
 _dpex_target = target_registry[DPEX_KERNEL_EXP_TARGET_NAME]
-dispatcher_registry[_dpex_target] = KernelDispatcher
+dispatcher_registry[_dpex_target] = SPVKernelDispatcher
