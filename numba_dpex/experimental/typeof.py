@@ -9,8 +9,9 @@ types.
 
 from numba.extending import typeof_impl
 
+from numba_dpex.kernel_api import AtomicRef
+
 from .dpcpp_types import AtomicRefType
-from .kernel_iface import AtomicRef
 
 
 @typeof_impl.register(AtomicRef)
