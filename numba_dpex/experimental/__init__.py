@@ -9,7 +9,7 @@ yet production ready.
 from numba.core.imputils import Registry
 
 # Temporary so that Range and NdRange work in experimental call_kernel
-from numba_dpex.core import boxing
+from numba_dpex.core.boxing import *
 
 from ._kernel_dpcpp_spirv_overloads import _atomic_ref_overloads
 from .decorators import device_func, kernel
