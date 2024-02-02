@@ -6,7 +6,7 @@
 memory enum classes.
 """
 
-from numba_dpex.experimental.flag_enum import FlagEnum
+from numba_dpex.kernel_api.flag_enum import FlagEnum
 
 
 class MemoryOrder(FlagEnum):

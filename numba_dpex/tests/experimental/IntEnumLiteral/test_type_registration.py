@@ -7,8 +7,8 @@ from numba.core.datamodel import default_manager
 
 from numba_dpex.core.datamodel.models import dpex_data_model_manager
 from numba_dpex.experimental import IntEnumLiteral
-from numba_dpex.experimental.flag_enum import FlagEnum
 from numba_dpex.experimental.models import exp_dmm
+from numba_dpex.kernel_api.flag_enum import FlagEnum
 
 
 def test_data_model_registration():
