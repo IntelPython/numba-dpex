@@ -52,7 +52,7 @@ repos:
     - id: pylint
       name: pylint
       entry: pylint
-      files: ^numba_dpex/experimental|^numba_dpex/core/utils/kernel_launcher.py
+      files: ^numba_dpex/kernel_api|^numba_dpex/experimental|^numba_dpex/core/utils/kernel_launcher.py
       language: system
       types: [python]
       require_serial: true
