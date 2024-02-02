@@ -14,13 +14,13 @@ from numba.extending import intrinsic, overload, overload_method
 from numba_dpex.core import itanium_mangler as ext_itanium_mangler
 from numba_dpex.core.targets.kernel_target import CC_SPIR_FUNC, LLVM_SPIRV_ARGS
 from numba_dpex.core.types import USMNdArray
-from numba_dpex.experimental.flag_enum import FlagEnum
 from numba_dpex.kernel_api import (
     AddressSpace,
     AtomicRef,
     MemoryOrder,
     MemoryScope,
 )
+from numba_dpex.kernel_api.flag_enum import FlagEnum
 
 from ..dpcpp_types import AtomicRefType
 from ..target import DPEX_KERNEL_EXP_TARGET_NAME
