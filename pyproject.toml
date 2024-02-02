@@ -57,7 +57,7 @@ requires = [
     "scikit-build>=0.13",
     "cmake>=3.18",
     "ninja",
-    "numba>=0.57",
+    "numba>=0.58",
     "versioneer-518"
 ]
 build-backend = "setuptools.build_meta"
