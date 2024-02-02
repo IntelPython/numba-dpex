@@ -12,9 +12,9 @@ from numba.core import cgutils, types
 from numba.core.imputils import Registry
 from numba.core.typing.npydecl import parse_dtype
 
-from numba_dpex import kernel_target
+from numba_dpex import spirv_kernel_target
+from numba_dpex._kernel_api_impl.spirv.codegen import SPIR_DATA_LAYOUT
 from numba_dpex.core import config
-from numba_dpex.core.codegen import SPIR_DATA_LAYOUT
 from numba_dpex.core.types import Array
 from numba_dpex.ocl.atomics import atomic_helper
 from numba_dpex.utils import address_space
@@ -171,7 +171,7 @@ def native_atomic_add(context, builder, sig, args):
     ptr = cgutils.get_item_pointer(context, builder, aryty, lary, indices)
 
     if dtype == types.float32 or dtype == types.float64:
-        context.extra_compile_options[kernel_target.LLVM_SPIRV_ARGS] = [
+        context.extra_compile_options[spirv_kernel_target.LLVM_SPIRV_ARGS] = [
             "--spirv-ext=+SPV_EXT_shader_atomic_float_add"
         ]
         name = "__spirv_AtomicFAddEXT"
@@ -208,7 +208,7 @@ def native_atomic_add(context, builder, sig, args):
 
     fnty = llvmir.FunctionType(retty, spirv_fn_arg_types)
     fn = cgutils.get_or_insert_function(builder.module, fnty, mangled_fn_name)
-    fn.calling_convention = kernel_target.CC_SPIR_FUNC
+    fn.calling_convention = spirv_kernel_target.CC_SPIR_FUNC
 
     sycl_memory_order = atomic_helper.sycl_memory_order.relaxed
     sycl_memory_scope = atomic_helper.sycl_memory_scope.device

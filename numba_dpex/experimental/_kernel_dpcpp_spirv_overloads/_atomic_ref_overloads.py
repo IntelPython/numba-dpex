@@ -11,8 +11,11 @@ from numba import errors
 from numba.core import cgutils, types
 from numba.extending import intrinsic, overload, overload_method
 
+from numba_dpex._kernel_api_impl.spirv.target import (
+    CC_SPIR_FUNC,
+    LLVM_SPIRV_ARGS,
+)
 from numba_dpex.core import itanium_mangler as ext_itanium_mangler
-from numba_dpex.core.targets.kernel_target import CC_SPIR_FUNC, LLVM_SPIRV_ARGS
 from numba_dpex.core.types import USMNdArray
 from numba_dpex.kernel_api import (
     AddressSpace,

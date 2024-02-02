@@ -8,18 +8,18 @@ from numba.core import options, targetconfig, typing
 from numba.core.cpu import CPUTargetOptions
 from numba.core.descriptors import TargetDescriptor
 
+from numba_dpex._kernel_api_impl.spirv.target import (
+    SPIRV_TARGET_NAME,
+    CompilationMode,
+    SPIRVTargetContext,
+    SPIRVTypingContext,
+)
 from numba_dpex.core import config
 
 from .targets.dpjit_target import (
     DPEX_TARGET_NAME,
     DpexTargetContext,
     DpexTypingContext,
-)
-from .targets.kernel_target import (
-    DPEX_KERNEL_TARGET_NAME,
-    CompilationMode,
-    DpexKernelTargetContext,
-    DpexKernelTypingContext,
 )
 
 _option_mapping = options._mapping
@@ -77,12 +77,12 @@ class DpexKernelTarget(TargetDescriptor):
     @cached_property
     def _toplevel_target_context(self):
         """Lazily-initialized top-level target context, for all threads."""
-        return DpexKernelTargetContext(self.typing_context, self._target_name)
+        return SPIRVTargetContext(self.typing_context, self._target_name)
 
     @cached_property
     def _toplevel_typing_context(self):
         """Lazily-initialized top-level typing context, for all threads."""
-        return DpexKernelTypingContext()
+        return SPIRVTypingContext()
 
     @property
     def target_context(self):
@@ -132,7 +132,7 @@ class DpexTarget(TargetDescriptor):
 
 
 # A global instance of the DpexKernelTarget
-dpex_kernel_target = DpexKernelTarget(DPEX_KERNEL_TARGET_NAME)
+dpex_kernel_target = DpexKernelTarget(SPIRV_TARGET_NAME)
 
 # A global instance of the DpexTarget
 dpex_target = DpexTarget(DPEX_TARGET_NAME)

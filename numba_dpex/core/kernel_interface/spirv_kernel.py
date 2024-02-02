@@ -8,10 +8,10 @@ from types import FunctionType
 from numba.core import ir
 
 from numba_dpex import spirv_generator
+from numba_dpex._kernel_api_impl.spirv.target import SPIRVTargetContext
 from numba_dpex.core import config
 from numba_dpex.core.compiler import compile_with_dpex
 from numba_dpex.core.exceptions import UncompiledKernelError, UnreachableError
-from numba_dpex.core.targets.kernel_target import DpexKernelTargetContext
 
 from .kernel_base import KernelInterface
 
@@ -135,7 +135,7 @@ class SpirvKernel(KernelInterface):
         )
 
         func = cres.library.get_function(cres.fndesc.llvm_func_name)
-        kernel_targetctx: DpexKernelTargetContext = cres.target_context
+        kernel_targetctx: SPIRVTargetContext = cres.target_context
         kernel = kernel_targetctx.prepare_spir_kernel(func, cres.signature.args)
 
         # XXX: Setting the inline_threshold in the following way is a temporary

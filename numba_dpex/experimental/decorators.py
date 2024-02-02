@@ -15,8 +15,8 @@ from numba.core.target_extension import (
     target_registry,
 )
 
-from numba_dpex._kernel_api_impl.spirv.dispatcher import SPVKernelDispatcher
-from numba_dpex.core.targets.kernel_target import CompilationMode
+from numba_dpex._kernel_api_impl.spirv.dispatcher import SPIRVKernelDispatcher
+from numba_dpex._kernel_api_impl.spirv.target import CompilationMode
 
 from .target import DPEX_KERNEL_EXP_TARGET_NAME
 
@@ -74,11 +74,11 @@ def kernel(func_or_sig=None, **options):
     for sig in sigs:
         if isinstance(sig, str):
             raise NotImplementedError(
-                "Specifying signatures as string is not yet supported by numba-dpex"
+                "Specifying signatures as string is not yet supported"
             )
 
     def _kernel_dispatcher(pyfunc):
-        disp: SPVKernelDispatcher = dispatcher(
+        disp: SPIRVKernelDispatcher = dispatcher(
             pyfunc=pyfunc,
             targetoptions=options,
         )
