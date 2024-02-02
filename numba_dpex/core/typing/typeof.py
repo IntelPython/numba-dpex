@@ -13,7 +13,7 @@ from numba_dpex.utils.constants import address_space
 
 from ..types.dpctl_types import DpctlSyclEvent, DpctlSyclQueue
 from ..types.dpnp_ndarray_type import DpnpNdArray
-from ..types.kernel_api_types.range_types import NdRangeType, RangeType
+from ..types.kernel_api.ranges import NdRangeType, RangeType
 from ..types.usm_ndarray_type import USMNdArray
 
 
