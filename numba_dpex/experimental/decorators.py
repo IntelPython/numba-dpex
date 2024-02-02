@@ -15,8 +15,8 @@ from numba.core.target_extension import (
     target_registry,
 )
 
+from numba_dpex._kernel_api_impl.spirv.dispatcher import SPVKernelDispatcher
 from numba_dpex.core.targets.kernel_target import CompilationMode
-from numba_dpex.experimental.kernel_dispatcher import KernelDispatcher
 
 from .target import DPEX_KERNEL_EXP_TARGET_NAME
 
@@ -78,7 +78,7 @@ def kernel(func_or_sig=None, **options):
             )
 
     def _kernel_dispatcher(pyfunc):
-        disp: KernelDispatcher = dispatcher(
+        disp: SPVKernelDispatcher = dispatcher(
             pyfunc=pyfunc,
             targetoptions=options,
         )
