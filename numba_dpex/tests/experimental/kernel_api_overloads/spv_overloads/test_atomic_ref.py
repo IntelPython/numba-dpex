@@ -8,7 +8,7 @@ from numba.core.errors import TypingError
 
 import numba_dpex as dpex
 import numba_dpex.experimental as dpex_exp
-from numba_dpex.experimental.kernel_iface import AddressSpace, AtomicRef
+from numba_dpex.kernel_api import AddressSpace, AtomicRef
 
 
 def test_atomic_ref_compilation():

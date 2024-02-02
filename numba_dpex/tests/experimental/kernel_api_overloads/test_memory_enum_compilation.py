@@ -6,11 +6,7 @@ import dpnp
 
 import numba_dpex.experimental as exp_dpex
 from numba_dpex import Range
-from numba_dpex.experimental.kernel_iface import (
-    AddressSpace,
-    MemoryOrder,
-    MemoryScope,
-)
+from numba_dpex.kernel_api import AddressSpace, MemoryOrder, MemoryScope
 
 
 def test_compilation_of_memory_order():

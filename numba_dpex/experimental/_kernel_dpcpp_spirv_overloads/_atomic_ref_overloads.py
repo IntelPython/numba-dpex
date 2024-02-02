@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 """
-Implements the SPIR-V overloads for the kernel_api.atomic_ref class methods.
+Implements the SPIR-V overloads for the kernel_api.AtomicRef class methods.
 """
 
 from llvmlite import ir as llvmir
@@ -15,9 +15,14 @@ from numba_dpex.core import itanium_mangler as ext_itanium_mangler
 from numba_dpex.core.targets.kernel_target import CC_SPIR_FUNC, LLVM_SPIRV_ARGS
 from numba_dpex.core.types import USMNdArray
 from numba_dpex.experimental.flag_enum import FlagEnum
+from numba_dpex.kernel_api import (
+    AddressSpace,
+    AtomicRef,
+    MemoryOrder,
+    MemoryScope,
+)
 
 from ..dpcpp_types import AtomicRefType
-from ..kernel_iface import AddressSpace, AtomicRef, MemoryOrder, MemoryScope
 from ..target import DPEX_KERNEL_EXP_TARGET_NAME
 from ._spv_atomic_inst_helper import (
     get_atomic_inst_name,
@@ -358,7 +363,7 @@ def ol_atomic_ref(
     address_space=AddressSpace.GLOBAL,
 ):
     """Overload of the constructor for the class
-    class:`numba_dpex.experimental.kernel_iface.AtomicRef`.
+    class:`numba_dpex.kernel_api.AtomicRef`.
 
     Raises:
         errors.TypingError: If the `ref` argument is not a UsmNdArray type.
@@ -436,8 +441,7 @@ def ol_atomic_ref(
 
 @overload_method(AtomicRefType, "fetch_add", target=DPEX_KERNEL_EXP_TARGET_NAME)
 def ol_fetch_add(atomic_ref, val):
-    """SPIR-V overload for
-    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.fetch_add`.
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_add`.
 
     Generates the same LLVM IR instruction as dpcpp for the
     `atomic_ref::fetch_add` function.
@@ -461,8 +465,7 @@ def ol_fetch_add(atomic_ref, val):
 
 @overload_method(AtomicRefType, "fetch_sub", target=DPEX_KERNEL_EXP_TARGET_NAME)
 def ol_fetch_sub(atomic_ref, val):
-    """SPIR-V overload for
-    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.fetch_sub`.
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_sub`.
 
     Generates the same LLVM IR instruction as dpcpp for the
     `atomic_ref::fetch_sub` function.
@@ -486,8 +489,7 @@ def ol_fetch_sub(atomic_ref, val):
 
 @overload_method(AtomicRefType, "fetch_min", target=DPEX_KERNEL_EXP_TARGET_NAME)
 def ol_fetch_min(atomic_ref, val):
-    """SPIR-V overload for
-    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.fetch_min`.
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_min`.
 
     Generates the same LLVM IR instruction as dpcpp for the
     `atomic_ref::fetch_min` function.
@@ -511,8 +513,7 @@ def ol_fetch_min(atomic_ref, val):
 
 @overload_method(AtomicRefType, "fetch_max", target=DPEX_KERNEL_EXP_TARGET_NAME)
 def ol_fetch_max(atomic_ref, val):
-    """SPIR-V overload for
-    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.fetch_max`.
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_max`.
 
     Generates the same LLVM IR instruction as dpcpp for the
     `atomic_ref::fetch_max` function.
@@ -536,8 +537,7 @@ def ol_fetch_max(atomic_ref, val):
 
 @overload_method(AtomicRefType, "fetch_and", target=DPEX_KERNEL_EXP_TARGET_NAME)
 def ol_fetch_and(atomic_ref, val):
-    """SPIR-V overload for
-    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.fetch_and`.
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_and`.
 
     Generates the same LLVM IR instruction as dpcpp for the
     `atomic_ref::fetch_and` function.
@@ -566,8 +566,7 @@ def ol_fetch_and(atomic_ref, val):
 
 @overload_method(AtomicRefType, "fetch_or", target=DPEX_KERNEL_EXP_TARGET_NAME)
 def ol_fetch_or(atomic_ref, val):
-    """SPIR-V overload for
-    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.fetch_or`.
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_or`.
 
     Generates the same LLVM IR instruction as dpcpp for the
     `atomic_ref::fetch_or` function.
@@ -596,8 +595,7 @@ def ol_fetch_or(atomic_ref, val):
 
 @overload_method(AtomicRefType, "fetch_xor", target=DPEX_KERNEL_EXP_TARGET_NAME)
 def ol_fetch_xor(atomic_ref, val):
-    """SPIR-V overload for
-    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.fetch_xor`.
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.fetch_xor`.
 
     Generates the same LLVM IR instruction as dpcpp for the
     `atomic_ref::fetch_xor` function.
@@ -626,8 +624,7 @@ def ol_fetch_xor(atomic_ref, val):
 
 @overload_method(AtomicRefType, "load", target=DPEX_KERNEL_EXP_TARGET_NAME)
 def ol_load(atomic_ref):  # pylint: disable=unused-argument
-    """SPIR-V overload for
-    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.load`.
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.load`.
 
     Generates the same LLVM IR instruction as dpcpp for the
     `atomic_ref::load` function.
@@ -643,8 +640,7 @@ def ol_load(atomic_ref):  # pylint: disable=unused-argument
 
 @overload_method(AtomicRefType, "store", target=DPEX_KERNEL_EXP_TARGET_NAME)
 def ol_store(atomic_ref, val):
-    """SPIR-V overload for
-    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.store`.
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.store`.
 
     Generates the same LLVM IR instruction as dpcpp for the
     `atomic_ref::store` function.
@@ -669,8 +665,7 @@ def ol_store(atomic_ref, val):
 
 @overload_method(AtomicRefType, "exchange", target=DPEX_KERNEL_EXP_TARGET_NAME)
 def ol_exchange(atomic_ref, val):
-    """SPIR-V overload for
-    :meth:`numba_dpex.experimental.kernel_iface.AtomicRef.exchange`.
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.AtomicRef.exchange`.
 
     Generates the same LLVM IR instruction as dpcpp for the
     `atomic_ref::exchange` function.
