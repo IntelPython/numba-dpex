@@ -80,7 +80,7 @@ setup(
     platforms=["Linux", "Windows"],
     author="Intel Corporation",
     url="https://github.com/IntelPython/numba-dpex",
-    install_requires=["numba >={0:s}".format("0.57"), "dpctl", "packaging"],
+    install_requires=["numba >={0:s}".format("0.58"), "dpctl", "packaging"],
     packages=find_packages("."),
     include_package_data=True,
     zip_safe=False,
