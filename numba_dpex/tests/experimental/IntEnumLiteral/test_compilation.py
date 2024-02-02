@@ -6,7 +6,7 @@ import dpnp
 
 import numba_dpex.experimental as exp_dpex
 from numba_dpex import Range
-from numba_dpex.experimental.flag_enum import FlagEnum
+from numba_dpex.kernel_api.flag_enum import FlagEnum
 
 
 class MockFlags(FlagEnum):

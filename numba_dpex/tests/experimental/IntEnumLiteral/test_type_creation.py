@@ -8,7 +8,7 @@ import pytest
 
 from numba_dpex.core.exceptions import IllegalIntEnumLiteralValueError
 from numba_dpex.experimental import IntEnumLiteral
-from numba_dpex.experimental.flag_enum import FlagEnum
+from numba_dpex.kernel_api.flag_enum import FlagEnum
 
 
 def test_intenumliteral_creation():
