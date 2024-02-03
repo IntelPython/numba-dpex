@@ -16,7 +16,7 @@ def test_group_barrier():
         i = nd_item.get_global_id(0)
 
         a[i] += 1
-        group_barrier(MemoryScope.DEVICE)
+        group_barrier(nd_item.get_group(), MemoryScope.DEVICE)
 
         if i == 0:
             for idx in range(1, a.size):
