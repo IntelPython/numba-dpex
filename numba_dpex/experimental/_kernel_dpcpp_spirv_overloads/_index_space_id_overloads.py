@@ -6,11 +6,12 @@
 Implements the SPIR-V overloads for the kernel_api.items class methods.
 """
 
-from numba.core import types
+from numba.core import cgutils, types
 from numba.core.errors import TypingError
 from numba.extending import intrinsic, overload_method
 
 from numba_dpex.experimental.core.types.kernel_api.items import (
+    GroupType,
     ItemType,
     NdItemType,
 )
@@ -26,7 +27,7 @@ def _intrinsic_get_global_id(
     """Generates instruction for spirv i64 get_global_id(i32) call."""
     sig = types.int64(types.int32)
 
-    def _intrinsic_exchange_gen(context, builder, sig, args):
+    def _intrinsic_get_global_id_gen(context, builder, sig, args):
         [dim] = args
         get_global_id = _declare_function(
             # unsigned int - is what demangler returns from IR instruction
@@ -43,13 +44,35 @@ def _intrinsic_get_global_id(
         res = builder.call(get_global_id, [dim])
         return context.cast(builder, res, types.uintp, types.intp)
 
-    return sig, _intrinsic_exchange_gen
+    return sig, _intrinsic_get_global_id_gen
+
+
+@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
+def _intrinsic_get_group(
+    ty_context, ty_nd_item: NdItemType  # pylint: disable=unused-argument
+):
+    """Generates group with a dimension of nd_item."""
+
+    if not isinstance(ty_nd_item, NdItemType):
+        raise TypingError(
+            f"Expected an NdItemType value, but encountered {ty_nd_item}"
+        )
+
+    ty_group = GroupType(ty_nd_item.ndim)
+    sig = ty_group(ty_nd_item)
+
+    # pylint: disable=unused-argument
+    def _intrinsic_get_group_gen(context, builder, sig, args):
+        group_struct = cgutils.create_struct_proxy(ty_group)(context, builder)
+        # pylint: disable=protected-access
+        return group_struct._getvalue()
+
+    return sig, _intrinsic_get_group_gen
 
 
 @overload_method(ItemType, "get_id", target=DPEX_KERNEL_EXP_TARGET_NAME)
 def ol_item_get_id(item, dim):
-    """SPIR-V overload for
-    :meth:`numba_dpex.kernel_api.Item.get_id`.
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.Item.get_id`.
 
     Generates the same LLVM IR instruction as dpcpp for the
     `sycl::item::get_id` function.
@@ -58,25 +81,30 @@ def ol_item_get_id(item, dim):
         TypingError: When argument is not an integer.
     """
     if not isinstance(item, ItemType):
-        raise TypingError("Only Item is supported")
+        raise TypingError(
+            "Expected an item should to be an Item value, but "
+            f"encountered {type(item)}"
+        )
 
     if not isinstance(dim, types.Integer):
-        raise TypingError("Only integers supported")
+        raise TypingError(
+            "Expected an Item's dim should to be an Integer value, but "
+            f"encountered {type(dim)}"
+        )
 
     # pylint: disable=unused-argument
-    def ol_get_id(item, dim):
+    def ol_item_get_id_impl(item, dim):
         # pylint: disable=no-value-for-parameter
         return _intrinsic_get_global_id(dim)
 
-    return ol_get_id
+    return ol_item_get_id_impl
 
 
 @overload_method(
     NdItemType, "get_global_id", target=DPEX_KERNEL_EXP_TARGET_NAME
 )
 def ol_nd_item_get_global_id(nd_item, dim):
-    """SPIR-V overload for
-    :meth:`numba_dpex.kernel_api.NdItem.get_global_id`.
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.NdItem.get_global_id`.
 
     Generates the same LLVM IR instruction as dpcpp for the
     `sycl::nd_item::get_global_id` function.
@@ -85,14 +113,46 @@ def ol_nd_item_get_global_id(nd_item, dim):
         TypingError: When argument is not an integer.
     """
     if not isinstance(nd_item, NdItemType):
-        raise TypingError("Only NdItem is supported")
+        # since it is a method overload, this error should not be reached
+        raise TypingError(
+            "Expected a nd_item should to be a NdItem value, but "
+            f"encountered {type(nd_item)}"
+        )
 
     if not isinstance(dim, types.Integer):
-        raise TypingError("Only integers supported")
+        raise TypingError(
+            "Expected a NdItem's dim should to be an Integer value, but "
+            f"encountered {type(dim)}"
+        )
 
     # pylint: disable=unused-argument
-    def ol_get_global_id(nd_item, dim):
+    def ol_nd_item_get_global_id_impl(nd_item, dim):
         # pylint: disable=no-value-for-parameter
         return _intrinsic_get_global_id(dim)
 
-    return ol_get_global_id
+    return ol_nd_item_get_global_id_impl
+
+
+@overload_method(NdItemType, "get_group", target=DPEX_KERNEL_EXP_TARGET_NAME)
+def ol_nd_item_get_group(nd_item):
+    """SPIR-V overload for :meth:`numba_dpex.kernel_api.NdItem.get_group`.
+
+    Generates the same LLVM IR instruction as dpcpp for the
+    `sycl::nd_item::get_group` function.
+
+    Raises:
+        TypingError: When argument is not NdItem.
+    """
+    if not isinstance(nd_item, NdItemType):
+        # since it is a method overload, this error should not be reached
+        raise TypingError(
+            "Expected a nd_item should to be a NdItem value, but "
+            f"encountered {type(nd_item)}"
+        )
+
+    # pylint: disable=unused-argument
+    def ol_nd_item_get_group_impl(nd_item):
+        # pylint: disable=no-value-for-parameter
+        return _intrinsic_get_group(nd_item)
+
+    return ol_nd_item_get_group_impl
