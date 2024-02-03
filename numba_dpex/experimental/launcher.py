@@ -218,8 +218,20 @@ def _submit_kernel(  # pylint: disable=too-many-arguments
     return sig, codegen
 
 
-@dpjit
 def call_kernel(kernel_fn, index_space, *kernel_args) -> None:
+    print(f"type(kernel_fn) = {type(kernel_fn)}")
+    if isinstance(kernel_fn, KernelDispatcher):
+        print("here 1")
+        _call_kernel(kernel_fn, index_space, *kernel_args)
+    else:
+        print("here 2")
+        from numba_dpex.experimental.kernel_iface.simulator import kernel
+
+        kernel(kernel_fn)[index_space](*kernel_args)
+
+
+@dpjit
+def _call_kernel(kernel_fn, index_space, *kernel_args) -> None:
     """Calls a numba_dpex.kernel decorated function from CPython or from another
     dpjit function. Kernel execution happens in synchronous way, so the thread
     will be blocked till the kernel done execution.
@@ -245,7 +257,7 @@ def call_kernel_async(
     kernel_fn,
     index_space,
     dependent_events: list[dpctl.SyclEvent],
-    *kernel_args
+    *kernel_args,
 ) -> tuple[dpctl.SyclEvent, dpctl.SyclEvent]:
     """Calls a numba_dpex.kernel decorated function from CPython or from another
     dpjit function. Kernel execution happens in asynchronous way, so the thread
