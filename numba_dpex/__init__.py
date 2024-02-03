@@ -18,6 +18,7 @@ from numba import __version__ as numba_version
 
 from numba_dpex.core.kernel_interface.launcher import call_kernel
 
+from ._kernel_api_impl.spirv import target as spirv_kernel_target
 from .numba_patches import patch_arrayexpr_tree_to_ir, patch_is_ufunc
 
 
@@ -107,7 +108,7 @@ from numba_dpex.dpnp_iface import dpnpimpl  # noqa E402
 # backward compatibility
 from numba_dpex.kernel_api import NdRange, Range  # noqa E402
 
-from .core.targets import dpjit_target, kernel_target  # noqa E402
+from .core.targets import dpjit_target  # noqa E402
 from .decorators import dpjit, func, kernel  # noqa E402
 from .ocl.stubs import (  # noqa E402
     GLOBAL_MEM_FENCE,

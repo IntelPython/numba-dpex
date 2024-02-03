@@ -42,7 +42,7 @@ def _declare_function(context, builder, name, sig, cargs, mangler=mangle_c):
     fnty = llvmir.FunctionType(llretty, llargs)
     mangled = mangler(name, cargs)
     fn = cgutils.get_or_insert_function(mod, fnty, mangled)
-    from numba_dpex import kernel_target
+    from numba_dpex import spirv_kernel_target
 
-    fn.calling_convention = kernel_target.CC_SPIR_FUNC
+    fn.calling_convention = spirv_kernel_target.CC_SPIR_FUNC
     return fn
