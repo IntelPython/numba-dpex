@@ -76,6 +76,10 @@ if numba_sem_version < (0, 58, 0) or numba_sem_version >= (0, 59, 0):
 
 # Monkey patches
 patch_is_ufunc.patch()
+if numba_sem_version < (0, 58, 0):
+    from .numba_patches import patch_mk_alloc
+
+    patch_mk_alloc.patch()
 patch_arrayexpr_tree_to_ir.patch()
 
 dpctl_sem_version = parse_sem_version(dpctl.__version__)
