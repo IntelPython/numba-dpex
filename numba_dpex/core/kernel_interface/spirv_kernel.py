@@ -7,7 +7,7 @@ from types import FunctionType
 
 from numba.core import ir
 
-from numba_dpex import spirv_generator
+from numba_dpex._kernel_api_impl.spirv import spirv_generator
 from numba_dpex._kernel_api_impl.spirv.target import SPIRVTargetContext
 from numba_dpex.core import config
 from numba_dpex.core.compiler import compile_with_dpex
