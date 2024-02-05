@@ -220,11 +220,11 @@ def _submit_kernel(  # pylint: disable=too-many-arguments
 
 def call_kernel(kernel_fn, index_space, *kernel_args) -> None:
     print(f"type(kernel_fn) = {type(kernel_fn)}")
-    if isinstance(kernel_fn, KernelDispatcher):
-        print("here 1")
+    if isinstance(kernel_fn, SPIRVKernelDispatcher):
+        # print("here 1")   # noqa: E800
         _call_kernel(kernel_fn, index_space, *kernel_args)
     else:
-        print("here 2")
+        # print("here 2")   # noqa: E800
         from numba_dpex.experimental.kernel_iface.simulator import kernel
 
         kernel(kernel_fn)[index_space](*kernel_args)

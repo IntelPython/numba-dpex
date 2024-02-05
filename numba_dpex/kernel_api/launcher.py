@@ -2,7 +2,11 @@
 #
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
+import copy
+from collections import namedtuple
 from collections.abc import Iterable
+from functools import reduce
+from itertools import product
 
 import numba_dpex
 from numba_dpex import (
@@ -76,8 +80,89 @@ def barrier_proxy(flags):
     simulator_impl.barrier()
 
 
+_ExecutionState = namedtuple(
+    "_ExecutionState",
+    [
+        "global_size",
+        "local_size",
+        "indices",
+        "wg_size",
+        "tasks",
+        "current_task",
+        "local_arrays",
+        "current_local_array",
+        "reduce_val",
+    ],
+)
+
+
+class ExecutionState:
+    def __init__(self, global_size, local_size):
+        self._state = _ExecutionState(
+            global_size=global_size,
+            local_size=local_size,
+            indices=[0] * len(global_size),
+            wg_size=[None],
+            tasks=[],
+            current_task=[None],
+            local_arrays=[],
+            current_local_array=[0],
+            reduce_val=[None],
+        )
+
+    def get(self):
+        return self._state
+
+    # def _save(self):
+    #     indices = copy.deepcopy(self._state.indices)              # noqa: E800
+    #     current_local_array = self._state.current_local_array[0]  # noqa: E800
+    #     self._state.current_local_array[0] = 0                    # noqa: E800
+    #     return (indices, current_local_array)                     # noqa: E800
+
+    # def _restore(self, state):
+    #     self._state.indices[:] = state[0]                 # noqa: E800
+    #     self._state.current_local_array[0] = state[1]     # noqa: E800
+
+    def _reset(self, wg_size):
+        self._state.wg_size[0] = wg_size
+        self._state.current_task[0] = 0
+        self._state.local_arrays.clear()
+        self._state.current_local_array[0] = 0
+
+    def _barrier(self):
+        # wg_size = state.wg_size[0]            # noqa: E800
+        assert self._state.wg_size > 0
+        if self._state.wg_size > 1:
+            assert len(self._state.tasks) > 0
+            # saved_state = self._save(state)   # noqa: E800
+            next_task = self._state.current_task[0] + 1
+            if next_task >= self._state.wg_size:
+                next_task = 0
+            self._state.current_task[0] = next_task
+            self._state.tasks[next_task].switch()
+            # self._restore(state, saved_state) # noqa: E800
+
+    def _reduce(self, value, op):
+        if self._state.current_task[0] == 0:
+            self._state.reduce_val[0] = value
+        else:
+            self._state.reduce_val[0] = op(self._state.reduce_val[0], value)
+        # _barrier_impl(state)      # noqa: E800
+        self._barrier()
+        return self._state.reduce_val[0]
+
+    def _destroy(self):
+        self._state = None
+
+    def _replace_globals(self, src, replace_global_func):
+        old_globals = list(src.items())
+        for name, val in src.items():
+            src[name] = replace_global_func(val)
+        return old_globals
+
+
 # TODO: Share code with dispatcher
-class Kernel:
+class FakeKernel:
     def __init__(self, func):
         self._func = func
         self._barrier_ops = [barrier]
@@ -162,7 +247,7 @@ class Kernel:
         return self
 
     def __call__(self, *args, **kwargs):
-        # need_barrier = self._have_barrier_ops() # noqa: E800
+        # need_barrier = self._have_barrier_ops()       # noqa: E800
         simulator_impl.execute_kernel(
             self._global_range[::-1],
             None if self._local_range is None else self._local_range[::-1],
@@ -174,4 +259,4 @@ class Kernel:
 
 
 def kernel(func):
-    return Kernel(func)
+    return FakeKernel(func)
