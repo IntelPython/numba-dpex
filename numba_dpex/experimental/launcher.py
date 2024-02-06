@@ -220,6 +220,7 @@ def _submit_kernel(  # pylint: disable=too-many-arguments
 
 def call_kernel(kernel_fn, index_space, *kernel_args) -> None:
     print(f"type(kernel_fn) = {type(kernel_fn)}")
+    print(f"type(index_space) = {type(index_space)}")
     if isinstance(kernel_fn, SPIRVKernelDispatcher):
         # print("here 1")   # noqa: E800
         _call_kernel(kernel_fn, index_space, *kernel_args)
