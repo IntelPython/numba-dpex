@@ -40,7 +40,7 @@ from numba_dpex.core.exceptions import (
 from . import simulator_impl
 
 
-class atomic_proxy:
+class fake_atomic:
     @staticmethod
     def add(arr, ind, val):
         new_val = arr[ind] + val
@@ -54,29 +54,29 @@ class atomic_proxy:
         return new_val
 
 
-def mem_fence_proxy(flags):
-    pass  # Nothing
-
-
-class local_proxy:
+class fake_local:
     @staticmethod
     def array(shape, dtype):
         return simulator_impl.local_array(shape, dtype)
 
 
-class private_proxy:
+def fake_mem_fence(flags):
+    pass  # Nothing
+
+
+class fake_private:
     @staticmethod
     def array(shape, dtype):
         return simulator_impl.private_array(shape, dtype)
 
 
-class group_proxy:
+class fake_group:
     @staticmethod
     def reduce_add(value):
         return simulator_impl.group_reduce(value, lambda a, b: a + b)
 
 
-class dpex_proxy:
+class fake_numba_dpex:
     @staticmethod
     def get_global_id(id):
         return simulator_impl.get_global_id(id)
@@ -85,7 +85,7 @@ class dpex_proxy:
         return simulator_impl.get_local_id(id)
 
 
-def barrier_proxy(flags):
+def fake_barrier(flags):
     simulator_impl.barrier()
 
 
@@ -164,19 +164,19 @@ class FakeKernel:
     def __init__(self, func):
         self._func = func
         self._globals_to_replace = [
-            (numba_dpex, dpex_proxy),
-            (get_global_id, simulator_impl.get_global_id),
-            (get_local_id, simulator_impl.get_local_id),
-            (get_group_id, simulator_impl.get_group_id),
-            (get_global_size, simulator_impl.get_global_size),
-            (get_local_size, simulator_impl.get_local_size),
-            (atomic, atomic_proxy),
-            (barrier, barrier_proxy),
-            (mem_fence, mem_fence_proxy),
-            (local, local_proxy),
-            (local.array, local_proxy.array),
-            (private, private_proxy),
-            (private.array, private_proxy.array),
+            (numba_dpex, fake_numba_dpex),
+            (get_global_id, self._get_global_id),
+            (get_local_id, self._get_local_id),
+            (get_group_id, self._get_group_id),
+            (get_global_size, self._get_global_size),
+            (get_local_size, self._get_local_size),
+            (atomic, fake_atomic),
+            (barrier, fake_barrier),
+            (mem_fence, fake_mem_fence),
+            (local, fake_local),
+            (local.array, fake_local.array),
+            (private, fake_private),
+            (private.array, fake_private.array),
             # (group, group_proxy), # noqa: E800
             # (group.reduce_add, group_proxy.reduce_add),   # noqa: E800
         ]
@@ -321,6 +321,27 @@ class FakeKernel:
         finally:
             self._restore_closure(self._func.__closure__)
             self._restore_globals(self._func.__globals__)
+
+    def _get_global_id(self, index):
+        return self._execution_state._indices[index]
+
+    def _get_local_id(self, index):
+        return (
+            self._execution_state._indices[index]
+            % self._execution_state._local_size[index]
+        )
+
+    def _get_group_id(self, index):
+        return (
+            self._execution_state._indices[index]
+            // self._execution_state._local_size[index]
+        )
+
+    def _get_global_size(self, index):
+        return self._execution_state._global_size[index]
+
+    def _get_local_size(self, index):
+        return self._execution_state._local_size[index]
 
     # def __call__(self, *args, **kwargs):
     #     # need_barrier = self._have_barrier_ops()       # noqa: E800
