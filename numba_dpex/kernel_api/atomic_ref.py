@@ -68,7 +68,7 @@ class AtomicRef:
         Returns: The original value of the object referenced by the AtomicRef.
 
         """
-        old = self._ref[self._index]
+        old = self._ref[self._index].copy()
         self._ref[self._index] += val
         return old
 
@@ -84,7 +84,7 @@ class AtomicRef:
         Returns: The original value of the object referenced by the AtomicRef.
 
         """
-        old = self._ref[self._index]
+        old = self._ref[self._index].copy()
         self._ref[self._index] -= val
         return old
 
@@ -100,7 +100,7 @@ class AtomicRef:
         Returns: The original value of the object referenced by the AtomicRef.
 
         """
-        old = self._ref[self._index]
+        old = self._ref[self._index].copy()
         self._ref[self._index] = min(old, val)
         return old
 
@@ -116,7 +116,7 @@ class AtomicRef:
         Returns: The original value of the object referenced by the AtomicRef.
 
         """
-        old = self._ref[self._index]
+        old = self._ref[self._index].copy()
         self._ref[self._index] = max(old, val)
         return old
 
@@ -132,7 +132,7 @@ class AtomicRef:
         Returns: The original value of the object referenced by the AtomicRef.
 
         """
-        old = self._ref[self._index]
+        old = self._ref[self._index].copy()
         self._ref[self._index] &= val
         return old
 
@@ -148,7 +148,7 @@ class AtomicRef:
         Returns: The original value of the object referenced by the AtomicRef.
 
         """
-        old = self._ref[self._index]
+        old = self._ref[self._index].copy()
         self._ref[self._index] |= val
         return old
 
@@ -164,7 +164,7 @@ class AtomicRef:
         Returns: The original value of the object referenced by the AtomicRef.
 
         """
-        old = self._ref[self._index]
+        old = self._ref[self._index].copy()
         self._ref[self._index] ^= val
         return old
 
@@ -197,7 +197,7 @@ class AtomicRef:
         Returns: The original value of the object referenced by the AtomicRef.
 
         """
-        old = self._ref[self._index]
+        old = self._ref[self._index].copy()
         self._ref[self._index] = val
         return old
 
