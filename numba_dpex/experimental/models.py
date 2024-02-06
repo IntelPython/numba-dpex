@@ -14,6 +14,7 @@ from numba.core.extending import register_model
 
 import numba_dpex.core.datamodel.models as dpex_core_models
 from numba_dpex.experimental.core.types.kernel_api.items import (
+    GroupType,
     ItemType,
     NdItemType,
 )
@@ -73,6 +74,9 @@ def _init_exp_data_model_manager() -> DataModelManager:
     dmm.register(IntEnumLiteral, IntEnumLiteralModel)
     dmm.register(AtomicRefType, AtomicRefModel)
 
+    # Register the GroupType type
+    dmm.register(GroupType, EmptyStructModel)
+
     # Register the ItemType type
     dmm.register(ItemType, EmptyStructModel)
 
@@ -86,6 +90,9 @@ exp_dmm = _init_exp_data_model_manager()
 
 # Register any new type that should go into numba.core.datamodel.default_manager
 register_model(KernelDispatcherType)(models.OpaqueModel)
+
+# Register the GroupType type
+register_model(GroupType)(EmptyStructModel)
 
 # Register the ItemType type
 register_model(ItemType)(EmptyStructModel)

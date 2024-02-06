@@ -5,10 +5,11 @@
 """Python functions that simulate SYCL's barrier primitives.
 """
 
+from .index_space_ids import Group
 from .memory_enums import MemoryScope
 
 
-def group_barrier(fence_scope=MemoryScope.WORK_GROUP):
+def group_barrier(group: Group, fence_scope=MemoryScope.WORK_GROUP):
     """Performs a barrier operation across all work-items in a work group.
 
     The function is modeled after the ``sycl::group_barrier`` function. It
