@@ -36,8 +36,7 @@ from numba_dpex.core.exceptions import (
     IllegalRangeValueError,
     InvalidKernelLaunchArgsError,
 )
-
-from . import simulator_impl
+from numba_dpex.experimental.kernel_iface import simulator_impl
 
 
 class fake_atomic:
@@ -79,10 +78,10 @@ class fake_group:
 class fake_numba_dpex:
     @staticmethod
     def get_global_id(id):
-        return simulator_impl.get_global_id(id)
+        return FakeKernel.get_global_id(id)
 
     def get_local_id(id):
-        return simulator_impl.get_local_id(id)
+        return FakeKernel.get_local_id(id)
 
 
 def fake_barrier(flags):
@@ -165,11 +164,11 @@ class FakeKernel:
         self._func = func
         self._globals_to_replace = [
             (numba_dpex, fake_numba_dpex),
-            (get_global_id, self._get_global_id),
-            (get_local_id, self._get_local_id),
-            (get_group_id, self._get_group_id),
-            (get_global_size, self._get_global_size),
-            (get_local_size, self._get_local_size),
+            (get_global_id, FakeKernel.get_global_id),
+            (get_local_id, FakeKernel.get_local_id),
+            (get_group_id, FakeKernel.get_group_id),
+            (get_global_size, FakeKernel.get_global_size),
+            (get_local_size, FakeKernel.get_local_size),
             (atomic, fake_atomic),
             (barrier, fake_barrier),
             (mem_fence, fake_mem_fence),
@@ -322,26 +321,31 @@ class FakeKernel:
             self._restore_closure(self._func.__closure__)
             self._restore_globals(self._func.__globals__)
 
-    def _get_global_id(self, index):
-        return self._execution_state._indices[index]
+    @classmethod
+    def get_global_id(cls, index):
+        return cls._execution_state._indices[index]
 
-    def _get_local_id(self, index):
+    @classmethod
+    def get_local_id(cls, index):
         return (
-            self._execution_state._indices[index]
-            % self._execution_state._local_size[index]
+            cls._execution_state._indices[index]
+            % cls._execution_state._local_size[index]
         )
 
-    def _get_group_id(self, index):
+    @classmethod
+    def get_group_id(cls, index):
         return (
-            self._execution_state._indices[index]
-            // self._execution_state._local_size[index]
+            cls._execution_state._indices[index]
+            // cls._execution_state._local_size[index]
         )
 
-    def _get_global_size(self, index):
-        return self._execution_state._global_size[index]
+    @classmethod
+    def get_global_size(cls, index):
+        return cls._execution_state._global_size[index]
 
-    def _get_local_size(self, index):
-        return self._execution_state._local_size[index]
+    @classmethod
+    def get_local_size(cls, index):
+        return cls._execution_state._local_size[index]
 
     # def __call__(self, *args, **kwargs):
     #     # need_barrier = self._have_barrier_ops()       # noqa: E800
