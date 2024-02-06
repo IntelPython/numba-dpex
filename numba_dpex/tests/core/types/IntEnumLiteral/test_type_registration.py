@@ -6,8 +6,7 @@ import pytest
 from numba.core.datamodel import default_manager
 
 from numba_dpex.core.datamodel.models import dpex_data_model_manager
-from numba_dpex.experimental import IntEnumLiteral
-from numba_dpex.experimental.models import exp_dmm
+from numba_dpex.core.types import IntEnumLiteral
 from numba_dpex.kernel_api.flag_enum import FlagEnum
 
 
@@ -24,11 +23,8 @@ def test_data_model_registration():
     with pytest.raises(KeyError):
         default_manager.lookup(dummy)
 
-    with pytest.raises(KeyError):
-        dpex_data_model_manager.lookup(dummy)
-
     try:
-        exp_dmm.lookup(dummy)
+        dpex_data_model_manager.lookup(dummy)
     except:
         pytest.fail(
             "IntEnumLiteral type lookup failed in experimental "

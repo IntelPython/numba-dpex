@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+from llvmlite import ir as llvmir
 from numba.core import datamodel, types
 from numba.core.datamodel.models import PrimitiveModel, StructModel
 from numba.core.extending import register_model
@@ -14,6 +15,7 @@ from ..types import (
     DpctlSyclEvent,
     DpctlSyclQueue,
     DpnpNdArray,
+    IntEnumLiteral,
     NdRangeType,
     RangeType,
     USMNdArray,
@@ -53,6 +55,17 @@ class GenericPointerModel(PrimitiveModel):
         )
         be_type = dmm.lookup(fe_type.dtype).get_data_type().as_pointer(adrsp)
         super(GenericPointerModel, self).__init__(dmm, fe_type, be_type)
+
+
+class IntEnumLiteralModel(PrimitiveModel):
+    """Representation of an object of LiteralIntEnum type using Numba's
+    PrimitiveModel that can be represented natively in the target in all
+    usage contexts.
+    """
+
+    def __init__(self, dmm, fe_type):
+        be_type = llvmir.IntType(fe_type.bitwidth)
+        super().__init__(dmm, fe_type, be_type)
 
 
 class USMArrayDeviceModel(StructModel):
@@ -237,7 +250,7 @@ class NdRangeModel(StructModel):
 
 
 def _init_data_model_manager() -> datamodel.DataModelManager:
-    """Initializes a DpexKernelTarget-specific data model manager.
+    """Initializes a data model manager used by the SPRIVTarget.
 
     SPIRV kernel functions for certain types of devices require an explicit
     address space qualifier for pointers. For OpenCL HD Graphics
@@ -252,8 +265,7 @@ def _init_data_model_manager() -> datamodel.DataModelManager:
     a dpnp.ndarray object can be passed to any other regular function.
 
     Returns:
-        DataModelManager: A numba-dpex DpexKernelTarget-specific data model
-        manager
+        DataModelManager: A numba-dpex SPIRVTarget-specific data model manager
     """
     dmm = datamodel.default_manager.copy()
     dmm.register(types.CPointer, GenericPointerModel)
@@ -270,6 +282,8 @@ def _init_data_model_manager() -> datamodel.DataModelManager:
     # Register the DpctlSyclQueue type to SyclQueueModel in numba_dpex's data
     # model manager. The dpex_data_model_manager is used by the DpexKernelTarget
     dmm.register(DpctlSyclQueue, SyclQueueModel)
+
+    dmm.register(IntEnumLiteral, IntEnumLiteralModel)
 
     return dmm
 
