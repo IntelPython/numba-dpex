@@ -20,7 +20,6 @@ from ._kernel_dpcpp_spirv_overloads import (
 )
 from .decorators import device_func, kernel
 from .launcher import call_kernel, call_kernel_async
-from .literal_intenum_type import IntEnumLiteral
 from .models import *
 from .types import KernelDispatcherType
 
@@ -41,6 +40,5 @@ __all__ = [
     "kernel",
     "call_kernel",
     "call_kernel_async",
-    "IntEnumLiteral",
     "SPIRVKernelDispatcher",
 ]

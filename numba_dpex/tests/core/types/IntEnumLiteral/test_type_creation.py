@@ -7,7 +7,7 @@ from enum import IntEnum
 import pytest
 
 from numba_dpex.core.exceptions import IllegalIntEnumLiteralValueError
-from numba_dpex.experimental import IntEnumLiteral
+from numba_dpex.core.types import IntEnumLiteral
 from numba_dpex.kernel_api.flag_enum import FlagEnum
 
 
