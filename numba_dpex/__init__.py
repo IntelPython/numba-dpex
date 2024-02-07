@@ -108,8 +108,8 @@ from numba_dpex.dpnp_iface import dpnpimpl  # noqa E402
 # backward compatibility
 from numba_dpex.kernel_api import NdRange, Range  # noqa E402
 
+from .core.decorators import dpjit, func, kernel  # noqa E402
 from .core.targets import dpjit_target  # noqa E402
-from .decorators import dpjit, func, kernel  # noqa E402
 from .ocl.stubs import (  # noqa E402
     GLOBAL_MEM_FENCE,
     LOCAL_MEM_FENCE,
