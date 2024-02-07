@@ -7,7 +7,7 @@ import numpy as np
 import numpy.testing as testing
 
 import numba_dpex as ndpx
-from numba_dpex.experimental.kernel_iface import simulator as kernel_sim
+import numba_dpex.experimental as ndpx_ex
 
 
 def vector_sum(a, b, c):
@@ -15,25 +15,21 @@ def vector_sum(a, b, c):
     c[i] = a[i] + b[i]
 
 
-# Device kernel
-kernel_vector_sum = ndpx.kernel(vector_sum)
-
-# Simulator kernel
-kernel_sim_vector_sum = kernel_sim(vector_sum)
-
-
 # Utility function for printing and testing
 def driver(a, b, c, global_size):
-    kernel_vector_sum[ndpx.Range(global_size)](a, b, c)
-    a_np = dpnp.asnumpy(a)  # Copy dpnp array a to NumPy array a_np
-    b_np = dpnp.asnumpy(b)  # Copy dpnp array b to NumPy array b_np
-    c_np = dpnp.asnumpy(c)  # Copy dpnp array c to NumPy array c_np
+    # Sim result
+    c_sim = dpnp.zeros_like(c)
 
-    c_sim_np = np.zeros_like(c_np)  # Sim result
-    kernel_sim_vector_sum[ndpx.Range(global_size)](a_np, b_np, c_sim_np)
+    # Call sim kernel
+    ndpx_ex.call_kernel(vector_sum, ndpx.Range(global_size), a, b, c_sim)
+
+    # Call dpex kernel
+    ndpx_ex.call_kernel(
+        ndpx_ex.kernel(vector_sum), ndpx.Range(global_size), a, b, c
+    )
 
     # Compare kernel result with simulator
-    testing.assert_equal(c_np, c_sim_np)
+    testing.assert_equal(c.asnumpy(), c_sim.asnumpy())
 
 
 # Main function
