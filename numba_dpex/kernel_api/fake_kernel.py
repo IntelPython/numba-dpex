@@ -2,8 +2,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
-import copy
-from collections import namedtuple
+
 from collections.abc import Iterable
 from functools import reduce
 from itertools import product
@@ -32,64 +31,12 @@ from numba_dpex import (
     mem_fence,
     private,
 )
-from numba_dpex.core.exceptions import (
-    IllegalRangeValueError,
-    InvalidKernelLaunchArgsError,
-)
-from numba_dpex.experimental.kernel_iface import simulator_impl
-
-
-class fake_atomic:
-    @staticmethod
-    def add(arr, ind, val):
-        new_val = arr[ind] + val
-        arr[ind] = new_val
-        return new_val
-
-    @staticmethod
-    def sub(arr, ind, val):
-        new_val = arr[ind] - val
-        arr[ind] = new_val
-        return new_val
-
-
-class fake_local:
-    @staticmethod
-    def array(shape, dtype):
-        return simulator_impl.local_array(shape, dtype)
-
-
-def fake_mem_fence(flags):
-    pass  # Nothing
-
-
-class fake_private:
-    @staticmethod
-    def array(shape, dtype):
-        return simulator_impl.private_array(shape, dtype)
-
-
-class fake_group:
-    @staticmethod
-    def reduce_add(value):
-        return simulator_impl.group_reduce(value, lambda a, b: a + b)
-
-
-class fake_numba_dpex:
-    @staticmethod
-    def get_global_id(id):
-        return FakeKernel.get_global_id(id)
-
-    def get_local_id(id):
-        return FakeKernel.get_local_id(id)
-
-
-def fake_barrier(flags):
-    simulator_impl.barrier()
+from numba_dpex.core.exceptions import UnsupportedKernelArgumentError
 
 
 class ExecutionState:
     def __init__(self, global_size, local_size):
+        print("ExecutionState.__init__()")
         self._global_size = global_size
         self._local_size = local_size
         self._indices = [0] * len(self._global_size)
@@ -100,48 +47,35 @@ class ExecutionState:
         self._current_local_array = [0]
         self._reduce_val = [None]
 
-    # def get(self):
-    #     return self._state        # noqa: E800
-
-    # def _save(self):
-    #     indices = copy.deepcopy(self._state.indices)              # noqa: E800
-    #     current_local_array = self._state.current_local_array[0]  # noqa: E800
-    #     self._state.current_local_array[0] = 0                    # noqa: E800
-    #     return (indices, current_local_array)                     # noqa: E800
-
-    # def _restore(self, state):
-    #     self._state.indices[:] = state[0]                 # noqa: E800
-    #     self._state.current_local_array[0] = state[1]     # noqa: E800
-
     def _reset(self, wg_size):
+        print("ExecutionState._reset()")
         self._wg_size[0] = wg_size
         self._current_task[0] = 0
         self._local_arrays.clear()
         self._current_local_array[0] = 0
 
     def _barrier(self):
-        # wg_size = state.wg_size[0]            # noqa: E800
+        print("ExecutionState._barrier()")
         assert self._wg_size > 0
         if self._wg_size > 1:
             assert len(self._tasks) > 0
-            # saved_state = self._save(state)   # noqa: E800
             next_task = self._current_task[0] + 1
             if next_task >= self._wg_size:
                 next_task = 0
             self._current_task[0] = next_task
             self._tasks[next_task].switch()
-            # self._restore(state, saved_state) # noqa: E800
 
     def _reduce(self, value, op):
+        print("ExecutionState._reduce()")
         if self._current_task[0] == 0:
             self._reduce_val[0] = value
         else:
             self._reduce_val[0] = op(self._reduce_val[0], value)
-        # _barrier_impl(state)      # noqa: E800
         self._barrier()
         return self._reduce_val[0]
 
     def _destroy(self):
+        print("ExecutionState._destroy()")
         self._indices = [0] * len(self._global_size)
         self._wg_size = [None]
         self._tasks = []
@@ -151,6 +85,8 @@ class ExecutionState:
         self._reduce_val = [None]
 
     def _capture_func(self, func, indices, args):
+        print("ExecutionState._capture_func()")
+
         def wrapper():
             self._indices[:] = indices
             func(*args)
@@ -160,52 +96,92 @@ class ExecutionState:
 
 # TODO: Share code with dispatcher
 class FakeKernel:
-    def __init__(self, func):
+    _execution_state = None
+
+    def __init__(
+        self,
+        func,
+        index_space,
+        *kernel_args,
+    ):
+        print("FakeKernel.__init__()")
         self._func = func
+        self._global_range, self._local_range = self._get_ranges(index_space)
+        self._kernel_args = kernel_args
+
         self._globals_to_replace = [
-            (numba_dpex, fake_numba_dpex),
+            (numba_dpex, FakeKernel),
             (get_global_id, FakeKernel.get_global_id),
             (get_local_id, FakeKernel.get_local_id),
             (get_group_id, FakeKernel.get_group_id),
             (get_global_size, FakeKernel.get_global_size),
             (get_local_size, FakeKernel.get_local_size),
-            (atomic, fake_atomic),
-            (barrier, fake_barrier),
-            (mem_fence, fake_mem_fence),
-            (local, fake_local),
-            (local.array, fake_local.array),
-            (private, fake_private),
-            (private.array, fake_private.array),
+            (atomic, FakeKernel.atomic),
+            (barrier, FakeKernel.barrier),
+            (mem_fence, FakeKernel.mem_fence),
+            (local, FakeKernel.local),
+            (local.array, FakeKernel.local.array),
+            (private, FakeKernel.private),
+            (private.array, FakeKernel.private.array),
             # (group, group_proxy), # noqa: E800
             # (group.reduce_add, group_proxy.reduce_add),   # noqa: E800
         ]
+
         self._need_barrier = self._has_barrier_ops()
-        self._execution_state = None
+        FakeKernel._execution_state = ExecutionState(
+            self._global_range, self._local_range
+        )
+
         self._saved_globals = self._replace_globals(self._func.__globals__)
         self._saved_closure = self._replace_closure(self._func.__closure__)
 
+    def _get_ranges(self, index_space):
+        print("FakeKernel._get_ranges()")
+        if isinstance(index_space, Range):
+            _global_range = list(index_space)
+            _local_range = None
+        elif isinstance(index_space, NdRange):
+            _global_range = list(index_space.global_range)
+            _local_range = list(index_space.local_range)
+        else:
+            raise UnsupportedKernelArgumentError(
+                type=type(index_space),
+                value=index_space,
+                kernel_name=self._func.__name__,
+            )
+        if _local_range is None or len(_local_range) == 0:
+            _local_range = (1,) * len(_global_range)
+        return _global_range, _local_range
+
     def _has_barrier_ops(self):
+        print("FakeKernel._has_barrier_ops()")
         for v in self._func.__globals__.values():
             if v is barrier:
                 return True
         return False
 
     def _replace_global_func(self, global_obj):
+        print("FakeKernel._replace_global_func()")
         for old_val, new_val in self._globals_to_replace:
             if global_obj is old_val:
                 return new_val
         return global_obj
 
     def _replace_globals(self, src):
+        print("FakeKernel._replace_globals()")
         old_globals = list(src.items())
         for name, val in src.items():
             src[name] = self._replace_global_func(val)
         return old_globals
 
     def _restore_globals(self, src):
+        print("FakeKernel._restore_globals()")
+        if self._saved_globals is None:
+            return
         src.update(self._saved_globals)
 
     def _replace_closure(self, src):
+        print("FakeKernel._replace_closure()")
         if src is None:
             return None
 
@@ -216,81 +192,31 @@ class FakeKernel:
         return old_vals
 
     def _restore_closure(self, src):
+        print("FakeKernel._restore_closure()")
         if self._saved_closure is None:
             return
 
         for i in range(len(src)):
             src[i].cell_contents = self._saved_closure[i]
 
-    def __getitem__(self, args):
-        if isinstance(args, Range):
-            # we need inversions, see github issue #889
-            self._global_range = list(args)[::-1]
-            self._local_range = None
-        elif isinstance(args, NdRange):
-            # we need inversions, see github issue #889
-            self._global_range = list(args.global_range)[::-1]
-            self._local_range = list(args.local_range)[::-1]
-        else:
-            if (
-                isinstance(args, tuple)
-                and len(args) == 2
-                and isinstance(args[0], int)
-                and isinstance(args[1], int)
-            ):
-                self._global_range = [args[0]]
-                self._local_range = [args[1]]
-                return self
-
-            args = [args] if not isinstance(args, Iterable) else args
-            nargs = len(args)
-
-            # Check if the kernel enquing arguments are sane
-            if nargs < 1 or nargs > 2:
-                raise InvalidKernelLaunchArgsError(kernel_name=self.kernel_name)
-
-            g_range = (
-                [args[0]] if not isinstance(args[0], Iterable) else args[0]
-            )
-            # If the optional local size argument is provided
-            l_range = None
-            if nargs == 2:
-                if args[1] != []:
-                    l_range = (
-                        [args[1]]
-                        if not isinstance(args[1], Iterable)
-                        else args[1]
-                    )
-
-            if len(g_range) < 1:
-                raise IllegalRangeValueError(kernel_name=self.kernel_name)
-
-            self._global_range = list(g_range)[::-1]
-            self._local_range = list(l_range)[::-1] if l_range else None
-
-        return self
-
-    def _execute(self, global_size, local_size, args):
-        if local_size is None or len(local_size) == 0:
-            local_size = (1,) * len(global_size)
-
-        # saved_globals = _replace_globals(func.__globals__, replace_global_func)   # noqa: E800
-        # saved_closure = _replace_closure(func.__closure__, replace_global_func)   # noqa: E800
-        # state = _setup_execution_state(global_size, local_size)   # noqa: E800
-        assert self._execution_state is None
-        self._execution_state = ExecutionState(global_size, local_size)
+    def execute(self):
+        print("FakeKernel.execute()")
+        assert FakeKernel._execution_state
         try:
             groups = tuple(
-                (g + l - 1) // l for g, l in zip(global_size, local_size)
+                (g + l - 1) // l
+                for g, l in zip(self._global_range, self._local_range)
             )
             for gid in product(*(range(g) for g in groups)):
-                offset = tuple(g * l for g, l in zip(gid, local_size))
+                offset = tuple(g * l for g, l in zip(gid, self._local_range))
                 size = tuple(
                     min(g - o, l)
-                    for o, g, l in zip(offset, global_size, local_size)
+                    for o, g, l in zip(
+                        offset, self._global_range, self._local_range
+                    )
                 )
                 count = reduce(lambda a, b: a * b, size)
-                self._execution_state._reset(count)
+                FakeKernel._execution_state._reset(count)
 
                 indices_range = (range(o, o + s) for o, s in zip(offset, size))
 
@@ -298,66 +224,121 @@ class FakeKernel:
                     global _greenlet_found
                     assert _greenlet_found, "greenlet package not installed"
                     # tasks = self._execution_state.tasks   # noqa: E800
-                    assert len(self._execution_state._tasks) == 0
+                    assert len(FakeKernel._execution_state._tasks) == 0
                     for indices in product(*indices_range):
-                        self._execution_state._tasks.append(
+                        FakeKernel._execution_state._tasks.append(
                             greenlet(
-                                self._execution_state._capture_func(
-                                    self._func, indices, args
+                                FakeKernel._execution_state._capture_func(
+                                    self._func, indices, self._kernel_args
                                 )
                             )
                         )
 
-                    for t in self._execution_state._tasks:
+                    for t in FakeKernel._execution_state._tasks:
                         t.switch()
 
-                    self._execution_state._tasks.clear()
+                    FakeKernel._execution_state._tasks.clear()
                 else:
                     for indices in product(*indices_range):
-                        self._execution_state._indices[:] = indices
-                        self._func(*args)
+                        FakeKernel._execution_state._indices[:] = indices
+                        self._func(*self._kernel_args)
 
         finally:
             self._restore_closure(self._func.__closure__)
             self._restore_globals(self._func.__globals__)
 
-    @classmethod
-    def get_global_id(cls, index):
-        return cls._execution_state._indices[index]
+    @staticmethod
+    def get_global_id(index):
+        print("FakeKernel.get_global_id()")
+        return FakeKernel._execution_state._indices[index]
 
-    @classmethod
-    def get_local_id(cls, index):
+    @staticmethod
+    def get_local_id(index):
+        print("FakeKernel.get_local_id()")
         return (
-            cls._execution_state._indices[index]
-            % cls._execution_state._local_size[index]
+            FakeKernel._execution_state._indices[index]
+            % FakeKernel._execution_state._local_size[index]
         )
 
-    @classmethod
-    def get_group_id(cls, index):
+    @staticmethod
+    def get_group_id(index):
+        print("FakeKernel.get_group_id()")
         return (
-            cls._execution_state._indices[index]
-            // cls._execution_state._local_size[index]
+            FakeKernel._execution_state._indices[index]
+            // FakeKernel._execution_state._local_size[index]
         )
 
-    @classmethod
-    def get_global_size(cls, index):
-        return cls._execution_state._global_size[index]
+    @staticmethod
+    def get_global_size(index):
+        print("FakeKernel.get_global_size()")
+        return FakeKernel._execution_state._global_size[index]
 
-    @classmethod
-    def get_local_size(cls, index):
-        return cls._execution_state._local_size[index]
+    @staticmethod
+    def get_local_size(index):
+        print("FakeKernel.get_local_size()")
+        return FakeKernel._execution_state._local_size[index]
 
-    # def __call__(self, *args, **kwargs):
-    #     # need_barrier = self._have_barrier_ops()       # noqa: E800
-    #     self._execute(
-    #         self._global_range[::-1],                     # noqa: E800
-    #         None if self._local_range is None else self._local_range[::-1],   # noqa: E800
-    #         self._func,
-    #         args,
-    #         # need_barrier=self._need_barrier,    # noqa: E800
-    #         # replace_global_func=self._replace_global_func,  # noqa: E800
-    #     ) # noqa: E800
+    @staticmethod
+    def local_array(shape, dtype):
+        print("FakeKernel.local_array()")
+        current = FakeKernel._execution_state._current_local_array[0]
+        if FakeKernel._execution_state._current_task[0] == 0:
+            arr = np.zeros(shape, dtype)
+            FakeKernel._execution_state._local_arrays.append(arr)
+        else:
+            arr = FakeKernel._execution_state._local_arrays[current]
+        FakeKernel._execution_state._current_local_array[0] = current + 1
+        return arr
 
+    @staticmethod
+    def private_array(shape, dtype):
+        print("FakeKernel.private_array()")
+        return np.zeros(shape, dtype)
 
-# def kernel(func):
-#     return FakeKernel(func)   # noqa: E800
+    @staticmethod
+    def group_reduce(value, op):
+        print("FakeKernel.group_reduce()")
+        return FakeKernel._execution_state._reduce(value, op)
+
+    @staticmethod
+    def barrier(flags):
+        print("FakeKernel.barrier()")
+        FakeKernel._execution_state._barrier()
+
+    @staticmethod
+    def mem_fence(flags):
+        print("FakeKernel.mem_fence()")
+        pass  # Nothing
+
+    class atomic:
+        @staticmethod
+        def add(arr, ind, val):
+            print("FakeKernel.atomic.add()")
+            new_val = arr[ind] + val
+            arr[ind] = new_val
+            return new_val
+
+        @staticmethod
+        def sub(arr, ind, val):
+            print("FakeKernel.atomic.sub()")
+            new_val = arr[ind] - val
+            arr[ind] = new_val
+            return new_val
+
+    class local:
+        @staticmethod
+        def array(shape, dtype):
+            print("FakeKernel.local.array()")
+            return FakeKernel.local_array(shape, dtype)
+
+    class private:
+        @staticmethod
+        def array(shape, dtype):
+            print("FakeKernel.private.array()")
+            return FakeKernel.private_array(shape, dtype)
+
+    class group:
+        @staticmethod
+        def reduce_add(value):
+            print("FakeKernel.group.reduce_add()")
+            return FakeKernel.group_reduce(value, lambda a, b: a + b)

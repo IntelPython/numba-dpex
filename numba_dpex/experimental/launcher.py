@@ -33,6 +33,7 @@ from numba_dpex.experimental.core.types.kernel_api.items import (
     ItemType,
     NdItemType,
 )
+from numba_dpex.kernel_api.fake_kernel import FakeKernel
 
 
 class LLRange(NamedTuple):
@@ -219,16 +220,11 @@ def _submit_kernel(  # pylint: disable=too-many-arguments
 
 
 def call_kernel(kernel_fn, index_space, *kernel_args) -> None:
-    print(f"type(kernel_fn) = {type(kernel_fn)}")
-    print(f"type(index_space) = {type(index_space)}")
     if isinstance(kernel_fn, SPIRVKernelDispatcher):
-        # print("here 1")   # noqa: E800
         _call_kernel(kernel_fn, index_space, *kernel_args)
     else:
-        # print("here 2")   # noqa: E800
-        from numba_dpex.experimental.kernel_iface.simulator import kernel
-
-        kernel(kernel_fn)[index_space](*kernel_args)
+        fk = FakeKernel(kernel_fn, index_space, *kernel_args)
+        fk.execute()
 
 
 @dpjit
