@@ -220,11 +220,25 @@ def _submit_kernel(  # pylint: disable=too-many-arguments
 
 
 def call_kernel(kernel_fn, index_space, *kernel_args) -> None:
+    """Calls a numba_dpex.kernel decorated function.
+
+    Calls a python function or a `numba_dpex.experimental.kernel` decorated
+    function from CPython or from another dpjit function. Kernel execution
+    happens in synchronous way, therefore the thread will be blocked till the
+    kernel done execution.
+
+    Args:
+        kernel_fn (function | KernelDispatcher): A python function or a
+            `numba_dpex.kernel` decorated function that is compiled to a
+            `KernelDispatcher` by `numba_dpex`.
+        index_space (Range | NdRange): A `numba_dpex.Range` or
+            `numba_dpex.NdRange` type object that specifies the index space for
+            the kernel.
+    """
     if isinstance(kernel_fn, SPIRVKernelDispatcher):
         _call_kernel(kernel_fn, index_space, *kernel_args)
     else:
-        fk = FakeKernel(kernel_fn, index_space, *kernel_args)
-        fk.execute()
+        FakeKernel(kernel_fn, index_space, *kernel_args).execute()
 
 
 @dpjit
