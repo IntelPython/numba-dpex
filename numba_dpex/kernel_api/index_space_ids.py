@@ -61,6 +61,14 @@ class Item:
         """
         return self._index[idx]
 
+    def get_range(self, idx):
+        """Get the range size for a specific dimension.
+
+        Returns:
+            int: The size
+        """
+        return self._extent[idx]
+
     @property
     def ndim(self) -> int:
         """Returns the rank of a Item object.
@@ -116,6 +124,22 @@ class NdItem:
             int: The local linear id.
         """
         return self._local_item.get_linear_id()
+
+    def get_global_range(self, idx):
+        """Get the global range size for a specific dimension.
+
+        Returns:
+            int: The size
+        """
+        return self._global_item.get_range(idx)
+
+    def get_local_range(self, idx):
+        """Get the local range size for a specific dimension.
+
+        Returns:
+            int: The size
+        """
+        return self._local_item.get_range(idx)
 
     def get_group(self):
         """Returns the group.
