@@ -18,11 +18,7 @@ from numba_dpex.core.pipelines.dpjit_compiler import get_compiler
 from numba_dpex.core.targets.dpjit_target import DPEX_TARGET_NAME
 
 
-def kernel(
-    func_or_sig=None,
-    debug=False,
-    enable_cache=True,
-):
+def kernel(func_or_sig=None, debug=False, enable_cache=True, mode=None):
     """A decorator to define a kernel function.
 
     A kernel function is conceptually equivalent to a SYCL kernel function, and
@@ -33,6 +29,18 @@ def kernel(
         * All array arguments passed to a kernel should adhere to compute
           follows data programming model.
     """
+
+    # A temporary hook to enable the new kernel_api_impl.spirv.dispatcher while
+    # maintaining backward compatibility.
+    if mode is not None:
+        if mode == "sycl":
+            from numba_dpex.experimental.decorators import kernel as exp_kernel
+
+            return exp_kernel(func_or_sig)
+        else:
+            warnings.warn(
+                'Ignoring unknown mode option. Only supported option is "sycl"'
+            )
 
     def _kernel_dispatcher(pyfunc, sigs=None):
         return JitKernel(
@@ -87,6 +95,15 @@ def kernel(
 
 
 def func(func_or_sig=None, debug=False, enable_cache=True):
+    """Same as device_func.
+
+    ..  deprecated:: 0.22
+        Use :func:`device_func` instead.
+    """
+    return device_func(func_or_sig, debug, enable_cache)
+
+
+def device_func(func_or_sig=None, debug=False, enable_cache=True, mode=None):
     """A decorator to define a kernel device function.
 
     Device functions are functions that can be only invoked from a kernel
@@ -97,6 +114,18 @@ def func(func_or_sig=None, debug=False, enable_cache=True):
     unlike a kernel function, a device function can return a value like
     normal functions.
     """
+
+    if mode is not None:
+        if mode == "sycl":
+            from numba_dpex.experimental.decorators import (
+                device_func as exp_device_func,
+            )
+
+            return exp_device_func(func_or_sig)
+        else:
+            warnings.warn(
+                'Ignoring unknown mode option. Only supported option is "sycl"'
+            )
 
     def _func_autojit(pyfunc):
         return compile_func_template(
