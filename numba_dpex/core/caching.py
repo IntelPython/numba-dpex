@@ -436,9 +436,9 @@ class LRUCache(AbstractCache):
                         )
                     )
                 self._cache_file.save(self._head.key, self._head.value)
-                self._evicted[
-                    self._head.key
-                ] = None  # as we are using cache files, we save memory
+                self._evicted[self._head.key] = (
+                    None  # as we are using cache files, we save memory
+                )
             else:
                 self._evicted[self._head.key] = self._head.value
             self._lookup.pop(self._head.key)

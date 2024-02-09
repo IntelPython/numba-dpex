@@ -18,7 +18,6 @@ from numba_dpex.core.types.dpnp_ndarray_type import DpnpNdArray
 
 
 class ParforLegalizeCFDPassImpl:
-
     """Legalizes the compute-follows-data based device attribute for parfor
     nodes.
 
