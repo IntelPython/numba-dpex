@@ -25,7 +25,7 @@ from numba_dpex.kernel_api_impl.spirv.target import (
     LLVM_SPIRV_ARGS,
 )
 
-from ..dpcpp_types import AtomicRefType
+from ...core.types.kernel_api.atomic_ref import AtomicRefType
 from ..target import DPEX_KERNEL_EXP_TARGET_NAME
 from ._spv_atomic_inst_helper import (
     get_atomic_inst_name,

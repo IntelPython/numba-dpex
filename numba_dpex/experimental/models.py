@@ -12,13 +12,13 @@ from numba.core.datamodel.models import StructModel
 from numba.core.extending import register_model
 
 import numba_dpex.core.datamodel.models as dpex_core_models
-from numba_dpex.experimental.core.types.kernel_api.items import (
+from numba_dpex.core.types.kernel_api.index_space_ids import (
     GroupType,
     ItemType,
     NdItemType,
 )
 
-from .dpcpp_types import AtomicRefType
+from ..core.types.kernel_api.atomic_ref import AtomicRefType
 from .types import KernelDispatcherType
 
 
