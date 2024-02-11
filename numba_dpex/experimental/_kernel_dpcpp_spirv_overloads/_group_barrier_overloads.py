@@ -14,7 +14,7 @@ from numba.core.errors import TypingError
 from numba.extending import intrinsic, overload
 
 from numba_dpex.core import itanium_mangler as ext_itanium_mangler
-from numba_dpex.experimental.core.types.kernel_api.items import GroupType
+from numba_dpex.core.types.kernel_api.index_space_ids import GroupType
 from numba_dpex.experimental.target import DPEX_KERNEL_EXP_TARGET_NAME
 from numba_dpex.kernel_api import group_barrier
 from numba_dpex.kernel_api.memory_enums import MemoryOrder, MemoryScope
