@@ -10,7 +10,6 @@ compiled.
 from .ranges import Range
 
 
-# pylint: disable=too-few-public-methods
 class Group:
     """Analogue to the ``sycl::group`` type."""
 
@@ -25,6 +24,82 @@ class Group:
         self._local_range = local_range
         self._group_range = group_range
         self._index = index
+        self._leader = False
+
+    def get_group_id(self, dim):
+        """Returns the index of the work-group within the global nd-range for
+        specified dimension.
+
+        Since the work-items in a work-group have a defined position within the
+        global nd-range, the returned group id can be used along with the local
+        id to uniquely identify the work-item in the global nd-range.
+        """
+        if dim > len(self._index) - 1:
+            raise ValueError(
+                "Dimension value is out of bounds for the group index"
+            )
+        return self._index[dim]
+
+    def get_group_linear_id(self):
+        """Returns a linearized version of the work-group index."""
+        if len(self._index) == 1:
+            return self._index[0]
+        if len(self._index) == 2:
+            return self._index[0] * self._group_range[1] + self._index[1]
+        return (
+            (self._index[0] * self._group_range[1] * self._group_range[2])
+            + (self._index[1] * self._group_range[2])
+            + (self._index[2])
+        )
+
+    def get_group_range(self):
+        """Returns a range representing the number of groups in the nd-range."""
+        return self._group_range
+
+    def get_group_linear_range(self):
+        """Return the total number of work-groups in the nd_range."""
+        num_wg = 1
+        for ext in self._group_range:
+            num_wg *= ext
+
+        return num_wg
+
+    def get_local_range(self):
+        """Returns a SYCL range representing all dimensions of the local
+        range. This local range may have been provided by the programmer, or
+        chosen by the SYCL runtime.
+        """
+        return self._local_range
+
+    def get_local_linear_range(self):
+        """Return the total number of work-items in the work-group."""
+        num_wi = 1
+        for ext in self._local_range:
+            num_wi *= ext
+
+        return num_wi
+
+    @property
+    def leader(self):
+        """Return true for exactly one work-item in the work-group, if the
+        calling work-item is the leader of the work-group, and false for all
+        other work-items in the work-group.
+
+        The leader of the work-group is determined during construction of the
+        work-group, and is invariant for the lifetime of the work-group. The
+        leader of the work-group is guaranteed to be the work-item with a
+        local id of 0.
+
+
+        Returns:
+            bool: If the work item is the designated leader of the
+        """
+        return self._leader
+
+    @leader.setter
+    def leader(self, work_item_id):
+        """Sets the leader attribute for the group."""
+        self._leader = work_item_id
 
 
 class Item:
@@ -45,7 +120,7 @@ class Item:
         """
         if len(self._extent) == 1:
             return self._index[0]
-        if len(self._extent) == 1:
+        if len(self._extent) == 2:
             return self._index[0] * self._extent[1] + self._index[1]
         return (
             (self._index[0] * self._extent[1] * self._extent[2])
@@ -90,6 +165,8 @@ class NdItem:
         self._global_item = global_item
         self._local_item = local_item
         self._group = group
+        if self.get_local_linear_id() == 0:
+            self._group.leader = True
 
     def get_global_id(self, idx):
         """Get the global id for a specific dimension.

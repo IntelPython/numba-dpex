@@ -12,6 +12,7 @@ numba_dpex.
 from .atomic_ref import AtomicRef
 from .barrier import group_barrier
 from .index_space_ids import Group, Item, NdItem
+from .launcher import call_kernel
 from .memory_enums import AddressSpace, MemoryOrder, MemoryScope
 from .ranges import NdRange, Range
 
@@ -26,4 +27,5 @@ __all__ = [
     "NdItem",
     "Item",
     "group_barrier",
+    "call_kernel",
 ]
