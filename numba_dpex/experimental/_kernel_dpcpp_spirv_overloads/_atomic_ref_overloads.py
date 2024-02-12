@@ -32,7 +32,7 @@ from ._spv_atomic_inst_helper import (
     get_memory_semantics_mask,
     get_scope,
 )
-from .spv_fn_generator import (
+from .spv_atomic_fn_declarations import (
     get_or_insert_atomic_load_fn,
     get_or_insert_spv_atomic_compare_exchange_fn,
     get_or_insert_spv_atomic_exchange_fn,
