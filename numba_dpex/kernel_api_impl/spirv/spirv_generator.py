@@ -11,30 +11,68 @@ import os
 import tempfile
 from subprocess import STDOUT, CalledProcessError, check_output
 
-from numba_dpex._kernel_api_impl.spirv.target import LLVM_SPIRV_ARGS
 from numba_dpex.core import config
 from numba_dpex.core.exceptions import InternalError
+from numba_dpex.kernel_api_impl.spirv.target import LLVM_SPIRV_ARGS
+
+try:
+    import dpcpp_llvm_spirv as dls
+except ImportError as err:
+    raise ImportError("Cannot import dpcpp-llvm-spirv package") from err
 
 
 def run_cmd(args, error_message=None):
+    """
+    Helper to run an external command and provide a meaningful error message.
+    """
     try:
         check_output(
             args,
             stderr=STDOUT,
         )
-    except CalledProcessError as err:
+    except CalledProcessError as cper:
         if error_message is None:
             error_message = f"Error during call to {args[0]}"
         raise InternalError(
             f"{error_message}:\n\t"
-            + "\t".join(err.output.decode("utf-8").splitlines(True))
-        )
+            + "\t".join(cper.output.decode("utf-8").splitlines(True))
+        ) from cper
 
 
-class _SpirvGenerator:
-    """Generates a SPIR-V binary from supplied LLVM IR."""
+class Module:
+    """
+    Abstracts a SPIR-V binary module that is created by calling
+    ``llvm-spirv`` translator on a LLVM IR binary module.
+    """
 
-    def generate(self, llvm_spirv_args, ipath, opath):
+    @staticmethod
+    def _llvm_spirv():
+        """Return path to llvm-spirv executable."""
+
+        return dls.get_llvm_spirv_path()
+
+    def __init__(self, context, llvmir, llvmbc):
+        self._tmpdir = tempfile.mkdtemp()
+        self._tempfiles = []
+        self._finalized = False
+        self.context = context
+        self._llvmfile = None
+        self._llvmir = llvmir
+        self._llvmbc = llvmbc
+
+    def __del__(self):
+        # Remove all temporary files
+        for afile in self._tempfiles:
+            os.unlink(afile)
+        # Remove directory
+        os.rmdir(self._tmpdir)
+
+    def _track_temp_file(self, name):
+        path = os.path.join(self._tmpdir, f"{len(self._tempfiles)}-{name}")
+        self._tempfiles.append(path)
+        return path
+
+    def _generate_spirv(self, llvm_spirv_args, ipath, opath):
         """
         Generate a spirv module from llvm bitcode.
 
@@ -58,47 +96,6 @@ class _SpirvGenerator:
             [llvm_spirv_tool, *llvm_spirv_args, "-o", opath, ipath],
             error_message="Error during lowering LLVM IR to SPIRV",
         )
-
-    @staticmethod
-    def _llvm_spirv():
-        """Return path to llvm-spirv executable."""
-
-        try:
-            import dpcpp_llvm_spirv as dls
-        except ImportError:
-            raise ImportError("Cannot import dpcpp-llvm-spirv package")
-
-        result = dls.get_llvm_spirv_path()
-        return result
-
-
-class Module(object):
-    def __init__(self, context, llvmir, llvmbc):
-        """
-        Setup
-        """
-        self._tmpdir = tempfile.mkdtemp()
-        self._tempfiles = []
-        self._generator = _SpirvGenerator()
-        self._finalized = False
-        self.context = context
-
-        self._llvmir = llvmir
-        self._llvmbc = llvmbc
-
-    def __del__(self):
-        # Remove all temporary files
-        for afile in self._tempfiles:
-            os.unlink(afile)
-        # Remove directory
-        os.rmdir(self._tmpdir)
-
-    def _track_temp_file(self, name):
-        path = os.path.join(
-            self._tmpdir, "{0}-{1}".format(len(self._tempfiles), name)
-        )
-        self._tempfiles.append(path)
-        return path
 
     def load_llvm(self):
         """
@@ -134,7 +131,7 @@ class Module(object):
 
         if config.SAVE_IR_FILES != 0:
             # Dump the llvmir and llvmbc in file
-            with open("generated_llvm.ir", "w") as f:
+            with open("generated_llvm.ir", "w", encoding="utf-8") as f:
                 f.write(self._llvmir)
             with open("generated_llvm.bc", "wb") as f:
                 f.write(self._llvmbc)
@@ -146,7 +143,7 @@ class Module(object):
             print("generated_llvm.bc")
             print("".center(80, "="))
 
-        self._generator.generate(
+        self._generate_spirv(
             llvm_spirv_args=llvm_spirv_args,
             ipath=self._llvmfile,
             opath=spirv_path,

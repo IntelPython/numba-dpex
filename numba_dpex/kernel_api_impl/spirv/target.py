@@ -2,6 +2,9 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
+"""Implements a SPIR-V code generation target for numba-dpex.
+"""
+
 from enum import IntEnum
 from functools import cached_property
 
@@ -9,20 +12,24 @@ import dpnp
 from llvmlite import binding as ll
 from llvmlite import ir as llvmir
 from numba import typeof
-from numba.core import cgutils, funcdesc, types, typing, utils
+from numba.core import cgutils, funcdesc
+from numba.core import types as nb_types
+from numba.core import typing, utils
 from numba.core.base import BaseContext
 from numba.core.callconv import MinimalCallConv
-from numba.core.registry import cpu_target
 from numba.core.target_extension import GPU, target_registry
 from numba.core.types import Array as NpArrayType
 from numba.core.types.scalars import IntEnumClass
+from numba.core.typing import cmathdecl, enumdecl, npydecl
 
 from numba_dpex.core.datamodel.models import _init_data_model_manager
 from numba_dpex.core.exceptions import UnsupportedKernelArgumentError
 from numba_dpex.core.typeconv import to_usm_ndarray
 from numba_dpex.core.types import IntEnumLiteral, USMNdArray
+from numba_dpex.core.typing import dpnpdecl
 from numba_dpex.core.utils import get_info_from_suai
 from numba_dpex.kernel_api.flag_enum import FlagEnum
+from numba_dpex.ocl.mathimpl import lower_ocl_impl, sig_mapper
 from numba_dpex.utils import address_space, calling_conv
 
 from . import codegen
@@ -90,7 +97,7 @@ class SPIRVTypingContext(typing.BaseContext):
         if isinstance(typ, IntEnumLiteral):
             try:
                 attrval = getattr(typ.literal_value, attr).value
-                retty = types.IntegerLiteral(attrval)
+                retty = nb_types.IntegerLiteral(attrval)
             except ValueError:
                 pass
         else:
@@ -133,20 +140,17 @@ class SPIRVTypingContext(typing.BaseContext):
             try:
                 suai_attrs = get_info_from_suai(val)
                 return to_usm_ndarray(suai_attrs)
-            except Exception:
+            except Exception as err:
                 raise UnsupportedKernelArgumentError(
                     type=str(type(val)), value=val
-                )
+                ) from err
 
         return super().resolve_argument_type(val)
 
     def load_additional_registries(self):
         """Register the OpenCL API and math and other functions."""
-        from numba.core.typing import cmathdecl, enumdecl, npydecl
-
-        from numba_dpex.core.typing import dpnpdecl
-
-        from ...ocl import mathdecl, ocldecl
+        # pylint: disable=import-outside-toplevel
+        from numba_dpex.ocl import mathdecl, ocldecl
 
         self.install_registry(ocldecl.registry)
         self.install_registry(mathdecl.registry)
@@ -157,10 +161,9 @@ class SPIRVTypingContext(typing.BaseContext):
         self.install_registry(enumdecl.registry)
 
 
+# pylint: disable=too-few-public-methods
 class SPIRVDevice(GPU):
     """Mark the hardware target as device that supports SPIR-V bitcode."""
-
-    pass
 
 
 SPIRV_TARGET_NAME = "spirv"
@@ -246,12 +249,14 @@ class SPIRVTargetContext(BaseContext):
         wrapperfnty = llvmir.FunctionType(
             llvmir.VoidType(), arginfo.argument_types
         )
-        wrapper_module = self.create_module("dpex.kernel.wrapper")
+        wrapper_module = self._internal_codegen.create_empty_spirv_module(
+            "dpex.kernel.wrapper"
+        )
         wrappername = func.name.replace("dpex_fn", "dpex_kernel")
         argtys = list(arginfo.argument_types)
         fnty = llvmir.FunctionType(
             llvmir.IntType(32),
-            [self.call_conv.get_return_type(types.pyobject)] + argtys,
+            [self.call_conv.get_return_type(nb_types.pyobject)] + argtys,
         )
         func = llvmir.Function(wrapper_module, fnty, name=func.name)
         func.calling_convention = CC_SPIR_FUNC
@@ -261,8 +266,8 @@ class SPIRVTargetContext(BaseContext):
         callargs = arginfo.from_arguments(builder, wrapper.args)
 
         # XXX handle error status
-        status, _ = self.call_conv.call_function(
-            builder, func, types.void, argtypes, callargs
+        self.call_conv.call_function(
+            builder, func, nb_types.void, argtypes, callargs
         )
         builder.ret_void()
 
@@ -283,6 +288,9 @@ class SPIRVTargetContext(BaseContext):
         """Called by the super().__init__ constructor to initalize the child
         class.
         """
+        # pylint: disable=import-outside-toplevel
+        from numba_dpex.dpnp_iface.dpnp_ufunc_db import _lazy_init_dpnp_db
+
         self._internal_codegen = codegen.JITSPIRVCodegen("numba_dpex.kernel")
         self._target_data = ll.create_target_data(
             codegen.SPIR_DATA_LAYOUT[utils.MACHINE_BITS]
@@ -290,9 +298,7 @@ class SPIRVTargetContext(BaseContext):
 
         # Override data model manager to SPIR model
         self.data_model_manager = _init_data_model_manager()
-        self.extra_compile_options = dict()
-
-        from numba_dpex.dpnp_iface.dpnp_ufunc_db import _lazy_init_dpnp_db
+        self.extra_compile_options = {}
 
         _lazy_init_dpnp_db()
 
@@ -319,11 +325,12 @@ class SPIRVTargetContext(BaseContext):
         return super().get_getattr(typ, attr)
 
     def create_module(self, name):
-        return self._internal_codegen._create_empty_module(name)
+        return self._internal_codegen.create_empty_spirv_module(name)
 
     def replace_dpnp_ufunc_with_ocl_intrinsics(self):
-        from numba_dpex.ocl.mathimpl import lower_ocl_impl, sig_mapper
-
+        """Replaces the implementation in the ufunc_db for specific math
+        functions for which a SPIR-V intrinsic should be used.
+        """
         ufuncs = [
             ("fabs", dpnp.fabs),
             ("exp", dpnp.exp),
@@ -373,10 +380,10 @@ class SPIRVTargetContext(BaseContext):
         target context.
 
         """
+        # pylint: disable=import-outside-toplevel
+        from numba_dpex import printimpl
         from numba_dpex.dpnp_iface import dpnpimpl
-
-        from ... import printimpl
-        from ...ocl import mathimpl, oclimpl
+        from numba_dpex.ocl import mathimpl, oclimpl
 
         self.insert_func_defn(oclimpl.registry.functions)
         self.insert_func_defn(mathimpl.registry.functions)
@@ -387,27 +394,40 @@ class SPIRVTargetContext(BaseContext):
 
     @cached_property
     def call_conv(self):
+        """
+        Return the CallConv object used by the SPIRVTargetContext.
+        """
         return SPIRVCallConv(self)
 
     def codegen(self):
+        """Return the CodeGen object used by the SPIRVTargetContext."""
         return self._internal_codegen
 
     @property
     def target_data(self):
         return self._target_data
 
-    def mangler(self, name, argtypes, abi_tags=(), uid=None):
+    def mangler(self, name, types, *, abi_tags=(), uid=None):
+        """
+        Generates a name for a function by appending \"dpex_fn\" to the
+        name of the function before calling Numba's default function name
+        mangler."""
         return funcdesc.default_mangler(
-            name + "dpex_fn", argtypes, abi_tags=abi_tags, uid=uid
+            name + "dpex_fn", types, abi_tags=abi_tags, uid=uid
         )
 
     def prepare_spir_kernel(self, func, argtypes):
+        """Generates a wrapper function with \"spir_kernel\" calling conv that
+        calls the compiled \"spir_func\" generated by numba_dpex for a kernel
+        decorated function.
+        """
         func.linkage = "linkonce_odr"
         func.module.data_layout = codegen.SPIR_DATA_LAYOUT[self.address_size]
         wrapper = self._generate_spir_kernel_wrapper(func, argtypes)
         return wrapper
 
     def set_spir_func_calling_conv(self, func):
+        """Sets the calling convetion of the provided LLVM func to spir_func"""
         # Adapt to SPIR
         func.calling_convention = CC_SPIR_FUNC
         func.linkage = "linkonce_odr"
@@ -434,7 +454,7 @@ class SPIRVTargetContext(BaseContext):
         )
         if not self.enable_debuginfo:
             fn.attributes.add("alwaysinline")
-        ret = super(SPIRVTargetContext, self).declare_function(module, fndesc)
+        ret = super().declare_function(module, fndesc)
         ret.calling_convention = calling_conv.CC_SPIR_FUNC
         return ret
 
@@ -486,9 +506,14 @@ class SPIRVTargetContext(BaseContext):
         """
         Populate array structure.
         """
+        # pylint: disable=import-outside-toplevel
         from numba_dpex.core.kernel_interface import arrayobj
 
         return arrayobj.populate_array(arr, **kwargs)
+
+    def get_executable(self, func, fndesc, env):
+        """Not implemented for SPIRVTargetContext"""
+        raise NotImplementedError("Not implemented for SPIRVTargetContext")
 
 
 class SPIRVCallConv(MinimalCallConv):
@@ -500,6 +525,7 @@ class SPIRVCallConv(MinimalCallConv):
 
     """
 
+    # pylint:disable=too-many-arguments
     def call_function(self, builder, callee, resty, argtys, args, env=None):
         """Call the Numba-compiled *callee*."""
         assert env is None

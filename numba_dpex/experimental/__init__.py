@@ -8,10 +8,9 @@ yet production ready.
 
 from numba.core.imputils import Registry
 
-from numba_dpex._kernel_api_impl.spirv.dispatcher import SPIRVKernelDispatcher
-
 # Temporary so that Range and NdRange work in experimental call_kernel
 from numba_dpex.core.boxing import *
+from numba_dpex.kernel_api_impl.spirv.dispatcher import SPIRVKernelDispatcher
 
 from ._kernel_dpcpp_spirv_overloads import (
     _atomic_ref_overloads,
