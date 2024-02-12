@@ -11,12 +11,12 @@ from functools import cached_property
 from numba.core.descriptors import TargetDescriptor
 from numba.core.target_extension import GPU, target_registry
 
-from numba_dpex._kernel_api_impl.spirv.target import (
+from numba_dpex.core.descriptor import DpexTargetOptions
+from numba_dpex.experimental.models import exp_dmm
+from numba_dpex.kernel_api_impl.spirv.target import (
     SPIRVTargetContext,
     SPIRVTypingContext,
 )
-from numba_dpex.core.descriptor import DpexTargetOptions
-from numba_dpex.experimental.models import exp_dmm
 
 
 #  pylint: disable=R0903

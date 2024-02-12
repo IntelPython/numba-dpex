@@ -26,12 +26,6 @@ from numba.core.types import void
 from numba.core.typing.typeof import Purpose, typeof
 
 from numba_dpex import config, numba_sem_version
-from numba_dpex._kernel_api_impl.spirv import spirv_generator
-from numba_dpex._kernel_api_impl.spirv.codegen import SPIRVCodeLibrary
-from numba_dpex._kernel_api_impl.spirv.target import (
-    CompilationMode,
-    SPIRVTargetContext,
-)
 from numba_dpex.core.exceptions import (
     ExecutionQueueInferenceError,
     InvalidKernelSpecializationError,
@@ -44,6 +38,12 @@ from numba_dpex.core.utils import kernel_launcher as kl
 from numba_dpex.experimental.target import (
     DPEX_KERNEL_EXP_TARGET_NAME,
     dpex_exp_kernel_target,
+)
+from numba_dpex.kernel_api_impl.spirv import spirv_generator
+from numba_dpex.kernel_api_impl.spirv.codegen import SPIRVCodeLibrary
+from numba_dpex.kernel_api_impl.spirv.target import (
+    CompilationMode,
+    SPIRVTargetContext,
 )
 
 _SPIRVKernelCompileResult = namedtuple(
@@ -314,6 +314,7 @@ class SPIRVKernelDispatcher(Dispatcher):
         self._kernel_name = pyfunc.__name__
 
         if numba_sem_version < (0, 59, 0):
+            # pylint: disable=unexpected-keyword-arg
             super().__init__(
                 py_func=pyfunc,
                 locals=local_vars_to_numba_types,
