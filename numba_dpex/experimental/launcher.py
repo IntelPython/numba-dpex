@@ -25,14 +25,14 @@ from numba_dpex.core.types.kernel_api.index_space_ids import (
     ItemType,
     NdItemType,
 )
+from numba_dpex.core.utils import kernel_launcher as kl
+from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
+from numba_dpex.dpctl_iface.wrappers import wrap_event_reference
 from numba_dpex.kernel_api_impl.spirv.dispatcher import (
     SPIRVKernelDispatcher,
     _SPIRVKernelCompileResult,
 )
 from numba_dpex.kernel_api_impl.spirv.target import SPIRVTargetContext
-from numba_dpex.core.utils import kernel_launcher as kl
-from numba_dpex.dpctl_iface import libsyclinterface_bindings as sycl
-from numba_dpex.dpctl_iface.wrappers import wrap_event_reference
 
 
 class LLRange(NamedTuple):

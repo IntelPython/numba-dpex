@@ -11,12 +11,12 @@ from numba.core import cgutils, types
 from numba.core.errors import TypingError
 from numba.extending import intrinsic, overload_method
 
-from numba_dpex.kernel_api_impl.spirv.target import SPIRVTargetContext
 from numba_dpex.core.types.kernel_api.index_space_ids import (
     GroupType,
     ItemType,
     NdItemType,
 )
+from numba_dpex.kernel_api_impl.spirv.target import SPIRVTargetContext
 
 from ..target import DPEX_KERNEL_EXP_TARGET_NAME
 
