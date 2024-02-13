@@ -19,6 +19,7 @@ dependencies:
   - pip
   - pip:
     - sphinx
+    - sphinx-autoapi
     - autodoc # there is no conda package
     - recommonmark
     - sphinx-rtd-theme
@@ -27,3 +28,4 @@ dependencies:
     - sphinxcontrib.programoutput
     - pydata-sphinx-theme
     - myst-parser
+    - furo
