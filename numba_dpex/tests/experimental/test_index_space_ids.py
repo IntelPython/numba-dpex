@@ -11,7 +11,8 @@ from numba.core.errors import TypingError
 
 import numba_dpex as dpex
 import numba_dpex.experimental as dpex_exp
-from numba_dpex.kernel_api import Item, NdItem
+from numba_dpex.kernel_api import Item, NdItem, NdRange
+from numba_dpex.kernel_api import call_kernel as kapi_call_kernel
 from numba_dpex.tests._helper import skip_windows
 
 _SIZE = 16
@@ -61,6 +62,24 @@ def set_ones_nd_item(nd_item: NdItem, a):
 def set_local_ones_nd_item(nd_item: NdItem, a):
     i = nd_item.get_local_id(0)
     a[i] = 1
+
+
+def _get_group_id_driver(nditem: NdItem, a):
+    i = nditem.get_global_id(0)
+    g = nditem.get_group()
+    a[i] = g.get_group_id(0)
+
+
+def _get_group_range_driver(nditem: NdItem, a):
+    i = nditem.get_global_id(0)
+    g = nditem.get_group()
+    a[i] = g.get_group_range(0)
+
+
+def _get_group_local_range_driver(nditem: NdItem, a):
+    i = nditem.get_global_id(0)
+    g = nditem.get_group()
+    a[i] = g.get_local_range(0)
 
 
 def test_item_get_id():
@@ -153,6 +172,71 @@ def test_no_item():
     assert np.array_equal(
         a.asnumpy(), np.array([1] + [0] * (a.size - 1), dtype=np.float32)
     )
+
+
+def test_get_group_id():
+
+    global_size = 100
+    group_size = 20
+    num_groups = global_size // group_size
+
+    a = dpnp.empty(global_size, dtype=dpnp.int32)
+    ka = dpnp.empty(global_size, dtype=dpnp.int32)
+    expected = np.empty(global_size, dtype=np.int32)
+    ndrange = NdRange((global_size,), (group_size,))
+    dpex_exp.call_kernel(dpex_exp.kernel(_get_group_id_driver), ndrange, a)
+    kapi_call_kernel(_get_group_id_driver, ndrange, ka)
+
+    for gid in range(num_groups):
+        for lid in range(group_size):
+            expected[gid * group_size + lid] = gid
+
+    assert np.array_equal(a.asnumpy(), expected)
+    assert np.array_equal(ka.asnumpy(), expected)
+
+
+def test_get_group_range():
+
+    global_size = 100
+    group_size = 20
+    num_groups = global_size // group_size
+
+    a = dpnp.empty(global_size, dtype=dpnp.int32)
+    ka = dpnp.empty(global_size, dtype=dpnp.int32)
+    expected = np.empty(global_size, dtype=np.int32)
+    ndrange = NdRange((global_size,), (group_size,))
+    dpex_exp.call_kernel(dpex_exp.kernel(_get_group_range_driver), ndrange, a)
+    kapi_call_kernel(_get_group_range_driver, ndrange, ka)
+
+    for gid in range(num_groups):
+        for lid in range(group_size):
+            expected[gid * group_size + lid] = num_groups
+
+    assert np.array_equal(a.asnumpy(), expected)
+    assert np.array_equal(ka.asnumpy(), expected)
+
+
+def test_get_group_local_range():
+
+    global_size = 100
+    group_size = 20
+    num_groups = global_size // group_size
+
+    a = dpnp.empty(global_size, dtype=dpnp.int32)
+    ka = dpnp.empty(global_size, dtype=dpnp.int32)
+    expected = np.empty(global_size, dtype=np.int32)
+    ndrange = NdRange((global_size,), (group_size,))
+    dpex_exp.call_kernel(
+        dpex_exp.kernel(_get_group_local_range_driver), ndrange, a
+    )
+    kapi_call_kernel(_get_group_local_range_driver, ndrange, ka)
+
+    for gid in range(num_groups):
+        for lid in range(group_size):
+            expected[gid * group_size + lid] = group_size
+
+    assert np.array_equal(a.asnumpy(), expected)
+    assert np.array_equal(ka.asnumpy(), expected)
 
 
 I_SIZE, J_SIZE, K_SIZE = 2, 3, 4
