@@ -174,8 +174,9 @@ def test_no_item():
     )
 
 
+# TODO: https://github.com/IntelPython/numba-dpex/issues/1308
+@skip_windows
 def test_get_group_id():
-
     global_size = 100
     group_size = 20
     num_groups = global_size // group_size
@@ -195,8 +196,9 @@ def test_get_group_id():
     assert np.array_equal(ka.asnumpy(), expected)
 
 
+# TODO: https://github.com/IntelPython/numba-dpex/issues/1308
+@skip_windows
 def test_get_group_range():
-
     global_size = 100
     group_size = 20
     num_groups = global_size // group_size
@@ -216,8 +218,9 @@ def test_get_group_range():
     assert np.array_equal(ka.asnumpy(), expected)
 
 
+# TODO: https://github.com/IntelPython/numba-dpex/issues/1308
+@skip_windows
 def test_get_group_local_range():
-
     global_size = 100
     group_size = 20
     num_groups = global_size // group_size
