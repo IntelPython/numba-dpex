@@ -1,0 +1,711 @@
+
+:py:mod:`numba_dpex.kernel_api`
+===============================
+
+.. py:module:: numba_dpex.kernel_api
+
+.. autoapi-nested-parse::
+
+   The kernel_api module provides a set of Python classes and functions that are
+   analogous to the C++ SYCL API. The kernel_api module is meant to allow
+   prototyping SYCL-like kernels in pure Python before compiling them using
+   numba_dpex.
+
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   atomic_ref/index.rst
+   barrier/index.rst
+   flag_enum/index.rst
+   index_space_ids/index.rst
+   launcher/index.rst
+   memory_enums/index.rst
+   ranges/index.rst
+
+
+Package Contents
+----------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`AtomicRef <numba_dpex.kernel_api.AtomicRef>`
+     - Analogue to the ``sycl::atomic_ref`` type. An atomic reference is a
+   * - :py:obj:`Group <numba_dpex.kernel_api.Group>`
+     - Analogue to the ``sycl::group`` type.
+   * - :py:obj:`Item <numba_dpex.kernel_api.Item>`
+     - Analogue to the ``sycl::item`` type. Identifies an instance of the
+   * - :py:obj:`NdItem <numba_dpex.kernel_api.NdItem>`
+     - Analogue to the ``sycl::nd_item`` type. Identifies an instance of the
+   * - :py:obj:`AddressSpace <numba_dpex.kernel_api.AddressSpace>`
+     - The address space values supported by numba_dpex.
+   * - :py:obj:`MemoryOrder <numba_dpex.kernel_api.MemoryOrder>`
+     - An enumeration of the supported ``sycl::memory_order`` values in dpcpp. The
+   * - :py:obj:`MemoryScope <numba_dpex.kernel_api.MemoryScope>`
+     - An enumeration of SYCL memory scope. For more details please refer to
+   * - :py:obj:`NdRange <numba_dpex.kernel_api.NdRange>`
+     - A class to encapsulate all kernel launch parameters.
+   * - :py:obj:`Range <numba_dpex.kernel_api.Range>`
+     - A data structure to encapsulate a single kernel launch parameter.
+
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   numba_dpex.kernel_api.group_barrier
+   numba_dpex.kernel_api.call_kernel
+
+
+
+.. py:class:: AtomicRef(ref, index=0, memory_order=MemoryOrder.RELAXED, memory_scope=MemoryScope.DEVICE, address_space=AddressSpace.GLOBAL)
+
+
+   Analogue to the ``sycl::atomic_ref`` type. An atomic reference is a
+   view into a data container that can be then updated atomically using any of
+   the ``fetch_*`` member functions of the class.
+
+   .. py:property:: ref
+
+      Returns the value stored in the AtomicRef._ref[_index].
+
+   .. py:property:: memory_order
+      :type: numba_dpex.kernel_api.memory_enums.MemoryOrder
+
+      Returns the MemoryOrder value used to define the AtomicRef.
+
+   .. py:property:: memory_scope
+      :type: numba_dpex.kernel_api.memory_enums.MemoryScope
+
+      Returns the MemoryScope value used to define the AtomicRef.
+
+   .. py:property:: address_space
+      :type: numba_dpex.kernel_api.memory_enums.AddressSpace
+
+      Returns the AddressSpace value used to define the AtomicRef.
+
+   .. py:method:: fetch_add(val)
+
+      Adds the operand ``val`` to the object referenced by the AtomicRef
+      and assigns the result to the value of the referenced object. Returns
+      the original value of the object.
+
+      :param val: Value to be added to the object referenced by the AtomicRef.
+
+      Returns: The original value of the object referenced by the AtomicRef.
+
+
+
+   .. py:method:: fetch_sub(val)
+
+      Subtracts the operand ``val`` to the object referenced by the
+      AtomicRef and assigns the result to the value of the referenced object.
+      Returns the original value of the object.
+
+      :param val: Value to be subtracted from the object referenced by the
+      :param AtomicRef.:
+
+      Returns: The original value of the object referenced by the AtomicRef.
+
+
+
+   .. py:method:: fetch_min(val)
+
+      Calculates the minimum value of the operand ``val`` and the object
+      referenced by the AtomicRef and assigns the result to the value of the
+      referenced object. Returns the original value of the object.
+
+      :param val: Value to be compared against the object referenced by the
+      :param AtomicRef.:
+
+      Returns: The original value of the object referenced by the AtomicRef.
+
+
+
+   .. py:method:: fetch_max(val)
+
+      Calculates the maximum value of the operand ``val`` and the object
+      referenced by the AtomicRef and assigns the result to the value of the
+      referenced object. Returns the original value of the object.
+
+      :param val: Value to be compared against the object referenced by the
+      :param AtomicRef.:
+
+      Returns: The original value of the object referenced by the AtomicRef.
+
+
+
+   .. py:method:: fetch_and(val)
+
+      Calculates the bitwise AND of the operand ``val`` and the object
+      referenced by the AtomicRef and assigns the result to the value of the
+      referenced object. Returns the original value of the object.
+
+      :param val: Value to be bitwise ANDed against the object referenced by
+      :param the AtomicRef.:
+
+      Returns: The original value of the object referenced by the AtomicRef.
+
+
+
+   .. py:method:: fetch_or(val)
+
+      Calculates the bitwise OR of the operand ``val`` and the object
+      referenced by the AtomicRef and assigns the result to the value of the
+      referenced object. Returns the original value of the object.
+
+      :param val: Value to be bitwise ORed against the object referenced by
+      :param the AtomicRef.:
+
+      Returns: The original value of the object referenced by the AtomicRef.
+
+
+
+   .. py:method:: fetch_xor(val)
+
+      Calculates the bitwise XOR of the operand ``val`` and the object
+      referenced by the AtomicRef and assigns the result to the value of the
+      referenced object. Returns the original value of the object.
+
+      :param val: Value to be bitwise XORed against the object referenced by
+      :param the AtomicRef.:
+
+      Returns: The original value of the object referenced by the AtomicRef.
+
+
+
+   .. py:method:: load()
+
+      Loads the value of the object referenced by the AtomicRef.
+
+      Returns: The value of the object referenced by the AtomicRef.
+
+
+
+   .. py:method:: store(val)
+
+      Stores operand ``val`` to the object referenced by the AtomicRef.
+
+      :param val: Value to be stored in the object referenced by
+      :param the AtomicRef.:
+
+
+   .. py:method:: exchange(val)
+
+      Replaces the value of the object referenced by the AtomicRef
+      with value of ``val``. Returns the original value of the referenced object.
+
+      :param val: Value to be exchanged against the object referenced by
+      :param the AtomicRef.:
+
+      Returns: The original value of the object referenced by the AtomicRef.
+
+
+
+   .. py:method:: compare_exchange(expected, desired, expected_idx=0)
+
+      Compares the value of the object referenced by the AtomicRef
+      against the value of ``expected[expected_idx]``.
+      If the values are equal, replaces the value of the
+      referenced object with the value of ``desired``.
+      Otherwise assigns the original value of the
+      referenced object to ``expected[expected_idx]``.
+
+      :param expected: Array containing the expected value of the
+      :param object referenced by the AtomicRef.:
+      :param desired: Value that replaces the value of the object
+      :param referenced by the AtomicRef.:
+      :param expected_idx: Offset in `expected` array where the expected
+      :param value of the object referenced by the AtomicRef is present.:
+
+      Returns: Returns ``True`` if the comparison operation and
+      replacement operation were successful.
+
+
+
+
+.. py:function:: group_barrier(group: numba_dpex.kernel_api.index_space_ids.Group, fence_scope=MemoryScope.WORK_GROUP)
+
+   Performs a barrier operation across all work-items in a work group.
+
+   The function is modeled after the ``sycl::group_barrier`` function. It
+   synchronizes work within a group of work items. All the work-items
+   of the group must execute the barrier construct before any work-item
+   continues execution beyond the barrier. However, unlike
+   ``sycl::group_barrier`` the numba_dpex function implicitly synchronizes at
+   the level of a work group and does not allow specifying the group as an
+   argument. The :func:`sub_group_barrier` function should be used if
+   synchronization has to be performed only across a sub-group.
+
+   The ``group_barrier`` performs mem-fence operations ensuring that memory
+   accesses issued before the barrier are not re-ordered with those issued
+   after the barrier: all work-items in group g execute a release fence prior
+   to synchronizing at the barrier, all work-items in group g execute an
+   acquire fence afterwards, and there is an implicit synchronization of these
+   fences as if provided by an explicit atomic operation on an atomic object.
+
+   :param fence_scope: scope of any memory consistency
+   :type fence_scope: optional
+   :param operations that are performed by the barrier.:
+
+
+.. py:class:: Group(global_range: numba_dpex.kernel_api.ranges.Range, local_range: numba_dpex.kernel_api.ranges.Range, group_range: numba_dpex.kernel_api.ranges.Range, index: list)
+
+
+   Analogue to the ``sycl::group`` type.
+
+   .. py:property:: leader
+
+      Return true for exactly one work-item in the work-group, if the
+      calling work-item is the leader of the work-group, and false for all
+      other work-items in the work-group.
+
+      The leader of the work-group is determined during construction of the
+      work-group, and is invariant for the lifetime of the work-group. The
+      leader of the work-group is guaranteed to be the work-item with a
+      local id of 0.
+
+
+      :returns: If the work item is the designated leader of the
+      :rtype: bool
+
+   .. py:method:: get_group_id(dim)
+
+      Returns the index of the work-group within the global nd-range for
+      specified dimension.
+
+      Since the work-items in a work-group have a defined position within the
+      global nd-range, the returned group id can be used along with the local
+      id to uniquely identify the work-item in the global nd-range.
+
+
+   .. py:method:: get_group_linear_id()
+
+      Returns a linearized version of the work-group index.
+
+
+   .. py:method:: get_group_range(dim)
+
+      Returns a the extent of the range representing the number of groups
+      in the nd-range for a specified dimension.
+
+
+   .. py:method:: get_group_linear_range()
+
+      Return the total number of work-groups in the nd_range.
+
+
+   .. py:method:: get_local_range(dim)
+
+      Returns the extent of the SYCL range representing all dimensions
+      of the local range for a specified dimension. This local range may
+      have been provided by the programmer, or chosen by the SYCL runtime.
+
+
+   .. py:method:: get_local_linear_range()
+
+      Return the total number of work-items in the work-group.
+
+
+
+.. py:class:: Item(extent: numba_dpex.kernel_api.ranges.Range, index: list)
+
+
+   Analogue to the ``sycl::item`` type. Identifies an instance of the
+   function object executing at each point in an Range.
+
+   .. py:property:: ndim
+      :type: int
+
+      Returns the rank of a Item object.
+
+      :returns: Number of dimensions in the Item object
+      :rtype: int
+
+   .. py:method:: get_linear_id()
+
+      Get the linear id associated with this item for all dimensions.
+      Original implementation could be found at ``sycl::item_base`` class.
+
+      :returns: The linear id.
+      :rtype: int
+
+
+   .. py:method:: get_id(idx)
+
+      Get the id for a specific dimension.
+
+      :returns: The id
+      :rtype: int
+
+
+   .. py:method:: get_range(idx)
+
+      Get the range size for a specific dimension.
+
+      :returns: The size
+      :rtype: int
+
+
+
+.. py:class:: NdItem(global_item: Item, local_item: Item, group: Group)
+
+
+   Analogue to the ``sycl::nd_item`` type. Identifies an instance of the
+   function object executing at each point in an NdRange.
+
+   .. py:property:: ndim
+      :type: int
+
+      Returns the rank of a NdItem object.
+
+      :returns: Number of dimensions in the NdItem object
+      :rtype: int
+
+   .. py:method:: get_global_id(idx)
+
+      Get the global id for a specific dimension.
+
+      :returns: The global id
+      :rtype: int
+
+
+   .. py:method:: get_global_linear_id()
+
+      Get the global linear id associated with this item for all
+      dimensions.
+
+      :returns: The global linear id.
+      :rtype: int
+
+
+   .. py:method:: get_local_id(idx)
+
+      Get the local id for a specific dimension.
+
+      :returns: The local id
+      :rtype: int
+
+
+   .. py:method:: get_local_linear_id()
+
+      Get the local linear id associated with this item for all
+      dimensions.
+
+      :returns: The local linear id.
+      :rtype: int
+
+
+   .. py:method:: get_global_range(idx)
+
+      Get the global range size for a specific dimension.
+
+      :returns: The size
+      :rtype: int
+
+
+   .. py:method:: get_local_range(idx)
+
+      Get the local range size for a specific dimension.
+
+      :returns: The size
+      :rtype: int
+
+
+   .. py:method:: get_group()
+
+      Returns the group.
+
+      :returns: A group object.
+
+
+
+.. py:function:: call_kernel(kernel_fn, index_range, *kernel_args)
+
+   Mocks the launching of a kernel function over either a Range or NdRange.
+
+   :param kernel_fn: A callable function object
+   :param index_range: An instance of a Range object
+   :type index_range: numba_dpex.Range
+
+   :raises ValueError: If the first positional argument is not callable
+   :raises ValueError: If the second positional argument is not a Range or an
+   :raises Ndrange object:
+
+
+.. py:class:: AddressSpace
+
+
+   Bases: :py:obj:`numba_dpex.kernel_api.flag_enum.FlagEnum`
+
+   The address space values supported by numba_dpex.
+
+   ==================   ============
+   Address space        Value
+   ==================   ============
+   PRIVATE              0
+   GLOBAL               1
+   CONSTANT             2
+   LOCAL                3
+   GENERIC              4
+   ==================   ============
+
+   .. py:attribute:: PRIVATE
+      :value: 0
+
+      
+
+   .. py:attribute:: GLOBAL
+      :value: 1
+
+      
+
+   .. py:attribute:: CONSTANT
+      :value: 2
+
+      
+
+   .. py:attribute:: LOCAL
+      :value: 3
+
+      
+
+   .. py:attribute:: GENERIC
+      :value: 4
+
+      
+
+
+.. py:class:: MemoryOrder
+
+
+   Bases: :py:obj:`numba_dpex.kernel_api.flag_enum.FlagEnum`
+
+   An enumeration of the supported ``sycl::memory_order`` values in dpcpp. The
+   integer values of the enums is kept consistent with the corresponding
+   implementation in dpcpp.
+
+   =====================   ============
+   Order                   Enum value
+   =====================   ============
+   RELAXED                 0
+   ACQUIRE                 1
+   CONSUME_UNSUPPORTED     2
+   RELEASE                 3
+   ACQ_REL                 4
+   SEQ_CST                 5
+   =====================   ============
+
+   .. py:attribute:: RELAXED
+      :value: 0
+
+      
+
+   .. py:attribute:: ACQUIRE
+      :value: 1
+
+      
+
+   .. py:attribute:: CONSUME_UNSUPPORTED
+      :value: 2
+
+      
+
+   .. py:attribute:: RELEASE
+      :value: 3
+
+      
+
+   .. py:attribute:: ACQ_REL
+      :value: 4
+
+      
+
+   .. py:attribute:: SEQ_CST
+      :value: 5
+
+      
+
+
+.. py:class:: MemoryScope
+
+
+   Bases: :py:obj:`numba_dpex.kernel_api.flag_enum.FlagEnum`
+
+   An enumeration of SYCL memory scope. For more details please refer to
+   SYCL 2020 specification, section 3.8.3.2
+
+   ===============  ============
+   Memory Scope     Enum value
+   ===============  ============
+   WORK_ITEM        0
+   SUB_GROUP        1
+   WORK_GROUP       2
+   DEVICE           3
+   SYSTEM           4
+   ===============  ============
+
+   .. py:attribute:: WORK_ITEM
+      :value: 0
+
+      
+
+   .. py:attribute:: SUB_GROUP
+      :value: 1
+
+      
+
+   .. py:attribute:: WORK_GROUP
+      :value: 2
+
+      
+
+   .. py:attribute:: DEVICE
+      :value: 3
+
+      
+
+   .. py:attribute:: SYSTEM
+      :value: 4
+
+      
+
+
+.. py:class:: NdRange(global_size, local_size)
+
+
+   A class to encapsulate all kernel launch parameters.
+
+   The NdRange defines the index space for a work group as well as
+   the global index space. It is passed to parallel_for to execute
+   a kernel on a set of work items.
+
+   This class basically contains two Range object, one for the global_range
+   and the other for the local_range. The global_range parameter contains
+   the global index space and the local_range parameter contains the index
+   space of a work group. This class mimics the behavior of `sycl::nd_range`
+   class.
+
+   .. py:property:: global_range
+
+      Accessor for global_range.
+
+      :returns: The `global_range` `Range` object.
+      :rtype: Range
+
+   .. py:property:: local_range
+
+      Accessor for local_range.
+
+      :returns: The `local_range` `Range` object.
+      :rtype: Range
+
+   .. py:method:: get_global_range()
+
+      Returns a Range defining the index space.
+
+      :returns: A `Range` object defining the index space.
+      :rtype: Range
+
+
+   .. py:method:: get_local_range()
+
+      Returns a Range defining the index space of a work group.
+
+      :returns: A `Range` object to specify index space of a work group.
+      :rtype: Range
+
+
+
+.. py:class:: Range
+
+
+   Bases: :py:obj:`tuple`
+
+   A data structure to encapsulate a single kernel launch parameter.
+
+   The range is an abstraction that describes the number of elements
+   in each dimension of buffers and index spaces. It can contain
+   1, 2, or 3 numbers, depending on the dimensionality of the
+   object it describes.
+
+   This is just a wrapper class on top of a 3-tuple. The kernel launch
+   parameter is consisted of three int's. This class basically mimics
+   the behavior of `sycl::range`.
+
+   .. py:property:: ndim
+      :type: int
+
+      Returns the rank of a Range object.
+
+      :returns: Number of dimensions in the Range object
+      :rtype: int
+
+   .. py:property:: dim0
+      :type: int
+
+      Return the extent of the first dimension for the Range object.
+
+      :returns: Extent of first dimension for the Range object
+      :rtype: int
+
+   .. py:property:: dim1
+      :type: int
+
+      Return the extent of the second dimension for the Range object.
+
+      :returns: Extent of second dimension for the Range object or -1 for 1D
+                Range
+      :rtype: int
+
+   .. py:property:: dim2
+      :type: int
+
+      Return the extent of the second dimension for the Range object.
+
+      :returns: Extent of second dimension for the Range object or -1 for 1D or
+                2D Range
+      :rtype: int
+
+   .. py:attribute:: UNDEFINED_DIMENSION
+
+      
+
+   .. py:method:: get(index)
+
+      Returns the range of a single dimension.
+
+      :param index: The index of the dimension, i.e. [0,2]
+      :type index: int
+
+      :returns: The range of the dimension indexed by `index`.
+      :rtype: int
+
+
+   .. py:method:: size()
+
+      Returns the size of a range.
+
+      Returns the size of a range by multiplying
+      the range of the individual dimensions.
+
+      :returns: The size of a range.
+      :rtype: int
+
+
+

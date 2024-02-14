@@ -1,0 +1,53 @@
+
+:py:mod:`numba_dpex.kernel_api.flag_enum`
+=========================================
+
+.. py:module:: numba_dpex.kernel_api.flag_enum
+
+.. autoapi-nested-parse::
+
+   Provides a FlagEnum class to help distinguish IntEnum types that numba_dpex
+   intends to use as Integer literal types inside the compiler type inferring
+   infrastructure.
+
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+.. list-table:: Classes
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`FlagEnum <numba_dpex.kernel_api.flag_enum.FlagEnum>`
+     - Helper class to distinguish IntEnum types that numba_dpex should consider
+
+
+
+
+
+.. py:class:: FlagEnum
+
+
+   Bases: :py:obj:`enum.IntEnum`
+
+   Helper class to distinguish IntEnum types that numba_dpex should consider
+   as Numba Literal types.
+
+   .. py:method:: basetype() -> int
+      :classmethod:
+
+      Returns an dummy int object that helps numba_dpex infer the type of
+      an instance of a FlagEnum class.
+
+      :returns: Dummy int value
+      :rtype: int
+
+
+
