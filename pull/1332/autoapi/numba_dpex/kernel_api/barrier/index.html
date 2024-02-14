@@ -207,14 +207,14 @@
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../../../index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 current has-children"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of numba_dpex.kernel_api</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../atomic_ref/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.atomic_ref</span></code></a></li>
-<li class="toctree-l3 current current-page"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.barrier</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../flag_enum/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.flag_enum</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../index_space_ids/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.index_space_ids</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../launcher/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.launcher</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../memory_enums/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.memory_enums</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../ranges/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.ranges</span></code></a></li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="../index.html">numba_dpex.kernel_api</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of numba_dpex.kernel_api</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../atomic_ref/index.html">numba_dpex.kernel_api.atomic_ref</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">numba_dpex.kernel_api.barrier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../flag_enum/index.html">numba_dpex.kernel_api.flag_enum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../index_space_ids/index.html">numba_dpex.kernel_api.index_space_ids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../launcher/index.html">numba_dpex.kernel_api.launcher</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../memory_enums/index.html">numba_dpex.kernel_api.memory_enums</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../ranges/index.html">numba_dpex.kernel_api.ranges</a></li>
 </ul>
 </li>
 </ul>
@@ -265,21 +265,23 @@
         </div>
         <article role="main">
           <section id="module-numba_dpex.kernel_api.barrier">
-<span id="numba-dpex-kernel-api-barrier"></span><h1><a class="reference internal" href="#module-numba_dpex.kernel_api.barrier" title="numba_dpex.kernel_api.barrier"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.barrier</span></code></a><a class="headerlink" href="#module-numba_dpex.kernel_api.barrier" title="Link to this heading">#</a></h1>
+<span id="numba-dpex-kernel-api-barrier"></span><h1>numba_dpex.kernel_api.barrier<a class="headerlink" href="#module-numba_dpex.kernel_api.barrier" title="Link to this heading">#</a></h1>
 <p>Python functions that simulate SYCL’s barrier primitives.</p>
-<section id="module-contents">
-<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
-<section id="functions">
-<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
-<div class="table-wrapper autosummary longtable docutils container">
-<table class="autosummary longtable docutils align-default">
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
+<table class="summarytable docutils align-default" id="id1">
+<caption><span class="caption-text">Function</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.barrier.group_barrier" title="numba_dpex.kernel_api.barrier.group_barrier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">group_barrier</span></code></a>(group[, fence_scope])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.barrier.group_barrier" title="numba_dpex.kernel_api.barrier.group_barrier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">group_barrier</span></code></a>(group, fence_scope)</p></td>
 <td><p>Performs a barrier operation across all work-items in a work group.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.barrier.group_barrier">
 <span class="sig-name descname"><span class="pre">group_barrier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../index_space_ids/index.html#numba_dpex.kernel_api.index_space_ids.Group" title="numba_dpex.kernel_api.index_space_ids.Group"><span class="pre">numba_dpex.kernel_api.index_space_ids.Group</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fence_scope</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">MemoryScope.WORK_GROUP</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.barrier.group_barrier" title="Link to this definition">#</a></dt>
@@ -310,7 +312,6 @@ fences as if provided by an explicit atomic operation on an atomic object.</p>
 
 </section>
 </section>
-</section>
 
         </article>
       </div>
@@ -322,7 +323,7 @@ fences as if provided by an explicit atomic operation on an atomic object.</p>
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.flag_enum</span></code></div>
+                <div class="title">numba_dpex.kernel_api.flag_enum</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -333,7 +334,7 @@ fences as if provided by an explicit atomic operation on an atomic object.</p>
                   <span>Previous</span>
                 </div>
                 
-                <div class="title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.atomic_ref</span></code></div>
+                <div class="title">numba_dpex.kernel_api.atomic_ref</div>
                 
               </div>
             </a>
@@ -367,12 +368,10 @@ fences as if provided by an explicit atomic operation on an atomic object.</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.barrier</span></code></a><ul>
-<li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
+<li><a class="reference internal" href="#">numba_dpex.kernel_api.barrier</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
 <li><a class="reference internal" href="#functions">Functions</a><ul>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.barrier.group_barrier"><code class="docutils literal notranslate"><span class="pre">group_barrier()</span></code></a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>

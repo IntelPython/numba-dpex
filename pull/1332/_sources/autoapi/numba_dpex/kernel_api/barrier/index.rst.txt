@@ -1,6 +1,6 @@
 
-:py:mod:`numba_dpex.kernel_api.barrier`
-=======================================
+numba_dpex.kernel_api.barrier
+=============================
 
 .. py:module:: numba_dpex.kernel_api.barrier
 
@@ -10,19 +10,23 @@
 
 
 
-Module Contents
----------------
+Overview
+--------
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`group_barrier <numba_dpex.kernel_api.barrier.group_barrier>`\ (group, fence_scope)
+     - Performs a barrier operation across all work-items in a work group.
+
+
 
 
 Functions
-~~~~~~~~~
-
-.. autoapisummary::
-
-   numba_dpex.kernel_api.barrier.group_barrier
-
-
-
+---------
 .. py:function:: group_barrier(group: numba_dpex.kernel_api.index_space_ids.Group, fence_scope=MemoryScope.WORK_GROUP)
 
    Performs a barrier operation across all work-items in a work group.
@@ -46,5 +50,8 @@ Functions
    :param fence_scope: scope of any memory consistency
    :type fence_scope: optional
    :param operations that are performed by the barrier.:
+
+
+
 
 

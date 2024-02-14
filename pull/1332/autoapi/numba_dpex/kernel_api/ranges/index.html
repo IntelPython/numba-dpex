@@ -207,14 +207,14 @@
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="../../../index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l2 current has-children"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of numba_dpex.kernel_api</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../atomic_ref/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.atomic_ref</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../barrier/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.barrier</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../flag_enum/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.flag_enum</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../index_space_ids/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.index_space_ids</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../launcher/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.launcher</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="../memory_enums/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.memory_enums</span></code></a></li>
-<li class="toctree-l3 current current-page"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.ranges</span></code></a></li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="../index.html">numba_dpex.kernel_api</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of numba_dpex.kernel_api</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../atomic_ref/index.html">numba_dpex.kernel_api.atomic_ref</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../barrier/index.html">numba_dpex.kernel_api.barrier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../flag_enum/index.html">numba_dpex.kernel_api.flag_enum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../index_space_ids/index.html">numba_dpex.kernel_api.index_space_ids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../launcher/index.html">numba_dpex.kernel_api.launcher</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../memory_enums/index.html">numba_dpex.kernel_api.memory_enums</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">numba_dpex.kernel_api.ranges</a></li>
 </ul>
 </li>
 </ul>
@@ -265,19 +265,11 @@
         </div>
         <article role="main">
           <section id="module-numba_dpex.kernel_api.ranges">
-<span id="numba-dpex-kernel-api-ranges"></span><h1><a class="reference internal" href="#module-numba_dpex.kernel_api.ranges" title="numba_dpex.kernel_api.ranges"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.ranges</span></code></a><a class="headerlink" href="#module-numba_dpex.kernel_api.ranges" title="Link to this heading">#</a></h1>
+<span id="numba-dpex-kernel-api-ranges"></span><h1>numba_dpex.kernel_api.ranges<a class="headerlink" href="#module-numba_dpex.kernel_api.ranges" title="Link to this heading">#</a></h1>
 <p>Defines types to define the range of execution of a kernel. The types are
 designed along the lines of classes defined in the SYCL 2020 spec section 4.9.</p>
-<section id="module-contents">
-<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
-<section id="classes">
-<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h3>
-<div class="table-wrapper autosummary longtable docutils container">
-<table class="autosummary longtable docutils align-default">
-<tbody>
-</tbody>
-</table>
-</div>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
 <div class="table-wrapper colwidths-auto summarytable docutils container" id="id1">
 <table class="summarytable docutils align-default" id="id1">
 <caption><span class="caption-text">Classes</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
@@ -291,6 +283,9 @@ designed along the lines of classes defined in the SYCL 2020 spec section 4.9.</
 </tbody>
 </table>
 </div>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.ranges.Range">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Range</span></span><a class="headerlink" href="#numba_dpex.kernel_api.ranges.Range" title="Link to this definition">#</a></dt>
@@ -303,64 +298,31 @@ object it describes.</p>
 <p>This is just a wrapper class on top of a 3-tuple. The kernel launch
 parameter is consisted of three int’s. This class basically mimics
 the behavior of <cite>sycl::range</cite>.</p>
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.kernel_api.ranges.Range.ndim">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ndim</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#numba_dpex.kernel_api.ranges.Range.ndim" title="Link to this definition">#</a></dt>
-<dd><p>Returns the rank of a Range object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Number of dimensions in the Range object</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.kernel_api.ranges.Range.dim0">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dim0</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#numba_dpex.kernel_api.ranges.Range.dim0" title="Link to this definition">#</a></dt>
-<dd><p>Return the extent of the first dimension for the Range object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Extent of first dimension for the Range object</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.kernel_api.ranges.Range.dim1">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dim1</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#numba_dpex.kernel_api.ranges.Range.dim1" title="Link to this definition">#</a></dt>
-<dd><p>Return the extent of the second dimension for the Range object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Extent of second dimension for the Range object or -1 for 1D
-Range</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.kernel_api.ranges.Range.dim2">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dim2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#numba_dpex.kernel_api.ranges.Range.dim2" title="Link to this definition">#</a></dt>
-<dd><p>Return the extent of the second dimension for the Range object.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Extent of second dimension for the Range object or -1 for 1D or
-2D Range</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
+<p class="rubric">Overview</p>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id2">
+<table class="summarytable docutils align-default" id="id2">
+<caption><span class="caption-text">Attributes</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range.UNDEFINED_DIMENSION" title="numba_dpex.kernel_api.ranges.Range.UNDEFINED_DIMENSION"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UNDEFINED_DIMENSION</span></code></a></p></td>
+<td><p>-</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id3">
+<table class="summarytable docutils align-default" id="id3">
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range.get" title="numba_dpex.kernel_api.ranges.Range.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a>(index)</p></td>
+<td><p>Returns the range of a single dimension.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range.size" title="numba_dpex.kernel_api.ranges.Range.size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">size</span></code></a>()</p></td>
+<td><p>Returns the size of a range.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Members</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.ranges.Range.UNDEFINED_DIMENSION">
 <span class="sig-name descname"><span class="pre">UNDEFINED_DIMENSION</span></span><a class="headerlink" href="#numba_dpex.kernel_api.ranges.Range.UNDEFINED_DIMENSION" title="Link to this definition">#</a></dt>
@@ -413,34 +375,21 @@ and the other for the local_range. The global_range parameter contains
 the global index space and the local_range parameter contains the index
 space of a work group. This class mimics the behavior of <cite>sycl::nd_range</cite>
 class.</p>
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.kernel_api.ranges.NdRange.global_range">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">global_range</span></span><a class="headerlink" href="#numba_dpex.kernel_api.ranges.NdRange.global_range" title="Link to this definition">#</a></dt>
-<dd><p>Accessor for global_range.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The <cite>global_range</cite> <cite>Range</cite> object.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range">Range</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="numba_dpex.kernel_api.ranges.NdRange.local_range">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">local_range</span></span><a class="headerlink" href="#numba_dpex.kernel_api.ranges.NdRange.local_range" title="Link to this definition">#</a></dt>
-<dd><p>Accessor for local_range.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>The <cite>local_range</cite> <cite>Range</cite> object.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range" title="numba_dpex.kernel_api.ranges.Range">Range</a></p>
-</dd>
-</dl>
-</dd></dl>
-
+<p class="rubric">Overview</p>
+<div class="table-wrapper colwidths-auto summarytable docutils container" id="id4">
+<table class="summarytable docutils align-default" id="id4">
+<caption><span class="caption-text">Methods</span><a class="headerlink" href="#id4" title="Link to this table">#</a></caption>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.ranges.NdRange.get_global_range" title="numba_dpex.kernel_api.ranges.NdRange.get_global_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_global_range</span></code></a>()</p></td>
+<td><p>Returns a Range defining the index space.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#numba_dpex.kernel_api.ranges.NdRange.get_local_range" title="numba_dpex.kernel_api.ranges.NdRange.get_local_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_local_range</span></code></a>()</p></td>
+<td><p>Returns a Range defining the index space of a work group.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Members</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="numba_dpex.kernel_api.ranges.NdRange.get_global_range">
 <span class="sig-name descname"><span class="pre">get_global_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#numba_dpex.kernel_api.ranges.NdRange.get_global_range" title="Link to this definition">#</a></dt>
@@ -473,7 +422,6 @@ class.</p>
 
 </section>
 </section>
-</section>
 
         </article>
       </div>
@@ -496,7 +444,7 @@ class.</p>
                   <span>Previous</span>
                 </div>
                 
-                <div class="title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.memory_enums</span></code></div>
+                <div class="title">numba_dpex.kernel_api.memory_enums</div>
                 
               </div>
             </a>
@@ -530,26 +478,18 @@ class.</p>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">numba_dpex.kernel_api.ranges</span></code></a><ul>
-<li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
+<li><a class="reference internal" href="#">numba_dpex.kernel_api.ranges</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
 <li><a class="reference internal" href="#classes">Classes</a><ul>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range"><code class="docutils literal notranslate"><span class="pre">Range</span></code></a><ul>
-<li><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range.ndim"><code class="docutils literal notranslate"><span class="pre">Range.ndim</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range.dim0"><code class="docutils literal notranslate"><span class="pre">Range.dim0</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range.dim1"><code class="docutils literal notranslate"><span class="pre">Range.dim1</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range.dim2"><code class="docutils literal notranslate"><span class="pre">Range.dim2</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range.UNDEFINED_DIMENSION"><code class="docutils literal notranslate"><span class="pre">Range.UNDEFINED_DIMENSION</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range.get"><code class="docutils literal notranslate"><span class="pre">Range.get()</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.ranges.Range.size"><code class="docutils literal notranslate"><span class="pre">Range.size()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.ranges.NdRange"><code class="docutils literal notranslate"><span class="pre">NdRange</span></code></a><ul>
-<li><a class="reference internal" href="#numba_dpex.kernel_api.ranges.NdRange.global_range"><code class="docutils literal notranslate"><span class="pre">NdRange.global_range</span></code></a></li>
-<li><a class="reference internal" href="#numba_dpex.kernel_api.ranges.NdRange.local_range"><code class="docutils literal notranslate"><span class="pre">NdRange.local_range</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.ranges.NdRange.get_global_range"><code class="docutils literal notranslate"><span class="pre">NdRange.get_global_range()</span></code></a></li>
 <li><a class="reference internal" href="#numba_dpex.kernel_api.ranges.NdRange.get_local_range"><code class="docutils literal notranslate"><span class="pre">NdRange.get_local_range()</span></code></a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>

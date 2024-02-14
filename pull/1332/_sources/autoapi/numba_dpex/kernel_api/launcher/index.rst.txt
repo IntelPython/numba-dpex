@@ -1,6 +1,6 @@
 
-:py:mod:`numba_dpex.kernel_api.launcher`
-========================================
+numba_dpex.kernel_api.launcher
+==============================
 
 .. py:module:: numba_dpex.kernel_api.launcher
 
@@ -10,19 +10,23 @@
 
 
 
-Module Contents
----------------
+Overview
+--------
+
+
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`call_kernel <numba_dpex.kernel_api.launcher.call_kernel>`\ (kernel_fn, index_range, \*kernel_args)
+     - Mocks the launching of a kernel function over either a Range or NdRange.
+
+
 
 
 Functions
-~~~~~~~~~
-
-.. autoapisummary::
-
-   numba_dpex.kernel_api.launcher.call_kernel
-
-
-
+---------
 .. py:function:: call_kernel(kernel_fn, index_range, *kernel_args)
 
    Mocks the launching of a kernel function over either a Range or NdRange.
@@ -34,5 +38,8 @@ Functions
    :raises ValueError: If the first positional argument is not callable
    :raises ValueError: If the second positional argument is not a Range or an
    :raises Ndrange object:
+
+
+
 
 

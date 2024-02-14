@@ -1,6 +1,6 @@
 
-:py:mod:`numba_dpex.kernel_api`
-===============================
+numba_dpex.kernel_api
+=====================
 
 .. py:module:: numba_dpex.kernel_api
 
@@ -28,13 +28,8 @@ Submodules
    ranges/index.rst
 
 
-Package Contents
-----------------
-
-Classes
-~~~~~~~
-
-.. autoapisummary::
+Overview
+--------
 
 .. list-table:: Classes
    :header-rows: 0
@@ -61,43 +56,61 @@ Classes
      - A data structure to encapsulate a single kernel launch parameter.
 
 
+.. list-table:: Function
+   :header-rows: 0
+   :widths: auto
+   :class: summarytable
+
+   * - :py:obj:`group_barrier <numba_dpex.kernel_api.group_barrier>`\ (group, fence_scope)
+     - Performs a barrier operation across all work-items in a work group.
+   * - :py:obj:`call_kernel <numba_dpex.kernel_api.call_kernel>`\ (kernel_fn, index_range, \*kernel_args)
+     - Mocks the launching of a kernel function over either a Range or NdRange.
 
 
-Functions
-~~~~~~~~~
 
-.. autoapisummary::
-
-   numba_dpex.kernel_api.group_barrier
-   numba_dpex.kernel_api.call_kernel
-
-
+Classes
+-------
 
 .. py:class:: AtomicRef(ref, index=0, memory_order=MemoryOrder.RELAXED, memory_scope=MemoryScope.DEVICE, address_space=AddressSpace.GLOBAL)
-
 
    Analogue to the ``sycl::atomic_ref`` type. An atomic reference is a
    view into a data container that can be then updated atomically using any of
    the ``fetch_*`` member functions of the class.
 
-   .. py:property:: ref
 
-      Returns the value stored in the AtomicRef._ref[_index].
+   .. rubric:: Overview
 
-   .. py:property:: memory_order
-      :type: numba_dpex.kernel_api.memory_enums.MemoryOrder
 
-      Returns the MemoryOrder value used to define the AtomicRef.
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
 
-   .. py:property:: memory_scope
-      :type: numba_dpex.kernel_api.memory_enums.MemoryScope
+      * - :py:obj:`fetch_add <numba_dpex.kernel_api.AtomicRef.fetch_add>`\ (val)
+        - Adds the operand ``val`` to the object referenced by the AtomicRef
+      * - :py:obj:`fetch_sub <numba_dpex.kernel_api.AtomicRef.fetch_sub>`\ (val)
+        - Subtracts the operand ``val`` to the object referenced by the
+      * - :py:obj:`fetch_min <numba_dpex.kernel_api.AtomicRef.fetch_min>`\ (val)
+        - Calculates the minimum value of the operand ``val`` and the object
+      * - :py:obj:`fetch_max <numba_dpex.kernel_api.AtomicRef.fetch_max>`\ (val)
+        - Calculates the maximum value of the operand ``val`` and the object
+      * - :py:obj:`fetch_and <numba_dpex.kernel_api.AtomicRef.fetch_and>`\ (val)
+        - Calculates the bitwise AND of the operand ``val`` and the object
+      * - :py:obj:`fetch_or <numba_dpex.kernel_api.AtomicRef.fetch_or>`\ (val)
+        - Calculates the bitwise OR of the operand ``val`` and the object
+      * - :py:obj:`fetch_xor <numba_dpex.kernel_api.AtomicRef.fetch_xor>`\ (val)
+        - Calculates the bitwise XOR of the operand ``val`` and the object
+      * - :py:obj:`load <numba_dpex.kernel_api.AtomicRef.load>`\ ()
+        - Loads the value of the object referenced by the AtomicRef.
+      * - :py:obj:`store <numba_dpex.kernel_api.AtomicRef.store>`\ (val)
+        - Stores operand ``val`` to the object referenced by the AtomicRef.
+      * - :py:obj:`exchange <numba_dpex.kernel_api.AtomicRef.exchange>`\ (val)
+        - Replaces the value of the object referenced by the AtomicRef
+      * - :py:obj:`compare_exchange <numba_dpex.kernel_api.AtomicRef.compare_exchange>`\ (expected, desired, expected_idx)
+        - Compares the value of the object referenced by the AtomicRef
 
-      Returns the MemoryScope value used to define the AtomicRef.
 
-   .. py:property:: address_space
-      :type: numba_dpex.kernel_api.memory_enums.AddressSpace
-
-      Returns the AddressSpace value used to define the AtomicRef.
+   .. rubric:: Members
 
    .. py:method:: fetch_add(val)
 
@@ -239,50 +252,35 @@ Functions
 
 
 
-.. py:function:: group_barrier(group: numba_dpex.kernel_api.index_space_ids.Group, fence_scope=MemoryScope.WORK_GROUP)
-
-   Performs a barrier operation across all work-items in a work group.
-
-   The function is modeled after the ``sycl::group_barrier`` function. It
-   synchronizes work within a group of work items. All the work-items
-   of the group must execute the barrier construct before any work-item
-   continues execution beyond the barrier. However, unlike
-   ``sycl::group_barrier`` the numba_dpex function implicitly synchronizes at
-   the level of a work group and does not allow specifying the group as an
-   argument. The :func:`sub_group_barrier` function should be used if
-   synchronization has to be performed only across a sub-group.
-
-   The ``group_barrier`` performs mem-fence operations ensuring that memory
-   accesses issued before the barrier are not re-ordered with those issued
-   after the barrier: all work-items in group g execute a release fence prior
-   to synchronizing at the barrier, all work-items in group g execute an
-   acquire fence afterwards, and there is an implicit synchronization of these
-   fences as if provided by an explicit atomic operation on an atomic object.
-
-   :param fence_scope: scope of any memory consistency
-   :type fence_scope: optional
-   :param operations that are performed by the barrier.:
-
 
 .. py:class:: Group(global_range: numba_dpex.kernel_api.ranges.Range, local_range: numba_dpex.kernel_api.ranges.Range, group_range: numba_dpex.kernel_api.ranges.Range, index: list)
 
-
    Analogue to the ``sycl::group`` type.
 
-   .. py:property:: leader
 
-      Return true for exactly one work-item in the work-group, if the
-      calling work-item is the leader of the work-group, and false for all
-      other work-items in the work-group.
-
-      The leader of the work-group is determined during construction of the
-      work-group, and is invariant for the lifetime of the work-group. The
-      leader of the work-group is guaranteed to be the work-item with a
-      local id of 0.
+   .. rubric:: Overview
 
 
-      :returns: If the work item is the designated leader of the
-      :rtype: bool
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`get_group_id <numba_dpex.kernel_api.Group.get_group_id>`\ (dim)
+        - Returns the index of the work-group within the global nd-range for
+      * - :py:obj:`get_group_linear_id <numba_dpex.kernel_api.Group.get_group_linear_id>`\ ()
+        - Returns a linearized version of the work-group index.
+      * - :py:obj:`get_group_range <numba_dpex.kernel_api.Group.get_group_range>`\ (dim)
+        - Returns a the extent of the range representing the number of groups
+      * - :py:obj:`get_group_linear_range <numba_dpex.kernel_api.Group.get_group_linear_range>`\ ()
+        - Return the total number of work-groups in the nd_range.
+      * - :py:obj:`get_local_range <numba_dpex.kernel_api.Group.get_local_range>`\ (dim)
+        - Returns the extent of the SYCL range representing all dimensions
+      * - :py:obj:`get_local_linear_range <numba_dpex.kernel_api.Group.get_local_linear_range>`\ ()
+        - Return the total number of work-items in the work-group.
+
+
+   .. rubric:: Members
 
    .. py:method:: get_group_id(dim)
 
@@ -323,19 +321,30 @@ Functions
 
 
 
-.. py:class:: Item(extent: numba_dpex.kernel_api.ranges.Range, index: list)
 
+.. py:class:: Item(extent: numba_dpex.kernel_api.ranges.Range, index: list)
 
    Analogue to the ``sycl::item`` type. Identifies an instance of the
    function object executing at each point in an Range.
 
-   .. py:property:: ndim
-      :type: int
 
-      Returns the rank of a Item object.
+   .. rubric:: Overview
 
-      :returns: Number of dimensions in the Item object
-      :rtype: int
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`get_linear_id <numba_dpex.kernel_api.Item.get_linear_id>`\ ()
+        - Get the linear id associated with this item for all dimensions.
+      * - :py:obj:`get_id <numba_dpex.kernel_api.Item.get_id>`\ (idx)
+        - Get the id for a specific dimension.
+      * - :py:obj:`get_range <numba_dpex.kernel_api.Item.get_range>`\ (idx)
+        - Get the range size for a specific dimension.
+
+
+   .. rubric:: Members
 
    .. py:method:: get_linear_id()
 
@@ -363,19 +372,38 @@ Functions
 
 
 
-.. py:class:: NdItem(global_item: Item, local_item: Item, group: Group)
 
+.. py:class:: NdItem(global_item: Item, local_item: Item, group: Group)
 
    Analogue to the ``sycl::nd_item`` type. Identifies an instance of the
    function object executing at each point in an NdRange.
 
-   .. py:property:: ndim
-      :type: int
 
-      Returns the rank of a NdItem object.
+   .. rubric:: Overview
 
-      :returns: Number of dimensions in the NdItem object
-      :rtype: int
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`get_global_id <numba_dpex.kernel_api.NdItem.get_global_id>`\ (idx)
+        - Get the global id for a specific dimension.
+      * - :py:obj:`get_global_linear_id <numba_dpex.kernel_api.NdItem.get_global_linear_id>`\ ()
+        - Get the global linear id associated with this item for all
+      * - :py:obj:`get_local_id <numba_dpex.kernel_api.NdItem.get_local_id>`\ (idx)
+        - Get the local id for a specific dimension.
+      * - :py:obj:`get_local_linear_id <numba_dpex.kernel_api.NdItem.get_local_linear_id>`\ ()
+        - Get the local linear id associated with this item for all
+      * - :py:obj:`get_global_range <numba_dpex.kernel_api.NdItem.get_global_range>`\ (idx)
+        - Get the global range size for a specific dimension.
+      * - :py:obj:`get_local_range <numba_dpex.kernel_api.NdItem.get_local_range>`\ (idx)
+        - Get the local range size for a specific dimension.
+      * - :py:obj:`get_group <numba_dpex.kernel_api.NdItem.get_group>`\ ()
+        - Returns the group.
+
+
+   .. rubric:: Members
 
    .. py:method:: get_global_id(idx)
 
@@ -435,21 +463,8 @@ Functions
 
 
 
-.. py:function:: call_kernel(kernel_fn, index_range, *kernel_args)
-
-   Mocks the launching of a kernel function over either a Range or NdRange.
-
-   :param kernel_fn: A callable function object
-   :param index_range: An instance of a Range object
-   :type index_range: numba_dpex.Range
-
-   :raises ValueError: If the first positional argument is not callable
-   :raises ValueError: If the second positional argument is not a Range or an
-   :raises Ndrange object:
-
 
 .. py:class:: AddressSpace
-
 
    Bases: :py:obj:`numba_dpex.kernel_api.flag_enum.FlagEnum`
 
@@ -464,6 +479,29 @@ Functions
    LOCAL                3
    GENERIC              4
    ==================   ============
+
+
+   .. rubric:: Overview
+
+   .. list-table:: Attributes
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`PRIVATE <numba_dpex.kernel_api.AddressSpace.PRIVATE>`
+        - \-
+      * - :py:obj:`GLOBAL <numba_dpex.kernel_api.AddressSpace.GLOBAL>`
+        - \-
+      * - :py:obj:`CONSTANT <numba_dpex.kernel_api.AddressSpace.CONSTANT>`
+        - \-
+      * - :py:obj:`LOCAL <numba_dpex.kernel_api.AddressSpace.LOCAL>`
+        - \-
+      * - :py:obj:`GENERIC <numba_dpex.kernel_api.AddressSpace.GENERIC>`
+        - \-
+
+
+
+   .. rubric:: Members
 
    .. py:attribute:: PRIVATE
       :value: 0
@@ -491,8 +529,8 @@ Functions
       
 
 
-.. py:class:: MemoryOrder
 
+.. py:class:: MemoryOrder
 
    Bases: :py:obj:`numba_dpex.kernel_api.flag_enum.FlagEnum`
 
@@ -510,6 +548,31 @@ Functions
    ACQ_REL                 4
    SEQ_CST                 5
    =====================   ============
+
+
+   .. rubric:: Overview
+
+   .. list-table:: Attributes
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`RELAXED <numba_dpex.kernel_api.MemoryOrder.RELAXED>`
+        - \-
+      * - :py:obj:`ACQUIRE <numba_dpex.kernel_api.MemoryOrder.ACQUIRE>`
+        - \-
+      * - :py:obj:`CONSUME_UNSUPPORTED <numba_dpex.kernel_api.MemoryOrder.CONSUME_UNSUPPORTED>`
+        - \-
+      * - :py:obj:`RELEASE <numba_dpex.kernel_api.MemoryOrder.RELEASE>`
+        - \-
+      * - :py:obj:`ACQ_REL <numba_dpex.kernel_api.MemoryOrder.ACQ_REL>`
+        - \-
+      * - :py:obj:`SEQ_CST <numba_dpex.kernel_api.MemoryOrder.SEQ_CST>`
+        - \-
+
+
+
+   .. rubric:: Members
 
    .. py:attribute:: RELAXED
       :value: 0
@@ -542,8 +605,8 @@ Functions
       
 
 
-.. py:class:: MemoryScope
 
+.. py:class:: MemoryScope
 
    Bases: :py:obj:`numba_dpex.kernel_api.flag_enum.FlagEnum`
 
@@ -559,6 +622,29 @@ Functions
    DEVICE           3
    SYSTEM           4
    ===============  ============
+
+
+   .. rubric:: Overview
+
+   .. list-table:: Attributes
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`WORK_ITEM <numba_dpex.kernel_api.MemoryScope.WORK_ITEM>`
+        - \-
+      * - :py:obj:`SUB_GROUP <numba_dpex.kernel_api.MemoryScope.SUB_GROUP>`
+        - \-
+      * - :py:obj:`WORK_GROUP <numba_dpex.kernel_api.MemoryScope.WORK_GROUP>`
+        - \-
+      * - :py:obj:`DEVICE <numba_dpex.kernel_api.MemoryScope.DEVICE>`
+        - \-
+      * - :py:obj:`SYSTEM <numba_dpex.kernel_api.MemoryScope.SYSTEM>`
+        - \-
+
+
+
+   .. rubric:: Members
 
    .. py:attribute:: WORK_ITEM
       :value: 0
@@ -586,8 +672,8 @@ Functions
       
 
 
-.. py:class:: NdRange(global_size, local_size)
 
+.. py:class:: NdRange(global_size, local_size)
 
    A class to encapsulate all kernel launch parameters.
 
@@ -601,19 +687,22 @@ Functions
    space of a work group. This class mimics the behavior of `sycl::nd_range`
    class.
 
-   .. py:property:: global_range
 
-      Accessor for global_range.
+   .. rubric:: Overview
 
-      :returns: The `global_range` `Range` object.
-      :rtype: Range
 
-   .. py:property:: local_range
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
 
-      Accessor for local_range.
+      * - :py:obj:`get_global_range <numba_dpex.kernel_api.NdRange.get_global_range>`\ ()
+        - Returns a Range defining the index space.
+      * - :py:obj:`get_local_range <numba_dpex.kernel_api.NdRange.get_local_range>`\ ()
+        - Returns a Range defining the index space of a work group.
 
-      :returns: The `local_range` `Range` object.
-      :rtype: Range
+
+   .. rubric:: Members
 
    .. py:method:: get_global_range()
 
@@ -632,8 +721,8 @@ Functions
 
 
 
-.. py:class:: Range
 
+.. py:class:: Range
 
    Bases: :py:obj:`tuple`
 
@@ -648,39 +737,30 @@ Functions
    parameter is consisted of three int's. This class basically mimics
    the behavior of `sycl::range`.
 
-   .. py:property:: ndim
-      :type: int
 
-      Returns the rank of a Range object.
+   .. rubric:: Overview
 
-      :returns: Number of dimensions in the Range object
-      :rtype: int
+   .. list-table:: Attributes
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
 
-   .. py:property:: dim0
-      :type: int
+      * - :py:obj:`UNDEFINED_DIMENSION <numba_dpex.kernel_api.Range.UNDEFINED_DIMENSION>`
+        - \-
 
-      Return the extent of the first dimension for the Range object.
 
-      :returns: Extent of first dimension for the Range object
-      :rtype: int
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
 
-   .. py:property:: dim1
-      :type: int
+      * - :py:obj:`get <numba_dpex.kernel_api.Range.get>`\ (index)
+        - Returns the range of a single dimension.
+      * - :py:obj:`size <numba_dpex.kernel_api.Range.size>`\ ()
+        - Returns the size of a range.
 
-      Return the extent of the second dimension for the Range object.
 
-      :returns: Extent of second dimension for the Range object or -1 for 1D
-                Range
-      :rtype: int
-
-   .. py:property:: dim2
-      :type: int
-
-      Return the extent of the second dimension for the Range object.
-
-      :returns: Extent of second dimension for the Range object or -1 for 1D or
-                2D Range
-      :rtype: int
+   .. rubric:: Members
 
    .. py:attribute:: UNDEFINED_DIMENSION
 
@@ -706,6 +786,50 @@ Functions
 
       :returns: The size of a range.
       :rtype: int
+
+
+
+
+Functions
+---------
+.. py:function:: group_barrier(group: numba_dpex.kernel_api.index_space_ids.Group, fence_scope=MemoryScope.WORK_GROUP)
+
+   Performs a barrier operation across all work-items in a work group.
+
+   The function is modeled after the ``sycl::group_barrier`` function. It
+   synchronizes work within a group of work items. All the work-items
+   of the group must execute the barrier construct before any work-item
+   continues execution beyond the barrier. However, unlike
+   ``sycl::group_barrier`` the numba_dpex function implicitly synchronizes at
+   the level of a work group and does not allow specifying the group as an
+   argument. The :func:`sub_group_barrier` function should be used if
+   synchronization has to be performed only across a sub-group.
+
+   The ``group_barrier`` performs mem-fence operations ensuring that memory
+   accesses issued before the barrier are not re-ordered with those issued
+   after the barrier: all work-items in group g execute a release fence prior
+   to synchronizing at the barrier, all work-items in group g execute an
+   acquire fence afterwards, and there is an implicit synchronization of these
+   fences as if provided by an explicit atomic operation on an atomic object.
+
+   :param fence_scope: scope of any memory consistency
+   :type fence_scope: optional
+   :param operations that are performed by the barrier.:
+
+
+.. py:function:: call_kernel(kernel_fn, index_range, *kernel_args)
+
+   Mocks the launching of a kernel function over either a Range or NdRange.
+
+   :param kernel_fn: A callable function object
+   :param index_range: An instance of a Range object
+   :type index_range: numba_dpex.Range
+
+   :raises ValueError: If the first positional argument is not callable
+   :raises ValueError: If the second positional argument is not a Range or an
+   :raises Ndrange object:
+
+
 
 
 

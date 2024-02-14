@@ -1,6 +1,6 @@
 
-:py:mod:`numba_dpex.kernel_api.flag_enum`
-=========================================
+numba_dpex.kernel_api.flag_enum
+===============================
 
 .. py:module:: numba_dpex.kernel_api.flag_enum
 
@@ -12,13 +12,8 @@
 
 
 
-Module Contents
----------------
-
-Classes
-~~~~~~~
-
-.. autoapisummary::
+Overview
+--------
 
 .. list-table:: Classes
    :header-rows: 0
@@ -31,14 +26,30 @@ Classes
 
 
 
+Classes
+-------
 
 .. py:class:: FlagEnum
-
 
    Bases: :py:obj:`enum.IntEnum`
 
    Helper class to distinguish IntEnum types that numba_dpex should consider
    as Numba Literal types.
+
+
+   .. rubric:: Overview
+
+
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
+
+      * - :py:obj:`basetype <numba_dpex.kernel_api.flag_enum.FlagEnum.basetype>`\ ()
+        - :summarylabel:`class` Returns an dummy int object that helps numba_dpex infer the type of
+
+
+   .. rubric:: Members
 
    .. py:method:: basetype() -> int
       :classmethod:
@@ -48,6 +59,10 @@ Classes
 
       :returns: Dummy int value
       :rtype: int
+
+
+
+
 
 
 

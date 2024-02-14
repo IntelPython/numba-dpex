@@ -1,6 +1,6 @@
 
-:py:mod:`numba_dpex.kernel_api.atomic_ref`
-==========================================
+numba_dpex.kernel_api.atomic_ref
+================================
 
 .. py:module:: numba_dpex.kernel_api.atomic_ref
 
@@ -11,13 +11,8 @@
 
 
 
-Module Contents
----------------
-
-Classes
-~~~~~~~
-
-.. autoapisummary::
+Overview
+--------
 
 .. list-table:: Classes
    :header-rows: 0
@@ -30,32 +25,49 @@ Classes
 
 
 
+Classes
+-------
 
 .. py:class:: AtomicRef(ref, index=0, memory_order=MemoryOrder.RELAXED, memory_scope=MemoryScope.DEVICE, address_space=AddressSpace.GLOBAL)
-
 
    Analogue to the ``sycl::atomic_ref`` type. An atomic reference is a
    view into a data container that can be then updated atomically using any of
    the ``fetch_*`` member functions of the class.
 
-   .. py:property:: ref
 
-      Returns the value stored in the AtomicRef._ref[_index].
+   .. rubric:: Overview
 
-   .. py:property:: memory_order
-      :type: numba_dpex.kernel_api.memory_enums.MemoryOrder
 
-      Returns the MemoryOrder value used to define the AtomicRef.
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
 
-   .. py:property:: memory_scope
-      :type: numba_dpex.kernel_api.memory_enums.MemoryScope
+      * - :py:obj:`fetch_add <numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_add>`\ (val)
+        - Adds the operand ``val`` to the object referenced by the AtomicRef
+      * - :py:obj:`fetch_sub <numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_sub>`\ (val)
+        - Subtracts the operand ``val`` to the object referenced by the
+      * - :py:obj:`fetch_min <numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_min>`\ (val)
+        - Calculates the minimum value of the operand ``val`` and the object
+      * - :py:obj:`fetch_max <numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_max>`\ (val)
+        - Calculates the maximum value of the operand ``val`` and the object
+      * - :py:obj:`fetch_and <numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_and>`\ (val)
+        - Calculates the bitwise AND of the operand ``val`` and the object
+      * - :py:obj:`fetch_or <numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_or>`\ (val)
+        - Calculates the bitwise OR of the operand ``val`` and the object
+      * - :py:obj:`fetch_xor <numba_dpex.kernel_api.atomic_ref.AtomicRef.fetch_xor>`\ (val)
+        - Calculates the bitwise XOR of the operand ``val`` and the object
+      * - :py:obj:`load <numba_dpex.kernel_api.atomic_ref.AtomicRef.load>`\ ()
+        - Loads the value of the object referenced by the AtomicRef.
+      * - :py:obj:`store <numba_dpex.kernel_api.atomic_ref.AtomicRef.store>`\ (val)
+        - Stores operand ``val`` to the object referenced by the AtomicRef.
+      * - :py:obj:`exchange <numba_dpex.kernel_api.atomic_ref.AtomicRef.exchange>`\ (val)
+        - Replaces the value of the object referenced by the AtomicRef
+      * - :py:obj:`compare_exchange <numba_dpex.kernel_api.atomic_ref.AtomicRef.compare_exchange>`\ (expected, desired, expected_idx)
+        - Compares the value of the object referenced by the AtomicRef
 
-      Returns the MemoryScope value used to define the AtomicRef.
 
-   .. py:property:: address_space
-      :type: numba_dpex.kernel_api.memory_enums.AddressSpace
-
-      Returns the AddressSpace value used to define the AtomicRef.
+   .. rubric:: Members
 
    .. py:method:: fetch_add(val)
 
@@ -193,6 +205,10 @@ Classes
 
       Returns: Returns ``True`` if the comparison operation and
       replacement operation were successful.
+
+
+
+
 
 
 

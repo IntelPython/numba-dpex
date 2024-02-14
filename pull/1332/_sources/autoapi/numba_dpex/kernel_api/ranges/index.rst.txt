@@ -1,6 +1,6 @@
 
-:py:mod:`numba_dpex.kernel_api.ranges`
-======================================
+numba_dpex.kernel_api.ranges
+============================
 
 .. py:module:: numba_dpex.kernel_api.ranges
 
@@ -11,13 +11,8 @@
 
 
 
-Module Contents
----------------
-
-Classes
-~~~~~~~
-
-.. autoapisummary::
+Overview
+--------
 
 .. list-table:: Classes
    :header-rows: 0
@@ -32,9 +27,10 @@ Classes
 
 
 
+Classes
+-------
 
 .. py:class:: Range
-
 
    Bases: :py:obj:`tuple`
 
@@ -49,39 +45,30 @@ Classes
    parameter is consisted of three int's. This class basically mimics
    the behavior of `sycl::range`.
 
-   .. py:property:: ndim
-      :type: int
 
-      Returns the rank of a Range object.
+   .. rubric:: Overview
 
-      :returns: Number of dimensions in the Range object
-      :rtype: int
+   .. list-table:: Attributes
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
 
-   .. py:property:: dim0
-      :type: int
+      * - :py:obj:`UNDEFINED_DIMENSION <numba_dpex.kernel_api.ranges.Range.UNDEFINED_DIMENSION>`
+        - \-
 
-      Return the extent of the first dimension for the Range object.
 
-      :returns: Extent of first dimension for the Range object
-      :rtype: int
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
 
-   .. py:property:: dim1
-      :type: int
+      * - :py:obj:`get <numba_dpex.kernel_api.ranges.Range.get>`\ (index)
+        - Returns the range of a single dimension.
+      * - :py:obj:`size <numba_dpex.kernel_api.ranges.Range.size>`\ ()
+        - Returns the size of a range.
 
-      Return the extent of the second dimension for the Range object.
 
-      :returns: Extent of second dimension for the Range object or -1 for 1D
-                Range
-      :rtype: int
-
-   .. py:property:: dim2
-      :type: int
-
-      Return the extent of the second dimension for the Range object.
-
-      :returns: Extent of second dimension for the Range object or -1 for 1D or
-                2D Range
-      :rtype: int
+   .. rubric:: Members
 
    .. py:attribute:: UNDEFINED_DIMENSION
 
@@ -110,8 +97,8 @@ Classes
 
 
 
-.. py:class:: NdRange(global_size, local_size)
 
+.. py:class:: NdRange(global_size, local_size)
 
    A class to encapsulate all kernel launch parameters.
 
@@ -125,19 +112,22 @@ Classes
    space of a work group. This class mimics the behavior of `sycl::nd_range`
    class.
 
-   .. py:property:: global_range
 
-      Accessor for global_range.
+   .. rubric:: Overview
 
-      :returns: The `global_range` `Range` object.
-      :rtype: Range
 
-   .. py:property:: local_range
+   .. list-table:: Methods
+      :header-rows: 0
+      :widths: auto
+      :class: summarytable
 
-      Accessor for local_range.
+      * - :py:obj:`get_global_range <numba_dpex.kernel_api.ranges.NdRange.get_global_range>`\ ()
+        - Returns a Range defining the index space.
+      * - :py:obj:`get_local_range <numba_dpex.kernel_api.ranges.NdRange.get_local_range>`\ ()
+        - Returns a Range defining the index space of a work group.
 
-      :returns: The `local_range` `Range` object.
-      :rtype: Range
+
+   .. rubric:: Members
 
    .. py:method:: get_global_range()
 
@@ -153,6 +143,10 @@ Classes
 
       :returns: A `Range` object to specify index space of a work group.
       :rtype: Range
+
+
+
+
 
 
 
