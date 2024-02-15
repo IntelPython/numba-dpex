@@ -10,7 +10,6 @@ numba_dpex.
 """
 
 from .atomic_ref import AtomicRef
-from .index_space_ids import Item, NdItem
 from .memory_enums import AddressSpace, MemoryOrder, MemoryScope
 from .ranges import NdRange, Range
 
@@ -21,6 +20,4 @@ __all__ = [
     "MemoryScope",
     "NdRange",
     "Range",
-    "NdItem",
-    "Item",
 ]

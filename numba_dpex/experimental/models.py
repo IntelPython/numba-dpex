@@ -13,10 +13,6 @@ from numba.core.datamodel.models import PrimitiveModel, StructModel
 from numba.core.extending import register_model
 
 import numba_dpex.core.datamodel.models as dpex_core_models
-from numba_dpex.experimental.core.types.kernel_api.items import (
-    ItemType,
-    NdItemType,
-)
 
 from .dpcpp_types import AtomicRefType
 from .literal_intenum_type import IntEnumLiteral
@@ -47,15 +43,6 @@ class IntEnumLiteralModel(PrimitiveModel):
         super().__init__(dmm, fe_type, be_type)
 
 
-class EmptyStructModel(StructModel):
-    """Data model that does not take space. Intended to be used with types that
-    are presented only at typing stage and not represented physically."""
-
-    def __init__(self, dmm, fe_type):
-        members = []
-        super().__init__(dmm, fe_type, members)
-
-
 def _init_exp_data_model_manager() -> DataModelManager:
     """Initializes a DpexExpKernelTarget-specific data model manager.
 
@@ -73,12 +60,6 @@ def _init_exp_data_model_manager() -> DataModelManager:
     dmm.register(IntEnumLiteral, IntEnumLiteralModel)
     dmm.register(AtomicRefType, AtomicRefModel)
 
-    # Register the ItemType type
-    dmm.register(ItemType, EmptyStructModel)
-
-    # Register the NdItemType type
-    dmm.register(NdItemType, EmptyStructModel)
-
     return dmm
 
 
@@ -86,9 +67,3 @@ exp_dmm = _init_exp_data_model_manager()
 
 # Register any new type that should go into numba.core.datamodel.default_manager
 register_model(KernelDispatcherType)(models.OpaqueModel)
-
-# Register the ItemType type
-register_model(ItemType)(EmptyStructModel)
-
-# Register the NdItemType type
-register_model(NdItemType)(EmptyStructModel)
