@@ -231,27 +231,52 @@ def _intrinsic_load(
 
     def _intrinsic_load_gen(context, builder, sig, args):
         atomic_ref_ty = sig.args[0]
-        fn = get_or_insert_atomic_load_fn(
-            context, builder.module, atomic_ref_ty
-        )
 
-        spirv_memory_semantics_mask = get_memory_semantics_mask(
-            atomic_ref_ty.memory_order
+        atomic_ref_ptr = builder.extract_value(
+            args[0],
+            context.data_model_manager.lookup(atomic_ref_ty).get_field_position(
+                "ref"
+            ),
         )
-        spirv_scope = get_scope(atomic_ref_ty.memory_scope)
+        if sig.args[0].dtype == types.float32:
+            atomic_ref_ptr = builder.bitcast(
+                atomic_ref_ptr,
+                llvmir.PointerType(
+                    llvmir.IntType(32), addrspace=sig.args[0].address_space
+                ),
+            )
+        elif sig.args[0].dtype == types.float64:
+            atomic_ref_ptr = builder.bitcast(
+                atomic_ref_ptr,
+                llvmir.PointerType(
+                    llvmir.IntType(64), addrspace=sig.args[0].address_space
+                ),
+            )
 
         fn_args = [
-            builder.extract_value(
-                args[0],
-                context.data_model_manager.lookup(
-                    atomic_ref_ty
-                ).get_field_position("ref"),
+            atomic_ref_ptr,
+            context.get_constant(
+                types.int32, get_scope(atomic_ref_ty.memory_scope)
             ),
-            context.get_constant(types.int32, spirv_scope),
-            context.get_constant(types.int32, spirv_memory_semantics_mask),
+            context.get_constant(
+                types.int32,
+                get_memory_semantics_mask(atomic_ref_ty.memory_order),
+            ),
         ]
 
-        return builder.call(fn, fn_args)
+        ret_val = builder.call(
+            get_or_insert_atomic_load_fn(
+                context, builder.module, atomic_ref_ty
+            ),
+            fn_args,
+        )
+
+        if sig.args[0].dtype == types.float32:
+            ret_val = builder.bitcast(ret_val, llvmir.FloatType())
+        elif sig.args[0].dtype == types.float64:
+            ret_val = builder.bitcast(ret_val, llvmir.DoubleType())
+
+        return ret_val
 
     return sig, _intrinsic_load_gen
 
@@ -264,17 +289,33 @@ def _intrinsic_store(
 
     def _intrinsic_store_gen(context, builder, sig, args):
         atomic_ref_ty = sig.args[0]
-        atomic_store_fn = get_or_insert_spv_atomic_store_fn(
-            context, builder.module, atomic_ref_ty
+
+        store_arg = args[1]
+        atomic_ref_ptr = builder.extract_value(
+            args[0],
+            context.data_model_manager.lookup(atomic_ref_ty).get_field_position(
+                "ref"
+            ),
         )
+        if sig.args[0].dtype == types.float32:
+            atomic_ref_ptr = builder.bitcast(
+                atomic_ref_ptr,
+                llvmir.PointerType(
+                    llvmir.IntType(32), addrspace=sig.args[0].address_space
+                ),
+            )
+            store_arg = builder.bitcast(store_arg, llvmir.IntType(32))
+        elif sig.args[0].dtype == types.float64:
+            atomic_ref_ptr = builder.bitcast(
+                atomic_ref_ptr,
+                llvmir.PointerType(
+                    llvmir.IntType(64), addrspace=sig.args[0].address_space
+                ),
+            )
+            store_arg = builder.bitcast(store_arg, llvmir.IntType(64))
 
         atomic_store_fn_args = [
-            builder.extract_value(
-                args[0],
-                context.data_model_manager.lookup(
-                    atomic_ref_ty
-                ).get_field_position("ref"),
-            ),
+            atomic_ref_ptr,
             context.get_constant(
                 types.int32, get_scope(atomic_ref_ty.memory_scope)
             ),
@@ -282,10 +323,15 @@ def _intrinsic_store(
                 types.int32,
                 get_memory_semantics_mask(atomic_ref_ty.memory_order),
             ),
-            args[1],
+            store_arg,
         ]
 
-        builder.call(atomic_store_fn, atomic_store_fn_args)
+        builder.call(
+            get_or_insert_spv_atomic_store_fn(
+                context, builder.module, atomic_ref_ty
+            ),
+            atomic_store_fn_args,
+        )
 
     return sig, _intrinsic_store_gen
 
@@ -298,17 +344,33 @@ def _intrinsic_exchange(
 
     def _intrinsic_exchange_gen(context, builder, sig, args):
         atomic_ref_ty = sig.args[0]
-        atomic_exchange_fn = get_or_insert_spv_atomic_exchange_fn(
-            context, builder.module, atomic_ref_ty
+
+        exchange_arg = args[1]
+        atomic_ref_ptr = builder.extract_value(
+            args[0],
+            context.data_model_manager.lookup(atomic_ref_ty).get_field_position(
+                "ref"
+            ),
         )
+        if sig.args[0].dtype == types.float32:
+            atomic_ref_ptr = builder.bitcast(
+                atomic_ref_ptr,
+                llvmir.PointerType(
+                    llvmir.IntType(32), addrspace=sig.args[0].address_space
+                ),
+            )
+            exchange_arg = builder.bitcast(exchange_arg, llvmir.IntType(32))
+        elif sig.args[0].dtype == types.float64:
+            atomic_ref_ptr = builder.bitcast(
+                atomic_ref_ptr,
+                llvmir.PointerType(
+                    llvmir.IntType(64), addrspace=sig.args[0].address_space
+                ),
+            )
+            exchange_arg = builder.bitcast(exchange_arg, llvmir.IntType(64))
 
         atomic_exchange_fn_args = [
-            builder.extract_value(
-                args[0],
-                context.data_model_manager.lookup(
-                    atomic_ref_ty
-                ).get_field_position("ref"),
-            ),
+            atomic_ref_ptr,
             context.get_constant(
                 types.int32, get_scope(atomic_ref_ty.memory_scope)
             ),
@@ -316,10 +378,22 @@ def _intrinsic_exchange(
                 types.int32,
                 get_memory_semantics_mask(atomic_ref_ty.memory_order),
             ),
-            args[1],
+            exchange_arg,
         ]
 
-        return builder.call(atomic_exchange_fn, atomic_exchange_fn_args)
+        ret_val = builder.call(
+            get_or_insert_spv_atomic_exchange_fn(
+                context, builder.module, atomic_ref_ty
+            ),
+            atomic_exchange_fn_args,
+        )
+
+        if sig.args[0].dtype == types.float32:
+            ret_val = builder.bitcast(ret_val, llvmir.FloatType())
+        elif sig.args[0].dtype == types.float64:
+            ret_val = builder.bitcast(ret_val, llvmir.DoubleType())
+
+        return ret_val
 
     return sig, _intrinsic_exchange_gen
 
