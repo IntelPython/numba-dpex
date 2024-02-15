@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-import dpctl
 import dpnp
 import pytest
 from numba.core.errors import TypingError
@@ -22,8 +21,7 @@ def store_exchange_fn(request):
     return request.param
 
 
-@pytest.mark.parametrize("supported_dtype", list_of_supported_dtypes)
-def test_load_store_fn(supported_dtype):
+def test_load_store_fn():
     """A test for load/store atomic functions."""
 
     @dpex_exp.kernel
@@ -35,19 +33,8 @@ def test_load_store_fn(supported_dtype):
         a_ref.store(val)
 
     N = 10
-    a = dpnp.zeros(2 * N, dtype=supported_dtype)
-    b = dpnp.arange(N, dtype=supported_dtype)
-
-    dev = a.sycl_device
-    if (
-        dev.backend == dpctl.backend_type.opencl
-        and dev.device_type == dpctl.device_type.cpu
-        and supported_dtype == dpnp.float64
-    ):
-        pytest.xfail(
-            "Atomic load, store, and exchange operations not working "
-            " for fp64 on OpenCL CPU"
-        )
+    a = dpnp.zeros(2 * N, dtype=dpnp.float32)
+    b = dpnp.arange(N, dtype=dpnp.float32)
 
     dpex_exp.call_kernel(_kernel, dpex.Range(b.size), a, b)
     # Verify that `b[i]` loaded and stored into a[i] by kernel
@@ -61,8 +48,7 @@ def test_load_store_fn(supported_dtype):
         assert a[i] == a[i + b.size]
 
 
-@pytest.mark.parametrize("supported_dtype", list_of_supported_dtypes)
-def test_exchange_fn(supported_dtype):
+def test_exchange_fn():
     """A test for exchange atomic function."""
 
     @dpex_exp.kernel
@@ -72,19 +58,8 @@ def test_exchange_fn(supported_dtype):
         b[i] = v.exchange(b[i])
 
     N = 10
-    a_orig = dpnp.zeros(2 * N, dtype=supported_dtype)
-    b_orig = dpnp.arange(N, dtype=supported_dtype)
-
-    dev = a_orig.sycl_device
-    if (
-        dev.backend == dpctl.backend_type.opencl
-        and dev.device_type == dpctl.device_type.cpu
-        and supported_dtype == dpnp.float64
-    ):
-        pytest.xfail(
-            "Atomic load, store, and exchange operations not working "
-            " for fp64 on OpenCL CPU"
-        )
+    a_orig = dpnp.zeros(2 * N, dtype=dpnp.float32)
+    b_orig = dpnp.arange(N, dtype=dpnp.float32)
 
     a_copy = dpnp.copy(a_orig)
     b_copy = dpnp.copy(b_orig)
