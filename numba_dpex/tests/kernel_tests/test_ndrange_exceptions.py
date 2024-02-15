@@ -6,7 +6,7 @@ import dpctl.tensor as dpt
 import pytest
 
 import numba_dpex as ndpx
-from numba_dpex.kernel_api import NdRange
+from numba_dpex.core.kernel_interface.indexers import NdRange
 
 
 # Data parallel kernel implementing vector sum

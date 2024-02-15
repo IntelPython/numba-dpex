@@ -5,7 +5,6 @@
 from .array_type import Array
 from .dpctl_types import DpctlSyclEvent, DpctlSyclQueue
 from .dpnp_ndarray_type import DpnpNdArray
-from .kernel_api_types.range_types import NdRangeType, RangeType
 from .numba_types_short_names import (
     b1,
     bool_,
@@ -27,6 +26,7 @@ from .numba_types_short_names import (
     uint64,
     void,
 )
+from .range_types import NdRangeType, RangeType
 from .usm_ndarray_type import USMNdArray
 
 usm_ndarray = USMNdArray
