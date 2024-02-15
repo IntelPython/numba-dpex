@@ -12,10 +12,10 @@
         gtag('js', new Date());
         gtag('config', 'G-LGGL0NJK6P');
     </script>
-    <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Programming Model" href="programming_model.html" /><link rel="prev" title="Getting Started" href="../getting_started.html" />
+    <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Kernel Programming Basics" href="kernel_programming/index.html" /><link rel="prev" title="Programming Model" href="../programming_model.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2024.01.29 -->
-        <title>User Guide - numba-dpex documentation</title>
+        <title>Tutorials - numba-dpex documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -168,8 +168,8 @@
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
-<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">User Guide</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of User Guide</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="programming_model.html">Programming Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_model.html">Programming Model</a></li>
+<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="kernel_programming/index.html">Kernel Programming Basics</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Kernel Programming Basics</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="kernel_programming/writing_kernels.html">Writing Data Parallel Kernels</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kernel_programming/synchronization.html">Synchronization Functions</a></li>
@@ -201,9 +201,7 @@
 <li class="toctree-l3"><a class="reference internal" href="debugging/common_issues.html">Common issues and tips</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="caching.html">Caching Mechanism in <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="config.html">Configuration Options for <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="useful_links.html">Useful links</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -219,6 +217,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../useful_links.html">Useful links</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Development</span></p>
 <ul>
@@ -264,17 +263,10 @@
           </label>
         </div>
         <article role="main">
-          <span class="target" id="index"></span><section id="user-guide">
-<h1>User Guide<a class="headerlink" href="#user-guide" title="Link to this heading">#</a></h1>
+          <span class="target" id="index"></span><section id="tutorials">
+<h1>Tutorials<a class="headerlink" href="#tutorials" title="Link to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="programming_model.html">Programming Model</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="programming_model.html#recognizing-available-devices">Recognizing available devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="programming_model.html#specifying-offload-target">Specifying offload target</a></li>
-<li class="toctree-l2"><a class="reference internal" href="programming_model.html#data-sharing">Data sharing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="programming_model.html#compute-follows-data">Compute follows data</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="kernel_programming/index.html">Kernel Programming Basics</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="kernel_programming/writing_kernels.html">Writing Data Parallel Kernels</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kernel_programming/synchronization.html">Synchronization Functions</a></li>
@@ -296,13 +288,7 @@
 <li class="toctree-l2"><a class="reference internal" href="debugging/index.html#features-and-limitations">Features and Limitations</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="caching.html">Caching Mechanism in <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="caching.html#algorithm">Algorithm</a></li>
-<li class="toctree-l2"><a class="reference internal" href="caching.html#settings">Settings</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="config.html">Configuration Options for <code class="docutils literal notranslate"><span class="pre">numba-dpex</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="useful_links.html">Useful links</a></li>
 </ul>
 </div>
 </section>
@@ -312,23 +298,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="programming_model.html">
+          <a class="next-page" href="kernel_programming/index.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Programming Model</div>
+                <div class="title">Kernel Programming Basics</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="../getting_started.html">
+          <a class="prev-page" href="../programming_model.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Getting Started</div>
+                <div class="title">Programming Model</div>
                 
               </div>
             </a>
@@ -344,7 +330,10 @@
             
           </div>
           <div class="right-details">
-            
+            <div class="icons">
+              <a class="muted-link " href="https://github.com/IntelPython/numba-dpex" aria-label="GitHub"></a>
+              
+            </div>
           </div>
         </div>
         
