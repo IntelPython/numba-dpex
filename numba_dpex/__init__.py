@@ -15,8 +15,10 @@ from typing import Tuple
 import dpctl
 import llvmlite.binding as ll
 from numba import __version__ as numba_version
+from numba.np.ufunc.decorators import Vectorize
 
 from numba_dpex.core.kernel_interface.launcher import call_kernel
+from numba_dpex.vectorizers import Vectorize as DpexVectorize
 
 from .numba_patches import patch_arrayexpr_tree_to_ir, patch_is_ufunc
 
@@ -132,6 +134,8 @@ from .ocl.stubs import (  # noqa E402
 load_dpctl_sycl_interface()
 del load_dpctl_sycl_interface
 
+
+Vectorize.target_registry.ondemand["dpex"] = lambda: DpexVectorize
 
 from numba_dpex._version import get_versions  # noqa E402
 
