@@ -431,11 +431,9 @@ class KernelLaunchIRBuilder:
 
         """
         int64_range = [
-            (
-                self.builder.sext(rext, utils.LLVMTypes.int64_t)
-                if rext.type != utils.LLVMTypes.int64_t
-                else rext
-            )
+            self.builder.sext(rext, utils.LLVMTypes.int64_t)
+            if rext.type != utils.LLVMTypes.int64_t
+            else rext
             for rext in idx_range
         ]
 

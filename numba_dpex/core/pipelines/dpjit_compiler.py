@@ -130,9 +130,9 @@ class DpjitCompiler(CompilerBase):
     def define_pipelines(self):
         pms = []
         self.state.parfor_diagnostics = ExtendedParforDiagnostics()
-        self.state.metadata["parfor_diagnostics"] = (
-            self.state.parfor_diagnostics
-        )
+        self.state.metadata[
+            "parfor_diagnostics"
+        ] = self.state.parfor_diagnostics
         if not self.state.flags.force_pyobject:
             pms.append(self._pass_builder.define_nopython_pipeline(self.state))
         if self.state.status.can_fallback or self.state.flags.force_pyobject:

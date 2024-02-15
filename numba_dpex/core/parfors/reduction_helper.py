@@ -285,9 +285,9 @@ class ReductionKernelVariables:
         self._parfor_redvars_to_redarrs = {}
         for ele1 in reductionHelperList:
             for key in ele1.redvars_to_redarrs_dict.keys():
-                self._parfor_redvars_to_redarrs[key] = (
-                    ele1.redvars_to_redarrs_dict[key]
-                )
+                self._parfor_redvars_to_redarrs[
+                    key
+                ] = ele1.redvars_to_redarrs_dict[key]
                 tmp1.append(ele1.redvars_to_redarrs_dict[key][0])
                 tmp1.append(ele1.redvars_to_redarrs_dict[key][1])
             self._final_sum_names.append(ele1.final_sum_var.name)

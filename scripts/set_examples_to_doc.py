@@ -1,6 +1,5 @@
 """ This script is needed to convert gdb scripts from commands to documentation
 """
-
 import os
 
 
