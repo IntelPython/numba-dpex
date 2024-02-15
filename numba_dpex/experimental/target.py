@@ -20,8 +20,8 @@ from numba_dpex.core.targets.kernel_target import (
     DpexKernelTypingContext,
 )
 from numba_dpex.experimental.models import exp_dmm
-from numba_dpex.kernel_api.flag_enum import FlagEnum
 
+from .flag_enum import FlagEnum
 from .literal_intenum_type import IntEnumLiteral
 
 

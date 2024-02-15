@@ -13,7 +13,7 @@ from numba.core.types import Integer, Literal
 from numba.core.typing.typeof import typeof
 
 from numba_dpex.core.exceptions import IllegalIntEnumLiteralValueError
-from numba_dpex.kernel_api.flag_enum import FlagEnum
+from numba_dpex.experimental.flag_enum import FlagEnum
 
 
 class IntEnumLiteral(Literal, Integer):
