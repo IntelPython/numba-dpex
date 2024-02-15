@@ -52,11 +52,9 @@ class Group:
             + (self._index[2])
         )
 
-    def get_group_range(self, dim):
-        """Returns a the extent of the range representing the number of groups
-        in the nd-range for a specified dimension.
-        """
-        return self._group_range[dim]
+    def get_group_range(self):
+        """Returns a range representing the number of groups in the nd-range."""
+        return self._group_range
 
     def get_group_linear_range(self):
         """Return the total number of work-groups in the nd_range."""
@@ -66,12 +64,12 @@ class Group:
 
         return num_wg
 
-    def get_local_range(self, dim):
-        """Returns the extent of the SYCL range representing all dimensions
-        of the local range for a specified dimension. This local range may
-        have been provided by the programmer, or chosen by the SYCL runtime.
+    def get_local_range(self):
+        """Returns a SYCL range representing all dimensions of the local
+        range. This local range may have been provided by the programmer, or
+        chosen by the SYCL runtime.
         """
-        return self._local_range[dim]
+        return self._local_range
 
     def get_local_linear_range(self):
         """Return the total number of work-items in the work-group."""

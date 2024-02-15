@@ -123,26 +123,6 @@ def _intrinsic_spirv_workgroup_size(
     )
 
 
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
-def _intrinsic_spirv_workgroup_id(
-    ty_context, ty_dim  # pylint: disable=unused-argument
-):
-    """Generates instruction to get index from BuiltInWorkgroupId."""
-    return _intrinsic_spirv_global_index_const(
-        ty_context, ty_dim, "BuiltInWorkgroupId"
-    )
-
-
-@intrinsic(target=DPEX_KERNEL_EXP_TARGET_NAME)
-def _intrinsic_spirv_numworkgroups(
-    ty_context, ty_dim  # pylint: disable=unused-argument
-):
-    """Generates instruction to get index from BuiltInNumWorkgroups."""
-    return _intrinsic_spirv_global_index_const(
-        ty_context, ty_dim, "BuiltInNumWorkgroups"
-    )
-
-
 def generate_index_overload(_type, _intrinsic):
     """Generates overload for the index method that generates specific IR from
     provided intrinsic."""
@@ -187,9 +167,6 @@ _index_const_overload_methods = [
     (NdItemType, "get_local_id", _intrinsic_spirv_local_invocation_id),
     (NdItemType, "get_global_range", _intrinsic_spirv_global_size),
     (NdItemType, "get_local_range", _intrinsic_spirv_workgroup_size),
-    (GroupType, "get_group_id", _intrinsic_spirv_workgroup_id),
-    (GroupType, "get_group_range", _intrinsic_spirv_numworkgroups),
-    (GroupType, "get_local_range", _intrinsic_spirv_workgroup_size),
 ]
 
 for index_overload in _index_const_overload_methods:
