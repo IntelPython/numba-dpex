@@ -11,9 +11,9 @@ import os
 import tempfile
 from subprocess import STDOUT, CalledProcessError, check_output
 
-from numba_dpex._kernel_api_impl.spirv.target import LLVM_SPIRV_ARGS
 from numba_dpex.core import config
 from numba_dpex.core.exceptions import InternalError
+from numba_dpex.core.targets.kernel_target import LLVM_SPIRV_ARGS
 
 
 def run_cmd(args, error_message=None):

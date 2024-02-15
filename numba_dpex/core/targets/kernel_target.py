@@ -23,7 +23,7 @@ from numba_dpex.core.types import USMNdArray
 from numba_dpex.core.utils import get_info_from_suai
 from numba_dpex.utils import address_space, calling_conv
 
-from . import codegen
+from .. import codegen
 
 CC_SPIR_KERNEL = "spir_kernel"
 CC_SPIR_FUNC = "spir_func"
@@ -52,7 +52,7 @@ class CompilationMode(IntEnum):
     DEVICE_FUNC = 2
 
 
-class SPIRVTypingContext(typing.BaseContext):
+class DpexKernelTypingContext(typing.BaseContext):
     """Custom typing context to support kernel compilation.
 
     The customized typing context provides two features required to compile
@@ -124,20 +124,20 @@ class SPIRVTypingContext(typing.BaseContext):
         self.install_registry(enumdecl.registry)
 
 
-class SPIRVDevice(GPU):
-    """Mark the hardware target as device that supports SPIR-V bitcode."""
+class SyclDevice(GPU):
+    """Mark the hardware target as SYCL Device."""
 
     pass
 
 
-SPIRV_TARGET_NAME = "spirv"
+DPEX_KERNEL_TARGET_NAME = "dpex_kernel"
 
-target_registry[SPIRV_TARGET_NAME] = SPIRVDevice
+target_registry[DPEX_KERNEL_TARGET_NAME] = SyclDevice
 
 
-class SPIRVTargetContext(BaseContext):
+class DpexKernelTargetContext(BaseContext):
     """A target context inheriting Numba's ``BaseContext`` that is customized
-    for generating SPIR-V kernels.
+    for generating SYCL kernels.
 
     A customized target context for generating SPIR-V kernels. The class defines
     helper functions to generates SPIR-V kernels as LLVM IR using the required
@@ -243,7 +243,7 @@ class SPIRVTargetContext(BaseContext):
         module.get_function(func.name).linkage = "internal"
         return wrapper
 
-    def __init__(self, typingctx, target=SPIRV_TARGET_NAME):
+    def __init__(self, typingctx, target=DPEX_KERNEL_TARGET_NAME):
         super().__init__(typingctx, target)
 
     def init(self):
@@ -338,7 +338,7 @@ class SPIRVTargetContext(BaseContext):
 
     @cached_property
     def call_conv(self):
-        return SPIRVCallConv(self)
+        return DpexCallConv(self)
 
     def codegen(self):
         return self._internal_codegen
@@ -385,7 +385,9 @@ class SPIRVTargetContext(BaseContext):
         )
         if not self.enable_debuginfo:
             fn.attributes.add("alwaysinline")
-        ret = super(SPIRVTargetContext, self).declare_function(module, fndesc)
+        ret = super(DpexKernelTargetContext, self).declare_function(
+            module, fndesc
+        )
         ret.calling_convention = calling_conv.CC_SPIR_FUNC
         return ret
 
@@ -442,12 +444,12 @@ class SPIRVTargetContext(BaseContext):
         return arrayobj.populate_array(arr, **kwargs)
 
 
-class SPIRVCallConv(MinimalCallConv):
+class DpexCallConv(MinimalCallConv):
     """Custom calling convention class used by numba-dpex.
 
     numba_dpex's calling convention derives from
     :class:`numba.core.callconv import MinimalCallConv`. The
-    :class:`SPIRVCallConv` overrides :func:`call_function`.
+    :class:`DpexCallConv` overrides :func:`call_function`.
 
     """
 

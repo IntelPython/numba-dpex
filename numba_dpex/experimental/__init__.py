@@ -8,7 +8,7 @@ yet production ready.
 
 from numba.core.imputils import Registry
 
-from numba_dpex._kernel_api_impl.spirv.dispatcher import SPIRVKernelDispatcher
+from numba_dpex._kernel_api_impl.spirv.dispatcher import SPVKernelDispatcher
 
 # Temporary so that Range and NdRange work in experimental call_kernel
 from numba_dpex.core.boxing import *
@@ -42,5 +42,5 @@ __all__ = [
     "call_kernel",
     "call_kernel_async",
     "IntEnumLiteral",
-    "SPIRVKernelDispatcher",
+    "SPVKernelDispatcher",
 ]

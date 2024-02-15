@@ -14,11 +14,11 @@ from numba.core.descriptors import TargetDescriptor
 from numba.core.target_extension import GPU, target_registry
 from numba.core.types.scalars import IntEnumClass
 
-from numba_dpex._kernel_api_impl.spirv.target import (
-    SPIRVTargetContext,
-    SPIRVTypingContext,
-)
 from numba_dpex.core.descriptor import DpexTargetOptions
+from numba_dpex.core.targets.kernel_target import (
+    DpexKernelTargetContext,
+    DpexKernelTypingContext,
+)
 from numba_dpex.experimental.models import exp_dmm
 from numba_dpex.kernel_api.flag_enum import FlagEnum
 
@@ -35,7 +35,7 @@ DPEX_KERNEL_EXP_TARGET_NAME = "dpex_kernel_exp"
 target_registry[DPEX_KERNEL_EXP_TARGET_NAME] = SyclDeviceExp
 
 
-class DpexExpKernelTypingContext(SPIRVTypingContext):
+class DpexExpKernelTypingContext(DpexKernelTypingContext):
     """Experimental typing context class extending the DpexKernelTypingContext
     by overriding super class functions for new experimental types.
 
@@ -80,7 +80,7 @@ class DpexExpKernelTypingContext(SPIRVTypingContext):
 #  pylint: disable=W0223
 # FIXME: Remove the pylint disablement once we add an override for
 # get_executable
-class DpexExpKernelTargetContext(SPIRVTargetContext):
+class DpexExpKernelTargetContext(DpexKernelTargetContext):
     """Experimental target context class extending the DpexKernelTargetContext
     by overriding super class functions for new experimental types.
 
