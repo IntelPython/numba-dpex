@@ -14,7 +14,6 @@ from numba_dpex.tests._helper import (
     get_float_dtypes,
     get_int_dtypes,
     has_opencl_gpu,
-    is_windows,
     num_required_arguments,
 )
 
@@ -317,7 +316,7 @@ unsupported_funcs = {
 }
 
 
-if has_opencl_gpu() or is_windows():
+if has_opencl_gpu():
     unsupported_funcs |= {parfor_ipow}
 
 
