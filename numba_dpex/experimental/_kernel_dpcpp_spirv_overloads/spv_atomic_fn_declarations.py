@@ -7,11 +7,25 @@ Implements a set of helper functions to generate the LLVM IR for SPIR-V
 functions and their use inside an LLVM module.
 """
 
+import warnings
+
 from llvmlite import ir as llvmir
 from numba.core import cgutils, types
 
 from numba_dpex.core import itanium_mangler as ext_itanium_mangler
 from numba_dpex.kernel_api_impl.spirv.target import CC_SPIR_FUNC
+
+_SUPPORT_CONVERGENT = True
+
+try:
+    llvmir.FunctionAttributes("convergent")
+except ValueError:
+    warnings.warn(
+        "convergent attribute is supported only starting llvmlite "
+        + "0.42. Not setting this attribute may result in unexpected behavior"
+        + "when using group_barrier"
+    )
+    _SUPPORT_CONVERGENT = False
 
 
 def get_or_insert_atomic_load_fn(context, module, atomic_ref_ty):
@@ -20,9 +34,16 @@ def get_or_insert_atomic_load_fn(context, module, atomic_ref_ty):
     specified LLVM IR module.
     """
     atomic_ref_dtype = atomic_ref_ty.dtype
+
+    if atomic_ref_dtype == types.float32:
+        atomic_ref_dtype = types.uint32
+    elif atomic_ref_dtype == types.float64:
+        atomic_ref_dtype = types.uint64
+
     atomic_load_fn_retty = context.get_value_type(atomic_ref_dtype)
     ptr_type = atomic_load_fn_retty.as_pointer()
     ptr_type.addrspace = atomic_ref_ty.address_space
+
     atomic_load_fn_arg_types = [
         ptr_type,
         llvmir.IntType(32),
@@ -44,6 +65,10 @@ def get_or_insert_atomic_load_fn(context, module, atomic_ref_ty):
     )
     fn.calling_convention = CC_SPIR_FUNC
 
+    if _SUPPORT_CONVERGENT:
+        fn.attributes.add("convergent")
+    fn.attributes.add("nounwind")
+
     return fn
 
 
@@ -53,9 +78,16 @@ def get_or_insert_spv_atomic_store_fn(context, module, atomic_ref_ty):
     specified LLVM IR module.
     """
     atomic_ref_dtype = atomic_ref_ty.dtype
+
+    if atomic_ref_dtype == types.float32:
+        atomic_ref_dtype = types.uint32
+    elif atomic_ref_dtype == types.float64:
+        atomic_ref_dtype = types.uint64
+
     ptr_type = context.get_value_type(atomic_ref_dtype).as_pointer()
     ptr_type.addrspace = atomic_ref_ty.address_space
     atomic_store_fn_retty = llvmir.VoidType()
+
     atomic_store_fn_arg_types = [
         ptr_type,
         llvmir.IntType(32),
@@ -80,6 +112,10 @@ def get_or_insert_spv_atomic_store_fn(context, module, atomic_ref_ty):
     )
     fn.calling_convention = CC_SPIR_FUNC
 
+    if _SUPPORT_CONVERGENT:
+        fn.attributes.add("convergent")
+    fn.attributes.add("nounwind")
+
     return fn
 
 
@@ -89,9 +125,16 @@ def get_or_insert_spv_atomic_exchange_fn(context, module, atomic_ref_ty):
     specified LLVM IR module.
     """
     atomic_ref_dtype = atomic_ref_ty.dtype
+
+    if atomic_ref_dtype == types.float32:
+        atomic_ref_dtype = types.uint32
+    elif atomic_ref_dtype == types.float64:
+        atomic_ref_dtype = types.uint64
+
     ptr_type = context.get_value_type(atomic_ref_dtype).as_pointer()
     ptr_type.addrspace = atomic_ref_ty.address_space
-    atomic_exchange_fn_retty = context.get_value_type(atomic_ref_ty.dtype)
+    atomic_exchange_fn_retty = context.get_value_type(atomic_ref_dtype)
+
     atomic_exchange_fn_arg_types = [
         ptr_type,
         llvmir.IntType(32),
@@ -117,6 +160,10 @@ def get_or_insert_spv_atomic_exchange_fn(context, module, atomic_ref_ty):
         mangled_fn_name,
     )
     fn.calling_convention = CC_SPIR_FUNC
+
+    if _SUPPORT_CONVERGENT:
+        fn.attributes.add("convergent")
+    fn.attributes.add("nounwind")
 
     return fn
 
@@ -173,5 +220,9 @@ def get_or_insert_spv_atomic_compare_exchange_fn(
         mangled_fn_name,
     )
     fn.calling_convention = CC_SPIR_FUNC
+
+    if _SUPPORT_CONVERGENT:
+        fn.attributes.add("convergent")
+    fn.attributes.add("nounwind")
 
     return fn

@@ -6,7 +6,6 @@
 Provides overloads for functions included in kernel_iface.barrier that
 generate dpcpp SPIR-V LLVM IR intrinsic function calls.
 """
-import warnings
 
 from llvmlite import ir as llvmir
 from numba.core import cgutils, types
@@ -20,18 +19,7 @@ from numba_dpex.kernel_api import group_barrier
 from numba_dpex.kernel_api.memory_enums import MemoryOrder, MemoryScope
 
 from ._spv_atomic_inst_helper import get_memory_semantics_mask, get_scope
-
-_SUPPORT_CONVERGENT = True
-
-try:
-    llvmir.FunctionAttributes("convergent")
-except ValueError:
-    warnings.warn(
-        "convergent attribute is supported only starting llvmlite "
-        + "0.42. Not setting this attribute may result in unexpected behavior"
-        + "when using group_barrier"
-    )
-    _SUPPORT_CONVERGENT = False
+from .spv_atomic_fn_declarations import _SUPPORT_CONVERGENT
 
 
 def _get_memory_scope(fence_scope):

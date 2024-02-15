@@ -27,8 +27,8 @@ def test_load_store_fn(supported_dtype):
     """A test for load/store atomic functions."""
 
     @dpex_exp.kernel
-    def _kernel(a, b):
-        i = dpex.get_global_id(0)
+    def _kernel(item, a, b):
+        i = item.get_id(0)
         a_ref = AtomicRef(a, index=i)
         b_ref = AtomicRef(b, index=i)
         val = b_ref.load()
@@ -37,17 +37,6 @@ def test_load_store_fn(supported_dtype):
     N = 10
     a = dpnp.zeros(2 * N, dtype=supported_dtype)
     b = dpnp.arange(N, dtype=supported_dtype)
-
-    dev = a.sycl_device
-    if (
-        dev.backend == dpctl.backend_type.opencl
-        and dev.device_type == dpctl.device_type.cpu
-        and supported_dtype == dpnp.float64
-    ):
-        pytest.xfail(
-            "Atomic load and store operations not working "
-            " for fp64 on OpenCL CPU"
-        )
 
     dpex_exp.call_kernel(_kernel, dpex.Range(b.size), a, b)
     # Verify that `b[i]` loaded and stored into a[i] by kernel
@@ -66,24 +55,14 @@ def test_exchange_fn(supported_dtype):
     """A test for exchange atomic function."""
 
     @dpex_exp.kernel
-    def _kernel(a, b):
-        i = dpex.get_global_id(0)
+    def _kernel(item, a, b):
+        i = item.get_id(0)
         v = AtomicRef(a, index=i)
         b[i] = v.exchange(b[i])
 
     N = 10
     a_orig = dpnp.zeros(2 * N, dtype=supported_dtype)
     b_orig = dpnp.arange(N, dtype=supported_dtype)
-
-    dev = a_orig.sycl_device
-    if (
-        dev.backend == dpctl.backend_type.opencl
-        and dev.device_type == dpctl.device_type.cpu
-        and supported_dtype == dpnp.float64
-    ):
-        pytest.xfail(
-            "Atomic exchange operation not working " " for fp64 on OpenCL CPU"
-        )
 
     a_copy = dpnp.copy(a_orig)
     b_copy = dpnp.copy(b_orig)
@@ -112,17 +91,6 @@ def test_compare_exchange_fns(supported_dtype):
 
     b = dpnp.arange(4, dtype=supported_dtype)
 
-    dev = b.sycl_device
-    if (
-        dev.backend == dpctl.backend_type.opencl
-        and dev.device_type == dpctl.device_type.cpu
-        and supported_dtype == dpnp.float64
-    ):
-        pytest.xfail(
-            "Atomic compare_exchange operation not working "
-            " for fp64 on OpenCL CPU"
-        )
-
     dpex_exp.call_kernel(_kernel, dpex.Range(1), b)
 
     # check for failure
@@ -142,8 +110,8 @@ def test_store_exchange_diff_types(store_exchange_fn):
     """
 
     @dpex_exp.kernel
-    def _kernel(a, b):
-        i = dpex.get_global_id(0)
+    def _kernel(item, a, b):
+        i = item.get_id(0)
         v = AtomicRef(b, index=0)
         getattr(v, store_exchange_fn)(a[i])
 
