@@ -53,13 +53,19 @@ exclude_patterns = []
 html_theme = "furo"
 
 html_theme_options = {
-    "footer_icons": [
+    "icon_links": [
         {
             "name": "GitHub",
             "url": "https://github.com/IntelPython/numba-dpex",
             "icon": "fab fa-github-square",
         },
+        {
+            "name": "Gitter",
+            "url": "https://app.gitter.im/#/room/#Data-Parallel-Python_community:gitter.im",
+            "icon": "fab fa-brands fa-gitter",
+        },
     ],
+    # "logo_only": True,
 }
 
 googleanalytics_id = "G-LGGL0NJK6P"
