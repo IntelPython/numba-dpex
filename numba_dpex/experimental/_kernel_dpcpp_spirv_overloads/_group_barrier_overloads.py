@@ -10,11 +10,9 @@ import warnings
 
 from llvmlite import ir as llvmir
 from numba.core import cgutils, types
-from numba.core.errors import TypingError
 from numba.extending import intrinsic, overload
 
 from numba_dpex.core import itanium_mangler as ext_itanium_mangler
-from numba_dpex.experimental.core.types.kernel_api.items import GroupType
 from numba_dpex.experimental.target import DPEX_KERNEL_EXP_TARGET_NAME
 from numba_dpex.kernel_api import group_barrier
 from numba_dpex.kernel_api.memory_enums import MemoryOrder, MemoryScope
@@ -28,7 +26,7 @@ try:
 except ValueError:
     warnings.warn(
         "convergent attribute is supported only starting llvmlite "
-        + "0.42. Not setting this attribute may result in unexpected behavior"
+        + "0.42. Not setting this attribute may result into unexpected behavior"
         + "when using group_barrier"
     )
     _SUPPORT_CONVERGENT = False
@@ -78,6 +76,7 @@ def _intrinsic_barrier(
             llvmir.IntType(32),
         ]
 
+        # TODO: split the function declaration from call
         fn = cgutils.get_or_insert_function(
             builder.module,
             llvmir.FunctionType(llvmir.VoidType(), spirv_fn_arg_types),
@@ -106,30 +105,26 @@ def _intrinsic_barrier(
     prefer_literal=True,
     target=DPEX_KERNEL_EXP_TARGET_NAME,
 )
-def ol_group_barrier(group, fence_scope=MemoryScope.WORK_GROUP):
+def ol_group_barrier(fence_scope=MemoryScope.WORK_GROUP):
     """SPIR-V overload for
     :meth:`numba_dpex.kernel_api.group_barrier`.
 
-    Generates the same LLVM IR instruction as DPC++ for the SYCL
+    Generates the same LLVM IR instruction as dpcpp for the
     `group_barrier` function.
 
     Per SYCL spec, group_barrier must perform both control barrier and memory
-    fence operations. Hence, group_barrier requires two scopes and one memory
-    consistency specification as its three arguments.
+    fence operations. Hence, group_barrier requires two scopes and memory
+    consistency specification as three arguments.
 
     mem_scope - scope of any memory consistency operations that are performed by
                 the barrier. By default, mem_scope is set to `work_group`.
     exec_scope - scope that determines the set of work-items that synchronize at
                  barrier. Set to `work_group` for group_barrier always.
-    spirv_memory_semantics_mask - Based on SYCL implementation. Always set to
-                                  use sequential consistency memory order.
-    """
+    spirv_memory_semantics_mask - Based on sycl implementation.
 
-    if not isinstance(group, GroupType):
-        raise TypingError(
-            "Expected a group should to be a GroupType value, but "
-            f"encountered {type(group)}"
-        )
+    Mask that is set to use sequential consistency memory order semantics
+    always.
+    """
 
     mem_scope = _get_memory_scope(fence_scope)
     exec_scope = get_scope(MemoryScope.WORK_GROUP.value)
@@ -138,7 +133,6 @@ def ol_group_barrier(group, fence_scope=MemoryScope.WORK_GROUP):
     )
 
     def _ol_group_barrier_impl(
-        group,
         fence_scope=MemoryScope.WORK_GROUP,
     ):  # pylint: disable=unused-argument
         # pylint: disable=no-value-for-parameter

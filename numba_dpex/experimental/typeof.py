@@ -10,11 +10,10 @@ types.
 from numba.extending import typeof_impl
 
 from numba_dpex.experimental.core.types.kernel_api.items import (
-    GroupType,
     ItemType,
     NdItemType,
 )
-from numba_dpex.kernel_api import AtomicRef, Group, Item, NdItem
+from numba_dpex.kernel_api import AtomicRef, Item, NdItem
 
 from .dpcpp_types import AtomicRefType
 
@@ -39,21 +38,6 @@ def typeof_atomic_ref(val: AtomicRef, ctx) -> AtomicRefType:
         memory_scope=val.memory_scope.value,
         address_space=val.address_space.value,
     )
-
-
-@typeof_impl.register(Group)
-def typeof_group(val: Group, c):
-    """Registers the type inference implementation function for a
-    numba_dpex.kernel_api.Group PyObject.
-
-    Args:
-        val : An instance of numba_dpex.kernel_api.Group.
-        c : Unused argument used to be consistent with Numba API.
-
-    Returns: A numba_dpex.experimental.core.types.kernel_api.items.GroupType
-        instance.
-    """
-    return GroupType(val.ndim)
 
 
 @typeof_impl.register(Item)

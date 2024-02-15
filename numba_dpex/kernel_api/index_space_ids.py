@@ -10,23 +10,6 @@ compiled.
 from .ranges import Range
 
 
-# pylint: disable=too-few-public-methods
-class Group:
-    """Analogue to the ``sycl::group`` type."""
-
-    def __init__(
-        self,
-        global_range: Range,
-        local_range: Range,
-        group_range: Range,
-        index: list,
-    ):
-        self._global_range = global_range
-        self._local_range = local_range
-        self._group_range = group_range
-        self._index = index
-
-
 class Item:
     """Analogue to the ``sycl::item`` type. Identifies an instance of the
     function object executing at each point in an Range.
@@ -77,7 +60,7 @@ class NdItem:
     """
 
     # TODO: define group type
-    def __init__(self, global_item: Item, local_item: Item, group: Group):
+    def __init__(self, global_item: Item, local_item: Item, group: any):
         # TODO: assert offset and dimensions
         self._global_item = global_item
         self._local_item = local_item
